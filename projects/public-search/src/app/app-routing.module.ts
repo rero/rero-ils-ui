@@ -20,7 +20,7 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   {
     path: 'global/search',
-    loadChildren: () => import('@rero/ng-core').then(m => m.RecordModule),
+    loadChildren: () => import('./record-wrapper.module').then(m => m.RecordWrapperModule),
     data: {
       showSearchInput: true,
       adminMode: false,
