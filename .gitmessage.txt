@@ -14,8 +14,4 @@ component: summarize changes in 50 char or less
 # Multiple `Co-Authored-by` lines are allowed.
 Co-Authored-by: [Your Full Name] <[your-email]>
 
-<<<<<<< HEAD
 # https://github.com/inveniosoftware/invenio/blob/master/CONTRIBUTING.rst#commit-messages
-=======
-# https://github.com/inveniosoftware/invenio/blob/master/CONTRIBUTING.rst#commit-messages
->>>>>>> bee239f... app: configure public-search app
