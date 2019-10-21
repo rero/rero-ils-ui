@@ -155,7 +155,9 @@ const routes: Routes = [
         {
           key: 'libraries',
           label: 'Libraries',
-          component: LibrariesBriefViewComponent
+          component: LibrariesBriefViewComponent,
+          canUpdate: RecordStatus.canUpdate,
+          canDelete: RecordStatus.canDelete
         }
       ]
     }

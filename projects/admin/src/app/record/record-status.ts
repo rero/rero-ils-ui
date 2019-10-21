@@ -24,12 +24,30 @@ export class RecordStatus {
 
   static translateService: TranslateService;
 
+  static canUpdate(record: any) {
+    if (
+      record.permissions
+      && record.permissions.cannot_update
+    ) {
+      return false;
+    }
+    return true;
+  }
+
   static canDelete(record: any): Observable<DeleteRecordStatus> {
     const Obs = new Observable((observer: Subscriber<any>): void => {
-      observer.next({can: !RecordStatus.generateMessage(record), message: RecordStatus.generateMessage(record)});
-      RecordStatus.translateService.onLangChange.subscribe(() => {
-        observer.next({can: !RecordStatus.generateMessage(record), message: RecordStatus.generateMessage(record)});
-      });
+      if (
+        record.permissions
+        && record.permissions.cannot_delete
+        && record.permissions.cannot_delete.permission
+        && record.permissions.cannot_delete.permission === 'permission denied') {
+        observer.next({ can: false, message: '' });
+      } else {
+        observer.next({ can: !RecordStatus.generateMessage(record), message: RecordStatus.generateMessage(record) });
+        RecordStatus.translateService.onLangChange.subscribe(() => {
+          observer.next({ can: !RecordStatus.generateMessage(record), message: RecordStatus.generateMessage(record) });
+        });
+      }
     });
 
     return Obs;
@@ -71,8 +89,8 @@ export class RecordStatus {
       }
       messages.unshift(
         messages.length === 1 ?
-        RecordStatus.translateService.instant(_('You cannot delete the record for the following reason:')) :
-        RecordStatus.translateService.instant(_('You cannot delete the record for the following reasons:'))
+          RecordStatus.translateService.instant('You cannot delete the record for the following reason:') :
+          RecordStatus.translateService.instant('You cannot delete the record for the following reasons:')
       );
 
       return messages.join('\n');
@@ -115,7 +133,7 @@ export class RecordStatus {
         '=1': RecordStatus.translateService.instant(_('has 1 organisation attached')),
         other: RecordStatus.translateService.instant(_('has # organisations attached'))
       },
-      patron_types: {
+      patron_types: {
         '=1': RecordStatus.translateService.instant(_('has 1 patron type attached')),
         other: RecordStatus.translateService.instant(_('has # patron types attached'))
       },
