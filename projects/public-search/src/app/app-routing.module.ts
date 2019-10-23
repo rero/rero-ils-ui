@@ -19,6 +19,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { RecordSearchComponent, DetailComponent } from '@rero/ng-core';
 import { DocumentBriefComponent } from './document-brief/document-brief.component';
 import { PersonBriefComponent } from './person-brief/person-brief.component';
+import { TranslateService } from '@ngx-translate/core';
+import { AggregationFilter } from './record/aggregation-filter';
 
 const routes: Routes = [
   {
@@ -36,7 +38,8 @@ const routes: Routes = [
         {
           key: 'documents',
           component: DocumentBriefComponent,
-          label: 'Documents'
+          label: 'Documents',
+          aggregations: AggregationFilter.filter
         },
         {
           key: 'persons',
@@ -62,6 +65,7 @@ const routes: Routes = [
           key: 'documents',
           component: DocumentBriefComponent,
           label: 'Documents',
+          aggregations: AggregationFilter.filter,
           preFilters: {
             view: 'highlands'
           }
@@ -89,6 +93,7 @@ const routes: Routes = [
         {
           key: 'documents',
           label: 'Documents',
+          aggregations: AggregationFilter.filter,
           component: DocumentBriefComponent,
           preFilters: {
             view: 'aoste'
@@ -108,4 +113,8 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+  constructor(private translateService: TranslateService) {
+    AggregationFilter.translateService = translateService;
+  }
+}
