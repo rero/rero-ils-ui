@@ -29,6 +29,8 @@ import { PersonsBriefViewComponent } from './record/brief-view/persons-brief-vie
 import { LibraryComponent } from './record/custom-editor/libraries/library.component';
 import { CirculationPolicyComponent } from './record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
 import { MylibraryComponent } from './mylibrary/mylibrary.component';
+import { RecordStatus } from './record/record-status';
+import { TranslateService } from '@ngx-translate/core';
 
 export function matchedUrl(url: UrlSegment[]) {
   const segments = [
@@ -132,6 +134,7 @@ const routes: Routes = [
         {
           key: 'documents',
           label: 'Documents',
+          canDelete: RecordStatus.canDelete,
           component: DocumentsBriefViewComponent
         }
       ]
@@ -286,4 +289,8 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+  constructor(translateService: TranslateService) {
+    RecordStatus.translateService = translateService;
+  }
+}

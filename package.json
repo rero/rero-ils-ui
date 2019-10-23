@@ -49,7 +49,7 @@
     "@cospired/i18n-iso-languages": "^2.0.5",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
-    "@rero/ng-core": "0.0.10",
+    "@rero/ng-core": "0.0.11",
     "angular-datatables": "^8.0.0",
     "angular6-json-schema-form": "^7.3.0",
     "bootstrap": "^4.3.1",
