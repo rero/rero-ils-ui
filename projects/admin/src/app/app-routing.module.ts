@@ -31,6 +31,7 @@ import { CirculationPolicyComponent } from './record/custom-editor/circulation-s
 import { MylibraryComponent } from './mylibrary/mylibrary.component';
 import { RecordStatus } from './record/record-status';
 import { TranslateService } from '@ngx-translate/core';
+import { AggregationFilter } from './record/aggregation-filter';
 
 export function matchedUrl(url: UrlSegment[]) {
   const segments = [
@@ -135,6 +136,7 @@ const routes: Routes = [
           key: 'documents',
           label: 'Documents',
           canDelete: RecordStatus.canDelete,
+          aggregations: AggregationFilter.filter,
           component: DocumentsBriefViewComponent
         }
       ]
@@ -292,5 +294,6 @@ const routes: Routes = [
 export class AppRoutingModule {
   constructor(translateService: TranslateService) {
     RecordStatus.translateService = translateService;
+    AggregationFilter.translateService = translateService;
   }
 }
