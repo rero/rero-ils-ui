@@ -24,7 +24,6 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppConfigService } from './service/app-config.service';
 import { MenuComponent } from './menu/menu.component';
-import { UserService } from './service/user.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CollapseModule, TabsModule, BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap';
 import { FrontpageComponent } from './frontpage/frontpage.component';
