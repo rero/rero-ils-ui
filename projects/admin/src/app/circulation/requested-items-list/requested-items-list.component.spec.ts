@@ -20,6 +20,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RequestedItemsListComponent } from './requested-items-list.component';
 import { DataTablesModule } from 'angular-datatables';
 import { RouterTestingModule } from '@angular/router/testing';
+import { DateTranslatePipe } from '@rero/ng-core';
 
 describe('RequestedItemsListComponent', () => {
   let component: RequestedItemsListComponent;
@@ -28,7 +29,7 @@ describe('RequestedItemsListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [DataTablesModule, RouterTestingModule],
-      declarations: [ RequestedItemsListComponent ]
+      declarations: [ RequestedItemsListComponent, DateTranslatePipe ]
     })
     .compileComponents();
   }));
