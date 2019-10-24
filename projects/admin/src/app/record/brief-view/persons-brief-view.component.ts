@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-persons-brief-view',
   template: `
   <h5 class="card-title mb-0 rero-ils-person">
-    <a>{{record.metadata | mefTitle}}</a>
+    <a>{{ record.metadata | mefTitle }}</a>
       <small *ngIf="record.metadata.rero" class="badge badge-secondary ml-1">RERO</small>
       <small *ngIf="record.metadata.gnd" class="badge badge-secondary ml-1">GND</small>
       <small *ngIf="record.metadata.bnf" class="badge badge-secondary ml-1">BNF</small>
@@ -42,4 +42,6 @@ export class PersonsBriefViewComponent implements ResultItem {
   @Input()
   type: string;
 
+  @Input()
+  detailUrl: string;
 }

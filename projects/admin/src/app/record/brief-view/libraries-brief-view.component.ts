@@ -25,11 +25,11 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
   template: `
   <h5 class="mb-0 d-inline">
     <i class="fa fa-caret-down" aria-hidden="true"></i>
-    {{record.metadata.name}}
+    {{ record.metadata.name }}
   </h5>
-  <small> {{record.metadata.code}}</small>
+  <small> {{ record.metadata.code }}</small>
   <section class="card-text">
-    <section class="collapse" id="{{'library'+record.metadata.pid }}">
+    <section class="collapse" id="{{ 'library'+record.metadata.pid }}">
       <dl class="row mb-0">
         <dt class="col-md-2"><span translate>Address</span>:</dt>
         <dd class="col-md-10 mb-0">{{ record.metadata.address }}</dd>
@@ -109,6 +109,9 @@ export class LibrariesBriefViewComponent implements ResultItem {
 
   @Input()
   type: string;
+
+  @Input()
+  detailUrl: string;
 
   isCollapsed = true;
   locations = [];
