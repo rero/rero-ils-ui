@@ -76,6 +76,9 @@ export class PatronsBriefViewComponent implements ResultItem {
   @Input()
   type: string;
 
+  @Input()
+  detailUrl: string;
+
   isCollapsed = true;
 
   constructor(

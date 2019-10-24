@@ -97,6 +97,9 @@ export class DocumentsBriefViewComponent implements ResultItem {
   @Input()
   type: string;
 
+  @Input()
+  detailUrl: string;
+
   isItemsCollapsed = true;
 
   constructor(
