@@ -35,7 +35,7 @@ export class RecordStatus {
   }
 
   static canDelete(record: any): Observable<DeleteRecordStatus> {
-    const Obs = new Observable((observer: Subscriber<any>): void => {
+    const obs = new Observable((observer: Subscriber<any>): void => {
       if (
         record.permissions
         && record.permissions.cannot_delete
@@ -50,7 +50,7 @@ export class RecordStatus {
       }
     });
 
-    return Obs;
+    return obs;
   }
 
   private static generateMessage(record: any) {

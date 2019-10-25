@@ -25,14 +25,15 @@ import { RecordService as LocalRecordService } from '../record.service';
   styleUrls: ['./document-brief.component.scss']
 })
 export class DocumentBriefComponent {
-
-  // TODO: adapt following line when issue #23 of ng-core is closed
+  private coverUrl: string;
   private pathArray = window.location.pathname.split('/');
+  private _record: any;
 
-  @Input()
-  set record(value) {
+  @Input() detailUrl: string;
+  @Input() viewcode = this.pathArray[1];
+  @Input() set record(value) {
     if (value !== undefined) {
-      this.Record = value;
+      this._record = value;
       this.coverUrl = `/static/images/icon_${value.metadata.type}.png`;
       if (value.metadata.cover_art) {
         this.coverUrl = value.metadata.cover_art;
@@ -51,15 +52,8 @@ export class DocumentBriefComponent {
   }
 
   get record() {
-    return this.Record;
+    return this._record;
   }
-
-  private Record: any;
-
-  coverUrl: string;
-
-  // TODO: adapt following line when issue #23 of ng-core is closed
-  public view = this.pathArray[1];
 
   constructor(
     private translate: TranslateService,
