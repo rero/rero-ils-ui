@@ -22,13 +22,13 @@ export class AggregationFilter {
   static translateService: TranslateService;
 
   static filter(aggregations: object): Observable<any> {
-    const Obs = new Observable((observer: Subscriber<any>): void => {
+    const obs = new Observable((observer: Subscriber<any>): void => {
       observer.next(AggregationFilter.aggregationFilter(aggregations));
       AggregationFilter.translateService.onLangChange.subscribe(() => {
         observer.next(AggregationFilter.aggregationFilter(aggregations));
       });
     });
-    return Obs;
+    return obs;
   }
 
   static aggregationFilter(aggregations: object) {

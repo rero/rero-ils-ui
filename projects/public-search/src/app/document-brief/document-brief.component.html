@@ -24,7 +24,7 @@
     </div>
     <div class="card-body w-100 py-0">
       <h4 class="card-title mb-1">
-        <a target="_self" href="/{{ view }}/documents/{{ record.metadata.pid }}">{{ record.metadata.title }}</a>
+        <a target="_self" href="/{{ detailUrl }}">{{ record.metadata.title }}</a>
       </h4>
       <article class="card-text">
         <!-- author -->
@@ -35,7 +35,7 @@
               {{ author.qualifier ? author.qualifier : '' }}
               {{ author.date ? author.date : '' }}
             </span>
-            <a *ngIf="author.pid" href="/{{ view }}/persons/{{ author.pid }}">
+            <a *ngIf="author.pid" href="/{{ viewcode }}/persons/{{ author.pid }}">
               {{ authorName(author) }}
               {{ author.qualifier ? author.qualifier : '' }}
               {{ author.date ? author.date : '' }}

@@ -22,15 +22,9 @@ import { Component, OnInit, Input } from '@angular/core';
   templateUrl: './person-brief.component.html'
 })
 export class PersonBriefComponent implements OnInit {
-
-  // TODO: adapt following line when issue #23 of ng-core is closed
-  private pathArray = window.location.pathname.split('/');
-
   @Input()
   record: any;
-
-  // TODO: adapt following line when issue #23 of ng-core is closed
-  public view = this.pathArray[1];
+  detailUrl: string;
 
   constructor() { }
 
