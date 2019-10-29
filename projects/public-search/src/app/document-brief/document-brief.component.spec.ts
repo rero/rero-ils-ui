@@ -16,13 +16,14 @@
  */
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CoreModule, SharedModule } from '@rero/ng-core';
+import { RecordModule } from '@rero/ng-core';
 
 import { MefTitlePipe } from './../pipes/mef-title.pipe';
 import { BirthDatePipe } from './../pipes/birth-date.pipe';
 import { BioInformationsPipe } from './../pipes/bio-informations.pipe';
 import { DocumentBriefComponent } from './document-brief.component';
 import { HttpClientModule } from '@angular/common/http';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('DocumentBriefComponent', () => {
   let component: DocumentBriefComponent;
@@ -31,7 +32,7 @@ describe('DocumentBriefComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DocumentBriefComponent, MefTitlePipe, BirthDatePipe, BioInformationsPipe ],
-      imports: [ CoreModule, SharedModule, HttpClientModule ]
+      imports: [ RecordModule, HttpClientModule, TranslateModule.forRoot() ]
     })
     .compileComponents();
   }));

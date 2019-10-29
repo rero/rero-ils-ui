@@ -21,12 +21,16 @@ import { RecordRoutingService } from './record-routing.service';
 // import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { RecordModule } from '@rero/ng-core';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('RecordRoutingService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       TranslateModule.forRoot({}),
-      RouterTestingModule
+      RouterTestingModule,
+      RecordModule,
+      HttpClientModule
     ]
   }));
 

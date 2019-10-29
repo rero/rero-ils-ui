@@ -18,11 +18,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MainCheckinCheckoutComponent } from './main-checkin-checkout.component';
-import { CoreModule, SharedModule } from '@rero/ng-core';
+import { RecordModule } from '@rero/ng-core';
 import { ItemsListComponent } from '../items-list/items-list.component';
 import { PatronDetailedComponent } from '../patron-detailed/patron-detailed.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('MainCheckinCheckoutComponent', () => {
   let component: MainCheckinCheckoutComponent;
@@ -30,7 +31,7 @@ describe('MainCheckinCheckoutComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CoreModule, SharedModule, RouterTestingModule, HttpClientModule],
+      imports: [RecordModule, RouterTestingModule, HttpClientModule, TranslateModule.forRoot()],
       declarations: [ MainCheckinCheckoutComponent, ItemsListComponent, PatronDetailedComponent ]
     })
     .compileComponents();

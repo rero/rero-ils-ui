@@ -24,6 +24,8 @@ import { Library } from './library';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../../service/user.service';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { TranslateService } from '@ngx-translate/core';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'admin-libraries-library',
@@ -43,7 +45,9 @@ export class LibraryComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private apiService: ApiService,
-    private toastService: ToastrService
+    private toastService: ToastrService,
+    private translateService: TranslateService,
+    private location: Location
   ) { }
 
   ngOnInit() {
@@ -88,29 +92,29 @@ export class LibraryComponent implements OnInit {
     if (this.library.pid) {
       this.recordService.update('libraries', cleanDictKeys(this.library)).subscribe(record => {
         this.toastService.success(
-          _('Record Updated!'),
-          _('libraries')
+          this.translateService.instant('Record Updated!'),
+          this.translateService.instant('libraries')
         );
-        this.router.navigate(['/records', 'libraries']);
+        this.router.navigate(['../../detail', this.library.pid], {relativeTo: this.route});
       });
     } else {
       const organisation = {
-        $ref: this.apiService.getEndpointByType('organisations', true) + this.organisationPid
+        $ref: this.apiService.getRefEndpoint('organisations', this.organisationPid)
       };
       this.library.organisation = organisation;
       this.recordService.create('libraries', cleanDictKeys(this.library)).subscribe(record => {
         this.toastService.success(
-          _('Record created!'),
-          _('libraries')
+          this.translateService.instant('Record created!'),
+          this.translateService.instant('libraries')
         );
-        this.router.navigate(['/records', 'libraries']);
+        this.router.navigate(['../detail', record.metadata.pid], {relativeTo: this.route});
       });
     }
     this.libraryForm.reset();
   }
 
   onCancel() {
-    this.router.navigate(['/records', 'libraries']);
+    this.location.back();
     this.libraryForm.reset();
   }
   addTime(dayIndex): void {
