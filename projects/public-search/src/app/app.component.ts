@@ -27,6 +27,6 @@ export class AppComponent implements OnInit {
    constructor(private injector: Injector) { }
 
   ngOnInit(): void {
-    this.injector.get(TranslateService).setLanguage(this.lang);
+    this.injector.get<TranslateService>(TranslateService).setLanguage(this.lang);
   }
 }

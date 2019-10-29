@@ -21,9 +21,6 @@ import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../service/user.service';
 import { TranslateService } from '@ngx-translate/core';
 
-export function _(str: string) {
-  return str;
-}
 
 @Component({
   selector: 'admin-circulation-main-request',
@@ -32,7 +29,7 @@ export function _(str: string) {
 })
 export class MainRequestComponent implements OnInit {
 
-  public placeholder: string = _('Please enter an item barcode.');
+  public placeholder: string = this.translate.instant('Please enter an item barcode.');
   public searchText = '';
   public items: any[] = null;
   private libraryPid: string;
@@ -70,8 +67,8 @@ export class MainRequestComponent implements OnInit {
     const item = this.items.find(currItem => currItem.barcode === searchText);
     if (item === undefined) {
       this.toastService.warning(
-        _('No request corresponding to the given item has been found.'),
-        _('search')
+        this.translate.instant('No request corresponding to the given item has been found.'),
+        this.translate.instant('search')
       );
     } else {
       const items = this.items;
@@ -86,7 +83,7 @@ export class MainRequestComponent implements OnInit {
           });
           this.toastService.warning(
             this.translate.instant('The item is ') + this.translate.instant(newItem.status),
-            _('search')
+            this.translate.instant('search')
           );
           this.searchText = '';
         }

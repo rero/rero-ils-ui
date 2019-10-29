@@ -19,11 +19,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ExceptionDatesEditComponent } from './exception-dates-edit.component';
 import { CommonModule } from '@angular/common';
-import { CoreModule, SharedModule } from '@rero/ng-core';
+import { RecordModule } from '@rero/ng-core';
 import { BsDatepickerModule, BsModalRef } from 'ngx-bootstrap';
 import { LOCALE_ID } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UiSwitchModule } from 'ngx-toggle-switch';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ExceptionDatesEditComponent', () => {
   let component: ExceptionDatesEditComponent;
@@ -36,10 +37,10 @@ describe('ExceptionDatesEditComponent', () => {
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        CoreModule,
-        SharedModule,
+        RecordModule,
         UiSwitchModule,
-        BsDatepickerModule.forRoot()
+        BsDatepickerModule.forRoot(),
+        TranslateModule.forRoot()
       ],
       providers: [BsModalRef, {provide: LOCALE_ID, useValue: 'en-US' }]
     })

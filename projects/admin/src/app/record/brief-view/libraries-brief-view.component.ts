@@ -19,6 +19,7 @@ import { Component, Input } from '@angular/core';
 import { ResultItem, RecordService } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-libraries-brief-view',
@@ -118,7 +119,8 @@ export class LibrariesBriefViewComponent implements ResultItem {
 
   constructor(
     private recordService: RecordService,
-    private toastService: ToastrService
+    private toastService: ToastrService,
+    private translate: TranslateService
   ) { }
 
   toggleCollapse() {
@@ -143,7 +145,7 @@ export class LibrariesBriefViewComponent implements ResultItem {
     this.recordService.delete('locations', pid).subscribe((success: any) => {
       if (success) {
         this.locations = this.locations.filter(location => location.metadata.pid !== pid);
-        this.toastService.success(_('Record deleted'), _('locations'));
+        this.toastService.success(this.translate.instant('Record deleted'), this.translate.instant('locations'));
       }
     });
   }

@@ -40,10 +40,10 @@ export class MenuComponent implements OnInit {
   languagesMenu = {
     navCssClass: 'navbar-nav',
     entries: [{
-      name: _('Menu'),
+      name: this.translateService.instant('Menu'),
       iconCssClass: 'fa fa-bars',
       entries: [{
-        name: _('Help'),
+        name: this.translateService.instant('Help'),
         iconCssClass: 'fa fa-help',
         href: 'https://ils.test.rero.ch/help'
       }]
@@ -81,7 +81,7 @@ export class MenuComponent implements OnInit {
       name: `${currentUser.first_name[0]}${currentUser.last_name[0]}`,
       entries: [
         {
-          name: _('Logout'),
+          name: this.translateService.instant('Logout'),
           href: `/logout`,
           iconCssClass: 'fa fa-sign-out'
         }
@@ -103,54 +103,54 @@ export class MenuComponent implements OnInit {
       navCssClass: 'navbar-nav',
       entries: [
         {
-          name: _('User services'),
+          name: this.translateService.instant('User services'),
           iconCssClass: 'fa fa-users',
           entries: [{
-            name: _('Circulation'),
+            name: this.translateService.instant('Circulation'),
             routerLink: '/circulation',
             iconCssClass: 'fa fa-exchange'
           }, {
-            name: _('Patrons'),
+            name: this.translateService.instant('Patrons'),
             routerLink: '/records/patrons',
             iconCssClass: 'fa fa-users'
           }]
         }, {
-          name: _('Catalog'),
+          name: this.translateService.instant('Catalog'),
           iconCssClass: 'fa fa-file-o',
           entries: [{
-            name: _('Documents'),
+            name: this.translateService.instant('Documents'),
             routerLink: '/records/documents',
             iconCssClass: 'fa fa-file-o'
           }, {
-            name: _('Create a bibliographic record'),
+            name: this.translateService.instant('Create a bibliographic record'),
             routerLink: '/records/documents/new',
             iconCssClass: 'fa fa-file-o'
           }, {
-            name: _('Persons'),
+            name: this.translateService.instant('Persons'),
             routerLink: '/records/persons',
             iconCssClass: 'fa fa-user'
           }]
         }, {
-          name: _('Admin & Monitoring'),
+          name: this.translateService.instant('Admin & Monitoring'),
           iconCssClass: 'fa fa-cogs',
           entries: [{
-            name: _('Circulation policies'),
+            name: this.translateService.instant('Circulation policies'),
             routerLink: '/records/circ_policies',
             iconCssClass: 'fa fa-exchange'
           }, {
-            name: _('Item types'),
+            name: this.translateService.instant('Item types'),
             routerLink: '/records/item_types',
             iconCssClass: 'fa fa-file-o'
           }, {
-            name: _('Patron types'),
+            name: this.translateService.instant('Patron types'),
             routerLink: '/records/patron_types',
             iconCssClass: 'fa fa-users'
           }, {
-            name: _('My Library'),
+            name: this.translateService.instant('My Library'),
             routerLink: `/records/libraries/detail/${this.userService.getCurrentUser().library.pid}`,
             iconCssClass: 'fa fa-university'
           }, {
-            name: _('Libraries'),
+            name: this.translateService.instant('Libraries'),
             routerLink: '/records/libraries',
             iconCssClass: 'fa fa-university'
           }]
@@ -164,6 +164,7 @@ export class MenuComponent implements OnInit {
     delete (this.activeLanguagesMenuItem.active);
     item.active = true;
     this.activeLanguagesMenuItem = item;
+    this.initLinksMenu();
   }
 
   getPersonsSuggestions(query, persons) {

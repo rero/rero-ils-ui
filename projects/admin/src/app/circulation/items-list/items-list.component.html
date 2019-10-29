@@ -30,8 +30,7 @@
       <th scope="col" class="text-center" *ngIf="patron" translate>Action</th>
       <th scope="col" class="text-center" translate>Action done</th>
     </tr>
-    <tr *ngFor="let item of items"
-        [ngClass]="{
+    <tr *ngFor="let item of items" [ngClass]="{
           'table-success': item.isActionLoan(patron),
           'table-warning': item.isActionReturn(patron)
         }">
@@ -52,18 +51,19 @@
         </span>
       </td>
       <td class="text-right">
-        <span [ngClass]="{'text-danger': item.loan.expired}"
-              *ngIf="item.loan && item.loan.dueDate">
+        <span [ngClass]="{'text-danger': item.loan.expired}" *ngIf="item.loan && item.loan.dueDate">
           {{ item.loan.dueDate | dateTranslate :'longDate' }}
         </span>
       </td>
       <td class="text-right" *ngIf="patron">
         <div class="btn-group" dropdown *ngIf="item.actions.length">
-          <button id="button-basic" class="btn btn-light btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" aria-controls="dropdown-basic" dropdownToggle [ngClass]="{'disabled': item.actions.length < 1}">
+          <button id="button-basic" class="btn btn-light btn-sm dropdown-toggle" type="button" id="dropdownMenuButton"
+            aria-controls="dropdown-basic" dropdownToggle [ngClass]="{'disabled': item.actions.length < 1}">
             {{ item.currentAction | translate }}
           </button>
           <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
-            <li role="menuitem" *ngFor="let action of item.actions"><a class="dropdown-item" (click)="item.currentAction = action">{{ action | translate }}</a></li>
+            <li role="menuitem" *ngFor="let action of item.actions"><a class="dropdown-item"
+                (click)="item.currentAction = action">{{ action | translate }}</a></li>
           </ul>
         </div>
       </td>
@@ -73,13 +73,8 @@
     </tr>
   </table>
 
-  <button *ngIf="patron"
-          [disabled]="!hasPendingActions()"
-          type="button"
-          class="btn btn-success pull-right"
-          (click)="apply(items)"
-          translate
-  >
+  <button *ngIf="patron" [disabled]="!hasPendingActions()" type="button" class="btn btn-success pull-right"
+    (click)="apply(items)" translate>
     Apply
   </button>
 </div>

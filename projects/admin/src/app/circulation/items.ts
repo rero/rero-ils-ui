@@ -21,9 +21,10 @@
 import { Moment } from 'moment';
 import * as moment from 'moment';
 import { User } from '../class/user';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 export function _(str) {
-  return str;
+  return marker(str);
 }
 
 export enum ItemStatus {

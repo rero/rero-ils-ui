@@ -25,6 +25,7 @@ import { CirculationMappingService } from '../circulation-mapping.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../../../service/user.service';
 import { RecordService, UniqueValidator, ApiService } from '@rero/ng-core';
+import { Location } from '@angular/common';
 
 
 @Component({
@@ -50,7 +51,8 @@ export class CirculationPolicyComponent implements OnInit {
     private userService: UserService,
     private circulationMapping: CirculationMappingService,
     private apiService: ApiService,
-    private recordService: RecordService
+    private recordService: RecordService,
+    private location: Location
     ) { }
 
     ngOnInit() {
@@ -61,7 +63,7 @@ export class CirculationPolicyComponent implements OnInit {
           this.circulationPolicyService
           .loadOrCreateCirculationPolicy(pid)
           .subscribe((circulation: CirculationPolicy) => {
-            circulation.organisation.$ref = this.apiService.getEndpointByType('organisation') + '/' + user.library.organisation.pid;
+            circulation.organisation.$ref = this.apiService.getRefEndpoint('organisations', user.library.organisation.pid);
             this.circulationPolicy = circulation;
             // Load organisation
             this.recordService.getRecord('organisations', user.library.organisation.pid)
@@ -213,7 +215,7 @@ export class CirculationPolicyComponent implements OnInit {
             }
 
             onCancel() {
-              this.router.navigate(['/records/circ_policies']);
+              this.location.back();
             }
 
             getField(field: string) {

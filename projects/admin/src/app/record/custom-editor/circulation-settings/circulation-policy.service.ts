@@ -20,9 +20,10 @@ import { forkJoin, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CirculationPolicy } from './circulation-policy';
 import { cleanDictKeys, RecordService } from '@rero/ng-core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -31,8 +32,10 @@ export class CirculationPolicyService {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private recordService: RecordService,
-    private toastService: ToastrService
+    private toastService: ToastrService,
+    private translateService: TranslateService
   ) { }
 
   loadOrCreateCirculationPolicy(pid: number = null) {
@@ -61,20 +64,20 @@ export class CirculationPolicyService {
       .update('circ_policies', circulationPolicy)
       .subscribe(() => {
         this.toastService.success(
-          _('Record Updated!'),
-          _('circ_policies')
+          this.translateService.instant('Record Updated!'),
+          this.translateService.instant('circ_policies')
         );
-        this.redirect();
+        this.router.navigate(['../../detail', circulationPolicy.pid], {relativeTo: this.route});
       });
     } else {
       this.recordService
       .create('circ_policies', circulationPolicy)
-      .subscribe(() => {
+      .subscribe((record) => {
         this.toastService.success(
-          _('Record created!'),
-          _('circ_policies')
+          this.translateService.instant('Record created!'),
+          this.translateService.instant('circ_policies')
         );
-        this.redirect();
+        this.router.navigate(['../detail', record.metadata.pid], {relativeTo: this.route});
       });
     }
   }

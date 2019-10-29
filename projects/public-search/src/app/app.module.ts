@@ -18,7 +18,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, LOCALE_ID, Injector } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 
-import { CoreConfigService, RecordModule, CoreModule, SharedModule, TranslateService } from '@rero/ng-core';
+import { CoreConfigService, RecordModule, TranslateService } from '@rero/ng-core';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -51,9 +51,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
-    CoreModule,
     RecordModule,
-    SharedModule,
     TranslateModule.forRoot({
       loader: {
         provide: BaseTranslateLoader,
