@@ -20,7 +20,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
 import { CollapseModule, BsDatepickerModule, TypeaheadModule } from 'ngx-bootstrap';
-import { SharedModule, AutocompleteComponent } from '@rero/ng-core';
+import { CoreModule, AutocompleteComponent } from '@rero/ng-core';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -30,7 +30,7 @@ describe('AppComponent', () => {
       imports: [
         RouterTestingModule,
         CollapseModule,
-        SharedModule,
+        CoreModule,
         HttpClientModule,
         BsDatepickerModule.forRoot(),
         TranslateModule.forRoot({}),

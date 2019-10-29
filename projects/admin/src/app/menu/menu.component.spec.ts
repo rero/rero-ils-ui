@@ -19,7 +19,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MenuComponent } from './menu.component';
 import { CollapseModule, BsDatepickerModule, TypeaheadModule } from 'ngx-bootstrap';
-import { CoreModule, SharedModule, RecordModule } from '@rero/ng-core';
+import { RecordModule } from '@rero/ng-core';
 import {TranslateModule} from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
@@ -45,8 +45,6 @@ describe('MenuComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         CollapseModule,
-        CoreModule,
-        SharedModule,
         RecordModule,
         TranslateModule.forRoot(),
         BsDatepickerModule.forRoot(),

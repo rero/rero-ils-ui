@@ -19,7 +19,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ExceptionDatesListComponent } from './exception-dates-list.component';
-import { SharedModule, CoreModule } from '@rero/ng-core';
+import { CoreModule } from '@rero/ng-core';
 import { ModalModule, BsDatepickerModule } from 'ngx-bootstrap';
 import { CommonModule } from '@angular/common';
 import { LOCALE_ID } from '@angular/core';
@@ -34,7 +34,6 @@ describe('ExceptionDatesListComponent', () => {
       imports: [
         CommonModule,
         CoreModule,
-        SharedModule,
         ModalModule.forRoot(),
         BsDatepickerModule.forRoot()
       ],

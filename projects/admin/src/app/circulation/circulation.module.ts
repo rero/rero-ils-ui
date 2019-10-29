@@ -25,7 +25,7 @@ import { MainCheckinCheckoutComponent } from './main-checkin-checkout/main-check
 import { RequestedItemsListComponent } from './requested-items-list/requested-items-list.component';
 import { PatronDetailedComponent } from './patron-detailed/patron-detailed.component';
 import { ItemsListComponent } from './items-list/items-list.component';
-import { SharedModule } from '@rero/ng-core';
+import { CoreModule } from '@rero/ng-core';
 import { DataTablesModule } from 'angular-datatables';
 
 @NgModule({
@@ -41,7 +41,7 @@ import { DataTablesModule } from 'angular-datatables';
     CommonModule,
     CirculationRoutingModule,
     DataTablesModule,
-    SharedModule
+    CoreModule
   ]
 })
 export class CirculationModule { }

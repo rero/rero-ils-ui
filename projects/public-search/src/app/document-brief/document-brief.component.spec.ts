@@ -16,7 +16,7 @@
  */
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CoreModule, SharedModule } from '@rero/ng-core';
+import { CoreModule } from '@rero/ng-core';
 
 import { MefTitlePipe } from './../pipes/mef-title.pipe';
 import { BirthDatePipe } from './../pipes/birth-date.pipe';
@@ -31,7 +31,7 @@ describe('DocumentBriefComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DocumentBriefComponent, MefTitlePipe, BirthDatePipe, BioInformationsPipe ],
-      imports: [ CoreModule, SharedModule, HttpClientModule ]
+      imports: [ CoreModule, HttpClientModule ]
     })
     .compileComponents();
   }));

@@ -33,6 +33,7 @@ import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-vi
 import { PersonsBriefViewComponent } from '../record/brief-view/persons-brief-view.component';
 import { ItemTypesBriefViewComponent } from '../record/brief-view/item-types-brief-view.component';
 import { PatronTypesBriefViewComponent } from '../record/brief-view/patron-types-brief-view.component';
+import { DocumentEditorComponent } from '../document-editor/document-editor.component';
 
 @Injectable({
   providedIn: 'root'
@@ -52,7 +53,7 @@ export class RecordRoutingService {
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: EditorComponent },
-        { path: 'new', component: EditorComponent }
+        { path: 'new', component: DocumentEditorComponent }
       ],
       data: {
         linkPrefix: 'records',

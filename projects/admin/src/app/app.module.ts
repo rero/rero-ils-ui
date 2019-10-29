@@ -18,7 +18,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, LOCALE_ID } from '@angular/core';
-import { RecordModule, CoreModule, CoreConfigService, SharedModule, TranslateService } from '@rero/ng-core';
+import { RecordModule, CoreConfigService, TranslateService } from '@rero/ng-core';
 import { UiSwitchModule } from 'ngx-toggle-switch';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -44,6 +44,8 @@ import { ExceptionDatesEditComponent } from './record/custom-editor/libraries/ex
 import { CirculationPolicyComponent } from './record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
 import { TranslateModule, TranslateLoader as BaseTranslateLoader } from '@ngx-translate/core';
 import { TranslateLoader } from './translate/loader/translate-loader';
+import { DocumentEditorComponent } from './document-editor/document-editor.component';
+import { Bootstrap4FrameworkModule } from 'angular6-json-schema-form';
 
 @NgModule({
   declarations: [
@@ -63,14 +65,14 @@ import { TranslateLoader } from './translate/loader/translate-loader';
     LibraryComponent,
     ExceptionDatesListComponent,
     ExceptionDatesEditComponent,
-    CirculationPolicyComponent
+    CirculationPolicyComponent,
+    DocumentEditorComponent
   ],
   imports: [
+    Bootstrap4FrameworkModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    CoreModule,
-    SharedModule,
     RecordModule,
     HttpClientModule,
     CollapseModule.forRoot(),
@@ -108,7 +110,8 @@ import { TranslateLoader } from './translate/loader/translate-loader';
     PatronTypesBriefViewComponent,
     PatronsBriefViewComponent,
     PersonsBriefViewComponent,
-    ExceptionDatesEditComponent
+    ExceptionDatesEditComponent,
+    DocumentEditorComponent
   ],
   bootstrap: [AppComponent]
 })

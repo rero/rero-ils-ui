@@ -19,7 +19,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LibraryComponent } from './library.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CoreModule, SharedModule } from '@rero/ng-core';
+import { CoreModule } from '@rero/ng-core';
 import { TabsModule, BsDatepickerModule } from 'ngx-bootstrap';
 import { UiSwitchModule } from 'ngx-toggle-switch';
 import { ExceptionDatesListComponent } from './exception-dates-list/exception-dates-list.component';
@@ -41,7 +41,6 @@ describe('LibraryComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         CoreModule,
-        SharedModule,
         TabsModule.forRoot(),
         UiSwitchModule,
         BsDatepickerModule.forRoot(),
