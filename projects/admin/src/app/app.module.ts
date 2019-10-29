@@ -18,7 +18,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, LOCALE_ID } from '@angular/core';
-import { RecordModule, CoreModule, CoreConfigService, SharedModule, TranslateService } from '@rero/ng-core';
+import { RecordModule, CoreConfigService, TranslateService } from '@rero/ng-core';
 import { UiSwitchModule } from 'ngx-toggle-switch';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -44,33 +44,39 @@ import { ExceptionDatesEditComponent } from './record/custom-editor/libraries/ex
 import { CirculationPolicyComponent } from './record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
 import { TranslateModule, TranslateLoader as BaseTranslateLoader } from '@ngx-translate/core';
 import { TranslateLoader } from './translate/loader/translate-loader';
+import { DocumentEditorComponent } from './document-editor/document-editor.component';
+import { Bootstrap4FrameworkModule, WidgetLibraryService } from 'angular6-json-schema-form';
+import { SelectItemTypeTypeComponent } from './record/editor/select-item-type-type/select-item-type-type.component';
+import { CheckboxIsOnlineComponent } from './record/editor/checkbox-is-online/checkbox-is-online.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MenuComponent,
-    FrontpageComponent,
-    ItemTypesBriefViewComponent,
-    CircPoliciesBriefViewComponent,
-    DocumentsBriefViewComponent,
-    LibrariesBriefViewComponent,
-    PatronTypesBriefViewComponent,
-    PatronsBriefViewComponent,
-    PersonsBriefViewComponent,
     BioInformationsPipe,
     BirthDatePipe,
-    MefTitlePipe,
-    LibraryComponent,
-    ExceptionDatesListComponent,
+    CheckboxIsOnlineComponent,
+    CircPoliciesBriefViewComponent,
+    CirculationPolicyComponent,
+    DocumentEditorComponent,
+    DocumentsBriefViewComponent,
     ExceptionDatesEditComponent,
-    CirculationPolicyComponent
+    ExceptionDatesListComponent,
+    FrontpageComponent,
+    ItemTypesBriefViewComponent,
+    LibrariesBriefViewComponent,
+    LibraryComponent,
+    MefTitlePipe,
+    MenuComponent,
+    PatronsBriefViewComponent,
+    PatronTypesBriefViewComponent,
+    PersonsBriefViewComponent,
+    SelectItemTypeTypeComponent
   ],
   imports: [
+    Bootstrap4FrameworkModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    CoreModule,
-    SharedModule,
     RecordModule,
     HttpClientModule,
     CollapseModule.forRoot(),
@@ -83,8 +89,7 @@ import { TranslateLoader } from './translate/loader/translate-loader';
       loader: {
         provide: BaseTranslateLoader,
         useClass: TranslateLoader,
-      },
-      isolate: false
+      }
     }),
     TypeaheadModule
   ],
@@ -101,15 +106,25 @@ import { TranslateLoader } from './translate/loader/translate-loader';
     BsLocaleService
   ],
   entryComponents: [
-    ItemTypesBriefViewComponent,
+    CheckboxIsOnlineComponent,
     CircPoliciesBriefViewComponent,
+    CirculationPolicyComponent,
+    DocumentEditorComponent,
     DocumentsBriefViewComponent,
+    ExceptionDatesEditComponent,
+    ItemTypesBriefViewComponent,
     LibrariesBriefViewComponent,
-    PatronTypesBriefViewComponent,
     PatronsBriefViewComponent,
+    PatronTypesBriefViewComponent,
     PersonsBriefViewComponent,
-    ExceptionDatesEditComponent
+    SelectItemTypeTypeComponent,
+    LibraryComponent
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private widgetLibrary: WidgetLibraryService) {
+    this.widgetLibrary.registerWidget('select-item-type-type', SelectItemTypeTypeComponent);
+    this.widgetLibrary.registerWidget('checkbox-is-online', CheckboxIsOnlineComponent);
+  }
+}

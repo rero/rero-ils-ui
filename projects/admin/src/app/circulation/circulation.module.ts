@@ -16,7 +16,6 @@
  */
 
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 import { CirculationRoutingModule } from './circulation-routing.module';
 import { MainComponent } from './main/main.component';
@@ -25,8 +24,10 @@ import { MainCheckinCheckoutComponent } from './main-checkin-checkout/main-check
 import { RequestedItemsListComponent } from './requested-items-list/requested-items-list.component';
 import { PatronDetailedComponent } from './patron-detailed/patron-detailed.component';
 import { ItemsListComponent } from './items-list/items-list.component';
-import { SharedModule } from '@rero/ng-core';
+import { RecordModule } from '@rero/ng-core';
 import { DataTablesModule } from 'angular-datatables';
+import { BsDropdownModule } from 'ngx-bootstrap';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { DataTablesModule } from 'angular-datatables';
     CommonModule,
     CirculationRoutingModule,
     DataTablesModule,
-    SharedModule
+    BsDropdownModule.forRoot(),
+    RecordModule
   ]
 })
 export class CirculationModule { }

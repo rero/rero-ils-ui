@@ -19,17 +19,17 @@ import { TestBed } from '@angular/core/testing';
 
 import { CirculationPolicyService } from './circulation-policy.service';
 import { RouterTestingModule } from '@angular/router/testing';
-import { RecordModule, CoreModule, SharedModule } from '@rero/ng-core';
+import { RecordModule } from '@rero/ng-core';
 import { HttpClientModule } from '@angular/common/http';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('CirculationPolicyService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       RouterTestingModule,
-      CoreModule,
-      SharedModule,
       RecordModule,
-      HttpClientModule
+      HttpClientModule,
+      TranslateModule.forRoot()
     ]
   }));
 

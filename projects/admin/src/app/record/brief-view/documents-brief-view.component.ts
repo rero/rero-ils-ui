@@ -150,7 +150,7 @@ export class DocumentsBriefViewComponent implements ResultItem, OnInit {
         for (const holding of this.record.metadata.holdings) {
           holding.items = holding.items.filter(item => item.pid !== pid);
         }
-        this.toastService.success(_('Record deleted'), _('documents'));
+        this.toastService.success(this.translate.instant('Record deleted'), this.translate.instant('documents'));
       }
     });
   }

@@ -25,6 +25,7 @@ import { AggregationFilter } from './record/aggregation-filter';
 const routes: Routes = [
   {
     path: 'global/search',
+    // loadChildren: () => import('@rero/ng-core').then(m => m.RecordModule),
     children: [
       { path: ':type', component: RecordSearchComponent },
       { path: ':type/detail/:pid', component: DetailComponent }

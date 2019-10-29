@@ -20,9 +20,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
 import { CollapseModule, BsDatepickerModule, TypeaheadModule } from 'ngx-bootstrap';
-import { SharedModule, AutocompleteComponent } from '@rero/ng-core';
+import { RecordModule } from '@rero/ng-core';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -30,7 +31,8 @@ describe('AppComponent', () => {
       imports: [
         RouterTestingModule,
         CollapseModule,
-        SharedModule,
+        FormsModule,
+        RecordModule,
         HttpClientModule,
         BsDatepickerModule.forRoot(),
         TranslateModule.forRoot({}),
@@ -38,8 +40,7 @@ describe('AppComponent', () => {
       ],
       declarations: [
         AppComponent,
-        MenuComponent,
-        AutocompleteComponent
+        MenuComponent
       ]
     }).compileComponents();
   }));
