@@ -98,7 +98,7 @@ export class DocumentsBriefViewComponent implements ResultItem {
   type: string;
 
   @Input()
-  detailUrl: string;
+  detailUrl: { link: string, external: boolean };
 
   isItemsCollapsed = true;
 

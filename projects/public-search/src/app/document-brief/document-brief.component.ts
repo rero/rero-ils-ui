@@ -25,7 +25,7 @@ import { RecordService as LocalRecordService } from '../record.service';
   styleUrls: ['./document-brief.component.scss']
 })
 export class DocumentBriefComponent {
-  private coverUrl: string;
+  public coverUrl: string;
   private pathArray = window.location.pathname.split('/');
   private _record: any;
 

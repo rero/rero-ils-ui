@@ -25,7 +25,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppConfigService } from './service/app-config.service';
 import { MenuComponent } from './menu/menu.component';
 import { HttpClientModule } from '@angular/common/http';
-import { CollapseModule, TabsModule, BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap';
+import { CollapseModule, TabsModule, BsDatepickerModule, BsLocaleService, TypeaheadModule } from 'ngx-bootstrap';
 import { FrontpageComponent } from './frontpage/frontpage.component';
 import { ItemTypesBriefViewComponent } from './record/brief-view/item-types-brief-view.component';
 import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policies-brief-view.component';
@@ -87,7 +87,8 @@ import { TranslateLoader } from './translate/loader/translate-loader';
         useClass: TranslateLoader,
       },
       isolate: false
-    })
+    }),
+    TypeaheadModule
   ],
   providers: [
     {

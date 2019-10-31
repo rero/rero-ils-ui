@@ -39,5 +39,5 @@ export class PatronTypesBriefViewComponent implements ResultItem {
   type: string;
 
   @Input()
-  detailUrl: string;
+  detailUrl: { link: string, external: boolean };
 }

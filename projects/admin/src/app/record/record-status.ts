@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { DeleteRecordStatus } from '@rero/ng-core';
-import { Observable, Subscriber } from 'rxjs';
+import { ActionStatus } from '@rero/ng-core';
+import { Observable, Subscriber, of } from 'rxjs';
 import { I18nPluralPipe, NgLocaleLocalization } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
@@ -29,12 +29,12 @@ export class RecordStatus {
       record.permissions
       && record.permissions.cannot_update
     ) {
-      return false;
+      return of(false);
     }
-    return true;
+    return of(true);
   }
 
-  static canDelete(record: any): Observable<DeleteRecordStatus> {
+  static canDelete(record: any): Observable<ActionStatus> {
     const obs = new Observable((observer: Subscriber<any>): void => {
       if (
         record.permissions
