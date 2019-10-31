@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, LOCALE_ID } from '@angular/core';
+import { NgModule, LOCALE_ID, Injector } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 
 import { CoreConfigService, RecordModule, CoreModule, SharedModule, TranslateService } from '@rero/ng-core';
@@ -31,6 +31,10 @@ import { BioInformationsPipe } from './pipes/bio-informations.pipe';
 import { TranslateModule, TranslateLoader as BaseTranslateLoader } from '@ngx-translate/core';
 import { TranslateLoader } from './translate/loader/translate-loader';
 import { BsLocaleService } from 'ngx-bootstrap';
+import { SearchBarComponent } from './search-bar/search-bar.component';
+import { createCustomElement } from '@angular/elements';
+import { TypeaheadModule } from 'ngx-bootstrap';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -39,10 +43,12 @@ import { BsLocaleService } from 'ngx-bootstrap';
     PersonBriefComponent,
     MefTitlePipe,
     BirthDatePipe,
-    BioInformationsPipe
+    BioInformationsPipe,
+    SearchBarComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     CoreModule,
@@ -54,7 +60,8 @@ import { BsLocaleService } from 'ngx-bootstrap';
         useClass: TranslateLoader,
       },
       isolate: false
-    })
+    }),
+    TypeaheadModule.forRoot()
   ],
   providers: [
     {
@@ -70,8 +77,16 @@ import { BsLocaleService } from 'ngx-bootstrap';
   ],
   entryComponents: [
     DocumentBriefComponent,
-    PersonBriefComponent
+    PersonBriefComponent,
+    SearchBarComponent
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+
+  constructor(private injector: Injector) {
+    const searchBar = createCustomElement(SearchBarComponent, { injector: this.injector });
+    customElements.define('main-search-bar', searchBar);
+  }
+
+}

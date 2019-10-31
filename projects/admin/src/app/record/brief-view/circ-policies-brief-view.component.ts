@@ -39,5 +39,5 @@ export class CircPoliciesBriefViewComponent implements ResultItem {
   type: string;
 
   @Input()
-  detailUrl: string;
+  detailUrl: { link: string, external: boolean };
 }

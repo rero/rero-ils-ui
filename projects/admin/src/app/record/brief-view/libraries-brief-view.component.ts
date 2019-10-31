@@ -111,7 +111,7 @@ export class LibrariesBriefViewComponent implements ResultItem {
   type: string;
 
   @Input()
-  detailUrl: string;
+  detailUrl: { link: string, external: boolean };
 
   isCollapsed = true;
   locations = [];

@@ -32,6 +32,7 @@ import { MylibraryComponent } from './mylibrary/mylibrary.component';
 import { RecordStatus } from './record/record-status';
 import { TranslateService } from '@ngx-translate/core';
 import { AggregationFilter } from './record/aggregation-filter';
+import { of } from 'rxjs';
 
 export function matchedUrl(url: UrlSegment[]) {
   const segments = [
@@ -45,7 +46,7 @@ export function matchedUrl(url: UrlSegment[]) {
   };
 }
 
-export function cant(record) { return false; }
+export function cant(record) { return of(false); }
 
 export function documentsMatcher(url) {
   if (url[0].path === 'records' && url[1].path === 'documents') {
@@ -131,6 +132,7 @@ const routes: Routes = [
     ],
     data: {
       linkPrefix: 'records',
+      showSearchInput: false,
       types: [
         {
           key: 'documents',

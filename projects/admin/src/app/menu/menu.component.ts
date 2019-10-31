@@ -19,6 +19,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../service/user.service';
 import { CoreConfigService, TranslateService } from '@rero/ng-core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { TranslateService as NgxTranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-menu',
@@ -29,6 +30,10 @@ export class MenuComponent implements OnInit {
   isCollapsed = true;
   lang: string = document.documentElement.lang;
   languages: string[];
+
+  recordTypes = [];
+
+  maxLengthSuggestion = 100;
 
   linksMenu = {
     navCssClass: 'navbar-nav',
@@ -112,39 +117,99 @@ export class MenuComponent implements OnInit {
 
   constructor(
     private appTranslateService: TranslateService,
+    private translateService: NgxTranslateService,
     private configService: CoreConfigService,
     private userService: UserService
-    ) {
-    }
+  ) {
+  }
 
-    ngOnInit() {
-      this.languages = this.configService.languages;
-      for (const lang of this.languages) {
-        const data: any = {name: lang};
-        if (lang === this.lang) {
-          data.active = true;
-          this.activeLanguagesMenuItem = data;
-        }
-        this.languagesMenu.entries[0].entries.splice(0, 0, data);
+  ngOnInit() {
+    this.languages = this.configService.languages;
+    for (const lang of this.languages) {
+      const data: any = { name: lang };
+      if (lang === this.lang) {
+        data.active = true;
+        this.activeLanguagesMenuItem = data;
       }
-      const currentUser = this.userService.getCurrentUser();
-      this.userMenu.entries.push({
-        name: `${currentUser.first_name[0]}${currentUser.last_name[0]}`,
-        entries: [
-          {
-            name: _('Logout'),
-            href: `/logout`,
-            iconCssClass: 'fa fa-sign-out'
-          }
-        ]
+      this.languagesMenu.entries[0].entries.splice(0, 0, data);
+    }
+    const currentUser = this.userService.getCurrentUser();
+    this.userMenu.entries.push({
+      name: `${currentUser.first_name[0]}${currentUser.last_name[0]}`,
+      entries: [
+        {
+          name: _('Logout'),
+          href: `/logout`,
+          iconCssClass: 'fa fa-sign-out'
+        }
+      ]
+    });
+    this.recordTypes = [{
+      type: 'documents',
+      field: 'autocomplete_title',
+      getSuggestions: (query, persons) => this.getDocumentsSuggestions(query, persons)
+    }, {
+      type: 'persons',
+      field: 'autocomplete_name',
+      getSuggestions: (query, persons) => this.getPersonsSuggestions(query, persons)
+    }];
+  }
+
+  changeLang(item) {
+    this.appTranslateService.setLanguage(item.name);
+    delete (this.activeLanguagesMenuItem.active);
+    item.active = true;
+    this.activeLanguagesMenuItem = item;
+  }
+
+  getPersonsSuggestions(query, persons) {
+    const values = [];
+    persons.hits.hits.map(hit => {
+      let text = this.getPersonName(hit.metadata);
+      text = text.replace(new RegExp(query, 'gi'), `<b>${query}</b>`);
+      values.push({
+        text,
+        query: '',
+        pid: hit.metadata.pid,
+        index: 'persons',
+        category: this.translateService.instant('direct links'),
+        href: `/records/persons/detail/${hit.metadata.pid}`,
+        iconCssClass: 'fa fa-user'
       });
-    }
+    });
+    return values;
+  }
 
-    changeLang(item) {
-      this.appTranslateService.setLanguage(item.name);
-      delete(this.activeLanguagesMenuItem.active);
-      item.active = true;
-      this.activeLanguagesMenuItem = item;
-    }
+  getDocumentsSuggestions(query, documents) {
+    const values = [];
+    documents.hits.hits.map(hit => {
+      let text = hit.metadata.title;
+      let truncate = false;
+      if (text.length > this.maxLengthSuggestion) {
+        truncate = true;
+        text = hit.metadata.title.substr(0, this.maxLengthSuggestion);
+      }
+      text = text.replace(new RegExp(query, 'gi'), `<b>${query}</b>`);
+      if (truncate) {
+        text = text + ' ...';
+      }
+      values.push({
+        text,
+        query: hit.metadata.title.replace(/[:\-\[\]()/"]/g, ' ').replace(/\s\s+/g, ' '),
+        index: 'documents',
+        pid: undefined,
+        category: this.translateService.instant('documents')
+        // href: `/records/documents/detail/${hit.metadata.pid}`
+      });
+    });
+    return values;
+  }
 
+  private getPersonName(metadata) {
+    for (const source of ['rero', 'bnf', 'gnd']) {
+      if (metadata[source] && metadata[source].preferred_name_for_person) {
+        return metadata[source].preferred_name_for_person;
+      }
+    }
+  }
 }

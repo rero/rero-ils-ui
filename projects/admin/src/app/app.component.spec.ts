@@ -19,8 +19,8 @@ import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
-import { CollapseModule, BsDatepickerModule } from 'ngx-bootstrap';
-import { SharedModule } from '@rero/ng-core';
+import { CollapseModule, BsDatepickerModule, TypeaheadModule } from 'ngx-bootstrap';
+import { SharedModule, AutocompleteComponent } from '@rero/ng-core';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -33,11 +33,13 @@ describe('AppComponent', () => {
         SharedModule,
         HttpClientModule,
         BsDatepickerModule.forRoot(),
-        TranslateModule.forRoot({})
+        TranslateModule.forRoot({}),
+        TypeaheadModule.forRoot()
       ],
       declarations: [
         AppComponent,
-        MenuComponent
+        MenuComponent,
+        AutocompleteComponent
       ]
     }).compileComponents();
   }));

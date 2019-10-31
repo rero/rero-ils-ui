@@ -14,21 +14,32 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light rero-ils-header mb-4">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark d-flex">
   <div class="container">
     <a routerLink="/" class="navbar-brand pr-2 text-sm">
       RERO ILS
     </a>
+    <ng-core-autocomplete
+      [placeholder]="'Search' | translate"
+      [recordTypes]="recordTypes"
+      [action]="'/records/documents'"
+      [internalRouting]="true"
+      class="flex-grow-1">
+    </ng-core-autocomplete>
+</div>
+</nav>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light rero-ils-header mb-4">
+  <div class="container">
     <button type="button" class="navbar-toggler" (click)="isCollapsed = !isCollapsed"
     [attr.aria-expanded]="!isCollapsed" aria-controls="navbarSupportedContent">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent" [collapse]="isCollapsed" [isAnimated]="true">
-      <ng-core-menu class="mr-auto" [menu]="linksMenu"></ng-core-menu>
-      <ng-core-menu [menu]="languagesMenu" (clickItem)="changeLang($event)"></ng-core-menu>
-      <ng-core-menu [menu]="userMenu"></ng-core-menu>
-    </div>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent" [collapse]="isCollapsed" [isAnimated]="true">
+    <ng-core-menu class="mr-auto" [menu]="linksMenu"></ng-core-menu>
+    <ng-core-menu [menu]="languagesMenu" (clickItem)="changeLang($event)"></ng-core-menu>
+    <ng-core-menu [menu]="userMenu"></ng-core-menu>
   </div>
+</div>
 </nav>
