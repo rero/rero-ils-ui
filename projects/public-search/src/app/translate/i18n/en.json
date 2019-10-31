@@ -1,7 +1,10 @@
 {
+  "Search": "Search",
   "article": "article",
   "available": "available",
   "book": "book",
+  "direct links": "direct links",
+  "documents": "documents",
   "ebook": "ebook",
   "journal": "journal",
   "not available": "not available",

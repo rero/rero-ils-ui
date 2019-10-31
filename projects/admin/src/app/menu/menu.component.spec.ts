@@ -18,14 +18,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MenuComponent } from './menu.component';
-import { CollapseModule, BsDatepickerModule } from 'ngx-bootstrap';
-import { CoreModule, SharedModule } from '@rero/ng-core';
+import { CollapseModule, BsDatepickerModule, TypeaheadModule } from 'ngx-bootstrap';
+import { CoreModule, SharedModule, RecordModule } from '@rero/ng-core';
 import {TranslateModule} from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserService } from '../service/user.service';
-
+import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('MenuComponent', () => {
   let component: MenuComponent;
@@ -44,11 +45,15 @@ describe('MenuComponent', () => {
         CollapseModule,
         CoreModule,
         SharedModule,
+        RecordModule,
         TranslateModule.forRoot(),
         BsDatepickerModule.forRoot(),
         HttpClientModule,
         BrowserModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        FormsModule,
+        TypeaheadModule.forRoot(),
+        RouterTestingModule
       ],
       declarations: [ MenuComponent ],
       providers: [

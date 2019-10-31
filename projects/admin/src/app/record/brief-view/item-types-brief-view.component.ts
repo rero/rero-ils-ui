@@ -40,5 +40,5 @@ export class ItemTypesBriefViewComponent implements ResultItem {
   type: string;
 
   @Input()
-  detailUrl: string;
+  detailUrl: { link: string, external: boolean };
 }

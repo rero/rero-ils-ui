@@ -30,7 +30,7 @@ const routes: Routes = [
       { path: ':type/detail/:pid', component: DetailComponent }
     ],
     data: {
-      showSearchInput: true,
+      showSearchInput: false,
       adminMode: false,
       linkPrefix: '/global/search',
       detailUrl: '/global/:type/:pid',
@@ -56,7 +56,7 @@ const routes: Routes = [
       { path: ':type/detail/:pid', component: DetailComponent }
     ],
     data: {
-      showSearchInput: true,
+      showSearchInput: false,
       adminMode: false,
       linkPrefix: '/highlands/search',
       detailUrl: '/highlands/:type/:pid',
@@ -85,7 +85,7 @@ const routes: Routes = [
       { path: ':type/detail/:pid', component: DetailComponent }
     ],
     data: {
-      showSearchInput: true,
+      showSearchInput: false,
       adminMode: false,
       linkPrefix: '/aoste/search',
       detailUrl: '/aoste/:type/:pid',

@@ -1,7 +1,10 @@
 {
+  "Search": "Search",
   "article": "article",
   "available": "disponible",
   "book": "livre",
+  "direct links": "direct links",
+  "documents": "documents",
   "ebook": "e-book",
   "journal": "journal",
   "not available": "non disponible",

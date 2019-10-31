@@ -43,5 +43,5 @@ export class PersonsBriefViewComponent implements ResultItem {
   type: string;
 
   @Input()
-  detailUrl: string;
+  detailUrl: { link: string, external: boolean };
 }
