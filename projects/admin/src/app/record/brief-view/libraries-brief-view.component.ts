@@ -90,7 +90,7 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
           <i class="fa fa-trash" aria-hidden="true"></i>
           </a>
           <a *ngIf="hasPermissionToUpdate(location)" class="ml-2 float-right text-secondary" routerLinkActive="active"
-             [routerLink]="['/records/locations', location.metadata.pid]"
+             [routerLink]="['/records/locations/edit', location.metadata.pid]"
              title="{{ 'Edit' | translate }}">
             <i class="fa fa-pencil" aria-hidden="true"></i>
           </a>

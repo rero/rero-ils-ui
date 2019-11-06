@@ -15,12 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ResultItem, RecordService } from '@rero/ng-core';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../service/user.service';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'admin-documents-brief-view',
@@ -56,30 +57,34 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
   <section *ngIf="!record.metadata.harvested">
     <button *ngIf="countHoldingsItems()"
        class="btn btn-link"
-       (click)="isItemsCollapsed = !isItemsCollapsed"
+       (click)="toggleCollapse()"
        aria-expanded="false" aria-controls="itemsList">
       <i [ngClass]="{'fa-caret-down':!isItemsCollapsed, 'fa-caret-right': isItemsCollapsed}" class="fa" aria-hidden="true"></i>
       <span translate *ngIf="countHoldingsItems() == 1"> item</span>
       <span translate *ngIf="countHoldingsItems() > 1"> items</span>
     </button>
+    <strong *ngIf="!countHoldingsItems()" translate>no item</strong>
     <a class="ml-2 text-secondary" routerLinkActive="active"
       [queryParams]="{document: record.metadata.pid}" [routerLink]="['/records/items/new']">
       <i class="fa fa-plus" aria-hidden="true"></i> {{ 'Add' | translate }}
     </a>
-    <span *ngIf="!countHoldingsItems()" translate>no item</span>
   </section>
-  <ul *ngIf="countHoldingsItems() > 0"
+  <ul *ngIf="countHoldingsItems() > 0 && !isItemsCollapsed"
       class="list-group list-group-flush"
       [collapse]="isItemsCollapsed">
-    <li *ngFor="let item of groupItems() "class="list-group-item p-1">
-      <a href="#">{{item.barcode}}</a><span> ({{ item.status | translate }})</span>
-      <a (click)="deleteItem(item.pid)"
-         class="ml-2 float-right text-secondary" title="{{ 'Delete' | translate }}">
+    <li *ngFor="let item of groupItems" class="list-group-item p-1">
+      <a [routerLink]="['/records/items/detail', item.metadata.pid]">
+        {{item.metadata.barcode}}
+      </a><span> ({{ item.metadata.status | translate }})</span>
+      <a *ngIf="canDeleteItem(item)" (click)="deleteItem(item.metadata.pid)"
+         class="float-right text-secondary btn p-1"
+         [ngClass]="{'disabled': item.permissions.cannot_delete}" title="{{ 'Delete' | translate }}"
+      >
         <i class="fa fa-trash" aria-hidden="true"></i>
       </a>
-      <a class="ml-2 float-right text-secondary"
+      <a *ngIf="canEditItem(item)" class="btn p-1 ml-2 float-right text-secondary"
          routerLinkActive="active"
-         [routerLink]="['/records/items/edit', item.pid]"
+         [routerLink]="['/records/items/edit', item.metadata.pid]"
          [queryParams]="{document: record.metadata.pid}"
          title="{{ 'Edit' | translate }}">
         <i class="fa fa-pencil" aria-hidden="true"></i>
@@ -89,7 +94,7 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
   `,
   styles: []
 })
-export class DocumentsBriefViewComponent implements ResultItem {
+export class DocumentsBriefViewComponent implements ResultItem, OnInit {
 
   @Input()
   record: any;
@@ -102,12 +107,20 @@ export class DocumentsBriefViewComponent implements ResultItem {
 
   isItemsCollapsed = true;
 
+  items = [];
+
+  groupItems = [];
+
   constructor(
     private recordsService: RecordService,
     private translate: TranslateService,
     private toastService: ToastrService,
     public userService: UserService
-    ) {}
+  ) { }
+
+  ngOnInit() {
+    this.items = this.getItems();
+  }
 
   publisherNames() {
     const indexName = `name_${this.translate.currentLang}`;
@@ -142,11 +155,34 @@ export class DocumentsBriefViewComponent implements ResultItem {
     });
   }
 
-  groupItems() {
+  canDeleteItem(item) {
+    if (item.links.delete) {
+      return true;
+    }
+    return false;
+  }
+
+  canEditItem(item) {
+    if (item.links.delete) {
+      return true;
+    }
+    return false;
+  }
+
+  ownedHolding(holding) {
+    // return true;
+    const currentUser = this.userService.getCurrentUser();
+    if ('system_librarian' in currentUser.roles) {
+      return currentUser.library.organisation.pid === holding.organisation.organisation_pid;
+    }
+    return currentUser.library.pid === holding.organisation.library_pid;
+  }
+
+  getItems() {
     const items = [];
     if ('holdings' in this.record.metadata) {
       for (const holding of this.record.metadata.holdings) {
-        if ('items' in holding) {
+        if ('items' in holding && this.ownedHolding(holding)) {
           for (const item of holding.items) {
             items.push(item);
           }
@@ -156,7 +192,24 @@ export class DocumentsBriefViewComponent implements ResultItem {
     return items;
   }
 
+  toggleCollapse() {
+    const observables = [];
+
+    if (this.isItemsCollapsed) {
+      this.groupItems = [];
+      this.items.map(item => {
+        observables.push(this.recordsService.getRecord('items', item.pid));
+      });
+      combineLatest(observables).subscribe((results: any) => {
+        results.map(result =>
+          this.groupItems.push(result)
+        );
+      });
+    }
+    this.isItemsCollapsed = !this.isItemsCollapsed;
+  }
+
   countHoldingsItems() {
-    return this.groupItems().length;
+    return this.items.length;
   }
 }

@@ -15,24 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { UserService } from '../service/user.service';
+import { TestBed } from '@angular/core/testing';
 
-@Component({
-  selector: 'admin-libraries-mylibrary',
-  template: ``,
-  styles: []
-})
-export class MylibraryComponent implements OnInit {
+import { RecordRoutingService } from './record-routing.service';
+// import { TranslateModule } from '@ngx-translate/core';
+import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
-  constructor(
-    private router: Router,
-    private currentUser: UserService
-  ) {}
+describe('RecordRoutingService', () => {
+  beforeEach(() => TestBed.configureTestingModule({
+    imports: [
+      TranslateModule.forRoot({}),
+      RouterTestingModule
+    ]
+  }));
 
-  ngOnInit() {
-    const user = this.currentUser.getCurrentUser();
-    this.router.navigate(['/records/libraries/detail', user.library.pid]);
-  }
-}
+  it('should be created', () => {
+    const service: RecordRoutingService = TestBed.get(RecordRoutingService);
+    expect(service).toBeTruthy();
+  });
+});

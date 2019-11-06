@@ -34,11 +34,13 @@ describe('MenuComponent', () => {
   const userService = jasmine.createSpyObj('UserService', ['getCurrentUser']);
   userService.getCurrentUser.and.returnValue({
     first_name: 'John',
-    last_name: 'Doe'
+    last_name: 'Doe',
+    library: {
+      pid: '1'
+    }
   });
 
   beforeEach(async(() => {
-
 
     TestBed.configureTestingModule({
       imports: [
