@@ -35,64 +35,7 @@ export class MenuComponent implements OnInit {
 
   maxLengthSuggestion = 100;
 
-  linksMenu = {
-    navCssClass: 'navbar-nav',
-    entries: [
-      {
-        name: _('User services'),
-        iconCssClass: 'fa fa-users',
-        entries: [{
-          name: _('Circulation'),
-          routerLink: '/circulation',
-          iconCssClass: 'fa fa-exchange'
-        }, {
-          name: _('Patrons'),
-          routerLink: '/records/patrons',
-          iconCssClass: 'fa fa-users'
-        }]
-      }, {
-        name: _('Catalog'),
-        iconCssClass: 'fa fa-file-o',
-        entries: [{
-          name: _('Documents'),
-          routerLink: '/records/documents',
-          iconCssClass: 'fa fa-file-o'
-        }, {
-          name: _('Create a bibliographic record'),
-          routerLink: '/records/documents/new',
-          iconCssClass: 'fa fa-file-o'
-        }, {
-          name: _('Persons'),
-          routerLink: '/records/persons',
-          iconCssClass: 'fa fa-user'
-        }]
-      }, {
-        name: _('Admin & Monitoring'),
-        iconCssClass: 'fa fa-cogs',
-        entries: [{
-          name: _('Circulation policies'),
-          routerLink: '/records/circ_policies',
-          iconCssClass: 'fa fa-exchange'
-        }, {
-          name: _('Item types'),
-          routerLink: '/records/item_types',
-          iconCssClass: 'fa fa-file-o'
-        }, {
-          name: _('Patron types'),
-          routerLink: '/records/patron_types',
-          iconCssClass: 'fa fa-users'
-        }, {
-          name: _('My Library'),
-          routerLink: '/mylibrary',
-          iconCssClass: 'fa fa-university'
-        }, {
-          name: _('Libraries'),
-          routerLink: '/records/libraries',
-          iconCssClass: 'fa fa-university'
-        }]
-      }
-    ]
-  };
+  linksMenu = {};
 
   languagesMenu = {
     navCssClass: 'navbar-nav',
@@ -120,10 +63,10 @@ export class MenuComponent implements OnInit {
     private translateService: NgxTranslateService,
     private configService: CoreConfigService,
     private userService: UserService
-  ) {
-  }
+  ) { }
 
   ngOnInit() {
+    this.initLinksMenu();
     this.languages = this.configService.languages;
     for (const lang of this.languages) {
       const data: any = { name: lang };
@@ -153,6 +96,67 @@ export class MenuComponent implements OnInit {
       field: 'autocomplete_name',
       getSuggestions: (query, persons) => this.getPersonsSuggestions(query, persons)
     }];
+  }
+
+  initLinksMenu() {
+    this.linksMenu = {
+      navCssClass: 'navbar-nav',
+      entries: [
+        {
+          name: _('User services'),
+          iconCssClass: 'fa fa-users',
+          entries: [{
+            name: _('Circulation'),
+            routerLink: '/circulation',
+            iconCssClass: 'fa fa-exchange'
+          }, {
+            name: _('Patrons'),
+            routerLink: '/records/patrons',
+            iconCssClass: 'fa fa-users'
+          }]
+        }, {
+          name: _('Catalog'),
+          iconCssClass: 'fa fa-file-o',
+          entries: [{
+            name: _('Documents'),
+            routerLink: '/records/documents',
+            iconCssClass: 'fa fa-file-o'
+          }, {
+            name: _('Create a bibliographic record'),
+            routerLink: '/records/documents/new',
+            iconCssClass: 'fa fa-file-o'
+          }, {
+            name: _('Persons'),
+            routerLink: '/records/persons',
+            iconCssClass: 'fa fa-user'
+          }]
+        }, {
+          name: _('Admin & Monitoring'),
+          iconCssClass: 'fa fa-cogs',
+          entries: [{
+            name: _('Circulation policies'),
+            routerLink: '/records/circ_policies',
+            iconCssClass: 'fa fa-exchange'
+          }, {
+            name: _('Item types'),
+            routerLink: '/records/item_types',
+            iconCssClass: 'fa fa-file-o'
+          }, {
+            name: _('Patron types'),
+            routerLink: '/records/patron_types',
+            iconCssClass: 'fa fa-users'
+          }, {
+            name: _('My Library'),
+            routerLink: `/records/libraries/detail/${this.userService.getCurrentUser().library.pid}`,
+            iconCssClass: 'fa fa-university'
+          }, {
+            name: _('Libraries'),
+            routerLink: '/records/libraries',
+            iconCssClass: 'fa fa-university'
+          }]
+        }
+      ]
+    };
   }
 
   changeLang(item) {

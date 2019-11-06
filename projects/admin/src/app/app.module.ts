@@ -42,7 +42,6 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ExceptionDatesListComponent } from './record/custom-editor/libraries/exception-dates-list/exception-dates-list.component';
 import { ExceptionDatesEditComponent } from './record/custom-editor/libraries/exception-dates-edit/exception-dates-edit.component';
 import { CirculationPolicyComponent } from './record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
-import { MylibraryComponent } from './mylibrary/mylibrary.component';
 import { TranslateModule, TranslateLoader as BaseTranslateLoader } from '@ngx-translate/core';
 import { TranslateLoader } from './translate/loader/translate-loader';
 
@@ -64,8 +63,7 @@ import { TranslateLoader } from './translate/loader/translate-loader';
     LibraryComponent,
     ExceptionDatesListComponent,
     ExceptionDatesEditComponent,
-    CirculationPolicyComponent,
-    MylibraryComponent
+    CirculationPolicyComponent
   ],
   imports: [
     BrowserModule,
