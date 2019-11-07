@@ -22,7 +22,7 @@ import { of, Observable, Subscriber } from 'rxjs';
 
 import { TranslateService } from '@ngx-translate/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { RecordSearchComponent, DetailComponent, EditorComponent, ActionStatus } from '@rero/ng-core';
+import { RecordSearchComponent, DetailComponent, ActionStatus } from '@rero/ng-core';
 
 import { CirculationPolicyComponent } from '../record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
 import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-policies-brief-view.component';
@@ -47,13 +47,7 @@ export class RecordRoutingService {
   initRoute() {
     this.router.config.push({
       matcher: (url) => this.routeMatcher(url, 'documents'),
-      // loadChildren: () => import('@rero/ng-core').then(m => m.RecordModule)
-      children: [
-        { path: '', component: RecordSearchComponent },
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent },
-        { path: 'new', component: EditorComponent }
-      ],
+      loadChildren: () => import('@rero/ng-core').then(m => m.RecordModule),
       data: {
         linkPrefix: 'records',
         showSearchInput: false,
@@ -68,7 +62,7 @@ export class RecordRoutingService {
         ]
       }
     }, {
-      matcher: (url) => this.routeMatcher(url, 'libraries'),
+      matcher: (url) => this.routeMatcher(url, 'libraries', false),
       children: [
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
@@ -89,12 +83,7 @@ export class RecordRoutingService {
       }
     }, {
       matcher: (url) => this.routeMatcher(url, 'patrons'),
-      children: [
-        { path: '', component: RecordSearchComponent },
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent },
-        { path: 'new', component: EditorComponent }
-      ],
+      loadChildren: () => import('@rero/ng-core').then(m => m.RecordModule),
       data: {
         linkPrefix: 'records',
         types: [
@@ -107,12 +96,7 @@ export class RecordRoutingService {
       }
     }, {
       matcher: (url) => this.routeMatcher(url, 'persons'),
-      children: [
-        { path: '', component: RecordSearchComponent },
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent },
-        { path: 'new', component: EditorComponent }
-      ],
+      loadChildren: () => import('@rero/ng-core').then(m => m.RecordModule),
       data: {
         linkPrefix: 'records',
         types: [
@@ -128,12 +112,7 @@ export class RecordRoutingService {
       }
     }, {
       matcher: (url) => this.routeMatcher(url, 'item_types'),
-      children: [
-        { path: '', component: RecordSearchComponent },
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent },
-        { path: 'new', component: EditorComponent }
-      ],
+      loadChildren: () => import('@rero/ng-core').then(m => m.RecordModule),
       data: {
         linkPrefix: 'records',
         types: [
@@ -146,11 +125,7 @@ export class RecordRoutingService {
       }
     }, {
       matcher: (url) => this.routeMatcher(url, 'items'),
-      children: [
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent },
-        { path: 'new', component: EditorComponent }
-      ],
+      loadChildren: () => import('@rero/ng-core').then(m => m.RecordModule),
       data: {
         linkPrefix: 'records',
         types: [
@@ -162,11 +137,7 @@ export class RecordRoutingService {
       }
     }, {
       matcher: (url) => this.routeMatcher(url, 'locations'),
-      children: [
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent },
-        { path: 'new', component: EditorComponent }
-      ],
+      loadChildren: () => import('@rero/ng-core').then(m => m.RecordModule),
       data: {
         linkPrefix: 'records',
         types: [
@@ -178,12 +149,7 @@ export class RecordRoutingService {
       }
     }, {
       matcher: (url) => this.routeMatcher(url, 'patron_types'),
-      children: [
-        { path: '', component: RecordSearchComponent },
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent },
-        { path: 'new', component: EditorComponent }
-      ],
+      loadChildren: () => import('@rero/ng-core').then(m => m.RecordModule),
       data: {
         linkPrefix: 'records',
         types: [
@@ -195,7 +161,7 @@ export class RecordRoutingService {
         ]
       }
     }, {
-      matcher: (url) => this.routeMatcher(url, 'circ_policies'),
+      matcher: (url) => this.routeMatcher(url, 'circ_policies', false),
       children: [
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
@@ -215,20 +181,24 @@ export class RecordRoutingService {
     });
   }
 
-  private matchedUrl(url: UrlSegment[]) {
+  private matchedUrl(url: UrlSegment[], lazyLoaded = true) {
     const segments = [
-      new UrlSegment(url[0].path, {}),
-      new UrlSegment(url[1].path, {})
+      new UrlSegment(url[0].path, {})
     ];
+
+    if (lazyLoaded === false) {
+      segments.push(new UrlSegment(url[1].path, {}));
+    }
+
     return {
       consumed: segments,
       posParams: { type: new UrlSegment(url[1].path, {}) }
     };
   }
 
-  private routeMatcher(url, type) {
+  private routeMatcher(url, type, lazyLoaded = true) {
     if (url[0].path === 'records' && url[1].path === type) {
-      return this.matchedUrl(url);
+      return this.matchedUrl(url, lazyLoaded);
     }
     return null;
   }

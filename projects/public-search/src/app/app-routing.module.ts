@@ -16,7 +16,6 @@
 */
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { RecordSearchComponent, DetailComponent } from '@rero/ng-core';
 import { DocumentBriefComponent } from './document-brief/document-brief.component';
 import { PersonBriefComponent } from './person-brief/person-brief.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -25,10 +24,7 @@ import { AggregationFilter } from './record/aggregation-filter';
 const routes: Routes = [
   {
     path: 'global/search',
-    children: [
-      { path: ':type', component: RecordSearchComponent },
-      { path: ':type/detail/:pid', component: DetailComponent }
-    ],
+    loadChildren: () => import('@rero/ng-core').then(m => m.RecordModule),
     data: {
       showSearchInput: false,
       adminMode: false,
@@ -51,10 +47,7 @@ const routes: Routes = [
   },
   {
     path: 'highlands/search',
-    children: [
-      { path: ':type', component: RecordSearchComponent },
-      { path: ':type/detail/:pid', component: DetailComponent }
-    ],
+    loadChildren: () => import('@rero/ng-core').then(m => m.RecordModule),
     data: {
       showSearchInput: false,
       adminMode: false,
@@ -80,10 +73,7 @@ const routes: Routes = [
   },
   {
     path: 'aoste/search',
-    children: [
-      { path: ':type', component: RecordSearchComponent },
-      { path: ':type/detail/:pid', component: DetailComponent }
-    ],
+    loadChildren: () => import('@rero/ng-core').then(m => m.RecordModule),
     data: {
       showSearchInput: false,
       adminMode: false,
