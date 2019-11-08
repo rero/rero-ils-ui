@@ -58,6 +58,8 @@ import { DocumentDetailViewComponent } from './record/detail-view/document-detai
 import { HoldingComponent } from './record/detail-view/document-detail-view/holding/holding.component';
 import { HoldingItemComponent } from './record/detail-view/document-detail-view/holding-item/holding-item.component';
 import { HoldingsComponent } from './record/detail-view/document-detail-view/holdings/holdings.component';
+import { CircPolicyDetailViewComponent } from './record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
+import { CollapseListComponent } from './record/detail-view/circ-policy-detail-view/collapse-list/collapse-list.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +92,16 @@ import { HoldingsComponent } from './record/detail-view/document-detail-view/hol
     DocumentDetailViewComponent,
     HoldingComponent,
     HoldingItemComponent,
-    HoldingsComponent
+    HoldingsComponent,
+    BioInformationsPipe,
+    BirthDatePipe,
+    MefTitlePipe,
+    LibraryComponent,
+    ExceptionDatesListComponent,
+    ExceptionDatesEditComponent,
+    CirculationPolicyComponent,
+    CircPolicyDetailViewComponent,
+    CollapseListComponent
   ],
   imports: [
     Bootstrap4FrameworkModule,
@@ -145,7 +156,11 @@ import { HoldingsComponent } from './record/detail-view/document-detail-view/hol
     SelectItemTypeTypeComponent,
     LibraryComponent,
     PersonDetailViewComponent,
-    DocumentDetailViewComponent
+    DocumentDetailViewComponent,
+    ExceptionDatesEditComponent,
+    CircPolicyDetailViewComponent,
+    CirculationPolicyComponent,
+    CollapseListComponent
   ],
   bootstrap: [AppComponent]
 })
