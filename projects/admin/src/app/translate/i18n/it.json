@@ -132,6 +132,7 @@
   "checkin": "restituire",
   "checkout": "prestare",
   "circ_policies": "politiche di prestito",
+  "date_at": "at",
   "documents": "documenti",
   "friday": "venerdì",
   "has # circulation policies attached": "ha # politiche di prestito allegate",

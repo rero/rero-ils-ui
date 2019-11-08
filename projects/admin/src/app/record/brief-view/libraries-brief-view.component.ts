@@ -25,10 +25,9 @@ import { TranslateService } from '@ngx-translate/core';
   selector: 'admin-libraries-brief-view',
   template: `
   <h5 class="mb-0 d-inline">
-    <i class="fa fa-caret-down" aria-hidden="true"></i>
-    {{ record.metadata.name }}
+    <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
   </h5>
-  <small> {{ record.metadata.code }}</small>
+  <small class="ml-2"> {{ record.metadata.code }}</small>
   <section class="card-text">
     <section class="collapse" id="{{ 'library'+record.metadata.pid }}">
       <dl class="row mb-0">
