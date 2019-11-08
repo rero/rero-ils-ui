@@ -31,6 +31,7 @@ import { LibraryComponent } from '../record/custom-editor/libraries/library.comp
 import { LibrariesBriefViewComponent } from '../record/brief-view/libraries-brief-view.component';
 import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-view.component';
 import { PersonsBriefViewComponent } from '../record/brief-view/persons-brief-view.component';
+import { PersonDetailViewComponent } from '../record/detail-view/person-detail-view/person-detail-view.component';
 import { ItemTypesBriefViewComponent } from '../record/brief-view/item-types-brief-view.component';
 import { ItemTypeDetailViewComponent } from '../record/detail-view/item-type-detail-view.component';
 import { PatronTypesBriefViewComponent } from '../record/brief-view/patron-types-brief-view.component';
@@ -119,20 +120,17 @@ export class RecordRoutingService {
       matcher: (url) => this.routeMatcher(url, 'persons'),
       children: [
         { path: '', component: RecordSearchComponent },
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent },
-        { path: 'new', component: EditorComponent }
+        { path: 'detail/:pid', component: DetailComponent }
       ],
       data: {
         linkPrefix: 'records',
+        adminMode: false,
         types: [
           {
             key: 'persons',
             label: 'Persons',
             component: PersonsBriefViewComponent,
-            canDelete: (record) => this.cant(),
-            canAdd: (record) => this.cant(),
-            canUpdate: (record) => this.cant()
+            detailComponent: PersonDetailViewComponent
           }
         ]
       }
