@@ -39,6 +39,7 @@ import { DocumentEditorComponent } from '../document-editor/document-editor.comp
 import { UserService } from './user.service';
 import { LibraryDetailViewComponent } from '../record/detail-view/library-detail-view/library-detail-view.component';
 import { RecordPermissionMessageService } from './record-permission-message.service';
+import { CircPolicyDetailViewComponent } from '../record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
 
 @Injectable({
   providedIn: 'root'
@@ -228,7 +229,8 @@ export class RecordRoutingService {
           {
             key: 'circ_policies',
             label: 'Circulation Policies',
-            component: CircPoliciesBriefViewComponent
+            component: CircPoliciesBriefViewComponent,
+            detailComponent: CircPolicyDetailViewComponent
           }
         ]
       }

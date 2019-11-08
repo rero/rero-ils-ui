@@ -15,27 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-  selector: 'admin-circ-policies-brief-view',
-  template: `
-  <h5 class="mb-0 card-title"><a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a></h5>
-
-  <div class="card-text">
-    <span *ngIf="record.metadata.description">
-      {{ record.metadata.description }}
-    </span>
-  </div>
-  `,
-  styles: []
+  selector: 'admin-collapse-list',
+  templateUrl: './collapse-list.component.html'
 })
-export class CircPoliciesBriefViewComponent implements ResultItem {
+export class CollapseListComponent {
 
-  record: any;
+  /** Patron type */
+  @Input() patronType: string;
 
-  type: string;
+  /** Item types */
+  @Input() itemTypes: string[];
 
-  detailUrl: { link: string, external: boolean };
+  /** Is collapsed */
+  isCollapsed = true;
+
 }
