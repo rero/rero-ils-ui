@@ -37,6 +37,7 @@ import { PatronTypesBriefViewComponent } from '../record/brief-view/patron-types
 import { PatronTypesDetailViewComponent } from '../record/detail-view/patron-types-detail-view.component';
 import { DocumentEditorComponent } from '../document-editor/document-editor.component';
 import { UserService } from './user.service';
+import { LibraryDetailViewComponent } from '../record/detail-view/library-detail-view/library-detail-view.component';
 
 @Injectable({
   providedIn: 'root'
@@ -89,6 +90,7 @@ export class RecordRoutingService {
             key: 'libraries',
             label: 'Libraries',
             component: LibrariesBriefViewComponent,
+            detailComponent: LibraryDetailViewComponent,
             canUpdate: (record) => this.canUpdate(record),
             canDelete: (record) => this.canDelete(record),
             preprocessRecordEditor: (data) => this.addLibrarianOrganisation(data)
@@ -326,9 +328,9 @@ export class RecordRoutingService {
       record.permissions
       && record.permissions.cannot_update
     ) {
-      return of(false);
+      return of({can: false, message: ''});
     }
-    return of(true);
+    return of({can: true, message: ''});
   }
 
   private canDelete(record: any): Observable<ActionStatus> {

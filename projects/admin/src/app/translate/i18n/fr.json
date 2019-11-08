@@ -132,6 +132,7 @@
   "checkin": "retour",
   "checkout": "prêt",
   "circ_policies": "circ_policies",
+  "date_at": "au",
   "documents": "Document",
   "friday": "vendredi",
   "has # circulation policies attached": "a # politiques de prêt attachées",
