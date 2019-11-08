@@ -132,6 +132,7 @@
   "checkin": "checkin",
   "checkout": "checkout",
   "circ_policies": "circulation policies",
+  "date_at": "at",
   "documents": "documents",
   "friday": "Friday",
   "has # circulation policies attached": "has # circulation policies attached",

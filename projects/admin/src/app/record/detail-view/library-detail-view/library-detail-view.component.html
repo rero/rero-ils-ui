@@ -1,0 +1,70 @@
+<!--
+  RERO ILS UI
+   Copyright (C) 2019 RERO
+  
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, version 3 of the License.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Affero General Public License for more details.
+  
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="record$ | async as record">
+  <h1>{{ record.metadata.name }}</h1>
+  <section class="row">
+    <!-- ADDRESS -->
+    <dt class="col-sm-3 offset-sm-2 offset-md-0" *ngIf="record.metadata.address">
+      {{ 'Address' | translate }}:
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.metadata.address }}
+    </dd>
+    <!-- CODE -->
+    <dt class="col-sm-3 offset-sm-2 offset-md-0" *ngIf="record.metadata.code">
+      {{ 'Code' | translate }}:
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.metadata.code }}
+    </dd>
+    <!-- EMAIL -->
+    <dt class="col-sm-3 offset-sm-2 offset-md-0" *ngIf="record.metadata.email">
+      {{ 'Email' | translate }}:
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.metadata.email }}
+    </dd>
+  </section>
+
+  <!-- OPENING HOURS -->
+  <article class="card mt-4">
+    <header class="card-header">
+      <b translate>Opening Hours</b>
+    </header>
+    <article class="card-body collapse show">
+      <ul class="list-unstyled">
+        <li *ngFor="let day of record.metadata.opening_hours">
+          <admin-day-opening-hours [day]="day"></admin-day-opening-hours>
+        </li>
+      </ul>
+    </article>
+  </article>
+
+  <!-- EXCEPTIONS -->
+  <article class="card mt-4">
+    <header class="card-header">
+      <b translate>Exceptions (holidays, etc.)</b>
+    </header>
+    <article class="card-body collapse show">
+      <ul class="list-unstyled">
+        <li *ngFor="let exception of record.metadata.exception_dates">
+          <admin-exception-date [exception]="exception"></admin-exception-date>
+        </li>
+      </ul>
+    </article>
+  </article>
+</ng-container>
