@@ -22,10 +22,10 @@ import { ResultItem } from '@rero/ng-core';
   selector: 'admin-persons-brief-view',
   template: `
   <h5 class="card-title mb-0 rero-ils-person">
-    <a>{{ record.metadata | mefTitle }}</a>
-      <small *ngIf="record.metadata.rero" class="badge badge-secondary ml-1">RERO</small>
-      <small *ngIf="record.metadata.gnd" class="badge badge-secondary ml-1">GND</small>
-      <small *ngIf="record.metadata.bnf" class="badge badge-secondary ml-1">BNF</small>
+    <a [routerLink]="[detailUrl.link]" class="pr-1">{{ record.metadata | mefTitle }}</a>
+    <ng-container *ngFor="let source of record.metadata.sources">
+    <small class="badge badge-secondary ml-1">{{ source | uppercase }}</small>
+    </ng-container>
   </h5>
   <div class="card-text px-2">
     <p class="mb-0" *ngIf="record.metadata | birthDate">{{ record.metadata | birthDate }}</p>
