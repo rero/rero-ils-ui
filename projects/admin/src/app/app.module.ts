@@ -50,6 +50,9 @@ import { Bootstrap4FrameworkModule, WidgetLibraryService } from 'angular6-json-s
 import { SelectItemTypeTypeComponent } from './record/editor/select-item-type-type/select-item-type-type.component';
 import { CheckboxIsOnlineComponent } from './record/editor/checkbox-is-online/checkbox-is-online.component';
 import { ItemTypeDetailViewComponent } from './record/detail-view/item-type-detail-view.component';
+import { LibraryDetailViewComponent } from './record/detail-view/library-detail-view/library-detail-view.component';
+import { DayOpeningHoursComponent } from './record/detail-view/library-detail-view/day-opening-hours/day-opening-hours.component';
+import { ExceptionDateComponent } from './record/detail-view/library-detail-view/exception-date/exception-date.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +77,10 @@ import { ItemTypeDetailViewComponent } from './record/detail-view/item-type-deta
     PatronTypesBriefViewComponent,
     PatronTypesDetailViewComponent,
     PersonsBriefViewComponent,
-    SelectItemTypeTypeComponent
+    SelectItemTypeTypeComponent,
+    LibraryDetailViewComponent,
+    DayOpeningHoursComponent,
+    ExceptionDateComponent
   ],
   imports: [
     Bootstrap4FrameworkModule,
@@ -123,7 +129,8 @@ import { ItemTypeDetailViewComponent } from './record/detail-view/item-type-deta
     PatronTypesDetailViewComponent,
     PatronTypesBriefViewComponent,
     PersonsBriefViewComponent,
-    SelectItemTypeTypeComponent,
+    ExceptionDatesEditComponent,
+    LibraryDetailViewComponent,
     LibraryComponent
   ],
   bootstrap: [AppComponent]

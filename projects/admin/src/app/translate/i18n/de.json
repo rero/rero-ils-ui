@@ -132,6 +132,7 @@
   "checkin": "Rückgabe",
   "checkout": "Ausleihe",
   "circ_policies": "circ_policies",
+  "date_at": "at",
   "documents": "documents",
   "friday": "Freitag",
   "has # circulation policies attached": "hat # Ausleihpolitiken angefügt",
