@@ -35,6 +35,7 @@ import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-
 import { PatronTypesDetailViewComponent } from './record/detail-view/patron-types-detail-view.component';
 import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view.component';
 import { PersonsBriefViewComponent } from './record/brief-view/persons-brief-view.component';
+import { PersonDetailViewComponent } from './record/detail-view/person-detail-view/person-detail-view.component';
 import { BioInformationsPipe } from './pipe/bio-informations.pipe';
 import { BirthDatePipe } from './pipe/birth-date.pipe';
 import { MefTitlePipe } from './pipe/mef-title.pipe';
@@ -80,7 +81,8 @@ import { ExceptionDateComponent } from './record/detail-view/library-detail-view
     SelectItemTypeTypeComponent,
     LibraryDetailViewComponent,
     DayOpeningHoursComponent,
-    ExceptionDateComponent
+    ExceptionDateComponent,
+    PersonDetailViewComponent
   ],
   imports: [
     Bootstrap4FrameworkModule,
@@ -131,7 +133,10 @@ import { ExceptionDateComponent } from './record/detail-view/library-detail-view
     PersonsBriefViewComponent,
     ExceptionDatesEditComponent,
     LibraryDetailViewComponent,
-    LibraryComponent
+    LibraryComponent,
+    SelectItemTypeTypeComponent,
+    LibraryComponent,
+    PersonDetailViewComponent
   ],
   bootstrap: [AppComponent]
 })
