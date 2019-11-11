@@ -54,6 +54,10 @@ import { ItemTypeDetailViewComponent } from './record/detail-view/item-type-deta
 import { LibraryDetailViewComponent } from './record/detail-view/library-detail-view/library-detail-view.component';
 import { DayOpeningHoursComponent } from './record/detail-view/library-detail-view/day-opening-hours/day-opening-hours.component';
 import { ExceptionDateComponent } from './record/detail-view/library-detail-view/exception-date/exception-date.component';
+import { DocumentDetailViewComponent } from './record/detail-view/document-detail-view/document-detail-view.component';
+import { HoldingComponent } from './record/detail-view/document-detail-view/holding/holding.component';
+import { HoldingItemComponent } from './record/detail-view/document-detail-view/holding-item/holding-item.component';
+import { HoldingsComponent } from './record/detail-view/document-detail-view/holdings/holdings.component';
 
 @NgModule({
   declarations: [
@@ -82,7 +86,11 @@ import { ExceptionDateComponent } from './record/detail-view/library-detail-view
     LibraryDetailViewComponent,
     DayOpeningHoursComponent,
     ExceptionDateComponent,
-    PersonDetailViewComponent
+    PersonDetailViewComponent,
+    DocumentDetailViewComponent,
+    HoldingComponent,
+    HoldingItemComponent,
+    HoldingsComponent
   ],
   imports: [
     Bootstrap4FrameworkModule,
@@ -136,7 +144,8 @@ import { ExceptionDateComponent } from './record/detail-view/library-detail-view
     LibraryComponent,
     SelectItemTypeTypeComponent,
     LibraryComponent,
-    PersonDetailViewComponent
+    PersonDetailViewComponent,
+    DocumentDetailViewComponent
   ],
   bootstrap: [AppComponent]
 })

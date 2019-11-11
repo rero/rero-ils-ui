@@ -26,7 +26,8 @@ import { combineLatest } from 'rxjs';
 @Component({
   selector: 'admin-documents-brief-view',
   template: `
-  <h5 class="mb-0 card-title">{{ record.metadata.title }}
+  <h5 class="mb-0 card-title">
+    <a [routerLink]="[detailUrl.link]">{{ record.metadata.title }}</a>
   <small> &ndash; {{ record.metadata.type | translate }}</small></h5>
   <div class="card-text">
 
