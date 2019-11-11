@@ -15,37 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { TestBed } from '@angular/core/testing';
 
-// _('Your string');
-_('monday');
-_('tuesday');
-_('wednesday');
-_('thursday');
-_('friday');
-_('saturday');
-_('sunday');
+import { RecordPermissionMessageService } from './record-permission-message.service';
+import { TranslateModule } from '@ngx-translate/core';
 
-// Status
-_('on_loan');
-_('on_shelf');
-_('missing');
-_('in_transit');
-_('at_desk');
-_('excluded');
+describe('RecordPermissionMessageService', () => {
+  beforeEach(() => TestBed.configureTestingModule({
+    imports: [
+      TranslateModule.forRoot({})
+    ]
+  }));
 
-// Document type
-_('article');
-_('book');
-_('ebook');
-_('journal');
-_('other');
-_('score');
-_('sound');
-_('video');
-
-// Provision activity
-_('bf:Publication');
-_('bf:Manufacture');
-_('bf:Distribution');
-_('bf:Production');
+  it('should be created', () => {
+    const service: RecordPermissionMessageService = TestBed.get(RecordPermissionMessageService);
+    expect(service).toBeTruthy();
+  });
+});

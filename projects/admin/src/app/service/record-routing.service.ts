@@ -14,10 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Injectable } from '@angular/core';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
-import { I18nPluralPipe, NgLocaleLocalization } from '@angular/common';
 import { of, Observable, Subscriber } from 'rxjs';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -27,6 +25,7 @@ import { RecordSearchComponent, DetailComponent, EditorComponent, ActionStatus, 
 import { CirculationPolicyComponent } from '../record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
 import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-policies-brief-view.component';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view.component';
+import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
 import { LibraryComponent } from '../record/custom-editor/libraries/library.component';
 import { LibrariesBriefViewComponent } from '../record/brief-view/libraries-brief-view.component';
 import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-view.component';
@@ -39,6 +38,7 @@ import { PatronTypesDetailViewComponent } from '../record/detail-view/patron-typ
 import { DocumentEditorComponent } from '../document-editor/document-editor.component';
 import { UserService } from './user.service';
 import { LibraryDetailViewComponent } from '../record/detail-view/library-detail-view/library-detail-view.component';
+import { RecordPermissionMessageService } from './record-permission-message.service';
 
 @Injectable({
   providedIn: 'root'
@@ -50,7 +50,8 @@ export class RecordRoutingService {
     private route: ActivatedRoute,
     private translateService: TranslateService,
     private userService: UserService,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private recordPermissionService: RecordPermissionMessageService
   ) { }
 
   initRoute() {
@@ -71,8 +72,10 @@ export class RecordRoutingService {
             key: 'documents',
             label: 'Documents',
             canDelete: (record) => this.canDelete(record),
+            canUpdate: (record) => this.canUpdate(record),
             aggregations: (aggregations) => this.filter(aggregations),
-            component: DocumentsBriefViewComponent
+            component: DocumentsBriefViewComponent,
+            detailComponent: DocumentDetailViewComponent
           }
         ]
       }
@@ -168,6 +171,7 @@ export class RecordRoutingService {
           {
             key: 'items',
             label: 'Items',
+            canDelete: (record) => this.canDelete(record),
             preprocessRecordEditor: (record) => this.preprocessItem(record)
           }
         ]
@@ -326,9 +330,9 @@ export class RecordRoutingService {
       record.permissions
       && record.permissions.cannot_update
     ) {
-      return of({can: false, message: ''});
+      return of({ can: false, message: '' });
     }
-    return of({can: true, message: ''});
+    return of({ can: true, message: '' });
   }
 
   private canDelete(record: any): Observable<ActionStatus> {
@@ -340,112 +344,19 @@ export class RecordRoutingService {
         && record.permissions.cannot_delete.permission === 'permission denied') {
         observer.next({ can: false, message: '' });
       } else {
-        observer.next({ can: !this.generateMessage(record), message: this.generateMessage(record) });
+        observer.next({
+          can: !this.recordPermissionService.generateMessage(record),
+          message: this.recordPermissionService.generateMessage(record)
+        });
         this.translateService.onLangChange.subscribe(() => {
-          observer.next({ can: !this.generateMessage(record), message: this.generateMessage(record) });
+          observer.next({
+            can: !this.recordPermissionService.generateMessage(record),
+            message: this.recordPermissionService.generateMessage(record)
+          });
         });
       }
     });
 
     return obs;
-  }
-
-  private generateMessage(record: any) {
-    if (('cannot_delete' in record.permissions)) {
-      const translatePlural = new I18nPluralPipe(new NgLocaleLocalization(
-        this.translateService.currentLang
-      ));
-      const messages = [];
-      const cannotDelete = record.permissions.cannot_delete;
-      if ('links' in cannotDelete) {
-        const links = record.permissions.cannot_delete.links;
-        const plurialdict = this.plurialLinksMessages();
-        Object.keys(links).forEach(link => {
-          let message = null;
-          if ((link in plurialdict)) {
-            message = translatePlural.transform(
-              links[link],
-              plurialdict[link],
-              this.translateService.currentLang
-            );
-          } else {
-            message = links[link][link] + ' ' + link;
-          }
-          messages.push('- ' + message);
-        });
-      }
-      if ('others' in cannotDelete) {
-        const plurialdict = this.othersMessages();
-        Object.keys(cannotDelete.others).forEach(other => {
-          if ((other in plurialdict)) {
-            messages.push('- ' + plurialdict[other]);
-          } else {
-            messages.push('- ' + other);
-          }
-        });
-      }
-      messages.unshift(
-        messages.length === 1 ?
-          this.translateService.instant('You cannot delete the record for the following reason:') :
-          this.translateService.instant('You cannot delete the record for the following reasons:')
-      );
-
-      return messages.join('\n');
-    }
-
-    return null;
-  }
-
-  private plurialLinksMessages() {
-    return {
-      circ_policies: {
-        '=1': this.translateService.instant('has 1 circulation policy attached'),
-        other: this.translateService.instant('has # circulation policies attached')
-      },
-      documents: {
-        '=1': this.translateService.instant('has 1 document attached'),
-        other: this.translateService.instant('has # documents attached')
-      },
-      item_types: {
-        '=1': this.translateService.instant('has 1 item type attached'),
-        other: this.translateService.instant('has # item types attached')
-      },
-      items: {
-        '=1': this.translateService.instant('has 1 item attached'),
-        other: this.translateService.instant('has # items attached')
-      },
-      libraries: {
-        '=1': this.translateService.instant('has 1 library attached'),
-        other: this.translateService.instant('has # libraries attached')
-      },
-      loans: {
-        '=1': this.translateService.instant('has 1 loan attached'),
-        other: this.translateService.instant('has # loans attached')
-      },
-      locations: {
-        '=1': this.translateService.instant('has 1 location attached'),
-        other: this.translateService.instant('has # locations attached')
-      },
-      organisations: {
-        '=1': this.translateService.instant('has 1 organisation attached'),
-        other: this.translateService.instant('has # organisations attached')
-      },
-      patron_types: {
-        '=1': this.translateService.instant('has 1 patron type attached'),
-        other: this.translateService.instant('has # patron types attached')
-      },
-      patrons: {
-        '=1': this.translateService.instant('has 1 patron attached'),
-        other: this.translateService.instant('has # patrons attached')
-      }
-    };
-  }
-
-  private othersMessages() {
-    return {
-      is_default: this.translateService.instant('The default record cannot be deleted'),
-      has_settings: this.translateService.instant('The record contains settings'),
-      harvested: this.translateService.instant('The record has been harvested')
-    };
   }
 }
