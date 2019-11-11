@@ -1,0 +1,64 @@
+<!--
+  RERO ILS UI
+   Copyright (C) 2019 RERO
+  
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, version 3 of the License.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Affero General Public License for more details.
+  
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="card mt-2">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-1">
+        <button
+          class="btn btn-link p-0"
+          (click)="toggleCollapse()"
+          aria-expanded="false" aria-controls="itemsList">
+          <i
+            [ngClass]="{ 'fa-caret-down':!isItemsCollapsed, 'fa-caret-right': isItemsCollapsed }"
+            class="fa"
+            aria-hidden="true"
+          ></i>
+        </button>
+      </div>
+      <div class="col-11">
+        <div class="row">
+          <div class="col-sm-6">
+            <ng-container *ngIf="this.holding.metadata.location.pid | getRecord:'locations' | async as location">
+              {{ location.metadata.code }}: {{ location.metadata.name }}
+            </ng-container>
+          </div>
+          <div class="col-sm-5">
+            {{ holding.metadata.circulation_category.pid | getRecord: 'item_types' : 'field' : 'name' | async }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body" *ngIf="!isItemsCollapsed">
+    <ng-container *ngIf="harvested">
+    <div class="row">
+        <div class="col-12">
+          <ul class="list-unstyled mb-0">
+            <li *ngFor="let elocation of holding.metadata.electronic_location">
+              <a href="{{ elocation.uri | translate }}">{{ elocation.source | translate }}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="items">
+      <div class="row col-12" *ngFor="let item of items">
+        <admin-holding-item [item]="item" class="col-12" (deleteItem)="deleteItem($event)"></admin-holding-item>
+      </div>
+    </ng-container>
+  </div>
+</div>
