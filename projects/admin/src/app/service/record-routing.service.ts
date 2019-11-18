@@ -34,6 +34,7 @@ import { PersonsBriefViewComponent } from '../record/brief-view/persons-brief-vi
 import { ItemTypesBriefViewComponent } from '../record/brief-view/item-types-brief-view.component';
 import { ItemTypeDetailViewComponent } from '../record/detail-view/item-type-detail-view.component';
 import { PatronTypesBriefViewComponent } from '../record/brief-view/patron-types-brief-view.component';
+import { PatronTypesDetailViewComponent } from '../record/detail-view/patron-types-detail-view.component';
 import { DocumentEditorComponent } from '../document-editor/document-editor.component';
 import { UserService } from './user.service';
 
@@ -202,7 +203,9 @@ export class RecordRoutingService {
           {
             key: 'patron_types',
             label: 'Patron Types',
+            canDelete: (record: any) => this.canDelete(record),
             component: PatronTypesBriefViewComponent,
+            detailComponent: PatronTypesDetailViewComponent,
             preprocessRecordEditor: (data) => this.addLibrarianOrganisation(data)
           }
         ]
