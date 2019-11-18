@@ -14,35 +14,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Component, Input } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
-
+import { Component } from '@angular/core';
+import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'admin-item-types-brief-view',
+  selector: 'admin-item-type-detail-view',
   template: `
-  <h5 class="mb-0 card-title">
-    <a [routerLink]="['/records', 'item_types', 'detail', record.metadata.pid]">
-      {{ record.metadata.name }}
-    </a>
-  </h5>
-  <div class="card-text">
-    <span *ngIf="record.metadata.description">
-      {{ record.metadata.description }}
-    </span>
-  </div>
-  `,
+  <ng-container *ngIf="record$ | async as record">
+    <h1>{{ record.metadata.name }}</h1>
+    {{ record.metadata.description }}
+  </ng-container>`,
   styles: []
 })
-export class ItemTypesBriefViewComponent implements ResultItem {
+export class ItemTypeDetailViewComponent implements DetailRecord {
 
-  @Input()
-  record: any;
+  record$: Observable<any>;
 
-  @Input()
   type: string;
 
-  @Input()
-  detailUrl: { link: string, external: boolean };
+  constructor() { }
 }

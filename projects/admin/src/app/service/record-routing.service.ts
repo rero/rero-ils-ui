@@ -32,6 +32,7 @@ import { LibrariesBriefViewComponent } from '../record/brief-view/libraries-brie
 import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-view.component';
 import { PersonsBriefViewComponent } from '../record/brief-view/persons-brief-view.component';
 import { ItemTypesBriefViewComponent } from '../record/brief-view/item-types-brief-view.component';
+import { ItemTypeDetailViewComponent } from '../record/detail-view/item-type-detail-view.component';
 import { PatronTypesBriefViewComponent } from '../record/brief-view/patron-types-brief-view.component';
 import { DocumentEditorComponent } from '../document-editor/document-editor.component';
 import { UserService } from './user.service';
@@ -147,6 +148,8 @@ export class RecordRoutingService {
             key: 'item_types',
             label: 'Item Types',
             component: ItemTypesBriefViewComponent,
+            detailComponent: ItemTypeDetailViewComponent,
+            canDelete: (record) => this.canDelete(record),
             preprocessRecordEditor: (data) => this.addLibrarianOrganisation(data)
           }
         ]

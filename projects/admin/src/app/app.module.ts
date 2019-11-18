@@ -48,6 +48,7 @@ import { DocumentEditorComponent } from './document-editor/document-editor.compo
 import { Bootstrap4FrameworkModule, WidgetLibraryService } from 'angular6-json-schema-form';
 import { SelectItemTypeTypeComponent } from './record/editor/select-item-type-type/select-item-type-type.component';
 import { CheckboxIsOnlineComponent } from './record/editor/checkbox-is-online/checkbox-is-online.component';
+import { ItemTypeDetailViewComponent } from './record/detail-view/item-type-detail-view.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { CheckboxIsOnlineComponent } from './record/editor/checkbox-is-online/ch
     ExceptionDatesListComponent,
     FrontpageComponent,
     ItemTypesBriefViewComponent,
+    ItemTypeDetailViewComponent,
     LibrariesBriefViewComponent,
     LibraryComponent,
     MefTitlePipe,
@@ -113,6 +115,7 @@ import { CheckboxIsOnlineComponent } from './record/editor/checkbox-is-online/ch
     DocumentsBriefViewComponent,
     ExceptionDatesEditComponent,
     ItemTypesBriefViewComponent,
+    ItemTypeDetailViewComponent,
     LibrariesBriefViewComponent,
     PatronsBriefViewComponent,
     PatronTypesBriefViewComponent,
