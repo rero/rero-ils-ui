@@ -36,11 +36,12 @@ import { ItemTypeDetailViewComponent } from '../record/detail-view/item-type-det
 import { PatronTypesBriefViewComponent } from '../record/brief-view/patron-types-brief-view.component';
 import { PatronTypesDetailViewComponent } from '../record/detail-view/patron-types-detail-view.component';
 import { DocumentEditorComponent } from '../document-editor/document-editor.component';
-import { UserService } from './user.service';
 import { LibraryDetailViewComponent } from '../record/detail-view/library-detail-view/library-detail-view.component';
 import { RecordPermissionMessageService } from './record-permission-message.service';
 import { CircPolicyDetailViewComponent } from '../record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
 import { LocationDetailViewComponent } from '../record/detail-view/location-detail-view/location-detail-view.component';
+import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -173,8 +174,10 @@ export class RecordRoutingService {
           {
             key: 'items',
             label: 'Items',
+            canRead: (record) => this.canReadItem(record),
             canDelete: (record) => this.canDelete(record),
-            preprocessRecordEditor: (record) => this.preprocessItem(record)
+            preprocessRecordEditor: (record) => this.preprocessItem(record),
+            detailComponent: ItemDetailViewComponent
           }
         ]
       }
@@ -328,6 +331,14 @@ export class RecordRoutingService {
       }
     });
     return aggs;
+  }
+
+  private canReadItem(record: any) {
+    const organisationPid = this.userService.getCurrentUser().library.organisation.pid;
+    if ('organisation' in record.metadata) {
+      return of({ can: organisationPid === record.metadata.organisation.pid, message: '' });
+    }
+    return of({can: false, message: ''});
   }
 
   private canUpdate(record: any) {

@@ -62,6 +62,10 @@ import { CircPolicyDetailViewComponent } from './record/detail-view/circ-policy-
 import { CollapseListComponent } from './record/detail-view/circ-policy-detail-view/collapse-list/collapse-list.component';
 import { LocationDetailViewComponent } from './record/detail-view/location-detail-view/location-detail-view.component';
 import { LocationComponent } from './record/brief-view/libraries-brief-view/location/location.component';
+import { ItemDetailViewComponent } from './record/detail-view/item-detail-view/item-detail-view.component';
+import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
+import { ItemTransactionComponent } from './record/detail-view/item-detail-view/item-transaction/item-transaction.component';
+import { ItemTransactionsComponent } from './record/detail-view/item-detail-view/item-transactions/item-transactions.component';
 
 @NgModule({
   declarations: [
@@ -106,7 +110,11 @@ import { LocationComponent } from './record/brief-view/libraries-brief-view/loca
     CollapseListComponent,
     ExceptionDateComponent,
     LocationDetailViewComponent,
-    LocationComponent
+    LocationComponent,
+    ItemDetailViewComponent,
+    ItemAvailabilityComponent,
+    ItemTransactionComponent,
+    ItemTransactionsComponent
   ],
   imports: [
     Bootstrap4FrameworkModule,
@@ -167,7 +175,8 @@ import { LocationComponent } from './record/brief-view/libraries-brief-view/loca
     CirculationPolicyComponent,
     CollapseListComponent,
     LibraryComponent,
-    LocationDetailViewComponent
+    LocationDetailViewComponent,
+    ItemDetailViewComponent
   ],
   bootstrap: [AppComponent]
 })

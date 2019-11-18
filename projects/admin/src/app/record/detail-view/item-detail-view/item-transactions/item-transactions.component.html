@@ -1,0 +1,67 @@
+<!--
+  RERO ILS UI
+   Copyright (C) 2019 RERO
+  
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, version 3 of the License.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Affero General Public License for more details.
+  
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="borrowedBy$ | async as borrowedBy">
+  <!-- Loan borrowed -->
+  <ng-container *ngIf="borrowedBy.length > 0">
+    <div class="card mt-2">
+      <div class="card-header">
+        <b>{{ 'Borrowed by' | translate }}</b>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-5 font-weight-bold">{{ 'Patron' | translate }}</div>
+          <div class="col-4 font-weight-bold">{{ 'Renewal' | translate }}</div>
+          <div class="col-3 font-weight-bold">{{ 'Due date' | translate }}</div>
+        </div>
+        <admin-item-transaction
+          type="loan_borrow"
+          [transaction]="borrowedBy[0]"
+        ></admin-item-transaction>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
+
+<ng-container *ngIf="requestedBy$ | async as requestedBy">
+  <!-- Loan requested -->
+  <ng-container *ngIf="requestedBy.length > 0">
+    <div class="card mt-2">
+      <div class="card-header">
+        <ng-container *ngIf="requestedBy.length <= 1; else requests">
+          <b>{{ 'Request' | translate }}</b>
+        </ng-container>
+        <ng-template #requests>
+          <b>{{ 'Requests' | translate }}</b>
+        </ng-template>
+        <b> ({{ requestedBy.length }})</b>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-5 font-weight-bold">{{ 'Patron' | translate }}</div>
+          <div class="col-4 font-weight-bold">{{ 'Pick-up Location' | translate }}</div>
+          <div class="col-3 font-weight-bold">{{ 'Reservation date' | translate }}</div>
+        </div>
+        <admin-item-transaction
+          *ngFor="let request of requestedBy; let i = index"
+          type="loan_request"
+          [background]="i % 2"
+          [transaction]="request"
+        ></admin-item-transaction>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
