@@ -32,6 +32,7 @@ import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policie
 import { DocumentsBriefViewComponent } from './record/brief-view/documents-brief-view.component';
 import { LibrariesBriefViewComponent } from './record/brief-view/libraries-brief-view.component';
 import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-brief-view.component';
+import { PatronTypesDetailViewComponent } from './record/detail-view/patron-types-detail-view.component';
 import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view.component';
 import { PersonsBriefViewComponent } from './record/brief-view/persons-brief-view.component';
 import { BioInformationsPipe } from './pipe/bio-informations.pipe';
@@ -71,6 +72,7 @@ import { ItemTypeDetailViewComponent } from './record/detail-view/item-type-deta
     MenuComponent,
     PatronsBriefViewComponent,
     PatronTypesBriefViewComponent,
+    PatronTypesDetailViewComponent,
     PersonsBriefViewComponent,
     SelectItemTypeTypeComponent
   ],
@@ -118,6 +120,7 @@ import { ItemTypeDetailViewComponent } from './record/detail-view/item-type-deta
     ItemTypeDetailViewComponent,
     LibrariesBriefViewComponent,
     PatronsBriefViewComponent,
+    PatronTypesDetailViewComponent,
     PatronTypesBriefViewComponent,
     PersonsBriefViewComponent,
     SelectItemTypeTypeComponent,
