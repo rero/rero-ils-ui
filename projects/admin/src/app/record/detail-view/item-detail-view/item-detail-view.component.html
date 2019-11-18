@@ -1,0 +1,87 @@
+<!--
+  RERO ILS UI
+   Copyright (C) 2019 RERO
+  
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, version 3 of the License.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Affero General Public License for more details.
+  
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="record">
+  <header class="row">
+    <h1>{{ 'Barcode' | translate }} {{ record.metadata.barcode }}</h1>
+  </header>
+  <section class="mb-4">
+    <dl class="row mb-0">
+      <!-- CALL NUMBER -->
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'Call number' | translate }}:
+      </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        {{ record.metadata.call_number }}
+      </dd>
+      <!-- ITEM TYPE -->
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'Type' | translate }}:
+      </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        {{ record.metadata.item_type.pid | getRecord:'item_types':'field':'name' | async }}
+      </dd>
+      <!-- DOCUMENT -->
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'Document' | translate }}:
+      </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        <a [routerLink]="['/records', 'documents', 'detail', record.metadata.document.pid]">
+          {{ record.metadata.document.pid | getRecord:'documents':'field':'title' | async }}
+        </a>
+      </dd>
+      <!-- LIBRARY -->
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'Library' | translate }}:
+      </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        <ng-container *ngIf="library">{{ library.metadata.name }}</ng-container>
+      </dd>
+      <!-- LOCATION -->
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'Location' | translate }}:
+      </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        <ng-container *ngIf="location">{{ location.metadata.name }}</ng-container>
+      </dd>
+      <!-- AVAILIBILITY -->
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'Availability' | translate }}:
+      </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        <admin-item-availability [item]="record"></admin-item-availability>
+      </dd>
+      <!-- NUMBER OF REQUEST -->
+      <ng-container *ngIf="numberOfRequests > 0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Request queue' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ numberOfRequests }}
+          <ng-container *ngIf="numberOfRequests > 1; else request">
+            {{ 'requests' | translate }}
+          </ng-container>
+          <ng-template #request>
+            {{ 'request' | translate }}
+          </ng-template>
+        </dd>
+      </ng-container>
+    </dl>
+  </section>
+
+  <!-- TRANSACTIONS -->
+  <admin-item-transactions [item]="record"></admin-item-transactions>
+</ng-container>
