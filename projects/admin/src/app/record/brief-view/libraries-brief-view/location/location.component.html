@@ -1,0 +1,33 @@
+<!--
+  RERO ILS UI
+   Copyright (C) 2019 RERO
+  
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, version 3 of the License.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Affero General Public License for more details.
+  
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<a [routerLink]="['/records/locations/detail', location.metadata.pid]">{{ location.metadata.name }}</a>
+<div class="float-right ml-2">
+  <a *ngIf="!location.permissions.cannot_update" class="btn btn-link p-0 ml-2 text-primary"
+    [routerLink]="['/records', 'locations', 'edit', location.metadata.pid]">
+    <i class="fa fa-pencil"></i>
+  </a>
+  <a *ngIf="!location.permissions.cannot_delete; else notDelete" class="btn btn-link p-0 ml-2 text-primary"
+    (click)="delete(location.metadata.pid)">
+    <i class="fa fa-trash"></i>
+  </a>
+  <ng-template #notDelete>
+    <a class="btn btn-link p-0 ml-2 text-secondary" (click)="showDeleteMessage(location)">
+      <i class="fa fa-trash"></i>
+    </a>
+  </ng-template>
+</div>
