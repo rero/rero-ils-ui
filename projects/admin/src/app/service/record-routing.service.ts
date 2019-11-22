@@ -27,7 +27,7 @@ import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-polici
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view.component';
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
 import { LibraryComponent } from '../record/custom-editor/libraries/library.component';
-import { LibrariesBriefViewComponent } from '../record/brief-view/libraries-brief-view.component';
+import { LibrariesBriefViewComponent } from '../record/brief-view/libraries-brief-view/libraries-brief-view.component';
 import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-view.component';
 import { PersonsBriefViewComponent } from '../record/brief-view/persons-brief-view.component';
 import { PersonDetailViewComponent } from '../record/detail-view/person-detail-view/person-detail-view.component';
@@ -40,6 +40,7 @@ import { UserService } from './user.service';
 import { LibraryDetailViewComponent } from '../record/detail-view/library-detail-view/library-detail-view.component';
 import { RecordPermissionMessageService } from './record-permission-message.service';
 import { CircPolicyDetailViewComponent } from '../record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
+import { LocationDetailViewComponent } from '../record/detail-view/location-detail-view/location-detail-view.component';
 
 @Injectable({
   providedIn: 'root'
@@ -190,6 +191,8 @@ export class RecordRoutingService {
           {
             key: 'locations',
             label: 'Locations',
+            detailComponent: LocationDetailViewComponent,
+            canDelete: (record) => this.canDelete(record),
             preprocessRecordEditor: (record) => this.preprocessLocation(record)
           }
         ]

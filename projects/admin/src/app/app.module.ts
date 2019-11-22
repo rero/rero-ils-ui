@@ -30,7 +30,7 @@ import { FrontpageComponent } from './frontpage/frontpage.component';
 import { ItemTypesBriefViewComponent } from './record/brief-view/item-types-brief-view.component';
 import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policies-brief-view.component';
 import { DocumentsBriefViewComponent } from './record/brief-view/documents-brief-view.component';
-import { LibrariesBriefViewComponent } from './record/brief-view/libraries-brief-view.component';
+import { LibrariesBriefViewComponent } from './record/brief-view/libraries-brief-view/libraries-brief-view.component';
 import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-brief-view.component';
 import { PatronTypesDetailViewComponent } from './record/detail-view/patron-types-detail-view.component';
 import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view.component';
@@ -60,6 +60,8 @@ import { HoldingItemComponent } from './record/detail-view/document-detail-view/
 import { HoldingsComponent } from './record/detail-view/document-detail-view/holdings/holdings.component';
 import { CircPolicyDetailViewComponent } from './record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
 import { CollapseListComponent } from './record/detail-view/circ-policy-detail-view/collapse-list/collapse-list.component';
+import { LocationDetailViewComponent } from './record/detail-view/location-detail-view/location-detail-view.component';
+import { LocationComponent } from './record/brief-view/libraries-brief-view/location/location.component';
 
 @NgModule({
   declarations: [
@@ -101,7 +103,10 @@ import { CollapseListComponent } from './record/detail-view/circ-policy-detail-v
     ExceptionDatesEditComponent,
     CirculationPolicyComponent,
     CircPolicyDetailViewComponent,
-    CollapseListComponent
+    CollapseListComponent,
+    ExceptionDateComponent,
+    LocationDetailViewComponent,
+    LocationComponent
   ],
   imports: [
     Bootstrap4FrameworkModule,
@@ -160,7 +165,9 @@ import { CollapseListComponent } from './record/detail-view/circ-policy-detail-v
     ExceptionDatesEditComponent,
     CircPolicyDetailViewComponent,
     CirculationPolicyComponent,
-    CollapseListComponent
+    CollapseListComponent,
+    LibraryComponent,
+    LocationDetailViewComponent
   ],
   bootstrap: [AppComponent]
 })
