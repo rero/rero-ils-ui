@@ -1,0 +1,75 @@
+<!--
+  RERO ILS UI
+   Copyright (C) 2019 RERO
+  
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, version 3 of the License.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Affero General Public License for more details.
+  
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="record && record.metadata as data">
+    <h1 class="mb-3">{{ data.name | translate }}</h1>
+    <article>
+        <!-- DETAILS -->
+        <section class="m-2 p-2">
+            <!-- LIBRARY -->
+            <dl class="row mb-0">
+                <dt class="col-sm-3 offset-sm-2 offset-md-0">
+                    {{ 'Library' | translate }}:
+                </dt>
+                <dd class="col-sm-7 col-md-8 mb-0">
+                    {{ data.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+                </dd>
+            </dl>
+            <!-- NAME -->
+            <dl class="row mb-0">
+                <dt class="col-sm-3 offset-sm-2 offset-md-0">
+                    {{ 'Name' | translate }}:
+                </dt>
+                <dd class="col-sm-7 col-md-8 mb-0">
+                    {{ data.name }}
+                </dd>
+            </dl>
+            <!-- CODE -->
+            <dl class="row mb-0">
+                <dt class="col-sm-3 offset-sm-2 offset-md-0">
+                    {{ 'Code' | translate }}:
+                </dt>
+                <dd class="col-sm-7 col-md-8 mb-0">
+                    {{ data.code }}
+                </dd>
+            </dl>
+            <!-- IS PICKUP -->
+            <dl class="row mb-0">
+                <dt class="col-sm-3 offset-sm-2 offset-md-0">
+                    {{ 'Is pickup' | translate }}:
+                </dt>
+                <dd class="col-sm-7 col-md-8 mb-0">
+                    <div *ngIf="data.is_pickup; then thenPickupBlock else elsePickupBlock"></div>
+                    <ng-template #thenPickupBlock>
+                        <i class="fa fa-check" style="color:green;" aria-hidden="true"></i>
+                    </ng-template>
+                    <ng-template #elsePickupBlock>
+                        <i class="fa fa-times" style="color:red;" aria-hidden="true"></i>
+                    </ng-template>
+                </dd>
+            </dl>
+            <!-- PICKUP LOCATION NAME -->
+            <dl class="row mb-0" *ngIf="data.pickup_name != undefined">
+                <dt class="col-sm-3 offset-sm-2 offset-md-0">
+                    {{ 'Pickup location name' | translate }}:
+                </dt>
+                <dd class="col-sm-7 col-md-8 mb-0">
+                    {{ data.pickup_name }}
+                </dd>
+            </dl>
+        </section>
+    </article>
+</ng-container>
