@@ -24,6 +24,8 @@ import { BioInformationsPipe } from './../pipes/bio-informations.pipe';
 import { DocumentBriefComponent } from './document-brief.component';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
+import { AppRoutingModule } from '../app-routing.module';
+import { PersonBriefComponent } from '../person-brief/person-brief.component';
 
 describe('DocumentBriefComponent', () => {
   let component: DocumentBriefComponent;
@@ -31,8 +33,19 @@ describe('DocumentBriefComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DocumentBriefComponent, MefTitlePipe, BirthDatePipe, BioInformationsPipe ],
-      imports: [ RecordModule, HttpClientModule, TranslateModule.forRoot() ]
+      declarations: [
+        DocumentBriefComponent,
+        MefTitlePipe,
+        BirthDatePipe,
+        BioInformationsPipe,
+        PersonBriefComponent
+      ],
+      imports: [
+        RecordModule,
+        HttpClientModule,
+        TranslateModule.forRoot(),
+        AppRoutingModule
+      ]
     })
     .compileComponents();
   }));
