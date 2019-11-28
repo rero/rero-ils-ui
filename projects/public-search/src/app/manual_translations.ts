@@ -18,11 +18,29 @@
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 
 // _('Your string');
+// Facets
+_('author');
+_('document_type');
+_('language');
+_('library');
+_('organisation');
+_('status');
+_('subject');
+
 // Document type
 _('article');
 _('book');
 _('ebook');
 _('journal');
+_('other');
 _('score');
 _('sound');
 _('video');
+
+// Status
+_('on_loan');
+_('on_shelf');
+_('missing');
+_('in_transit');
+_('at_desk');
+_('excluded');

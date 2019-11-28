@@ -18,6 +18,16 @@
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 
 // _('Your string');
+
+// Facets
+_('author');
+_('document_type');
+_('language');
+_('library');
+_('organisation');
+_('status');
+_('subject');
+
 _('monday');
 _('tuesday');
 _('wednesday');
