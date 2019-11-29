@@ -43,6 +43,10 @@ export class UserService {
     return this.user;
   }
 
+  hasRole(role: string) {
+    return this.user.hasRole(role);
+  }
+
   public loadLoggedUser() {
     this.http.get<any>('/patrons/logged_user?resolve').subscribe(data => {
       let user = null;
