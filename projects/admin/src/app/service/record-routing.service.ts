@@ -74,11 +74,11 @@ export class RecordRoutingService {
           {
             key: 'documents',
             label: 'Documents',
-            canDelete: (record) => this.canDelete(record),
-            canUpdate: (record) => this.canUpdate(record),
-            aggregations: (aggregations) => this.filter(aggregations),
             component: DocumentsBriefViewComponent,
-            detailComponent: DocumentDetailViewComponent
+            detailComponent: DocumentDetailViewComponent,
+            canUpdate: (record: any) => this.canUpdate(record),
+            canDelete: (record: any) => this.canDelete(record),
+            aggregations: (aggregations: any) => this.filter(aggregations)
           }
         ]
       }
@@ -98,9 +98,10 @@ export class RecordRoutingService {
             label: 'Libraries',
             component: LibrariesBriefViewComponent,
             detailComponent: LibraryDetailViewComponent,
-            canUpdate: (record) => this.canUpdate(record),
-            canDelete: (record) => this.canDelete(record),
-            preprocessRecordEditor: (data) => this.addLibrarianOrganisation(data)
+            canAdd: () => this.canAddLibrary(),
+            canUpdate: (record: any) => this.canUpdate(record),
+            canDelete: (record: any) => this.canDelete(record),
+            preprocessRecordEditor: (data: any) => this.addLibrarianOrganisation(data)
           }
         ]
       }
@@ -118,7 +119,9 @@ export class RecordRoutingService {
           {
             key: 'patrons',
             label: 'Patrons',
-            component: PatronsBriefViewComponent
+            component: PatronsBriefViewComponent,
+            canUpdate: (record: any) => this.canUpdate(record),
+            canDelete: (record: any) => this.canDelete(record)
           }
         ]
       }
@@ -136,7 +139,9 @@ export class RecordRoutingService {
             key: 'persons',
             label: 'Persons',
             component: PersonsBriefViewComponent,
-            detailComponent: PersonDetailViewComponent
+            detailComponent: PersonDetailViewComponent,
+            canUpdate: (record: any) => this.canUpdate(record),
+            canDelete: (record: any) => this.canDelete(record)
           }
         ]
       }
@@ -156,8 +161,10 @@ export class RecordRoutingService {
             label: 'Item Types',
             component: ItemTypesBriefViewComponent,
             detailComponent: ItemTypeDetailViewComponent,
-            canDelete: (record) => this.canDelete(record),
-            preprocessRecordEditor: (data) => this.addLibrarianOrganisation(data)
+            canAdd: () => this.canAddItemType(),
+            canUpdate: (record: any) => this.canUpdate(record),
+            canDelete: (record: any) => this.canDelete(record),
+            preprocessRecordEditor: (data: any) => this.addLibrarianOrganisation(data)
           }
         ]
       }
@@ -174,10 +181,11 @@ export class RecordRoutingService {
           {
             key: 'items',
             label: 'Items',
-            canRead: (record) => this.canReadItem(record),
-            canDelete: (record) => this.canDelete(record),
-            preprocessRecordEditor: (record) => this.preprocessItem(record),
-            detailComponent: ItemDetailViewComponent
+            detailComponent: ItemDetailViewComponent,
+            canRead: (record: any) => this.canReadItem(record),
+            canUpdate: (record: any) => this.canUpdate(record),
+            canDelete: (record: any) => this.canDelete(record),
+            preprocessRecordEditor: (record: any) => this.preprocessItem(record)
           }
         ]
       }
@@ -195,8 +203,10 @@ export class RecordRoutingService {
             key: 'locations',
             label: 'Locations',
             detailComponent: LocationDetailViewComponent,
-            canDelete: (record) => this.canDelete(record),
-            preprocessRecordEditor: (record) => this.preprocessLocation(record)
+            canAdd: () => this.canAddLocation(),
+            canUpdate: (record: any) => this.canUpdate(record),
+            canDelete: (record: any) => this.canDelete(record),
+            preprocessRecordEditor: (record: any) => this.preprocessLocation(record)
           }
         ]
       }
@@ -214,10 +224,12 @@ export class RecordRoutingService {
           {
             key: 'patron_types',
             label: 'Patron Types',
-            canDelete: (record: any) => this.canDelete(record),
             component: PatronTypesBriefViewComponent,
             detailComponent: PatronTypesDetailViewComponent,
-            preprocessRecordEditor: (data) => this.addLibrarianOrganisation(data)
+            canAdd: () => this.canAddPatronType(),
+            canUpdate: (record: any) => this.canUpdate(record),
+            canDelete: (record: any) => this.canDelete(record),
+            preprocessRecordEditor: (data: any) => this.addLibrarianOrganisation(data)
           }
         ]
       }
@@ -236,7 +248,10 @@ export class RecordRoutingService {
             key: 'circ_policies',
             label: 'Circulation Policies',
             component: CircPoliciesBriefViewComponent,
-            detailComponent: CircPolicyDetailViewComponent
+            detailComponent: CircPolicyDetailViewComponent,
+            canAdd: () => this.canAddCiculationPolicy(),
+            canUpdate: (record: any) => this.canUpdate(record),
+            canDelete: (record: any) => this.canDelete(record)
           }
         ]
       }
@@ -249,7 +264,7 @@ export class RecordRoutingService {
    * @param data - object, record data before edition
    * @returns object, the modified record data
    */
-  private addLibrarianOrganisation(data) {
+  private addLibrarianOrganisation(data: any) {
     const user = this.userService.getCurrentUser();
     const orgPid = user.library.organisation.pid;
     if (orgPid != null && data.organisation == null) {
@@ -263,7 +278,7 @@ export class RecordRoutingService {
    * @param data - object, item data before edition
    * @returns object, the modified record data
    */
-  private preprocessItem(itemData) {
+  private preprocessItem(itemData: any) {
     const docPid = this.route.snapshot.queryParams.document;
     if (itemData.pid == null && docPid != null && itemData.document == null) {
       itemData.document = {$ref: this.apiService.getRefEndpoint('documents', docPid)};
@@ -276,7 +291,7 @@ export class RecordRoutingService {
    * @param data - object, item data before edition
    * @returns object, the modified record data
    */
-  private preprocessLocation(locationData) {
+  private preprocessLocation(locationData: any) {
     const libPid = this.route.snapshot.queryParams.library;
     if (locationData.pid == null && libPid != null && locationData.library == null) {
       locationData.library = {$ref: this.apiService.getRefEndpoint('libraries', libPid)};
@@ -295,15 +310,11 @@ export class RecordRoutingService {
     };
   }
 
-  private routeMatcher(url, type) {
+  private routeMatcher(url: any, type: string) {
     if (url[0].path === 'records' && url[1].path === type) {
       return this.matchedUrl(url);
     }
     return null;
-  }
-
-  private cant() {
-    return of(false);
   }
 
   private filter(aggregations: object): Observable<any> {
@@ -331,6 +342,33 @@ export class RecordRoutingService {
       }
     });
     return aggs;
+  }
+
+  private canAddLibrary() {
+    return this.canAddSystemLibrarian();
+  }
+
+  private canAddItemType() {
+    return this.canAddSystemLibrarian();
+  }
+
+  private canAddPatronType() {
+    return this.canAddSystemLibrarian();
+  }
+
+  private canAddCiculationPolicy() {
+    return this.canAddSystemLibrarian();
+  }
+
+  private canAddLocation() {
+    return this.canAddSystemLibrarian();
+  }
+
+  private canAddSystemLibrarian() {
+    return of({
+      can: this.userService.hasRole('system_librarian'),
+       message: ''
+    });
   }
 
   private canReadItem(record: any) {
