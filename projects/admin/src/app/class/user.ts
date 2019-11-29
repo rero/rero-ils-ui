@@ -31,7 +31,7 @@ export class User {
   pid: string;
   circulation_location_pid?: string;
   postal_code: string;
-  roles: [];
+  roles: string[];
   street: string;
   organisation_pid: string;
   barcode?: string;
@@ -39,7 +39,7 @@ export class User {
   patron_type?: PatronType;
   is_logged: Boolean = false;
 
-  constructor(user) {
+  constructor(user: any) {
     Object.assign(this, user);
   }
 
@@ -49,6 +49,10 @@ export class User {
         return role;
       }
     }).length > 0;
+  }
+
+  hasRole(role: string) {
+    return this.roles.includes(role);
   }
 }
 
