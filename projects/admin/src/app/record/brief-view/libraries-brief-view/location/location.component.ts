@@ -26,7 +26,7 @@ export class LocationComponent {
    * @param locationPid - location PID
    */
   delete(locationPid: string) {
-    this.recordUiService.deleteRecord('items', locationPid).subscribe((success: boolean) => {
+    this.recordUiService.deleteRecord('locations', locationPid).subscribe((success: boolean) => {
       if (success) {
         this.deleteLocation.emit(locationPid);
       }

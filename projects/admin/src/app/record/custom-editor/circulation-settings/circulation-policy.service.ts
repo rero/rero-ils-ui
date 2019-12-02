@@ -67,7 +67,9 @@ export class CirculationPolicyService {
           this.translateService.instant('Record Updated!'),
           this.translateService.instant('circ_policies')
         );
-        this.router.navigate(['../../detail', circulationPolicy.pid], {relativeTo: this.route});
+        // Relative path not working
+        // this.router.navigate(['../../detail', circulationPolicy.pid], {relativeTo: this.route});
+        this.goToDetailView(circulationPolicy.pid);
       });
     } else {
       this.recordService
@@ -77,12 +79,18 @@ export class CirculationPolicyService {
           this.translateService.instant('Record created!'),
           this.translateService.instant('circ_policies')
         );
-        this.router.navigate(['../detail', record.metadata.pid], {relativeTo: this.route});
+        // Relative path not working
+        // this.router.navigate(['../detail', record.metadata.pid], {relativeTo: this.route});
+        this.goToDetailView(record.metadata.pid);
       });
     }
   }
 
   redirect() {
     this.router.navigate(['/records/circ_policies']);
+  }
+
+  goToDetailView(pid: string) {
+    this.router.navigate(['records',  'circ_policies', 'detail', pid], {relativeTo: this.route});
   }
 }
