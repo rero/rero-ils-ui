@@ -78,7 +78,10 @@ export class RecordRoutingService {
             detailComponent: DocumentDetailViewComponent,
             canUpdate: (record: any) => this.canUpdate(record),
             canDelete: (record: any) => this.canDelete(record),
-            aggregations: (aggregations: any) => this.filter(aggregations)
+            aggregations: (aggregations: any) => this.filter(aggregations),
+            aggregationsOrder: ['document_type', 'author', 'library', 'organisation', 'language', 'subject', 'status'],
+            aggregationsExpand: ['document_type'],
+            aggregationsBucketSize: 10
           }
         ]
       }
