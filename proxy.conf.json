@@ -35,13 +35,67 @@
       "^/api": "https://localhost:5000/lang"
     }
   },
-  "/static/images/*": {
+  "/static/*": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
     "pathRewrite": {
-      "^/static/images": "https://localhost:5000/static/images"
+      "^/static": "https://localhost:5000/static"
+    }
+  },
+  "/global/documents/*": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/global/documents": "https://localhost:5000/global/documents"
+    }
+  },
+  "/aoste/documents/*": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/aoste/documents": "https://localhost:5000/aoste/documents"
+    }
+  },
+  "/highlands/documents/*": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/highlands/documents": "https://localhost:5000/highlands/documents"
+    }
+  },
+  "/global/persons/*": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/global/persons": "https://localhost:5000/global/persons"
+    }
+  },
+  "/aoste/persons/*": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/aoste/persons": "https://localhost:5000/aoste/persons"
+    }
+  },
+  "/highlands/persons/*": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/highlands/persons": "https://localhost:5000/highlands/persons"
     }
   }
 }
