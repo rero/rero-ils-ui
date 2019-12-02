@@ -91,181 +91,181 @@ export class CirculationPolicyComponent implements OnInit {
                         )
                       ]);
                     });
-                  }
-                  );
+                  });
                 });
-              });
             });
+          });
+        }
+      }
+
+      allowCheckoutCheckbox(checkbox: boolean) {
+        if (!this.allow_checkout.value) {
+          this.checkout_duration.setValue(null);
+          this.allow_renewals.setValue(false);
+          this.number_renewals.setValue(null);
+          this.renewal_duration.setValue(null);
+          this.number_of_days_after_due_date.setValue(null);
+          this.number_of_days_before_due_date.setValue(null);
+          this.reminder_fee_amount.setValue(null);
+        }
+      }
+
+      allowRenewalsCheckbox(checkbox: boolean) {
+        if (!this.allow_renewals.value) {
+          this.number_renewals.setValue(null);
+          this.renewal_duration.setValue(null);
+        }
+      }
+
+      numberRenewalsCheck() {
+        if (this.number_renewals.value < 1) {
+          this.renewal_duration.setValue(null);
+        }
+      }
+
+      policyLevelEvent(level: boolean) {
+        this.circulationMapping.setPolicyLevel(level);
+        this.getField('settings').setValue([]);
+        if (!level) {
+          this.getField('libraries').setValue([]);
+        }
+      }
+
+      libraryCheck(libraryPid: string) {
+        const librariesControl = this.getField('libraries');
+        return librariesControl.value.indexOf(libraryPid) >= 0;
+      }
+
+      libraryClickEvent(checkbox: boolean, libraryId: string) {
+        const values = this.getField('libraries').value;
+        if (checkbox) {
+          if (values.indexOf(libraryId) === -1) {
+            values.push(libraryId);
+          }
+        } else {
+          const index = values.indexOf(libraryId);
+          if (index >= 0) {
+            values.splice(index, 1);
           }
         }
+      }
 
-        allowCheckoutCheckbox(checkbox: boolean) {
-          if (!this.allow_checkout.value) {
-            this.checkout_duration.setValue(null);
-            this.allow_renewals.setValue(false);
-            this.number_renewals.setValue(null);
-            this.renewal_duration.setValue(null);
-            this.number_of_days_after_due_date.setValue(null);
-            this.number_of_days_before_due_date.setValue(null);
-            this.reminder_fee_amount.setValue(null);
+      patronTypes() {
+        return this.circulationMapping.getPatronTypes();
+      }
+
+      isPatronTypeChecked(patronTypeId: string) {
+        const settingsControl = this.getField('settings');
+        // console.log(patronTypeId);
+        return patronTypeId in settingsControl.value;
+      }
+
+      isPatronTypeDisabled(patronTypeId: string) {
+        return this.circulationMapping.isPatronTypeDisabled(patronTypeId);
+      }
+
+      patronTypeClickEvent(checkbox: boolean, patronTypeId: string) {
+        const settings = this.getField('settings').value;
+        if (checkbox) {
+          if ((settings.indexOf(patronTypeId) === -1)) {
+            settings[patronTypeId] = [];
           }
+        } else {
+          delete settings[patronTypeId];
         }
+      }
 
-        allowRenewalsCheckbox(checkbox: boolean) {
-          if (!this.allow_renewals.value) {
-            this.number_renewals.setValue(null);
-            this.renewal_duration.setValue(null);
-          }
-        }
+      itemTypes() {
+        return this.circulationMapping.getItemTypes();
+      }
 
-        numberRenewalsCheck() {
-          if (this.number_renewals.value < 1) {
-            this.renewal_duration.setValue(null);
-          }
-        }
+      isItemTypeChecked(patronTypeId: string, itemTypeId: string) {
+        const settingsControl = this.getField('settings');
+        return settingsControl.value[patronTypeId].indexOf(itemTypeId) > -1;
+      }
 
-        policyLevelEvent(level: boolean) {
-          this.circulationMapping.setPolicyLevel(level);
-          this.getField('settings').setValue([]);
-          if (!level) {
-            this.getField('libraries').setValue([]);
-          }
-        }
+      isItemTypeDisabled(patronTypeId: string, itemTypeId: string) {
+        return this.circulationMapping.isItemTypeDisabled(
+          patronTypeId,
+          itemTypeId
+          );
+      }
 
-        libraryCheck(libraryPid: string) {
-          const librariesControl = this.getField('libraries');
-          return librariesControl.value.indexOf(libraryPid) >= 0;
-        }
-
-        libraryClickEvent(checkbox: boolean, libraryId: string) {
-          const values = this.getField('libraries').value;
-          if (checkbox) {
-            if (values.indexOf(libraryId) === -1) {
-              values.push(libraryId);
-            }
-          } else {
-            const index = values.indexOf(libraryId);
-            if (index >= 0) {
-              values.splice(index, 1);
-            }
-          }
-        }
-
-        patronTypes() {
-          return this.circulationMapping.getPatronTypes();
-        }
-
-        isPatronTypeChecked(patronTypeId: string) {
+      itemTypeClickEvent(
+        checkbox: boolean,
+        patronTypeId: string,
+        itemTypeId: string
+        ) {
           const settingsControl = this.getField('settings');
-          return patronTypeId in settingsControl.value;
-        }
-
-        isPatronTypeDisabled(patronTypeId: string) {
-          return this.circulationMapping.isPatronTypeDisabled(patronTypeId);
-        }
-
-        patronTypeClickEvent(checkbox: boolean, patronTypeId: string) {
-          const settings = this.getField('settings').value;
+          const values = settingsControl.value;
           if (checkbox) {
-            if ((settings.indexOf(patronTypeId) === -1)) {
-              settings[patronTypeId] = [];
-            }
+            values[patronTypeId].push(itemTypeId);
           } else {
-            delete settings[patronTypeId];
+            const index = values[patronTypeId].indexOf(itemTypeId);
+            values[patronTypeId].splice(index, 1);
           }
-        }
-
-        itemTypes() {
-          return this.circulationMapping.getItemTypes();
-        }
-
-        isItemTypeChecked(patronTypeId: string, itemTypeId: string) {
-          const settingsControl = this.getField('settings');
-          return settingsControl.value[patronTypeId].indexOf(itemTypeId) > -1;
-        }
-
-        isItemTypeDisabled(patronTypeId: string, itemTypeId: string) {
-          return this.circulationMapping.isItemTypeDisabled(
-            patronTypeId,
-            itemTypeId
-            );
+          if (values[patronTypeId].length === 0) {
+            delete values[patronTypeId];
           }
+      }
 
-          itemTypeClickEvent(
-            checkbox: boolean,
-            patronTypeId: string,
-            itemTypeId: string
-            ) {
-              const settingsControl = this.getField('settings');
-              const values = settingsControl.value;
-              if (checkbox) {
-                values[patronTypeId].push(itemTypeId);
-              } else {
-                const index = values[patronTypeId].indexOf(itemTypeId);
-                values[patronTypeId].splice(index, 1);
-              }
-              if (values[patronTypeId].length === 0) {
-                delete values[patronTypeId];
-              }
-            }
+      onSubmit() {
+        this.circulationPolicy.update(this.circulationPolicyForm.getValues());
+        this.circulationPolicyService.save(this.circulationPolicy);
+      }
 
-            onSubmit() {
-              this.circulationPolicy.update(this.circulationPolicyForm.getValues());
-              this.circulationPolicyService.save(this.circulationPolicy);
-            }
+      onCancel() {
+        this.location.back();
+      }
 
-            onCancel() {
-              this.location.back();
-            }
+      getField(field: string) {
+        return this.circulationPolicyForm.getControlByFieldName(field);
+      }
 
-            getField(field: string) {
-              return this.circulationPolicyForm.getControlByFieldName(field);
-            }
-
-            /* Control Fields */
-            get name() {
-              return this.getField('name');
-            }
-            get description() {
-              return this.getField('description');
-            }
-            get allow_checkout() {
-              return this.getField('allow_checkout');
-            }
-            get allow_requests() {
-              return this.getField('allow_requests');
-            }
-            get allow_renewals() {
-              return this.getField('allow_renewals');
-            }
-            get number_of_days_after_due_date() {
-              return this.getField('number_of_days_after_due_date');
-            }
-            get number_of_days_before_due_date() {
-              return this.getField('number_of_days_before_due_date');
-            }
-            get checkout_duration() {
-              return this.getField('checkout_duration');
-            }
-            get number_renewals() {
-              return this.getField('number_renewals');
-            }
-            get renewal_duration() {
-              return this.getField('renewal_duration');
-            }
-            get reminder_fee_amount() {
-              return this.getField('reminder_fee_amount');
-            }
-            get currency() {
-              return this.organisation.default_currency;
-            }
-            get policy_library_level() {
-              return this.getField('policy_library_level');
-            }
-            get is_default() {
-              return this.getField('is_default');
-            }
-            get libraries() {
-              return this.getField('libraries');
-            }
-          }
+      /* Control Fields */
+      get name() {
+        return this.getField('name');
+      }
+      get description() {
+        return this.getField('description');
+      }
+      get allow_checkout() {
+        return this.getField('allow_checkout');
+      }
+      get allow_requests() {
+        return this.getField('allow_requests');
+      }
+      get allow_renewals() {
+        return this.getField('allow_renewals');
+      }
+      get number_of_days_after_due_date() {
+        return this.getField('number_of_days_after_due_date');
+      }
+      get number_of_days_before_due_date() {
+        return this.getField('number_of_days_before_due_date');
+      }
+      get checkout_duration() {
+        return this.getField('checkout_duration');
+      }
+      get number_renewals() {
+        return this.getField('number_renewals');
+      }
+      get renewal_duration() {
+        return this.getField('renewal_duration');
+      }
+      get reminder_fee_amount() {
+        return this.getField('reminder_fee_amount');
+      }
+      get currency() {
+        return this.organisation.default_currency;
+      }
+      get policy_library_level() {
+        return this.getField('policy_library_level');
+      }
+      get is_default() {
+        return this.getField('is_default');
+      }
+      get libraries() {
+        return this.getField('libraries');
+      }
+    }
