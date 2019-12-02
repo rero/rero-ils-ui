@@ -40,7 +40,10 @@ const routes: Routes = [
           key: 'documents',
           component: DocumentBriefComponent,
           label: 'Documents',
-          aggregations: AggregationFilter.filter
+          aggregations: AggregationFilter.filter,
+          aggregationsOrder: ['document_type', 'author', 'library', 'organisation', 'language', 'subject', 'status'],
+          aggregationsExpand: ['document_type'],
+          aggregationsBucketSize: 10
         },
         {
           key: 'persons',
