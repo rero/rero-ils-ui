@@ -19,6 +19,7 @@ import { Injectable } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { CirculationPolicy } from './circulation-policy';
 import { ApiService } from '@rero/ng-core';
+import { AppConfigService } from '../../../service/app-config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +30,8 @@ export class CirculationPolicyFormService {
 
   constructor(
     private apiService: ApiService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private appConfigService: AppConfigService
   ) {
     this.build();
     this.validators();
@@ -156,7 +158,7 @@ export class CirculationPolicyFormService {
   private unserializeLibraries(libraries) {
     const ulibraries = [];
     const librariesRegex = new RegExp(
-      this.apiService.getEndpointByType('libraries', true) + '(.+)$'
+      this.apiService.getRefEndpoint('libraries', '(.+)$')
     );
     libraries.forEach(element => {
       ulibraries.push(
@@ -167,12 +169,10 @@ export class CirculationPolicyFormService {
   }
 
   private serializeLibraries(libraries) {
-    const libraryEntryPoint = this.apiService
-      .getEndpointByType('libraries', true);
     const slibraries = [];
     libraries.forEach(element => {
       slibraries.push({
-        $ref: libraryEntryPoint + element
+        $ref: this.apiService.getRefEndpoint('libraries', element)
       });
     });
     return slibraries;
@@ -180,10 +180,10 @@ export class CirculationPolicyFormService {
 
   private unserializeSettings(settings) {
     const itemTypeRegex = new RegExp(
-      this.apiService.getEndpointByType('item_types', true) + '(.+)$'
+      this.apiService.getRefEndpoint('item_types', '(.+)$')
     );
     const patronTypeRegex = new RegExp(
-      this.apiService.getEndpointByType('patron_types', true) + '(.+)$'
+      this.apiService.getRefEndpoint('patron_types', '(.+)$')
     );
     const mapping = [];
     settings.forEach(element => {
@@ -197,19 +197,15 @@ export class CirculationPolicyFormService {
   }
 
   private serializeSettings(settings) {
-    const patronTypeentrypoint = this.apiService
-      .getEndpointByType('patron_types', true);
-    const itemTypeentrypoint = this.apiService
-      .getEndpointByType('item_types', true);
     const mapping = [];
     Object.keys(settings).forEach(key => {
       settings[key].forEach(element => {
         mapping.push({
           patron_type: {
-            $ref: patronTypeentrypoint + key.substr(1)
+            $ref: this.apiService.getRefEndpoint('patron_types', key.substr(1))
           },
           item_type: {
-            $ref: itemTypeentrypoint + element.substr(1)
+            $ref: this.apiService.getRefEndpoint('item_types', element.substr(1))
           }
         });
       });

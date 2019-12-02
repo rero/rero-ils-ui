@@ -41,7 +41,7 @@ export class CirculationMappingService {
   ) {
     const baseMapping = {};
     patronTypes.hits.hits.forEach(patronType => {
-      const pkey = this.generateItemTypeKey(patronType.metadata.pid);
+      const pkey = this.generatePatronTypeKey(patronType.metadata.pid);
       baseMapping[pkey] = {
         disabled: false,
         itemTypes: {}
@@ -61,7 +61,7 @@ export class CirculationMappingService {
         if (settings) {
           const pLevel = this.translatePolicyLevel(data.policy_library_level);
           settings.forEach(setting => {
-            const pKey = this.generateItemTypeKey(setting.patron_type.pid);
+            const pKey = this.generatePatronTypeKey(setting.patron_type.pid);
             const iKey = this.generateItemTypeKey(setting.item_type.pid);
             this.mapping[pLevel][pKey].itemTypes[iKey] = true;
           });
@@ -121,7 +121,7 @@ export class CirculationMappingService {
   private serializePatronTypes(patronTypes: any) {
     const output = [];
     patronTypes.forEach(patronType => {
-      const pkey = this.generateItemTypeKey(patronType.metadata.pid);
+      const pkey = this.generatePatronTypeKey(patronType.metadata.pid);
       output.push({ id: pkey, name: patronType.metadata.name });
     });
     return output;
@@ -140,7 +140,7 @@ export class CirculationMappingService {
     return 'i' + pid;
   }
 
-  generatePatronTypeKe(pid) {
+  generatePatronTypeKey(pid) {
     return 'p' + pid;
   }
 

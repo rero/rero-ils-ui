@@ -21,7 +21,7 @@
         <!-- DETAILS -->
         <section class="m-2 p-2">
             <!-- NAME -->
-            <dl class="row">
+            <dl class="row mb-0">
                 <dt class="col-sm-3 offset-sm-2 offset-md-0">
                     {{ 'Name' | translate }}:
                 </dt>
@@ -30,7 +30,7 @@
                 </dd>
             </dl>
             <!-- DESCRIPTION -->
-            <dl class="row">
+            <dl class="row mb-0">
                 <dt class="col-sm-3 offset-sm-2 offset-md-0">
                     {{ 'Description' | translate }}:
                 </dt>
@@ -39,7 +39,7 @@
                 </dd>
             </dl>
             <!-- LEVEL -->
-            <dl class="row">
+            <dl class="row mb-0">
                 <dt class="col-sm-3 offset-sm-2 offset-md-0">
                     {{ 'Level' | translate }}:
                 </dt>
@@ -60,7 +60,7 @@
         <section class="m-2 p-2">
             <h3>{{ 'Circulation settings' | translate }}</h3>
             <!-- ALLOW CHECKOUT -->
-            <dl class="row">
+            <dl class="row mb-0">
                 <dt class="col-sm-3 offset-sm-2 offset-md-0">
                     {{ 'Allow checkout' | translate }}:
                 </dt>
@@ -76,7 +76,7 @@
                 </dd>
             </dl>
             <!-- ALLOW REQUESTS -->
-            <dl class="row">
+            <dl class="row mb-0">
                 <dt class="col-sm-3 offset-sm-2 offset-md-0">
                     {{ 'Allow requests' | translate }}:
                 </dt>
@@ -91,7 +91,7 @@
                 </dd>
             </dl>
             <!-- IS DEFAULT -->
-            <dl class="row">
+            <dl class="row mb-0">
                 <dt class="col-sm-3 offset-sm-2 offset-md-0">
                     {{ 'Is default' | translate }}:
                 </dt>
@@ -106,7 +106,7 @@
                 </dd>
             </dl>
             <!-- CHECKOUT DURATION -->
-            <dl class="row" *ngIf="data.renewal_duration!==undefined">
+            <dl class="row mb-0" *ngIf="data.renewal_duration!==undefined">
                 <dt class="col-sm-3 offset-sm-2 offset-md-0">
                     {{ 'Checkout duration' | translate }}:
                 </dt>
@@ -115,7 +115,7 @@
                 </dd>
             </dl>
             <!-- NUMBER OF RENEWALS -->
-            <dl class="row" *ngIf="data.number_renewals!==undefined">
+            <dl class="row mb-0" *ngIf="data.number_renewals!==undefined">
                 <dt class="col-sm-3 offset-sm-2 offset-md-0">
                     {{ 'Number of renewals' | translate }}:
                 </dt>
@@ -124,7 +124,7 @@
                 </dd>
             </dl>
             <!-- RENEWAL DURATION -->
-            <dl class="row" *ngIf="data.renewal_duration!==undefined">
+            <dl class="row mb-0" *ngIf="data.renewal_duration!==undefined">
                 <dt class="col-sm-3 offset-sm-2 offset-md-0">
                     {{ 'Renewal duration' | translate }}:
                 </dt>
@@ -138,7 +138,7 @@
         data.number_of_days_before_due_date != undefined && data.reminder_fee_amount != undefined">
             <h3>{{ 'Notifications and fees' | translate}}</h3>
             <!-- DAYS AFTER DUE DATE -->
-            <dl class="row" *ngIf="data.number_of_days_after_due_date!==undefined">
+            <dl class="row mb-0" *ngIf="data.number_of_days_after_due_date!==undefined">
                 <dt class="col-sm-3 offset-sm-2 offset-md-0">
                     {{ 'Number of days after due date' | translate }}:
                 </dt>
@@ -147,7 +147,7 @@
                 </dd>
             </dl>
             <!-- DAYS BEFORE DUE DATE -->
-            <dl class="row" *ngIf="data.number_of_days_before_due_date!==undefined">
+            <dl class="row mb-0" *ngIf="data.number_of_days_before_due_date!==undefined">
                 <dt class="col-sm-3 offset-sm-2 offset-md-0">
                     {{ 'Number of days before due date' | translate }}:
                 </dt>
@@ -156,7 +156,7 @@
                 </dd>
             </dl>
             <!-- REMINDER FEE AMOUNT -->
-            <dl class="row" *ngIf="data.reminder_fee_amount!==undefined">
+            <dl class="row mb-0" *ngIf="data.reminder_fee_amount!==undefined">
                 <dt class="col-sm-3 offset-sm-2 offset-md-0">
                     {{ 'Reminder fee amount' | translate }}:
                 </dt>
