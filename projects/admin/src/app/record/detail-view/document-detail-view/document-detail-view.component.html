@@ -69,19 +69,17 @@
     </ng-container>
 
     <!-- PUBLICATION STATEMENT -->
-    <ng-container *ngIf="provisionActivity as provisions">
-      <ng-container *ngFor="let provision of provisions | keyvalue">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ provision.key | translate }}:
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          <ul class="list-unstyled mb-0">
-            <li *ngFor="let value of provision.value">
-              {{ value }}
-            </li>
-          </ul>
-        </dd>
-      </ng-container>
+    <ng-container *ngFor="let provision of provisionActivity | keyvalue">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ provision.key | translate }}:
+      </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let value of provision.value">
+            {{ value }}
+          </li>
+        </ul>
+      </dd>
     </ng-container>
 
     <!-- COPYRIGHT DATE -->

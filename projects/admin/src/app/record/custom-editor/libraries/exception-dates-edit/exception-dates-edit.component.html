@@ -22,7 +22,9 @@
     </div>
     <!-- Title -->
     <div class="form-group row">
-      <label for="title" class="col-sm-2 col-form-label required" translate>Title</label>
+      <label for="title" class="col-sm-2 col-form-label required">
+        {{ 'Title' | translate }} <strong class="text-danger">*</strong>
+      </label>
       <div class="col-sm-10">
         <input
           class="form-control"
@@ -54,7 +56,9 @@
     </div>
     <!-- one Date -->
     <div class="form-group row" *ngIf="!is_period.value">
-      <label for="date" class="col-sm-2 col-form-label required" translate>Date</label>
+      <label for="date" class="col-sm-2 col-form-label required">
+        {{ 'Date' | translate }} <strong class="text-danger">*</strong>
+      </label>
       <div class="col-sm-10">
         <div class="input-group">
           <input type="text"
@@ -169,7 +173,9 @@
     <!-- Period -->
     </div>
     <div class="form-group row" *ngIf="is_period.value">
-      <label for="date" class="col-sm-2 col-form-label required" translate>Start-End Date</label>
+      <label for="date" class="col-sm-2 col-form-label required">
+        {{ 'Start-End Date' | translate }} <strong class="text-danger">*</strong>
+      </label>
       <div class="col-sm-10">
         <div class="input-group">
           <input type="text"
