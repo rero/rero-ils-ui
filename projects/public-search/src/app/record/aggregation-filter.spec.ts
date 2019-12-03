@@ -80,9 +80,8 @@ describe('AggregationFilter', () => {
     AggregationFilter.translateService = translate;
     AggregationFilter.filter(aggregations).subscribe(data => {
       const keys = Object.keys(data);
-      expect(keys).toEqual(['author', 'document_type', 'organisation']);
+      expect(keys).toEqual(['author__en', 'document_type', 'organisation']);
       expect(keys.length).toBe(3);
-      expect(keys.indexOf('author') > -1).toBeTruthy();
     });
   });
 });

@@ -41,9 +41,26 @@ const routes: Routes = [
           component: DocumentBriefComponent,
           label: 'Documents',
           aggregations: AggregationFilter.filter,
-          aggregationsOrder: ['document_type', 'author', 'library', 'organisation', 'language', 'subject', 'status'],
+          aggregationsOrder: [
+            'document_type',
+            'author__fr',
+            'author__de',
+            'author__en',
+            'author__it',
+            'library',
+            'organisation',
+            'language',
+            'subject',
+            'status'
+          ],
           aggregationsExpand: ['document_type'],
-          aggregationsBucketSize: 10
+          aggregationsBucketSize: 10,
+          listHeaders: {
+            Accept: 'application/rero+json, application/json'
+          },
+          preFilters: {
+            view: 'global'
+          }
         },
         {
           key: 'persons',
@@ -72,6 +89,9 @@ const routes: Routes = [
           aggregations: AggregationFilter.filter,
           preFilters: {
             view: 'highlands'
+          },
+          listHeaders: {
+            Accept: 'application/rero+json, application/json'
           }
         },
         {
@@ -101,6 +121,41 @@ const routes: Routes = [
           component: DocumentBriefComponent,
           preFilters: {
             view: 'aoste'
+          },
+          listHeaders: {
+            Accept: 'application/rero+json, application/json'
+          }
+        },
+        {
+          key: 'persons',
+          component: PersonBriefComponent,
+          label: 'Persons'
+        }
+      ]
+    }
+  },
+  {
+    path: 'fictive/search',
+    children: [
+      { path: ':type', component: RecordSearchComponent },
+      { path: ':type/detail/:pid', component: DetailComponent }
+    ],
+    data: {
+      showSearchInput: false,
+      adminMode: false,
+      linkPrefix: '/fictive/search',
+      detailUrl: '/fictive/:type/:pid',
+      types: [
+        {
+          key: 'documents',
+          label: 'Documents',
+          aggregations: AggregationFilter.filter,
+          component: DocumentBriefComponent,
+          preFilters: {
+            view: 'fictive'
+          },
+          listHeaders: {
+            Accept: 'application/rero+json, application/json'
           }
         },
         {

@@ -79,7 +79,18 @@ export class RecordRoutingService {
             canUpdate: (record: any) => this.canUpdate(record),
             canDelete: (record: any) => this.canDelete(record),
             aggregations: (aggregations: any) => this.filter(aggregations),
-            aggregationsOrder: ['document_type', 'author', 'library', 'organisation', 'language', 'subject', 'status'],
+            aggregationsOrder: [
+              'document_type',
+               'author__fr',
+               'author__de',
+               'author__en',
+               'author__it',
+               'library',
+               'organisation',
+               'language',
+               'subject',
+               'status'
+            ],
             aggregationsExpand: ['document_type'],
             aggregationsBucketSize: 10
           }
@@ -337,7 +348,7 @@ export class RecordRoutingService {
         if (aggregation.indexOf('__') > -1) {
           const splitted = aggregation.split('__');
           if (this.translateService.currentLang === splitted[1]) {
-            aggs[splitted[0]] = aggregations[aggregation];
+            aggs[aggregation] = aggregations[aggregation];
           }
         } else {
           aggs[aggregation] = aggregations[aggregation];

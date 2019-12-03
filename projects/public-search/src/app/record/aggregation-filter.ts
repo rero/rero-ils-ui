@@ -37,7 +37,7 @@ export class AggregationFilter {
       if (aggregation.indexOf('__') > -1) {
         const splitted = aggregation.split('__');
         if (AggregationFilter.translateService.currentLang === splitted[1]) {
-          aggs[splitted[0]] = aggregations[aggregation];
+          aggs[aggregation] = aggregations[aggregation];
         }
       } else {
         aggs[aggregation] = aggregations[aggregation];
