@@ -71,6 +71,15 @@
       "^/highlands/documents": "https://localhost:5000/highlands/documents"
     }
   },
+  "/fictive/documents/*": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/fictive/documents": "https://localhost:5000/fictive/documents"
+    }
+  },
   "/global/persons/*": {
     "target": "https://localhost:5000",
     "secure": false,
@@ -96,6 +105,15 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/highlands/persons": "https://localhost:5000/highlands/persons"
+    }
+  },
+  "/fictive/persons/*": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/fictive/persons": "https://localhost:5000/fictive/persons"
     }
   }
 }
