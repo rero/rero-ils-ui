@@ -67,6 +67,7 @@ import { ItemAvailabilityComponent } from './record/item-availability/item-avail
 import { ItemTransactionComponent } from './record/detail-view/item-detail-view/item-transaction/item-transaction.component';
 import { ItemTransactionsComponent } from './record/detail-view/item-detail-view/item-transactions/item-transactions.component';
 import { AuthorNameTranslatePipe } from './pipe/author-name-translate.pipe';
+import { PatronDetailViewComponent } from './record/detail-view/patron-detail-view/patron-detail-view.component';
 
 @NgModule({
   declarations: [
@@ -116,7 +117,8 @@ import { AuthorNameTranslatePipe } from './pipe/author-name-translate.pipe';
     ItemAvailabilityComponent,
     ItemTransactionComponent,
     ItemTransactionsComponent,
-    AuthorNameTranslatePipe
+    AuthorNameTranslatePipe,
+    PatronDetailViewComponent
   ],
   imports: [
     Bootstrap4FrameworkModule,
@@ -178,7 +180,8 @@ import { AuthorNameTranslatePipe } from './pipe/author-name-translate.pipe';
     CollapseListComponent,
     LibraryComponent,
     LocationDetailViewComponent,
-    ItemDetailViewComponent
+    ItemDetailViewComponent,
+    PatronDetailViewComponent
   ],
   bootstrap: [AppComponent]
 })

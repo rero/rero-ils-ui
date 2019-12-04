@@ -1,0 +1,98 @@
+<!--
+  RERO ILS UI
+   Copyright (C) 2019 RERO
+  
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, version 3 of the License.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Affero General Public License for more details.
+  
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="record$ | async as record">
+  <h1 class="mb-3">{{ record.metadata.last_name }} {{ record.metadata.first_name }}</h1>
+  <article>
+    <section class="m-2 p-2">
+      <!-- BARCODE -->
+      <dl class="row mb-0" *ngIf="record.metadata.barcode">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Barcode' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <a [routerLink]="['/circulation', 'checkinout']" [queryParams]="{ patron: record.metadata.barcode }">{{ record.metadata.barcode }}</a>
+        </dd>
+      </dl>
+      <!-- TYPE -->
+      <dl class="row mb-0" *ngIf="isPatron">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Type' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.patron_type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
+        </dd>
+      </dl>
+      <!-- TYPE -->
+      <dl class="row mb-0" *ngIf="isLibrarian">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Library' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+        </dd>
+      </dl>
+      <!-- PHONE -->
+      <dl class="row mb-0" *ngIf="record.metadata.phone">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Phone' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.phone }}
+        </dd>
+      </dl>
+      <!-- EMAIL -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Email' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.email }}
+        </dd>
+      </dl>
+      <!-- STREET -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Street' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.street }}
+        </dd>
+      </dl>
+      <!-- CITY -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'City' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.postal_code }} {{ record.metadata.city }}
+        </dd>
+      </dl>
+      <!-- ROLES -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          <ng-container *ngIf="record.metadata.roles.length === 1; else roles" translate>Role</ng-container>
+          <ng-template #roles translate>Roles</ng-template>:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <ng-container *ngFor="let role of record.metadata.roles; let last=last">
+            {{ role | translate }}{{ last ? '' : ', ' }}
+          </ng-container>
+        </dd>
+      </dl>
+    </section>
+  </article>
+</ng-container>

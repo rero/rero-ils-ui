@@ -42,6 +42,7 @@ import { CircPolicyDetailViewComponent } from '../record/detail-view/circ-policy
 import { LocationDetailViewComponent } from '../record/detail-view/location-detail-view/location-detail-view.component';
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
 import { UserService } from './user.service';
+import { PatronDetailViewComponent } from '../record/detail-view/patron-detail-view/patron-detail-view.component';
 
 @Injectable({
   providedIn: 'root'
@@ -134,8 +135,10 @@ export class RecordRoutingService {
             key: _('patrons'),
             label: _('Patrons'),
             component: PatronsBriefViewComponent,
+            detailComponent: PatronDetailViewComponent,
             canUpdate: (record: any) => this.canUpdate(record),
-            canDelete: (record: any) => this.canDelete(record)
+            canDelete: (record: any) => this.canDelete(record),
+            aggregationsExpand: ['roles']
           }
         ]
       }
