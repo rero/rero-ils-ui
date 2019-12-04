@@ -18,12 +18,14 @@
   <h1>{{ record.metadata.name }}</h1>
   <section class="row">
     <!-- ADDRESS -->
-    <dt class="col-sm-3 offset-sm-2 offset-md-0" *ngIf="record.metadata.address">
-      {{ 'Address' | translate }}:
-    </dt>
-    <dd class="col-sm-7 col-md-8 mb-0">
-      {{ record.metadata.address }}
-    </dd>
+    <ng-container *ngIf="record.metadata.address">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+            {{ 'Address' | translate }}:
+          </dt>
+          <dd class="col-sm-7 col-md-8 mb-0">
+            {{ record.metadata.address }}
+          </dd>
+    </ng-container>
     <!-- CODE -->
     <dt class="col-sm-3 offset-sm-2 offset-md-0" *ngIf="record.metadata.code">
       {{ 'Code' | translate }}:
@@ -55,7 +57,7 @@
   </article>
 
   <!-- EXCEPTIONS -->
-  <article class="card mt-4">
+  <article class="card mt-4" *ngIf="record.metadata.exception_dates">
     <header class="card-header">
       <b translate>Exceptions (holidays, etc.)</b>
     </header>
