@@ -17,9 +17,10 @@
 
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../service/user.service';
-import { CoreConfigService, TranslateService } from '@rero/ng-core';
+import { CoreConfigService } from '@rero/ng-core';
+import { TranslateService as CoreTranslateService} from '@rero/ng-core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { TranslateService as NgxTranslateService } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-menu',
@@ -59,8 +60,8 @@ export class MenuComponent implements OnInit {
   private activeLanguagesMenuItem;
 
   constructor(
-    private appTranslateService: TranslateService,
-    private translateService: NgxTranslateService,
+    private appTranslateService: CoreTranslateService,
+    private translateService: TranslateService,
     private configService: CoreConfigService,
     private userService: UserService
   ) { }

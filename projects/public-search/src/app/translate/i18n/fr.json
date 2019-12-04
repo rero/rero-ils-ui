@@ -1,4 +1,7 @@
 {
+
+  "Documents": "Documents",
+  "Persons": "Personnes",
   "Search": "recherche",
   "article": "article",
   "at_desk": "au bureau du prêt",
@@ -24,6 +27,7 @@
   "on_shelf": "en rayon",
   "organisation": "organisation",
   "other": "autre",
+  "persons": "persons",
   "score": "partition",
   "sound": "son",
   "status": "statut",

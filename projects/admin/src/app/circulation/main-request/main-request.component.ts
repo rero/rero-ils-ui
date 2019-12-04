@@ -68,7 +68,7 @@ export class MainRequestComponent implements OnInit {
     if (item === undefined) {
       this.toastService.warning(
         this.translate.instant('No request corresponding to the given item has been found.'),
-        this.translate.instant('search')
+        this.translate.instant('request')
       );
     } else {
       const items = this.items;
@@ -83,7 +83,7 @@ export class MainRequestComponent implements OnInit {
           });
           this.toastService.warning(
             this.translate.instant('The item is ') + this.translate.instant(newItem.status),
-            this.translate.instant('search')
+            this.translate.instant('request')
           );
           this.searchText = '';
         }

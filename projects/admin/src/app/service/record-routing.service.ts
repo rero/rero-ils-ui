@@ -72,24 +72,24 @@ export class RecordRoutingService {
         showSearchInput: false,
         types: [
           {
-            key: 'documents',
-            label: 'Documents',
+            key: _('documents'),
+            label: _('Documents'),
             component: DocumentsBriefViewComponent,
             detailComponent: DocumentDetailViewComponent,
             canUpdate: (record: any) => this.canUpdate(record),
             canDelete: (record: any) => this.canDelete(record),
             aggregations: (aggregations: any) => this.filter(aggregations),
             aggregationsOrder: [
-              'document_type',
-               'author__fr',
-               'author__de',
-               'author__en',
-               'author__it',
-               'library',
-               'organisation',
-               'language',
-               'subject',
-               'status'
+              _('document_type'),
+              _('author__fr'),
+              _('author__en'),
+              _('author__de'),
+              _('author__it'),
+              _('library'),
+              _('organisation'),
+              _('language'),
+              _('subject'),
+              _('status')
             ],
             aggregationsExpand: ['document_type'],
             aggregationsBucketSize: 10
@@ -108,8 +108,8 @@ export class RecordRoutingService {
         linkPrefix: 'records',
         types: [
           {
-            key: 'libraries',
-            label: 'Libraries',
+            key: _('libraries'),
+            label: _('Libraries'),
             component: LibrariesBriefViewComponent,
             detailComponent: LibraryDetailViewComponent,
             canAdd: () => this.canAddLibrary(),
@@ -131,8 +131,8 @@ export class RecordRoutingService {
         linkPrefix: 'records',
         types: [
           {
-            key: 'patrons',
-            label: 'Patrons',
+            key: _('patrons'),
+            label: _('Patrons'),
             component: PatronsBriefViewComponent,
             canUpdate: (record: any) => this.canUpdate(record),
             canDelete: (record: any) => this.canDelete(record)
@@ -150,8 +150,8 @@ export class RecordRoutingService {
         adminMode: false,
         types: [
           {
-            key: 'persons',
-            label: 'Persons',
+            key: _('persons'),
+            label: _('Persons'),
             component: PersonsBriefViewComponent,
             detailComponent: PersonDetailViewComponent,
             canUpdate: (record: any) => this.canUpdate(record),
@@ -171,8 +171,8 @@ export class RecordRoutingService {
         linkPrefix: 'records',
         types: [
           {
-            key: 'item_types',
-            label: 'Item Types',
+            key: _('item_types'),
+            label: _('Item types'),
             component: ItemTypesBriefViewComponent,
             detailComponent: ItemTypeDetailViewComponent,
             canAdd: () => this.canAddItemType(),
@@ -193,8 +193,8 @@ export class RecordRoutingService {
         linkPrefix: 'records',
         types: [
           {
-            key: 'items',
-            label: 'Items',
+            key: _('items'),
+            label: _('Items'),
             detailComponent: ItemDetailViewComponent,
             canRead: (record: any) => this.canReadItem(record),
             canUpdate: (record: any) => this.canUpdate(record),
@@ -214,8 +214,8 @@ export class RecordRoutingService {
         linkPrefix: 'records',
         types: [
           {
-            key: 'locations',
-            label: 'Locations',
+            key: _('locations'),
+            label: _('Locations'),
             detailComponent: LocationDetailViewComponent,
             canAdd: () => this.canAddLocation(),
             canUpdate: (record: any) => this.canUpdate(record),
@@ -236,8 +236,8 @@ export class RecordRoutingService {
         linkPrefix: 'records',
         types: [
           {
-            key: 'patron_types',
-            label: 'Patron Types',
+            key: _('patron_types'),
+            label: _('Patron types'),
             component: PatronTypesBriefViewComponent,
             detailComponent: PatronTypesDetailViewComponent,
             canAdd: () => this.canAddPatronType(),
@@ -259,8 +259,8 @@ export class RecordRoutingService {
         linkPrefix: 'records',
         types: [
           {
-            key: 'circ_policies',
-            label: 'Circulation Policies',
+            key: _('circ_policies') ,
+            label: _('Circulation policies'),
             component: CircPoliciesBriefViewComponent,
             detailComponent: CircPolicyDetailViewComponent,
             canAdd: () => this.canAddCiculationPolicy(),
