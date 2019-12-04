@@ -24,7 +24,7 @@ import { RecordSearchComponent, DetailComponent, EditorComponent, ActionStatus, 
 
 import { CirculationPolicyComponent } from '../record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
 import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-policies-brief-view.component';
-import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view.component';
+import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
 import { LibraryComponent } from '../record/custom-editor/libraries/library.component';
 import { LibrariesBriefViewComponent } from '../record/brief-view/libraries-brief-view/libraries-brief-view.component';
