@@ -16,55 +16,34 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { ResultItem, RecordService } from '@rero/ng-core';
+import { ResultItem } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-patrons-brief-view',
   template: `
-  <h5 class="card-title mb-0">{{ record.metadata.last_name }}, {{ record.metadata.first_name }}
-   <small *ngIf="isPatron()">
-      <a [routerLink]="['/circulation', 'checkinout']" [queryParams]="{ patron: record.metadata.barcode}">
-        <i class="fa fa-exchange"></i>
-        <span translate> Circulation</span>
+  <ng-container *ngIf="record">
+    <h5 class="card-title mb-0">
+      <a [routerLink]="['/records', 'patrons', 'detail', record.metadata.pid]">
+        {{ record.metadata.last_name }}, {{ record.metadata.first_name }}
       </a>
-    </small>
-  </h5>
-  <div class="card-text px-2">
-    <p class="mb-0">{{ record.metadata.birth_date | dateTranslate:'mediumDate' }} &mdash; {{ record.metadata.city }}</p>
-    <p class="mb-0">
-    <a class="text-secondary" (click)="toggleCollapse()" [attr.aria-expanded]="!isCollapsed">
-      <i class="fa"
-         [ngClass]="{'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" aria-hidden="true">
-      </i>
+      <small class="ml-3" *ngIf="record.metadata.barcode">
+        <a [routerLink]="['/circulation', 'checkinout']" [queryParams]="{ patron: record.metadata.barcode}">
+          <i class="fa fa-exchange mr-2"></i>
+          <span translate>Circulation</span>
+        </a>
+      </small>
+    </h5>
+    <div class="card-text px-2">
+      <p class="mb-0">{{ record.metadata.birth_date | dateTranslate:'mediumDate' }} &mdash; {{ record.metadata.city }}</p>
+      <span class="font-weight-bold">
+        <ng-container *ngIf="record.metadata.roles.length === 1; else roles" translate>Role</ng-container>
+        <ng-template #roles translate>Roles</ng-template>:
+      </span>
       <span *ngFor="let role of record.metadata.roles; let isLast=last">
         {{ role | translate }}{{isLast ? '' : ', '}}
       </span>
-    </a>
-    </p>
-    <ul [collapse]="isCollapsed" class="list-group list-group-flush" id="{{ 'patron-'+record.metadata.pid }}">
-      <li *ngIf="record.metadata.barcode" class="list-group-item p-0 border-0">
-        <span translate>Barcode</span>: {{ record.metadata.barcode }}
-      </li>
-      <li *ngIf="isLibrarian()" class="list-group-item p-0 border-0">
-        <span translate>Library</span>: {{ record.metadata.library.name }}
-      </li>
-      <li *ngIf="isPatron()" class="list-group-item p-0 border-0">
-        <span translate>Type</span>: {{ record.metadata.patron_type.name }}
-      </li>
-      <li *ngIf="record.metadata.phone" class="list-group-item p-0 border-0">
-        <span translate>Phone</span>: {{ record.metadata.phone }}
-      </li>
-      <li class="list-group-item p-0 border-0">
-        <span translate>Email</span>: <a href="mailto:{{ record.metadata.email }}">{{ record.metadata.email }}</a>
-      </li>
-      <li class="list-group-item p-0 border-0">
-        <span translate>Street</span>: {{ record.metadata.street }}
-      </li>
-      <li class="list-group-item p-0 border-0">
-        <span translate>City</span>: {{ record.metadata.postal_code }} {{ record.metadata.city }}
-      </li>
-    </ul>
-  </div>
+    </div>
+  <ng-container>
   `,
   styles: []
 })
@@ -79,50 +58,5 @@ export class PatronsBriefViewComponent implements ResultItem {
   @Input()
   detailUrl: { link: string, external: boolean };
 
-  isCollapsed = true;
-
-  constructor(
-    private recordService: RecordService
-  ) {
-  }
-
-  isPatron() {
-    if (this.record && this.record.metadata.roles) {
-      return this.record.metadata.roles.some(role => role === 'patron');
-    }
-    return false;
-  }
-
-  isLibrarian() {
-    if (this.record && this.record.metadata.roles) {
-      return this.record.metadata.roles.some(role => role === 'librarian');
-    }
-    return false;
-  }
-
-  toggleCollapse() {
-    const isCollapsed = this.isCollapsed;
-    if (isCollapsed) {
-      if (this.isPatron()) {
-        const patronTypePid = this.record.metadata.patron_type.pid;
-        this.recordService
-          .getRecord('patron_types', patronTypePid, 1)
-          .subscribe(data => {
-            this.record.metadata.patron_type = data.metadata;
-            this.isCollapsed = !isCollapsed;
-          });
-      }
-      if (this.isLibrarian()) {
-        const libraryPid = this.record.metadata.library.pid;
-        this.recordService
-          .getRecord('libraries', libraryPid, 1)
-          .subscribe(data => {
-            this.record.metadata.library = data.metadata;
-            this.isCollapsed = !isCollapsed;
-          });
-      }
-    } else {
-      this.isCollapsed = !isCollapsed;
-    }
-  }
+  constructor() { }
 }

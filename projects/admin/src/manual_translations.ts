@@ -63,3 +63,8 @@ _('bf:Publication');
 _('bf:Manufacture');
 _('bf:Distribution');
 _('bf:Production');
+
+// Roles
+_('librarian');
+_('patron');
+_('system_librarian');
