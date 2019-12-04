@@ -40,10 +40,10 @@ export class MenuComponent implements OnInit {
   languagesMenu = {
     navCssClass: 'navbar-nav',
     entries: [{
-      name: this.translateService.instant('Menu'),
+      name: this.translateService.instant(_('Menu')),
       iconCssClass: 'fa fa-bars',
       entries: [{
-        name: this.translateService.instant('Help'),
+        name: this.translateService.instant(_('Help')),
         iconCssClass: 'fa fa-help',
         href: 'https://ils.test.rero.ch/help'
       }]
@@ -81,7 +81,7 @@ export class MenuComponent implements OnInit {
       name: `${currentUser.first_name[0]}${currentUser.last_name[0]}`,
       entries: [
         {
-          name: this.translateService.instant('Logout'),
+          name: this.translateService.instant(_('Logout')),
           href: `/logout`,
           iconCssClass: 'fa fa-sign-out'
         }
@@ -103,54 +103,54 @@ export class MenuComponent implements OnInit {
       navCssClass: 'navbar-nav',
       entries: [
         {
-          name: this.translateService.instant('User services'),
+          name: this.translateService.instant(_('User services')),
           iconCssClass: 'fa fa-users',
           entries: [{
-            name: this.translateService.instant('Circulation'),
+            name: this.translateService.instant(_('Circulation')),
             routerLink: '/circulation',
             iconCssClass: 'fa fa-exchange'
           }, {
-            name: this.translateService.instant('Patrons'),
+            name: this.translateService.instant(_('Patrons')),
             routerLink: '/records/patrons',
             iconCssClass: 'fa fa-users'
           }]
         }, {
-          name: this.translateService.instant('Catalog'),
+          name: this.translateService.instant(_('Catalog')),
           iconCssClass: 'fa fa-file-o',
           entries: [{
-            name: this.translateService.instant('Documents'),
+            name: this.translateService.instant(_('Documents')),
             routerLink: '/records/documents',
             iconCssClass: 'fa fa-file-o'
           }, {
-            name: this.translateService.instant('Create a bibliographic record'),
+            name: this.translateService.instant(_('Create a bibliographic record')),
             routerLink: '/records/documents/new',
             iconCssClass: 'fa fa-file-o'
           }, {
-            name: this.translateService.instant('Persons'),
+            name: this.translateService.instant(_('Persons')),
             routerLink: '/records/persons',
             iconCssClass: 'fa fa-user'
           }]
         }, {
-          name: this.translateService.instant('Admin & Monitoring'),
+          name: this.translateService.instant(_('Admin & Monitoring')),
           iconCssClass: 'fa fa-cogs',
           entries: [{
-            name: this.translateService.instant('Circulation policies'),
+            name: this.translateService.instant(_('Circulation policies')),
             routerLink: '/records/circ_policies',
             iconCssClass: 'fa fa-exchange'
           }, {
-            name: this.translateService.instant('Item types'),
+            name: this.translateService.instant(_('Item types')),
             routerLink: '/records/item_types',
             iconCssClass: 'fa fa-file-o'
           }, {
-            name: this.translateService.instant('Patron types'),
+            name: this.translateService.instant(_('Patron types')),
             routerLink: '/records/patron_types',
             iconCssClass: 'fa fa-users'
           }, {
-            name: this.translateService.instant('My Library'),
+            name: this.translateService.instant(_('My Library')),
             routerLink: `/records/libraries/detail/${this.userService.getCurrentUser().library.pid}`,
             iconCssClass: 'fa fa-university'
           }, {
-            name: this.translateService.instant('Libraries'),
+            name: this.translateService.instant(_('Libraries')),
             routerLink: '/records/libraries',
             iconCssClass: 'fa fa-university'
           }]
