@@ -80,7 +80,7 @@ export class LibraryFormService {
           });
         }
       } else {
-        atimes.push(this.buildTimes('00:00', '00:00'));
+        atimes.push(this.buildTimes('08:00', '18:00'));
       }
     }
   }
@@ -95,18 +95,19 @@ export class LibraryFormService {
     });
   }
 
-  buildTimes(startTime = '00:00', endTime = '00:00'): FormGroup {
+  buildTimes(startTime = '00:01', endTime = '23:59'): FormGroup {
+    const regex = '^(?!(0:00)|(00:00)$)([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$';
     return this.fb.group({
       start_time: [startTime, {
         validators: [
           Validators.required,
-          Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
+          Validators.pattern(regex)
         ]
       }],
       end_time: [endTime, {
         validators: [
           Validators.required,
-          Validators.pattern('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
+          Validators.pattern(regex)
         ]
       }]
     }, {
