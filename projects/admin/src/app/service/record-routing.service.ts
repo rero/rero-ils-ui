@@ -155,7 +155,8 @@ export class RecordRoutingService {
             component: PersonsBriefViewComponent,
             detailComponent: PersonDetailViewComponent,
             canUpdate: (record: any) => this.canUpdate(record),
-            canDelete: (record: any) => this.canDelete(record)
+            canDelete: (record: any) => this.canDelete(record),
+            aggregationsExpand: ['sources']
           }
         ]
       }
