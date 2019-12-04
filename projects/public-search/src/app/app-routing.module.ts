@@ -21,6 +21,8 @@ import { DocumentBriefComponent } from './document-brief/document-brief.componen
 import { PersonBriefComponent } from './person-brief/person-brief.component';
 import { TranslateService } from '@ngx-translate/core';
 import { AggregationFilter } from './record/aggregation-filter';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+
 
 const routes: Routes = [
   {
@@ -37,21 +39,21 @@ const routes: Routes = [
       detailUrl: '/global/:type/:pid',
       types: [
         {
-          key: 'documents',
+          key: _('documents'),
           component: DocumentBriefComponent,
-          label: 'Documents',
+          label: _('Documents'),
           aggregations: AggregationFilter.filter,
           aggregationsOrder: [
-            'document_type',
-            'author__fr',
-            'author__de',
-            'author__en',
-            'author__it',
-            'library',
-            'organisation',
-            'language',
-            'subject',
-            'status'
+            _('document_type'),
+            _('author__fr'),
+            _('author__en'),
+            _('author__de'),
+            _('author__it'),
+            _('library'),
+            _('organisation'),
+            _('language'),
+            _('subject'),
+            _('status')
           ],
           aggregationsExpand: ['document_type'],
           aggregationsBucketSize: 10,
@@ -63,9 +65,9 @@ const routes: Routes = [
           }
         },
         {
-          key: 'persons',
+          key: _('persons'),
           component: PersonBriefComponent,
-          label: 'Persons'
+          label: _('Persons')
         }
       ]
     }
@@ -83,9 +85,9 @@ const routes: Routes = [
       detailUrl: '/highlands/:type/:pid',
       types: [
         {
-          key: 'documents',
+          key: _('documents'),
           component: DocumentBriefComponent,
-          label: 'Documents',
+          label: _('Documents'),
           aggregations: AggregationFilter.filter,
           preFilters: {
             view: 'highlands'
@@ -95,9 +97,9 @@ const routes: Routes = [
           }
         },
         {
-          key: 'persons',
+          key: _('persons'),
           component: PersonBriefComponent,
-          label: 'Persons'
+          label: _('Persons')
         }
       ]
     }
@@ -115,8 +117,8 @@ const routes: Routes = [
       detailUrl: '/aoste/:type/:pid',
       types: [
         {
-          key: 'documents',
-          label: 'Documents',
+          key: _('documents'),
+          label: _('Documents'),
           aggregations: AggregationFilter.filter,
           component: DocumentBriefComponent,
           preFilters: {
@@ -127,9 +129,9 @@ const routes: Routes = [
           }
         },
         {
-          key: 'persons',
+          key: _('persons'),
           component: PersonBriefComponent,
-          label: 'Persons'
+          label: _('Persons')
         }
       ]
     }
@@ -147,8 +149,8 @@ const routes: Routes = [
       detailUrl: '/fictive/:type/:pid',
       types: [
         {
-          key: 'documents',
-          label: 'Documents',
+          key: _('documents'),
+          label: _('Documents'),
           aggregations: AggregationFilter.filter,
           component: DocumentBriefComponent,
           preFilters: {
@@ -159,9 +161,9 @@ const routes: Routes = [
           }
         },
         {
-          key: 'persons',
+          key: _('persons'),
           component: PersonBriefComponent,
-          label: 'Persons'
+          label: _('Persons')
         }
       ]
     }

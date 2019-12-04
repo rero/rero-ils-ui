@@ -1,4 +1,6 @@
 {
+  "Documents": "Documents",
+  "Persons": "Persons",
   "Search": "Search",
   "article": "article",
   "at_desk": "at_desk",
@@ -24,6 +26,7 @@
   "on_shelf": "on_shelf",
   "organisation": "organisation",
   "other": "other",
+  "persons": "persons",
   "score": "score",
   "sound": "sound",
   "status": "status",

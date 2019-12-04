@@ -20,16 +20,6 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 // _('Your string');
 // Facets
 _('author');
-_('author__fr');
-_('author__en');
-_('author__de');
-_('author__it');
-_('document_type');
-_('language');
-_('library');
-_('organisation');
-_('status');
-_('subject');
 
 // Document type
 _('article');
