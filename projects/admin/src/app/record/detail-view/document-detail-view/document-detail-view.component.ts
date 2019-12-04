@@ -36,7 +36,8 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit {
   /** Document record */
   record: any;
 
-  constructor(private translateService: TranslateService) { }
+  constructor(
+    private translateService: TranslateService) { }
 
   ngOnInit() {
     this.record$.subscribe((record: any) => {

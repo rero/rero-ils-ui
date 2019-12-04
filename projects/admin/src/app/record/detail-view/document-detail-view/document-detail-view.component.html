@@ -40,14 +40,17 @@
         </ng-template>
       </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
-        <span *ngFor="let author of docAuthors; let isLast=last">
-          <span *ngIf="author.pid; else authorOnly">
-            <a [routerLink]="['/records', 'persons', 'detail', author.pid]">{{ author.name }}</a>{{ isLast ? '' : ', ' }}
-          </span>
-          <ng-template #authorOnly>
-            {{ author.name }}{{ isLast ? '' : '; ' }}
-          </ng-template>
-        </span>
+        <ul class="list-inline mb-0">
+          <li class="list-inline-item" *ngFor="let author of docAuthors; let last=last">
+            <span *ngIf="!author.pid">
+              {{ author | authorNameTranslate }}
+            </span>
+            <a *ngIf="author.pid" [routerLink]="['/records', 'persons', 'detail', author.pid]">
+              {{ author | authorNameTranslate }}
+            </a>
+            {{ last ? '' : '; ' }}
+          </li>
+        </ul>
       </dd>
       </ng-container>
     </ng-container>

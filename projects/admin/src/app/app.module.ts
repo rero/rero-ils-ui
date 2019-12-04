@@ -29,7 +29,7 @@ import { CollapseModule, TabsModule, BsDatepickerModule, BsLocaleService, Typeah
 import { FrontpageComponent } from './frontpage/frontpage.component';
 import { ItemTypesBriefViewComponent } from './record/brief-view/item-types-brief-view.component';
 import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policies-brief-view.component';
-import { DocumentsBriefViewComponent } from './record/brief-view/documents-brief-view.component';
+import { DocumentsBriefViewComponent } from './record/brief-view/documents-brief-view/documents-brief-view.component';
 import { LibrariesBriefViewComponent } from './record/brief-view/libraries-brief-view/libraries-brief-view.component';
 import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-brief-view.component';
 import { PatronTypesDetailViewComponent } from './record/detail-view/patron-types-detail-view.component';
@@ -66,6 +66,7 @@ import { ItemDetailViewComponent } from './record/detail-view/item-detail-view/i
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { ItemTransactionComponent } from './record/detail-view/item-detail-view/item-transaction/item-transaction.component';
 import { ItemTransactionsComponent } from './record/detail-view/item-detail-view/item-transactions/item-transactions.component';
+import { AuthorNameTranslatePipe } from './pipe/author-name-translate.pipe';
 
 @NgModule({
   declarations: [
@@ -114,7 +115,8 @@ import { ItemTransactionsComponent } from './record/detail-view/item-detail-view
     ItemDetailViewComponent,
     ItemAvailabilityComponent,
     ItemTransactionComponent,
-    ItemTransactionsComponent
+    ItemTransactionsComponent,
+    AuthorNameTranslatePipe
   ],
   imports: [
     Bootstrap4FrameworkModule,
