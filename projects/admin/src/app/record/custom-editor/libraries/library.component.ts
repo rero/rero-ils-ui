@@ -51,7 +51,6 @@ export class LibraryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.libForm = this.libraryForm.form;
     this.route.params.subscribe( (params) => {
       const loggedUser = this.userService.getCurrentUser();
       if (loggedUser) {
@@ -61,10 +60,13 @@ export class LibraryComponent implements OnInit {
         this.recordService.getRecord('libraries', params.pid, 1).subscribe(record => {
           this.library = new Library(record.metadata);
           this.libraryForm.populate(record.metadata);
+          this.libForm = this.libraryForm.form;
           this.setAsyncValidator();
         });
       } else {
+        this.libraryForm.reset();
         this.library = new Library({});
+        this.libForm = this.libraryForm.form;
         this.setAsyncValidator();
       }
     });
