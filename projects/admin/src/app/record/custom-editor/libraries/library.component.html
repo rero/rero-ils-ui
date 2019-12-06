@@ -15,6 +15,7 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<ng-container *ngIf="libForm">
 <h1 translate>Library</h1>
 <form [formGroup]="libForm" (ngSubmit)="onSubmit()">
   <div class="form-group row">
@@ -167,3 +168,4 @@
     </div>
   </div>
 </form>
+</ng-container>
