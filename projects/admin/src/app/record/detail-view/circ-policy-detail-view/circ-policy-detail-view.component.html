@@ -16,161 +16,187 @@
 -->
 
 <ng-container *ngIf="record && record.metadata as data">
-    <h1 class="mb-3">{{ data.name | translate }}</h1>
-    <article>
-        <!-- DETAILS -->
-        <section class="m-2 p-2">
-            <!-- NAME -->
-            <dl class="row mb-0">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Name' | translate }}:
-                </dt>
-                <dd class="col-sm-7 col-md-8 mb-0">
-                    {{ data.name }}
-                </dd>
-            </dl>
-            <!-- DESCRIPTION -->
-            <dl class="row mb-0">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Description' | translate }}:
-                </dt>
-                <dd class="col-sm-7 col-md-8 mb-0">
-                    {{ data.description }}
-                </dd>
-            </dl>
-            <!-- LEVEL -->
-            <dl class="row mb-0">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Level' | translate }}:
-                </dt>
-                <div *ngIf="data.policy_library_level; then thenBlock else elseBlock"></div>
-                <ng-template #thenBlock>
-                    <dd class="col-sm-7 col-md-8 mb-0">
-                        {{ 'Library' | translate }}
-                    </dd>
-                </ng-template>
-                <ng-template #elseBlock>
-                    <dd class="col-sm-7 col-md-8 mb-0">
-                        {{ 'Organisation' | translate }}
-                    </dd>
-                </ng-template>
-            </dl>
-        </section>
-        <!-- CIRCULATION SETTINGS -->
-        <section class="m-2 p-2">
-            <h3>{{ 'Circulation settings' | translate }}</h3>
-            <!-- ALLOW CHECKOUT -->
-            <dl class="row mb-0">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Allow checkout' | translate }}:
-                </dt>
-                <dd class="col-sm-7 col-md-8 mb-0">
-                    <div *ngIf="data.allow_checkout; then thenCheckoutBlock else elseCheckoutBlock">
-                    </div>
-                    <ng-template #thenCheckoutBlock>
-                        <i class="fa fa-check" style="color:green;" aria-hidden="true"></i>
-                    </ng-template>
-                    <ng-template #elseCheckoutBlock>
-                        <i class="fa fa-times" style="color:red;" aria-hidden="true"></i>
-                    </ng-template>
-                </dd>
-            </dl>
-            <!-- ALLOW REQUESTS -->
-            <dl class="row mb-0">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Allow requests' | translate }}:
-                </dt>
-                <dd class="col-sm-7 col-md-8 mb-0">
-                    <div *ngIf="data.allow_requests; then thenRequestBlock else elseRequestBlock"></div>
-                    <ng-template #thenRequestBlock>
-                        <i class="fa fa-check" style="color:green;" aria-hidden="true"></i>
-                    </ng-template>
-                    <ng-template #elseRequestBlock>
-                        <i class="fa fa-times" style="color:red;" aria-hidden="true"></i>
-                    </ng-template>
-                </dd>
-            </dl>
-            <!-- IS DEFAULT -->
-            <dl class="row mb-0">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Is default' | translate }}:
-                </dt>
-                <dd class="col-sm-7 col-md-8 mb-0">
-                    <div *ngIf="data.is_default; then thenDefaultBlock else elseDefaultBlock"></div>
-                    <ng-template #thenDefaultBlock>
-                        <i class="fa fa-check" style="color:green;" aria-hidden="true"></i>
-                    </ng-template>
-                    <ng-template #elseDefaultBlock>
-                        <i class="fa fa-times" style="color:red;" aria-hidden="true"></i>
-                    </ng-template>
-                </dd>
-            </dl>
-            <!-- CHECKOUT DURATION -->
-            <dl class="row mb-0" *ngIf="data.renewal_duration!==undefined">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Checkout duration' | translate }}:
-                </dt>
-                <dd class="col-sm-7 col-md-8 mb-0">
-                    {{ data.checkout_duration }}
-                </dd>
-            </dl>
-            <!-- NUMBER OF RENEWALS -->
-            <dl class="row mb-0" *ngIf="data.number_renewals!==undefined">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Number of renewals' | translate }}:
-                </dt>
-                <dd class="col-sm-7 col-md-8 mb-0">
-                    {{ data.number_renewals }}
-                </dd>
-            </dl>
-            <!-- RENEWAL DURATION -->
-            <dl class="row mb-0" *ngIf="data.renewal_duration!==undefined">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Renewal duration' | translate }}:
-                </dt>
-                <dd class="col-sm-7 col-md-8 mb-0">
-                    {{ data.renewal_duration }}
-                </dd>
-            </dl>
-        </section>
-        <!-- NOTIFICATION AND FEES -->
-        <section class="m-2 p-2" *ngIf="data.number_of_days_after_due_date != undefined &&
-        data.number_of_days_before_due_date != undefined && data.reminder_fee_amount != undefined">
-            <h3>{{ 'Notifications and fees' | translate}}</h3>
-            <!-- DAYS AFTER DUE DATE -->
-            <dl class="row mb-0" *ngIf="data.number_of_days_after_due_date!==undefined">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Number of days after due date' | translate }}:
-                </dt>
-                <dd class="col-sm-7 col-md-8 mb-0">
-                    {{ data.number_of_days_after_due_date }}
-                </dd>
-            </dl>
-            <!-- DAYS BEFORE DUE DATE -->
-            <dl class="row mb-0" *ngIf="data.number_of_days_before_due_date!==undefined">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Number of days before due date' | translate }}:
-                </dt>
-                <dd class="col-sm-7 col-md-8 mb-0">
-                    {{ data.number_of_days_before_due_date }}
-                </dd>
-            </dl>
-            <!-- REMINDER FEE AMOUNT -->
-            <dl class="row mb-0" *ngIf="data.reminder_fee_amount!==undefined">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Reminder fee amount' | translate }}:
-                </dt>
-                <dd class="col-sm-7 col-md-8 mb-0">
-                    {{ data.reminder_fee_amount }}
-                </dd>
-            </dl>
-        </section>
-        <!-- APPLICATION -->
-        <section class="m-2 p-2" *ngIf="record.metadata.settings">
-            <h3>{{ 'Application' | translate }}</h3>
-                <div *ngFor="let setting of settings | keyvalue">
-                    <admin-collapse-list patronType="{{ setting.key }}" [itemTypes]="setting.value"></admin-collapse-list>
-                </div>
-        </section>
-    </article>
+  <h1 class="mb-3">{{ data.name | translate }}</h1>
+  <article>
+    <!-- DETAILS -->
+    <section class="m-2 p-2">
+      <!-- NAME -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Name' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ data.name }}
+        </dd>
+      </dl>
+      <!-- DESCRIPTION -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Description' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ data.description }}
+        </dd>
+      </dl>
+      <!-- LEVEL -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Level' | translate }}:
+        </dt>
+        <ng-container *ngIf="data.policy_library_level; then thenBlock else elseBlock"></ng-container>
+        <ng-template #thenBlock>
+          <dd class="col-sm-7 col-md-8 mb-0" translate>
+            Library
+          </dd>
+        </ng-template>
+        <ng-template #elseBlock>
+          <dd class="col-sm-7 col-md-8 mb-0" translate>
+            Organisation
+          </dd>
+        </ng-template>
+      </dl>
+    </section>
+    <!-- CIRCULATION SETTINGS -->
+    <section class="m-2 p-2">
+      <h3 translate>Circulation settings</h3>
+      <!-- ALLOW CHECKOUT -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Allow checkout' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <ng-container *ngIf="data.allow_checkout; then thenCheckoutBlock else elseCheckoutBlock">
+          </ng-container>
+          <ng-template #thenCheckoutBlock>
+            <i class="fa fa-check text-success" aria-hidden="true"></i>
+          </ng-template>
+          <ng-template #elseCheckoutBlock>
+            <i class="fa fa-times text-danger" aria-hidden="true"></i>
+          </ng-template>
+        </dd>
+      </dl>
+      <!-- ALLOW REQUESTS -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Allow requests' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <ng-container *ngIf="data.allow_requests; then thenRequestBlock else elseRequestBlock"></ng-container>
+          <ng-template #thenRequestBlock>
+            <i class="fa fa-check  text-success" aria-hidden="true"></i>
+          </ng-template>
+          <ng-template #elseRequestBlock>
+            <i class="fa fa-times text-danger" aria-hidden="true"></i>
+          </ng-template>
+        </dd>
+      </dl>
+      <!-- IS DEFAULT -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Is default' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <ng-container *ngIf="data.is_default; then thenDefaultBlock else elseDefaultBlock"></ng-container>
+          <ng-template #thenDefaultBlock>
+            <i class="fa fa-check  text-success" aria-hidden="true"></i>
+          </ng-template>
+          <ng-template #elseDefaultBlock>
+            <i class="fa fa-times text-danger" aria-hidden="true"></i>
+          </ng-template>
+        </dd>
+      </dl>
+      <!-- CHECKOUT DURATION -->
+      <dl class="row mb-0" *ngIf="data.renewal_duration">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Checkout duration' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ data.checkout_duration }}
+        </dd>
+      </dl>
+      <!-- NUMBER OF RENEWALS -->
+      <dl class="row mb-0" *ngIf="data.number_renewals">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Number of renewals' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ data.number_renewals }}
+        </dd>
+      </dl>
+      <!-- RENEWAL DURATION -->
+      <dl class="row mb-0" *ngIf="data.renewal_duration">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Renewal duration' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ data.renewal_duration }}
+        </dd>
+      </dl>
+    </section>
+    <!-- NOTIFICATION AND FEES -->
+    <section class="m-2 p-2" *ngIf="data.number_of_days_after_due_date &&
+        data.number_of_days_before_due_date  && data.reminder_fee_amount">
+      <h3 translate>Notifications and fees</h3>
+      <!-- DAYS AFTER DUE DATE -->
+      <dl class="row mb-0" *ngIf="data.number_of_days_after_due_date">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Number of days after due date' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ data.number_of_days_after_due_date }}
+        </dd>
+      </dl>
+      <!-- DAYS BEFORE DUE DATE -->
+      <dl class="row mb-0" *ngIf="data.number_of_days_before_due_date">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Number of days before due date' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ data.number_of_days_before_due_date }}
+        </dd>
+      </dl>
+      <!-- REMINDER FEE AMOUNT -->
+      <dl class="row mb-0" *ngIf="data.reminder_fee_amount">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Reminder fee amount' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ data.reminder_fee_amount }}
+        </dd>
+      </dl>
+    </section>
+    <!-- APPLICATION -->
+    <section class="m-2 p-2" *ngIf="record.metadata.settings">
+      <h3 translate>Application</h3>
+      <ng-container class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col" rowspan="2" translate>Patron types</th>
+              <th scope="col" [attr.colspan]="itemTypes.size" class="text-center" translate>Item types</th>
+            </tr>
+            <tr>
+              <th scope="col" *ngFor="let itemType of itemTypes" class="text-center">
+                {{ itemType | getRecord: 'item_types' : 'field' : 'name' | async }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let setting of settings | keyvalue; let i = index">
+              <th scope="row" class="table-light">
+                {{ setting.key | getRecord: 'patron_types' : 'field' : 'name' | async }}
+              </th>
+              <td *ngFor="let itemType of itemTypes" class="text-center">
+                <span *ngFor="let currentItemType of setting.value">
+                  <span *ngIf="itemType == currentItemType">
+                    <i class="fa fa-check  text-success" aria-hidden="true"></i>
+                  </span>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+    </section>
+  </article>
 </ng-container>

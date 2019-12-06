@@ -34,11 +34,14 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
   /** The record */
   record: any;
 
-  /** The settings to display */
+  /** The settings to display, patron type pid as a key */
   settings = new Map<string, string[]>();
 
   /** The observer to the record observable */
   private recordObs = null;
+
+  /** The list of item types concerned by the circulation policy */
+  itemTypes = new Set();
 
   /** On init hook */
   ngOnInit() {
@@ -46,16 +49,21 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
       this.record = record;
       if (record.metadata.settings) {
         record.metadata.settings.forEach(setting => {
+          // create new entry
           if (!this.settings.has(setting.patron_type.pid)) {
             this.settings.set(setting.patron_type.pid, [setting.item_type.pid]);
           } else {
+            // append
             this.settings.get(setting.patron_type.pid).push(setting.item_type.pid);
+          }
+          // add item type to the list
+          if (!this.itemTypes.has(setting.item_type.pid)) {
+            this.itemTypes.add(setting.item_type.pid);
           }
         });
       }
     });
   }
-
 
   /** On destroy hook */
   ngOnDestroy() { this.recordObs.unsubscribe(); }
