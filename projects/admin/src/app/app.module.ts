@@ -59,7 +59,6 @@ import { HoldingComponent } from './record/detail-view/document-detail-view/hold
 import { HoldingItemComponent } from './record/detail-view/document-detail-view/holding-item/holding-item.component';
 import { HoldingsComponent } from './record/detail-view/document-detail-view/holdings/holdings.component';
 import { CircPolicyDetailViewComponent } from './record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
-import { CollapseListComponent } from './record/detail-view/circ-policy-detail-view/collapse-list/collapse-list.component';
 import { LocationDetailViewComponent } from './record/detail-view/location-detail-view/location-detail-view.component';
 import { LocationComponent } from './record/brief-view/libraries-brief-view/location/location.component';
 import { ItemDetailViewComponent } from './record/detail-view/item-detail-view/item-detail-view.component';
@@ -109,7 +108,6 @@ import { PatronDetailViewComponent } from './record/detail-view/patron-detail-vi
     ExceptionDatesEditComponent,
     CirculationPolicyComponent,
     CircPolicyDetailViewComponent,
-    CollapseListComponent,
     ExceptionDateComponent,
     LocationDetailViewComponent,
     LocationComponent,
@@ -177,7 +175,6 @@ import { PatronDetailViewComponent } from './record/detail-view/patron-detail-vi
     ExceptionDatesEditComponent,
     CircPolicyDetailViewComponent,
     CirculationPolicyComponent,
-    CollapseListComponent,
     LibraryComponent,
     LocationDetailViewComponent,
     ItemDetailViewComponent,
