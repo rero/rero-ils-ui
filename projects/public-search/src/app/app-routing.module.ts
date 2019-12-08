@@ -68,7 +68,8 @@ const routes: Routes = [
           key: _('persons'),
           component: PersonBriefComponent,
           label: _('Persons'),
-          aggregationsExpand: ['sources']
+          aggregationsExpand: ['sources'],
+          showSearchInput: true
         }
       ]
     }
@@ -101,7 +102,8 @@ const routes: Routes = [
           key: _('persons'),
           component: PersonBriefComponent,
           label: _('Persons'),
-          aggregationsExpand: ['sources']
+          aggregationsExpand: ['sources'],
+          showSearchInput: true
         }
       ]
     }
@@ -134,7 +136,8 @@ const routes: Routes = [
           key: _('persons'),
           component: PersonBriefComponent,
           label: _('Persons'),
-          aggregationsExpand: ['sources']
+          aggregationsExpand: ['sources'],
+          showSearchInput: true
         }
       ]
     }
@@ -167,7 +170,8 @@ const routes: Routes = [
           key: _('persons'),
           component: PersonBriefComponent,
           label: _('Persons'),
-          aggregationsExpand: ['sources']
+          aggregationsExpand: ['sources'],
+          showSearchInput: true
         }
       ]
     }
