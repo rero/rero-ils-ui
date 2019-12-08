@@ -18,15 +18,20 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, LOCALE_ID } from '@angular/core';
-import { RecordModule, CoreConfigService, TranslateService } from '@rero/ng-core';
+import {
+  RecordModule,
+  CoreConfigService,
+  TranslateService
+} from '@rero/ng-core';
 import { UiSwitchModule } from 'ngx-toggle-switch';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppConfigService } from './service/app-config.service';
 import { MenuComponent } from './menu/menu.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { CollapseModule, TabsModule, BsDatepickerModule, BsLocaleService, TypeaheadModule } from 'ngx-bootstrap';
+import { CollapseModule, TabsModule, BsDatepickerModule, BsLocaleService, TypeaheadModule, TooltipModule } from 'ngx-bootstrap';
 import { FrontpageComponent } from './frontpage/frontpage.component';
+import { FormlyModule } from '@ngx-formly/core';
 import { ItemTypesBriefViewComponent } from './record/brief-view/item-types-brief-view.component';
 import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policies-brief-view.component';
 import { DocumentsBriefViewComponent } from './record/brief-view/documents-brief-view/documents-brief-view.component';
@@ -44,12 +49,11 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ExceptionDatesListComponent } from './record/custom-editor/libraries/exception-dates-list/exception-dates-list.component';
 import { ExceptionDatesEditComponent } from './record/custom-editor/libraries/exception-dates-edit/exception-dates-edit.component';
 import { CirculationPolicyComponent } from './record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
-import { TranslateModule, TranslateLoader as BaseTranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateLoader as BaseTranslateLoader
+} from '@ngx-translate/core';
 import { TranslateLoader } from './translate/loader/translate-loader';
-import { DocumentEditorComponent } from './document-editor/document-editor.component';
-import { Bootstrap4FrameworkModule, WidgetLibraryService } from 'angular6-json-schema-form';
-import { SelectItemTypeTypeComponent } from './record/editor/select-item-type-type/select-item-type-type.component';
-import { CheckboxIsOnlineComponent } from './record/editor/checkbox-is-online/checkbox-is-online.component';
 import { ItemTypeDetailViewComponent } from './record/detail-view/item-type-detail-view.component';
 import { LibraryDetailViewComponent } from './record/detail-view/library-detail-view/library-detail-view.component';
 import { DayOpeningHoursComponent } from './record/detail-view/library-detail-view/day-opening-hours/day-opening-hours.component';
@@ -67,16 +71,17 @@ import { ItemTransactionComponent } from './record/detail-view/item-detail-view/
 import { ItemTransactionsComponent } from './record/detail-view/item-detail-view/item-transactions/item-transactions.component';
 import { AuthorNameTranslatePipe } from './pipe/author-name-translate.pipe';
 import { PatronDetailViewComponent } from './record/detail-view/patron-detail-view/patron-detail-view.component';
+import { RefComponent } from './record/editor/ref/ref.component';
+import { RemoteAutocompleteInputTypeComponent } from './record/editor/remote-autocomplete/remote-autocomplete.component';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
-import { RemoteSelectComponent } from './record/editor/remote-select/remote-select.component';
 import { InterfaceInfoComponent } from './interface-info/interface-info.component';
+import { DocumentEditorComponent } from './record/custom-editor/document-editor/document-editor.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BioInformationsPipe,
     BirthDatePipe,
-    CheckboxIsOnlineComponent,
     CircPoliciesBriefViewComponent,
     CirculationPolicyComponent,
     DocumentEditorComponent,
@@ -94,7 +99,6 @@ import { InterfaceInfoComponent } from './interface-info/interface-info.componen
     PatronTypesBriefViewComponent,
     PatronTypesDetailViewComponent,
     PersonsBriefViewComponent,
-    SelectItemTypeTypeComponent,
     LibraryDetailViewComponent,
     DayOpeningHoursComponent,
     ExceptionDateComponent,
@@ -120,29 +124,39 @@ import { InterfaceInfoComponent } from './interface-info/interface-info.componen
     ItemTransactionsComponent,
     AuthorNameTranslatePipe,
     PatronDetailViewComponent,
-    RemoteSelectComponent,
-    InterfaceInfoComponent
+    InterfaceInfoComponent,
+    RefComponent,
+    RemoteAutocompleteInputTypeComponent
   ],
   imports: [
-    Bootstrap4FrameworkModule,
-    BrowserModule,
-    BrowserAnimationsModule,
     AppRoutingModule,
-    RecordModule,
-    HttpClientModule,
+    BrowserAnimationsModule,
+    BrowserModule,
+    BsDatepickerModule.forRoot(),
     CollapseModule.forRoot(),
     FormsModule,
+    HttpClientModule,
     ReactiveFormsModule,
+    RecordModule,
     TabsModule.forRoot(),
-    UiSwitchModule,
-    BsDatepickerModule.forRoot(),
+    TooltipModule.forRoot(),
+    FormlyModule.forRoot({
+      wrappers: [{ name: 'ref', component: RefComponent }],
+      types: [
+        {
+          name: 'remoteautocomplete',
+          component: RemoteAutocompleteInputTypeComponent
+        }
+      ]
+    }),
     TranslateModule.forRoot({
       loader: {
         provide: BaseTranslateLoader,
-        useClass: TranslateLoader,
+        useClass: TranslateLoader
       }
     }),
-    TypeaheadModule
+    TypeaheadModule,
+    UiSwitchModule
   ],
   providers: [
     {
@@ -162,7 +176,6 @@ import { InterfaceInfoComponent } from './interface-info/interface-info.componen
     BsLocaleService
   ],
   entryComponents: [
-    CheckboxIsOnlineComponent,
     CircPoliciesBriefViewComponent,
     CirculationPolicyComponent,
     DocumentEditorComponent,
@@ -178,7 +191,6 @@ import { InterfaceInfoComponent } from './interface-info/interface-info.componen
     ExceptionDatesEditComponent,
     LibraryDetailViewComponent,
     LibraryComponent,
-    SelectItemTypeTypeComponent,
     LibraryComponent,
     PersonDetailViewComponent,
     DocumentDetailViewComponent,
@@ -189,14 +201,10 @@ import { InterfaceInfoComponent } from './interface-info/interface-info.componen
     LocationDetailViewComponent,
     ItemDetailViewComponent,
     PatronDetailViewComponent,
-    RemoteSelectComponent
+    RefComponent,
+    RemoteAutocompleteInputTypeComponent
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-  constructor(private widgetLibrary: WidgetLibraryService) {
-    this.widgetLibrary.registerWidget('select-item-type-type', SelectItemTypeTypeComponent);
-    this.widgetLibrary.registerWidget('checkbox-is-online', CheckboxIsOnlineComponent);
-    this.widgetLibrary.registerWidget('remote-select', RemoteSelectComponent);
-  }
-}
+export class AppModule {}
+

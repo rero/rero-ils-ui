@@ -21,7 +21,6 @@ import { of, Observable, Subscriber } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { RecordSearchComponent, DetailComponent, EditorComponent, ActionStatus, ApiService } from '@rero/ng-core';
-
 import { CirculationPolicyComponent } from '../record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
 import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-policies-brief-view.component';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
@@ -35,7 +34,6 @@ import { ItemTypesBriefViewComponent } from '../record/brief-view/item-types-bri
 import { ItemTypeDetailViewComponent } from '../record/detail-view/item-type-detail-view.component';
 import { PatronTypesBriefViewComponent } from '../record/brief-view/patron-types-brief-view.component';
 import { PatronTypesDetailViewComponent } from '../record/detail-view/patron-types-detail-view.component';
-import { DocumentEditorComponent } from '../document-editor/document-editor.component';
 import { LibraryDetailViewComponent } from '../record/detail-view/library-detail-view/library-detail-view.component';
 import { RecordPermissionMessageService } from './record-permission-message.service';
 import { CircPolicyDetailViewComponent } from '../record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
@@ -43,6 +41,7 @@ import { LocationDetailViewComponent } from '../record/detail-view/location-deta
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
 import { UserService } from './user.service';
 import { PatronDetailViewComponent } from '../record/detail-view/patron-detail-view/patron-detail-view.component';
+import { DocumentEditorComponent } from '../record/custom-editor/document-editor/document-editor.component';
 
 @Injectable({
   providedIn: 'root'
@@ -65,7 +64,7 @@ export class RecordRoutingService {
       children: [
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent },
+        { path: 'edit/:pid', component: DocumentEditorComponent },
         { path: 'new', component: DocumentEditorComponent }
       ],
       data: {
@@ -75,6 +74,7 @@ export class RecordRoutingService {
           {
             key: _('documents'),
             label: _('Documents'),
+            editorLongMode: true,
             component: DocumentsBriefViewComponent,
             detailComponent: DocumentDetailViewComponent,
             canUpdate: (record: any) => this.canUpdate(record),
@@ -278,7 +278,6 @@ export class RecordRoutingService {
       }
     });
   }
-
 
   /**
    * Adds the $ref of the librarian organisation to the data
