@@ -156,7 +156,6 @@ export class CirculationPolicyComponent implements OnInit {
 
       isPatronTypeChecked(patronTypeId: string) {
         const settingsControl = this.getField('settings');
-        // console.log(patronTypeId);
         return patronTypeId in settingsControl.value;
       }
 
