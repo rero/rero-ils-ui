@@ -29,7 +29,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
   @Input() holding: any;
 
   /** Document harvested */
-  @Input() harvested: false;
+  @Input() harvested: boolean;
 
   /** Items */
   items: any;
@@ -51,7 +51,9 @@ export class HoldingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.itemsRef.unsubscribe();
+    if (this.itemsRef != null) {
+      this.itemsRef.unsubscribe();
+    }
   }
 
   toggleCollapse() {
