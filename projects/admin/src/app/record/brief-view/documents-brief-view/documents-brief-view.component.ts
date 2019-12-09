@@ -52,19 +52,6 @@ export class DocumentsBriefViewComponent implements ResultItem {
     public userService: UserService
   ) { }
 
-  publisherNames() {
-    const indexName = `name_${this.translate.currentLang}`;
-    const publishers = [];
-    for (const publisher of this.record.metadata.publishers) {
-      let lngName = publisher[indexName];
-      if (!lngName) {
-        lngName = publisher.name;
-      }
-      publishers.push(lngName);
-    }
-    return publishers;
-  }
-
   deleteItem(pid) {
     this.recordsService.delete('items', pid).subscribe((success: any) => {
       if (success) {
@@ -90,29 +77,6 @@ export class DocumentsBriefViewComponent implements ResultItem {
     return false;
   }
 
-  ownedHolding(holding) {
-    // return true;
-    const currentUser = this.userService.getCurrentUser();
-    if ('system_librarian' in currentUser.roles) {
-      return currentUser.library.organisation.pid === holding.organisation.organisation_pid;
-    }
-    return currentUser.library.pid === holding.organisation.library_pid;
-  }
-
-  getItems() {
-    const items = [];
-    if ('holdings' in this.record.metadata) {
-      for (const holding of this.record.metadata.holdings) {
-        if ('items' in holding && this.ownedHolding(holding)) {
-          for (const item of holding.items) {
-            items.push(item);
-          }
-        }
-      }
-    }
-    return items;
-  }
-
   toggleCollapse() {
     const observables = [];
 
@@ -128,9 +92,5 @@ export class DocumentsBriefViewComponent implements ResultItem {
       });
     }
     this.isItemsCollapsed = !this.isItemsCollapsed;
-  }
-
-  countHoldingsItems() {
-    return this.items.length;
   }
 }
