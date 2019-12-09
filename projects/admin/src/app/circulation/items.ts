@@ -47,6 +47,10 @@ export enum LoanState {
   CANCELLED = _('CANCELLED')
 }
 
+export interface Organisation {
+  pid: string
+}
+
 export interface Document {
   pid: string;
   title: string;
@@ -119,6 +123,7 @@ export class Item {
   call_number: string;
   document: string;
   status: ItemStatus;
+  organisation: Organisation;
   pid: string;
   requests_count: number;
   action_applied?: ItemActionObjectType<object>;
@@ -175,19 +180,13 @@ export class Item {
   }
 
   public requestedPosition(patron: User) {
-    if (!patron || !this.pending_loans) {
-      return 0;
-    }
-    return this.pending_loans.findIndex(
-      loan => loan.patron_pid === patron.pid
-      ) + 1;
+    return (!patron || !this.pending_loans)
+      ? 0
+      : this.pending_loans.findIndex(loan => loan.patron_pid === patron.pid) + 1;
   }
 
   public get hasRequests() {
-    if (!this.pending_loans) {
-      return false;
-    }
-    return this.pending_loans.length;
+    return (this.pending_loans && this.pending_loans.length > 0);
   }
 }
 
