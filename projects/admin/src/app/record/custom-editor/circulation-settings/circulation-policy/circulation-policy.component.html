@@ -270,7 +270,7 @@
 
     <div class="clearfix">
       <div class="btn-group float-right" role="group" aria-label="Form Button">
-        <button type="cancel" class="btn btn-warning" (click)="onCancel()" translate>Cancel</button>
+        <button class="btn btn-warning" (click)="onCancel($event)" translate>Cancel</button>
         <button type="submit" class="btn btn-success" [disabled]="circulationForm.invalid" translate>Submit</button>
       </div>
     </div>

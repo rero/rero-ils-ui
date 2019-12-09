@@ -115,7 +115,8 @@ export class LibraryComponent implements OnInit {
     this.libraryForm.reset();
   }
 
-  onCancel() {
+  onCancel(event) {
+    event.preventDefault();
     this.location.back();
     this.libraryForm.reset();
   }
