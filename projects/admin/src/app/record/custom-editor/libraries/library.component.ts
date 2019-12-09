@@ -97,7 +97,7 @@ export class LibraryComponent implements OnInit {
           this.translateService.instant('Record Updated!'),
           this.translateService.instant('libraries')
         );
-        this.router.navigate(['../../detail', this.library.pid], {relativeTo: this.route});
+        this.router.navigate(['../../detail', this.library.pid], {relativeTo: this.route, replaceUrl: true});
       });
     } else {
       const organisation = {
@@ -109,7 +109,7 @@ export class LibraryComponent implements OnInit {
           this.translateService.instant('Record created!'),
           this.translateService.instant('libraries')
         );
-        this.router.navigate(['../detail', record.metadata.pid], {relativeTo: this.route});
+        this.router.navigate(['../detail', record.metadata.pid], {relativeTo: this.route, replaceUrl: true});
       });
     }
     this.libraryForm.reset();

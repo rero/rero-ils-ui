@@ -91,6 +91,6 @@ export class CirculationPolicyService {
   }
 
   goToDetailView(pid: string) {
-    this.router.navigate(['records',  'circ_policies', 'detail', pid], {relativeTo: this.route});
+    this.router.navigate(['records',  'circ_policies', 'detail', pid], {relativeTo: this.route, replaceUrl: true});
   }
 }
