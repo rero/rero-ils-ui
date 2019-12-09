@@ -163,7 +163,7 @@
   </tabset>
   <div class="clearfix">
     <div class="btn-group float-right" role="group" aria-label="Basic example">
-      <button type="cancel" class="btn btn-warning" (click)="onCancel()" translate>Cancel</button>
+      <button class="btn btn-warning" (click)="onCancel($event)" translate>Cancel</button>
       <button type="submit" class="btn btn-success" [disabled]="libForm.invalid" translate>Submit</button>
     </div>
   </div>

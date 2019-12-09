@@ -214,7 +214,8 @@ export class CirculationPolicyComponent implements OnInit {
         this.circulationPolicyService.save(this.circulationPolicy);
       }
 
-      onCancel() {
+      onCancel(event) {
+        event.preventDefault();
         this.location.back();
       }
 
