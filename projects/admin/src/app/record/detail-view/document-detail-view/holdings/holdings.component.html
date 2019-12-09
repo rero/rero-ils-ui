@@ -24,10 +24,8 @@
   <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }}
 </a>
 <ng-container *ngIf="holdings">
-  <ng-container *ngFor="let holding of holdings">
-    <admin-document-holding
+    <admin-document-holding *ngFor="let holding of holdings"
       [holding]="holding"
       [harvested]="harvested"
     ></admin-document-holding>
-  </ng-container>
 </ng-container>

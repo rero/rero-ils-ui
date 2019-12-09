@@ -27,7 +27,7 @@ import { RecordService } from '@rero/ng-core';
 export class HoldingsComponent implements OnInit, OnDestroy {
 
   /** Document harvested */
-  @Input() harvested = false;
+  @Input() harvested: boolean;
 
   /** Document pid */
   @Input() documentPid: string;
