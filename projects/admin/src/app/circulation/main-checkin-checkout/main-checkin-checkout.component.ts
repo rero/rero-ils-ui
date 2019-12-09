@@ -15,17 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { Item, ItemAction, ItemStatus } from '../items';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ItemsService } from '../items.service';
-import { Observable, forkJoin, of } from 'rxjs';
-import { DialogService } from '@rero/ng-core';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { ToastrService } from 'ngx-toastr';
-import { User } from '../../class/user';
-import { UserService } from '../../service/user.service';
-import { TranslateService } from '@ngx-translate/core';
+import {Component, OnInit} from '@angular/core';
+import {Item, ItemAction, ItemStatus} from '../items';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ItemsService} from '../items.service';
+import {forkJoin, Observable, of} from 'rxjs';
+import {DialogService} from '@rero/ng-core';
+import {ToastrService} from 'ngx-toastr';
+import {User} from '../../class/user';
+import {UserService} from '../../service/user.service';
+import {TranslateService} from '@ngx-translate/core';
 
 export interface NoPendingChange {
     noPendingChange(): boolean | Observable<boolean>;
@@ -134,40 +133,78 @@ export class MainCheckinCheckoutComponent implements OnInit, NoPendingChange {
     });
   }
 
+  /**
+   * This method check if operation can be done by current logged user for a specific item
+   * @param item: the item to check
+   * @param action: check if this action if allowed on this item
+   * @return `false` if user or operation is not allowed, `true` otherwise
+   */
+  private allowActionOnItem(item: Item, action: ItemAction = null): boolean {
+    // check if item and current logged user are from the same organisation
+    if (this.loggedUser.library.organisation.pid !== item.organisation.pid) {
+      this.toastService.warning(
+        this.translate.instant('No action allowed: the item belongs to another organisation.'),
+        this.translate.instant('Checkin')
+      );
+      return false;
+    }
+    if (action) {
+      // check if operation has allowed on this item
+      if (item.actions.length === 1 && item.actions[0] === ItemAction.no) {
+        this.toastService.warning(
+          this.translate.instant('No action possible on this item!'),
+          this.translate.instant('Checkout')
+        );
+        return false;
+      }
+      // check if action passed in params is allowed for this item
+      if (!item.actions.includes(action)) {
+        this.toastService.warning(
+          this.translate.instant('This action is not allowed for this item'),
+          this.translate.instant(action as unknown as string)
+        );
+        return false;
+      }
+    }
+    return true;
+  }
+
   getItem(barcode: string) {
+    // check if item is already in the user items list. If yes, this is a check-in operation
     const item = this.items.find(currItem => currItem.barcode === barcode);
-    if (item) {
+    if (item && this.allowActionOnItem(item)) {
       if (this.patron) {
         item.currentAction = ItemAction.checkin;
         this.searchText = '';
       } else {
-        this.toastService.warning(this.translate.instant('The item is already in the list.'), this.translate.instant('checkin'));
+        this.toastService.warning(
+          this.translate.instant('The item is already in the list.'),
+          this.translate.instant('Checkin')
+        );
       }
-    } else {
-      this.itemsService.getItem(barcode, this.patron.pid).subscribe(
-        (newItem) => {
-          if (newItem === null) {
-            this.toastService.warning(this.translate.instant('item not found!'), this.translate.instant('checkin'));
-          } else {
-            if (newItem.canLoan(this.patron) === false) {
-              this.toastService.warning(this.translate.instant('item is unavailable!'), this.translate.instant('checkin'));
-            } else {
-              if (newItem.actions.length === 1 && newItem.actions.indexOf('no') > -1) {
-                this.toastService.warning(this.translate.instant('no action possible on this item!'), this.translate.instant('checkin'));
-              } else {
-                newItem.currentAction = ItemAction.checkout;
-                this.items.unshift(newItem);
-                this.searchText = '';
-              }
-            }
-          }
-        },
-        (error) => this.toastService.error(
-          error.message,
-          this.translate.instant('checkin')
-        ), () => console.log('loan success')
-      );
+      return;
     }
+    // If item isn't in the list, get it and try to place a checkout action on it
+    this.itemsService.getItem(barcode, this.patron.pid).subscribe(
+      (newItem) => {
+        if (newItem.canLoan(this.patron) === false) {
+          this.toastService.warning(
+            this.translate.instant('Item is unavailable!'),
+            this.translate.instant('Checkout')
+          );
+        } else if (this.allowActionOnItem(newItem, ItemAction.checkout)) {
+          newItem.currentAction = ItemAction.checkout;
+          this.items.unshift(newItem);
+          this.searchText = '';
+        }
+      },
+      (error) => {
+        this.toastService.error(
+          this.translate.instant(error.message),
+          this.translate.instant('Error')
+        );
+      }
+    );
   }
 
   getPatronInfo(patronPID) {

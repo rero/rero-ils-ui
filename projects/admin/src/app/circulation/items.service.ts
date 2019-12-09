@@ -66,21 +66,21 @@ export class ItemsService {
     }
     return this.http.get<any>(url).pipe(
       map(data => {
-        return data.metadata;
-      }),
-      map(data => {
-        const item = new Item(data.item);
-        if (data.loan) {
-          item.setLoan(data.loan);
+        const item = new Item(data.metadata.item);
+        if (data.metadata.loan) {
+          item.setLoan(data.metadata.loan);
         }
         return item;
       }),
       catchError(e => {
-        if (e.status === 404) {
-          return of(null);
+        switch (e.status) {
+          case 404:
+            throw new Error('item not found!');
+          default:
+            throw e;
         }
       })
-      );
+    );
   }
 
   automaticCheckin(itemBarcode) {
