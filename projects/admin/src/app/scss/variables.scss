@@ -28,3 +28,7 @@ $navbar-brand-font-size:              ($font-size-base * 1.5);    // controls th
 $footer-height:                       50px;
 
 $form-check-input-margin-y:           .2rem !default;
+
+$form_error: #a94442;
+$form_required: red;
+$form_valid: green;
