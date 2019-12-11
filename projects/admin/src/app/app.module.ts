@@ -24,7 +24,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppConfigService } from './service/app-config.service';
 import { MenuComponent } from './menu/menu.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CollapseModule, TabsModule, BsDatepickerModule, BsLocaleService, TypeaheadModule } from 'ngx-bootstrap';
 import { FrontpageComponent } from './frontpage/frontpage.component';
 import { ItemTypesBriefViewComponent } from './record/brief-view/item-types-brief-view.component';
@@ -67,6 +67,8 @@ import { ItemTransactionComponent } from './record/detail-view/item-detail-view/
 import { ItemTransactionsComponent } from './record/detail-view/item-detail-view/item-transactions/item-transactions.component';
 import { AuthorNameTranslatePipe } from './pipe/author-name-translate.pipe';
 import { PatronDetailViewComponent } from './record/detail-view/patron-detail-view/patron-detail-view.component';
+import { NoCacheHeaderService } from './service/no-cache-header.service';
+import { RemoteSelectComponent } from './record/editor/remote-select/remote-select.component';
 
 @NgModule({
   declarations: [
@@ -116,7 +118,8 @@ import { PatronDetailViewComponent } from './record/detail-view/patron-detail-vi
     ItemTransactionComponent,
     ItemTransactionsComponent,
     AuthorNameTranslatePipe,
-    PatronDetailViewComponent
+    PatronDetailViewComponent,
+    RemoteSelectComponent
   ],
   imports: [
     Bootstrap4FrameworkModule,
@@ -140,6 +143,11 @@ import { PatronDetailViewComponent } from './record/detail-view/patron-detail-vi
     TypeaheadModule
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: NoCacheHeaderService,
+      multi: true
+    },
     {
       provide: CoreConfigService,
       useClass: AppConfigService
@@ -178,7 +186,8 @@ import { PatronDetailViewComponent } from './record/detail-view/patron-detail-vi
     LibraryComponent,
     LocationDetailViewComponent,
     ItemDetailViewComponent,
-    PatronDetailViewComponent
+    PatronDetailViewComponent,
+    RemoteSelectComponent
   ],
   bootstrap: [AppComponent]
 })
@@ -186,5 +195,6 @@ export class AppModule {
   constructor(private widgetLibrary: WidgetLibraryService) {
     this.widgetLibrary.registerWidget('select-item-type-type', SelectItemTypeTypeComponent);
     this.widgetLibrary.registerWidget('checkbox-is-online', CheckboxIsOnlineComponent);
+    this.widgetLibrary.registerWidget('remote-select', RemoteSelectComponent);
   }
 }
