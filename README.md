@@ -100,13 +100,22 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 As we use [Transifex for rero-ils-ui](https://www.transifex.com/rero/rero-ils-ui/) you need to extract new string.
 
-Choose the command regarding the application you work on. Either use extract or update command.
+Transifex is now integrated into git workflow the following way:
+
+When a PR is merged into dev branch, Transifex pulls the new or updated strings.
+When a language is 100% reviewed, Transifex creates a branch and a PR (one per language) to merge translations to dev branch.
+
+Don't use tx pull or push command, as the synchronization is done automatically, but extract the strings before each PR, as described below:
+
+Choose the command regarding the application you work on:
+* Use extract command first to put the strings in source file.
+* Then use update command to add the strings in the translations files. This allows the strings to be displayed in any language even if not yet translated.
 
 Commands:
 
-  * `npm run admin_extract_messages`: will extract all strings in **admin** project and put it in **en\_US.json** file
-  * `npm run admin_update_catalog`: will extract for update all string in **admin** project and put them into **de/en/fr/it** json files!
+  * `npm run admin_extract_messages`: will extract all strings in **admin** project and put them in **en\_US.json** file (source file)
+  * `npm run admin_update_catalog`: will extract all string in source file and put them into **de/en/fr/it** json files for translation
   * `npm run public-search_extract_messages`: same as admin, but for **public-search** project
   * `npm run public-search_update_catalog`: same as admin, but for **public-search** project
-  * `npm run extract_messages`: launch **admin\_extract\_messages** and **public-search\_extract\_messages** commands
-  * `npm run update_catalog`: launch **public-search\_update\_catalog** and **admin\_update\_catalog** commands
+  * `npm run extract_messages`: launches **admin\_extract\_messages** and **public-search\_extract\_messages** commands
+  * `npm run update_catalog`: launches **public-search\_update\_catalog** and **admin\_update\_catalog** commands
