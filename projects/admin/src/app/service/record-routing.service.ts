@@ -93,7 +93,10 @@ export class RecordRoutingService {
               _('status')
             ],
             aggregationsExpand: ['document_type'],
-            aggregationsBucketSize: 10
+            aggregationsBucketSize: 10,
+            itemHeaders: {
+              Accept: 'application/rero+json, application/json'
+            }
           }
         ]
       }
