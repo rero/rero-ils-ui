@@ -27,7 +27,6 @@ import { map, switchMap, tap } from 'rxjs/operators';
   styles: []
 })
 export class ItemDetailViewComponent implements DetailRecord, OnInit {
-
   /** Observable resolving record data */
   record$: Observable<any>;
 
@@ -54,30 +53,31 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit {
   constructor(
     private recordService: RecordService,
     private loanService: LoanService
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.record$.pipe(
-      map(record => this.record = record),
-      tap(record => this.loanService
-        .numberOfRequests$(record.metadata.pid)
-        .subscribe((count: number) => {
-          this.numberOfRequests = count;
+    // TODO: should be rewritten to avoid multiple subscribe
+    this.record$
+      .pipe(
+        tap(record => {
+          this.record = record;
+          // numberOfRequests
+          this.loanService
+            .numberOfRequests$(record.metadata.pid)
+            .subscribe((count: number) => {
+              this.numberOfRequests = count;
+            });
+          // location and library
+          this.recordService
+            .getRecord('locations', record.metadata.location.pid)
+            .subscribe(location => {
+              this.location = location;
+              this.recordService.getRecord(
+                'libraries',
+                extractIdOnRef(location.metadata.library.$ref)
+              ).subscribe(library => this.library = library);
+            });
         })
-      )
-    ).pipe(
-      switchMap(item => this.recordService.getRecord(
-        'locations',
-        item.metadata.location.pid
-      ))
-    ).pipe(
-      switchMap(location => this.recordService.getRecord(
-        'libraries',
-        extractIdOnRef(location.metadata.library.$ref)
-      )),
-      map(location => this.location = location)
-    ).pipe(
-      map(library => this.library = library)
-    ).subscribe();
+      ).subscribe();
   }
 }
