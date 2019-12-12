@@ -69,6 +69,9 @@ import { AuthorNameTranslatePipe } from './pipe/author-name-translate.pipe';
 import { PatronDetailViewComponent } from './record/detail-view/patron-detail-view/patron-detail-view.component';
 import { NoCacheHeaderService } from './service/no-cache-header.service';
 import { RemoteSelectComponent } from './record/editor/remote-select/remote-select.component';
+import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
+import { VendorBriefViewComponent } from './record/brief-view/vendor-brief-view.component';
+import { AddressTypeComponent } from './record/detail-view/address-type/address-type.component';
 
 @NgModule({
   declarations: [
@@ -119,7 +122,10 @@ import { RemoteSelectComponent } from './record/editor/remote-select/remote-sele
     ItemTransactionsComponent,
     AuthorNameTranslatePipe,
     PatronDetailViewComponent,
-    RemoteSelectComponent
+    RemoteSelectComponent,
+    VendorDetailViewComponent,
+    VendorBriefViewComponent,
+    AddressTypeComponent
   ],
   imports: [
     Bootstrap4FrameworkModule,
@@ -187,7 +193,9 @@ import { RemoteSelectComponent } from './record/editor/remote-select/remote-sele
     LocationDetailViewComponent,
     ItemDetailViewComponent,
     PatronDetailViewComponent,
-    RemoteSelectComponent
+    RemoteSelectComponent,
+    VendorDetailViewComponent,
+    VendorBriefViewComponent
   ],
   bootstrap: [AppComponent]
 })

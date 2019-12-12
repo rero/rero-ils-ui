@@ -141,6 +141,14 @@ export class MenuComponent implements OnInit {
             iconCssClass: 'fa fa-user'
           }]
         }, {
+          name: this.translateService.instant('Acquisitions'),
+          iconCssClass: 'fa fa-university',
+          entries: [{
+            name: this.translateService.instant('Vendors'),
+            routerLink: '/records/vendors',
+            iconCssClass: 'fa fa-briefcase'
+          }]
+        }, {
           name: this.translateService.instant('Admin & Monitoring'),
           iconCssClass: 'fa fa-cogs',
           entries: [{

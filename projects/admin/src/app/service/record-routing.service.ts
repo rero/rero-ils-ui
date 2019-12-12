@@ -43,6 +43,8 @@ import { LocationDetailViewComponent } from '../record/detail-view/location-deta
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
 import { UserService } from './user.service';
 import { PatronDetailViewComponent } from '../record/detail-view/patron-detail-view/patron-detail-view.component';
+import { VendorDetailViewComponent } from '../record/detail-view/vendor-detail-view/vendor-detail-view.component';
+import { VendorBriefViewComponent } from '../record/brief-view/vendor-brief-view.component';
 
 @Injectable({
   providedIn: 'root'
@@ -273,6 +275,28 @@ export class RecordRoutingService {
             canAdd: () => this.canAddCiculationPolicy(),
             canUpdate: (record: any) => this.canUpdate(record),
             canDelete: (record: any) => this.canDelete(record)
+          }
+        ]
+      }
+    }, {
+      matcher: (url) => this.routeMatcher(url, 'vendors'),
+      children: [
+        { path: '', component: RecordSearchComponent },
+        { path: 'detail/:pid', component: DetailComponent },
+        { path: 'edit/:pid', component: EditorComponent },
+        { path: 'new', component: EditorComponent }
+      ],
+      data: {
+        linkPrefix: 'records',
+        types: [
+          {
+            key: _('vendors'),
+            label: _('Vendors'),
+            component: VendorBriefViewComponent,
+            detailComponent: VendorDetailViewComponent,
+            canUpdate: (record: any) => this.canUpdate(record),
+            canDelete: (record: any) => this.canDelete(record),
+            preprocessRecordEditor: (data: any) => this.addLibrarianOrganisation(data)
           }
         ]
       }
