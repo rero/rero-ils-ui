@@ -76,6 +76,9 @@ import { RemoteAutocompleteInputTypeComponent } from './record/editor/remote-aut
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
 import { InterfaceInfoComponent } from './interface-info/interface-info.component';
 import { DocumentEditorComponent } from './record/custom-editor/document-editor/document-editor.component';
+import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
+import { VendorBriefViewComponent } from './record/brief-view/vendor-brief-view.component';
+import { AddressTypeComponent } from './record/detail-view/address-type/address-type.component';
 
 @NgModule({
   declarations: [
@@ -126,7 +129,11 @@ import { DocumentEditorComponent } from './record/custom-editor/document-editor/
     PatronDetailViewComponent,
     InterfaceInfoComponent,
     RefComponent,
-    RemoteAutocompleteInputTypeComponent
+    RemoteAutocompleteInputTypeComponent,
+    InterfaceInfoComponent,
+    VendorDetailViewComponent,
+    VendorBriefViewComponent,
+    AddressTypeComponent
   ],
   imports: [
     AppRoutingModule,
@@ -202,9 +209,10 @@ import { DocumentEditorComponent } from './record/custom-editor/document-editor/
     ItemDetailViewComponent,
     PatronDetailViewComponent,
     RefComponent,
-    RemoteAutocompleteInputTypeComponent
+    RemoteAutocompleteInputTypeComponent,
+    VendorDetailViewComponent,
+    VendorBriefViewComponent
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
-
