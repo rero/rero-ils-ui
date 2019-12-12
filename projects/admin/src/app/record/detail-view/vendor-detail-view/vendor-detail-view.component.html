@@ -1,0 +1,69 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019 RERO
+  
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+  
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="record$ | async as record">
+  <h1 class="mb-3">{{ record.metadata.name }}</h1>
+  <article>
+    <section class="m-2 p-2">
+      <!-- WEBSITE -->
+      <dl class="row mb-0" *ngIf="record.metadata.website">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Website' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <a target="_blank" href="{{ record.metadata.website }}">{{ record.metadata.website }}</a>
+        </dd>
+      </dl>
+      <!-- COMMUNICATION_LANGUAGE -->
+      <ng-container *ngIf="record.metadata.communication_language && record.metadata.communication_language.length > 0">
+        <dl class="row mb-0">
+          <dt class="col-sm-3 offset-sm-2 offset-md-0">
+            {{ 'Communication language' | translate }}:
+          </dt>
+          <dd class="col-sm-7 col-md-8 mb-0">
+            {{ record.metadata.communication_language | translateLanguage:currentLanguage }}
+          </dd>
+        </dl>
+      </ng-container>
+      <!-- NOTE -->
+      <dl class="row mb-0" *ngIf="record.metadata.note">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Note' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.note }}
+        </dd>
+      </dl>
+    </section>
+
+    <section class="m-2 p-2">
+      <tabset>
+        <!-- DEFAULT CONTACT -->
+        <ng-container *ngIf="record.metadata.default_contact as defaultContact">
+          <tab heading="Default contact details" id="default_address">
+            <admin-address-type [addressType]="defaultContact"></admin-address-type>
+          </tab>
+        </ng-container>
+        <!-- ORDER CONTACT -->
+        <ng-container *ngIf="record.metadata.order_contact as orderContact">
+          <tab heading="Order contact details" id="order_address">
+            <admin-address-type [addressType]="orderContact"></admin-address-type>
+          </tab>
+        </ng-container>
+      </tabset>
+    </section>
+  </article>
+</ng-container>

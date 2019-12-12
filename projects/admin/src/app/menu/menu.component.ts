@@ -174,6 +174,14 @@ export class MenuComponent implements OnInit {
             iconCssClass: 'fa fa-user'
           }]
         }, {
+          name: this.translateService.instant('Acquisitions'),
+          iconCssClass: 'fa fa-university',
+          entries: [{
+            name: this.translateService.instant('Vendors'),
+            routerLink: '/records/vendors',
+            iconCssClass: 'fa fa-briefcase'
+          }]
+        }, {
           name: this.translateService.instant('Admin & Monitoring'),
           iconCssClass: 'fa fa-cogs',
           entries: [{
@@ -202,7 +210,7 @@ export class MenuComponent implements OnInit {
     };
 
     this.localeStorageService.onSet$.subscribe(() => {
-      const link = this.linksMenu.entries[2].entries.find(
+      const link = this.linksMenu.entries[3].entries.find(
         (element: any) => element.routerLink.indexOf('/libraries/detail') > -1
       );
       link.routerLink = this.myLibraryRouterLink();
