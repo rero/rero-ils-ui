@@ -69,6 +69,8 @@ import { AuthorNameTranslatePipe } from './pipe/author-name-translate.pipe';
 import { PatronDetailViewComponent } from './record/detail-view/patron-detail-view/patron-detail-view.component';
 import { NoCacheHeaderService } from './service/no-cache-header.service';
 import { RemoteSelectComponent } from './record/editor/remote-select/remote-select.component';
+import { AcqAccountBriefViewComponent } from './record/brief-view/acq-account-brief-view/acq-account-brief-view.component';
+import { AcqAccountDetailViewComponent } from './record/detail-view/acq-account-detail-view/acq-account-detail-view.component';
 
 @NgModule({
   declarations: [
@@ -119,7 +121,9 @@ import { RemoteSelectComponent } from './record/editor/remote-select/remote-sele
     ItemTransactionsComponent,
     AuthorNameTranslatePipe,
     PatronDetailViewComponent,
-    RemoteSelectComponent
+    RemoteSelectComponent,
+    AcqAccountBriefViewComponent,
+    AcqAccountDetailViewComponent
   ],
   imports: [
     Bootstrap4FrameworkModule,
@@ -187,7 +191,9 @@ import { RemoteSelectComponent } from './record/editor/remote-select/remote-sele
     LocationDetailViewComponent,
     ItemDetailViewComponent,
     PatronDetailViewComponent,
-    RemoteSelectComponent
+    RemoteSelectComponent,
+    AcqAccountBriefViewComponent,
+    AcqAccountDetailViewComponent
   ],
   bootstrap: [AppComponent]
 })

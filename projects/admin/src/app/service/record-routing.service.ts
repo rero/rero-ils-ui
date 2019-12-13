@@ -43,6 +43,8 @@ import { LocationDetailViewComponent } from '../record/detail-view/location-deta
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
 import { UserService } from './user.service';
 import { PatronDetailViewComponent } from '../record/detail-view/patron-detail-view/patron-detail-view.component';
+import { AcqAccountBriefViewComponent } from '../record/brief-view/acq-account-brief-view/acq-account-brief-view.component';
+import { AcqAccountDetailViewComponent } from '../record/detail-view/acq-account-detail-view/acq-account-detail-view.component';
 
 @Injectable({
   providedIn: 'root'
@@ -276,6 +278,38 @@ export class RecordRoutingService {
           }
         ]
       }
+    }, {
+      matcher: (url) => this.routeMatcher(url, 'acq_accounts'),
+      children: [
+        { path: '', component: RecordSearchComponent },
+        { path: 'detail/:pid', component: DetailComponent },
+        { path: 'edit/:pid', component: EditorComponent },
+        { path: 'new', component: EditorComponent }
+      ],
+      data: {
+        linkPrefix: 'records',
+        types: [
+          {
+            key: _('acq_accounts'),
+            label: _('Accounts'),
+            aggregationsOrder: [
+              _('library'),
+              _('fiscal_year')
+            ],
+            aggregationsExpand: ['library', 'fiscal_year'],
+            aggregationsBucketSize: 10,
+            component: AcqAccountBriefViewComponent,
+            detailComponent: AcqAccountDetailViewComponent,
+            listHeaders: {
+              Accept: 'application/rero+json'
+            },
+            canUpdate: (record: any) => this.canUpdate(record),
+            canDelete: (record: any) => this.canDelete(record),
+            aggregations: (aggregations: any) => this.aggregationsAcqAccountsFilter(aggregations),
+            preprocessRecordEditor: (data: any) => this.addLibrarianLibraryAndOrganisation(data)
+          }
+        ]
+      }
     });
   }
 
@@ -290,6 +324,24 @@ export class RecordRoutingService {
     const orgPid = user.library.organisation.pid;
     if (orgPid != null && data.organisation == null) {
       data.organisation = { $ref: this.apiService.getRefEndpoint('organisations', orgPid)};
+    }
+    return data;
+  }
+
+  /**
+   * Adds the $ref of the librarian organisation and library to the data
+   * @param data - object, record data before edition
+   * @returns object, the modified record data
+   */
+  private addLibrarianLibraryAndOrganisation(data: any) {
+    const user = this.userService.getCurrentUser();
+    const orgPid = user.library.organisation.pid;
+    const libPid = user.library.pid;
+    if (orgPid != null && data.organisation == null) {
+      data.organisation = { $ref: this.apiService.getRefEndpoint('organisations', orgPid)};
+    }
+    if (libPid != null && data.library == null) {
+      data.library = { $ref: this.apiService.getRefEndpoint('libraries', libPid)};
     }
     return data;
   }
@@ -363,6 +415,18 @@ export class RecordRoutingService {
       }
     });
     return aggs;
+  }
+
+  private aggregationsAcqAccountsFilter(aggregations: { fiscal_year: [], library: [] }) {
+    const obs = new Observable((observer: Subscriber<any>): void => {
+      if (!this.userService.hasRole('system_librarian')) {
+        // Delete library facet
+        delete aggregations.library;
+
+      }
+      observer.next(this.aggregationFilter(aggregations));
+    });
+    return obs;
   }
 
   private canAddLibrary() {
