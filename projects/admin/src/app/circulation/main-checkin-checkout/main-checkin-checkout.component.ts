@@ -109,20 +109,20 @@ export class MainCheckinCheckoutComponent implements OnInit, NoPendingChange {
         item === null ||
         item.location.organisation.pid !== this.loggedUser.library.organisation.pid
       ) {
-        this.toastService.warning(this.translate.instant('item or patron not found!'), this.translate.instant('checkin'));
+        this.toastService.warning(this.translate.instant('Item or patron not found!'), this.translate.instant('Checkin'));
         return;
       }
       if (item.loan) {
         this.getPatronInfo(item.loan.patron_pid);
       }
       if (item.hasRequests) {
-        this.toastService.warning(this.translate.instant('The item contains requests'), this.translate.instant('checkin'));
+        this.toastService.warning(this.translate.instant('The item contains requests'), this.translate.instant('Checkin'));
       }
       switch (item.actionDone) {
         case ItemAction.return_missing:
           this.toastService.warning(
-            this.translate.instant('the item has been returned from missing'),
-            this.translate.instant('checkin')
+            this.translate.instant('The item has been returned from missing'),
+            this.translate.instant('Checkin')
           );
           break;
         default:
@@ -177,12 +177,32 @@ export class MainCheckinCheckoutComponent implements OnInit, NoPendingChange {
         item.currentAction = ItemAction.checkin;
         this.searchText = '';
       } else {
-        this.toastService.warning(
-          this.translate.instant('The item is already in the list.'),
-          this.translate.instant('Checkin')
-        );
+        this.toastService.warning(this.translate.instant('The item is already in the list.'), this.translate.instant('Checkin'));
       }
-      return;
+    } else {
+      this.itemsService.getItem(barcode, this.patron.pid).subscribe(
+        (newItem) => {
+          if (newItem === null) {
+            this.toastService.warning(this.translate.instant('Item not found!'), this.translate.instant('Checkin'));
+          } else {
+            if (newItem.canLoan(this.patron) === false) {
+              this.toastService.warning(this.translate.instant('Item is unavailable!'), this.translate.instant('Checkin'));
+            } else {
+              if (newItem.actions.length === 1 && newItem.actions.indexOf(ItemAction.no) > -1) {
+                this.toastService.warning(this.translate.instant('No action possible on this item!'), this.translate.instant('Checkin'));
+              } else {
+                newItem.currentAction = ItemAction.checkout;
+                this.items.unshift(newItem);
+                this.searchText = '';
+              }
+            }
+          }
+        },
+        (error) => this.toastService.error(
+          error.message,
+          this.translate.instant('Checkin')
+        ), () => console.log('loan success')
+      );
     }
     // If item isn't in the list, get it and try to place a checkout action on it
     this.itemsService.getItem(barcode, this.patron.pid).subscribe(
@@ -217,7 +237,7 @@ export class MainCheckinCheckoutComponent implements OnInit, NoPendingChange {
         },
         (error) => this.toastService.error(
           error.message,
-          this.translate.instant('checkin')
+          this.translate.instant('Checkin')
         ),
         () => console.log('patron by pid success')
       );
@@ -233,14 +253,14 @@ export class MainCheckinCheckoutComponent implements OnInit, NoPendingChange {
         (patron) => {
           this.isLoading = false;
           if (patron !== null && patron.organisation.pid !== this.loggedUser.library.organisation.pid) {
-            this.toastService.warning(this.translate.instant('patron not found!'), this.translate.instant('checkin'));
+            this.toastService.warning(this.translate.instant('Patron not found!'), this.translate.instant('Checkin'));
             return;
           }
           if (patron === null) {
             this.placeholder = this.translate.instant('Please enter a patron card number.');
             const newItem = this.items.find(item => item.barcode === barcode);
             if (newItem) {
-              this.toastService.warning(this.translate.instant('The item is already in the list.'), this.translate.instant('checkin'));
+              this.toastService.warning(this.translate.instant('The item is already in the list.'), this.translate.instant('Checkin'));
             } else {
               this.automaticCheckinCheckout(barcode);
             }
@@ -266,7 +286,7 @@ export class MainCheckinCheckoutComponent implements OnInit, NoPendingChange {
         },
         (error) => this.toastService.error(
           error.message,
-          this.translate.instant('checkin')
+          this.translate.instant('Checkin')
         ), () => console.log('patron success')
       );
     }
@@ -317,13 +337,13 @@ export class MainCheckinCheckoutComponent implements OnInit, NoPendingChange {
             if (newItem.status === ItemStatus.IN_TRANSIT) {
               this.toastService.success(
                 this.translate.instant('The item is ') + this.translate.instant(newItem.status),
-                this.translate.instant('checkin')
+                this.translate.instant('Checkin')
               );
             } else {
               if (newItem.status === ItemStatus.AT_DESK) {
                 this.toastService.success(
                   this.translate.instant('The item is ') + this.translate.instant(newItem.status),
-                  this.translate.instant('checkin')
+                  this.translate.instant('Checkin')
                 );
               }
             }
@@ -338,8 +358,8 @@ export class MainCheckinCheckoutComponent implements OnInit, NoPendingChange {
             errorMessage = err.error.status;
         }
         this.toastService.error(
-            this.translate.instant('an error occurs on the server: ') + errorMessage,
-            this.translate.instant('checkin')
+            this.translate.instant('An error occured on the server: ') + errorMessage,
+            this.translate.instant('Checkin')
          );
       }
     );
