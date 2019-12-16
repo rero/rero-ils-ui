@@ -17,7 +17,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../service/user.service';
-import { CoreConfigService } from '@rero/ng-core';
+import { CoreConfigService, RecordService } from '@rero/ng-core';
 import { TranslateService as CoreTranslateService} from '@rero/ng-core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
@@ -41,6 +41,10 @@ export class MenuComponent implements OnInit {
   languagesMenu = {
     navCssClass: 'navbar-nav',
     entries: [{
+      name: this.translateService.instant('Switch to public view'),
+      href: '/',
+      iconCssClass: 'fa fa-television'
+    }, {
       name: this.translateService.instant('Menu'),
       iconCssClass: 'fa fa-bars',
       entries: [{
@@ -63,11 +67,17 @@ export class MenuComponent implements OnInit {
     private appTranslateService: CoreTranslateService,
     private translateService: TranslateService,
     private configService: CoreConfigService,
-    private userService: UserService
+    private userService: UserService,
+    private recordService: RecordService
   ) { }
 
   ngOnInit() {
     this.initLinksMenu();
+    const currentUser = this.userService.getCurrentUser();
+    this.recordService.getRecord('organisations', currentUser.library.organisation.pid).subscribe(organisation => {
+      this.languagesMenu.entries[0].href = '/' + organisation.metadata.code + '/';
+    });
+
     this.languages = this.configService.languages;
     for (const lang of this.languages) {
       const data: any = { name: lang };
@@ -75,9 +85,8 @@ export class MenuComponent implements OnInit {
         data.active = true;
         this.activeLanguagesMenuItem = data;
       }
-      this.languagesMenu.entries[0].entries.splice(0, 0, data);
+      this.languagesMenu.entries[1].entries.splice(0, 0, data);
     }
-    const currentUser = this.userService.getCurrentUser();
     this.userMenu.entries.push({
       name: `${currentUser.first_name[0]}${currentUser.last_name[0]}`,
       entries: [

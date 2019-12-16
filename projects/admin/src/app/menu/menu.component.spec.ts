@@ -20,7 +20,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MenuComponent } from './menu.component';
 import { CollapseModule, BsDatepickerModule, TypeaheadModule } from 'ngx-bootstrap';
 import { RecordModule } from '@rero/ng-core';
-import {TranslateModule} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -36,7 +36,10 @@ describe('MenuComponent', () => {
     first_name: 'John',
     last_name: 'Doe',
     library: {
-      pid: '1'
+      pid: '1',
+      organisation: {
+        pid: 1
+      }
     }
   });
 
