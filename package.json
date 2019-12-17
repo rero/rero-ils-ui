@@ -60,9 +60,11 @@
     "angular-datatables": "^8.0.0",
     "angular6-json-schema-form": "^7.3.0",
     "bootstrap": "^4.3.1",
+    "crypto-js": "^3.1.9-1",
     "datatables.net": "^1.10.20",
     "datatables.net-bs": "^1.10.19",
     "datatables.net-dt": "^1.10.20",
+    "document-register-element": "^1.7.2",
     "font-awesome": "^4.7.0",
     "jquery": "^3.4.1",
     "lodash-es": "4.17.14",
@@ -72,8 +74,7 @@
     "ngx-toggle-switch": "^2.0.5",
     "rxjs": "~6.4.0",
     "tslib": "^1.9.0",
-    "zone.js": "~0.9.1",
-    "document-register-element": "^1.7.2"
+    "zone.js": "~0.9.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.801.3",

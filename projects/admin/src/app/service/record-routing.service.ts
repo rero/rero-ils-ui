@@ -20,7 +20,7 @@ import { of, Observable, Subscriber } from 'rxjs';
 
 import { TranslateService } from '@ngx-translate/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { RecordSearchComponent, DetailComponent, EditorComponent, ActionStatus, ApiService } from '@rero/ng-core';
+import { RecordSearchComponent, DetailComponent, EditorComponent, ActionStatus, ApiService, extractIdOnRef } from '@rero/ng-core';
 
 import { CirculationPolicyComponent } from '../record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
 import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-policies-brief-view.component';
@@ -206,7 +206,8 @@ export class RecordRoutingService {
             canRead: (record: any) => this.canReadItem(record),
             canUpdate: (record: any) => this.canUpdate(record),
             canDelete: (record: any) => this.canDelete(record),
-            preprocessRecordEditor: (record: any) => this.preprocessItem(record)
+            preprocessRecordEditor: (record: any) => this.preprocessItem(record),
+            redirectUrl: (record: any) => this.getUrl(record)
           }
         ]
       }
@@ -279,6 +280,14 @@ export class RecordRoutingService {
     });
   }
 
+  /**
+   * Parse url with pid from $ref
+   * @param record - object, record to be saved
+   */
+  private getUrl(record: any) {
+    const pid = extractIdOnRef(record.document.$ref);
+    return of(`records/documents/detail/` + pid);
+  }
 
   /**
    * Adds the $ref of the librarian organisation to the data
