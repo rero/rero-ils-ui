@@ -206,7 +206,11 @@ export class RecordRoutingService {
             canRead: (record: any) => this.canReadItem(record),
             canUpdate: (record: any) => this.canUpdate(record),
             canDelete: (record: any) => this.canDelete(record),
-            preprocessRecordEditor: (record: any) => this.preprocessItem(record)
+            preprocessRecordEditor: (record: any) => this.preprocessItem(record),
+            redirectUrl: (record: any) => {
+              const pidRegExp = new RegExp('.*\/(.*)$');
+              return of('records/documents/detail/' + record.document.$ref.match(pidRegExp)[1]);
+            }
           }
         ]
       }
