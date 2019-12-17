@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { BaseRoute } from './Base-route';
-import { RouteInterface, DetailComponent, EditorComponent, RecordService } from '@rero/ng-core';
+import { RouteInterface, DetailComponent, EditorComponent, RecordService, extractIdOnRef } from '@rero/ng-core';
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
 import { of } from 'rxjs';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -56,6 +56,9 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
                   this._routeToolService.getRouteQueryParam('document')
                 )
               };
+              return data;
+            },
+            preUpdateRecord: (data: any) => {
               // remove dynamic field
               if (data.hasOwnProperty('available')) {
                 delete data.available;
@@ -66,11 +69,21 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
               return this.populateLocationsByCurrentUserLibrary(
                 field, jsonSchema
               );
-            }
+            },
+            redirectUrl: (record: any) => this.getUrl(record)
           }
         ]
       }
     };
+  }
+
+  /**
+   * Parse url with pid from $ref
+   * @param record - object, record to be saved
+   */
+  private getUrl(record: any) {
+    const pid = extractIdOnRef(record.metadata.document.$ref);
+    return of(`records/documents/detail/` + pid);
   }
 
   /**
