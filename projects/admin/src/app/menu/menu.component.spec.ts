@@ -27,21 +27,26 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserService } from '../service/user.service';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { InterfaceInfoComponent } from '../interface-info/interface-info.component';
 
 describe('MenuComponent', () => {
   let component: MenuComponent;
   let fixture: ComponentFixture<MenuComponent>;
-  const userService = jasmine.createSpyObj('UserService', ['getCurrentUser']);
+  const userService = jasmine.createSpyObj(
+    'UserService', ['getCurrentUser', 'hasRole']
+  );
   userService.getCurrentUser.and.returnValue({
     first_name: 'John',
     last_name: 'Doe',
     library: {
       pid: '1',
       organisation: {
-        pid: 1
-      }
+        pid: '1'
+      },
+      current: '1'
     }
   });
+  userService.hasRole.and.returnValue(true);
 
   beforeEach(async(() => {
 
@@ -58,7 +63,7 @@ describe('MenuComponent', () => {
         TypeaheadModule.forRoot(),
         RouterTestingModule
       ],
-      declarations: [ MenuComponent ],
+      declarations: [ MenuComponent, InterfaceInfoComponent ],
       providers: [
         { provide: UserService, useValue: userService }
       ]

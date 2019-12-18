@@ -67,8 +67,9 @@ import { ItemTransactionComponent } from './record/detail-view/item-detail-view/
 import { ItemTransactionsComponent } from './record/detail-view/item-detail-view/item-transactions/item-transactions.component';
 import { AuthorNameTranslatePipe } from './pipe/author-name-translate.pipe';
 import { PatronDetailViewComponent } from './record/detail-view/patron-detail-view/patron-detail-view.component';
-import { NoCacheHeaderService } from './service/no-cache-header.service';
+import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
 import { RemoteSelectComponent } from './record/editor/remote-select/remote-select.component';
+import { InterfaceInfoComponent } from './interface-info/interface-info.component';
 
 @NgModule({
   declarations: [
@@ -119,7 +120,8 @@ import { RemoteSelectComponent } from './record/editor/remote-select/remote-sele
     ItemTransactionsComponent,
     AuthorNameTranslatePipe,
     PatronDetailViewComponent,
-    RemoteSelectComponent
+    RemoteSelectComponent,
+    InterfaceInfoComponent
   ],
   imports: [
     Bootstrap4FrameworkModule,
@@ -145,7 +147,7 @@ import { RemoteSelectComponent } from './record/editor/remote-select/remote-sele
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: NoCacheHeaderService,
+      useClass: NoCacheHeaderInterceptor,
       multi: true
     },
     {

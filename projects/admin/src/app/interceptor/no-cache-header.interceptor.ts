@@ -14,13 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
-export const environment = {
-  production: true,
-  apiBaseUrl: '',
-  $refPrefix: 'https://ils.rero.ch',
-  languages: ['fr', 'de', 'it', 'en'],
-  defaultLanguage: 'en',
-  adminRoles: ['system_librarian', 'librarian'],
-  sessionExpiredSeconds: 1800 /* Seconds => 1800: 30 minutes */
-};
+@Injectable()
+export class NoCacheHeaderInterceptor implements HttpInterceptor {
+
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    const authReq = req.clone({
+      // Prevent caching in IE, in particular IE11.
+      // See: https://support.microsoft.com/en-us/help/234067/how-to-prevent-caching-in-internet-explorer
+      setHeaders: {
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache'
+      }
+    });
+    return next.handle(authReq);
+  }
+}

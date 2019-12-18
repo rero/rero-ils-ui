@@ -15,12 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AppConfigService } from './app-config.service';
 import { User } from '../class/user';
 import { concatAll, map } from 'rxjs/operators';
-import { Observable, forkJoin, of } from 'rxjs';
+import { Observable, forkJoin, of, Subject } from 'rxjs';
 import { Item } from '../circulation/items';
 import { RecordService } from '@rero/ng-core';
 
@@ -29,13 +28,16 @@ import { RecordService } from '@rero/ng-core';
 })
 export class UserService {
 
-  readonly onUserLoaded: EventEmitter<User> = new EventEmitter();
+  private onUserLoaded: Subject<User> = new Subject();
 
   private user: User;
 
+  get onUserLoaded$() {
+    return this.onUserLoaded.asObservable();
+  }
+
   constructor(
     private http: HttpClient,
-    private appConfigService: AppConfigService,
     private recordService: RecordService
   ) { }
 
@@ -44,21 +46,21 @@ export class UserService {
   }
 
   hasRole(role: string) {
-    return this.user.hasRole(role);
+    return this.getCurrentUser().hasRole(role);
+  }
+
+  hasRoles(roles: Array<string>) {
+    return this.getCurrentUser().hasRoles(roles);
   }
 
   public loadLoggedUser() {
-    this.http.get<any>('/patrons/logged_user?resolve').subscribe(data => {
-      let user = null;
-      if (data.metadata) {
-        user = new User(data.metadata);
-        user.is_logged = true;
-      } else {
-        user = new User({});
+    this.http.get<any>(User.LOGGED_URL).subscribe(data => {
+      const user = data.metadata;
+      if (user && user.library) {
+        user.currentLibrary = user.library.pid;
       }
-      this.appConfigService.setSettings(data.settings);
-      this.user = user;
-      this.onUserLoaded.emit(user);
+      this.user = new User(user);
+      this.onUserLoaded.next(data);
     });
   }
 
@@ -146,5 +148,4 @@ export class UserService {
       map(response => new Item(response.hits.hits[0].metadata))
     );
   }
-
 }

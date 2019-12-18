@@ -25,7 +25,8 @@ export const environment = {
   $refPrefix: 'https://ils.rero.ch',
   languages: ['fr', 'de', 'it', 'en'],
   defaultLanguage: 'en',
-  adminRoles: ['system_librarian', 'librarian']
+  adminRoles: ['system_librarian', 'librarian'],
+  sessionExpiredSeconds: 1800 /* Seconds => 1800: 30 minutes */
 };
 
 /*

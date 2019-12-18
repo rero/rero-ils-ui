@@ -17,10 +17,11 @@
 
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../service/user.service';
-import { CoreConfigService, RecordService } from '@rero/ng-core';
+import { CoreConfigService, RecordService, LocalStorageService } from '@rero/ng-core';
 import { TranslateService as CoreTranslateService} from '@rero/ng-core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
+import { LibrarySwitchService } from '../service/library-switch.service';
 
 @Component({
   selector: 'admin-menu',
@@ -36,15 +37,20 @@ export class MenuComponent implements OnInit {
 
   maxLengthSuggestion = 100;
 
-  linksMenu = {};
+  linksMenu = { navCssClass: undefined, entries: []};
+
+  librariesSwitchMenu = {
+    navCssClass: 'navbar-nav',
+    entries: [{
+      name: this.translateService.instant('Switch libraries'),
+      iconCssClass: 'fa fa-random',
+      entries: []
+    }]
+  };
 
   languagesMenu = {
     navCssClass: 'navbar-nav',
     entries: [{
-      name: this.translateService.instant('Switch to public view'),
-      href: '/',
-      iconCssClass: 'fa fa-television'
-    }, {
       name: this.translateService.instant('Menu'),
       iconCssClass: 'fa fa-bars',
       entries: [{
@@ -68,14 +74,17 @@ export class MenuComponent implements OnInit {
     private translateService: TranslateService,
     private configService: CoreConfigService,
     private userService: UserService,
-    private recordService: RecordService
+    private recordService: RecordService,
+    private librarySwitchService: LibrarySwitchService,
+    private localeStorageService: LocalStorageService
   ) { }
 
   ngOnInit() {
     this.initLinksMenu();
     const currentUser = this.userService.getCurrentUser();
-    this.recordService.getRecord('organisations', currentUser.library.organisation.pid).subscribe(organisation => {
-      this.languagesMenu.entries[0].href = '/' + organisation.metadata.code + '/';
+    this.recordService.getRecord('organisations', currentUser.library.organisation.pid)
+    .subscribe(organisation => {
+      this.userMenu.entries[0].entries[0].href = `/${organisation.metadata.code}/`;
     });
 
     this.languages = this.configService.languages;
@@ -85,18 +94,27 @@ export class MenuComponent implements OnInit {
         data.active = true;
         this.activeLanguagesMenuItem = data;
       }
-      this.languagesMenu.entries[1].entries.splice(0, 0, data);
+      this.languagesMenu.entries[0].entries.splice(0, 0, data);
     }
     this.userMenu.entries.push({
       name: `${currentUser.first_name[0]}${currentUser.last_name[0]}`,
       entries: [
         {
+          name: this.translateService.instant('Switch to public view'),
+          href: '/',
+          iconCssClass: 'fa fa-television'
+        }, {
           name: this.translateService.instant('Logout'),
           href: `/logout`,
           iconCssClass: 'fa fa-sign-out'
         }
       ]
     });
+
+    this.librarySwitchService.onGenerate$.subscribe((entries: any) => {
+      this.librariesSwitchMenu.entries[0].entries = entries;
+    });
+
     this.recordTypes = [{
       type: 'documents',
       field: 'autocomplete_title',
@@ -106,6 +124,21 @@ export class MenuComponent implements OnInit {
       field: 'autocomplete_name',
       getSuggestions: (query, persons) => this.getPersonsSuggestions(query, persons)
     }];
+  }
+
+  changeLibrary(item: {name: string, id: string}) {
+    this.librarySwitchService.switch(item.id);
+  }
+
+  get isVisibleLibrarySwitchMenu() {
+    if (this.librarySwitchService.length <= 1) {
+      return false;
+    }
+    return this.librarySwitchService.visible;
+  }
+
+  get isVisible() {
+    return this.librarySwitchService.visible;
   }
 
   initLinksMenu() {
@@ -157,7 +190,7 @@ export class MenuComponent implements OnInit {
             iconCssClass: 'fa fa-users'
           }, {
             name: this.translateService.instant('My Library'),
-            routerLink: `/records/libraries/detail/${this.userService.getCurrentUser().library.pid}`,
+            routerLink: this.myLibraryRouterLink(),
             iconCssClass: 'fa fa-university'
           }, {
             name: this.translateService.instant('Libraries'),
@@ -167,6 +200,14 @@ export class MenuComponent implements OnInit {
         }
       ]
     };
+
+    this.localeStorageService.onSet$.subscribe(() => {
+      const link = this.linksMenu.entries[2].entries.find(
+        (element: any) => element.routerLink.indexOf('/libraries/detail') > -1
+      );
+      link.routerLink = this.myLibraryRouterLink();
+
+    });
   }
 
   changeLang(item) {
@@ -226,5 +267,9 @@ export class MenuComponent implements OnInit {
         return metadata[source].preferred_name_for_person;
       }
     }
+  }
+
+  private myLibraryRouterLink() {
+    return `/records/libraries/detail/${this.userService.getCurrentUser().currentLibrary}`;
   }
 }

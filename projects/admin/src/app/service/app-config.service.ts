@@ -31,6 +31,8 @@ export class AppConfigService extends CoreConfigService {
 
   public adminRoles: Array<string>;
 
+  public sessionExpiredSeconds: number;
+
   constructor() {
     super();
     this.production = environment.production;
@@ -40,6 +42,7 @@ export class AppConfigService extends CoreConfigService {
     this.languages = environment.languages;
     this.defaultLanguage = environment.defaultLanguage;
     this.adminRoles = environment.adminRoles;
+    this.sessionExpiredSeconds = environment.sessionExpiredSeconds;
   }
 
   public setSettings(settings: ContextSettings) {

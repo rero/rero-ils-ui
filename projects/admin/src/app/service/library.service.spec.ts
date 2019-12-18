@@ -14,13 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { TestBed } from '@angular/core/testing';
 
-export const environment = {
-  production: true,
-  apiBaseUrl: '',
-  $refPrefix: 'https://ils.rero.ch',
-  languages: ['fr', 'de', 'it', 'en'],
-  defaultLanguage: 'en',
-  adminRoles: ['system_librarian', 'librarian'],
-  sessionExpiredSeconds: 1800 /* Seconds => 1800: 30 minutes */
-};
+import { LibraryService } from './library.service';
+import { HttpClientModule } from '@angular/common/http';
+
+describe('LibraryService', () => {
+  beforeEach(() => TestBed.configureTestingModule({
+    imports: [
+      HttpClientModule
+    ]
+  }));
+
+  it('should be created', () => {
+    const service: LibraryService = TestBed.get(LibraryService);
+    expect(service).toBeTruthy();
+  });
+});

@@ -37,12 +37,24 @@ export class User {
   barcode?: string;
   items?: any[];
   patron_type?: PatronType;
-  is_logged: Boolean = false;
+  currentLibrary: string;
 
+  static readonly STORAGE_KEY = 'user';
+
+  static readonly LOGGED_URL = '/patrons/logged_user?resolve';
+
+  /**
+   * Constructor
+   * @param user - Object
+   */
   constructor(user: any) {
     Object.assign(this, user);
   }
 
+  /**
+   * Check if you are an access ton admin interface
+   * @param roles - arrays of role
+   */
   isAuthorizedAdminAccess(roles: Array<string>) {
     return this.roles.filter((role: string) => {
       if (roles.indexOf(role) > -1) {
@@ -51,8 +63,42 @@ export class User {
     }).length > 0;
   }
 
+  /**
+   * Has the role
+   * @param role - string
+   */
   hasRole(role: string) {
     return this.roles.includes(role);
+  }
+
+  /**
+   * Has roles
+   * @param roles - array of role
+   */
+  hasRoles(roles: Array<string>) {
+    let hasRole = false;
+    roles.forEach(role => {
+      if (!hasRole && this.roles.includes(role)) {
+        hasRole = true;
+      }
+    });
+    return hasRole;
+  }
+
+  /**
+   * Set current library pid
+   * @param pid - string
+   */
+  setCurrentLibrary(pid: string) {
+    this.currentLibrary = pid;
+  }
+
+  /**
+   * Get current Library
+   * @return pid - string
+   */
+  getCurrentLibrary() {
+    return this.currentLibrary;
   }
 }
 
