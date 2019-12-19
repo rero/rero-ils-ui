@@ -180,6 +180,10 @@ export class MenuComponent implements OnInit {
             name: this.translateService.instant('Vendors'),
             routerLink: '/records/vendors',
             iconCssClass: 'fa fa-briefcase'
+          }, {
+            name: this.translateService.instant('Orders'),
+            routerLink: '/records/acq_orders',
+            iconCssClass: 'fa fa-shopping-cart'
           }]
         }, {
           name: this.translateService.instant('Admin & Monitoring'),

@@ -14,78 +14,79 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<article>
-  <section class="m-2 p-2">
-    <div class="p-2">
+<ng-container *ngIf="record$ | async as record">
+  <h1 class="mb-3">{{ record.metadata.order_number }}</h1>
+  <article>
+    <section class="m-2 p-2">
       <dl class="row mb-0">
-        <!-- CONTACT_PERSON -->
-        <ng-container *ngIf="addressType.contact_person">
+        <!-- VENDOR -->
+        <ng-container *ngIf="record.metadata.vendor">
           <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Contact person
+            Vendor
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
-            {{ addressType.contact_person }}
+            {{ record.metadata.vendor.pid | getRecord: 'vendors' : 'field' : 'name' | async }}
           </dd>
         </ng-container>
-        <!-- STREET -->
-        <ng-container *ngIf="addressType.street">
+        <!-- ORDER DATE -->
+        <ng-container *ngIf="record.metadata.order_date">
           <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Street
+            Order date
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
-            {{ addressType.street }}
+            {{ record.metadata.order_date | dateTranslate :'shortDate' }}
           </dd>
         </ng-container>
-        <!-- POSTAL_CODE -->
-        <ng-container *ngIf="addressType.postal_code">
+        <!-- ORDER TYPE -->
+        <ng-container *ngIf="record.metadata.order_type">
           <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Postal code
+            Order type
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
-            {{ addressType.postal_code }}
+            {{ record.metadata.order_type | translate }}
           </dd>
         </ng-container>
-        <!-- CITY -->
-        <ng-container *ngIf="addressType.city">
+        <!-- ORDER STATUS -->
+        <ng-container *ngIf="">
           <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            City
+            Order status
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
-            {{ addressType.city }}
+            {{ record.metadata.order_status | translate }}
           </dd>
         </ng-container>
-        <!-- COUNTRY -->
-        <ng-container *ngIf="addressType.country">
+        <!-- DESCRIPTION -->
+        <ng-container *ngIf="record.metadata.description">
           <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Country
+            Description
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
-            {{ addressType.country }}
+            {{ record.metadata.description }}
+          </dd>
+        </ng-container>
+        <!-- CURRENCY -->
+        <ng-container *ngIf="record.metadata.currency">
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+            Currency
+          </dt>
+          <dd class="col-sm-7 col-md-8 mb-0">
+            {{ record.metadata.currency }}
+          </dd>
+        </ng-container>
+        <!-- TOTAL AMOUNT -->
+        <ng-container *ngIf="totalAmount$ | async as totalAmount">
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+            Total amount
+          </dt>
+          <dd class="col-sm-7 col-md-8 mb-0">
+            {{ totalAmount | currency:record.metadata.currency:'symbol' }}
           </dd>
         </ng-container>
       </dl>
-    </div>
-    <div class="p-2">
-      <dl class="row mb-0">
-        <!-- COUNTRY -->
-        <ng-container *ngIf="addressType.phone">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Phone
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ addressType.phone }}
-          </dd>
-        </ng-container>
-        <!-- EMAIL -->
-        <ng-container *ngIf="addressType.email">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Email
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ addressType.email }}
-          </dd>
-        </ng-container>
-      </dl>
-    </div>
-  </section>
-</article>
+    </section>
+  </article>
+
+  <!-- Order lines -->
+  <admin-acquisition-order-lines [order]="record" [orderLines$]="orderLines$" (deleteOrderLine)="deleteOrderLine($event)">
+  </admin-acquisition-order-lines>
+</ng-container>

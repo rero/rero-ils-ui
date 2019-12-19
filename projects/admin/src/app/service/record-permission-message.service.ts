@@ -74,6 +74,14 @@ export class RecordPermissionMessageService {
 
   private plurialLinksMessages() {
     return {
+      acq_order_lines: {
+        '=1': this.translateService.instant('has 1 acquisition order line attached'),
+        other: this.translateService.instant('has # acquisition order lines attached')
+      },
+      acq_orders: {
+        '=1': this.translateService.instant('has 1 acquisition orders attached'),
+        other: this.translateService.instant('has # acquisition orders attached')
+      },
       circ_policies: {
         '=1': this.translateService.instant('has 1 circulation policy attached'),
         other: this.translateService.instant('has # circulation policies attached')
