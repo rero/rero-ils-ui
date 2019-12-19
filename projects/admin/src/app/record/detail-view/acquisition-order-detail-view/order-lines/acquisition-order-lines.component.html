@@ -1,0 +1,91 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019 RERO
+  
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+  
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<h4 class="mt-4" translate>Order lines</h4>
+
+<div class="mb-2">
+  <a *ngIf="!order.permissions.cannot_update"
+     class="btn btn-sm btn-primary"
+     [routerLink]="['/', 'records', 'acq_order_lines', 'new']"
+     [queryParams]="{ order: order.metadata.pid }"
+  >
+    <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }}
+  </a>
+</div>
+<div *ngIf="orderLines$ | async as orderLines; else noOrderLines">
+  <!-- HEADER -->
+  <div class="row p-2 mb-1 bg-dark rounded text-light">
+    <div class="col-sm-1">#</div>
+    <div class="col-sm-3" translate>Description</div>
+    <div class="col-sm-2" translate>Amount</div>
+    <div class="col-sm-1" translate>Quantity</div>
+    <div class="col-sm-2" translate>Discount amount</div>
+    <div class="col-sm-2" translate>Total amount</div>
+  </div>
+  <div *ngFor="let orderLine of orderLines; let i = index">
+    <ng-container *ngIf="orderLine">
+      <div class="row p-2 mb-1 border rounded align-middle">
+        <!-- # -->
+        <div class="col-sm-1">
+          {{ i + 1 }}
+        </div>
+        <!-- DESCRIPTION -->
+        <div class="col-sm-3">
+          <a [routerLink]="['/records', 'acq_order_lines', 'detail', orderLine.metadata.pid]">
+            {{ orderLine.metadata.description }}
+          </a>
+        </div>
+        <!-- AMOUNT -->
+        <div class="col-sm-2">
+          {{ orderLine.metadata.amount | currency:order.metadata.currency:'symbol' }}
+        </div>
+        <!-- QUANTITY -->
+        <div class="col-sm-1">
+          {{ orderLine.metadata.quantity }}
+        </div>
+        <!-- DISCOUNT_AMOUNT -->
+        <div class="col-sm-2">
+          {{ orderLine.metadata.discount_amount | currency:order.metadata.currency:'symbol' }}
+        </div>
+        <!-- TOTAL_AMOUNT -->
+        <div class="col-sm-2">
+          {{ orderLine.metadata.total_amount | currency:order.metadata.currency:'symbol' }}
+        </div>
+        <!-- ACTIONS -->
+        <div class="col-sm-1">
+          <button *ngIf="!orderLine.permissions.cannot_update" type="button" class="btn btn-link p-0"
+                  [routerLink]="['/records', 'acq_order_lines', 'edit', orderLine.metadata.pid]">
+            <i class="fa fa-pencil"></i>
+          </button>
+
+          <button *ngIf="!orderLine.permissions.cannot_delete" type="button" class="btn btn-link p-0 text-muted ml-1"
+                  (click)="delete(orderLine.metadata.pid)">
+            <i class="fa fa-trash"></i>
+          </button>
+          <ng-template #notDelete>
+            <button type="button" class="btn btn-dark btn-sm ml-1" (click)="showDeleteMessage(orderLine)">
+              <i class="fa fa-trash"></i>
+            </button>
+          </ng-template>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #noOrderLines>
+  {{ 'There is no order line to be collected.' | translate }}
+</ng-template>

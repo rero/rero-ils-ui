@@ -20,8 +20,8 @@
     <section class="m-2 p-2">
       <!-- WEBSITE -->
       <dl class="row mb-0" *ngIf="record.metadata.website">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Website' | translate }}:
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Website
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           <a target="_blank" href="{{ record.metadata.website }}">{{ record.metadata.website }}</a>
@@ -30,18 +30,36 @@
       <!-- COMMUNICATION_LANGUAGE -->
       <ng-container *ngIf="record.metadata.communication_language && record.metadata.communication_language.length > 0">
         <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0">
-            {{ 'Communication language' | translate }}:
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+            Communication language
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
             {{ record.metadata.communication_language | translateLanguage:currentLanguage }}
           </dd>
         </dl>
       </ng-container>
+      <!-- CURRENCY -->
+      <dl class="row mb-0" *ngIf="record.metadata.currency">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Currency
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.currency }}
+        </dd>
+      </dl>
+      <!-- TVA RATE -->
+      <dl class="row mb-0" *ngIf="record.metadata.tva_rate">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          TVA rate
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.tva_rate }}
+        </dd>
+      </dl>
       <!-- NOTE -->
       <dl class="row mb-0" *ngIf="record.metadata.note">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Note' | translate }}:
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Note
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           {{ record.metadata.note }}
