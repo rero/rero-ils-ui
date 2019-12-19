@@ -68,3 +68,20 @@ _('bf:Production');
 _('librarian');
 _('patron');
 _('system_librarian');
+
+// Order type
+_('serial');
+_('monograph');
+_('standing_order');
+_('monographic_set');
+_('planned_order');
+_('multi_volume');
+
+// Order status & Order line status
+_('approved');
+_('canceled');
+_('ordered');
+_('requested');
+_('pending');
+_('received');
+

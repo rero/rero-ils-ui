@@ -14,42 +14,46 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
-import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
-import { of, Observable, Subscriber } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {ActivatedRoute, Router, UrlSegment} from '@angular/router';
+import {Observable, of, Subscriber} from 'rxjs';
 
-import { TranslateService } from '@ngx-translate/core';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import {TranslateService} from '@ngx-translate/core';
+import {marker as _} from '@biesbjerg/ngx-translate-extract-marker';
+import {ActionStatus, ApiService, DetailComponent, EditorComponent, RecordSearchComponent} from '@rero/ng-core';
 import {
-  RecordSearchComponent,
-  DetailComponent,
-  EditorComponent,
-  ActionStatus,
-  ApiService
-} from '@rero/ng-core';
-import { CirculationPolicyComponent } from '../record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
-import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-policies-brief-view.component';
-import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
-import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
-import { LibraryComponent } from '../record/custom-editor/libraries/library.component';
-import { LibrariesBriefViewComponent } from '../record/brief-view/libraries-brief-view/libraries-brief-view.component';
-import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-view.component';
-import { PersonsBriefViewComponent } from '../record/brief-view/persons-brief-view.component';
-import { PersonDetailViewComponent } from '../record/detail-view/person-detail-view/person-detail-view.component';
-import { ItemTypesBriefViewComponent } from '../record/brief-view/item-types-brief-view.component';
-import { ItemTypeDetailViewComponent } from '../record/detail-view/item-type-detail-view.component';
-import { PatronTypesBriefViewComponent } from '../record/brief-view/patron-types-brief-view.component';
-import { PatronTypesDetailViewComponent } from '../record/detail-view/patron-types-detail-view.component';
-import { LibraryDetailViewComponent } from '../record/detail-view/library-detail-view/library-detail-view.component';
-import { RecordPermissionMessageService } from './record-permission-message.service';
-import { CircPolicyDetailViewComponent } from '../record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
-import { LocationDetailViewComponent } from '../record/detail-view/location-detail-view/location-detail-view.component';
-import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
-import { UserService } from './user.service';
-import { PatronDetailViewComponent } from '../record/detail-view/patron-detail-view/patron-detail-view.component';
-import { DocumentEditorComponent } from '../record/custom-editor/document-editor/document-editor.component';
-import { VendorDetailViewComponent } from '../record/detail-view/vendor-detail-view/vendor-detail-view.component';
-import { VendorBriefViewComponent } from '../record/brief-view/vendor-brief-view.component';
+  AcquisitionOrderBriefViewComponent
+} from '../record/brief-view/acquisition-order-brief-view.component';
+import {
+  AcquisitionOrderDetailViewComponent
+} from '../record/detail-view/acquisition-order-detail-view/acquisition-order-detail-view.component';
+import {
+  AcquisitionOrderLineDetailViewComponent
+} from '../record/detail-view/acquisition-order-line-detail-view/acquisition-order-line-detail-view.component';
+import {CirculationPolicyComponent} from '../record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
+import {CircPoliciesBriefViewComponent} from '../record/brief-view/circ-policies-brief-view.component';
+import {DocumentsBriefViewComponent} from '../record/brief-view/documents-brief-view/documents-brief-view.component';
+import {DocumentDetailViewComponent} from '../record/detail-view/document-detail-view/document-detail-view.component';
+import {formatDate} from '@angular/common';
+import {LibraryComponent} from '../record/custom-editor/libraries/library.component';
+import {LibrariesBriefViewComponent} from '../record/brief-view/libraries-brief-view/libraries-brief-view.component';
+import {PatronsBriefViewComponent} from '../record/brief-view/patrons-brief-view.component';
+import {PersonsBriefViewComponent} from '../record/brief-view/persons-brief-view.component';
+import {PersonDetailViewComponent} from '../record/detail-view/person-detail-view/person-detail-view.component';
+import {ItemTypesBriefViewComponent} from '../record/brief-view/item-types-brief-view.component';
+import {ItemTypeDetailViewComponent} from '../record/detail-view/item-type-detail-view.component';
+import {PatronTypesBriefViewComponent} from '../record/brief-view/patron-types-brief-view.component';
+import {PatronTypesDetailViewComponent} from '../record/detail-view/patron-types-detail-view.component';
+import {LibraryDetailViewComponent} from '../record/detail-view/library-detail-view/library-detail-view.component';
+import {RecordPermissionMessageService} from './record-permission-message.service';
+import {CircPolicyDetailViewComponent} from '../record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
+import {LocationDetailViewComponent} from '../record/detail-view/location-detail-view/location-detail-view.component';
+import {ItemDetailViewComponent} from '../record/detail-view/item-detail-view/item-detail-view.component';
+import {UserService} from './user.service';
+import {PatronDetailViewComponent} from '../record/detail-view/patron-detail-view/patron-detail-view.component';
+import {DocumentEditorComponent} from '../record/custom-editor/document-editor/document-editor.component';
+import {VendorDetailViewComponent} from '../record/detail-view/vendor-detail-view/vendor-detail-view.component';
+import {VendorBriefViewComponent} from '../record/brief-view/vendor-brief-view.component';
 
 @Injectable({
   providedIn: 'root'
@@ -322,6 +326,61 @@ export class RecordRoutingService {
             }
           ]
         }
+      },
+      {
+        matcher: (url) => this.routeMatcher(url, 'acq_orders'),
+        children: [
+          { path: '', component: RecordSearchComponent },
+          { path: 'detail/:pid', component: DetailComponent },
+          { path: 'edit/:pid', component: EditorComponent },
+          { path: 'new', component: EditorComponent }
+        ],
+        data: {
+          linkPrefix: 'records',
+          types: [
+            {
+              key: _('acq_orders'),
+              label: _('Orders'),
+              component: AcquisitionOrderBriefViewComponent,
+              detailComponent: AcquisitionOrderDetailViewComponent,
+              canUpdate: (record: any) => this.canUpdate(record),
+              canDelete: (record: any) => this.canDelete(record),
+              preprocessRecordEditor: (data: any) => this.preprocessAcquisitionOrder(data),
+              aggregations: (aggregations: any) => this.filter(aggregations),
+              aggregationsExpand: ['library'],
+              aggregationsOrder: [
+                _('library'),
+                _('status')
+              ],
+              aggregationsBucketSize: 10,
+              listHeaders: {
+                Accept: 'application/rero+json'
+              }
+            }
+          ]
+        }
+      },
+      {
+        matcher: (url) => this.routeMatcher(url, 'acq_order_lines'),
+        children: [
+          { path: 'detail/:pid', component: DetailComponent },
+          { path: 'edit/:pid', component: EditorComponent },
+          { path: 'new', component: EditorComponent }
+        ],
+        data: {
+          linkPrefix: 'records',
+          types: [
+            {
+              key: _('acq_order_lines'),
+              label: _('Order lines'),
+              detailComponent: AcquisitionOrderLineDetailViewComponent,
+              canAdd: () => this.canAddPatronType(),
+              canUpdate: (record: any) => this.canUpdate(record),
+              canDelete: (record: any) => this.canDelete(record),
+              preprocessRecordEditor: (data: any) => this.preprocessAcquisitionOrderLine(data)
+            }
+          ]
+        }
       }
     );
   }
@@ -377,7 +436,25 @@ export class RecordRoutingService {
   }
 
   /**
-   * Adds the $ref of the document to the item data and removes dynamic fields.
+   * Adds the $ref of the librarian organisation and current library to the data
+   * @param data - object, record data before edition
+   * @returns object, the modified record data
+   */
+  private addLibrarianLibraryAndOrganisation(data: any) {
+    const user = this.userService.getCurrentUser();
+    const orgPid = user.library.organisation.pid;
+    const libPid = user.currentLibrary;
+    if (orgPid != null && data.organisation == null) {
+      data.organisation = { $ref: this.apiService.getRefEndpoint('organisations', orgPid) };
+    }
+    if (libPid != null && data.library == null) {
+      data.library = { $ref: this.apiService.getRefEndpoint('libraries', libPid) };
+    }
+    return data;
+  }
+
+  /**
+   * Adds the $ref of the document to the item data
    * @param data - object, item data before edition
    * @returns object, the modified record data
    */
@@ -412,6 +489,32 @@ export class RecordRoutingService {
       };
     }
     return locationData;
+  }
+
+  /**
+   * Adds the $ref of the librarian organisation to the data
+   * Adds default order date to the data
+   * @param orderData - object, record data before edition
+   * @returns object, the modified record data
+   */
+  private preprocessAcquisitionOrder(orderData: any) {
+    if (orderData.order_date == null) {
+      orderData.order_date = formatDate(new Date(), 'yyyy-MM-dd', this.translateService.currentLang);
+    }
+    return this.addLibrarianLibraryAndOrganisation(orderData);
+  }
+
+  /**
+   * Adds the $ref of the library and order to the Acquisition order line
+   * @param data - object, AcqOrderLine data before edition
+   * @returns object, the modified record data
+   */
+  private preprocessAcquisitionOrderLine(orderLineData: any) {
+    const orderPid = this.route.snapshot.queryParams.order;
+    if (orderLineData.pid == null && orderPid != null && orderLineData.acq_order == null) {
+      orderLineData.acq_order = {$ref: this.apiService.getRefEndpoint('acq_orders', orderPid) };
+    }
+    return orderLineData;
   }
 
   private matchedUrl(url: UrlSegment[]) {
