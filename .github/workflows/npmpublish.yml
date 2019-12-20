@@ -1,0 +1,35 @@
+name: GPR publication
+on:
+  pull_request:
+    branches:
+    - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm ci
+
+  publish-gpr:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://npm.pkg.github.com/
+          scope: '@rero'
+      - name: GIT setup
+        run: |
+          git config --global user.email "<Johnny.Mariethoz@rero.ch>"
+          git config --global user.name "Johnny Mariéthoz"
+      - run: npm ci
+      - run: npm version patch
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
