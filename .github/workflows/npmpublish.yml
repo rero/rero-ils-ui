@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: 12
           registry-url: https://npm.pkg.github.com/
-          scope: '@rero'
+          scope: '@rero-test'
       - name: GIT setup
         run: |
           git config --global user.email "<Johnny.Mariethoz@rero.ch>"
