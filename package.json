@@ -1,6 +1,6 @@
 {
-  "name": "@rero/rero-ils-ui",
-  "version": "0.0.6",
+  "name": "@rero-test/rero-ils-ui",
+  "version": "0.0.0",
   "license": "AGPL-3.0-only",
   "author": {
     "name": "RERO",
