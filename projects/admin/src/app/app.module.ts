@@ -89,6 +89,13 @@ import {
 import {
   AcquisitionOrderLinesComponent
 } from './record/detail-view/acquisition-order-detail-view/order-lines/acquisition-order-lines.component';
+import { BudgetsBriefViewComponent } from './record/brief-view/budgets-brief-view.component';
+import { BudgetDetailViewComponent } from './record/detail-view/budget-detail-view/budget-detail-view.component';
+import { AcquisitionAccountsComponent } from './record/detail-view/budget-detail-view/acquisition-accounts/acquisition-accounts.component';
+import { AcquisitionAccountComponent } from './record/detail-view/budget-detail-view/acquisition-account/acquisition-account.component';
+import { OrganisationDetailViewComponent } from './record/detail-view/organisation-detail-view/organisation-detail-view.component';
+import { BudgetSelectComponent } from './record/detail-view/organisation-detail-view/budget-select/budget-select.component';
+import { BudgetSelectLineComponent } from './record/detail-view/organisation-detail-view/budget-select-line/budget-select-line.component';
 
 @NgModule({
   declarations: [
@@ -147,7 +154,14 @@ import {
     AcquisitionOrderDetailViewComponent,
     AcquisitionOrderBriefViewComponent,
     AcquisitionOrderLineDetailViewComponent,
-    AcquisitionOrderLinesComponent
+    AcquisitionOrderLinesComponent,
+    BudgetsBriefViewComponent,
+    BudgetDetailViewComponent,
+    AcquisitionAccountsComponent,
+    AcquisitionAccountComponent,
+    OrganisationDetailViewComponent,
+    BudgetSelectComponent,
+    BudgetSelectLineComponent
   ],
   imports: [
     AppRoutingModule,
@@ -228,7 +242,10 @@ import {
     VendorBriefViewComponent,
     AcquisitionOrderDetailViewComponent,
     AcquisitionOrderBriefViewComponent,
-    AcquisitionOrderLineDetailViewComponent
+    AcquisitionOrderLineDetailViewComponent,
+    BudgetsBriefViewComponent,
+    BudgetDetailViewComponent,
+    OrganisationDetailViewComponent
   ],
   bootstrap: [AppComponent]
 })

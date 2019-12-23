@@ -71,7 +71,7 @@
             <i class="fa fa-pencil"></i>
           </button>
 
-          <button *ngIf="!orderLine.permissions.cannot_delete" type="button" class="btn btn-link p-0 text-muted ml-1"
+          <button *ngIf="!orderLine.permissions.cannot_delete" type="button" class="btn btn-link p-0 ml-1"
                   (click)="delete(orderLine.metadata.pid)">
             <i class="fa fa-trash"></i>
           </button>
