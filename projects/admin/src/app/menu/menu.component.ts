@@ -184,6 +184,10 @@ export class MenuComponent implements OnInit {
             name: this.translateService.instant('Orders'),
             routerLink: '/records/acq_orders',
             iconCssClass: 'fa fa-shopping-cart'
+          }, {
+            name: this.translateService.instant('Budgets'),
+            routerLink: '/records/budgets',
+            iconCssClass: 'fa fa-money'
           }]
         }, {
           name: this.translateService.instant('Admin & Monitoring'),
@@ -201,7 +205,11 @@ export class MenuComponent implements OnInit {
             routerLink: '/records/patron_types',
             iconCssClass: 'fa fa-users'
           }, {
-            name: this.translateService.instant('My Library'),
+            name: this.translateService.instant('My organisation'),
+            routerLink: `/records/organisations/detail/${this.userService.getCurrentUser().library.organisation.pid}`,
+            iconCssClass: 'fa fa-university'
+          }, {
+            name: this.translateService.instant('My library'),
             routerLink: this.myLibraryRouterLink(),
             iconCssClass: 'fa fa-university'
           }, {
@@ -218,7 +226,6 @@ export class MenuComponent implements OnInit {
         (element: any) => element.routerLink.indexOf('/libraries/detail') > -1
       );
       link.routerLink = this.myLibraryRouterLink();
-
     });
   }
 

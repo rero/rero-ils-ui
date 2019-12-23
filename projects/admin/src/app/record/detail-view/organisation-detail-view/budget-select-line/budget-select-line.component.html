@@ -1,0 +1,26 @@
+<!--
+  RERO ILS UI
+   Copyright (C) 2019 RERO
+  
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, version 3 of the License.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Affero General Public License for more details.
+  
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<input
+  type="radio"
+  class="custom-control-input"
+  id="{{ budget.metadata.pid }}"
+  name="budgets"
+  attr.data-budgetname="{{ budget.metadata.name }}"
+  [checked]="isChecked(budget.metadata.pid)"
+  (click)="updateOrganisationBudgetPid($event)"
+>
+<label class="custom-control-label" for="{{ budget.metadata.pid }}">{{ budget.metadata.name }}</label>

@@ -20,10 +20,8 @@ import {Observable, of, Subscriber} from 'rxjs';
 
 import {TranslateService} from '@ngx-translate/core';
 import {marker as _} from '@biesbjerg/ngx-translate-extract-marker';
-import {ActionStatus, ApiService, DetailComponent, EditorComponent, RecordSearchComponent} from '@rero/ng-core';
-import {
-  AcquisitionOrderBriefViewComponent
-} from '../record/brief-view/acquisition-order-brief-view.component';
+import { ActionStatus, ApiService, DetailComponent, EditorComponent, RecordSearchComponent, extractIdOnRef } from '@rero/ng-core';
+import { AcquisitionOrderBriefViewComponent } from '../record/brief-view/acquisition-order-brief-view.component';
 import {
   AcquisitionOrderDetailViewComponent
 } from '../record/detail-view/acquisition-order-detail-view/acquisition-order-detail-view.component';
@@ -54,6 +52,9 @@ import {PatronDetailViewComponent} from '../record/detail-view/patron-detail-vie
 import {DocumentEditorComponent} from '../record/custom-editor/document-editor/document-editor.component';
 import {VendorDetailViewComponent} from '../record/detail-view/vendor-detail-view/vendor-detail-view.component';
 import {VendorBriefViewComponent} from '../record/brief-view/vendor-brief-view.component';
+import { BudgetsBriefViewComponent } from '../record/brief-view/budgets-brief-view.component';
+import { BudgetDetailViewComponent } from '../record/detail-view/budget-detail-view/budget-detail-view.component';
+import { OrganisationDetailViewComponent } from '../record/detail-view/organisation-detail-view/organisation-detail-view.component';
 
 @Injectable({
   providedIn: 'root'
@@ -377,12 +378,161 @@ export class RecordRoutingService {
               canAdd: () => this.canAddPatronType(),
               canUpdate: (record: any) => this.canUpdate(record),
               canDelete: (record: any) => this.canDelete(record),
-              preprocessRecordEditor: (data: any) => this.preprocessAcquisitionOrderLine(data)
+              preprocessRecordEditor: (data: any) => this.preprocessAcquisitionOrderLine(data),
+              redirectUrl: (record: any) => {
+                const acqOrderPid = extractIdOnRef(record.metadata.acq_order.$ref);
+                return of(`/records/acq_orders/detail/${acqOrderPid}`);
+              }
             }
           ]
         }
+      }, {
+      matcher: (url) => this.routeMatcher(url, 'organisations'),
+      children: [
+        { path: 'detail/:pid', component: DetailComponent },
+        { path: 'edit/:pid', component: EditorComponent }
+      ],
+      data: {
+        linkPrefix: 'records',
+        adminMode: false,
+        types: [
+          {
+            key: _('organisations'),
+            label: _('Organisations'),
+            detailComponent: OrganisationDetailViewComponent
+          }
+        ]
       }
+    }, {
+      matcher: (url) => this.routeMatcher(url, 'libraries'),
+      children: [
+        { path: '', component: RecordSearchComponent },
+        { path: 'detail/:pid', component: DetailComponent },
+        { path: 'edit/:pid', component: EditorComponent },
+        { path: 'new', component: EditorComponent }
+      ],
+      data: {
+        linkPrefix: 'records',
+        types: [
+          {
+            key: _('libraries'),
+            label: _('Libraries'),
+            component: LibrariesBriefViewComponent,
+            detailComponent: LibraryDetailViewComponent,
+            canAdd: () => this.canAddLibrary(),
+            canUpdate: (record: any) => this.canUpdate(record),
+            canDelete: (record: any) => this.canDelete(record),
+            preprocessRecordEditor: (data: any) => this.addLibrarianOrganisation(data)
+          }
+        ]
+      }
+    }, {
+      matcher: (url) => this.routeMatcher(url, 'patrons'),
+      children: [
+        { path: '', component: RecordSearchComponent },
+        { path: 'detail/:pid', component: DetailComponent },
+        { path: 'edit/:pid', component: EditorComponent },
+        { path: 'new', component: EditorComponent }
+      ],
+      data: {
+        linkPrefix: 'records',
+        types: [
+          {
+            key: _('patrons'),
+            label: _('Patrons'),
+            component: PatronsBriefViewComponent,
+            detailComponent: PatronDetailViewComponent,
+            canUpdate: (record: any) => this.canUpdate(record),
+            canDelete: (record: any) => this.canDelete(record),
+            aggregationsExpand: ['roles']
+          }
+        ]
+      }
+    }, {
+      matcher: (url) => this.routeMatcher(url, 'budgets'),
+      children: [
+        { path: '', component: RecordSearchComponent },
+        { path: 'detail/:pid', component: DetailComponent },
+        { path: 'edit/:pid', component: EditorComponent },
+        { path: 'new', component: EditorComponent }
+      ],
+      data: {
+        linkPrefix: 'records',
+        types: [
+          {
+            key: _('budgets'),
+            label: _('Budgets'),
+            component: BudgetsBriefViewComponent,
+            detailComponent: BudgetDetailViewComponent,
+            canAdd: () => this.canAddBudget(),
+            canUpdate: (record: any) => this.canUpdate(record),
+            canDelete: () => this.canNot(),
+            preCreateRecord: (data: any) => this.preCreateRecordBudget(data)
+          }
+        ]
+      }
+    }, {
+      matcher: (url) => this.routeMatcher(url, 'acq_accounts'),
+      children: [
+        { path: 'edit/:pid', component: EditorComponent },
+        { path: 'new', component: EditorComponent }
+      ],
+      data: {
+        linkPrefix: 'records',
+        types: [
+          {
+            key: _('acq_accounts'),
+            label: _('Acquisition accounts'),
+            preCreateRecord: (data: any) => this.preCreateAcqAccount(data),
+            redirectUrl: (record: any) => {
+              const budgetPid = extractIdOnRef(record.metadata.budget.$ref);
+              return of(`records/budgets/detail/${budgetPid}`);
+            }
+          }
+        ]
+      }
+    }
     );
+  }
+
+  /**
+   * Can not to disabled action
+   * @return Observable
+   */
+  private canNot() {
+    return of({ can: false, message: '' });
+  }
+
+  /**
+   * Add the $ref of organisation on a new Budget
+   * @param data - object, item data before edition
+   * @returns object, the modified record data
+   */
+  private preCreateRecordBudget(data: any) {
+    const user = this.userService.getCurrentUser();
+    data.organisation = { $ref: this.apiService.getRefEndpoint(
+      'organisations', user.library.organisation.pid
+    )};
+    return data;
+  }
+
+  /**
+   * Adds the $ref of library and budget on a new Acquisition account
+   * @param data - object, item data before edition
+   * @returns object, the modified record data
+   */
+  private preCreateAcqAccount(data: any) {
+    const user = this.userService.getCurrentUser();
+    data.organisation = { $ref: this.apiService.getRefEndpoint(
+      'organisations', user.library.organisation.pid
+    )};
+    data.library = { $ref: this.apiService.getRefEndpoint(
+      'libraries', user.currentLibrary
+    )};
+    data.budget = { $ref: this.apiService.getRefEndpoint(
+      'budgets', this.route.snapshot.queryParams.budget
+    )};
+    return data;
   }
 
   /**
@@ -579,6 +729,10 @@ export class RecordRoutingService {
   }
 
   private canAddLocation() {
+    return this.canAddSystemLibrarian();
+  }
+
+  private canAddBudget() {
     return this.canAddSystemLibrarian();
   }
 

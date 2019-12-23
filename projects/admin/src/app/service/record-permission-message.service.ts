@@ -82,6 +82,14 @@ export class RecordPermissionMessageService {
         '=1': this.translateService.instant('has 1 acquisition orders attached'),
         other: this.translateService.instant('has # acquisition orders attached')
       },
+      acq_accounts: {
+        '=1': this.translateService.instant('has 1 acquisition account attached'),
+        other: this.translateService.instant('has # acquisition accounts attached')
+      },
+      budgets: {
+        '=1': this.translateService.instant('has 1 budget attached'),
+        other: this.translateService.instant('has # budgets attached')
+      },
       circ_policies: {
         '=1': this.translateService.instant('has 1 circulation policy attached'),
         other: this.translateService.instant('has # circulation policies attached')
