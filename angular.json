@@ -28,13 +28,10 @@
               "node_modules/bootstrap/scss/bootstrap.scss",
               "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
               "node_modules/font-awesome/scss/font-awesome.scss",
-              "node_modules/datatables.net-bs/css/dataTables.bootstrap.css",
               "projects/admin/src/app/scss/styles.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
-              "./node_modules/datatables.net/js/jquery.dataTables.js",
-              "./node_modules/datatables.net-bs/js/dataTables.bootstrap.js",
               {
                 "input": "node_modules/document-register-element/build/document-register-element.js"
               }
