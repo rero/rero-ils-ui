@@ -16,30 +16,38 @@
  */
 
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { MainComponent } from './main/main.component';
+import { RouterModule, Routes } from '@angular/router';
+import { CheckoutComponent } from './checkout/checkout.component';
 import { MainRequestComponent } from './main-request/main-request.component';
-import { MainCheckinCheckoutComponent } from './main-checkin-checkout/main-checkin-checkout.component';
-import { ModificationsGuard } from './modifications.guard';
+import { LoanComponent } from './patron/loan/loan.component';
+import { MainComponent } from './patron/main/main.component';
 
 const routes: Routes = [
   {
     path: '',
+    redirectTo: 'checkout',
+    pathMatch: 'full'
+  },
+  {
+    path: 'patron/:barcode',
     component: MainComponent,
     children: [
-    {
-      path: '',
-      redirectTo: 'checkinout',
-      pathMatch: 'full'
-    }, {
-      path: 'requests',
-      component: MainRequestComponent
-    }, {
-      path: 'checkinout',
-      component: MainCheckinCheckoutComponent,
-      canDeactivate: [ModificationsGuard]
-    }
+      {
+        path: '',
+        redirectTo: 'loan',
+        pathMatch: 'full'
+      },
+      {
+        path: 'loan',
+        component: LoanComponent
+      }
     ]
+  }, {
+      path: 'checkout',
+      component: CheckoutComponent
+    }, {
+    path: 'requests',
+    component: MainRequestComponent
   }
 ];
 

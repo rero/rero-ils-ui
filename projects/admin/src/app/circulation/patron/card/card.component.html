@@ -1,21 +1,21 @@
 <!--
-  RERO ILS UI
-   Copyright (C) 2019 RERO
-  
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU Affero General Public License as published by
-   the Free Software Foundation, version 3 of the License.
-  
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-   GNU Affero General Public License for more details.
-  
-   You should have received a copy of the GNU Affero General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ RERO ILS UI
+ Copyright (C) 2019 RERO
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published by
+ the Free Software Foundation, version 3 of the License.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div m-0 *ngIf="patron">
+<div m-0 *ngIf="patron" [ngClass]="{'text-muted': !patron.displayPatronMode}">
   <div class="row">
     <div class="col-md-2 user-icon">
       <i class="fa fa-user fa-5x" aria-hidden="true"></i>
@@ -28,7 +28,7 @@
         <span *ngIf="patron.first_name">{{ patron.first_name }} </span>
       </h3>
     </div>
-    <div *ngIf="!info" class="col-md-2">
+    <div *ngIf="patron.displayPatronMode" class="col-md-2">
       <button type="button" class="btn btn-danger pull-right" (click)="clear()">
         <i class="fa fa-close" aria-hidden="true"></i>
       </button>
@@ -45,11 +45,11 @@
         </div>
         <div class="col-md-6">
           <div>
-            <span *ngIf="patron.patron_type">{{ patron.patron_type.name | translate}}</span>
+            <span *ngIf="patronType$ | async as patronType">{{ patronType }}</span>
           </div>
           <div>
             <span *ngIf="patron.barcode">
-              <a [routerLink]="['/circulation/checkinout']" [queryParams]="{ patron: patron.barcode }">{{ patron.barcode }}</a>
+              <a [routerLink]="['/circulation', 'patron', patron.barcode]">{{ patron.barcode }}</a>
             </span>
           </div>
       </div>
