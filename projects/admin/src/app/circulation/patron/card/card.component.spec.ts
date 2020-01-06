@@ -15,26 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { DateTranslatePipe } from '@rero/ng-core';
-import { RequestedItemsListComponent } from './requested-items-list.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { CardComponent } from './card.component';
 
 
-describe('RequestedItemsListComponent', () => {
-  let component: RequestedItemsListComponent;
-  let fixture: ComponentFixture<RequestedItemsListComponent>;
+describe('PatronDetailedComponent', () => {
+  let component: CardComponent;
+  let fixture: ComponentFixture<CardComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [ RequestedItemsListComponent, DateTranslatePipe ]
+      imports: [TranslateModule, RouterTestingModule, HttpClientModule],
+      declarations: [ CardComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RequestedItemsListComponent);
+    fixture = TestBed.createComponent(CardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

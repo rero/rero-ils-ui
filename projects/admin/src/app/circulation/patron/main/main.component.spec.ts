@@ -15,26 +15,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { PatronDetailedComponent } from './patron-detailed.component';
-import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { CardComponent } from '../card/card.component';
+import { MainComponent } from './main.component';
 
-describe('PatronDetailedComponent', () => {
-  let component: PatronDetailedComponent;
-  let fixture: ComponentFixture<PatronDetailedComponent>;
+
+describe('MainComponent', () => {
+  let component: MainComponent;
+  let fixture: ComponentFixture<MainComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule, RouterTestingModule],
-      declarations: [ PatronDetailedComponent ]
+      imports: [
+        TranslateModule.forRoot(),
+        RouterTestingModule,
+        HttpClientModule
+      ],
+      declarations: [ MainComponent, CardComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PatronDetailedComponent);
+    fixture = TestBed.createComponent(MainComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

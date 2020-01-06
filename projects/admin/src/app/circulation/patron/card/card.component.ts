@@ -15,20 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { User } from '../../class/user';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { RecordService } from '@rero/ng-core';
+import { map } from 'rxjs/operators';
+import { User } from '../../../class/user';
 
 @Component({
   selector: 'admin-circulation-patron-detailed',
-  templateUrl: './patron-detailed.component.html',
-  styleUrls: ['./patron-detailed.component.scss']
+  templateUrl: './card.component.html',
+  styleUrls: ['./card.component.scss']
 })
-export class PatronDetailedComponent {
+export class CardComponent implements OnInit {
   @Input() patron: User;
   @Output() clearPatron = new EventEmitter<User>();
-  @Input() info: boolean;
+  patronType$: any;
 
-  constructor() { }
+  constructor(private recordService: RecordService) { }
+
+  ngOnInit() {
+    if (this.patron) {
+      this.patronType$ = this.recordService.getRecord('patron_types', this.patron.patron_type.pid).pipe(
+        map(patronType => patronType.metadata.name)
+      );
+    }
+  }
 
   clear() {
     if (this.patron) {
