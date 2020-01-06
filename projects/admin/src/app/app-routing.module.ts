@@ -16,7 +16,7 @@
  */
 
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { FrontpageComponent } from './frontpage/frontpage.component';
 import { RecordRoutingService } from './service/record-routing.service';
 
@@ -24,7 +24,8 @@ const routes: Routes = [
   {
     path: '',
     component: FrontpageComponent
-  }, {
+  },
+  {
     path: 'circulation',
     loadChildren: () => import('./circulation/circulation.module').then(m => m.CirculationModule)
   }

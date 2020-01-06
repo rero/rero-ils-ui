@@ -16,12 +16,10 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../service/user.service';
-import { CoreConfigService, RecordService, LocalStorageService } from '@rero/ng-core';
-import { TranslateService as CoreTranslateService} from '@rero/ng-core';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
+import { CoreConfigService, LocalStorageService, RecordService, TranslateService as CoreTranslateService } from '@rero/ng-core';
 import { LibrarySwitchService } from '../service/library-switch.service';
+import { UserService } from '../service/user.service';
 
 @Component({
   selector: 'admin-menu',
@@ -152,6 +150,10 @@ export class MenuComponent implements OnInit {
             name: this.translateService.instant('Circulation'),
             routerLink: '/circulation',
             iconCssClass: 'fa fa-exchange'
+          }, {
+            name: this.translateService.instant('Requests'),
+            routerLink: '/circulation/requests',
+            iconCssClass: 'fa fa-truck'
           }, {
             name: this.translateService.instant('Patrons'),
             routerLink: '/records/patrons',

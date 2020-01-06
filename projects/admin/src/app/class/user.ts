@@ -37,6 +37,8 @@ export class User {
   barcode?: string;
   items?: any[];
   patron_type?: PatronType;
+  is_logged = false;
+  displayPatronMode = true;
   currentLibrary: string;
 
   static readonly STORAGE_KEY = 'user';
