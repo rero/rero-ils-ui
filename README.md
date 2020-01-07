@@ -110,3 +110,7 @@ Commands:
   * `npm run public-search_update_catalog`: same as admin, but for **public-search** project
   * `npm run extract_messages`: launch **admin\_extract\_messages** and **public-search\_extract\_messages** commands
   * `npm run update_catalog`: launch **public-search\_update\_catalog** and **admin\_update\_catalog** commands
+
+# Github Package Registry
+
+This project is published on GPR on pull request.
