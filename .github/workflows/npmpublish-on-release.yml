@@ -1,0 +1,27 @@
+name: publish on npm on release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://registry.npmjs.org/
+          scope: 'rero'
+      - run: npm ci
+      - run: ./run-tests.sh
+        env:
+          CI: true
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_auth_token}}
