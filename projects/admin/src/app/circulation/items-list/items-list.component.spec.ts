@@ -20,7 +20,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ItemsListComponent } from './items-list.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { DateTranslatePipe } from '@rero/ng-core';
+import { CoreModule, RecordModule } from '@rero/ng-core';
+import { ItemComponent } from '../item/item.component';
+import { HttpClientModule } from '@angular/common/http';
+import { CollapseModule } from 'ngx-bootstrap';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ItemsListComponent', () => {
   let component: ItemsListComponent;
@@ -28,8 +32,19 @@ describe('ItemsListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, TranslateModule],
-      declarations: [ ItemsListComponent, DateTranslatePipe ]
+      imports: [
+        RouterTestingModule,
+        TranslateModule,
+        CoreModule,
+        RecordModule,
+        HttpClientModule,
+        CollapseModule,
+        BrowserAnimationsModule
+      ],
+      declarations: [
+        ItemsListComponent,
+        ItemComponent
+      ]
     })
     .compileComponents();
   }));

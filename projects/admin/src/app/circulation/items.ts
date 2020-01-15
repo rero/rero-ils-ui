@@ -18,10 +18,10 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-import { Moment } from 'moment';
-import * as moment from 'moment';
-import { User } from '../class/user';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import * as moment from 'moment';
+import { Moment } from 'moment';
+import { User } from '../class/user';
 
 export function _(str) {
   return marker(str);
@@ -81,6 +81,7 @@ export class Loan {
   start_date?: Moment;
   end_date?: Moment;
   request_expire_date?: Moment;
+  pickup_location_pid?: string;
   constructor(obj?: any) {
     Object.assign(this, obj);
     this.request_expire_date = this.convertToMoment(this.request_expire_date);
@@ -133,6 +134,7 @@ export class Item {
   actions: ItemAction[];
   pending_loans: Loan[];
   number_of_extensions: number;
+  location: any;
 
   constructor(obj?: any) {
     Object.assign(this, obj);

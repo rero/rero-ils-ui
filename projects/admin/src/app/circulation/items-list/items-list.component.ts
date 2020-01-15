@@ -15,50 +15,73 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { ItemAction } from '../items';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { User } from '../../class/user';
+import { ItemAction } from '../items';
 
 
 @Component({
   selector: 'admin-circulation-items-list',
-  templateUrl: './items-list.component.html',
-  styleUrls: ['./items-list.component.scss']
+  templateUrl: './items-list.component.html'
 })
 export class ItemsListComponent {
 
-  @Input() items: any[];
+  /** Items of the checked out list */
+  @Input() checkedOutItems: any[];
+
+  /** Items of the checked in list */
+  @Input() checkedInItems: any[];
+
+  /** Current patron */
   @Input() patron: User;
-  @Output() applyItems = new EventEmitter<any[]>();
 
-  viewcode = undefined;
+  /** Extend (renew) all event emitter */
+  @Output() extendAllLoansClicked = new EventEmitter<any[]>();
 
+  /** Extend loan event emitter */
+  @Output() extendLoanClicked = new EventEmitter<any[]>();
+
+  /** Extend loan item action */
+  extendLoan = ItemAction.extend_loan;
+
+   /** Checkin item action */
+  checkin = ItemAction.checkin;
+
+   /** Checkout item action */
+  checkout = ItemAction.checkout;
+
+  /** Constructor */
   constructor(
   ) {
-    this.items =  null;
+    this.checkedOutItems = null;
   }
 
-  apply(items: any[]) {
-     if (items.length) {
-      this.applyItems.emit(items);
-    }
+  /** Extend loan
+   * @param event: event
+   * @param item: current item
+   */
+  extendLoanClick(event: any, item) {
+    item.currentAction = ItemAction.extend_loan;
+    this.extendLoanClicked.emit(item);
   }
 
-  warningRequests(item) {
-    if (this.patron) {
-      return item.hasRequests
-          && (item.currentAction === ItemAction.checkin);
-    } else {
-      return item.hasRequests;
-    }
+  /** Extend all */
+  extendAllLoansClick() {
+    this.extendAllLoansClicked.emit(this.loansToExtend.map(item => {
+      item.currentAction = ItemAction.extend_loan;
+      return item;
+    }));
   }
 
-  hasPendingActions() {
-    if (this.patron) {
-      if (this.items.filter(item => item.currentAction !== ItemAction.no).length > 0) {
-        return true;
-      }
-    }
-    return false;
+  /** Get loans that can be extended */
+  get loansToExtend() {
+    return this.checkedOutItems.filter(item => item.actions.includes(ItemAction.extend_loan));
+  }
+
+  /** Check if current loan has fees
+   * @param event: value received from child component
+   */
+   hasFees(event: boolean) {
+    return event;
   }
 }

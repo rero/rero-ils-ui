@@ -22,6 +22,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule, RecordModule } from '@rero/ng-core';
 import { ItemsListComponent } from '../../items-list/items-list.component';
 import { LoanComponent } from './loan.component';
+import { ItemComponent } from '../../item/item.component';
+import { ItemsService } from '../../items.service';
+import { ToastrService } from 'ngx-toastr';
+import { CollapseModule } from 'ngx-bootstrap';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 describe('LoanComponent', () => {
@@ -35,9 +40,14 @@ describe('LoanComponent', () => {
         CoreModule,
         RecordModule,
         RouterTestingModule,
-        HttpClientModule
+        HttpClientModule,
+        CollapseModule,
+        BrowserAnimationsModule
       ],
-      declarations: [ LoanComponent, ItemsListComponent ]
+      declarations: [
+        LoanComponent,
+        ItemsListComponent,
+        ItemComponent ]
     })
     .compileComponents();
   }));

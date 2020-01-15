@@ -16,14 +16,12 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { User } from '../../../class/user';
 import { PatronService } from '../../../service/patron.service';
-import { UserService } from '../../../service/user.service';
-import { Item, ItemAction, ItemStatus } from '../../items';
+import { Item, ItemAction } from '../../items';
 import { ItemsService } from '../../items.service';
 
 @Component({
@@ -34,18 +32,30 @@ export class LoanComponent implements OnInit {
   public placeholder: string = this.translate.instant(
     'Please enter an item barcode.'
   );
+  /** Search text (barcode) entered in search input */
   public searchText = '';
+
+  /** Current patron */
   public patron: User;
+
+  /** Is loading */
   public isLoading = false;
 
-  private loggedUser: User;
+  /** List of checked out items */
+  public checkedOutItems = [];
 
-  public items: Item[] = [];
+  /** List of checked in items */
+  public checkedInItems = [];
 
+  /**
+   * Constructor
+   * @param itemsService: Items Service
+   * @param translate: Translate Service
+   * @param toastService: Toastr Service
+   * @param patronService: Patron Service
+   */
   constructor(
-    private userService: UserService,
     private itemsService: ItemsService,
-    private route: ActivatedRoute,
     private translate: TranslateService,
     private toastService: ToastrService,
     private patronService: PatronService
@@ -53,73 +63,36 @@ export class LoanComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loggedUser = this.userService.getCurrentUser();
     this.patronService.currentPatron$.subscribe(patron => {
       this.patron = patron;
       if (patron) {
         this.isLoading = true;
         this.patronService.getItems(patron.pid).subscribe(items => {
-          this.items = items;
+          this.checkedOutItems = items;
           this.isLoading = false;
-          const itemBarcode = this.route.snapshot.queryParamMap.get('item_barcode');
-          if (itemBarcode != null) {
-            this.getItem(itemBarcode);
-          }
         });
       }
     });
   }
 
+  /** Search value with search input
+   * @param searchText: value to search for (barcode)
+   */
   searchValueUpdated(searchText: string) {
     if (!searchText) {
       return null;
     }
+    this.isLoading = true;
     this.searchText = searchText;
     this.getItem(searchText);
   }
 
-  /**
-   * This method check if operation can be done by current logged user for a specific item
-   * @param item: the item to check
-   * @param action: check if this action if allowed on this item
-   * @return `false` if user or operation is not allowed, `true` otherwise
+  /** Check item availability and set current action
+   * @param barcode: barcode of the item to get
    */
-  private allowActionOnItem(item: Item, action: ItemAction = null): boolean {
-    // check if item and current logged user are from the same organisation
-    if (this.loggedUser.library.organisation.pid !== item.organisation.pid) {
-      this.toastService.warning(
-        this.translate.instant(
-          'No action allowed: the item belongs to another organisation.'
-        ),
-        this.translate.instant('Checkin')
-      );
-      return false;
-    }
-    if (action) {
-      // check if operation has allowed on this item
-      if (item.actions.length === 1 && item.actions[0] === ItemAction.no) {
-        this.toastService.warning(
-          this.translate.instant('No action possible on this item!'),
-          this.translate.instant('Checkout')
-        );
-        return false;
-      }
-      // check if action passed in params is allowed for this item
-      if (!item.actions.includes(action)) {
-        this.toastService.warning(
-          this.translate.instant('This action is not allowed for this item'),
-          this.translate.instant((action as unknown) as string)
-        );
-        return false;
-      }
-    }
-    return true;
-  }
-
   getItem(barcode: string) {
-    // check if item is already in the user items list. If yes, this is a check-in operation
-    const item = this.items.find(currItem => currItem.barcode === barcode);
-    if (item && this.allowActionOnItem(item)) {
+    const item = this.checkedOutItems.find(currItem => currItem.barcode === barcode);
+    if (item && item.actions.includes(ItemAction.checkin)) {
       item.currentAction = ItemAction.checkin;
       this.searchText = '';
     } else {
@@ -137,32 +110,30 @@ export class LoanComponent implements OnInit {
                 this.translate.instant('Checkin')
               );
             } else {
-              if (
-                newItem.actions.length === 1 &&
-                newItem.actions.indexOf(ItemAction.no) > -1
-              ) {
-                this.toastService.warning(
-                  this.translate.instant('No action possible on this item!'),
-                  this.translate.instant('Checkin')
-                );
-              } else {
-                newItem.currentAction = ItemAction.checkout;
-                this.items.unshift(newItem);
-                this.searchText = '';
-              }
+              newItem.currentAction = ItemAction.checkout;
+              this.applyItems([newItem]);
             }
           }
+          this.isLoading = false;
         },
-        error =>
+        error => {
           this.toastService.error(
             error.message,
-            this.translate.instant('Checkin')
-          ),
-        () => console.log('loan success')
+            this.translate.instant('Checkout')
+          );
+          this.isLoading = false;
+        },
+        () => {
+          console.log('loan success');
+          this.isLoading = false;
+        }
       );
     }
   }
 
+  /** Dispatch items between checked in and checked out items
+   * @param items: checked in and checked out items
+   */
   applyItems(items: Item[]) {
     const observables = [];
     for (const item of items) {
@@ -172,32 +143,28 @@ export class LoanComponent implements OnInit {
     }
     forkJoin(observables).subscribe(
       newItems => {
-        this.items = this.items
-          .map(item => {
-            const newItem = newItems
-              .filter(currItem => currItem.pid === item.pid)
-              .pop();
-            if (newItem) {
-              if (newItem.status === ItemStatus.IN_TRANSIT) {
-                this.toastService.success(
-                  this.translate.instant('The item is ') +
-                    this.translate.instant(newItem.status),
-                  this.translate.instant('Checkin')
-                );
-              } else {
-                if (newItem.status === ItemStatus.AT_DESK) {
-                  this.toastService.success(
-                    this.translate.instant('The item is ') +
-                      this.translate.instant(newItem.status),
-                    this.translate.instant('Checkin')
-                  );
-                }
-              }
-              return newItem;
+        newItems.map(newItem => {
+          switch (newItem.actionDone) {
+            case ItemAction.checkin: {
+              this.checkedOutItems = this.checkedOutItems.filter(currItem => currItem.pid !== newItem.pid);
+              this.checkedInItems.unshift(newItem);
+              break;
             }
-            return item;
-          })
-          .filter(item => item.status === ItemStatus.ON_LOAN);
+            case ItemAction.checkout: {
+              this.checkedOutItems.unshift(newItem);
+              this.checkedInItems = this.checkedInItems.filter(currItem => currItem.pid !== newItem.pid);
+              break;
+            }
+            case ItemAction.extend_loan: {
+              const index = this.checkedOutItems.findIndex(currItem => currItem.pid === newItem.pid);
+              this.checkedOutItems[index] = newItem;
+              break;
+            }
+          }
+        });
+        this.isLoading = false;
+        this.searchText = '';
+        // TODO set focus in search input (enhancement, needs to adapt ng-core)
       },
       err => {
         let errorMessage = '';
@@ -212,5 +179,4 @@ export class LoanComponent implements OnInit {
       }
     );
   }
-
 }
