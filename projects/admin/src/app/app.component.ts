@@ -15,16 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UserService } from './service/user.service';
-import { AppConfigService } from './service/app-config.service';
-import { TranslateService, LocalStorageService } from '@rero/ng-core';
-import { User } from './class/user';
-import { Router, NavigationStart } from '@angular/router';
-import { filter } from 'rxjs/operators';
-import { LibrarySwitchService } from './service/library-switch.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NavigationStart, Router } from '@angular/router';
+import { LocalStorageService, TranslateService } from '@rero/ng-core';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { User } from './class/user';
+import { AppConfigService } from './service/app-config.service';
+import { LibrarySwitchService } from './service/library-switch.service';
 import { OrganisationService } from './service/organisation.service';
+import { UserService } from './service/user.service';
 
 @Component({
   selector: 'admin-root',

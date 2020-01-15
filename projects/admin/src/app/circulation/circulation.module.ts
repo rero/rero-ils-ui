@@ -15,19 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RecordModule } from '@rero/ng-core';
-import { BsDropdownModule } from 'ngx-bootstrap';
+import { BsDropdownModule, CollapseModule } from 'ngx-bootstrap';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { CirculationRoutingModule } from './circulation-routing.module';
+import { ItemComponent } from './item/item.component';
 import { ItemsListComponent } from './items-list/items-list.component';
 import { MainRequestComponent } from './main-request/main-request.component';
 import { CardComponent } from './patron/card/card.component';
 import { LoanComponent } from './patron/loan/loan.component';
 import { MainComponent } from './patron/main/main.component';
 import { RequestedItemsListComponent } from './requested-items-list/requested-items-list.component';
-
 
 @NgModule({
   declarations: [
@@ -37,12 +38,14 @@ import { RequestedItemsListComponent } from './requested-items-list/requested-it
     CardComponent,
     ItemsListComponent,
     LoanComponent,
-    CheckoutComponent
+    CheckoutComponent,
+    ItemComponent
   ],
   imports: [
     CommonModule,
     CirculationRoutingModule,
     BsDropdownModule.forRoot(),
+    CollapseModule.forRoot(),
     RecordModule
   ]
 })

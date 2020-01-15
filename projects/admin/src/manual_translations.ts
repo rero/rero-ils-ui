@@ -85,3 +85,8 @@ _('requested');
 _('pending');
 _('received');
 
+// Notifications
+_('due_soon');
+_('overdue');
+_('availability');
+_('recall');
