@@ -23,6 +23,9 @@ import { CoreModule, RecordModule } from '@rero/ng-core';
 import { ItemsListComponent } from '../items-list/items-list.component';
 import { CardComponent } from '../patron/card/card.component';
 import { CheckoutComponent } from './checkout.component';
+import { ItemComponent } from '../item/item.component';
+import { CollapseModule } from 'ngx-bootstrap';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 describe('CheckoutComponent', () => {
@@ -36,9 +39,16 @@ describe('CheckoutComponent', () => {
         CoreModule,
         RecordModule,
         HttpClientModule,
-        RouterTestingModule
+        RouterTestingModule,
+        CollapseModule,
+        BrowserAnimationsModule
       ],
-      declarations: [ CardComponent, CheckoutComponent, ItemsListComponent ]
+      declarations: [
+        CardComponent,
+        CheckoutComponent,
+        ItemsListComponent,
+        ItemComponent
+      ]
     })
     .compileComponents();
   }));
