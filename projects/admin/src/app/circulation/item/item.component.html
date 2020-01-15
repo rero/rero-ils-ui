@@ -1,0 +1,74 @@
+<!--
+  RERO ILS UI
+   Copyright (C) 2019 RERO
+  
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, version 3 of the License.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Affero General Public License for more details.
+  
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="item">
+  <!-- BARCODE -->
+  <div class="col-lg-3">
+    <button type="button" class="pl-0 pt-0 btn" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed"
+      aria-controls="collapse">
+      <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" class="fa" aria-hidden="true"></i>
+    </button>
+    <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+  </div>
+  <!-- TITLE -->
+  <div class="col-lg-6"><a [routerLink]="['/records','documents','detail', item.document.pid]">{{ item.document.title | truncateText: 12 }}</a>
+  </div>
+  <!-- CIRCULATION INFO -->
+  <div class="col-lg-3">
+    <ul class="list-unstyled mb-0">
+      <ng-container [ngSwitch]="item.status">
+        <li *ngSwitchCase="'on_loan'">{{ item.status | translate }} <i class="fa fa-arrow-right" aria-hidden="true"></i>
+          {{ item.loan.dueDate | dateTranslate :'shortDate' }}</li>
+        <li *ngSwitchCase="'in_transit'">{{ item.status | translate }} (to
+          {{ getTransitLocationPid(item) | getRecord: 'locations' : 'field' : 'code' | async }})</li>
+        <li *ngSwitchCase="'on_shelf'">{{ item.status | translate }}</li>
+        <li *ngSwitchDefault>{{ item.status | translate }}</li>
+      </ng-container>
+      <!-- RENEWALS, FEES, REQUESTS -->
+      <li>
+        <span title="{{'Renewals' | translate }}" class="badge badge-secondary font-weight-normal mr-1" *ngIf="item.loan && item.loan.extension_count">
+          {{ item.loan.extension_count }} <i class="fa fa-refresh"></i>
+        </span>
+        <span title="{{'Fees' | translate }}" class="badge badge-secondary font-weight-normal mr-1" *ngIf="totalAmountOfFee > 0">
+          {{ totalAmountOfFee | currency: organisation.default_currency }}</span>
+        <span title="{{'Requests' | translate }}" class="badge badge-secondary font-weight-normal mr-1" *ngIf="item.pending_loans && item.pending_loans.length">
+          {{ item.pending_loans.length }} <i class="fa fa-exclamation-circle"></i>
+        </span>
+      </li>
+    </ul>
+  </div>
+  <!-- COLLAPSED DETAILS -->
+  <div class="col-sm-6 mt-2">
+    <ul class="list-unstyled mb-0" id="collapse" [collapse]="isCollapsed" [isAnimated]="true">
+      <li>{{ 'Location' | translate }}:
+        {{ item.loan.pickup_location_pid | getRecord: 'locations' : 'field' : 'code' | async }} {{ item.location.name }}
+      </li>
+      <li *ngIf="item.loan && item.loan.extension_count">{{ 'Renewals' | translate }}: {{ item.loan.extension_count }}
+      </li>
+      <li *ngIf="totalAmountOfFee > 0">{{ 'Fees' | translate }}:
+        {{ totalAmountOfFee | currency: organisation.default_currency }}</li>
+      <li *ngIf="notifications && notifications.length > 0">{{ 'Notifications' | translate }}:
+        <ul class="list-unstyled pl-2 mb-0">
+          <li *ngFor="let notification of notifications">
+            {{ notification.metadata.process_date | dateTranslate :'shortDate' }}:
+            {{ notification.metadata.notification_type | translate}}</li>
+        </ul>
+      </li>
+      <li *ngIf="item.pending_loans">{{ 'Requests' | translate }}: {{ item.pending_loans.length }}</li>
+      <li *ngIf="item.pending_loans">{{ 'For' | translate }}: {{ item.pending_loans[0].patron.name }}</li>
+    </ul>
+  </div>
+</ng-container>

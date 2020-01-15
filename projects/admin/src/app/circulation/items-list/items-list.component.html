@@ -15,66 +15,86 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div *ngIf="items && items.length === 0 && patron">
+<div *ngIf="checkedOutItems && checkedOutItems.length === 0 && patron">
   <span translate>No loan for the current patron.</span>
 </div>
-<div *ngIf="items && items.length">
-  <table class="table table-bordered">
-    <tr>
-      <th scope="col" translate>Document</th>
-      <th scope="col" class="text-center" translate>Item</th>
-      <th scope="col" class="text-center" translate>Location</th>
-      <th scope="col" class="text-center" translate>Status</th>
-      <th scope="col" class="text-center" translate>Item infos</th>
-      <th scope="col" class="text-center" translate>Due date</th>
-      <th scope="col" class="text-center" *ngIf="patron" translate>Action</th>
-      <th scope="col" class="text-center" translate>Action done</th>
-    </tr>
-    <tr *ngFor="let item of items" [ngClass]="{
-          'table-success': item.isActionLoan(patron),
-          'table-warning': item.isActionReturn(patron)
-        }">
-      <td><a [routerLink]="['/records/documents/detail', item.document.pid]">{{ item.document.title }}</a></td>
-      <td class="text-right"><a [routerLink]="['/records/items/detail', item.pid]">{{ item.barcode }}</a></td>
-      <td class="text-right">{{ item.location.name }}</td>
-      <td class="text-right">{{ item.status | translate}}</td>
-      <td class="text-right">
-        <div *ngIf="item.requestedPosition(patron)">
-          <i *ngIf="warningRequests(item)" class="fa text-danger fa-exclamation-triangle">&nbsp;</i>
-          {{ 'Request position' | translate }}: {{ item.requestedPosition(patron) }}
+<div *ngIf="(checkedOutItems && checkedOutItems.length > 0) || (checkedInItems && checkedInItems.length > 0)">
+  <!-- HEADER -->
+  <div class="row mb-1 align-items-center">
+    <div class="col mr-1 d-none d-lg-block">
+      <div class="row p-2 bg-dark rounded text-light">
+        <div class="col-lg-3" translate>Item</div>
+        <div class="col-lg-6" translate>Document</div>
+        <div class="col-lg-3" translate>Circulation info</div>
+      </div>
+    </div>
+    <!-- RENEW ALL -->
+    <div *ngIf="patron" class="col-sm-2 pl-0">
+      <div class="text-left">
+        <button class="btn btn-primary d-none d-lg-block"
+        (click)="extendAllLoansClick()"
+        [disabled]="loansToExtend.length < 1"
+        translate>Renew all</button>
+      </div>
+    </div>
+  </div>
+  <!-- CHECKED OUT ITEMS -->
+  <div class="row align-items-start" *ngFor="let item of checkedOutItems">
+    <!-- CONTENT -->
+    <div class="col mr-1">
+      <admin-item [patron]="patron" [item]="item" class="row p-2 mb-1 border rounded align-middle"
+        (hasFees)="hasFees($event)">
+      </admin-item>
+    </div>
+    <div *ngIf="patron" class="col-md-2 text-left pl-0 mb-2">
+      <!-- EXTEND LOAN -->
+      <button id="button-basic" class="btn btn-secondary btn-sm mr-1 d-md-block" type="button"
+      [disabled]="!item.actions.includes(extendLoan)" (click)="extendLoanClick($event, item)" translate>
+      extend_loan
+      </button>
+      <!-- ACTION DONE -->
+        <ng-container *ngIf="item.actionDone" [ngSwitch]="item.actionDone">
+          <ng-container *ngSwitchCase="checkin">
+            <i class="fa fa-arrow-circle-o-down text-success align-baseline" aria-hidden="true"></i>
+            <span class="align-baseline ml-1">{{ item.actionDone | translate }}</span>
+          </ng-container>
+          <ng-container *ngSwitchCase="checkout">
+            <i class="fa fa-arrow-circle-o-right text-success align-baseline" aria-hidden="true"></i>
+            <span class="align-baseline ml-1">{{ item.actionDone | translate }}</span>
+          </ng-container>
+          <ng-container *ngSwitchCase="extendLoan">
+            <i class="fa fa-refresh text-success align-baseline" aria-hidden="true"></i>
+            <span class="align-baseline ml-1" translate>renew</span>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            <span class="align-baseline">{{ item.actionDone | translate }}</span>
+          </ng-container>
+        </ng-container>
+    </div>
+  </div>
+  <!-- CHECKED IN ITEMS  : RED BORDER FOR TRANSIT, REQUEST OR FEE | GREYED BY DEFAULT-->
+  <div class="row align-items-start" *ngFor="let item of checkedInItems">
+    <div class="col">
+      <admin-item [patron]="patron" [item]="item"
+        [ngClass]="{'border-danger': item.status === 'in_transit' || item.pending_loans || hasFees($event)}"
+        class="row p-2 mb-1 border border-secondary rounded align-middle text-secondary" (hasFees)="hasFees($event)">
+      </admin-item>
+    </div>
+    <div *ngIf="patron" class="col-md-2">
+      <!-- ACTION DONE -->
+      <div *ngIf="item.actionDone">
+        <div [ngSwitch]="item.actionDone">
+          <div *ngSwitchCase="'checkin'"><i class="fa fa-arrow-circle-o-down text-success align-middle"
+              aria-hidden="true"></i><span class="align-middle ml-1">{{ item.actionDone | translate }}</span>
+          </div>
+          <div *ngSwitchCase="'checkout'"><i class="fa fa-arrow-circle-o-righttext-success align-middle"
+              aria-hidden="true"></i><span class="align-middle ml-1">{{ item.actionDone | translate }}</span>
+          </div>
+          <div *ngSwitchCase="'extend_loan'"><i class="fa fa-refresh text-success align-middle"
+              aria-hidden="true"></i><span class="align-middle ml-1" translate>renew</span></div>
+          <div *ngSwitchDefault><span class="align-middle">{{ item.actionDone | translate }}</span></div>
         </div>
-        <span *ngIf="item && item.pending_loans && item.pending_loans.length">
-          {{ 'Requests' | translate }}: {{ item.pending_loans.length }}
-        </span>
-        <span *ngIf="item.loan && item.loan.extension_count">
-          {{ 'Extension' | translate }}: {{ item.loan.extension_count }}
-        </span>
-      </td>
-      <td class="text-right">
-        <span [ngClass]="{'text-danger': item.loan.expired}" *ngIf="item.loan && item.loan.dueDate">
-          {{ item.loan.dueDate | dateTranslate :'longDate' }}
-        </span>
-      </td>
-      <td class="text-right" *ngIf="patron">
-        <div class="btn-group" dropdown *ngIf="item.actions.length">
-          <button id="button-basic" class="btn btn-light btn-sm dropdown-toggle" type="button" id="dropdownMenuButton"
-            aria-controls="dropdown-basic" dropdownToggle [ngClass]="{'disabled': item.actions.length < 1}">
-            {{ item.currentAction | translate }}
-          </button>
-          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
-            <li role="menuitem" *ngFor="let action of item.actions"><a class="dropdown-item"
-                (click)="item.currentAction = action">{{ action | translate }}</a></li>
-          </ul>
-        </div>
-      </td>
-      <td class="text-right">
-        <span *ngIf="item.actionDone">{{ item.actionDone | translate }} <i class="fa fa-check text-success"></i> </span>
-      </td>
-    </tr>
-  </table>
-
-  <button *ngIf="patron" [disabled]="!hasPendingActions()" type="button" class="btn btn-success pull-right"
-    (click)="apply(items)" translate>
-    Apply
-  </button>
+      </div>
+    </div>
+  </div>
 </div>

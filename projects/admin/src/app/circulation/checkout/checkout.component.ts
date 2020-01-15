@@ -16,9 +16,9 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { DialogService, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
 import { map } from 'rxjs/operators';
 import { User } from '../../class/user';
@@ -46,14 +46,21 @@ export class CheckoutComponent implements OnInit {
     return this._itemsList;
   }
 
+  /** Constructor
+   * @param  userService: User Service
+   * @param  recordService: Record Service
+   * @param  itemsService: Items Service
+   * @param  router: Router
+   * @param  translate: Translate Service
+   * @param  toastService: Toastr Service
+   * @param  patronService: Patron Service
+   */
   constructor(
     private userService: UserService,
     private recordService: RecordService,
     private itemsService: ItemsService,
-    private route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
-    private dialogService: DialogService,
     private toastService: ToastrService,
     private patronService: PatronService
   ) {}
@@ -65,6 +72,9 @@ export class CheckoutComponent implements OnInit {
     );
   }
 
+  /** Search value with search input
+   * @param searchText: value to search for (barcode)
+   */
   searchValueUpdated(searchText: string) {
     if (!searchText) {
       return null;
@@ -73,14 +83,10 @@ export class CheckoutComponent implements OnInit {
     this.getPatronOrItem(searchText);
   }
 
+  /** Apply checkin and checkout automatically
+   * @param itemBarcode: item barcode
+   */
   automaticCheckinCheckout(itemBarcode) {
-    // this.patronService.getItem(itemBarcode).subscribe(item => {
-    //   this._itemsList.unshift(item);
-    //   this.searchText = '';
-    //   this.getPatronInfo(item.loan['patron'].barcode);
-    // });
-
-    // return;
     this.itemsService.automaticCheckin(itemBarcode).subscribe(item => {
       // TODO: remove this when policy will be in place
       if (
@@ -156,6 +162,9 @@ export class CheckoutComponent implements OnInit {
     return true;
   }
 
+  /** Get patron information
+   * @param barcode: item barcode
+   */
   getPatronInfo(barcode) {
     if (barcode) {
       this.isLoading = true;
@@ -176,6 +185,9 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
+  /** Get patron or item when entering a barcode
+   * @param barcode: item or patron barcode
+   */
   getPatronOrItem(barcode: string) {
     if (barcode) {
       this.isLoading = true;

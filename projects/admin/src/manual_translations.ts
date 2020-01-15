@@ -68,3 +68,9 @@ _('bf:Production');
 _('librarian');
 _('patron');
 _('system_librarian');
+
+// Notifications
+_('due_soon');
+_('overdue');
+_('availability');
+_('recall');
