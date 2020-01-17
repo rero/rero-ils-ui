@@ -24,6 +24,7 @@ import { Router, NavigationStart } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { LibrarySwitchService } from './service/library-switch.service';
 import { Subscription } from 'rxjs';
+import { OrganisationService } from './service/organisation.service';
 
 @Component({
   selector: 'admin-root',
@@ -61,7 +62,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private translateService: TranslateService,
     private localStorageService: LocalStorageService,
     private librarySwitchService: LibrarySwitchService,
-    private router: Router
+    private router: Router,
+    private organisationService: OrganisationService
     ) {
       this.initializeEvents();
     }
@@ -101,21 +103,28 @@ export class AppComponent implements OnInit, OnDestroy {
         );
       }
       if (this.access) {
-        if (!this.localStorageService.has(User.STORAGE_KEY)) {
-          this.localStorageService.set(User.STORAGE_KEY, user);
-        } else {
-          const userLocal = this.localStorageService.get(User.STORAGE_KEY);
-          if (userLocal.pid !== user.pid) {
-            this.localStorageService.set(User.STORAGE_KEY, user);
-          }
-          const locale = this.localStorageService.get(User.STORAGE_KEY);
-          user.setCurrentLibrary(locale.currentLibrary);
-        }
-        this.librarySwitchService.switch(
-          user.getCurrentLibrary()
+        this.organisationService.loadOrganisationByPid(
+          user.library.organisation.pid
         );
+        this.organisationService.onOrganisationLoaded.subscribe(() => {
+          if (!this.localStorageService.has(User.STORAGE_KEY)) {
+            this.localStorageService.set(User.STORAGE_KEY, user);
+          } else {
+            const userLocal = this.localStorageService.get(User.STORAGE_KEY);
+            if (userLocal.pid !== user.pid) {
+              this.localStorageService.set(User.STORAGE_KEY, user);
+            }
+            const locale = this.localStorageService.get(User.STORAGE_KEY);
+            user.setCurrentLibrary(locale.currentLibrary);
+          }
+          this.librarySwitchService.switch(
+            user.getCurrentLibrary()
+          );
+          this.user = user;
+        });
+      } else {
+        this.user = user;
       }
-      this.user = user;
     }));
 
     this._subcription.add(this.router.events.pipe(
