@@ -50,12 +50,9 @@
   "Closed": "Closed",
   "Code": "Code",
   "Code is already taken.": "Code is already taken.",
-<<<<<<< HEAD
   "Communication language": "Communication language",
   "Confirmation": "Confirmation",
   "Contact person": "Contact person",
-=======
->>>>>>> circulation: adapt ui
   "Copyright date": "Copyright date",
   "Country": "Country",
   "Create a bibliographic record": "Create a bibliographic record",
@@ -90,6 +87,8 @@
   "Enter an EAN": "Enter an EAN",
   "Exception": "Exception",
   "Exceptions (holidays, etc.)": "Exceptions (holidays, etc.)",
+  "Expected availability": "Expected availability",
+  "Extension": "Extension",
   "Fees": "Fees",
   "First reminder days": "First reminder days",
   "First reminder days is required.": "First reminder days is required.",
@@ -169,6 +168,7 @@
   "Physical description": "Physical description",
   "Pick-up Location": "Pick-up Location",
   "Pickup": "Pickup",
+  "Pickup location": "Pickup location",
   "Pickup location name": "Pickup location name",
   "Please enter a patron card number or an item barcode.": "Please enter a patron card number or an item barcode.",
   "Please enter an item barcode.": "Please enter an item barcode.",
@@ -176,7 +176,10 @@
   "Please insert a name": "Please insert a name",
   "Please insert a title": "Please insert a title",
   "Postal code": "Postal code",
+<<<<<<< HEAD
   "Quantity": "Quantity",
+=======
+>>>>>>> circulation ui: implement pickup, requested and profile tabs
   "Profile": "Profile",
   "RERO ILS administration": "RERO ILS administration",
   "Rate": "Rate",
@@ -221,7 +224,11 @@
   "The record contains settings": "The record contains settings",
   "The record has been harvested": "The record has been harvested",
   "The two periods are overlapping.": "The two periods are overlapping.",
+<<<<<<< HEAD
   "There is no order line to be collected.": "There is no order line to be collected.",
+=======
+  "There is no item to be collected.": "There is no item to be collected.",
+>>>>>>> circulation ui: implement pickup, requested and profile tabs
   "This action is not allowed for this item": "This action is not allowed for this item",
   "Title": "Title",
   "Title is required.": "Title is required.",

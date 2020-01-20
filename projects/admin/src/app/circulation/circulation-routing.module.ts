@@ -21,6 +21,9 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { MainRequestComponent } from './main-request/main-request.component';
 import { LoanComponent } from './patron/loan/loan.component';
 import { MainComponent } from './patron/main/main.component';
+import { ProfileComponent } from './patron/profile/profile.component';
+import { RequestedComponent } from './patron/requested/requested.component';
+import { PickupComponent } from './patron/pickup/pickup.component';
 
 const routes: Routes = [
   {
@@ -40,6 +43,18 @@ const routes: Routes = [
       {
         path: 'loan',
         component: LoanComponent
+      },
+      {
+        path: 'pickup',
+        component: PickupComponent
+      },
+      {
+        path: 'requested',
+        component: RequestedComponent
+      },
+      {
+        path: 'profile',
+        component: ProfileComponent
       }
     ]
   }, {

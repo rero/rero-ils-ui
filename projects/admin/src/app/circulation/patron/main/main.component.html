@@ -31,24 +31,17 @@
         <a
           class="nav-link"
           routerLinkActive="active"
-          [routerLink]="['/circulation', 'patron', patron.barcode]"
+          [routerLinkActiveOptions]="{exact: true}"
+          [routerLink]="['/circulation', 'patron', patron.barcode, 'loan']"
           translate
           >Checkin/Checkout</a
         >
       </li>
       <li class="nav-item">
         <a
-          class="nav-link disabled"
+          class="nav-link"
           routerLinkActive="active"
-          [routerLink]="['/circulation', 'patron', patron.barcode, 'requested']"
-          translate
-          >Requested</a
-        >
-      </li>
-      <li class="nav-item">
-        <a
-          class="nav-link disabled"
-          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', patron.barcode, 'pickup']"
           translate
           >Pickup</a
@@ -56,8 +49,19 @@
       </li>
       <li class="nav-item">
         <a
-          class="nav-link disabled"
+          class="nav-link"
           routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}"
+          [routerLink]="['/circulation', 'patron', patron.barcode, 'requested']"
+          translate
+          >Requested</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', patron.barcode, 'profile']"
           translate
           >Profile</a
@@ -67,6 +71,7 @@
         <a
           class="nav-link disabled"
           routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', patron.barcode, 'fees']"
           translate
           >Fees</a

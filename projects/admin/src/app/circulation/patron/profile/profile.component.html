@@ -1,0 +1,62 @@
+<!--
+ RERO ILS UI
+ Copyright (C) 2020 RERO
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published by
+ the Free Software Foundation, version 3 of the License.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<article *ngIf="currentPatron | async as record">
+  <section class="m-0 p-0">
+    <!-- BIRTH DATE -->
+    <dl class="row mb-0">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Birth date</dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        {{ record.birth_date | dateTranslate :'shortDate' }}
+      </dd>
+    </dl>
+    <!-- BARCODE -->
+    <dl class="row mb-0">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Barcode</dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        {{ record.barcode }}
+      </dd>
+    </dl>
+    <!-- STREET -->
+    <dl class="row mb-0">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Street</dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        {{ record.street }}
+      </dd>
+    </dl>
+    <!-- POSTAL CODE -->
+    <dl class="row mb-0">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Postal code</dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        {{ record.postal_code }}
+      </dd>
+    </dl>
+    <!-- PHONE -->
+    <dl class="row mb-0">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Phone</dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        {{ record.phone }}
+      </dd>
+    </dl>
+    <!-- EMAIL -->
+    <dl class="row mb-0">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Email</dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        {{ record.email }}
+      </dd>
+    </dl>
+  </section>
+</article>

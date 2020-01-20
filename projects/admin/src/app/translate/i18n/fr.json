@@ -50,12 +50,9 @@
   "Closed": "Fermé",
   "Code": "Code",
   "Code is already taken.": "Le code est déjà utilisé.",
-<<<<<<< HEAD
   "Communication language": "Communication language",
   "Confirmation": "Confirmation",
   "Contact person": "Contact person",
-=======
->>>>>>> circulation: adapt ui
   "Copyright date": "Date de copyright",
   "Country": "Country",
   "Create a bibliographic record": "Créer une notice bibliographique",
@@ -92,12 +89,17 @@
   "Error": "Erreur",
   "Exception": "Exception",
   "Exceptions (holidays, etc.)": "Exceptions (vacances, etc.)",
+<<<<<<< HEAD
   "Exit without saving changes?": "Quitter sans enregistrer les modifications ?",
   "Extension": "Prolongation(s)",
 =======
   "Exception": "Exception",
   "Exceptions (holidays, etc.)": "Exceptions (vacances, etc.)",
 >>>>>>> circulation: adapt ui
+=======
+  "Expected availability": "Expected availability",
+  "Extension": "Prolongation(s)",
+>>>>>>> circulation ui: implement pickup, requested and profile tabs
   "Fees": "Frais",
   "First reminder days": "Nombre de jours avant le premier rappel",
   "First reminder days is required.": "Le nombre de jours avant le premier rappel est obligatoire.",
@@ -177,16 +179,21 @@
   "Physical description": "Description matérielle",
   "Pick-up Location": "Lieu de retrait",
   "Pickup": "Pickup",
+  "Pickup location": "Lieu de retrait",
   "Pickup location name": "Nom du lieu de retrait",
   "Please enter a patron card number or an item barcode.": "Entrer le code-barres de l'exemplaire ou du lecteur.",
   "Please enter an item barcode.": "Entrez le code-barres de l'exemplaire.",
   "Please insert a code": "Veuillez introduire un code",
   "Please insert a name": "Veuillez introduire un nom",
   "Please insert a title": "Veuillez introduire un titre",
+<<<<<<< HEAD
   "Postal code": "Postal code",
   "Quantity": "Quantity",
   "RERO ILS administration": "Interface professionnelle de RERO ILS",
   "Rate": "Rate",
+=======
+  "Postal code": "Code postal",
+>>>>>>> circulation ui: implement pickup, requested and profile tabs
   "Profile": "Profile",
   "RERO ILS administration": "Interface professionnelle de RERO ILS",
   "Record Updated!": "La ressource a été mise à jour!",
@@ -234,8 +241,13 @@
   "The record contains settings": "L'enregistrement contient des paramètres",
   "The record has been harvested": "L'enregistrement a été importé",
   "The two periods are overlapping.": "Les deux périodes se chevauchent.",
+<<<<<<< HEAD
   "There is no order line to be collected.": "There is no order line to be collected.",
   "This action is not allowed for this item": "Cette action n'est pas autorisée sur cet exemplaire",
+=======
+  "There is no item to be collected.": "There is no item to be collected.",
+  "This action is not allowed for this item": "This action is not allowed for this item",
+>>>>>>> circulation ui: implement pickup, requested and profile tabs
   "Title": "Titre",
   "Title is required.": "Le titre est obligatoire.",
   "Total amount": "Total amount",

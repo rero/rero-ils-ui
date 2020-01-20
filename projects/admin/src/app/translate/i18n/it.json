@@ -50,12 +50,9 @@
   "Closed": "Chiuso",
   "Code": "Codice",
   "Code is already taken.": "Il codice è già utilizzato.",
-<<<<<<< HEAD
   "Communication language": "Communication language",
   "Confirmation": "Conferma",
   "Contact person": "Contact person",
-=======
->>>>>>> circulation: adapt ui
   "Copyright date": "Data di copyright",
   "Country": "Country",
   "Create a bibliographic record": "Create a bibliographic record",
@@ -90,6 +87,8 @@
   "Enter an EAN": "Enter an EAN",
   "Exception": "Eccezione",
   "Exceptions (holidays, etc.)": "Eccezioni (vacanze, ecc.)",
+  "Expected availability": "Expected availability",
+  "Extension": "Proroga",
   "Fees": "Fees",
   "First reminder days": "Numero di giorni per il primo richiamo",
   "First reminder days is required.": "Il numero di giorni per il primo richiamo è obbligatorio.",
@@ -169,6 +168,7 @@
   "Physical description": "Descrizione fisica",
   "Pick-up Location": "Luogo di ritiro",
   "Pickup": "Pickup",
+  "Pickup location": "Pickup location",
   "Pickup location name": "Nome del punto di ritiro",
   "Please enter a patron card number or an item barcode.": "Digitare un numero di carta di lettore o codice a barre d'esemplare",
   "Please enter an item barcode.": "Digitare il codice a barre dell'esemplare",
@@ -176,7 +176,10 @@
   "Please insert a name": "Si prega di inserire un nome",
   "Please insert a title": "Si prega di inserire un titolo",
   "Postal code": "Postal code",
+<<<<<<< HEAD
   "Quantity": "Quantity",
+=======
+>>>>>>> circulation ui: implement pickup, requested and profile tabs
   "Profile": "Profile",
   "RERO ILS administration": "RERO ILS administration",
   "Rate": "Rate",
@@ -221,7 +224,11 @@
   "The record contains settings": "Il record contiene le impostazioni",
   "The record has been harvested": "Il record è stato raccolto",
   "The two periods are overlapping.": "I due periodi si sovrappongono.",
+<<<<<<< HEAD
   "There is no order line to be collected.": "There is no order line to be collected.",
+=======
+  "There is no item to be collected.": "There is no item to be collected.",
+>>>>>>> circulation ui: implement pickup, requested and profile tabs
   "This action is not allowed for this item": "This action is not allowed for this item",
   "Title": "Titolo",
   "Title is required.": "Il titolo è richiesto.",
