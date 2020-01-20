@@ -29,6 +29,11 @@ import { CardComponent } from './patron/card/card.component';
 import { LoanComponent } from './patron/loan/loan.component';
 import { MainComponent } from './patron/main/main.component';
 import { RequestedItemsListComponent } from './requested-items-list/requested-items-list.component';
+import { ProfileComponent } from './patron/profile/profile.component';
+import { RequestedComponent } from './patron/requested/requested.component';
+import { RequestedItemComponent } from './patron/requested/requested-item/requested-item.component';
+import { PickupComponent } from './patron/pickup/pickup.component';
+import { PickupItemComponent } from './patron/pickup/pickup-item/pickup-item.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +44,12 @@ import { RequestedItemsListComponent } from './requested-items-list/requested-it
     ItemsListComponent,
     LoanComponent,
     CheckoutComponent,
-    ItemComponent
+    ItemComponent,
+    ProfileComponent,
+    RequestedComponent,
+    RequestedItemComponent,
+    PickupComponent,
+    PickupItemComponent
   ],
   imports: [
     CommonModule,

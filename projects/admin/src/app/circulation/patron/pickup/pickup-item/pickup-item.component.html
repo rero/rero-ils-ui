@@ -1,0 +1,36 @@
+<!--
+ RERO ILS UI
+ Copyright (C) 2020 RERO
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published by
+ the Free Software Foundation, version 3 of the License.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="item && loan; else loading">
+  <!-- BARCODE -->
+  <div class="col-sm-2">
+    <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
+  </div>
+  <!-- TITLE -->
+  <div class="col-sm-5"><a [routerLink]="['/records', 'documents', 'detail', item.document.pid]">{{ item.document.title }}</a>
+  </div>
+  <!-- PICKUP LOCATION -->
+  <div class="col-sm-3">
+    {{ loan.metadata.pickup_location_pid | getRecord:'locations':'field':'name' | async }}
+  </div>
+  <div class="col-sm-2">
+    &nbsp;
+  </div>
+</ng-container>
+
+<ng-template #loading>
+  <i class="fa fa-spin fa-spinner"></i>
+</ng-template>
