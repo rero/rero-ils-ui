@@ -56,14 +56,26 @@ export class PatronService {
     return false;
   }
 
+  /**
+   * Get Current Patron
+   * @return Observable
+   */
   get currentPatron$(): Observable<User> {
     return this._currentPatron.asObservable();
   }
 
+  /**
+   * Clear patron
+   */
   clearPatron() {
     this._currentPatron.next(undefined);
   }
 
+  /**
+   * Get patron by barcode
+   * @param barcode - string
+   * @return Observable
+   */
   getPatron(barcode: string): Observable<any> {
     return this.recordService
       .getRecords('patrons', `barcode:${barcode}`, 1, 1)
@@ -88,6 +100,11 @@ export class PatronService {
       );
   }
 
+  /**
+   * Get Item by Patron Pid
+   * @param patronPid - string
+   * @return observable
+   */
   getItems(patronPid: string) {
     const itemApiUrl = this.apiService.getEndpointByType('item');
     const url = `${itemApiUrl}/loans/${patronPid}`;
@@ -106,6 +123,11 @@ export class PatronService {
     );
   }
 
+  /**
+   * Get Item by barcode
+   * @param barcode - string
+   * @return Observable
+   */
   getItem(barcode: string) {
     return this.http
       .get<any>(`/api/item/barcode/${barcode}`)
@@ -115,5 +137,41 @@ export class PatronService {
         item.setLoan(response.metadata.loan);
         return item;
       }));
+  }
+
+  /**
+   * Get items requested
+   * @param patronPid - string
+   * @return Observable
+   */
+  getItemsRequested(patronPid: string) {
+    return this.getLoans(
+      `patron_pid:${patronPid} AND (state:PENDING OR state:ITEM_IN_TRANSIT_FOR_PICKUP)`
+    );
+  }
+
+  /**
+   * Get items pickup
+   * @param patronPid - string
+   * @return Observable
+   */
+  getItemsPickup(patronPid: string) {
+    return this.getLoans(
+      `patron_pid:${patronPid} AND state:ITEM_AT_DESK`
+    );
+  }
+
+  /**
+   * Get Loans by query
+   * @param query - string
+   * @return Observable
+   */
+  private getLoans(query: string) {
+    return this.recordService.getRecords(
+      'loans', query, 1, RecordService.MAX_REST_RESULTS_SIZE
+    ).pipe(
+      map(data => data.hits),
+      map(hits => (hits.total === 0 ? [] : hits.hits))
+    );
   }
 }
