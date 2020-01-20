@@ -48,7 +48,7 @@ export enum LoanState {
 }
 
 export interface Organisation {
-  pid: string
+  pid: string;
 }
 
 export interface Document {
@@ -69,10 +69,9 @@ export enum ItemAction {
   no = _('no')
 }
 
-type ItemActionObjectType<R> = {[key in keyof typeof ItemAction]: R };
+type ItemActionObjectType<R> = { [key in keyof typeof ItemAction]: R };
 
 export class Loan {
-
   pid?: string;
   state: LoanState;
   transaction_date?: Moment;
@@ -99,14 +98,14 @@ export class Loan {
   get dueDate() {
     switch (this.state) {
       case LoanState.PENDING:
-      return this.request_expire_date;
-      break;
+        return this.request_expire_date;
+        break;
       case LoanState.ITEM_ON_LOAN:
-      return this.end_date;
-      break;
+        return this.end_date;
+        break;
       default:
-      return undefined;
-      break;
+        return undefined;
+        break;
     }
   }
 
@@ -147,23 +146,27 @@ export class Item {
   }
 
   public set currentAction(action: ItemAction) {
-      this._currentAction = action;
+    this._currentAction = action;
+  }
+
+  public get currentAction() {
+    if (this._currentAction) {
+      return this._currentAction;
     }
-    public get currentAction() {
-      if (this._currentAction) {
-        return this._currentAction;
-      }
-      return ItemAction.no;
-    }
-    // should rely on backend and delete this function
-    public canLoan(patron) {
-      if (!this.available) {
-        if ((this.status === ItemStatus.AT_DESK || this.status === ItemStatus.IN_TRANSIT)
-            && patron
-            && this.pending_loans
-            && this.pending_loans.length
-            && this.pending_loans[0].patron_pid === patron.pid) {
-          return true;
+    return ItemAction.no;
+  }
+  // should rely on backend and delete this function
+  public canLoan(patron) {
+    if (!this.available) {
+      if (
+        (this.status === ItemStatus.AT_DESK ||
+          this.status === ItemStatus.IN_TRANSIT) &&
+        patron &&
+        this.pending_loans &&
+        this.pending_loans.length &&
+        this.pending_loans[0].patron_pid === patron.pid
+      ) {
+        return true;
       }
       return true;
     }
@@ -180,13 +183,13 @@ export class Item {
   }
 
   public requestedPosition(patron: User) {
-    return (!patron || !this.pending_loans)
+    return !patron || !this.pending_loans
       ? 0
-      : this.pending_loans.findIndex(loan => loan.patron_pid === patron.pid) + 1;
+      : this.pending_loans.findIndex(loan => loan.patron_pid === patron.pid) +
+          1;
   }
 
   public get hasRequests() {
-    return (this.pending_loans && this.pending_loans.length > 0);
+    return this.pending_loans && this.pending_loans.length > 0;
   }
 }
-

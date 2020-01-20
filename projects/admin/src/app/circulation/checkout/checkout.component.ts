@@ -213,29 +213,12 @@ export class CheckoutComponent implements OnInit {
                 this.automaticCheckinCheckout(barcode);
               }
             } else {
-              if (this._itemsList.length > 0 && this._itemsList[0].canLoan(patron)) {
-                const item = this._itemsList[0];
-                // candidate to checkout
-                this.itemsService.getItem(item.barcode, patron.pid).subscribe(
-                  itm => {
-                    const queryParams: any = {};
-                    // patron: 10000001
-                    // 10000000020
-                    // can be checked out
-                    if (item.actions.some(action => action === ItemAction.checkout)) {
-                      queryParams.item_barcode = item.barcode;
-                    }
-                    this.router.navigate(
-                      ['/circulation', 'patron', patron.barcode, 'loan'],
-                      { queryParams }
-                    );
-                  }
-                );
-              } else {
-                this.router.navigate(
-                  ['/circulation', 'patron', patron.barcode, 'loan']
-                );
-              }
+              this.router.navigate([
+                '/circulation',
+                'patron',
+                patron.barcode,
+                'loan'
+              ]);
             }
             this.isLoading = false;
           },

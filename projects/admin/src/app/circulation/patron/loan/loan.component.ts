@@ -61,10 +61,6 @@ export class LoanComponent implements OnInit {
         this.patronService.getItems(patron.pid).subscribe(items => {
           this.items = items;
           this.isLoading = false;
-          const itemBarcode = this.route.snapshot.queryParamMap.get('item_barcode');
-          if (itemBarcode != null) {
-            this.getItem(itemBarcode);
-          }
         });
       }
     });
@@ -97,7 +93,7 @@ export class LoanComponent implements OnInit {
     }
     if (action) {
       // check if operation has allowed on this item
-      if (item.actions.length === 1 && item.actions[0] === ItemAction.no) {
+      if (item.actions === [ItemAction.no]) {
         this.toastService.warning(
           this.translate.instant('No action possible on this item!'),
           this.translate.instant('Checkout')
@@ -119,48 +115,43 @@ export class LoanComponent implements OnInit {
   getItem(barcode: string) {
     // check if item is already in the user items list. If yes, this is a check-in operation
     const item = this.items.find(currItem => currItem.barcode === barcode);
-    if (item && this.allowActionOnItem(item)) {
+    if (item && item.actions.includes(ItemAction.checkin)) {
       item.currentAction = ItemAction.checkin;
-      this.searchText = '';
+      this.applyItems([item]);
     } else {
       this.itemsService.getItem(barcode, this.patron.pid).subscribe(
         newItem => {
           if (newItem === null) {
             this.toastService.warning(
               this.translate.instant('Item not found!'),
-              this.translate.instant('Checkin')
+              this.translate.instant('Checkin/Checkout')
             );
           } else {
-            if (newItem.canLoan(this.patron) === false) {
+            if (!newItem.actions.includes(ItemAction.checkout)) {
               this.toastService.warning(
                 this.translate.instant('Item is unavailable!'),
-                this.translate.instant('Checkin')
+                this.translate.instant('Checkout')
               );
             } else {
-              if (
-                newItem.actions.length === 1 &&
-                newItem.actions.indexOf(ItemAction.no) > -1
-              ) {
-                this.toastService.warning(
-                  this.translate.instant('No action possible on this item!'),
-                  this.translate.instant('Checkin')
-                );
-              } else {
-                newItem.currentAction = ItemAction.checkout;
-                this.items.unshift(newItem);
-                this.searchText = '';
-              }
+              newItem.currentAction = ItemAction.checkout;
+              this.items.unshift(newItem);
+              this.applyItems([newItem]);
             }
           }
         },
         error =>
           this.toastService.error(
             error.message,
-            this.translate.instant('Checkin')
+            this.translate.instant('Checkout')
           ),
         () => console.log('loan success')
       );
     }
+  }
+
+  extendLoan(item) {
+    item.currentAction = ItemAction.extend_loan;
+    this.applyItems([item]);
   }
 
   applyItems(items: Item[]) {
@@ -175,26 +166,20 @@ export class LoanComponent implements OnInit {
         this.items = this.items
           .map(item => {
             const newItem = newItems
-              .filter(currItem => currItem.pid === item.pid)
-              .pop();
+              .find(currItem => currItem.pid === item.pid);
+
+            // replace existing item in list by the backend return value
             if (newItem) {
-              if (newItem.status === ItemStatus.IN_TRANSIT) {
+              if (newItem.status === ItemStatus.IN_TRANSIT || newItem.status === ItemStatus.AT_DESK) {
                 this.toastService.success(
                   this.translate.instant('The item is ') +
                     this.translate.instant(newItem.status),
                   this.translate.instant('Checkin')
                 );
-              } else {
-                if (newItem.status === ItemStatus.AT_DESK) {
-                  this.toastService.success(
-                    this.translate.instant('The item is ') +
-                      this.translate.instant(newItem.status),
-                    this.translate.instant('Checkin')
-                  );
-                }
               }
               return newItem;
             }
+            // item was not modified by the backend
             return item;
           })
           .filter(item => item.status === ItemStatus.ON_LOAN);

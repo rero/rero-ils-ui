@@ -57,14 +57,9 @@
       </td>
       <td class="text-right" *ngIf="patron">
         <div class="btn-group" dropdown *ngIf="item.actions.length">
-          <button id="button-basic" class="btn btn-light btn-sm dropdown-toggle" type="button" id="dropdownMenuButton"
-            aria-controls="dropdown-basic" dropdownToggle [ngClass]="{'disabled': item.actions.length < 1}">
-            {{ item.currentAction | translate }}
+          <button (click)="extendLoanClick($event, item)" id="button-basic" *ngIf="item.actions.includes('extend_loan')" class="btn btn-success btn-sm" type="button">
+            {{ 'extend_loan' | translate }}
           </button>
-          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
-            <li role="menuitem" *ngFor="let action of item.actions"><a class="dropdown-item"
-                (click)="item.currentAction = action">{{ action | translate }}</a></li>
-          </ul>
         </div>
       </td>
       <td class="text-right">
@@ -72,9 +67,4 @@
       </td>
     </tr>
   </table>
-
-  <button *ngIf="patron" [disabled]="!hasPendingActions()" type="button" class="btn btn-success pull-right"
-    (click)="apply(items)" translate>
-    Apply
-  </button>
 </div>

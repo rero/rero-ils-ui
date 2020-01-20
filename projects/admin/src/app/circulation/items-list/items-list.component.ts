@@ -29,7 +29,7 @@ export class ItemsListComponent {
 
   @Input() items: any[];
   @Input() patron: User;
-  @Output() applyItems = new EventEmitter<any[]>();
+  @Output() extendLoanClicked = new EventEmitter<any[]>();
 
   viewcode = undefined;
 
@@ -38,10 +38,8 @@ export class ItemsListComponent {
     this.items =  null;
   }
 
-  apply(items: any[]) {
-     if (items.length) {
-      this.applyItems.emit(items);
-    }
+  extendLoanClick(event, item) {
+    this.extendLoanClicked.emit(item);
   }
 
   warningRequests(item) {
@@ -51,14 +49,5 @@ export class ItemsListComponent {
     } else {
       return item.hasRequests;
     }
-  }
-
-  hasPendingActions() {
-    if (this.patron) {
-      if (this.items.filter(item => item.currentAction !== ItemAction.no).length > 0) {
-        return true;
-      }
-    }
-    return false;
   }
 }

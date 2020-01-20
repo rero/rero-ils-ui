@@ -40,6 +40,7 @@ export class MainComponent implements OnInit, OnDestroy {
     this.patronService.clearPatron();
     this.router.navigate(['/circulation']);
   }
+
   ngOnDestroy() {
     this.patronService.clearPatron();
   }
