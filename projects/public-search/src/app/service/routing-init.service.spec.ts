@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2020 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,10 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-export const environment = {
-  production: true,
-  apiBaseUrl: '',
-  $refPrefix: 'https://ils.rero.ch',
-  languages: ['fr', 'de', 'it', 'en'],
-  globalViewName: 'global'
-};
+import { TestBed } from '@angular/core/testing';
+
+import { RoutingInitService } from './routing-init.service';
+import { TranslateModule } from '@ngx-translate/core';
+
+describe('RoutingInitService', () => {
+  beforeEach(() => TestBed.configureTestingModule({
+    imports: [
+      TranslateModule.forRoot({})
+    ]
+  }));
+
+  it('should be created', () => {
+    const service: RoutingInitService = TestBed.get(RoutingInitService);
+    expect(service).toBeTruthy();
+  });
+});

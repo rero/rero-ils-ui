@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2020 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,30 +14,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
-import { CoreConfigService } from '@rero/ng-core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { environment } from '../environments/environment';
+import { MainComponent } from './main.component';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AppConfigService extends CoreConfigService {
+describe('MainComponent', () => {
+  let component: MainComponent;
+  let fixture: ComponentFixture<MainComponent>;
 
-  /**
-   * Global View Name
-   */
-  globalViewName: string;
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ MainComponent ]
+    })
+    .compileComponents();
+  }));
 
-  /**
-   * Constructor
-   */
-  constructor() {
-    super();
-    this.production = environment.production;
-    this.apiBaseUrl = environment.apiBaseUrl;
-    this.$refPrefix = environment.$refPrefix;
-    this.languages = environment.languages;
-    this.globalViewName = environment.globalViewName;
-  }
-}
+  beforeEach(() => {
+    fixture = TestBed.createComponent(MainComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

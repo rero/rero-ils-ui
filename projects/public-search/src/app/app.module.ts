@@ -35,6 +35,7 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
 import { createCustomElement } from '@angular/elements';
 import { TypeaheadModule } from 'ngx-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MainComponent } from './main/main.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MefTitlePipe,
     BirthDatePipe,
     BioInformationsPipe,
-    SearchBarComponent
+    SearchBarComponent,
+    MainComponent
   ],
   imports: [
     BrowserModule,

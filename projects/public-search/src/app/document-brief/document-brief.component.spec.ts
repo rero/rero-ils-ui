@@ -26,6 +26,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppRoutingModule } from '../app-routing.module';
 import { PersonBriefComponent } from '../person-brief/person-brief.component';
+import { MainComponent } from '../main/main.component';
 
 describe('DocumentBriefComponent', () => {
   let component: DocumentBriefComponent;
@@ -38,7 +39,8 @@ describe('DocumentBriefComponent', () => {
         MefTitlePipe,
         BirthDatePipe,
         BioInformationsPipe,
-        PersonBriefComponent
+        PersonBriefComponent,
+        MainComponent
       ],
       imports: [
         RecordModule,
