@@ -23,7 +23,8 @@ export const environment = {
   production: false,
   apiBaseUrl: '',
   $refPrefix: 'https://ils.rero.ch',
-  languages: ['fr', 'de', 'it', 'en']
+  languages: ['fr', 'de', 'it', 'en'],
+  globalViewName: 'global'
 };
 
 /*
