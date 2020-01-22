@@ -131,24 +131,18 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit {
     if (undefined === provisions) {
       return [];
     }
+
     const results = {};
-    provisions.forEach((element: any) => {
+    provisions.map((element: any) => {
       const type =  element.type;
-      if (!(type in results)) {
-        results[type] = [];
-      }
       if ('_text' in element) {
         const elementText = element._text;
-        const keys = Object.keys(elementText);
-        const indexDefault = keys.indexOf('default');
-        if (indexDefault > -1) {
-          results[type].push(elementText.default);
-          keys.splice(indexDefault, 1);
+        if (!(type in results)) {
+          results[type] = [];
         }
-
-        keys.forEach(key => {
-          results[type].push(elementText[key]);
-        });
+        elementText.map(
+          (e: {language: string, value: string}) => results[type].push(e.value)
+        );
       }
     });
 
