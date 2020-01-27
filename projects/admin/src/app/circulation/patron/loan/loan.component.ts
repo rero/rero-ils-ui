@@ -82,7 +82,6 @@ export class LoanComponent implements OnInit {
     if (!searchText) {
       return null;
     }
-    this.isLoading = true;
     this.searchText = searchText;
     this.getItem(searchText);
   }
@@ -94,7 +93,7 @@ export class LoanComponent implements OnInit {
     const item = this.checkedOutItems.find(currItem => currItem.barcode === barcode);
     if (item && item.actions.includes(ItemAction.checkin)) {
       item.currentAction = ItemAction.checkin;
-      this.searchText = '';
+      this.applyItems([item]);
     } else {
       this.itemsService.getItem(barcode, this.patron.pid).subscribe(
         newItem => {
@@ -114,18 +113,15 @@ export class LoanComponent implements OnInit {
               this.applyItems([newItem]);
             }
           }
-          this.isLoading = false;
         },
         error => {
           this.toastService.error(
             error.message,
             this.translate.instant('Checkout')
           );
-          this.isLoading = false;
         },
         () => {
           console.log('loan success');
-          this.isLoading = false;
         }
       );
     }
@@ -162,7 +158,6 @@ export class LoanComponent implements OnInit {
             }
           }
         });
-        this.isLoading = false;
         this.searchText = '';
         // TODO set focus in search input (enhancement, needs to adapt ng-core)
       },
