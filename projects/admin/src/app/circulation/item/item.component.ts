@@ -15,11 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Item, LoanState } from '../items';
 import { OrganisationService } from '../../service/organisation.service';
+import { Item, LoanState } from '../items';
 
 @Component({
   selector: 'admin-item',
@@ -33,9 +34,6 @@ export class ItemComponent implements OnInit {
   /** Current patron */
   @Input() patron: any;
 
-  /** Has fees event emitter */
-  @Output() hasFees = new EventEmitter<boolean>();
-
   /** Is collapsed */
   isCollapsed = true;
 
@@ -43,7 +41,7 @@ export class ItemComponent implements OnInit {
   totalAmountOfFee = 0;
 
   /** Notifications related to the current loan */
-  notifications: any;
+  notifications$: Observable<any>;
 
   /**
    * Constructor
@@ -53,34 +51,42 @@ export class ItemComponent implements OnInit {
   constructor(
     private recordService: RecordService,
     private organisationService: OrganisationService
-    ) { }
+    ) {  }
 
+  /**
+   * On init hook
+   */
   ngOnInit() {
     if (this.item && this.item.loan && this.item.loan.pid) {
       const loanPid = this.item.loan.pid;
 
-      this.recordService.getRecords('fees', `loan.pid:${loanPid} AND fee_type:overdue`, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
-        map((results: any) => results.hits.hits)
-      ).subscribe(fees => this.getTotalAmountOfFees(fees));
+      this.recordService.getRecords(
+        'fees', `loan.pid:${loanPid} AND fee_type:overdue`, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
+        map((results: any) => results.hits.hits),
+        map((fees: any) => this._getTotalAmountOfFees(fees))
+      ).subscribe(total => this.totalAmountOfFee = total);
 
-      this.recordService.getRecords('notifications', `loan.pid:${loanPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
+      this.notifications$ = this.recordService.getRecords(
+        'notifications', `loan.pid:${loanPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
         map((results: any) => results.hits.hits)
-      ).subscribe(notifications => this.notifications = notifications);
+      );
     }
   }
 
   /** Get total amount of fees
    * @param fees: fees of the current item
    */
-  getTotalAmountOfFees(fees: any) {
+  private _getTotalAmountOfFees(fees: any): number {
     let total = 0;
     for (const fee of fees) {
       total += fee.metadata.amount;
     }
-    if (total > 0) {
-      this.hasFees.emit(true);
-    }
-    this.totalAmountOfFee = total;
+    return total;
+  }
+
+  /** Check if current item is a patron loan */
+  get patronLoan(): boolean {
+    return this.item.status !== 'on_loan' && this.patron;
   }
 
   /** Get transit location pid
