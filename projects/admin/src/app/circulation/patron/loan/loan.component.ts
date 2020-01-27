@@ -47,6 +47,9 @@ export class LoanComponent implements OnInit {
   /** List of checked in items */
   public checkedInItems = [];
 
+  /** Focus attribute of the search input */
+  searchInputFocus = false;
+
   /**
    * Constructor
    * @param itemsService: Items Service
@@ -73,6 +76,7 @@ export class LoanComponent implements OnInit {
         });
       }
     });
+    this.searchInputFocus = true;
   }
 
   /** Search value with search input
@@ -131,6 +135,7 @@ export class LoanComponent implements OnInit {
    * @param items: checked in and checked out items
    */
   applyItems(items: Item[]) {
+    this.searchInputFocus = false;
     const observables = [];
     for (const item of items) {
       if (item.currentAction !== ItemAction.no) {
@@ -159,7 +164,7 @@ export class LoanComponent implements OnInit {
           }
         });
         this.searchText = '';
-        // TODO set focus in search input (enhancement, needs to adapt ng-core)
+        this.searchInputFocus = true;
       },
       err => {
         let errorMessage = '';
