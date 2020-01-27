@@ -107,7 +107,7 @@ export class PatronService {
    */
   getItems(patronPid: string) {
     const itemApiUrl = this.apiService.getEndpointByType('item');
-    const url = `${itemApiUrl}/loans/${patronPid}`;
+    const url = `${itemApiUrl}/loans/${patronPid}?sort=-transaction_date`;
     return this.http.get<any>(url).pipe(
       map(data => data.hits),
       map(hits => (hits.total === 0 ? [] : hits.hits)),
