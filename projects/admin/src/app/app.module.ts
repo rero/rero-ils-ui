@@ -23,7 +23,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormlyModule } from '@ngx-formly/core';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CoreConfigService, RecordModule, TranslateService } from '@rero/ng-core';
-import { BsDatepickerModule, BsLocaleService, CollapseModule, TabsModule, TooltipModule, TypeaheadModule } from 'ngx-bootstrap';
+import {
+  BsDatepickerModule,
+  BsDropdownModule,
+  BsLocaleService,
+  CollapseModule,
+  TabsModule,
+  TooltipModule,
+  TypeaheadModule
+} from 'ngx-bootstrap';
 import { UiSwitchModule } from 'ngx-toggle-switch';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -169,6 +177,7 @@ import { TranslateLoader } from './translate/loader/translate-loader';
     BrowserAnimationsModule,
     BrowserModule,
     BsDatepickerModule.forRoot(),
+    BsDropdownModule.forRoot(),
     CollapseModule.forRoot(),
     FormsModule,
     HttpClientModule,

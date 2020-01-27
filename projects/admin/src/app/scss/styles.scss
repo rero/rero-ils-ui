@@ -94,3 +94,94 @@ json-schema-form {
   font-size: $font-size-very-small;
   vertical-align: top;
 }
+
+// source: https://codepen.io/superjaberwocky/pen/AXdEWj
+.callout {
+  border: 1px solid #eee;
+  border-left-width: 5px;
+  border-radius: 3px;
+  h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+  }
+  p:last-child {
+    margin-bottom: 0;
+  }
+  code {
+    border-radius: 3px;
+  }
+  & + .bs-callout {
+    margin-top: -5px;
+  }
+}
+@each $name,$color in (default,#777),(primary,$primary),(success,$success),(danger,$danger),(warning,$warning),(info,$info), (dark,$dark) {
+  .callout-#{$name} {
+    border-left-color: $color;
+    h4 {
+      color: $color;
+    }
+  }
+}
+
+
+.events-timeline {
+  position: relative;
+  .timeline-event {
+    .event-timestamp {
+      color: $secondary;
+      font-size: 0.75rem;
+    }
+    .event-content {
+      &:before {
+        content: '';
+        background: $secondary;
+        position: absolute;
+        left: -.5rem;
+        top: .25rem;
+        width: 1px;
+        height: 100%;
+        z-index: 400;
+      }
+      &:hover .more-detail{
+        display: block;
+      }
+      .row {
+        margin-bottom: 1rem;
+        line-height: 1.1;
+        &:first-child:after {
+          content: ' ';
+          background-color: white;
+          display: inline-block;
+          position: absolute;
+          border-radius: 50%;
+          border: 1px solid $secondary;
+          left: calc(-.75rem - 1px);
+          top: .25rem;
+          width: .75rem;
+          height: .75rem;
+          z-index: 400;
+        }
+        &.event-highlight:first-child:after{
+          border-color: $warning;
+          background-color: theme-color-level("warning", -10);
+        }
+        .label {
+          &:after {
+            content: ' ';
+            position: absolute;
+            border: .5px dashed #EEE;
+            top: calc(.55rem - 1px);
+            width: 100%;
+          }
+        }
+      }
+      .force-display {
+        display: block !important;
+      }
+      .more-detail {
+        display: none;
+        cursor: pointer;
+      }
+    }
+  }
+}

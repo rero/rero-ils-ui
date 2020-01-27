@@ -15,11 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { User } from '../../../class/user';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PatronService } from '../../../service/patron.service';
+import { PatronTransactionService } from '../../patron-transaction.service';
+import { Observable, Subscription } from 'rxjs';
+import { OrganisationService } from '../../../service/organisation.service';
+import { User } from '../../../class/user';
 
 @Component({
   selector: 'admin-main',
@@ -27,20 +29,53 @@ import { PatronService } from '../../../service/patron.service';
 })
 export class MainComponent implements OnInit, OnDestroy {
 
+  /** current patron as observable */
   patron$: Observable<User>;
 
-  constructor(private route: ActivatedRoute, private router: Router, private patronService: PatronService) { }
+  /** the total amount of all 'open' patron transactions for the current patron */
+  transactionsTotalAmount = 0;
+
+  /** Subscription to 'open' patron transactions */
+  patronTransactionSubscription$: Subscription;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private patronService: PatronService,
+    private patronTransactionService: PatronTransactionService,
+    private organisationService: OrganisationService) { }
 
   ngOnInit() {
     const barcode = this.route.snapshot.paramMap.get('barcode');
     this.patron$ = this.patronService.getPatron(barcode);
+    this.patron$.subscribe((patron) => {
+      if (patron) {
+        this.patronTransactionSubscription$ = this.patronTransactionService.patronTransactionsSubject$.subscribe(
+          (transactions) => {
+            this.transactionsTotalAmount = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
+          }
+        );
+        this.patronTransactionService.emitPatronTransactionByPatron(patron.pid, undefined, 'open');
+      }
+    });
   }
 
   clearPatron() {
     this.patronService.clearPatron();
     this.router.navigate(['/circulation']);
   }
+
   ngOnDestroy() {
+    if (this.patronTransactionSubscription$) {
+      this.patronTransactionSubscription$.unsubscribe();
+    }
     this.patronService.clearPatron();
+  }
+
+  /** Get current organisation
+   *  @return: current organisation
+   */
+  get organisation() {
+    return this.organisationService.organisation;
   }
 }

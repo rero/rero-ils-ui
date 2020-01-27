@@ -1,0 +1,80 @@
+<ng-container *ngIf="transaction !== undefined">
+  <div class="col mr-1 p-2"
+       [ngClass]="{
+         'callout callout-warning': isDisputed(),
+         'border rounded': !isDisputed()
+       }"
+  >
+    <div class="row pl-2 pr-2">
+      <div class="col-lg-2">
+        <button type="button"
+                class="pl-0 pt-0 btn"
+                (click)="showDetail()"
+                [attr.aria-expanded]="!isCollapsed"
+                aria-controls="collapse">
+          <i [ngClass]="{ 'fa-caret-down pr-0': !isCollapsed, 'fa-caret-right pr-1': isCollapsed }" class="fa" aria-hidden="true"></i>
+        </button>
+        {{ transaction.creation_date | dateTranslate :'shortDate' }}
+      </div>
+      <div class="col-lg-7 d-inline-block text-truncate">{{ transaction.label }}</div>
+      <div class="col-lg-3 text-lg-right">{{ transactionAmount | currency: organisation.default_currency }}</div>
+    </div>
+    <div *ngIf="!isCollapsed" class="mt-2">
+      <!-- Transaction detail ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <h6 translate>Details</h6>
+      <section class="offset-md-1 mb-3">
+        <div class="row" *ngIf="transaction.note">
+          <div class="col-sm-2 label-title text-right" translate>Note</div>
+          <div class="col-sm-10">{{ transaction.note }}</div>
+        </div>
+        <div class="row" *ngIf="transaction.document.pid | getRecord:'documents' | async as document">
+          <div class="col-sm-2 label-title text-right" translate>Document</div>
+          <div class="col-sm-10">
+            <a [routerLink]="['/records','documents','detail', transaction.document.pid]">
+              {{ document.metadata.title | truncateText: 15 }}
+            </a>
+          </div>
+        </div>
+        <div class="row" *ngIf="item">
+          <div class="col-sm-2 label-title text-right" translate>Item</div>
+          <div class="col-sm-10">
+            <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+          </div>
+        </div>
+        <div class="row" *ngIf="transaction.loan.pid | getRecord: 'loans' | async as loan">
+          <div class="col-sm-2 label-title text-right" translate>Loan started at</div>
+          <div class="col-sm-10">{{ loan.metadata.start_date | dateTranslate: 'shortDate' }}</div>
+        </div>
+      </section>
+      <!-- Transaction history ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <h6 translate>Transaction history</h6>
+      <div class="events-timeline">
+        <admin-patron-transaction-event [event]="event"
+                                        class="row pl-2 pr-2 align-items-start timeline-event"
+                                        *ngFor="let event of transaction.get_events()">
+        </admin-patron-transaction-event>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-1 text-left pl-0 mb-2" dropdown>
+    <ng-container *ngIf="transaction.status === patronTransactionStatus.OPEN">
+      <button class="btn btn-secondary btn-block d-md-block dropdown-toggle" type="button" dropdownToggle aria-controls="dropdown-animated" translate>Action</button>
+      <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-animated">
+        <li role="menuitem">
+          <a class="dropdown-item" (click)="patronTransactionAction('pay', 'full')">{{ 'Pay' | translate }} {{ transaction.total_amount | currency: organisation.default_currency }}</a>
+        </li>
+        <li role="menuitem">
+          <a class="dropdown-item" (click)="patronTransactionAction('pay', 'part')" translate>Pay a part</a>
+        </li>
+        <li class="divider dropdown-divider"></li>
+        <li role="menuitem">
+          <a class="dropdown-item" (click)="patronTransactionAction('dispute')" translate>Dispute</a>
+        </li>
+        <li role="menuitem">
+          <a class="dropdown-item" (click)="patronTransactionAction('cancel')" translate>Cancel</a>
+        </li>
+      </ul>
+    </ng-container>
+  </div>
+</ng-container>
+

@@ -21,6 +21,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CardComponent } from '../card/card.component';
 import { MainComponent } from './main.component';
+import { ToastrModule } from 'ngx-toastr';
 
 
 describe('MainComponent', () => {
@@ -32,7 +33,8 @@ describe('MainComponent', () => {
       imports: [
         TranslateModule.forRoot(),
         RouterTestingModule,
-        HttpClientModule
+        HttpClientModule,
+        ToastrModule.forRoot()
       ],
       declarations: [ MainComponent, CardComponent ]
     })
