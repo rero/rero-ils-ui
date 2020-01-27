@@ -24,6 +24,7 @@ import { MainComponent } from './patron/main/main.component';
 import { ProfileComponent } from './patron/profile/profile.component';
 import { RequestedComponent } from './patron/requested/requested.component';
 import { PickupComponent } from './patron/pickup/pickup.component';
+import { PatronTransactionsComponent } from './patron/patron-transactions/patron-transactions.component';
 
 const routes: Routes = [
   {
@@ -55,6 +56,10 @@ const routes: Routes = [
       {
         path: 'profile',
         component: ProfileComponent
+      },
+      {
+        path: 'fees',
+        component: PatronTransactionsComponent
       }
     ]
   }, {

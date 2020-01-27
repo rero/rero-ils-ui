@@ -33,7 +33,7 @@
       [routerLink]="['/records','documents','detail', item.document.pid]">{{ item.document.title | truncateText: 12 }}</a>
   </div>
   <!-- CIRCULATION INFO -->
-  <div class="col-lg-4">
+  <div class="col-lg-3">
     <ul class="list-unstyled mb-0">
       <ng-container [ngSwitch]="item.status">
         <li *ngSwitchCase="'on_loan'">{{ item.status | translate }} <i class="fa fa-arrow-right" aria-hidden="true"></i>
@@ -51,15 +51,15 @@
       </ng-container>
       <!-- RENEWALS, FEES, REQUESTS -->
       <li>
-        <span title="{{'Renewals' | translate }}" class="badge badge-secondary font-weight-normal mr-1"
-          *ngIf="item.loan && item.loan.extension_count">
+        <span title="{{ 'Renewals' | translate }}" class="badge badge-secondary font-weight-normal mr-1"
+              *ngIf="item.loan && item.loan.extension_count">
           {{ item.loan.extension_count }} <i class="fa fa-refresh"></i>
         </span>
-        <span title="{{'Fees' | translate }}" class="badge badge-secondary font-weight-normal mr-1"
-          *ngIf="totalAmountOfFee > 0">
+        <span title="{{ 'Fees' | translate }}" class="badge badge-warning font-weight-normal mr-1"
+              *ngIf="totalAmountOfFee > 0">
           {{ totalAmountOfFee | currency: organisation.default_currency }}</span>
-        <span title="{{'Requests' | translate }}" class="badge badge-secondary font-weight-normal mr-1"
-          *ngIf="item.pending_loans && item.pending_loans.length">
+        <span title="{{ 'Requests' | translate }}" class="badge badge-secondary font-weight-normal mr-1"
+              *ngIf="item.pending_loans && item.pending_loans.length">
           {{ item.pending_loans.length }} <i class="fa fa-exclamation-circle"></i>
         </span>
       </li>

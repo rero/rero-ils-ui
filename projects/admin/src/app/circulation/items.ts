@@ -94,20 +94,17 @@ export class Loan {
     if (data) {
       return moment(data);
     }
-    return undefined;
+    return null;
   }
 
   get dueDate() {
     switch (this.state) {
       case LoanState.PENDING:
-      return this.request_expire_date;
-      break;
+        return this.request_expire_date;
       case LoanState.ITEM_ON_LOAN:
-      return this.end_date;
-      break;
+        return this.end_date;
       default:
-      return undefined;
-      break;
+        return null;
     }
   }
 
@@ -141,7 +138,9 @@ export class Item {
     if (obj.pending_loans) {
       this.pending_loans = obj.pending_loans.map(loan => new Loan(loan));
     }
-    this.actions.unshift(ItemAction.no);
+    if (this.actions !== undefined) {
+      this.actions.unshift(ItemAction.no);
+    }
   }
 
   setLoan(obj?: any) {
@@ -149,14 +148,14 @@ export class Item {
   }
 
   public set currentAction(action: ItemAction) {
-      this._currentAction = action;
+    this._currentAction = action;
+  }
+  public get currentAction() {
+    if (this._currentAction) {
+      return this._currentAction;
     }
-    public get currentAction() {
-      if (this._currentAction) {
-        return this._currentAction;
-      }
-      return ItemAction.no;
-    }
+    return ItemAction.no;
+  }
 
   public isActionLoan() {
     return this.currentAction === ItemAction.checkout;
@@ -176,4 +175,3 @@ export class Item {
     return (this.pending_loans && this.pending_loans.length > 0);
   }
 }
-

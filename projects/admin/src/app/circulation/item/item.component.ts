@@ -21,6 +21,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OrganisationService } from '../../service/organisation.service';
 import { Item, ItemAction, LoanState } from '../items';
+import { PatronTransactionService } from '../patron-transaction.service';
 
 @Component({
   selector: 'admin-item',
@@ -59,10 +60,12 @@ export class ItemComponent implements OnInit {
    * Constructor
    * @param recordService: Record Service
    * @param organisationService: Organisation Service
+   * @param patronTransactionService: Patron transaction Service
    */
   constructor(
     private recordService: RecordService,
-    private organisationService: OrganisationService
+    private organisationService: OrganisationService,
+    private patronTransactionService: PatronTransactionService
     ) {  }
 
   /**
@@ -72,31 +75,20 @@ export class ItemComponent implements OnInit {
     if (this.item && this.item.loan && this.item.loan.pid) {
       const loanPid = this.item.loan.pid;
 
-      this.recordService.getRecords(
-        'fees', `loan.pid:${loanPid} AND fee_type:overdue`, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
-        map((results: any) => results.hits.hits),
-        map((fees: any) => this._getTotalAmountOfFees(fees))
-      ).subscribe(total => this.totalAmountOfFee = total);
+      this.patronTransactionService.patronTransactionsByLoan$(loanPid, 'overdue', 'open').subscribe(
+        (transactions) => {
+          this.totalAmountOfFee = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
+          if (this.totalAmountOfFee > 0) {
+            this.hasFeesEmitter.emit(true);
+          }
+        }
+      );
 
       this.notifications$ = this.recordService.getRecords(
         'notifications', `loan.pid:${loanPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
         map((results: any) => results.hits.hits)
       );
     }
-  }
-
-  /** Get total amount of fees
-   * @param fees: fees of the current item
-   */
-  private _getTotalAmountOfFees(fees: any): number {
-    let total = 0;
-    for (const fee of fees) {
-      total += fee.metadata.amount;
-    }
-    if (total > 0) {
-      this.hasFeesEmitter.emit(true);
-    }
-    return total;
   }
 
   /** Get transit location pid

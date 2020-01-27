@@ -69,13 +69,15 @@
       </li>
       <li class="nav-item">
         <a
-          class="nav-link disabled"
+          class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.barcode, 'fees']"
-          translate
-          >Fees</a
-        >
+          [routerLink]="['/circulation', 'patron', patron.barcode, 'fees']">
+          {{ 'Fees' }}
+          <span *ngIf="transactionsTotalAmount > 0" class="badge badge-warning font-weight-normal">
+            {{ transactionsTotalAmount | currency: organisation.default_currency }}
+          </span>
+        </a>
       </li>
     </ul>
     <div class="mt-4">
