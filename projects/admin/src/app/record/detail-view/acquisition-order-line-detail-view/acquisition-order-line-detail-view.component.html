@@ -47,6 +47,17 @@
               {{ record.metadata.order_line_status | translate }}
             </dd>
           </ng-container>
+          <!-- DOCUMENT -->
+          <ng-container *ngIf="record.metadata.document.pid | getRecord: 'documents' | async as document">
+            <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+              Title
+            </dt>
+            <dd class="col-sm-7 col-md-8 mb-0">
+              <a [routerLink]="['/records', 'documents', 'detail', document.metadata.pid]">
+                {{ document.metadata.title }}
+              </a>
+            </dd>
+          </ng-container>
           <!-- QUANTITY -->
           <ng-container *ngIf="record.metadata.quantity">
             <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
