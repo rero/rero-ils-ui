@@ -18,7 +18,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FrontpageComponent } from './frontpage/frontpage.component';
-import { RecordRoutingService } from './service/record-routing.service';
+import { RouteService } from './routes/route.service';
 
 const routes: Routes = [
   {
@@ -36,7 +36,12 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule {
-  constructor(private recordRouting: RecordRoutingService) {
-    this.recordRouting.initRoute();
+
+  /**
+   * Constructor
+   * @param _routeService - RouteService
+   */
+  constructor(private _routeService: RouteService) {
+    this._routeService.initializeRoutes();
   }
 }
