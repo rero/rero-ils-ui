@@ -19,6 +19,38 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 
 // _('Your string');
 
+// Resources
+_('acq_accounts');
+_('Acquisition accounts');
+_('acq_order_lines');
+_('Order lines');
+_('acq_orders');
+_('Orders');
+_('budgets');
+_('Budgets');
+_('circ_policies');
+_('Circulation policies');
+_('documents');
+_('Documents');
+_('items');
+_('Items');
+_('item_types');
+_('Item types');
+_('libraries');
+_('Libaries');
+_('locations');
+_('Locations');
+_('organisations');
+_('Organisations');
+_('patrons');
+_('Patrons');
+_('patrons_types');
+_('Patron types');
+_('persons');
+_('Persons');
+_('vendors');
+_('Vendors');
+
 // Facets
 _('author');
 _('author__fr');
@@ -32,6 +64,7 @@ _('organisation');
 _('status');
 _('subject');
 
+// Day
 _('monday');
 _('tuesday');
 _('wednesday');
