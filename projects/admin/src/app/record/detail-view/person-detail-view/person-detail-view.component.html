@@ -1,127 +1,155 @@
 <!--
   RERO ILS UI
-   Copyright (C) 2019 RERO
-  
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU Affero General Public License as published by
-   the Free Software Foundation, version 3 of the License.
-  
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-   GNU Affero General Public License for more details.
-  
-   You should have received a copy of the GNU Affero General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  Copyright (C) 2019 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="record$ | async as record">
-<h1 class="mb-0">{{ record.metadata | mefTitle }}</h1>
-<small>{{ 'MEF ID' | translate }}: {{ record.metadata.pid }}</small>
+  <h1 class="mb-0">{{ record.metadata | mefTitle }}</h1>
+  <small>{{ 'MEF ID' | translate }}: {{ record.metadata.pid }}</small>
 
-<article class="card m-2" *ngFor="let source of record.metadata.sources">
-  <a class="card-link" data-toggle="collapse" data-target="#collapse-rero" aria-expanded="true">
-    <header class="card-header">
-      <b class="card-title mb-0">
-        {{ source | translate | uppercase }}
-      </b>
-    </header>
-  </a>
-  <article id="collapse-rero" class="card-body collapse show">
-    <!-- DATE OF BIRTH -->
-    <dl class="row mb-0" *ngIf="record.metadata[source].date_of_birth">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Birth date' | translate }}:
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.metadata[source].date_of_birth }}
-      </dd>
-    </dl>
-    <!-- DATE OF DEATH -->
-    <dl class="row mb-0" *ngIf="record.metadata[source].date_of_death">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Death date' | translate }}:
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.metadata[source].date_of_death }}
-      </dd>
-    </dl>
-    <!-- LANGUAGE OF PERSON -->
-    <dl class="row mb-0" *ngIf="record.metadata[source].language_of_person">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Language of person' | translate }}:
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-        <ul class="list-unstyled">
-          <li *ngFor="let language of record.metadata[source].language_of_person">
-            {{ language }}
+  <article class="card m-2" *ngFor="let source of record.metadata.sources">
+    <a class="card-link" data-toggle="collapse" data-target="#collapse-rero" aria-expanded="true">
+      <header class="card-header">
+        <b class="card-title mb-0">
+          {{ source | translate | uppercase }}
+        </b>
+      </header>
+    </a>
+    <article id="collapse-rero" class="card-body collapse show">
+      <!-- DATE OF BIRTH -->
+      <dl class="row mb-0" *ngIf="record.metadata[source].date_of_birth">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Birth date' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata[source].date_of_birth }}
+        </dd>
+      </dl>
+      <!-- DATE OF DEATH -->
+      <dl class="row mb-0" *ngIf="record.metadata[source].date_of_death">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Death date' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata[source].date_of_death }}
+        </dd>
+      </dl>
+      <!-- LANGUAGE OF PERSON -->
+      <dl class="row mb-0" *ngIf="record.metadata[source].language_of_person">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Language of person' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <ul class="list-unstyled mb-0">
+            <li *ngFor="let language of record.metadata[source].language_of_person">
+              {{ language | translate }}
+            </li>
+          </ul>
+        </dd>
+      </dl>
+      <!-- GENDER -->
+      <dl class="row mb-0" *ngIf="record.metadata[source].Gender">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Gender' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata[source].Gender }}
+        </dd>
+      </dl>
+      <!-- BIBLIOGRAPHICAL INFORMATION -->
+      <dl class="row mb-0" *ngIf="record.metadata[source].biographical_information">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Biographical information' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let bio of record.metadata[source].biographical_information">
+            {{ bio }}
           </li>
         </ul>
-      </dd>
-    </dl>
-    <!-- GENDER -->
-    <dl class="row mb-0" *ngIf="record.metadata[source].Gender">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Gender' | translate }}:
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.metadata[source].Gender }}
-      </dd>
-    </dl>
-    <!-- BIBLIOGRAPHICAL INFORMATION -->
-    <dl class="row mb-0" *ngIf="record.metadata[source].biographical_information">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Biographical information' | translate }}:
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-      <ul class="list-unstyled">
-        <li *ngFor="let bio of record.metadata[source].biographical_information">
-          {{ bio }}
-        </li>
-      </ul>
-      </dd>
-    </dl>
-    <!-- PERMALINK -->
-    <dl class="row mb-0" *ngIf="record.metadata[source].identifier_for_person">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Id' | translate }}:
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-        <a href="{{ record.metadata[source].identifier_for_person }}">
-          {{ record.metadata[source].pid }}
-        </a>
-      </dd>
-    </dl>
-    <!-- NAME -->
-    <dl class="row mb-0" *ngIf="record.metadata[source].name">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Name' | translate }}:
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.metadata[source].name }}
-      </dd>
-    </dl>
-    <!-- VARIANTE NAME -->
-    <dl class="row mb-0" *ngIf="record.metadata[source].variant_name_for_person">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Variant name' | translate }}:
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-      <ul class="list-unstyled">
-        <li *ngFor="let variant_name of record.metadata[source].variant_name_for_person">
-          {{ variant_name }}
-        </li>
-      </ul>
-      </dd>
-    </dl>
-    <!-- AUTHORIZED ACCESS POINT -->
-    <dl class="row mb-0" *ngIf="record.metadata[source].authorized_access_point_representing_a_person">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Authorized access point' | translate }}:
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.metadata[source].authorized_access_point_representing_a_person }}
-      </dd>
-    </dl>
+        </dd>
+      </dl>
+      <!-- PERMALINK -->
+      <dl class="row mb-0" *ngIf="record.metadata[source].identifier_for_person">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Id' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <a href="{{ record.metadata[source].identifier_for_person }}">
+            {{ record.metadata[source].pid }}
+          </a>
+        </dd>
+      </dl>
+      <!-- NAME -->
+      <dl class="row mb-0" *ngIf="record.metadata[source].name">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Name' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata[source].name }}
+        </dd>
+      </dl>
+      <!-- VARIANTE NAME -->
+      <dl class="row mb-0" *ngIf="record.metadata[source].variant_name_for_person">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Variant name' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let variant_name of record.metadata[source].variant_name_for_person">
+            {{ variant_name }}
+          </li>
+        </ul>
+        </dd>
+      </dl>
+      <!-- AUTHORIZED ACCESS POINT -->
+      <dl class="row mb-0" *ngIf="record.metadata[source].authorized_access_point_representing_a_person">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Authorized access point' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata[source].authorized_access_point_representing_a_person }}
+        </dd>
+      </dl>
+    </article>
   </article>
-</article>
+
+  <ng-container *ngIf="documents$ | async as documents">
+  <article class="card m-2 mt-4">
+    <header class="card-header">
+      <b class="card-title mb-0">
+        <ng-container *ngIf="documents.length <= 1; else plurial">
+          {{ 'Document' | translate }}
+        </ng-container>
+        <ng-template #plurial>
+          {{ 'Documents' | translate }}
+        </ng-template>
+        ({{ documents.length }})
+      </b>
+
+    </header>
+    <article id="collapse-rero" class="card-body collapse show">
+      <ul class="list-unstyled mb-0" *ngFor="let document of documents">
+        <li>
+          <a [routerLink]="['/records', 'documents', 'detail', document.metadata.pid]">
+            {{ document.metadata.title }}
+          </a>
+        </li>
+      </ul>
+    </article>
+  </article>
+  </ng-container>
 </ng-container>
+
+
