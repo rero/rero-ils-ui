@@ -15,9 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { BaseRoute } from './Base-route';
-import { RouteInterface, DetailComponent, EditorComponent } from '@rero/ng-core';
+import { RouteInterface, DetailComponent, EditorComponent, RecordService } from '@rero/ng-core';
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
 import { of } from 'rxjs';
+import { FormlyFieldConfig } from '@ngx-formly/core';
+import { JSONSchema7 } from 'json-schema';
+import { map } from 'rxjs/operators';
 
 export class ItemsRoute extends BaseRoute implements RouteInterface {
 
@@ -58,6 +61,11 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
                 delete data.available;
               }
               return data;
+            },
+            formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
+              return this.populateLocationsByCurrentUserLibrary(
+                field, jsonSchema
+              );
             }
           }
         ]
@@ -65,6 +73,11 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
     };
   }
 
+  /**
+   * Check if the item is in the same organisation of connected user.
+   * @param record - Object
+   * @return Observable
+   */
   private canReadItem(record: any) {
     const organisationPid = this._routeToolService.userService
       .getCurrentUser().library.organisation.pid;
@@ -75,5 +88,44 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
       });
     }
     return of({ can: false, message: '' });
+  }
+
+  /**
+   * Populate select menu with locations of current user library
+   * @param field - FormlyFieldConfig
+   * @param jsonSchema - JSONSchema7
+   * @return FormlyFieldConfig
+   */
+  private populateLocationsByCurrentUserLibrary(
+    field: FormlyFieldConfig,
+    jsonSchema: JSONSchema7): FormlyFieldConfig {
+    const formOptions = jsonSchema.form;
+    if (formOptions && formOptions.fieldMap === 'location') {
+      field.type = 'select';
+      const user = this._routeToolService.userService.getCurrentUser();
+      const recordService = this._routeToolService.recordService;
+      const apiService = this._routeToolService.apiService;
+      const libraryPid = user.currentLibrary;
+      const query = `library.pid:${libraryPid}`;
+      field.templateOptions.options = recordService.getRecords(
+        'locations',
+        query, 1,
+        RecordService.MAX_REST_RESULTS_SIZE
+      ).pipe(
+        map(result => result.hits.total === 0 ? [] : result.hits.hits),
+        map(hits => {
+          return hits.map((hit: any) => {
+            return {
+              label: hit.metadata.name,
+              value: apiService.getRefEndpoint(
+                'locations',
+                hit.metadata.pid
+              )
+            };
+          });
+        })
+      );
+    }
+    return field;
   }
 }
