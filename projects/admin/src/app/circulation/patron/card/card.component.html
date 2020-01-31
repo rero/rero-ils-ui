@@ -24,8 +24,10 @@
       <div class="row">
       <div class="col-md-10">
       <h3>
-        <span *ngIf="patron.last_name">{{ patron.last_name }}</span>,
-        <span *ngIf="patron.first_name">{{ patron.first_name }} </span>
+        <a [routerLink]="['/records', 'patrons','detail', patron.pid]">
+          <span *ngIf="patron.last_name">{{ patron.last_name }},</span>
+          <span *ngIf="patron.first_name">{{ patron.first_name }} </span>
+        </a>
       </h3>
     </div>
     <div *ngIf="patron.displayPatronMode" class="col-md-2">
@@ -49,7 +51,7 @@
           </div>
           <div>
             <span *ngIf="patron.barcode">
-              <a [routerLink]="['/circulation', 'patron', patron.barcode]">{{ patron.barcode }}</a>
+              {{ patron.barcode }}
             </span>
           </div>
       </div>
