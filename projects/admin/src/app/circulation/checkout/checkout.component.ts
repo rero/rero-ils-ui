@@ -46,6 +46,9 @@ export class CheckoutComponent implements OnInit {
     return this._itemsList;
   }
 
+  /** Focus attribute of the search input */
+  searchInputFocus = false;
+
   /** Constructor
    * @param  userService: User Service
    * @param  recordService: Record Service
@@ -70,6 +73,7 @@ export class CheckoutComponent implements OnInit {
     this.patronService.currentPatron$.subscribe(
       patron => (this.patronInfo = patron)
     );
+    this.searchInputFocus = true;
   }
 
   /** Search value with search input
@@ -87,6 +91,7 @@ export class CheckoutComponent implements OnInit {
    * @param itemBarcode: item barcode
    */
   automaticCheckinCheckout(itemBarcode) {
+    this.searchInputFocus = false;
     this.itemsService.automaticCheckin(itemBarcode).subscribe(item => {
       // TODO: remove this when policy will be in place
       if (
@@ -121,6 +126,7 @@ export class CheckoutComponent implements OnInit {
       }
       this._itemsList.unshift(item);
       this.searchText = '';
+      this.searchInputFocus = true;
     });
   }
 
