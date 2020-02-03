@@ -110,7 +110,11 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
       field.templateOptions.options = recordService.getRecords(
         'locations',
         query, 1,
-        RecordService.MAX_REST_RESULTS_SIZE
+        RecordService.MAX_REST_RESULTS_SIZE,
+        undefined,
+        undefined,
+        undefined,
+        'name'
       ).pipe(
         map(result => result.hits.total === 0 ? [] : result.hits.hits),
         map(hits => {
