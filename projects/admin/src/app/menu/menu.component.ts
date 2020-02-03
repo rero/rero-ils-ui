@@ -61,6 +61,7 @@ export class MenuComponent implements OnInit {
 
   userMenu = {
     navCssClass: 'navbar-nav',
+    dropdownMenuCssClass: 'dropdown-menu-right',
     iconCssClass: 'fa fa-user',
     entries: []
   };
