@@ -18,6 +18,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RecordUiService } from '@rero/ng-core';
 import { RecordPermissionMessageService } from 'projects/admin/src/app/service/record-permission-message.service';
+import { UserService } from 'projects/admin/src/app/service/user.service';
 
 @Component({
   selector: 'admin-holding-item',
@@ -26,11 +27,20 @@ import { RecordPermissionMessageService } from 'projects/admin/src/app/service/r
 })
 export class HoldingItemComponent {
 
+  /** Holding record */
+  @Input() holding: any;
+
   /** Item Record */
   @Input() item: any;
 
   /** Event for delete Item */
   @Output() deleteItem = new EventEmitter();
+
+  /** Availables action */
+  get isAvailableActions() {
+    return this.userService.getCurrentUser().currentLibrary
+      = this.holding.metadata.library.pid;
+  }
 
   /**
    * Constructor
@@ -39,7 +49,8 @@ export class HoldingItemComponent {
    */
   constructor(
     private recordUiService: RecordUiService,
-    private recordPermissionMessage: RecordPermissionMessageService
+    private recordPermissionMessage: RecordPermissionMessageService,
+    private userService: UserService
   ) { }
 
   /**

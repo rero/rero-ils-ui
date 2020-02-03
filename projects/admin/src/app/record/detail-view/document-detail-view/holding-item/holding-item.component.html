@@ -27,18 +27,23 @@
   {{ item.metadata.call_number }}
 </div>
 <div class="col-sm-4 text-right">
-  <button *ngIf="!item.permissions.cannot_update" type="button" class="btn btn-primary btn-sm"
-    [routerLink]="['/records', 'items', 'edit', item.metadata.pid]">
-    <i class="fa fa-pencil"></i> {{ 'Edit' | translate }}
-  </button>
+  <ng-container *ngIf="isAvailableActions; else noactions">
+    <button *ngIf="!item.permissions.cannot_update" type="button" class="btn btn-primary btn-sm"
+      [routerLink]="['/records', 'items', 'edit', item.metadata.pid]">
+      <i class="fa fa-pencil"></i> {{ 'Edit' | translate }}
+    </button>
 
-  <button *ngIf="!item.permissions.cannot_delete; else notDelete" type="button" class="btn btn-primary btn-sm ml-1"
-    (click)="delete(item.metadata.pid)">
-    <i class="fa fa-trash"></i> {{ 'Delete' | translate }}
-  </button>
-  <ng-template #notDelete>
-    <button type="button" class="btn btn-dark btn-sm ml-1" (click)="showDeleteMessage(item)">
+    <button *ngIf="!item.permissions.cannot_delete; else notDelete" type="button" class="btn btn-primary btn-sm ml-1"
+      (click)="delete(item.metadata.pid)">
       <i class="fa fa-trash"></i> {{ 'Delete' | translate }}
     </button>
+    <ng-template #notDelete>
+      <button type="button" class="btn btn-dark btn-sm ml-1" (click)="showDeleteMessage(item)">
+        <i class="fa fa-trash"></i> {{ 'Delete' | translate }}
+      </button>
+    </ng-template>
+  </ng-container>
+  <ng-template #noactions>
+    &nbsp;
   </ng-template>
 </div>

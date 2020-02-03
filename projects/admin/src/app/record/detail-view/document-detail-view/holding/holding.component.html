@@ -46,7 +46,12 @@
             </ul>
           </div>
           <ng-container *ngIf="items && items.length > 0">
-            <admin-holding-item class="row mt-1" *ngFor="let item of items" [item]="item" (deleteItem)="deleteItem($event)">
+            <admin-holding-item
+              *ngFor="let item of items"
+              class="row mt-1"
+              [holding]="holding"
+              [item]="item"
+              (deleteItem)="deleteItem($event)">
             </admin-holding-item>
           </ng-container>
         </div>
