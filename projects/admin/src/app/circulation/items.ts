@@ -157,21 +157,6 @@ export class Item {
       }
       return ItemAction.no;
     }
-    // should rely on backend and delete this function
-    public canLoan(patron) {
-      if (!this.available) {
-        if ((this.status === ItemStatus.AT_DESK || this.status === ItemStatus.IN_TRANSIT)
-            && patron
-            && this.pending_loans
-            && this.pending_loans.length
-            && this.pending_loans[0].patron_pid === patron.pid) {
-          return true;
-      }
-      return true;
-    }
-    // available
-    return true;
-  }
 
   public isActionLoan() {
     return this.currentAction === ItemAction.checkout;

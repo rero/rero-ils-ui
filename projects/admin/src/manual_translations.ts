@@ -44,7 +44,7 @@ _('organisations');
 _('Organisations');
 _('patrons');
 _('Patrons');
-_('patrons_types');
+_('patron_types');
 _('Patron types');
 _('persons');
 _('Persons');
