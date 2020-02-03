@@ -21,7 +21,7 @@ import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { User } from '../../../class/user';
 import { PatronService } from '../../../service/patron.service';
-import { Item, ItemAction } from '../../items';
+import { Item, ItemAction, ItemStatus } from '../../items';
 import { ItemsService } from '../../items.service';
 
 @Component({
@@ -103,18 +103,25 @@ export class LoanComponent implements OnInit {
         newItem => {
           if (newItem === null) {
             this.toastService.warning(
-              this.translate.instant('Item not found!'),
-              this.translate.instant('Checkin')
+              this.translate.instant('Item not found'),
+              this.translate.instant('Checkout')
             );
           } else {
-            if (newItem.canLoan(this.patron) === false) {
-              this.toastService.warning(
-                this.translate.instant('Item is unavailable!'),
-                this.translate.instant('Checkin')
+            if (newItem.status === ItemStatus.ON_LOAN) {
+              this.toastService.error(
+                this.translate.instant('The item is already on loan'),
+                this.translate.instant('Checkout')
               );
             } else {
-              newItem.currentAction = ItemAction.checkout;
-              this.applyItems([newItem]);
+              if (newItem.pending_loans && newItem.pending_loans[0].patron_pid !== this.patron.pid) {
+                this.toastService.warning(
+                  this.translate.instant('The item has a request'),
+                  this.translate.instant('Checkout')
+                );
+              } else {
+                newItem.currentAction = ItemAction.checkout;
+                this.applyItems([newItem]);
+              }
             }
           }
         },
@@ -171,11 +178,17 @@ export class LoanComponent implements OnInit {
         if (err && err.error && err.error.status) {
           errorMessage = err.error.status;
         }
-        this.toastService.error(
-          this.translate.instant('An error occured on the server: ') +
-            errorMessage,
-          this.translate.instant('Checkin')
-        );
+        if ( err.error.status.includes('403 Forbidden')) {
+          this.toastService.error(
+            this.translate.instant('Checkout is not allowed by circulation policy'),
+            this.translate.instant('Checkout')
+          );
+        } else {
+          this.toastService.error(
+            this.translate.instant('An error occured on the server: ') + errorMessage,
+            this.translate.instant('Circulation')
+          );
+        }
       }
     );
   }
