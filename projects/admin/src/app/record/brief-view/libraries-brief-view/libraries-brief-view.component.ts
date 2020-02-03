@@ -53,7 +53,16 @@ export class LibrariesBriefViewComponent implements ResultItem {
     if (this.isCollapsed) {
       const libraryPid = this.record.metadata.pid;
       this.recordService
-        .getRecords('locations', `library.pid:${libraryPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE)
+        .getRecords(
+          'locations',
+          `library.pid:${libraryPid}`,
+          1,
+          RecordService.MAX_REST_RESULTS_SIZE,
+          undefined,
+          undefined,
+          undefined,
+          'name'
+          )
         .subscribe(data => {
           this.locations = data.hits.hits || [];
           this.isCollapsed = !this.isCollapsed;
