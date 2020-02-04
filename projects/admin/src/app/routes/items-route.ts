@@ -21,6 +21,7 @@ import { of } from 'rxjs';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { JSONSchema7 } from 'json-schema';
 import { map } from 'rxjs/operators';
+import { ItemAccessGuard } from '../guard/item-access.guard';
 
 export class ItemsRoute extends BaseRoute implements RouteInterface {
 
@@ -36,7 +37,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
         { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ ItemAccessGuard ] },
         { path: 'new', component: EditorComponent }
       ],
       data: {

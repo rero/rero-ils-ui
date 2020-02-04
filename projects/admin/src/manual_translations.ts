@@ -37,7 +37,7 @@ _('Items');
 _('item_types');
 _('Item types');
 _('libraries');
-_('Libaries');
+_('Libraries');
 _('locations');
 _('Locations');
 _('organisations');

@@ -1,5 +1,6 @@
 {
   "Abstract": "Résumés",
+  "Access denied": "Accès non autorisé",
   "Account": "Account",
   "Acquisition accounts": "Comptes d'acquisition",
   "Acquisitions": "Acquisitions",
@@ -296,6 +297,7 @@
   "has 1 patron attached": "a 1 lecteur attaché",
   "has 1 patron type attached": "a 1 type de lecteur attaché",
   "in_transit": "en transit",
+  "item": "Exemplaire",
   "item_types": "types d'exemplaire",
   "items": "exemplaires",
   "journal": "revue",

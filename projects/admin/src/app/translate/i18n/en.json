@@ -1,5 +1,6 @@
 {
   "Abstract": "Abstract",
+  "Access denied": "Access denied",
   "Account": "Account",
   "Acquisition accounts": "Acquisition accounts",
   "Acquisitions": "Acquisitions",
@@ -296,6 +297,7 @@
   "has 1 patron attached": "has 1 patron attached",
   "has 1 patron type attached": "has 1 patron type attached",
   "in_transit": "in transit",
+  "item": "item",
   "item_types": "Item types",
   "items": "items",
   "journal": "journal",
