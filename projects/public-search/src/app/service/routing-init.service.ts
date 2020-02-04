@@ -79,7 +79,13 @@ export class RoutingInitService {
             key: _('persons'),
             component: PersonBriefComponent,
             label: _('Persons'),
-            aggregationsExpand: ['sources']
+            aggregationsExpand: ['sources'],
+            listHeaders: {
+              Accept: 'application/rero+json, application/json'
+            },
+            preFilters: {
+              view: `${viewcode}`
+            }
           }
         ]
       }
