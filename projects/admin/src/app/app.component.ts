@@ -28,7 +28,8 @@ import { UserService } from './service/user.service';
 
 @Component({
   selector: 'admin-root',
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
 
