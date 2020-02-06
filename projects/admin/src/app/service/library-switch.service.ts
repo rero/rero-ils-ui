@@ -33,6 +33,11 @@ export class LibrarySwitchService {
   private onGenerateMenu: Subject<Array<any>> = new Subject();
 
   /**
+   * On Visible Menu
+   */
+  private onVisibleMenu: Subject<boolean> = new Subject();
+
+  /**
    * Entries for library switch menu
    */
   private menuEntries = [];
@@ -48,10 +53,17 @@ export class LibrarySwitchService {
   private menuVisible = false;
 
   /**
-   * Retour on Generate Menu Observable
+   * Return on generate menu observable
    */
   get onGenerate$() {
     return this.onGenerateMenu.asObservable();
+  }
+
+  /**
+   * Return on visible menu observable
+   */
+  get onVisibleMenu$() {
+    return this.onVisibleMenu.asObservable();
   }
 
   /**
@@ -106,6 +118,7 @@ export class LibrarySwitchService {
    */
   show(visible: boolean) {
     this.menuVisible = visible;
+    this.onVisibleMenu.next(visible);
   }
 
   /**
