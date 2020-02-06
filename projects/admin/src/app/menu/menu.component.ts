@@ -110,6 +110,15 @@ export class MenuComponent implements OnInit {
       ]
     });
 
+    this.librarySwitchService.onVisibleMenu$.subscribe((visible) => {
+      if (
+        visible
+        && this.userService.hasRole('system_librarian')
+        && this.librarySwitchService.entries.length === 0) {
+          this.librarySwitchService.generateMenu();
+      }
+    });
+
     this.librarySwitchService.onGenerate$.subscribe((entries: any) => {
       this.librariesSwitchMenu.entries[0].entries = entries;
     });
