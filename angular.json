@@ -20,10 +20,7 @@
             "polyfills": "projects/admin/src/polyfills.ts",
             "tsConfig": "projects/admin/tsconfig.app.json",
             "aot": false,
-            "assets": [
-              "projects/admin/src/favicon.ico",
-              "projects/admin/src/assets"
-            ],
+            "assets": [],
             "styles": [
               "node_modules/bootstrap/scss/bootstrap.scss",
               "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
@@ -89,10 +86,7 @@
             "polyfills": "projects/admin/src/polyfills.ts",
             "tsConfig": "projects/admin/tsconfig.spec.json",
             "karmaConfig": "projects/admin/karma.conf.js",
-            "assets": [
-              "projects/admin/src/favicon.ico",
-              "projects/admin/src/assets"
-            ],
+            "assets": [],
             "styles": [
               "node_modules/bootstrap/scss/bootstrap.scss",
               "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
@@ -208,10 +202,7 @@
             "polyfills": "projects/public-search/src/polyfills.ts",
             "tsConfig": "projects/public-search/tsconfig.spec.json",
             "karmaConfig": "projects/public-search/karma.conf.js",
-            "assets": [
-              "projects/public-search/src/favicon.ico",
-              "projects/public-search/src/assets"
-            ],
+            "assets": [],
             "styles": [
               "projects/public-search/src/styles.css"
             ],
@@ -261,10 +252,7 @@
             "polyfills": "projects/search-bar/src/polyfills.ts",
             "tsConfig": "projects/search-bar/tsconfig.app.json",
             "aot": false,
-            "assets": [
-              "projects/search-bar/src/favicon.ico",
-              "projects/search-bar/src/assets"
-            ],
+            "assets": [],
             "styles": [
               "projects/search-bar/src/styles.css"
             ],
