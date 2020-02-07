@@ -160,3 +160,11 @@ _('webSite');
 _('tableOfContents');
 _('fullText');
 _('video');
+// Item Request messages
+_('Circulation policies do not allow request on this item.');
+_('Item is already checked-out or requested by patron.');
+_('Item not found.');
+_('Item status does not allow requests.');
+_('Library not found.');
+_('Patron not found.');
+_('Request is possible.');

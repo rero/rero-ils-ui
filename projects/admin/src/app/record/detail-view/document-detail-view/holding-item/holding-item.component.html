@@ -28,17 +28,20 @@
   </div>
   <div class="col-sm-4 text-right">
     <ng-container *ngIf="isAvailableActions; else noactions">
-      <button *ngIf="permissions.update.can" type="button" class="btn btn-primary btn-sm"
+      <button type="button" class="btn btn-link p-0 mr-2" (click)="addRequest(item.metadata.pid)">
+        <i class="fa fa-shopping-basket" aria-hidden="true" title="{{ 'Request' | translate }}"></i>
+      </button>
+      <button *ngIf="permissions.update.can" type="button" class="btn btn-link p-0 mr-2"
         [routerLink]="['/records', 'items', 'edit', item.metadata.pid]">
-        <i class="fa fa-pencil"></i> {{ 'Edit' | translate }}
+        <i class="fa fa-pencil" title="{{ 'Edit' | translate }}"></i>
       </button>
       <button *ngIf="permissions.delete.can; else notDelete" type="button" class="btn btn-primary btn-sm ml-1"
         (click)="delete(item.metadata.pid)">
-        <i class="fa fa-trash"></i> {{ 'Delete' | translate }}
+        <i class="fa fa-trash" title="{{ 'Delete' | translate }}"></i>
       </button>
       <ng-template #notDelete>
-        <button type="button" class="btn btn-dark btn-sm ml-1" (click)="showDeleteMessage()">
-          <i class="fa fa-trash"></i> {{ 'Delete' | translate }}
+        <button type="button" class="btn btn-link text-muted btn-sm p-0" (click)="showDeleteMessage()">
+          <i class="fa fa-trash" title="{{ 'Delete' | translate }}"></i>
         </button>
       </ng-template>
     </ng-container>
