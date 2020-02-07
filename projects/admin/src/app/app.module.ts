@@ -27,8 +27,8 @@ import { BsDatepickerModule, BsLocaleService, CollapseModule, TabsModule, Toolti
 import { UiSwitchModule } from 'ngx-toggle-switch';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { FrontpageComponent } from './frontpage/frontpage.component';
 import { FrontpageBoardComponent } from './frontpage/frontpage-board/frontpage-board.component';
+import { FrontpageComponent } from './frontpage/frontpage.component';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
 import { InterfaceInfoComponent } from './interface-info/interface-info.component';
 import { MenuComponent } from './menu/menu.component';
@@ -70,6 +70,7 @@ import { DocumentDetailViewComponent } from './record/detail-view/document-detai
 import { HoldingItemComponent } from './record/detail-view/document-detail-view/holding-item/holding-item.component';
 import { HoldingComponent } from './record/detail-view/document-detail-view/holding/holding.component';
 import { HoldingsComponent } from './record/detail-view/document-detail-view/holdings/holdings.component';
+import { ItemRequestComponent } from './record/detail-view/document-detail-view/item-request/item-request.component';
 import { RelatedResourceComponent } from './record/detail-view/document-detail-view/related-resource/related-resource.component';
 import { ResourceComponent } from './record/detail-view/document-detail-view/resource/resource.component';
 import { ItemDetailViewComponent } from './record/detail-view/item-detail-view/item-detail-view.component';
@@ -160,7 +161,8 @@ import { TranslateLoader } from './translate/loader/translate-loader';
     BudgetSelectLineComponent,
     FrontpageBoardComponent,
     RelatedResourceComponent,
-    ResourceComponent
+    ResourceComponent,
+    ItemRequestComponent
   ],
   imports: [
     AppRoutingModule,
@@ -244,7 +246,8 @@ import { TranslateLoader } from './translate/loader/translate-loader';
     AcquisitionOrderLineDetailViewComponent,
     BudgetsBriefViewComponent,
     BudgetDetailViewComponent,
-    OrganisationDetailViewComponent
+    OrganisationDetailViewComponent,
+    ItemRequestComponent
   ],
   bootstrap: [AppComponent]
 })

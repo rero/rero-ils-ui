@@ -16,8 +16,10 @@
  */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordUiService } from '@rero/ng-core';
+import { BsModalService } from 'ngx-bootstrap';
 import { RecordPermission, RecordPermissionService } from '../../../../service/record-permission.service';
 import { UserService } from '../../../../service/user.service';
+import { ItemRequestComponent } from '../item-request/item-request.component';
 
 
 @Component({
@@ -52,8 +54,9 @@ export class HoldingItemComponent implements OnInit {
    */
   constructor(
     private _recordUiService: RecordUiService,
+    private _recordPermissionService: RecordPermissionService,
     private _userService: UserService,
-    private _recordPermissionService: RecordPermissionService
+    private _modalService: BsModalService
   ) { }
 
   /**
@@ -62,6 +65,16 @@ export class HoldingItemComponent implements OnInit {
   ngOnInit() {
     this._recordPermissionService.getPermission('items', this.item.metadata.pid)
     .subscribe(permissions => this.permissions = permissions);
+  }
+
+  /**
+   * Add request on item
+   * @param itemPid - string
+   */
+  addRequest(itemPid: string) {
+    this._modalService.show(ItemRequestComponent, {
+      initialState: { itemPid }
+    });
   }
 
   /**
