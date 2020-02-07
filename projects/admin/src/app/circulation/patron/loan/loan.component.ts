@@ -94,6 +94,7 @@ export class LoanComponent implements OnInit {
    * @param barcode: barcode of the item to get
    */
   getItem(barcode: string) {
+    this.searchInputFocus = false;
     const item = this.checkedOutItems.find(currItem => currItem.barcode === barcode);
     if (item && item.actions.includes(ItemAction.checkin)) {
       item.currentAction = ItemAction.checkin;
@@ -106,18 +107,24 @@ export class LoanComponent implements OnInit {
               this.translate.instant('Item not found'),
               this.translate.instant('Checkout')
             );
+            this.searchText = '';
+            this.searchInputFocus = true;
           } else {
             if (newItem.status === ItemStatus.ON_LOAN) {
               this.toastService.error(
                 this.translate.instant('The item is already on loan'),
                 this.translate.instant('Checkout')
               );
+              this.searchText = '';
+              this.searchInputFocus = true;
             } else {
               if (newItem.pending_loans && newItem.pending_loans[0].patron_pid !== this.patron.pid) {
                 this.toastService.warning(
                   this.translate.instant('The item has a request'),
                   this.translate.instant('Checkout')
                 );
+                this.searchText = '';
+                this.searchInputFocus = true;
               } else {
                 newItem.currentAction = ItemAction.checkout;
                 this.applyItems([newItem]);
@@ -130,6 +137,8 @@ export class LoanComponent implements OnInit {
             error.message,
             this.translate.instant('Checkout')
           );
+          this.searchText = '';
+          this.searchInputFocus = true;
         },
         () => {
           console.log('loan success');
@@ -142,7 +151,6 @@ export class LoanComponent implements OnInit {
    * @param items: checked in and checked out items
    */
   applyItems(items: Item[]) {
-    this.searchInputFocus = false;
     const observables = [];
     for (const item of items) {
       if (item.currentAction !== ItemAction.no) {
@@ -178,7 +186,7 @@ export class LoanComponent implements OnInit {
         if (err && err.error && err.error.status) {
           errorMessage = err.error.status;
         }
-        if ( err.error.status.includes('403 Forbidden')) {
+        if (err.error.status === 403) {
           this.toastService.error(
             this.translate.instant('Checkout is not allowed by circulation policy'),
             this.translate.instant('Checkout')
@@ -189,6 +197,8 @@ export class LoanComponent implements OnInit {
             this.translate.instant('Circulation')
           );
         }
+        this.searchText = '';
+        this.searchInputFocus = true;
       }
     );
   }
