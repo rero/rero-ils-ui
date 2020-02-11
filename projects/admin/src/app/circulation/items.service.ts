@@ -45,11 +45,12 @@ export class ItemsService {
       );
   }
 
-  doValidateRequest(item) {
+  doValidateRequest(item, transactionLibraryPid) {
     const url = '/api/item/validate';
     return this.http.post<any>(url, {
       item_pid: item.pid,
-      pid: item.loan.pid
+      pid: item.loan.pid,
+      transaction_library_pid: transactionLibraryPid
     }).pipe(
     map(data => {
       const itemData = data.metadata;
@@ -83,9 +84,9 @@ export class ItemsService {
     );
   }
 
-  automaticCheckin(itemBarcode) {
+  automaticCheckin(itemBarcode, transactionLibraryPid) {
     const url = '/api/item/automatic_checkin';
-    return this.http.post<any>(url, {item_barcode: itemBarcode}).pipe(
+    return this.http.post<any>(url, {item_barcode: itemBarcode, transaction_library_pid: transactionLibraryPid}).pipe(
       map(data => {
         const item = new Item(data.metadata);
         const action = Object.keys(data.action_applied).pop();
@@ -104,11 +105,12 @@ export class ItemsService {
       );
   }
 
-  doAction(item, patronPid?: string) {
+  doAction(item, transactionLibraryPid, patronPid?: string) {
     const action = item.currentAction;
     const url = `/api/item/${action}`;
     const data: any = {
-      item_pid: item.pid
+      item_pid: item.pid,
+      transaction_library_pid: transactionLibraryPid
     };
     if (patronPid && action === ItemAction.checkout) {
       data.patron_pid = patronPid;

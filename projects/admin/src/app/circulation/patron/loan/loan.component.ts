@@ -23,6 +23,7 @@ import { User } from '../../../class/user';
 import { PatronService } from '../../../service/patron.service';
 import { Item, ItemAction, ItemStatus } from '../../items';
 import { ItemsService } from '../../items.service';
+import { LibrarySwitchService } from '../../../service/library-switch.service';
 
 @Component({
   selector: 'admin-loan',
@@ -56,12 +57,14 @@ export class LoanComponent implements OnInit {
    * @param translate: Translate Service
    * @param toastService: Toastr Service
    * @param patronService: Patron Service
+   * @param librarySwitchService: LibrarySwitchService
    */
   constructor(
     private itemsService: ItemsService,
     private translate: TranslateService,
     private toastService: ToastrService,
-    private patronService: PatronService
+    private patronService: PatronService,
+    private librarySwitchService: LibrarySwitchService
   ) {
   }
 
@@ -154,7 +157,7 @@ export class LoanComponent implements OnInit {
     const observables = [];
     for (const item of items) {
       if (item.currentAction !== ItemAction.no) {
-        observables.push(this.itemsService.doAction(item, this.patron.pid));
+        observables.push(this.itemsService.doAction(item, this.librarySwitchService.currentLibrary.pid, this.patron.pid));
       }
     }
     forkJoin(observables).subscribe(

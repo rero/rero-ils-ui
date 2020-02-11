@@ -26,6 +26,7 @@ import { PatronService } from '../../service/patron.service';
 import { UserService } from '../../service/user.service';
 import { Item, ItemAction } from '../items';
 import { ItemsService } from '../items.service';
+import { LibrarySwitchService } from '../../service/library-switch.service';
 
 @Component({
   selector: 'admin-circulation-checkout',
@@ -57,6 +58,7 @@ export class CheckoutComponent implements OnInit {
    * @param  translate: Translate Service
    * @param  toastService: Toastr Service
    * @param  patronService: Patron Service
+   * @param librarySwitchService: LibrarySwitchService
    */
   constructor(
     private userService: UserService,
@@ -65,7 +67,8 @@ export class CheckoutComponent implements OnInit {
     private router: Router,
     private translate: TranslateService,
     private toastService: ToastrService,
-    private patronService: PatronService
+    private patronService: PatronService,
+    private librarySwitchService: LibrarySwitchService
   ) {}
 
   ngOnInit() {
@@ -92,7 +95,7 @@ export class CheckoutComponent implements OnInit {
    */
   automaticCheckinCheckout(itemBarcode) {
     this.searchInputFocus = false;
-    this.itemsService.automaticCheckin(itemBarcode).subscribe(item => {
+    this.itemsService.automaticCheckin(itemBarcode, this.librarySwitchService.currentLibrary.pid).subscribe(item => {
       // TODO: remove this when policy will be in place
       if (
         item === null ||
