@@ -20,6 +20,7 @@ import { ItemsService } from '../items.service';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../service/user.service';
 import { TranslateService } from '@ngx-translate/core';
+import { LibrarySwitchService } from '../../service/library-switch.service';
 
 
 @Component({
@@ -35,11 +36,19 @@ export class MainRequestComponent implements OnInit {
   private libraryPid: string;
   public isLoading = false;
 
+  /** Constructor
+   * @param  userService: User Service
+   * @param  itemsService: Items Service
+   * @param  translate: Translate Service
+   * @param  toastService: Toastr Service
+   * @param librarySwitchService: LibrarySwitchService
+   */
   constructor(
     private userService: UserService,
     private itemsService: ItemsService,
     private translate: TranslateService,
-    private toastService: ToastrService
+    private toastService: ToastrService,
+    private librarySwitchService: LibrarySwitchService
   ) {}
 
   ngOnInit() {
@@ -73,7 +82,7 @@ export class MainRequestComponent implements OnInit {
     } else {
       const items = this.items;
       this.items = null;
-      this.itemsService.doValidateRequest(item).subscribe(
+      this.itemsService.doValidateRequest(item, this.librarySwitchService.currentLibrary.pid).subscribe(
         newItem => {
           this.items = items.map(currItem => {
             if (currItem.pid === newItem.pid) {
