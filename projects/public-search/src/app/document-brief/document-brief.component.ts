@@ -55,6 +55,21 @@ export class DocumentBriefComponent {
     return this._record;
   }
 
+  /** process provision activity publications */
+  get provisionActivityPublications() {
+    const provisionActivity = this._record.metadata.provisionActivity;
+    const publications = [];
+    if (undefined === provisionActivity) {
+      return publications;
+    }
+    provisionActivity.map((provision: any) => {
+      if (provision.type === 'bf:Publication' && '_text' in provision) {
+        provision._text.map((text: any) => publications.push(text));
+      }
+    });
+    return publications;
+  }
+
   constructor(
     private translate: TranslateService,
     private localRecordService: LocalRecordService

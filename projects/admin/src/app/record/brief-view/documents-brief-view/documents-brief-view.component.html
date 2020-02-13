@@ -21,7 +21,10 @@
 
   <!-- author -->
   <ul class="list-inline mb-0" *ngIf="record.metadata.authors && record.metadata.authors.length > 0">
-    <li class="list-inline-item" *ngFor="let author of record.metadata.authors.slice(0,3); let last = last">
+    <li
+      class="list-inline-item"
+      *ngFor="let author of record.metadata.authors.slice(0,3); let last = last; let i = index"
+    >
       <span *ngIf="!author.pid">
         {{ author | authorNameTranslate }}
       </span>
@@ -29,12 +32,12 @@
         {{ author | authorNameTranslate }}
       </a>
       {{ last ? '' : '; ' }}
+      {{ last && i === 2 ? '; …' : '' }}
     </li>
-    <li *ngIf="record.metadata.authors && record.metadata.authors.length > 3">; …</li>
   </ul>
 
-  <!-- publisher_statements -->
-  <span *ngIf="record.metadata.publisherStatement">
-    {{ record.metadata.publisherStatement[0] }}
-  </span>
+  <!-- provision activity publications -->
+  <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
+    <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>
+  </ul>
 </ng-container>
