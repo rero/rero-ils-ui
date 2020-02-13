@@ -44,8 +44,6 @@ export class PersonsRoute extends BaseRoute implements RouteInterface {
             label: 'Persons',
             component: PersonsBriefViewComponent,
             detailComponent: PersonDetailViewComponent,
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record),
-            canDelete: (record: any) => this._routeToolService.canDelete(record),
             aggregationsExpand: ['sources']
           }
         ]

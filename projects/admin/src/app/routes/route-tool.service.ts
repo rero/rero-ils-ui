@@ -21,6 +21,7 @@ import { RecordPermissionMessageService } from '../service/record-permission-mes
 import { of, Observable, Subscriber } from 'rxjs';
 import { ActionStatus, ApiService, RecordService } from '@rero/ng-core';
 import { UserService } from '../service/user.service';
+import { RecordPermission, RecordPermissionService } from '../service/record-permission.service';
 
 
 @Injectable({
@@ -71,33 +72,45 @@ export class RouteToolService {
    * @param _apiService - ApiService
    * @param _activatedRoute - ActivatedRoute
    * @param _recordService - RecordService
+   * @param _recordPermissionService - RecordPermissionService
    */
   constructor(
     private _translateService: TranslateService,
-    private _recordPermissionService: RecordPermissionMessageService,
+    private _recordPermissionMessageService: RecordPermissionMessageService,
     private _userService: UserService,
     private _apiService: ApiService,
     private _activatedRoute: ActivatedRoute,
-    private _recordService: RecordService
+    private _recordService: RecordService,
+    private _recordPermissionService: RecordPermissionService
   ) { }
 
   /**
-   * Can not to disabled action
+   * Enabled action
+   * @param message - string
    * @return Observable
    */
-  canNot() {
-    return of({ can: false, message: '' });
+  can(message: string = ''): Observable<ActionStatus> {
+    return of({ can: true, message });
   }
 
   /**
-   * Can Add System Librarian
+   * Disabled action
+   * @param message - string
    * @return Observable
    */
-  canAddSystemLibrarian() {
-    return of({
-      can: this._userService.hasRole('system_librarian'),
-      message: ''
-    });
+  canNot(message: string = ''): Observable<ActionStatus> {
+    return of({ can: false, message });
+  }
+
+  /**
+   * Access only for system librarian
+   * @param message - string
+   * @return Observable
+   */
+  canSystemLibrarian(message: string = ''): Observable<ActionStatus> {
+    return of(
+      { can: this._userService.hasRole('system_librarian'), message }
+    );
   }
 
   /**
@@ -105,11 +118,25 @@ export class RouteToolService {
    * @param record - Object
    * @return Observable
    */
-  canUpdate(record: any) {
-    if (record.permissions && record.permissions.cannot_update) {
-      return of({ can: false, message: '' });
+  canUpdate(record: any, recordType: string): Observable<ActionStatus> {
+    // TODO: Refactoring after all change in resource permission
+    if ('documents' === recordType) {
+      const obs = new Observable((observer: Subscriber<any>): void => {
+        this._recordPermissionService
+        .getPermission(recordType, record.metadata.pid)
+        .subscribe((permission: RecordPermission) => {
+          observer.next({ can: permission.update.can, message: '' });
+        });
+      });
+
+      return obs;
+    } else {
+      if (record.permissions && record.permissions.cannot_update) {
+        return this.canNot();
+      }
+
+      return this.can();
     }
-    return of({ can: true, message: '' });
   }
 
   /**
@@ -117,30 +144,52 @@ export class RouteToolService {
    * @param record - Object
    * @return Observable
    */
-  canDelete(record: any): Observable<ActionStatus> {
-    const obs = new Observable((observer: Subscriber<any>): void => {
-      if (
-        record.permissions &&
-        record.permissions.cannot_delete &&
-        record.permissions.cannot_delete.permission &&
-        record.permissions.cannot_delete.permission === 'permission denied'
-      ) {
-        observer.next({ can: false, message: '' });
-      } else {
-        observer.next({
-          can: !this._recordPermissionService.generateMessage(record),
-          message: this._recordPermissionService.generateMessage(record)
+  canDelete(record: any, recordType: string): Observable<ActionStatus> {
+    // TODO: Refactoring after all change in resource permission
+    if ('documents' === recordType) {
+      const obs = new Observable((observer: Subscriber<any>): void => {
+        this._recordPermissionService
+        .getPermission(recordType, record.metadata.pid)
+        .subscribe((permission: RecordPermission) => {
+          if (permission.delete.can) {
+            observer.next({ can: permission.delete.can, message: '' });
+          } else {
+            observer.next({
+              can: permission.delete.can,
+              message: this._recordPermissionService.generateDeleteMessage(
+                permission.delete.reasons
+              )
+            });
+          }
         });
-        this.translateService.onLangChange.subscribe(() => {
-          observer.next({
-            can: !this._recordPermissionService.generateMessage(record),
-            message: this._recordPermissionService.generateMessage(record)
-          });
-        });
-      }
-    });
+      });
 
-    return obs;
+      return obs;
+    } else {
+      const obs = new Observable((observer: Subscriber<any>): void => {
+        if (
+          record.permissions &&
+          record.permissions.cannot_delete &&
+          record.permissions.cannot_delete.permission &&
+          record.permissions.cannot_delete.permission === 'permission denied'
+        ) {
+          observer.next({ can: false, message: '' });
+        } else {
+          observer.next({
+            can: !this._recordPermissionMessageService.generateMessage(record),
+            message: this._recordPermissionMessageService.generateMessage(record)
+          });
+          this.translateService.onLangChange.subscribe(() => {
+            observer.next({
+              can: !this._recordPermissionMessageService.generateMessage(record),
+              message: this._recordPermissionMessageService.generateMessage(record)
+            });
+          });
+        }
+      });
+
+      return obs;
+    }
   }
 
   /**
@@ -160,6 +209,7 @@ export class RouteToolService {
   /**
    * Aggregation filter
    * @param aggregations - Object
+   * @return array
    */
   private aggFilter(aggregations: object) {
     const aggs = {};

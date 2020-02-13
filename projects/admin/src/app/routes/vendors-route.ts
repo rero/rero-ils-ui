@@ -24,6 +24,9 @@ export class VendorsRoute extends BaseRoute implements RouteInterface {
   /** Route name */
   readonly name = 'vendors';
 
+  /** Record type */
+  readonly recordType = 'persons';
+
   /**
    * Get Configuration
    * @return Object
@@ -45,8 +48,8 @@ export class VendorsRoute extends BaseRoute implements RouteInterface {
             label: 'Vendors',
             component: VendorBriefViewComponent,
             detailComponent: VendorDetailViewComponent,
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record),
-            canDelete: (record: any) => this._routeToolService.canDelete(record),
+            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
             preCreateRecord: (data: any) => {
               const user = this._routeToolService.userService.getCurrentUser();
               data.organisation = {

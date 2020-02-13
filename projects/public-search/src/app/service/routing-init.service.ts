@@ -68,9 +68,6 @@ export class RoutingInitService {
             aggregationsOrder: this.aggregations(viewcode),
             aggregationsExpand: ['document_type'],
             aggregationsBucketSize: 10,
-            listHeaders: {
-              Accept: 'application/rero+json, application/json'
-            },
             preFilters: {
               view: `${viewcode}`
             }

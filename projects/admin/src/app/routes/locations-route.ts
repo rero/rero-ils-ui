@@ -23,6 +23,9 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
   /** Route name */
   readonly name = 'locations';
 
+  /** Record type */
+  readonly recordType = 'libraries';
+
   /**
    * Get Configuration
    * @return Object
@@ -42,9 +45,9 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             label: 'Locations',
             detailComponent: LocationDetailViewComponent,
-            canAdd: () => this._routeToolService.canAddSystemLibrarian(),
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record),
-            canDelete: (record: any) => this._routeToolService.canDelete(record),
+            canAdd: () => this._routeToolService.canSystemLibrarian(),
+            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
             preCreateRecord: (record: any) => {
               record.library = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(

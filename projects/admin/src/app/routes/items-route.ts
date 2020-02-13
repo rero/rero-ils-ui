@@ -28,6 +28,9 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
   /** Route name */
   readonly name = 'items';
 
+  /** Record type */
+  readonly recordType = 'items';
+
   /**
    * Get Configuration
    * @return Object
@@ -48,8 +51,8 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             label: 'Items',
             detailComponent: ItemDetailViewComponent,
             canRead: (record: any) => this.canReadItem(record),
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record),
-            canDelete: (record: any) => this._routeToolService.canDelete(record),
+            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
             preCreateRecord: (data: any) => {
               data.document = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(

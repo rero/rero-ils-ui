@@ -29,6 +29,9 @@ export class AcquisitionOrderLinesRoute extends BaseRoute implements RouteInterf
   /** Route name */
   readonly name = 'acq_order_lines';
 
+  /** Record type */
+  readonly recordType = 'acq_order_lines';
+
   /**
    * Get Configuration
    * @return Object
@@ -48,9 +51,9 @@ export class AcquisitionOrderLinesRoute extends BaseRoute implements RouteInterf
             key: this.name,
             label: 'Order lines',
             detailComponent: AcquisitionOrderLineDetailViewComponent,
-            canAdd: () => this._routeToolService.canAddSystemLibrarian(),
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record),
-            canDelete: (record: any) => this._routeToolService.canDelete(record),
+            canAdd: () => this._routeToolService.canSystemLibrarian(),
+            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
             preCreateRecord: (data: any) => {
               data.acq_order = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(

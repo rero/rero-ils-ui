@@ -14,7 +14,7 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
+<ng-container *ngIf="item && permissions">
 <div class="col-sm-4">
   <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]">
     {{ item.metadata.barcode }}
@@ -28,17 +28,17 @@
 </div>
 <div class="col-sm-4 text-right">
   <ng-container *ngIf="isAvailableActions; else noactions">
-    <button *ngIf="!item.permissions.cannot_update" type="button" class="btn btn-primary btn-sm"
+    <button *ngIf="permissions.update.can" type="button" class="btn btn-primary btn-sm"
       [routerLink]="['/records', 'items', 'edit', item.metadata.pid]">
       <i class="fa fa-pencil"></i> {{ 'Edit' | translate }}
     </button>
 
-    <button *ngIf="!item.permissions.cannot_delete; else notDelete" type="button" class="btn btn-primary btn-sm ml-1"
+    <button *ngIf="permissions.delete.can; else notDelete" type="button" class="btn btn-primary btn-sm ml-1"
       (click)="delete(item.metadata.pid)">
       <i class="fa fa-trash"></i> {{ 'Delete' | translate }}
     </button>
     <ng-template #notDelete>
-      <button type="button" class="btn btn-dark btn-sm ml-1" (click)="showDeleteMessage(item)">
+      <button type="button" class="btn btn-dark btn-sm ml-1" (click)="showDeleteMessage()">
         <i class="fa fa-trash"></i> {{ 'Delete' | translate }}
       </button>
     </ng-template>
@@ -47,3 +47,4 @@
     &nbsp;
   </ng-template>
 </div>
+</ng-container>

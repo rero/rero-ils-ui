@@ -27,6 +27,9 @@ export class AcquisitionOrdersRoute extends BaseRoute implements RouteInterface 
   /** Route name */
   readonly name = 'acq_orders';
 
+  /** Record type */
+  readonly recordType = 'acq_orders';
+
   /**
    * Get Configuration
    * @return Object
@@ -48,8 +51,8 @@ export class AcquisitionOrdersRoute extends BaseRoute implements RouteInterface 
             label: 'Orders',
             component: AcquisitionOrderBriefViewComponent,
             detailComponent: AcquisitionOrderDetailViewComponent,
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record),
-            canDelete: (record: any) => this._routeToolService.canDelete(record),
+            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
             preCreateRecord: (data: any) => {
               const user = this._routeToolService.userService.getCurrentUser();
               data.order_date = formatDate(
