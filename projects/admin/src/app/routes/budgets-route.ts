@@ -24,6 +24,9 @@ export class BudgetsRoute extends BaseRoute implements RouteInterface {
   /** Route name */
   readonly name = 'budgets';
 
+  /** Record type */
+  readonly recordType = 'budgets';
+
   /**
    * Get Configuration
    * @return Object
@@ -45,8 +48,8 @@ export class BudgetsRoute extends BaseRoute implements RouteInterface {
             label: 'Budgets',
             component: BudgetsBriefViewComponent,
             detailComponent: BudgetDetailViewComponent,
-            canAdd: () => this._routeToolService.canAddSystemLibrarian(),
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record),
+            canAdd: () => this._routeToolService.canSystemLibrarian(),
+            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: () => this._routeToolService.canNot(),
             preCreateRecord: (data: any) => {
               const user = this._routeToolService.userService.getCurrentUser();

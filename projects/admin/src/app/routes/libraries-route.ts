@@ -25,6 +25,9 @@ export class LibrariesRoute extends BaseRoute implements RouteInterface {
   /** Route name */
   readonly name = 'libraries';
 
+  /** Record type */
+  readonly recordType = 'libraries';
+
   /**
    * Get Configuration
    * @return Object
@@ -46,9 +49,9 @@ export class LibrariesRoute extends BaseRoute implements RouteInterface {
             label: 'Libraries',
             component: LibrariesBriefViewComponent,
             detailComponent: LibraryDetailViewComponent,
-            canAdd: () => this._routeToolService.canAddSystemLibrarian(),
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record),
-            canDelete: (record: any) => this._routeToolService.canDelete(record),
+            canAdd: () => this._routeToolService.canSystemLibrarian(),
+            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
             preCreateRecord: (data: any) => {
               const user = this._routeToolService.userService.getCurrentUser();
               data.organisation = {

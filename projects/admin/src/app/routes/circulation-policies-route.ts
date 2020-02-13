@@ -25,6 +25,9 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
   /** Route name */
   readonly name = 'circ_policies';
 
+  /** Record type */
+  readonly recordType = 'circ_policies';
+
   /**
    * Get Configuration
    * @return Object
@@ -46,9 +49,9 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
             label: 'Circulation policies',
             component: CircPoliciesBriefViewComponent,
             detailComponent: CircPolicyDetailViewComponent,
-            canAdd: () => this._routeToolService.canAddSystemLibrarian(),
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record),
-            canDelete: (record: any) => this._routeToolService.canDelete(record)
+            canAdd: () => this._routeToolService.canSystemLibrarian(),
+            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType)
           }
         ]
       }

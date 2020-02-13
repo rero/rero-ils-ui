@@ -25,6 +25,9 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
   /** Route name */
   readonly name = 'documents';
 
+  /** Record type */
+  readonly recordType = 'documents';
+
   /**
    * Get Configuration
    * @return Object
@@ -48,8 +51,8 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             editorLongMode: true,
             component: DocumentsBriefViewComponent,
             detailComponent: DocumentDetailViewComponent,
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record),
-            canDelete: (record: any) => this._routeToolService.canDelete(record),
+            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
             preprocessRecordEditor: (record: any) => {
               return this.removeKey(record, '_text');
             },

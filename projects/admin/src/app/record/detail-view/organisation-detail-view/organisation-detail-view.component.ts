@@ -17,6 +17,7 @@
 import { Component } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
+import { UserService } from '../../../service/user.service';
 
 @Component({
   selector: 'admin-organisation-detail-view',
@@ -33,4 +34,11 @@ export class OrganisationDetailViewComponent implements DetailRecord {
    * Type
    */
   type: string;
+
+  get isSystemLibrarian() {
+    return this._userService.hasRole('system_librarian');
+
+  }
+
+  constructor(private _userService: UserService) {}
 }

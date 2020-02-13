@@ -24,6 +24,9 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
   /** Route name */
   readonly name = 'patrons';
 
+  /** Record type */
+  readonly recordType = 'patrons';
+
   /**
    * Get Configuration
    * @return Object
@@ -45,8 +48,8 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
             label: 'Patrons',
             component: PatronsBriefViewComponent,
             detailComponent: PatronDetailViewComponent,
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record),
-            canDelete: (record: any) => this._routeToolService.canDelete(record),
+            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
             aggregationsExpand: ['roles']
           }
         ]

@@ -19,6 +19,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { I18nPluralPipe, NgLocaleLocalization } from '@angular/common';
 
+// TODO: Delete this service after refactoring of resource permission
 @Injectable({
   providedIn: 'root'
 })
