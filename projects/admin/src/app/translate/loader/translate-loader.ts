@@ -16,6 +16,7 @@
  */
 
 import { TranslateLoader as NgCoreTranslateLoader } from '@rero/ng-core';
+import { Injectable } from '@angular/core';
 import { AppConfigService } from '../../service/app-config.service';
 
 import fr from '../i18n/fr.json';
@@ -23,6 +24,7 @@ import de from '../i18n/de.json';
 import en from '../i18n/en.json';
 import it from '../i18n/it.json';
 
+@Injectable()
 export class TranslateLoader extends NgCoreTranslateLoader {
 
   /**
