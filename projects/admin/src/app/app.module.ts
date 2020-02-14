@@ -96,6 +96,8 @@ import { AcquisitionAccountComponent } from './record/detail-view/budget-detail-
 import { OrganisationDetailViewComponent } from './record/detail-view/organisation-detail-view/organisation-detail-view.component';
 import { BudgetSelectComponent } from './record/detail-view/organisation-detail-view/budget-select/budget-select.component';
 import { BudgetSelectLineComponent } from './record/detail-view/organisation-detail-view/budget-select-line/budget-select-line.component';
+import { FrontpageBoardComponent } from './frontpage/frontpage-board/frontpage-board.component';
+import { FrontpageSubBoardComponent } from './frontpage/frontpage-sub-board/frontpage-sub-board.component';
 
 @NgModule({
   declarations: [
@@ -161,7 +163,9 @@ import { BudgetSelectLineComponent } from './record/detail-view/organisation-det
     AcquisitionAccountComponent,
     OrganisationDetailViewComponent,
     BudgetSelectComponent,
-    BudgetSelectLineComponent
+    BudgetSelectLineComponent,
+    FrontpageBoardComponent,
+    FrontpageSubBoardComponent
   ],
   imports: [
     AppRoutingModule,

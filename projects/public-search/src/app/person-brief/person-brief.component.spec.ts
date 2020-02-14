@@ -15,17 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { MefTitlePipe } from './../pipes/mef-title.pipe';
-import { BirthDatePipe } from './../pipes/birth-date.pipe';
-import { BioInformationsPipe } from './../pipes/bio-informations.pipe';
-import { PersonBriefComponent } from './person-brief.component';
-import { AppRoutingModule } from 'projects/admin/src/app/app-routing.module';
-import { FrontpageComponent } from 'projects/admin/src/app/frontpage/frontpage.component';
-import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { RecordModule } from '@rero/ng-core';
+import { AppRoutingModule } from 'projects/admin/src/app/app-routing.module';
+import { FrontpageBoardComponent } from 'projects/admin/src/app/frontpage/frontpage-board/frontpage-board.component';
+import { FrontpageSubBoardComponent } from 'projects/admin/src/app/frontpage/frontpage-sub-board/frontpage-sub-board.component';
+import { FrontpageComponent } from 'projects/admin/src/app/frontpage/frontpage.component';
+import { BioInformationsPipe } from './../pipes/bio-informations.pipe';
+import { BirthDatePipe } from './../pipes/birth-date.pipe';
+import { MefTitlePipe } from './../pipes/mef-title.pipe';
+import { PersonBriefComponent } from './person-brief.component';
+
 
 describe('PersonBriefComponent', () => {
   let component: PersonBriefComponent;
@@ -38,7 +40,9 @@ describe('PersonBriefComponent', () => {
         MefTitlePipe,
         BirthDatePipe,
         BioInformationsPipe,
-        FrontpageComponent
+        FrontpageComponent,
+        FrontpageBoardComponent,
+        FrontpageSubBoardComponent
       ],
       imports:
       [

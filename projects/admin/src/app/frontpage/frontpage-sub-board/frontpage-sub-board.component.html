@@ -15,14 +15,15 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="container">
-  <div class="col mb-3">
-    <h1 class="text-center" translate>RERO ILS administration</h1>
-  </div >
-    <admin-frontpage-board *ngIf="userServices && catalog && acquisitions && adminMonitoring"
-  [userServices]="userServices"
-  [catalog]="catalog"
-  [acquisitions]="acquisitions"
-  [adminMonitoring]="adminMonitoring">
-</admin-frontpage-board>
+<div class="card" *ngIf="items">
+  <div class="card-header bg-dark text-white text-wrap" *ngIf="items.title">
+    <i *ngIf="items.title.iconCssClass" [ngClass]="items.title.iconCssClass" aria-hidden="true"></i>
+    {{ items.title.name }}
+  </div>
+  <ul class="list-group list-group-flush" *ngIf="items.entries">
+    <li class="list-group-item p-0" *ngFor="let item of items.entries">
+      <a class="list-group-item btn btn-light text-left text-wrap" [routerLink]="item.routerLink"><i *ngIf="item.iconCssClass"
+        [ngClass]="item.iconCssClass" aria-hidden="true"></i> {{ item.name | translate }}</a>
+    </li>
+  </ul>
 </div>
