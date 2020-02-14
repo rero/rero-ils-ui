@@ -15,14 +15,21 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="container">
-  <div class="col mb-3">
-    <h1 class="text-center" translate>RERO ILS administration</h1>
-  </div >
-    <admin-frontpage-board *ngIf="userServices && catalog && acquisitions && adminMonitoring"
-  [userServices]="userServices"
-  [catalog]="catalog"
-  [acquisitions]="acquisitions"
-  [adminMonitoring]="adminMonitoring">
-</admin-frontpage-board>
+<div class="row">
+  <!-- USER SERVICES -->
+  <div class="col-lg-3" *ngIf="userServices">
+    <admin-frontpage-sub-board [items]="userServices"></admin-frontpage-sub-board>
+  </div>
+  <!-- CATALOG -->
+  <div class="col-lg-3" *ngIf="catalog">
+    <admin-frontpage-sub-board [items]="catalog"></admin-frontpage-sub-board>
+  </div>
+  <!-- ACQUISITIONS -->
+  <div class="col-lg-3" *ngIf="acquisitions">
+    <admin-frontpage-sub-board [items]="acquisitions"></admin-frontpage-sub-board>
+  </div>
+  <!-- ADMIN & MONITORING -->
+  <div class="col-lg-3" *ngIf="adminMonitoring">
+    <admin-frontpage-sub-board [items]="adminMonitoring"></admin-frontpage-sub-board>
+  </div>
 </div>

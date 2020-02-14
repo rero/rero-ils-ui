@@ -83,7 +83,7 @@ export class ItemAccessGuard implements CanActivate {
       },
         () => {
           this._toastr.warning(
-            this._translateService.instant('Item not found!'),
+            this._translateService.instant('Item not found'),
             this._translateService.instant('item')
           );
           // Redirect to homepage on error
