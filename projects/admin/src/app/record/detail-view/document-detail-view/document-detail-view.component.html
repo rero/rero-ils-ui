@@ -102,7 +102,15 @@
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           <ul class="list-unstyled mb-0">
-            <li *ngFor="let abstract of record.metadata.abstracts" [innerHTML]="abstract | nl2br"></li>
+            <li *ngFor="let abstract of record.metadata.abstracts"> 
+              <ng-core-text-read-more
+                [text]="abstract" 
+                [unit]="'word'" 
+                [limit]=100 
+                [showMoreLabel]="'Show more'|translate"
+                [showLessLabel]="'Show less'|translate">
+              </ng-core-text-read-more>
+            </li>
           </ul>
         </dd>
       </ng-container>
