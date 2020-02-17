@@ -18,6 +18,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '../service/user.service';
+import { LocalStorageService } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-frontpage',
@@ -32,41 +33,50 @@ export class FrontpageComponent implements OnInit {
   adminMonitoring = { title: {}, entries: [] };
 
   /** Constructor
-   * @param translateService: TranslateService
-   * @param  userService: User Service
+   * @param _translateService - TranslateService
+   * @param _userService - User Service
+   * @param _localStorageService - LocalStorageService
    */
   constructor(
-    private translateService: TranslateService,
-    private userService: UserService) { }
+    private _translateService: TranslateService,
+    private _userService: UserService,
+    private _localStorageService: LocalStorageService
+  ) { }
 
     /** On init hook */
   ngOnInit() {
     this.initBoard();
+    this._localStorageService.onSet$.subscribe(() => {
+      const link = this.adminMonitoring.entries.find(
+        (element: any) => element.routerLink.indexOf('/libraries/detail') > -1
+      );
+      link.routerLink = this.myLibraryRouterLink();
+    });
   }
 
   /** Router link for my library */
   private myLibraryRouterLink() {
-    return `/records/libraries/detail/${this.userService.getCurrentUser().currentLibrary}`;
+    return `/records/libraries/detail/${this._userService.getCurrentUser().currentLibrary}`;
   }
 
   /** Populates the list of entries */
   initBoard() {
     this.userServices = {
       title: {
-        name: this.translateService.instant('User services'),
+        name: this._translateService.instant('User services'),
         iconCssClass: 'fa fa-users'
       },
       entries: [
         {
-          name: this.translateService.instant('Circulation'),
+          name: this._translateService.instant('Circulation'),
           routerLink: '/circulation',
           iconCssClass: 'fa fa-exchange'
         }, {
-          name: this.translateService.instant('Requests'),
+          name: this._translateService.instant('Requests'),
           routerLink: '/circulation/requests',
           iconCssClass: 'fa fa-truck'
         }, {
-          name: this.translateService.instant('Patrons'),
+          name: this._translateService.instant('Patrons'),
           routerLink: '/records/patrons',
           iconCssClass: 'fa fa-users'
         }
@@ -74,20 +84,20 @@ export class FrontpageComponent implements OnInit {
 
     this.catalog = {
       title: {
-        name: this.translateService.instant('Catalog'),
+        name: this._translateService.instant('Catalog'),
           iconCssClass: 'fa fa-file-o'
       },
       entries: [
         {
-          name: this.translateService.instant('Documents'),
+          name: this._translateService.instant('Documents'),
             routerLink: '/records/documents',
             iconCssClass: 'fa fa-file-o'
           }, {
-            name: this.translateService.instant('Create a bibliographic record'),
+            name: this._translateService.instant('Create a bibliographic record'),
             routerLink: '/records/documents/new',
             iconCssClass: 'fa fa-file-o'
           }, {
-            name: this.translateService.instant('Persons'),
+            name: this._translateService.instant('Persons'),
             routerLink: '/records/persons',
             iconCssClass: 'fa fa-user'
         }
@@ -95,20 +105,20 @@ export class FrontpageComponent implements OnInit {
 
     this.acquisitions = {
       title: {
-        name: this.translateService.instant('Acquisitions'),
+        name: this._translateService.instant('Acquisitions'),
         iconCssClass: 'fa fa-university'
       },
       entries: [
         {
-          name: this.translateService.instant('Vendors'),
+          name: this._translateService.instant('Vendors'),
           routerLink: '/records/vendors',
           iconCssClass: 'fa fa-briefcase'
         }, {
-          name: this.translateService.instant('Orders'),
+          name: this._translateService.instant('Orders'),
           routerLink: '/records/acq_orders',
           iconCssClass: 'fa fa-shopping-cart'
         }, {
-          name: this.translateService.instant('Budgets'),
+          name: this._translateService.instant('Budgets'),
           routerLink: '/records/budgets',
           iconCssClass: 'fa fa-money'
         }
@@ -116,32 +126,32 @@ export class FrontpageComponent implements OnInit {
 
     this.adminMonitoring = {
       title: {
-        name: this.translateService.instant('Admin & Monitoring'),
+        name: this._translateService.instant('Admin & Monitoring'),
         iconCssClass: 'fa fa-cogs'
       },
       entries: [
         {
-          name: this.translateService.instant('Circulation policies'),
+          name: this._translateService.instant('Circulation policies'),
           routerLink: '/records/circ_policies',
           iconCssClass: 'fa fa-exchange'
         }, {
-          name: this.translateService.instant('Item types'),
+          name: this._translateService.instant('Item types'),
           routerLink: '/records/item_types',
           iconCssClass: 'fa fa-file-o'
         }, {
-          name: this.translateService.instant('Patron types'),
+          name: this._translateService.instant('Patron types'),
           routerLink: '/records/patron_types',
           iconCssClass: 'fa fa-users'
         }, {
-          name: this.translateService.instant('My organisation'),
-          routerLink: `/records/organisations/detail/${this.userService.getCurrentUser().library.organisation.pid}`,
+          name: this._translateService.instant('My organisation'),
+          routerLink: `/records/organisations/detail/${this._userService.getCurrentUser().library.organisation.pid}`,
           iconCssClass: 'fa fa-university'
         }, {
-          name: this.translateService.instant('My library'),
+          name: this._translateService.instant('My library'),
           routerLink: this.myLibraryRouterLink(),
           iconCssClass: 'fa fa-university'
         }, {
-          name: this.translateService.instant('Libraries'),
+          name: this._translateService.instant('Libraries'),
           routerLink: '/records/libraries',
           iconCssClass: 'fa fa-university'
         }
