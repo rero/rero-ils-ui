@@ -16,9 +16,9 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-document-detail-view',
@@ -36,9 +36,13 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit {
   /** Document record */
   record: any;
 
+  /** constructor
+   * @param _translateService: TranslateService
+   */
   constructor(
-    private translateService: TranslateService) { }
+    private _translateService: TranslateService) { }
 
+  /** On init hook */
   ngOnInit() {
     this.record$.subscribe((record: any) => {
       this.record = record;
@@ -50,7 +54,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit {
    * @return string - language
    */
   get currentLanguage() {
-    return this.translateService.currentLang;
+    return this._translateService.currentLang;
   }
 
   /**
@@ -62,7 +66,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit {
     if (undefined === authors) {
       return [];
     }
-    const key = `name_${this.translateService.currentLang}`;
+    const key = `name_${this._translateService.currentLang}`;
     authors.forEach((author: any) => {
       if (!('name' in author)) {
         if (key in author) {
@@ -147,5 +151,29 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit {
     });
 
     return results;
+  }
+
+  /** Related resources to display below 'Subjects' */
+  get relatedResources() {
+    if (this.record.metadata.electronicLocator) {
+      return this.record.metadata.electronicLocator.filter((electronicLocator: any) =>
+      this.filterEletronicLocatorByType(electronicLocator, ['noInfo', 'relatedResource', 'hiddenUrl'])
+      );
+    }
+  }
+
+  /** Resources to display like a holding */
+  get resources() {
+    if (this.record.metadata.electronicLocator) {
+      return this.record.metadata.electronicLocator.filter((electronicLocator: any) =>
+      this.filterEletronicLocatorByType(electronicLocator, ['resource', 'versionOfResource'])
+      );
+    }
+  }
+
+  filterEletronicLocatorByType(electronicLocator: any, types: string[]): any {
+    if (types.find(t => t === electronicLocator.type) !== undefined) {
+      return electronicLocator;
+    }
   }
 }

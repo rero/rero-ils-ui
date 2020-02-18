@@ -70,6 +70,8 @@ import { DocumentDetailViewComponent } from './record/detail-view/document-detai
 import { HoldingItemComponent } from './record/detail-view/document-detail-view/holding-item/holding-item.component';
 import { HoldingComponent } from './record/detail-view/document-detail-view/holding/holding.component';
 import { HoldingsComponent } from './record/detail-view/document-detail-view/holdings/holdings.component';
+import { RelatedResourceComponent } from './record/detail-view/document-detail-view/related-resource/related-resource.component';
+import { ResourceComponent } from './record/detail-view/document-detail-view/resource/resource.component';
 import { ItemDetailViewComponent } from './record/detail-view/item-detail-view/item-detail-view.component';
 import { ItemTransactionComponent } from './record/detail-view/item-detail-view/item-transaction/item-transaction.component';
 import { ItemTransactionsComponent } from './record/detail-view/item-detail-view/item-transactions/item-transactions.component';
@@ -156,7 +158,9 @@ import { TranslateLoader } from './translate/loader/translate-loader';
     OrganisationDetailViewComponent,
     BudgetSelectComponent,
     BudgetSelectLineComponent,
-    FrontpageBoardComponent
+    FrontpageBoardComponent,
+    RelatedResourceComponent,
+    ResourceComponent
   ],
   imports: [
     AppRoutingModule,
