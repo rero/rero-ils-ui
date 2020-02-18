@@ -14,6 +14,7 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
 <ng-container *ngIf="record">
   <header class="row">
     <h1>{{ record.metadata.title }}</h1>
@@ -21,8 +22,8 @@
   <section>
     <dl class="row mb-0">
       <!-- TYPE -->
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Type' | translate }}:
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+        Type
       </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
         {{ record.metadata.type | translate | titlecase }}
@@ -32,11 +33,11 @@
       <ng-container *ngIf="authors as docAuthors">
         <ng-container *ngIf="docAuthors.length > 0">
           <dt class="col-sm-3 offset-sm-2 offset-md-0">
-            <ng-container *ngIf="docAuthors < 2; else authors">
-              {{ 'Author' | translate }}:
+            <ng-container *ngIf="docAuthors < 2; else authors" class="label-title" translate>
+              Author
             </ng-container>
             <ng-template #authors>
-              {{ 'Authors' | translate }}:
+              <span class="label-title" translate>Authors</span>
             </ng-template>
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
@@ -58,13 +59,13 @@
       <!-- EDITION STATEMENT -->
       <ng-container *ngIf="editionsStatement as editions">
         <ng-container *ngIf="editions.length > 0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0">
-            {{ 'Edition' | translate }}:
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+            Edition
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
             <ul class="list-unstyled mb-0">
               <li *ngFor="let edition of editions">
-                {{ edition }}
+                {{ edition.value }}
               </li>
             </ul>
           </dd>
@@ -87,8 +88,8 @@
 
       <!-- COPYRIGHT DATE -->
       <ng-container *ngIf="record.metadata.copyright_date">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Copyright date' | translate }}:
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Copyright date
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           {{ record.metadata.copyright_date.join(', ') }}
@@ -97,8 +98,8 @@
 
       <!-- ABSTRACT -->
       <ng-container *ngIf="record.metadata.abstracts && record.metadata.abstracts.length > 0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Abstract' | translate }}:
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Abstract
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           <ul class="list-unstyled mb-0">
@@ -110,8 +111,8 @@
       <!-- PHYSICAL DESCRIPTION -->
       <ng-container
         *ngIf="record.metadata.extent || record.metadata.otherMaterialCharacteristics || record.metadata.formats">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Physical description' | translate }}:
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Physical description
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           <ng-container *ngIf="record.metadata.extent">
@@ -130,8 +131,8 @@
 
       <!-- ADDITIONAL MATERIALS -->
       <ng-container *ngIf="record.metadata.additionalMaterials">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Additional Materials' | translate }}:
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Additional Materials
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           {{ record.metadata.additionalMaterials }}
@@ -140,8 +141,8 @@
 
       <!-- SERIES -->
       <ng-container *ngIf="record.metadata.series">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Series' | translate }}:
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Series
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           <ul class="list-unstyled mb-0">
@@ -154,8 +155,8 @@
 
       <!-- UNIFORM TITLE -->
       <ng-container *ngIf="record.metadata.titlesProper">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Uniform title' | translate }}:
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Uniform title
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           {{ record.metadata.titlesProper.join('; ') }}
@@ -164,8 +165,8 @@
 
       <!-- IS PART OF -->
       <ng-container *ngIf="record.metadata.is_part_of">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Is part of' | translate }}:
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Is part of
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           {{ record.metadata.is_part_of }}
@@ -174,18 +175,40 @@
 
       <!-- SUBJECTS -->
       <ng-container *ngIf="record.metadata.subjects">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Subjects' | translate }}:
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Subjects
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           {{ record.metadata.subjects.join('; ') }}
         </dd>
       </ng-container>
 
+      <!-- RELATED RESOURCE -->
+      <ng-container *ngIf="relatedResources">
+        <ng-container *ngFor="let eloc of relatedResources; first as isFirst">
+          <ng-container *ngIf="isFirst; else elseBlock">
+            <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+              Related resource
+            </dt>
+            <dd class="col-sm-7 col-md-8 mb-0">
+              <admin-related-resource [electronicLocator]="eloc"></admin-related-resource>
+            </dd>
+          </ng-container>
+          <ng-template #elseBlock>
+            <dt class="col-sm-3 offset-sm-2 offset-md-0">
+              &nbsp;
+            </dt>
+            <dd class="col-sm-7 col-md-8 mb-0">
+              <admin-related-resource [electronicLocator]="eloc"></admin-related-resource>
+            </dd>
+          </ng-template>
+        </ng-container>
+      </ng-container>
+
       <!-- NOTES -->
       <ng-container *ngIf="record.metadata.notes && record.metadata.notes.length > 0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Notes' | translate }}:
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Notes
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           <ul class="list-unstyled mb-0">
@@ -197,8 +220,8 @@
       <!-- IDENTIFIEDBY -->
       <ng-container *ngIf="identifiedBy as identifiers">
         <ng-container *ngIf="identifiers.length > 0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0">
-            {{ 'Identifier' | translate }}:
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+            Identifier
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
             <ul class="list-unstyled mb-0">
@@ -213,14 +236,14 @@
 
       <!-- LANGUAGE -->
       <ng-container *ngIf="record.metadata.language && record.metadata.language.length > 0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Language' | translate }}:
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Language
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           <ul class="list-unstyled mb-0">
             <li *ngFor="let lang of record.metadata.language">
-              <ng-container *ngIf="lang.value === 'und'; else language">
-                {{ 'undefined' | translate }}
+              <ng-container *ngIf="lang.value === 'und'; else language" class="label-title" translate>
+                undefined
               </ng-container>
               <ng-template #language>
                 {{ lang.value | translateLanguage:currentLanguage }}
@@ -232,8 +255,8 @@
 
       <!-- ELECTRONIC LOCATION -->
       <ng-container *ngIf="record.metadata.electronic_location && record.metadata.electronic_location.length > 0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Online Access' | translate }}:
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Online Access
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           <ul class="list-unstyled mb-0">
@@ -248,8 +271,8 @@
 
       <!-- SOURCE -->
       <ng-container *ngIf="record.metadata.source">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Source' | translate }}:
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Source
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           <a href="{{ record.metadata.source }}">{{ record.metadata.source }}</a>
@@ -257,6 +280,9 @@
       </ng-container>
     </dl>
   </section>
+
+  <!-- RESOURCES -->
+  <admin-resource *ngIf="resources && resources.length > 0" [resources]="resources"></admin-resource>
 
   <!-- HOLDINGS -->
   <admin-holdings [harvested]="record.metadata.harvested" [documentPid]="record.metadata.pid">
