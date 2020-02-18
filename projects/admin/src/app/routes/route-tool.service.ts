@@ -17,11 +17,11 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordPermissionMessageService } from '../service/record-permission-message.service';
-import { of, Observable, Subscriber } from 'rxjs';
 import { ActionStatus, ApiService, RecordService } from '@rero/ng-core';
-import { UserService } from '../service/user.service';
+import { Observable, of, Subscriber } from 'rxjs';
+import { RecordPermissionMessageService } from '../service/record-permission-message.service';
 import { RecordPermission, RecordPermissionService } from '../service/record-permission.service';
+import { UserService } from '../service/user.service';
 
 
 @Injectable({
@@ -111,6 +111,23 @@ export class RouteToolService {
     return of(
       { can: this._userService.hasRole('system_librarian'), message }
     );
+  }
+
+  /**
+   * Admin mode with user role control
+   */
+  adminMode(): Observable<ActionStatus> {
+    const obs = new Observable((observer: Subscriber<ActionStatus>) => {
+      observer.next({ can: false, message: '' });
+      const currentUser = this._userService.getCurrentUser();
+      if (currentUser) {
+        observer.next({ can: currentUser.hasRole('system_librarian'), message: '' });
+      }
+      this._userService.onUserLoaded$.subscribe(user => {
+        observer.next({ can: user.hasRole('system_librarian'), message: '' });
+      });
+    });
+    return obs;
   }
 
   /**

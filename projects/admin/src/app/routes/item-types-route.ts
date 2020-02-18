@@ -42,6 +42,7 @@ export class ItemTypesRoute extends BaseRoute implements RouteInterface {
       ],
       data: {
         linkPrefix: 'records',
+        adminMode: () => this._routeToolService.adminMode(),
         types: [
           {
             key: this.name,

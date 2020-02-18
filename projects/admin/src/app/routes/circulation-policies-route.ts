@@ -43,6 +43,7 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
       ],
       data: {
         linkPrefix: 'records',
+        adminMode: () => this._routeToolService.adminMode(),
         types: [
           {
             key: this.name,
