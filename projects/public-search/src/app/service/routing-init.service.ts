@@ -70,6 +70,9 @@ export class RoutingInitService {
             aggregationsBucketSize: 10,
             preFilters: {
               view: `${viewcode}`
+            },
+            listHeaders: {
+              Accept: 'application/rero+json, application/json'
             }
           },
           {
