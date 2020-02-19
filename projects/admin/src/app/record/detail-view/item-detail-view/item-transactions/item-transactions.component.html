@@ -48,9 +48,8 @@
           <b>{{ 'Requests' | translate }}</b>
         </ng-template>
         <b> ({{ requestedBy.length }})</b>
-        <button class="btn btn-outline-primary btn-link btn-sm ml-2"
-        (click)="addRequest(item.metadata.pid)">
-          <i class="fa fa-plus"></i> {{ 'Add' | translate }}
+        <button class="btn btn-outline-primary btn-link btn-sm ml-2 float-right" (click)="addRequest(item.metadata.pid)">
+          <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} ...
         </button>
       </div>
       <div class="card-body">

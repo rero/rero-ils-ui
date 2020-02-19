@@ -23,7 +23,7 @@ export class MenuService {
         }, {
           name: this._translateService.instant('Requests'),
           routerLink: '/circulation/requests',
-          iconCssClass: 'fa fa-truck'
+          iconCssClass: 'fa fa-shopping-basket'
         }, {
           name: this._translateService.instant('Patrons'),
           routerLink: '/records/patrons',

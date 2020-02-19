@@ -28,24 +28,41 @@
   </div>
   <div class="col-sm-4 text-right">
     <ng-container *ngIf="isHoldingMatchUserLibraryPID">
-      <button type="button" class="btn btn-sm btn-outline-primary mr-2" (click)="addRequest(item.metadata.pid)" >
+      <button *ngIf="permissions.canRequest && permissions.canRequest.can; else notRequest"
+              type="button" class="btn btn-sm btn-outline-primary " (click)="addRequest(item.metadata.pid)"
+              title="{{ 'Item request' | translate}}">
         <i class="fa fa-shopping-basket" aria-hidden="true"></i>
       </button>
+      <ng-template #notRequest>
+        <button type="buttton" class="btn btn-sm btn-outline-primary disabled"
+                title="{{ 'Item request' | translate}}"
+                [popover]="tolTemplate" triggers="mouseenter:mouseleave">
+          <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+        </button>
+        <ng-template #tolTemplate><div [innerHtml]="cannotRequestInfoMessage | nl2br"></div></ng-template>
+      </ng-template>
     </ng-container>
-    <button *ngIf="permissions.update && permissions.update.can" type="button" class="btn btn-sm btn-outline-primary ml-1"
-        [routerLink]="['/records', 'items', 'edit', item.metadata.pid]">
-        <i class="fa fa-pencil"></i>
-      </button>
-      <button *ngIf="permissions.delete.can; else deleteInfo" type="button" class="btn btn-outline-danger btn-sm ml-1"
-        (click)="delete(item)">
+    <button *ngIf="permissions.update && permissions.update.can"
+            type="button" class="btn btn-sm btn-outline-primary ml-1"
+            title="{{ 'Edit' | translate}}"
+            [routerLink]="['/records', 'items', 'edit', item.metadata.pid]">
+      <i class="fa fa-pencil"></i>
+    </button>
+    <button *ngIf="permissions.delete && permissions.delete.can; else deleteInfo"
+            type="button" class="btn btn-outline-danger btn-sm ml-1"
+            title="{{ 'Delete' | translate}}"
+            (click)="delete(item.metadata.pid)">
         <i class="fa fa-trash" ></i>
+    </button>
+    <ng-template #deleteInfo>
+      <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"
+              title="{{ 'Delete' | translate}}"
+              [popover]="tolTemplate" triggers="mouseenter:mouseleave">
+        <i class="fa fa-trash"></i>
       </button>
+      <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
+    </ng-template>
   </div>
 </ng-container>
 
-<ng-template #deleteInfo>
-  <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"  [popover]="tolTemplate" triggers="mouseenter:mouseleave">
-    <i class="fa fa-trash"></i>
-  </button>
-  <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
-</ng-template>
+

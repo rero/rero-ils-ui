@@ -16,8 +16,11 @@
  */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { RecordUiService } from '@rero/ng-core';
+import { forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { RecordPermission, RecordPermissionService } from '../../../../service/record-permission.service';
+import { ItemsService } from '../../../../service/items.service';
+import { RecordPermissionService } from '../../../../service/record-permission.service';
 import { UserService } from '../../../../service/user.service';
 import { ItemRequestComponent } from '../item-request/item-request.component';
 
@@ -38,7 +41,9 @@ export class HoldingItemComponent implements OnInit {
   @Output() deleteItem = new EventEmitter();
 
   /** Item permissions */
-  permissions: RecordPermission;
+  permissions: any;
+
+
 
   /** Check if the holding owning library correspond to the current user library affilation.
    *
@@ -52,26 +57,34 @@ export class HoldingItemComponent implements OnInit {
 
   /**
    * Constructor
+   * @param _recordUiService - RecordUiService
    * @param _userService - UserService
-   * @param recordPermissionMessage - RecordPermissionMessageService
+   * @param _recordPermissionService - RecordPermissionMessageService
+   * @param _modalService - BsModalService
+   * @param _itemService - ItemService
    */
   constructor(
+    private _recordUiService: RecordUiService,
     private _recordPermissionService: RecordPermissionService,
     private _userService: UserService,
-    private _modalService: BsModalService
+    private _modalService: BsModalService,
+    private _itemService: ItemsService
   ) { }
 
-  /**
-   * Init
-   */
+  /** Init */
   ngOnInit() {
     this.getPermissions();
   }
 
   /** Get permissions */
   getPermissions() {
-    this._recordPermissionService.getPermission('items', this.item.metadata.pid)
-      .subscribe(permissions => this.permissions = permissions);
+    const permissionObs = this._recordPermissionService.getPermission('items', this.item.metadata.pid);
+    const canRequestObs = this._itemService.canRequest(this.item.metadata.pid);
+    forkJoin([permissionObs, canRequestObs]).subscribe(
+      ([permissions, canRequest]) => {
+        this.permissions = permissions;
+        this.permissions.canRequest = canRequest;
+    });
   }
 
   /**
@@ -79,7 +92,6 @@ export class HoldingItemComponent implements OnInit {
    * @param itemPid - string
    */
   addRequest(itemPid: string) {
-
     const modalRef = this._modalService.show(ItemRequestComponent, {
       initialState: { itemPid }
     });
@@ -92,17 +104,22 @@ export class HoldingItemComponent implements OnInit {
    * Delete item
    * @param itemPid - Item pid
    */
-  delete(item) {
-    this.deleteItem.emit(item);
+  delete(itemPid) {
+    this.deleteItem.emit(itemPid);
   }
 
   /**
    * Return a message containing the reasons why the item cannot be deleted
    */
-  get deleteInfoMessage() {
-    const message = this._recordPermissionService.generateDeleteMessage(
-      this.permissions.delete.reasons
-    );
-    return message;
+  get deleteInfoMessage(): string {
+    return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
   }
+
+  /**
+   * Return a message containing the reasons wht the item cannot be requested
+   */
+  get cannotRequestInfoMessage(): string {
+    return this._recordPermissionService.generateTooltipMessage(this.permissions.canRequest.reasons, 'request');
+  }
+
 }

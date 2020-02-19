@@ -1,12 +1,12 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { RecordUiService } from '@rero/ng-core';
-import { RecordPermissionMessageService } from 'projects/admin/src/app/service/record-permission-message.service';
+import { RecordPermissionService } from '../../../../service/record-permission.service';
 
 @Component({
   selector: 'admin-location',
   templateUrl: './location.component.html'
 })
-export class LocationComponent {
+export class LocationComponent implements OnInit {
 
   /** The location whose details are displayed */
   @Input() location: any;
@@ -17,18 +17,34 @@ export class LocationComponent {
   /** Delete location event emitter */
   @Output() deleteLocation = new EventEmitter();
 
-  /** Constructor */
+  /** location record permission */
+  permissions: any;
+
+  /**
+   * Constructor
+   * @param _recordUiService: RecordUiService
+   * @param _recordPermissionMessage: RecordPermissionMessageService
+   */
   constructor(
-    private recordUiService: RecordUiService,
-    private recordPermissionMessage: RecordPermissionMessageService
+    private _recordUiService: RecordUiService,
+    private _recordPermissionService: RecordPermissionService
   ) { }
+
+  /**
+   * Init
+   */
+  ngOnInit() {
+    this._recordPermissionService.getPermission('locations', this.location.metadata.pid).subscribe(
+      (permissions) => this.permissions = permissions
+    );
+  }
 
   /**
    * Delete the location
    * @param locationPid - location PID
    */
   delete(locationPid: string) {
-    this.recordUiService.deleteRecord('locations', locationPid).subscribe((success: boolean) => {
+    this._recordUiService.deleteRecord('locations', locationPid).subscribe((success: boolean) => {
       if (success) {
         this.deleteLocation.emit(locationPid);
       }
@@ -36,12 +52,10 @@ export class LocationComponent {
   }
 
   /**
-   * Show a message after deletion action
-   * @param location : object - location concerned by the delete action
+   * Return a message containing the reasons wht the item cannot be requested
    */
-  public showDeleteMessage(location: object) {
-    const message = this.recordPermissionMessage.generateMessage(location);
-    this.recordUiService.showDeleteMessage(message);
+  get deleteInfoMessage(): string {
+    return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
   }
 
 }

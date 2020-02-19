@@ -24,8 +24,9 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { LoanService } from '../../../../service/loan.service';
 import { Observable } from 'rxjs';
-import { debounceTime, map, shareReplay } from 'rxjs/operators';
+import { ItemsService } from '../../../../service/items.service';
 import { UserService } from '../../../../service/user.service';
+import { debounceTime, map, shareReplay } from 'rxjs/operators';
 
 @Component({
   selector: 'admin-item-request',
@@ -73,6 +74,7 @@ export class ItemRequestComponent implements OnInit {
    * @param _toastr - ToastrService
    * @param _translateService - TranslateService
    * @param _loanService: LoanService
+   * @param _itemService: ItemService
    */
   constructor(
     private _modalService: BsModalService,
@@ -81,8 +83,9 @@ export class ItemRequestComponent implements OnInit {
     private _recordService: RecordService,
     private _http: HttpClient,
     private _toastr: ToastrService,
+    private _loanService: LoanService,
     private _translateService: TranslateService,
-    private _loanService: LoanService
+    private _itemService: ItemsService
   ) { }
 
   /**
@@ -141,8 +144,7 @@ export class ItemRequestComponent implements OnInit {
    */
   initForm() {
     if (this.currentUser) {
-      const organisationPid = this.currentUser.library.organisation.pid;
-      this.getPickupsByOrganisation(organisationPid).subscribe(pickups => {
+      this.getPickupLocations().subscribe(pickups => {
         this.formFields = [
           {
             key: 'patronBarcode',
@@ -164,12 +166,10 @@ export class ItemRequestComponent implements OnInit {
                     const value = fc.value;
                     if (value.length > 2) {
                       this.getPatron(fc.value).subscribe((result: any) => {
-                        if (result.length === 1) {
-                          this.patron = result[0].metadata;
-                        } else {
-                          this.patron = undefined;
-                        }
-                        resolve((result.length === 1) ? true : false);
+                        this.patron = (result.length === 1)
+                          ? this.patron = result[0].metadata
+                          : null;
+                        resolve(result.length === 1);
                       });
                     }
                   });
@@ -181,17 +181,12 @@ export class ItemRequestComponent implements OnInit {
                   return new Promise((resolve) => {
                     const value = fc.value;
                     if (value.length > 2) {
-                      const libraryPid = this.currentUser.library.pid;
-                      const patronBarcode = fc.value;
-                      const itemPid = this.itemPid;
-                      this._http.get(`/api/item/${itemPid}/can_request/${libraryPid}/${patronBarcode}`)
-                      .subscribe((result: any) => {
-                        if (!result.can_request) {
-                          this.canRequestMessage = result.reason;
-                          resolve(false);
-                        } else {
-                          resolve(true);
+                      this._itemService.canRequest(this.itemPid, this.currentUser.library.pid, value).subscribe((result: any) => {
+                        if (!result.can) {
+                          const reasons = result.reasons.others || {'Not defined error': true};
+                          this.canRequestMessage = Object.keys(reasons)[0];
                         }
+                        resolve(result.can);
                       });
                     }
                   });
@@ -223,30 +218,20 @@ export class ItemRequestComponent implements OnInit {
     }
   }
 
-  /**
-   * Get pickups by organisation pid
-   * @param organisationPid - string
-   * @return observable
+
+  /** Get pickup location available for the item
+   *  @return observable with pickup locations informations (name and pid)
    */
-  private getPickupsByOrganisation(organisationPid: string) {
+  private getPickupLocations(): Observable<Array<any>> {
     const currentLibrary = this.currentUser.currentLibrary;
-    const query = `is_pickup:true AND organisation.pid:${organisationPid}`;
-    return this._recordService.getRecords(
-      'locations', query, 1, RecordService.MAX_REST_RESULTS_SIZE,
-      undefined, undefined, undefined, 'pickup_name'
-    ).pipe(
-      map(result => result.hits.total === 0 ? [] : result.hits.hits),
-      map(results => results.map((result: any) => result.metadata)),
-      map(results => results.map((result: any) => {
-        if (
-          this.pickupDefaultValue === undefined
-          && result.library.pid === currentLibrary
-        ) {
-          this.pickupDefaultValue = result.pid;
+    return this._itemService.getPickupLocations(this.itemPid).pipe(
+      map(locations => locations.map((loc: any) => {
+        if (this.pickupDefaultValue === undefined && loc.library.pid === currentLibrary) {
+          this.pickupDefaultValue = loc.pid;
         }
         return {
-          label: result.pickup_name,
-          value: result.pid
+          label: loc.pickup_name || loc.name,
+          value: loc.pid
         };
       }))
     );
