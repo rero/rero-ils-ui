@@ -36,6 +36,7 @@ import { createCustomElement } from '@angular/elements';
 import { TypeaheadModule } from 'ngx-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MainComponent } from './main/main.component';
+import { DocumentAvailabilityComponent } from './document-availability/document-availability.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { MainComponent } from './main/main.component';
     BirthDatePipe,
     BioInformationsPipe,
     SearchBarComponent,
-    MainComponent
+    MainComponent,
+    DocumentAvailabilityComponent
   ],
   imports: [
     BrowserModule,
@@ -58,8 +60,7 @@ import { MainComponent } from './main/main.component';
       loader: {
         provide: BaseTranslateLoader,
         useClass: TranslateLoader,
-      },
-      isolate: false
+      }
     }),
     TypeaheadModule.forRoot()
   ],
@@ -77,6 +78,7 @@ import { MainComponent } from './main/main.component';
   ],
   entryComponents: [
     DocumentBriefComponent,
+    DocumentAvailabilityComponent,
     PersonBriefComponent,
     SearchBarComponent
   ],

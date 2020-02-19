@@ -70,6 +70,9 @@ export class RoutingInitService {
             aggregationsBucketSize: 10,
             preFilters: {
               view: `${viewcode}`
+            },
+            listHeaders: {
+              Accept: 'application/rero+json, application/json'
             }
           },
           {
@@ -78,7 +81,7 @@ export class RoutingInitService {
             label: _('Persons'),
             aggregationsExpand: ['sources'],
             listHeaders: {
-              Accept: 'application/rero+json, application/json'
+              Accept: 'application/json, application/rero+json'
             },
             preFilters: {
               view: `${viewcode}`

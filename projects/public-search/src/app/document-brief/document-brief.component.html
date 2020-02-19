@@ -57,9 +57,7 @@
         </ul>
 
         <div *ngIf="record.metadata.type !== 'ebook'">
-          <i class="fa fa-circle text-{{ record.metadata.available ? 'success' : 'danger' }}" aria-hidden="true"></i>&nbsp;
-          <span translate *ngIf="record.metadata.available">available</span>
-          <span translate *ngIf="!record.metadata.available">not available</span>
+        <public-search-document-availability [document]="record"></public-search-document-availability>
         </div>
         <div *ngIf="record.explanation">
           <a class="badge badge-info collapsed"

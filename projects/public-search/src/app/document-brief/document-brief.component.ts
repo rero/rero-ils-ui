@@ -71,15 +71,15 @@ export class DocumentBriefComponent {
   }
 
   constructor(
-    private translate: TranslateService,
-    private localRecordService: LocalRecordService
+    private _translate: TranslateService,
+    private _localRecordService: LocalRecordService
   ) {  }
 
     /**
      * Get author name
      */
   authorName(author) {
-    const nameIndex = `name_${this.translate.currentLang}`;
+    const nameIndex = `name_${this._translate.currentLang}`;
     let nameLng = author[nameIndex];
     if (!nameLng) {
       nameLng = author.name;
@@ -91,7 +91,7 @@ export class DocumentBriefComponent {
      * Load cover image
      */
   getCover(isbn: string) {
-    this.localRecordService.getCover(isbn).subscribe(result => {
+    this._localRecordService.getCover(isbn).subscribe(result => {
       if (result.success) {
         this.coverUrl = result.image;
       }
