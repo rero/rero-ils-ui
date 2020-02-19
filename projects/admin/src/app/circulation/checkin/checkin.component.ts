@@ -25,7 +25,7 @@ import { User } from '../../class/user';
 import { PatronService } from '../../service/patron.service';
 import { UserService } from '../../service/user.service';
 import { ItemAction, ItemStatus } from '../items';
-import { ItemsService } from '../items.service';
+import { ItemsService } from '../../service/items.service';
 
 @Component({
   selector: 'admin-circulation-checkout',

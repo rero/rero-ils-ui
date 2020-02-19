@@ -16,10 +16,10 @@
  */
 
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { Item, ItemAction } from './items';
+import { Observable, of } from 'rxjs';
+import { Item, ItemAction } from '../circulation/items';
 
 @Injectable({
   providedIn: 'root'
@@ -142,5 +142,40 @@ export class ItemsService {
         return newItem;
       })
       );
+  }
+
+  /**
+   * Get the available pickup locations for an item.
+   * @param itemPid: the item pid to be requested
+   * @return an observable on the API call response
+   */
+  getPickupLocations(itemPid): Observable<any> {
+    const url = `/api/item/${itemPid}/pickup_locations`;
+    return this.http.get<any>(url).pipe(
+      map(data => data.locations),
+      catchError(e => {
+        if (e.status === 404) {
+          return of(null);
+        }
+      })
+    );
+  }
+
+  /**
+   * Check if an item can be requested.
+   * @param itemPid: the item pid to check
+   * @param libraryPid: the library_pid to check
+   * @param patronBarcode: the patron barcode to check
+   * @return an observable on the API call response
+   */
+  canRequest(itemPid: string, libraryPid?: string, patronBarcode?: string): Observable<any> {
+    let params = new HttpParams();
+    if (libraryPid != null) {
+      params = params.set('library_pid', libraryPid);
+    }
+    if (patronBarcode != null) {
+      params = params.set('patron_barcode', patronBarcode);
+    }
+    return this.http.get(`/api/item/${itemPid}/can_request`, { params });
   }
 }

@@ -23,6 +23,7 @@ import { LoanService } from 'projects/admin/src/app/service/loan.service';
 import { UserService } from 'projects/admin/src/app/service/user.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ItemsService } from 'projects/admin/src/app/service/items.service';
 
 @Component({
   selector: 'admin-item-transaction',
@@ -48,11 +49,6 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
    * Item pid
    */
   @Input() itemPid: string;
-
-  /**
-   * Current item loans
-   */
-  loans$: Observable<any>;
 
   /**
    * Pickup locations of the organisation
@@ -110,7 +106,8 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
     private _userService: UserService,
     private _toastrService: ToastrService,
     private _translateService: TranslateService,
-    private _dialogService: DialogService
+    private _dialogService: DialogService,
+    private _itemService: ItemsService
   ) {}
 
   /**
@@ -208,36 +205,16 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
    */
   private getPickupLocations() {
     const currentLibrary = this._currentUser.currentLibrary;
-    const organisationPid = this._currentUser.library.organisation.pid;
-    const query = `is_pickup:true AND organisation.pid:${organisationPid}`;
-    return this._recordService
-      .getRecords(
-        'locations',
-        query,
-        1,
-        RecordService.MAX_REST_RESULTS_SIZE,
-        undefined,
-        undefined,
-        undefined,
-        'pickup_name'
-      )
-      .pipe(
-        map((result) => (result.hits.total === 0 ? [] : result.hits.hits)),
-        map((results) => results.map((result: any) => result.metadata)),
-        map((results) =>
-          results.map((result: any) => {
-            if (
-              this._pickupDefaultValue === undefined &&
-              result.library.pid === currentLibrary
-            ) {
-              this._pickupDefaultValue = result.pid;
-            }
-            return {
-              label: result.pickup_name,
-              value: result.pid,
-            };
-          })
-        )
-      );
+    return this._itemService.getPickupLocations(this.itemPid).pipe(
+        map(locations => locations.map((loc: any) => {
+          if (this._pickupDefaultValue === undefined && loc.library.pid === currentLibrary) {
+            this._pickupDefaultValue = loc.pid;
+          }
+          return {
+            label: loc.pickup_name || loc.name,
+            value: loc.pid
+          };
+        }))
+    );
   }
 }

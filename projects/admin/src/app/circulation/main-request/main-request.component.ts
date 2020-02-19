@@ -19,7 +19,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../service/user.service';
-import { ItemsService } from '../items.service';
+import { ItemsService } from '../../service/items.service';
 
 
 @Component({

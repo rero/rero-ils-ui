@@ -84,12 +84,10 @@ export class HoldingComponent implements OnInit, OnDestroy {
    *
    * @param itemPid - the PID of the item to remove.
    */
-  deleteItem(item) {
-    this._recordUiService.deleteRecord('items', item.metadata.pid).subscribe((success: any) => {
+  deleteItem(itemPid) {
+    this._recordUiService.deleteRecord('items', itemPid).subscribe((success: any) => {
       if (success) {
-        this.items = this.items.filter(
-          (i: any) => item.metadata.pid !== i.metadata.pid
-        );
+        this.items = this.items.filter((i: any) => itemPid !== i.metadata.pid);
         if (this.items.length === 0) {
           this.deleteHolding.emit({holding: this.holding, callBackend: false});
         }
@@ -113,13 +111,12 @@ export class HoldingComponent implements OnInit, OnDestroy {
 
   /**
    * Display message if the record cannot be deleted
-   * @param item - Item record
+   * @return the delete info message use hover the delete button
    */
-  get deleteInfoMessage() {
-    const message = this._recordPermissionService.generateDeleteMessage(
+  get deleteInfoMessage(): string {
+    return this._recordPermissionService.generateDeleteMessage(
       this.permissions.delete.reasons
     );
-    return message;
   }
 
   /**

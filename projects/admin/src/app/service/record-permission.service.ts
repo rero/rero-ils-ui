@@ -54,53 +54,72 @@ export class RecordPermissionService {
   }
 
   /**
-   * Generate Delete messages
-   * @param reasons - Object
-   * @return string
+   * Generate tooltip messages
+   * @param reasons - Object with reasons to insert into the tooltip
+   * @param type (optional) - The type of message to display ('delete', 'request')
+   * @return string - The message to display
    */
-  generateDeleteMessage(reasons: any) {
+  generateTooltipMessage(reasons: any, type?: string): string {
+    const messageType = type || 'delete';
     const translatePlural = new I18nPluralPipe(new NgLocaleLocalization(
       this._translateService.currentLang
     ));
     const messages = [];
-
     // Links
     if ('links' in reasons) {
-      const plurialdict = this.plurialLinksMessages();
+      const pluralDict = this.plurialLinksMessages();
       Object.keys(reasons.links).forEach(link => {
-        let message = null;
-        if ((link in plurialdict)) {
-          message = translatePlural.transform(
-            reasons.links[link],
-            plurialdict[link],
-            this._translateService.currentLang
-          );
-        } else {
-          message = reasons.links[link][link] + ' ' + link;
-        }
+        const message = (link in pluralDict)
+          ? translatePlural.transform(reasons.links[link], pluralDict[link], this._translateService.currentLang)
+          : reasons.links[link][link] + ' ' + link;
+        messages.push('- ' + message);
+      });
+    }
+    // Others
+    if ('others' in reasons) {
+      const pluralDict = this.othersMessages();
+      Object.keys(reasons.others).forEach(other => {
+        const message = (other in pluralDict)
+          ? pluralDict[other]
+          : other;
         messages.push('- ' + message);
       });
     }
 
-    // Others
-    if ('others' in reasons) {
-      const plurialdict = this.othersMessages();
-      Object.keys(reasons.others).forEach(other => {
-        if ((other in plurialdict)) {
-          messages.push('- ' + plurialdict[other]);
-        } else {
-          messages.push('- ' + other);
-        }
-      });
+    if (messages.length > 0) {
+      switch (messageType) {
+        case 'delete':
+          messages.unshift(
+            messages.length === 1
+              ? this._translateService.instant('You cannot delete the record for the following reason:')
+              : this._translateService.instant('You cannot delete the record for the following reasons:')
+          );
+          break;
+        case 'request':
+          messages.unshift(
+            messages.length === 1
+              ? this._translateService.instant('You cannot request the record for the following reason:')
+              : this._translateService.instant('You cannot request the record for the following reasons:')
+          );
+          break;
+        default:
+          messages.unshift(
+            messages.length === 1
+              ? this._translateService.instant('You cannot operate the record for the following reason:')
+              : this._translateService.instant('You cannot operate this record for the following reasons:')
+          );
+      }
     }
-
-    messages.unshift(
-      messages.length === 1 ?
-        this._translateService.instant('You cannot delete the record for the following reason:') :
-        this._translateService.instant('You cannot delete the record for the following reasons:')
-    );
-
     return messages.join('\n');
+  }
+
+  /**
+   * Generate Delete messages
+   * @param reasons - Object
+   * @return string
+   */
+  generateDeleteMessage(reasons: any): string {
+    return this.generateTooltipMessage(reasons, 'delete');
   }
 
   /**

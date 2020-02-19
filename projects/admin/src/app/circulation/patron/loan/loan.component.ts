@@ -23,7 +23,7 @@ import { User } from '../../../class/user';
 import { PatronService } from '../../../service/patron.service';
 import { UserService } from '../../../service/user.service';
 import { Item, ItemAction, ItemStatus } from '../../items';
-import { ItemsService } from '../../items.service';
+import { ItemsService } from '../../../service/items.service';
 import { PatronBlockedMessagePipe } from '../../../pipe/patron-blocked-message.pipe';
 
 @Component({
@@ -58,10 +58,12 @@ export class LoanComponent implements OnInit {
 
   /**
    * Constructor
-   * @param itemsService: Items Service
-   * @param translate: Translate Service
-   * @param toastService: Toastr Service
-   * @param patronService: Patron Service
+   * @param _itemsService: Items Service
+   * @param _translate: Translate Service
+   * @param _toastService: Toastr Service
+   * @param _patronService: Patron Service
+   * @param _userService: UserService
+   * @param _patronBlockedMessagePipe: PatronBlockingPipe
    */
   constructor(
     private _itemsService: ItemsService,
