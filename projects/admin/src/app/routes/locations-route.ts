@@ -53,12 +53,23 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
             preprocessRecordEditor: (record: any) => {
-              record.library = {
-                $ref: this._routeToolService.apiService.getRefEndpoint(
-                  'libraries',
-                  this._routeToolService.getRouteQueryParam('library')
-                )
-              };
+              // Location resource use a asynchronous validator ('valueAlreadyExists').
+              // This validator needs the library pid to work ; but in creation mode, the record.library.pid isn't yet known by system
+              // so we use the 'library' query parameter to construct this data (only if the resource isn't already related to a library)
+              if (record.library == null && this._routeToolService.getRouteQueryParam('library') != null) {
+                record.library = {
+                  $ref: this._routeToolService.apiService.getRefEndpoint(
+                    'libraries',
+                    this._routeToolService.getRouteQueryParam('library')
+                  )
+                };
+              }
+              return record;
+            },
+            postprocessRecordEditor: (record: any) => {
+              if (!record.allow_request || !record.send_notification) {
+                delete record.send_notification;
+              }
               return record;
             },
             redirectUrl: (record: any) => this.getUrl(record)

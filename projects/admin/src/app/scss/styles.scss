@@ -24,6 +24,9 @@
 html [type=button] {
   -webkit-appearance: none;
 }
+button:disabled:hover {
+  cursor: not-allowed;
+}
 
 body {
   height: 100vh;      // With block page body div to flex-grow-1

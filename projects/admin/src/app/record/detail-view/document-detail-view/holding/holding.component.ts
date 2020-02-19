@@ -115,11 +115,10 @@ export class HoldingComponent implements OnInit, OnDestroy {
    * Display message if the record cannot be deleted
    * @param item - Item record
    */
-  get deleteInfoMessage() {
-    const message = this._recordPermissionService.generateDeleteMessage(
+  get deleteInfoMessage(): string {
+    return this._recordPermissionService.generateDeleteMessage(
       this.permissions.delete.reasons
     );
-    return message;
   }
 
   /**

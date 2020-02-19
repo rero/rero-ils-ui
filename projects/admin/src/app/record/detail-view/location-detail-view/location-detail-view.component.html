@@ -21,55 +21,78 @@
         <section class="m-2 p-2">
             <!-- LIBRARY -->
             <dl class="row mb-0">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Library' | translate }}:
-                </dt>
+                <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Library</dt>
                 <dd class="col-sm-7 col-md-8 mb-0">
                     {{ data.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
                 </dd>
             </dl>
             <!-- NAME -->
             <dl class="row mb-0">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Name' | translate }}:
-                </dt>
-                <dd class="col-sm-7 col-md-8 mb-0">
-                    {{ data.name }}
-                </dd>
+                <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Name</dt>
+                <dd class="col-sm-7 col-md-8 mb-0">{{ data.name }}</dd>
             </dl>
             <!-- CODE -->
             <dl class="row mb-0">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Code' | translate }}:
-                </dt>
-                <dd class="col-sm-7 col-md-8 mb-0">
-                    {{ data.code }}
-                </dd>
+                <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Code</dt>
+                <dd class="col-sm-7 col-md-8 mb-0">{{ data.code }}</dd>
+            </dl>
+            <!-- IS ONLINE -->
+            <dl class="row mb-0">
+              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Is online</dt>
+              <dd class="col-sm-7 col-md-8 mb-0">
+                <ng-container *ngIf="data.is_online; then validIcon else invalidIcon"></ng-container>
+              </dd>
             </dl>
             <!-- IS PICKUP -->
             <dl class="row mb-0">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Is pickup' | translate }}:
-                </dt>
+                <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Is pickup</dt>
                 <dd class="col-sm-7 col-md-8 mb-0">
-                    <div *ngIf="data.is_pickup; then thenPickupBlock else elsePickupBlock"></div>
-                    <ng-template #thenPickupBlock>
-                        <i class="fa fa-check" style="color:green;" aria-hidden="true"></i>
-                    </ng-template>
-                    <ng-template #elsePickupBlock>
-                        <i class="fa fa-times" style="color:red;" aria-hidden="true"></i>
-                    </ng-template>
+                    <ng-container *ngIf="data.is_pickup; then validIcon else invalidIcon"></ng-container>
                 </dd>
             </dl>
             <!-- PICKUP LOCATION NAME -->
-            <dl class="row mb-0" *ngIf="data.pickup_name != undefined">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0">
-                    {{ 'Pickup location name' | translate }}:
-                </dt>
-                <dd class="col-sm-7 col-md-8 mb-0">
-                    {{ data.pickup_name }}
-                </dd>
+            <dl class="row mb-0" *ngIf="data.pickup_name !== undefined && data.is_pickup">
+                <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Pickup location name</dt>
+                <dd class="col-sm-7 col-md-8 mb-0">{{ data.pickup_name }}</dd>
+            </dl>
+            <h4 class="mt-4" translate>Restrictions</h4>
+            <!-- ALLOW REQUEST -->
+            <dl class="row mb-0">
+              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Allow request</dt>
+              <dd class="col-sm-7 col-md-8 mb-0">
+                <ng-container *ngIf="data.allow_request; then validIcon else invalidIcon"></ng-container>
+              </dd>
+            </dl>
+            <!-- SEND NOTIFICATION -->
+            <dl class="row mb-0" *ngIf="data.allow_request">
+              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Send notification</dt>
+              <dd class="col-sm-7 col-md-8 mb-0">
+                <ng-container *ngIf="data.send_notification; then validIcon else invalidIcon"></ng-container>
+              </dd>
+            </dl>
+            <!-- CONTACT EMAIL -->
+            <dl class="row mb-0" *ngIf="data.send_notification && data.allow_request">
+              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Contact email</dt>
+              <dd class="col-sm-7 col-md-8 mb-0">{{ data.contact_email }}</dd>
+            </dl>
+            <!-- RESTRICT PICKUP TO -->
+            <dl class="row mb-0" *ngIf="data.restrict_pickup_to && data.allow_request">
+              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Restrict pickup to</dt>
+              <dd class="col-sm-7 col-md-8 mb-0">
+                <ul>
+                  <li *ngFor="let location of data.restrict_pickup_to">
+                    {{ location.pid | getRecord: 'locations' : 'field' : 'pickup_name' | async  }}
+                  </li>
+                </ul>
+              </dd>
             </dl>
         </section>
     </article>
 </ng-container>
+
+<ng-template #validIcon>
+  <i class="fa fa-check" style="color:green;" aria-hidden="true"></i>
+</ng-template>
+<ng-template #invalidIcon>
+  <i class="fa fa-times" style="color:red;" aria-hidden="true"></i>
+</ng-template>
