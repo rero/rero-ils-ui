@@ -15,13 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-document-holding',
-  templateUrl: './holding.component.html',
-  styles: ['./holding.component.css']
+  templateUrl: './holding.component.html'
 })
 export class HoldingComponent implements OnInit, OnDestroy {
 

@@ -15,14 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { UserService } from 'projects/admin/src/app/service/user.service';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
+import { UserService } from 'projects/admin/src/app/service/user.service';
 
 @Component({
   selector: 'admin-holdings',
-  templateUrl: './holdings.component.html',
-  styles: []
+  templateUrl: './holdings.component.html'
 })
 export class HoldingsComponent implements OnInit, OnDestroy {
 
@@ -44,14 +43,16 @@ export class HoldingsComponent implements OnInit, OnDestroy {
    * @param recordService - RecordService
    */
   constructor(
-    private userService: UserService,
-    private recordService: RecordService
+    private _userService: UserService,
+    private _recordService: RecordService
   ) { }
 
+  /** Init */
   ngOnInit() {
     this.loadHoldings(this.documentPid);
   }
 
+  /** Destroy */
   ngOnDestroy() {
     this.holdgingsRef.unsubscribe();
   }
@@ -62,9 +63,9 @@ export class HoldingsComponent implements OnInit, OnDestroy {
    * @returns void
    */
   private loadHoldings(documentPid: string) {
-    const orgPid = this.userService.getCurrentUser().library.organisation.pid;
+    const orgPid = this._userService.getCurrentUser().library.organisation.pid;
     const query = `document.pid:${documentPid} AND organisation.pid:${orgPid}`;
-    this.holdgingsRef = this.recordService.getRecords('holdings', query, 1, RecordService.MAX_REST_RESULTS_SIZE)
+    this.holdgingsRef = this._recordService.getRecords('holdings', query, 1, RecordService.MAX_REST_RESULTS_SIZE)
     .subscribe(result => {
       if (result.hits.total > 0) {
         this.holdings = result.hits.hits;

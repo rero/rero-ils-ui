@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordUiService } from '@rero/ng-core';
+import { RecordPermission, RecordPermissionService } from '../../../../service/record-permission.service';
 import { UserService } from '../../../../service/user.service';
-import { RecordPermissionService, RecordPermission } from '../../../../service/record-permission.service';
+
 
 @Component({
   selector: 'admin-holding-item',
@@ -39,9 +39,9 @@ export class HoldingItemComponent implements OnInit {
   permissions: RecordPermission;
 
   /** Availables actions */
-  get isAvailableActions() {
+  get isAvailableActions(): boolean {
     return this._userService.getCurrentUser().currentLibrary
-      = this.holding.metadata.library.pid;
+      === this.holding.metadata.library.pid;
   }
 
   /**
