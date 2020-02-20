@@ -24,7 +24,7 @@
   </div>
   <!-- PICKUP LOCATION -->
   <div class="col-sm-3">
-    {{ loan.metadata.pickup_location_pid | getRecord:'locations':'field':'name' | async }}
+    {{ loan.metadata.pickup_location_pid | getRecord: 'locations' : 'field' : 'name' | async }}
   </div>
   <div class="col-sm-2">
     &nbsp;
