@@ -88,9 +88,9 @@ json-schema-form {
   a.collapsed i.fa-caret-down {
     transform: rotate(-90deg);
   }
+}
 
-  .rero-ils-person small {
-    font-size: $font-size-very-small;
-    vertical-align: top;
-  }
+.rero-ils-person small {
+  font-size: $font-size-very-small;
+  vertical-align: top;
 }
