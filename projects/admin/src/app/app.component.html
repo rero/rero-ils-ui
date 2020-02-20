@@ -14,12 +14,12 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div *ngIf="!user" translate>Loading…</div>
-<ng-container *ngIf="user">
+<div *ngIf="!userLoaded" translate>Loading…</div>
+<ng-container *ngIf="userLoaded">
   <header>
-    <admin-menu *ngIf="access"></admin-menu>
+    <admin-menu *ngIf="allowAccess"></admin-menu>
   </header>
-  <div class="container" *ngIf="access; else noaccess">
+  <div class="container" *ngIf="allowAccess; else noaccess">
     <router-outlet></router-outlet>
   </div>
   <footer class="rero-ils-footer container d-flex justify-content-center align-items-center border-top mt-4 py-4">

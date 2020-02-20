@@ -54,15 +54,11 @@ export class User {
   }
 
   /**
-   * Check if you are an access ton admin interface
-   * @param roles - arrays of role
+   * Get Roles
+   * @return array
    */
-  isAuthorizedAdminAccess(roles: Array<string>) {
-    return this.roles.filter((role: string) => {
-      if (roles.indexOf(role) > -1) {
-        return role;
-      }
-    }).length > 0;
+  getRoles() {
+    return this.roles;
   }
 
   /**

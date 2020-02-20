@@ -14,16 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationStart, Router } from '@angular/router';
-import { LocalStorageService, TranslateService } from '@rero/ng-core';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { User } from './class/user';
-import { AppConfigService } from './service/app-config.service';
-import { LibrarySwitchService } from './service/library-switch.service';
-import { OrganisationService } from './service/organisation.service';
+import { Component, OnInit } from '@angular/core';
+import { AppRouterEventService } from './service/app-router-event.service';
 import { UserService } from './service/user.service';
 
 @Component({
@@ -31,125 +23,40 @@ import { UserService } from './service/user.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
 
-  /**
-   * User
-   */
-  user: any;
+  /** User loaded by Observable */
+  private _userLoaded = false;
 
-  /**
-   * Control access on template
-   */
-  access = false;
+  /** Allow interface access */
+  get allowAccess() {
+    return this._userService.allowAccess;
+  }
 
-  /**
-   * Store some observables on Subcription
-   */
-  private _subcription = new Subscription();
+  /** User loaded */
+  get userLoaded() {
+    return this._userLoaded;
+  }
 
   /**
    * Constructor
+   * @param _userInterfaceAccessService - UserInterfaceAccessService
    * @param userService - UserService
-   * @param appConfigService - AppConfigService
-   * @param translateService - TranslateService
-   * @param localStorageService - LocalStorageService
-   * @param librarySwitchService - LibrarySwitchService
-   * @param router - Router
    */
   constructor(
-    private userService: UserService,
-    private appConfigService: AppConfigService,
-    private translateService: TranslateService,
-    private localStorageService: LocalStorageService,
-    private librarySwitchService: LibrarySwitchService,
-    private router: Router,
-    private organisationService: OrganisationService
-    ) {
-      this.initializeEvents();
-    }
+    private _userService: UserService,
+    private _appRouterEventService: AppRouterEventService
+    ) { }
 
+    /** Init */
   ngOnInit() {
-    this.userService.loadLoggedUser();
-  }
-
-  ngOnDestroy() {
-    this._subcription.unsubscribe();
-  }
-
-  /**
-   * Initialize App Events
-   * @return void
-   */
-  private initializeEvents() {
-    this._subcription.add(this.userService.onUserLoaded$.subscribe((data: any) => {
-      if (!data.metadata) {
-        this.access = false;
-      }
-      this.appConfigService.setSettings(data.settings);
-      const language = this.appConfigService.getSettings().language;
-      if (language) {
-        this.translateService.setLanguage(language);
-      } else {
-        const browserLang = this.translateService.getBrowserLang();
-        this.translateService.setLanguage(
-          browserLang.match(this.appConfigService.languages.join('|')) ?
-          browserLang : this.appConfigService.defaultLanguage
-        );
-      }
-      const user = this.userService.getCurrentUser();
+    this._appRouterEventService.initializeEvents();
+    this._userService.onUserLoaded$.subscribe((data: any) => {
+      this._userLoaded = true;
+      // Initialize event only if user is logged
       if (data.metadata) {
-        this.access = user.isAuthorizedAdminAccess(
-          this.appConfigService.adminRoles
-        );
+        this._appRouterEventService.initializeEvents();
       }
-      if (this.access) {
-        this.organisationService.loadOrganisationByPid(
-          user.library.organisation.pid
-        );
-        this.organisationService.onOrganisationLoaded.subscribe(() => {
-          if (!this.localStorageService.has(User.STORAGE_KEY)) {
-            this.localStorageService.set(User.STORAGE_KEY, user);
-          } else {
-            const userLocal = this.localStorageService.get(User.STORAGE_KEY);
-            if (userLocal.pid !== user.pid) {
-              this.localStorageService.set(User.STORAGE_KEY, user);
-            }
-            const locale = this.localStorageService.get(User.STORAGE_KEY);
-            user.setCurrentLibrary(locale.currentLibrary);
-          }
-          this.librarySwitchService.switch(
-            user.getCurrentLibrary()
-          );
-          this.user = user;
-        });
-      } else {
-        this.user = user;
-      }
-    }));
-
-    this._subcription.add(this.router.events.pipe(
-        filter(event => event instanceof NavigationStart)
-      ).subscribe((event: NavigationStart) => {
-        if (
-          event instanceof NavigationStart
-          && this.localStorageService.has(User.STORAGE_KEY)
-        ) {
-          if (this.localStorageService.isExpired(
-            User.STORAGE_KEY,
-            this.appConfigService.sessionExpiredSeconds)
-          ) {
-            this.localStorageService.remove(User.STORAGE_KEY);
-          } else {
-            this.localStorageService.updateDate(User.STORAGE_KEY);
-          }
-        }
-
-        // Library Switch menu show only on homepage
-        this.librarySwitchService.show(
-          (event.url === '/') ? true : false
-        );
-      })
-    );
+    });
   }
 }
