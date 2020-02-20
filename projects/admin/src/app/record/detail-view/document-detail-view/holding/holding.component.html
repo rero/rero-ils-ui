@@ -15,46 +15,42 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="(items && items.length > 0) || (harvested &&  holding.metadata?.electronic_location?.length > 0)">
-    <div class="card mt-2">
-        <div class="card-header">
-          <div class="row">
-            <div class="col-sm-4">
-              <ng-container *ngIf="this.holding.metadata.location.pid | getRecord:'locations' | async as location">
-                <button class="btn btn-link" (click)="toggleCollapse()" aria-expanded="false" aria-controls="itemsList">
-                  <i [ngClass]="{ 'fa-caret-down':!isItemsCollapsed, 'fa-caret-right': isItemsCollapsed }" class="fa"
-                    aria-hidden="true"></i>
-                </button>
-                {{ location.metadata.code }}: {{ location.metadata.name }}
-              </ng-container>
-            </div>
-            <div class="col-sm-2">
-              {{ holding.metadata.circulation_category.pid | getRecord: 'item_types' : 'field' : 'name' | async }}
-            </div>
-          </div>
+  <div class="card mt-2">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-sm-1">
+          <button class="btn btn-link" (click)="toggleCollapse()" aria-expanded="false" aria-controls="itemsList">
+            <i [ngClass]="{ 'fa-caret-down':!isItemsCollapsed, 'fa-caret-right': isItemsCollapsed }" class="fa"
+              aria-hidden="true"></i>
+          </button>
         </div>
-        <div class="card-body" *ngIf="!isItemsCollapsed">
-            <div class="row" *ngIf="!harvested">
-                <div class="col-sm-4 font-weight-bold" translate>Barcode</div>
-                <div class="col-sm-2 font-weight-bold" translate>Status</div>
-                <div class="col-sm-2 font-weight-bold" translate>Call number</div>
-            </div>
-          <div class="row" *ngIf="harvested">
-            <ul class="list-unstyled mb-0 col-sm-auto">
-              <li *ngFor="let elocation of holding.metadata.electronic_location">
-                <a href="{{ elocation.uri | translate }}">{{ elocation.source | translate }}</a>
-              </li>
-            </ul>
-          </div>
-          <ng-container *ngIf="items && items.length > 0">
-            <admin-holding-item
-              *ngFor="let item of items"
-              class="row mt-1"
-              [holding]="holding"
-              [item]="item"
-              (deleteItem)="deleteItem($event)">
-            </admin-holding-item>
-          </ng-container>
+        <div *ngIf="holding.metadata.location.pid | getRecord: 'locations' | async as location" class="col-sm-3">
+          {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}:
+          {{ location.metadata.name }}
+        </div>
+        <div class="col-sm-2">
+          {{ holding.metadata.circulation_category.pid | getRecord: 'item_types' : 'field' : 'name' | async }}
         </div>
       </div>
+    </div>
+    <div class="card-body" *ngIf="!isItemsCollapsed">
+      <div class="row" *ngIf="!harvested">
+        <div class="offset-sm-1 col-sm-3 font-weight-bold" translate>Barcode</div>
+        <div class="col-sm-2 font-weight-bold" translate>Status</div>
+        <div class="col-sm-2 font-weight-bold" translate>Call number</div>
+      </div>
+      <div class="row" *ngIf="harvested">
+        <ul class="list-unstyled mb-0 col-sm-auto">
+          <li *ngFor="let elocation of holding.metadata.electronic_location">
+            <a href="{{ elocation.uri | translate }}">{{ elocation.source | translate }}</a>
+          </li>
+        </ul>
+      </div>
+      <ng-container *ngIf="items && items.length > 0">
+        <admin-holding-item *ngFor="let item of items" class="row mt-1" [holding]="holding" [item]="item"
+          (deleteItem)="deleteItem($event)">
+        </admin-holding-item>
+      </ng-container>
+    </div>
+  </div>
 </ng-container>
-
