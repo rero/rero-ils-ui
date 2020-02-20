@@ -15,51 +15,55 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="mt-2 mb-2 btn-group float-right" role="group">
-  <button
-    type="button"
-    class="btn btn-success"
-    (click)="addException()"
-  ><i class="fa fa-plus" aria-hidden="true"></i> <span translate>Add</span></button>
+<div class="clearfix">
+  <div class="mt-2 mb-2 float-right">
+    <button type="button" class="btn btn-outline-primary btn-sm" (click)="addException()">
+      <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} ...
+    </button>
+  </div>
 </div>
-<table class="table table-striped" *ngIf="exceptionDates">
-  <tbody>
-    <tr *ngFor="let exception of exceptionDates; let i=index">
-      <td>
-        {{ exception.start_date | dateTranslate:'longDate' }}
-        <div *ngIf="exception.end_date"> - {{ exception.end_date | dateTranslate:'longDate' }}</div>
-      </td>
-      <td>
-        <div *ngIf="exception.is_open; else elseOpen">
-          <i class="fa fa-check text-success"></i> <span translate>Open</span>
-        </div>
-        <ng-template #elseOpen>
-          <i class="fa fa-times text-danger pt-1"></i> <span translate>Closed</span>
-        </ng-template>
-      </td>
-      <td>
-        {{ exception.title }}
-      </td>
-      <td>
-        <div *ngFor="let time of exception.times">
-          {{ time.start_time }}-{{ time.end_time }}
-        </div>
-        <div *ngIf="exception.repeat">
-          <i class="fa fa-repeat" aria-hidden="true" title="repeated"></i> {{ exception.repeat.period | translate }}={{ exception.repeat.interval }}
-        </div>
-      </td>
-      <td class="text-right">
-        <button
-          type="button"
-          class="btn btn-light mr-1"
-          (click)="editException(i)"
-        ><i class="fa fa-pencil-square-o"></i></button>
-        <button
-          type="button"
-          class="btn btn-light"
-          (click)="deleteException(i)"
-        ><i class="fa fa-trash-o"></i></button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+
+<div *ngIf="exceptionDates" class="mb-3">
+  <div *ngFor="let exception of exceptionDates; let i=index" class="row mt-2 pb-2 border-bottom">
+    <!-- date -->
+    <div class="col-md-4 col-lg-4 col-sm-8">
+      {{ exception.start_date | dateTranslate:'longDate' }}
+      <ng-container *ngIf="exception.end_date">
+        <i class="fa fa-arrow-right ml-1 mr-1"></i>
+        {{ exception.end_date | dateTranslate:'longDate' }}
+      </ng-container>
+    </div>
+    <!-- hours -->
+    <div class="col-md-2 col-lg-2 col-sm-4">
+      <div *ngFor="let time of exception.times">
+        {{ time.start_time }}-{{ time.end_time }}
+      </div>
+      <div *ngIf="exception.repeat">
+        <i class="fa fa-repeat" aria-hidden="true" title="repeated"></i>
+        {{ exception.repeat.period | translate }}={{ exception.repeat.interval }}
+      </div>
+    </div>
+    <!-- open/close icon -->
+    <div class="col-md-1 col-lg-1 col-sm-2 text-center">
+      <ng-container *ngIf="exception.is_open; else elseOpen">
+        <i class="fa fa-check text-success" title="{{ 'Open' | translate }}"></i>
+      </ng-container>
+      <ng-template #elseOpen>
+        <i class="fa fa-ban text-danger" title="{{ 'Closed' | translate }}"></i>
+      </ng-template>
+    </div>
+    <!-- title -->
+    <div class="col-md-3 col-lg-3 col-sm-6">
+      {{ exception.title }}
+    </div>
+    <!-- Actions -->
+    <div class="col-md-2 col-lg-2 col-sm-4 text-right">
+      <button type="button" class="btn btn-outline-primary btn-sm ml-1" (click)="editException(i)" title="{{ 'Edit' | translate }}">
+        <i class="fa fa-pencil"></i>
+      </button>
+      <button type="button" class="btn btn-outline-danger btn-sm ml-1" (click)="deleteException(i)" title="{{ 'Delete' | translate }}">
+        <i class="fa fa-trash"></i>
+      </button>
+    </div>
+  </div>
+</div>
