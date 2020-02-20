@@ -90,6 +90,7 @@ export class LibraryComponent implements OnInit {
   get openingHours() { return this.libraryForm.opening_hours as FormArray; }
 
   onSubmit() {
+    this._cleanFormValues(this.libraryForm.getValues());
     this.library.update(this.libraryForm.getValues());
     if (this.library.pid) {
       this.recordService.update('libraries', cleanDictKeys(this.library)).subscribe(record => {
@@ -113,6 +114,19 @@ export class LibraryComponent implements OnInit {
       });
     }
     this.libraryForm.reset();
+  }
+
+  /**
+   * Clean form values before saving the library
+   * @param formValues: the form values to clean
+   */
+  private _cleanFormValues(formValues: any): void {
+    // CLEAN OPENING HOURS : When day is defined as closed, remove all periods/times
+    formValues.opening_hours.forEach(day => {
+      if (!day.is_open) {
+        day.times = [];
+      }
+    });
   }
 
   onCancel(event) {

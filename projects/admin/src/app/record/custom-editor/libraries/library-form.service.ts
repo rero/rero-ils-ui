@@ -16,11 +16,11 @@
  */
 
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TimeValidator } from '@rero/ng-core';
+import { WeekDays } from '../../../class/week-days';
 
 import { Library } from './library';
-import { WeekDays } from '../../../class/week-days';
-import { TimeValidator } from '@rero/ng-core';
 
 @Injectable({
    providedIn: 'root'
