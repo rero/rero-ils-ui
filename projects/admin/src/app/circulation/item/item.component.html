@@ -37,8 +37,13 @@
       <ng-container [ngSwitch]="item.status">
         <li *ngSwitchCase="'on_loan'">{{ item.status | translate }} <i class="fa fa-arrow-right" aria-hidden="true"></i>
           {{ item.loan.dueDate | dateTranslate :'shortDate' }}</li>
-        <li *ngSwitchCase="'in_transit'">{{ item.status | translate }} (to
-          {{ getTransitLocationPid(item) | getRecord: 'locations' : 'field' : 'code' | async }})</li>
+        <li *ngSwitchCase="'in_transit'">{{ item.status | translate }}
+          <ng-container *ngIf="getTransitLocationPid(item) | getRecord: 'locations' | async as location">
+            ({{ 'to' | translate }}
+            {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+            - {{ location.metadata.name }})
+          </ng-container>
+        </li>
         <li *ngSwitchCase="'on_shelf'">{{ item.status | translate }}</li>
         <li *ngSwitchDefault>{{ item.status | translate }}</li>
       </ng-container>

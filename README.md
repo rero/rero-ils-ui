@@ -41,7 +41,7 @@ $ git clone https://github.com/rero/rero-ils-ui.git/
 $ cd rero-ils-ui
 $ nvm use lts/dubnium
 # Install angular-cli
-$ npm i -g angular-cli
+$ npm i -g @angular/cli@8.3.25
 # Project npm dependencies
 $ npm i
 # Launch a local server using a proxy for https://localhost:5000 (rero-ils server)
