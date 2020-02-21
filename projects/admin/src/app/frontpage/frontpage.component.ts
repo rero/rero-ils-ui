@@ -16,9 +16,9 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { UserService } from '../service/user.service';
 import { LocalStorageService } from '@rero/ng-core';
+import { MenuService } from '../service/menu.service';
+import { UserService } from '../service/user.service';
 
 @Component({
   selector: 'admin-frontpage',
@@ -27,27 +27,24 @@ import { LocalStorageService } from '@rero/ng-core';
 })
 export class FrontpageComponent implements OnInit {
   /** Lists of entries */
-  userServices = { title: {}, entries: [] };
-  catalog = { title: {}, entries: [] };
-  acquisitions = { title: {}, entries: [] };
-  adminMonitoring = { title: {}, entries: [] };
+  linksMenu: any;
 
   /** Constructor
-   * @param _translateService - TranslateService
    * @param _userService - User Service
    * @param _localStorageService - LocalStorageService
+   * @param _menuService: MenuService
    */
   constructor(
-    private _translateService: TranslateService,
     private _userService: UserService,
-    private _localStorageService: LocalStorageService
+    private _localStorageService: LocalStorageService,
+    private _menuService: MenuService
   ) { }
 
-    /** On init hook */
+  /** On init hook */
   ngOnInit() {
-    this.initBoard();
+    this.initLinksMenu();
     this._localStorageService.onSet$.subscribe(() => {
-      const link = this.adminMonitoring.entries.find(
+      const link = this.linksMenu.entries[3].entries.find(
         (element: any) => element.routerLink.indexOf('/libraries/detail') > -1
       );
       link.routerLink = this.myLibraryRouterLink();
@@ -59,102 +56,8 @@ export class FrontpageComponent implements OnInit {
     return `/records/libraries/detail/${this._userService.getCurrentUser().currentLibrary}`;
   }
 
-  /** Populates the list of entries */
-  initBoard() {
-    this.userServices = {
-      title: {
-        name: this._translateService.instant('User services'),
-        iconCssClass: 'fa fa-users'
-      },
-      entries: [
-        {
-          name: this._translateService.instant('Circulation'),
-          routerLink: '/circulation',
-          iconCssClass: 'fa fa-exchange'
-        }, {
-          name: this._translateService.instant('Requests'),
-          routerLink: '/circulation/requests',
-          iconCssClass: 'fa fa-truck'
-        }, {
-          name: this._translateService.instant('Patrons'),
-          routerLink: '/records/patrons',
-          iconCssClass: 'fa fa-users'
-        }
-      ]};
-
-    this.catalog = {
-      title: {
-        name: this._translateService.instant('Catalog'),
-          iconCssClass: 'fa fa-file-o'
-      },
-      entries: [
-        {
-          name: this._translateService.instant('Documents'),
-            routerLink: '/records/documents',
-            iconCssClass: 'fa fa-file-o'
-          }, {
-            name: this._translateService.instant('Create a bibliographic record'),
-            routerLink: '/records/documents/new',
-            iconCssClass: 'fa fa-file-o'
-          }, {
-            name: this._translateService.instant('Persons'),
-            routerLink: '/records/persons',
-            iconCssClass: 'fa fa-user'
-        }
-      ]};
-
-    this.acquisitions = {
-      title: {
-        name: this._translateService.instant('Acquisitions'),
-        iconCssClass: 'fa fa-university'
-      },
-      entries: [
-        {
-          name: this._translateService.instant('Vendors'),
-          routerLink: '/records/vendors',
-          iconCssClass: 'fa fa-briefcase'
-        }, {
-          name: this._translateService.instant('Orders'),
-          routerLink: '/records/acq_orders',
-          iconCssClass: 'fa fa-shopping-cart'
-        }, {
-          name: this._translateService.instant('Budgets'),
-          routerLink: '/records/budgets',
-          iconCssClass: 'fa fa-money'
-        }
-      ]};
-
-    this.adminMonitoring = {
-      title: {
-        name: this._translateService.instant('Admin & Monitoring'),
-        iconCssClass: 'fa fa-cogs'
-      },
-      entries: [
-        {
-          name: this._translateService.instant('Circulation policies'),
-          routerLink: '/records/circ_policies',
-          iconCssClass: 'fa fa-exchange'
-        }, {
-          name: this._translateService.instant('Item types'),
-          routerLink: '/records/item_types',
-          iconCssClass: 'fa fa-file-o'
-        }, {
-          name: this._translateService.instant('Patron types'),
-          routerLink: '/records/patron_types',
-          iconCssClass: 'fa fa-users'
-        }, {
-          name: this._translateService.instant('My organisation'),
-          routerLink: `/records/organisations/detail/${this._userService.getCurrentUser().library.organisation.pid}`,
-          iconCssClass: 'fa fa-university'
-        }, {
-          name: this._translateService.instant('My library'),
-          routerLink: this.myLibraryRouterLink(),
-          iconCssClass: 'fa fa-university'
-        }, {
-          name: this._translateService.instant('Libraries'),
-          routerLink: '/records/libraries',
-          iconCssClass: 'fa fa-university'
-        }
-      ]};
+  /** Populate list of items to display */
+  initLinksMenu() {
+    this.linksMenu = this._menuService.linksMenu;
   }
 }

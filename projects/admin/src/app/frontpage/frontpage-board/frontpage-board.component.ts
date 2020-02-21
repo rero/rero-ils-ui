@@ -23,9 +23,6 @@ import { Component, Input } from '@angular/core';
 })
 export class FrontpageBoardComponent {
 
-  /** Lists of items to display */
-  @Input() userServices: any;
-  @Input() catalog: any;
-  @Input() acquisitions: any;
-  @Input() adminMonitoring: any;
+  /** List of items to display */
+  @Input() item: any;
 }
