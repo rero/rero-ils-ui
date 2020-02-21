@@ -15,21 +15,15 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="row">
-  <!-- USER SERVICES -->
-  <div class="col-lg-3" *ngIf="userServices">
-    <admin-frontpage-sub-board [items]="userServices"></admin-frontpage-sub-board>
+<div class="card" *ngIf="item">
+  <div class="card-header bg-dark text-white text-wrap" *ngIf="item.name">
+    <i *ngIf="item.iconCssClass" [ngClass]="item.iconCssClass" aria-hidden="true"></i>
+    {{ item.name }}
   </div>
-  <!-- CATALOG -->
-  <div class="col-lg-3" *ngIf="catalog">
-    <admin-frontpage-sub-board [items]="catalog"></admin-frontpage-sub-board>
-  </div>
-  <!-- ACQUISITIONS -->
-  <div class="col-lg-3" *ngIf="acquisitions">
-    <admin-frontpage-sub-board [items]="acquisitions"></admin-frontpage-sub-board>
-  </div>
-  <!-- ADMIN & MONITORING -->
-  <div class="col-lg-3" *ngIf="adminMonitoring">
-    <admin-frontpage-sub-board [items]="adminMonitoring"></admin-frontpage-sub-board>
-  </div>
+  <ul class="list-group list-group-flush" *ngIf="item.entries">
+    <li class="list-group-item p-0" *ngFor="let entry of item.entries">
+      <a class="list-group-item btn btn-light text-left text-wrap" [routerLink]="entry.routerLink"><i *ngIf="entry.iconCssClass"
+        [ngClass]="entry.iconCssClass" aria-hidden="true"></i> {{ entry.name | translate }}</a>
+    </li>
+  </ul>
 </div>

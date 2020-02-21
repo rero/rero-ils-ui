@@ -20,6 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, LocalStorageService, RecordService, TranslateService as CoreTranslateService } from '@rero/ng-core';
 import { LibrarySwitchService } from '../service/library-switch.service';
 import { UserService } from '../service/user.service';
+import { MenuService } from '../service/menu.service';
 
 @Component({
   selector: 'admin-menu',
@@ -35,12 +36,12 @@ export class MenuComponent implements OnInit {
 
   maxLengthSuggestion = 100;
 
-  linksMenu = { navCssClass: undefined, entries: []};
+  linksMenu: any;
 
   librariesSwitchMenu = {
     navCssClass: 'navbar-nav',
     entries: [{
-      name: this.translateService.instant('Switch libraries'),
+      name: this._translateService.instant('Switch libraries'),
       iconCssClass: 'fa fa-random',
       entries: []
     }]
@@ -49,10 +50,10 @@ export class MenuComponent implements OnInit {
   languagesMenu = {
     navCssClass: 'navbar-nav',
     entries: [{
-      name: this.translateService.instant('Menu'),
+      name: this._translateService.instant('Menu'),
       iconCssClass: 'fa fa-bars',
       entries: [{
-        name: this.translateService.instant('Help'),
+        name: this._translateService.instant('Help'),
         iconCssClass: 'fa fa-help',
         href: 'https://ils.test.rero.ch/help'
       }]
@@ -66,32 +67,33 @@ export class MenuComponent implements OnInit {
     entries: []
   };
 
-  private activeLanguagesMenuItem;
+  private _activeLanguagesMenuItem: any;
 
   constructor(
-    private appTranslateService: CoreTranslateService,
-    private translateService: TranslateService,
-    private configService: CoreConfigService,
-    private userService: UserService,
-    private recordService: RecordService,
-    private librarySwitchService: LibrarySwitchService,
-    private localeStorageService: LocalStorageService
+    private _appTranslateService: CoreTranslateService,
+    private _translateService: TranslateService,
+    private _configService: CoreConfigService,
+    private _userService: UserService,
+    private _recordService: RecordService,
+    private _librarySwitchService: LibrarySwitchService,
+    private _localeStorageService: LocalStorageService,
+    private _menuService: MenuService
   ) { }
 
   ngOnInit() {
     this.initLinksMenu();
-    const currentUser = this.userService.getCurrentUser();
-    this.recordService.getRecord('organisations', currentUser.library.organisation.pid)
+    const currentUser = this._userService.getCurrentUser();
+    this._recordService.getRecord('organisations', currentUser.library.organisation.pid)
     .subscribe(organisation => {
       this.userMenu.entries[0].entries[0].href = `/${organisation.metadata.code}/`;
     });
 
-    this.languages = this.configService.languages;
+    this.languages = this._configService.languages;
     for (const lang of this.languages) {
       const data: any = { name: lang };
       if (lang === this.lang) {
         data.active = true;
-        this.activeLanguagesMenuItem = data;
+        this._activeLanguagesMenuItem = data;
       }
       this.languagesMenu.entries[0].entries.splice(0, 0, data);
     }
@@ -99,27 +101,27 @@ export class MenuComponent implements OnInit {
       name: `${currentUser.first_name[0]}${currentUser.last_name[0]}`,
       entries: [
         {
-          name: this.translateService.instant('Switch to public view'),
+          name: this._translateService.instant('Switch to public view'),
           href: '/',
           iconCssClass: 'fa fa-television'
         }, {
-          name: this.translateService.instant('Logout'),
+          name: this._translateService.instant('Logout'),
           href: `/logout`,
           iconCssClass: 'fa fa-sign-out'
         }
       ]
     });
 
-    this.librarySwitchService.onVisibleMenu$.subscribe((visible) => {
+    this._librarySwitchService.onVisibleMenu$.subscribe((visible) => {
       if (
         visible
-        && this.userService.hasRole('system_librarian')
-        && this.librarySwitchService.entries.length === 0) {
-          this.librarySwitchService.generateMenu();
+        && this._userService.hasRole('system_librarian')
+        && this._librarySwitchService.entries.length === 0) {
+          this._librarySwitchService.generateMenu();
       }
     });
 
-    this.librarySwitchService.onGenerate$.subscribe((entries: any) => {
+    this._librarySwitchService.onGenerate$.subscribe((entries: any) => {
       this.librariesSwitchMenu.entries[0].entries = entries;
     });
 
@@ -135,105 +137,24 @@ export class MenuComponent implements OnInit {
   }
 
   changeLibrary(item: {name: string, id: string}) {
-    this.librarySwitchService.switch(item.id);
+    this._librarySwitchService.switch(item.id);
   }
 
   get isVisibleLibrarySwitchMenu() {
-    if (this.librarySwitchService.length <= 1) {
+    if (this._librarySwitchService.length <= 1) {
       return false;
     }
-    return this.librarySwitchService.visible;
+    return this._librarySwitchService.visible;
   }
 
   get isVisible() {
-    return this.librarySwitchService.visible;
+    return this._librarySwitchService.visible;
   }
 
   initLinksMenu() {
-    this.linksMenu = {
-      navCssClass: 'navbar-nav',
-      entries: [
-        {
-          name: this.translateService.instant('User services'),
-          iconCssClass: 'fa fa-users',
-          entries: [{
-            name: this.translateService.instant('Circulation'),
-            routerLink: '/circulation',
-            iconCssClass: 'fa fa-exchange'
-          }, {
-            name: this.translateService.instant('Requests'),
-            routerLink: '/circulation/requests',
-            iconCssClass: 'fa fa-truck'
-          }, {
-            name: this.translateService.instant('Patrons'),
-            routerLink: '/records/patrons',
-            iconCssClass: 'fa fa-users'
-          }]
-        }, {
-          name: this.translateService.instant('Catalog'),
-          iconCssClass: 'fa fa-file-o',
-          entries: [{
-            name: this.translateService.instant('Documents'),
-            routerLink: '/records/documents',
-            iconCssClass: 'fa fa-file-o'
-          }, {
-            name: this.translateService.instant('Create a bibliographic record'),
-            routerLink: '/records/documents/new',
-            iconCssClass: 'fa fa-file-o'
-          }, {
-            name: this.translateService.instant('Persons'),
-            routerLink: '/records/persons',
-            iconCssClass: 'fa fa-user'
-          }]
-        }, {
-          name: this.translateService.instant('Acquisitions'),
-          iconCssClass: 'fa fa-university',
-          entries: [{
-            name: this.translateService.instant('Vendors'),
-            routerLink: '/records/vendors',
-            iconCssClass: 'fa fa-briefcase'
-          }, {
-            name: this.translateService.instant('Orders'),
-            routerLink: '/records/acq_orders',
-            iconCssClass: 'fa fa-shopping-cart'
-          }, {
-            name: this.translateService.instant('Budgets'),
-            routerLink: '/records/budgets',
-            iconCssClass: 'fa fa-money'
-          }]
-        }, {
-          name: this.translateService.instant('Admin & Monitoring'),
-          iconCssClass: 'fa fa-cogs',
-          entries: [{
-            name: this.translateService.instant('Circulation policies'),
-            routerLink: '/records/circ_policies',
-            iconCssClass: 'fa fa-exchange'
-          }, {
-            name: this.translateService.instant('Item types'),
-            routerLink: '/records/item_types',
-            iconCssClass: 'fa fa-file-o'
-          }, {
-            name: this.translateService.instant('Patron types'),
-            routerLink: '/records/patron_types',
-            iconCssClass: 'fa fa-users'
-          }, {
-            name: this.translateService.instant('My organisation'),
-            routerLink: `/records/organisations/detail/${this.userService.getCurrentUser().library.organisation.pid}`,
-            iconCssClass: 'fa fa-university'
-          }, {
-            name: this.translateService.instant('My library'),
-            routerLink: this.myLibraryRouterLink(),
-            iconCssClass: 'fa fa-university'
-          }, {
-            name: this.translateService.instant('Libraries'),
-            routerLink: '/records/libraries',
-            iconCssClass: 'fa fa-university'
-          }]
-        }
-      ]
-    };
+    this.linksMenu = this._menuService.linksMenu;
 
-    this.localeStorageService.onSet$.subscribe(() => {
+    this._localeStorageService.onSet$.subscribe(() => {
       const link = this.linksMenu.entries[3].entries.find(
         (element: any) => element.routerLink.indexOf('/libraries/detail') > -1
       );
@@ -242,10 +163,10 @@ export class MenuComponent implements OnInit {
   }
 
   changeLang(item) {
-    this.appTranslateService.setLanguage(item.name);
-    delete (this.activeLanguagesMenuItem.active);
+    this._appTranslateService.setLanguage(item.name);
+    delete (this._activeLanguagesMenuItem.active);
     item.active = true;
-    this.activeLanguagesMenuItem = item;
+    this._activeLanguagesMenuItem = item;
     this.initLinksMenu();
   }
 
@@ -259,7 +180,7 @@ export class MenuComponent implements OnInit {
         query: '',
         pid: hit.metadata.pid,
         index: 'persons',
-        category: this.translateService.instant('direct links'),
+        category: this._translateService.instant('direct links'),
         href: `/records/persons/detail/${hit.metadata.pid}`,
         iconCssClass: 'fa fa-user'
       });
@@ -285,7 +206,7 @@ export class MenuComponent implements OnInit {
         query: hit.metadata.title.replace(/[:\-\[\]()/"]/g, ' ').replace(/\s\s+/g, ' '),
         index: 'documents',
         pid: undefined,
-        category: this.translateService.instant('documents')
+        category: this._translateService.instant('documents')
         // href: `/records/documents/detail/${hit.metadata.pid}`
       });
     });
@@ -301,6 +222,6 @@ export class MenuComponent implements OnInit {
   }
 
   private myLibraryRouterLink() {
-    return `/records/libraries/detail/${this.userService.getCurrentUser().currentLibrary}`;
+    return `/records/libraries/detail/${this._userService.getCurrentUser().currentLibrary}`;
   }
 }

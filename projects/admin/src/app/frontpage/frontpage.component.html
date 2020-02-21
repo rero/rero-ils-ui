@@ -18,11 +18,10 @@
 <div class="container">
   <div class="col mb-3">
     <h1 class="text-center" translate>RERO ILS administration</h1>
-  </div >
-    <admin-frontpage-board *ngIf="userServices && catalog && acquisitions && adminMonitoring"
-  [userServices]="userServices"
-  [catalog]="catalog"
-  [acquisitions]="acquisitions"
-  [adminMonitoring]="adminMonitoring">
-</admin-frontpage-board>
+  </div>
+  <div class="row">
+    <div *ngFor="let entry of linksMenu.entries" class="col-lg-3">
+      <admin-frontpage-board [item]="entry"></admin-frontpage-board>
+    </div>
+  </div>
 </div>
