@@ -89,8 +89,8 @@ export class LoanComponent implements OnInit {
     if (!searchText) {
       return null;
     }
-    this.searchText = searchText;
-    this.getItem(searchText);
+    this.searchText = searchText.trim();
+    this.getItem(this.searchText);
   }
 
   /** Check item availability and set current action
@@ -106,7 +106,7 @@ export class LoanComponent implements OnInit {
       this.itemsService.getItem(barcode, this.patron.pid).subscribe(
         newItem => {
           if (newItem === null) {
-            this.toastService.warning(
+            this.toastService.error(
               this.translate.instant('Item not found'),
               this.translate.instant('Checkout')
             );
@@ -122,8 +122,8 @@ export class LoanComponent implements OnInit {
               this.searchInputFocus = true;
             } else {
               if (newItem.pending_loans && newItem.pending_loans[0].patron_pid !== this.patron.pid) {
-                this.toastService.warning(
-                  this.translate.instant('The item has a request'),
+                this.toastService.error(
+                  this.translate.instant('Checkout impossible: the item is requested by another patron'),
                   this.translate.instant('Checkout')
                 );
                 this.searchText = '';

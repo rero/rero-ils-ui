@@ -86,8 +86,8 @@ export class CheckoutComponent implements OnInit {
     if (!searchText) {
       return null;
     }
-    this.searchText = searchText;
-    this.getPatronOrItem(searchText);
+    this.searchText = searchText.trim();
+    this.getPatronOrItem(this.searchText);
   }
 
   /** Apply checkin and checkout automatically
@@ -102,7 +102,7 @@ export class CheckoutComponent implements OnInit {
         item.location.organisation.pid !==
           this.loggedUser.library.organisation.pid
       ) {
-        this.toastService.warning(
+        this.toastService.error(
           this.translate.instant('Item or patron not found!'),
           this.translate.instant('Checkin')
         );

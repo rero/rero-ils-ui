@@ -20,7 +20,7 @@ import { RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OrganisationService } from '../../service/organisation.service';
-import { Item, LoanState } from '../items';
+import { Item, ItemAction, LoanState } from '../items';
 
 @Component({
   selector: 'admin-item',
@@ -45,6 +45,15 @@ export class ItemComponent implements OnInit {
 
   /** Notifications related to the current loan */
   notifications$: Observable<any>;
+
+  /** Extend loan item action */
+  extendLoan = ItemAction.extend_loan;
+
+  /** Checkin item action */
+  checkin = ItemAction.checkin;
+
+  /** Checkout item action */
+  checkout = ItemAction.checkout;
 
   /**
    * Constructor

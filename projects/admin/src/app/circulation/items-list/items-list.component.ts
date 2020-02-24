@@ -19,7 +19,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { User } from '../../class/user';
 import { ItemAction } from '../items';
 
-
 @Component({
   selector: 'admin-circulation-items-list',
   templateUrl: './items-list.component.html'
@@ -46,12 +45,6 @@ export class ItemsListComponent {
 
   /** Extend loan item action */
   extendLoan = ItemAction.extend_loan;
-
-   /** Checkin item action */
-  checkin = ItemAction.checkin;
-
-   /** Checkout item action */
-  checkout = ItemAction.checkout;
 
   /** Constructor */
   constructor(
