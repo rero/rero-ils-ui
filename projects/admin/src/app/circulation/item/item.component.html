@@ -40,8 +40,7 @@
         <li *ngSwitchCase="'in_transit'">{{ item.status | translate }}
           <ng-container *ngIf="getTransitLocationPid(item) | getRecord: 'locations' | async as location">
             ({{ 'to' | translate }}
-            {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
-            - {{ location.metadata.name }})
+            {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }})
           </ng-container>
         </li>
         <li *ngSwitchCase="'on_shelf'">{{ item.status | translate }}</li>
