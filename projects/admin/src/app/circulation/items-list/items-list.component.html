@@ -15,7 +15,7 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div *ngIf="checkedOutItems && checkedOutItems.length === 0 && patron">
+<div class="mb-2" *ngIf="checkedOutItems && checkedOutItems.length === 0 && patron">
   <span translate>No loan for the current patron.</span>
 </div>
 <div *ngIf="(checkedOutItems && checkedOutItems.length > 0) || (checkedInItems && checkedInItems.length > 0)">
@@ -23,9 +23,10 @@
   <div class="row mb-1 align-items-center">
     <div class="col mr-1 d-none d-lg-block">
       <div class="row p-2 bg-dark rounded text-light">
-        <div class="col-lg-3" translate>Item</div>
-        <div class="col-lg-6" translate>Document</div>
-        <div class="col-lg-3" translate>Circulation info</div>
+        <div class="col-lg-2" translate>Item</div>
+        <div class="col-lg-4" translate>Document</div>
+        <div class="col-lg-4" translate>Circulation info</div>
+        <div class="col-lg-2">&nbsp;</div>
       </div>
     </div>
     <!-- RENEW ALL -->
@@ -47,28 +48,10 @@
     </div>
     <div *ngIf="patron" class="col-md-2 text-left pl-0 mb-2">
       <!-- EXTEND LOAN -->
-      <button id="button-basic" class="btn btn-secondary btn-sm mr-1 d-md-block" type="button"
+      <button id="button-basic" class="btn btn-secondary mr-1 d-md-block" type="button"
       [disabled]="!item.actions.includes(extendLoan)" (click)="extendLoanClick($event, item)" translate>
-      extend_loan
+      Renew
       </button>
-      <!-- ACTION DONE -->
-        <ng-container *ngIf="item.actionDone" [ngSwitch]="item.actionDone">
-          <ng-container *ngSwitchCase="checkin">
-            <i class="fa fa-arrow-circle-o-down text-success align-baseline" aria-hidden="true"></i>
-            <span class="align-baseline ml-1">{{ item.actionDone | translate }}</span>
-          </ng-container>
-          <ng-container *ngSwitchCase="checkout">
-            <i class="fa fa-arrow-circle-o-right text-success align-baseline" aria-hidden="true"></i>
-            <span class="align-baseline ml-1">{{ item.actionDone | translate }}</span>
-          </ng-container>
-          <ng-container *ngSwitchCase="extendLoan">
-            <i class="fa fa-refresh text-success align-baseline" aria-hidden="true"></i>
-            <span class="align-baseline ml-1" translate>renew</span>
-          </ng-container>
-          <ng-container *ngSwitchDefault>
-            <span class="align-baseline">{{ item.actionDone | translate }}</span>
-          </ng-container>
-        </ng-container>
     </div>
   </div>
   <!-- CHECKED IN ITEMS  : RED BORDER FOR TRANSIT, REQUEST OR FEE | GREYED BY DEFAULT-->
@@ -76,22 +59,6 @@
     <div class="col">
       <admin-item [patron]="patron" [item]="item" (hasFeesEmitter)="hasFees($event)">
       </admin-item>
-    </div>
-    <div *ngIf="patron" class="col-md-2">
-      <!-- ACTION DONE -->
-      <div *ngIf="item.actionDone">
-        <div [ngSwitch]="item.actionDone">
-          <div *ngSwitchCase="'checkin'"><i class="fa fa-arrow-circle-o-down text-success align-middle"
-              aria-hidden="true"></i><span class="align-middle ml-1">{{ item.actionDone | translate }}</span>
-          </div>
-          <div *ngSwitchCase="'checkout'"><i class="fa fa-arrow-circle-o-righttext-success align-middle"
-              aria-hidden="true"></i><span class="align-middle ml-1">{{ item.actionDone | translate }}</span>
-          </div>
-          <div *ngSwitchCase="'extend_loan'"><i class="fa fa-refresh text-success align-middle"
-              aria-hidden="true"></i><span class="align-middle ml-1" translate>renew</span></div>
-          <div *ngSwitchDefault><span class="align-middle">{{ item.actionDone | translate }}</span></div>
-        </div>
-      </div>
     </div>
   </div>
 </div>

@@ -20,19 +20,20 @@
   class="row p-2 mb-1 border rounded align-middle"
   *ngIf="item">
   <!-- BARCODE -->
-  <div class="col-lg-3">
-    <button *ngIf="item.loan || totalAmountOfFee || item.pending_loans || notifications$" type="button" class="pl-0 pt-0 btn" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed"
+  <div class="col-lg-2">
+    <button *ngIf="item.loan || totalAmountOfFee || item.pending_loans || notifications$" type="button"
+      class="pl-0 pt-0 btn" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed"
       aria-controls="collapse">
       <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" class="fa" aria-hidden="true"></i>
     </button>
     <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
   </div>
   <!-- TITLE -->
-  <div class="col-lg-6"><a
+  <div class="col-lg-4"><a
       [routerLink]="['/records','documents','detail', item.document.pid]">{{ item.document.title | truncateText: 12 }}</a>
   </div>
   <!-- CIRCULATION INFO -->
-  <div class="col-lg-3">
+  <div class="col-lg-4">
     <ul class="list-unstyled mb-0">
       <ng-container [ngSwitch]="item.status">
         <li *ngSwitchCase="'on_loan'">{{ item.status | translate }} <i class="fa fa-arrow-right" aria-hidden="true"></i>
@@ -40,8 +41,9 @@
         <li *ngSwitchCase="'in_transit'">{{ item.status | translate }}
           <ng-container *ngIf="getTransitLocationPid(item) | getRecord: 'locations' | async as location">
             ({{ 'to' | translate }}
-            {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
-            <ng-container *ngIf="item.loan && item.loan.state === 'ITEM_IN_TRANSIT_FOR_PICKUP'"> - {{ location.metadata.pickup_name }}</ng-container>)
+            <ng-container *ngIf="item.loan && item.loan.state === 'ITEM_IN_TRANSIT_FOR_PICKUP'; else toHouse"> {{ location.metadata.pickup_name }}</ng-container>
+            <ng-template #toHouse> {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</ng-template>
+            )
           </ng-container>
         </li>
         <li *ngSwitchCase="'on_shelf'">{{ item.status | translate }}</li>
@@ -62,6 +64,26 @@
         </span>
       </li>
     </ul>
+  </div>
+  <!-- ACTION DONE -->
+  <div class="col-lg-2">
+    <ng-container *ngIf="item.actionDone" [ngSwitch]="item.actionDone">
+      <ng-container *ngSwitchCase="checkin">
+        <i class="fa fa-arrow-circle-o-down text-success align-baseline" aria-hidden="true"></i>
+        <span class="align-baseline ml-1">{{ item.actionDone | translate }}</span>
+      </ng-container>
+      <ng-container *ngSwitchCase="checkout">
+        <i class="fa fa-arrow-circle-o-right text-success align-baseline" aria-hidden="true"></i>
+        <span class="align-baseline ml-1">{{ item.actionDone | translate }}</span>
+      </ng-container>
+      <ng-container *ngSwitchCase="extendLoan">
+        <i class="fa fa-refresh text-success align-baseline" aria-hidden="true"></i>
+        <span class="align-baseline ml-1" translate>renew</span>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <span class="align-baseline">{{ item.actionDone | translate }}</span>
+      </ng-container>
+    </ng-container>
   </div>
   <!-- COLLAPSED DETAILS -->
   <div class="col-sm-6 mt-2">
