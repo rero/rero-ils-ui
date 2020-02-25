@@ -24,7 +24,7 @@ import { map } from 'rxjs/operators';
 import { User } from '../../class/user';
 import { PatronService } from '../../service/patron.service';
 import { UserService } from '../../service/user.service';
-import { Item, ItemAction } from '../items';
+import { ItemAction, ItemStatus, LoanState } from '../items';
 import { ItemsService } from '../items.service';
 
 @Component({
@@ -32,14 +32,15 @@ import { ItemsService } from '../items.service';
   templateUrl: './checkout.component.html'
 })
 export class CheckoutComponent implements OnInit {
-  public placeholder: string = this.translate.instant(
+  public placeholder: string = this._translate.instant(
     'Please enter a patron card number or an item barcode.'
   );
   public searchText = '';
   public patronInfo: User;
   public isLoading = false;
+  currentLibraryPid: string;
 
-  private loggedUser: User;
+  private _loggedUser: User;
   private _itemsList = [];
 
   public get items() {
@@ -50,30 +51,32 @@ export class CheckoutComponent implements OnInit {
   searchInputFocus = false;
 
   /** Constructor
-   * @param  userService: User Service
-   * @param  recordService: Record Service
-   * @param  itemsService: Items Service
-   * @param  router: Router
-   * @param  translate: Translate Service
+   * @param  _userService: User Service
+   * @param  _recordService: Record Service
+   * @param  _itemsService: Items Service
+   * @param  _router: Router
+   * @param  _translate: Translate Service
    * @param  toastService: Toastr Service
-   * @param  patronService: Patron Service
+   * @param  _patronService: Patron Service
    */
   constructor(
-    private userService: UserService,
-    private recordService: RecordService,
-    private itemsService: ItemsService,
-    private router: Router,
-    private translate: TranslateService,
-    private toastService: ToastrService,
-    private patronService: PatronService,
+    private _userService: UserService,
+    private _recordService: RecordService,
+    private _itemsService: ItemsService,
+    private _router: Router,
+    private _translate: TranslateService,
+    private _toastService: ToastrService,
+    private _patronService: PatronService,
   ) {}
 
   ngOnInit() {
-    this.loggedUser = this.userService.getCurrentUser();
-    this.patronService.currentPatron$.subscribe(
+    this._loggedUser = this._userService.getCurrentUser();
+    this._patronService.currentPatron$.subscribe(
       patron => (this.patronInfo = patron)
     );
     this.searchInputFocus = true;
+    this.currentLibraryPid = this._userService.getCurrentUser().getCurrentLibrary();
+    this.patronInfo = null;
   }
 
   /** Search value with search input
@@ -90,36 +93,44 @@ export class CheckoutComponent implements OnInit {
   /** Apply checkin and checkout automatically
    * @param itemBarcode: item barcode
    */
-  automaticCheckinCheckout(itemBarcode) {
+  automaticCheckinCheckout(itemBarcode: string) {
     this.searchInputFocus = false;
-    this.itemsService.automaticCheckin(itemBarcode, this.loggedUser.getCurrentLibrary()).subscribe(item => {
+    this._itemsService.automaticCheckin(itemBarcode, this._loggedUser.getCurrentLibrary()).subscribe(item => {
       // TODO: remove this when policy will be in place
       if (
         item === null ||
         item.location.organisation.pid !==
-          this.loggedUser.library.organisation.pid
+          this._loggedUser.library.organisation.pid
       ) {
-        this.toastService.error(
-          this.translate.instant('Item or patron not found!'),
-          this.translate.instant('Checkin')
+        this._toastService.error(
+          this._translate.instant('Item or patron not found!'),
+          this._translate.instant('Checkin')
         );
         return;
       }
-      if (item.loan) {
-        this.getPatronInfo(item.loan.patron.barcode);
-      }
       if (item.hasRequests) {
-        this.toastService.warning(
-          this.translate.instant('The item contains requests'),
-          this.translate.instant('Checkin')
+        this._toastService.warning(
+          this._translate.instant('The item contains requests'),
+          this._translate.instant('Checkin')
         );
       }
       switch (item.actionDone) {
         case ItemAction.return_missing:
-          this.toastService.warning(
-            this.translate.instant('The item has been returned from missing'),
-            this.translate.instant('Checkin')
+          this._toastService.warning(
+            this._translate.instant('The item has been returned from missing'),
+            this._translate.instant('Checkin')
           );
+          break;
+        case ItemAction.checkin:
+          if (item.action_applied.checkin) {
+            this.getPatronInfo(item.action_applied.checkin.patron.barcode);
+          }
+          if (item.status === ItemStatus.IN_TRANSIT) {
+            this._toastService.warning(
+              this._translate.instant('The item is ' + ItemStatus.IN_TRANSIT),
+              this._translate.instant('Checkin')
+            );
+          }
           break;
         default:
           break;
@@ -130,59 +141,21 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-  /**
-   * This method check if operation can be done by current logged user for a specific item
-   * @param item: the item to check
-   * @param action: check if this action if allowed on this item
-   * @return `false` if user or operation is not allowed, `true` otherwise
-   */
-  private allowActionOnItem(item: Item, action: ItemAction = null): boolean {
-    // check if item and current logged user are from the same organisation
-    if (this.loggedUser.library.organisation.pid !== item.organisation.pid) {
-      this.toastService.warning(
-        this.translate.instant(
-          'No action allowed: the item belongs to another organisation.'
-        ),
-        this.translate.instant('Checkin')
-      );
-      return false;
-    }
-    if (action) {
-      // check if operation has allowed on this item
-      if (item.actions.length === 1 && item.actions[0] === ItemAction.no) {
-        this.toastService.warning(
-          this.translate.instant('No action possible on this item!'),
-          this.translate.instant('Checkout')
-        );
-        return false;
-      }
-      // check if action passed in params is allowed for this item
-      if (!item.actions.includes(action)) {
-        this.toastService.warning(
-          this.translate.instant('This action is not allowed for this item'),
-          this.translate.instant((action as unknown) as string)
-        );
-        return false;
-      }
-    }
-    return true;
-  }
-
   /** Get patron information
    * @param barcode: item barcode
    */
-  getPatronInfo(barcode) {
+  getPatronInfo(barcode: string) {
     if (barcode) {
       this.isLoading = true;
-      this.patronService
+      this._patronService
         .getPatron(barcode)
         .pipe(map(patron => (patron.displayPatronMode = false)))
         .subscribe(
           () => (this.isLoading = false),
           error =>
-            this.toastService.error(
+            this._toastService.error(
               error.message,
-              this.translate.instant('Checkin')
+              this._translate.instant('Checkin')
             ),
           () => console.log('patron by pid success')
         );
@@ -197,7 +170,7 @@ export class CheckoutComponent implements OnInit {
   getPatronOrItem(barcode: string) {
     if (barcode) {
       this.isLoading = true;
-      this.recordService
+      this._recordService
         .getRecords('patrons', `barcode:${barcode}`, 1, 1)
         .pipe(
           map((response: any) => {
@@ -212,44 +185,44 @@ export class CheckoutComponent implements OnInit {
             if (
               patron !== null &&
               patron.organisation.pid !==
-                this.loggedUser.library.organisation.pid
+                this._loggedUser.library.organisation.pid
             ) {
-              this.toastService.warning(
-                this.translate.instant('Patron not found!'),
-                this.translate.instant('Checkin')
+              this._toastService.warning(
+                this._translate.instant('Patron not found!'),
+                this._translate.instant('Checkin')
               );
               return;
             }
             if (patron === null) {
               const newItem = this.items.find(item => item.barcode === barcode);
               if (newItem) {
-                this.toastService.warning(
-                  this.translate.instant('The item is already in the list.'),
-                  this.translate.instant('Checkin')
+                this._toastService.warning(
+                  this._translate.instant('The item is already in the list.'),
+                  this._translate.instant('Checkin')
                 );
               } else {
                 this.automaticCheckinCheckout(barcode);
               }
             } else {
-              this.router.navigate(
+              this._router.navigate(
                 ['/circulation', 'patron', patron.barcode, 'loan']
               );
             }
             this.isLoading = false;
           },
           error =>
-            this.toastService.error(
+            this._toastService.error(
               error.message,
-              this.translate.instant('Checkin')
+              this._translate.instant('Checkin')
             )
         );
     }
   }
   hasFees(event: boolean) {
     if (event) {
-      this.toastService.error(
-        this.translate.instant('The item has fees'),
-        this.translate.instant('Checkin')
+      this._toastService.error(
+        this._translate.instant('The item has fees'),
+        this._translate.instant('Checkin')
       );
     }
   }
