@@ -28,7 +28,7 @@ export class LoanService {
   };
 
   statusRequest = {
-    ON_DESK: 'ITEM_ON_DESK',
+    AT_DESK: 'ITEM_AT_DESK',
     PENDING: 'PENDING',
     IN_TRANSIT_FOR_PICKUP: 'ITEM_IN_TRANSIT_FOR_PICKUP'
   };
@@ -73,7 +73,7 @@ export class LoanService {
   requestedBy$(itemPid: string) {
     return this.loans$(itemPid).pipe(
       map(results => results.hits.hits.filter((data: any) =>
-          data.metadata.state === this.statusRequest.ON_DESK
+          data.metadata.state === this.statusRequest.AT_DESK
           || data.metadata.state === this.statusRequest.PENDING
           || data.metadata.state === this.statusRequest.IN_TRANSIT_FOR_PICKUP
       ))

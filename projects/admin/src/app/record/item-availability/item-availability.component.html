@@ -16,10 +16,12 @@
 -->
 <ng-container *ngIf="item">
   <i class="fa fa-circle text-{{ item.metadata.available ? 'success': 'danger' }}"></i>
-   <ng-container *ngIf="item.metadata.available; else unavailable">
+  <!-- TODO: There will be a US to uniformize the display of availability. Remove or modify this component accordingly:  -->
+   <!-- <ng-container *ngIf="item.metadata.available; else unavailable">
     {{ 'available' | translate }}
    </ng-container>
    <ng-template #unavailable>
     {{ 'unavailable' | translate }}
-   </ng-template>
+   </ng-template> -->
+  ({{ item.metadata.status | translate }})
 </ng-container>
