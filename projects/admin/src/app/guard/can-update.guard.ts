@@ -30,13 +30,12 @@ export class CanUpdateGuard implements CanActivate {
    * @param next - ActivatedRouteSnapshot
    * @param state - RouterStateSnapshot
    */
-  canActivate(next: ActivatedRouteSnapshot,
-              state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-
+  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot):
+    Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     this._permissionService.getPermission(next.params.type, next.params.pid).subscribe(
       (permission: RecordPermission) => {
         if (!permission.update.can) {
-          this._router.navigate(['/errors/403']);
+          this._router.navigate(['/errors/403'], { skipLocationChange: true });
         }
       }
     );

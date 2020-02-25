@@ -20,8 +20,7 @@ import { DetailComponent, RecordSearchComponent, RouteInterface } from '@rero/ng
 import { LibraryComponent } from '../record/custom-editor/libraries/library.component';
 import { LibrariesBriefViewComponent } from '../record/brief-view/libraries-brief-view.component';
 import { LibraryDetailViewComponent } from '../record/detail-view/library-detail-view/library-detail-view.component';
-
-
+import { RoleGuard } from '../guard/role.guard';
 
 export class LibrariesRoute extends BaseRoute implements RouteInterface {
 
@@ -42,7 +41,7 @@ export class LibrariesRoute extends BaseRoute implements RouteInterface {
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: LibraryComponent, canActivate: [ CanUpdateGuard ] },
-        { path: 'new', component: LibraryComponent }
+        { path: 'new', component: LibraryComponent, canActivate: [ RoleGuard ], data: { roles: [ 'system_librarian' ]} }
       ],
       data: {
         linkPrefix: 'records',

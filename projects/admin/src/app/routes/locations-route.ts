@@ -18,6 +18,7 @@ import { DetailComponent, EditorComponent, RouteInterface, extractIdOnRef } from
 import { of } from 'rxjs';
 import { BaseRoute } from './Base-route';
 import { CanUpdateGuard } from '../guard/can-update.guard';
+import { LibraryGuard } from '../guard/library.guard';
 import { LocationDetailViewComponent } from '../record/detail-view/location-detail-view/location-detail-view.component';
 
 
@@ -39,7 +40,7 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
       children: [
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
-        { path: 'new', component: EditorComponent }
+        { path: 'new', component: EditorComponent, canActivate: [ LibraryGuard ] }
       ],
       data: {
         linkPrefix: 'records',

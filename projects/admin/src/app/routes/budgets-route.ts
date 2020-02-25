@@ -18,8 +18,8 @@ import { BaseRoute } from './Base-route';
 import { BudgetsBriefViewComponent } from '../record/brief-view/budgets-brief-view.component';
 import { BudgetDetailViewComponent } from '../record/detail-view/budget-detail-view/budget-detail-view.component';
 import { CanUpdateGuard } from '../guard/can-update.guard';
+import { RoleGuard } from '../guard/role.guard';
 import { RouteInterface, RecordSearchComponent, DetailComponent, EditorComponent } from '@rero/ng-core';
-
 
 export class BudgetsRoute extends BaseRoute implements RouteInterface {
 
@@ -40,7 +40,7 @@ export class BudgetsRoute extends BaseRoute implements RouteInterface {
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
-        { path: 'new', component: EditorComponent }
+        { path: 'new', component: EditorComponent, canActivate: [ RoleGuard ], data: { roles: [ 'system_librarian' ]} }
       ],
       data: {
         linkPrefix: 'records',

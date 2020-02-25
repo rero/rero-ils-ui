@@ -19,6 +19,7 @@ import { CanUpdateGuard } from '../guard/can-update.guard';
 import { CirculationPolicyComponent } from '../record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
 import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-policies-brief-view.component';
 import { CircPolicyDetailViewComponent } from '../record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
+import { RoleGuard } from '../guard/role.guard';
 import { RouteInterface, RecordSearchComponent, DetailComponent } from '@rero/ng-core';
 
 export class CirculationPoliciesRoute extends BaseRoute implements RouteInterface {
@@ -40,7 +41,7 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: CirculationPolicyComponent, canActivate: [ CanUpdateGuard ] },
-        { path: 'new', component: CirculationPolicyComponent }
+        { path: 'new', component: CirculationPolicyComponent, canActivate: [ RoleGuard ], data: { roles: [ 'system_librarian' ]}  }
       ],
       data: {
         linkPrefix: 'records',
