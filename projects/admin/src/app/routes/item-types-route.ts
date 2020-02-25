@@ -18,8 +18,8 @@ import { BaseRoute } from './Base-route';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { ItemTypesBriefViewComponent } from '../record/brief-view/item-types-brief-view.component';
 import { ItemTypeDetailViewComponent } from '../record/detail-view/item-type-detail-view.component';
+import { RoleGuard } from '../guard/role.guard';
 import { RouteInterface, RecordSearchComponent, DetailComponent, EditorComponent } from '@rero/ng-core';
-
 
 export class ItemTypesRoute extends BaseRoute implements RouteInterface {
 
@@ -40,7 +40,7 @@ export class ItemTypesRoute extends BaseRoute implements RouteInterface {
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
-        { path: 'new', component: EditorComponent }
+        { path: 'new', component: EditorComponent, canActivate: [ RoleGuard ], data: { roles: [ 'system_librarian' ]}  }
       ],
       data: {
         linkPrefix: 'records',

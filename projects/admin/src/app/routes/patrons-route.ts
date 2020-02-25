@@ -20,7 +20,6 @@ import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-vi
 import { PatronDetailViewComponent } from '../record/detail-view/patron-detail-view/patron-detail-view.component';
 import { RouteInterface, RecordSearchComponent, DetailComponent, EditorComponent } from '@rero/ng-core';
 
-
 export class PatronsRoute extends BaseRoute implements RouteInterface {
 
   /** Route name */
