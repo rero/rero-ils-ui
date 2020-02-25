@@ -19,23 +19,23 @@
   <div class="row">
     <div class="col col-md-6 mb-4">
       <ng-core-search-input
-        [placeholder]="placeholder | translate"
-        [searchText]="searchText"
-        (search)="searchValueUpdated($event)"
-        [focus]="searchInputFocus"
-      ></ng-core-search-input>
+      [placeholder]="placeholder | translate"
+      [searchText]="searchText"
+      (search)="searchValueUpdated($event)"
+      [focus]="searchInputFocus"></ng-core-search-input>
     </div>
     <div class="col col-md-6 mb-4">
-            <admin-circulation-patron-detailed
-            [patron]="patronInfo"
-            ></admin-circulation-patron-detailed>
+      <admin-circulation-patron-detailed
+        [patron]="patronInfo">
+      </admin-circulation-patron-detailed>
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
       <admin-circulation-items-list
-      [checkedInItems]="items"
-      ></admin-circulation-items-list>
+        [checkedInItems]="items"
+        (hasFeesEmitter)="hasFees($event)">
+      </admin-circulation-items-list>
     </div>
   </div>
 </section>
