@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { AcqOrderLineGuard } from '../guard/acq-order-line.guard';
 import {
   AcquisitionOrderLineDetailViewComponent
 } from '../record/detail-view/acquisition-order-line-detail-view/acquisition-order-line-detail-view.component';
@@ -43,7 +44,7 @@ export class AcquisitionOrderLinesRoute extends BaseRoute implements RouteInterf
       children: [
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
-        { path: 'new', component: EditorComponent }
+        { path: 'new', component: EditorComponent, canActivate: [ AcqOrderLineGuard ] }
       ],
       data: {
         linkPrefix: 'records',

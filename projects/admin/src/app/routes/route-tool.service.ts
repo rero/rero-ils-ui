@@ -23,7 +23,6 @@ import { ActionStatus, ApiService, RecordService } from '@rero/ng-core';
 import { UserService } from '../service/user.service';
 import { RecordPermission, RecordPermissionService } from '../service/record-permission.service';
 
-
 @Injectable({
   providedIn: 'root'
 })
