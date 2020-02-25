@@ -14,6 +14,7 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
 <ng-container *ngIf="record">
   <header class="row">
     <h1>{{ 'Barcode' | translate }} {{ record.metadata.barcode }}</h1>
@@ -64,21 +65,6 @@
       <dd class="col-sm-7 col-md-8 mb-0">
         <admin-item-availability [item]="record"></admin-item-availability>
       </dd>
-      <!-- NUMBER OF REQUEST -->
-      <ng-container *ngIf="numberOfRequests > 0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Request queue' | translate }}:
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ numberOfRequests }}
-          <ng-container *ngIf="numberOfRequests > 1; else request">
-            {{ 'requests' | translate }}
-          </ng-container>
-          <ng-template #request>
-            {{ 'request' | translate }}
-          </ng-template>
-        </dd>
-      </ng-container>
     </dl>
   </section>
 
