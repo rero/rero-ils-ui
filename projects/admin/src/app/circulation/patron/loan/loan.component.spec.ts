@@ -27,11 +27,28 @@ import { ItemsService } from '../../items.service';
 import { ToastrService } from 'ngx-toastr';
 import { CollapseModule } from 'ngx-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { UserService } from '../../../service/user.service';
 
 
 describe('LoanComponent', () => {
   let component: LoanComponent;
   let fixture: ComponentFixture<LoanComponent>;
+
+  const userService = jasmine.createSpyObj(
+    'UserService', ['getCurrentUser']
+  );
+  userService.getCurrentUser.and.returnValue({
+    first_name: 'John',
+    last_name: 'Doe',
+    library: {
+      pid: '1',
+      organisation: {
+        pid: '1'
+      },
+      current: '1',
+    },
+    getCurrentLibrary: () => '1'
+  });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -47,7 +64,10 @@ describe('LoanComponent', () => {
       declarations: [
         LoanComponent,
         ItemsListComponent,
-        ItemComponent ]
+        ItemComponent ],
+        providers: [
+          { provide: UserService, useValue: userService }
+        ]
     })
     .compileComponents();
   }));

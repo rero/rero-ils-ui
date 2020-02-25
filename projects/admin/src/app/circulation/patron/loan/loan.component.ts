@@ -30,7 +30,7 @@ import { UserService } from '../../../service/user.service';
   templateUrl: './loan.component.html'
 })
 export class LoanComponent implements OnInit {
-  public placeholder: string = this.translate.instant(
+  public placeholder: string = this._translate.instant(
     'Please enter an item barcode.'
   );
   /** Search text (barcode) entered in search input */
@@ -51,6 +51,9 @@ export class LoanComponent implements OnInit {
   /** Focus attribute of the search input */
   searchInputFocus = false;
 
+  /** Library PID of the logged user */
+  currentLibraryPid: string;
+
   /**
    * Constructor
    * @param itemsService: Items Service
@@ -59,25 +62,26 @@ export class LoanComponent implements OnInit {
    * @param patronService: Patron Service
    */
   constructor(
-    private itemsService: ItemsService,
-    private translate: TranslateService,
-    private toastService: ToastrService,
-    private patronService: PatronService,
-    private userService: UserService
+    private _itemsService: ItemsService,
+    private _translate: TranslateService,
+    private _toastService: ToastrService,
+    private _patronService: PatronService,
+    private _userService: UserService
   ) {
   }
 
   ngOnInit() {
-    this.patronService.currentPatron$.subscribe(patron => {
+    this._patronService.currentPatron$.subscribe(patron => {
       this.patron = patron;
       if (patron) {
         this.isLoading = true;
-        this.patronService.getItems(patron.pid).subscribe(items => {
+        this._patronService.getItems(patron.pid).subscribe(items => {
           this.checkedOutItems = items;
           this.isLoading = false;
         });
       }
     });
+    this.currentLibraryPid = this._userService.getCurrentUser().getCurrentLibrary();
     this.searchInputFocus = true;
   }
 
@@ -101,29 +105,41 @@ export class LoanComponent implements OnInit {
     if (item && item.actions.includes(ItemAction.checkin)) {
       item.currentAction = ItemAction.checkin;
       this.applyItems([item]);
+      if (item.pending_loans) {
+        this._toastService.warning(
+          this._translate.instant('The item has a request'),
+          this._translate.instant('Checkin')
+        );
+      }
+      if (item.status === ItemStatus.IN_TRANSIT) {
+        this._toastService.warning(
+          this._translate.instant('The item is ' + ItemStatus.IN_TRANSIT),
+          this._translate.instant('Checkin')
+        );
+      }
     } else {
-      this.itemsService.getItem(barcode, this.patron.pid).subscribe(
+      this._itemsService.getItem(barcode, this.patron.pid).subscribe(
         newItem => {
           if (newItem === null) {
-            this.toastService.error(
-              this.translate.instant('Item not found'),
-              this.translate.instant('Checkout')
+            this._toastService.error(
+              this._translate.instant('Item not found'),
+              this._translate.instant('Checkout')
             );
             this.searchText = '';
             this.searchInputFocus = true;
           } else {
             if (newItem.status === ItemStatus.ON_LOAN) {
-              this.toastService.error(
-                this.translate.instant('The item is already on loan'),
-                this.translate.instant('Checkout')
+              this._toastService.error(
+                this._translate.instant('The item is already on loan'),
+                this._translate.instant('Checkout')
               );
               this.searchText = '';
               this.searchInputFocus = true;
             } else {
               if (newItem.pending_loans && newItem.pending_loans[0].patron_pid !== this.patron.pid) {
-                this.toastService.error(
-                  this.translate.instant('Checkout impossible: the item is requested by another patron'),
-                  this.translate.instant('Checkout')
+                this._toastService.error(
+                  this._translate.instant('Checkout impossible: the item is requested by another patron'),
+                  this._translate.instant('Checkout')
                 );
                 this.searchText = '';
                 this.searchInputFocus = true;
@@ -135,9 +151,9 @@ export class LoanComponent implements OnInit {
           }
         },
         error => {
-          this.toastService.error(
+          this._toastService.error(
             error.message,
-            this.translate.instant('Checkout')
+            this._translate.instant('Checkout')
           );
           this.searchText = '';
           this.searchInputFocus = true;
@@ -154,11 +170,10 @@ export class LoanComponent implements OnInit {
    */
   applyItems(items: Item[]) {
     const observables = [];
-    const currentLibrary = this.userService.getCurrentUser().getCurrentLibrary();
     for (const item of items) {
       if (item.currentAction !== ItemAction.no) {
         observables.push(
-          this.itemsService.doAction(item, currentLibrary, this.patron.pid));
+          this._itemsService.doAction(item, this.currentLibraryPid, this.patron.pid));
       }
     }
     forkJoin(observables).subscribe(
@@ -191,14 +206,14 @@ export class LoanComponent implements OnInit {
           errorMessage = err.error.status;
         }
         if (err.error.status === 403) {
-          this.toastService.error(
-            this.translate.instant('Checkout is not allowed by circulation policy'),
-            this.translate.instant('Checkout')
+          this._toastService.error(
+            this._translate.instant('Checkout is not allowed by circulation policy'),
+            this._translate.instant('Checkout')
           );
         } else {
-          this.toastService.error(
-            this.translate.instant('An error occured on the server: ') + errorMessage,
-            this.translate.instant('Circulation')
+          this._toastService.error(
+            this._translate.instant('An error occured on the server: ') + errorMessage,
+            this._translate.instant('Circulation')
           );
         }
         this.searchText = '';
@@ -209,9 +224,9 @@ export class LoanComponent implements OnInit {
 
   hasFees(event: boolean) {
     if (event) {
-      this.toastService.error(
-        this.translate.instant('The item has fees'),
-        this.translate.instant('Checkin')
+      this._toastService.error(
+        this._translate.instant('The item has fees'),
+        this._translate.instant('Checkin')
       );
     }
   }

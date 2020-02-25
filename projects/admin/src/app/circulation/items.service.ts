@@ -84,17 +84,33 @@ export class ItemsService {
     );
   }
 
+  /** Do automatic checkin and get applied actions
+   * @param itemBarcode: item barcode
+   * @param transactionLibraryPid: transaction library
+   */
   automaticCheckin(itemBarcode, transactionLibraryPid) {
     const url = '/api/item/automatic_checkin';
     return this.http.post<any>(url, {item_barcode: itemBarcode, transaction_library_pid: transactionLibraryPid}).pipe(
       map(data => {
         const item = new Item(data.metadata);
-        const action = Object.keys(data.action_applied).pop();
-        const loan = Object.values(data.action_applied).pop();
-        if (loan) {
+        const actions = Object.keys(data.action_applied);
+        let loan: any;
+
+        item.action_applied = data.action_applied;
+        actions.forEach(action => {
+          if (action === 'checkin' || action === 'receive') {
+            item.actionDone =  ItemAction[action];
+          }
+        });
+        if (data.action_applied[ItemAction.checkin]) {
+          loan = data.action_applied[ItemAction.checkin];
+        }
+        if (data.action_applied[ItemAction.validate]) {
+          loan = data.action_applied[ItemAction.validate];
+        }
+        if (loan != null) {
           item.setLoan(loan);
         }
-        item.actionDone = ItemAction[action];
         return item;
       }),
       catchError(e => {
@@ -102,7 +118,7 @@ export class ItemsService {
           return of(null);
         }
       })
-      );
+    );
   }
 
   doAction(item, transactionLibraryPid, patronPid?: string) {

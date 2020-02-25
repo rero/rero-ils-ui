@@ -65,7 +65,7 @@ export enum ItemAction {
   return_missing = _('return_missing'),
   // cancel_loan = _('cancel_loan'),
   extend_loan = _('extend_loan'),
-  validate_request = _('validate_request'),
+  validate = _('validate'),
   no = _('no')
 }
 
@@ -82,6 +82,7 @@ export class Loan {
   end_date?: Moment;
   request_expire_date?: Moment;
   pickup_location_pid?: string;
+
   constructor(obj?: any) {
     Object.assign(this, obj);
     this.request_expire_date = this.convertToMoment(this.request_expire_date);

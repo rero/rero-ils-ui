@@ -41,9 +41,8 @@
         <li *ngSwitchCase="'in_transit'">{{ item.status | translate }}
           <ng-container *ngIf="getTransitLocationPid(item) | getRecord: 'locations' | async as location">
             ({{ 'to' | translate }}
-            <ng-container *ngIf="item.loan && item.loan.state === 'ITEM_IN_TRANSIT_FOR_PICKUP'; else toHouse"> {{ location.metadata.pickup_name }}</ng-container>
-            <ng-template #toHouse> {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</ng-template>
-            )
+            <ng-container *ngIf="item.loan && item.loan.state === 'ITEM_IN_TRANSIT_FOR_PICKUP'; else toHouse"> {{ location.metadata.pickup_name }})</ng-container>
+            <ng-template #toHouse> {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }})</ng-template>
           </ng-container>
         </li>
         <li *ngSwitchCase="'on_shelf'">{{ item.status | translate }}</li>

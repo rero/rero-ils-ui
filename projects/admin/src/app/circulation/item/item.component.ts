@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OrganisationService } from '../../service/organisation.service';
-import { Item, ItemAction, LoanState } from '../items';
+import { Item, ItemAction, Loan, LoanState } from '../items';
 import { PatronTransactionService } from '../patron-transaction.service';
 
 @Component({
@@ -96,11 +96,22 @@ export class ItemComponent implements OnInit {
    * @return: transit location pid
    */
   getTransitLocationPid(item: Item) {
-    if (item.loan && item.loan.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP) {
-      return item.loan.pickup_location_pid;
-    }
-    if (item.loan && item.loan.state === LoanState.ITEM_IN_TRANSIT_TO_HOUSE) {
-      return item.location.pid;
+    if (this.patron) {
+      if (item.loan && item.loan.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP) {
+        return item.loan.pickup_location_pid;
+      }
+      if (item.loan && item.loan.state === LoanState.ITEM_IN_TRANSIT_TO_HOUSE) {
+        return item.location.pid;
+      }
+    } else {
+      const validatedLoan = new Loan(item.action_applied[ItemAction.validate]);
+      const checkedInLoan = new Loan(item.action_applied[ItemAction.checkin]);
+      if (validatedLoan && validatedLoan.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP) {
+        return validatedLoan.pickup_location_pid;
+      }
+      if (checkedInLoan && checkedInLoan.state === LoanState.ITEM_IN_TRANSIT_TO_HOUSE) {
+        return item.location.pid;
+      }
     }
     return null;
   }
