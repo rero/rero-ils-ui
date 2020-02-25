@@ -248,4 +248,12 @@ export class CheckoutComponent implements OnInit {
         );
     }
   }
+  hasFees(event: boolean) {
+    if (event) {
+      this.toastService.error(
+        this.translate.instant('The item has fees'),
+        this.translate.instant('Checkin')
+      );
+    }
+  }
 }

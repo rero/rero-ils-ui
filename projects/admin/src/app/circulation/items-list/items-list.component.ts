@@ -41,6 +41,9 @@ export class ItemsListComponent {
   /** Extend loan event emitter */
   @Output() extendLoanClicked = new EventEmitter<any[]>();
 
+  /** Item has fees */
+  @Output() hasFeesEmitter = new EventEmitter<boolean>();
+
   /** Extend loan item action */
   extendLoan = ItemAction.extend_loan;
 
@@ -82,6 +85,7 @@ export class ItemsListComponent {
    * @param event: value received from child component
    */
    hasFees(event: boolean) {
+    this.hasFeesEmitter.emit(event);
     return event;
   }
 }

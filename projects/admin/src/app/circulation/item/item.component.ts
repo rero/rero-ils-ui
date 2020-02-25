@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -33,6 +33,9 @@ export class ItemComponent implements OnInit {
 
   /** Current patron */
   @Input() patron: any;
+
+  /** Item has fees */
+  @Output() hasFeesEmitter = new EventEmitter<boolean>();
 
   /** Is collapsed */
   isCollapsed = true;
@@ -81,12 +84,10 @@ export class ItemComponent implements OnInit {
     for (const fee of fees) {
       total += fee.metadata.amount;
     }
+    if (total > 0) {
+      this.hasFeesEmitter.emit(true);
+    }
     return total;
-  }
-
-  /** Check if current item is a patron loan */
-  get patronLoan(): boolean {
-    return this.item.status !== 'on_loan' && this.patron;
   }
 
   /** Get transit location pid
