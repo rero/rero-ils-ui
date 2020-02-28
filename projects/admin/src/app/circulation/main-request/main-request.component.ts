@@ -36,6 +36,9 @@ export class MainRequestComponent implements OnInit {
   private libraryPid: string;
   public isLoading = false;
 
+  /** Focus attribute of the search input */
+  searchInputFocus = false;
+
   /** Constructor
    * @param  userService: User Service
    * @param  itemsService: Items Service
@@ -58,6 +61,7 @@ export class MainRequestComponent implements OnInit {
       this.items = null;
       this.getRequestedLoans();
     }
+    this.searchInputFocus = true;
   }
 
   getRequestedLoans() {
@@ -98,5 +102,6 @@ export class MainRequestComponent implements OnInit {
         }
       );
     }
+    this.searchInputFocus = true;
   }
 }
