@@ -14,11 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { RouteInterface, RecordSearchComponent, DetailComponent } from '@rero/ng-core';
+import { BaseRoute } from './Base-route';
+import { CanUpdateGuard } from '../guard/can-update.guard';
+import { DetailComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
 import { LibraryComponent } from '../record/custom-editor/libraries/library.component';
 import { LibrariesBriefViewComponent } from '../record/brief-view/libraries-brief-view/libraries-brief-view.component';
 import { LibraryDetailViewComponent } from '../record/detail-view/library-detail-view/library-detail-view.component';
-import { BaseRoute } from './Base-route';
+
+
 
 export class LibrariesRoute extends BaseRoute implements RouteInterface {
 
@@ -38,7 +41,7 @@ export class LibrariesRoute extends BaseRoute implements RouteInterface {
       children: [
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: LibraryComponent },
+        { path: 'edit/:pid', component: LibraryComponent, canActivate: [ CanUpdateGuard ] },
         { path: 'new', component: LibraryComponent }
       ],
       data: {

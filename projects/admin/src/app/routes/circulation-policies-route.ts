@@ -15,10 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { BaseRoute } from './Base-route';
-import { RouteInterface, RecordSearchComponent, DetailComponent } from '@rero/ng-core';
+import { CanUpdateGuard } from '../guard/can-update.guard';
 import { CirculationPolicyComponent } from '../record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
 import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-policies-brief-view.component';
 import { CircPolicyDetailViewComponent } from '../record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
+import { RouteInterface, RecordSearchComponent, DetailComponent } from '@rero/ng-core';
 
 export class CirculationPoliciesRoute extends BaseRoute implements RouteInterface {
 
@@ -38,7 +39,7 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
       children: [
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: CirculationPolicyComponent },
+        { path: 'edit/:pid', component: CirculationPolicyComponent, canActivate: [ CanUpdateGuard ] },
         { path: 'new', component: CirculationPolicyComponent }
       ],
       data: {
