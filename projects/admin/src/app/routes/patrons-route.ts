@@ -14,10 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { RouteInterface, RecordSearchComponent, DetailComponent, EditorComponent } from '@rero/ng-core';
+import { BaseRoute } from './Base-route';
+import { CanUpdateGuard } from '../guard/can-update.guard';
 import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-view.component';
 import { PatronDetailViewComponent } from '../record/detail-view/patron-detail-view/patron-detail-view.component';
-import { BaseRoute } from './Base-route';
+import { RouteInterface, RecordSearchComponent, DetailComponent, EditorComponent } from '@rero/ng-core';
+
 
 export class PatronsRoute extends BaseRoute implements RouteInterface {
 
@@ -37,7 +39,7 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
       children: [
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
         { path: 'new', component: EditorComponent }
       ],
       data: {

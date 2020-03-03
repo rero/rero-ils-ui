@@ -14,11 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { RouteInterface, RecordSearchComponent, DetailComponent } from '@rero/ng-core';
-import { DocumentEditorComponent } from '../record/custom-editor/document-editor/document-editor.component';
+
+import { BaseRoute } from './Base-route';
+import { CanUpdateGuard } from '../guard/can-update.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
-import { BaseRoute } from './Base-route';
+import { DocumentEditorComponent } from '../record/custom-editor/document-editor/document-editor.component';
+import { RouteInterface, RecordSearchComponent, DetailComponent } from '@rero/ng-core';
 
 export class DocumentsRoute extends BaseRoute implements RouteInterface {
 
@@ -38,7 +40,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
       children: [
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: DocumentEditorComponent },
+        { path: 'edit/:pid', component: DocumentEditorComponent, canActivate: [ CanUpdateGuard ] },
         { path: 'new', component: DocumentEditorComponent }
       ],
       data: {

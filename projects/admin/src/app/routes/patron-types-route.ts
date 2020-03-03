@@ -15,9 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { BaseRoute } from './Base-route';
-import { RouteInterface, RecordSearchComponent, DetailComponent, EditorComponent } from '@rero/ng-core';
+import { CanUpdateGuard } from '../guard/can-update.guard';
 import { PatronTypesBriefViewComponent } from '../record/brief-view/patron-types-brief-view.component';
 import { PatronTypesDetailViewComponent } from '../record/detail-view/patron-types-detail-view.component';
+import { RouteInterface, RecordSearchComponent, DetailComponent, EditorComponent } from '@rero/ng-core';
 
 export class PatronTypesRoute extends BaseRoute implements RouteInterface {
 
@@ -37,7 +38,7 @@ export class PatronTypesRoute extends BaseRoute implements RouteInterface {
       children: [
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
         { path: 'new', component: EditorComponent }
       ],
       data: {

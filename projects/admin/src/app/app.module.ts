@@ -101,6 +101,7 @@ import { RemoteAutocompleteInputTypeComponent } from './record/editor/remote-aut
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { AppConfigService } from './service/app-config.service';
 import { TranslateLoader } from './translate/loader/translate-loader';
+import { ErrorPageComponent } from './error/error-page/error-page.component';
 
 @NgModule({
   declarations: [
@@ -170,7 +171,8 @@ import { TranslateLoader } from './translate/loader/translate-loader';
     FrontpageBoardComponent,
     RelatedResourceComponent,
     ResourceComponent,
-    ItemRequestComponent
+    ItemRequestComponent,
+    ErrorPageComponent
   ],
   imports: [
     AppRoutingModule,
@@ -256,7 +258,8 @@ import { TranslateLoader } from './translate/loader/translate-loader';
     BudgetsBriefViewComponent,
     BudgetDetailViewComponent,
     OrganisationDetailViewComponent,
-    ItemRequestComponent
+    ItemRequestComponent,
+    ErrorPageComponent
   ],
   bootstrap: [AppComponent]
 })

@@ -33,6 +33,7 @@ import { AcquisitionOrderLinesRoute } from './acquisition-order-lines-route';
 import { OrganisationsRoute } from './organisations-route';
 import { AcquisitionAccountsRoute } from './acquisition-accounts-route';
 import { BudgetsRoute } from './budgets-route';
+import { ErrorPageComponent } from '../error/error-page/error-page.component';
 
 @Injectable({
   providedIn: 'root'
@@ -72,9 +73,13 @@ export class RouteService {
       .addRoute(new PersonsRoute(this._routeToolService))
       .addRoute(new VendorsRoute(this._routeToolService))
     ;
-
     this._routeCollectionService.getRoutes().map((route: any) => {
       this._router.config.push(route);
     });
+
+    this._router.config.push(...[
+      {path: 'errors/:status_code', component: ErrorPageComponent},
+      {path: '**', component: ErrorPageComponent}
+    ]);
   }
 }
