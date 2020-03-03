@@ -14,9 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { RouteInterface, DetailComponent, EditorComponent } from '@rero/ng-core';
 import { BaseRoute } from './Base-route';
+import { CanUpdateGuard } from '../guard/can-update.guard';
 import { OrganisationDetailViewComponent } from '../record/detail-view/organisation-detail-view/organisation-detail-view.component';
+import { RouteInterface, DetailComponent, EditorComponent } from '@rero/ng-core';
 
 export class OrganisationsRoute extends BaseRoute implements RouteInterface {
 
@@ -32,7 +33,7 @@ export class OrganisationsRoute extends BaseRoute implements RouteInterface {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
         { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent }
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] }
       ],
       data: {
         linkPrefix: 'records',

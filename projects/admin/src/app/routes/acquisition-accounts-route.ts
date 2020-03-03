@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { RouteInterface, EditorComponent, extractIdOnRef } from '@rero/ng-core';
 import { BaseRoute } from './Base-route';
+import { CanUpdateGuard } from '../guard/can-update.guard';
+import { RouteInterface, EditorComponent, extractIdOnRef } from '@rero/ng-core';
 import { of } from 'rxjs';
 
 export class AcquisitionAccountsRoute extends BaseRoute implements RouteInterface {
@@ -31,7 +32,7 @@ export class AcquisitionAccountsRoute extends BaseRoute implements RouteInterfac
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'edit/:pid', component: EditorComponent },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
         { path: 'new', component: EditorComponent }
       ],
       data: {
