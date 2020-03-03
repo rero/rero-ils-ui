@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { DetailComponent, EditorComponent, extractIdOnRef, RecordService, RouteInterface} from '@rero/ng-core';
-import { BaseRoute } from './Base-route';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { JSONSchema7 } from 'json-schema';
 import {
   AcquisitionOrderLineDetailViewComponent
 } from '../record/detail-view/acquisition-order-line-detail-view/acquisition-order-line-detail-view.component';
+import { CanUpdateGuard } from '../guard/can-update.guard';
+import { BaseRoute } from './Base-route';
+import { DetailComponent, EditorComponent, extractIdOnRef, RecordService, RouteInterface} from '@rero/ng-core';
+import { FormlyFieldConfig } from '@ngx-formly/core';
+import { JSONSchema7 } from 'json-schema';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -41,7 +42,7 @@ export class AcquisitionOrderLinesRoute extends BaseRoute implements RouteInterf
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
         { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
         { path: 'new', component: EditorComponent }
       ],
       data: {
