@@ -14,10 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { DetailComponent, EditorComponent, RouteInterface, extractIdOnRef } from '@rero/ng-core';
+import { of } from 'rxjs';
 import { BaseRoute } from './Base-route';
 import { CanUpdateGuard } from '../guard/can-update.guard';
-import { RouteInterface, DetailComponent, EditorComponent } from '@rero/ng-core';
 import { LocationDetailViewComponent } from '../record/detail-view/location-detail-view/location-detail-view.component';
+
 
 export class LocationsRoute extends BaseRoute implements RouteInterface {
 
@@ -25,7 +27,7 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
   readonly name = 'locations';
 
   /** Record type */
-  readonly recordType = 'libraries';
+  readonly recordType = 'locations';
 
   /**
    * Get Configuration
@@ -57,10 +59,20 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
                 )
               };
               return record;
-            }
+            },
+            redirectUrl: (record: any) => this.getUrl(record)
           }
         ]
       }
     };
+  }
+
+  /**
+   * Parse url with pid from $ref
+   * @param record - object, record to be saved
+   */
+  private getUrl(record: any) {
+    const pid = extractIdOnRef(record.metadata.library.$ref);
+    return of(`records/libraries/detail/` + pid);
   }
 }

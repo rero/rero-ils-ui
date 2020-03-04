@@ -14,16 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { Observable } from 'rxjs';
+import { RecordService } from '@rero/ng-core';
+import { UserService } from '../../../service/user.service';
 
 @Component({
   selector: 'admin-library-detail-view',
   templateUrl: './library-detail-view.component.html',
   styles: []
 })
-export class LibraryDetailViewComponent implements DetailRecord {
+export class LibraryDetailViewComponent implements DetailRecord, OnInit {
 
   /** Observable resolving record data */
   record$: Observable<any>;
@@ -31,5 +33,44 @@ export class LibraryDetailViewComponent implements DetailRecord {
   /** Resource type */
   type: string;
 
-  constructor() { }
+  /** linked locations */
+  locations = [];
+
+  constructor(
+    private _recordService: RecordService,
+    private _userService: UserService
+  ) { }
+
+  ngOnInit() {
+    // Load linked locations
+    this.record$.subscribe(
+      (data) => {
+        const libraryPid = data.metadata.pid;
+        this._recordService
+          .getRecords(
+            'locations',
+            `library.pid:${libraryPid}`,
+            1,
+            RecordService.MAX_REST_RESULTS_SIZE,
+            [],  // aggFilters
+            {},  // preFilters
+            null,  // headers
+            'name'
+          )
+          .subscribe((record) => {
+            this.locations = record.hits.hits || [];
+          });
+      }
+    );
+  }
+
+  /** Delete a location event listener
+   *  This function catch the event emitted when a location is deleted and removed the deleted location
+   *  from the known locations list
+   *  @param deletedLocationPid - The deleted location pid
+   */
+  deleteLocation(deletedLocationPid: Event) {
+    this.locations = this.locations.filter((location: any) => deletedLocationPid !== location.metadata.pid);
+  }
+
 }
