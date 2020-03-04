@@ -69,4 +69,25 @@
       </ul>
     </article>
   </article>
+
+  <!-- LOCATIONS -->
+  <article class="card mt-4">
+    <header class="card-header">
+      <b translate>Locations</b>
+      <a class="ml-2 btn btn-sm btn-primary"
+         [routerLink]="['/', 'records', 'locations', 'new']"
+         [queryParams]="{ library: record.metadata.pid }">
+        <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }}
+      </a>
+    </header>
+    <article class="card-body collapsed show">
+      <ul class="list-group list-group-flush" *ngIf="locations; else no_locations">
+        <li *ngFor="let location of locations" class="list-group-item p-1">
+          <admin-location [location]="location" class="col-12" (deleteLocation)="deleteLocation($event)"></admin-location>
+        </li>
+      </ul>
+      <ng-template #no_locations><p translate>no location</p></ng-template>
+    </article>
+
+  </article>
 </ng-container>

@@ -49,8 +49,8 @@ import { BudgetsBriefViewComponent } from './record/brief-view/budgets-brief-vie
 import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policies-brief-view.component';
 import { DocumentsBriefViewComponent } from './record/brief-view/documents-brief-view/documents-brief-view.component';
 import { ItemTypesBriefViewComponent } from './record/brief-view/item-types-brief-view.component';
-import { LibrariesBriefViewComponent } from './record/brief-view/libraries-brief-view/libraries-brief-view.component';
-import { LocationComponent } from './record/brief-view/libraries-brief-view/location/location.component';
+import { LibrariesBriefViewComponent } from './record/brief-view/libraries-brief-view.component';
+import { LocationComponent } from './record/detail-view/library-detail-view/location/location.component';
 import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-brief-view.component';
 import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view.component';
 import { PersonsBriefViewComponent } from './record/brief-view/persons-brief-view.component';

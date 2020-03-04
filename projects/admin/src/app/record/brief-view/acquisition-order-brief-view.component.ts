@@ -22,9 +22,7 @@ import { ResultItem } from '@rero/ng-core';
   selector: 'admin-acquisition-order-brief-view',
   template: `
     <h5 class="mb-0 card-title">
-      <a [routerLink]="['/records', 'acq_orders', 'detail', record.metadata.pid]">
-        {{ record.metadata.order_number }}
-      </a>
+      <a [routerLink]="[detailUrl.link]">{{ record.metadata.order_number }}</a>
     </h5>
   `,
   styleUrls: []
@@ -39,5 +37,4 @@ export class AcquisitionOrderBriefViewComponent implements ResultItem {
 
   @Input()
   detailUrl: { link: string, external: boolean };
-
 }

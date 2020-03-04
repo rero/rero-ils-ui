@@ -22,7 +22,6 @@ import { ResultItem } from '@rero/ng-core';
   selector: 'admin-circ-policies-brief-view',
   template: `
   <h5 class="mb-0 card-title"><a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a></h5>
-
   <div class="card-text">
     <span *ngIf="record.metadata.description">
       {{ record.metadata.description }}

@@ -22,9 +22,7 @@ import { ResultItem } from '@rero/ng-core';
   selector: 'admin-patron-types-brief-view',
   template: `
   <h5 class="mb-0 card-title">
-    <a [routerLink]="['/records', 'patron_types', 'detail', record.metadata.pid]">
-      {{ record.metadata.name }}
-    </a>
+    <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
   </h5>
   <div class="card-text">
     <span *ngIf="record.metadata.description">
