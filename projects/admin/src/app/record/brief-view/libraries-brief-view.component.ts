@@ -16,25 +16,33 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
+import { ResultItem  } from '@rero/ng-core';
 
 @Component({
-  selector: 'admin-vendor-brief-view',
+  selector: 'admin-libraries-brief-view',
   template: `
-    <h5 class="mb-0 card-title">
-      <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
-    </h5>
+  <h5 class="mb-0 card-title">
+    <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
+  </h5>
+  <div class="card-text">
+    <small> {{ record.metadata.code }}</small>
+    <span *ngIf="record.metadata.description">
+      {{ record.metadata.description }}
+    </span>
+  </div>
   `,
-  styleUrls: []
 })
-export class VendorBriefViewComponent implements ResultItem {
+export class LibrariesBriefViewComponent implements ResultItem {
 
-  /** Record  data */
+  /** Record data */
+  @Input()
   record: any;
 
   /** Resource type */
+  @Input()
   type: string;
 
   /** Detail URL to navigate to detail view */
+  @Input()
   detailUrl: { link: string, external: boolean };
 }

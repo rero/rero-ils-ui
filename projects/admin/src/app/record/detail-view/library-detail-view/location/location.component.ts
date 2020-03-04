@@ -1,7 +1,6 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { RecordUiService } from '@rero/ng-core';
 import { RecordPermissionMessageService } from 'projects/admin/src/app/service/record-permission-message.service';
-import { EventEmitter } from 'events';
 
 @Component({
   selector: 'admin-location',

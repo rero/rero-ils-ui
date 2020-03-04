@@ -18,7 +18,7 @@ import { BaseRoute } from './Base-route';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { DetailComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
 import { LibraryComponent } from '../record/custom-editor/libraries/library.component';
-import { LibrariesBriefViewComponent } from '../record/brief-view/libraries-brief-view/libraries-brief-view.component';
+import { LibrariesBriefViewComponent } from '../record/brief-view/libraries-brief-view.component';
 import { LibraryDetailViewComponent } from '../record/detail-view/library-detail-view/library-detail-view.component';
 
 
