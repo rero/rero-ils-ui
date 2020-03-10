@@ -14,9 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { PatronService } from 'projects/admin/src/app/service/patron.service';
+import { MainTitleService } from '../../../../service/main-title.service';
+import { PatronService } from '../../../../service/patron.service';
 
 @Component({
   selector: 'admin-requested-item',
@@ -41,7 +42,8 @@ export class RequestedItemComponent implements OnInit {
    */
   constructor(
     private _recordService: RecordService,
-    private _patronService: PatronService
+    private _patronService: PatronService,
+    private _mainTitleService: MainTitleService
   ) { }
 
   /**
@@ -56,5 +58,13 @@ export class RequestedItemComponent implements OnInit {
         );
       });
     }
+  }
+
+  /**
+   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
+   * @param titleMetadata: title metadata
+   */
+  getMainTitle(titleMetadata: any): string {
+    return this._mainTitleService.getMainTitle(titleMetadata);
   }
 }

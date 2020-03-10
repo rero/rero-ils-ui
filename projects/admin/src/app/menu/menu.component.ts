@@ -19,6 +19,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, LocalStorageService, RecordService, TranslateService as CoreTranslateService } from '@rero/ng-core';
 import { LibrarySwitchService } from '../service/library-switch.service';
+import { MainTitleService } from '../service/main-title.service';
 import { MenuService } from '../service/menu.service';
 import { UserService } from '../service/user.service';
 
@@ -77,7 +78,8 @@ export class MenuComponent implements OnInit {
     private _recordService: RecordService,
     private _librarySwitchService: LibrarySwitchService,
     private _localeStorageService: LocalStorageService,
-    private _menuService: MenuService
+    private _menuService: MenuService,
+    private _mainTitleService: MainTitleService
   ) { }
 
   ngOnInit() {
@@ -111,7 +113,7 @@ export class MenuComponent implements OnInit {
     this.recordTypes = [{
       type: 'documents',
       field: 'autocomplete_title',
-      getSuggestions: (query, persons) => this.getDocumentsSuggestions(query, persons)
+      getSuggestions: (query, documents) => this.getDocumentsSuggestions(query, documents)
     }, {
       type: 'persons',
       field: 'autocomplete_name',
@@ -135,7 +137,6 @@ export class MenuComponent implements OnInit {
     this._librarySwitchService.onGenerate$.subscribe((entries: any) => {
       this.librariesSwitchMenu.entries[0].entries = entries;
     });
-
 
   }
 
@@ -194,11 +195,11 @@ export class MenuComponent implements OnInit {
   getDocumentsSuggestions(query, documents) {
     const values = [];
     documents.hits.hits.map(hit => {
-      let text = hit.metadata.title;
+      let text = this.getMainTitle(hit.metadata.title);
       let truncate = false;
       if (text.length > this.maxLengthSuggestion) {
         truncate = true;
-        text = hit.metadata.title.substr(0, this.maxLengthSuggestion);
+        text = this.getMainTitle(hit.metadata.title).substr(0, this.maxLengthSuggestion);
       }
       text = text.replace(new RegExp(query, 'gi'), `<b>${query}</b>`);
       if (truncate) {
@@ -206,7 +207,7 @@ export class MenuComponent implements OnInit {
       }
       values.push({
         text,
-        query: hit.metadata.title.replace(/[:\-\[\]()/"]/g, ' ').replace(/\s\s+/g, ' '),
+        query: this.getMainTitle(hit.metadata.title).replace(/[:\-\[\]()/"]/g, ' ').replace(/\s\s+/g, ' '),
         index: 'documents',
         pid: undefined,
         category: this._translateService.instant('documents')
@@ -226,5 +227,13 @@ export class MenuComponent implements OnInit {
 
   private myLibraryRouterLink() {
     return `/records/libraries/detail/${this._userService.getCurrentUser().currentLibrary}`;
+  }
+
+  /**
+   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
+   * @param titleMetadata: title metadata
+   */
+  getMainTitle(titleMetadata: any): string {
+    return this._mainTitleService.getMainTitle(titleMetadata);
   }
 }

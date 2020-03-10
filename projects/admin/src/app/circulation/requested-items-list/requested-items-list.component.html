@@ -31,7 +31,8 @@
   <tbody *ngIf="items && items.length">
     <tr [ngClass]="{'table-success': item.loan.state !== 'PENDING'}"
         *ngFor="let item of items">
-      <td><span *ngIf="item.document.title">{{ item.document.title }}</span></td>
+      <td><span *ngIf="getMainTitle(item.document.title) != null">
+        {{ getMainTitle(item.document.title) }}</span></td>
       <td class="text-right">
         {{ item.barcode }}
       </td>

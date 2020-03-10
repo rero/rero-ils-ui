@@ -19,6 +19,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MainTitleService } from '../../service/main-title.service';
 import { OrganisationService } from '../../service/organisation.service';
 import { Item, ItemAction, Loan, LoanState } from '../items';
 import { PatronTransactionService } from '../patron-transaction.service';
@@ -65,7 +66,8 @@ export class ItemComponent implements OnInit {
   constructor(
     private recordService: RecordService,
     private organisationService: OrganisationService,
-    private patronTransactionService: PatronTransactionService
+    private patronTransactionService: PatronTransactionService,
+    private _mainTitleService: MainTitleService
     ) {  }
 
   /**
@@ -121,5 +123,13 @@ export class ItemComponent implements OnInit {
    */
   get organisation() {
     return this.organisationService.organisation;
+  }
+
+  /**
+   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
+   * @param titleMetadata: title metadata
+   */
+  getMainTitle(titleMetadata: any): string {
+    return this._mainTitleService.getMainTitle(titleMetadata);
   }
 }

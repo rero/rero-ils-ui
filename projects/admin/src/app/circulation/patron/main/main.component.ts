@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
+import { User } from '../../../class/user';
+import { OrganisationService } from '../../../service/organisation.service';
 import { PatronService } from '../../../service/patron.service';
 import { PatronTransactionService } from '../../patron-transaction.service';
-import { Observable, Subscription } from 'rxjs';
-import { OrganisationService } from '../../../service/organisation.service';
-import { User } from '../../../class/user';
 
 @Component({
   selector: 'admin-main',

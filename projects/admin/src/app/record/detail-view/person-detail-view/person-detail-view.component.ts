@@ -19,6 +19,7 @@ import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record
 import { Observable } from 'rxjs';
 import { RecordService } from '@rero/ng-core';
 import { map, switchMap } from 'rxjs/operators';
+import { MainTitleService } from '../../../service/main-title.service';
 
 @Component({
   selector: 'admin-person-detail-view',
@@ -41,7 +42,8 @@ export class PersonDetailViewComponent implements DetailRecord, OnInit {
    * @param _recordService - RecordService
    */
   constructor(
-    private _recordService: RecordService
+    private _recordService: RecordService,
+    private _mainTitleService: MainTitleService
   ) { }
 
   /**
@@ -57,5 +59,13 @@ export class PersonDetailViewComponent implements DetailRecord, OnInit {
       ); }),
       map(hits => hits.hits.total === 0 ? [] : hits.hits.hits)
     );
+  }
+
+  /**
+   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
+   * @param titleMetadata: title metadata
+   */
+  getMainTitle(titleMetadata: any): string {
+    return this._mainTitleService.getMainTitle(titleMetadata);
   }
 }

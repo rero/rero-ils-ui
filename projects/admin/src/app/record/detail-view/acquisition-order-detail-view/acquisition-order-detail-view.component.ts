@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, OnInit } from '@angular/core';
+import { RecordService, RecordUiService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
-import { RecordService, RecordUiService} from '@rero/ng-core';
+import { map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'admin-acquisition-order-detail-view',

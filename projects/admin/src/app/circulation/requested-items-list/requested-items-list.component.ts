@@ -16,6 +16,7 @@
  */
 
 import { Component, Input } from '@angular/core';
+import { MainTitleService } from '../../service/main-title.service';
 
 @Component({
   selector: 'admin-circulation-requested-items-list',
@@ -24,5 +25,15 @@ import { Component, Input } from '@angular/core';
 export class RequestedItemsListComponent {
 
   @Input() items: any[];
+
+  constructor(private _mainTitleService: MainTitleService) {}
+
+  /**
+   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
+   * @param titleMetadata: title metadata
+   */
+  getMainTitle(titleMetadata: any): string {
+    return this._mainTitleService.getMainTitle(titleMetadata);
+  }
 
 }

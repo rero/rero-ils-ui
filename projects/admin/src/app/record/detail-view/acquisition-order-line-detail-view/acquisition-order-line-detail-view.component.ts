@@ -19,6 +19,7 @@ import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record
 import { RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MainTitleService } from '../../../service/main-title.service';
 
 @Component({
   selector: 'admin-acquisition-order-line-detail-view',
@@ -39,7 +40,10 @@ export class AcquisitionOrderLineDetailViewComponent implements OnInit, DetailRe
    * Constructor
    * @param recordService RecordService
    */
-  constructor(private _recordService: RecordService) { }
+  constructor(
+    private _recordService: RecordService,
+    private _mainTitleService: MainTitleService
+  ) { }
 
   /** On init hook */
   ngOnInit() {
@@ -48,5 +52,13 @@ export class AcquisitionOrderLineDetailViewComponent implements OnInit, DetailRe
       this.order$ = this._recordService.getRecord('acq_orders', record.metadata.acq_order.pid).pipe(
         map(order => order));
     });
+  }
+
+  /**
+   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
+   * @param titleMetadata: title metadata
+   */
+  getMainTitle(titleMetadata: any): string {
+    return this._mainTitleService.getMainTitle(titleMetadata);
   }
 }
