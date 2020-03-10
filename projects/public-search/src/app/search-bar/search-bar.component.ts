@@ -1,5 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { MainTitleService } from 'projects/admin/src/app/service/main-title.service';
+
 
 @Component({
   selector: 'public-search-search-bar',
@@ -28,7 +30,10 @@ export class SearchBarComponent implements OnInit {
     }
   }
 
-  constructor(private translateService: TranslateService) {
+  constructor(
+    private translateService: TranslateService,
+    private _mainTitleService: MainTitleService
+  ) {
       this.placeholder = this.translateService.instant('Search');
    }
 
@@ -36,7 +41,7 @@ export class SearchBarComponent implements OnInit {
     this.recordTypes = [{
       type: 'documents',
       field: 'autocomplete_title',
-      getSuggestions: (query, persons) => this.getDocumentsSuggestions(query, persons),
+      getSuggestions: (query, documents) => this.getDocumentsSuggestions(query, documents),
       preFilters: this.viewcode ? {view: this.viewcode} : {}
     }, {
       type: 'persons',
@@ -67,11 +72,11 @@ export class SearchBarComponent implements OnInit {
   getDocumentsSuggestions(query, documents) {
     const values = [];
     documents.hits.hits.map(hit => {
-      let text = hit.metadata.title;
+      let text = this.getMainTitle(hit.metadata.title);
       let truncate = false;
       if (text.length > this.maxLengthSuggestion) {
         truncate = true;
-        text = hit.metadata.title.substr(0, this.maxLengthSuggestion);
+        text = this.getMainTitle(hit.metadata.title).substr(0, this.maxLengthSuggestion);
       }
       text = text.replace(new RegExp(query, 'gi'), `<b>${query}</b>`);
       if (truncate) {
@@ -79,12 +84,20 @@ export class SearchBarComponent implements OnInit {
       }
       values.push({
         text,
-        query: hit.metadata.title.replace(/[:\-\[\]()/"]/g, ' ').replace(/\s\s+/g, ' '),
+        query: this.getMainTitle(hit.metadata.title).replace(/[:\-\[\]()/"]/g, ' ').replace(/\s\s+/g, ' '),
         index: 'documents',
         category: this.translateService.instant('documents')
         // href: `/${this.viewcode}/documents/${hit.metadata.pid}`
       });
     });
     return values;
+  }
+
+  /**
+   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
+   * @param titleMetadata: title metadata
+   */
+  getMainTitle(titleMetadata: any): string {
+    return this._mainTitleService.getMainTitle(titleMetadata);
   }
 }

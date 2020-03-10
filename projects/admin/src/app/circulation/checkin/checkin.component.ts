@@ -24,7 +24,7 @@ import { map } from 'rxjs/operators';
 import { User } from '../../class/user';
 import { PatronService } from '../../service/patron.service';
 import { UserService } from '../../service/user.service';
-import { ItemAction, ItemStatus, LoanState } from '../items';
+import { ItemAction, ItemStatus } from '../items';
 import { ItemsService } from '../items.service';
 
 @Component({

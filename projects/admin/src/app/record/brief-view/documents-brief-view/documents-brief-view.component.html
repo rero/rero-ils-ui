@@ -14,8 +14,9 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
 <h5 class="mb-0 card-title">
-  <a [routerLink]="[detailUrl.link]">{{ record.metadata.title }}</a>
+  <a [routerLink]="[detailUrl.link]">{{ record.metadata.ui_title_text }}</a>
 <small> &ndash; {{ record.metadata.type | translate }}</small></h5>
 <ng-container class="card-text">
 

@@ -30,7 +30,9 @@
   </div>
   <!-- TITLE -->
   <div class="col-lg-4"><a
-      [routerLink]="['/records','documents','detail', item.document.pid]">{{ item.document.title | truncateText: 12 }}</a>
+      [routerLink]="['/records','documents','detail', item.document.pid]"
+      *ngIf="getMainTitle(item.document.title) != null">
+      {{ getMainTitle(item.document.title) | truncateText: 12 }}</a>
   </div>
   <!-- CIRCULATION INFO -->
   <div class="col-lg-3">

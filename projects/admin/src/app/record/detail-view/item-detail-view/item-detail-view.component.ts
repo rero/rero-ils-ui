@@ -20,6 +20,7 @@ import { Observable } from 'rxjs';
 import { RecordService, extractIdOnRef } from '@rero/ng-core';
 import { LoanService } from '../../../service/loan.service';
 import { map, switchMap, tap } from 'rxjs/operators';
+import { MainTitleService } from '../../../service/main-title.service';
 
 @Component({
   selector: 'admin-item-detail-view',
@@ -52,7 +53,8 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit {
    */
   constructor(
     private recordService: RecordService,
-    private loanService: LoanService
+    private loanService: LoanService,
+    private _mainTitleService: MainTitleService
   ) {}
 
   ngOnInit() {
@@ -79,5 +81,13 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit {
             });
         })
       ).subscribe();
+  }
+
+  /**
+   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
+   * @param titleMetadata: title metadata
+   */
+  getMainTitle(titleMetadata: any): string {
+    return this._mainTitleService.getMainTitle(titleMetadata);
   }
 }

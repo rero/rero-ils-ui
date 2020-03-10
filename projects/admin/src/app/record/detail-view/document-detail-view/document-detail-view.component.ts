@@ -19,6 +19,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
+import { MainTitleService } from '../../../service/main-title.service';
 
 @Component({
   selector: 'admin-document-detail-view',
@@ -36,11 +37,16 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit {
   /** Document record */
   record: any;
 
+  /** Css class for dd in template */
+  ddCssClass = 'col-sm-6 col-md-8 mb-0';
+
   /** constructor
    * @param _translateService: TranslateService
    */
   constructor(
-    private _translateService: TranslateService) { }
+    private _translateService: TranslateService,
+    private _mainTitleService: MainTitleService
+  ) { }
 
   /** On init hook */
   ngOnInit() {
@@ -153,7 +159,9 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit {
     return results;
   }
 
-  /** Related resources to display below 'Subjects' */
+  /**
+   * Related resources to display below 'Subjects'
+   */
   get relatedResources() {
     if (this.record.metadata.electronicLocator) {
       return this.record.metadata.electronicLocator.filter((electronicLocator: any) =>
@@ -162,7 +170,9 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit {
     }
   }
 
-  /** Resources to display like a holding */
+  /**
+   * Resources to display like a holding
+   */
   get resources() {
     if (this.record.metadata.electronicLocator) {
       return this.record.metadata.electronicLocator.filter((electronicLocator: any) =>
@@ -171,9 +181,22 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit {
     }
   }
 
+  /**
+   * Filter eletronic locator by type
+   * @param electronicLocator: electronic locator to filter
+   * @param types: list of types to consider for filter
+   */
   filterEletronicLocatorByType(electronicLocator: any, types: string[]): any {
     if (types.find(t => t === electronicLocator.type) !== undefined) {
       return electronicLocator;
     }
+  }
+
+  /**
+   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
+   * @param titleMetadata: title metadata
+   */
+  getMainTitle(titleMetadata: any): string {
+    return this._mainTitleService.getMainTitle(titleMetadata);
   }
 }

@@ -48,7 +48,7 @@
         <ng-container *ngIf="orderLine.metadata.document.pid | getRecord: 'documents' | async as document">
         <div class="col-sm-3">
           <a [routerLink]="['/records', 'documents', 'detail', document.metadata.pid]">
-            {{ document.metadata.title }}
+            {{ getMainTitle(document.metadata.title) }}
           </a>
         </div>
         </ng-container>

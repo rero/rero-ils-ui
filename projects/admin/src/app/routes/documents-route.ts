@@ -74,6 +74,9 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             aggregationsBucketSize: 10,
             itemHeaders: {
               Accept: 'application/rero+json, application/json'
+            },
+            listHeaders: {
+              Accept: 'application/rero+json, application/json'
             }
           }
         ]

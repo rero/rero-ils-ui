@@ -1,12 +1,12 @@
-import { BsModalService } from 'ngx-bootstrap';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BsModalService } from 'ngx-bootstrap';
+import { Subscription } from 'rxjs';
+import { User } from '../../../class/user';
 import { OrganisationService } from '../../../service/organisation.service';
 import { PatronService } from '../../../service/patron.service';
 import { PatronTransaction, PatronTransactionStatus } from '../../patron-transaction';
-import { PatronTransactionEventFormComponent } from './patron-transaction-event-form/patron-transaction-event-form.component';
 import { PatronTransactionService } from '../../patron-transaction.service';
-import { Subscription } from 'rxjs';
-import { User } from '../../../class/user';
+import { PatronTransactionEventFormComponent } from './patron-transaction-event-form/patron-transaction-event-form.component';
 
 @Component({
   selector: 'admin-patron-transactions',

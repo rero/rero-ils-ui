@@ -21,9 +21,9 @@ import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { User } from '../../../class/user';
 import { PatronService } from '../../../service/patron.service';
+import { UserService } from '../../../service/user.service';
 import { Item, ItemAction, ItemStatus } from '../../items';
 import { ItemsService } from '../../items.service';
-import { UserService } from '../../../service/user.service';
 
 @Component({
   selector: 'admin-loan',
