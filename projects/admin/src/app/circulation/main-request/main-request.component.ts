@@ -16,10 +16,10 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { ItemsService } from '../items.service';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../service/user.service';
-import { TranslateService } from '@ngx-translate/core';
+import { ItemsService } from '../items.service';
 
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { PatronTransactionEvent, PatronTransactionEventType } from '../../../patron-transaction';
 import { OrganisationService } from '../../../../service/organisation.service';
+import { PatronTransactionEvent, PatronTransactionEventType } from '../../../patron-transaction';
 
 @Component({
   selector: 'admin-patron-transaction-event',

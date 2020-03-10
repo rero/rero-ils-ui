@@ -1,14 +1,13 @@
-import { BsModalService } from 'ngx-bootstrap';
 import { Component, Input, OnInit } from '@angular/core';
+import { RecordService } from '@rero/ng-core';
+import { BsModalService } from 'ngx-bootstrap';
+import { MainTitleService } from 'projects/admin/src/app/service/main-title.service';
+import { map, mergeMap } from 'rxjs/operators';
+import { OrganisationService } from '../../../../service/organisation.service';
 import { Item } from '../../../items';
 import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '../../../patron-transaction';
-import {
-  PatronTransactionEventFormComponent
-} from '../patron-transaction-event-form/patron-transaction-event-form.component';
 import { PatronTransactionService } from '../../../patron-transaction.service';
-import { OrganisationService } from '../../../../service/organisation.service';
-import { RecordService } from '@rero/ng-core';
-import { map, mergeMap } from 'rxjs/operators';
+import { PatronTransactionEventFormComponent } from '../patron-transaction-event-form/patron-transaction-event-form.component';
 
 
 @Component({
@@ -32,8 +31,9 @@ export class PatronTransactionComponent implements OnInit {
     private _recordService: RecordService,
     private _organisationService: OrganisationService,
     private _patronTransactionService: PatronTransactionService,
-    private _modalService: BsModalService
-  ) { }
+    private _modalService: BsModalService,
+    private _mainTitleService: MainTitleService
+  ) {}
 
   ngOnInit() {
     this._loadLinkedItem();
@@ -109,5 +109,13 @@ export class PatronTransactionComponent implements OnInit {
       transactions: [this.transaction]
     };
     this._modalService.show(PatronTransactionEventFormComponent, {initialState});
+  }
+
+  /**
+   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
+   * @param titleMetadata: title metadata
+   */
+  getMainTitle(titleMetadata: any): string {
+    return this._mainTitleService.getMainTitle(titleMetadata);
   }
 }

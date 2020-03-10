@@ -41,7 +41,7 @@
       </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
         <a [routerLink]="['/records', 'documents', 'detail', record.metadata.document.pid]">
-          {{ record.metadata.document.pid | getRecord:'documents':'field':'title' | async }}
+          {{ getMainTitle(record.metadata.document.pid | getRecord:'documents':'field':'title' | async) }}
         </a>
       </dd>
       <!-- LIBRARY -->
