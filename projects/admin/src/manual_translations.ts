@@ -161,7 +161,7 @@ _('tableOfContents');
 _('fullText');
 _('video');
 // Item Request messages
-_('Circulation policies do not allow request on this item.');
+_('Request not allowed by the circulation policy.');
 _('Item is already checked-out or requested by patron.');
 _('Item not found.');
 _('Item status does not allow requests.');

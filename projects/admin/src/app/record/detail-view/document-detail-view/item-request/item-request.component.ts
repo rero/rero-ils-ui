@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -54,6 +54,9 @@ export class ItemRequestComponent implements OnInit {
 
   /** Dynamic message for can_request validator */
   canRequestMessage: string;
+
+  /** On submit event */
+  onSubmit: EventEmitter<any> = new EventEmitter();
 
   /**
    * Constructor
@@ -100,9 +103,10 @@ export class ItemRequestComponent implements OnInit {
     };
     this._http.post('/api/item/request', body).subscribe(
       () => {
+        this.onSubmit.next();
         this.closeModal();
         this._toastr.success(
-          this._translateService.instant('Your new request has been registered.'),
+          this._translateService.instant('Request registered.'),
           this._translateService.instant('Item Request')
         );
       },
