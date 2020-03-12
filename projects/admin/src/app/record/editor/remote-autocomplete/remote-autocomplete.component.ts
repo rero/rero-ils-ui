@@ -110,7 +110,7 @@ export class RemoteAutocompleteInputTypeComponent extends FieldType implements O
   }
 
   getName(metadata) {
-    for (const source of ['rero', 'bnf', 'gnd']) {
+    for (const source of ['rero', 'idref', 'bnf', 'gnd']) {
       if (metadata[source]) {
         const data = metadata[source];
         let name = data.preferred_name_for_person;

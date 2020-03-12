@@ -222,7 +222,7 @@ export class MenuComponent implements OnInit {
   }
 
   private getPersonName(metadata) {
-    for (const source of ['rero', 'bnf', 'gnd']) {
+    for (const source of ['rero', 'idref', 'bnf', 'gnd']) {
       if (metadata[source] && metadata[source].preferred_name_for_person) {
         return metadata[source].preferred_name_for_person;
       }

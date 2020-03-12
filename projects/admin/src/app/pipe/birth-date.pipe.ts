@@ -23,7 +23,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class BirthDatePipe implements PipeTransform {
 
   transform(value: any): any {
-    for (const source of ['rero', 'bnf', 'gnd']) {
+    for (const source of ['rero', 'idref', 'bnf', 'gnd']) {
       if (value[source] && value[source].date_of_birth) {
         return value[source].date_of_birth;
       }

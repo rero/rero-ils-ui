@@ -23,7 +23,7 @@ export class SearchBarComponent implements OnInit {
   recordTypes = [];
 
   static getPersonName(metadata) {
-    for (const source of ['rero', 'bnf', 'gnd']) {
+    for (const source of ['rero', 'idref', 'bnf', 'gnd']) {
       if (metadata[source] && metadata[source].preferred_name_for_person) {
         return metadata[source].preferred_name_for_person;
       }
