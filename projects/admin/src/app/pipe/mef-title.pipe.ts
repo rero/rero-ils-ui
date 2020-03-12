@@ -23,7 +23,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class MefTitlePipe implements PipeTransform {
 
   transform(value: any): any {
-    for (const source of ['rero', 'bnf', 'gnd']) {
+    for (const source of ['rero', 'idref', 'bnf', 'gnd']) {
       if (value[source] && value[source].preferred_name_for_person) {
         return value[source].preferred_name_for_person;
       }
