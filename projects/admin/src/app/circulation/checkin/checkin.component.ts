@@ -29,9 +29,9 @@ import { ItemsService } from '../items.service';
 
 @Component({
   selector: 'admin-circulation-checkout',
-  templateUrl: './checkout.component.html'
+  templateUrl: './checkin.component.html'
 })
-export class CheckoutComponent implements OnInit {
+export class CheckinComponent implements OnInit {
   public placeholder: string = this._translate.instant(
     'Please enter a patron card number or an item barcode.'
   );
