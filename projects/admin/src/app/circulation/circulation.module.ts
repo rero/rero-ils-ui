@@ -18,7 +18,7 @@
 
 import { BsDropdownModule, CollapseModule } from 'ngx-bootstrap';
 import { CardComponent } from './patron/card/card.component';
-import { CheckoutComponent } from './checkout/checkout.component';
+import { CheckinComponent } from './checkin/checkin.component';
 import { CirculationRoutingModule } from './circulation-routing.module';
 import { CommonModule } from '@angular/common';
 import { FormlyModule } from '@ngx-formly/core';
@@ -56,7 +56,7 @@ import { RequestedItemsListComponent } from './requested-items-list/requested-it
     CardComponent,
     ItemsListComponent,
     LoanComponent,
-    CheckoutComponent,
+    CheckinComponent,
     ItemComponent,
     ProfileComponent,
     RequestedComponent,

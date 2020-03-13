@@ -17,7 +17,7 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CheckoutComponent } from './checkout/checkout.component';
+import { CheckinComponent } from './checkin/checkin.component';
 import { MainRequestComponent } from './main-request/main-request.component';
 import { LoanComponent } from './patron/loan/loan.component';
 import { MainComponent } from './patron/main/main.component';
@@ -64,7 +64,7 @@ const routes: Routes = [
     ]
   }, {
       path: 'checkout',
-      component: CheckoutComponent
+      component: CheckinComponent
     }, {
     path: 'requests',
     component: MainRequestComponent
