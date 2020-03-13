@@ -22,7 +22,9 @@ import fr from '../i18n/fr.json';
 import de from '../i18n/de.json';
 import en from '../i18n/en.json';
 import it from '../i18n/it.json';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class TranslateLoader extends NgCoreTranslateLoader {
 
   /**
