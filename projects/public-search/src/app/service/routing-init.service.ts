@@ -36,6 +36,7 @@ export class RoutingInitService {
 
   /**
    * Constructor
+   *
    * @param _translateService - TranslateService
    */
   constructor(
@@ -45,6 +46,7 @@ export class RoutingInitService {
 
   /**
    * Route Config
+   *
    * @param viewcode - string
    */
   routeConfig(viewcode: string) {
@@ -95,6 +97,11 @@ export class RoutingInitService {
     };
   }
 
+  /**
+   * List of aggregations
+   *
+   * @param viewcode - viewcode
+   */
   private aggregations(viewcode: string) {
     if (this._appConfigService.globalViewName === viewcode) {
       return [
@@ -124,7 +131,8 @@ export class RoutingInitService {
   }
 
   /**
-   * filter aggregations
+   * Filter aggregations
+   *
    * @return Observable
    */
   private filter(aggregations: object): Observable<any> {
@@ -139,9 +147,11 @@ export class RoutingInitService {
 
   /**
    * Aggregation filter
+   *
    * @return array of value
    */
   private aggregationFilter(aggregations: object) {
+    // TODO replace organisation facet by library facet when the viewcode is not global (needs backend adaptation)
     const aggs = {};
     Object.keys(aggregations).forEach(aggregation => {
       if (aggregation.indexOf('__') > -1) {

@@ -66,7 +66,6 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
               'author__en',
               'author__de',
               'author__it',
-              'library',
               'organisation',
               'language',
               'subject',

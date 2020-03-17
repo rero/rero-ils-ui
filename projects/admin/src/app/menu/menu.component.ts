@@ -39,6 +39,8 @@ export class MenuComponent implements OnInit {
 
   linksMenu: any;
 
+  autocompleteQueryParams: any = {page: '1', size: '10'};
+
   librariesSwitchMenu = {
     navCssClass: 'navbar-nav',
     entries: [{
@@ -85,6 +87,7 @@ export class MenuComponent implements OnInit {
   ngOnInit() {
     this.initLinksMenu();
     const currentUser = this._userService.getCurrentUser();
+    this.autocompleteQueryParams.organisation = currentUser.library.organisation.pid;
     this.languages = this._configService.languages;
     for (const lang of this.languages) {
       const data: any = { name: lang };
@@ -113,6 +116,7 @@ export class MenuComponent implements OnInit {
     this.recordTypes = [{
       type: 'documents',
       field: 'autocomplete_title',
+      preFilters: {organisation: currentUser.library.organisation.pid},
       getSuggestions: (query, documents) => this.getDocumentsSuggestions(query, documents)
     }, {
       type: 'persons',

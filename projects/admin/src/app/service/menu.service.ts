@@ -7,6 +7,9 @@ import { UserService } from './user.service';
 })
 export class MenuService {
 
+  /**
+   * Menu content
+   */
   linksMenu = {
     navCssClass: 'navbar-nav',
     entries: [
@@ -32,6 +35,7 @@ export class MenuService {
         entries: [{
           name: this._translateService.instant('Documents'),
           routerLink: '/records/documents',
+          queryParams: this._myDocumentsQueryParams(),
           iconCssClass: 'fa fa-file-o'
         }, {
           name: this._translateService.instant('Create a bibliographic record'),
@@ -75,7 +79,7 @@ export class MenuService {
           iconCssClass: 'fa fa-users'
         }, {
           name: this._translateService.instant('My organisation'),
-          routerLink: `/records/organisations/detail/${this._userService.getCurrentUser().library.organisation.pid}`,
+          routerLink: this._myOrganisationRouterLink(),
           iconCssClass: 'fa fa-university'
         }, {
           name: this._translateService.instant('My library'),
@@ -90,12 +94,41 @@ export class MenuService {
     ]
   };
 
+  /**
+   * Constructor
+   *
+   * @param _translateService : TranslateService
+   * @param _userService : UserService
+   */
   constructor(
     private _translateService: TranslateService,
     private _userService: UserService,
   ) {}
 
+  /**
+   * Router link to my library
+   *
+   * @return logged user library url for router link
+   */
   private _myLibraryRouterLink() {
     return `/records/libraries/detail/${this._userService.getCurrentUser().currentLibrary}`;
+  }
+
+  /**
+   * Router link to my organisation
+   *
+   * @return logged user organisation url for router link
+   */
+  private _myOrganisationRouterLink() {
+    return `/records/organisations/detail/${this._userService.getCurrentUser().library.organisation.pid}`;
+  }
+
+  /**
+   * Query params to filter documents by organisation
+   *
+   * @return organisation pid as a dictionary
+   */
+  private _myDocumentsQueryParams() {
+    return {organisation: this._userService.getCurrentUser().library.organisation.pid};
   }
 }
