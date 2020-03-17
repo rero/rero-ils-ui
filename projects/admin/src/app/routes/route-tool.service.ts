@@ -65,6 +65,7 @@ export class RouteToolService {
 
   /**
    * Constructor
+   *
    * @param _translateService - TranslateService
    * @param _recordPermissionService - RecordPermissionMessageService
    * @param _userService - UserService
@@ -85,6 +86,7 @@ export class RouteToolService {
 
   /**
    * Enabled action
+   *
    * @param message - string
    * @return Observable
    */
@@ -94,6 +96,7 @@ export class RouteToolService {
 
   /**
    * Disabled action
+   *
    * @param message - string
    * @return Observable
    */
@@ -103,6 +106,7 @@ export class RouteToolService {
 
   /**
    * Access only for system librarian
+   *
    * @param message - string
    * @return Observable
    */
@@ -114,6 +118,7 @@ export class RouteToolService {
 
   /**
    * Can Add
+   *
    * @param record - Object
    * @return Observable
    */
@@ -140,6 +145,7 @@ export class RouteToolService {
 
   /**
    * Can Delete
+   *
    * @param record - Object
    * @return Observable
    */
@@ -193,6 +199,7 @@ export class RouteToolService {
 
   /**
    * Aggregation filter
+   *
    * @param aggregations - Object
    */
   aggregationFilter(aggregations: object): Observable<any> {
@@ -207,21 +214,20 @@ export class RouteToolService {
 
   /**
    * Aggregation filter
+   *
    * @param aggregations - Object
    * @return array
    */
   private aggFilter(aggregations: object) {
     const aggs = {};
     Object.keys(aggregations).map(aggregation => {
-      if ('organisation' !== aggregation) {
-        if (aggregation.indexOf('__') > -1) {
-          const splitted = aggregation.split('__');
-          if (this._translateService.currentLang === splitted[1]) {
-            aggs[aggregation] = aggregations[aggregation];
-          }
-        } else {
+      if (aggregation.indexOf('__') > -1) {
+        const splitted = aggregation.split('__');
+        if (this._translateService.currentLang === splitted[1]) {
           aggs[aggregation] = aggregations[aggregation];
         }
+      } else {
+        aggs[aggregation] = aggregations[aggregation];
       }
     });
     return aggs;
@@ -229,6 +235,7 @@ export class RouteToolService {
 
   /**
    * Get route param by name
+   *
    * @param name - string
    * @return mixed - string | null
    */
