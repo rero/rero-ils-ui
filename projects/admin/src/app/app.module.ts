@@ -95,7 +95,7 @@ import { BudgetSelectLineComponent } from './record/detail-view/organisation-det
 import { BudgetSelectComponent } from './record/detail-view/organisation-detail-view/budget-select/budget-select.component';
 import { OrganisationDetailViewComponent } from './record/detail-view/organisation-detail-view/organisation-detail-view.component';
 import { PatronDetailViewComponent } from './record/detail-view/patron-detail-view/patron-detail-view.component';
-import { PatronTypesDetailViewComponent } from './record/detail-view/patron-types-detail-view.component';
+import { PatronTypesDetailViewComponent } from './record/detail-view/patron-types-detail-view/patron-types-detail-view.component';
 import { PersonDetailViewComponent } from './record/detail-view/person-detail-view/person-detail-view.component';
 import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
 import { RefComponent } from './record/editor/ref/ref.component';
