@@ -1,0 +1,41 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019 RERO
+  
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+  
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="record$ | async as record">
+  <h1 class="mb-3">{{ record.metadata.name }}</h1>
+  <dl class="row">
+    <!-- DESCRIPTIION -->
+    <ng-container *ngIf="record.metadata.description">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Description</dt>
+      <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.description }}</dd>
+    </ng-container>
+    <!-- YEARLY SUBSCRIPTION -->
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Yearly subscription</dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      <ng-container *ngIf="record.metadata.subscription_amount > 0; else noSubscription">
+        <i class="fa fa-check" style="color:green;" aria-hidden="true"></i>
+      </ng-container>
+      <ng-template #noSubscription>
+        <i class="fa fa-times" style="color:red;" aria-hidden="true"></i>
+      </ng-template>
+    </dd>
+    <!-- SUBSCRIPTION AMOUNT -->
+    <ng-container *ngIf="record.metadata.subscription_amount">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Subscription amount</dt>
+      <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.subscription_amount | currency: organisation.default_currency }}</dd>
+    </ng-container>
+  </dl>
+</ng-container>
