@@ -14,12 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { DetailComponent, EditorComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
 import { BaseRoute } from './Base-route';
 import { CanUpdateGuard } from '../guard/can-update.guard';
-import { PatronTypesBriefViewComponent } from '../record/brief-view/patron-types-brief-view.component';
-import { PatronTypesDetailViewComponent } from '../record/detail-view/patron-types-detail-view.component';
 import { RoleGuard } from '../guard/role.guard';
-import { RouteInterface, RecordSearchComponent, DetailComponent, EditorComponent } from '@rero/ng-core';
+import { PatronTypesBriefViewComponent } from '../record/brief-view/patron-types-brief-view.component';
+import { PatronTypesDetailViewComponent } from '../record/detail-view/patron-types-detail-view/patron-types-detail-view.component';
+
 
 export class PatronTypesRoute extends BaseRoute implements RouteInterface {
 
