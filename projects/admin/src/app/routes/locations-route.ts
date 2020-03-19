@@ -48,7 +48,7 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
             canAdd: () => this._routeToolService.canSystemLibrarian(),
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
-            preCreateRecord: (record: any) => {
+            preprocessRecordEditor: (record: any) => {
               record.library = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(
                   'libraries',
