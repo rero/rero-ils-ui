@@ -11,7 +11,14 @@ import { UserService } from '../service/user.service';
  *  least one of this role (OR condition).
  *
  *  USAGE:
- *  { path: 'new', component: MyComponent, canActivate: [RoleGuard], data: {roles: ['xxx', 'yyy']}  }
+ *  { path: 'new',
+ *    component: MyComponent,
+ *    canActivate: [RoleGuard],
+ *    data: {
+ *      roles: ['xxx', 'yyy'],
+ *      operator: 'and' || 'or'  # 'and' by default
+ *    }
+ *  }
  */
 export class RoleGuard implements CanActivate {
 
@@ -23,10 +30,7 @@ export class RoleGuard implements CanActivate {
   /** Check if the current logged user as at least a specific role */
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {
     this._userService.onUserLoaded$.subscribe(() => {
-      const user = this._userService.getCurrentUser();
-      const requestedRoles = next.data.roles as Array<string>;
-      const intersection = requestedRoles.filter(value => user.roles.includes(value));
-      if (intersection.length === 0) {
+      if (!this._userService.getCurrentUser().hasRoles(next.data.roles as Array<string>, next.data.operator || 'and')) {
         this._router.navigate(['/errors/403'], { skipLocationChange: true });
       }
     });
