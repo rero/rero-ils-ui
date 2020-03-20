@@ -54,37 +54,26 @@ export class User {
   }
 
   /**
-   * Check if you are an access ton admin interface
-   * @param roles - arrays of role
-   */
-  isAuthorizedAdminAccess(roles: Array<string>) {
-    return this.roles.filter((role: string) => {
-      if (roles.indexOf(role) > -1) {
-        return role;
-      }
-    }).length > 0;
-  }
-
-  /**
-   * Has the role
-   * @param role - string
+   * Check if the user has a specific role
+   * @param role: string the role to check
+   * @return boolean: if the user has the requested role
    */
   hasRole(role: string) {
     return this.roles.includes(role);
   }
 
   /**
-   * Has roles
-   * @param roles - array of role
+   * Check if the user has specific roles.
+   * @param roles: array of role to check
+   * @param operator: If 'and', then the user need to have all requested roles.
+   *                  If 'or', then the user need to have at least one of requested roles.
+   * @return boolean
    */
-  hasRoles(roles: Array<string>) {
-    let hasRole = false;
-    roles.forEach(role => {
-      if (!hasRole && this.roles.includes(role)) {
-        hasRole = true;
-      }
-    });
-    return hasRole;
+  hasRoles(roles: Array<string>, operator: string = 'and') {
+    const intersection = roles.filter(role => this.roles.includes(role));
+    return (operator === 'and')
+      ? intersection.length == roles.length  // all requested roles are present into user roles.
+      : intersection.length > 0 // at least one requested roles are present into user roles.
   }
 
   /**

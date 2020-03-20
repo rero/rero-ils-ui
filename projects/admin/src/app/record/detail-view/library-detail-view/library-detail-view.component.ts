@@ -36,6 +36,9 @@ export class LibraryDetailViewComponent implements DetailRecord, OnInit {
   /** linked locations */
   locations = [];
 
+  /** Is the current logged user can add locations */
+  isUserCanAddLocation = false;
+
   constructor(
     private _recordService: RecordService,
     private _userService: UserService
@@ -60,6 +63,7 @@ export class LibraryDetailViewComponent implements DetailRecord, OnInit {
           .subscribe((record) => {
             this.locations = record.hits.hits || [];
           });
+        this.isUserCanAddLocation = this._userService.getCurrentUser().getCurrentLibrary() === libraryPid;
       }
     );
   }

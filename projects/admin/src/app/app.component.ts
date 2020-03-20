@@ -99,9 +99,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
       const user = this.userService.getCurrentUser();
       if (data.metadata) {
-        this.access = user.isAuthorizedAdminAccess(
-          this.appConfigService.adminRoles
-        );
+        this.access = user.hasRoles(this.appConfigService.adminRoles, 'or');
       }
       if (this.access) {
         this.organisationService.loadOrganisationByPid(
