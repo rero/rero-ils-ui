@@ -14,7 +14,7 @@ export class AcqOrderLineGuard extends LibraryGuard {
    *  @param route: the current URL route
    *  @return: the library pid linked to the resource from the 'order' query parameters
    */
-  getOwningLibrary(route: ActivatedRouteSnapshot): Observable<string> {
+  getOwningLibrary$(route: ActivatedRouteSnapshot): Observable<string> {
     return this._recordService.getRecord('acq_orders', route.queryParams.order).pipe(
       map( data => data.metadata || {} ),
       map( metadata => metadata.library || {} ),

@@ -75,6 +75,7 @@
     <header class="card-header">
       <b translate>Locations</b>
       <a class="ml-2 btn btn-sm btn-primary"
+         *ngIf="isUserCanAddLocation"
          [routerLink]="['/', 'records', 'locations', 'new']"
          [queryParams]="{ library: record.metadata.pid }">
         <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }}
