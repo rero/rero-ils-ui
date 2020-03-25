@@ -25,6 +25,12 @@
     </div>
   </div>
 
+  <div class="col mb-4" *ngIf="patron | patronBlockedMessage as message">
+      <div class="alert alert-danger" role="alert">
+      {{ message }}
+      </div>
+  </div>
+
   <div class="col">
     <ul class="nav nav-tabs">
       <li class="nav-item">

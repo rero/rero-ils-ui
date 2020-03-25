@@ -15,44 +15,48 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<ng-container *ngIf="record$ | async as record">
-  <h1 class="mb-3">{{ record.metadata.last_name }} {{ record.metadata.first_name }}</h1>
+<ng-container *ngIf="patron">
+  <h1 class="mb-3">{{ patron.last_name }} {{ patron.first_name }}</h1>
+  <!-- BLOCKED OR NOT? -->
+  <div *ngIf="patron | patronBlockedMessage as message" class="alert alert-danger" role="alert">
+    {{ message }}
+  </div>
   <article>
     <section class="m-2 p-2">
       <!-- BARCODE -->
-      <dl class="row mb-0" *ngIf="record.metadata.barcode">
+      <dl class="row mb-0" *ngIf="patron.barcode">
         <dt class="col-sm-3 offset-sm-2 offset-md-0">
           {{ 'Barcode' | translate }}:
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
-          <a [routerLink]="['/circulation', 'patron', record.metadata.barcode]">{{ record.metadata.barcode }}</a>
+          <a [routerLink]="['/circulation', 'patron', patron.barcode]">{{ patron.barcode }}</a>
         </dd>
       </dl>
       <!-- TYPE -->
-      <dl class="row mb-0" *ngIf="hasRole('patron')">
+      <dl class="row mb-0" *ngIf="patron.isPatron">
         <dt class="col-sm-3 offset-sm-2 offset-md-0">
           {{ 'Type' | translate }}:
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
-          {{ record.metadata.patron_type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
+          {{ patron.patron_type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
         </dd>
       </dl>
       <!-- TYPE -->
-      <dl class="row mb-0" *ngIf="hasRole('librarian')">
+      <dl class="row mb-0" *ngIf="patron.isLibrarian">
         <dt class="col-sm-3 offset-sm-2 offset-md-0">
           {{ 'Library' | translate }}:
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
-          {{ record.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+          {{ patron.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
         </dd>
       </dl>
       <!-- PHONE -->
-      <dl class="row mb-0" *ngIf="record.metadata.phone">
+      <dl class="row mb-0" *ngIf="patron.phone">
         <dt class="col-sm-3 offset-sm-2 offset-md-0">
           {{ 'Phone' | translate }}:
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
-          {{ record.metadata.phone }}
+          {{ patron.phone }}
         </dd>
       </dl>
       <!-- EMAIL -->
@@ -61,7 +65,7 @@
           {{ 'Email' | translate }}:
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
-          {{ record.metadata.email }}
+          {{ patron.email }}
         </dd>
       </dl>
       <!-- STREET -->
@@ -70,7 +74,7 @@
           {{ 'Street' | translate }}:
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
-          {{ record.metadata.street }}
+          {{ patron.street }}
         </dd>
       </dl>
       <!-- CITY -->
@@ -79,17 +83,17 @@
           {{ 'City' | translate }}:
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
-          {{ record.metadata.postal_code }} {{ record.metadata.city }}
+          {{ patron.postal_code }} {{ patron.city }}
         </dd>
       </dl>
       <!-- ROLES -->
       <dl class="row mb-0">
         <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          <ng-container *ngIf="record.metadata.roles.length === 1; else roles" translate>Role</ng-container>
+	        <ng-container *ngIf="patron.roles.length === 1; else roles" translate>Role</ng-container>
           <ng-template #roles translate>Roles</ng-template>:
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
-          <ng-container *ngFor="let role of record.metadata.roles; let last=last">
+          <ng-container *ngFor="let role of patron.roles; let last=last">
             {{ role | translate }}{{ last ? '' : ', ' }}
           </ng-container>
         </dd>

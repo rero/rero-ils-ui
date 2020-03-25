@@ -38,25 +38,6 @@ export class PatronService {
   ) {}
 
   /**
-   * Set Patron record
-   * @param patron - patron record
-   */
-  setRecord(patron: any) {
-    this._patron = patron.metadata;
-  }
-
-  /**
-   * has role
-   * @param role - name of role
-   */
-  hasRole(role: string) {
-    if (this._patron && this._patron.roles) {
-      return this._patron.roles.some((r: string) => r === role);
-    }
-    return false;
-  }
-
-  /**
    * Get Current Patron
    * @return Observable
    */

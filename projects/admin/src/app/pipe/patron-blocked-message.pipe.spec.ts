@@ -15,24 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { NgModule } from '@angular/core';
-import { AuthorNameTranslatePipe } from '../pipe/author-name-translate.pipe';
-import { MainTitlePipe } from '../pipe/main-title.pipe';
-import { ProvisionActivityPipe } from '../pipe/provision-activity.pipe';
-import { PatronBlockedMessagePipe } from '../pipe/patron-blocked-message.pipe';
+import { PatronBlockedMessagePipe } from './patron-blocked-message.pipe';
+import { TranslateService } from '@ngx-translate/core';
 
-@NgModule({
-  declarations: [
-    AuthorNameTranslatePipe,
-    MainTitlePipe,
-    ProvisionActivityPipe,
-    PatronBlockedMessagePipe
-  ],
-  exports: [
-    AuthorNameTranslatePipe,
-    MainTitlePipe,
-    ProvisionActivityPipe,
-    PatronBlockedMessagePipe
-  ]
-})
-export class SharedPipesModule {}
+class TranslateServiceMock {
+  currentLang = 'en';
+}
+
+describe('PatronBlockedMessagePipe', () => {
+  it('create an instance', () => {
+    const pipe = new PatronBlockedMessagePipe(new TranslateServiceMock() as TranslateService);
+    expect(pipe).toBeTruthy();
+  });
+});
