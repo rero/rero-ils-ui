@@ -24,10 +24,12 @@ import { PatronService } from '../../../service/patron.service';
 import { UserService } from '../../../service/user.service';
 import { Item, ItemAction, ItemStatus } from '../../items';
 import { ItemsService } from '../../items.service';
+import { PatronBlockedMessagePipe } from '../../../pipe/patron-blocked-message.pipe';
 
 @Component({
   selector: 'admin-loan',
-  templateUrl: './loan.component.html'
+  templateUrl: './loan.component.html',
+  providers: [PatronBlockedMessagePipe]
 })
 export class LoanComponent implements OnInit {
   public placeholder: string = this._translate.instant(
@@ -66,7 +68,8 @@ export class LoanComponent implements OnInit {
     private _translate: TranslateService,
     private _toastService: ToastrService,
     private _patronService: PatronService,
-    private _userService: UserService
+    private _userService: UserService,
+    private _patronBlockedMessagePipe: PatronBlockedMessagePipe
   ) {
   }
 
@@ -202,14 +205,23 @@ export class LoanComponent implements OnInit {
       },
       err => {
         let errorMessage = '';
-        if (err && err.error && err.error.status) {
-          errorMessage = err.error.status;
+        if (err && err.error && err.error.message) {
+          errorMessage = err.error.message;
         }
         if (err.error.status === 403) {
-          this._toastService.error(
-            this._translate.instant('Checkout is not allowed by circulation policy'),
-            this._translate.instant('Checkout')
-          );
+          // Specific case when user is blocked (for better user comprehension)
+          if (errorMessage !== '' && errorMessage.startsWith('BLOCKED USER')) {
+            const blockedMessage = this._patronBlockedMessagePipe.transform(this.patron);
+            this._toastService.error(
+              `${this._translate.instant('Checkout not possible.')} ${blockedMessage}`,
+              this._translate.instant('Circulation')
+            );
+          } else {
+            this._toastService.error(
+              this._translate.instant('Checkout is not allowed by circulation policy'),
+              this._translate.instant('Checkout')
+            );
+          }
         } else {
           this._toastService.error(
             this._translate.instant('An error occured on the server: ') + errorMessage,

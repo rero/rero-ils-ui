@@ -51,6 +51,9 @@
               {{ patron.postal_code }} {{ patron.city }}<br>
               {{ patron.email }}
             </p>
+            <div *ngIf="patron | patronBlockedMessage as message" class="alert alert-danger" role="alert">
+              {{ message }}
+            </div>
           </div>
         </div>
         <form [formGroup]="form" (ngSubmit)="submit(model)">

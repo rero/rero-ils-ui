@@ -23,7 +23,6 @@ export class User {
   city: string;
   email: string;
   first_name: string;
-  is_patron: boolean;
   last_name: string;
   library: Library;
   name: string;
@@ -37,9 +36,11 @@ export class User {
   barcode?: string;
   items?: any[];
   patron_type?: PatronType;
-  is_logged = false;
   displayPatronMode = true;
   currentLibrary: string;
+  // When patron is blocked, add 'blocked' and 'blocked_note' fields.
+  blocked = false;
+  blocked_note: string;
 
   static readonly STORAGE_KEY = 'user';
 
@@ -91,6 +92,23 @@ export class User {
   getCurrentLibrary() {
     return this.currentLibrary;
   }
+
+  /**
+   * Is this user a patron?
+   * @return a boolean
+   */
+  get isPatron() {
+    return this.hasRole('patron');
+  }
+
+  /**
+   * Is this user a librarian?
+   * @return a boolean
+   */
+  get isLibrarian() {
+    return this.hasRole('librarian');
+  }
+
 }
 
 export interface Organisation {

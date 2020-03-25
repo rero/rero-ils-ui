@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable, Subscription } from 'rxjs';
-import { PatronService } from '../../../service/patron.service';
+import { User } from '../../../class/user';
 
 @Component({
   selector: 'admin-patron-detail-view',
@@ -25,44 +25,31 @@ import { PatronService } from '../../../service/patron.service';
 })
 export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestroy {
 
-  /** Observable resolving record data */
+  /** Data from patron we received */
   record$: Observable<any>;
 
-  /** Record subscription */
-  private _recordObs: Subscription;
-
-  /** Document record */
-  record: any;
+  /** Current displayed/used patron */
+  patron: User;
 
   /** record type */
   type: string;
 
-  /** Constructor
-   * @param _patronService : PatronService
-   */
-  constructor(private _patronService: PatronService) { }
+  /** Subscription to (un)follow the record$ Observable */
+  private _subscription$ = new Subscription();
 
   /**
-   * Init
+   * Current patron initialization.
    */
   ngOnInit() {
-    this._recordObs = this.record$.subscribe(record => {
-      this.record = record;
-      this._patronService.setRecord(record);
+    this._subscription$ = this.record$.subscribe(record => {
+      this.patron = new User(record.metadata);
     });
   }
 
   /**
-   * Destroy
+   * Unsubscribe observable when destroying the PatronDetailViewComponent
    */
-  ngOnDestroy(): void {
-    this._recordObs.unsubscribe();
-  }
-
-  /** Check if the current logged user has a specific role
-   * @return True | False depending if the current logged user has the desired role
-   */
-  hasRole(role: string): boolean {
-    return this._patronService.hasRole(role);
+  ngOnDestroy() {
+    this._subscription$.unsubscribe();
   }
 }
