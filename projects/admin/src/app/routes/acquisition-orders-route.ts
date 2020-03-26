@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { formatDate } from '@angular/common';
+import { DetailComponent, EditorComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
+import { CanUpdateGuard } from '../guard/can-update.guard';
 import { AcquisitionOrderBriefViewComponent } from '../record/brief-view/acquisition-order-brief-view.component';
 import {
   AcquisitionOrderDetailViewComponent
 } from '../record/detail-view/acquisition-order-detail-view/acquisition-order-detail-view.component';
-import { BaseRoute } from './Base-route';
-import { CanUpdateGuard } from '../guard/can-update.guard';
-import { RouteInterface, RecordSearchComponent, DetailComponent, EditorComponent } from '@rero/ng-core';
-import { formatDate } from '@angular/common';
+import { BaseRoute } from './base-route';
 
 export class AcquisitionOrdersRoute extends BaseRoute implements RouteInterface {
 

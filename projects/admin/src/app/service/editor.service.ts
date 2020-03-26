@@ -8,7 +8,8 @@ import { of, Observable } from 'rxjs';
   providedIn: 'root'
 })
 /**
- * Deliver piece of data for EditorComponent: Record from BNF (aka Bibliothèque Nationale de France)
+ * Deliver piece of data for EditorComponent: Record from BNF (aka Bibliothèque Nationale de France).
+ * Get Holding pattern preview examples.
  */
 export class EditorService {
   /**
@@ -33,5 +34,18 @@ export class EditorService {
         }
       })
     );
+  }
+
+  /**
+   * Get some preview example for given serial patterns.
+   * @param data object containing the patterns serial prediction
+   * @param size the number of preview samples
+   * @returns an object with an issues property containing the list of samples
+   */
+  getHoldingPatternPreview(data: any, size = 10): Observable<any> {
+    return this.http.post<any>(`/api/holding/pattern/preview`, {
+      data: data.patterns,
+      size
+    });
   }
 }

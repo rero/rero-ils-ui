@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { DetailComponent, EditorComponent, RouteInterface, extractIdOnRef } from '@rero/ng-core';
+import { DetailComponent, EditorComponent, extractIdOnRef, RouteInterface } from '@rero/ng-core';
 import { of } from 'rxjs';
-import { BaseRoute } from './Base-route';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { LibraryGuard } from '../guard/library.guard';
 import { LocationDetailViewComponent } from '../record/detail-view/location-detail-view/location-detail-view.component';
+import { BaseRoute } from './base-route';
 
 
 export class LocationsRoute extends BaseRoute implements RouteInterface {

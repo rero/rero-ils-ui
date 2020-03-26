@@ -14,17 +14,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { AcqOrderLineGuard } from '../guard/acq-order-line.guard';
-import {
-  AcquisitionOrderLineDetailViewComponent
-} from '../record/detail-view/acquisition-order-line-detail-view/acquisition-order-line-detail-view.component';
-import { CanUpdateGuard } from '../guard/can-update.guard';
-import { BaseRoute } from './Base-route';
-import { DetailComponent, EditorComponent, extractIdOnRef, RecordService, RouteInterface} from '@rero/ng-core';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { DetailComponent, EditorComponent, extractIdOnRef, RecordService, RouteInterface } from '@rero/ng-core';
 import { JSONSchema7 } from 'json-schema';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AcqOrderLineGuard } from '../guard/acq-order-line.guard';
+import { CanUpdateGuard } from '../guard/can-update.guard';
+import {
+  AcquisitionOrderLineDetailViewComponent
+} from '../record/detail-view/acquisition-order-line-detail-view/acquisition-order-line-detail-view.component';
+import { BaseRoute } from './base-route';
 
 export class AcquisitionOrderLinesRoute extends BaseRoute implements RouteInterface {
 

@@ -14,11 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { BaseRoute } from './Base-route';
-import { CanUpdateGuard } from '../guard/can-update.guard';
-import { RouteInterface, RecordSearchComponent, DetailComponent, EditorComponent } from '@rero/ng-core';
+import { DetailComponent, EditorComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
 import { VendorBriefViewComponent } from '../record/brief-view/vendor-brief-view.component';
 import { VendorDetailViewComponent } from '../record/detail-view/vendor-detail-view/vendor-detail-view.component';
+import { BaseRoute } from './base-route';
 
 export class VendorsRoute extends BaseRoute implements RouteInterface {
 

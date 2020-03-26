@@ -15,21 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { BaseRoute } from './base-route';
-import { RouteInterface, DetailComponent, EditorComponent, RecordService, extractIdOnRef } from '@rero/ng-core';
+import { RouteInterface, RecordService, extractIdOnRef, EditorComponent } from '@rero/ng-core';
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
 import { of } from 'rxjs';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { JSONSchema7 } from 'json-schema';
 import { map } from 'rxjs/operators';
+import { HoldingEditorComponent } from '../record/custom-editor/holding-editor/holding-editor.component';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 
-export class ItemsRoute extends BaseRoute implements RouteInterface {
+export class HoldingsRoute extends BaseRoute implements RouteInterface {
 
   /** Route name */
-  readonly name = 'items';
+  readonly name = 'holdings';
 
   /** Record type */
-  readonly recordType = 'items';
+  readonly recordType = 'holdings';
 
   /**
    * Get Configuration
@@ -39,19 +40,19 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        // TODO: add guards
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
-        { path: 'new', component: EditorComponent }
+        { path: 'edit/:pid', component: HoldingEditorComponent, canActivate: [ CanUpdateGuard ] },
+        { path: 'new', component: HoldingEditorComponent }
       ],
       data: {
         linkPrefix: 'records',
         types: [
           {
             key: this.name,
-            label: 'Items',
+            label: 'Holdings',
+            // editorLongMode: true,
+
             detailComponent: ItemDetailViewComponent,
-            canRead: (record: any) => this.canReadItem(record),
+            canRead: (record: any) => this.canReadHolding(record),
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
             preCreateRecord: (data: any) => {
@@ -61,13 +62,6 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
                   this._routeToolService.getRouteQueryParam('document')
                 )
               };
-              return data;
-            },
-            preUpdateRecord: (data: any) => {
-              // remove dynamic field
-              if (data.hasOwnProperty('available')) {
-                delete data.available;
-              }
               return data;
             },
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
@@ -96,7 +90,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
    * @param record - Object
    * @return Observable
    */
-  private canReadItem(record: any) {
+  private canReadHolding(record: any) {
     const organisationPid = this._routeToolService.userService
       .getCurrentUser().library.organisation.pid;
     if ('organisation' in record.metadata) {

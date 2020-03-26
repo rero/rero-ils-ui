@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -30,7 +30,8 @@ import {
   CollapseModule,
   TabsModule,
   TooltipModule,
-  TypeaheadModule
+  TypeaheadModule,
+  PopoverModule
 } from 'ngx-bootstrap';
 import { UiSwitchModule } from 'ngx-toggle-switch';
 import { AppRoutingModule } from './app-routing.module';
@@ -56,6 +57,7 @@ import { PersonsBriefViewComponent } from './record/brief-view/persons-brief-vie
 import { VendorBriefViewComponent } from './record/brief-view/vendor-brief-view.component';
 import { CirculationPolicyComponent } from './record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
 import { DocumentEditorComponent } from './record/custom-editor/document-editor/document-editor.component';
+import { HoldingEditorComponent } from './record/custom-editor/holding-editor/holding-editor.component';
 import { ExceptionDatesEditComponent } from './record/custom-editor/libraries/exception-dates-edit/exception-dates-edit.component';
 import { ExceptionDatesListComponent } from './record/custom-editor/libraries/exception-dates-list/exception-dates-list.component';
 import { LibraryComponent } from './record/custom-editor/libraries/library.component';
@@ -130,6 +132,7 @@ import { TranslateLoader } from './translate/loader/translate-loader';
     ExceptionDateComponent,
     PersonDetailViewComponent,
     DocumentDetailViewComponent,
+    HoldingEditorComponent,
     HoldingComponent,
     HoldingItemComponent,
     HoldingsComponent,
@@ -187,6 +190,7 @@ import { TranslateLoader } from './translate/loader/translate-loader';
     SharedPipesModule,
     TabsModule.forRoot(),
     TooltipModule.forRoot(),
+    PopoverModule.forRoot(),
     FormlyModule.forRoot({
       wrappers: [{ name: 'ref', component: RefComponent }],
       types: [
@@ -226,6 +230,7 @@ import { TranslateLoader } from './translate/loader/translate-loader';
     CircPoliciesBriefViewComponent,
     CirculationPolicyComponent,
     DocumentEditorComponent,
+    HoldingEditorComponent,
     DocumentsBriefViewComponent,
     ExceptionDatesEditComponent,
     ItemTypesBriefViewComponent,

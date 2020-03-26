@@ -164,8 +164,8 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit {
    */
   get relatedResources() {
     if (this.record.metadata.electronicLocator) {
-      return this.record.metadata.electronicLocator.filter((electronicLocator: any) =>
-      this.filterEletronicLocatorByType(electronicLocator, ['noInfo', 'relatedResource', 'hiddenUrl'])
+      return this.record.metadata.electronicLocator.filter(
+        (electronicLocator: any) => ['noInfo', 'relatedResource', 'hiddenUrl'].some(t => t === electronicLocator.type)
       );
     }
   }
@@ -175,21 +175,22 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit {
    */
   get resources() {
     if (this.record.metadata.electronicLocator) {
-      return this.record.metadata.electronicLocator.filter((electronicLocator: any) =>
-      this.filterEletronicLocatorByType(electronicLocator, ['resource', 'versionOfResource'])
+      return this.record.metadata.electronicLocator.filter(
+        (electronicLocator: any) => ['resource', 'versionOfResource'].some(t => t === electronicLocator.type)
       );
     }
   }
 
-  /**
-   * Filter eletronic locator by type
-   * @param electronicLocator: electronic locator to filter
-   * @param types: list of types to consider for filter
-   */
-  filterEletronicLocatorByType(electronicLocator: any, types: string[]): any {
-    if (types.find(t => t === electronicLocator.type) !== undefined) {
-      return electronicLocator;
+  /** Get the holding type used to add a new holding. */
+  get holdingType(): 'standard'|'electronic'|'serial' {
+    const data = this.record.metadata;
+    if (data.issuance === 'rdami:1003') {
+      return 'serial';
     }
+    if (data.harvested === true && data.type === 'ebook') {
+      return 'electronic';
+    }
+    return 'standard';
   }
 
   /**

@@ -17,23 +17,24 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouteCollectionService } from '@rero/ng-core';
+import { ErrorPageComponent } from '../error/error-page/error-page.component';
+import { AcquisitionAccountsRoute } from './acquisition-accounts-route';
+import { AcquisitionOrderLinesRoute } from './acquisition-order-lines-route';
+import { AcquisitionOrdersRoute } from './acquisition-orders-route';
+import { BudgetsRoute } from './budgets-route';
+import { CirculationPoliciesRoute } from './circulation-policies-route';
 import { DocumentsRoute } from './documents-route';
-import { RouteToolService } from './route-tool.service';
-import { LibrariesRoute } from './libraries-route';
-import { PatronsRoute } from './patrons-route';
-import { PersonsRoute } from './persons-route';
+import { HoldingsRoute } from './holdings-route';
 import { ItemTypesRoute } from './item-types-route';
 import { ItemsRoute } from './items-route';
+import { LibrariesRoute } from './libraries-route';
 import { LocationsRoute } from './locations-route';
-import { PatronTypesRoute } from './patron-types-route';
-import { CirculationPoliciesRoute } from './circulation-policies-route';
-import { VendorsRoute } from './vendors-route';
-import { AcquisitionOrdersRoute } from './acquisition-orders-route';
-import { AcquisitionOrderLinesRoute } from './acquisition-order-lines-route';
 import { OrganisationsRoute } from './organisations-route';
-import { AcquisitionAccountsRoute } from './acquisition-accounts-route';
-import { BudgetsRoute } from './budgets-route';
-import { ErrorPageComponent } from '../error/error-page/error-page.component';
+import { PatronTypesRoute } from './patron-types-route';
+import { PatronsRoute } from './patrons-route';
+import { PersonsRoute } from './persons-route';
+import { RouteToolService } from './route-tool.service';
+import { VendorsRoute } from './vendors-route';
 
 @Injectable({
   providedIn: 'root'
@@ -63,13 +64,14 @@ export class RouteService {
       .addRoute(new BudgetsRoute(this._routeToolService))
       .addRoute(new CirculationPoliciesRoute(this._routeToolService))
       .addRoute(new DocumentsRoute(this._routeToolService))
-      .addRoute(new ItemTypesRoute(this._routeToolService))
+      .addRoute(new HoldingsRoute(this._routeToolService))
       .addRoute(new ItemsRoute(this._routeToolService))
+      .addRoute(new ItemTypesRoute(this._routeToolService))
       .addRoute(new LibrariesRoute(this._routeToolService))
       .addRoute(new LocationsRoute(this._routeToolService))
       .addRoute(new OrganisationsRoute(this._routeToolService))
-      .addRoute(new PatronTypesRoute(this._routeToolService))
       .addRoute(new PatronsRoute(this._routeToolService))
+      .addRoute(new PatronTypesRoute(this._routeToolService))
       .addRoute(new PersonsRoute(this._routeToolService))
       .addRoute(new VendorsRoute(this._routeToolService))
     ;
