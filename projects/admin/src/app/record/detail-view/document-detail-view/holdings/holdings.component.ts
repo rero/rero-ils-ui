@@ -16,7 +16,7 @@
  */
 
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
+import { RecordService, RecordUiService } from '@rero/ng-core';
 import { UserService } from 'projects/admin/src/app/service/user.service';
 
 @Component({
@@ -24,10 +24,6 @@ import { UserService } from 'projects/admin/src/app/service/user.service';
   templateUrl: './holdings.component.html'
 })
 export class HoldingsComponent implements OnInit, OnDestroy {
-
-  /** Document harvested */
-  @Input() harvested: boolean;
-
   /** Document pid */
   @Input() documentPid: string;
 
@@ -37,6 +33,12 @@ export class HoldingsComponent implements OnInit, OnDestroy {
   /** Holdings */
   holdings: Array<any>;
 
+  /** Holding type related to the parent document. */
+  @Input() holdingType: 'electronic' | 'serial' | 'standard';
+
+  /** Can a new holding be added? */
+  canAdd = false;
+
   /**
    * Constructor
    * @param userService - UserService
@@ -44,12 +46,13 @@ export class HoldingsComponent implements OnInit, OnDestroy {
    */
   constructor(
     private _userService: UserService,
-    private _recordService: RecordService
+    private _recordService: RecordService,
+    private _recordUiService: RecordUiService
   ) { }
 
   /** Init */
   ngOnInit() {
-    this.loadHoldings(this.documentPid);
+    this._loadHoldings(this.documentPid);
   }
 
   /** Destroy */
@@ -57,19 +60,53 @@ export class HoldingsComponent implements OnInit, OnDestroy {
     this.holdgingsRef.unsubscribe();
   }
 
+  /** Delete a given holding.
+   *
+   * @param holding - the holding to delete
+   */
+  deleteHolding(data: { holding: any, callBackend: boolean }) {
+    const holding = data.holding;
+    if (data.callBackend === false) {
+      this.holdings = this.holdings.filter(
+        h => h.metadata.pid !== holding.metadata.pid
+      );
+    } else {
+      this._recordUiService.deleteRecord('holdings', holding.metadata.pid)
+        .subscribe((success: any) => {
+          if (success) {
+            this.holdings = this.holdings.filter(
+              h => h.metadata.pid !== holding.metadata.pid
+            );
+          }
+        });
+    }
+  }
+
   /**
    * Load holdings by document pid
    * @param documentPid - Document pid
    * @returns void
    */
-  private loadHoldings(documentPid: string) {
+  private _loadHoldings(documentPid: string) {
     const orgPid = this._userService.getCurrentUser().library.organisation.pid;
     const query = `document.pid:${documentPid} AND organisation.pid:${orgPid}`;
-    this.holdgingsRef = this._recordService.getRecords('holdings', query, 1, RecordService.MAX_REST_RESULTS_SIZE)
-    .subscribe(result => {
-      if (result.hits.total > 0) {
-        this.holdings = result.hits.hits;
-      }
-    });
+    this.holdgingsRef = this._recordService
+      .getRecords('holdings', query, 1, RecordService.MAX_REST_RESULTS_SIZE)
+      .subscribe((results: any) => {
+        // update permission
+        if (
+          results &&
+          results.permissions &&
+          results.permissions.cannot_create
+        ) {
+          this.canAdd = false;
+        } else {
+          this.canAdd = true;
+        }
+        // store holdings localy
+        if (results.hits.total > 0) {
+          this.holdings = results.hits.hits;
+        }
+      });
   }
 }

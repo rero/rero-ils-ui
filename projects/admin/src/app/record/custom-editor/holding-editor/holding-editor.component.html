@@ -1,0 +1,37 @@
+<div class="row">
+  <div class="col-md-9 col-xl-8" role="main">
+    <ng-core-editor [model]="model" (modelChange)="modelChanged($event)"></ng-core-editor>
+  </div>
+  <div class="col-md-3 col-xl-4 bd-sidebar">
+    <div class="card">
+      <div class="card-header">
+        <h5 translate>Examples (preview)</h5>
+      </div>
+      <div class="card-body">
+        <ng-container *ngIf="!serialPreviewError; else previewError">
+          <ng-container *ngIf="serialPreviewExamples && serialPreviewExamples.length > 0; else noPreview">
+            <ul class="list-unstyled">
+              <li *ngFor="let issue of serialPreviewExamples | slice:0:10">{{issue}}</li>
+            </ul>
+            ...
+            <ul class="list-unstyled">
+              <li *ngFor="let issue of serialPreviewExamples | slice:97:100">{{issue}}</li>
+            </ul>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noPreview>
+  <div class="alert alert-light" role="alert">
+    No preview available
+  </div>
+</ng-template>
+
+<ng-template #previewError>
+  <div class="alert alert-danger" role="alert">
+    <strong translate>Template</strong> {{ serialPreviewError.status }}
+  </div>
+</ng-template>

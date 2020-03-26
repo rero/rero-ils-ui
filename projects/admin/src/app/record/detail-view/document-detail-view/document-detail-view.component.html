@@ -404,9 +404,6 @@
   ></admin-resource>
 
   <!-- HOLDINGS -->
-  <admin-holdings
-    [harvested]="record.metadata.harvested"
-    [documentPid]="record.metadata.pid"
-  >
+  <admin-holdings [holdingType]="holdingType" [documentPid]="record.metadata.pid">
   </admin-holdings>
 </ng-container>

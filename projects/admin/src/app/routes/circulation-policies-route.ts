@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { BaseRoute } from './Base-route';
+import { DetailComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
-import { CirculationPolicyComponent } from '../record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
-import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-policies-brief-view.component';
-import { CircPolicyDetailViewComponent } from '../record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
 import { RoleGuard } from '../guard/role.guard';
-import { RouteInterface, RecordSearchComponent, DetailComponent } from '@rero/ng-core';
+import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-policies-brief-view.component';
+import { CirculationPolicyComponent } from '../record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
+import { CircPolicyDetailViewComponent } from '../record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
+import { BaseRoute } from './base-route';
 
 export class CirculationPoliciesRoute extends BaseRoute implements RouteInterface {
 

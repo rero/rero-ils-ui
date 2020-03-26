@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { RecordUiService } from '@rero/ng-core';
 import { BsModalService } from 'ngx-bootstrap';
 import { first } from 'rxjs/operators';
 import { RecordPermission, RecordPermissionService } from '../../../../service/record-permission.service';
@@ -41,20 +40,22 @@ export class HoldingItemComponent implements OnInit {
   /** Item permissions */
   permissions: RecordPermission;
 
-  /** Availables actions */
-  get isAvailableActions(): boolean {
+  /** Check if the holding owning library correspond to the current user library affilation.
+   *
+   * Used to display the request button. A more advanced test is performed when the patron barcode is known.
+   * @returns - true if match
+   */
+  get isHoldingMatchUserLibraryPID(): boolean {
     return this._userService.getCurrentUser().currentLibrary
       === this.holding.metadata.library.pid;
   }
 
   /**
    * Constructor
-   * @param _recordUiService - RecordUiService
    * @param _userService - UserService
    * @param recordPermissionMessage - RecordPermissionMessageService
    */
   constructor(
-    private _recordUiService: RecordUiService,
     private _recordPermissionService: RecordPermissionService,
     private _userService: UserService,
     private _modalService: BsModalService
@@ -70,7 +71,7 @@ export class HoldingItemComponent implements OnInit {
   /** Get permissions */
   getPermissions() {
     this._recordPermissionService.getPermission('items', this.item.metadata.pid)
-    .subscribe(permissions => this.permissions = permissions);
+      .subscribe(permissions => this.permissions = permissions);
   }
 
   /**
@@ -84,29 +85,24 @@ export class HoldingItemComponent implements OnInit {
     });
     modalRef.content.onSubmit.pipe(first()).subscribe(value => {
       this.getPermissions();
-  });
+    });
   }
 
   /**
    * Delete item
    * @param itemPid - Item pid
    */
-  delete(itemPid: string) {
-    this._recordUiService.deleteRecord('items', itemPid).subscribe((success: any) => {
-      if (success) {
-        this.deleteItem.emit(itemPid);
-      }
-    });
+  delete(item) {
+    this.deleteItem.emit(item);
   }
 
   /**
-   * Display message if the record cannot be deleted
-   * @param item - Item record
+   * Return a message containing the reasons why the item cannot be deleted
    */
-  public showDeleteMessage() {
+  get deleteInfoMessage() {
     const message = this._recordPermissionService.generateDeleteMessage(
       this.permissions.delete.reasons
     );
-    this._recordUiService.showDeleteMessage(message);
+    return message;
   }
 }
