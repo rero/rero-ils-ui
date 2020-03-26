@@ -1,0 +1,10 @@
+
+.bd-sidebar {
+  @supports (position: sticky) {
+    position: sticky;
+    top: 0rem;
+    z-index: 500;
+    background: white;
+    height: 100%;
+  }
+}

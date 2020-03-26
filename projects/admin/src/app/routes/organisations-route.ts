@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { BaseRoute } from './Base-route';
+import { DetailComponent, EditorComponent, RouteInterface } from '@rero/ng-core';
+import { of } from 'rxjs';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { OrganisationDetailViewComponent } from '../record/detail-view/organisation-detail-view/organisation-detail-view.component';
-import { RouteInterface, DetailComponent, EditorComponent } from '@rero/ng-core';
-import { of } from 'rxjs';
+import { BaseRoute } from './base-route';
 
 export class OrganisationsRoute extends BaseRoute implements RouteInterface {
 

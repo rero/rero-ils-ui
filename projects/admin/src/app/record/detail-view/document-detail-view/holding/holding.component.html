@@ -14,7 +14,7 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="(items && items.length > 0) || (harvested &&  holding.metadata?.electronic_location?.length > 0)">
+<ng-container>
   <div class="card mt-2">
     <div class="card-header">
       <div class="row">
@@ -31,26 +31,53 @@
         <div class="col-sm-2">
           {{ holding.metadata.circulation_category.pid | getRecord: 'item_types' : 'field' : 'name' | async }}
         </div>
+        <div *ngIf="holdingType === 'serial'" class="col-sm-6 text-right">
+          <a *ngIf="permissions && permissions.update && permissions.update.can"
+            class="btn btn-outline-primary btn-sm ml-1"
+            [routerLink]="['/', 'records', 'holdings', 'edit', holding.metadata.pid]">
+            <i class="fa fa-pencil"></i>
+          </a>
+          <button *ngIf="permissions && permissions.delete && permissions.delete.can; else deleteInfo" type="button"
+            class="btn btn-outline-danger btn-sm ml-1" (click)="delete()">
+            <i class="fa fa-trash"></i>
+          </button>
+        </div>
       </div>
     </div>
     <div class="card-body" *ngIf="!isItemsCollapsed">
-      <div class="row" *ngIf="!harvested">
-        <div class="offset-sm-1 col-sm-3 font-weight-bold" translate>Barcode</div>
-        <div class="col-sm-2 font-weight-bold" translate>Status</div>
-        <div class="col-sm-2 font-weight-bold" translate>Call number</div>
-      </div>
-      <div class="row" *ngIf="harvested">
-        <ul class="list-unstyled mb-0 col-sm-auto">
-          <li *ngFor="let elocation of holding.metadata.electronic_location">
-            <a href="{{ elocation.uri | translate }}">{{ elocation.source | translate }}</a>
-          </li>
-        </ul>
-      </div>
-      <ng-container *ngIf="items && items.length > 0">
-        <admin-holding-item *ngFor="let item of items" class="row mt-1" [holding]="holding" [item]="item"
-          (deleteItem)="deleteItem($event)">
-        </admin-holding-item>
+      <ng-container [ngSwitch]="holdingType">
+
+        <div class="row" *ngSwitchCase="'electronic'">
+            <div class="offset-sm-1 col-sm-11 " *ngFor="let elocation of holding.metadata.electronic_location">
+              <a href="{{ elocation.uri | translate }}">{{ elocation.source | translate }}</a>
+            </div>
+        </div>
+
+        <div class="row" *ngSwitchCase="'serial'">
+          <div class="offset-sm-1 col-sm-11" translate>No item received.</div>
+        </div>
+
+        <ng-container *ngSwitchDefault>
+          <ng-container *ngIf="items && items.length > 0">
+            <div class="row">
+              <div class="offset-sm-1 col-sm-3 font-weight-bold" translate>Barcode</div>
+              <div class="col-sm-2 font-weight-bold" translate>Status</div>
+              <div class="col-sm-2 font-weight-bold" translate>Call number</div>
+            </div>
+            <admin-holding-item *ngFor="let item of items" class="row mt-1" [holding]="holding" [item]="item"
+              (deleteItem)="deleteItem($event)">
+            </admin-holding-item>
+          </ng-container>
+        </ng-container>
+
       </ng-container>
     </div>
   </div>
 </ng-container>
+
+<ng-template #deleteInfo>
+  <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"  [popover]="tolTemplate" triggers="mouseenter:mouseleave">
+    <i class="fa fa-trash"></i>
+  </button>
+  <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
+</ng-template>
