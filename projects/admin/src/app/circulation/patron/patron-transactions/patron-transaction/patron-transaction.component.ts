@@ -1,13 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
 import { BsModalService } from 'ngx-bootstrap';
-import { MainTitleService } from 'projects/admin/src/app/service/main-title.service';
-import { map, mergeMap } from 'rxjs/operators';
 import { OrganisationService } from '../../../../service/organisation.service';
-import { Item } from '../../../items';
 import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '../../../patron-transaction';
 import { PatronTransactionService } from '../../../patron-transaction.service';
-import { PatronTransactionEventFormComponent } from '../patron-transaction-event-form/patron-transaction-event-form.component';
+import {
+  PatronTransactionEventFormComponent
+} from '../patron-transaction-event-form/patron-transaction-event-form.component';
 
 
 @Component({
@@ -18,8 +16,6 @@ export class PatronTransactionComponent implements OnInit {
 
   /** Patron transaction */
   @Input() transaction: PatronTransaction;
-  /** item linked to this transaction if transaction linked to a loan */
-  item: Item;
 
   /** Is collapsed */
   isCollapsed = true;
@@ -28,29 +24,14 @@ export class PatronTransactionComponent implements OnInit {
   public patronTransactionStatus = PatronTransactionStatus;
 
   constructor(
-    private _recordService: RecordService,
     private _organisationService: OrganisationService,
     private _patronTransactionService: PatronTransactionService,
-    private _modalService: BsModalService,
-    private _mainTitleService: MainTitleService
-  ) {}
+    private _modalService: BsModalService
+  ) { }
 
   ngOnInit() {
-    this._loadLinkedItem();
     if (this.transaction) {
       this._patronTransactionService.loadTransactionHistory(this.transaction);
-    }
-  }
-
-
-  /** Load item informations if the transaction is linked to a loan */
-  private _loadLinkedItem() {
-    if (this.transaction && this.transaction.loan && this.transaction.loan.pid) {
-      this._recordService.getRecord('loans', this.transaction.pid).pipe(
-        map(data => data.metadata),
-        mergeMap( data => this._recordService.getRecord('items', data.item_pid)),
-        map(data => new Item(data.metadata))
-      ).subscribe((data) => this.item = data);
     }
   }
 
@@ -109,13 +90,5 @@ export class PatronTransactionComponent implements OnInit {
       transactions: [this.transaction]
     };
     this._modalService.show(PatronTransactionEventFormComponent, {initialState});
-  }
-
-  /**
-   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
-   * @param titleMetadata: title metadata
-   */
-  getMainTitle(titleMetadata: any): string {
-    return this._mainTitleService.getMainTitle(titleMetadata);
   }
 }

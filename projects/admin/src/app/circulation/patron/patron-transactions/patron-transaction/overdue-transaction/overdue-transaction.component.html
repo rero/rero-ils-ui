@@ -1,0 +1,25 @@
+<ng-container *ngIf="transaction">
+  <div class="row" *ngIf="transaction.note">
+    <div class="col-sm-2 label-title text-right" translate>Note</div>
+    <div class="col-sm-10">{{ transaction.note }}</div>
+  </div>
+  <div class="row" *ngIf="transaction.document.pid | getRecord:'documents' | async as document">
+    <div class="col-sm-2 label-title text-right" translate>Document</div>
+    <div class="col-sm-10">
+      <a [routerLink]="['/records','documents','detail', transaction.document.pid]"
+         *ngIf="getMainTitle(document.metadata.title) != null">
+        {{ getMainTitle(document.metadata.title) | truncateText: 15 }}
+      </a>
+    </div>
+  </div>
+  <div class="row" *ngIf="item">
+    <div class="col-sm-2 label-title text-right" translate>Item</div>
+    <div class="col-sm-10">
+      <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+    </div>
+  </div>
+  <div class="row" *ngIf="transaction.loan.pid | getRecord: 'loans' | async as loan">
+    <div class="col-sm-2 label-title text-right" translate>Loan started at</div>
+    <div class="col-sm-10">{{ loan.metadata.start_date | dateTranslate: 'shortDate' }}</div>
+  </div>
+</ng-container>
