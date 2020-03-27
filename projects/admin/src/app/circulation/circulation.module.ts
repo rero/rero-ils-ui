@@ -22,6 +22,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { RecordModule } from '@rero/ng-core';
 import { BsDropdownModule, CollapseModule } from 'ngx-bootstrap';
+import { SharedPipesModule } from '../shared/shared-pipes.module';
 import { CheckinComponent } from './checkin/checkin.component';
 import { CirculationRoutingModule } from './circulation-routing.module';
 import { ItemComponent } from './item/item.component';
@@ -36,6 +37,12 @@ import {
   PatronTransactionEventFormComponent
 } from './patron/patron-transactions/patron-transaction-event-form/patron-transaction-event-form.component';
 import { PatronTransactionEventComponent } from './patron/patron-transactions/patron-transaction-event/patron-transaction-event.component';
+import {
+  DefaultTransactionComponent
+} from './patron/patron-transactions/patron-transaction/default-transaction/default-transaction.component';
+import {
+  OverdueTransactionComponent
+} from './patron/patron-transactions/patron-transaction/overdue-transaction/overdue-transaction.component';
 import { PatronTransactionComponent } from './patron/patron-transactions/patron-transaction/patron-transaction.component';
 import { PatronTransactionsComponent } from './patron/patron-transactions/patron-transactions.component';
 import { PickupItemComponent } from './patron/pickup/pickup-item/pickup-item.component';
@@ -44,7 +51,6 @@ import { ProfileComponent } from './patron/profile/profile.component';
 import { RequestedItemComponent } from './patron/requested/requested-item/requested-item.component';
 import { RequestedComponent } from './patron/requested/requested.component';
 import { RequestedItemsListComponent } from './requested-items-list/requested-items-list.component';
-import { SharedPipesModule } from '../shared/shared-pipes.module';
 
 
 @NgModule({
@@ -65,6 +71,9 @@ import { SharedPipesModule } from '../shared/shared-pipes.module';
     PatronTransactionsComponent,
     PatronTransactionComponent,
     PatronTransactionEventComponent,
+    PatronTransactionEventFormComponent,
+    OverdueTransactionComponent,
+    DefaultTransactionComponent
     PatronTransactionEventFormComponent,
     HistoryComponent,
     HistoryItemComponent
