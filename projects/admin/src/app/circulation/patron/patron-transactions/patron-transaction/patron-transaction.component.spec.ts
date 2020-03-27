@@ -1,12 +1,14 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CoreModule, RecordModule } from '@rero/ng-core';
+import { HttpClientModule } from '@angular/common/http';
+import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { DefaultTransactionComponent } from './default-transaction/default-transaction.component';
+import { OverdueTransactionComponent } from './overdue-transaction/overdue-transaction.component';
 import { PatronTransactionComponent } from './patron-transaction.component';
-import { CoreModule, RecordModule } from '@rero/ng-core';
-import { RouterTestingModule } from '@angular/router/testing';
 import { PatronTransactionEventComponent } from '../patron-transaction-event/patron-transaction-event.component';
-import { HttpClientModule } from '@angular/common/http';
-import { TranslateModule } from '@ngx-translate/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('PatronTransactionComponent', () => {
   let component: PatronTransactionComponent;
@@ -23,6 +25,8 @@ describe('PatronTransactionComponent', () => {
         BrowserAnimationsModule
       ],
       declarations: [
+        DefaultTransactionComponent,
+        OverdueTransactionComponent,
         PatronTransactionComponent,
         PatronTransactionEventComponent
       ]
