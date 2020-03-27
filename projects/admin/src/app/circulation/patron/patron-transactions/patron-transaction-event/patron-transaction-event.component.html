@@ -43,13 +43,15 @@
           </div>
         </div>
       </ng-container>
-      <div class="row" *ngIf="event.library.pid | getRecord:'libraries' | async as library">
-        <div class="col-2 offset-1 label-title">
-          <i class="fa fa-map-marker pr-1"></i>
-          <ng-container translate>Library</ng-container>
+      <ng-container *ngIf="event.library">
+        <div class="row" *ngIf="event.library.pid | getRecord:'libraries' | async as library">
+          <div class="col-2 offset-1 label-title">
+            <i class="fa fa-map-marker pr-1"></i>
+            <ng-container translate>Library</ng-container>
+          </div>
+          <div class="col-9">{{ library.metadata.name }}</div>
         </div>
-        <div class="col-9">{{ library.metadata.name }}</div>
-      </div>
+      </ng-container>
     </ng-container>
   </div>
 </ng-container>
