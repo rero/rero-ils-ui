@@ -47,6 +47,7 @@ export class PatronTransaction {
   note?: string = null;
   document?: any = null;
   loan?: any = null;
+  patron: any = null;
 
   constructor(obj?: any) {
     Object.assign(this, obj);

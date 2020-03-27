@@ -16,6 +16,10 @@
  */
 import { BehaviorSubject, Observable} from 'rxjs';
 import { Injectable } from '@angular/core';
+import { RecordService } from '@rero/ng-core';
+import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
+import { map } from 'rxjs/operators';
 import { PatronService } from '../service/patron.service';
 import {
   PatronTransaction,
@@ -23,13 +27,9 @@ import {
   PatronTransactionEventType,
   PatronTransactionStatus
 } from './patron-transaction';
-import { RecordService } from '@rero/ng-core';
 import { RouteToolService } from '../routes/route-tool.service';
-import { ToastrService } from 'ngx-toastr';
-import { TranslateService } from '@ngx-translate/core';
+import { User } from '../class/user';
 import { UserService } from '../service/user.service';
-import { map } from 'rxjs/operators';
-
 
 @Injectable({
   providedIn: 'root'
@@ -194,7 +194,7 @@ export class PatronTransactionService {
     record.type = PatronTransactionEventType.PAYMENT;
     record.subtype = paymentMethod;
     record.amount = amount;
-    this._createTransactionEvent(record);
+    this._createTransactionEvent(record, transaction.patron.pid);
   }
 
   /**
@@ -206,7 +206,7 @@ export class PatronTransactionService {
     const record = this._buildTransactionEventsSkeleton(transaction);
     record.type = PatronTransactionEventType.DISPUTE;
     record.note = reason;
-    this._createTransactionEvent(record);
+    this._createTransactionEvent(record, transaction.patron.pid);
   }
 
   /**
@@ -219,34 +219,33 @@ export class PatronTransactionService {
     record.type = PatronTransactionEventType.CANCEL;
     record.amount = amount;
     record.note = reason;
-    this._createTransactionEvent(record);
+    this._createTransactionEvent(record, transaction.patron.pid);
   }
 
   /**
    * Call API to create the PatronTransactionEvent
    * @param record: data to send through the API
+   * @param affectedPatron: the user pid affected by this new transaction event
    */
-  private _createTransactionEvent(record: any) {
-    this._patronService.currentPatron$.subscribe(
-      (patron) => {
-        this._recordService.create('patron_transaction_events', record).subscribe(
-          () => {
-            this.emitPatronTransactionByPatron(patron.pid, undefined, 'open');
-            this._toastService.success(this._translateService.instant(
-              '{{ type }} registered',
-              { type: record.type }
-            ));
-          },
-          (error) => {
-            const message = '[' + error.status + ' - ' + error.statusText + '] ' + error.error.message;
-            this._toastService.error(
-              message,
-              this._translateService.instant(
-                '{{ type }} creation failed !',
-                { type: record.type }
-              )
-            );
-          });
-      });
+  private _createTransactionEvent(record: any, affectedPatron: string) {
+    this._recordService.create('patron_transaction_events', record).subscribe(
+      () => {
+        this.emitPatronTransactionByPatron(affectedPatron, undefined, 'open');
+        this._toastService.success(this._translateService.instant(
+          '{{ type }} registered',
+          {type: record.type}
+        ));
+      },
+      (error) => {
+        const message = '[' + error.status + ' - ' + error.statusText + '] ' + error.error.message;
+        this._toastService.error(
+          message,
+          this._translateService.instant(
+            '{{ type }} creation failed !',
+            { type: record.type }
+          )
+        );
+      }
+    );
   }
 }
