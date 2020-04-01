@@ -86,7 +86,6 @@ export class CheckinComponent implements OnInit {
     if (!searchText) {
       return null;
     }
-    this.searchText = searchText.trim();
     this.getPatronOrItem(this.searchText);
   }
 
