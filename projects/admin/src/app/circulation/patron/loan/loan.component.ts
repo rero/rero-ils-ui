@@ -92,7 +92,6 @@ export class LoanComponent implements OnInit {
     if (!searchText) {
       return null;
     }
-    this.searchText = searchText.trim();
     this.getItem(this.searchText);
   }
 
