@@ -42,7 +42,7 @@ export class MenuComponent implements OnInit {
   librariesSwitchMenu = {
     navCssClass: 'navbar-nav',
     entries: [{
-      name: this._translateService.instant('Switch libraries'),
+      name: this._translateService.instant('Switch library'),
       iconCssClass: 'fa fa-random',
       entries: []
     }]
@@ -99,7 +99,7 @@ export class MenuComponent implements OnInit {
       name: `${currentUser.first_name[0]}${currentUser.last_name[0]}`,
       entries: [
         {
-          name: this._translateService.instant('Switch to public view'),
+          name: this._translateService.instant('Public interface'),
           href: '/',
           iconCssClass: 'fa fa-television'
         }, {

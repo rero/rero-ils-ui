@@ -241,7 +241,7 @@ export class PatronTransactionService {
         this._toastService.error(
           message,
           this._translateService.instant(
-            '{{ type }} creation failed !',
+            '{{ type }} creation failed!',
             { type: record.type }
           )
         );

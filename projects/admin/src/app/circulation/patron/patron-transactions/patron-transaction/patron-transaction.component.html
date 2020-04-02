@@ -43,7 +43,7 @@
           </div>
         </div>
         <div class="row" *ngIf="transaction.loan.pid | getRecord: 'loans' | async as loan">
-          <div class="col-sm-2 label-title text-right" translate>Loan started at</div>
+          <div class="col-sm-2 label-title text-right" translate>Checked out on</div>
           <div class="col-sm-10">{{ loan.metadata.start_date | dateTranslate: 'shortDate' }}</div>
         </div>
       </section>

@@ -61,7 +61,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
         method: 'cash'
       };
     } else if (this.action === 'cancel') {
-      const placeholder = this._translateService.instant('Describe why are you cancel this transaction...');
+      const placeholder = this._translateService.instant('Cancellation reason');
       this.formFields.push(this._amountFormFieldDefinition());
       this.formFields.push(this._commentFormFieldDefinition(placeholder));
       this.model = {
@@ -69,7 +69,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
         method: 'cash'
       };
     } else {
-      const placeholder = this._translateService.instant('Describe why are you create a dispute...');
+      const placeholder = this._translateService.instant('Reason of dispute');
       this.formFields.push(this._commentFormFieldDefinition(placeholder));
     }
   }
@@ -96,7 +96,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
           // As we use 'step' property, we need to specify 'min' property to '0' for a nice value interval. But
           // with this special validator, we disallow to place a payment with a 0 amount
           expression: (c) => c.value > 0,
-          message: (error) => this._translateService.instant('should be > 0')
+          message: (error) => this._translateService.instant('Must be greater than 0')
         }
       }
     };
