@@ -162,9 +162,9 @@ _('fullText');
 _('video');
 // Item Request messages
 _('Request not allowed by the circulation policy.');
-_('Item is already checked-out or requested by patron.');
+_('The item is already checked out or requested by this patron.');
 _('Item not found.');
-_('Item status does not allow requests.');
+_('The item status does not allow requests.');
 _('Library not found.');
 _('Patron not found.');
-_('Request is possible.');
+_('Request possible');

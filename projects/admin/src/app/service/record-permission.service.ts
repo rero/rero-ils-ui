@@ -114,7 +114,7 @@ export class RecordPermissionService {
         other: this._translateService.instant('has # acquisition order lines attached')
       },
       acq_orders: {
-        '=1': this._translateService.instant('has 1 acquisition orders attached'),
+        '=1': this._translateService.instant('has 1 acquisition order attached'),
         other: this._translateService.instant('has # acquisition orders attached')
       },
       acq_accounts: {

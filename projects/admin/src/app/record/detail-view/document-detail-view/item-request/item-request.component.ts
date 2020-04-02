@@ -107,13 +107,13 @@ export class ItemRequestComponent implements OnInit {
         this.closeModal();
         this._toastr.success(
           this._translateService.instant('Request registered.'),
-          this._translateService.instant('Item Request')
+          this._translateService.instant('Item request')
         );
       },
       () => {
         this._toastr.error(
           this._translateService.instant('An error has occurred. Please try again.'),
-          this._translateService.instant('Item Request'),
+          this._translateService.instant('Item request'),
           { disableTimeOut: true }
         );
       }
@@ -141,7 +141,7 @@ export class ItemRequestComponent implements OnInit {
             type: 'input',
             focus: true,
             templateOptions: {
-              label: this._translateService.instant('Patron Barcode'),
+              label: this._translateService.instant('Patron barcode'),
               required: true,
               keydown: (field, event) => {
                 if (event.key === 'Enter') {
