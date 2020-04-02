@@ -11,6 +11,9 @@ export class LocationComponent {
   /** The location whose details are displayed */
   @Input() location: any;
 
+  /** The parent library of the location */
+  @Input() library: any;
+
   /** Delete location event emitter */
   @Output() deleteLocation = new EventEmitter();
 

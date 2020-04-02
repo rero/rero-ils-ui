@@ -84,7 +84,7 @@
     <article class="card-body collapsed show">
       <ul class="list-group list-group-flush" *ngIf="locations; else no_locations">
         <li *ngFor="let location of locations" class="list-group-item p-1">
-          <admin-location [location]="location" class="col-12" (deleteLocation)="deleteLocation($event)"></admin-location>
+          <admin-location [location]="location" [library]="record" class="col-12" (deleteLocation)="deleteLocation($event)"></admin-location>
         </li>
       </ul>
       <ng-template #no_locations><p translate>no location</p></ng-template>
