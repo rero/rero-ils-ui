@@ -16,7 +16,7 @@
 -->
 
 <a [routerLink]="['/records/locations/detail', location.metadata.pid]">{{ location.metadata.name }}</a>
-<div class="float-right ml-2">
+<div class="float-right ml-2" *ngIf="!library.permissions.cannot_update">
   <a *ngIf="!location.permissions.cannot_update" class="btn btn-link p-0 ml-2 text-primary"
     [routerLink]="['/records', 'locations', 'edit', location.metadata.pid]">
     <i class="fa fa-pencil"></i>
