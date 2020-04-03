@@ -38,10 +38,10 @@ export class ItemTransactionsComponent implements OnInit {
    * Constructor
    * @param loanService - LoanService
    */
-  constructor(private loanService: LoanService) { }
+  constructor(private _loanService: LoanService) { }
 
   ngOnInit() {
-    this.borrowedBy$ = this.loanService.borrowedBy$(this.item.metadata.pid);
-    this.requestedBy$ = this.loanService.requestedBy$(this.item.metadata.pid);
+    this.borrowedBy$ = this._loanService.borrowedBy$(this.item.metadata.pid);
+    this.requestedBy$ = this._loanService.requestedBy$(this.item.metadata.pid);
   }
 }
