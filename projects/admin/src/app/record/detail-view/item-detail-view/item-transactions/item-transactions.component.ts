@@ -14,9 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { BsModalService } from 'ngx-bootstrap';
 import { LoanService } from 'projects/admin/src/app/service/loan.service';
 import { Observable } from 'rxjs';
+import { first } from 'rxjs/operators';
+import { ItemRequestComponent } from '../../document-detail-view/item-request/item-request.component';
 
 @Component({
   selector: 'admin-item-transactions',
@@ -25,23 +28,56 @@ import { Observable } from 'rxjs';
 })
 export class ItemTransactionsComponent implements OnInit {
 
-  /** Item record */
+  /**
+   * Item record
+   */
   @Input() item: any;
 
-  /** Borrowed item */
+  /**
+   * Borrowed item
+   */
   borrowedBy$: Observable<any>;
 
-  /** Requested item(s) */
+  /**
+   * Requested item(s)
+   */
   requestedBy$: Observable<any>;
 
   /**
    * Constructor
    * @param loanService - LoanService
+   * @param _modalService - BsModalService
    */
-  constructor(private loanService: LoanService) { }
+  constructor(
+    private _loanService: LoanService,
+    private _modalService: BsModalService
+  ) { }
 
+  /**
+   * On init hook
+   */
   ngOnInit() {
-    this.borrowedBy$ = this.loanService.borrowedBy$(this.item.metadata.pid);
-    this.requestedBy$ = this.loanService.requestedBy$(this.item.metadata.pid);
+    this.borrowedBy$ = this._loanService.borrowedBy$(this.item.metadata.pid);
+    this.requestedBy$ = this._loanService.requestedBy$(this.item.metadata.pid);
+  }
+
+  /**
+   * Update request list
+   */
+  updateRequestList() {
+    this.requestedBy$ = this._loanService.requestedBy$(this.item.metadata.pid);
+  }
+
+  /**
+   * Add request on item
+   * @param itemPid - string
+   */
+  addRequest(itemPid: string) {
+    const modalRef = this._modalService.show(ItemRequestComponent, {
+      initialState: { itemPid }
+    });
+    modalRef.content.onSubmit.pipe(first()).subscribe(value => {
+      this.updateRequestList();
+    });
   }
 }
