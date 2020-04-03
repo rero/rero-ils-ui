@@ -15,15 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { UserService } from '../../../../service/user.service';
+import { LoanService } from 'projects/admin/src/app/service/loan.service';
+import { Observable } from 'rxjs';
 import { debounceTime, map, shareReplay } from 'rxjs/operators';
+import { UserService } from '../../../../service/user.service';
 
 @Component({
   selector: 'admin-item-request',
@@ -32,13 +34,7 @@ import { debounceTime, map, shareReplay } from 'rxjs/operators';
 export class ItemRequestComponent implements OnInit {
 
   /** Item pid */
-  private itemPid: string;
-
-  /** Pickup default $ref */
-  private pickupDefaultValue: string;
-
-  /** Current user */
-  private currentUser: any;
+  itemPid: string;
 
   /** form */
   form: FormGroup = new FormGroup({});
@@ -58,6 +54,15 @@ export class ItemRequestComponent implements OnInit {
   /** On submit event */
   onSubmit: EventEmitter<any> = new EventEmitter();
 
+  /** Requested item(s) */
+  requestedBy$: Observable<any>;
+
+  /** Pickup default $ref */
+  private pickupDefaultValue: string;
+
+  /** Current user */
+  private currentUser: any;
+
   /**
    * Constructor
    * @param _modalService - BsModalService
@@ -67,6 +72,7 @@ export class ItemRequestComponent implements OnInit {
    * @param _http - HttpClient
    * @param _toastr - ToastrService
    * @param _translateService - TranslateService
+   * @param _loanService: LoanService
    */
   constructor(
     private _modalService: BsModalService,
@@ -75,7 +81,8 @@ export class ItemRequestComponent implements OnInit {
     private _recordService: RecordService,
     private _http: HttpClient,
     private _toastr: ToastrService,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
+    private _loanService: LoanService
   ) { }
 
   /**
@@ -88,6 +95,7 @@ export class ItemRequestComponent implements OnInit {
       this.closeModal();
     }
     this.itemPid = initialState.itemPid;
+    this.requestedBy$ = this._loanService.requestedBy$(this.itemPid);
     this.initForm();
   }
 
