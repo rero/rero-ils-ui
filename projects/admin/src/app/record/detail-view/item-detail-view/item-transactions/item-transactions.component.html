@@ -22,8 +22,8 @@
         <b>{{ 'Borrowed by' | translate }}</b>
       </div>
       <div class="card-body">
-        <div class="row">
-          <div class="col-5 font-weight-bold">{{ 'Patron' | translate }}</div>
+        <div class="row mb-2">
+          <div class="col-4 font-weight-bold">{{ 'Patron' | translate }}</div>
           <div class="col-4 font-weight-bold">{{ 'Renewal' | translate }}</div>
           <div class="col-3 font-weight-bold">{{ 'Due date' | translate }}</div>
         </div>
@@ -48,10 +48,14 @@
           <b>{{ 'Requests' | translate }}</b>
         </ng-template>
         <b> ({{ requestedBy.length }})</b>
+        <button class="btn btn-outline-primary btn-link btn-sm ml-2"
+        (click)="addRequest(item.metadata.pid)">
+          <i class="fa fa-plus"></i> {{ 'Add' | translate }}
+        </button>
       </div>
       <div class="card-body">
-        <div class="row">
-          <div class="col-5 font-weight-bold">{{ 'Patron' | translate }}</div>
+        <div class="row mb-2">
+          <div class="col-4 font-weight-bold">{{ 'Patron' | translate }}</div>
           <div class="col-4 font-weight-bold">{{ 'Pick-up Location' | translate }}</div>
           <div class="col-3 font-weight-bold">{{ 'Request date' | translate }}</div>
         </div>
@@ -60,6 +64,8 @@
           type="loan_request"
           [background]="i % 2"
           [transaction]="request"
+          [itemPid]="item.metadata.pid"
+          (removeRequest)="updateRequestList()"
         ></admin-item-transaction>
       </div>
     </div>
