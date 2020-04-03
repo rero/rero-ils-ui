@@ -140,7 +140,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
       ignoreBackdropClick: true,
       initialState: {
         title: this._translateService.instant('Cancel request'),
-        body: this._translateService.instant('Cancel request') + ' ?',
+        body: this._translateService.instant('Do you really want to delete this request?'),
         confirmButton: true,
         cancelTitleButton: this._translateService.instant('No'),
         confirmTitleButton: this._translateService.instant('Yes')
@@ -182,7 +182,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         this._toastrService.success(
-          this._translateService.instant('Record Updated!'),
+          this._translateService.instant('The pickup location has been changed.'),
           this._translateService.instant('Request')
         );
       });

@@ -24,6 +24,25 @@
         </button>
       </div>
       <div class="modal-body">
+        <div *ngIf="requestedBy$ | async as requestedBy" class="card-body">
+          <div class="row card-text">
+            <div class="border border-warning rounded alert alert-warning  pt-2 pb-2 col-auto">
+              <ng-container *ngIf="requestedBy.length < 2; else pluralBlock">
+                <i class="fa fa-exclamation-triangle pr-1" aria-hidden="true"></i>
+                {{ requestedBy.length }} {{ 'request in the queue' | translate }}
+              </ng-container>
+              <ng-template #pluralBlock>
+                <i class="fa fa-exclamation-triangle pr-1" aria-hidden="true"></i>
+                {{ requestedBy.length }} {{ 'requests in the queue' | translate }}
+              </ng-template>
+            </div>
+            <div class="col-auto">
+              <button type="button" class="btn btn-outline-primary btn-link pt-2 pb-2"
+              [routerLink]="['/records', 'items', 'detail', itemPid]"
+              (click)="closeModal()" translate>Edit queue</button>
+            </div>
+          </div>
+        </div>
         <div *ngIf="patron" class="card mb-2">
           <div class="card-body">
             <h5 class="card-title">{{ patron.last_name }}, {{ patron.first_name }}</h5>
