@@ -16,9 +16,9 @@
  */
 
 import { TestBed } from '@angular/core/testing';
-
-import { RecordPermissionMessageService } from './record-permission-message.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { RecordPermissionMessageService } from './record-permission-message.service';
+
 
 describe('RecordPermissionMessageService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -30,5 +30,9 @@ describe('RecordPermissionMessageService', () => {
   it('should be created', () => {
     const service: RecordPermissionMessageService = TestBed.get(RecordPermissionMessageService);
     expect(service).toBeTruthy();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 });

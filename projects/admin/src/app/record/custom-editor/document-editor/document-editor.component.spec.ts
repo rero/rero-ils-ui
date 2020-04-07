@@ -15,16 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { DocumentEditorComponent } from './document-editor.component';
-import { TranslateModule, TranslateLoader, TranslateFakeLoader, TranslateService } from '@ngx-translate/core';
-import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { ToastrModule } from 'ngx-toastr';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RecordModule, RecordService } from '@rero/ng-core';
+import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
-import { convertToParamMap, ActivatedRoute } from '@angular/router';
+import { DocumentEditorComponent } from './document-editor.component';
+
 
 describe('DocumentEditorComponent', () => {
   let component: DocumentEditorComponent;
@@ -84,5 +84,9 @@ describe('DocumentEditorComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 });

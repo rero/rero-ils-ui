@@ -33,4 +33,8 @@ describe('PatronTransactionEventComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
+  });
 });

@@ -1,12 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { SearchBarComponent } from './search-bar.component';
-import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { TypeaheadModule } from 'ngx-bootstrap';
 import { RecordModule } from '@rero/ng-core';
+import { TypeaheadModule } from 'ngx-bootstrap';
+import { SearchBarComponent } from './search-bar.component';
+
 
 describe('SearchBarComponent', () => {
   let component: SearchBarComponent;
@@ -36,5 +36,9 @@ describe('SearchBarComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 });

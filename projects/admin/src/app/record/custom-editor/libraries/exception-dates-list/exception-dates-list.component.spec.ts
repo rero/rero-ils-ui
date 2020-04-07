@@ -16,14 +16,14 @@
  */
 
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ExceptionDatesListComponent } from './exception-dates-list.component';
-import { RecordModule } from '@rero/ng-core';
-import { ModalModule, BsDatepickerModule } from 'ngx-bootstrap';
 import { CommonModule } from '@angular/common';
 import { LOCALE_ID } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { RecordModule } from '@rero/ng-core';
+import { BsDatepickerModule, ModalModule } from 'ngx-bootstrap';
+import { ExceptionDatesListComponent } from './exception-dates-list.component';
+
 
 describe('ExceptionDatesListComponent', () => {
   let component: ExceptionDatesListComponent;
@@ -52,5 +52,9 @@ describe('ExceptionDatesListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 });

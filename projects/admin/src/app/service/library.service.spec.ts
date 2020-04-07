@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { TestBed } from '@angular/core/testing';
-
-import { LibraryService } from './library.service';
 import { HttpClientModule } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
+import { LibraryService } from './library.service';
+
 
 describe('LibraryService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -29,5 +29,9 @@ describe('LibraryService', () => {
   it('should be created', () => {
     const service: LibraryService = TestBed.get(LibraryService);
     expect(service).toBeTruthy();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 });

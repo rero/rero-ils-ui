@@ -17,8 +17,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { RecordService } from './record.service';
 
 
@@ -34,4 +34,7 @@ describe('myService', () => {
     expect(service).toBeTruthy();
   });
 
+  afterEach(() => {
+    TestBed.resetTestingModule();
+  });
 });

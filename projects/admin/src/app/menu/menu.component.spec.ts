@@ -15,20 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { MenuComponent } from './menu.component';
-import { CollapseModule, BsDatepickerModule, TypeaheadModule } from 'ngx-bootstrap';
-import { RecordModule, RecordService } from '@rero/ng-core';
-import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { UserService } from '../service/user.service';
-import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { InterfaceInfoComponent } from '../interface-info/interface-info.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { RecordModule, RecordService } from '@rero/ng-core';
+import { BsDatepickerModule, CollapseModule, TypeaheadModule } from 'ngx-bootstrap';
 import { of } from 'rxjs';
+import { InterfaceInfoComponent } from '../interface-info/interface-info.component';
+import { UserService } from '../service/user.service';
+import { MenuComponent } from './menu.component';
+
 
 describe('MenuComponent', () => {
   let component: MenuComponent;
@@ -94,4 +94,8 @@ describe('MenuComponent', () => {
   // it('should create', () => {
   //   expect(component).toBeTruthy();
   // });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
+  });
 });

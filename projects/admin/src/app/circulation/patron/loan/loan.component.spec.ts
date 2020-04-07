@@ -17,17 +17,15 @@
 
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule, RecordModule } from '@rero/ng-core';
+import { CollapseModule } from 'ngx-bootstrap';
+import { UserService } from '../../../service/user.service';
+import { ItemComponent } from '../../item/item.component';
 import { ItemsListComponent } from '../../items-list/items-list.component';
 import { LoanComponent } from './loan.component';
-import { ItemComponent } from '../../item/item.component';
-import { ItemsService } from '../../items.service';
-import { ToastrService } from 'ngx-toastr';
-import { CollapseModule } from 'ngx-bootstrap';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { UserService } from '../../../service/user.service';
 
 
 describe('LoanComponent', () => {
@@ -80,5 +78,9 @@ describe('LoanComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 });

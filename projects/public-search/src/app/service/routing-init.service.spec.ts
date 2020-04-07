@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { TestBed } from '@angular/core/testing';
-
-import { RoutingInitService } from './routing-init.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { RoutingInitService } from './routing-init.service';
+
 
 describe('RoutingInitService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -29,5 +29,9 @@ describe('RoutingInitService', () => {
   it('should be created', () => {
     const service: RoutingInitService = TestBed.get(RoutingInitService);
     expect(service).toBeTruthy();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 });

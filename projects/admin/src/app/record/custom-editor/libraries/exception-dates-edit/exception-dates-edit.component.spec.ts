@@ -15,16 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ExceptionDatesEditComponent } from './exception-dates-edit.component';
 import { CommonModule } from '@angular/common';
+import { LOCALE_ID } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { RecordModule } from '@rero/ng-core';
 import { BsDatepickerModule, BsModalRef } from 'ngx-bootstrap';
-import { LOCALE_ID } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UiSwitchModule } from 'ngx-toggle-switch';
-import { TranslateModule } from '@ngx-translate/core';
+import { ExceptionDatesEditComponent } from './exception-dates-edit.component';
+
 
 describe('ExceptionDatesEditComponent', () => {
   let component: ExceptionDatesEditComponent;
@@ -55,5 +55,9 @@ describe('ExceptionDatesEditComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 });

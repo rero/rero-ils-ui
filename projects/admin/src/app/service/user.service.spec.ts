@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { TestBed } from '@angular/core/testing';
-
-import { UserService } from './user.service';
 import { HttpClientModule } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
 import { RecordModule } from '@rero/ng-core';
+import { UserService } from './user.service';
+
 
 describe('UserService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -32,5 +32,9 @@ describe('UserService', () => {
   it('should be created', () => {
     const service: UserService = TestBed.get(UserService);
     expect(service).toBeTruthy();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 });

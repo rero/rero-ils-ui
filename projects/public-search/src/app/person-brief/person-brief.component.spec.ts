@@ -20,12 +20,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordModule } from '@rero/ng-core';
 import { AppRoutingModule } from 'projects/admin/src/app/app-routing.module';
+import { FrontpageBoardComponent } from 'projects/admin/src/app/frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from 'projects/admin/src/app/frontpage/frontpage.component';
 import { BioInformationsPipe } from './../pipes/bio-informations.pipe';
 import { BirthDatePipe } from './../pipes/birth-date.pipe';
 import { MefTitlePipe } from './../pipes/mef-title.pipe';
 import { PersonBriefComponent } from './person-brief.component';
-import { FrontpageBoardComponent } from 'projects/admin/src/app/frontpage/frontpage-board/frontpage-board.component';
 
 
 describe('PersonBriefComponent', () => {
@@ -61,5 +61,9 @@ describe('PersonBriefComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 });

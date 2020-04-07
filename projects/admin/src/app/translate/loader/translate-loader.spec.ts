@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { TranslateLoader } from './translate-loader';
 import { AppConfigService } from '../../service/app-config.service';
+import { TranslateLoader } from './translate-loader';
 
 describe('TranslateLoader', () => {
   it('should create an instance', () => {

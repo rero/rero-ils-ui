@@ -16,8 +16,8 @@
  */
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { RelatedResourceComponent } from './related-resource.component';
+
 
 describe('RelatedResourceComponent', () => {
   let component: RelatedResourceComponent;
@@ -38,5 +38,9 @@ describe('RelatedResourceComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 });

@@ -28,4 +28,8 @@ describe('PatronService', () => {
     const service: PatronService = TestBed.get(PatronService);
     expect(service).toBeTruthy();
   });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
+  });
 });

@@ -16,12 +16,12 @@
  */
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ResourceComponent } from './resource.component';
-import { RelatedResourceComponent } from '../related-resource/related-resource.component';
-import { CollapseModule } from 'ngx-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
+import { CollapseModule } from 'ngx-bootstrap';
+import { RelatedResourceComponent } from '../related-resource/related-resource.component';
+import { ResourceComponent } from './resource.component';
+
 
 describe('ResourceComponent', () => {
   let component: ResourceComponent;
@@ -50,5 +50,9 @@ describe('ResourceComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 });

@@ -16,9 +16,9 @@
  */
 
 import { TestBed } from '@angular/core/testing';
-
-import { LibraryFormService } from './library-form.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LibraryFormService } from './library-form.service';
+
 
 describe('LibraryFormService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -31,5 +31,9 @@ describe('LibraryFormService', () => {
   it('should be created', () => {
     const service: LibraryFormService = TestBed.get(LibraryFormService);
     expect(service).toBeTruthy();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 });

@@ -16,10 +16,10 @@
  */
 
 import { TestBed } from '@angular/core/testing';
-
-import { CirculationPolicyFormService } from './circulation-policy-form.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RecordModule } from '@rero/ng-core';
+import { CirculationPolicyFormService } from './circulation-policy-form.service';
+
 
 describe('CirculationPolicyFormService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -34,5 +34,9 @@ describe('CirculationPolicyFormService', () => {
   it('should be created', () => {
     const service: CirculationPolicyFormService = TestBed.get(CirculationPolicyFormService);
     expect(service).toBeTruthy();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 });
