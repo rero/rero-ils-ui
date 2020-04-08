@@ -16,64 +16,69 @@
  */
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { DocumentEditorComponent } from './document-editor.component';
-import { TranslateModule, TranslateLoader, TranslateFakeLoader, TranslateService } from '@ngx-translate/core';
+import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientModule } from '@angular/common/http';
-import { ToastrModule } from 'ngx-toastr';
-import { RecordModule, RecordService } from '@rero/ng-core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { RecordService, RecordUiService } from '@rero/ng-core';
 import { of } from 'rxjs';
-import { convertToParamMap, ActivatedRoute } from '@angular/router';
+import { AppModule } from '../../../app.module';
+import { DocumentEditorComponent } from './document-editor.component';
+
+
+const recordTestingUiService = jasmine.createSpyObj('RecordUiService', [
+  'getResourceConfig'
+]);
+recordTestingUiService.getResourceConfig.and.returnValue({ key: 'documents' });
+recordTestingUiService.types = [
+  {
+    key: 'documents',
+  }
+];
+
+const testingRoute = {
+  params: of({ type: 'documents' }),
+  snapshot: {
+    params: { type: 'documents' },
+    data: {
+      types: [
+        {
+          key: 'documents',
+        }
+      ],
+      showSearchInput: true,
+      adminMode: true
+    }
+  },
+  queryParams: of({})
+};
+
+const recordTestingService = jasmine.createSpyObj('RecordService', ['getSchemaForm']);
+recordTestingService.getSchemaForm.and.returnValue(of({
+  schema: {
+    type: 'object',
+    additionalProperties: true,
+    properties: {}
+  }
+}));
 
 describe('DocumentEditorComponent', () => {
   let component: DocumentEditorComponent;
   let fixture: ComponentFixture<DocumentEditorComponent>;
-  const recordService = jasmine.createSpyObj('RecordService', ['getSchemaForm']);
-  recordService.getSchemaForm.and.returnValue(of({
-    schema: {
-      type: 'object',
-      additionalProperties: true,
-      properties: {}
-    }
-  }));
-
-  const route = {
-    snapshot: {
-      paramMap: convertToParamMap({
-        type: 'documents', pid: '1'
-      }),
-      data: {
-        types: [
-          {
-            key: 'documents',
-          }
-        ],
-        showSearchInput: true,
-        adminMode: true
-      }
-    }
-  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: TranslateFakeLoader }
-        }),
-        RecordModule,
+        TranslateModule.forRoot(),
         RouterTestingModule,
-        HttpClientModule,
-        ToastrModule.forRoot()
+        AppModule
       ],
-      declarations: [ DocumentEditorComponent ],
       providers: [
         TranslateService,
-        { provide: RecordService, useValue: recordService },
-        { provide: ActivatedRoute, useValue: route }
+        { provide: RecordService, useValue: recordTestingService },
+        { provide: RecordUiService, useValue: recordTestingUiService },
+        { provide: ActivatedRoute, useValue: testingRoute }
       ]
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

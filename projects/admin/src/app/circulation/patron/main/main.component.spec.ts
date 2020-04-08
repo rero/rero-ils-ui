@@ -19,9 +19,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { RecordService } from '@rero/ng-core';
+import { ToastrModule } from 'ngx-toastr';
+import { recordTestingService } from 'projects/admin/tests/utils';
 import { CardComponent } from '../card/card.component';
 import { MainComponent } from './main.component';
-import { ToastrModule } from 'ngx-toastr';
 
 
 describe('MainComponent', () => {
@@ -36,9 +38,11 @@ describe('MainComponent', () => {
         HttpClientModule,
         ToastrModule.forRoot()
       ],
-      declarations: [ MainComponent, CardComponent ]
-    })
-    .compileComponents();
+      declarations: [MainComponent, CardComponent],
+      providers: [
+        { provide: RecordService, useValue: recordTestingService }
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

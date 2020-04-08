@@ -16,29 +16,31 @@
  */
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { MenuComponent } from './menu.component';
-import { CollapseModule, BsDatepickerModule, TypeaheadModule } from 'ngx-bootstrap';
-import { RecordModule, RecordService } from '@rero/ng-core';
-import { TranslateModule } from '@ngx-translate/core';
-import { HttpClientModule } from '@angular/common/http';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { UserService } from '../service/user.service';
-import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { InterfaceInfoComponent } from '../interface-info/interface-info.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { RecordService } from '@rero/ng-core';
+import { recordTestingService } from 'projects/admin/tests/utils';
 import { of } from 'rxjs';
+import { AppModule } from '../app.module';
+import { LibrarySwitchService } from '../service/library-switch.service';
+import { UserService } from '../service/user.service';
+import { MenuComponent } from './menu.component';
+
 
 describe('MenuComponent', () => {
   let component: MenuComponent;
   let fixture: ComponentFixture<MenuComponent>;
-  let recordServiceSpy: jasmine.SpyObj<RecordService>;
 
-  const userService = jasmine.createSpyObj(
+  const libraryTestingSwitchService = jasmine.createSpyObj(
+    'LibrarySwitchService', ['generateMenu']);
+  libraryTestingSwitchService.onVisibleMenu$ = of(false);
+  libraryTestingSwitchService.entries = [{ entries: [] }];
+  libraryTestingSwitchService.onGenerate$ = of([]);
+
+  const userTestingService = jasmine.createSpyObj(
     'UserService', ['getCurrentUser', 'hasRole']
   );
-  userService.getCurrentUser.and.returnValue({
+  userTestingService.getCurrentUser.and.returnValue({
     first_name: 'John',
     last_name: 'Doe',
     library: {
@@ -49,39 +51,28 @@ describe('MenuComponent', () => {
       current: '1'
     }
   });
-  userService.hasRole.and.returnValue(true);
+  userTestingService.hasRole.and.returnValue(true);
+
+  recordTestingService.getRecord.and.returnValue(of({
+    metadata: {
+      code: '1'
+    }
+  }));
 
   beforeEach(async(() => {
-    const spy = jasmine.createSpyObj('RecordService', ['getRecord']);
-
     TestBed.configureTestingModule({
       imports: [
-        CollapseModule,
-        RecordModule,
+        AppModule,
         TranslateModule.forRoot(),
-        BsDatepickerModule.forRoot(),
-        HttpClientModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        FormsModule,
-        TypeaheadModule.forRoot(),
         RouterTestingModule
       ],
-      declarations: [ MenuComponent, InterfaceInfoComponent ],
       providers: [
-        { provide: RecordService, useValue: spy },
-        { provide: UserService, useValue: userService }
+        { provide: RecordService, useValue: recordTestingService },
+        { provide: UserService, useValue: userTestingService },
+        { provide: LibrarySwitchService, useValue: libraryTestingSwitchService }
       ]
     })
-    .compileComponents();
-
-    recordServiceSpy = TestBed.get(RecordService);
-    recordServiceSpy.getRecord.and.returnValue(of({
-      metadata: {
-        code: '1'
-      }
-    }));
-
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -90,8 +81,7 @@ describe('MenuComponent', () => {
     fixture.detectChanges();
   });
 
-  // TODO: enable tests
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });
