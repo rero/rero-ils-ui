@@ -19,8 +19,8 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, LocalStorageService, RecordService, TranslateService as CoreTranslateService } from '@rero/ng-core';
 import { LibrarySwitchService } from '../service/library-switch.service';
-import { UserService } from '../service/user.service';
 import { MenuService } from '../service/menu.service';
+import { UserService } from '../service/user.service';
 
 @Component({
   selector: 'admin-menu',
@@ -83,11 +83,6 @@ export class MenuComponent implements OnInit {
   ngOnInit() {
     this.initLinksMenu();
     const currentUser = this._userService.getCurrentUser();
-    this._recordService.getRecord('organisations', currentUser.library.organisation.pid)
-    .subscribe(organisation => {
-      this.userMenu.entries[0].entries[0].href = `/${organisation.metadata.code}/`;
-    });
-
     this.languages = this._configService.languages;
     for (const lang of this.languages) {
       const data: any = { name: lang };
@@ -97,6 +92,7 @@ export class MenuComponent implements OnInit {
       }
       this.languagesMenu.entries[0].entries.splice(0, 0, data);
     }
+
     this.userMenu.entries.push({
       name: `${currentUser.first_name[0]}${currentUser.last_name[0]}`,
       entries: [
@@ -112,19 +108,6 @@ export class MenuComponent implements OnInit {
       ]
     });
 
-    this._librarySwitchService.onVisibleMenu$.subscribe((visible) => {
-      if (
-        visible
-        && this._userService.hasRole('system_librarian')
-        && this._librarySwitchService.entries.length === 0) {
-          this._librarySwitchService.generateMenu();
-      }
-    });
-
-    this._librarySwitchService.onGenerate$.subscribe((entries: any) => {
-      this.librariesSwitchMenu.entries[0].entries = entries;
-    });
-
     this.recordTypes = [{
       type: 'documents',
       field: 'autocomplete_title',
@@ -134,9 +117,29 @@ export class MenuComponent implements OnInit {
       field: 'autocomplete_name',
       getSuggestions: (query, persons) => this.getPersonsSuggestions(query, persons)
     }];
+
+    this._recordService.getRecord('organisations', currentUser.library.organisation.pid)
+      .subscribe(organisation => {
+        this.userMenu.entries[0].entries[0].href = `/${organisation.metadata.code}/`;
+      });
+
+    this._librarySwitchService.onVisibleMenu$.subscribe((visible) => {
+      if (
+        visible
+        && this._userService.hasRole('system_librarian')
+        && this._librarySwitchService.entries.length === 0) {
+        this._librarySwitchService.generateMenu();
+      }
+    });
+
+    this._librarySwitchService.onGenerate$.subscribe((entries: any) => {
+      this.librariesSwitchMenu.entries[0].entries = entries;
+    });
+
+
   }
 
-  changeLibrary(item: {name: string, id: string}) {
+  changeLibrary(item: { name: string, id: string }) {
     this._librarySwitchService.switch(item.id);
   }
 
