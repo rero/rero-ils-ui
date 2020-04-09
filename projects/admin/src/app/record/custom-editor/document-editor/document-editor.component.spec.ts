@@ -45,8 +45,7 @@ const testingRoute = {
           key: 'documents',
         }
       ],
-      showSearchInput: true,
-      adminMode: true
+      showSearchInput: true
     }
   },
   queryParams: of({})

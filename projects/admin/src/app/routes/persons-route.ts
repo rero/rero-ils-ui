@@ -18,6 +18,7 @@ import { RouteInterface, RecordSearchComponent, DetailComponent } from '@rero/ng
 import { PersonsBriefViewComponent } from '../record/brief-view/persons-brief-view.component';
 import { PersonDetailViewComponent } from '../record/detail-view/person-detail-view/person-detail-view.component';
 import { BaseRoute } from './Base-route';
+import { of } from 'rxjs';
 
 export class PersonsRoute extends BaseRoute implements RouteInterface {
 
@@ -37,7 +38,10 @@ export class PersonsRoute extends BaseRoute implements RouteInterface {
       ],
       data: {
         linkPrefix: 'records',
-        adminMode: false,
+        adminMode: () => of({
+          can: false,
+          message: ''
+        }),
         types: [
           {
             key: this.name,

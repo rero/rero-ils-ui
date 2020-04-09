@@ -18,6 +18,7 @@ import { BaseRoute } from './Base-route';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { OrganisationDetailViewComponent } from '../record/detail-view/organisation-detail-view/organisation-detail-view.component';
 import { RouteInterface, DetailComponent, EditorComponent } from '@rero/ng-core';
+import { of } from 'rxjs';
 
 export class OrganisationsRoute extends BaseRoute implements RouteInterface {
 
@@ -37,7 +38,10 @@ export class OrganisationsRoute extends BaseRoute implements RouteInterface {
       ],
       data: {
         linkPrefix: 'records',
-        adminMode: false,
+        adminMode: () => of({
+          can: false,
+          message: ''
+        }),
         types: [
           {
             key: this.name,

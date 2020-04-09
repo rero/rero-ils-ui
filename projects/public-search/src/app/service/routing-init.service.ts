@@ -16,13 +16,13 @@
  */
 import { Injectable } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-
-import { RecordSearchComponent, DetailComponent } from '@rero/ng-core';
+import { TranslateService } from '@ngx-translate/core';
+import { DetailComponent, RecordSearchComponent } from '@rero/ng-core';
+import { Observable, of, Subscriber } from 'rxjs';
+import { AppConfigService } from '../app-config.service';
 import { DocumentBriefComponent } from '../document-brief/document-brief.component';
 import { PersonBriefComponent } from '../person-brief/person-brief.component';
-import { Observable, Subscriber } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
-import { AppConfigService } from '../app-config.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -57,7 +57,10 @@ export class RoutingInitService {
       ],
       data: {
         showSearchInput: false,
-        adminMode: false,
+        adminMode: () => of({
+          can: false,
+          message: ''
+        }),
         detailUrl: `/${viewcode}/:type/:pid`,
         types: [
           {
