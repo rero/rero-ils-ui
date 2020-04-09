@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -35,12 +35,12 @@ import {
 import { UiSwitchModule } from 'ngx-toggle-switch';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { FrontpageBoardComponent } from './frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from './frontpage/frontpage.component';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
 import { InterfaceInfoComponent } from './interface-info/interface-info.component';
 import { MenuComponent } from './menu/menu.component';
-import { AuthorNameTranslatePipe } from './pipe/author-name-translate.pipe';
 import { BioInformationsPipe } from './pipe/bio-informations.pipe';
 import { BirthDatePipe } from './pipe/birth-date.pipe';
 import { MefTitlePipe } from './pipe/mef-title.pipe';
@@ -50,7 +50,6 @@ import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policie
 import { DocumentsBriefViewComponent } from './record/brief-view/documents-brief-view/documents-brief-view.component';
 import { ItemTypesBriefViewComponent } from './record/brief-view/item-types-brief-view.component';
 import { LibrariesBriefViewComponent } from './record/brief-view/libraries-brief-view.component';
-import { LocationComponent } from './record/detail-view/library-detail-view/location/location.component';
 import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-brief-view.component';
 import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view.component';
 import { PersonsBriefViewComponent } from './record/brief-view/persons-brief-view.component';
@@ -88,6 +87,7 @@ import { ItemTypeDetailViewComponent } from './record/detail-view/item-type-deta
 import { DayOpeningHoursComponent } from './record/detail-view/library-detail-view/day-opening-hours/day-opening-hours.component';
 import { ExceptionDateComponent } from './record/detail-view/library-detail-view/exception-date/exception-date.component';
 import { LibraryDetailViewComponent } from './record/detail-view/library-detail-view/library-detail-view.component';
+import { LocationComponent } from './record/detail-view/library-detail-view/location/location.component';
 import { LocationDetailViewComponent } from './record/detail-view/location-detail-view/location-detail-view.component';
 import { BudgetSelectLineComponent } from './record/detail-view/organisation-detail-view/budget-select-line/budget-select-line.component';
 import { BudgetSelectComponent } from './record/detail-view/organisation-detail-view/budget-select/budget-select.component';
@@ -100,8 +100,8 @@ import { RefComponent } from './record/editor/ref/ref.component';
 import { RemoteAutocompleteInputTypeComponent } from './record/editor/remote-autocomplete/remote-autocomplete.component';
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { AppConfigService } from './service/app-config.service';
+import { SharedPipesModule } from './shared/shared-pipes.module';
 import { TranslateLoader } from './translate/loader/translate-loader';
-import { ErrorPageComponent } from './error/error-page/error-page.component';
 
 @NgModule({
   declarations: [
@@ -148,7 +148,6 @@ import { ErrorPageComponent } from './error/error-page/error-page.component';
     ItemAvailabilityComponent,
     ItemTransactionComponent,
     ItemTransactionsComponent,
-    AuthorNameTranslatePipe,
     PatronDetailViewComponent,
     InterfaceInfoComponent,
     RefComponent,
@@ -185,6 +184,7 @@ import { ErrorPageComponent } from './error/error-page/error-page.component';
     HttpClientModule,
     ReactiveFormsModule,
     RecordModule,
+    SharedPipesModule,
     TabsModule.forRoot(),
     TooltipModule.forRoot(),
     FormlyModule.forRoot({

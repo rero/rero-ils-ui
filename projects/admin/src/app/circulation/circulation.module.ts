@@ -16,36 +16,35 @@
  */
 
 
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyModule } from '@ngx-formly/core';
+import { RecordModule } from '@rero/ng-core';
 import { BsDropdownModule, CollapseModule } from 'ngx-bootstrap';
-import { CardComponent } from './patron/card/card.component';
 import { CheckinComponent } from './checkin/checkin.component';
 import { CirculationRoutingModule } from './circulation-routing.module';
-import { CommonModule } from '@angular/common';
-import { FormlyModule } from '@ngx-formly/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ItemComponent } from './item/item.component';
 import { ItemsListComponent } from './items-list/items-list.component';
+import { MainRequestComponent } from './main-request/main-request.component';
+import { CardComponent } from './patron/card/card.component';
+import { HistoryItemComponent } from './patron/history/history-item/history-item.component';
+import { HistoryComponent } from './patron/history/history.component';
 import { LoanComponent } from './patron/loan/loan.component';
 import { MainComponent } from './patron/main/main.component';
-import { MainRequestComponent } from './main-request/main-request.component';
-import { NgModule } from '@angular/core';
-import { PatronTransactionsComponent } from './patron/patron-transactions/patron-transactions.component';
-import {
-  PatronTransactionComponent
-} from './patron/patron-transactions/patron-transaction/patron-transaction.component';
-import {
-  PatronTransactionEventComponent
-} from './patron/patron-transactions/patron-transaction-event/patron-transaction-event.component';
 import {
   PatronTransactionEventFormComponent
 } from './patron/patron-transactions/patron-transaction-event-form/patron-transaction-event-form.component';
-import { PickupComponent } from './patron/pickup/pickup.component';
+import { PatronTransactionEventComponent } from './patron/patron-transactions/patron-transaction-event/patron-transaction-event.component';
+import { PatronTransactionComponent } from './patron/patron-transactions/patron-transaction/patron-transaction.component';
+import { PatronTransactionsComponent } from './patron/patron-transactions/patron-transactions.component';
 import { PickupItemComponent } from './patron/pickup/pickup-item/pickup-item.component';
+import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
-import { RecordModule } from '@rero/ng-core';
-import { RequestedComponent } from './patron/requested/requested.component';
 import { RequestedItemComponent } from './patron/requested/requested-item/requested-item.component';
+import { RequestedComponent } from './patron/requested/requested.component';
 import { RequestedItemsListComponent } from './requested-items-list/requested-items-list.component';
+import { SharedPipesModule } from '../shared/shared-pipes.module';
 
 
 @NgModule({
@@ -66,7 +65,9 @@ import { RequestedItemsListComponent } from './requested-items-list/requested-it
     PatronTransactionsComponent,
     PatronTransactionComponent,
     PatronTransactionEventComponent,
-    PatronTransactionEventFormComponent
+    PatronTransactionEventFormComponent,
+    HistoryComponent,
+    HistoryItemComponent
   ],
   imports: [
     CommonModule,
@@ -76,7 +77,8 @@ import { RequestedItemsListComponent } from './requested-items-list/requested-it
     RecordModule,
     FormsModule,
     ReactiveFormsModule,
-    FormlyModule
+    FormlyModule,
+    SharedPipesModule
   ],
   entryComponents: [
     PatronTransactionEventFormComponent

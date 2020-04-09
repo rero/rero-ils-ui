@@ -19,12 +19,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CheckinComponent } from './checkin/checkin.component';
 import { MainRequestComponent } from './main-request/main-request.component';
+import { HistoryComponent } from './patron/history/history.component';
 import { LoanComponent } from './patron/loan/loan.component';
 import { MainComponent } from './patron/main/main.component';
+import { PatronTransactionsComponent } from './patron/patron-transactions/patron-transactions.component';
+import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
 import { RequestedComponent } from './patron/requested/requested.component';
-import { PickupComponent } from './patron/pickup/pickup.component';
-import { PatronTransactionsComponent } from './patron/patron-transactions/patron-transactions.component';
 
 const routes: Routes = [
   {
@@ -60,6 +61,10 @@ const routes: Routes = [
       {
         path: 'fees',
         component: PatronTransactionsComponent
+      },
+      {
+        path: 'history',
+        component: HistoryComponent
       }
     ]
   }, {
