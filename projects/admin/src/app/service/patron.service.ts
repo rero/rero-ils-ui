@@ -19,7 +19,7 @@ import { Injectable } from '@angular/core';
 import { ApiService, RecordService } from '@rero/ng-core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { Item } from '../circulation/items';
+import { Item, LoanState } from '../circulation/items';
 import { User } from '../class/user';
 
 @Injectable({
@@ -162,13 +162,30 @@ export class PatronService {
   }
 
   /**
-   * Get Loans by query
-   * @param query - string
+   * Get items history
+   * @param patronPid - string : the patron pid to search
+   * @param fromLimit - int: low interval boundary (in days from now). Default is 183 (6 months)
+   * @param toLimit - int: high interval boundary (in days from now). Default is 0 (today)
    * @return Observable
    */
-  private getLoans(query: string) {
+  getHistory(patronPid: string, fromLimit?: number, toLimit?: number) {
+    fromLimit = fromLimit || Math.round(6 * 365 / 12);  // 6 months
+    toLimit = toLimit || 0;
+    const states = [LoanState.CANCELLED, LoanState.ITEM_RETURNED];
+    const statesQuery = states.map(state => `state:${state}`).join(' OR ');
+    const query = `patron_pid:${patronPid} AND (${statesQuery}) end_date:[now-${fromLimit}d/d TO now-${toLimit}d/d]`;
+    return this.getLoans(query, '-end_date');
+  }
+
+  /**
+   * Get Loans by query
+   * @param query - string : Query to execute to find loans
+   * @param sort - string : Sorting criteria
+   * @return Observable
+   */
+  private getLoans(query: string, sort?: string) {
     return this.recordService.getRecords(
-      'loans', query, 1, RecordService.MAX_REST_RESULTS_SIZE
+      'loans', query, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, null, sort
     ).pipe(
       map(data => data.hits),
       map(hits => (hits.total === 0 ? [] : hits.hits))

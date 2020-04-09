@@ -80,6 +80,14 @@
           </span>
         </a>
       </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}"
+          [routerLink]="['/circulation', 'patron', patron.barcode, 'history']"
+          translate>History</a>
+      </li>
     </ul>
     <div class="mt-4">
       <router-outlet></router-outlet>
