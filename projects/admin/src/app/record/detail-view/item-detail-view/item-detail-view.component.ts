@@ -14,22 +14,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { extractIdOnRef, RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable } from 'rxjs';
-import { RecordService, extractIdOnRef } from '@rero/ng-core';
+import { forkJoin, Observable, Subscription } from 'rxjs';
 import { LoanService } from '../../../service/loan.service';
-import { map, switchMap, tap } from 'rxjs/operators';
-import { MainTitleService } from '../../../service/main-title.service';
 
 @Component({
   selector: 'admin-item-detail-view',
   templateUrl: './item-detail-view.component.html',
   styles: []
 })
-export class ItemDetailViewComponent implements DetailRecord, OnInit {
+export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
   /** Observable resolving record data */
   record$: Observable<any>;
+
+  /** Record subscription */
+  private _recordObs: Subscription;
 
   /** Resource type */
   type: string;
@@ -53,41 +54,27 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit {
    */
   constructor(
     private recordService: RecordService,
-    private loanService: LoanService,
-    private _mainTitleService: MainTitleService
+    private loanService: LoanService
   ) {}
 
   ngOnInit() {
-    // TODO: should be rewritten to avoid multiple subscribe
-    this.record$
-      .pipe(
-        tap(record => {
-          this.record = record;
-          // numberOfRequests
-          this.loanService
-            .numberOfRequests$(record.metadata.pid)
-            .subscribe((count: number) => {
-              this.numberOfRequests = count;
-            });
-          // location and library
-          this.recordService
-            .getRecord('locations', record.metadata.location.pid)
-            .subscribe(location => {
-              this.location = location;
-              this.recordService.getRecord(
-                'libraries',
-                extractIdOnRef(location.metadata.library.$ref)
-              ).subscribe(library => this.library = library);
-            });
-        })
-      ).subscribe();
+    this._recordObs = this.record$.subscribe( record => {
+      this.record = record;
+      const numberOfRequest$ = this.loanService.numberOfRequests$(record.metadata.pid);
+      const locationRecord$ = this.recordService.getRecord('locations', record.metadata.location.pid);
+      forkJoin([numberOfRequest$, locationRecord$]).subscribe(
+        ([numberOfRequest, location]) => {
+          this.numberOfRequests = numberOfRequest;
+          this.location = location;
+          this.recordService.getRecord('libraries', extractIdOnRef(location.metadata.library.$ref)).subscribe(
+            library => this.library = library
+          );
+        }
+      );
+    });
   }
 
-  /**
-   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
-   * @param titleMetadata: title metadata
-   */
-  getMainTitle(titleMetadata: any): string {
-    return this._mainTitleService.getMainTitle(titleMetadata);
+  ngOnDestroy() {
+    this._recordObs.unsubscribe();
   }
 }

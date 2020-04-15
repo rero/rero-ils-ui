@@ -24,8 +24,8 @@
 
     <!-- TITLE -->
     <ng-container *ngIf="record.metadata.title">
-      <h1 *ngIf="getMainTitle(record.metadata.title) !== null" class="pl-0">
-        {{ getMainTitle(record.metadata.title) }}
+      <h1 *ngIf="record.metadata.title | mainTitle as title" class="pl-0">
+        {{ title }}
       </h1>
     </ng-container>
   </header>

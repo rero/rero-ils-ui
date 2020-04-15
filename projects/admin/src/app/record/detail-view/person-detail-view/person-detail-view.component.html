@@ -142,8 +142,8 @@
     <article id="collapse-rero" class="card-body collapse show">
       <ul class="list-unstyled mb-0" *ngFor="let document of documents">
         <li>
-          <a [routerLink]="['/records', 'documents', 'detail', document.metadata.pid]" *ngIf="getMainTitle(document.metadata.title) != null">
-            {{ getMainTitle(document.metadata.title) }}
+          <a [routerLink]="['/records', 'documents', 'detail', document.metadata.pid]" *ngIf="document.metadata.title | mainTitle as title">
+            {{ title }}
           </a>
         </li>
       </ul>

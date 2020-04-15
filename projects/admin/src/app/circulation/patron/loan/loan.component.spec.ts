@@ -19,15 +19,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { CoreModule, RecordModule } from '@rero/ng-core';
-import { ItemsListComponent } from '../../items-list/items-list.component';
-import { LoanComponent } from './loan.component';
-import { ItemComponent } from '../../item/item.component';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { UserService } from '../../../service/user.service';
-import { userTestingService, patronTestingService } from 'projects/admin/tests/utils';
+import { patronTestingService, userTestingService } from 'projects/admin/tests/utils';
 import { PatronService } from '../../../service/patron.service';
+import { UserService } from '../../../service/user.service';
+import { CirculationModule } from '../../circulation.module';
+import { LoanComponent } from './loan.component';
 
 
 describe('LoanComponent', () => {
@@ -38,21 +34,14 @@ describe('LoanComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
-        CoreModule,
-        RecordModule,
         RouterTestingModule,
         HttpClientModule,
-        CollapseModule,
-        BrowserAnimationsModule
+        CirculationModule
       ],
-      declarations: [
-        LoanComponent,
-        ItemsListComponent,
-        ItemComponent ],
-        providers: [
-          { provide: UserService, useValue: userTestingService },
-          { provide: PatronService, useValue: patronTestingService }
-        ]
+      providers: [
+        { provide: UserService, useValue: userTestingService },
+        { provide: PatronService, useValue: patronTestingService }
+      ]
     })
     .compileComponents();
   }));

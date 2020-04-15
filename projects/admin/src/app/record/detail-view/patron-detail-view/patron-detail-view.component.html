@@ -29,7 +29,7 @@
         </dd>
       </dl>
       <!-- TYPE -->
-      <dl class="row mb-0" *ngIf="isPatron">
+      <dl class="row mb-0" *ngIf="hasRole('patron')">
         <dt class="col-sm-3 offset-sm-2 offset-md-0">
           {{ 'Type' | translate }}:
         </dt>
@@ -38,7 +38,7 @@
         </dd>
       </dl>
       <!-- TYPE -->
-      <dl class="row mb-0" *ngIf="isLibrarian">
+      <dl class="row mb-0" *ngIf="hasRole('librarian')">
         <dt class="col-sm-3 offset-sm-2 offset-md-0">
           {{ 'Library' | translate }}:
         </dt>

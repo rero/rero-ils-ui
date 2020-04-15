@@ -14,28 +14,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, LOCALE_ID, Injector } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-
-import { CoreConfigService, RecordModule, TranslateService } from '@rero/ng-core';
-
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
-import { AppConfigService } from './app-config.service';
-import { DocumentBriefComponent } from './document-brief/document-brief.component';
-import { PersonBriefComponent } from './person-brief/person-brief.component';
-import { MefTitlePipe } from './pipes/mef-title.pipe';
-import { BirthDatePipe } from './pipes/birth-date.pipe';
-import { BioInformationsPipe } from './pipes/bio-informations.pipe';
-import { TranslateModule, TranslateLoader as BaseTranslateLoader } from '@ngx-translate/core';
-import { TranslateLoader } from './translate/loader/translate-loader';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { SearchBarComponent } from './search-bar/search-bar.component';
+import { Injector, LOCALE_ID, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
-import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { CoreConfigService, RecordModule, TranslateService } from '@rero/ng-core';
+import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { SharedPipesModule } from 'projects/admin/src/app/shared/shared-pipes.module';
+import { AppConfigService } from './app-config.service';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { DocumentBriefComponent } from './document-brief/document-brief.component';
 import { MainComponent } from './main/main.component';
+import { PersonBriefComponent } from './person-brief/person-brief.component';
+import { BioInformationsPipe } from './pipes/bio-informations.pipe';
+import { BirthDatePipe } from './pipes/birth-date.pipe';
+import { MefTitlePipe } from './pipes/mef-title.pipe';
+import { SearchBarComponent } from './search-bar/search-bar.component';
+import { TranslateLoader } from './translate/loader/translate-loader';
 
 @NgModule({
   declarations: [
@@ -61,7 +60,8 @@ import { MainComponent } from './main/main.component';
       },
       isolate: false
     }),
-    TypeaheadModule.forRoot()
+    TypeaheadModule.forRoot(),
+    SharedPipesModule
   ],
   providers: [
     {

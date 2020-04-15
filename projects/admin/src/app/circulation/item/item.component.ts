@@ -19,7 +19,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MainTitleService } from '../../service/main-title.service';
 import { OrganisationService } from '../../service/organisation.service';
 import { Item, ItemAction, Loan, LoanState } from '../items';
 import { PatronTransactionService } from '../patron-transaction.service';
@@ -59,15 +58,14 @@ export class ItemComponent implements OnInit {
 
   /**
    * Constructor
-   * @param recordService: Record Service
-   * @param organisationService: Organisation Service
-   * @param patronTransactionService: Patron transaction Service
+   * @param _recordService: Record Service
+   * @param _organisationService: Organisation Service
+   * @param _patronTransactionService: Patron transaction Service
    */
   constructor(
-    private recordService: RecordService,
-    private organisationService: OrganisationService,
-    private patronTransactionService: PatronTransactionService,
-    private _mainTitleService: MainTitleService
+    private _recordService: RecordService,
+    private _organisationService: OrganisationService,
+    private _patronTransactionService: PatronTransactionService
     ) {  }
 
   /**
@@ -77,16 +75,16 @@ export class ItemComponent implements OnInit {
     if (this.item && this.item.loan && this.item.loan.pid) {
       const loanPid = this.item.loan.pid;
 
-      this.patronTransactionService.patronTransactionsByLoan$(loanPid, 'overdue', 'open').subscribe(
+      this._patronTransactionService.patronTransactionsByLoan$(loanPid, 'overdue', 'open').subscribe(
         (transactions) => {
-          this.totalAmountOfFee = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
+          this.totalAmountOfFee = this._patronTransactionService.computeTotalTransactionsAmount(transactions);
           if (this.totalAmountOfFee > 0) {
             this.hasFeesEmitter.emit(true);
           }
         }
       );
 
-      this.notifications$ = this.recordService.getRecords(
+      this.notifications$ = this._recordService.getRecords(
         'notifications', `loan.pid:${loanPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
         map((results: any) => results.hits.hits)
       );
@@ -122,14 +120,6 @@ export class ItemComponent implements OnInit {
    * @return: current organisation
    */
   get organisation() {
-    return this.organisationService.organisation;
-  }
-
-  /**
-   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
-   * @param titleMetadata: title metadata
-   */
-  getMainTitle(titleMetadata: any): string {
-    return this._mainTitleService.getMainTitle(titleMetadata);
+    return this._organisationService.organisation;
   }
 }

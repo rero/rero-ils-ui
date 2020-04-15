@@ -14,21 +14,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { Observable } from 'rxjs';
+import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MainTitleService } from '../../../service/main-title.service';
 
 @Component({
   selector: 'admin-acquisition-order-line-detail-view',
   templateUrl: './acquisition-order-line-detail-view.component.html'
 })
-export class AcquisitionOrderLineDetailViewComponent implements OnInit, DetailRecord {
+export class AcquisitionOrderLineDetailViewComponent implements OnInit, DetailRecord, OnDestroy {
 
   /** Observable resolving record data */
   record$: Observable<any>;
+
+  /** Record subscription */
+  private _recordObs: Subscription;
 
   /** Resource type */
   type: string;
@@ -41,13 +43,12 @@ export class AcquisitionOrderLineDetailViewComponent implements OnInit, DetailRe
    * @param recordService RecordService
    */
   constructor(
-    private _recordService: RecordService,
-    private _mainTitleService: MainTitleService
+    private _recordService: RecordService
   ) { }
 
   /** On init hook */
   ngOnInit() {
-    this.record$.subscribe(record => {
+    this._recordObs = this.record$.subscribe(record => {
       // get order record
       this.order$ = this._recordService.getRecord('acq_orders', record.metadata.acq_order.pid).pipe(
         map(order => order));
@@ -55,10 +56,9 @@ export class AcquisitionOrderLineDetailViewComponent implements OnInit, DetailRe
   }
 
   /**
-   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
-   * @param titleMetadata: title metadata
+   * Destroy
    */
-  getMainTitle(titleMetadata: any): string {
-    return this._mainTitleService.getMainTitle(titleMetadata);
+  ngOnDestroy(): void {
+    this._recordObs.unsubscribe();
   }
 }

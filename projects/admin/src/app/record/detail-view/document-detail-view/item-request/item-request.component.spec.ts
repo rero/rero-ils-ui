@@ -17,16 +17,12 @@
 import { HttpClientModule } from '@angular/common/http';
 import { LOCALE_ID } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { FormlyModule } from '@ngx-formly/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { RecordModule } from '@rero/ng-core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { ItemRequestComponent } from './item-request.component';
 import { of } from 'rxjs';
+import { AppModule } from '../../../../app.module';
 import { LoanService } from '../../../../service/loan.service';
-
+import { ItemRequestComponent } from './item-request.component';
 
 
 describe('ItemRequestComponent', () => {
@@ -40,15 +36,10 @@ describe('ItemRequestComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        FormlyModule,
         HttpClientModule,
-        RecordModule,
         TranslateModule.forRoot(),
-        RouterTestingModule
+        AppModule
       ],
-      declarations: [ ItemRequestComponent ],
       providers: [
         BsModalRef,
         {provide: LOCALE_ID, useValue: 'en-US' },

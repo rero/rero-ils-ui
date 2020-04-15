@@ -38,14 +38,14 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
   settings = new Map<string, string[]>();
 
   /** The observer to the record observable */
-  private recordObs = null;
+  private _recordObs = null;
 
   /** The list of item types concerned by the circulation policy */
   itemTypes = new Set();
 
   /** On init hook */
   ngOnInit() {
-    this.recordObs = this.record$.subscribe(record => {
+    this._recordObs = this.record$.subscribe(record => {
       this.record = record;
       if (record.metadata.settings) {
         record.metadata.settings.forEach(setting => {
@@ -66,5 +66,7 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
   }
 
   /** On destroy hook */
-  ngOnDestroy() { this.recordObs.unsubscribe(); }
+  ngOnDestroy() {
+    this._recordObs.unsubscribe();
+  }
 }

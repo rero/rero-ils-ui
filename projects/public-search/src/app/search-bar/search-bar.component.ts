@@ -1,12 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { MainTitleService } from 'projects/admin/src/app/service/main-title.service';
+import { MainTitlePipe } from '../../../../admin/src/app/pipe/main-title.pipe';
 
 
 @Component({
   selector: 'public-search-search-bar',
   templateUrl: './search-bar.component.html',
-  styleUrls: ['./search-bar.component.css']
+  styleUrls: ['./search-bar.component.css'],
+  providers: [MainTitlePipe]
 })
 export class SearchBarComponent implements OnInit {
 
@@ -31,10 +32,10 @@ export class SearchBarComponent implements OnInit {
   }
 
   constructor(
-    private translateService: TranslateService,
-    private _mainTitleService: MainTitleService
+    private _translateService: TranslateService,
+    private _mainTitlePipe: MainTitlePipe
   ) {
-      this.placeholder = this.translateService.instant('Search');
+      this.placeholder = this._translateService.instant('Search');
    }
 
   ngOnInit() {
@@ -63,7 +64,7 @@ export class SearchBarComponent implements OnInit {
         text,
         query: '',
         index: 'persons',
-        category: this.translateService.instant('direct links'),
+        category: this._translateService.instant('direct links'),
         href: `/${this.viewcode}/persons/${hit.metadata.pid}`,
         iconCssClass: 'fa fa-user'
       });
@@ -74,11 +75,11 @@ export class SearchBarComponent implements OnInit {
   getDocumentsSuggestions(query, documents) {
     const values = [];
     documents.hits.hits.map(hit => {
-      let text = this.getMainTitle(hit.metadata.title);
+      let text = this._mainTitlePipe.transform(hit.metadata.title);
       let truncate = false;
       if (text.length > this.maxLengthSuggestion) {
         truncate = true;
-        text = this.getMainTitle(hit.metadata.title).substr(0, this.maxLengthSuggestion);
+        text = this._mainTitlePipe.transform(hit.metadata.title).substr(0, this.maxLengthSuggestion);
       }
       text = text.replace(new RegExp(query, 'gi'), `<b>${query}</b>`);
       if (truncate) {
@@ -86,20 +87,12 @@ export class SearchBarComponent implements OnInit {
       }
       values.push({
         text,
-        query: this.getMainTitle(hit.metadata.title).replace(/[:\-\[\]()/"]/g, ' ').replace(/\s\s+/g, ' '),
+        query: this._mainTitlePipe.transform(hit.metadata.title).replace(/[:\-\[\]()/"]/g, ' ').replace(/\s\s+/g, ' '),
         index: 'documents',
-        category: this.translateService.instant('documents')
+        category: this._translateService.instant('documents')
         // href: `/${this.viewcode}/documents/${hit.metadata.pid}`
       });
     });
     return values;
-  }
-
-  /**
-   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
-   * @param titleMetadata: title metadata
-   */
-  getMainTitle(titleMetadata: any): string {
-    return this._mainTitleService.getMainTitle(titleMetadata);
   }
 }

@@ -17,12 +17,8 @@
 
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { AppModule } from '../../../../app.module';
 import { ExceptionDatesListComponent } from './exception-dates-list.component';
-import { RecordModule } from '@rero/ng-core';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import { CommonModule } from '@angular/common';
 import { LOCALE_ID } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -32,12 +28,8 @@ describe('ExceptionDatesListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ExceptionDatesListComponent ],
       imports: [
-        CommonModule,
-        RecordModule,
-        ModalModule.forRoot(),
-        BsDatepickerModule.forRoot(),
+        AppModule,
         TranslateModule.forRoot()
       ],
       providers: [{provide: LOCALE_ID, useValue: 'en-US' }]

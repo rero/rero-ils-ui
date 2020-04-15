@@ -15,21 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable } from 'rxjs';
-import { MainTitleService } from '../../../service/main-title.service';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'admin-document-detail-view',
   templateUrl: './document-detail-view.component.html',
   styles: []
 })
-export class DocumentDetailViewComponent implements DetailRecord, OnInit {
+export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
 
   /** Observable resolving record data */
   record$: Observable<any>;
+
+  /** Record subscription */
+  private _recordObs: Subscription;
 
   /** Resource type */
   type: string;
@@ -44,15 +46,19 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit {
    * @param _translateService: TranslateService
    */
   constructor(
-    private _translateService: TranslateService,
-    private _mainTitleService: MainTitleService
+    private _translateService: TranslateService
   ) { }
 
   /** On init hook */
   ngOnInit() {
-    this.record$.subscribe((record: any) => {
+    this._recordObs = this.record$.subscribe((record: any) => {
       this.record = record;
     });
+  }
+
+  /** On destroy hook */
+  ngOnDestroy(): void {
+    this._recordObs.unsubscribe();
   }
 
   /**
@@ -191,13 +197,5 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit {
       return 'electronic';
     }
     return 'standard';
-  }
-
-  /**
-   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
-   * @param titleMetadata: title metadata
-   */
-  getMainTitle(titleMetadata: any): string {
-    return this._mainTitleService.getMainTitle(titleMetadata);
   }
 }

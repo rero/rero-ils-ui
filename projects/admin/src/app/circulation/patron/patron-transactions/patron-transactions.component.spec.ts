@@ -1,12 +1,8 @@
-import { CoreModule, RecordModule } from '@rero/ng-core';
 import { HttpClientModule } from '@angular/common/http';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DefaultTransactionComponent } from './patron-transaction/default-transaction/default-transaction.component';
-import { OverdueTransactionComponent } from './patron-transaction/overdue-transaction/overdue-transaction.component';
-import { PatronTransactionComponent } from './patron-transaction/patron-transaction.component';
-import { PatronTransactionEventComponent } from './patron-transaction-event/patron-transaction-event.component';
+import { CirculationModule } from '../../circulation.module';
 import { PatronTransactionsComponent } from './patron-transactions.component';
 
 describe('PatronTransactionsComponent', () => {
@@ -17,17 +13,9 @@ describe('PatronTransactionsComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
-        CoreModule,
-        RecordModule,
         RouterTestingModule,
-        HttpClientModule
-      ],
-      declarations: [
-        DefaultTransactionComponent,
-        OverdueTransactionComponent,
-        PatronTransactionsComponent,
-        PatronTransactionComponent,
-        PatronTransactionEventComponent
+        HttpClientModule,
+        CirculationModule
       ]
     })
     .compileComponents();

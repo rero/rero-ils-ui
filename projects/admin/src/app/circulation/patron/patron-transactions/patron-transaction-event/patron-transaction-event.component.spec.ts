@@ -1,9 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { CoreModule, RecordModule } from '@rero/ng-core';
-import { PatronTransactionEventComponent } from './patron-transaction-event.component';
 import { HttpClientModule } from '@angular/common/http';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { CirculationModule } from '../../../circulation.module';
+import { PatronTransactionEventComponent } from './patron-transaction-event.component';
 
 describe('PatronTransactionEventComponent', () => {
   let component: PatronTransactionEventComponent;
@@ -13,12 +12,8 @@ describe('PatronTransactionEventComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
-        CoreModule,
-        RecordModule,
-        HttpClientModule
-      ],
-      declarations: [
-        PatronTransactionEventComponent
+        HttpClientModule,
+        CirculationModule
       ]
     })
     .compileComponents();

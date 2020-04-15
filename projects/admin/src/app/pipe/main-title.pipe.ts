@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2020 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,30 +14,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { Pipe, PipeTransform } from '@angular/core';
 
-import { Injectable } from '@angular/core';
-
-@Injectable({
-  providedIn: 'root'
+@Pipe({
+  name: 'mainTitle'
 })
-export class MainTitleService {
-
-  constructor() { }
+export class MainTitlePipe implements PipeTransform {
 
   /**
-   * Get main title
-   * @param titleMetadata: document title metadata
+   * extract the main title from document metadata
+   * @param titleMetadata:  the document title metadata (as `getRecord` response with resolve=1)
+   * @return string: the document main title or null if no title found.
    */
-  getMainTitle(titleMetadata: any): string {
-    let mainTitle: string = null;
+  transform(titleMetadata: any): string | null {
     if (titleMetadata == null) {
-      return;
+      return null;
     }
-    titleMetadata.forEach(metadata => {
-      if (metadata.type === 'bf:Title') {
-        mainTitle = metadata._text;
-      }
-    });
-    return mainTitle;
+    const mainTitles: Array<any> = titleMetadata.filter(title => title.type === 'bf:Title');
+    return (mainTitles.length > 0)
+      ? mainTitles.pop()._text
+      : null;
   }
+
 }

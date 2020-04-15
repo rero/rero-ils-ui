@@ -17,16 +17,19 @@
 
 import { NgModule } from '@angular/core';
 import { AuthorNameTranslatePipe } from '../pipe/author-name-translate.pipe';
+import { MainTitlePipe } from '../pipe/main-title.pipe';
 import { ProvisionActivityPipe } from '../pipe/provision-activity.pipe';
 
 @NgModule({
-  declarations: SharedPipesModule.pipes,
-  exports: SharedPipesModule.pipes
-})
-export class SharedPipesModule {
-
-  static readonly pipes = [
+  declarations: [
     AuthorNameTranslatePipe,
+    MainTitlePipe,
     ProvisionActivityPipe
-  ];
-}
+  ],
+  exports: [
+    AuthorNameTranslatePipe,
+    MainTitlePipe,
+    ProvisionActivityPipe
+  ]
+})
+export class SharedPipesModule {}
