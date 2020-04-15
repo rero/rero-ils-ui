@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { map, mergeMap } from 'rxjs/operators';
-import { MainTitleService } from '../../../../../service/main-title.service';
 import { Item } from '../../../../items';
 import { PatronTransaction } from '../../../../patron-transaction';
 
@@ -18,8 +17,7 @@ export class OverdueTransactionComponent implements OnInit {
   item: Item;
 
   constructor(
-    private _recordService: RecordService,
-    private _mainTitleService: MainTitleService
+    private _recordService: RecordService
   ) { }
 
   /** Load item informations if the transaction is linked to a loan */
@@ -31,13 +29,5 @@ export class OverdueTransactionComponent implements OnInit {
         map(data => new Item(data.metadata))
       ).subscribe((data) => this.item = data);
     }
-  }
-
-  /**
-   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
-   * @param titleMetadata: title metadata
-   */
-  getMainTitle(titleMetadata: any): string {
-    return this._mainTitleService.getMainTitle(titleMetadata);
   }
 }

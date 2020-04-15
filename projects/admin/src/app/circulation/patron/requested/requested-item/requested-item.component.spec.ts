@@ -18,10 +18,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { recordTestingService } from 'projects/admin/tests/utils';
-import { of } from 'rxjs';
-import { RequestedItemComponent } from './requested-item.component';
 import { RecordService } from '@rero/ng-core';
+import { recordTestingService } from 'projects/admin/tests/utils';
+import { CirculationModule } from '../../../circulation.module';
+import { RequestedItemComponent } from './requested-item.component';
 
 
 describe('RequestedItemComponent', () => {
@@ -33,15 +33,12 @@ describe('RequestedItemComponent', () => {
       imports: [
         RouterTestingModule,
         TranslateModule.forRoot({}),
-        HttpClientModule
-      ],
-      declarations: [
-        RequestedItemComponent,
-        RequestedItemComponent
+        HttpClientModule,
+        CirculationModule
       ],
       providers: [
         { provide: RecordService, useValue: recordTestingService }
-      ]
+    ]
     })
     .compileComponents();
   }));

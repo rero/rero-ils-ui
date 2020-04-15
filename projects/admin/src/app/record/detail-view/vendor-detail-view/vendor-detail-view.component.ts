@@ -35,15 +35,15 @@ export class VendorDetailViewComponent implements DetailRecord {
 
   /**
    * Constructor
-   * @param translateService TranslateService
+   * @param _translateService : TranslateService
    */
-  constructor(private translateService: TranslateService) { }
+  constructor(private _translateService: TranslateService) { }
 
   /**
    * Get Current language interface
    * @return string - language
    */
   get currentLanguage() {
-    return this.translateService.currentLang;
+    return this._translateService.currentLang;
   }
 }

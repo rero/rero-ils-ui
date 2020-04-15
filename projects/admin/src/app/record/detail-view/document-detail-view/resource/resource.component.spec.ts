@@ -16,11 +16,8 @@
  */
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { AppModule } from '../../../../app.module';
 import { ResourceComponent } from './resource.component';
-import { RelatedResourceComponent } from '../related-resource/related-resource.component';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 
 describe('ResourceComponent', () => {
@@ -31,12 +28,7 @@ describe('ResourceComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
-        CollapseModule,
-        BrowserAnimationsModule
-      ],
-      declarations: [
-        ResourceComponent,
-        RelatedResourceComponent
+        AppModule
       ]
     })
     .compileComponents();

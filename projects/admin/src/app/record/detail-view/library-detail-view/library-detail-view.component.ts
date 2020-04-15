@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
+import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { Observable, Subscription } from 'rxjs';
 import { UserService } from '../../../service/user.service';
 
 @Component({
@@ -25,10 +25,13 @@ import { UserService } from '../../../service/user.service';
   templateUrl: './library-detail-view.component.html',
   styles: []
 })
-export class LibraryDetailViewComponent implements DetailRecord, OnInit {
+export class LibraryDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
 
   /** Observable resolving record data */
   record$: Observable<any>;
+
+  /** Record subscription */
+  private _recordObs: Subscription;
 
   /** Resource type */
   type: string;
@@ -44,9 +47,12 @@ export class LibraryDetailViewComponent implements DetailRecord, OnInit {
     private _userService: UserService
   ) { }
 
+  /**
+   * Init
+   */
   ngOnInit() {
     // Load linked locations
-    this.record$.subscribe(
+    this._recordObs = this.record$.subscribe(
       (data) => {
         const libraryPid = data.metadata.pid;
         this._recordService
@@ -66,6 +72,13 @@ export class LibraryDetailViewComponent implements DetailRecord, OnInit {
         this.isUserCanAddLocation = this._userService.getCurrentUser().getCurrentLibrary() === libraryPid;
       }
     );
+  }
+
+  /**
+   * Destroy
+   */
+  ngOnDestroy(): void {
+    this._recordObs.unsubscribe();
   }
 
   /** Delete a location event listener

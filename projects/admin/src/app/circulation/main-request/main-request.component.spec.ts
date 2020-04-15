@@ -17,11 +17,10 @@
 
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { RecordModule } from '@rero/ng-core';
-import { RequestedItemsListComponent } from '../requested-items-list/requested-items-list.component';
+import { CirculationModule } from '../circulation.module';
 import { MainRequestComponent } from './main-request.component';
+
 
 describe('MainRequestComponent', () => {
   let component: MainRequestComponent;
@@ -29,8 +28,11 @@ describe('MainRequestComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RecordModule, RouterTestingModule, HttpClientModule, TranslateModule.forRoot()],
-      declarations: [ MainRequestComponent, RequestedItemsListComponent ]
+      imports: [
+        HttpClientModule,
+        TranslateModule.forRoot(),
+        CirculationModule
+      ]
     })
     .compileComponents();
   }));

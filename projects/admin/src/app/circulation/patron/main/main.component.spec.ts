@@ -20,9 +20,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
-import { ToastrModule } from 'ngx-toastr';
 import { recordTestingService } from 'projects/admin/tests/utils';
-import { CardComponent } from '../card/card.component';
+import { CirculationModule } from '../../circulation.module';
 import { MainComponent } from './main.component';
 
 
@@ -36,9 +35,8 @@ describe('MainComponent', () => {
         TranslateModule.forRoot(),
         RouterTestingModule,
         HttpClientModule,
-        ToastrModule.forRoot()
+        CirculationModule
       ],
-      declarations: [MainComponent, CardComponent],
       providers: [
         { provide: RecordService, useValue: recordTestingService }
       ]

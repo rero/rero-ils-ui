@@ -14,17 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ItemsListComponent } from './items-list.component';
+import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { CoreModule, RecordModule } from '@rero/ng-core';
-import { ItemComponent } from '../item/item.component';
-import { HttpClientModule } from '@angular/common/http';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CirculationModule } from '../circulation.module';
+import { ItemsListComponent } from './items-list.component';
+
 
 describe('ItemsListComponent', () => {
   let component: ItemsListComponent;
@@ -34,16 +30,9 @@ describe('ItemsListComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        TranslateModule,
-        CoreModule,
-        RecordModule,
+        TranslateModule.forRoot(),
         HttpClientModule,
-        CollapseModule,
-        BrowserAnimationsModule
-      ],
-      declarations: [
-        ItemsListComponent,
-        ItemComponent
+        CirculationModule
       ]
     })
     .compileComponents();

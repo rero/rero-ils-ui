@@ -19,9 +19,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { AppModule } from '../app.module';
 import { UserService } from '../service/user.service';
 import { FrontpageComponent } from './frontpage.component';
-import { FrontpageBoardComponent } from './frontpage-board/frontpage-board.component';
 
 
 describe('FrontpageComponent', () => {
@@ -48,11 +48,8 @@ describe('FrontpageComponent', () => {
       imports: [
         RouterTestingModule,
         TranslateModule.forRoot({}),
-        HttpClientModule
-      ],
-      declarations: [
-        FrontpageComponent,
-        FrontpageBoardComponent
+        HttpClientModule,
+        AppModule
       ],
       providers: [
         { provide: UserService, useValue: userService }

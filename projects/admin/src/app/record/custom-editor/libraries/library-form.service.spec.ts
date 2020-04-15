@@ -16,15 +16,13 @@
  */
 
 import { TestBed } from '@angular/core/testing';
-
+import { AppModule } from '../../../app.module';
 import { LibraryFormService } from './library-form.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('LibraryFormService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
-      FormsModule,
-      ReactiveFormsModule
+      AppModule
     ]
   }));
 

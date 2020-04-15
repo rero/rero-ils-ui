@@ -16,15 +16,10 @@
  */
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { AppModule } from '../../../../app.module';
 import { ExceptionDatesEditComponent } from './exception-dates-edit.component';
-import { CommonModule } from '@angular/common';
-import { RecordModule } from '@rero/ng-core';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { LOCALE_ID } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { UiSwitchModule } from 'ngx-toggle-switch';
 import { TranslateModule } from '@ngx-translate/core';
 
 describe('ExceptionDatesEditComponent', () => {
@@ -33,17 +28,14 @@ describe('ExceptionDatesEditComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ExceptionDatesEditComponent ],
       imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        RecordModule,
-        UiSwitchModule,
-        BsDatepickerModule.forRoot(),
+        AppModule,
         TranslateModule.forRoot()
       ],
-      providers: [BsModalRef, {provide: LOCALE_ID, useValue: 'en-US' }]
+      providers: [
+        BsModalRef,
+        { provide: LOCALE_ID, useValue: 'en-US' }
+      ]
     })
     .compileComponents();
   }));

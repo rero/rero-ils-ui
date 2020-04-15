@@ -24,8 +24,7 @@ import { ItemsService } from '../items.service';
 
 @Component({
   selector: 'admin-circulation-main-request',
-  templateUrl: './main-request.component.html',
-  styleUrls: ['./main-request.component.scss']
+  templateUrl: './main-request.component.html'
 })
 export class MainRequestComponent implements OnInit {
 

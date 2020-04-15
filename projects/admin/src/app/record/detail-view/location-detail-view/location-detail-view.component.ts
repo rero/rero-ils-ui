@@ -15,14 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'admin-location-detail-view',
   templateUrl: './location-detail-view.component.html'
 })
-export class LocationDetailViewComponent implements OnInit {
+export class LocationDetailViewComponent implements OnInit, OnDestroy, DetailRecord {
 
   /** Observable resolving record data */
   record$: Observable<any>;
@@ -34,15 +35,22 @@ export class LocationDetailViewComponent implements OnInit {
   record: any;
 
   /** The observer to the record observable */
-  private recordObs = null;
+  private _recordObs: Subscription;
 
   /** Constructor */
   constructor() { }
 
   /** On init hook */
   ngOnInit() {
-    this.recordObs = this.record$.subscribe(record => {
+    this._recordObs = this.record$.subscribe(record => {
       this.record = record;
     });
+  }
+
+  /**
+   * Destroy
+   */
+  ngOnDestroy(): void {
+    this._recordObs.unsubscribe();
   }
 }

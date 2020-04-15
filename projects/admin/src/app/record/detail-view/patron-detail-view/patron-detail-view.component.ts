@@ -14,37 +14,55 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { PatronService } from '../../../service/patron.service';
 
 @Component({
   selector: 'admin-patron-detail-view',
   templateUrl: './patron-detail-view.component.html'
 })
-export class PatronDetailViewComponent implements OnInit, DetailRecord {
+export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestroy {
 
+  /** Observable resolving record data */
   record$: Observable<any>;
 
+  /** Record subscription */
+  private _recordObs: Subscription;
+
+  /** Document record */
   record: any;
 
+  /** record type */
   type: string;
 
-  constructor(private patronService: PatronService) { }
+  /** Constructor
+   * @param _patronService : PatronService
+   */
+  constructor(private _patronService: PatronService) { }
 
+  /**
+   * Init
+   */
   ngOnInit() {
-    this.record$.subscribe(record => {
+    this._recordObs = this.record$.subscribe(record => {
       this.record = record;
-      this.patronService.setRecord(record);
+      this._patronService.setRecord(record);
     });
   }
 
-  get isPatron() {
-    return this.patronService.hasRole('patron');
+  /**
+   * Destroy
+   */
+  ngOnDestroy(): void {
+    this._recordObs.unsubscribe();
   }
 
-  get isLibrarian() {
-    return this.patronService.hasRole('librarian');
+  /** Check if the current logged user has a specific role
+   * @return True | False depending if the current logged user has the desired role
+   */
+  hasRole(role: string): boolean {
+    return this._patronService.hasRole(role);
   }
 }

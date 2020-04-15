@@ -27,7 +27,7 @@ export class PatronTransactionComponent implements OnInit {
     private _organisationService: OrganisationService,
     private _patronTransactionService: PatronTransactionService,
     private _modalService: BsModalService
-  ) { }
+  ) {}
 
   ngOnInit() {
     if (this.transaction) {

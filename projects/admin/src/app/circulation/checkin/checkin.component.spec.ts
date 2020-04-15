@@ -17,57 +17,28 @@
 
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { CoreModule, RecordModule } from '@rero/ng-core';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { userTestingService } from '../../../../tests/utils';
 import { UserService } from '../../service/user.service';
-import { ItemComponent } from '../item/item.component';
-import { ItemsListComponent } from '../items-list/items-list.component';
-import { CardComponent } from '../patron/card/card.component';
+import { CirculationModule } from '../circulation.module';
 import { CheckinComponent } from './checkin.component';
 
 
-describe('CheckoutComponent', () => {
+describe('CheckinComponent', () => {
   let component: CheckinComponent;
   let fixture: ComponentFixture<CheckinComponent>;
-
-  const userService = jasmine.createSpyObj(
-    'UserService', ['getCurrentUser']
-  );
-  userService.getCurrentUser.and.returnValue({
-    first_name: 'John',
-    last_name: 'Doe',
-    library: {
-      pid: '1',
-      organisation: {
-        pid: '1'
-      },
-      current: '1',
-    },
-    getCurrentLibrary: () => '1'
-  });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
-        CoreModule,
-        RecordModule,
         HttpClientModule,
         RouterTestingModule,
-        CollapseModule,
-        BrowserAnimationsModule
-      ],
-      declarations: [
-        CardComponent,
-        CheckinComponent,
-        ItemsListComponent,
-        ItemComponent
+        CirculationModule
       ],
       providers: [
-        { provide: UserService, useValue: userService }
+        { provide: UserService, useValue: userTestingService }
       ]
     })
     .compileComponents();

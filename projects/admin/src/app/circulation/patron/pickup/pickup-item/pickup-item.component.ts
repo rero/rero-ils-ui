@@ -16,7 +16,6 @@
  */
 import { Component, Input, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { MainTitleService } from '../../../../service/main-title.service';
 import { PatronService } from '../../../../service/patron.service';
 
 @Component({
@@ -42,8 +41,7 @@ export class PickupItemComponent implements OnInit {
    */
   constructor(
     private _recordService: RecordService,
-    private _patronService: PatronService,
-    private _mainTitleService: MainTitleService
+    private _patronService: PatronService
   ) { }
 
   /**
@@ -58,13 +56,5 @@ export class PickupItemComponent implements OnInit {
         );
       });
     }
-  }
-
-  /**
-   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
-   * @param titleMetadata: title metadata
-   */
-  getMainTitle(titleMetadata: any): string {
-    return this._mainTitleService.getMainTitle(titleMetadata);
   }
 }

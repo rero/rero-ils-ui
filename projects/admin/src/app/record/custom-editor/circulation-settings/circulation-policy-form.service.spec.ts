@@ -16,18 +16,14 @@
  */
 
 import { TestBed } from '@angular/core/testing';
+import { AppModule } from '../../../app.module';
 
 import { CirculationPolicyFormService } from './circulation-policy-form.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RecordModule } from '@rero/ng-core';
 
 describe('CirculationPolicyFormService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
-      FormsModule,
-      RecordModule,
-      FormsModule,
-      ReactiveFormsModule
+      AppModule
     ]
   }));
 

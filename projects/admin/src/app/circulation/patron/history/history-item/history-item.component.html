@@ -25,12 +25,12 @@
         <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" class="fa" aria-hidden="true"></i>
       </button>
       <a [routerLink]="['/records','documents','detail', document.metadata.pid]"
-         *ngIf="getMainTitle(document.metadata.title) != null">
+         *ngIf="document.metadata.title | mainTitle as title">
         <ng-container *ngIf="isCollapsed; else titleNotCollapsed">
-          {{ getMainTitle(document.metadata.title) | truncateText: 10 }}
+          {{ title | truncateText: 10 }}
         </ng-container>
         <ng-template #titleNotCollapsed>
-          {{ getMainTitle(document.metadata.title) }}
+          {{ title }}
         </ng-template>
       </a>
     </div>

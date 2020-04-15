@@ -16,15 +16,8 @@
  */
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { AppModule } from '../../../app.module';
 import { LibraryComponent } from './library.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RecordModule } from '@rero/ng-core';
-import { TabsModule } from 'ngx-bootstrap/tabs';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { UiSwitchModule } from 'ngx-toggle-switch';
-import { ExceptionDatesListComponent } from './exception-dates-list/exception-dates-list.component';
-import { ExceptionDatesEditComponent } from './exception-dates-edit/exception-dates-edit.component';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
@@ -35,17 +28,8 @@ describe('LibraryComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        ExceptionDatesListComponent,
-        ExceptionDatesEditComponent,
-        LibraryComponent ],
       imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        RecordModule,
-        TabsModule.forRoot(),
-        UiSwitchModule,
-        BsDatepickerModule.forRoot(),
+        AppModule,
         HttpClientModule,
         RouterTestingModule,
         TranslateModule.forRoot()

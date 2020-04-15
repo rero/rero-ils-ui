@@ -19,7 +19,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { extractIdOnRef, RecordService } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
 import { ProvisionActivityType } from '../../../../pipe/provision-activity.pipe';
-import { MainTitleService } from '../../../../service/main-title.service';
 import { PatronService } from '../../../../service/patron.service';
 
 @Component({
@@ -53,8 +52,7 @@ export class HistoryItemComponent implements OnInit {
    */
   constructor(
     private _recordService: RecordService,
-    private _patronService: PatronService,
-    private _mainTitleService: MainTitleService
+    private _patronService: PatronService
   ) { }
 
   /**
@@ -80,14 +78,4 @@ export class HistoryItemComponent implements OnInit {
         });
     }
   }
-
-  /**
-   * Get main title (corresponding to 'bf_Title' type, present only once in metadata)
-   * @param titleMetadata: title metadata
-   * @return string: the document main title, `null` if not found
-   */
-  getMainTitle(titleMetadata: any): string {
-    return this._mainTitleService.getMainTitle(titleMetadata);
-  }
-
 }

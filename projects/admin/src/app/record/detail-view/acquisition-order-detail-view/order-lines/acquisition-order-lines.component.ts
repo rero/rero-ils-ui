@@ -17,7 +17,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
-import { MainTitleService } from '../../../../service/main-title.service';
 import { RecordPermissionMessageService } from '../../../../service/record-permission-message.service';
 
 @Component({
@@ -46,8 +45,7 @@ export class AcquisitionOrderLinesComponent {
   constructor(
     private _recordService: RecordService,
     private _recordUiService: RecordUiService,
-    private _recordPermissionMessage: RecordPermissionMessageService,
-    private _mainTitleService: MainTitleService
+    private _recordPermissionMessage: RecordPermissionMessageService
   ) { }
 
   /**
@@ -65,13 +63,5 @@ export class AcquisitionOrderLinesComponent {
   public showDeleteMessage(orderLine: object) {
     const message = this._recordPermissionMessage.generateMessage(orderLine);
     this._recordUiService.showDeleteMessage(message);
-  }
-
-  /**
-   * Get main title (correspondig to 'bf_Title' type, present only once in metadata)
-   * @param titleMetadata: title metadata
-   */
-  getMainTitle(titleMetadata: any): string {
-    return this._mainTitleService.getMainTitle(titleMetadata);
   }
 }

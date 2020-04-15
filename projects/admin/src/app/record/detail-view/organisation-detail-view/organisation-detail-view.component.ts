@@ -35,10 +35,16 @@ export class OrganisationDetailViewComponent implements DetailRecord {
    */
   type: string;
 
-  get isSystemLibrarian() {
+  /** Constructor
+   * @param _userService : UserService
+   */
+  constructor(private _userService: UserService) {}
+
+  /** Check if the current logged user is a system librarian
+   * @return True | False depending of the current logged user role
+   */
+  get isSystemLibrarian(): boolean {
     return this._userService.hasRole('system_librarian');
 
   }
-
-  constructor(private _userService: UserService) {}
 }

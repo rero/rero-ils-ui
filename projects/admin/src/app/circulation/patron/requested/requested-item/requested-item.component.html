@@ -20,9 +20,10 @@
     <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
   </div>
   <!-- TITLE -->
-  <div class="col-sm-5"><a [routerLink]="['/records', 'documents', 'detail', item.document.pid]"
-    *ngIf="getMainTitle(item.document.title) != null">
-    {{ getMainTitle(item.document.title) }}</a>
+  <div class="col-sm-5">
+    <a [routerLink]="['/records', 'documents', 'detail', item.document.pid]" *ngIf="item.document.title | mainTitle as title">
+      {{ title }}
+    </a>
   </div>
   <!-- EXPECTED AVAILABILITY -->
   <div class="col-sm-3">
