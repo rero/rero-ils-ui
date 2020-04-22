@@ -73,7 +73,7 @@ import { RequestedItemsListComponent } from './requested-items-list/requested-it
     PatronTransactionEventComponent,
     PatronTransactionEventFormComponent,
     OverdueTransactionComponent,
-    DefaultTransactionComponent
+    DefaultTransactionComponent,
     PatronTransactionEventFormComponent,
     HistoryComponent,
     HistoryItemComponent
