@@ -19,7 +19,7 @@ import { CanUpdateGuard } from '../guard/can-update.guard';
 import { RoleGuard } from '../guard/role.guard';
 import { PatronTypesBriefViewComponent } from '../record/brief-view/patron-types-brief-view.component';
 import { PatronTypesDetailViewComponent } from '../record/detail-view/patron-types-detail-view/patron-types-detail-view.component';
-import { BaseRoute } from './Base-route';
+import { BaseRoute } from './base-route';
 
 
 export class PatronTypesRoute extends BaseRoute implements RouteInterface {
