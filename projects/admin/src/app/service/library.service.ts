@@ -33,8 +33,8 @@ export class LibraryService {
     return this.recordService.getRecords(
       LibraryService.resource,
       undefined,
-      undefined,
-      0
+      1,
+      1
     ).pipe(
       map(results => results.hits.total)
     );
