@@ -47,7 +47,7 @@ export class LoanService {
   numberOfRequests$(itemPid: string) {
     const states = Object.values(this.statusRequest).join(' OR state:');
     const query = `item_pid:${itemPid} AND (state:${states})`;
-    return this.recordService.getRecords('loans', query, 1, 0).pipe(
+    return this.recordService.getRecords('loans', query, 1, 1).pipe(
       map(result => result.hits.total)
     );
   }
