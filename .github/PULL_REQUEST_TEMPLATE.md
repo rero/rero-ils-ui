@@ -3,6 +3,12 @@
 - Which task/US does it implement?
 - Which issue does it fix?
 
+## Dependencies
+
+My PR depends on `rero-ils#<xx>`'s PR(s):
+
+* rero/rero-ils#<xx>
+
 ## How to test?
 
 - What command should I have to run to test your PR?
