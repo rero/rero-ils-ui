@@ -114,6 +114,18 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   ) {}
 
   /**
+   * Get current pickup location
+   * @return pickup location name
+   */
+  get currentPickupLocation(): string {
+    const location = this.pickupLocations.find(loc => loc.value === this.transaction.metadata.pickup_location_pid);
+    if (location != null) {
+      return location.label;
+    }
+    return this._translateService.instant('No pickup location');
+  }
+
+  /**
    * Check if request can be cancelled
    * @return: true or false
    */
@@ -180,11 +192,12 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
         pickupLocationPid,
         this.itemPid
       )
-      .subscribe(() => {
+      .subscribe((data: any) => {
         this._toastrService.success(
           this._translateService.instant('The pickup location has been changed.'),
           this._translateService.instant('Request')
         );
+        this.transaction.metadata = data;
       });
   }
 

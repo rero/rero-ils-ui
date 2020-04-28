@@ -33,21 +33,23 @@
         </div>
       </ng-container>
       <!-- REQUESTS -->
-      <ng-container *ngIf="type === 'loan_request'">
+      <ng-container *ngIf="type === 'loan_request' && pickupLocations && pickupLocations.length > 0">
         <ng-container *ngIf="canUpdateRequestPickupLocation(); else pickupLocationName">
-          <select class="custom-select col-4">
-            <ng-container *ngFor="let pickup of pickupLocations">
-              <ng-container *ngIf="pickup.value === transaction.metadata.pickup_location_pid; else otherLocationsBlock">
-                <option selected>{{ pickup.label }}</option>
-              </ng-container>
-              <ng-template #otherLocationsBlock>
-                <option (click)="updateRequest(pickup.value)">{{ pickup.label }}</option>
-              </ng-template>
-            </ng-container>
-          </select>
+          <div class="btn-group col-4" dropdown>
+            <button id="button-basic" dropdownToggle type="button" class="btn btn-outline-secondary text-left dropdown-toggle"
+                    aria-controls="dropdown-basic">
+                    {{ currentPickupLocation }} <span class="caret"></span>
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+                role="menu" aria-labelledby="button-basic">
+              <li role="menuitem" *ngFor="let pickup of pickupLocations">
+                <a class="dropdown-item" (click)="updateRequest(pickup.value)">{{ pickup.label }}</a>
+              </li>
+            </ul>
+          </div>
         </ng-container>
         <ng-template #pickupLocationName>
-          <div class="col-4">
+          <div class="col-4" title="{{'The pickup location cannot be modified' | translate }}">
             {{ transaction.metadata.pickup_location_pid | getRecord:'locations':'field':'pickup_name' | async }}
           </div>
         </ng-template>
@@ -58,14 +60,15 @@
           <ng-container *ngIf="canCancelRequest(); else noCancel">
             <button
             type="button"
-            class="btn btn-danger btn-sm"
+            class="btn btn-outline-danger btn-sm"
             (click)="showCancelRequestDialog()"
           ><i class="fa fa-trash-o" aria-hidden="true"></i></button>
           </ng-container>
           <ng-template #noCancel>
             <button
             type="button"
-            class="btn btn-danger btn-sm"
+            class="btn btn-outline-danger btn-sm"
+            title="{{'The request cannot be cancelled' | translate }}"
             disabled
           ><i class="fa fa-trash-o" aria-hidden="true"></i></button>
           </ng-template>
