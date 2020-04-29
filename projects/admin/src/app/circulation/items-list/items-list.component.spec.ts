@@ -23,7 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule, RecordModule } from '@rero/ng-core';
 import { ItemComponent } from '../item/item.component';
 import { HttpClientModule } from '@angular/common/http';
-import { CollapseModule } from 'ngx-bootstrap';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ItemsListComponent', () => {

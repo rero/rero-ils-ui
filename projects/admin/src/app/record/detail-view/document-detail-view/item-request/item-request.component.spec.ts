@@ -22,13 +22,20 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { FormlyModule } from '@ngx-formly/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordModule } from '@rero/ng-core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ItemRequestComponent } from './item-request.component';
+import { of } from 'rxjs';
+import { LoanService } from '../../../../service/loan.service';
+
 
 
 describe('ItemRequestComponent', () => {
   let component: ItemRequestComponent;
   let fixture: ComponentFixture<ItemRequestComponent>;
+  const loanTestingService = jasmine.createSpyObj(
+    'LoanService', ['requestedBy$']
+  );
+  loanTestingService.requestedBy$.and.returnValue(of({}));
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,7 +49,11 @@ describe('ItemRequestComponent', () => {
         RouterTestingModule
       ],
       declarations: [ ItemRequestComponent ],
-      providers: [BsModalRef, {provide: LOCALE_ID, useValue: 'en-US' }]
+      providers: [
+        BsModalRef,
+        {provide: LOCALE_ID, useValue: 'en-US' },
+        {provide: LoanService,  useValue: loanTestingService}
+      ]
     })
     .compileComponents();
   }));

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { first } from 'rxjs/operators';
 import { RecordPermission, RecordPermissionService } from '../../../../service/record-permission.service';
 import { UserService } from '../../../../service/user.service';

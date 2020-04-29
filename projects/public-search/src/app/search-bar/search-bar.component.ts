@@ -41,11 +41,13 @@ export class SearchBarComponent implements OnInit {
     this.recordTypes = [{
       type: 'documents',
       field: 'autocomplete_title',
+      maxNumberOfSuggestions: 5,
       getSuggestions: (query, documents) => this.getDocumentsSuggestions(query, documents),
       preFilters: this.viewcode ? {view: this.viewcode} : {}
     }, {
       type: 'persons',
       field: 'autocomplete_name',
+      maxNumberOfSuggestions: 5,
       getSuggestions: (query, persons) => this.getPersonsSuggestions(query, persons),
       component: this,
       preFilters: this.viewcode ? {view: this.viewcode} : {}

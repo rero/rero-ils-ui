@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnInit } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { LoanService } from 'projects/admin/src/app/service/loan.service';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';

@@ -20,7 +20,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ExceptionDatesListComponent } from './exception-dates-list.component';
 import { RecordModule } from '@rero/ng-core';
-import { ModalModule, BsDatepickerModule } from 'ngx-bootstrap';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { CommonModule } from '@angular/common';
 import { LOCALE_ID } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';

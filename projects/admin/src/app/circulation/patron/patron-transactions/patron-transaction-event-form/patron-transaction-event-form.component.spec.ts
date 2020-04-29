@@ -6,7 +6,7 @@ import { FormlyModule } from '@ngx-formly/core';
 import { CoreModule } from '@rero/ng-core';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('PatronTransactionEventFormComponent', () => {

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { OrganisationService } from '../../../../service/organisation.service';
 import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '../../../patron-transaction';
 import { PatronTransactionService } from '../../../patron-transaction.service';

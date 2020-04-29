@@ -19,7 +19,10 @@ import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
-import { CollapseModule, BsDatepickerModule, TypeaheadModule, BsDropdownModule } from 'ngx-bootstrap';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { DatepickerModule } from 'ngx-bootstrap/datepicker';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { RecordModule } from '@rero/ng-core';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
@@ -35,7 +38,7 @@ describe('AppComponent', () => {
         FormsModule,
         RecordModule,
         HttpClientModule,
-        BsDatepickerModule.forRoot(),
+        DatepickerModule.forRoot(),
         BsDropdownModule.forRoot(),
         TranslateModule.forRoot({}),
         TypeaheadModule.forRoot()
