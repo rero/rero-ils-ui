@@ -1,34 +1,32 @@
 <!--
   RERO ILS UI
-   Copyright (C) 2019 RERO
-  
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU Affero General Public License as published by
-   the Free Software Foundation, version 3 of the License.
-  
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-   GNU Affero General Public License for more details.
-  
-   You should have received a copy of the GNU Affero General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  Copyright (C) 2019 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<h4 class="mt-4">{{ 'Access' | translate }}
-  <ng-container *ngIf="canAdd">
-    <ng-container [ngSwitch]="holdingType">
-      <a *ngSwitchCase="'standard'" class="btn btn-sm btn-outline-primary"
+  <div class="row" *ngIf="canAdd">
+    <div class="col" [ngSwitch]="holdingType">
+      <a *ngSwitchCase="'standard'" class="btn btn-sm btn-outline-primary mt-2 float-right"
         [routerLink]="['/', 'records', 'items', 'new']" [queryParams]="{ document: documentPid }">
         <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }}...
       </a>
-      <a *ngSwitchCase="'serial'" class="btn btn-sm btn-outline-primary"
+      <a *ngSwitchCase="'serial'" class="btn btn-sm btn-outline-primary float-right"
         [routerLink]="['/', 'records', 'holdings', 'new']" [queryParams]="{ document: documentPid }">
         <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }}...
       </a>
-    </ng-container>
-  </ng-container>
-</h4>
+    </div>
+  </div>
 
 <ng-container *ngIf="holdings">
   <admin-document-holding *ngFor="let holding of holdings" [holding]="holding" [holdingType]="holdingType"

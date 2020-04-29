@@ -103,8 +103,12 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
     const identifiers = [];
     identified.forEach((id: any) => {
       const status = id.status;
+      let idType = id.type;
       if ((undefined === status || status === 'valid') && id.type !== 'bf:Local') {
-        identifiers.push({type: id.type.split(':')[1], value: id.value });
+        if (id.type.indexOf(':') !== -1) {
+          idType = id.type.split(':')[1];
+        }
+        identifiers.push({type: idType, value: id.value });
       }
     });
     return identifiers;
