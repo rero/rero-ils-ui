@@ -23,16 +23,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormlyModule } from '@ngx-formly/core';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CoreConfigService, RecordModule, TranslateService } from '@rero/ng-core';
-import {
-  BsDatepickerModule,
-  BsDropdownModule,
-  BsLocaleService,
-  CollapseModule,
-  TabsModule,
-  TooltipModule,
-  TypeaheadModule,
-  PopoverModule
-} from 'ngx-bootstrap';
 import { UiSwitchModule } from 'ngx-toggle-switch';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -104,6 +94,14 @@ import { ItemAvailabilityComponent } from './record/item-availability/item-avail
 import { AppConfigService } from './service/app-config.service';
 import { SharedPipesModule } from './shared/shared-pipes.module';
 import { TranslateLoader } from './translate/loader/translate-loader';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { PopoverModule } from 'ngx-bootstrap/popover';
+import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 
 @NgModule({
   declarations: [

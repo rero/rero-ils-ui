@@ -23,32 +23,16 @@ import { CoreModule, RecordModule } from '@rero/ng-core';
 import { ItemsListComponent } from '../../items-list/items-list.component';
 import { LoanComponent } from './loan.component';
 import { ItemComponent } from '../../item/item.component';
-import { ItemsService } from '../../items.service';
-import { ToastrService } from 'ngx-toastr';
-import { CollapseModule } from 'ngx-bootstrap';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserService } from '../../../service/user.service';
+import { userTestingService, patronTestingService } from 'projects/admin/tests/utils';
+import { PatronService } from '../../../service/patron.service';
 
 
 describe('LoanComponent', () => {
   let component: LoanComponent;
   let fixture: ComponentFixture<LoanComponent>;
-
-  const userService = jasmine.createSpyObj(
-    'UserService', ['getCurrentUser']
-  );
-  userService.getCurrentUser.and.returnValue({
-    first_name: 'John',
-    last_name: 'Doe',
-    library: {
-      pid: '1',
-      organisation: {
-        pid: '1'
-      },
-      current: '1',
-    },
-    getCurrentLibrary: () => '1'
-  });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -66,7 +50,8 @@ describe('LoanComponent', () => {
         ItemsListComponent,
         ItemComponent ],
         providers: [
-          { provide: UserService, useValue: userService }
+          { provide: UserService, useValue: userTestingService },
+          { provide: PatronService, useValue: patronTestingService }
         ]
     })
     .compileComponents();

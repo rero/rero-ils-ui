@@ -21,7 +21,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule, RecordModule } from '@rero/ng-core';
-import { CollapseModule } from 'ngx-bootstrap';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { UserService } from '../../service/user.service';
 import { ItemComponent } from '../item/item.component';
 import { ItemsListComponent } from '../items-list/items-list.component';

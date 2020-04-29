@@ -32,3 +32,27 @@ recordTestingService.getRecord.and.returnValue(of({
   metadata: {
   }
 }));
+
+export const userTestingService = jasmine.createSpyObj(
+  'UserService', ['getCurrentUser']
+);
+userTestingService.getCurrentUser.and.returnValue({
+  first_name: 'John',
+  last_name: 'Doe',
+  library: {
+    pid: '1',
+    organisation: {
+      pid: '1'
+    },
+    current: '1',
+  },
+  getCurrentLibrary: () => '1'
+});
+
+export const patronTestingService = jasmine.createSpyObj(
+  'PatronService', ['getItems', 'currentPatron$']
+);
+patronTestingService.getItems.and.returnValue(of([]));
+patronTestingService.currentPatron$ = of({
+  pid: '1'
+});

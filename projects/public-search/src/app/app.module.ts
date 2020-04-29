@@ -30,10 +30,10 @@ import { BirthDatePipe } from './pipes/birth-date.pipe';
 import { BioInformationsPipe } from './pipes/bio-informations.pipe';
 import { TranslateModule, TranslateLoader as BaseTranslateLoader } from '@ngx-translate/core';
 import { TranslateLoader } from './translate/loader/translate-loader';
-import { BsLocaleService } from 'ngx-bootstrap';
+import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { createCustomElement } from '@angular/elements';
-import { TypeaheadModule } from 'ngx-bootstrap';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MainComponent } from './main/main.component';
 

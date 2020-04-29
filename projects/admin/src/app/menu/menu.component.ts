@@ -116,11 +116,13 @@ export class MenuComponent implements OnInit {
     this.recordTypes = [{
       type: 'documents',
       field: 'autocomplete_title',
+      maxNumberOfSuggestions: 5,
       preFilters: {organisation: currentUser.library.organisation.pid},
       getSuggestions: (query, documents) => this.getDocumentsSuggestions(query, documents)
     }, {
       type: 'persons',
       field: 'autocomplete_name',
+      maxNumberOfSuggestions: 5,
       getSuggestions: (query, persons) => this.getPersonsSuggestions(query, persons)
     }];
 

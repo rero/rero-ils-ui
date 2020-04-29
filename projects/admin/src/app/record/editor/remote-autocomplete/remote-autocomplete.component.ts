@@ -19,7 +19,7 @@ import { Component, OnInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { of, Observable } from 'rxjs';
 import { mergeMap, map } from 'rxjs/operators';
-import { TypeaheadMatch } from 'ngx-bootstrap';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import moment from 'moment';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';

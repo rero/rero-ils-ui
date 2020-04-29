@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { OrganisationService } from '../../../../service/organisation.service';
 import { PatronTransaction } from '../../../patron-transaction';
 import { PatronTransactionService } from '../../../patron-transaction.service';
