@@ -98,7 +98,7 @@ json-schema-form {
 // source: https://codepen.io/superjaberwocky/pen/AXdEWj
 .callout {
   border: 1px solid #eee;
-  border-left-width: 5px;
+  border-left-width: 5px !important;
   border-radius: 3px;
   h4 {
     margin-top: 0;
@@ -116,7 +116,7 @@ json-schema-form {
 }
 @each $name,$color in (default,#777),(primary,$primary),(success,$success),(danger,$danger),(warning,$warning),(info,$info), (dark,$dark) {
   .callout-#{$name} {
-    border-left-color: $color;
+    border-color: $color !important;
     h4 {
       color: $color;
     }

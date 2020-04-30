@@ -15,7 +15,7 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div [ngClass]="{'border-danger': item.actionDone === 'checkin' && (item.status === 'in_transit' || item.pending_loans || totalAmountOfFee > 0),
+<div [ngClass]="{'callout callout-warning': item.actionDone === itemAction.checkin && (item.status === 'in_transit' || item.pending_loans || totalAmountOfFee > 0),
   'text-secondary': item.status !== 'on_loan'}"
   class="row p-2 mb-1 border rounded align-middle"
   *ngIf="item">
@@ -69,17 +69,17 @@
   <!-- ACTION DONE -->
   <div class="col-lg-2">
     <ng-container *ngIf="item.actionDone" [ngSwitch]="item.actionDone">
-      <ng-container *ngSwitchCase="checkin">
+      <ng-container *ngSwitchCase="itemAction.checkin">
         <i class="fa fa-arrow-circle-o-down text-success align-baseline" aria-hidden="true"></i>
-        <span class="align-baseline ml-1">{{ item.actionDone | translate }}</span>
+        <span class="align-baseline ml-1" translate>checked in</span>
       </ng-container>
-      <ng-container *ngSwitchCase="checkout">
+      <ng-container *ngSwitchCase="itemAction.checkout">
         <i class="fa fa-arrow-circle-o-right text-success align-baseline" aria-hidden="true"></i>
-        <span class="align-baseline ml-1">{{ item.actionDone | translate }}</span>
+        <span class="align-baseline ml-1" translate>checked out</span>
       </ng-container>
-      <ng-container *ngSwitchCase="extendLoan">
+      <ng-container *ngSwitchCase="itemAction.extend_loan">
         <i class="fa fa-refresh text-success align-baseline" aria-hidden="true"></i>
-        <span class="align-baseline ml-1" translate>renew</span>
+        <span class="align-baseline ml-1" translate>renewed</span>
       </ng-container>
       <ng-container *ngSwitchDefault>
         <span class="align-baseline">{{ item.actionDone | translate }}</span>
