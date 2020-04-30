@@ -48,14 +48,8 @@ export class ItemComponent implements OnInit {
   /** Notifications related to the current loan */
   notifications$: Observable<any>;
 
-  /** Extend loan item action */
-  extendLoan = ItemAction.extend_loan;
-
-  /** Checkin item action */
-  checkin = ItemAction.checkin;
-
-  /** Checkout item action */
-  checkout = ItemAction.checkout;
+  /** ItemAction reference */
+  itemAction = ItemAction;
 
   /**
    * Constructor
