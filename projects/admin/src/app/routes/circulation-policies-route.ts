@@ -40,8 +40,8 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
       children: [
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: CirculationPolicyComponent, canActivate: [ CanUpdateGuard ] },
-        { path: 'new', component: CirculationPolicyComponent, canActivate: [ RoleGuard ], data: { roles: [ 'system_librarian' ]}  }
+        { path: 'edit/:pid', component: CirculationPolicyComponent, canActivate: [CanUpdateGuard] },
+        { path: 'new', component: CirculationPolicyComponent, canActivate: [RoleGuard], data: { roles: ['system_librarian'] } }
       ],
       data: {
         linkPrefix: 'records',
@@ -53,7 +53,11 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
             detailComponent: CircPolicyDetailViewComponent,
             canAdd: () => this._routeToolService.canSystemLibrarian(),
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType)
+            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            // use simple query for UI search
+            preFilters: {
+              simple: 1
+            }
           }
         ]
       }

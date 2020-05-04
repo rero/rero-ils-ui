@@ -38,7 +38,7 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
       children: [
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [CanUpdateGuard] },
         { path: 'new', component: EditorComponent }
       ],
       data: {
@@ -51,7 +51,6 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
             detailComponent: PatronDetailViewComponent,
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
-            aggregationsExpand: ['roles'],
             // Clean-up 'blocked_note' field content if blocked is false.
             postprocessRecordEditor: (record: any) => {
               if (record.blocked === false) {
@@ -59,6 +58,11 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
               }
               return record;
             },
+            // use simple query for UI search
+            preFilters: {
+              simple: 1
+            },
+            aggregationsExpand: ['roles']
           }
         ]
       }

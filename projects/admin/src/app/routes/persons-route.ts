@@ -48,7 +48,11 @@ export class PersonsRoute extends BaseRoute implements RouteInterface {
             label: 'Persons',
             component: PersonsBriefViewComponent,
             detailComponent: PersonDetailViewComponent,
-            aggregationsExpand: ['sources']
+            aggregationsExpand: ['sources'],
+            // use simple query for UI search
+            preFilters: {
+              simple: 1
+            }
           }
         ]
       }

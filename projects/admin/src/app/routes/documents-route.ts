@@ -55,6 +55,10 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             detailComponent: DocumentDetailViewComponent,
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            // use simple query for UI search
+            preFilters: {
+              simple: 1
+            },
             preprocessRecordEditor: (record: any) => {
               return this.removeKey(record, '_text');
             },

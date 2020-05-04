@@ -41,7 +41,7 @@ export class AcquisitionOrdersRoute extends BaseRoute implements RouteInterface 
       children: [
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [CanUpdateGuard] },
         { path: 'new', component: EditorComponent }
       ],
       data: {
@@ -54,6 +54,10 @@ export class AcquisitionOrdersRoute extends BaseRoute implements RouteInterface 
             detailComponent: AcquisitionOrderDetailViewComponent,
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            // use simple query for UI search
+            preFilters: {
+              simple: 1
+            },
             preCreateRecord: (data: any) => {
               const user = this._routeToolService.userService.getCurrentUser();
               data.order_date = formatDate(

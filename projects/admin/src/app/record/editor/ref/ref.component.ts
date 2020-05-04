@@ -61,7 +61,7 @@ export class RefComponent extends FieldWrapper implements OnInit {
       .getRecord('mef', v.split('/').pop(), 1)
       .pipe(
         map(data => {
-          for (const source of ['rero', 'bnf', 'gnd']) {
+          for (const source of ['rero', 'bnf', 'gnd', 'idref']) {
             if (
               data.metadata[source] &&
               data.metadata[source].preferred_name_for_person

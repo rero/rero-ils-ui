@@ -32,7 +32,7 @@ export class AcquisitionAccountsRoute extends BaseRoute implements RouteInterfac
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [CanUpdateGuard] },
         { path: 'new', component: EditorComponent }
       ],
       data: {
