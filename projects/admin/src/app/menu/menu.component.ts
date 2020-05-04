@@ -23,6 +23,11 @@ import { MainTitlePipe } from '../pipe/main-title.pipe';
 import { MenuService } from '../service/menu.service';
 import { UserService } from '../service/user.service';
 
+
+function escapeRegExp(data) {
+  return data.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
 @Component({
   selector: 'admin-menu',
   templateUrl: './menu.component.html',
@@ -185,7 +190,7 @@ export class MenuComponent implements OnInit {
     const values = [];
     persons.hits.hits.map(hit => {
       let text = this.getPersonName(hit.metadata);
-      text = text.replace(new RegExp(query, 'gi'), `<b>${query}</b>`);
+      text = text.replace(new RegExp(escapeRegExp(query), 'gi'), `<b>${query}</b>`);
       values.push({
         text,
         query: '',
@@ -208,7 +213,9 @@ export class MenuComponent implements OnInit {
         truncate = true;
         text = this._mainTitlePipe.transform(hit.metadata.title).substr(0, this.maxLengthSuggestion);
       }
-      text = text.replace(new RegExp(query, 'gi'), `<b>${query}</b>`);
+      console.log(text);
+      text = text.replace(new RegExp(escapeRegExp(query), 'gi'), `<b>${query}</b>`);
+      console.log(text);
       if (truncate) {
         text = text + ' ...';
       }

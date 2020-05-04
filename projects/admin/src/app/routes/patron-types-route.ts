@@ -40,8 +40,8 @@ export class PatronTypesRoute extends BaseRoute implements RouteInterface {
       children: [
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
-        { path: 'new', component: EditorComponent, canActivate: [ RoleGuard ], data: { roles: [ 'system_librarian' ]} }
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [CanUpdateGuard] },
+        { path: 'new', component: EditorComponent, canActivate: [RoleGuard], data: { roles: ['system_librarian'] } }
       ],
       data: {
         linkPrefix: 'records',
@@ -54,6 +54,10 @@ export class PatronTypesRoute extends BaseRoute implements RouteInterface {
             canAdd: () => this._routeToolService.canSystemLibrarian(),
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            // use simple query for UI search
+            preFilters: {
+              simple: 1
+            },
             preCreateRecord: (data: any) => {
               const user = this._routeToolService.userService.getCurrentUser();
               data.organisation = {

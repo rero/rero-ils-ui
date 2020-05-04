@@ -3,6 +3,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { MainTitlePipe } from '../../../../admin/src/app/pipe/main-title.pipe';
 
 
+function escapeRegExp(data) {
+  return data.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
 @Component({
   selector: 'public-search-search-bar',
   templateUrl: './search-bar.component.html',
@@ -59,7 +63,7 @@ export class SearchBarComponent implements OnInit {
     const values = [];
     persons.hits.hits.map(hit => {
       let text = SearchBarComponent.getPersonName(hit.metadata);
-      text = text.replace(new RegExp(query, 'gi'), `<b>${query}</b>`);
+      text = text.replace(new RegExp(escapeRegExp(query), 'gi'), `<b>${query}</b>`);
       values.push({
         text,
         query: '',
@@ -81,7 +85,7 @@ export class SearchBarComponent implements OnInit {
         truncate = true;
         text = this._mainTitlePipe.transform(hit.metadata.title).substr(0, this.maxLengthSuggestion);
       }
-      text = text.replace(new RegExp(query, 'gi'), `<b>${query}</b>`);
+      text = text.replace(new RegExp(escapeRegExp(query), 'gi'), `<b>${query}</b>`);
       if (truncate) {
         text = text + ' ...';
       }
