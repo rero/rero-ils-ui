@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap/modal';
 import { RecordUiService } from '@rero/ng-core';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { ItemsService } from 'projects/admin/src/app/service/items.service';
+import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
+import { UserService } from 'projects/admin/src/app/service/user.service';
 import { forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { ItemsService } from '../../../../service/items.service';
-import { RecordPermissionService } from '../../../../service/record-permission.service';
-import { UserService } from '../../../../service/user.service';
 import { ItemRequestComponent } from '../item-request/item-request.component';
 
 
@@ -59,7 +59,7 @@ export class HoldingItemComponent implements OnInit {
    * Constructor
    * @param _recordUiService - RecordUiService
    * @param _userService - UserService
-   * @param _recordPermissionService - RecordPermissionMessageService
+   * @param _recordPermissionService - RecordPermissionService
    * @param _modalService - BsModalService
    * @param _itemService - ItemService
    */

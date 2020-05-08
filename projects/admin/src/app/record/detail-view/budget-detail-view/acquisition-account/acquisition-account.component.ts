@@ -14,17 +14,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { RecordUiService } from '@rero/ng-core';
-import { RecordPermissionMessageService } from 'projects/admin/src/app/service/record-permission-message.service';
 import { BudgetTotalService } from 'projects/admin/src/app/service/budget-total.service';
+import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'admin-acquisition-account',
   templateUrl: './acquisition-account.component.html'
 })
-export class AcquisitionAccountComponent implements OnDestroy {
+export class AcquisitionAccountComponent implements OnInit, OnDestroy {
 
   /**
    * Account record
@@ -47,16 +47,30 @@ export class AcquisitionAccountComponent implements OnDestroy {
   private _subcription = new Subscription();
 
   /**
+   * account permissions
+   */
+  permissions: any;
+
+  /**
    * Constructor
    * @param _recordUiService - RecordUiService
-   * @param _recordPermissionMessage - RecordPermissionMessageService
+   * @param _recordPermissionService - RecordPermissionService
    * @param _budgetTotalService - BudgetTotalService
    */
   constructor(
     private _recordUiService: RecordUiService,
-    private _recordPermissionMessage: RecordPermissionMessageService,
+    private _recordPermissionService: RecordPermissionService,
     private _budgetTotalService: BudgetTotalService
   ) { }
+
+  /**
+   * On Init
+   */
+  ngOnInit() {
+    this._recordPermissionService.getPermission('acq_accounts', this.account.metadata.pid).subscribe(
+      (permissions) => this.permissions = permissions
+    );
+  }
 
   /**
    * On Destroy
@@ -81,11 +95,10 @@ export class AcquisitionAccountComponent implements OnDestroy {
   }
 
   /**
-   * Display message if the record cannot be deleted
-   * @param acqAccount - Acquisition Account record
+   * Return a message containing the reasons why the item cannot be requested
+   * @return the message to display into the tooltip box
    */
-  public showDeleteMessage(acqAccount: object) {
-    const message = this._recordPermissionMessage.generateMessage(acqAccount);
-    this._recordUiService.showDeleteMessage(message);
+  get deleteInfoMessage(): string {
+    return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
   }
 }

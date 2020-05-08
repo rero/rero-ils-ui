@@ -25,7 +25,7 @@ export class VendorsRoute extends BaseRoute implements RouteInterface {
   readonly name = 'vendors';
 
   /** Record type */
-  readonly recordType = 'persons';
+  readonly recordType = 'vendors';
 
   /**
    * Get Configuration

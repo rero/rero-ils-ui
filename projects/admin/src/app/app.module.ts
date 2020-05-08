@@ -102,6 +102,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+import { OrderLineComponent } from './record/detail-view/acquisition-order-detail-view/order-lines/order-line/order-line.component';
 
 @NgModule({
   declarations: [
@@ -172,7 +173,8 @@ import { BsLocaleService } from 'ngx-bootstrap/datepicker';
     RelatedResourceComponent,
     ResourceComponent,
     ItemRequestComponent,
-    ErrorPageComponent
+    ErrorPageComponent,
+    OrderLineComponent
   ],
   imports: [
     AppRoutingModule,

@@ -15,46 +15,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { RecordService, RecordUiService } from '@rero/ng-core';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
-import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'admin-acquisition-order-lines',
-  templateUrl: './acquisition-order-lines.component.html'
+  selector: 'admin-order-line',
+  templateUrl: './order-line.component.html',
+  styles: []
 })
-export class AcquisitionOrderLinesComponent implements OnInit {
+export class OrderLineComponent implements OnInit {
 
-  /** Acquisition order pid */
+  /** order line */
+  @Input() orderLine: any;
+
+  /** parent order */
   @Input() order: any;
 
-  /** Acquisition order Line observable */
-  @Input()
-  orderLines$: Observable<Array<any>>;
-
-  /** record permissions */
+  /** order line permission */
   permissions: any;
 
   /** Event for delete order line */
-  @Output() deleteOrderLineEmitter = new EventEmitter();
+  @Output() deleteOrderLine = new EventEmitter();
 
   /**
    * Constructor
-   * @param _recordService - RecordService
-   * @param _recordUiService - RecordUiService
    * @param _recordPermissionService - RecordPermissionService
    */
   constructor(
-    private _recordService: RecordService,
-    private _recordUiService: RecordUiService,
     private _recordPermissionService: RecordPermissionService
   ) { }
 
   /**
    * On init hook
    */
-  ngOnInit(): void {
-    this._recordPermissionService.getPermission('acq_orders', this.order.metadata.pid).subscribe(
+  ngOnInit() {
+    this._recordPermissionService.getPermission('acq_order_lines', this.orderLine.metadata.pid).subscribe(
       (permissions) => this.permissions = permissions
     );
   }
@@ -63,7 +57,16 @@ export class AcquisitionOrderLinesComponent implements OnInit {
    * Delete order line
    * @param orderLinePid - AcqOrderLine pid
    */
-  deleteOrderLine(orderLinePid: string) {
-    this.deleteOrderLineEmitter.emit(orderLinePid);
+  delete(orderLinePid: string) {
+    this.deleteOrderLine.emit(orderLinePid);
   }
+
+  /**
+   * Return a message containing the reasons wht the item cannot be requested
+   * @return the message to display into the tooltip box
+   */
+  get deleteInfoMessage(): string {
+    return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
+  }
+
 }

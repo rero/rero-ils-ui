@@ -14,81 +14,26 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<h4 class="mt-4" translate>Order lines</h4>
-
-<div class="mb-2">
-  <a *ngIf="!order.permissions.cannot_update"
-     class="btn btn-sm btn-primary"
+<h4 class="mt-4" translate>
+  {{ 'Order lines' | translate }}
+  <a *ngIf="permissions && permissions.update.can"
+     class="btn btn-sm btn-outline-primary"
      [routerLink]="['/', 'records', 'acq_order_lines', 'new']"
      [queryParams]="{ order: order.metadata.pid }"
   >
-    <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }}
+    <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} ...
   </a>
-</div>
-<div class="container" *ngIf="orderLines$ | async as orderLines; else noOrderLines">
-  <!-- HEADER -->
+</h4>
+<div class="container mt-2" *ngIf="orderLines$ | async as orderLines; else noOrderLines">
   <div class="row p-2 mb-1 bg-dark rounded text-light">
-    <div class="col-sm-1">#</div>
     <div class="col-sm-3" translate>Title</div>
     <div class="col-sm-2" translate>Amount</div>
     <div class="col-sm-1" translate>Quantity</div>
     <div class="col-sm-2" translate>Discount amount</div>
     <div class="col-sm-2" translate>Total amount</div>
   </div>
-  <div *ngFor="let orderLine of orderLines; let i = index">
-    <ng-container *ngIf="orderLine">
-      <div class="row p-2 mb-1 border rounded align-middle">
-        <!-- # -->
-        <div class="col-sm-1">
-          <a [routerLink]="['/records', 'acq_order_lines', 'detail', orderLine.metadata.pid]">
-            {{ i + 1 }}
-          </a>
-        </div>
-        <!-- DOCUMENT -->
-        <ng-container *ngIf="orderLine.metadata.document.pid | getRecord: 'documents' | async as document">
-        <div class="col-sm-3">
-          <a [routerLink]="['/records', 'documents', 'detail', document.metadata.pid]"
-             *ngIf="document.metadata.title | mainTitle as title">
-            {{ title }}
-          </a>
-        </div>
-        </ng-container>
-        <!-- AMOUNT -->
-        <div class="col-sm-2">
-          {{ orderLine.metadata.amount | currency:order.metadata.currency:'symbol' }}
-        </div>
-        <!-- QUANTITY -->
-        <div class="col-sm-1">
-          {{ orderLine.metadata.quantity }}
-        </div>
-        <!-- DISCOUNT_AMOUNT -->
-        <div class="col-sm-2">
-          {{ orderLine.metadata.discount_amount | currency:order.metadata.currency:'symbol' }}
-        </div>
-        <!-- TOTAL_AMOUNT -->
-        <div class="col-sm-2">
-          {{ orderLine.metadata.total_amount | currency:order.metadata.currency:'symbol' }}
-        </div>
-        <!-- ACTIONS -->
-        <div class="col-sm-1">
-          <button *ngIf="!orderLine.permissions.cannot_update" type="button" class="btn btn-link p-0"
-                  [routerLink]="['/records', 'acq_order_lines', 'edit', orderLine.metadata.pid]">
-            <i class="fa fa-pencil"></i>
-          </button>
-
-          <button *ngIf="!orderLine.permissions.cannot_delete" type="button" class="btn btn-link p-0 ml-1"
-                  (click)="delete(orderLine.metadata.pid)">
-            <i class="fa fa-trash"></i>
-          </button>
-          <ng-template #notDelete>
-            <button type="button" class="btn btn-dark btn-sm ml-1" (click)="showDeleteMessage(orderLine)">
-              <i class="fa fa-trash"></i>
-            </button>
-          </ng-template>
-        </div>
-      </div>
-    </ng-container>
-  </div>
+  <admin-order-line [orderLine]="orderLine" [order]="order" (deleteOrderLine)="deleteOrderLine($event)"
+                    *ngFor="let orderLine of orderLines"></admin-order-line>
 </div>
 
 <ng-template #noOrderLines>

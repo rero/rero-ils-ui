@@ -42,15 +42,16 @@ export class RecordPermissionService {
   ) { }
 
   /**
-   * Get Permission by ressource with pid
-   * @param resource - string
-   * @param pid - string
+   * Get Permission by resource with pid
+   * @param resource - string : the resource type
+   * @param pid - string : the resource pid (optional)
+   * @return Return an observable of RecordPermission
    */
-  getPermission(resource: string, pid: string) {
-    return this._httpClient.get<RecordPermission>(
-      `/api/permissions/${resource}/${pid}`,
-      this._httpOptions
-    );
+  getPermission(resource: string, pid?: string) {
+    const url = (pid == null)
+      ? `/api/permissions/${resource}`
+      : `/api/permissions/${resource}/${pid}`;
+    return this._httpClient.get<RecordPermission>(url, this._httpOptions);
   }
 
   /**
@@ -205,7 +206,10 @@ export class RecordPermissionService {
  */
 export interface RecordPermission {
   update: {
-    can: boolean,
+    can: boolean
+  };
+  create: {
+    can: boolean
   };
   delete: {
     can: boolean,
