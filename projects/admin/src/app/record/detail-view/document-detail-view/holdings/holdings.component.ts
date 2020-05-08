@@ -15,20 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
+import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { UserService } from 'projects/admin/src/app/service/user.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'admin-holdings',
   templateUrl: './holdings.component.html'
 })
-export class HoldingsComponent implements OnInit, OnDestroy {
+export class HoldingsComponent implements OnInit {
   /** Document pid */
   @Input() documentPid: string;
-
-  /** Holding observable reference */
-  holdgingsRef: any;
 
   /** Holdings */
   holdings: Array<any>;
@@ -41,28 +40,39 @@ export class HoldingsComponent implements OnInit, OnDestroy {
 
   /**
    * Constructor
-   * @param userService - UserService
-   * @param recordService - RecordService
+   * @param _userService - UserService
+   * @param _recordService - RecordService
+   * @param _recordUiService - RecordUiService
+   * @param _recordPermissionService - RecordPermissionService
    */
   constructor(
     private _userService: UserService,
     private _recordService: RecordService,
-    private _recordUiService: RecordUiService
+    private _recordUiService: RecordUiService,
+    private _recordPermissionService: RecordPermissionService
   ) { }
 
   /** Init */
   ngOnInit() {
-    this._loadHoldings(this.documentPid);
-  }
-
-  /** Destroy */
-  ngOnDestroy() {
-    this.holdgingsRef.unsubscribe();
+    const orgPid = this._userService.getCurrentUser().library.organisation.pid;
+    const query = `document.pid:${this.documentPid} AND organisation.pid:${orgPid}`;
+    const holdingRecordsRef = this._recordService.getRecords('holdings', query, 1, RecordService.MAX_REST_RESULTS_SIZE);
+    const permissionsRef = this._recordPermissionService.getPermission('holdings');
+    forkJoin([holdingRecordsRef, permissionsRef]).subscribe(
+      ([holdingsData, permissions]) => {
+        if (holdingsData.hits.total > 0) {
+          this.holdings = holdingsData.hits.hits;
+        }
+        this.canAdd = permissions.create.can;
+      }
+    );
   }
 
   /** Delete a given holding.
    *
-   * @param holding - the holding to delete
+   * @param data: object with 2 keys :
+   *          * 'holding' : the holding to delete
+   *          * 'callBakend' : boolean if backend API should be called
    */
   deleteHolding(data: { holding: any, callBackend: boolean }) {
     const holding = data.holding;
@@ -80,33 +90,5 @@ export class HoldingsComponent implements OnInit, OnDestroy {
           }
         });
     }
-  }
-
-  /**
-   * Load holdings by document pid
-   * @param documentPid - Document pid
-   * @returns void
-   */
-  private _loadHoldings(documentPid: string) {
-    const orgPid = this._userService.getCurrentUser().library.organisation.pid;
-    const query = `document.pid:${documentPid} AND organisation.pid:${orgPid}`;
-    this.holdgingsRef = this._recordService
-      .getRecords('holdings', query, 1, RecordService.MAX_REST_RESULTS_SIZE)
-      .subscribe((results: any) => {
-        // update permission
-        if (
-          results &&
-          results.permissions &&
-          results.permissions.cannot_create
-        ) {
-          this.canAdd = false;
-        } else {
-          this.canAdd = true;
-        }
-        // store holdings localy
-        if (results.hits.total > 0) {
-          this.holdings = results.hits.hits;
-        }
-      });
   }
 }

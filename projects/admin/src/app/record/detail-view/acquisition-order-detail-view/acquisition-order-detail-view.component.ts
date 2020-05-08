@@ -40,6 +40,8 @@ export class AcquisitionOrderDetailViewComponent implements OnInit, DetailRecord
 
   /**
    * Constructor
+   * @param _recordService - RecordService
+   * @param _recordUiService - RecordUiService
    */
   constructor(
     private _recordService: RecordService,
@@ -55,7 +57,7 @@ export class AcquisitionOrderDetailViewComponent implements OnInit, DetailRecord
       map(record => record.metadata.total_amount)
     );
     // retrieve all order lines linked
-    this.orderLines$ =  this.record$.pipe(
+    this.orderLines$ = this.record$.pipe(
       switchMap(record => {
         const query = `acq_order.pid:${record.metadata.pid}`;
         return this._recordService.getRecords(

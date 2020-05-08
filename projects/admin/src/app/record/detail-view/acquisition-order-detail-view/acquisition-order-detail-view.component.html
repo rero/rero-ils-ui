@@ -87,6 +87,6 @@
   </article>
 
   <!-- Order lines -->
-  <admin-acquisition-order-lines [order]="record" [orderLines$]="orderLines$" (deleteOrderLine)="deleteOrderLine($event)">
+  <admin-acquisition-order-lines [order]="record" [orderLines$]="orderLines$" (deleteOrderLineEmitter)="deleteOrderLine($event)">
   </admin-acquisition-order-lines>
 </ng-container>

@@ -14,22 +14,17 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<h4 class="mt-4" translate>Acquisition accounts</h4>
-<a
-  class="btn btn-sm btn-primary"
-  [routerLink]="['/', 'records', 'acq_accounts', 'new']"
-  [queryParams]="{ budget: budgetPid }"
->
-  <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }}
-</a>
+<h4 class="mt-4">
+  {{ 'Acquisition accounts' | translate }}
+  <a class="btn btn-sm btn-outline-primary float-right" [routerLink]="['/', 'records', 'acq_accounts', 'new']" [queryParams]="{ budget: budgetPid }">
+    <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} ...
+  </a>
+</h4>
 <ng-container *ngIf="accounts">
-  <ul class="list-group list-group-flush mt-3">
-    <li class="list-group-item" *ngFor="let account of accounts">
-      <admin-acquisition-account
-        [account]="account"
-        [currencyCode]="currencyCode"
-        (deleteAcqAccount)="delete($event)"
-        ></admin-acquisition-account>
-    </li>
-  </ul>
+  <admin-acquisition-account
+    *ngFor="let account of accounts"
+    [account]="account"
+    [currencyCode]="currencyCode"
+    (deleteAcqAccount)="delete($event)">
+  </admin-acquisition-account>
 </ng-container>

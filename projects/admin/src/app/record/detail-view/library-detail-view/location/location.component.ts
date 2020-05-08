@@ -1,6 +1,22 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+/*
+ * RERO ILS UI
+ * Copyright (C) 2020 RERO
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordUiService } from '@rero/ng-core';
-import { RecordPermissionService } from '../../../../service/record-permission.service';
+import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 
 @Component({
   selector: 'admin-location',
@@ -23,7 +39,7 @@ export class LocationComponent implements OnInit {
   /**
    * Constructor
    * @param _recordUiService: RecordUiService
-   * @param _recordPermissionMessage: RecordPermissionMessageService
+   * @param _recordPermissionService: RecordPermissionService
    */
   constructor(
     private _recordUiService: RecordUiService,
