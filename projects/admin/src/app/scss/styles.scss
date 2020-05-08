@@ -130,7 +130,6 @@ json-schema-form {
   }
 }
 
-
 .events-timeline {
   position: relative;
   .timeline-event {
@@ -191,4 +190,24 @@ json-schema-form {
       }
     }
   }
+}
+
+// Adapt detailed views to not use screen width
+.main-content{
+  @extend .container;
+}
+
+.rero-ils-editor-max-width {
+  @include media-breakpoint-up(lg) {
+    max-width: 500px;
+  }
+}
+
+.rero-ils-editor-title > div > label {
+  font-weight: bold;
+}
+
+.header:hover ~ .content {
+  background-color: #f8f9fa;
+  border-radius: 5px;
 }

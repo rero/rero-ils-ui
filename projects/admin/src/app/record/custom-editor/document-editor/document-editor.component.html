@@ -15,28 +15,32 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="form-group">
-  <label class="control-label" translate>Import record from BNF</label>
-  <div class="input-group">
-    <input
-      #searchinput
-      (keyup.enter)="importFromEan(searchinput.value)"
-      type="text"
-      class="form-control"
-      placeholder="{{ 'Enter an EAN' | translate }}"
-      aria-label="Enter an EAN"
-      aria-describedby="button-import"
-    />
-    <div class="input-group-append">
-      <button
-        (click)="importFromEan(searchinput.value)"
-        class="btn btn-outline-info"
-        type="button"
-        id="button-import"
-        translate
-      >
-        Import
-      </button>
+<div class="row">
+  <div class="col-lg-8 offset-xl-2 offset-md-3 rero-ils-editor-max-width">
+    <div class="form-group">
+      <label class="control-label" translate>Import record from BNF</label>
+      <div class="input-group">
+        <input
+          #searchinput
+          (keyup.enter)="importFromEan(searchinput.value)"
+          type="text"
+          class="form-control"
+          placeholder="{{ 'Enter an EAN' | translate }}"
+          aria-label="Enter an EAN"
+          aria-describedby="button-import"
+        />
+        <div class="input-group-append">
+          <button
+            (click)="importFromEan(searchinput.value)"
+            class="btn btn-outline-info"
+            type="button"
+            id="button-import"
+            translate
+          >
+            Import
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
