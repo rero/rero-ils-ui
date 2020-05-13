@@ -17,9 +17,9 @@
 import { BaseRoute } from './base-route';
 import { RouteInterface, DetailComponent, EditorComponent, RecordService } from '@rero/ng-core';
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
-import { of } from 'rxjs';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { JSONSchema7 } from 'json-schema';
+import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 
@@ -54,13 +54,25 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             canRead: (record: any) => this.canReadItem(record),
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            preprocessRecordEditor: (record: any) => {
+              // If we found an `holding` parameter into the query string then we need to pre-populated
+              // the form with the corresponding holding metadata (see '_populateItemFieldFromHolding' function
+              // to know which fields will be filled.
+              const holdingPid = this._routeToolService.getRouteQueryParam('holding');
+              if (holdingPid !== null) {
+                this._populateItemFieldFromHolding(record, holdingPid);
+              }
+              return record;
+            },
             preCreateRecord: (data: any) => {
-              data.document = {
-                $ref: this._routeToolService.apiService.getRefEndpoint(
-                  'documents',
-                  this._routeToolService.getRouteQueryParam('document')
-                )
-              };
+              if (data.document == null) {
+                data.document = {
+                  $ref: this._routeToolService.apiService.getRefEndpoint(
+                    'documents',
+                    this._routeToolService.getRouteQueryParam('document')
+                  )
+                };
+              }
               return data;
             },
             preUpdateRecord: (data: any) => {
@@ -71,6 +83,11 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
               return data;
             },
             postprocessRecordEditor: (record: any) => {
+              // As 'issue' is part of the JSON propertiesOrder. The record should always contain this property ;
+              // But this property is only necessary for 'issue' item type.
+              if (record.type !== 'issue' && record.hasOwnProperty('issue')) {
+                delete record.issue;
+              }
               // If we try to save an item with without any notes, then remove the empty array notes array from record
               if (record.notes && record.notes.length === 0) {
                 delete record.notes;
@@ -82,16 +99,29 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
                 field, jsonSchema
               );
             },
-            redirectUrl: (record: any) => {
-              return this.redirectUrl(
-                record.metadata.document,
-                '/records/documents/detail'
-              );
-            }
+            redirectUrl: (record: any) => this.getUrl(record)
           }
         ]
       }
     };
+  }
+
+  /**
+   * Get the url where redirect the user.
+   * After editing an item, user should always redirect to the linked document except if
+   * a `redirectTo` parameter is found in the query string
+   * @param record - object, record to be saved
+   * @return an observable on the url to redirect
+   */
+  private getUrl(record: any) {
+    const redirectTo = this._routeToolService.getRouteQueryParam('redirectTo');
+    return of((redirectTo)
+        ? redirectTo
+        : this.redirectUrl(
+            record.metadata.document,
+            '/records/documents/detail'
+          )
+    );
   }
 
   /**
@@ -152,5 +182,47 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
       );
     }
     return field;
+  }
+
+  /**
+   * Populate item record from holding data
+   *
+   * For an issue item record, we need to set some default and/or static values for the record.
+   * Some of theses values (record.type, record.issue.regular) are required by the JSON schema but are hidden into the form.
+   * Some other fields will be pre-populated, based on corresponding url arguments
+   *
+   * @param record: the item record to populate
+   * @param holdingPid: the holding pid
+   */
+  private _populateItemFieldFromHolding(record: any, holdingPid: string) {
+    record.type = 'issue';
+    record.issue = record.issue || {};
+    record.issue.regular = true;  // default to true
+
+    // setting irregular issue from url parameter
+    try {
+      // NOTE : Using `Boolean(JSON.parse(...`, values [1, '1', 'true', 'True'] from url will be considered as True.
+      const isIrregular = Boolean(JSON.parse(this._routeToolService.getRouteQueryParam('irregular', 'false')));
+      if (isIrregular) {
+        record.issue.regular = false;
+      }
+    } catch (e) { }
+    // setting other issue attributes from url parameters
+    const today = this._routeToolService.datePipe.transform(Date.now(), 'yyyy-MM-dd');
+    record.issue.display_text = this._routeToolService.getRouteQueryParam('display_text', '');
+    record.issue.expected_date = this._routeToolService.getRouteQueryParam('expected_date', today);
+    record.issue.received_date = this._routeToolService.getRouteQueryParam('received_date', today);
+
+    this._routeToolService.recordService.getRecord('holdings', holdingPid).subscribe(
+      (holdingData) => {
+        record.item_type = holdingData.metadata.circulation_category;
+        record.location = holdingData.metadata.location;
+        record.document = holdingData.metadata.document;
+        record.holding = { $ref: this._routeToolService.apiService.getRefEndpoint('holdings', holdingPid) };
+        if (holdingData.metadata.patterns.frequency === 'rdafr:1016') {  // 'rdafr:1016 --> 'irregular frequency'
+          record.issue.regular = false;
+        }
+      }
+    );
   }
 }

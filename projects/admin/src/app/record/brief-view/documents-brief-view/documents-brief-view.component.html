@@ -16,7 +16,14 @@
 -->
 
 <h5 class="mb-0 card-title">
-  <a [routerLink]="[detailUrl.link]">{{ record.metadata.ui_title_text }}</a>
+  <a [routerLink]="[detailUrl.link]">
+    <ng-container *ngIf="record.metadata.ui_title_text else mainTitle">
+      {{ record.metadata.ui_title_text }}
+    </ng-container>
+    <ng-template #mainTitle>
+      {{ record.metadata.title | mainTitle }}
+    </ng-template>
+  </a>
 <small> &ndash; {{ record.metadata.type | translate }}</small></h5>
 <ng-container class="card-text">
 

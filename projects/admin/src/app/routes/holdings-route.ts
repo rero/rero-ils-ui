@@ -14,15 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { BaseRoute } from './base-route';
-import { RouteInterface, RecordService } from '@rero/ng-core';
-import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
-import { of } from 'rxjs';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { DetailComponent, RecordService, RouteInterface } from '@rero/ng-core';
 import { JSONSchema7 } from 'json-schema';
 import { map } from 'rxjs/operators';
-import { HoldingEditorComponent } from '../record/custom-editor/holding-editor/holding-editor.component';
 import { CanUpdateGuard } from '../guard/can-update.guard';
+import { HoldingEditorComponent } from '../record/custom-editor/holding-editor/holding-editor.component';
+import { HoldingDetailViewComponent } from '../record/detail-view/holding-detail-view/holding-detail-view.component';
+import { BaseRoute } from './base-route';
 
 export class HoldingsRoute extends BaseRoute implements RouteInterface {
 
@@ -40,6 +39,7 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
+        { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: HoldingEditorComponent, canActivate: [ CanUpdateGuard ] },
         { path: 'new', component: HoldingEditorComponent }
       ],
@@ -49,10 +49,7 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
           {
             key: this.name,
             label: 'Holdings',
-            // editorLongMode: true,
-
-            detailComponent: ItemDetailViewComponent,
-            canRead: (record: any) => this.canReadHolding(record),
+            detailComponent: HoldingDetailViewComponent,
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
             preCreateRecord: (data: any) => {
@@ -68,34 +65,11 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
               return this.populateLocationsByCurrentUserLibrary(
                 field, jsonSchema
               );
-            },
-            redirectUrl: (record: any) => {
-              return this.redirectUrl(
-                record.metadata.document,
-                '/records/documents/detail'
-              );
             }
           }
         ]
       }
     };
-  }
-
-  /**
-   * Check if the item is in the same organisation of connected user.
-   * @param record - Object
-   * @return Observable
-   */
-  private canReadHolding(record: any) {
-    const organisationPid = this._routeToolService.userService
-      .getCurrentUser().library.organisation.pid;
-    if ('organisation' in record.metadata) {
-      return of({
-        can: organisationPid === record.metadata.organisation.pid,
-        message: ''
-      });
-    }
-    return of({ can: false, message: '' });
   }
 
   /**

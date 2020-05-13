@@ -15,14 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormlyModule } from '@ngx-formly/core';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { CoreConfigService, RecordModule, TranslateService } from '@rero/ng-core';
+import { CoreConfigService, RecordModule, TranslateLoader, TranslateService } from '@rero/ng-core';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { PopoverModule } from 'ngx-bootstrap/popover';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { UiSwitchModule } from 'ngx-toggle-switch';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -57,6 +64,7 @@ import {
 import {
   AcquisitionOrderLinesComponent
 } from './record/detail-view/acquisition-order-detail-view/order-lines/acquisition-order-lines.component';
+import { OrderLineComponent } from './record/detail-view/acquisition-order-detail-view/order-lines/order-line/order-line.component';
 import {
   AcquisitionOrderLineDetailViewComponent
 } from './record/detail-view/acquisition-order-line-detail-view/acquisition-order-line-detail-view.component';
@@ -66,12 +74,21 @@ import { AcquisitionAccountsComponent } from './record/detail-view/budget-detail
 import { BudgetDetailViewComponent } from './record/detail-view/budget-detail-view/budget-detail-view.component';
 import { CircPolicyDetailViewComponent } from './record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
 import { DocumentDetailViewComponent } from './record/detail-view/document-detail-view/document-detail-view.component';
-import { HoldingItemComponent } from './record/detail-view/document-detail-view/holding-item/holding-item.component';
+import {
+  DefaultHoldingItemComponent
+} from './record/detail-view/document-detail-view/holding/default-holding-item/default-holding-item.component';
 import { HoldingComponent } from './record/detail-view/document-detail-view/holding/holding.component';
+import {
+  SerialHoldingItemComponent
+} from './record/detail-view/document-detail-view/holding/serial-holding-item/serial-holding-item.component';
 import { HoldingsComponent } from './record/detail-view/document-detail-view/holdings/holdings.component';
 import { ItemRequestComponent } from './record/detail-view/document-detail-view/item-request/item-request.component';
 import { RelatedResourceComponent } from './record/detail-view/document-detail-view/related-resource/related-resource.component';
 import { ResourceComponent } from './record/detail-view/document-detail-view/resource/resource.component';
+import { HoldingDetailViewComponent } from './record/detail-view/holding-detail-view/holding-detail-view.component';
+import {
+  SerialHoldingDetailViewComponent
+} from './record/detail-view/holding-detail-view/serial-holding-detail-view/serial-holding-detail-view.component';
 import { ItemDetailViewComponent } from './record/detail-view/item-detail-view/item-detail-view.component';
 import { ItemTransactionComponent } from './record/detail-view/item-detail-view/item-transaction/item-transaction.component';
 import { ItemTransactionsComponent } from './record/detail-view/item-detail-view/item-transactions/item-transactions.component';
@@ -93,16 +110,6 @@ import { RemoteAutocompleteInputTypeComponent } from './record/editor/remote-aut
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { AppConfigService } from './service/app-config.service';
 import { SharedPipesModule } from './shared/shared-pipes.module';
-import { TranslateLoader } from '@rero/ng-core';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-import { TabsModule } from 'ngx-bootstrap/tabs';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { PopoverModule } from 'ngx-bootstrap/popover';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { OrderLineComponent } from './record/detail-view/acquisition-order-detail-view/order-lines/order-line/order-line.component';
 
 @NgModule({
   declarations: [
@@ -133,7 +140,6 @@ import { OrderLineComponent } from './record/detail-view/acquisition-order-detai
     DocumentDetailViewComponent,
     HoldingEditorComponent,
     HoldingComponent,
-    HoldingItemComponent,
     HoldingsComponent,
     BioInformationsPipe,
     BirthDatePipe,
@@ -174,7 +180,11 @@ import { OrderLineComponent } from './record/detail-view/acquisition-order-detai
     ResourceComponent,
     ItemRequestComponent,
     ErrorPageComponent,
-    OrderLineComponent
+    OrderLineComponent,
+    SerialHoldingItemComponent,
+    SerialHoldingDetailViewComponent,
+    HoldingDetailViewComponent,
+    DefaultHoldingItemComponent
   ],
   imports: [
     AppRoutingModule,
@@ -264,7 +274,8 @@ import { OrderLineComponent } from './record/detail-view/acquisition-order-detai
     BudgetDetailViewComponent,
     OrganisationDetailViewComponent,
     ItemRequestComponent,
-    ErrorPageComponent
+    ErrorPageComponent,
+    HoldingDetailViewComponent
   ],
   bootstrap: [AppComponent]
 })

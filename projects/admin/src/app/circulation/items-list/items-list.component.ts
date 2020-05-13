@@ -17,7 +17,7 @@
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { User } from '../../class/user';
-import { ItemAction } from '../items';
+import { ItemAction } from '../../class/items';
 
 @Component({
   selector: 'admin-circulation-items-list',

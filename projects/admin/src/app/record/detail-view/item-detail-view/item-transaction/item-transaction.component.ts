@@ -18,7 +18,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { TranslateService } from '@ngx-translate/core';
 import { DialogService, RecordService } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
-import { LoanState } from 'projects/admin/src/app/circulation/items';
+import { LoanState } from 'projects/admin/src/app/class/items';
 import { LoanService } from 'projects/admin/src/app/service/loan.service';
 import { UserService } from 'projects/admin/src/app/service/user.service';
 import { Observable } from 'rxjs';

@@ -78,6 +78,12 @@ header {
   width: 450px !important; // override width for all toastr message
 }
 
+span.no-data {
+  font-style: italic;
+  color: lightgray;
+  cursor: not-allowed;
+}
+
 json-schema-form {
   input.ng-valid,
   textarea.ng-valid {

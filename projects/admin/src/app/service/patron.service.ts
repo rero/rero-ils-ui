@@ -19,7 +19,7 @@ import { Injectable } from '@angular/core';
 import { ApiService, RecordService } from '@rero/ng-core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { Item, LoanState } from '../circulation/items';
+import { Item, LoanState } from '../class/items';
 import { User } from '../class/user';
 
 @Injectable({

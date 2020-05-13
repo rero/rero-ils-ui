@@ -18,6 +18,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { extractIdOnRef, RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { forkJoin, Observable, Subscription } from 'rxjs';
+import { IssueItemStatus } from '../../../class/items';
 import { LoanService } from '../../../service/loan.service';
 
 @Component({
@@ -26,6 +27,7 @@ import { LoanService } from '../../../service/loan.service';
   styles: []
 })
 export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+
   /** Observable resolving record data */
   record$: Observable<any>;
 
@@ -46,6 +48,9 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
 
   /** Number of requested items */
   numberOfRequests: number;
+
+  /** reference to IssueItemStatus */
+  issueItemStatus = IssueItemStatus;
 
   /**
    * Constructor

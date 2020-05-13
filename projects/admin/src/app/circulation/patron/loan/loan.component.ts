@@ -20,11 +20,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { User } from '../../../class/user';
-import { PatronBlockedMessagePipe } from '../../../pipe/patron-blocked-message.pipe';
-import { ItemsService } from '../../../service/items.service';
 import { PatronService } from '../../../service/patron.service';
 import { UserService } from '../../../service/user.service';
-import { Item, ItemAction, ItemNoteType, ItemStatus } from '../../items';
+import { Item, ItemAction, ItemNoteType, ItemStatus } from '../../../class/items';
+import { ItemsService } from '../../../service/items.service';
+import { PatronBlockedMessagePipe } from '../../../pipe/patron-blocked-message.pipe';
 
 @Component({
   selector: 'admin-loan',
@@ -265,7 +265,4 @@ export class LoanComponent implements OnInit {
       );
     }
   }
-
-
 }
-
