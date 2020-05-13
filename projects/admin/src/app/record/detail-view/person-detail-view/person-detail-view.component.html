@@ -18,6 +18,7 @@
   <h1 class="mb-0">{{ record.metadata | mefTitle }}</h1>
   <small>{{ 'MEF ID' | translate }}: {{ record.metadata.pid }}</small>
 
+  <!-- TODO: custom ordering of sources -->
   <article class="card m-2" *ngFor="let source of record.metadata.sources">
     <a class="card-link" data-toggle="collapse" data-target="#collapse-rero" aria-expanded="true">
       <header class="card-header">
@@ -151,5 +152,3 @@
   </article>
   </ng-container>
 </ng-container>
-
-
