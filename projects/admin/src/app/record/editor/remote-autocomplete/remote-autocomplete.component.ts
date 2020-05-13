@@ -97,23 +97,65 @@ export class RemoteAutocompleteInputTypeComponent extends FieldType implements O
             return [];
           }
           results.hits.hits.map(hit => {
-            names.push({
-              name: this.getName(hit.metadata),
-              ref: `https://mef.rero.ch/api/mef/${hit.metadata.pid}`,
-              query,
-              category: this.translateService.instant('link to authority')
-            });
+            for (const source of ['idref', 'gnd']) {
+              if (hit.metadata[source]) {
+                names.push(this.getNameRef(hit.metadata, source, query));
+              }
+            }
           });
           return names;
         })
       );
   }
 
+
+  /**
+   * Returns name, $ref end category.
+   *
+   * @param metadata the meta data.
+   * @param sourceName The name of the source.
+   * @param query The query for the $ref.
+   * @return the name the $ref and the category.
+   */
+  getNameRef(metadata, sourceName, query) {
+    return {
+      name: this.getNameSource(metadata[sourceName]),
+      ref: `https://mef.rero.ch/api/${sourceName}/${metadata[sourceName].pid}`,
+      query,
+      category: this.translateService.instant(`link to authority ${sourceName}`)
+    };
+  }
+
+  /**
+   * Returns name of the source.
+   *
+   * @param sourceData the source.
+   * @return name as string with ptreferred name + birth and death date.
+   */
+  getNameSource(sourceData) {
+    if (sourceData) {
+      const data = sourceData;
+      let name = data.preferred_name_for_person;
+      if (data.date_of_birth || data.date_of_death) {
+        name += ', ';
+        if (data.date_of_birth) {
+          name += this.extractDate(data.date_of_birth);
+        }
+        name += ' - ';
+        if (data.date_of_death) {
+          name += this.extractDate(data.date_of_death);
+        }
+      }
+      return name;
+    }
+  }
+
   getName(metadata) {
-    for (const source of ['rero', 'idref', 'bnf', 'gnd']) {
+    for (const source of ['idref', 'gnd', 'bnf', 'rero']) {
       if (metadata[source]) {
         const data = metadata[source];
-        let name = data.preferred_name_for_person;
+        let name = source.toUpperCase( );
+        name += ': ' + data.preferred_name_for_person;
         if (data.date_of_birth || data.date_of_death) {
           name += ', ';
           if (data.date_of_birth) {

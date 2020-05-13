@@ -25,12 +25,12 @@ import { RecordService } from '@rero/ng-core';
   template: `
     <div *ngIf="value" class="form-group mb-0">
       <label [attr.for]="id" class="" *ngIf="to.label">
-        <span [tooltip]="to.description">{{ to.label }}</span>
+        <span [tooltip]="to.description">{{ value.source | translate }} {{ to.label }}</span>
         <ng-container *ngIf="to.required && to.hideRequiredMarker !== true">*</ng-container>
       </label>
       <h4>
         <span class="badge badge-light">
-          {{ value }}
+          {{ value.name }}
         </span>
       </h4>
       <div *ngIf="showError" class="invalid-feedback d-block">
@@ -57,17 +57,28 @@ export class RefComponent extends FieldWrapper implements OnInit {
       this.field.hide = true;
       return;
     }
+    const url = v.split('/');
+    const pid = url.pop();
+    const source = url.pop();
+    let query = `${source}.pid:${pid}`;
+    if (source === 'mef') {
+      query = `pid:${pid}`;
+    }
+    if (source === 'viaf') {
+      query = `viaf_pid:${pid}`;
+    }
     this.recordService
-      .getRecord('mef', v.split('/').pop(), 1)
+      .getRecords('mef', query, 1, 1)
       .pipe(
         map(data => {
-          for (const source of ['rero', 'bnf', 'gnd', 'idref']) {
-            if (
-              data.metadata[source] &&
-              data.metadata[source].preferred_name_for_person
-            ) {
-              return data.metadata[source].preferred_name_for_person;
-            }
+          if (
+            data.hits.hits.length > 0 &&
+            data.hits.hits[0].metadata[source].preferred_name_for_person
+          ) {
+            return {
+              source: source.toUpperCase( ),
+              name: data.hits.hits[0].metadata[source].preferred_name_for_person
+            };
           }
         })
       )
