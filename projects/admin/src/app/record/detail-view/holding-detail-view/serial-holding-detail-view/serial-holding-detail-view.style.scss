@@ -1,0 +1,13 @@
+@import 'node_modules/bootstrap/scss/bootstrap';
+
+div.deleted-status {
+  div.text {
+    text-decoration:line-through;
+    color:$danger;
+  }
+}
+div.expected-issue {
+  div.text {
+    color:lightgray;
+  }
+}

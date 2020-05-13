@@ -196,7 +196,8 @@ export class RecordPermissionService {
     return {
       is_default: this._translateService.instant('The default record cannot be deleted'),
       has_settings: this._translateService.instant('The record contains settings'),
-      harvested: this._translateService.instant('The record has been harvested')
+      harvested: this._translateService.instant('The record has been harvested'),
+      regular_issue_cannot_be_deleted: this._translateService.instant('A regular issue cannot be deleted')
     };
   }
 }

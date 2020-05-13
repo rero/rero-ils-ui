@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { map, mergeMap } from 'rxjs/operators';
-import { Item } from '../../../../items';
+import { Item } from '../../../../../class/items';
 import { PatronTransaction } from '../../../../patron-transaction';
 
 @Component({

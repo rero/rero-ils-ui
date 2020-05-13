@@ -1,6 +1,24 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2020 RERO
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import { Component } from '@angular/core';
-import { EditorService } from '../../../service/editor.service';
 import { removeEmptyValues } from '@rero/ng-core';
+import { EditorService } from '../../../service/editor.service';
+import { PredictionIssue } from '../../../service/holdings.service';
 
 /**
  * Holding specific editor.
@@ -17,7 +35,7 @@ export class HoldingEditorComponent {
   model = {};
 
   /** Current list of the serial preview examples */
-  serialPreviewExamples = [];
+  serialPreviewExamples: Array<PredictionIssue> = [];
 
   /** Number of the serial preview examples */
   numberOfSerialPreviewExamples = 100;
@@ -42,9 +60,9 @@ export class HoldingEditorComponent {
     this.serialPreviewError = null;
     if (modelValue.patterns && modelValue.patterns.template) {
       this._editorService.getHoldingPatternPreview(modelValue, this.numberOfSerialPreviewExamples).subscribe(
-        response => {
-          if (response && response.issues && response.issues.length > 0) {
-            this.serialPreviewExamples = response.issues;
+        (predictions) => {
+          if (predictions && predictions.length > 0) {
+            this.serialPreviewExamples = predictions;
           }
         },
         (error: any) => {

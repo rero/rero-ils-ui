@@ -11,11 +11,11 @@
         <ng-container *ngIf="!serialPreviewError; else previewError">
           <ng-container *ngIf="serialPreviewExamples && serialPreviewExamples.length > 0; else noPreview">
             <ul class="list-unstyled">
-              <li *ngFor="let issue of serialPreviewExamples | slice:0:10">{{issue}}</li>
+              <li *ngFor="let issue of serialPreviewExamples | slice:0:10">{{issue.issue}}</li>
             </ul>
             ...
             <ul class="list-unstyled">
-              <li *ngFor="let issue of serialPreviewExamples | slice:97:100">{{issue}}</li>
+              <li *ngFor="let issue of serialPreviewExamples | slice:97:100">{{issue.issue}}</li>
             </ul>
           </ng-container>
         </ng-container>

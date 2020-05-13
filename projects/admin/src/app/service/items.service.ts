@@ -17,20 +17,36 @@
 
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { ApiService, RecordService, RecordUiService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Item, ItemAction, ItemNoteType, ItemStatus } from '../circulation/items';
+import { Item, ItemAction, ItemNoteType, ItemStatus } from '../class/items';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ItemsService {
 
-  constructor(private http: HttpClient) { }
+  /**
+   * constructor
+   * @param _http - HttpClient
+   * @param _recordService - RecordService
+   * @param _recordUiService - RecordUiService
+   * @param _apiService - ApiService
+   * @param _translateService - TranslateService
+   */
+  constructor(
+    private _http: HttpClient,
+    private _recordService: RecordService,
+    private _recordUiService: RecordUiService,
+    private _apiService: ApiService,
+    private _translateService: TranslateService
+  ) { }
 
   getRequestedLoans(libraryPid) {
     const url = `/api/item/requested_loans/${libraryPid}`;
-    return this.http.get<any>(url).pipe(
+    return this._http.get<any>(url).pipe(
       map(data => data.hits),
       map(hits => hits.total === 0 ? [] : hits.hits),
       map(hits => hits.map(
@@ -47,7 +63,7 @@ export class ItemsService {
 
   doValidateRequest(item, transactionLibraryPid) {
     const url = '/api/item/validate';
-    return this.http.post<any>(url, {
+    return this._http.post<any>(url, {
       item_pid: item.pid,
       pid: item.loan.pid,
       transaction_library_pid: transactionLibraryPid
@@ -65,7 +81,7 @@ export class ItemsService {
     if (patronPid) {
       url = url + `?patron_pid=${patronPid}`;
     }
-    return this.http.get<any>(url).pipe(
+    return this._http.get<any>(url).pipe(
       map(data => {
         const item = new Item(data.metadata.item);
         if (data.metadata.loan) {
@@ -90,7 +106,7 @@ export class ItemsService {
    */
   automaticCheckin(itemBarcode, transactionLibraryPid) {
     const url = '/api/item/automatic_checkin';
-    return this.http.post<any>(url, {item_barcode: itemBarcode, transaction_library_pid: transactionLibraryPid}).pipe(
+    return this._http.post<any>(url, {item_barcode: itemBarcode, transaction_library_pid: transactionLibraryPid}).pipe(
       map(data => {
         const item = new Item(data.metadata);
         const actions = Object.keys(data.action_applied);
@@ -134,14 +150,14 @@ export class ItemsService {
     if (item.loan) {
       data.pid = item.loan.pid;
     }
-    return this.http.post<any>(url, data).pipe(
+    return this._http.post<any>(url, data).pipe(
       map(itemData => {
         const newItem = new Item(itemData.metadata);
         newItem.actionDone = action;
         newItem.setLoan(Object.values(itemData.action_applied).pop());
         return newItem;
       })
-      );
+    );
   }
 
   /**
@@ -151,7 +167,7 @@ export class ItemsService {
    */
   getPickupLocations(itemPid): Observable<any> {
     const url = `/api/item/${itemPid}/pickup_locations`;
-    return this.http.get<any>(url).pipe(
+    return this._http.get<any>(url).pipe(
       map(data => data.locations),
       catchError(e => {
         if (e.status === 404) {
@@ -176,7 +192,7 @@ export class ItemsService {
     if (patronBarcode != null) {
       params = params.set('patron_barcode', patronBarcode);
     }
-    return this.http.get(`/api/item/${itemPid}/can_request`, { params });
+    return this._http.get(`/api/item/${itemPid}/can_request`, { params });
   }
 
   /** Is a callout wrapper is required for this item.

@@ -15,12 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
-import {
-  RecordPermissionService,
-  RecordPermission
-} from 'projects/admin/src/app/service/record-permission.service';
+import { ItemsService } from 'projects/admin/src/app/service/items.service';
+import { RecordPermission, RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 
 
 @Component({
@@ -35,7 +34,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
   @Input() holdingType: 'electronic' | 'serial' | 'standard';
 
   /** Items */
-  items: any;
+  items: any = null;
 
   /** Items observable reference */
   itemsRef: any;
@@ -49,16 +48,32 @@ export class HoldingComponent implements OnInit, OnDestroy {
   /** Holding permissions */
   permissions: RecordPermission;
 
+  /** total number of items for this holding */
+  totalItemsCounter = 0;
+
+  /** number of item to load/display */
+  displayItemsCounter = 5;
+
+  /**
+   * constructor
+   * @param _recordUiService - RecordUiService
+   * @param _recordService - RecordService
+   * @param _recordPermissionService - RecordPermissionService
+   * @param _translateService - TranslateService
+   * @param _holdingService - HoldingsService
+   */
   constructor(
     private _recordUiService: RecordUiService,
     private _recordService: RecordService,
-    private _recordPermissionService: RecordPermissionService
+    private _recordPermissionService: RecordPermissionService,
+    private _translateService: TranslateService,
+    private _itemService: ItemsService
   ) { }
 
   /** Init */
   ngOnInit() {
-    if (this.holdingType === 'standard') {
-      this._loadItems(this.holding.metadata.pid);
+    if (this.holdingType !== 'electronic') {
+      this._loadItems();
     }
     this.getPermissions();
   }
@@ -75,7 +90,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
    */
   toggleCollapse() {
     if (this.isItemsCollapsed) {
-      this._loadItems(this.holding.metadata.pid);
+      this._loadItems();
     }
     this.isItemsCollapsed = !this.isItemsCollapsed;
   }
@@ -121,17 +136,38 @@ export class HoldingComponent implements OnInit, OnDestroy {
 
   /**
    * Load the items corresponding to a given holding PID.
-   * @param holdingPid - PID of the holding
    */
-  private _loadItems(holdingPid: string) {
-    const query = `holding.pid:${holdingPid}`;
-    this.items = [];
+  private _loadItems() {
+    let query = `holding.pid:${this.holding.metadata.pid}`;
+    let sort = '';
+    if (this.holding.metadata.holdings_type === 'serial') {
+      query += ' AND -issue.status:(claimed OR deleted)';
+      sort = '-issue_expected_date';
+    }
     this.itemsRef = this._recordService
-      .getRecords('items', query, 1, RecordService.MAX_REST_RESULTS_SIZE)
+      .getRecords('items', query, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, null, sort)
       .subscribe(result => {
-        if (result.hits.total > 0) {
-          this.items = result.hits.hits;
-        }
+        this.items = (result.hits.total > 0) ? result.hits.hits : null;
+        this.totalItemsCounter = result.hits.total;
       });
+  }
+
+  /**
+   * Load more items
+   * @param increment : number of items to add into the item list
+   */
+  showMore(increment = 5) {
+    this.displayItemsCounter += increment;
+  }
+
+  /**
+   * Get the counter string about not loaded items
+   * @return the string to display with the 'show more' link
+   */
+  showMoreItemsCounter(itemType: string, pluralForm?: string) {
+    const plural = (pluralForm == null) ? itemType + 's' : pluralForm;
+    const additionalIssueCounter = this.totalItemsCounter - this.displayItemsCounter;
+    itemType = (additionalIssueCounter > 1) ? plural : itemType;
+    return additionalIssueCounter + ' ' + this._translateService.instant('hidden') + ' ' + itemType;
   }
 }

@@ -21,7 +21,7 @@
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import * as moment from 'moment';
 import { Moment } from 'moment';
-import { User } from '../class/user';
+import { User } from './user';
 import { RecordPermission } from '../service/record-permission.service';
 
 export function _(str) {
@@ -42,6 +42,12 @@ export enum ItemNoteType {
   STAFF = _('staff_note'),
   CHECKIN = _('checkin_note'),
   CHECKOUT = _('checkout_note')
+}
+
+export enum IssueItemStatus {
+  RECEIVED = _('received'),
+  CLAIMED = _('claimed'),
+  DELETED = _('deleted')
 }
 
 export enum LoanState {

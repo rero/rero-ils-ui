@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { RecordService } from '@rero/ng-core';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
+import { PredictionIssue } from './holdings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -42,10 +42,12 @@ export class EditorService {
    * @param size the number of preview samples
    * @returns an object with an issues property containing the list of samples
    */
-  getHoldingPatternPreview(data: any, size = 10): Observable<any> {
+  getHoldingPatternPreview(data: any, size = 10): Observable<PredictionIssue[]> {
     return this.http.post<any>(`/api/holding/pattern/preview`, {
       data: data.patterns,
       size
-    });
+    }).pipe(
+      map(result => result.issues)
+    );
   }
 }

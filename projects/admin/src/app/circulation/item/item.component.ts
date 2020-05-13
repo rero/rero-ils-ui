@@ -21,7 +21,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ItemsService } from '../../service/items.service';
 import { OrganisationService } from '../../service/organisation.service';
-import { Item, ItemAction, Loan, LoanState } from '../items';
+import { Item, ItemAction, Loan, LoanState } from '../../class/items';
 import { PatronTransactionService } from '../patron-transaction.service';
 
 @Component({

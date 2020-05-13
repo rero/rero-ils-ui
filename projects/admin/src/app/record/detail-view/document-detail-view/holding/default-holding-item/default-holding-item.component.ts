@@ -15,21 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { RecordUiService } from '@rero/ng-core';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { RecordUiService } from '@rero/ng-core';
+import { forkJoin } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { ItemsService } from 'projects/admin/src/app/service/items.service';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { UserService } from 'projects/admin/src/app/service/user.service';
-import { forkJoin } from 'rxjs';
-import { first } from 'rxjs/operators';
-import { ItemRequestComponent } from '../item-request/item-request.component';
+import { ItemRequestComponent } from '../../item-request/item-request.component';
 
 
 @Component({
-  selector: 'admin-holding-item',
-  templateUrl: './holding-item.component.html'
+  selector: 'admin-default-holding-item',
+  templateUrl: './default-holding-item.component.html'
 })
-export class HoldingItemComponent implements OnInit {
+export class DefaultHoldingItemComponent implements OnInit {
 
   /** Holding record */
   @Input() holding: any;
@@ -44,17 +44,6 @@ export class HoldingItemComponent implements OnInit {
   permissions: any;
 
 
-
-  /** Check if the holding owning library correspond to the current user library affilation.
-   *
-   * Used to display the request button. A more advanced test is performed when the patron barcode is known.
-   * @returns - true if match
-   */
-  get isHoldingMatchUserLibraryPID(): boolean {
-    return this._userService.getCurrentUser().currentLibrary
-      === this.holding.metadata.library.pid;
-  }
-
   /**
    * Constructor
    * @param _recordUiService - RecordUiService
@@ -64,11 +53,11 @@ export class HoldingItemComponent implements OnInit {
    * @param _itemService - ItemService
    */
   constructor(
-    private _recordUiService: RecordUiService,
-    private _recordPermissionService: RecordPermissionService,
-    private _userService: UserService,
-    private _modalService: BsModalService,
-    private _itemService: ItemsService
+    protected _recordUiService: RecordUiService,
+    protected _recordPermissionService: RecordPermissionService,
+    protected _userService: UserService,
+    protected _modalService: BsModalService,
+    protected _itemService: ItemsService
   ) { }
 
   /** Init */
@@ -85,6 +74,15 @@ export class HoldingItemComponent implements OnInit {
         this.permissions = permissions;
         this.permissions.canRequest = canRequest;
     });
+  }
+
+  /** Check if the holding owning library correspond to the current user library affiliation.
+   *
+   * Used to display the request button. A more advanced test is performed when the patron barcode is known.
+   * @returns - true if match
+   */
+  get isHoldingMatchUserLibraryPID(): boolean {
+    return this._userService.getCurrentUser().currentLibrary === this.holding.metadata.library.pid;
   }
 
   /**

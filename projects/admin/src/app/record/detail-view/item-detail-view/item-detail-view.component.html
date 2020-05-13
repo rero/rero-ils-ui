@@ -16,17 +16,20 @@
 -->
 
 <ng-container *ngIf="record">
-  <header class="row">
+  <header class="row mb-3">
     <h1>{{ 'Barcode' | translate }} {{ record.metadata.barcode }}</h1>
   </header>
   <section class="mb-4">
     <dl class="row mb-0">
       <!-- CALL NUMBER -->
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Call number' | translate }}:
-      </dt>
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Call number</dt>
       <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.metadata.call_number }}
+        <ng-container *ngIf="record.metadata.call_number else no_call_number">
+          {{ record.metadata.call_number }}
+        </ng-container>
+        <ng-template #no_call_number>
+          <span class="no-data">({{ 'no data' | translate }})</span>
+        </ng-template>
       </dd>
       <!-- ITEM TYPE -->
       <dt class="col-sm-3 offset-sm-2 offset-md-0">
@@ -66,6 +69,45 @@
         <admin-item-availability [item]="record"></admin-item-availability>
       </dd>
     </dl>
+  </section>
+
+  <!-- ISSUE DATA -->
+  <section *ngIf="record.metadata.type == 'issue'">
+    <header class="row">
+      <h3 translate>Issue data</h3>
+    </header>
+    <section class="mb-4">
+      <dl class="row mb-0">
+        <!-- numbering -->
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Numbering</dt>
+        <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.issue.display_text }}</dd>
+        <!-- received date -->
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Received date</dt>
+        <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.issue.received_date | dateTranslate }}</dd>
+        <!-- expected date -->
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Expected date</dt>
+        <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.issue.expected_date | dateTranslate }}</dd>
+        <!-- is regular -->
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Regular issue</dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <i class="fa"
+             [ngClass]="(record.metadata.issue.regular) ? 'fa-check' : 'fa-times'"
+             [ngStyle]="{'color': (record.metadata.issue.regular) ? 'green' : 'red'}"
+             aria-hidden="true">
+          </i>
+        </dd>
+        <!-- issue status -->
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Status</dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <i class="fa fa-circle" [ngClass]="{
+              'text-success': record.metadata.issue.status == issueItemStatus.RECEIVED,
+              'text-danger': record.metadata.issue.status == issueItemStatus.DELETED,
+              'text-warning': record.metadata.issue.status == issueItemStatus.CLAIMED
+          }"></i>
+          {{ record.metadata.issue.status | translate }}
+        </dd>
+      </dl>
+    </section>
   </section>
 
   <section *ngIf="record.metadata.notes">

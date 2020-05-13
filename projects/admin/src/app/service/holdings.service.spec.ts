@@ -14,11 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { HttpClientModule } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
 
-import { Loan } from './items';
+import { HoldingsService } from './holdings.service';
 
-describe('Loan', () => {
-  it('should create an instance', () => {
-    expect(new Loan()).toBeTruthy();
+describe('HoldingsService', () => {
+  beforeEach(() => TestBed.configureTestingModule({
+    imports: [
+      HttpClientModule
+    ]
+  }));
+
+  it('should be created', () => {
+    const service: HoldingsService = TestBed.get(HoldingsService);
+    expect(service).toBeTruthy();
   });
 });

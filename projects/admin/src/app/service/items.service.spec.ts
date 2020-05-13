@@ -15,15 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { TestBed } from '@angular/core/testing';
-
-import { ItemsService } from './items.service';
 import { HttpClientModule } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { BsModalRef, BsModalService, ModalModule } from 'ngx-bootstrap/modal';
+import { ToastrModule } from 'ngx-toastr';
+import { ItemsService } from './items.service';
 
 describe('ItemsService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
-      HttpClientModule
+      HttpClientModule,
+      ModalModule.forRoot(),
+      ToastrModule.forRoot(),
+      TranslateModule.forRoot({}),
+      RouterTestingModule,
+    ],
+    providers: [
+      BsModalRef,
+      BsModalService
     ]
   }));
 

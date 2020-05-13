@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { DatePipe } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -63,6 +64,13 @@ export class RouteToolService {
   }
 
   /**
+   * @return datePipe
+   */
+  get datePipe() {
+    return this._datePipe;
+  }
+
+  /**
    * Constructor
    *
    * @param _translateService - TranslateService
@@ -71,6 +79,7 @@ export class RouteToolService {
    * @param _activatedRoute - ActivatedRoute
    * @param _recordService - RecordService
    * @param _recordPermissionService - RecordPermissionService
+   * @param _datePipe - DatePipe
    */
   constructor(
     private _translateService: TranslateService,
@@ -78,7 +87,8 @@ export class RouteToolService {
     private _apiService: ApiService,
     private _activatedRoute: ActivatedRoute,
     private _recordService: RecordService,
-    private _recordPermissionService: RecordPermissionService
+    private _recordPermissionService: RecordPermissionService,
+    private _datePipe: DatePipe
   ) { }
 
   /**
@@ -194,15 +204,17 @@ export class RouteToolService {
 
   /**
    * Get route param by name
+   * Check the query string to found a requested parameter. If the param is not
+   * part of the query string, return the default value specified as function parameter.
    *
    * @param name - string
+   * @param defaultValue: the default value to return if name is not found as query parameter
    * @return mixed - string | null
    */
-  getRouteQueryParam(name: string) {
+  getRouteQueryParam(name: string, defaultValue = null) {
     const queryParams = this._activatedRoute.snapshot.queryParams;
-    if (name in queryParams) {
-      return queryParams[name];
-    }
-    return null;
+    return ( name in queryParams && queryParams[name].length > 0 )
+      ? queryParams[name]
+      : defaultValue;
   }
 }

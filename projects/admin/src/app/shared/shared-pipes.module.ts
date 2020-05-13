@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { AuthorNameTranslatePipe } from '../pipe/author-name-translate.pipe';
 import { MainTitlePipe } from '../pipe/main-title.pipe';
@@ -33,6 +34,9 @@ import { PatronBlockedMessagePipe } from '../pipe/patron-blocked-message.pipe';
     MainTitlePipe,
     ProvisionActivityPipe,
     PatronBlockedMessagePipe
+  ],
+  providers: [
+    DatePipe
   ]
 })
 export class SharedPipesModule {}
