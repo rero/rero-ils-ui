@@ -20,7 +20,9 @@
             "polyfills": "projects/admin/src/polyfills.ts",
             "tsConfig": "projects/admin/tsconfig.app.json",
             "aot": false,
-            "assets": [],
+            "assets": [
+              "projects/admin/src/assets"
+            ],
             "styles": [
               "node_modules/bootstrap/scss/bootstrap.scss",
               "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",

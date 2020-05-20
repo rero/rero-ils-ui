@@ -122,7 +122,7 @@ export class RemoteAutocompleteInputTypeComponent extends FieldType implements O
       name: this.getNameSource(metadata[sourceName]),
       ref: `https://mef.rero.ch/api/${sourceName}/${metadata[sourceName].pid}`,
       query,
-      category: this.translateService.instant(`link to authority ${sourceName}`)
+      category: this.translateService.instant('link to authority ' + sourceName)
     };
   }
 

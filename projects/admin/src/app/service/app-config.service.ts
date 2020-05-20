@@ -43,6 +43,7 @@ export class AppConfigService extends CoreConfigService {
     this.defaultLanguage = environment.defaultLanguage;
     this.adminRoles = environment.adminRoles;
     this.sessionExpiredSeconds = environment.sessionExpiredSeconds;
+    this.translationsURLs = environment.translationsURLs;
   }
 
   public setSettings(settings: ContextSettings) {

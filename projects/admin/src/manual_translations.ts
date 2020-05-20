@@ -31,9 +31,6 @@ _('Budgets');
 _('circ_policies');
 _('Circulation policies');
 _('documents');
-_('Documents');
-_('items');
-_('Items');
 _('item_types');
 _('Item types');
 _('libraries');
@@ -42,7 +39,6 @@ _('locations');
 _('Locations');
 _('organisations');
 _('Organisations');
-_('patrons');
 _('Patrons');
 _('patron_types');
 _('Patron types');
@@ -53,16 +49,6 @@ _('Vendors');
 
 // Facets
 _('author');
-_('author__fr');
-_('author__en');
-_('author__de');
-_('author__it');
-_('document_type');
-_('language');
-_('library');
-_('organisation');
-_('status');
-_('subject');
 
 // Day
 _('monday');
@@ -73,32 +59,10 @@ _('friday');
 _('saturday');
 _('sunday');
 
-// Status
-_('on_loan');
-_('on_shelf');
-_('missing');
-_('in_transit');
-_('at_desk');
-_('excluded');
-
 // Document type
-_('article');
-_('book');
-_('ebook');
-_('journal');
 _('other');
-_('score');
-_('sound');
-_('video');
-
-// Provision activity
-_('bf:Publication');
-_('bf:Manufacture');
-_('bf:Distribution');
-_('bf:Production');
 
 // Roles
-_('librarian');
 _('patron');
 _('system_librarian');
 
@@ -114,15 +78,9 @@ _('multi_volume');
 _('approved');
 _('canceled');
 _('ordered');
-_('requested');
 _('pending');
 _('received');
 
-// Notifications
-_('due_soon');
-_('overdue');
-_('availability');
-_('recall');
 
 // Electronic locator types
 _('noInfo');
@@ -159,7 +117,7 @@ _('pressReview');
 _('webSite');
 _('tableOfContents');
 _('fullText');
-_('video');
+
 // Item Request messages
 _('Request not allowed by the circulation policy.');
 _('The item is already checked out or requested by this patron.');
