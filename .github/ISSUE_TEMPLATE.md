@@ -2,9 +2,13 @@
 name: Default Issue template
 about: Create an issue to help us improve
 title: ''
-labels: ''
+labels: 'triage'
 assignees: ''
 ---
+
+**If your issue concerns a RERO ILS functionality, even if it's on the
+professional interface, please open it on the rero-ils project:
+https://github.com/rero/rero-ils/issues**
 
 **Describe the issue**
 A clear and concise description of what the issue is.
