@@ -93,7 +93,7 @@ import { RemoteAutocompleteInputTypeComponent } from './record/editor/remote-aut
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { AppConfigService } from './service/app-config.service';
 import { SharedPipesModule } from './shared/shared-pipes.module';
-import { TranslateLoader } from './translate/loader/translate-loader';
+import { TranslateLoader } from '@rero/ng-core';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CollapseModule } from 'ngx-bootstrap/collapse';

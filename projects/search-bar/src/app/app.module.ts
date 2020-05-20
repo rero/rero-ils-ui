@@ -6,11 +6,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { RecordModule } from '@rero/ng-core';
+import { RecordModule, TranslateLoader } from '@rero/ng-core';
 
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { SharedPipesModule } from 'projects/admin/src/app/shared/shared-pipes.module';
-import { TranslateLoader } from 'projects/admin/src/app/translate/loader/translate-loader';
 import { SearchBarComponent } from 'projects/public-search/src/app/search-bar/search-bar.component';
 
 

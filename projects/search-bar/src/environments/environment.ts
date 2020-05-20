@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  translationsURLs: [
+    '/assets/rero-ils-ui/public-search/i18n/${lang}.json',
+    '/api/translations/${lang}.json'
+  ]
 };
 
 /*

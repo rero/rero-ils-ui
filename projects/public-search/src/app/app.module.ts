@@ -34,7 +34,7 @@ import { BioInformationsPipe } from './pipes/bio-informations.pipe';
 import { BirthDatePipe } from './pipes/birth-date.pipe';
 import { MefTitlePipe } from './pipes/mef-title.pipe';
 import { SearchBarComponent } from './search-bar/search-bar.component';
-import { TranslateLoader } from './translate/loader/translate-loader';
+import { TranslateLoader } from '@rero/ng-core';
 
 @NgModule({
   declarations: [

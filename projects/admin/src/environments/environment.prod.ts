@@ -22,5 +22,9 @@ export const environment = {
   languages: ['fr', 'de', 'it', 'en'],
   defaultLanguage: 'en',
   adminRoles: ['system_librarian', 'librarian'],
-  sessionExpiredSeconds: 1800 /* Seconds => 1800: 30 minutes */
+  sessionExpiredSeconds: 1800, /* Seconds => 1800: 30 minutes */
+  translationsURLs: [
+    'static/node_modules/@rero/rero-ils-ui/dist/admin/assets/rero-ils-ui/admin/i18n/${lang}.json',
+    '/api/translations/${lang}.json'
+  ]
 };
