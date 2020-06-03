@@ -16,13 +16,12 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { CoreConfigService, LocalStorageService, RecordService, TranslateService as CoreTranslateService } from '@rero/ng-core';
 import { TranslateService } from '@ngx-translate/core';
-import { LibrarySwitchService } from '../service/library-switch.service';
+import { CoreConfigService, LocalStorageService, RecordService, TranslateService as CoreTranslateService } from '@rero/ng-core';
 import { MainTitlePipe } from '../pipe/main-title.pipe';
+import { LibrarySwitchService } from '../service/library-switch.service';
 import { MenuService } from '../service/menu.service';
 import { UserService } from '../service/user.service';
-
 
 function escapeRegExp(data) {
   return data.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
@@ -36,8 +35,6 @@ function escapeRegExp(data) {
 })
 export class MenuComponent implements OnInit {
   isCollapsed = true;
-  lang: string = document.documentElement.lang;
-  languages: string[];
 
   recordTypes = [];
 
@@ -45,7 +42,7 @@ export class MenuComponent implements OnInit {
 
   linksMenu: any;
 
-  autocompleteQueryParams: any = {page: '1', size: '10'};
+  autocompleteQueryParams: any = { page: '1', size: '10' };
 
   librariesSwitchMenu = {
     navCssClass: 'navbar-nav',
@@ -56,18 +53,7 @@ export class MenuComponent implements OnInit {
     }]
   };
 
-  languagesMenu = {
-    navCssClass: 'navbar-nav',
-    entries: [{
-      name: this._translateService.instant('Menu'),
-      iconCssClass: 'fa fa-bars',
-      entries: [{
-        name: this._translateService.instant('Help'),
-        iconCssClass: 'fa fa-help',
-        href: 'https://ils.test.rero.ch/help'
-      }]
-    }]
-  };
+  languagesMenu = {};
 
   userMenu = {
     navCssClass: 'navbar-nav',
@@ -75,8 +61,6 @@ export class MenuComponent implements OnInit {
     iconCssClass: 'fa fa-user',
     entries: []
   };
-
-  private _activeLanguagesMenuItem: any;
 
   constructor(
     private _appTranslateService: CoreTranslateService,
@@ -91,18 +75,14 @@ export class MenuComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.initLinksMenu();
+    this._initLinksMenu();
     const currentUser = this._userService.getCurrentUser();
     this.autocompleteQueryParams.organisation = currentUser.library.organisation.pid;
-    this.languages = this._configService.languages;
-    for (const lang of this.languages) {
-      const data: any = { name: lang };
-      if (lang === this.lang) {
-        data.active = true;
-        this._activeLanguagesMenuItem = data;
-      }
-      this.languagesMenu.entries[0].entries.splice(0, 0, data);
-    }
+
+    // first call
+    this._initLanguageMenu();
+    // change the menu when the language is changing
+    this._translateService.onLangChange.subscribe(lang => this._initLanguageMenu());
 
     this.userMenu.entries.push({
       name: `${currentUser.first_name[0]}${currentUser.last_name[0]}`,
@@ -123,7 +103,7 @@ export class MenuComponent implements OnInit {
       type: 'documents',
       field: 'autocomplete_title',
       maxNumberOfSuggestions: 5,
-      preFilters: {organisation: currentUser.library.organisation.pid},
+      preFilters: { organisation: currentUser.library.organisation.pid },
       getSuggestions: (query, documents) => this.getDocumentsSuggestions(query, documents)
     }, {
       type: 'persons',
@@ -152,6 +132,39 @@ export class MenuComponent implements OnInit {
 
   }
 
+  /**
+   * Populate the language menu given the current language.
+   */
+  private _initLanguageMenu() {
+    const languagesMenu = {
+      navCssClass: 'navbar-nav',
+      entries: [{
+        name: this._translateService.instant('Menu'),
+        iconCssClass: 'fa fa-bars',
+        entries: [{
+          name: this._translateService.instant('Help'),
+          iconCssClass: 'fa fa-info',
+          href: 'https://ils.test.rero.ch/help'
+        }]
+      }]
+    };
+    const languages = this._configService.languages;
+    // divider
+    languagesMenu.entries[0].entries.splice(0, 0, {name: null, iconCssClass: null, href: null});
+    for (const lang of languages) {
+      if (lang !== this._appTranslateService.currentLanguage) {
+        const data: any = {
+          // same strategy as rero-ils
+          name: `ui_language_${lang}`,
+          code: lang,
+          iconCssClass: 'fa fa-language',
+        };
+        languagesMenu.entries[0].entries.splice(0, 0, data);
+      }
+    }
+    this.languagesMenu = languagesMenu;
+  }
+
   changeLibrary(item: { name: string, id: string }) {
     this._librarySwitchService.switch(item.id);
   }
@@ -167,7 +180,10 @@ export class MenuComponent implements OnInit {
     return this._librarySwitchService.visible;
   }
 
-  initLinksMenu() {
+  /**
+   * Populate the links menu and adds the current library link.
+   */
+  private _initLinksMenu() {
     this.linksMenu = this._menuService.linksMenu;
 
     this._localeStorageService.onSet$.subscribe(() => {
@@ -179,11 +195,8 @@ export class MenuComponent implements OnInit {
   }
 
   changeLang(item) {
-    this._appTranslateService.setLanguage(item.name);
-    delete (this._activeLanguagesMenuItem.active);
-    item.active = true;
-    this._activeLanguagesMenuItem = item;
-    this.initLinksMenu();
+    this._appTranslateService.setLanguage(item.code);
+    this._initLinksMenu();
   }
 
   getPersonsSuggestions(query, persons) {
@@ -213,9 +226,7 @@ export class MenuComponent implements OnInit {
         truncate = true;
         text = this._mainTitlePipe.transform(hit.metadata.title).substr(0, this.maxLengthSuggestion);
       }
-      console.log(text);
       text = text.replace(new RegExp(escapeRegExp(query), 'gi'), `<b>${query}</b>`);
-      console.log(text);
       if (truncate) {
         text = text + ' ...';
       }
