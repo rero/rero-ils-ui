@@ -18,7 +18,7 @@
 <div class="card" *ngIf="item">
   <div class="card-header bg-dark text-white text-wrap" *ngIf="item.name">
     <i *ngIf="item.iconCssClass" [ngClass]="item.iconCssClass" aria-hidden="true"></i>
-    {{ item.name }}
+    {{ item.name | translate }}
   </div>
   <ul class="list-group list-group-flush" *ngIf="item.entries">
     <li class="list-group-item p-0" *ngFor="let entry of item.entries">
