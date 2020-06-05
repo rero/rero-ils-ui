@@ -68,6 +68,20 @@
     </dl>
   </section>
 
+  <section *ngIf="record.metadata.notes">
+    <div class="card item-notes">
+      <div class="card-header" translate>Notes</div>
+      <div class="card-body">
+        <div class="row mb-3" *ngFor="let note of record.metadata.notes">
+          <div class="col-12">
+            <strong translate>{{ note.type }}</strong>
+          </div>
+          <div class="offset-1 col-11 text-justify">{{ note.content }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- TRANSACTIONS -->
   <admin-item-transactions [item]="record"></admin-item-transactions>
 </ng-container>
