@@ -19,6 +19,9 @@
     <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]">
       {{ item.metadata.barcode }}
     </a>
+    <span class="float-right text-warning small pt-1" *ngIf="item.metadata.notes && item.metadata.notes.length > 0">
+      <i class="fa fa-sticky-note-o pr-1"></i>{{ item.metadata.notes.length }}
+    </span>
   </div>
   <div class="col-sm-2">
     {{ item.metadata.status | translate }}
