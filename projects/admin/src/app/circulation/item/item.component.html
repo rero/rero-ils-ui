@@ -15,18 +15,26 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div [ngClass]="{'callout callout-warning': item.actionDone === itemAction.checkin && (item.status === 'in_transit' || item.pending_loans || totalAmountOfFee > 0),
-  'text-secondary': item.status !== 'on_loan'}"
-  class="row p-2 mb-1 border rounded align-middle"
-  *ngIf="item">
+<div *ngIf="item"
+     [ngClass]="{
+       'callout callout-warning': needCallout(item, 'warning') || (item.actionDone === itemAction.checkin && totalAmountOfFee > 0),
+       'text-secondary': item.status !== 'on_loan'
+     }"
+     class="row p-2 mb-1 border rounded align-middle">
   <!-- BARCODE -->
-  <div class="col-lg-2">
+  <div class="col-lg-3">
     <button *ngIf="item.loan || totalAmountOfFee || item.pending_loans || notifications$" type="button"
       class="pl-0 pt-0 btn" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed"
       aria-controls="collapse">
       <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" class="fa" aria-hidden="true"></i>
     </button>
     <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+    <ng-container *ngIf="item.actionDone">
+      <ng-container *ngIf="(item.actionDone === itemAction.checkin && item.getNote('checkin_note')) ||
+                           (item.actionDone === itemAction.checkout && item.getNote('checkout_note'))">
+        <i class="fa fa-sticky-note-o text-warning pt-1 float-right"></i>
+      </ng-container>
+    </ng-container>
   </div>
   <!-- TITLE -->
   <div class="col-lg-4">
@@ -87,26 +95,49 @@
     </ng-container>
   </div>
   <!-- COLLAPSED DETAILS -->
-  <div class="col-sm-6 mt-2">
-    <ul class="list-unstyled mb-0" id="collapse" [collapse]="isCollapsed" [isAnimated]="true">
-      <li *ngIf="item.loan && item.loan.pickup_location_pid">{{ 'Location' | translate }}:
-        {{ item.loan.pickup_location_pid | getRecord: 'locations' : 'field' : 'code' | async }} {{ item.location.name }}
-      </li>
-      <li *ngIf="item.loan && item.loan.extension_count">{{ 'Renewals' | translate }}: {{ item.loan.extension_count }}
-      </li>
-      <li *ngIf="totalAmountOfFee > 0">{{ 'Fees' | translate }}:
-        {{ totalAmountOfFee | currency: organisation.default_currency }}</li>
-      <ng-container *ngIf="notifications$ | async as notifications">
-        <li *ngIf="notifications.length > 0">{{ 'Notifications' | translate }}:
-          <ul class="list-unstyled pl-2 mb-0">
-            <li *ngFor="let notification of notifications">
-              {{ notification.metadata.process_date | dateTranslate :'shortDate' }}:
-              {{ notification.metadata.notification_type | translate}}</li>
-          </ul>
-        </li>
+  <div class="col-sm-12 mt-2" *ngIf="!isCollapsed">
+    <dl class="row">
+      <ng-container *ngIf="item.loan && item.loan.pickup_location_pid">
+        <dt class="col-sm-5 col-md-3 label-title" translate>Location</dt>
+        <dd class="col-sm-7 col-md-9">
+          {{ item.loan.pickup_location_pid | getRecord: 'locations' : 'field' : 'code' | async }} {{ item.location.name }}
+        </dd>
       </ng-container>
-      <li *ngIf="item.pending_loans">{{ 'Requests' | translate }}: {{ item.pending_loans.length }}</li>
-      <li *ngIf="item.pending_loans">{{ 'For' | translate }}: {{ item.pending_loans[0].patron.name }}</li>
-    </ul>
+      <ng-container *ngIf="item.loan && item.loan.extension_count">
+        <dt class="col-sm-5 col-md-3 label-title" translate>Renewals</dt>
+        <dd class="col-sm-7 col-md-9">{{ item.loan.extension_count }}</dd>
+      </ng-container>
+      <ng-container *ngIf="totalAmountOfFee > 0">
+        <dt class="col-sm-5 col-md-3 label-title" translate>Fees</dt>
+        <dd class="col-sm-7 col-md-9">{{ totalAmountOfFee | currency: organisation.default_currency }}</dd>
+      </ng-container>
+      <ng-container *ngIf="notifications$ | async as notifications">
+        <ng-container *ngIf="notifications.length > 0">
+          <dt class="col-sm-5 col-md-3 label-title" translate>Notifications</dt>
+          <dd class="col-sm-7 col-md-9">
+            <ul class="list-unstyled pl-2 mb-0">
+              <li *ngFor="let notification of notifications">
+                {{ notification.metadata.process_date | dateTranslate :'shortDate' }}:
+                {{ notification.metadata.notification_type | translate }}
+              </li>
+            </ul>
+          </dd>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="item.pending_loans">
+        <dt class="col-sm-5 col-md-3 label-title" translate>Requests</dt>
+        <dd class="col-sm-7 col-md-9">{{ item.pending_loans.length }}</dd>
+        <dt class="col-sm-5 col-md-3 label-title" translate="">For</dt>
+        <dd class="col-sm-7 col-md-9">{{ item.pending_loans[0].patron.name }}</dd>
+      </ng-container>
+      <ng-container *ngIf="item.actionDone && item.actionDone === itemAction.checkin && item.getNote('checkin_note') as note">
+        <dt class="col-sm-5 col-md-3 label-title" translate>{{ note.type }}</dt>
+        <dd class="col-sm-7 col-md-9 text-justify">{{ note.content }}</dd>
+      </ng-container>
+      <ng-container *ngIf="item.actionDone && item.actionDone === itemAction.checkout && item.getNote('checkout_note') as note">
+        <dt class="col-sm-5 col-md-3 label-title" translate>{{ note.type }}</dt>
+        <dd class="col-sm-7 col-md-9 text-justify">{{ note.content }}</dd>
+      </ng-container>
+    </dl>
   </div>
 </div>

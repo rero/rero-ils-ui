@@ -37,6 +37,13 @@ export enum ItemStatus {
   MISSING = _('missing')
 }
 
+export enum ItemNoteType {
+  PUBLIC = _('public_note'),
+  STAFF = _('staff_note'),
+  CHECKIN = _('checkin_note'),
+  CHECKOUT = _('checkout_note')
+}
+
 export enum LoanState {
   CREATED = _('CREATED'),
   PENDING = _('PENDING'),
@@ -117,6 +124,12 @@ export class Loan {
     return false;
   }
 }
+
+export class ItemNote {
+  type: ItemNoteType;
+  content: string;
+}
+
 export class Item {
   available: boolean;
   barcode: string;
@@ -134,6 +147,7 @@ export class Item {
   pending_loans: Loan[];
   number_of_extensions: number;
   location: any;
+  notes: ItemNote[];
 
   constructor(obj?: any) {
     Object.assign(this, obj);
@@ -175,5 +189,20 @@ export class Item {
 
   public get hasRequests() {
     return (this.pending_loans && this.pending_loans.length > 0);
+  }
+
+  /** Search on item notes a note corresponding to the note type
+   *
+   * @param type: the note type
+   * @return Return the corresponding note or null if not found
+   */
+  public getNote(type: ItemNoteType): ItemNote | null {
+    if (this.notes == null) {
+      return null;
+    }
+    const filteredNotes = this.notes.filter(note => note.type === type);
+    return (filteredNotes)
+      ? filteredNotes[0]
+      : null;
   }
 }

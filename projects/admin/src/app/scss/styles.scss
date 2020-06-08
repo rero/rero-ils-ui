@@ -74,7 +74,9 @@ header {
   content: " \f08e";
 }
 
-
+.toast-container .ngx-toastr {
+  width: 450px !important; // override width for all toastr message
+}
 
 json-schema-form {
   input.ng-valid,
