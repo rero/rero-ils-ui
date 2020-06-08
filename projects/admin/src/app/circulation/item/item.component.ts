@@ -19,6 +19,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ItemsService } from '../../service/items.service';
 import { OrganisationService } from '../../service/organisation.service';
 import { Item, ItemAction, Loan, LoanState } from '../items';
 import { PatronTransactionService } from '../patron-transaction.service';
@@ -55,12 +56,14 @@ export class ItemComponent implements OnInit {
    * @param _recordService: Record Service
    * @param _organisationService: Organisation Service
    * @param _patronTransactionService: Patron transaction Service
+   * @param _itemService: Item Service
    */
   constructor(
     private _recordService: RecordService,
     private _organisationService: OrganisationService,
-    private _patronTransactionService: PatronTransactionService
-    ) {  }
+    private _patronTransactionService: PatronTransactionService,
+    private _itemService: ItemsService
+  ) {  }
 
   /**
    * On init hook
@@ -115,5 +118,14 @@ export class ItemComponent implements OnInit {
    */
   get organisation() {
     return this._organisationService.organisation;
+  }
+
+  /** Is a callout wrapper is required for this item.
+   *
+   * @param item: the item to analyse
+   * @param type: the callout type (error, warning, info, ...)
+   */
+  needCallout(item: Item, type?: string): boolean {
+    return this._itemService.needCallout(item, type);
   }
 }

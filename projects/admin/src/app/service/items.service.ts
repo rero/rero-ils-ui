@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map, catchError } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { Item, ItemAction } from '../circulation/items';
+import { catchError, map } from 'rxjs/operators';
+import { Item, ItemAction, ItemNoteType, ItemStatus } from '../circulation/items';
 
 @Injectable({
   providedIn: 'root'
@@ -177,5 +177,33 @@ export class ItemsService {
       params = params.set('patron_barcode', patronBarcode);
     }
     return this.http.get(`/api/item/${itemPid}/can_request`, { params });
+  }
+
+  /** Is a callout wrapper is required for this item.
+   *
+   * A callout wrapper is a visual css information to indicate to user than something happens
+   * on an element
+   *
+   * @param item: the item to analyse
+   * @param type: the callout type (error, warning, info, ...)
+   * @return true if the callout is required, false otherwise
+   */
+  needCallout(item: Item, type?: string): boolean {
+    if (type == null) {
+      type = 'warning';
+    }
+    // WARNING ~~~~~~~~~~~~~~~~~~~~~~~
+    if (type === 'warning') {
+      if (item.actionDone && item.actionDone === ItemAction.checkin) {
+        return item.status === ItemStatus.IN_TRANSIT
+            || (item.pending_loans && item.pending_loans.length > 0)
+            || item.getNote(ItemNoteType.CHECKIN) != null;
+      }
+      if (item.actionDone && item.actionDone === ItemAction.checkout) {
+        return item.getNote(ItemNoteType.CHECKOUT) != null;
+      }
+    }
+    // DEFAULT ~~~~~~~~~~~~~~~~~~~~~~~
+    return false;
   }
 }

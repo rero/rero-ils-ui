@@ -22,10 +22,10 @@ import { RecordService } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
 import { map } from 'rxjs/operators';
 import { User } from '../../class/user';
+import { ItemsService } from '../../service/items.service';
 import { PatronService } from '../../service/patron.service';
 import { UserService } from '../../service/user.service';
-import { ItemAction, ItemStatus } from '../items';
-import { ItemsService } from '../../service/items.service';
+import { Item, ItemAction, ItemNoteType, ItemStatus } from '../items';
 
 @Component({
   selector: 'admin-circulation-checkout',
@@ -56,7 +56,7 @@ export class CheckinComponent implements OnInit {
    * @param  _itemsService: Items Service
    * @param  _router: Router
    * @param  _translate: Translate Service
-   * @param  toastService: Toastr Service
+   * @param  _toastService: Toastr Service
    * @param  _patronService: Patron Service
    */
   constructor(
@@ -122,6 +122,7 @@ export class CheckinComponent implements OnInit {
           );
           break;
         case ItemAction.checkin:
+          this._displayCirculationNote(item, ItemNoteType.CHECKIN);
           if (item.action_applied.checkin) {
             this.getPatronInfo(item.action_applied.checkin.patron.barcode);
           }
@@ -173,14 +174,8 @@ export class CheckinComponent implements OnInit {
       this._recordService
         .getRecords('patrons', `barcode:${barcode}`, 1, 1)
         .pipe(
-          map((response: any) => {
-            if (response.hits.total === 0) {
-              return null;
-            }
-            return response.hits.hits[0].metadata;
-          })
-        )
-        .subscribe(
+          map((response: any) => (response.hits.total === 0)  ? null : response.hits.hits[0].metadata)
+        ).subscribe(
           patron => {
             if (
               patron !== null &&
@@ -218,6 +213,26 @@ export class CheckinComponent implements OnInit {
         );
     }
   }
+
+  /** display a circulation note about an item as a permanent toastr message
+   *
+   * @param item: the item
+   * @param noteType: the note type to display
+   */
+  private _displayCirculationNote(item: Item, noteType: ItemNoteType): void {
+    const note = item.getNote(noteType);
+    if (note != null) {
+      this._toastService.warning(
+        note.content, null,
+        {
+          closeButton: true,    // add a close button to the toastr message
+          disableTimeOut: true, // permanent toastr message (until click on 'close' button)
+          tapToDismiss: false   // toastr message only close when click on the 'close' button.
+        }
+      );
+    }
+  }
+
   hasFees(event: boolean) {
     if (event) {
       this._toastService.error(

@@ -20,11 +20,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { User } from '../../../class/user';
+import { PatronBlockedMessagePipe } from '../../../pipe/patron-blocked-message.pipe';
+import { ItemsService } from '../../../service/items.service';
 import { PatronService } from '../../../service/patron.service';
 import { UserService } from '../../../service/user.service';
-import { Item, ItemAction, ItemStatus } from '../../items';
-import { ItemsService } from '../../../service/items.service';
-import { PatronBlockedMessagePipe } from '../../../pipe/patron-blocked-message.pipe';
+import { Item, ItemAction, ItemNoteType, ItemStatus } from '../../items';
 
 @Component({
   selector: 'admin-loan',
@@ -186,11 +186,13 @@ export class LoanComponent implements OnInit {
         newItems.map(newItem => {
           switch (newItem.actionDone) {
             case ItemAction.checkin: {
+              this._displayCirculationNote(newItem, ItemNoteType.CHECKIN);
               this.checkedOutItems = this.checkedOutItems.filter(currItem => currItem.pid !== newItem.pid);
               this.checkedInItems.unshift(newItem);
               break;
             }
             case ItemAction.checkout: {
+              this._displayCirculationNote(newItem, ItemNoteType.CHECKOUT);
               this.checkedOutItems.unshift(newItem);
               this.checkedInItems = this.checkedInItems.filter(currItem => currItem.pid !== newItem.pid);
               break;
@@ -236,6 +238,25 @@ export class LoanComponent implements OnInit {
     );
   }
 
+  /** display a circulation note about an item as a permanent toastr message
+   *
+   * @param item: the item
+   * @param noteType: the note type to display
+   */
+  private _displayCirculationNote(item: Item, noteType: ItemNoteType): void {
+    const note = item.getNote(noteType);
+    if (note != null) {
+      this._toastService.warning(
+        note.content, null,
+        {
+          closeButton: true,    // add a close button to the toastr message
+          disableTimeOut: true, // permanent toastr message (until click on 'close' button)
+          tapToDismiss: false   // toastr message only close when click on the 'close' button.
+        }
+      );
+    }
+  }
+
   hasFees(event: boolean) {
     if (event) {
       this._toastService.error(
@@ -244,4 +265,7 @@ export class LoanComponent implements OnInit {
       );
     }
   }
+
+
 }
+

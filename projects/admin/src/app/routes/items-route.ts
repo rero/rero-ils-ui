@@ -70,6 +70,13 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
               }
               return data;
             },
+            postprocessRecordEditor: (record: any) => {
+              // If we try to save an item with without any notes, then remove the empty array notes array from record
+              if (record.notes && record.notes.length === 0) {
+                delete record.notes;
+              }
+              return record;
+            },
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
               return this.populateLocationsByCurrentUserLibrary(
                 field, jsonSchema
