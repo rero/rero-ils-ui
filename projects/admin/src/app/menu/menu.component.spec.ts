@@ -33,9 +33,9 @@ describe('MenuComponent', () => {
 
   const libraryTestingSwitchService = jasmine.createSpyObj(
     'LibrarySwitchService', ['generateMenu']);
-  libraryTestingSwitchService.onVisibleMenu$ = of(false);
   libraryTestingSwitchService.entries = [{ entries: [] }];
   libraryTestingSwitchService.onGenerate$ = of([]);
+  libraryTestingSwitchService.currentLibraryRecord$ = of({code: 1});
 
   const userTestingService = jasmine.createSpyObj(
     'UserService', ['getCurrentUser', 'hasRole']

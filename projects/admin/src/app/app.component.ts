@@ -142,11 +142,6 @@ export class AppComponent implements OnInit, OnDestroy {
             this.localStorageService.updateDate(User.STORAGE_KEY);
           }
         }
-
-        // Library Switch menu show only on homepage
-        this.librarySwitchService.show(
-          (event.url === '/') ? true : false
-        );
       })
     );
   }

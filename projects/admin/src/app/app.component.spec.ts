@@ -27,7 +27,6 @@ import { RecordModule } from '@rero/ng-core';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
-import { InterfaceInfoComponent } from './interface-info/interface-info.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -45,8 +44,7 @@ describe('AppComponent', () => {
       ],
       declarations: [
         AppComponent,
-        MenuComponent,
-        InterfaceInfoComponent
+        MenuComponent
       ]
     }).compileComponents();
   }));
