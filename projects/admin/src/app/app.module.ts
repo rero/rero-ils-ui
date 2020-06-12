@@ -37,7 +37,6 @@ import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { FrontpageBoardComponent } from './frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from './frontpage/frontpage.component';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
-import { InterfaceInfoComponent } from './interface-info/interface-info.component';
 import { MenuComponent } from './menu/menu.component';
 import { BioInformationsPipe } from './pipe/bio-informations.pipe';
 import { BirthDatePipe } from './pipe/birth-date.pipe';
@@ -159,10 +158,8 @@ import { MarcPipe } from './pipe/marc.pipe';
     ItemTransactionComponent,
     ItemTransactionsComponent,
     PatronDetailViewComponent,
-    InterfaceInfoComponent,
     RefComponent,
     RemoteAutocompleteInputTypeComponent,
-    InterfaceInfoComponent,
     VendorDetailViewComponent,
     VendorBriefViewComponent,
     AddressTypeComponent,

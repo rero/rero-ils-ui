@@ -16,6 +16,7 @@
  */
 import { Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
+import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -41,7 +42,7 @@ export class LibraryService {
   }
 
   get$(pid: string) {
-    return this.recordService.getRecord('libraries', pid);
+    return this.recordService.getRecord(LibraryService.resource, pid);
   }
 
   allOrderBy$(order: string = 'name') {

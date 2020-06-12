@@ -46,8 +46,9 @@ export class MenuComponent implements OnInit {
 
   librariesSwitchMenu = {
     navCssClass: 'navbar-nav',
+    dropdownMenuCssClass: 'dropdown-menu-right',
     entries: [{
-      name: this._translateService.instant('Switch library'),
+      name: '',  // start with empty value, it will be changed when menu is generated
       iconCssClass: 'fa fa-random',
       entries: []
     }]
@@ -58,7 +59,6 @@ export class MenuComponent implements OnInit {
   userMenu = {
     navCssClass: 'navbar-nav',
     dropdownMenuCssClass: 'dropdown-menu-right',
-    iconCssClass: 'fa fa-user',
     entries: []
   };
 
@@ -72,7 +72,7 @@ export class MenuComponent implements OnInit {
     private _localeStorageService: LocalStorageService,
     private _menuService: MenuService,
     private _mainTitlePipe: MainTitlePipe
-  ) { }
+  ) {}
 
   ngOnInit() {
     this._initLinksMenu();
@@ -86,6 +86,7 @@ export class MenuComponent implements OnInit {
 
     this.userMenu.entries.push({
       name: `${currentUser.first_name[0]}${currentUser.last_name[0]}`,
+      iconCssClass: 'fa fa-user',
       entries: [
         {
           name: this._translateService.instant('Public interface'),
@@ -117,19 +118,10 @@ export class MenuComponent implements OnInit {
         this.userMenu.entries[0].entries[0].href = `/${organisation.metadata.code}/`;
       });
 
-    this._librarySwitchService.onVisibleMenu$.subscribe((visible) => {
-      if (
-        visible
-        && this._userService.hasRole('system_librarian')
-        && this._librarySwitchService.entries.length === 0) {
-        this._librarySwitchService.generateMenu();
-      }
-    });
-
-    this._librarySwitchService.onGenerate$.subscribe((entries: any) => {
-      this.librariesSwitchMenu.entries[0].entries = entries;
-    });
-
+    // SWITCH LIBRARY MENU ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    this._librarySwitchService.generateMenu();
+    this._librarySwitchService.onGenerate$.subscribe((entries: any) => this.librariesSwitchMenu.entries[0].entries = entries);
+    this._librarySwitchService.currentLibraryRecord$.subscribe((library: any) => this.librariesSwitchMenu.entries[0].name = library.code);
   }
 
   /**
@@ -169,15 +161,12 @@ export class MenuComponent implements OnInit {
     this._librarySwitchService.switch(item.id);
   }
 
-  get isVisibleLibrarySwitchMenu() {
-    if (this._librarySwitchService.length <= 1) {
-      return false;
-    }
-    return this._librarySwitchService.visible;
-  }
-
-  get isVisible() {
-    return this._librarySwitchService.visible;
+  /** Is the library switch menu should be displayed.
+   *  To be displayed, the current logged used must be allowed and the menu must contains more than one entry
+   *  @return `true if the menu should be display, `false` otherwise
+   */
+  get isVisibleLibrarySwitchMenu(): boolean {
+    return this._librarySwitchService.visible && (this._librarySwitchService.length > 1);
   }
 
   /**

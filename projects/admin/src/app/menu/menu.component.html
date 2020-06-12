@@ -14,7 +14,6 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<admin-interface-info></admin-interface-info>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark d-flex">
   <div class="container">
     <a [routerLink]="['/']" class="navbar-brand pr-2 text-sm">
@@ -39,11 +38,11 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent" [collapse]="isCollapsed" [isAnimated]="true">
       <ng-core-menu class="mr-auto" [menu]="linksMenu"></ng-core-menu>
-      <ng-core-menu
+      <!-- RIGHT MENU ENTRIES -->
+      <ng-core-menu *ngIf="isVisibleLibrarySwitchMenu"
         class="userMenu"
         [menu]="librariesSwitchMenu"
         (clickItem)="changeLibrary($event)"
-        *ngIf="isVisibleLibrarySwitchMenu && isVisible"
       ></ng-core-menu>
       <ng-core-menu [menu]="languagesMenu" (clickItem)="changeLang($event)"></ng-core-menu>
       <ng-core-menu [menu]="userMenu"></ng-core-menu>
