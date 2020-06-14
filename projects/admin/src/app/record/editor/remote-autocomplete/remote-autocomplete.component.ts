@@ -134,50 +134,10 @@ export class RemoteAutocompleteInputTypeComponent extends FieldType implements O
    */
   getNameSource(sourceData) {
     if (sourceData) {
-      const data = sourceData;
-      let name = data.preferred_name_for_person;
-      if (data.date_of_birth || data.date_of_death) {
-        name += ', ';
-        if (data.date_of_birth) {
-          name += this.extractDate(data.date_of_birth);
-        }
-        name += ' - ';
-        if (data.date_of_death) {
-          name += this.extractDate(data.date_of_death);
-        }
-      }
-      return name;
+      return sourceData.authorized_access_point_representing_a_person;
     }
   }
 
-  getName(metadata) {
-    for (const source of ['idref', 'gnd', 'bnf', 'rero']) {
-      if (metadata[source]) {
-        const data = metadata[source];
-        let name = source.toUpperCase( );
-        name += ': ' + data.preferred_name_for_person;
-        if (data.date_of_birth || data.date_of_death) {
-          name += ', ';
-          if (data.date_of_birth) {
-            name += this.extractDate(data.date_of_birth);
-          }
-          name += ' - ';
-          if (data.date_of_death) {
-            name += this.extractDate(data.date_of_death);
-          }
-        }
-        return name;
-      }
-    }
-  }
-
-  extractDate(date) {
-    const mDate = moment(date, ['YYYY', 'YYYY-MM', 'YYYY-MM-DD']);
-    if (mDate.isValid()) {
-      return mDate.format('YYYY');
-    }
-    return date;
-  }
 
   changeTypeaheadLoading(e: boolean): void {
     this.typeaheadLoading = e;
