@@ -14,7 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DetailComponent, EditorComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
+import { JSONSchema7 } from 'json-schema';
+import { map } from 'rxjs/operators';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-view.component';
 import { PatronDetailViewComponent } from '../record/detail-view/patron-detail-view/patron-detail-view.component';
@@ -58,6 +61,9 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
               }
               return record;
             },
+            formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
+              return this._limitUserFormField(field, jsonSchema);
+            },
             // use simple query for UI search
             preFilters: {
               simple: 1
@@ -67,5 +73,48 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
         ]
       }
     };
+  }
+
+  /** Limit some field from user editor.
+   *
+   * @param field - FormlyFieldConfig
+   * @param jsonSchema - JSONSchema7
+   * @return FormlyFieldConfig
+   */
+  private _limitUserFormField(field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig {
+    const formOptions = jsonSchema.form;
+    // ROLES FIELD MANAGEMENT ---------------------------------
+    //   Depending of current user, the roles user can managed could be restricted.
+    //   Call the 'role_management' API filter allowed roles. If user cannot manage a role, then this role
+    //   will be disabled.  We can't hide the restricted role because if the edited user has already this role
+    //   this information will be lost on save !
+    if (formOptions && formOptions.fieldMap === 'roles') {
+      const values = Object.assign([], field.templateOptions.options);  // create a clone of original values
+      field.templateOptions.options = this._routeToolService.recordPermissionService.getRolesManagementPermissions().pipe(
+        map(results => {
+          values.forEach((role: any) => role.disabled = !results.allowed_roles.includes(role.value));
+          return values;
+        })
+      );
+    }
+
+    // LIBRARY MANAGEMENT -------------------------------------
+    //   If current logged user doesn't have the 'system_librarian' role, then the only library available
+    //   should be the current_user.current_library. Set default value for library select the current_library URI
+    //   and disable the field (so the user can't change/manage other libraries)
+    if (formOptions && formOptions.fieldMap === 'library') {
+      if (!this._routeToolService.userService.hasRole('system_librarian')) {
+        if (!field.hasOwnProperty('templateOptions')) {
+          field.templateOptions = {};
+        }
+        const currentLibraryEndpoint = this._routeToolService.apiService.getRefEndpoint(
+          'libraries',
+          this._routeToolService.userService.getCurrentUser().getCurrentLibrary()
+        );
+        field.templateOptions.disabled = true;
+        field.fieldGroup[0].defaultValue = currentLibraryEndpoint;
+      }
+    }
+    return field;
   }
 }

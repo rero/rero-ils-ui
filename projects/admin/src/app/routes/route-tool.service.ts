@@ -64,6 +64,13 @@ export class RouteToolService {
   }
 
   /**
+   * @return recordPermissionService
+   */
+  get recordPermissionService() {
+    return this._recordPermissionService;
+  }
+
+  /**
    * @return datePipe
    */
   get datePipe() {

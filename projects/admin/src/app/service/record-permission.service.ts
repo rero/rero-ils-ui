@@ -18,6 +18,8 @@ import { I18nPluralPipe, NgLocaleLocalization } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +54,15 @@ export class RecordPermissionService {
       ? `/api/permissions/${resource}`
       : `/api/permissions/${resource}/${pid}`;
     return this._httpClient.get<RecordPermission>(url, this._httpOptions);
+  }
+
+
+  /**
+   * Get roles that the current user can manage
+   * @return an observable on allowed roles management
+   */
+  getRolesManagementPermissions(): Observable<any> {
+    return this._httpClient.get('api/patrons/roles_management_permissions', this._httpOptions);
   }
 
   /**
