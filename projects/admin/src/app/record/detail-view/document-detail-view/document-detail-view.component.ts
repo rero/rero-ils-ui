@@ -152,13 +152,12 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
    * Get list of document edition statement
    * @return array - edition statement
    */
-  get editionsStatement() {
-    const editionStatement = this.record.metadata.editionStatement;
-    if (undefined === editionStatement) {
+  getStatement(statements: any) {
+    if (null === statements) {
       return [];
     }
     const results = [];
-    editionStatement.forEach((element: any) => {
+    statements.forEach((element: any) => {
       if ('_text' in element) {
         const elementText = element._text;
         const keys = Object.keys(elementText);
@@ -237,4 +236,61 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
     return 'standard';
   }
 
+  /**
+   * Format "part of" numbering for display
+   *
+   * @param num: numbering to format
+   * @return formatted numbering (example: 2020, vol. 2, nr. 3, p. 302)
+   */
+  formatNumbering(num: any) {
+    const numbering = [];
+    if (num.year) {
+      numbering.push(num.year);
+    }
+    if (num.volume) {
+      const volume = [this._translateService.instant('vol'), num.volume];
+      numbering.push(volume.join('. '));
+    }
+    if (num.issue) {
+      const issue = [this._translateService.instant('nr'), num.issue];
+      numbering.push(issue.join('. '));
+    }
+    if (num.pages) {
+      const pages = [this._translateService.instant('p'), num.pages];
+      numbering.push(pages.join('. '));
+    }
+    return numbering.join(', ');
+  }
+
+  /**
+   * Get "part of" label from host document type
+   * @param hostDocument - host document
+   * @return corresponding translated label
+   */
+  getPartOfLabel(hostDocument: any) {
+    switch (hostDocument.metadata.issuance.subtype) {
+      case 'periodical':
+          return this._translateService.instant('Journal');
+      case 'monographicSeries':
+          return this._translateService.instant('Series');
+      default:
+           return this._translateService.instant('Published in');
+    }
+  }
+
+  /**
+   * Get short main title
+   * @param titles - document titles
+   * @return - main title to display
+   */
+  getShortMainTitle(titles: any) {
+    const bfTitles: Array<any> = titles.filter((title: any) => title.type === 'bf:Title');
+    for (const bfTitle of bfTitles) {
+      for (const mainTitle of bfTitle.mainTitle) {
+        if (!mainTitle.language) {
+          return mainTitle.value;
+        }
+      }
+    }
+  }
 }

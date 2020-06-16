@@ -53,9 +53,6 @@
           </li>
         </ul>
 
-        <!-- is_part_of -->
-        <span *ngIf="record.metadata.is_part_of">{{ record.metadata.is_part_of }}</span>
-
         <!-- provision activity publications -->
         <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
           <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>
