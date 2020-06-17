@@ -15,9 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { DetailComponent, EditorComponent, extractIdOnRef, RecordService, RouteInterface } from '@rero/ng-core';
+import { DetailComponent, EditorComponent, RecordService, RouteInterface } from '@rero/ng-core';
 import { JSONSchema7 } from 'json-schema';
-import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqOrderLineGuard } from '../guard/acq-order-line.guard';
 import { CanUpdateGuard } from '../guard/can-update.guard';
@@ -66,8 +65,10 @@ export class AcquisitionOrderLinesRoute extends BaseRoute implements RouteInterf
               return data;
             },
             redirectUrl: (record: any) => {
-              const acqOrderPid = extractIdOnRef(record.metadata.acq_order.$ref);
-              return of(`/records/acq_orders/detail/${acqOrderPid}`);
+              return this.redirectUrl(
+                record.metadata.acq_order,
+                '/records/acq_orders/detail'
+              );
             },
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
               return this.populateAcquisitionAccountsByCurrentUserLibrary(

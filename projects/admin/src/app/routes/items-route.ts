@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { BaseRoute } from './base-route';
-import { RouteInterface, DetailComponent, EditorComponent, RecordService, extractIdOnRef } from '@rero/ng-core';
+import { RouteInterface, DetailComponent, EditorComponent, RecordService } from '@rero/ng-core';
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
 import { of } from 'rxjs';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -75,20 +75,16 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
                 field, jsonSchema
               );
             },
-            redirectUrl: (record: any) => this.getUrl(record)
+            redirectUrl: (record: any) => {
+              return this.redirectUrl(
+                record.metadata.document,
+                '/records/documents/detail'
+              );
+            }
           }
         ]
       }
     };
-  }
-
-  /**
-   * Parse url with pid from $ref
-   * @param record - object, record to be saved
-   */
-  private getUrl(record: any) {
-    const pid = extractIdOnRef(record.metadata.document.$ref);
-    return of(`records/documents/detail/` + pid);
   }
 
   /**

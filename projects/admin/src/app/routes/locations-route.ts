@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { DetailComponent, EditorComponent, extractIdOnRef, RouteInterface } from '@rero/ng-core';
-import { of } from 'rxjs';
+import { DetailComponent, EditorComponent, RouteInterface } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { LibraryGuard } from '../guard/library.guard';
 import { LocationDetailViewComponent } from '../record/detail-view/location-detail-view/location-detail-view.component';
@@ -73,19 +72,15 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
               }
               return record;
             },
-            redirectUrl: (record: any) => this.getUrl(record)
+            redirectUrl: (record: any) => {
+              return this.redirectUrl(
+                record.metadata.library,
+                '/records/libraries/detail'
+              );
+            }
           }
         ]
       }
     };
-  }
-
-  /**
-   * Parse url with pid from $ref
-   * @param record - object, record to be saved
-   */
-  private getUrl(record: any) {
-    const pid = extractIdOnRef(record.metadata.library.$ref);
-    return of(`records/libraries/detail/` + pid);
   }
 }

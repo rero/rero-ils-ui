@@ -16,6 +16,8 @@
  */
 import { UrlSegment } from '@angular/router';
 import { RouteToolService } from './route-tool.service';
+import { extractIdOnRef } from '@rero/ng-core';
+import { of } from 'rxjs';
 
 export class BaseRoute {
 
@@ -77,5 +79,18 @@ export class BaseRoute {
       }
     }
     return data;
+  }
+
+  /**
+   * Return the redirect url with an observable
+   * @param recordMetadata object - Record metadata
+   * @param baseUrl string - absolute url entrypoint
+   * @return observable
+   */
+  protected redirectUrl(recordMetadata: any, baseUrl: string) {
+    const pid = ('$ref' in recordMetadata)
+      ? extractIdOnRef(recordMetadata.$ref)
+      : recordMetadata.pid;
+    return of(`${baseUrl}/${pid}`);
   }
  }
