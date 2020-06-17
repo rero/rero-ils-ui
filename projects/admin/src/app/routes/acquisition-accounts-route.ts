@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { EditorComponent, extractIdOnRef, RouteInterface } from '@rero/ng-core';
-import { of } from 'rxjs';
+import { EditorComponent, RouteInterface } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { BaseRoute } from './base-route';
 
@@ -61,8 +60,10 @@ export class AcquisitionAccountsRoute extends BaseRoute implements RouteInterfac
               return data;
             },
             redirectUrl: (record: any) => {
-              const budgetPid = extractIdOnRef(record.metadata.budget.$ref);
-              return of(`records/budgets/detail/${budgetPid}`);
+              return this.redirectUrl(
+                record.metadata.budget,
+                '/records/budgets/detail'
+              );
             }
           }
         ]
