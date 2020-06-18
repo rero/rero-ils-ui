@@ -16,9 +16,11 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 
 @Component({
   selector: 'admin-document-detail-view',
@@ -29,6 +31,9 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
 
   /** Observable resolving record data */
   record$: Observable<any>;
+
+  /** Observable of the imported record in marc format */
+  marc$: Observable<any>;
 
   /** Record subscription */
   private _recordObs: Subscription;
@@ -43,17 +48,46 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   ddCssClass = 'col-sm-6 col-md-8 mb-0';
 
   /** constructor
-   * @param _translateService: TranslateService
+   * @param _translateService - TranslateService to translate some strings.
+   * @param _router - ActivatedRoute to get url parameters.
+   * @param _recordService - RecordService to the MARC version for the record.
    */
   constructor(
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
+    private _router: ActivatedRoute,
+    private _recordService: RecordService
   ) { }
 
   /** On init hook */
   ngOnInit() {
     this._recordObs = this.record$.subscribe((record: any) => {
       this.record = record;
+      // only for imported record
+      if (record != null && record.metadata != null && this.record.metadata.pid == null) {
+        this.marc$ = this._recordService.getRecord(
+          this._router.snapshot.params.type, this.pid, 0, {
+          Accept: 'application/marc+json, application/json'
+        });
+      } else {
+        this.marc$ = of(null);
+      }
     });
+  }
+
+  /** Source for imported record. */
+  get source() {
+    if (this._router.snapshot && this._router.snapshot.params && this._router.snapshot.params.type !== null) {
+      return this._router.snapshot.params.type.replace('import_', '');
+    }
+    return null;
+  }
+
+  /** External identifier for imported record. */
+  get pid() {
+    if (this._router.snapshot && this._router.snapshot.params && this._router.snapshot.params.pid !== null) {
+      return this._router.snapshot.params.pid;
+    }
+    return null;
   }
 
   /** On destroy hook */
@@ -202,4 +236,5 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
     }
     return 'standard';
   }
+
 }

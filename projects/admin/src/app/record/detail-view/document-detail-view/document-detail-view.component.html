@@ -14,7 +14,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
+<!-- import button for external source importation such as BNF -->
+<div *ngIf="record && record.metadata && !record.metadata.pid && pid && source" class="float-right ml-4 mt-2 mb-4">
+  <a routerLink="/records/documents/new" [queryParams]="{source: source, pid: pid}" class="btn btn-sm btn-primary"
+    translate>Import</a>
+</div>
 <ng-container *ngIf="record">
   <!-- HEADER ----------------------------------------------------------------->
   <header class="col-10 mt-3 mb-3">
@@ -30,9 +34,8 @@
 
     <!-- TITLE ALTERNATIVE GRAPHICS -->
     <ng-container *ngIf="record.metadata.ui_title_altgr">
-      <ng-container
-        *ngFor="let altgr_title of record.metadata.ui_title_altgr">
-          <h3>{{ altgr_title }}</h3>
+      <ng-container *ngFor="let altgr_title of record.metadata.ui_title_altgr">
+        <h3>{{ altgr_title }}</h3>
       </ng-container>
     </ng-container>
 
@@ -87,12 +90,8 @@
     <ng-container *ngIf=" record.metadata.abstracts && record.metadata.abstracts.length > 0">
       <ul class="list-unstyled mb-0">
         <li *ngFor="let abstract of record.metadata.abstracts">
-          <ng-core-text-read-more
-            [text]="abstract"
-            [unit]="'word'"
-            [limit]="100"
-            [showMoreLabel]="'Show more' | translate"
-            [showLessLabel]="'Show less' | translate">
+          <ng-core-text-read-more [text]="abstract" [unit]="'word'" [limit]="100"
+            [showMoreLabel]="'Show more' | translate" [showLessLabel]="'Show less' | translate">
           </ng-core-text-read-more>
         </li>
       </ul>
@@ -100,7 +99,7 @@
 
     <!-- SUBJECTS -->
     <div class="row" *ngIf="record.metadata.subjects">
-      <div class="col" >
+      <div class="col">
         <span *ngFor="let subject of record.metadata.subjects" class="badge badge-secondary mr-1">
           <i class="fa fa-tag"></i> {{ subject }}
         </span>
@@ -112,16 +111,36 @@
   <div>
     <tabset>
       <!-- GET TAB ------------------------------------------------------------>
-      <tab>
+      <tab *ngIf="record.metadata.pid">
         <ng-template tabHeading>
           <i class="fa fa-list-ul mr-1"></i><span translate>Get</span>
         </ng-template>
         <div class="mt-2">
-        <!-- HOLDINGS -->
-        <admin-holdings
-          [holdingType]="holdingType"
-          [documentPid]="record.metadata.pid">
-        </admin-holdings>
+          <!-- HOLDINGS -->
+          <admin-holdings [holdingType]="holdingType" [documentPid]="record.metadata.pid">
+          </admin-holdings>
+        </div>
+      </tab>
+      <!-- END OF GET TAB ----------------------------------------------------->
+      <!-- MARC TAB ------------------------------------------------------------>
+      <tab *ngIf="marc$ | async as marc">
+        <ng-template tabHeading>
+          <i class="fa fa-list-ul mr-1"></i><span translate>Marc</span>
+        </ng-template>
+        <div class="mt-2">
+          <!-- MARC -->
+          <table class="table table-striped table-sm">
+            <tbody>
+              <tr *ngFor="let field of marc">
+                <ng-container *ngIf="field | marc as f">
+                  <th scope="row">{{ f.field }}</th>
+                  <td>{{ f.ind1 }}</td>
+                  <td>{{ f.ind2 }}</td>
+                  <td>{{ f.value }}</td>
+                </ng-container>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </tab>
       <!-- END OF GET TAB ----------------------------------------------------->
@@ -132,10 +151,8 @@
         </ng-template>
         <div class="mt-2">
           <!-- RESOURCES -->
-        <admin-resource
-          class="mt-3"
-          [resources]="resources">
-        </admin-resource>
+          <admin-resource class="mt-3" [resources]="resources">
+          </admin-resource>
         </div>
       </tab>
       <!-- END OF ONLINE ACCESS TAB ------------------------------------------->
@@ -169,7 +186,7 @@
                 <dt class="col-sm-4 offset-sm-2 offset-md-0">
                   <span *ngIf="isFirst; else elseBlock" translate>
                     Variant title
-                  </span >
+                  </span>
                   <ng-template #elseBlock>&nbsp;</ng-template>
                 </dt>
                 <dd [ngClass]="ddCssClass">
@@ -271,8 +288,7 @@
             </ng-container>
 
             <!-- PHYSICAL DESCRIPTION -->
-            <ng-container
-              *ngIf="
+            <ng-container *ngIf="
                 record.metadata.otherMaterialCharacteristics ||
                 record.metadata.formats">
               <dt class="col-sm-4 offset-sm-2 offset-md-0" translate>
@@ -427,8 +443,7 @@
             </ng-container>
 
             <!-- ELECTRONIC LOCATION -->
-            <ng-container
-              *ngIf="
+            <ng-container *ngIf="
                 record.metadata.electronic_location &&
                 record.metadata.electronic_location.length > 0
               ">
@@ -437,9 +452,7 @@
               </dt>
               <dd [ngClass]="ddCssClass">
                 <ul class="list-unstyled mb-0">
-                  <li
-                    *ngFor="let location of record.metadata.electronic_location"
-                  >
+                  <li *ngFor="let location of record.metadata.electronic_location">
                     <a href="{{ location.uri }}">
                       <i class="fa fa-lock fa-fw"></i> {{ location.uri }}
                     </a>

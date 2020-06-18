@@ -111,6 +111,7 @@ import { RemoteAutocompleteInputTypeComponent } from './record/editor/remote-aut
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { AppConfigService } from './service/app-config.service';
 import { SharedPipesModule } from './shared/shared-pipes.module';
+import { MarcPipe } from './pipe/marc.pipe';
 
 @NgModule({
   declarations: [
@@ -186,7 +187,8 @@ import { SharedPipesModule } from './shared/shared-pipes.module';
     SerialHoldingDetailViewComponent,
     HoldingDetailViewComponent,
     DefaultHoldingItemComponent,
-    NotesFormatPipe
+    NotesFormatPipe,
+    MarcPipe
   ],
   imports: [
     AppRoutingModule,
