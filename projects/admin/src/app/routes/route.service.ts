@@ -35,6 +35,8 @@ import { PatronsRoute } from './patrons-route';
 import { PersonsRoute } from './persons-route';
 import { RouteToolService } from './route-tool.service';
 import { VendorsRoute } from './vendors-route';
+import { ImportDocumentsRoute } from './import-documents-route';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -46,11 +48,13 @@ export class RouteService {
    * @param routeCollectionService - RouteCollectionService
    * @param router - Router
    * @param routeToolService - RouteToolService
+   * @param _translateService - TranslateService used by children.
    */
   constructor(
     private _routeCollectionService: RouteCollectionService,
     private _router: Router,
-    private _routeToolService: RouteToolService
+    private _routeToolService: RouteToolService,
+    private _translateService: TranslateService
   ) { }
 
   /**
@@ -74,6 +78,8 @@ export class RouteService {
       .addRoute(new PatronTypesRoute(this._routeToolService))
       .addRoute(new PersonsRoute(this._routeToolService))
       .addRoute(new VendorsRoute(this._routeToolService))
+      // should be at the last
+      .addRoute(new ImportDocumentsRoute(this._routeToolService, this._translateService))
     ;
     this._routeCollectionService.getRoutes().map((route: any) => {
       this._router.config.push(route);

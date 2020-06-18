@@ -42,6 +42,10 @@ export class MenuService {
           routerLink: '/records/documents/new',
           iconCssClass: 'fa fa-file-o'
         }, {
+          name: this._translateService.instant('Import from the web'),
+          routerLink: '/records/import_bnf',
+          iconCssClass: 'fa fa-file-o'
+        }, {
           name: this._translateService.instant('Persons'),
           routerLink: '/records/persons',
           iconCssClass: 'fa fa-user'

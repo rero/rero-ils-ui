@@ -50,6 +50,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
           {
             key: this.name,
             label: 'Documents',
+            showLabel: false,
             editorLongMode: true,
             component: DocumentsBriefViewComponent,
             detailComponent: DocumentDetailViewComponent,
