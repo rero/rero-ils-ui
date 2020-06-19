@@ -19,6 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CirculationModule } from '../../circulation.module';
 import { CardComponent } from './card.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 describe('CardComponent', () => {
@@ -29,7 +30,8 @@ describe('CardComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientModule,
-        CirculationModule
+        CirculationModule,
+        TranslateModule.forRoot()
       ]
     })
     .compileComponents();

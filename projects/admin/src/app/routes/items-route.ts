@@ -115,13 +115,13 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
    */
   private getUrl(record: any) {
     const redirectTo = this._routeToolService.getRouteQueryParam('redirectTo');
-    return of((redirectTo)
-        ? redirectTo
+    return redirectTo
+        ? of(redirectTo)
         : this.redirectUrl(
             record.metadata.document,
             '/records/documents/detail'
           )
-    );
+    ;
   }
 
   /**
