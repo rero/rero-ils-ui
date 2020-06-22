@@ -201,41 +201,43 @@
             </ng-container>
 
             <!-- NOTES -->
-            <ng-container *ngIf="record.metadata.notes_text && record.metadata.notes_text.general">
+            <ng-container *ngIf="record.metadata.note && record.metadata.note.length > 0 && record.metadata.note | notesFormat as notes">
+              <ng-container *ngIf="notes.general">
                 <dt class="col-sm-4 offset-sm-2 offset-md-0" translate>
                   Note
                 </dt>
                 <dd [ngClass]="ddCssClass">
                   <ul class="list-unstyled mb-0">
                     <li
-                      *ngFor="let note of record.metadata.notes_text.general"
+                      *ngFor="let note of notes.general"
                     >{{ note }}</li>
                   </ul>
                 </dd>
-            </ng-container>
-            <ng-container *ngIf="record.metadata.notes_text && record.metadata.notes_text.otherPhysicalDetails">
-              <dt class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                Physical details
-              </dt>
-              <dd [ngClass]="ddCssClass">
-                <ul class="list-unstyled mb-0">
-                  <li
-                    *ngFor="let note of record.metadata.notes_text.otherPhysicalDetails"
-                  >{{ note }}</li>
-                </ul>
-              </dd>
-            </ng-container>
-            <ng-container *ngIf="record.metadata.notes_text && record.metadata.notes_text.accompanyingMaterial">
-              <dt class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                Accompanying material
-              </dt>
-              <dd [ngClass]="ddCssClass">
-                <ul class="list-unstyled mb-0">
-                  <li
-                    *ngFor="let note of record.metadata.notes_text.accompanyingMaterial"
-                  >{{ note }}</li>
-                </ul>
-              </dd>
+              </ng-container>
+              <ng-container *ngIf="notes.otherPhysicalDetails">
+                <dt class="col-sm-4 offset-sm-2 offset-md-0" translate>
+                  Physical details
+                </dt>
+                <dd [ngClass]="ddCssClass">
+                  <ul class="list-unstyled mb-0">
+                    <li
+                      *ngFor="let note of notes.otherPhysicalDetails"
+                    >{{ note }}</li>
+                  </ul>
+                </dd>
+              </ng-container>
+              <ng-container *ngIf="notes.accompanyingMaterial">
+                <dt class="col-sm-4 offset-sm-2 offset-md-0" translate>
+                  Accompanying material
+                </dt>
+                <dd [ngClass]="ddCssClass">
+                  <ul class="list-unstyled mb-0">
+                    <li
+                      *ngFor="let note of notes.accompanyingMaterial"
+                    >{{ note }}</li>
+                  </ul>
+                </dd>
+              </ng-container>
             </ng-container>
 
             <!-- SERIES -->

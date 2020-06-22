@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -42,6 +42,7 @@ import { MenuComponent } from './menu/menu.component';
 import { BioInformationsPipe } from './pipe/bio-informations.pipe';
 import { BirthDatePipe } from './pipe/birth-date.pipe';
 import { MefTitlePipe } from './pipe/mef-title.pipe';
+import { NotesFormatPipe } from './pipe/notes-format.pipe';
 import { AcquisitionOrderBriefViewComponent } from './record/brief-view/acquisition-order-brief-view.component';
 import { BudgetsBriefViewComponent } from './record/brief-view/budgets-brief-view.component';
 import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policies-brief-view.component';
@@ -184,7 +185,8 @@ import { SharedPipesModule } from './shared/shared-pipes.module';
     SerialHoldingItemComponent,
     SerialHoldingDetailViewComponent,
     HoldingDetailViewComponent,
-    DefaultHoldingItemComponent
+    DefaultHoldingItemComponent,
+    NotesFormatPipe
   ],
   imports: [
     AppRoutingModule,
