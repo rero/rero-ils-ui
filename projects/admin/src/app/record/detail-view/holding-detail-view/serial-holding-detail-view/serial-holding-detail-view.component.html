@@ -100,8 +100,8 @@
          *ngFor="let item of this.receivedItems"
          [ngClass]="{'deleted-status': item.metadata.issue.status == 'deleted'}">
       <div class="col-sm-4 text">
-        <span class="badge badge-pill badge-info" *ngIf="item.new_issue" translate>New</span>
         {{ item.metadata.issue.display_text }}
+        <span class="badge badge-pill badge-info pl-2" *ngIf="item.new_issue" translate>New</span>
       </div>
       <div class="col-sm-1 text-center">
         <i class="fa fa-circle" title="{{ item.metadata.issue.status | translate }}"
