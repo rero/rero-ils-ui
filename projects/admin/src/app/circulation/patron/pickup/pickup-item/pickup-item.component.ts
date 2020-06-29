@@ -49,7 +49,7 @@ export class PickupItemComponent implements OnInit {
    */
   ngOnInit() {
     if (this.loan) {
-      this._recordService.getRecord('items', this.loan.metadata.item_pid)
+      this._recordService.getRecord('items', this.loan.metadata.item_pid.value)
       .subscribe(result => {
         this._patronService.getItem(result.metadata.barcode).subscribe(
           item => this.item = item
