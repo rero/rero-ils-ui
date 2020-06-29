@@ -25,7 +25,7 @@ export class OverdueTransactionComponent implements OnInit {
     if (this.transaction && this.transaction.loan && this.transaction.loan.pid) {
       this._recordService.getRecord('loans', this.transaction.pid).pipe(
         map(data => data.metadata),
-        mergeMap( data => this._recordService.getRecord('items', data.item_pid)),
+        mergeMap( data => this._recordService.getRecord('items', data.item_pid.value)),
         map(data => new Item(data.metadata))
       ).subscribe((data) => this.item = data);
     }
