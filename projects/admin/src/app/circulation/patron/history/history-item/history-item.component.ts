@@ -61,7 +61,7 @@ export class HistoryItemComponent implements OnInit {
    */
   ngOnInit() {
     if (this.loan) {
-      this._recordService.getRecord('items', this.loan.metadata.item_pid).subscribe(
+      this._recordService.getRecord('items', this.loan.metadata.item_pid.value).subscribe(
         (result) => {
           const documentId = extractIdOnRef(result.metadata.document.$ref);
           const itemObservable = this._patronService.getItem(result.metadata.barcode);
