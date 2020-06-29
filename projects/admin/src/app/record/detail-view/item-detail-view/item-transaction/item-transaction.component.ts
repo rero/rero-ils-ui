@@ -71,6 +71,13 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   private _pickupLocations$: any;
 
   /**
+   * Autorized Transaction Type to load pickup locations
+   */
+  private _autorizedTypeToLoadPickupLocations = [
+    'loan_request'
+  ];
+
+  /**
    * Informs parent component to remove request when it is cancelled
    */
   @Output() removeRequest = new EventEmitter<boolean>();
@@ -80,16 +87,20 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this._currentUser = this._userService.getCurrentUser();
-    this._pickupLocations$ = this.getPickupLocations().subscribe((pickups) => {
-      this.pickupLocations = pickups;
-    });
+    if (this._autorizedTypeToLoadPickupLocations.includes(this.type)) {
+      this._pickupLocations$ = this.getPickupLocations().subscribe((pickups) => {
+        this.pickupLocations = pickups;
+      });
+    }
   }
 
   /**
    * On destroy hook
    */
   ngOnDestroy() {
-    this._pickupLocations$.unsubscribe();
+    if (this._autorizedTypeToLoadPickupLocations.includes(this.type)) {
+      this._pickupLocations$.unsubscribe();
+    }
   }
 
   /**
