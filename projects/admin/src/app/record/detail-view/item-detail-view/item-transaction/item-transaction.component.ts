@@ -95,14 +95,14 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   /**
    * constructor
    * @param _loanService - LoanService
-   * @param _recordService - RecordService
    * @param _userService - User service
-   * @param _toastrService - ToastrService,
+   * @param _toastrService - ToastrService
    * @param _translateService - TranslateService
+   * @param _dialogService: DialogService
+   * @param _itemService: ItemsService
    */
   constructor(
     private _loanService: LoanService,
-    private _recordService: RecordService,
     private _userService: UserService,
     private _toastrService: ToastrService,
     private _translateService: TranslateService,

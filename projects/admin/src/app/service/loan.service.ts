@@ -18,6 +18,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { map } from 'rxjs/operators';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +47,8 @@ export class LoanService {
    */
   constructor(
     private _recordService: RecordService,
-    private _http: HttpClient
+    private _http: HttpClient,
+    private _userService: UserService
   ) { }
 
   /**
@@ -98,11 +100,12 @@ export class LoanService {
    * @return item data
    */
   cancelLoan(itemPid: string, loanPid: string, transactionLibraryPid: string) {
-    const url = '/api/item/cancel';
+    const url = '/api/item/cancel_item_request';
     return this._http.post<any>(url, {
       item_pid: itemPid,
       pid: loanPid,
-      transaction_library_pid: transactionLibraryPid
+      transaction_library_pid: transactionLibraryPid,
+      transaction_user_pid: this._userService.getCurrentUser().pid
     }).pipe(
     map(data => {
       const itemData = data.metadata;
