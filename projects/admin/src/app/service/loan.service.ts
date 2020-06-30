@@ -56,7 +56,7 @@ export class LoanService {
    */
   numberOfRequests$(itemPid: string) {
     const states = Object.values(this.statusRequest).join(' OR state:');
-    const query = `item_pid:${itemPid} AND (state:${states})`;
+    const query = `item_pid.value:${itemPid} AND (state:${states})`;
     return this._recordService.getRecords('loans', query, 1, 1).pipe(
       map(result => result.hits.total)
     );
@@ -141,7 +141,7 @@ export class LoanService {
       ...Object.values(this.statusRequest)
     ];
     const states = statuses.join(' OR state:');
-    const query = `item_pid:${itemPid} AND (state:${states})`;
+    const query = `item_pid.value:${itemPid} AND (state:${states})`;
     return this._recordService.getRecords('loans', query, 1, 100);
   }
 }
