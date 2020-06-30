@@ -29,7 +29,13 @@
 
     <!-- TITLE -->
     <h2 *ngIf="record.metadata.title && record.metadata.title | mainTitle as title" class="pl-0">
-      {{ title }}
+      <ng-core-text-read-more
+        [text]="title"
+        [unit]="'character'"
+        [limit]="150"
+        [showMoreLabel]="'Show more' | translate"
+        [showLessLabel]="'Show less' | translate"
+      ></ng-core-text-read-more>
     </h2>
 
     <!-- TITLE ALTERNATIVE GRAPHICS -->
