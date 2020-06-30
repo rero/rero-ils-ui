@@ -111,6 +111,8 @@ export class ItemRequestComponent implements OnInit {
       item_pid: this.itemPid,
       pickup_location_pid: model.pickupPid,
       patron_pid: this.patron.pid,
+      transaction_library_pid: this.currentUser.currentLibrary,
+      transaction_user_pid: this.currentUser.pid
     };
     this._http.post('/api/item/request', body).subscribe(
       () => {
