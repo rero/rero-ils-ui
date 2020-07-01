@@ -17,6 +17,7 @@
 
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { KeyboardShortcutsModule } from 'ng-keyboard-shortcuts';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
@@ -27,6 +28,7 @@ import { RecordModule } from '@rero/ng-core';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ShortcutsComponent } from './widgets/shortcuts/shortcuts.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -40,11 +42,13 @@ describe('AppComponent', () => {
         DatepickerModule.forRoot(),
         BsDropdownModule.forRoot(),
         TranslateModule.forRoot({}),
-        TypeaheadModule.forRoot()
+        TypeaheadModule.forRoot(),
+        KeyboardShortcutsModule.forRoot()
       ],
       declarations: [
         AppComponent,
-        MenuComponent
+        MenuComponent,
+        ShortcutsComponent
       ]
     }).compileComponents();
   }));

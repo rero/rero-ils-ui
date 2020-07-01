@@ -43,3 +43,12 @@
     {{ 'You do not have sufficient permissions to view this page' | translate }}
   </div>
 </ng-template>
+
+<ng-keyboard-shortcuts-help
+  [key]="'?'"
+  [keyLabel]="'Global shortcuts' | translate"
+  [keyDescription]="'Open/close the help panel' | translate"
+  [title]="'RERO ILS keyboard shortcuts' | translate"
+>
+</ng-keyboard-shortcuts-help>
+<admin-shortcuts></admin-shortcuts>

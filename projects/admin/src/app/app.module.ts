@@ -23,6 +23,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormlyModule } from '@ngx-formly/core';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CoreConfigService, RecordModule, TranslateLoader, TranslateService } from '@rero/ng-core';
+import { KeyboardShortcutsModule } from 'ng-keyboard-shortcuts';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -116,6 +117,7 @@ import { MefTypeahead } from './class/mef-typeahead';
 import { DocumentsTypeahead } from './class/documents-typeahead';
 import { MainTitlePipe } from './pipe/main-title.pipe';
 import { AppInitService } from './service/app-init.service';
+import { ShortcutsComponent } from './widgets/shortcuts/shortcuts.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -195,7 +197,8 @@ export function appInitFactory(appInitService: AppInitService) {
     DefaultHoldingItemComponent,
     NotesFormatPipe,
     MarcPipe,
-    TabOrderDirective
+    TabOrderDirective,
+    ShortcutsComponent
   ],
   imports: [
     AppRoutingModule,
@@ -219,6 +222,7 @@ export function appInitFactory(appInitService: AppInitService) {
         useClass: TranslateLoader
       }
     }),
+    KeyboardShortcutsModule.forRoot(),
     TypeaheadModule
   ],
   providers: [

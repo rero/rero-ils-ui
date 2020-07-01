@@ -123,6 +123,7 @@ export class User {
 
 export interface Organisation {
   pid: string;
+  code?: string;
 }
 
 export interface Library {
