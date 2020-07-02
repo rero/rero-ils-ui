@@ -111,6 +111,7 @@ import { ItemAvailabilityComponent } from './record/item-availability/item-avail
 import { AppConfigService } from './service/app-config.service';
 import { SharedPipesModule } from './shared/shared-pipes.module';
 import { MarcPipe } from './pipe/marc.pipe';
+import { TabOrderDirective } from './directives/tab-order.directive';
 
 @NgModule({
   declarations: [
@@ -185,7 +186,8 @@ import { MarcPipe } from './pipe/marc.pipe';
     HoldingDetailViewComponent,
     DefaultHoldingItemComponent,
     NotesFormatPipe,
-    MarcPipe
+    MarcPipe,
+    TabOrderDirective
   ],
   imports: [
     AppRoutingModule,
