@@ -3,12 +3,11 @@ sudo: false
 
 language: node_js
 node_js:
-  - "10"
+  - "12"
 
-# Can be reactived when this issue will be resolved: https://github.com/cospired/i18n-iso-languages/issues/17
-#cache:
-#  directories:
-#    - ./node_modules
+cache:
+  directories:
+          - ./node_modules
 
 install:
   - npm install
