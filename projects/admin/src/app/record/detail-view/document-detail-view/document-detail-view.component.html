@@ -117,7 +117,7 @@
   <div>
     <tabset>
       <!-- GET TAB ------------------------------------------------------------>
-      <tab *ngIf="record.metadata.pid">
+      <tab tabOrder="1" [active]="true" *ngIf="record.metadata.pid">
         <ng-template tabHeading>
           <i class="fa fa-list-ul mr-1"></i><span translate>Get</span>
         </ng-template>
@@ -128,30 +128,8 @@
         </div>
       </tab>
       <!-- END OF GET TAB ----------------------------------------------------->
-      <!-- MARC TAB ------------------------------------------------------------>
-      <tab *ngIf="marc$ | async as marc">
-        <ng-template tabHeading>
-          <i class="fa fa-list-ul mr-1"></i><span translate>Marc</span>
-        </ng-template>
-        <div class="mt-2">
-          <!-- MARC -->
-          <table class="table table-striped table-sm">
-            <tbody>
-              <tr *ngFor="let field of marc">
-                <ng-container *ngIf="field | marc as f">
-                  <th scope="row">{{ f.field }}</th>
-                  <td>{{ f.ind1 }}</td>
-                  <td>{{ f.ind2 }}</td>
-                  <td>{{ f.value }}</td>
-                </ng-container>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </tab>
-      <!-- END OF GET TAB ----------------------------------------------------->
       <!-- ONLINE ACCESS TAB -------------------------------------------------->
-      <tab *ngIf="resources && resources.length > 0">
+      <tab tabOrder="2" *ngIf="resources && resources.length > 0">
         <ng-template tabHeading>
           <i class="fa fa-download mr-1"></i><span translate>Online access</span>
         </ng-template>
@@ -163,7 +141,7 @@
       </tab>
       <!-- END OF ONLINE ACCESS TAB ------------------------------------------->
       <!-- DESCRIPTION TAB ---------------------------------------------------->
-      <tab>
+      <tab tabOrder="3" [active]="!record.metadata.pid">
         <ng-template tabHeading>
           <i class="fa fa-bars mr-1"></i><span translate>Description</span>
         </ng-template>
@@ -482,6 +460,28 @@
         </div>
       </tab>
       <!-- END OF DESCRIPTION TAB --------------------------------------------->
+      <!-- MARC TAB ------------------------------------------------------------>
+      <tab tabOrder="4" *ngIf="marc$ | async as marc">
+        <ng-template tabHeading>
+          <i class="fa fa-list-ul mr-1"></i><span translate>Marc</span>
+        </ng-template>
+        <div class="mt-2">
+          <!-- MARC -->
+          <table class="table table-striped table-sm">
+            <tbody>
+            <tr *ngFor="let field of marc">
+              <ng-container *ngIf="field | marc as f">
+                <th scope="row">{{ f.field }}</th>
+                <td>{{ f.ind1 }}</td>
+                <td>{{ f.ind2 }}</td>
+                <td>{{ f.value }}</td>
+              </ng-container>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </tab>
+      <!-- END OF MARC TAB ---------------------------------------------------->
     </tabset>
   </div>
   <!-- END OF TABS ------------------------------------------------------------>
