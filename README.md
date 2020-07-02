@@ -34,18 +34,29 @@ $ wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | ba
 # reload shell environment to activate nvm
 $ source ~/.bashrc
 # Install npm
-$ nvm install lts/dubnium
+$ nvm install lts/erbium
 
 # Get RERO-ILS-UI and use specific npm
 $ git clone https://github.com/rero/rero-ils-ui.git/
 $ cd rero-ils-ui
-$ nvm use lts/dubnium
+$ nvm use lts/erbium
 # Install angular-cli
-$ npm i -g @angular/cli@8.3.25
+$ npm i -g @angular/cli@8.3.28
 # Project npm dependencies
 $ npm i
 # Launch a local server using a proxy for https://localhost:5000 (rero-ils server)
 $ npm run start-admin-proxy
+```
+
+## How to update Node version with nvm
+
+In case you're updating Node version with nvm:
+
+```bash
+# First check you node version
+node --version # here, 10.16.3
+nvm install lts/erbium --reinstall-packages-from=10.16.3
+nvm uninstall 10.16.3
 ```
 
 # Development server
