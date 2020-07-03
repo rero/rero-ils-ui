@@ -27,7 +27,7 @@
     {{ item.metadata.issue.display_text }}
   </div>
   <div class="col-sm-2">
-    {{ item.metadata.call_number }}
+    {{ callNumber }}
   </div>
   <div class="col-sm-2 text-right">
     <button *ngIf="permissions.canRequest && permissions.canRequest.can; else notRequest"
