@@ -86,6 +86,19 @@ export class DefaultHoldingItemComponent implements OnInit {
   }
 
   /**
+   * Get formatted call number
+   *
+   * Join call number and second call number separate by ` - `
+   * @returns - formatted string
+   */
+  get callNumber(): string {
+    if (this.item.metadata.second_call_number) {
+      return this.item.metadata.call_number + ' | ' + this.item.metadata.second_call_number;
+    }
+    return this.item.metadata.call_number;
+  }
+
+  /**
    * Add request on item and refresh permissions
    * @param itemPid - string
    */
