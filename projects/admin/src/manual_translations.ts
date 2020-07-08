@@ -126,3 +126,9 @@ _('The item status does not allow requests.');
 _('Library not found.');
 _('Patron not found.');
 _('Request possible');
+
+// item note
+_('public_note');
+_('staff_note');
+_('checkin_note');
+_('checkout_note');
