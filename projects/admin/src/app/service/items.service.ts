@@ -22,6 +22,7 @@ import { ApiService, RecordService, RecordUiService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Item, ItemAction, ItemNoteType, ItemStatus } from '../class/items';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'

@@ -112,6 +112,7 @@ import { AppConfigService } from './service/app-config.service';
 import { SharedPipesModule } from './shared/shared-pipes.module';
 import { MarcPipe } from './pipe/marc.pipe';
 import { TabOrderDirective } from './directives/tab-order.directive';
+import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/items-brief-view.component';
 
 @NgModule({
   declarations: [
@@ -158,6 +159,7 @@ import { TabOrderDirective } from './directives/tab-order.directive';
     ItemAvailabilityComponent,
     ItemTransactionComponent,
     ItemTransactionsComponent,
+    ItemsBriefViewComponent,
     PatronDetailViewComponent,
     RefComponent,
     RemoteAutocompleteInputTypeComponent,
@@ -248,6 +250,7 @@ import { TabOrderDirective } from './directives/tab-order.directive';
     ExceptionDatesEditComponent,
     ItemTypesBriefViewComponent,
     ItemTypeDetailViewComponent,
+    ItemsBriefViewComponent,
     LibrariesBriefViewComponent,
     PatronsBriefViewComponent,
     PatronTypesDetailViewComponent,
@@ -256,13 +259,11 @@ import { TabOrderDirective } from './directives/tab-order.directive';
     ExceptionDatesEditComponent,
     LibraryDetailViewComponent,
     LibraryComponent,
-    LibraryComponent,
     PersonDetailViewComponent,
     DocumentDetailViewComponent,
     ExceptionDatesEditComponent,
     CircPolicyDetailViewComponent,
     CirculationPolicyComponent,
-    LibraryComponent,
     LocationDetailViewComponent,
     ItemDetailViewComponent,
     PatronDetailViewComponent,
