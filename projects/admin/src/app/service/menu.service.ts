@@ -80,7 +80,16 @@ export class MenuService {
           id: 'budgets-menu'
         }]
       }, {
-        name: this._translateService.instant('Admin & Monitoring'),
+        name: this._translateService.instant('Reports & monitoring'),
+        iconCssClass: 'fa fa-bar-chart',
+        entries: [{
+          name: this._translateService.instant('Inventory list'),
+          queryParams: this._myLibraryQueryParams(),
+          routerLink: '/records/items',
+          iconCssClass: 'fa fa-list'
+        }]
+      }, {
+        name: this._translateService.instant('Admin'),
         iconCssClass: 'fa fa-cogs',
         id: 'admin-and-monitoring-menu',
         entries: [{
@@ -154,5 +163,14 @@ export class MenuService {
    */
   private _myDocumentsQueryParams() {
     return {organisation: this._userService.getCurrentUser().library.organisation.pid};
+  }
+
+  /**
+   * Query param to filter items list by current library
+   *
+   * @return library pid as a dictionary
+   */
+  private _myLibraryQueryParams() {
+    return {library: this._userService.getCurrentUser().library.pid};
   }
 }

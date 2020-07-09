@@ -15,13 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { BaseRoute } from './base-route';
-import { RouteInterface, DetailComponent, EditorComponent, RecordService } from '@rero/ng-core';
+import { RouteInterface, DetailComponent, EditorComponent, RecordService, RecordSearchComponent } from '@rero/ng-core';
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { JSONSchema7 } from 'json-schema';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CanUpdateGuard } from '../guard/can-update.guard';
+import { ItemsBriefViewComponent } from '../record/brief-view/items-brief-view/items-brief-view.component';
 
 export class ItemsRoute extends BaseRoute implements RouteInterface {
 
@@ -40,16 +41,21 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
         // TODO: add guards
+        { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
         { path: 'new', component: EditorComponent }
       ],
       data: {
-        linkPrefix: 'records',
+        adminMode: () => of({
+          can: false,
+          message: ''
+        }),
         types: [
           {
             key: this.name,
             label: 'Items',
+            component: ItemsBriefViewComponent,
             detailComponent: ItemDetailViewComponent,
             canRead: (record: any) => this.canReadItem(record),
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
@@ -99,9 +105,26 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
                 field, jsonSchema
               );
             },
-            redirectUrl: (record: any) => this.getUrl(record)
+            redirectUrl: (record: any) => this.getUrl(record),
+            aggregationsBucketSize: 10,
+            aggregationsOrder: [
+              'library',
+              'location',
+              'item_type',
+              'status',
+            ],
+            aggregationsExpand: ['library', 'location', 'item_type', 'status'],
+            listHeaders: {
+              Accept: 'application/rero+json, application/json'
+            },
+            exportFormats: [
+              {
+                label: 'CSV',
+                format: 'csv'
+              }
+            ],
           }
-        ]
+        ],
       }
     };
   }

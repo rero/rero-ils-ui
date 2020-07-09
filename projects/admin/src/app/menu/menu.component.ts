@@ -180,12 +180,21 @@ export class MenuComponent implements OnInit {
    */
   private _initLinksMenu() {
     this.linksMenu = this._menuService.linksMenu;
-
     this._localeStorageService.onSet$.subscribe(() => {
-      const link = this.linksMenu.entries[3].entries.find(
-        (element: any) => element.routerLink.indexOf('/libraries/detail') > -1
-      );
-      link.routerLink = this.myLibraryRouterLink();
+      this.linksMenu.entries.find((mainEntry: any) => {
+        mainEntry.entries.find(
+            (element: any) => {
+              // update my library link
+              if (element.routerLink.indexOf('/libraries/detail') > -1) {
+                element.routerLink = this.myLibraryRouterLink();
+              }
+              // update items list query params
+              if (element.routerLink.indexOf('/records/items') > -1) {
+                element.queryParams = this.myItemListQueryParams();
+              }
+            }
+          );
+      });
     });
   }
 
@@ -247,5 +256,14 @@ export class MenuComponent implements OnInit {
 
   private myLibraryRouterLink() {
     return `/records/libraries/detail/${this._userService.getCurrentUser().currentLibrary}`;
+  }
+
+  /**
+   * Query param to filter items list by current library
+   *
+   * @return library pid as a dictionary
+   */
+  private myItemListQueryParams() {
+    return {library: this._userService.getCurrentUser().currentLibrary};
   }
 }
