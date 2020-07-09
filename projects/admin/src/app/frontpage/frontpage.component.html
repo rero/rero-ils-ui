@@ -15,12 +15,12 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="container">
+<div class="container-fluid">
   <div class="col mb-3">
     <h1 class="text-center" translate>RERO ILS administration</h1>
   </div>
-  <div class="row">
-    <div *ngFor="let entry of linksMenu.entries" class="col-lg-3">
+  <div class="row justify-content-center">
+    <div *ngFor="let entry of linksMenu.entries" class="col-lg-2">
       <admin-frontpage-board [item]="entry"></admin-frontpage-board>
     </div>
   </div>

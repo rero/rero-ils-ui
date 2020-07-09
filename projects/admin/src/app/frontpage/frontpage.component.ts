@@ -43,12 +43,6 @@ export class FrontpageComponent implements OnInit {
   /** On init hook */
   ngOnInit() {
     this.initLinksMenu();
-    this._localStorageService.onSet$.subscribe(() => {
-      const link = this.linksMenu.entries[3].entries.find(
-        (element: any) => element.routerLink.indexOf('/libraries/detail') > -1
-      );
-      link.routerLink = this.myLibraryRouterLink();
-    });
   }
 
   /** Router link for my library */
