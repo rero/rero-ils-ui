@@ -93,9 +93,9 @@ export class CheckinComponent implements OnInit {
   /** Apply checkin and checkout automatically
    * @param itemBarcode: item barcode
    */
-  automaticCheckinCheckout(itemBarcode: string) {
+  checkin(itemBarcode: string) {
     this.searchInputFocus = false;
-    this._itemsService.automaticCheckin(itemBarcode, this._loggedUser.getCurrentLibrary()).subscribe(item => {
+    this._itemsService.checkin(itemBarcode, this._loggedUser.getCurrentLibrary()).subscribe(item => {
       // TODO: remove this when policy will be in place
       if (
         item === null ||
@@ -196,7 +196,7 @@ export class CheckinComponent implements OnInit {
                   this._translate.instant('Checkin')
                 );
               } else {
-                this.automaticCheckinCheckout(barcode);
+                this.checkin(barcode);
               }
             } else {
               this._router.navigate(
