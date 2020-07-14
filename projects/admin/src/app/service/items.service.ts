@@ -22,6 +22,7 @@ import { ApiService, RecordService, RecordUiService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Item, ItemAction, ItemNoteType, ItemStatus } from '../class/items';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -31,17 +32,11 @@ export class ItemsService {
   /**
    * constructor
    * @param _http - HttpClient
-   * @param _recordService - RecordService
-   * @param _recordUiService - RecordUiService
-   * @param _apiService - ApiService
-   * @param _translateService - TranslateService
+   * @param _userService - UserService
    */
   constructor(
     private _http: HttpClient,
-    private _recordService: RecordService,
-    private _recordUiService: RecordUiService,
-    private _apiService: ApiService,
-    private _translateService: TranslateService
+    private _userService: UserService
   ) { }
 
   getRequestedLoans(libraryPid) {
@@ -100,13 +95,16 @@ export class ItemsService {
     );
   }
 
-  /** Do automatic checkin and get applied actions
+  /** Do checkin and get applied actions
    * @param itemBarcode: item barcode
    * @param transactionLibraryPid: transaction library
    */
-  automaticCheckin(itemBarcode, transactionLibraryPid) {
-    const url = '/api/item/automatic_checkin';
-    return this._http.post<any>(url, {item_barcode: itemBarcode, transaction_library_pid: transactionLibraryPid}).pipe(
+  checkin(barcode: string, transactionLibraryPid: string) {
+    return this._http.post<any>('/api/item/checkin', {
+      item_barcode: barcode,
+      transaction_library_pid: transactionLibraryPid,
+      transaction_user_pid: this._userService.getCurrentUser().pid
+    }).pipe(
       map(data => {
         const item = new Item(data.metadata);
         const actions = Object.keys(data.action_applied);
