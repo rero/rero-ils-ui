@@ -178,7 +178,11 @@ export class LoanComponent implements OnInit {
     for (const item of items) {
       if (item.currentAction !== ItemAction.no) {
         observables.push(
-          this._itemsService.doAction(item, this.currentLibraryPid, this.patron.pid));
+          this._itemsService.doAction(
+            item,
+            this.currentLibraryPid,
+            this._userService.getCurrentUser().pid,
+            this.patron.pid));
       }
     }
     forkJoin(observables).subscribe(

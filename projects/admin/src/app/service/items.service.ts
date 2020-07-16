@@ -137,12 +137,13 @@ export class ItemsService {
     );
   }
 
-  doAction(item, transactionLibraryPid, patronPid?: string) {
+  doAction(item, transactionLibraryPid, userPid, patronPid?: string) {
     const action = item.currentAction;
     const url = `/api/item/${action}`;
     const data: any = {
       item_pid: item.pid,
-      transaction_library_pid: transactionLibraryPid
+      transaction_library_pid: transactionLibraryPid,
+      transaction_user_pid: userPid
     };
     if (patronPid && action === ItemAction.checkout) {
       data.patron_pid = patronPid;
