@@ -87,15 +87,18 @@ export class MenuComponent implements OnInit {
     this.userMenu.entries.push({
       name: `${currentUser.first_name[0]}${currentUser.last_name[0]}`,
       iconCssClass: 'fa fa-user',
+      id: 'my-account-menu',
       entries: [
         {
           name: this._translateService.instant('Public interface'),
           href: '/',
-          iconCssClass: 'fa fa-television'
+          iconCssClass: 'fa fa-television',
+          id: 'public-interface-menu'
         }, {
           name: this._translateService.instant('Logout'),
           href: `/logout`,
-          iconCssClass: 'fa fa-sign-out'
+          iconCssClass: 'fa fa-sign-out',
+          id: 'logout-menu'
         }
       ]
     });
@@ -133,16 +136,18 @@ export class MenuComponent implements OnInit {
       entries: [{
         name: this._translateService.instant('Menu'),
         iconCssClass: 'fa fa-bars',
+        id: 'language-menu',
         entries: [{
           name: this._translateService.instant('Help'),
           iconCssClass: 'fa fa-info',
-          href: 'https://ils.test.rero.ch/help'
+          href: 'https://ils.test.rero.ch/help',
+          id: 'help-menu',
         }]
       }]
     };
     const languages = this._configService.languages;
     // divider
-    languagesMenu.entries[0].entries.splice(0, 0, {name: null, iconCssClass: null, href: null});
+    languagesMenu.entries[0].entries.splice(0, 0, {name: null, iconCssClass: null, href: null, id: null});
     for (const lang of languages) {
       if (lang !== this._appTranslateService.currentLanguage) {
         const data: any = {
@@ -150,6 +155,7 @@ export class MenuComponent implements OnInit {
           name: `ui_language_${lang}`,
           code: lang,
           iconCssClass: 'fa fa-language',
+          id: `language-menu-${lang}`,
         };
         languagesMenu.entries[0].entries.splice(0, 0, data);
       }
