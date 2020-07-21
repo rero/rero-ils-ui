@@ -120,12 +120,10 @@ export class LoanService {
    * @param pickupLocationPid: pickup location pid to update
    * @return item data
    */
-  updateLoanPickupLocation(loanPid: string, pickupLocationPid: string, itemPid: string) {
-    const url = '/api/item/update_loan_pickup_location';
-    return this._http.post<any>(url, {
-      loan_pid: loanPid,
-      pickup_location_pid: pickupLocationPid,
-      item_pid: itemPid
+  updateLoanPickupLocation(loanPid: string, pickupLocationPid: string) {
+    return this._http.post<any>('/api/item/update_loan_pickup_location', {
+      pid: loanPid,
+      pickup_location_pid: pickupLocationPid
     }).pipe(
     map(loanData => {
       return loanData;
