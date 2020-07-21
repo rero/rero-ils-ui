@@ -120,4 +120,20 @@ export class DefaultHoldingItemComponent implements OnInit {
     return this._recordPermissionService.generateTooltipMessage(this.permissions.canRequest.reasons, 'request');
   }
 
+  /**
+   * Get item ID (barcode) and add optional suffix on it
+   * @param item metadata from item
+   * @param suffix suffix to add after item ID (barcode)
+   * @return a string
+   */
+  getId(item: any, suffix?: string): string {
+    if (item.barcode !== null) {
+      let res = item.barcode;
+      if (suffix !== null) {
+        res += suffix;
+      }
+      return res;
+    }
+  }
+
 }

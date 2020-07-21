@@ -16,7 +16,7 @@
 -->
 <ng-container *ngIf="item && permissions">
   <div class="offset-sm-1 col-sm-3">
-    <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]">
+    <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" [attr.id]="getId(item.metadata, '-item')">
       {{ item.metadata.barcode }}
     </a>
     <span class="float-right text-warning small pt-1" *ngIf="item.metadata.notes && item.metadata.notes.length > 0">
@@ -54,7 +54,8 @@
     <button *ngIf="permissions.delete && permissions.delete.can; else deleteInfo"
             type="button" class="btn btn-outline-danger btn-sm ml-1"
             title="{{ 'Delete' | translate}}"
-            (click)="delete(item.metadata.pid)">
+            (click)="delete(item.metadata.pid)"
+            [attr.id]="getId(item.metadata, '-delete')">
         <i class="fa fa-trash" ></i>
     </button>
     <ng-template #deleteInfo>
