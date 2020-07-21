@@ -26,19 +26,4 @@ export class FrontpageBoardComponent {
   /** List of items to display */
   @Input() item: any;
 
-  /**
-   * Get item ID and add optional suffix on it
-   * @param item menu item
-   * @param suffix suffix to add after item id
-   * @return a string
-   */
-  getId(item: any, suffix?: string): string {
-    if (item.id !== null) {
-      let res = item.id;
-      if (suffix !== null) {
-        res += suffix;
-      }
-      return res;
-    }
-  }
 }

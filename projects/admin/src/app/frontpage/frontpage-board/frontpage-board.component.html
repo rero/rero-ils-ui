@@ -22,7 +22,7 @@
   </div>
   <ul class="list-group list-group-flush" *ngIf="item.entries">
     <li class="list-group-item p-0" *ngFor="let entry of item.entries">
-      <a class="list-group-item btn btn-light text-left text-wrap" [routerLink]="entry.routerLink" [queryParams]="entry.queryParams" [attr.id]="getId(entry, '-frontpage')"><i *ngIf="entry.iconCssClass"
+      <a class="list-group-item btn btn-light text-left text-wrap" [routerLink]="entry.routerLink" [queryParams]="entry.queryParams" [attr.id]="entry.id | idAttribute:{suffix: 'frontpage'}"><i *ngIf="entry.iconCssClass"
         [ngClass]="entry.iconCssClass" aria-hidden="true"></i> {{ entry.name | translate }}</a>
     </li>
   </ul>

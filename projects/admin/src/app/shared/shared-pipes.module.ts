@@ -21,16 +21,19 @@ import { AuthorNameTranslatePipe } from '../pipe/author-name-translate.pipe';
 import { MainTitlePipe } from '../pipe/main-title.pipe';
 import { ProvisionActivityPipe } from '../pipe/provision-activity.pipe';
 import { PatronBlockedMessagePipe } from '../pipe/patron-blocked-message.pipe';
+import { IdAttributePipe } from '../pipe/id-attribute.pipe';
 
 @NgModule({
   declarations: [
     AuthorNameTranslatePipe,
+    IdAttributePipe,
     MainTitlePipe,
     ProvisionActivityPipe,
     PatronBlockedMessagePipe
   ],
   exports: [
     AuthorNameTranslatePipe,
+    IdAttributePipe,
     MainTitlePipe,
     ProvisionActivityPipe,
     PatronBlockedMessagePipe

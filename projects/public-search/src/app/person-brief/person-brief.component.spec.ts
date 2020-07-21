@@ -27,6 +27,7 @@ import { BioInformationsPipe } from '../pipes/bio-informations.pipe';
 import { BirthDatePipe } from '../pipes/birth-date.pipe';
 import { MefTitlePipe } from '../pipes/mef-title.pipe';
 import { PersonBriefComponent } from './person-brief.component';
+import { IdAttributePipe } from 'projects/admin/src/app/pipe/id-attribute.pipe';
 
 
 describe('PersonBriefComponent', () => {
@@ -40,6 +41,7 @@ describe('PersonBriefComponent', () => {
         MefTitlePipe,
         BirthDatePipe,
         BioInformationsPipe,
+        IdAttributePipe,
         FrontpageComponent,
         FrontpageBoardComponent
       ],
