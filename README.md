@@ -1,4 +1,23 @@
-# Introduction
+# [RERO ILS UI][1]
+
+[![Travis (.org)](https://img.shields.io/travis/rero/rero-ils-ui)](https://travis-ci.org/github/rero/rero-ils-ui)
+[![Coverall.io](https://img.shields.io/coveralls/rero/rero-ils.svg)](https://coveralls.io/r/rero/rero-ils)
+[![GitHub Release](https://img.shields.io/github/tag/rero/rero-ils-ui.svg?style=flat)](https://github.com/rero/rero-ils-ui/releases/latest)
+[![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
+[![Gitter](https://img.shields.io/gitter/room/rero/reroils)](https://gitter.im/rero/reroils)
+
+Public search: \
+[![Translation status](https://hosted.weblate.org/widgets/rero_plus/-/rero-ils-public-search/svg-badge.svg)](https://hosted.weblate.org/engage/rero_plus/?utm_source=widget)
+
+Professional interface (admin): \
+[![Translation status](https://hosted.weblate.org/widgets/rero_plus/-/rero-ils-admin/svg-badge.svg)](https://hosted.weblate.org/engage/rero_plus/?utm_source=widget)
+
+*Copyright (C) 2020 RERO*
+*Copyright (C) 2020 UCLouvain*
+
+[1]: https://github.com/rero/rero-ils-ui
+
+## Introduction
 
 **Rero-ils-ui** is a part of [RERO21 project](https://rero21.ch/about/).
 
@@ -24,7 +43,7 @@ And then:
 
 Optionnaly, for development purposes, you can install an IDE such as Visual Studio Code, Atom, WebStorm, etc.
 
-# Quick start
+## Quick start
 
 After [having launched RERO-ILS server](https://github.com/rero/rero-ils/blob/master/INSTALL.rst#running):
 
@@ -48,7 +67,7 @@ $ npm i
 $ npm run start-admin-proxy
 ```
 
-## How to update Node version with nvm
+### How to update Node version with nvm
 
 In case you're updating Node version with nvm:
 
@@ -59,7 +78,7 @@ nvm install lts/erbium --reinstall-packages-from=10.16.3
 nvm uninstall 10.16.3
 ```
 
-# Development server
+## Development server
 
 Run the `rero-ils` dev server on `https://localhost:5000` and run `npm run start-admin-proxy` or `npm run start-public-search-proxy` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
@@ -87,7 +106,7 @@ where **project\_name** is one of:
   * public-search
   * search-bar
 
-## Run only one test
+### Run only one test
 
 For example with **projects/admin/src/app/menu/menu.component.spec.ts** file:
 
@@ -95,7 +114,7 @@ For example with **projects/admin/src/app/menu/menu.component.spec.ts** file:
 ng test --main projects/admin/src/app/menu/menu.component.spec.ts
 ```
 
-## Tip: Chromium users
+### Tip: Chromium users
 
 For Chromium users, it would be necessary to set **CHROME\_BIN** variable:
 
@@ -103,11 +122,11 @@ For Chromium users, it would be necessary to set **CHROME\_BIN** variable:
 CHROME_BIN=`which chromium` ./run-tests.sh
 ```
 
-# Further help
+## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
-# Translations
+## Translations
 
 As we use [Transifex for rero-ils-ui](https://www.transifex.com/rero/rero-ils-ui/) you need to extract new string.
 
