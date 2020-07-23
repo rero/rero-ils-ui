@@ -15,4 +15,4 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<ng-core-editor [model]="model"></ng-core-editor>
+<ng-core-editor (loadingChange)="loadingChanged($event)" [model]="model"></ng-core-editor>
