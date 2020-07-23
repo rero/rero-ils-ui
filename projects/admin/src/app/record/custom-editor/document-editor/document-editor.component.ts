@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
-import {ToastrService} from 'ngx-toastr';
-import { TranslateService } from '@ngx-translate/core';
-import { EditorService } from '../../../service/editor.service';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
 import { combineLatest } from 'rxjs';
+import { EditorService } from '../../../service/editor.service';
 
 @Component({
   selector: 'admin-document-editor',
@@ -30,8 +30,9 @@ import { combineLatest } from 'rxjs';
 /**
  * Show Document Editor with a specific input: EAN import.
  */
-export class DocumentEditorComponent implements  OnInit  {
+export class DocumentEditorComponent {
 
+  // initial editor values
   model = {};
 
   constructor(
@@ -39,18 +40,8 @@ export class DocumentEditorComponent implements  OnInit  {
     private toastrService: ToastrService,
     private translateService: TranslateService,
     private _route: ActivatedRoute
+  ) { }
 
-  ) {}
-
-  ngOnInit() {
-    combineLatest([this._route.params, this._route.queryParams])
-      .subscribe(([params, queryParams]) => {
-        if (queryParams.source != null && queryParams.pid != null) {
-          this.importFromExternalSource(queryParams.source, queryParams.pid);
-        }
-      }
-    );
-  }
   /**
    * Retrieve information about an item regarding its EAN code using EditorService
    * @param source string - the external source
@@ -68,6 +59,25 @@ export class DocumentEditorComponent implements  OnInit  {
           );
         }
       }
-      );
+    );
+  }
+
+  /**
+   * To be notified when the child editor loading state change.
+   *
+   * An other approach can be to display the child component only when the
+   * external source data are retrieved.
+   *
+   * @param value - true if the child editor component is currently loading data
+   */
+  loadingChanged(value: boolean) {
+    if (value === false) {
+      combineLatest([this._route.params, this._route.queryParams])
+        .subscribe(([params, queryParams]) => {
+          if (queryParams.source != null && queryParams.pid != null) {
+            this.importFromExternalSource(queryParams.source, queryParams.pid);
+          }
+        });
+    }
   }
 }
