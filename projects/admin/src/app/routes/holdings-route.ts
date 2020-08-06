@@ -90,7 +90,7 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
       const apiService = this._routeToolService.apiService;
       const libraryPid = user.currentLibrary;
       const query = `library.pid:${libraryPid}`;
-      field.templateOptions.options = recordService.getRecords(
+      recordService.getRecords(
         'locations',
         query, 1,
         RecordService.MAX_REST_RESULTS_SIZE,
@@ -111,7 +111,7 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
             };
           });
         })
-      );
+      ).subscribe(options => field.templateOptions.options = options);
     }
     return field;
   }

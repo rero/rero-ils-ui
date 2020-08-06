@@ -154,6 +154,8 @@ export class Item {
   number_of_extensions: number;
   location: any;
   notes: ItemNote[];
+  acquisition_date: Moment;
+
 
   constructor(obj?: any) {
     Object.assign(this, obj);
