@@ -45,22 +45,23 @@
       </ng-container>
     </ng-container>
 
-    <!-- AUTHORS -->
-    <ng-container *ngIf="authors as docAuthors">
-      <ng-container *ngIf="docAuthors.length > 0">
-        <ul class="list-inline mb-0">
-          <li class="list-inline-item" *ngFor="let author of docAuthors; let last = last; let i = index"
-          [attr.id]="i | idAttribute:{prefix: 'doc-author'}">
-            <span *ngIf="!author.pid">
-              {{ author | authorNameTranslate }}
-            </span>
-            <a *ngIf="author.pid" [routerLink]="['/records', 'persons', 'detail', author.pid]">
-              {{ author | authorNameTranslate }}
-            </a>
-            {{ last ? "" : "; " }}
-          </li>
-        </ul>
-      </ng-container>
+    <!-- CONTRIBUTION -->
+    <ng-container *ngIf="record.metadata.contribution && record.metadata.contribution.length > 0">
+      <ul class="list-inline mb-0">
+        <li
+          class="list-inline-item"
+          *ngFor="let contribution of record.metadata.contribution; let last = last; let i = index"
+          [attr.id]="i | idAttribute:{prefix: 'doc-contribution'}"
+        >
+          <span *ngIf="!contribution.agent.pid" [innerHTML]="contribution | contributionFormat: true"></span>
+          <a
+          *ngIf="contribution.agent.pid"
+          [innerHTML]="contribution | contributionFormat: true"
+          [routerLink]="['/records', 'persons', 'detail', contribution.agent.pid]">
+          </a>
+          {{ last ? '' : '; ' }}
+        </li>
+      </ul>
     </ng-container>
 
     <!-- PUBLICATION STATEMENT -->

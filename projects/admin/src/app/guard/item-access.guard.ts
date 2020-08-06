@@ -18,6 +18,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { extractIdOnRef, RecordService } from '@rero/ng-core';
+import { Record } from '@rero/ng-core/lib/record/record';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -54,13 +55,13 @@ export class ItemAccessGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       const itemPid = next.params.pid;
       this._recordService.getRecord('items', itemPid).pipe(
-        map(data => data.metadata),
+        map((data: any) => data.metadata),
         map(data => extractIdOnRef(data.holding.$ref))
       )
       .subscribe(holdingPid => {
         const query = `pid:${holdingPid}`;
         this._recordService.getRecords('holdings', query, 1, 1).pipe(
-          map(result => result.hits.total === 0 ? null : result.hits.hits[0]),
+          map((result: Record) => result.hits.total === 0 ? null : result.hits.hits[0]),
         ).subscribe(data => {
           if (null === data) {
             this._toastr.warning(

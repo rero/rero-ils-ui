@@ -16,7 +16,6 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { RecordService as LocalRecordService } from '../record.service';
 
 @Component({
@@ -71,21 +70,8 @@ export class DocumentBriefComponent {
   }
 
   constructor(
-    private translate: TranslateService,
     private localRecordService: LocalRecordService
   ) {  }
-
-    /**
-     * Get author name
-     */
-  authorName(author) {
-    const nameIndex = `name_${this.translate.currentLang}`;
-    let nameLng = author[nameIndex];
-    if (!nameLng) {
-      nameLng = author.name;
-    }
-    return nameLng;
-  }
 
     /**
      * Load cover image

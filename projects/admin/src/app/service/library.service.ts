@@ -16,7 +16,7 @@
  */
 import { Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { of } from 'rxjs';
+import { Record } from '@rero/ng-core/lib/record/record';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -37,7 +37,7 @@ export class LibraryService {
       1,
       1
     ).pipe(
-      map(results => results.hits.total)
+      map((results: Record) => results.hits.total)
     );
   }
 

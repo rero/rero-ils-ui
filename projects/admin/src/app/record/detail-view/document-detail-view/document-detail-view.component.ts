@@ -104,28 +104,6 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   }
 
   /**
-   * Get list of document authors
-   * @return array - authors
-   */
-  get authors() {
-    const authors = this.record.metadata.authors;
-    if (undefined === authors) {
-      return [];
-    }
-    const key = `name_${this._translateService.currentLang}`;
-    authors.forEach((author: any) => {
-      if (!('name' in author)) {
-        if (key in author) {
-          author.name = author[key];
-        } else {
-          author.name = author.name_en;
-        }
-      }
-    });
-    return authors;
-  }
-
-  /**
    * Get list of document identifiers
    * @return array - identifiers
    */

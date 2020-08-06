@@ -17,6 +17,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
+import { Record } from '@rero/ng-core/lib/record/record';
 import { map } from 'rxjs/operators';
 import { UserService } from './user.service';
 
@@ -60,7 +61,7 @@ export class LoanService {
     const states = Object.values(this.statusRequest).join(' OR state:');
     const query = `item_pid.value:${itemPid} AND (state:${states})`;
     return this._recordService.getRecords('loans', query, 1, 1).pipe(
-      map(result => result.hits.total)
+      map((result: Record) => result.hits.total)
     );
   }
 
@@ -71,7 +72,7 @@ export class LoanService {
    */
   borrowedBy$(itemPid: string) {
     return this.loans$(itemPid).pipe(
-      map(results => results.hits.hits.filter((data: any) =>
+      map((results: Record) => results.hits.hits.filter((data: any) =>
         data.metadata.state === this.statusBorrow.ON_LOAN
       ))
     );
@@ -84,7 +85,7 @@ export class LoanService {
    */
   requestedBy$(itemPid: string) {
     return this.loans$(itemPid).pipe(
-      map(results => results.hits.hits.filter((data: any) =>
+      map((results: Record) => results.hits.hits.filter((data: any) =>
           data.metadata.state === this.statusRequest.AT_DESK
           || data.metadata.state === this.statusRequest.PENDING
           || data.metadata.state === this.statusRequest.IN_TRANSIT_FOR_PICKUP

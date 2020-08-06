@@ -14,14 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'birthDate'
 })
 export class BirthDatePipe implements PipeTransform {
-
   transform(value: any): any {
     for (const source of ['idref', 'gnd', 'bnf', 'rero']) {
       if (value[source] && value[source].date_of_birth) {
@@ -30,5 +28,4 @@ export class BirthDatePipe implements PipeTransform {
     }
     return null;
   }
-
 }

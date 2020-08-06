@@ -17,9 +17,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
+import { Record } from '@rero/ng-core/lib/record/record';
 import { ToastrService } from 'ngx-toastr';
 import { HoldingsService, PredictionIssue } from 'projects/admin/src/app/service/holdings.service';
-import { ItemsService } from 'projects/admin/src/app/service/items.service';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { IssueItemStatus } from '../../../../class/items';
 
@@ -60,7 +60,6 @@ export class SerialHoldingDetailViewComponent implements OnInit {
    * @param _recordService: RecordService
    * @param _recordUiService: RecordUiService
    * @param _recordPermissionService: RecordPermissionService
-   * @param _itemService: ItemService
    * @param _translateService: TranslateService,
    * @param _toastrService: ToastrService
    */
@@ -69,7 +68,6 @@ export class SerialHoldingDetailViewComponent implements OnInit {
     private _recordService: RecordService,
     private _recordUiService: RecordUiService,
     private _recordPermissionService: RecordPermissionService,
-    private _itemService: ItemsService,
     private _translateService: TranslateService,
     private _toastrService: ToastrService
   ) {}
@@ -105,7 +103,7 @@ export class SerialHoldingDetailViewComponent implements OnInit {
         this._receivedIssueCounter,
         [], {}, null,
         '-issue_expected_date'
-      ).subscribe(result => {
+      ).subscribe((result: Record) => {
         this.totalReceivedItems = result.hits.total;
         this.receivedItems = [];
         result.hits.hits.forEach(item => this.receivedItems.push(this._loadItem(item)), this);

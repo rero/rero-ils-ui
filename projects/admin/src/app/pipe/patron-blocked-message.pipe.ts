@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -34,7 +33,7 @@ export class PatronBlockedMessagePipe implements PipeTransform {
    * Display a message if patron is blocked
    * @param patron - Patron object
    */
-  transform(patron: any, ...args: any[]): any {
+  transform(patron: any): any {
     if (patron == null || patron.blocked !== true) {
       return null;
     }

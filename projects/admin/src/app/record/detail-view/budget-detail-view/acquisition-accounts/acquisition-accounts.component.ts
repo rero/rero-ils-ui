@@ -16,6 +16,7 @@
  */
 import { Component, Input, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
+import { Record } from '@rero/ng-core/lib/record/record';
 import { BudgetTotalService } from 'projects/admin/src/app/service/budget-total.service';
 import { UserService } from 'projects/admin/src/app/service/user.service';
 import { map } from 'rxjs/operators';
@@ -79,7 +80,7 @@ export class AcquisitionAccountsComponent implements OnInit {
     this._recordService
         .getRecords('acq_accounts', query, 1, RecordService.MAX_REST_RESULTS_SIZE)
         .pipe(
-          map(hits => hits.hits.total === 0 ? [] : hits.hits.hits)
+          map((hits: Record) => hits.hits.total === 0 ? [] : hits.hits.hits)
         ).subscribe((accounts: any) => {
           this.accounts = accounts;
           accounts.map((record: any) => {

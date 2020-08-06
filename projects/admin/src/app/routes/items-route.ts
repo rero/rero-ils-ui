@@ -14,15 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { BaseRoute } from './base-route';
-import { RouteInterface, DetailComponent, EditorComponent, RecordService, RecordSearchComponent } from '@rero/ng-core';
-import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { DetailComponent, EditorComponent, RecordSearchComponent, RecordService, RouteInterface } from '@rero/ng-core';
+import { Record } from '@rero/ng-core/lib/record/record';
 import { JSONSchema7 } from 'json-schema';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { ItemsBriefViewComponent } from '../record/brief-view/items-brief-view/items-brief-view.component';
+import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
+import { BaseRoute } from './base-route';
 
 export class ItemsRoute extends BaseRoute implements RouteInterface {
 
@@ -190,7 +191,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
         undefined,
         'name'
       ).pipe(
-        map(result => result.hits.total === 0 ? [] : result.hits.hits),
+        map((result: Record) => result.hits.total === 0 ? [] : result.hits.hits),
         map(hits => {
           return hits.map((hit: any) => {
             return {

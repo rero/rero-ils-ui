@@ -17,6 +17,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { Record } from '@rero/ng-core/lib/record/record';
 import { Observable, Subscription } from 'rxjs';
 import { UserService } from '../../../service/user.service';
 
@@ -66,7 +67,7 @@ export class LibraryDetailViewComponent implements DetailRecord, OnInit, OnDestr
             null,  // headers
             'name'
           )
-          .subscribe((record) => {
+          .subscribe((record: Record) => {
             this.locations = record.hits.hits || [];
           });
         this.isUserCanAddLocation = this._userService.getCurrentUser().getCurrentLibrary() === libraryPid;
