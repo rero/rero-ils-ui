@@ -69,6 +69,10 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
               if (holdingPid !== null) {
                 this._populateItemFieldFromHolding(record, holdingPid);
               }
+              // for new item creation, fill the acquisition date field with the current timestamp
+              if (!record.hasOwnProperty('pid')) {
+                record.acquisition_date = this._routeToolService.datePipe.transform(Date.now(), 'yyyy-MM-dd');
+              }
               return record;
             },
             preCreateRecord: (data: any) => {
@@ -98,6 +102,10 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
               // If we try to save an item with without any notes, then remove the empty array notes array from record
               if (record.notes && record.notes.length === 0) {
                 delete record.notes;
+              }
+              // If we save an item with 'new_acquisition' flag set to false, ensure than we don't send any acquisition_date
+              if (!record.hasOwnProperty('acquisition_date') && record.acquisition_date == null) {
+                delete record.acquisition_date;
               }
               return record;
             },
@@ -182,7 +190,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
       const apiService = this._routeToolService.apiService;
       const libraryPid = user.currentLibrary;
       const query = `library.pid:${libraryPid}`;
-      field.templateOptions.options = recordService.getRecords(
+      recordService.getRecords(
         'locations',
         query, 1,
         RecordService.MAX_REST_RESULTS_SIZE,
@@ -203,7 +211,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             };
           });
         })
-      );
+      ).subscribe(options => field.templateOptions.options = options);
     }
     return field;
   }

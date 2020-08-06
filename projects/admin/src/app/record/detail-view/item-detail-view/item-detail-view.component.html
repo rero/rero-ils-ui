@@ -72,6 +72,19 @@
       <dd class="col-sm-7 col-md-8 mb-0">
         <admin-item-availability [item]="record"></admin-item-availability>
       </dd>
+      <!-- ACQUISITION -->
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'New acquisition' | translate }}:
+      </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        <i class="fa"
+           [ngClass]="(record.metadata.acquisition_date) ? 'fa-check text-success' : 'fa-times text-danger'"
+           aria-hidden="true">
+        </i>
+        <span class="ml-1" *ngIf="record.metadata.acquisition_date">
+          ({{ record.metadata.acquisition_date | dateTranslate : 'shortDate' }})
+        </span>
+      </dd>
     </dl>
   </section>
 
@@ -95,8 +108,7 @@
         <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Regular issue</dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           <i class="fa"
-             [ngClass]="(record.metadata.issue.regular) ? 'fa-check' : 'fa-times'"
-             [ngStyle]="{'color': (record.metadata.issue.regular) ? 'green' : 'red'}"
+             [ngClass]="(record.metadata.issue.regular) ? 'fa-check text-success' : 'fa-times text-danger'"
              aria-hidden="true">
           </i>
         </dd>
