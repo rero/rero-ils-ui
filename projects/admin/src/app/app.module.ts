@@ -105,14 +105,15 @@ import { PatronDetailViewComponent } from './record/detail-view/patron-detail-vi
 import { PatronTypesDetailViewComponent } from './record/detail-view/patron-types-detail-view/patron-types-detail-view.component';
 import { PersonDetailViewComponent } from './record/detail-view/person-detail-view/person-detail-view.component';
 import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
-import { RefComponent } from './record/editor/ref/ref.component';
-import { RemoteAutocompleteInputTypeComponent } from './record/editor/remote-autocomplete/remote-autocomplete.component';
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { AppConfigService } from './service/app-config.service';
 import { SharedPipesModule } from './shared/shared-pipes.module';
 import { MarcPipe } from './pipe/marc.pipe';
 import { TabOrderDirective } from './directives/tab-order.directive';
 import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/items-brief-view.component';
+import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
+import { RemoteTypeaheadService } from '@rero/ng-core';
+import { MefTypeahead } from './class/mef-typeahead';
 
 @NgModule({
   declarations: [
@@ -161,8 +162,6 @@ import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/it
     ItemTransactionsComponent,
     ItemsBriefViewComponent,
     PatronDetailViewComponent,
-    RefComponent,
-    RemoteAutocompleteInputTypeComponent,
     VendorDetailViewComponent,
     VendorBriefViewComponent,
     AddressTypeComponent,
@@ -206,15 +205,7 @@ import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/it
     TabsModule.forRoot(),
     TooltipModule.forRoot(),
     PopoverModule.forRoot(),
-    FormlyModule.forRoot({
-      wrappers: [{ name: 'ref', component: RefComponent }],
-      types: [
-        {
-          name: 'remoteautocomplete',
-          component: RemoteAutocompleteInputTypeComponent
-        }
-      ]
-    }),
+    FormlyModule.forRoot({}),
     TranslateModule.forRoot({
       loader: {
         provide: BaseTranslateLoader,
@@ -231,6 +222,10 @@ import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/it
       multi: true
     },
     {
+      provide: RemoteTypeaheadService,
+      useClass: UiRemoteTypeaheadService
+    },
+    {
       provide: CoreConfigService,
       useClass: AppConfigService
     },
@@ -239,7 +234,8 @@ import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/it
       useFactory: (translate: TranslateService) => translate.currentLanguage,
       deps: [TranslateService]
     },
-    BsLocaleService
+    BsLocaleService,
+    MefTypeahead
   ],
   entryComponents: [
     CircPoliciesBriefViewComponent,
@@ -267,8 +263,6 @@ import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/it
     LocationDetailViewComponent,
     ItemDetailViewComponent,
     PatronDetailViewComponent,
-    RefComponent,
-    RemoteAutocompleteInputTypeComponent,
     VendorDetailViewComponent,
     VendorBriefViewComponent,
     AcquisitionOrderDetailViewComponent,

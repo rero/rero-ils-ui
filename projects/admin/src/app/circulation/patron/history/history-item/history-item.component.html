@@ -35,14 +35,14 @@
       </a>
     </div>
     <div class="col-sm-4">
-      <ul class="list-inline mb-0" *ngIf="document.metadata.authors && document.metadata.authors.length > 0">
+      <ul class="list-inline mb-0" *ngIf="document.metadata.contribution && document.metadata.contribution.length > 0">
         <li class="list-inline-item"
-            *ngFor="let author of document.metadata.authors.slice(0,3); let last = last; let i = index">
-          <span *ngIf="!author.pid">
-            {{ author | authorNameTranslate }}
+            *ngFor="let contribution of document.metadata.contribution.slice(0,3); let last = last; let i = index">
+          <span *ngIf="!contribution.agent.pid">
+            {{ contribution | contributionFormat }}
           </span>
-          <a *ngIf="author.pid" [routerLink]="['/records', 'persons', 'detail', author.pid]">
-            {{ author | authorNameTranslate }}
+          <a *ngIf="contribution.agent.pid" [routerLink]="['/records', 'persons', 'detail', contribution.agent.pid]">
+            {{ contribution | contributionFormat }}
           </a>
           {{ last ? '' : '; ' }}
           {{ last && i === 2 ? '; …' : '' }}

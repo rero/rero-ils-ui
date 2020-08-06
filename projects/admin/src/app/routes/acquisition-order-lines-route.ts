@@ -16,6 +16,7 @@
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DetailComponent, EditorComponent, RecordService, RouteInterface } from '@rero/ng-core';
+import { Record } from '@rero/ng-core/lib/record/record';
 import { JSONSchema7 } from 'json-schema';
 import { map } from 'rxjs/operators';
 import { AcqOrderLineGuard } from '../guard/acq-order-line.guard';
@@ -103,7 +104,7 @@ export class AcquisitionOrderLinesRoute extends BaseRoute implements RouteInterf
         query, 1,
         RecordService.MAX_REST_RESULTS_SIZE
       ).pipe(
-        map(result => result.hits.total === 0 ? [] : result.hits.hits),
+        map((result: Record) => result.hits.total === 0 ? [] : result.hits.hits),
         map(hits => {
           return hits.map((hit: any) => {
             return {

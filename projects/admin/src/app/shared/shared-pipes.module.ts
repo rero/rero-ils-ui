@@ -17,22 +17,22 @@
 
 import { DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { AuthorNameTranslatePipe } from '../pipe/author-name-translate.pipe';
-import { MainTitlePipe } from '../pipe/main-title.pipe';
-import { ProvisionActivityPipe } from '../pipe/provision-activity.pipe';
-import { PatronBlockedMessagePipe } from '../pipe/patron-blocked-message.pipe';
+import { ContributionFormatPipe } from '../pipe/contribution-format.pipe';
 import { IdAttributePipe } from '../pipe/id-attribute.pipe';
+import { MainTitlePipe } from '../pipe/main-title.pipe';
+import { PatronBlockedMessagePipe } from '../pipe/patron-blocked-message.pipe';
+import { ProvisionActivityPipe } from '../pipe/provision-activity.pipe';
 
 @NgModule({
   declarations: [
-    AuthorNameTranslatePipe,
+    ContributionFormatPipe,
     IdAttributePipe,
     MainTitlePipe,
     ProvisionActivityPipe,
     PatronBlockedMessagePipe
   ],
   exports: [
-    AuthorNameTranslatePipe,
+    ContributionFormatPipe,
     IdAttributePipe,
     MainTitlePipe,
     ProvisionActivityPipe,

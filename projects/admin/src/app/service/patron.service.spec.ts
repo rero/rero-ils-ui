@@ -16,12 +16,16 @@
  */
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { PatronService } from './patron.service';
 
 
 describe('PatronService', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [HttpClientModule]
+    imports: [
+      HttpClientModule,
+      TranslateModule.forRoot()
+    ]
   }));
 
   it('should be created', () => {

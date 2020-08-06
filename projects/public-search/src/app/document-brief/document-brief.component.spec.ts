@@ -27,6 +27,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AppRoutingModule } from '../app-routing.module';
 import { PersonBriefComponent } from '../person-brief/person-brief.component';
 import { MainComponent } from '../main/main.component';
+import { ContributionFormatPipe } from 'projects/admin/src/app/pipe/contribution-format.pipe';
 
 describe('DocumentBriefComponent', () => {
   let component: DocumentBriefComponent;
@@ -36,6 +37,7 @@ describe('DocumentBriefComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         DocumentBriefComponent,
+        ContributionFormatPipe,
         MefTitlePipe,
         BirthDatePipe,
         BioInformationsPipe,

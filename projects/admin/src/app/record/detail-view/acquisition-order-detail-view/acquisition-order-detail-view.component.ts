@@ -17,6 +17,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { Record } from '@rero/ng-core/lib/record/record';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
@@ -64,7 +65,7 @@ export class AcquisitionOrderDetailViewComponent implements OnInit, DetailRecord
           'acq_order_lines', query, 1, RecordService.MAX_REST_RESULTS_SIZE,
           undefined, undefined, undefined, 'pid'
         ).pipe(
-          map(result => result.hits.hits)
+          map((result: Record) => result.hits.hits)
         );
       })
     );

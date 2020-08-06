@@ -17,6 +17,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiService, RecordService } from '@rero/ng-core';
+import { Record } from '@rero/ng-core/lib/record/record';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Item, LoanState } from '../class/items';
@@ -26,7 +27,7 @@ import { User } from '../class/user';
   providedIn: 'root'
 })
 export class PatronService {
-  private _patron: any;
+
   private _currentPatron: BehaviorSubject<User> = new BehaviorSubject(
     undefined
   );
@@ -61,7 +62,7 @@ export class PatronService {
     return this.recordService
       .getRecords('patrons', `barcode:${barcode}`, 1, 1)
       .pipe(
-        switchMap(response => {
+        switchMap((response: Record) => {
           switch (response.hits.total) {
             case 0: {
               this._currentPatron.next(null);
@@ -168,7 +169,7 @@ export class PatronService {
     return this.recordService.getRecords(
       'loans', query, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, null, sort
     ).pipe(
-      map(data => data.hits),
+      map((data: Record) => data.hits),
       map(hits => (hits.total === 0 ? [] : hits.hits))
     );
   }

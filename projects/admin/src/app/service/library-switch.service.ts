@@ -18,6 +18,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { LocalStorageService, RecordEvent, RecordService } from '@rero/ng-core';
+import { Record } from '@rero/ng-core/lib/record/record';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User } from '../class/user';
@@ -124,7 +125,7 @@ export class LibrarySwitchService {
    */
   generateMenu(): void {
     this._libraryService.allOrderBy$('name').pipe(
-      map(results => (results.hits.total > 0) ? results.hits.hits : [])
+      map((results: Record) => (results.hits.total > 0) ? results.hits.hits : [])
     ).subscribe(libraries => {
       this.menuEntries = [];
       libraries.forEach((library: any) => {

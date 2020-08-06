@@ -20,13 +20,14 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
+import { Record } from '@rero/ng-core/lib/record/record';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { LoanService } from '../../../../service/loan.service';
 import { Observable } from 'rxjs';
-import { ItemsService } from '../../../../service/items.service';
-import { UserService } from '../../../../service/user.service';
 import { debounceTime, map, shareReplay } from 'rxjs/operators';
+import { ItemsService } from '../../../../service/items.service';
+import { LoanService } from '../../../../service/loan.service';
+import { UserService } from '../../../../service/user.service';
 
 @Component({
   selector: 'admin-item-request',
@@ -248,7 +249,7 @@ export class ItemRequestComponent implements OnInit {
     const query = `barcode:${barcode}`;
     return this._recordService.getRecords('patrons', query, 1, 1).pipe(
       debounceTime(500),
-      map(result => result.hits.total === 0 ? [] : result.hits.hits),
+      map((result: Record) => result.hits.total === 0 ? [] : result.hits.hits),
       shareReplay(1)
     );
   }

@@ -14,22 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { BehaviorSubject, Observable} from 'rxjs';
 import { Injectable } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
-import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
+import { RecordService } from '@rero/ng-core';
+import { Record } from '@rero/ng-core/lib/record/record';
+import { ToastrService } from 'ngx-toastr';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { PatronService } from '../service/patron.service';
+import { RouteToolService } from '../routes/route-tool.service';
+import { UserService } from '../service/user.service';
 import {
   PatronTransaction,
   PatronTransactionEvent,
   PatronTransactionEventType,
   PatronTransactionStatus
 } from './patron-transaction';
-import { RouteToolService } from '../routes/route-tool.service';
-import { User } from '../class/user';
-import { UserService } from '../service/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +42,6 @@ export class PatronTransactionService {
     private _recordService: RecordService,
     private _userService: UserService,
     private _routeToolService: RouteToolService,
-    private _patronService: PatronService,
     private _toastService: ToastrService,
     private _translateService: TranslateService
   ) {}
@@ -88,7 +86,7 @@ export class PatronTransactionService {
       undefined,
       sort
     ).pipe(
-      map(data => data.hits),
+      map((data: Record) => data.hits),
       map(hits => hits.total === 0 ? [] : hits.hits),
       map(hits => hits.map( hit => new PatronTransaction(hit.metadata)))
     );
@@ -103,7 +101,7 @@ export class PatronTransactionService {
   patronTransactionsByLoan$(loanPid: string, type?: string, status?: string): Observable<Array<PatronTransaction>> {
     const query = this._buildQuery(undefined, loanPid, type, status);
     return this._recordService.getRecords('patron_transactions', query, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
-      map(data => data.hits),
+      map((data: Record) => data.hits),
       map(hits => hits.total === 0 ? [] : hits.hits),
       map(hits => hits.map( hit => new PatronTransaction(hit.metadata)))
     );
@@ -138,10 +136,10 @@ export class PatronTransactionService {
   loadTransactionHistory(transaction: PatronTransaction) {
     const query = `parent.pid:${transaction.pid}`;
     this._recordService.getRecords('patron_transaction_events', query, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
-      map(data => data.hits),
+      map((data: Record) => data.hits),
       map(hits => hits.total === 0 ? [] : hits.hits),
-      map( hits => hits.map(hit => new PatronTransactionEvent(hit.metadata)))
-    ).subscribe( events => transaction.events = events);
+      map(hits => hits.map(hit => new PatronTransactionEvent(hit.metadata)))
+    ).subscribe(events => transaction.events = events);
   }
 
   /**

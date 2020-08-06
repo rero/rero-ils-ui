@@ -32,24 +32,20 @@
         <a target="_self" [href]="detailUrl.link">{{ record.metadata.ui_title_text }}</a>
       </h4>
       <article class="card-text">
-        <!-- author -->
-        <ul class="list-inline mb-0" *ngIf="record.metadata.authors && record.metadata.authors.length > 0">
+        <!-- contribution -->
+        <ul class="list-inline mb-0" *ngIf="record.metadata.contribution && record.metadata.contribution.length > 0">
           <li
-            class="list-inline-item"
-            *ngFor="let author of record.metadata.authors.slice(0,3); let last = last; let i = index"
-          >
-            <span *ngIf="!author.pid">
-              {{ authorName(author) }}
-              {{ author.qualifier ? author.qualifier : '' }}
-              {{ author.date ? author.date : '' }}
+              class="list-inline-item"
+              *ngFor="let contribution of record.metadata.contribution.slice(0,3); let last = last; let i = index"
+            >
+            <span *ngIf="!contribution.agent.pid">
+              {{ contribution | contributionFormat }}
             </span>
-            <a *ngIf="author.pid" href="/{{ viewcode }}/persons/{{ author.pid }}">
-              {{ authorName(author) }}
-              {{ author.qualifier ? author.qualifier : '' }}
-              {{ author.date ? author.date : '' }}
+            <a *ngIf="contribution.agent.pid" [routerLink]="['/records', 'persons', 'detail', contribution.agent.pid]">
+              {{ contribution | contributionFormat }}
             </a>
             {{ last ? '' : '; ' }}
-            {{ last && i === 2 ? '; …' : '' }}
+            {{ last && record.metadata.contribution.length > 3 ? '; …' : '' }}
           </li>
         </ul>
 

@@ -15,9 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, OnInit } from '@angular/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable } from 'rxjs';
 import { RecordService } from '@rero/ng-core';
+import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { Record } from '@rero/ng-core/lib/record/record';
+import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -49,13 +50,13 @@ export class PersonDetailViewComponent implements DetailRecord, OnInit {
    */
   ngOnInit() {
     this.documents$ = this.record$.pipe(
-      switchMap(record => {
+      switchMap((record: any) => {
         const personPid = record.metadata.pid;
-        const query = `authors.pid:${personPid}`;
+        const query = `contribution.agent.pid:${personPid}`;
         return this._recordService.getRecords(
         'documents', query, 1, RecordService.MAX_REST_RESULTS_SIZE
       ); }),
-      map(hits => hits.hits.total === 0 ? [] : hits.hits.hits)
+      map((hits: Record) => hits.hits.total === 0 ? [] : hits.hits.hits)
     );
   }
 }

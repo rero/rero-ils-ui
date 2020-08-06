@@ -18,7 +18,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
-import { ItemsService } from 'projects/admin/src/app/service/items.service';
+import { Record } from '@rero/ng-core/lib/record/record';
 import { RecordPermission, RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 
 
@@ -60,14 +60,12 @@ export class HoldingComponent implements OnInit, OnDestroy {
    * @param _recordService - RecordService
    * @param _recordPermissionService - RecordPermissionService
    * @param _translateService - TranslateService
-   * @param _holdingService - HoldingsService
    */
   constructor(
     private _recordUiService: RecordUiService,
     private _recordService: RecordService,
     private _recordPermissionService: RecordPermissionService,
     private _translateService: TranslateService,
-    private _itemService: ItemsService
   ) { }
 
   /** Init */
@@ -146,7 +144,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
     }
     this.itemsRef = this._recordService
       .getRecords('items', query, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, null, sort)
-      .subscribe(result => {
+      .subscribe((result: Record) => {
         this.items = (result.hits.total > 0) ? result.hits.hits : null;
         this.totalItemsCounter = result.hits.total;
       });

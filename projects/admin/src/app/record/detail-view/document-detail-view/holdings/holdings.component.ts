@@ -17,6 +17,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
+import { Record } from '@rero/ng-core/lib/record/record';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { UserService } from 'projects/admin/src/app/service/user.service';
 import { forkJoin } from 'rxjs';
@@ -59,7 +60,9 @@ export class HoldingsComponent implements OnInit {
     const holdingRecordsRef = this._recordService.getRecords('holdings', query, 1, RecordService.MAX_REST_RESULTS_SIZE);
     const permissionsRef = this._recordPermissionService.getPermission('holdings');
     forkJoin([holdingRecordsRef, permissionsRef]).subscribe(
-      ([holdingsData, permissions]) => {
+      (result: [Record, any]) => {
+        const holdingsData = result[0];
+        const permissions = result[1];
         if (holdingsData.hits.total > 0) {
           this.holdings = holdingsData.hits.hits;
         }
