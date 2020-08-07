@@ -57,11 +57,12 @@ export class ItemsService {
   }
 
   doValidateRequest(item, transactionLibraryPid) {
-    const url = '/api/item/validate';
+    const url = '/api/item/validate_request';
     return this._http.post<any>(url, {
       item_pid: item.pid,
       pid: item.loan.pid,
-      transaction_library_pid: transactionLibraryPid
+      transaction_library_pid: transactionLibraryPid,
+      transaction_user_pid: this._userService.getCurrentUser().pid
     }).pipe(
     map(data => {
       const itemData = data.metadata;
