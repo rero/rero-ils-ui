@@ -16,30 +16,32 @@
 -->
 <ng-container *ngIf="item && permissions">
   <div class="offset-sm-1 col-sm-3">
-    <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" [attr.id]="item.metadata.barcode | idAttribute:{prefix: 'item'}">
+    <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
       {{ item.metadata.barcode }}
     </a>
     <span class="float-right text-warning small pt-1" *ngIf="item.metadata.notes && item.metadata.notes.length > 0">
       <i class="fa fa-sticky-note-o pr-1"></i>{{ item.metadata.notes.length }}
     </span>
   </div>
-  <div class="col-sm-2">
+  <div class="col-sm-2" name="status">
     {{ item.metadata.status | translate }}
   </div>
-  <div class="col-sm-2">
+  <div class="col-sm-2" name="call-number">
     {{ callNumber }}
   </div>
   <div class="col-sm-4 text-right">
     <ng-container *ngIf="isHoldingMatchUserLibraryPID">
       <button *ngIf="permissions.canRequest && permissions.canRequest.can; else notRequest"
               type="button" class="btn btn-sm btn-outline-primary " (click)="addRequest(item.metadata.pid)"
-              title="{{ 'Item request' | translate}}">
+              title="{{ 'Item request' | translate}}"
+              name="request">
         <i class="fa fa-shopping-basket" aria-hidden="true"></i>
       </button>
       <ng-template #notRequest>
         <button type="buttton" class="btn btn-sm btn-outline-primary disabled"
                 title="{{ 'Item request' | translate}}"
-                [popover]="tolTemplate" triggers="mouseenter:mouseleave">
+                [popover]="tolTemplate" triggers="mouseenter:mouseleave"
+                name="request">
           <i class="fa fa-shopping-basket" aria-hidden="true"></i>
         </button>
         <ng-template #tolTemplate><div [innerHtml]="cannotRequestInfoMessage | nl2br"></div></ng-template>
@@ -48,20 +50,22 @@
     <button *ngIf="permissions.update && permissions.update.can"
             type="button" class="btn btn-sm btn-outline-primary ml-1"
             title="{{ 'Edit' | translate}}"
-            [routerLink]="['/records', 'items', 'edit', item.metadata.pid]">
+            [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
+            name="edit">
       <i class="fa fa-pencil"></i>
     </button>
     <button *ngIf="permissions.delete && permissions.delete.can; else deleteInfo"
             type="button" class="btn btn-outline-danger btn-sm ml-1"
             title="{{ 'Delete' | translate}}"
             (click)="delete(item.metadata.pid)"
-            [attr.id]="item.metadata.barcode | idAttribute:{prefix: 'item', suffix: 'delete'}">
+            name="delete">
         <i class="fa fa-trash" ></i>
     </button>
     <ng-template #deleteInfo>
       <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"
               title="{{ 'Delete' | translate}}"
-              [popover]="tolTemplate" triggers="mouseenter:mouseleave">
+              [popover]="tolTemplate" triggers="mouseenter:mouseleave"
+              name="delete">
         <i class="fa fa-trash"></i>
       </button>
       <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>

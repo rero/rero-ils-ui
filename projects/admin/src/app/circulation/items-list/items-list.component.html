@@ -35,6 +35,7 @@
         <button class="btn btn-primary d-none d-lg-block"
         (click)="extendAllLoansClick()"
         [disabled]="loansToExtend.length < 1"
+        id="renew-all-button"
         translate>Renew all</button>
       </div>
     </div>
@@ -43,15 +44,16 @@
   <div class="row align-items-start" *ngFor="let item of checkedOutItems">
     <!-- CONTENT -->
     <div class="col mr-1">
-      <admin-item [patron]="patron" [item]="item">
+      <admin-item [patron]="patron" [item]="item" [attr.id]="item.barcode | idAttribute:{prefix: 'item'}">
       </admin-item>
     </div>
     <!-- ACTIONS -->
     <div *ngIf="patron" class="col-md-2 text-left pl-0 mb-2">
       <!-- extend loan action -->
-      <button id="button-basic" type="button"
+      <button type="button"
               class="btn btn-outline-secondary mr-1 d-md-block"
               [disabled]="!item.actions.includes(extendLoan)"
+              [attr.id]="item.barcode | idAttribute:{prefix: 'item', suffix: 'renew-button'}"
               (click)="extendLoanClick($event, item)" translate>
         Renew
       </button>
@@ -61,7 +63,8 @@
   <!--   Callout border for [TRANSIT|REQUEST|FEE] -->
   <div class="row align-items-start" *ngFor="let item of checkedInItems">
     <div class="col mr-1">
-      <admin-item [patron]="patron" [item]="item" (hasFeesEmitter)="hasFees($event)"></admin-item>
+      <admin-item [patron]="patron" [item]="item" (hasFeesEmitter)="hasFees($event)" [attr.id]="item.barcode | idAttribute:{prefix: 'item'}">
+      </admin-item>
     </div>
     <div *ngIf="patron" class="col-md-2 pl-0 mb-2">
       <!-- No actions -->

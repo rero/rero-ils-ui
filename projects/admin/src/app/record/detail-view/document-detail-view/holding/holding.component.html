@@ -74,10 +74,11 @@
                 *ngFor="let item of items | slice:0: displayItemsCounter"
                 [holding]="holding"
                 [item]="item"
-                (deleteItem)="deleteItem($event)">
+                (deleteItem)="deleteItem($event)"
+                [attr.id]="item.metadata.barcode | idAttribute:{prefix: 'item'}">
             ></admin-serial-holding-item>
             <div class="row pl-3" *ngIf="displayItemsCounter < totalItemsCounter">
-              <a [routerLink]="" (click)="showMore(5)">
+              <a [routerLink]="" (click)="showMore(5)" [attr.id]="holding.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
                 <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
                 {{ 'Show more' | translate }} ...
               </a>
@@ -104,10 +105,11 @@
                 class="row mt-1"
                 [holding]="holding"
                 [item]="item"
-                (deleteItem)="deleteItem($event)">
+                (deleteItem)="deleteItem($event)"
+                [attr.id]="item.metadata.barcode | idAttribute:{prefix: 'item'}">
             </admin-default-holding-item>
             <div class="row pl-3" *ngIf="displayItemsCounter < totalItemsCounter">
-              <a [routerLink]="" (click)="showMore(5)">
+              <a [routerLink]="" (click)="showMore(5)" [attr.id]="holding.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
                 <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
                 {{ 'Show more' | translate }} ...
               </a>
