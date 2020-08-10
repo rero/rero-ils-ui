@@ -28,7 +28,10 @@
       aria-controls="collapse">
       <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" class="fa" aria-hidden="true"></i>
     </button>
-    <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+    <a [routerLink]="['/records','items','detail', item.pid]"
+       name="barcode">
+      {{ item.barcode }}
+    </a>
     <ng-container *ngIf="item.actionDone">
       <ng-container *ngIf="(item.actionDone === itemAction.checkin && item.getNote('checkin_note')) ||
                            (item.actionDone === itemAction.checkout && item.getNote('checkout_note'))">
@@ -38,7 +41,7 @@
   </div>
   <!-- TITLE -->
   <div class="col-lg-4">
-    <a [routerLink]="['/records','documents','detail', item.document.pid]" *ngIf="item.document.title | mainTitle as title ">
+    <a [routerLink]="['/records','documents','detail', item.document.pid]" *ngIf="item.document.title | mainTitle as title " name="title">
       {{ title | truncateText: 12 }}
     </a>
   </div>
@@ -46,17 +49,17 @@
   <div class="col-lg-3">
     <ul class="list-unstyled mb-0">
       <ng-container [ngSwitch]="item.status">
-        <li *ngSwitchCase="'on_loan'">{{ item.status | translate }} <i class="fa fa-arrow-right" aria-hidden="true"></i>
+        <li *ngSwitchCase="'on_loan'" name="status">{{ item.status | translate }} <i class="fa fa-arrow-right" aria-hidden="true"></i>
           {{ item.loan.dueDate | dateTranslate :'shortDate' }}</li>
-        <li *ngSwitchCase="'in_transit'">{{ item.status | translate }}
+        <li *ngSwitchCase="'in_transit'" name="status">{{ item.status | translate }}
           <ng-container *ngIf="getTransitLocationPid(item) | getRecord: 'locations' | async as location">
             ({{ 'to' | translate }}
             <ng-container *ngIf="item.loan && item.loan.state === 'ITEM_IN_TRANSIT_FOR_PICKUP'; else toHouse"> {{ location.metadata.pickup_name }})</ng-container>
             <ng-template #toHouse> {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }})</ng-template>
           </ng-container>
         </li>
-        <li *ngSwitchCase="'on_shelf'">{{ item.status | translate }}</li>
-        <li *ngSwitchDefault>{{ item.status | translate }}</li>
+        <li *ngSwitchCase="'on_shelf'" name="status">{{ item.status | translate }}</li>
+        <li *ngSwitchDefault name="status">{{ item.status | translate }}</li>
       </ng-container>
       <!-- RENEWALS, FEES, REQUESTS -->
       <li>
@@ -75,7 +78,7 @@
     </ul>
   </div>
   <!-- ACTION DONE -->
-  <div class="col-lg-2">
+  <div class="col-lg-2" name="action-done">
     <ng-container *ngIf="item.actionDone" [ngSwitch]="item.actionDone">
       <ng-container *ngSwitchCase="itemAction.checkin">
         <i class="fa fa-arrow-circle-o-down text-success align-baseline" aria-hidden="true"></i>
@@ -99,22 +102,22 @@
     <dl class="row">
       <ng-container *ngIf="item.loan && item.loan.pickup_location_pid">
         <dt class="col-sm-5 col-md-3 label-title" translate>Location</dt>
-        <dd class="col-sm-7 col-md-9">
+        <dd class="col-sm-7 col-md-9" name="location">
           {{ item.loan.pickup_location_pid | getRecord: 'locations' : 'field' : 'code' | async }} {{ item.location.name }}
         </dd>
       </ng-container>
       <ng-container *ngIf="item.loan && item.loan.extension_count">
         <dt class="col-sm-5 col-md-3 label-title" translate>Renewals</dt>
-        <dd class="col-sm-7 col-md-9">{{ item.loan.extension_count }}</dd>
+        <dd class="col-sm-7 col-md-9" name="renewals">{{ item.loan.extension_count }}</dd>
       </ng-container>
       <ng-container *ngIf="totalAmountOfFee > 0">
         <dt class="col-sm-5 col-md-3 label-title" translate>Fees</dt>
-        <dd class="col-sm-7 col-md-9">{{ totalAmountOfFee | currency: organisation.default_currency }}</dd>
+        <dd class="col-sm-7 col-md-9" name="fees">{{ totalAmountOfFee | currency: organisation.default_currency }}</dd>
       </ng-container>
       <ng-container *ngIf="notifications$ | async as notifications">
         <ng-container *ngIf="notifications.length > 0">
           <dt class="col-sm-5 col-md-3 label-title" translate>Notifications</dt>
-          <dd class="col-sm-7 col-md-9">
+          <dd class="col-sm-7 col-md-9" name="notifications">
             <ul class="list-unstyled pl-2 mb-0">
               <li *ngFor="let notification of notifications">
                 {{ notification.metadata.process_date | dateTranslate :'shortDate' }}:
@@ -126,17 +129,17 @@
       </ng-container>
       <ng-container *ngIf="item.pending_loans">
         <dt class="col-sm-5 col-md-3 label-title" translate>Requests</dt>
-        <dd class="col-sm-7 col-md-9">{{ item.pending_loans.length }}</dd>
+        <dd class="col-sm-7 col-md-9" name="requests">{{ item.pending_loans.length }}</dd>
         <dt class="col-sm-5 col-md-3 label-title" translate="">For</dt>
-        <dd class="col-sm-7 col-md-9">{{ item.pending_loans[0].patron.name }}</dd>
+        <dd class="col-sm-7 col-md-9" name="request-for">{{ item.pending_loans[0].patron.name }}</dd>
       </ng-container>
       <ng-container *ngIf="item.actionDone && item.actionDone === itemAction.checkin && item.getNote('checkin_note') as note">
         <dt class="col-sm-5 col-md-3 label-title" translate>{{ note.type }}</dt>
-        <dd class="col-sm-7 col-md-9 text-justify">{{ note.content }}</dd>
+        <dd class="col-sm-7 col-md-9 text-justify" name="checkin-note">{{ note.content }}</dd>
       </ng-container>
       <ng-container *ngIf="item.actionDone && item.actionDone === itemAction.checkout && item.getNote('checkout_note') as note">
         <dt class="col-sm-5 col-md-3 label-title" translate>{{ note.type }}</dt>
-        <dd class="col-sm-7 col-md-9 text-justify">{{ note.content }}</dd>
+        <dd class="col-sm-7 col-md-9 text-justify" name="checkout-note">{{ note.content }}</dd>
       </ng-container>
     </dl>
   </div>
