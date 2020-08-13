@@ -64,7 +64,7 @@
       <!-- RENEWALS, FEES, REQUESTS -->
       <li>
         <span title="{{ 'Renewals' | translate }}" class="badge badge-secondary font-weight-normal mr-1"
-              *ngIf="item.loan && item.loan.extension_count">
+              *ngIf="item.loan && item.loan.extension_count && (!item.actionDone || item.actionDone !== itemAction.checkin)">
           {{ item.loan.extension_count }} <i class="fa fa-refresh"></i>
         </span>
         <span title="{{ 'Fees' | translate }}" class="badge badge-warning font-weight-normal mr-1"
