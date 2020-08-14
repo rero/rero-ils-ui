@@ -95,51 +95,58 @@ export class CheckinComponent implements OnInit {
    */
   checkin(itemBarcode: string) {
     this.searchInputFocus = false;
-    this._itemsService.checkin(itemBarcode, this._loggedUser.getCurrentLibrary()).subscribe(item => {
-      // TODO: remove this when policy will be in place
-      if (
-        item === null ||
-        item.location.organisation.pid !==
-          this._loggedUser.library.organisation.pid
-      ) {
-        this._toastService.error(
-          this._translate.instant('Item or patron not found!'),
-          this._translate.instant('Checkin')
-        );
-        return;
-      }
-      if (item.hasRequests) {
-        this._toastService.warning(
-          this._translate.instant('The item contains requests'),
-          this._translate.instant('Checkin')
-        );
-      }
-      switch (item.actionDone) {
-        case ItemAction.return_missing:
-          this._toastService.warning(
-            this._translate.instant('The item has been returned from missing'),
+    this._itemsService.checkin(itemBarcode, this._loggedUser.getCurrentLibrary()).subscribe(
+      item => {
+        // TODO: remove this when policy will be in place
+        if (item === null || item.location.organisation.pid !== this._loggedUser.library.organisation.pid) {
+          this._toastService.error(
+            this._translate.instant('Item or patron not found!'),
             this._translate.instant('Checkin')
           );
-          break;
-        case ItemAction.checkin:
-          this._displayCirculationNote(item, ItemNoteType.CHECKIN);
-          if (item.action_applied.checkin) {
-            this.getPatronInfo(item.action_applied.checkin.patron.barcode);
-          }
-          if (item.status === ItemStatus.IN_TRANSIT) {
+          return;
+        }
+        if (item.hasRequests) {
+          this._toastService.warning(
+            this._translate.instant('The item contains requests'),
+            this._translate.instant('Checkin')
+          );
+        }
+        switch (item.actionDone) {
+          case ItemAction.return_missing:
             this._toastService.warning(
-              this._translate.instant('The item is ' + ItemStatus.IN_TRANSIT),
+              this._translate.instant('The item has been returned from missing'),
               this._translate.instant('Checkin')
             );
-          }
-          break;
-        default:
-          break;
+            break;
+          case ItemAction.checkin:
+            this._displayCirculationNote(item, ItemNoteType.CHECKIN);
+            if (item.action_applied.checkin) {
+              this.getPatronInfo(item.action_applied.checkin.patron.barcode);
+            }
+            if (item.status === ItemStatus.IN_TRANSIT) {
+              this._toastService.warning(
+                this._translate.instant('The item is ' + ItemStatus.IN_TRANSIT),
+                this._translate.instant('Checkin')
+              );
+            }
+            break;
+        }
+        this._itemsList.unshift(item);
+        this.searchText = '';
+        this.searchInputFocus = true;
+      },
+      error => {
+        // If no action could be done by the '/item/checkin' api, an error will be raised.
+        // catch this error to display it as an toastr message.
+        const message = (error.hasOwnProperty('error') && error.error.hasOwnProperty('status'))
+          ? error.error.status.replace(/^error:/, '')
+          : error.message;
+        this._toastService.warning(
+          this._translate.instant(message),
+          this._translate.instant('Checkin')
+        );
       }
-      this._itemsList.unshift(item);
-      this.searchText = '';
-      this.searchInputFocus = true;
-    });
+    );
   }
 
   /** Get patron information
