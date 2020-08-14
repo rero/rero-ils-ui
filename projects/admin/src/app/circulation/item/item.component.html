@@ -120,7 +120,13 @@
           <dd class="col-sm-7 col-md-9" name="notifications">
             <ul class="list-unstyled pl-2 mb-0">
               <li *ngFor="let notification of notifications">
-                {{ notification.metadata.process_date | dateTranslate :'shortDate' }}:
+                <ng-container *ngIf="notification.metadata.process_date; else noProcessDate">
+                  {{ notification.metadata.process_date | dateTranslate :'shortDate' }}
+                </ng-container>
+                <ng-template #noProcessDate>
+                  {{ notification.metadata.creation_date | dateTranslate : 'shortDate' }}
+                  <small class="text-muted"><em>({{ 'Not yet sent' | translate }})</em></small>
+                </ng-template> :
                 {{ notification.metadata.notification_type | translate }}
               </li>
             </ul>
