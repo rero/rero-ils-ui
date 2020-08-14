@@ -162,9 +162,6 @@ export class LoanComponent implements OnInit {
           );
           this.searchText = '';
           this.searchInputFocus = true;
-        },
-        () => {
-          console.log('loan success');
         }
       );
     }
