@@ -131,6 +131,8 @@ export class ItemsService {
       catchError(e => {
         if (e.status === 404) {
           return of(null);
+        } else {
+          throw e;
         }
       })
     );
