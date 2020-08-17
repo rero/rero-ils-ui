@@ -19,12 +19,12 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
+import { Item, ItemAction, ItemNoteType, ItemStatus } from '../../../class/items';
 import { User } from '../../../class/user';
+import { PatronBlockedMessagePipe } from '../../../pipe/patron-blocked-message.pipe';
+import { ItemsService } from '../../../service/items.service';
 import { PatronService } from '../../../service/patron.service';
 import { UserService } from '../../../service/user.service';
-import { Item, ItemAction, ItemNoteType, ItemStatus } from '../../../class/items';
-import { ItemsService } from '../../../service/items.service';
-import { PatronBlockedMessagePipe } from '../../../pipe/patron-blocked-message.pipe';
 
 @Component({
   selector: 'admin-loan',
@@ -190,6 +190,13 @@ export class LoanComponent implements OnInit {
               this._displayCirculationNote(newItem, ItemNoteType.CHECKIN);
               this.checkedOutItems = this.checkedOutItems.filter(currItem => currItem.pid !== newItem.pid);
               this.checkedInItems.unshift(newItem);
+              // display a toast message if the item goes in transit...
+              if (newItem.status === ItemStatus.IN_TRANSIT) {
+                this._toastService.warning(
+                  this._translate.instant('The item is ' + ItemStatus.IN_TRANSIT),
+                  this._translate.instant('Checkin')
+                );
+              }
               break;
             }
             case ItemAction.checkout: {
@@ -229,7 +236,7 @@ export class LoanComponent implements OnInit {
           }
         } else {
           this._toastService.error(
-            this._translate.instant('An error occured on the server: ') + errorMessage,
+            this._translate.instant('An error occurred on the server: ') + errorMessage,
             this._translate.instant('Circulation')
           );
         }
