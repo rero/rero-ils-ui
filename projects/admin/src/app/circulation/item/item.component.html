@@ -100,10 +100,10 @@
   <!-- COLLAPSED DETAILS -->
   <div class="col-sm-12 mt-2" *ngIf="!isCollapsed">
     <dl class="row">
-      <ng-container *ngIf="item.loan && item.loan.pickup_location_pid">
+      <ng-container *ngIf="item.location.pid | getRecord: 'locations' | async as location">
         <dt class="col-sm-5 col-md-3 label-title" translate>Location</dt>
         <dd class="col-sm-7 col-md-9" name="location">
-          {{ item.loan.pickup_location_pid | getRecord: 'locations' : 'field' : 'code' | async }} {{ item.location.name }}
+          {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}: {{ item.location.name }}
         </dd>
       </ng-container>
       <ng-container *ngIf="item.loan && item.loan.extension_count">
