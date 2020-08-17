@@ -85,6 +85,18 @@ export enum ItemAction {
 
 type ItemActionObjectType<R> = {[key in keyof typeof ItemAction]: R };
 
+
+export class LoanDestination {
+  location_name?: string;
+  library_name?: string;
+  library_code?: string;
+  location_code?: string;
+
+  constructor(obj?: any) {
+    Object.assign(this, obj)
+  }
+}
+
 export class Loan {
 
   pid?: string;
@@ -96,6 +108,7 @@ export class Loan {
   end_date?: Moment;
   request_expire_date?: Moment;
   pickup_location_pid?: string;
+  item_destination?: LoanDestination;
 
   constructor(obj?: any) {
     Object.assign(this, obj);

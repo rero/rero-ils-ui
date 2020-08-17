@@ -20,12 +20,12 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
-import { map } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
+import { Item, ItemAction, ItemNoteType, ItemStatus } from '../../class/items';
 import { User } from '../../class/user';
 import { ItemsService } from '../../service/items.service';
 import { PatronService } from '../../service/patron.service';
 import { UserService } from '../../service/user.service';
-import { Item, ItemAction, ItemNoteType, ItemStatus } from '../../class/items';
 
 @Component({
   selector: 'admin-circulation-checkout',
@@ -138,13 +138,7 @@ export class CheckinComponent implements OnInit {
       error => {
         // If no action could be done by the '/item/checkin' api, an error will be raised.
         // catch this error to display it as an toastr message.
-        const message = (error.hasOwnProperty('error') && error.error.hasOwnProperty('status'))
-          ? error.error.status.replace(/^error:/, '')
-          : error.message;
-        this._toastService.warning(
-          this._translate.instant(message),
-          this._translate.instant('Checkin')
-        );
+        this._checkinErrorManagement(error, itemBarcode);
       }
     );
   }
@@ -238,6 +232,42 @@ export class CheckinComponent implements OnInit {
         }
       );
     }
+  }
+
+
+  /** create the most relevant message concerning a checkin operation error and display it as a toastr
+   *
+   * @param error: the raised error
+   * @param barcode: the item barcode searched
+   */
+  private _checkinErrorManagement(error: any, barcode: string) {
+    // get the error message from the raised error. This will be the toastr message core.
+    let message = (error.hasOwnProperty('error') && error.error.hasOwnProperty('status'))
+      ? error.error.status.replace(/^error:/, '')
+      : error.message;
+
+    // the message could contains some data information from the item. So we need to load the item
+    this._itemsService.getItem(barcode).pipe(
+      finalize(() => {
+        this._toastService.warning(
+          this._translate.instant(message),
+          this._translate.instant('Checkin'),
+          { enableHtml: true }
+        );
+      })
+    ).subscribe(
+      item => {
+        message += `<br/>${this._translate.instant('Status')}: ${this._translate.instant(item.status.toString())}`;
+        if (item.status === ItemStatus.IN_TRANSIT && item.loan && item.loan.item_destination) {
+          const library_code = item.loan.item_destination.library_code;
+          const location_name = item.loan.item_destination.location_name;
+          message += ` (${this._translate.instant('to')} ${library_code}:${location_name})`;
+        }
+      },
+      () => {
+        message += '<br/>' + this._translate.instant('Item not found!');
+      }
+    );
   }
 
   hasFees(event: boolean) {
