@@ -197,8 +197,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
     this._loanService
       .updateLoanPickupLocation(
         this.transaction.metadata.pid,
-        pickupLocationPid,
-        this.itemPid
+        pickupLocationPid
       )
       .subscribe((data: any) => {
         this._toastrService.success(
