@@ -119,7 +119,7 @@ export class LoanService {
    * Update the pickup location of a loan
    * @param loan: loan to update
    * @param pickupLocationPid: pickup location pid to update
-   * @return item data
+   * @return loan data
    */
   updateLoanPickupLocation(loanPid: string, pickupLocationPid: string) {
     const url = '/api/item/update_loan_pickup_location';

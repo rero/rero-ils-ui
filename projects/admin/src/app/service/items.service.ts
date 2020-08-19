@@ -156,7 +156,8 @@ export class ItemsService {
       map(itemData => {
         const newItem = new Item(itemData.metadata);
         newItem.actionDone = action;
-        newItem.setLoan(Object.values(itemData.action_applied).pop());
+        // Set the action applied corresponding to current action as the loan of the item
+        newItem.setLoan(itemData.action_applied[action]);
         return newItem;
       })
     );
