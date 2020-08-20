@@ -30,23 +30,21 @@
     {{ callNumber }}
   </div>
   <div class="col-sm-4 text-right">
-    <ng-container *ngIf="isHoldingMatchUserLibraryPID">
-      <button *ngIf="permissions.canRequest && permissions.canRequest.can; else notRequest"
-              type="button" class="btn btn-sm btn-outline-primary " (click)="addRequest(item.metadata.pid)"
+    <button *ngIf="permissions.canRequest && permissions.canRequest.can; else notRequest"
+            type="button" class="btn btn-sm btn-outline-primary " (click)="addRequest(item.metadata.pid)"
+            title="{{ 'Item request' | translate}}"
+            name="request">
+      <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+    </button>
+    <ng-template #notRequest>
+      <button type="buttton" class="btn btn-sm btn-outline-primary disabled"
               title="{{ 'Item request' | translate}}"
+              [popover]="tolTemplate" triggers="mouseenter:mouseleave"
               name="request">
         <i class="fa fa-shopping-basket" aria-hidden="true"></i>
       </button>
-      <ng-template #notRequest>
-        <button type="buttton" class="btn btn-sm btn-outline-primary disabled"
-                title="{{ 'Item request' | translate}}"
-                [popover]="tolTemplate" triggers="mouseenter:mouseleave"
-                name="request">
-          <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-        </button>
-        <ng-template #tolTemplate><div [innerHtml]="cannotRequestInfoMessage | nl2br"></div></ng-template>
-      </ng-template>
-    </ng-container>
+      <ng-template #tolTemplate><div [innerHtml]="cannotRequestInfoMessage | nl2br"></div></ng-template>
+    </ng-template>
     <button *ngIf="permissions.update && permissions.update.can"
             type="button" class="btn btn-sm btn-outline-primary ml-1"
             title="{{ 'Edit' | translate}}"

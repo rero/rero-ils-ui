@@ -76,15 +76,6 @@ export class DefaultHoldingItemComponent implements OnInit {
     });
   }
 
-  /** Check if the holding owning library correspond to the current user library affiliation.
-   *
-   * Used to display the request button. A more advanced test is performed when the patron barcode is known.
-   * @returns - true if match
-   */
-  get isHoldingMatchUserLibraryPID(): boolean {
-    return this._userService.getCurrentUser().currentLibrary === this.holding.metadata.library.pid;
-  }
-
   /**
    * Get formatted call number
    *
