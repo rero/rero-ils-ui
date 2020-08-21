@@ -138,8 +138,10 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
    * @return: true or false
    */
   canCancelRequest(): boolean {
-    // TODO: manage more complex cases according to specifications (when implemented in backend or invenio-circulation)
-    return this.transaction.metadata.state === LoanState.PENDING;
+    // No permission API in backend
+    // Allowed when loan state is PENDING or ITEM_IN_TRANSIT_FOR_PICKUP according to actions.md
+    return this.transaction.metadata.state === LoanState.PENDING
+    || this.transaction.metadata.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP;
   }
 
   /**
@@ -147,9 +149,10 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
    * @return: true or false
    */
   canUpdateRequestPickupLocation(): boolean {
-    // for now request pickup location update allowed for pending requests only
-    // TODO: manage case 'at desk' and 'in transit' (needs PO feedback)
-    return this.transaction.metadata.state === LoanState.PENDING;
+    // No permission API in backend
+    // Allowed when loan state is PENDING or ITEM_IN_TRANSIT_FOR_PICKUP according to actions.md
+    return this.transaction.metadata.state === LoanState.PENDING
+    || this.transaction.metadata.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP;
   }
 
   /**
