@@ -61,7 +61,9 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
               simple: 1
             },
             preprocessRecordEditor: (record: any) => {
-              return this.removeKey(record, '_text');
+              record = this.removeKey(record, '_text');
+              record = this.removeKey(record, '_draft');
+              return record;
             },
             aggregations: (aggregations: any) => this._routeToolService
               .aggregationFilter(aggregations),
