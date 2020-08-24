@@ -151,14 +151,20 @@ export class CheckinComponent implements OnInit {
       this.isLoading = true;
       this._patronService
         .getPatron(barcode)
-        .pipe(map(patron => (patron.displayPatronMode = false)))
-        .subscribe(
-          () => (this.isLoading = false),
-          error =>
+        .pipe(map(patron => {
+          if (patron) {
+            patron.displayPatronMode = false;
+          }
+        }))
+        .subscribe(() => {
+            this.isLoading = false;
+          },
+          error => {
             this._toastService.error(
               error.message,
               this._translate.instant('Checkin')
-            ),
+            );
+          },
           () => console.log('patron by pid success')
         );
     } else {

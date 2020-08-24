@@ -80,6 +80,7 @@ export class LoanComponent implements OnInit {
       this.patron = patron;
       if (patron) {
         this.isLoading = true;
+        this.patron.displayPatronMode = true;
         this._patronService.getItems(patron.pid).subscribe(items => {
           this.checkedOutItems = items;
           this.isLoading = false;
