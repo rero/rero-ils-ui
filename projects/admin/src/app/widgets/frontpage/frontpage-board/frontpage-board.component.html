@@ -20,10 +20,15 @@
     <i *ngIf="item.iconCssClass" [ngClass]="item.iconCssClass" aria-hidden="true"></i>
     {{ item.name | translate }}
   </div>
-  <ul class="list-group list-group-flush" *ngIf="item.entries">
-    <li class="list-group-item p-0" *ngFor="let entry of item.entries">
-      <a class="list-group-item btn btn-light text-left text-wrap" [routerLink]="entry.routerLink" [queryParams]="entry.queryParams" [attr.id]="entry.id | idAttribute:{suffix: 'frontpage'}"><i *ngIf="entry.iconCssClass"
-        [ngClass]="entry.iconCssClass" aria-hidden="true"></i> {{ entry.name | translate }}</a>
+  <ul class="list-group list-group-flush" *ngFor="let section of sections; last as isLast">
+    <li class="list-group-item p-0" *ngFor="let entry of section">
+      <a class="list-group-item btn btn-light text-left text-wrap"
+         [routerLink]="entry.routerLink"
+         [queryParams]="entry.queryParams"
+         [attr.id]="entry.id | idAttribute:{suffix: 'frontpage'}">
+        <i *ngIf="entry.iconCssClass" [ngClass]="entry.iconCssClass" aria-hidden="true"></i> {{ entry.name | translate }}
+      </a>
     </li>
+    <hr class="m-0" *ngIf="!isLast"/>
   </ul>
 </div>
