@@ -14,34 +14,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { AppModule } from '../app.module';
-import { UserService } from '../service/user.service';
-import { FrontpageComponent } from './frontpage.component';
+import { AppModule } from '../../../app.module';
+import { FrontpageBoardComponent } from './frontpage-board.component';
 
 
-describe('FrontpageComponent', () => {
-  let component: FrontpageComponent;
-  let fixture: ComponentFixture<FrontpageComponent>;
-
-  const userService = jasmine.createSpyObj(
-    'UserService', ['getCurrentUser']
-  );
-  userService.getCurrentUser.and.returnValue({
-    first_name: 'John',
-    last_name: 'Doe',
-    library: {
-      pid: '1',
-      organisation: {
-        pid: '1'
-      },
-      current: '1'
-    }
-  });
+describe('FrontpageBoardComponent', () => {
+  let component: FrontpageBoardComponent;
+  let fixture: ComponentFixture<FrontpageBoardComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -50,16 +33,13 @@ describe('FrontpageComponent', () => {
         TranslateModule.forRoot({}),
         HttpClientTestingModule,
         AppModule
-      ],
-      providers: [
-        { provide: UserService, useValue: userService }
       ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FrontpageComponent);
+    fixture = TestBed.createComponent(FrontpageBoardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

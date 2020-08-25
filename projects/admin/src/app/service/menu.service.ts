@@ -96,32 +96,44 @@ export class MenuService {
           name: this._translateService.instant('Circulation policies'),
           routerLink: '/records/circ_policies',
           iconCssClass: 'fa fa-exchange',
-          id: 'circulation-policies-menu'
+          id: 'circulation-policies-menu',
+          section: 'circulation-resource'
         }, {
           name: this._translateService.instant('Item types'),
           routerLink: '/records/item_types',
           iconCssClass: 'fa fa-file-o',
-          id: 'item-types-menu'
+          id: 'item-types-menu',
+          section: 'circulation-resource'
         }, {
           name: this._translateService.instant('Patron types'),
           routerLink: '/records/patron_types',
           iconCssClass: 'fa fa-users',
-          id: 'patron-types-menu'
+          id: 'patron-types-menu',
+          section: 'circulation-resource'
         }, {
           name: this._translateService.instant('My organisation'),
           routerLink: this._myOrganisationRouterLink(),
           iconCssClass: 'fa fa-university',
-          id: 'my-organisation-menu'
+          id: 'my-organisation-menu',
+          section: 'structure-resource'
         }, {
           name: this._translateService.instant('My library'),
           routerLink: this._myLibraryRouterLink(),
           iconCssClass: 'fa fa-university',
-          id: 'my-library-menu'
+          id: 'my-library-menu',
+          section: 'structure-resource'
         }, {
           name: this._translateService.instant('Libraries'),
           routerLink: '/records/libraries',
           iconCssClass: 'fa fa-university',
-          id: 'libraries-menu'
+          id: 'libraries-menu',
+          section: 'structure-resource'
+        }, {
+          name: this._translateService.instant('Templates'),
+          routerLink: '/records/templates',
+          iconCssClass: 'fa fa-file-code-o',
+          id: 'templates-menu',
+          section: 'cataloging-resource'
         }]
       }
     ]
