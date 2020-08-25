@@ -26,4 +26,19 @@ export class FrontpageBoardComponent {
   /** List of items to display */
   @Input() item: any;
 
+  /** This getter lists entries by section (depending of the 'section' key defined for the entry)
+   *  @return: Array<Array<entry>>.
+   */
+  get sections() {
+    const sections: { [id: string]: Array<any>; } = {};
+    this.item.entries.forEach( (entry) => {
+      const entrySectionName = entry.hasOwnProperty('section') ? entry.section : 'default';
+      if (!sections.hasOwnProperty(entrySectionName)) {
+        sections[entrySectionName] = [];
+      }
+      sections[entrySectionName].push(entry);
+    });
+    return Object.keys(sections).map((key) => sections[key]);
+  }
+
 }

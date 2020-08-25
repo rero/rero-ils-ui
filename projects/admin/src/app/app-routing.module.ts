@@ -17,7 +17,7 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FrontpageComponent } from './frontpage/frontpage.component';
+import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 import { RouteService } from './routes/route.service';
 
 const routes: Routes = [
