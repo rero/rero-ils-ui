@@ -15,7 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DetailComponent, EditorComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
+import { JSONSchema7 } from 'json-schema';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { TemplatesBriefViewComponent } from '../record/brief-view/templates-brief-view.component';
 import { TemplateDetailViewComponent } from '../record/detail-view/template-detail-view/template-detail-view.component';
@@ -52,6 +54,16 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
             canAdd: () => this._routeToolService.canNot(),
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            preCreateRecord: (data: any) => this._addDefaultValuesForTemplate(data),
+            formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
+              return this._limitUserFormField(field, jsonSchema);
+            },
+            redirectUrl: (record: any) => {
+              return this.redirectUrl(
+                record.metadata,
+                '/records/templates/detail/'
+              );
+            },
             aggregationsOrder: [
               'template_type',
               'visibility'
@@ -65,5 +77,39 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
         ]
       }
     };
+  }
+
+  /**
+   * Adds default values when user create a template resource
+   * @param data: the initial data
+   */
+  private _addDefaultValuesForTemplate(data: any) {
+    const user = this._routeToolService.userService.getCurrentUser();
+    if (!data.hasOwnProperty('visibility')) {
+      data.visibility = 'private';
+    }
+    data.organisation = {
+      $ref: this._routeToolService.apiService.getRefEndpoint('organisations', user.library.organisation.pid)
+    };
+    data.creator = {
+      $ref: this._routeToolService.apiService.getRefEndpoint('patrons', user.pid)
+    };
+    return data;
+  }
+
+  /**
+   * As a librarian, I cannot update the visibility of a template
+   * @param field - FormlyFieldConfig
+   * @param jsonSchema - JSONSchema7
+   * @return FormlyFieldConfig
+   */
+  private _limitUserFormField(field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig {
+    const formOptions = jsonSchema.form;
+    if (formOptions && formOptions.fieldMap === 'visibility') {
+      if (!this._routeToolService.userService.getCurrentUser().hasRole('system_librarian')) {
+        field.templateOptions.disabled = true;
+      }
+    }
+    return field;
   }
 }

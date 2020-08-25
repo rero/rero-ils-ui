@@ -52,7 +52,14 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             label: 'Documents',
             showLabel: false,
-            editorLongMode: true,
+            editorSettings: {
+              longMode: true,
+              template: {
+                recordType: 'templates',
+                loadFromTemplate: true,
+                saveAsTemplate: true
+              }
+            },
             component: DocumentsBriefViewComponent,
             detailComponent: DocumentDetailViewComponent,
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
