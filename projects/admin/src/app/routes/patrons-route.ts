@@ -50,6 +50,13 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
           {
             key: this.name,
             label: 'Patrons',
+            editorSettings: {
+              template: {
+                recordType: 'templates',
+                loadFromTemplate: true,
+                saveAsTemplate: true
+              }
+            },
             component: PatronsBriefViewComponent,
             detailComponent: PatronDetailViewComponent,
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),

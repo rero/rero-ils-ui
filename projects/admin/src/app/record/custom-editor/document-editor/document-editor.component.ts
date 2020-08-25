@@ -107,7 +107,7 @@ export class DocumentEditorComponent {
       combineLatest([this._route.params, this._route.queryParams])
       .subscribe(([params, queryParams]) => {
         if (queryParams.pid) {
-          if (queryParams.source) {
+          if (queryParams.source && queryParams.source !== 'templates') {
             this.importFromExternalSource(queryParams.source, queryParams.pid);
           }
           if (queryParams.type) {
