@@ -50,6 +50,13 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
           {
             key: this.name,
             label: 'Holdings',
+            editorSettings: {
+              template: {
+                recordType: 'templates',
+                loadFromTemplate: true,
+                saveAsTemplate: true
+              }
+            },
             detailComponent: HoldingDetailViewComponent,
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),

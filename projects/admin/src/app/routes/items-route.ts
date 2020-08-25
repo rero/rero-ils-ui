@@ -56,6 +56,13 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
           {
             key: this.name,
             label: 'Items',
+            editorSettings: {
+              template: {
+                recordType: 'templates',
+                loadFromTemplate: true,
+                saveAsTemplate: true
+              }
+            },
             component: ItemsBriefViewComponent,
             detailComponent: ItemDetailViewComponent,
             canRead: (record: any) => this.canReadItem(record),

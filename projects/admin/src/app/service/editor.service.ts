@@ -22,7 +22,8 @@ export class EditorService {
 
   /**
    * Get record from rero-ils API
-   * @param ean EAN code
+   * @param source: the source where to find the data
+   * @param pid: the pid corresponding to the data to load
    * @returns observable of null if the record does not exists else an
    * observable containing the record
    */
