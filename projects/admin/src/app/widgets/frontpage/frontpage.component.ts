@@ -16,9 +16,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { LocalStorageService } from '@rero/ng-core';
-import { MenuService } from '../service/menu.service';
-import { UserService } from '../service/user.service';
+import { MenuService } from '../../service/menu.service';
 
 @Component({
   selector: 'admin-frontpage',
@@ -30,28 +28,14 @@ export class FrontpageComponent implements OnInit {
   linksMenu: any;
 
   /** Constructor
-   * @param _userService - User Service
-   * @param _localStorageService - LocalStorageService
    * @param _menuService: MenuService
    */
   constructor(
-    private _userService: UserService,
-    private _localStorageService: LocalStorageService,
     private _menuService: MenuService
   ) { }
 
   /** On init hook */
   ngOnInit() {
-    this.initLinksMenu();
-  }
-
-  /** Router link for my library */
-  private myLibraryRouterLink() {
-    return `/records/libraries/detail/${this._userService.getCurrentUser().currentLibrary}`;
-  }
-
-  /** Populate list of items to display */
-  initLinksMenu() {
     this.linksMenu = this._menuService.linksMenu;
   }
 }
