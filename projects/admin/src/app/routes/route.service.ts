@@ -34,6 +34,7 @@ import { PatronTypesRoute } from './patron-types-route';
 import { PatronsRoute } from './patrons-route';
 import { PersonsRoute } from './persons-route';
 import { RouteToolService } from './route-tool.service';
+import { TemplatesRoute } from './templates-route';
 import { VendorsRoute } from './vendors-route';
 import { ImportDocumentsRoute } from './import-documents-route';
 import { TranslateService } from '@ngx-translate/core';
@@ -45,9 +46,9 @@ export class RouteService {
 
   /**
    * Constructor
-   * @param routeCollectionService - RouteCollectionService
-   * @param router - Router
-   * @param routeToolService - RouteToolService
+   * @param _routeCollectionService - RouteCollectionService
+   * @param _router - Router
+   * @param _routeToolService - RouteToolService
    * @param _translateService - TranslateService used by children.
    */
   constructor(
@@ -78,13 +79,13 @@ export class RouteService {
       .addRoute(new PatronTypesRoute(this._routeToolService))
       .addRoute(new PersonsRoute(this._routeToolService))
       .addRoute(new VendorsRoute(this._routeToolService))
+      .addRoute(new TemplatesRoute(this._routeToolService))
       // should be at the last
       .addRoute(new ImportDocumentsRoute(this._routeToolService, this._translateService))
     ;
     this._routeCollectionService.getRoutes().map((route: any) => {
       this._router.config.push(route);
     });
-
     this._router.config.push(...[
       {path: 'errors/:status_code', component: ErrorPageComponent},
       {path: '**', component: ErrorPageComponent}
