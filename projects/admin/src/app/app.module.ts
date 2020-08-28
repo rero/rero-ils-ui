@@ -114,6 +114,8 @@ import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/it
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { RemoteTypeaheadService } from '@rero/ng-core';
 import { MefTypeahead } from './class/mef-typeahead';
+import { DocumentsTypeahead } from './class/documents-typeahead';
+import { MainTitlePipe } from './pipe/main-title.pipe';
 
 @NgModule({
   declarations: [
@@ -235,7 +237,9 @@ import { MefTypeahead } from './class/mef-typeahead';
       deps: [TranslateService]
     },
     BsLocaleService,
-    MefTypeahead
+    MefTypeahead,
+    DocumentsTypeahead,
+    MainTitlePipe
   ],
   entryComponents: [
     CircPoliciesBriefViewComponent,
