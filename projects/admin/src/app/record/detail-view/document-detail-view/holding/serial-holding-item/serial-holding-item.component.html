@@ -29,7 +29,7 @@
   <div class="col-sm-2" name="call-number">
     {{ callNumber }}
   </div>
-  <div class="col-sm-2 text-right">
+  <div class="col-sm-2 text-right" name="buttons">
     <button *ngIf="permissions.canRequest && permissions.canRequest.can; else notRequest"
             type="button" class="btn btn-sm btn-outline-primary " (click)="addRequest(item.metadata.pid)"
             title="{{ 'Item request' | translate}}"

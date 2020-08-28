@@ -25,13 +25,13 @@
       <div class="col-md-10">
       <h3>
         <a [routerLink]="['/records', 'patrons','detail', patron.pid]">
-          <span *ngIf="patron.last_name">{{ patron.last_name }}</span>
-          <span *ngIf="patron.first_name">, {{ patron.first_name }} </span>
+          <span id="patron-last-name" *ngIf="patron.last_name">{{ patron.last_name }}</span>
+          <span id="patron-first-name" *ngIf="patron.first_name">, {{ patron.first_name }} </span>
         </a>
       </h3>
     </div>
     <div *ngIf="patron.displayPatronMode" class="col-md-2">
-      <button type="button" class="btn btn-danger pull-right" (click)="clear()">
+      <button id="clear-patron-button" type="button" class="btn btn-danger pull-right" (click)="clear()">
         <i class="fa fa-close" aria-hidden="true"></i>
       </button>
     </div>
@@ -39,18 +39,18 @@
       <div class="row">
         <div class="col-md-6">
           <div>
-            <span *ngIf="patron.birth_date">{{ patron.birth_date | date :'shortDate' }}</span>
+            <span id="patron-birth-date" *ngIf="patron.birth_date">{{ patron.birth_date | date :'shortDate' }}</span>
           </div>
           <div>
-            <span *ngIf="patron.city">{{ patron.city}}</span>
+            <span id="patron-city" *ngIf="patron.city">{{ patron.city}}</span>
           </div>
         </div>
         <div class="col-md-6">
           <div>
-            <span *ngIf="patronType$ | async as patronType">{{ patronType }}</span>
+            <span id="patron-type" *ngIf="patronType$ | async as patronType">{{ patronType }}</span>
           </div>
           <div>
-            <span *ngIf="patron.barcode">
+            <span id="patron-barcode" *ngIf="patron.barcode">
               {{ patron.barcode }}
             </span>
           </div>

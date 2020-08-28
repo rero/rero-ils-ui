@@ -59,7 +59,7 @@
         <form [formGroup]="form" (ngSubmit)="submit(model)">
           <formly-form [form]="form" [fields]="formFields" [model]="model"></formly-form>
           <div class="text-right">
-            <button class="btn btn-primary" [disabled]="!form.valid" translate>New request</button>
+            <button id="new-request-button" class="btn btn-primary" [disabled]="!form.valid" translate>New request</button>
           </div>
         </form>
       </div>
