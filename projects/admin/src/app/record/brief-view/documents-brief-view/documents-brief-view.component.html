@@ -16,7 +16,7 @@
 -->
 
 <h5 class="mb-0 card-title">
-  <a [routerLink]="[detailUrl.link]">
+  <a name="document-title" [routerLink]="[detailUrl.link]">
     <ng-container *ngIf="record.metadata.ui_title_text else mainTitle">
       {{ record.metadata.ui_title_text }}
     </ng-container>

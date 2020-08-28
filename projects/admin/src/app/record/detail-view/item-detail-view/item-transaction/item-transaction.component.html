@@ -16,10 +16,10 @@
 -->
 
 <ng-container *ngIf="transaction">
-  <div class="row mb-2">
-    <ng-container *ngIf="transaction.metadata.patron_pid | getRecord:'patrons' | async as patron">
+  <ng-container *ngIf="transaction.metadata.patron_pid | getRecord:'patrons' | async as patron">
+    <div id="{{patron.metadata.barcode}}" class="row mb-2">
       <div class="col-4">
-        <a [routerLink]="['/circulation', 'patron', patron.metadata.barcode]">
+        <a name="loans" [routerLink]="['/circulation', 'patron', patron.metadata.barcode]">
           {{ patron.metadata.last_name }} {{ patron.metadata.first_name }} ({{ patron.metadata.barcode }})
         </a>
       </div>
@@ -37,18 +37,19 @@
         <ng-container *ngIf="canUpdateRequestPickupLocation(); else pickupLocationName">
           <div class="btn-group col-4" dropdown>
             <button class="btn btn-outline-secondary btn-block d-md-block dropdown-toggle  dropdown-toggle-split text-left" type="button"
-                    dropdownToggle aria-controls="dropdown-animated" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    dropdownToggle aria-controls="dropdown-animated" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    name="dropdown">
               {{ currentPickupLocation }}
             </button>
             <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="dropdown-animated">
-              <li role="menuitem" *ngFor="let pickup of pickupLocations">
+              <li role="menuitem" *ngFor="let pickup of pickupLocations; let i = index">
                 <a class="dropdown-item" (click)="updateRequest(pickup.value)">{{ pickup.label }}</a>
               </li>
             </ul>
           </div>
         </ng-container>
         <ng-template #pickupLocationName>
-          <div class="col-4" title="{{'The pickup location cannot be modified' | translate }}">
+          <div name="location" class="col-4" title="{{'The pickup location cannot be modified' | translate }}">
             {{ transaction.metadata.pickup_location_pid | getRecord:'locations':'field':'pickup_name' | async }}
           </div>
         </ng-template>
@@ -59,19 +60,21 @@
           <ng-container *ngIf="canCancelRequest(); else noCancel">
             <button type="button"
                     class="btn btn-outline-danger btn-sm"
-                    (click)="showCancelRequestDialog()">
+                    (click)="showCancelRequestDialog()"
+                    name="cancel">
               <i class="fa fa-trash-o" aria-hidden="true"></i>
             </button>
           </ng-container>
           <ng-template #noCancel>
             <button type="button" class="btn btn-outline-danger btn-sm"
                     title="{{'The request cannot be cancelled' | translate }}"
+                    name="cancel"
                     disabled>
               <i class="fa fa-trash-o" aria-hidden="true"></i>
             </button>
           </ng-template>
         </div>
       </ng-container>
-    </ng-container>
-  </div>
+    </div>
+  </ng-container>
 </ng-container>
