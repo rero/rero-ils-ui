@@ -20,6 +20,8 @@ import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-tran
 import { RecordModule } from '@rero/ng-core';
 import { MefTypeahead } from '../class/mef-typeahead';
 import { UiRemoteTypeaheadService } from './ui-remote-typeahead.service';
+import { DocumentsTypeahead } from '../class/documents-typeahead';
+import { MainTitlePipe } from '../pipe/main-title.pipe';
 
 describe('UiRemoteTypeaheadService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -31,7 +33,9 @@ describe('UiRemoteTypeaheadService', () => {
     })
     ],
     providers: [
-      MefTypeahead
+      MefTypeahead,
+      DocumentsTypeahead,
+      MainTitlePipe
     ]
   }));
 

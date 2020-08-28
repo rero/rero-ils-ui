@@ -18,6 +18,7 @@ import { Injectable, Injector } from '@angular/core';
 import { RemoteTypeaheadService, RecordService, ApiService, SuggestionMetadata } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { MefTypeahead } from '../class/mef-typeahead';
+import { DocumentsTypeahead } from '../class/documents-typeahead';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,8 @@ export class UiRemoteTypeaheadService extends RemoteTypeaheadService {
 
   /** Custom typeahead Type */
   private _typeaheadTypes = {
-    mef: this._injector.get(MefTypeahead)
+    mef: this._injector.get(MefTypeahead),
+    documents: this._injector.get(DocumentsTypeahead)
   };
 
   /**
