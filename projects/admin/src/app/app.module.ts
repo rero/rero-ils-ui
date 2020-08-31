@@ -114,6 +114,8 @@ import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/it
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { RemoteTypeaheadService } from '@rero/ng-core';
 import { MefTypeahead } from './class/mef-typeahead';
+import { TemplatesBriefViewComponent } from './record/brief-view/templates-brief-view.component';
+import { TemplateDetailViewComponent } from './record/detail-view/template-detail-view/template-detail-view.component';
 import { DocumentsTypeahead } from './class/documents-typeahead';
 import { MainTitlePipe } from './pipe/main-title.pipe';
 
@@ -190,7 +192,9 @@ import { MainTitlePipe } from './pipe/main-title.pipe';
     DefaultHoldingItemComponent,
     NotesFormatPipe,
     MarcPipe,
-    TabOrderDirective
+    TabOrderDirective,
+    TemplatesBriefViewComponent,
+    TemplateDetailViewComponent
   ],
   imports: [
     AppRoutingModule,
@@ -277,7 +281,9 @@ import { MainTitlePipe } from './pipe/main-title.pipe';
     OrganisationDetailViewComponent,
     ItemRequestComponent,
     ErrorPageComponent,
-    HoldingDetailViewComponent
+    HoldingDetailViewComponent,
+    TemplatesBriefViewComponent,
+    TemplateDetailViewComponent
   ],
   bootstrap: [AppComponent]
 })
