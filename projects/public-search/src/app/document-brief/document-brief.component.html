@@ -41,7 +41,7 @@
             <span *ngIf="!contribution.agent.pid">
               {{ contribution | contributionFormat }}
             </span>
-            <a *ngIf="contribution.agent.pid" [routerLink]="['/records', 'persons', 'detail', contribution.agent.pid]">
+            <a *ngIf="contribution.agent.pid" [href]="getPersonLink(contribution.agent.pid)">
               {{ contribution | contributionFormat }}
             </a>
             {{ last ? '' : '; ' }}

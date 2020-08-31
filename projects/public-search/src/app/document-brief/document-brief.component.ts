@@ -73,14 +73,25 @@ export class DocumentBriefComponent {
     private localRecordService: LocalRecordService
   ) {  }
 
-    /**
-     * Load cover image
-     */
+  /**
+   * Load cover image
+   * @param isbn - isbn of the document
+   * @returns string - url of the cover if cover exists.
+   */
   getCover(isbn: string) {
     this.localRecordService.getCover(isbn).subscribe(result => {
       if (result.success) {
         this.coverUrl = result.image;
       }
     });
+  }
+
+  /**
+   * Get link to MEF person
+   * @param pid - a MEF PID
+   * @returns string - link to MEF person.
+   */
+  getPersonLink(pid: string) {
+    return `/${this.viewcode}/persons/${pid}`;
   }
 }
