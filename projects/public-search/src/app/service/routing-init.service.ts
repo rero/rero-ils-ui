@@ -108,10 +108,10 @@ export class RoutingInitService {
     if (this._appConfigService.globalViewName === viewcode) {
       return [
         _('document_type'),
-        _('author__fr'),
-        _('author__en'),
-        _('author__de'),
-        _('author__it'),
+        _('contributor__fr'),
+        _('contributor__en'),
+        _('contributor__de'),
+        _('contributor__it'),
         _('organisation'),
         _('language'),
         _('subject'),
@@ -120,10 +120,10 @@ export class RoutingInitService {
     } else {
       return [
         _('document_type'),
-        _('author__fr'),
-        _('author__en'),
-        _('author__de'),
-        _('author__it'),
+        _('contributor__fr'),
+        _('contributor__en'),
+        _('contributor__de'),
+        _('contributor__it'),
         _('library'),
         _('language'),
         _('subject'),
