@@ -217,6 +217,9 @@ export class RecordPermissionService {
  * Permission response structure
  */
 export interface RecordPermission {
+  read: {
+    can: boolean
+  };
   update: {
     can: boolean
   };
