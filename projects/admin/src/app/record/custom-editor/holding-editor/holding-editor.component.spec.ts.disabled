@@ -7,7 +7,9 @@ import { TranslateService, TranslateModule, TranslateLoader, TranslateFakeLoader
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { of } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+// FIX THIS TEST
 describe('HoldingEditorComponent', () => {
   let component: HoldingEditorComponent;
   let fixture: ComponentFixture<HoldingEditorComponent>;
@@ -43,7 +45,8 @@ describe('HoldingEditorComponent', () => {
         }),
         RecordModule,
         HttpClientTestingModule,
-        RouterTestingModule
+        RouterTestingModule,
+        BrowserAnimationsModule,
       ],
       declarations: [ HoldingEditorComponent ],
       providers: [

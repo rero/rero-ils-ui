@@ -16,8 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { DetailComponent, EditorComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
+import { ActionStatus, DetailComponent, EditorComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
 import { JSONSchema7 } from 'json-schema';
+import { Observable, Subscriber } from 'rxjs';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { TemplatesBriefViewComponent } from '../record/brief-view/templates-brief-view.component';
 import { TemplateDetailViewComponent } from '../record/detail-view/template-detail-view/template-detail-view.component';
@@ -54,6 +55,7 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
             canAdd: () => this._routeToolService.canNot(),
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            canUse: (record: any) => this._canUse(record),
             preCreateRecord: (data: any) => this._addDefaultValuesForTemplate(data),
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
               return this._limitUserFormField(field, jsonSchema);
@@ -65,10 +67,13 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
               );
             },
             aggregationsOrder: [
-              'template_type',
+              'type',
               'visibility'
             ],
-            aggregationsExpand: ['template_type'],
+            aggregationsExpand: [
+              'type',
+              'visibility'
+            ],
             // use simple query for UI search
             preFilters: {
               simple: 1
@@ -77,6 +82,38 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
         ]
       }
     };
+  }
+
+  /**
+   * Eval if a template can be used to create a new resource. If yes, set the url to use to create this resource.
+   * @param record: the record to check
+   * @return Observable providing object with 2 attributes :
+   *   - 'can' - Boolean: to know if the resource could be used
+   *   - 'message' - String: the message to display if the record cannot be used
+   *   - 'url' - String: the url to use thii template (optional)
+   */
+  private _canUse(record: any) {
+    const usableTemplateTypes = ['documents', 'patrons'];
+    return new Observable((observer: Subscriber<any>): void => {
+      if (usableTemplateTypes.includes(record.metadata.template_type)) {
+        this._routeToolService.canRead(record, this.recordType).subscribe((actionStatus: ActionStatus) => {
+          if (actionStatus.can) {
+            const urlTree = this._routeToolService.router.createUrlTree(
+              ['/', 'records', record.metadata.template_type, 'new'],
+              {
+                queryParams: {
+                  source: this.recordType,
+                  pid: record.metadata.pid
+                }
+              }
+            );
+            const url = (this._routeToolService.urlSerializer.serialize(urlTree));
+            actionStatus.url = url;
+            observer.next(actionStatus);
+          }
+        });
+      }
+    });
   }
 
   /**

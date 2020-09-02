@@ -16,7 +16,7 @@
  */
 import { DatePipe } from '@angular/common';
 import { Injectable } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionStatus, ApiService, RecordService } from '@rero/ng-core';
 import { Observable, of, Subscriber } from 'rxjs';
@@ -78,6 +78,20 @@ export class RouteToolService {
   }
 
   /**
+   * @return router
+   */
+  get router() {
+    return this._router;
+  }
+
+  /**
+   * @return urlSerializer
+   */
+  get urlSerializer() {
+    return this._urlSerializer;
+  }
+
+  /**
    * Constructor
    *
    * @param _translateService - TranslateService
@@ -86,7 +100,9 @@ export class RouteToolService {
    * @param _activatedRoute - ActivatedRoute
    * @param _recordService - RecordService
    * @param _recordPermissionService - RecordPermissionService
-   * @param _datePipe - DatePipe
+   * @param _datePipe - DatePipe,
+   * @param _router - Router
+   * @param _urlSerializer - UrlSerializer
    */
   constructor(
     private _translateService: TranslateService,
@@ -95,7 +111,9 @@ export class RouteToolService {
     private _activatedRoute: ActivatedRoute,
     private _recordService: RecordService,
     private _recordPermissionService: RecordPermissionService,
-    private _datePipe: DatePipe
+    private _datePipe: DatePipe,
+    private _router: Router,
+    private _urlSerializer: UrlSerializer
   ) { }
 
   /**
@@ -170,6 +188,26 @@ export class RouteToolService {
                 : this._recordPermissionService.generateDeleteMessage(permission.delete.reasons)
             });
           });
+    });
+  }
+
+
+  /**
+   * Check if a record can be read
+   *
+   * @param record - Object: the resource object to check
+   * @param recordType - String: the record type
+   * @return Observable providing object with 2 attributes :
+   *     - 'can' - Boolean: to know if the resource could be deleted
+   *     - 'message' - String: the message to display if the record cannot be deleted
+   */
+  canRead(record: any, recordType: string): Observable<ActionStatus> {
+    return new Observable((observer: Subscriber<any>): void => {
+      this._recordPermissionService
+        .getPermission(recordType, record.metadata.pid)
+        .subscribe((permission: RecordPermission) => {
+          observer.next({can: permission.read.can, message: ''});
+        });
     });
   }
 
