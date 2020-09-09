@@ -145,7 +145,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Check if request pickup location can be chenged
+   * Check if request pickup location can be changed
    * @return: true or false
    */
   canUpdateRequestPickupLocation(): boolean {
@@ -185,7 +185,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
       .cancelLoan(
         this.itemPid,
         this.transaction.metadata.pid,
-        this.transaction.metadata.transaction_location_pid
+        this._currentUser.currentLibrary
       )
       .subscribe((itemData: any) => {
         this.removeRequest.emit(true);
