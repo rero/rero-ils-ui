@@ -69,10 +69,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
               .aggregationFilter(aggregations),
             aggregationsOrder: [
               'document_type',
-              'contribution__fr',
-              'contribution__en',
-              'contribution__de',
-              'contribution__it',
+              'author',
               'organisation',
               'language',
               'subject',
