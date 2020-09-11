@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { TranslateService } from '@ngx-translate/core';
 import { DetailComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
-import { of, Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
 import { BaseRoute } from './base-route';
-import { TranslateService } from '@ngx-translate/core';
 import { RouteToolService } from './route-tool.service';
 
 export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
@@ -58,9 +58,9 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
             label: 'BNF Importation',
             component: DocumentsBriefViewComponent,
             detailComponent: DocumentDetailViewComponent,
-            canAdd: (record: any) => of(false),
-            canUpdate: (record: any) => of(false),
-            canDelete: (record: any) => of(false),
+            canAdd: () => of(false),
+            canUpdate: () => of(false),
+            canDelete: () => of(false),
             resultsText: (hits: any) => this.getResultsText(hits),
             aggregationsBucketSize: 10,
             aggregationsOrder: [
@@ -85,13 +85,14 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
    * @param hits list of hit results.
    * @return observable of the string representation of the number of results.
    */
-  getResultsText(hits): Observable<string> {
-    if (hits.total === 0) {
+  getResultsText(hits: any): Observable<string> {
+    const total = this._routeToolService.recordService.totalHits(hits.total);
+    if (total === 0) {
       return this._translateService.stream('no result');
     }
     return this._translateService.stream('{{ total }} results of {{ remoteTotal }}',
       {
-        total: hits.total,
+        total,
         remoteTotal: hits.remote_total
       }
     );

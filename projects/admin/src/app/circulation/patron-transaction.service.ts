@@ -44,7 +44,7 @@ export class PatronTransactionService {
     private _routeToolService: RouteToolService,
     private _toastService: ToastrService,
     private _translateService: TranslateService
-  ) {}
+  ) { }
 
   /**
    * Allow to build the query to send through the API to retrieve desired data
@@ -87,7 +87,7 @@ export class PatronTransactionService {
       sort
     ).pipe(
       map((data: Record) => data.hits),
-      map(hits => hits.total === 0 ? [] : hits.hits),
+      map(hits => this._recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
       map(hits => hits.map( hit => new PatronTransaction(hit.metadata)))
     );
   }
@@ -102,7 +102,7 @@ export class PatronTransactionService {
     const query = this._buildQuery(undefined, loanPid, type, status);
     return this._recordService.getRecords('patron_transactions', query, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
       map((data: Record) => data.hits),
-      map(hits => hits.total === 0 ? [] : hits.hits),
+      map(hits => this._recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
       map(hits => hits.map( hit => new PatronTransaction(hit.metadata)))
     );
   }
@@ -137,7 +137,7 @@ export class PatronTransactionService {
     const query = `parent.pid:${transaction.pid}`;
     this._recordService.getRecords('patron_transaction_events', query, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
       map((data: Record) => data.hits),
-      map(hits => hits.total === 0 ? [] : hits.hits),
+      map(hits => this._recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
       map(hits => hits.map(hit => new PatronTransactionEvent(hit.metadata)))
     ).subscribe(events => transaction.events = events);
   }

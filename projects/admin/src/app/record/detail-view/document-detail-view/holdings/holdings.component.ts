@@ -44,7 +44,6 @@ export class HoldingsComponent implements OnInit {
    * @param _userService - UserService
    * @param _recordService - RecordService
    * @param _recordUiService - RecordUiService
-   * @param _recordPermissionService - RecordPermissionService
    */
   constructor(
     private _userService: UserService,
@@ -63,7 +62,7 @@ export class HoldingsComponent implements OnInit {
       (result: [Record, any]) => {
         const holdingsData = result[0];
         const permissions = result[1];
-        if (holdingsData.hits.total > 0) {
+        if (this._recordService.totalHits(holdingsData.hits.total) > 0) {
           this.holdings = holdingsData.hits.hits;
         }
         this.canAdd = permissions.create.can;

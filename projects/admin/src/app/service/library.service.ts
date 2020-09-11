@@ -24,29 +24,47 @@ import { map } from 'rxjs/operators';
 })
 export class LibraryService {
 
+  /** Resource name */
   static readonly resource = 'libraries';
 
+  /**
+   * Constructor
+   * @param _recordService - RecordService
+   */
   constructor(
-    private recordService: RecordService
+    private _recordService: RecordService
   ) { }
 
+  /**
+   * Library count
+   * @return Observable
+   */
   get count$() {
-    return this.recordService.getRecords(
+    return this._recordService.getRecords(
       LibraryService.resource,
       undefined,
       1,
       1
     ).pipe(
-      map((results: Record) => results.hits.total)
+      map((results: Record) => this._recordService.totalHits(results.hits.total))
     );
   }
 
+  /**
+   * Get Library
+   * @param pid - Library pid
+   * @return Observable
+   */
   get$(pid: string) {
-    return this.recordService.getRecord(LibraryService.resource, pid);
+    return this._recordService.getRecord(LibraryService.resource, pid);
   }
 
+  /**
+   * Get all order by column name
+   * @param order - string, order name
+   */
   allOrderBy$(order: string = 'name') {
-    return this.recordService.getRecords(
+    return this._recordService.getRecords(
       LibraryService.resource, undefined, 1, RecordService.MAX_REST_RESULTS_SIZE,
       undefined, undefined, undefined, order
     );

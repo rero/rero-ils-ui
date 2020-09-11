@@ -44,7 +44,9 @@ export class LoanService {
 
   /**
    * Constructor
-   * @param _recordService RecordService
+   * @param _recordService - RecordService
+   * @param _http - HttpClient
+   * @param _userService - UserService
    */
   constructor(
     private _recordService: RecordService,
@@ -61,7 +63,7 @@ export class LoanService {
     const states = Object.values(this.statusRequest).join(' OR state:');
     const query = `item_pid.value:${itemPid} AND (state:${states})`;
     return this._recordService.getRecords('loans', query, 1, 1).pipe(
-      map((result: Record) => result.hits.total)
+      map((result: Record) => this._recordService.totalHits(result.hits.total))
     );
   }
 

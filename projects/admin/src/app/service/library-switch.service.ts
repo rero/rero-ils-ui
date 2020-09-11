@@ -125,7 +125,7 @@ export class LibrarySwitchService {
    */
   generateMenu(): void {
     this._libraryService.allOrderBy$('name').pipe(
-      map((results: Record) => (results.hits.total > 0) ? results.hits.hits : [])
+      map((results: Record) => this._recordService.totalHits(results.hits.total) > 0 ? results.hits.hits : [])
     ).subscribe(libraries => {
       this.menuEntries = [];
       libraries.forEach((library: any) => {

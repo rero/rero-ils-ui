@@ -17,8 +17,7 @@
 
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { ApiService, RecordService, RecordUiService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Item, ItemAction, ItemNoteType, ItemStatus } from '../class/items';
@@ -33,17 +32,19 @@ export class ItemsService {
    * constructor
    * @param _http - HttpClient
    * @param _userService - UserService
+   * @param _recordService - RecordService
    */
   constructor(
     private _http: HttpClient,
-    private _userService: UserService
+    private _userService: UserService,
+    private _recordService: RecordService
   ) { }
 
   getRequestedLoans(libraryPid) {
     const url = `/api/item/requested_loans/${libraryPid}`;
     return this._http.get<any>(url).pipe(
       map(data => data.hits),
-      map(hits => hits.total === 0 ? [] : hits.hits),
+      map(hits => this._recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
       map(hits => hits.map(
         data => {
           const item = data.item;

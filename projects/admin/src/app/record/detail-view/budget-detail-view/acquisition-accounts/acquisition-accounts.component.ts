@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, PipeTransform } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { BudgetTotalService } from 'projects/admin/src/app/service/budget-total.service';
@@ -80,7 +81,7 @@ export class AcquisitionAccountsComponent implements OnInit {
     this._recordService
         .getRecords('acq_accounts', query, 1, RecordService.MAX_REST_RESULTS_SIZE)
         .pipe(
-          map((hits: Record) => hits.hits.total === 0 ? [] : hits.hits.hits)
+          map((hits: Record) => this._recordService.totalHits(hits.hits.total) === 0 ? [] : hits.hits.hits)
         ).subscribe((accounts: any) => {
           this.accounts = accounts;
           accounts.map((record: any) => {

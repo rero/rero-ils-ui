@@ -51,13 +51,13 @@ export class CheckinComponent implements OnInit {
   searchInputFocus = false;
 
   /** Constructor
-   * @param  _userService: User Service
-   * @param  _recordService: Record Service
-   * @param  _itemsService: Items Service
-   * @param  _router: Router
-   * @param  _translate: Translate Service
-   * @param  _toastService: Toastr Service
-   * @param  _patronService: Patron Service
+   * @param _userService: UserService
+   * @param _recordService: RecordService
+   * @param _itemsService: ItemsService
+   * @param _router: Router
+   * @param _translate: TranslateService
+   * @param _toastService: ToastrService
+   * @param _patronService: PatronService
    */
   constructor(
     private _userService: UserService,
@@ -66,7 +66,7 @@ export class CheckinComponent implements OnInit {
     private _router: Router,
     private _translate: TranslateService,
     private _toastService: ToastrService,
-    private _patronService: PatronService,
+    private _patronService: PatronService
   ) {}
 
   ngOnInit() {
@@ -181,7 +181,10 @@ export class CheckinComponent implements OnInit {
       this._recordService
         .getRecords('patrons', `barcode:${barcode}`, 1, 1)
         .pipe(
-          map((response: any) => (response.hits.total === 0)  ? null : response.hits.hits[0].metadata)
+          map((response: any) => (this._recordService.totalHits(response.hits.total) === 0)
+            ? null
+            : response.hits.hits[0].metadata
+          )
         ).subscribe(
           patron => {
             if (

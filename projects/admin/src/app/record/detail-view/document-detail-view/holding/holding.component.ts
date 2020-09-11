@@ -145,8 +145,8 @@ export class HoldingComponent implements OnInit, OnDestroy {
     this.itemsRef = this._recordService
       .getRecords('items', query, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, null, sort)
       .subscribe((result: Record) => {
-        this.items = (result.hits.total > 0) ? result.hits.hits : null;
-        this.totalItemsCounter = result.hits.total;
+        this.items = (this._recordService.totalHits(result.hits.total) > 0) ? result.hits.hits : null;
+        this.totalItemsCounter = this._recordService.totalHits(result.hits.total);
       });
   }
 

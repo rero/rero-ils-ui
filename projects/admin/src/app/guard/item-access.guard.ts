@@ -29,6 +29,7 @@ import { UserService } from '../service/user.service';
   providedIn: 'root'
 })
 export class ItemAccessGuard implements CanActivate {
+
   /**
    * Constructor
    * @param _router - Router
@@ -61,7 +62,10 @@ export class ItemAccessGuard implements CanActivate {
       .subscribe(holdingPid => {
         const query = `pid:${holdingPid}`;
         this._recordService.getRecords('holdings', query, 1, 1).pipe(
-          map((result: Record) => result.hits.total === 0 ? null : result.hits.hits[0]),
+          map((result: Record) => this._recordService.totalHits(result.hits.total) === 0
+            ? null
+            : result.hits.hits[0]
+          ),
         ).subscribe(data => {
           if (null === data) {
             this._toastr.warning(
