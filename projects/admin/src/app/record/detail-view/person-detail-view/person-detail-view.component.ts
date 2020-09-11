@@ -56,7 +56,7 @@ export class PersonDetailViewComponent implements DetailRecord, OnInit {
         return this._recordService.getRecords(
         'documents', query, 1, RecordService.MAX_REST_RESULTS_SIZE
       ); }),
-      map((hits: Record) => hits.hits.total === 0 ? [] : hits.hits.hits)
+      map((hits: Record) => this._recordService.totalHits(hits.hits.total) === 0 ? [] : hits.hits.hits)
     );
   }
 }

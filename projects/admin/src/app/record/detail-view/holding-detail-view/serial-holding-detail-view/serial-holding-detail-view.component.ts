@@ -52,7 +52,6 @@ export class SerialHoldingDetailViewComponent implements OnInit {
   /** reference to IssueItemStatus */
   issueItemStatus = IssueItemStatus;
 
-
   /**
    * Constructor
    *
@@ -104,7 +103,7 @@ export class SerialHoldingDetailViewComponent implements OnInit {
         [], {}, null,
         '-issue_expected_date'
       ).subscribe((result: Record) => {
-        this.totalReceivedItems = result.hits.total;
+        this.totalReceivedItems = this._recordService.totalHits(result.hits.total);
         this.receivedItems = [];
         result.hits.hits.forEach(item => this.receivedItems.push(this._loadItem(item)), this);
       });

@@ -104,7 +104,7 @@ export class AcquisitionOrderLinesRoute extends BaseRoute implements RouteInterf
         query, 1,
         RecordService.MAX_REST_RESULTS_SIZE
       ).pipe(
-        map((result: Record) => result.hits.total === 0 ? [] : result.hits.hits),
+        map((result: Record) => this._routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
         map(hits => {
           return hits.map((hit: any) => {
             return {

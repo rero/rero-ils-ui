@@ -28,14 +28,21 @@ import { User } from '../class/user';
 })
 export class PatronService {
 
+  /** Current patron */
   private _currentPatron: BehaviorSubject<User> = new BehaviorSubject(
     undefined
   );
 
+  /**
+   * Constructor
+   * @param _http - HttpClient
+   * @param _apiService - ApiService
+   * @param _recordService - RecordService
+   */
   constructor(
-    private http: HttpClient,
-    private apiService: ApiService,
-    private recordService: RecordService
+    private _http: HttpClient,
+    private _apiService: ApiService,
+    private _recordService: RecordService
   ) {}
 
   /**
@@ -59,11 +66,11 @@ export class PatronService {
    * @return Observable
    */
   getPatron(barcode: string): Observable<any> {
-    return this.recordService
+    return this._recordService
       .getRecords('patrons', `barcode:${barcode}`, 1, 1)
       .pipe(
         switchMap((response: Record) => {
-          switch (response.hits.total) {
+          switch (this._recordService.totalHits(response.hits.total)) {
             case 0: {
               this._currentPatron.next(null);
               break;
@@ -88,13 +95,13 @@ export class PatronService {
    * @return observable
    */
   getItems(patronPid: string) {
-    const itemApiUrl = this.apiService.getEndpointByType('item');
+    const itemApiUrl = this._apiService.getEndpointByType('item');
     const url = `${itemApiUrl}/loans/${patronPid}?sort=-transaction_date`;
-    return this.http.get<any>(url).pipe(
+    return this._http.get<any>(url).pipe(
       map(data => data.hits),
-      map(hits => (hits.total === 0 ? [] : hits.hits)),
+      map(hits => this._recordService.totalHits(hits.total === 0) ? [] : hits.hits),
       map(hits =>
-        hits.map(data => {
+        hits.map((data: any) => {
           const item = new Item(data.item);
           if (data.loan) {
             item.setLoan(data.loan);
@@ -111,7 +118,7 @@ export class PatronService {
    * @return Observable
    */
   getItem(barcode: string) {
-    return this.http
+    return this._http
       .get<any>(`/api/item/barcode/${barcode}`)
       .pipe(map(response => {
         const data = response.metadata.item;
@@ -166,11 +173,11 @@ export class PatronService {
    * @return Observable
    */
   private getLoans(query: string, sort?: string) {
-    return this.recordService.getRecords(
+    return this._recordService.getRecords(
       'loans', query, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, null, sort
     ).pipe(
       map((data: Record) => data.hits),
-      map(hits => (hits.total === 0 ? [] : hits.hits))
+      map(hits => this._recordService.totalHits(hits.total) === 0 ? [] : hits.hits)
     );
   }
 }

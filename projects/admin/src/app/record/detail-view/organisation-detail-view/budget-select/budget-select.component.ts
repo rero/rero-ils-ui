@@ -40,7 +40,9 @@ export class BudgetSelectComponent implements OnInit {
    * Constructor
    * @param recordService - RecordService
    */
-  constructor(private _recordService: RecordService) {}
+  constructor(
+    private _recordService: RecordService
+  ) {}
 
   /**
    * Init
@@ -51,7 +53,7 @@ export class BudgetSelectComponent implements OnInit {
       'budgets', query, 1, RecordService.MAX_REST_RESULTS_SIZE,
       undefined, undefined, undefined, undefined
     ).pipe(
-      map((hits: Record) => hits.hits.total === 0 ? [] : hits.hits.hits)
+      map((hits: Record) => this._recordService.totalHits(hits.hits.total) === 0 ? [] : hits.hits.hits)
     );
   }
 }
