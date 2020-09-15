@@ -1,23 +1,36 @@
-import { Injectable } from '@angular/core';
+/*
+ * RERO ILS UI
+ * Copyright (C) 2020 RERO
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { of, Observable } from 'rxjs';
 import { PredictionIssue } from './holdings.service';
 
 @Injectable({
   providedIn: 'root'
 })
-/**
- * Deliver piece of data for EditorComponent: Record from BNF (aka Bibliothèque Nationale de France).
- * Get Holding pattern preview examples.
- */
 export class EditorService {
   /**
    * Constructor
-   * @param http HttpClient
+   * @param _http - HttpClient
    */
   constructor(
-    private http: HttpClient,
+    private _http: HttpClient
   ) { }
 
   /**
@@ -26,8 +39,8 @@ export class EditorService {
    * @returns observable of null if the record does not exists else an
    * observable containing the record
    */
-  getRecordFromExternal(source, pid): Observable<any> {
-    return this.http.get<any>(`/api/import_${source}/${pid}`).pipe(
+  getRecordFromExternal(source: string, pid: string): Observable<any> {
+    return this._http.get<any>(`/api/import_${source}/${pid}`).pipe(
       catchError(e => {
         if (e.status === 404) {
           return of(null);
@@ -43,7 +56,7 @@ export class EditorService {
    * @returns an object with an issues property containing the list of samples
    */
   getHoldingPatternPreview(data: any, size = 10): Observable<PredictionIssue[]> {
-    return this.http.post<any>(`/api/holding/pattern/preview`, {
+    return this._http.post<any>(`/api/holding/pattern/preview`, {
       data: data.patterns,
       size
     }).pipe(

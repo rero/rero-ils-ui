@@ -18,6 +18,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { RecordService } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
 import { combineLatest } from 'rxjs';
 import { EditorService } from '../../../service/editor.service';
@@ -35,11 +36,20 @@ export class DocumentEditorComponent {
   // initial editor values
   model = {};
 
+  /**
+   * Constructor
+   * @param _editorService - EditorService
+   * @param _toastrService - ToastrService
+   * @param _translateService - TranslateService
+   * @param _route - ActivatedRoute
+   * @param _recordService - RecordService
+   */
   constructor(
-    private editorService: EditorService,
-    private toastrService: ToastrService,
-    private translateService: TranslateService,
-    private _route: ActivatedRoute
+    private _editorService: EditorService,
+    private _toastrService: ToastrService,
+    private _translateService: TranslateService,
+    private _route: ActivatedRoute,
+    private _recordService: RecordService
   ) { }
 
   /**
@@ -48,14 +58,36 @@ export class DocumentEditorComponent {
    * @param pid string - identifier of the external record
    */
   importFromExternalSource(source: string, pid: string) {
-    this.editorService.getRecordFromExternal(source, pid).subscribe(
+    this._editorService.getRecordFromExternal(source, pid).subscribe(
       record => {
         if (record) {
           this.model = record.metadata;
         } else {
-          this.toastrService.warning(
-            this.translateService.instant('Does not exists on the remote server!'),
-            this.translateService.instant('Import')
+          this._toastrService.warning(
+            this._translateService.instant('Does not exists on the remote server!'),
+            this._translateService.instant('Import')
+          );
+        }
+      }
+    );
+  }
+
+  /**
+   * Get record by type and pid
+   * @param type string - resource type
+   * @param pid - resource pid
+   */
+  duplicateRecord(type: string, pid: string) {
+    this._recordService.getRecord(type, pid).subscribe(
+      record => {
+        if (record) {
+          delete (record.metadata.pid);
+          this.model = record.metadata;
+          this._toastrService.success('Document duplicated');
+        } else {
+          this._toastrService.warning(
+            this._translateService.instant('This document does not exists!'),
+            this._translateService.instant('Duplicate')
           );
         }
       }
@@ -73,11 +105,16 @@ export class DocumentEditorComponent {
   loadingChanged(value: boolean) {
     if (value === false) {
       combineLatest([this._route.params, this._route.queryParams])
-        .subscribe(([params, queryParams]) => {
-          if (queryParams.source != null && queryParams.pid != null) {
+      .subscribe(([params, queryParams]) => {
+        if (queryParams.pid) {
+          if (queryParams.source) {
             this.importFromExternalSource(queryParams.source, queryParams.pid);
           }
-        });
+          if (queryParams.type) {
+            this.duplicateRecord(queryParams.type, queryParams.pid);
+          }
+        }
+      });
     }
   }
 }

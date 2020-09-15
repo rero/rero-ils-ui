@@ -25,7 +25,7 @@ import { Observable, of, Subscription } from 'rxjs';
 @Component({
   selector: 'admin-document-detail-view',
   templateUrl: './document-detail-view.component.html',
-  styles: []
+  styleUrls: ['./document-detail-view.component.scss']
 })
 export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
 

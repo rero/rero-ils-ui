@@ -41,7 +41,8 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
         { path: '', component: RecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: DocumentEditorComponent, canActivate: [ CanUpdateGuard ] },
-        { path: 'new', component: DocumentEditorComponent }
+        { path: 'new', component: DocumentEditorComponent },
+        { path: 'duplicate', component: DocumentEditorComponent }
       ],
       data: {
         linkPrefix: 'records',
