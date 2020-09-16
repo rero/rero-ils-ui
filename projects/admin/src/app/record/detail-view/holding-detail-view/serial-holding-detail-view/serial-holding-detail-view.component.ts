@@ -146,8 +146,9 @@ export class SerialHoldingDetailViewComponent implements OnInit {
   get showMoreIssuesCounter() {
     const additionalIssueCounter = this.totalReceivedItems - this.receivedItems.length;
     return (additionalIssueCounter === 1)
-      ? '1 ' + this._translateService.instant('hidden issue')
-      : additionalIssueCounter + ' ' + this._translateService.instant('hidden issues');
+      ? this._translateService.instant('1 hidden issue')
+      : this._translateService.instant('{{ counter }} hidden issues',
+        {counter: additionalIssueCounter});
   }
 
   /**

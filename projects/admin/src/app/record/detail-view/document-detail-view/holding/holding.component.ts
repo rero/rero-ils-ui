@@ -160,12 +160,25 @@ export class HoldingComponent implements OnInit, OnDestroy {
 
   /**
    * Get the counter string about not loaded items
+   * @param itemType: the type of item related to the counter
    * @return the string to display with the 'show more' link
    */
-  showMoreItemsCounter(itemType: string, pluralForm?: string) {
-    const plural = (pluralForm == null) ? itemType + 's' : pluralForm;
-    const additionalIssueCounter = this.totalItemsCounter - this.displayItemsCounter;
-    itemType = (additionalIssueCounter > 1) ? plural : itemType;
-    return additionalIssueCounter + ' ' + this._translateService.instant('hidden') + ' ' + itemType;
+  showMoreItemsCounter(itemType: string) {
+    const messages = {
+      issue: {
+        singular: '{{ counter }} hidden issue',
+        plural: '{{ counter }} hidden issues'
+      },
+      default: {
+        singular: '{{ counter }} hidden item',
+        plural: '{{ counter }} hidden items'
+      }
+    };
+    const message = messages.hasOwnProperty(itemType) ? messages[itemType] : messages.default;
+    const additionalItemCounter = this.totalItemsCounter - this.displayItemsCounter;
+    return this._translateService.instant(
+      (additionalItemCounter === 1) ? message.singular : message.plural,
+      {counter: additionalItemCounter}
+    );
   }
 }
