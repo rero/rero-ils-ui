@@ -1,4 +1,5 @@
 {
+  "1 hidden issue": "1 hidden issue",
   "A regular issue cannot be deleted": "A regular issue cannot be deleted",
   "Access denied": "غير مسموح بالدخول",
   "Accompanying material": "Accompanying material",
@@ -390,9 +391,6 @@
   "has 1 organisation attached": "يوجد 1 شبكة مرفقة",
   "has 1 patron attached": "يوجد 1 مستخدم مرفق",
   "has 1 patron type attached": "يوجد 1 تصنيف مستخدم مرفق",
-  "hidden": "hidden",
-  "hidden issue": "hidden issue",
-  "hidden issues": "hidden issues",
   "hiddenUrl": "URL مخفي",
   "illustrations": "الرسوم التوضيحية",
   "introductionPreface": "مقدمة/تمهيد",
@@ -459,6 +457,7 @@
   "wednesday": "الاربعاء",
   "week": "إسبوع",
   "year": "عام",
+  "{{ counter }} hidden issues": "{{ counter }} hidden issues",
   "{{ total }} results of {{ remoteTotal }}": "{{ total }} results of {{ remoteTotal }}",
   "{{ type }} creation failed!": "{{ type }} حدث خطأ عن الانشاء",
   "{{ type }} registered": "{{ type }} مسجل"

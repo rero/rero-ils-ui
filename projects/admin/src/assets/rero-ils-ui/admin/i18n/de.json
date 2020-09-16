@@ -1,4 +1,5 @@
 {
+  "1 hidden issue": "1 versteckte Lieferung",
   "A regular issue cannot be deleted": "Eine regelmässige Lieferung kann nicht gelöscht werden",
   "Access denied": "Zugriff abgelehnt",
   "Accompanying material": "Begleitmaterial",
@@ -390,9 +391,6 @@
   "has 1 organisation attached": "hat 1 Organisation angehängt",
   "has 1 patron attached": "hat 1 Leser angehängt",
   "has 1 patron type attached": "hat 1 Lesertyp angehängt",
-  "hidden": "versteckt",
-  "hidden issue": "versteckte Lieferungen",
-  "hidden issues": "versteckte Lieferungen",
   "hiddenUrl": "Versteckte URL",
   "illustrations": "Abbildungen",
   "introductionPreface": "Einführung/Vorwort",
@@ -459,6 +457,7 @@
   "wednesday": "Mittwoch",
   "week": "Woche",
   "year": "Jahr",
+  "{{ counter }} hidden issues": "{{ counter }} versteckten Lieferungen",
   "{{ total }} results of {{ remoteTotal }}": "{{ total }} Ergebnisse von {{ remoteTotal }}",
   "{{ type }} creation failed!": "Erstellung von {{ type }} fehlgeschlagen!",
   "{{ type }} registered": "{{ type }} gespeichert"
