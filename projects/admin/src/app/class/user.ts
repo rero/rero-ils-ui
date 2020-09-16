@@ -42,8 +42,10 @@ export class User {
   blocked = false;
   blocked_note: string;
 
+  /** Locale storage name key */
   static readonly STORAGE_KEY = 'user';
 
+  /** Logged user API url */
   static readonly LOGGED_URL = '/patrons/logged_user?resolve';
 
   /**
@@ -75,6 +77,14 @@ export class User {
     return (operator === 'and')
       ? intersection.length == roles.length  // all requested roles are present into user roles.
       : intersection.length > 0 // at least one requested roles are present into user roles.
+  }
+
+  /**
+   * Get All roles
+   * @return array of roles
+   */
+  getRoles() {
+    return this.roles ? this.roles : [];
   }
 
   /**

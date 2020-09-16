@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { LoanService } from './loan.service';
@@ -7,7 +7,7 @@ import { LoanService } from './loan.service';
 describe('LoanService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
-      HttpClientModule,
+      HttpClientTestingModule,
       TranslateModule.forRoot()
     ]
   }));

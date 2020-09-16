@@ -15,12 +15,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ngx-spinner type="ball-spin-clockwise" size="medium"></ngx-spinner>
-<div *ngIf="!user" translate>Loading…</div>
-<ng-container *ngIf="user">
+<ng-container *ngIf="userLoaded">
   <header>
-    <admin-menu *ngIf="access"></admin-menu>
+    <admin-menu *ngIf="allowAccess"></admin-menu>
   </header>
-  <div class="container-fluid px-5" *ngIf="access; else noaccess">
+  <div class="container-fluid px-5" *ngIf="allowAccess; else noaccess">
     <router-outlet></router-outlet>
   </div>
   <footer class="rero-ils-footer container-fluid px-5 d-flex justify-content-center align-items-center border-top mt-4 py-4">

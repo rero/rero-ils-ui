@@ -15,15 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-
-import { UserService } from './user.service';
 import { AppModule } from '../app.module';
+import { UserService } from './user.service';
+
 
 describe('UserService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
-      AppModule
+      AppModule,
+      HttpClientTestingModule
     ]
   }));
 

@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppModule } from '../../../app.module';
-import { LibraryComponent } from './library.component';
-import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { AppModule } from '../../../app.module';
+import { LibraryComponent } from './library.component';
 
 describe('LibraryComponent', () => {
   let component: LibraryComponent;
@@ -30,7 +30,7 @@ describe('LibraryComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         AppModule,
-        HttpClientModule,
+        HttpClientTestingModule,
         RouterTestingModule,
         TranslateModule.forRoot()
       ]

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { OrganisationService } from './organisation.service';
@@ -23,7 +23,7 @@ import { OrganisationService } from './organisation.service';
 describe('OrganisationService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
-      HttpClientModule,
+      HttpClientTestingModule,
       TranslateModule.forRoot()
     ]
   }));

@@ -24,9 +24,9 @@ import { DatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { RecordModule } from '@rero/ng-core';
-import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -36,7 +36,7 @@ describe('AppComponent', () => {
         CollapseModule,
         FormsModule,
         RecordModule,
-        HttpClientModule,
+        HttpClientTestingModule,
         DatepickerModule.forRoot(),
         BsDropdownModule.forRoot(),
         TranslateModule.forRoot({}),
