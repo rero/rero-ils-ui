@@ -21,6 +21,7 @@ import { RecordService } from '@rero/ng-core';
 import { forkJoin, of, Subject } from 'rxjs';
 import { concatAll, map } from 'rxjs/operators';
 import { User } from '../class/user';
+import { AppConfigService } from './app-config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -31,13 +32,24 @@ export class UserService {
 
   private user: User;
 
+  public userLoaded = false;
+
+  /** Allow interface access */
+  private _allowInterfaceAccess = false;
+
   get onUserLoaded$() {
     return this.onUserLoaded.asObservable();
   }
 
+  /** Allow user interface access */
+  get allowAccess() {
+    return this._allowInterfaceAccess;
+  }
+
   constructor(
     private http: HttpClient,
-    private recordService: RecordService
+    private recordService: RecordService,
+    private _appConfigService: AppConfigService
   ) { }
 
   getCurrentUser() {
@@ -59,6 +71,8 @@ export class UserService {
         user.currentLibrary = user.library.pid;
       }
       this.user = new User(user);
+      this.isAuthorizedAccess();
+      this.userLoaded = true;
       this.onUserLoaded.next(data);
     });
   }
@@ -86,4 +100,17 @@ export class UserService {
       concatAll()
     );
   }
+
+  /**
+   * Check if you are an access ton admin interface
+   */
+  private isAuthorizedAccess() {
+    const adminRoles = this._appConfigService.adminRoles;
+    this._allowInterfaceAccess = this.user.getRoles()
+    .filter((role: string) => {
+      if (adminRoles.indexOf(role) > -1) {
+        return role;
+      }
+    }).length > 0;
+ }
 }

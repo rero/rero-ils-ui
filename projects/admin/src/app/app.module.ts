@@ -16,7 +16,7 @@
  */
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -115,6 +115,12 @@ import { RemoteTypeaheadService } from '@rero/ng-core';
 import { MefTypeahead } from './class/mef-typeahead';
 import { DocumentsTypeahead } from './class/documents-typeahead';
 import { MainTitlePipe } from './pipe/main-title.pipe';
+import { AppInitService } from './service/app-init.service';
+
+/** Init application factory */
+export function appInitFactory(appInitService: AppInitService) {
+  return () => appInitService.load();
+}
 
 @NgModule({
   declarations: [
@@ -216,6 +222,12 @@ import { MainTitlePipe } from './pipe/main-title.pipe';
     TypeaheadModule
   ],
   providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitFactory,
+      deps: [AppInitService],
+      multi: true
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: NoCacheHeaderInterceptor,

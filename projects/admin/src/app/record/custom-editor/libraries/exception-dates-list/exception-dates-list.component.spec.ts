@@ -16,11 +16,12 @@
  */
 
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { LOCALE_ID } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { AppModule } from '../../../../app.module';
 import { ExceptionDatesListComponent } from './exception-dates-list.component';
-import { LOCALE_ID } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
 
 describe('ExceptionDatesListComponent', () => {
   let component: ExceptionDatesListComponent;
@@ -30,6 +31,7 @@ describe('ExceptionDatesListComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         AppModule,
+        HttpClientTestingModule,
         TranslateModule.forRoot()
       ],
       providers: [{provide: LOCALE_ID, useValue: 'en-US' }]

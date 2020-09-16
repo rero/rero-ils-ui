@@ -15,15 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationStart, Router } from '@angular/router';
-import { LocalStorageService, TranslateService } from '@rero/ng-core';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { User } from './class/user';
-import { AppConfigService } from './service/app-config.service';
+import { Component, OnInit } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { AppRouterEventService } from './service/app-router-event.service';
 import { LibrarySwitchService } from './service/library-switch.service';
-import { OrganisationService } from './service/organisation.service';
 import { UserService } from './service/user.service';
 
 @Component({
@@ -31,118 +26,41 @@ import { UserService } from './service/user.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
 
-  /**
-   * User
-   */
-  user: any;
+  /** Allow interface access */
+  get allowAccess() {
+    return this._userService.allowAccess;
+  }
 
-  /**
-   * Control access on template
-   */
-  access = false;
-
-  /**
-   * Store some observables on Subcription
-   */
-  private _subcription = new Subscription();
+  /** is user loaded */
+  get userLoaded() {
+    return this._userService.userLoaded;
+  }
 
   /**
    * Constructor
-   * @param userService - UserService
-   * @param appConfigService - AppConfigService
-   * @param translateService - TranslateService
-   * @param localStorageService - LocalStorageService
-   * @param librarySwitchService - LibrarySwitchService
-   * @param router - Router
+   * @param _userService - UserService
+   * @param _appRouterEventService - AppRouterEventService
+   * @param _librarySwitchService - LibrarySwitchService
+   * @param _spinner - NgxSpinnerService
    */
   constructor(
-    private userService: UserService,
-    private appConfigService: AppConfigService,
-    private translateService: TranslateService,
-    private localStorageService: LocalStorageService,
-    private librarySwitchService: LibrarySwitchService,
-    private router: Router,
-    private organisationService: OrganisationService
-    ) {
-      this.initializeEvents();
-    }
+    private _userService: UserService,
+    private _appRouterEventService: AppRouterEventService,
+    private _librarySwitchService: LibrarySwitchService,
+    private _spinner: NgxSpinnerService
+    ) {}
 
+    /** Init */
   ngOnInit() {
-    this.userService.loadLoggedUser();
-  }
-
-  ngOnDestroy() {
-    this._subcription.unsubscribe();
-  }
-
-  /**
-   * Initialize App Events
-   * @return void
-   */
-  private initializeEvents() {
-    this._subcription.add(this.userService.onUserLoaded$.subscribe((data: any) => {
-      if (!data.metadata) {
-        this.access = false;
-      }
-      this.appConfigService.setSettings(data.settings);
-      const language = this.appConfigService.getSettings().language;
-      if (language) {
-        this.translateService.setLanguage(language);
-      } else {
-        const browserLang = this.translateService.getBrowserLang();
-        this.translateService.setLanguage(
-          browserLang.match(this.appConfigService.languages.join('|')) ?
-          browserLang : this.appConfigService.defaultLanguage
-        );
-      }
-      const user = this.userService.getCurrentUser();
-      if (data.metadata) {
-        this.access = user.hasRoles(this.appConfigService.adminRoles, 'or');
-      }
-      if (this.access) {
-        this.organisationService.loadOrganisationByPid(
-          user.library.organisation.pid
-        );
-        this.organisationService.onOrganisationLoaded.subscribe(() => {
-          if (!this.localStorageService.has(User.STORAGE_KEY)) {
-            this.localStorageService.set(User.STORAGE_KEY, user);
-          } else {
-            const userLocal = this.localStorageService.get(User.STORAGE_KEY);
-            if (userLocal.pid !== user.pid) {
-              this.localStorageService.set(User.STORAGE_KEY, user);
-            }
-            const locale = this.localStorageService.get(User.STORAGE_KEY);
-            user.setCurrentLibrary(locale.currentLibrary);
-          }
-          this.librarySwitchService.switch(
-            user.getCurrentLibrary()
-          );
-          this.user = user;
-        });
-      } else {
-        this.user = user;
-      }
-    }));
-
-    this._subcription.add(this.router.events.pipe(
-        filter(event => event instanceof NavigationStart)
-      ).subscribe((event: NavigationStart) => {
-        if (
-          event instanceof NavigationStart
-          && this.localStorageService.has(User.STORAGE_KEY)
-        ) {
-          if (this.localStorageService.isExpired(
-            User.STORAGE_KEY,
-            this.appConfigService.sessionExpiredSeconds)
-          ) {
-            this.localStorageService.remove(User.STORAGE_KEY);
-          } else {
-            this.localStorageService.updateDate(User.STORAGE_KEY);
-          }
-        }
-      })
-    );
+    this._spinner.show();
+    this._appRouterEventService.initializeEvents();
+    this._userService.onUserLoaded$.subscribe(() => {
+      this._librarySwitchService.switch(
+        this._userService.getCurrentUser().getCurrentLibrary()
+      );
+      this._spinner.hide();
+    });
   }
 }
