@@ -30,7 +30,6 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-import { UiSwitchModule } from 'ngx-toggle-switch';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
@@ -214,8 +213,7 @@ import { MainTitlePipe } from './pipe/main-title.pipe';
         useClass: TranslateLoader
       }
     }),
-    TypeaheadModule,
-    UiSwitchModule
+    TypeaheadModule
   ],
   providers: [
     {

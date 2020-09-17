@@ -20,7 +20,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CirculationPolicyComponent } from './circulation-policy.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RecordModule } from '@rero/ng-core';
-import { UiSwitchModule } from 'ngx-toggle-switch';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
@@ -36,7 +35,6 @@ describe('CirculationPolicyComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         RecordModule,
-        UiSwitchModule,
         RouterTestingModule,
         HttpClientModule,
         TranslateModule.forRoot()

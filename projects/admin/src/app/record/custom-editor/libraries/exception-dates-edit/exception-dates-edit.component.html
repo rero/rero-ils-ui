@@ -202,34 +202,41 @@
     </div>
     <!-- Repeat -->
     <div class="form-group row">
-      <label for="repeat" class="col-sm-2 col-form-label required" translate>Repetition</label>
-      <div class="col-sm-10">
-        <ui-switch
-          class="align-middle"
-          formControlName="repeat"
-          [checked]="repeat"
-          size="small"
-          defaultBgColor="red"
-          (change)="onRepeatChange($event)">
-        </ui-switch>
-        <div class="ml-2 d-inline" *ngIf="repeat.value">
-          <label for="interval" class="col-form-label required" translate>Repeat each</label>
-          <input type="number" min="1" step="1" class="ml-2 col-2" formControlName="interval">
-          <select class="col-3 ml-1 form-control d-inline-block" formControlName="period">
-            <option value="weekly" translate>week</option>
-            <option value="monthly" translate>month</option>
-            <option value="yearly" translate>year</option>
-          </select>
-          <div *ngIf="interval.invalid && (interval.dirty || interval.touched)" class="text-danger pt-1">
-            <div *ngIf="interval.errors.required" translate>
-              Interval is required.
-            </div>
-            <div *ngIf="interval.errors.min" translate>
-              Interval must greater than 0.
-            </div>
-            <div *ngIf="interval.errors.pattern && !interval.errors.min" translate>
-              Integer only.
-            </div>
+      <div class="col-sm-2">
+          <div class="custom-control custom-switch">
+            <input
+              formControlName="repeat"
+              class="custom-control-input"
+              type="checkbox"
+              id="repeat"
+              (change)="onRepeatChange($event)"
+              [checked]="repeat.value"
+            >
+            <label
+              class="custom-control-label"
+              for="repeat"
+            >
+              {{ 'Repetition' | translate | titlecase }}
+            </label>
+        </div>
+      </div>
+      <div class="col-sm-10 d-inline" *ngIf="repeat.value">
+        <label for="interval" class="col-form-label required" translate>Repeat each</label>
+        <input type="number" min="1" step="1" class="ml-2 col-2" formControlName="interval">
+        <select class="col-3 ml-1 form-control d-inline-block" formControlName="period">
+          <option value="weekly" translate>week</option>
+          <option value="monthly" translate>month</option>
+          <option value="yearly" translate>year</option>
+        </select>
+        <div *ngIf="interval.invalid && (interval.dirty || interval.touched)" class="text-danger pt-1">
+          <div *ngIf="interval.errors.required" translate>
+            Interval is required.
+          </div>
+          <div *ngIf="interval.errors.min" translate>
+            Interval must greater than 0.
+          </div>
+          <div *ngIf="interval.errors.pattern && !interval.errors.min" translate>
+            Integer only.
           </div>
         </div>
       </div>
