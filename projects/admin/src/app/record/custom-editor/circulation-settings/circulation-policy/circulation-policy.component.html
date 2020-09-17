@@ -55,11 +55,23 @@
           <div class="form-group">
             <div class="row">
               <div class="col-sm-4">
-                <div class="form-check">
-                  <ui-switch formControlName="allow_checkout" [checked]="allow_checkout.value"
-                    (click)="allowCheckoutCheckbox($event.target.checked)" size="small" defaultBgColor="red"
-                    class="align-middle"></ui-switch>
-                  {{ 'checkout' | translate | titlecase }}
+                <div class='form-group'>
+                  <div class="custom-control custom-switch">
+                    <input
+                      formControlName="allow_checkout"
+                      class="custom-control-input"
+                      type="checkbox"
+                      id="is_pickup"
+                      (click)="allowCheckoutCheckbox($event.target.checked)"
+                      [checked]="allow_checkout.value"
+                    >
+                    <label
+                      class="custom-control-label"
+                      for="is_pickup"
+                    >
+                      {{ 'checkout' | translate | titlecase }}
+                    </label>
+                  </div>
                 </div>
               </div>
               <div class="col-sm-8">
@@ -82,11 +94,23 @@
             </div>
             <div class="row" *ngIf="allow_checkout.value">
               <div class="col-sm-4">
-                <div class="form-check">
-                  <ui-switch formControlName="allow_renewals" [checked]="allow_renewals.value"
-                    (click)="allowRenewalsCheckbox($event.target.checked)" size="small" defaultBgColor="red"
-                    class="align-middle"></ui-switch>
-                  {{ 'renewals' | translate | titlecase }}
+                <div class='form-group'>
+                  <div class="custom-control custom-switch">
+                    <input
+                      formControlName="allow_renewals"
+                      class="custom-control-input"
+                      type="checkbox"
+                      id="renewals"
+                      (click)="allowRenewalsCheckbox($event.target.checked)"
+                      [checked]="allow_renewals.value"
+                    >
+                    <label
+                      class="custom-control-label"
+                      for="renewals"
+                    >
+                      {{ 'renewals' | translate | titlecase }}
+                    </label>
+                  </div>
                 </div>
               </div>
               <div class="col-sm-8">
@@ -126,10 +150,22 @@
             </div>
             <div class="row">
               <div class="col-sm-4">
-                <div class="form-check">
-                  <ui-switch formControlName="allow_requests" [checked]="allow_requests.value" size="small"
-                    defaultBgColor="red" class="align-middle"></ui-switch>
-                  {{ 'requests' | translate | titlecase }}
+                <div class='form-group'>
+                  <div class="custom-control custom-switch">
+                    <input
+                      formControlName="allow_requests"
+                      class="custom-control-input"
+                      type="checkbox"
+                      id="requests"
+                      [checked]="allow_requests.value"
+                    >
+                    <label
+                      class="custom-control-label"
+                      for="requests"
+                    >
+                      {{ 'requests' | translate | titlecase }}
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>

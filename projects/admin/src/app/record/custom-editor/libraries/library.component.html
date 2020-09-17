@@ -91,18 +91,24 @@
       <div class="mt-3" formArrayName="opening_hours" *ngFor="let day of openingHours.controls; let i=index">
         <div [formGroupName]="i">
           <div class="form-group row">
-            <div class="col-1 text-right">
-              <ui-switch formControlName="is_open"
-                         [checked]="day.value.is_open"
-                         size="small"
-                         defaultBgColor="red"
-                         class="align-middle">
-              </ui-switch>
+            <div class="col-2">
+              <div class="custom-control custom-switch">
+                <input
+                  formControlName="is_open"
+                  class="custom-control-input"
+                  type="checkbox"
+                  [id]="day.value.day"
+                  [checked]="day.value.is_open"
+                >
+                <label
+                class="custom-control-label"
+                [for]="day.value.day"
+              >
+                {{ day.value.day | translate | titlecase }}
+              </label>
+              </div>
             </div>
-            <div class="col-2 p-0">
-              {{ day.value.day | translate | titlecase }}
-            </div>
-            <div class="col-9">
+            <div class="col-8">
               <ul class="list-unstyled mb-0">
                 <li formArrayName="times" *ngFor="let time of day.controls.times.controls; let t=index">
                   <div [formGroupName]="t" class="mb-1">
