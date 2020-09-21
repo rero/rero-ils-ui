@@ -1,4 +1,5 @@
 {
+  "1 hidden issue": "1 hidden issue",
   "A regular issue cannot be deleted": "Un fascicule régulier ne peut être supprimé.",
   "Access denied": "Accès refusé",
   "Accompanying material": "Matériel d'accompagnement",
@@ -390,9 +391,6 @@
   "has 1 organisation attached": "a 1 organisation attachée",
   "has 1 patron attached": "a 1 lecteur attaché",
   "has 1 patron type attached": "a 1 type de lecteur attaché",
-  "hidden": "caché",
-  "hidden issue": "fascicule caché",
-  "hidden issues": "fascicules cachés",
   "hiddenUrl": "URL cachée",
   "illustrations": "illustrations",
   "introductionPreface": "introduction/préface",
@@ -459,6 +457,7 @@
   "wednesday": "mercredi",
   "week": "semaine",
   "year": "année",
+  "{{ counter }} hidden issues": "{{ counter }} hidden issues",
   "{{ total }} results of {{ remoteTotal }}": "{{ total }} résultats sur {{ remoteTotal }}",
   "{{ type }} creation failed!": "Échec de la création de {{ type }} !",
   "{{ type }} registered": "{{ type }} sauvé"
