@@ -1,5 +1,5 @@
 {
-  "1 hidden issue": "1 hidden issue",
+  "1 hidden issue": "1 fascicule caché",
   "A regular issue cannot be deleted": "Un fascicule régulier ne peut être supprimé.",
   "Access denied": "Accès refusé",
   "Accompanying material": "Matériel d'accompagnement",
@@ -457,7 +457,7 @@
   "wednesday": "mercredi",
   "week": "semaine",
   "year": "année",
-  "{{ counter }} hidden issues": "{{ counter }} hidden issues",
+  "{{ counter }} hidden issues": "{{ counter }} fascicules cachés",
   "{{ total }} results of {{ remoteTotal }}": "{{ total }} résultats sur {{ remoteTotal }}",
   "{{ type }} creation failed!": "Échec de la création de {{ type }} !",
   "{{ type }} registered": "{{ type }} sauvé"

@@ -1,5 +1,5 @@
 {
-  "1 hidden issue": "1 hidden issue",
+  "1 hidden issue": "1 versteckte Lieferung",
   "A regular issue cannot be deleted": "Eine regelmässige Lieferung kann nicht gelöscht werden",
   "Access denied": "Zugriff abgelehnt",
   "Accompanying material": "Begleitmaterial",
@@ -457,7 +457,7 @@
   "wednesday": "Mittwoch",
   "week": "Woche",
   "year": "Jahr",
-  "{{ counter }} hidden issues": "{{ counter }} hidden issues",
+  "{{ counter }} hidden issues": "{{ counter }} versteckten Lieferungen",
   "{{ total }} results of {{ remoteTotal }}": "{{ total }} Ergebnisse von {{ remoteTotal }}",
   "{{ type }} creation failed!": "Erstellung von {{ type }} fehlgeschlagen!",
   "{{ type }} registered": "{{ type }} gespeichert"
