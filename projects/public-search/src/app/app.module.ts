@@ -14,19 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { HttpClientModule } from '@angular/common/http';
-import { Injector, LOCALE_ID, NgModule } from '@angular/core';
+import { APP_INITIALIZER, Injector, LOCALE_ID, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { CoreConfigService, RecordModule, TranslateService } from '@rero/ng-core';
+import { CoreConfigService, RecordModule, TranslateLoader, TranslateService } from '@rero/ng-core';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { SharedPipesModule } from 'projects/admin/src/app/shared/shared-pipes.module';
 import { AppConfigService } from './app-config.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { CollectionBriefComponent } from './collection-brief/collection-brief.component';
 import { DocumentBriefComponent } from './document-brief/document-brief.component';
 import { MainComponent } from './main/main.component';
 import { PersonBriefComponent } from './person-brief/person-brief.component';
@@ -34,7 +36,13 @@ import { BioInformationsPipe } from './pipes/bio-informations.pipe';
 import { BirthDatePipe } from './pipes/birth-date.pipe';
 import { MefTitlePipe } from './pipes/mef-title.pipe';
 import { SearchBarComponent } from './search-bar/search-bar.component';
-import { TranslateLoader } from '@rero/ng-core';
+import { AppInitializerService } from './app-initializer.service';
+import { ErrorPageComponent } from './error/error-page.component';
+
+/** function to instantiate the application  */
+export function appInitFactory(appInitializerService: AppInitializerService) {
+  return () => appInitializerService.load();
+}
 
 @NgModule({
   declarations: [
@@ -45,7 +53,9 @@ import { TranslateLoader } from '@rero/ng-core';
     BirthDatePipe,
     BioInformationsPipe,
     SearchBarComponent,
-    MainComponent
+    MainComponent,
+    CollectionBriefComponent,
+    ErrorPageComponent
   ],
   imports: [
     BrowserModule,
@@ -64,10 +74,8 @@ import { TranslateLoader } from '@rero/ng-core';
     SharedPipesModule
   ],
   providers: [
-    {
-      provide: CoreConfigService,
-      useClass: AppConfigService
-    },
+    { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
+    { provide: CoreConfigService, useClass: AppConfigService },
     {
       provide: LOCALE_ID,
       useFactory: (translate: TranslateService) => translate.currentLanguage,
@@ -78,7 +86,9 @@ import { TranslateLoader } from '@rero/ng-core';
   entryComponents: [
     DocumentBriefComponent,
     PersonBriefComponent,
-    SearchBarComponent
+    SearchBarComponent,
+    CollectionBriefComponent,
+    ErrorPageComponent
   ],
   bootstrap: [AppComponent]
 })

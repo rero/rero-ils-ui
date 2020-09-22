@@ -38,6 +38,7 @@ import { TemplatesRoute } from './templates-route';
 import { VendorsRoute } from './vendors-route';
 import { ImportDocumentsRoute } from './import-documents-route';
 import { TranslateService } from '@ngx-translate/core';
+import { CollectionsRoute } from './collections-route';
 
 @Injectable({
   providedIn: 'root'
@@ -80,6 +81,7 @@ export class RouteService {
       .addRoute(new PersonsRoute(this._routeToolService))
       .addRoute(new VendorsRoute(this._routeToolService))
       .addRoute(new TemplatesRoute(this._routeToolService))
+      .addRoute(new CollectionsRoute(this._routeToolService))
       // should be at the last
       .addRoute(new ImportDocumentsRoute(this._routeToolService, this._translateService))
     ;

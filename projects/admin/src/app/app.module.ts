@@ -22,7 +22,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormlyModule } from '@ngx-formly/core';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { CoreConfigService, RecordModule, RemoteTypeaheadService, TranslateLoader, TranslateService } from '@rero/ng-core';
+import {
+  CoreConfigService, RecordModule, RemoteTypeaheadService, TranslateLoader, TranslateService, TruncateTextPipe
+} from '@rero/ng-core';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -32,6 +34,8 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { DocumentsTypeahead } from './class/documents-typeahead';
+import { ItemsTypeahead } from './class/items-typeahead';
 import { MefTypeahead } from './class/mef-typeahead';
 import { TabOrderDirective } from './directives/tab-order.directive';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
@@ -39,12 +43,14 @@ import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.intercep
 import { MenuComponent } from './menu/menu.component';
 import { BioInformationsPipe } from './pipe/bio-informations.pipe';
 import { BirthDatePipe } from './pipe/birth-date.pipe';
+import { MainTitlePipe } from './pipe/main-title.pipe';
 import { MarcPipe } from './pipe/marc.pipe';
 import { MefTitlePipe } from './pipe/mef-title.pipe';
 import { NotesFormatPipe } from './pipe/notes-format.pipe';
 import { AcquisitionOrderBriefViewComponent } from './record/brief-view/acquisition-order-brief-view.component';
 import { BudgetsBriefViewComponent } from './record/brief-view/budgets-brief-view.component';
 import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policies-brief-view.component';
+import { CollectionBriefViewComponent } from './record/brief-view/collection-brief-view.component';
 import { DocumentsBriefViewComponent } from './record/brief-view/documents-brief-view/documents-brief-view.component';
 import { ItemTypesBriefViewComponent } from './record/brief-view/item-types-brief-view.component';
 import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/items-brief-view.component';
@@ -52,6 +58,7 @@ import { LibrariesBriefViewComponent } from './record/brief-view/libraries-brief
 import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-brief-view.component';
 import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view.component';
 import { PersonsBriefViewComponent } from './record/brief-view/persons-brief-view.component';
+import { TemplatesBriefViewComponent } from './record/brief-view/templates-brief-view.component';
 import { VendorBriefViewComponent } from './record/brief-view/vendor-brief-view.component';
 import { CirculationPolicyComponent } from './record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
 import { DocumentEditorComponent } from './record/custom-editor/document-editor/document-editor.component';
@@ -74,10 +81,15 @@ import { AcquisitionAccountComponent } from './record/detail-view/budget-detail-
 import { AcquisitionAccountsComponent } from './record/detail-view/budget-detail-view/acquisition-accounts/acquisition-accounts.component';
 import { BudgetDetailViewComponent } from './record/detail-view/budget-detail-view/budget-detail-view.component';
 import { CircPolicyDetailViewComponent } from './record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
+import { CollectionDetailViewComponent } from './record/detail-view/collection-detail-view/collection-detail-view.component';
+import { CollectionItemsComponent } from './record/detail-view/collection-detail-view/collection-items/collection-items.component';
 import { DocumentDetailViewComponent } from './record/detail-view/document-detail-view/document-detail-view.component';
 import {
   DefaultHoldingItemComponent
 } from './record/detail-view/document-detail-view/holding/default-holding-item/default-holding-item.component';
+import {
+  HoldingItemInCollectionComponent
+} from './record/detail-view/document-detail-view/holding/holding-item-in-collection/holding-item-in-collection.component';
 import { HoldingComponent } from './record/detail-view/document-detail-view/holding/holding.component';
 import {
   SerialHoldingItemComponent
@@ -105,18 +117,16 @@ import { OrganisationDetailViewComponent } from './record/detail-view/organisati
 import { PatronDetailViewComponent } from './record/detail-view/patron-detail-view/patron-detail-view.component';
 import { PatronTypesDetailViewComponent } from './record/detail-view/patron-types-detail-view/patron-types-detail-view.component';
 import { PersonDetailViewComponent } from './record/detail-view/person-detail-view/person-detail-view.component';
+import { TemplateDetailViewComponent } from './record/detail-view/template-detail-view/template-detail-view.component';
 import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { AppConfigService } from './service/app-config.service';
+import { AppInitService } from './service/app-init.service';
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { SharedPipesModule } from './shared/shared-pipes.module';
 import { FrontpageBoardComponent } from './widgets/frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { TemplatesBriefViewComponent } from './record/brief-view/templates-brief-view.component';
-import { TemplateDetailViewComponent } from './record/detail-view/template-detail-view/template-detail-view.component';
-import { DocumentsTypeahead } from './class/documents-typeahead';
-import { MainTitlePipe } from './pipe/main-title.pipe';
-import { AppInitService } from './service/app-init.service';
+
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -198,7 +208,11 @@ export function appInitFactory(appInitService: AppInitService) {
     MarcPipe,
     TabOrderDirective,
     TemplatesBriefViewComponent,
-    TemplateDetailViewComponent
+    TemplateDetailViewComponent,
+    CollectionBriefViewComponent,
+    CollectionDetailViewComponent,
+    CollectionItemsComponent,
+    HoldingItemInCollectionComponent
   ],
   imports: [
     AppRoutingModule,
@@ -215,7 +229,7 @@ export function appInitFactory(appInitService: AppInitService) {
     TabsModule.forRoot(),
     TooltipModule.forRoot(),
     PopoverModule.forRoot(),
-    FormlyModule.forRoot({}),
+    FormlyModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: BaseTranslateLoader,
@@ -252,7 +266,9 @@ export function appInitFactory(appInitService: AppInitService) {
     BsLocaleService,
     MefTypeahead,
     DocumentsTypeahead,
-    MainTitlePipe
+    ItemsTypeahead,
+    MainTitlePipe,
+    TruncateTextPipe
   ],
   entryComponents: [
     CircPoliciesBriefViewComponent,
@@ -292,7 +308,10 @@ export function appInitFactory(appInitService: AppInitService) {
     ErrorPageComponent,
     HoldingDetailViewComponent,
     TemplatesBriefViewComponent,
-    TemplateDetailViewComponent
+    TemplateDetailViewComponent,
+    CollectionBriefViewComponent,
+    CollectionDetailViewComponent,
+    HoldingItemInCollectionComponent
   ],
   bootstrap: [AppComponent]
 })

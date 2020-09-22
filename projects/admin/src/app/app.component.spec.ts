@@ -14,19 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { TestBed, async } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { async, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AppComponent } from './app.component';
-import { MenuComponent } from './menu/menu.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { RecordModule } from '@rero/ng-core';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { DatepickerModule } from 'ngx-bootstrap/datepicker';
-import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { RecordModule } from '@rero/ng-core';
-import { TranslateModule } from '@ngx-translate/core';
-import { FormsModule } from '@angular/forms';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { AppComponent } from './app.component';
+import { MenuComponent } from './menu/menu.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {

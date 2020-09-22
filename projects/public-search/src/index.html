@@ -16,42 +16,45 @@
 -->
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>PublicSearch</title>
-  <base href="/">
+  <head>
+    <meta charset="utf-8">
+    <title>PublicSearch</title>
+    <base href="/">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-</head>
-<body>
-  <div class="container">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-          <a class="navbar-brand" href="/">Public Search</a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="/global/search/documents">Global results</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/aoste/search/documents">Aoste results</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/highlands/search/documents">Highlands results</a>
-              </li>
-              <li class="nav-item">
-                  <a class="nav-link" href="/fictive/search/documents">Fictive org results</a>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/">Public Search</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="/global/search/documents">Global</a>
                 </li>
-            </ul>
-          </div>
-          <main-search-bar viewcode="aoste"></main-search-bar>
-        </nav>
-      <public-search-root></public-search-root>
-  </div>
-</body>
+                <li class="nav-item">
+                  <a class="nav-link" href="/aoste/search/documents">Aoste</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/highlands/search/documents">Highlands</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/fictive/search/documents">Fictive</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/aoste/search/collections">Aoste collections</a>
+                </li>
+              </ul>
+            </div>
+            <main-search-bar viewcode="aoste"></main-search-bar>
+          </nav>
+        <public-search-root></public-search-root>
+    </div>
+  </body>
 </html>

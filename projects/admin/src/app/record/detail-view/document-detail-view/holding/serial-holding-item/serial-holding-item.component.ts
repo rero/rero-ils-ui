@@ -26,5 +26,4 @@ export class SerialHoldingItemComponent extends DefaultHoldingItemComponent {
 
   /** reference to ItemIssueStatus */
   itemIssueStatus = IssueItemStatus;
-
 }

@@ -1,4 +1,3 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 /*
  * RERO ILS UI
  * Copyright (C) 2019 RERO
@@ -15,6 +14,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -80,7 +81,7 @@ describe('DocumentEditorComponent', () => {
         ReactiveFormsModule,
         FormlyModule.forRoot({}),
         RecordModule,
-        BrowserAnimationsModule,
+        BrowserAnimationsModule
       ],
       providers: [
         EditorService,

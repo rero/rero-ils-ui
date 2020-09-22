@@ -21,6 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RecordModule } from '@rero/ng-core';
 import { ContributionFormatPipe } from 'projects/admin/src/app/pipe/contribution-format.pipe';
 import { AppRoutingModule } from '../app-routing.module';
+import { ErrorPageComponent } from '../error/error-page.component';
 import { MainComponent } from '../main/main.component';
 import { PersonBriefComponent } from '../person-brief/person-brief.component';
 import { BioInformationsPipe } from './../pipes/bio-informations.pipe';
@@ -42,7 +43,8 @@ describe('DocumentBriefComponent', () => {
         BirthDatePipe,
         BioInformationsPipe,
         PersonBriefComponent,
-        MainComponent
+        MainComponent,
+        ErrorPageComponent
       ],
       imports: [
         RecordModule,

@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { Inject, Injectable } from '@angular/core';
 import { ApiService, RecordService, SuggestionMetadata } from '@rero/ng-core';
 import { of, Observable } from 'rxjs';
@@ -84,14 +85,14 @@ export class DocumentsTypeahead {
         numberOfSuggestions
       ).pipe(
         map((results: any) => {
-          const documemts = [];
+          const documents = [];
           if (!results) {
             return [];
           }
           results.hits.hits.map((hit: any) => {
-            documemts.push(this._getDocumentRef(hit.metadata, query));
+            documents.push(this._getDocumentRef(hit.metadata, query));
           });
-          return documemts;
+          return documents;
         })
       );
   }
