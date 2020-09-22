@@ -14,11 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { Injectable, Injector } from '@angular/core';
-import { RemoteTypeaheadService, RecordService, ApiService, SuggestionMetadata } from '@rero/ng-core';
+import { ApiService, RecordService, RemoteTypeaheadService, SuggestionMetadata } from '@rero/ng-core';
 import { Observable } from 'rxjs';
-import { MefTypeahead } from '../class/mef-typeahead';
 import { DocumentsTypeahead } from '../class/documents-typeahead';
+import { ItemsTypeahead } from '../class/items-typeahead';
+import { MefTypeahead } from '../class/mef-typeahead';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +30,8 @@ export class UiRemoteTypeaheadService extends RemoteTypeaheadService {
   /** Custom typeahead Type */
   private _typeaheadTypes = {
     mef: this._injector.get(MefTypeahead),
-    documents: this._injector.get(DocumentsTypeahead)
+    documents: this._injector.get(DocumentsTypeahead),
+    items: this._injector.get(ItemsTypeahead)
   };
 
   /**

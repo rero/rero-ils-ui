@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -50,6 +51,7 @@ export class ItemAccessGuard implements CanActivate {
    * Item Access control
    * @param next - ActivatedRouteSnapshot
    * @param state - RouterStateSnapshot
+   * @return boolean
    */
   canActivate(
     next: ActivatedRouteSnapshot,

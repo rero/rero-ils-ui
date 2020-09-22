@@ -1,0 +1,73 @@
+<!--
+  RERO ILS UI
+   Copyright (C) 2020 RERO
+  
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, version 3 of the License.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Affero General Public License for more details.
+  
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="items">
+  <h3 class="mt-4 mb-0" translate>Items</h3>
+  <ul class="list-unstyled">
+    <ng-container *ngFor="let item of items; let isOdd=odd">
+      <li class="py-1" [ngClass]="{ 'bg-light': isOdd }" *ngIf="item.pid | getRecord: 'items' | async as itemData">
+        <ng-container
+          *ngIf="itemData.metadata.document.pid | getRecord:'documents':'object':null:{Accept: 'application/rero+json'} | async as document"
+        >
+          <h5>
+            <a [routerLink]="['/records','documents', 'detail', itemData.metadata.document.pid]">
+              {{ document.metadata.title[0]._text }}
+            </a>
+          </h5>
+          <div class="my-2">
+            <div *ngIf="document.metadata.contribution && document.metadata.contribution.length > 0">
+              <span class="font-weight-bold" translate>Contribution</span>:
+              <ng-container
+                class="list-inline-item"
+                *ngFor="let contribution of document.metadata.contribution; let last = last; let i = index"
+              >
+                <span *ngIf="!contribution.agent.pid" [innerHTML]="contribution | contributionFormat: true"></span>
+                <a
+                  *ngIf="contribution.agent.pid"
+                  [innerHTML]="contribution | contributionFormat: true"
+                  [routerLink]="['/records', 'persons', 'detail', contribution.agent.pid]"
+                >
+                </a>
+                {{ last ? '' : '; ' }}
+              </ng-container>
+            </div>
+            <div>
+              <span class="font-weight-bold" translate>Publication</span>:
+              {{ document.metadata.provisionActivity[0]._text[0].value }}
+            </div>
+            <div>
+              <span class="font-weight-bold" translate>Barcode</span>:
+              {{ itemData.metadata.barcode }}
+            </div>
+            <div *ngIf="itemData.metadata.call_number">
+              <span class="font-weight-bold" translate>Call number</span>:
+              {{ itemData.metadata.call_number }}
+              <span *ngIf="itemData.metadata.second_call_number">
+              | {{ itemData.metadata.second_call_number }}
+              </span>
+            </div>
+            <div *ngIf="itemData.metadata.location.pid | getRecord:'locations' | async as location">
+              <span class="font-weight-bold" translate>Library</span>:
+              <ng-container *ngIf="location.metadata.library.pid | getRecord: 'libraries' | async as library">
+                {{ library.metadata.name }} - {{ location.metadata.name }}
+              </ng-container>
+            </div>
+          </div>
+        </ng-container>
+      </li>
+    </ng-container>
+  </ul>
+</ng-container>

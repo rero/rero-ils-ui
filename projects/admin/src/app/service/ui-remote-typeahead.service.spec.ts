@@ -17,11 +17,12 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { RecordModule } from '@rero/ng-core';
+import { RecordModule, TruncateTextPipe } from '@rero/ng-core';
 import { MefTypeahead } from '../class/mef-typeahead';
 import { UiRemoteTypeaheadService } from './ui-remote-typeahead.service';
 import { DocumentsTypeahead } from '../class/documents-typeahead';
 import { MainTitlePipe } from '../pipe/main-title.pipe';
+import { ItemsTypeahead } from '../class/items-typeahead';
 
 describe('UiRemoteTypeaheadService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -35,7 +36,9 @@ describe('UiRemoteTypeaheadService', () => {
     providers: [
       MefTypeahead,
       DocumentsTypeahead,
-      MainTitlePipe
+      ItemsTypeahead,
+      MainTitlePipe,
+      TruncateTextPipe
     ]
   }));
 

@@ -20,7 +20,6 @@ import { LibraryGuard } from '../guard/library.guard';
 import { LocationDetailViewComponent } from '../record/detail-view/location-detail-view/location-detail-view.component';
 import { BaseRoute } from './base-route';
 
-
 export class LocationsRoute extends BaseRoute implements RouteInterface {
 
   /** Route name */

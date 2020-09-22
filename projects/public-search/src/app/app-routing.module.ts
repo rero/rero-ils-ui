@@ -15,47 +15,66 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule, Router, NavigationStart } from '@angular/router';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { NavigationStart, Router, RouterModule, Routes } from '@angular/router';
+import { ErrorPageComponent } from './error/error-page.component';
 import { MainComponent } from './main/main.component';
-import { RoutingInitService } from './service/routing-init.service';
+import { CollectionsRouteService } from './routes/collections-route.service';
+import { DocumentsRouteService } from './routes/documents-route.service';
+import { resourceRouteToken } from './routes/route-collection.service';
+import { RouteFactoryService } from './routes/route-factory.service';
 
 const routes: Routes = [
   {
     path: '',
     component: MainComponent,
     pathMatch: 'full'
-  }
+  },
+  { path: 'errors/:status_code', component: ErrorPageComponent }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(
-    routes
-  )],
-  exports: [RouterModule]
+  imports: [
+    RouterModule.forRoot(
+      routes
+    )
+  ],
+  exports: [RouterModule],
+  providers: [
+    // Use the "multi" parameter to allow the recovery of several services in the injector.
+    { provide: resourceRouteToken, useClass: DocumentsRouteService, multi: true },
+    { provide: resourceRouteToken, useClass: CollectionsRouteService, multi: true },
+  ]
 })
 export class AppRoutingModule {
 
   /**
    * Constructor
    * @param _router - Router
-   * @param _routingInitService - RoutingInitService
+   * @param _routeFactoryService - RouteFactoryService
    */
   constructor(
     private _router: Router,
-    private _routingInitService: RoutingInitService
+    private _routeFactoryService: RouteFactoryService
     ) {
       this._router.events.subscribe(async routerEvent => {
         if (routerEvent instanceof NavigationStart) {
-          const url = routerEvent.url;
-          const rx = /\/(.+?)\/.*/g;
-          const view = rx.exec(url);
-          if (
-            null !== view
-            && !(this._routingInitService.availableConfig.some(x => x === view[1]))
-          ) {
-            this._router.config.push(this._routingInitService.routeConfig(view[1]));
-            this._router.setUpLocationChangeListener();
+          let url = routerEvent.url;
+          const position = url.indexOf('?');
+          if (position > -1) {
+            /* Remove parameters after ? */
+            url = url.substr(0, position);
+          }
+          /* Clean empty values */
+          const urlParams = url.split('/').filter(param => param);
+          if (urlParams.length === 3) {
+            const view = urlParams[0];
+            const resource = urlParams[2];
+            if (view && resource) {
+              this._routeFactoryService.createRouteByRecourceNameAndView(
+                resource,
+                view
+              );
+            }
           }
         }
       }
