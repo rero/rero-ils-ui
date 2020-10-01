@@ -30,8 +30,8 @@ export class HoldingComponent implements OnInit, OnDestroy {
   /** Holding record */
   @Input() holding: any;
 
-  /** Document harvested */
-  @Input() holdingType: 'electronic' | 'serial' | 'standard';
+  /** shortcut for holding type */
+  holdingType: 'electronic' | 'serial' | 'standard';
 
   /** Items */
   items: any = null;
@@ -70,6 +70,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
 
   /** Init */
   ngOnInit() {
+    this.holdingType = this.holding.metadata.holdings_type;
     if (this.holdingType !== 'electronic') {
       this._loadItems();
     }

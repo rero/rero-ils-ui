@@ -15,21 +15,20 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-  <div class="row" *ngIf="canAdd">
-    <div class="col" [ngSwitch]="holdingType">
-      <a *ngSwitchCase="'standard'" class="btn btn-sm btn-outline-primary mt-2 float-right"
-        [routerLink]="['/', 'records', 'items', 'new']" [queryParams]="{ document: documentPid }">
-        <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }}...
-      </a>
-      <a *ngSwitchCase="'serial'" class="btn btn-sm btn-outline-primary float-right"
-        [routerLink]="['/', 'records', 'holdings', 'new']" [queryParams]="{ document: documentPid }">
-        <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }}...
-      </a>
-    </div>
+<div class="row" *ngIf="canAdd">
+  <div class="col" [ngSwitch]="holdingType">
+    <a *ngSwitchCase="'standard'" class="btn btn-sm btn-outline-primary mt-2 float-right"
+      [routerLink]="['/', 'records', 'items', 'new']" [queryParams]="{ document: documentPid }">
+      <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }}...
+    </a>
+    <a *ngSwitchCase="'serial'" class="btn btn-sm btn-outline-primary float-right"
+      [routerLink]="['/', 'records', 'holdings', 'new']" [queryParams]="{ document: documentPid }">
+      <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }}...
+    </a>
   </div>
+</div>
 
 <ng-container *ngIf="holdings">
-  <admin-document-holding *ngFor="let holding of holdings" [holding]="holding" [holdingType]="holdingType"
-    (deleteHolding)="deleteHolding($event)">
+  <admin-document-holding *ngFor="let holding of holdings" [holding]="holding" (deleteHolding)="deleteHolding($event)">
   </admin-document-holding>
 </ng-container>
