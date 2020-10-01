@@ -101,7 +101,7 @@
               <div class="col-sm-2" translate>Call number</div>
             </div>
             <admin-default-holding-item
-                *ngFor="let item of items"
+                *ngFor="let item of items | slice:0: displayItemsCounter"
                 class="row mt-1"
                 [holding]="holding"
                 [item]="item"
