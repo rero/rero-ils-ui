@@ -45,6 +45,9 @@ export class User {
   /** Locale storage name key */
   static readonly STORAGE_KEY = 'user';
 
+  /** Locale storage for current library for user */
+  static readonly CURRENT_LIBRARY_STORAGE_KEY = 'user_current_library';
+
   /** Logged user API url */
   static readonly LOGGED_URL = '/patrons/logged_user?resolve';
 
