@@ -157,10 +157,10 @@ export class LibrarySwitchService {
    * @param libraryPid: the library pid that user would used
    */
   switch(libraryPid: string): void {
-    const key = User.STORAGE_KEY;
-    const data = this._localStorageService.get(key);
-    data.currentLibrary = libraryPid;
-    this._localStorageService.set(key, data);
+    this._localStorageService.set(
+      User.CURRENT_LIBRARY_STORAGE_KEY,
+      { currentLibrary: libraryPid }
+    );
     // NOTE : As we are listening changed on localStorage, we don't need to modify
     //        menu to set the newly choose library as active, it will be done by
     //        the `generateMenu` called by this event handler.
@@ -208,7 +208,7 @@ export class LibrarySwitchService {
     // when the local storage USER changed
     //   --> if local stored 'currentLibrary' <> current library then switch the library and regenerate the menuEntries
     this._localStorageService.onSet$.subscribe((event: any) => {
-      if (event.key === User.STORAGE_KEY) {
+      if (event.key === User.CURRENT_LIBRARY_STORAGE_KEY) {
         const local = event.data.data;
         const user = this._userService.getCurrentUser();
         if (user.getCurrentLibrary() !== local.currentLibrary) {
