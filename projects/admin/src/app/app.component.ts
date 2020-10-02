@@ -18,7 +18,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AppRouterEventService } from './service/app-router-event.service';
-import { LibrarySwitchService } from './service/library-switch.service';
+import { NavigateService } from './service/navigate.service';
 import { UserService } from './service/user.service';
 
 @Component({
@@ -42,25 +42,21 @@ export class AppComponent implements OnInit {
    * Constructor
    * @param _userService - UserService
    * @param _appRouterEventService - AppRouterEventService
-   * @param _librarySwitchService - LibrarySwitchService
    * @param _spinner - NgxSpinnerService
+   * @param _navigateService - NavigateService
    */
   constructor(
     private _userService: UserService,
     private _appRouterEventService: AppRouterEventService,
-    private _librarySwitchService: LibrarySwitchService,
-    private _spinner: NgxSpinnerService
+    private _spinner: NgxSpinnerService,
+    private _navigateService: NavigateService
     ) {}
 
     /** Init */
   ngOnInit() {
     this._spinner.show();
     this._appRouterEventService.initializeEvents();
-    this._userService.onUserLoaded$.subscribe(() => {
-      this._librarySwitchService.switch(
-        this._userService.getCurrentUser().getCurrentLibrary()
-      );
-      this._spinner.hide();
-    });
+    this._navigateService.initialize();
+    this._spinner.hide();
   }
 }

@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { LocalStorageService, RecordEvent, RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
@@ -103,15 +103,13 @@ export class LibrarySwitchService {
    * @param _localStorageService - LocalStorageService
    * @param _libraryService - LibraryService
    * @param _translateService: TranslateService
-   * @param _router: Router
    */
   constructor(
     private _recordService: RecordService,
     private _userService: UserService,
     private _localStorageService: LocalStorageService,
     private _libraryService: LibraryService,
-    private _translateService: TranslateService,
-    private _router: Router
+    private _translateService: TranslateService
   ) {
     this.initObservables();
   }
@@ -167,12 +165,6 @@ export class LibrarySwitchService {
     //        menu to set the newly choose library as active, it will be done by
     //        the `generateMenu` called by this event handler.
     this._loadCurrentLibrary(libraryPid);
-    // After the current library changed, then reload the current page to force component to update
-    // NOTE : just navigate on the current URL doesn't easily work because, with basic configuration, Angular
-    //        doesn't reload component data if url doesn't change. Using the below trick, we are sure to update
-    //        all components.
-    const currentFullURL = this._router.url;
-    this._router.navigateByUrl('/', {skipLocationChange: true}).then(() => this._router.navigateByUrl(currentFullURL));
   }
 
   /**

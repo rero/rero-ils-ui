@@ -18,6 +18,7 @@ import { Injectable } from '@angular/core';
 import { LocalStorageService, TranslateService } from '@rero/ng-core';
 import { User } from '../class/user';
 import { AppConfigService } from './app-config.service';
+import { LibrarySwitchService } from './library-switch.service';
 import { OrganisationService } from './organisation.service';
 import { UserService } from './user.service';
 
@@ -39,7 +40,8 @@ export class AppInitService {
     private _appConfigService: AppConfigService,
     private _translateService: TranslateService,
     private _organisationService: OrganisationService,
-    private _localeStorageService: LocalStorageService
+    private _localeStorageService: LocalStorageService,
+    private _librarySwitchService: LibrarySwitchService
   ) { }
 
   /**
@@ -54,6 +56,7 @@ export class AppInitService {
         // User is logged
         if (data.metadata) {
           if (this._userService.allowAccess) {
+            this._librarySwitchService.switch(data.metadata.library.pid);
             this._organisationService.loadOrganisationByPid(
               data.metadata.library.organisation.pid
             );
