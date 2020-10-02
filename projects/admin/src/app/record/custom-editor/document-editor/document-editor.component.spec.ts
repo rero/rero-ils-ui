@@ -16,12 +16,14 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { RecordService, RecordUiService } from '@rero/ng-core';
+import { FormlyModule } from '@ngx-formly/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { RecordModule, RecordService, RecordUiService } from '@rero/ng-core';
 import { of } from 'rxjs';
-import { AppModule } from '../../../app.module';
+import { EditorService } from '../../../service/editor.service';
 import { DocumentEditorComponent } from './document-editor.component';
 
 
@@ -66,19 +68,25 @@ describe('DocumentEditorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      declarations: [
+        DocumentEditorComponent
+      ],
       imports: [
-        TranslateModule.forRoot(),
+        HttpClientTestingModule,
         RouterTestingModule,
-        AppModule,
-        HttpClientTestingModule
+        TranslateModule.forRoot(),
+        FormsModule,
+        ReactiveFormsModule,
+        FormlyModule.forRoot({}),
+        RecordModule
       ],
       providers: [
-        TranslateService,
+        EditorService,
         { provide: RecordService, useValue: recordTestingService },
         { provide: RecordUiService, useValue: recordTestingUiService },
         { provide: ActivatedRoute, useValue: testingRoute }
       ]
-    }).compileComponents();
+    });
   }));
 
   beforeEach(() => {
