@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { Item, ItemAction, ItemNoteType, ItemStatus } from '../../../class/items';
 import { User } from '../../../class/user';
 import { PatronBlockedMessagePipe } from '../../../pipe/patron-blocked-message.pipe';
@@ -31,7 +31,7 @@ import { UserService } from '../../../service/user.service';
   templateUrl: './loan.component.html',
   providers: [PatronBlockedMessagePipe]
 })
-export class LoanComponent implements OnInit {
+export class LoanComponent implements OnInit, OnDestroy {
   public placeholder: string = this._translate.instant(
     'Please enter an item barcode.'
   );
@@ -56,6 +56,8 @@ export class LoanComponent implements OnInit {
   /** Library PID of the logged user */
   currentLibraryPid: string;
 
+  private _subcription = new Subscription();
+
   /**
    * Constructor
    * @param _itemsService: Items Service
@@ -72,24 +74,36 @@ export class LoanComponent implements OnInit {
     private _patronService: PatronService,
     private _userService: UserService,
     private _patronBlockedMessagePipe: PatronBlockedMessagePipe
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
-    this._patronService.currentPatron$.subscribe(patron => {
+    this._subcription.add(this._patronService.currentPatron$.subscribe(patron => {
       this.patron = patron;
       if (patron) {
         this.isLoading = true;
         this.patron.displayPatronMode = true;
         this._patronService.getItems(patron.pid).subscribe(items => {
+          // items is an array of brief item data (pid, barcode). For each one, we need to
+          // call the detail item service to get full data about it
+          items.map((item: any) => item.loading = true);
           this.checkedOutItems = items;
           this.isLoading = false;
+
+          // for each checkedOutElement call the detail item service.
+          items.forEach((data: any, index) => {
+            this._patronService.getItem(data.barcode).subscribe(item => items[index] = item);
+          });
         });
       }
-    });
+    }));
     this.currentLibraryPid = this._userService.getCurrentUser().getCurrentLibrary();
     this.searchInputFocus = true;
   }
+
+  ngOnDestroy() {
+    this._subcription.unsubscribe();
+  }
+
 
   /** Search value with search input
    * @param searchText: value to search for (barcode)
@@ -144,7 +158,7 @@ export class LoanComponent implements OnInit {
             } else {
               if (newItem.pending_loans && newItem.pending_loans[0].patron_pid !== this.patron.pid) {
                 this._toastService.error(
-                  this._translate.instant('Checkout impossible: the item is requested by another patron'),
+                  this._translate.instant('Checkout impossible: the item is pending by another patron'),
                   this._translate.instant('Checkout')
                 );
                 this.searchText = '';

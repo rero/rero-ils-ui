@@ -15,7 +15,7 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div *ngIf="item"
+<div *ngIf="item && !(item.loading || false) else loading"
      [ngClass]="{
        'callout callout-warning': needCallout(item, 'warning') || (item.actionDone === itemAction.checkin && totalAmountOfFee > 0),
        'text-secondary': item.status !== 'on_loan'
@@ -149,3 +149,9 @@
     </dl>
   </div>
 </div>
+
+<ng-template #loading>
+  <div class="row p-2 mb-1 border rounded">
+    <i class="fa fa-spinner fa-spin fa-fw"></i>
+  </div>
+</ng-template>

@@ -49,8 +49,8 @@ import { PatronTransactionsComponent } from './patron/patron-transactions/patron
 import { PickupItemComponent } from './patron/pickup/pickup-item/pickup-item.component';
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
-import { RequestedItemComponent } from './patron/requested/requested-item/requested-item.component';
-import { RequestedComponent } from './patron/requested/requested.component';
+import { PendingItemComponent } from './patron/pending/pending-item/pending-item.component';
+import { PendingComponent } from './patron/pending/pending.component';
 import { RequestedItemsListComponent } from './requested-items-list/requested-items-list.component';
 
 
@@ -65,8 +65,8 @@ import { RequestedItemsListComponent } from './requested-items-list/requested-it
     CheckinComponent,
     ItemComponent,
     ProfileComponent,
-    RequestedComponent,
-    RequestedItemComponent,
+    PendingComponent,
+    PendingItemComponent,
     PickupComponent,
     PickupItemComponent,
     PatronTransactionsComponent,

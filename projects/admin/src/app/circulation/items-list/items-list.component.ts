@@ -47,8 +47,7 @@ export class ItemsListComponent {
   extendLoan = ItemAction.extend_loan;
 
   /** Constructor */
-  constructor(
-  ) {
+  constructor() {
     this.checkedOutItems = null;
   }
 
