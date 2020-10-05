@@ -44,7 +44,9 @@
   <div class="row align-items-start" *ngFor="let item of checkedOutItems">
     <!-- CONTENT -->
     <div class="col mr-1">
-      <admin-item [patron]="patron" [item]="item" [attr.id]="item.barcode | idAttribute:{prefix: 'item'}">
+      <admin-item [patron]="patron"
+                  [item]="item"
+                  [attr.id]="item.barcode | idAttribute:{prefix: 'item'}">
       </admin-item>
     </div>
     <!-- ACTIONS -->
@@ -63,7 +65,10 @@
   <!--   Callout border for [TRANSIT|REQUEST|FEE] -->
   <div class="row align-items-start" *ngFor="let item of checkedInItems">
     <div class="col mr-1">
-      <admin-item [patron]="patron" [item]="item" (hasFeesEmitter)="hasFees($event)" [attr.id]="item.barcode | idAttribute:{prefix: 'item'}">
+      <admin-item [patron]="patron"
+                  [item]="item"
+                  [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
+                  (hasFeesEmitter)="hasFees($event)">
       </admin-item>
     </div>
     <div *ngIf="patron" class="col-md-2 pl-0 mb-2">

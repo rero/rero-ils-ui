@@ -72,7 +72,7 @@ export class PatronService {
         switchMap((response: Record) => {
           switch (this._recordService.totalHits(response.hits.total)) {
             case 0: {
-              this._currentPatron.next(null);
+              this.clearPatron();
               break;
             }
             case 1: {
@@ -100,15 +100,7 @@ export class PatronService {
     return this._http.get<any>(url).pipe(
       map(data => data.hits),
       map(hits => this._recordService.totalHits(hits.total === 0) ? [] : hits.hits),
-      map(hits =>
-        hits.map((data: any) => {
-          const item = new Item(data.item);
-          if (data.loan) {
-            item.setLoan(data.loan);
-          }
-          return item;
-        })
-      )
+      map(hits => hits.map((data: any) => this._buildItem(data)))
     );
   }
 
@@ -120,16 +112,26 @@ export class PatronService {
   getItem(barcode: string) {
     return this._http
       .get<any>(`/api/item/barcode/${barcode}`)
-      .pipe(map(response => {
-        const data = response.metadata.item;
-        const item = new Item(data);
-        item.setLoan(response.metadata.loan);
-        return item;
-      }));
+      .pipe(
+        map(response => this._buildItem(response.metadata))
+      );
   }
 
   /**
-   * Get items requested
+   * Build an Item object instance based on metadata from backend
+   * @param data - any: the item metadata
+   * @return Item
+   */
+  private _buildItem(data: any): Item {
+    const item = new Item(data.item);
+    if (data.loan) {
+      item.setLoan(data.loan);
+    }
+    return item;
+  }
+
+  /**
+   * Get pending items for a patron
    * @param patronPid - string
    * @return Observable
    */

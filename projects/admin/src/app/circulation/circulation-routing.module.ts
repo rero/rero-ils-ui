@@ -25,7 +25,7 @@ import { MainComponent } from './patron/main/main.component';
 import { PatronTransactionsComponent } from './patron/patron-transactions/patron-transactions.component';
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
-import { RequestedComponent } from './patron/requested/requested.component';
+import { PendingComponent } from './patron/pending/pending.component';
 
 const routes: Routes = [
   {
@@ -51,8 +51,8 @@ const routes: Routes = [
         component: PickupComponent
       },
       {
-        path: 'requested',
-        component: RequestedComponent
+        path: 'pending',
+        component: PendingComponent
       },
       {
         path: 'profile',

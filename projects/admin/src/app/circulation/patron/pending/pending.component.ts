@@ -18,10 +18,10 @@ import { Component, OnInit } from '@angular/core';
 import { PatronService } from '../../../service/patron.service';
 
 @Component({
-  selector: 'admin-requested',
-  templateUrl: './requested.component.html'
+  selector: 'admin-pending',
+  templateUrl: './pending.component.html'
 })
-export class RequestedComponent implements OnInit {
+export class PendingComponent implements OnInit {
 
   /**
    * Array of loans

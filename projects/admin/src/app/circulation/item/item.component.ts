@@ -17,7 +17,7 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { Observable } from 'rxjs';
+import { isObservable, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ItemsService } from '../../service/items.service';
 import { OrganisationService } from '../../service/organisation.service';

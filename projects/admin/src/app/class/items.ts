@@ -161,7 +161,7 @@ export class Item {
   _currentAction: ItemAction;
   actionDone: ItemAction;
   loan: Loan;
-  actions: ItemAction[];
+  actions: ItemAction[] = [];
   pending_loans: Loan[];
   number_of_extensions: number;
   location: any;
