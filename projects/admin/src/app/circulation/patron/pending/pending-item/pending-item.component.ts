@@ -19,10 +19,10 @@ import { RecordService } from '@rero/ng-core';
 import { PatronService } from '../../../../service/patron.service';
 
 @Component({
-  selector: 'admin-requested-item',
-  templateUrl: './requested-item.component.html'
+  selector: 'admin-pending-item',
+  templateUrl: './pending-item.component.html'
 })
-export class RequestedItemComponent implements OnInit {
+export class PendingItemComponent implements OnInit {
 
   /** Loan */
   @Input() loan = undefined;

@@ -29,14 +29,16 @@ import { PatronTransactionService } from '../../patron-transaction.service';
 })
 export class MainComponent implements OnInit, OnDestroy {
 
-  /** current patron as observable */
-  patron$: Observable<User>;
+  patron: User = undefined;
 
   /** the total amount of all 'open' patron transactions for the current patron */
   transactionsTotalAmount = 0;
 
   /** Subscription to 'open' patron transactions */
-  patronTransactionSubscription$: Subscription;
+  private _patronTransactionSubscription$: Subscription;
+
+  /** Subsription to current patron */
+  private _patronSubscription$: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,10 +49,10 @@ export class MainComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const barcode = this.route.snapshot.paramMap.get('barcode');
-    this.patron$ = this.patronService.getPatron(barcode);
-    this.patron$.subscribe((patron) => {
+    this._patronSubscription$ = this.patronService.getPatron(barcode).subscribe((patron) => {
       if (patron) {
-        this.patronTransactionSubscription$ = this.patronTransactionService.patronTransactionsSubject$.subscribe(
+        this.patron = patron;
+        this._patronTransactionSubscription$ = this.patronTransactionService.patronTransactionsSubject$.subscribe(
           (transactions) => {
             this.transactionsTotalAmount = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
           }
@@ -66,8 +68,11 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.patronTransactionSubscription$) {
-      this.patronTransactionSubscription$.unsubscribe();
+    if (this._patronTransactionSubscription$) {
+      this._patronTransactionSubscription$.unsubscribe();
+    }
+    if (this._patronSubscription$) {
+      this._patronSubscription$.unsubscribe();
     }
     this.patronService.clearPatron();
   }
