@@ -28,10 +28,10 @@ export class MenuService {
           iconCssClass: 'fa fa-shopping-basket',
           id: 'requests-menu'
         }, {
-          name: this._translateService.instant('Patrons'),
+          name: this._translateService.instant('Users'),
           routerLink: '/records/patrons',
           iconCssClass: 'fa fa-users',
-          id: 'patrons-menu'
+          id: 'users-menu'
         }]
       }, {
         name: this._translateService.instant('Catalog'),
