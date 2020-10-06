@@ -26,23 +26,26 @@ import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { SharedPipesModule } from 'projects/admin/src/app/shared/shared-pipes.module';
 import { AppConfigService } from './app-config.service';
+import { AppInitializerService } from './app-initializer.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CollectionBriefComponent } from './collection-brief/collection-brief.component';
 import { DocumentBriefComponent } from './document-brief/document-brief.component';
+import { DocumentRecordSearchComponent } from './document-record-search/document-record-search.component';
+import { ErrorPageComponent } from './error/error-page.component';
 import { MainComponent } from './main/main.component';
 import { PersonBriefComponent } from './person-brief/person-brief.component';
 import { BioInformationsPipe } from './pipes/bio-informations.pipe';
 import { BirthDatePipe } from './pipes/birth-date.pipe';
 import { MefTitlePipe } from './pipes/mef-title.pipe';
 import { SearchBarComponent } from './search-bar/search-bar.component';
-import { AppInitializerService } from './app-initializer.service';
-import { ErrorPageComponent } from './error/error-page.component';
+
 
 /** function to instantiate the application  */
 export function appInitFactory(appInitializerService: AppInitializerService) {
   return () => appInitializerService.load();
 }
+
 
 @NgModule({
   declarations: [
@@ -55,7 +58,8 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
     SearchBarComponent,
     MainComponent,
     CollectionBriefComponent,
-    ErrorPageComponent
+    ErrorPageComponent,
+    DocumentRecordSearchComponent
   ],
   imports: [
     BrowserModule,
@@ -88,7 +92,8 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
     PersonBriefComponent,
     SearchBarComponent,
     CollectionBriefComponent,
-    ErrorPageComponent
+    ErrorPageComponent,
+    DocumentRecordSearchComponent
   ],
   bootstrap: [AppComponent]
 })

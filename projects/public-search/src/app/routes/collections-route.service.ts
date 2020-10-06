@@ -61,7 +61,7 @@ export class CollectionsRouteService extends BaseRoute implements ResourceRouteI
       this.availableConfig.push(viewcode);
 
       return {
-        matcher: (url: any) => this.routeMatcher(url, ['collections']),
+        path: `${viewcode}/search/:type`,
         children: [
           { path: '', component: RecordSearchComponent, canActivate: [CollectionAccessGuard] }
         ],
@@ -70,7 +70,7 @@ export class CollectionsRouteService extends BaseRoute implements ResourceRouteI
             can: false,
             message: ''
           }),
-          detailUrl: `/${viewcode}/:type/:pid`,
+          detailUrl: `/${viewcode}/collections/:pid`,
           types: [
             {
               key: this.getName(),

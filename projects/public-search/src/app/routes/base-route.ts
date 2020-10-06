@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { UrlSegment } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subscriber } from 'rxjs';
 
@@ -28,35 +27,6 @@ export class BaseRoute {
   protected constructor(
     protected _translateService: TranslateService
   ) {}
-
-  /**
-   * Route matcher
-   * @param url - any
-   * @param types - array of string
-   */
-  protected routeMatcher(url: any, types: Array<string>) {
-    const urlType = url.slice(-1).pop();
-    if (types.some(x => x === urlType.path)) {
-      return this.matchedUrl(url);
-    }
-    return null;
-  }
-
-  /**
-   * Matched url
-   * @param url - array of UrlSegment
-   */
-  private matchedUrl(url: UrlSegment[]) {
-    const segments = [
-      new UrlSegment(url[0].path, {}),
-      new UrlSegment(url[1].path, {}),
-      new UrlSegment(url[2].path, {})
-    ];
-    return {
-      consumed: segments,
-      posParams: { type: new UrlSegment(url[2].path, {}) }
-    };
-  }
 
   /**
    * Filter aggregations
