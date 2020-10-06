@@ -49,7 +49,7 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
         types: [
           {
             key: this.name,
-            label: 'Patrons',
+            label: 'Users',
             editorSettings: {
               template: {
                 recordType: 'templates',
