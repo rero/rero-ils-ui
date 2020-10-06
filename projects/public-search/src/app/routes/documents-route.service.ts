@@ -18,10 +18,10 @@
 import { Injectable } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordSearchComponent } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { AppConfigService } from '../app-config.service';
 import { DocumentBriefComponent } from '../document-brief/document-brief.component';
+import { DocumentRecordSearchComponent } from '../document-record-search/document-record-search.component';
 import { PersonBriefComponent } from '../person-brief/person-brief.component';
 import { BaseRoute } from './base-route';
 import { ResourceRouteInterface } from './resource-route-interface';
@@ -66,9 +66,9 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
       this.availableConfig.push(viewcode);
 
       return {
-        matcher: (url: any) => this.routeMatcher(url, ['documents', 'persons']),
+        path: `${viewcode}/search/:type`,
         children: [
-          { path: '', component: RecordSearchComponent },
+          { path: '', component: DocumentRecordSearchComponent },
         ],
         data: {
           showSearchInput: false,

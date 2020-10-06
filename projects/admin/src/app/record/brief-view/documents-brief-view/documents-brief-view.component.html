@@ -15,36 +15,38 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<h5 class="mb-0 card-title">
-  <a name="document-title" [routerLink]="[detailUrl.link]">
-    <ng-container *ngIf="record.metadata.ui_title_text else mainTitle">
-      {{ record.metadata.ui_title_text }}
-    </ng-container>
-    <ng-template #mainTitle>
-      {{ record.metadata.title | mainTitle }}
-    </ng-template>
-  </a>
-<small> &ndash; {{ record.metadata.type | translate }}</small></h5>
-<ng-container class="card-text">
-  <!-- contribution -->
-  <ul class="list-inline mb-0" *ngIf="record.metadata.contribution && record.metadata.contribution.length > 0">
-    <li
-      class="list-inline-item"
-      *ngFor="let contribution of record.metadata.contribution.slice(0,3); let last = last; let i = index"
-    >
-      <span *ngIf="!contribution.agent.pid">
-        {{ contribution | contributionFormat }}
-      </span>
-      <a *ngIf="contribution.agent.pid" [routerLink]="['/records', 'persons', 'detail', contribution.agent.pid]">
-        {{ contribution | contributionFormat }}
-      </a>
-      {{ last ? '' : '; ' }}
-      {{ last && record.metadata.contribution.length > 3 ? '; …' : '' }}
-    </li>
-  </ul>
+<ng-container *ngIf="record">
+  <h5 class="mb-0 card-title">
+    <a name="document-title" [routerLink]="[detailUrl.link]">
+      <ng-container *ngIf="record.metadata.ui_title_text else mainTitle">
+        {{ record.metadata.ui_title_text }}
+      </ng-container>
+      <ng-template #mainTitle>
+        {{ record.metadata.title | mainTitle }}
+      </ng-template>
+    </a>
+  <small> &ndash; {{ record.metadata.type | translate }}</small></h5>
+  <ng-container class="card-text">
+    <!-- contribution -->
+    <ul class="list-inline mb-0" *ngIf="record.metadata.contribution && record.metadata.contribution.length > 0">
+      <li
+        class="list-inline-item"
+        *ngFor="let contribution of record.metadata.contribution.slice(0,3); let last = last; let i = index"
+      >
+        <span *ngIf="!contribution.agent.pid">
+          {{ contribution | contributionFormat }}
+        </span>
+        <a *ngIf="contribution.agent.pid" [routerLink]="['/records', 'persons', 'detail', contribution.agent.pid]">
+          {{ contribution | contributionFormat }}
+        </a>
+        {{ last ? '' : '; ' }}
+        {{ last && record.metadata.contribution.length > 3 ? '; …' : '' }}
+      </li>
+    </ul>
 
-  <!-- provision activity publications -->
-  <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
-    <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>
-  </ul>
+    <!-- provision activity publications -->
+    <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
+      <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>
+    </ul>
+  </ng-container>
 </ng-container>

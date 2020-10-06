@@ -30,7 +30,7 @@ import { HoldingEditorComponent } from './holding-editor.component';
 describe('HoldingEditorComponent', () => {
   let component: HoldingEditorComponent;
   let fixture: ComponentFixture<HoldingEditorComponent>;
-  const recordService = jasmine.createSpyObj('RecordService', ['getSchemaForm']);
+  const recordService = jasmine.createSpyObj('RecordService', ['getSchemaForm', 'getRecord']);
   recordService.getSchemaForm.and.returnValue(of({
     schema: {
       type: 'object',
@@ -38,11 +38,11 @@ describe('HoldingEditorComponent', () => {
       properties: {}
     }
   }));
+  recordService.getRecord.and.returnValue(of({metadata: { pid: '1' }}));
   const route = {
+    params: of({ type: 'holdings', pid: 1 }),
     snapshot: {
-      paramMap: convertToParamMap({
-        type: 'holdings', pid: '1'
-      }),
+      params: { type: 'holdings', pid: 1 },
       data: {
         types: [
           {
@@ -50,10 +50,12 @@ describe('HoldingEditorComponent', () => {
           }
         ],
         showSearchInput: true,
-        adminMode: true
+        adminMode: of({ message: '', can: true })
       }
-    }
+    },
+    queryParams: of({})
   };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [

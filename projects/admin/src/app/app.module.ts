@@ -119,6 +119,7 @@ import { PatronTypesDetailViewComponent } from './record/detail-view/patron-type
 import { PersonDetailViewComponent } from './record/detail-view/person-detail-view/person-detail-view.component';
 import { TemplateDetailViewComponent } from './record/detail-view/template-detail-view/template-detail-view.component';
 import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
+import { DocumentRecordSearchComponent } from './record/document-record-search/document-record-search.component';
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { AppConfigService } from './service/app-config.service';
 import { AppInitService } from './service/app-init.service';
@@ -212,7 +213,8 @@ export function appInitFactory(appInitService: AppInitService) {
     CollectionBriefViewComponent,
     CollectionDetailViewComponent,
     CollectionItemsComponent,
-    HoldingItemInCollectionComponent
+    HoldingItemInCollectionComponent,
+    DocumentRecordSearchComponent
   ],
   imports: [
     AppRoutingModule,
@@ -311,7 +313,8 @@ export function appInitFactory(appInitService: AppInitService) {
     TemplateDetailViewComponent,
     CollectionBriefViewComponent,
     CollectionDetailViewComponent,
-    HoldingItemInCollectionComponent
+    HoldingItemInCollectionComponent,
+    DocumentRecordSearchComponent
   ],
   bootstrap: [AppComponent]
 })

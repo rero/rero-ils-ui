@@ -42,9 +42,11 @@ export class RouteFactoryService {
    */
   createRouteByRecourceNameAndView(resource: string, view: string) {
     const service = this._routeCollectionService.getRouteByResourceName(resource);
-    const routeConfig = service.create(view);
-    if (routeConfig) {
-      this._router.config.push(routeConfig);
+    if (service) {
+      const routeConfig = service.create(view);
+      if (routeConfig) {
+        this._router.config.push(routeConfig);
+      }
     }
   }
 }

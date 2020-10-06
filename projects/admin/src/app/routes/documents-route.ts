@@ -15,11 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { DetailComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
+import { DetailComponent, RouteInterface } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentEditorComponent } from '../record/custom-editor/document-editor/document-editor.component';
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
+import { DocumentRecordSearchComponent } from '../record/document-record-search/document-record-search.component';
 import { BaseRoute } from './base-route';
 
 export class DocumentsRoute extends BaseRoute implements RouteInterface {
@@ -38,7 +39,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchComponent },
+        { path: '', component: DocumentRecordSearchComponent },
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: DocumentEditorComponent, canActivate: [ CanUpdateGuard ] },
         { path: 'new', component: DocumentEditorComponent },
