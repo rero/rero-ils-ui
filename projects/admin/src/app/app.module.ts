@@ -127,7 +127,7 @@ import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service'
 import { SharedPipesModule } from './shared/shared-pipes.module';
 import { FrontpageBoardComponent } from './widgets/frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-
+import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -214,7 +214,8 @@ export function appInitFactory(appInitService: AppInitService) {
     CollectionDetailViewComponent,
     CollectionItemsComponent,
     HoldingItemInCollectionComponent,
-    DocumentRecordSearchComponent
+    DocumentRecordSearchComponent,
+    HoldingDetailComponent
   ],
   imports: [
     AppRoutingModule,

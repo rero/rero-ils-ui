@@ -1,0 +1,87 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2020 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<div *ngIf="holding" class="row col-sm-11 holding-detail">
+  <!-- CALL NUMBER -->
+  <ng-container *ngIf="holding.metadata.call_number || holding.metadata.second_call_number">
+    <div class="col-sm-3 font-weight-bold" translate>
+      Call number
+    </div>
+    <div class="col-sm-9">
+      <ng-container *ngIf="holding.metadata.call_number">
+      {{ holding.metadata.call_number }}
+      </ng-container>
+      <ng-container *ngIf="holding.metadata.call_number && holding.metadata.second_call_number">
+        |
+      </ng-container>
+      <ng-container *ngIf="holding.metadata.second_call_number">
+        {{ holding.metadata.second_call_number }}
+       </ng-container>
+    </div>
+  </ng-container>
+
+  <!-- AVAILABLE COLLECTION -->
+  <ng-container *ngIf="holding.metadata.enumerationAndChronology">
+    <div class="col-sm-3 font-weight-bold" translate>
+      Available collection
+    </div>
+    <div class="col-sm-9">
+      {{ holding.metadata.enumerationAndChronology }}
+    </div>
+  </ng-container>
+
+  <!-- SUPPLEMENTARY CONTENT -->
+  <ng-container *ngIf="holding.metadata.supplementaryContent">
+    <div class="col-sm-3 font-weight-bold" translate>
+      Supplementary content
+    </div>
+    <div class="col-sm-9">
+      {{ holding.metadata.supplementaryContent }}
+    </div>
+  </ng-container>
+
+  <!-- INDEXES -->
+  <ng-container *ngIf="holding.metadata.index">
+    <div class="col-sm-3 font-weight-bold" translate>
+      Indexes
+    </div>
+    <div class="col-sm-9">
+      {{ holding.metadata.index }}
+    </div>
+  </ng-container>
+
+  <!-- MISSING ISSUES -->
+  <ng-container *ngIf="holding.metadata.missing_issues">
+    <div class="col-sm-3 font-weight-bold" translate>
+      Missing issues
+    </div>
+    <div class="col-sm-9">
+      {{ holding.metadata.missing_issues }}
+    </div>
+  </ng-container>
+
+  <!-- NOTES -->
+  <ng-container *ngIf="holding.metadata.notes">
+    <ng-container *ngFor="let note of holding.metadata.notes">
+      <div class="col-sm-3 font-weight-bold" translate>
+        {{ note.type }}
+      </div>
+      <div class="col-sm-9" [innerHtml]="note.content | nl2br">
+      </div>
+    </ng-container>
+  </ng-container>
+</div>
