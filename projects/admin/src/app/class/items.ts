@@ -22,7 +22,6 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { User } from './user';
-import { RecordPermission } from '../service/record-permission.service';
 
 export function _(str) {
   return marker(str);

@@ -84,13 +84,13 @@ export class UserService {
           const patron = new User(data.metadata);
           return forkJoin(
               of(patron),
-              this.recordService.getRecord('patron_types', patron.patron_type.pid)
+              this.recordService.getRecord('patron_types', patron.patron.type.pid)
               ).pipe(
                 map(patronAndType => {
                   const newPatron = patronAndType[0];
                   const patronType = patronAndType[1];
                   if (patronType) {
-                    newPatron.patron_type = patronType.metadata;
+                    newPatron.patron.type = patronType.metadata;
                   }
                   return newPatron;
                 })
