@@ -210,7 +210,7 @@ export class CheckinComponent implements OnInit {
               }
             } else {
               this._router.navigate(
-                ['/circulation', 'patron', patron.barcode, 'loan']
+                ['/circulation', 'patron', patron.patron.barcode, 'loan']
               );
             }
             this.isLoading = false;

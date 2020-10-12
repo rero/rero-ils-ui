@@ -39,7 +39,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.barcode, 'loan']"
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'loan']"
           translate
           >Checkin/Checkout</a
         >
@@ -50,7 +50,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.barcode, 'pickup']"
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'pickup']"
           translate
           >To pick up</a
         >
@@ -62,7 +62,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.barcode, 'requested']"
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'requested']"
           translate
           >Pending</a
         >
@@ -73,7 +73,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.barcode, 'profile']"
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'profile']"
           translate
           >Profile</a
         >
@@ -84,7 +84,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.barcode, 'fees']">
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'fees']">
           {{ 'Fees' }}
           <span *ngIf="transactionsTotalAmount > 0" class="badge badge-warning font-weight-normal">
             {{ transactionsTotalAmount | currency: organisation.default_currency }}
@@ -97,7 +97,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.barcode, 'history']"
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'history']"
           translate>History</a>
       </li>
     </ul>

@@ -14,48 +14,114 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<article *ngIf="currentPatron | async as record">
-  <section class="m-0 p-0">
-    <!-- BIRTH DATE -->
+<article *ngIf="currentPatron$ | async as patron">
+  <section class="m-2 p-2">
+    <!-- USERNAME -->
     <dl class="row mb-0">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Birth date</dt>
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'Username' | translate }}:
+      </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.birth_date | dateTranslate :'shortDate' }}
-      </dd>
-    </dl>
-    <!-- BARCODE -->
-    <dl class="row mb-0">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Barcode</dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.barcode }}
+        {{ patron.username }}
       </dd>
     </dl>
     <!-- STREET -->
     <dl class="row mb-0">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Street</dt>
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'Street' | translate }}:
+      </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.street }}
+        {{ patron.street }}
       </dd>
     </dl>
-    <!-- POSTAL CODE -->
+    <!-- CITY -->
     <dl class="row mb-0">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Postal code</dt>
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'City' | translate }}:
+      </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.postal_code }}
+        {{ patron.postal_code }} {{ patron.city }}
       </dd>
     </dl>
+
     <!-- PHONE -->
-    <dl class="row mb-0">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Phone</dt>
+    <dl class="row mb-0" *ngIf="patron.phone">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'Phone' | translate }}:
+      </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.phone }}
+        {{ patron.phone }}
       </dd>
     </dl>
     <!-- EMAIL -->
-    <dl class="row mb-0">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Email</dt>
+    <dl *ngIf="patron.email" class="row mb-0">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'Email' | translate }}:
+      </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.email }}
+        {{ patron.email }}
+      </dd>
+    </dl>
+    <!-- ROLES -->
+    <dl class="row mb-0">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        <ng-container *ngIf="patron.roles.length === 1; else roles" translate>Role</ng-container>
+        <ng-template #roles translate>Roles</ng-template>:
+      </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        <ng-container *ngFor="let role of patron.roles; let last=last">
+          {{ role | translate }}{{ last ? '' : ', ' }}
+        </ng-container>
+      </dd>
+    </dl>
+
+  </section>
+  <section class="m-2 p-2" *ngIf="patron.isLibrarian">
+    <h5 translate>Librarian Information</h5>
+    <!-- LIBRARY -->
+    <dl class="row mb-0">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'Library' | translate }}:
+      </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        {{ patron.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+      </dd>
+    </dl>
+  </section>
+  <section class="m-2 p-2" *ngIf="patron.patron">
+    <h5 translate>Patron Information</h5>
+    <!-- BARCODE -->
+    <dl class="row mb-0">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'Barcode' | translate }}:
+      </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        <a [routerLink]="['/circulation', 'patron', patron.patron.barcode]">{{ patron.patron.barcode }}</a>
+      </dd>
+    </dl>
+    <!-- TYPE -->
+    <dl class="row mb-0">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'Type' | translate }}:
+      </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        {{ patron.patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
+      </dd>
+    </dl>
+    <!-- ACCOUNT EXPIRATION -->
+    <dl class="row mb-0">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'Account expiration' | translate }}:
+      </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        {{ patron.patron.expiration_date | dateTranslate:'mediumDate' }}
+      </dd>
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        {{ 'Affiliation libraries' | translate }}:
+      </dt>
+      <dd *ngIf="patron.patron.libraries && patron.patron.libraries.length > 0" class="col-sm-7 col-md-8 mb-0">
+        <div *ngFor="let library of patron.patron.libraries">
+          {{library.pid | getRecord: 'libraries' : 'field' : 'name' | async}}</div>
       </dd>
     </dl>
   </section>

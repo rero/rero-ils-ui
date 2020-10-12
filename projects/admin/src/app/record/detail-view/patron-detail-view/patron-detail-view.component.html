@@ -17,55 +17,27 @@
 
 <ng-container *ngIf="patron">
   <h1 class="mb-3">{{ patron.last_name }} {{ patron.first_name }}</h1>
+  <b>{{ 'Date of birth' | translate }}:</b> {{ patron.birth_date | dateTranslate:'mediumDate' }}
   <!-- BLOCKED OR NOT? -->
   <div *ngIf="patron | patronBlockedMessage as message" class="alert alert-danger" role="alert">
     {{ message }}
   </div>
+  <!-- NOTES-->
+  <div *ngIf="notes && notes.length > 0" class="alert alert-warning" role="alert">
+    <ng-container *ngFor="let note of notes">
+      <strong class="alert-heading">{{ note.type | translate }}</strong>
+      <p class="mb-0" [innerHTML]="note.content"></p>
+    </ng-container>
+  </div>
   <article>
     <section class="m-2 p-2">
-      <!-- BARCODE -->
-      <dl class="row mb-0" *ngIf="patron.barcode">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Barcode' | translate }}:
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          <a [routerLink]="['/circulation', 'patron', patron.barcode]">{{ patron.barcode }}</a>
-        </dd>
-      </dl>
-      <!-- TYPE -->
-      <dl class="row mb-0" *ngIf="patron.isPatron">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Type' | translate }}:
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.patron_type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
-        </dd>
-      </dl>
-      <!-- TYPE -->
-      <dl class="row mb-0" *ngIf="patron.isLibrarian">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Library' | translate }}:
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
-        </dd>
-      </dl>
-      <!-- PHONE -->
-      <dl class="row mb-0" *ngIf="patron.phone">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Phone' | translate }}:
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.phone }}
-        </dd>
-      </dl>
-      <!-- EMAIL -->
+      <!-- USERNAME -->
       <dl class="row mb-0">
         <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Email' | translate }}:
+          {{ 'Username' | translate }}:
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.email }}
+          {{ patron.username }}
         </dd>
       </dl>
       <!-- STREET -->
@@ -86,16 +58,83 @@
           {{ patron.postal_code }} {{ patron.city }}
         </dd>
       </dl>
+
+      <!-- PHONE -->
+      <dl class="row mb-0" *ngIf="patron.phone">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Phone' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ patron.phone }}
+        </dd>
+      </dl>
+      <!-- EMAIL -->
+      <dl *ngIf="patron.email" class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Email' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ patron.email }}
+        </dd>
+      </dl>
       <!-- ROLES -->
       <dl class="row mb-0">
         <dt class="col-sm-3 offset-sm-2 offset-md-0">
-	        <ng-container *ngIf="patron.roles.length === 1; else roles" translate>Role</ng-container>
+          <ng-container *ngIf="patron.roles.length === 1; else roles" translate>Role</ng-container>
           <ng-template #roles translate>Roles</ng-template>:
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           <ng-container *ngFor="let role of patron.roles; let last=last">
             {{ role | translate }}{{ last ? '' : ', ' }}
           </ng-container>
+        </dd>
+      </dl>
+    </section>
+    <section class="m-2 p-2" *ngIf="patron.isLibrarian">
+      <h5 translate>Librarian Information</h5>
+      <!-- LIBRARY -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Library' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ patron.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+        </dd>
+      </dl>
+    </section>
+    <section class="m-2 p-2" *ngIf="patron.patron">
+      <h5 translate>Patron Information</h5>
+      <!-- BARCODE -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Barcode' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <a [routerLink]="['/circulation', 'patron', patron.patron.barcode]">{{ patron.patron.barcode }}</a>
+        </dd>
+      </dl>
+      <!-- TYPE -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Type' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ patron.patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
+        </dd>
+      </dl>
+      <!-- ACCOUNT EXPIRATION -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Account expiration' | translate }}:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ patron.patron.expiration_date | dateTranslate:'mediumDate' }}
+        </dd>
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          {{ 'Affiliation libraries' | translate }}:
+        </dt>
+        <dd *ngIf="patron.patron.libraries && patron.patron.libraries.length > 0" class="col-sm-7 col-md-8 mb-0">
+          <div *ngFor="let library of patron.patron.libraries">{{library.pid | getRecord: 'libraries' : 'field' : 'name' | async}}</div>
         </dd>
       </dl>
     </section>

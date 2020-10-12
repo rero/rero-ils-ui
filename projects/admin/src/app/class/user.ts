@@ -14,14 +14,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+
+export function _(str) {
+  return marker(str);
+}
+
+export enum UserNoteType {
+  PUBLIC = _('public_note'),
+  STAFF = _('staff_note')
+}
 
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 export class User {
   $schema: string;
+  username: string;
   birth_date: string;
   city: string;
-  email: string;
+  email?: string;
   first_name: string;
   last_name: string;
   library: Library;
@@ -32,15 +43,26 @@ export class User {
   postal_code: string;
   roles: string[];
   street: string;
+  user_id: string;
+  patron: {
+    barcode: string,
+    type: PatronType,
+    communication_channel: string,
+    communication_language: string,
+    expiration_date: string,
+    libraries?: Array<Library>,
+    // When patron is blocked, add 'blocked' and 'blocked_note' fields.
+    blocked?: false,
+    blocked_note?: string
+  };
+  notes?: Array<{
+    type:UserNoteType,
+    content: string
+  }>;
   organisation_pid: string;
-  barcode?: string;
   items?: any[];
-  patron_type?: PatronType;
   displayPatronMode = true;
   currentLibrary: string;
-  // When patron is blocked, add 'blocked' and 'blocked_note' fields.
-  blocked = false;
-  blocked_note: string;
 
   /** Locale storage name key */
   static readonly STORAGE_KEY = 'user';

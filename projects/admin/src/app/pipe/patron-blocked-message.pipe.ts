@@ -34,9 +34,10 @@ export class PatronBlockedMessagePipe implements PipeTransform {
    * @param patron - Patron object
    */
   transform(patron: any): any {
-    if (patron == null || patron.blocked !== true) {
+    if (patron == null || patron.patron == null || patron.patron.blocked !== true) {
       return null;
     }
-    return `${this.translate.instant('This patron is currently blocked.')} ${this.translate.instant('Reason')}: ${patron.blocked_note}`;
+    return `${this.translate.instant(
+      'This patron is currently blocked.')} ${this.translate.instant('Reason')}: ${patron.patron.blocked_note}`;
   }
 }
