@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable, Subscription } from 'rxjs';
 import { User } from '../../../class/user';
@@ -38,6 +39,14 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
   private _subscription$ = new Subscription();
 
   /**
+   * Constructor.
+   * @param _sanitizer - DomSanitizer, to render html.
+   */
+  constructor(
+    private _sanitizer: DomSanitizer
+  ) {}
+
+  /**
    * Current patron initialization.
    */
   ngOnInit() {
@@ -52,4 +61,24 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
   ngOnDestroy() {
     this._subscription$.unsubscribe();
   }
+
+  /**
+   * Get the patron notes.
+   *
+   * It replace a new line to the corresponding html code.
+   * Allows to render html.
+   */
+  public get notes(): Array<{type: string, content: SafeHtml}> {
+    if (!this.patron.notes || this.patron.notes.length < 1) {
+      return [];
+    }
+    return this.patron.notes.map((note: any) => {
+      return {
+        type: note.type,
+        content: this._sanitizer.bypassSecurityTrustHtml(
+          note.content.replace('\n', '<br>'))
+      };
+    });
+  }
+
 }

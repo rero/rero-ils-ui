@@ -27,7 +27,7 @@ export class ProfileComponent {
    * Get current patron
    * @return Observable
    */
-  get currentPatron() {
+  get currentPatron$() {
     return this._patronService.currentPatron$;
   }
 

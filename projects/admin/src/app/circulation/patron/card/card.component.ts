@@ -16,6 +16,7 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { RecordService } from '@rero/ng-core';
 import { map } from 'rxjs/operators';
 import { User } from '../../../class/user';
@@ -30,11 +31,14 @@ export class CardComponent implements OnInit {
   @Output() clearPatron = new EventEmitter<User>();
   patronType$: any;
 
-  constructor(private recordService: RecordService) { }
+  constructor(
+    private recordService: RecordService,
+    private _sanitizer: DomSanitizer
+  ) { }
 
   ngOnInit() {
     if (this.patron) {
-      this.patronType$ = this.recordService.getRecord('patron_types', this.patron.patron_type.pid).pipe(
+      this.patronType$ = this.recordService.getRecord('patron_types', this.patron.patron.type.pid).pipe(
         map(patronType => patronType.metadata.name)
       );
     }
@@ -44,5 +48,23 @@ export class CardComponent implements OnInit {
     if (this.patron) {
       this.clearPatron.emit(this.patron);
     }
+  }
+  /**
+   * Get the patron notes.
+   *
+   * It replace a new line to the corresponding html code.
+   * Allows to render html.
+   */
+  get notes(): Array<{ type: string, content: SafeHtml }> {
+    if (!this.patron || !this.patron.notes || this.patron.notes.length < 1) {
+      return null;
+    }
+    return this.patron.notes.map((note: any) => {
+      return {
+        type: note.type,
+        content: this._sanitizer.bypassSecurityTrustHtml(
+          note.content.replace('\n', '<br>'))
+      };
+    });
   }
 }

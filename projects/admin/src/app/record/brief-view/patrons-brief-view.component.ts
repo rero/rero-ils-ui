@@ -23,11 +23,11 @@ import { ResultItem } from '@rero/ng-core';
   template: `
   <ng-container *ngIf="record">
     <h5 class="card-title mb-0">
-      <a id="{{record.metadata.barcode + '-profile'}}" [routerLink]="[detailUrl.link]">
+      <a id="{{record.metadata.user_id + '-profile'}}" [routerLink]="[detailUrl.link]">
         {{ record.metadata.last_name }}, {{ record.metadata.first_name }}
       </a>
-      <small class="ml-3" *ngIf="record.metadata.barcode">
-        <a id="{{record.metadata.barcode + '-loans'}}" [routerLink]="['/circulation', 'patron', record.metadata.barcode]">
+      <small class="ml-3" *ngIf="record.metadata.patron">
+        <a id="{{record.metadata.patron.barcode + '-loans'}}" [routerLink]="['/circulation', 'patron', record.metadata.patron.barcode]">
           <i class="fa fa-exchange mr-2"></i>
           <span translate>Circulation</span>
         </a>

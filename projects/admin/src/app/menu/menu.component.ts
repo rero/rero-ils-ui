@@ -96,7 +96,7 @@ export class MenuComponent implements OnInit {
           id: 'public-interface-menu'
         }, {
           name: this._translateService.instant('Logout'),
-          href: `/logout`,
+          href: `/signout`,
           iconCssClass: 'fa fa-sign-out',
           id: 'logout-menu'
         }
