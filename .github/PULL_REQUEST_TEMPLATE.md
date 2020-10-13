@@ -22,4 +22,3 @@ My PR depends on `rero-ils#<xx>`'s PR(s):
 - [ ] Functions names.
 - [ ] Functions docstrings.
 - [ ] Unnecessary commited files?
-- [ ] Extracted translations?
