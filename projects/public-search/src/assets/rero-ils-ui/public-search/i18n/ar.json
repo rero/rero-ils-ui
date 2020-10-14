@@ -1,5 +1,7 @@
 {
+  "Collections": "Collections",
   "Documents": "المستندات",
+  "Expand to all RERO ILS": "Expand to all RERO ILS",
   "Persons": "الاشخاص",
   "Search": "البحث",
   "author": "المؤلف",
@@ -12,7 +14,6 @@
   "not available": "غيرمتاح",
   "organisation": "الشبكة",
   "other": "آخر",
-  "persons": "أشخاص",
   "status": "حالة",
   "subject": "موضوع"
 }
