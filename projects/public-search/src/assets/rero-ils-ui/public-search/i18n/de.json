@@ -1,5 +1,7 @@
 {
+  "Collections": "Sammlungen",
   "Documents": "Dokumente",
+  "Expand to all RERO ILS": "Auf das ganze RERO ILS erweitern",
   "Persons": "Personen",
   "Search": "Suche",
   "author": "Autor",
@@ -12,7 +14,6 @@
   "not available": "nicht verfügbar",
   "organisation": "Organisation",
   "other": "anderes",
-  "persons": "Personen",
   "status": "Status",
   "subject": "Schlagwort"
 }
