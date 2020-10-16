@@ -14,13 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit, PipeTransform } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { BudgetTotalService } from 'projects/admin/src/app/service/budget-total.service';
-import { UserService } from 'projects/admin/src/app/service/user.service';
 import { map } from 'rxjs/operators';
+import { UserService } from '@rero/shared';
 
 @Component({
   selector: 'admin-acquisition-accounts',
@@ -76,7 +75,7 @@ export class AcquisitionAccountsComponent implements OnInit {
    * Load acquisition accounts for current budget
    */
   private _loadAcqAccounts() {
-    const currentLibrary = this._userService.getCurrentUser().getCurrentLibrary();
+    const currentLibrary = this._userService.user.getCurrentLibrary();
     const query = `budget.pid:${this.budgetPid} AND library.pid:${currentLibrary}`;
     this._recordService
         .getRecords('acq_accounts', query, 1, RecordService.MAX_REST_RESULTS_SIZE)

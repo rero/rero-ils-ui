@@ -16,8 +16,8 @@
  */
 import { DetailComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
 import { of } from 'rxjs';
-import { PersonsBriefViewComponent } from '../record/brief-view/persons-brief-view.component';
-import { PersonDetailViewComponent } from '../record/detail-view/person-detail-view/person-detail-view.component';
+import { ContributionBriefComponent } from '@rero/shared';
+import { ContributionDetailViewComponent } from '../record/detail-view/contribution-detail-view/contribution-detail-view.component';
 import { BaseRoute } from './base-route';
 
 export class PersonsRoute extends BaseRoute implements RouteInterface {
@@ -37,20 +37,22 @@ export class PersonsRoute extends BaseRoute implements RouteInterface {
         { path: 'detail/:pid', component: DetailComponent }
       ],
       data: {
-        linkPrefix: 'records',
         adminMode: () => of({
           can: false,
           message: ''
         }),
         types: [
           {
-            key: this.name,
+            key: 'persons',
+            index: 'contributions',
             label: 'Persons',
-            component: PersonsBriefViewComponent,
-            detailComponent: PersonDetailViewComponent,
+            component: ContributionBriefComponent,
+            detailComponent: ContributionDetailViewComponent,
+            aggregationsOrder: ['sources'],
             aggregationsExpand: ['sources'],
             // use simple query for UI search
             preFilters: {
+              type: 'bf:Person',
               simple: 1
             }
           }

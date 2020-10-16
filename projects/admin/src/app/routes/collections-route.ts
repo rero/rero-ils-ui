@@ -62,7 +62,7 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
             aggregationsOrder: ['type', 'library', 'teacher', 'subject'],
             aggregationsExpand: ['type'],
             preprocessRecordEditor: (record: any) => {
-              const user = this._routeToolService.userService.getCurrentUser();
+              const user = this._routeToolService.userService.user;
               if (!record.pid) {
                 // set the user's default library at the time of creation
                 record.libraries = [];
@@ -76,7 +76,7 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
               return record;
             },
             preCreateRecord: (data: any) => {
-              const user = this._routeToolService.userService.getCurrentUser();
+              const user = this._routeToolService.userService.user;
               data.organisation = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(
                   'organisations',
@@ -111,7 +111,7 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
    */
   private populateLibrariesByCurrentUser(field: FormlyFieldConfig): FormlyFieldConfig {
     field.type = 'select';
-    const user = this._routeToolService.userService.getCurrentUser();
+    const user = this._routeToolService.userService.user;
     const recordService = this._routeToolService.recordService;
     const apiService = this._routeToolService.apiService;
     const query = (user.roles.some(r => r === 'system_librarian'))

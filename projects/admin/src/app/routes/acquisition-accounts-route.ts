@@ -35,13 +35,12 @@ export class AcquisitionAccountsRoute extends BaseRoute implements RouteInterfac
         { path: 'new', component: EditorComponent }
       ],
       data: {
-        linkPrefix: 'records',
         types: [
           {
             key: this.name,
             label: 'Acquisition accounts',
             preCreateRecord: (data: any) => {
-              const user = this._routeToolService.userService.getCurrentUser();
+              const user = this._routeToolService.userService.user;
               data.organisation = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(
                   'organisations', user.library.organisation.pid

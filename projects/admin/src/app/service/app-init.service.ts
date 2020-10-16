@@ -16,11 +16,11 @@
  */
 import { Injectable } from '@angular/core';
 import { LocalStorageService, TranslateService } from '@rero/ng-core';
-import { User } from '../class/user';
+import { LoggedUserService, SharedConfigService, User, UserService } from '@rero/shared';
 import { AppConfigService } from './app-config.service';
 import { LibrarySwitchService } from './library-switch.service';
 import { OrganisationService } from './organisation.service';
-import { UserService } from './user.service';
+import { TypeaheadFactoryService } from './typeahead-factory.service';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +34,10 @@ export class AppInitService {
    * @param _translateService - TranslateService
    * @param _organisationService - OrganisationService
    * @param _localeStorageService - LocalStorageService
+   * @param _librarySwitchService - LibrarySwitchService
+   * @param _loggedUserService - LoggedUserService
+   * @param _sharedConfigService - SharedConfigService
+   * @param _typeaheadFactoryService - TypeaheadFactoryService
    */
   constructor(
     private _userService: UserService,
@@ -41,7 +45,10 @@ export class AppInitService {
     private _translateService: TranslateService,
     private _organisationService: OrganisationService,
     private _localeStorageService: LocalStorageService,
-    private _librarySwitchService: LibrarySwitchService
+    private _librarySwitchService: LibrarySwitchService,
+    private _loggedUserService: LoggedUserService,
+    private _sharedConfigService: SharedConfigService,
+    private _typeaheadFactoryService: TypeaheadFactoryService
   ) { }
 
   /**
@@ -49,13 +56,16 @@ export class AppInitService {
    */
   load() {
     return new Promise((resolve) => {
-      this._userService.loadLoggedUser();
-      this._userService.onUserLoaded$.subscribe((data: any) => {
+      this._typeaheadFactoryService.init();
+      this._userService.init();
+      this._sharedConfigService.init();
+      this._loggedUserService.load();
+      this._loggedUserService.onLoggedUserLoaded$.subscribe((data: any) => {
         this._appConfigService.setSettings(data.settings);
         this.initTranslateService();
         // User is logged
         if (data.metadata) {
-          if (this._userService.allowAccess) {
+          if (this._userService.user.adminInterfaceAccess) {
             this._librarySwitchService.switch(data.metadata.library.pid);
             this._organisationService.loadOrganisationByPid(
               data.metadata.library.organisation.pid
@@ -85,7 +95,7 @@ export class AppInitService {
   /** Initialize locale storage */
   private initializeLocaleStorage() {
     this._organisationService.onOrganisationLoaded.subscribe(() => {
-      const user = this._userService.getCurrentUser();
+      const user = this._userService.user;
       if (!this._localeStorageService.has(User.STORAGE_KEY)) {
         this._localeStorageService.set(User.STORAGE_KEY, user);
       } else {

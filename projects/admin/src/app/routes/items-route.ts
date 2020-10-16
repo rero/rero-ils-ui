@@ -167,8 +167,8 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
    * @return Observable
    */
   private canReadItem(record: any) {
-    const organisationPid = this._routeToolService.userService
-      .getCurrentUser().library.organisation.pid;
+    const organisationPid = this._routeToolService.userService.user
+      .library.organisation.pid;
     if ('organisation' in record.metadata) {
       return of({
         can: organisationPid === record.metadata.organisation.pid,
@@ -190,7 +190,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
     const formOptions = jsonSchema.form;
     if (formOptions && formOptions.fieldMap === 'location') {
       field.type = 'select';
-      const user = this._routeToolService.userService.getCurrentUser();
+      const user = this._routeToolService.userService.user;
       const recordService = this._routeToolService.recordService;
       const apiService = this._routeToolService.apiService;
       const libraryPid = user.currentLibrary;

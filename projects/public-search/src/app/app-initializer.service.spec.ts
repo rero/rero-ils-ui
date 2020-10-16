@@ -15,12 +15,17 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
 import { AppInitializerService } from './app-initializer.service';
 
 describe('AppInitializerService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+  beforeEach(() => TestBed.configureTestingModule({
+    imports: [
+      HttpClientTestingModule
+    ]
+  }));
 
   it('should be created', () => {
     const service: AppInitializerService = TestBed.get(AppInitializerService);

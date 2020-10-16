@@ -16,19 +16,17 @@
  */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { UserService } from '@rero/shared';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { LoanService } from 'projects/admin/src/app/service/loan.service';
 import { forkJoin } from 'rxjs';
-import { UserService } from 'projects/admin/src/app/service/user.service';
-import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ItemRequestComponent } from '../../document-detail-view/item-request/item-request.component';
 
 @Component({
   selector: 'admin-item-transactions',
-  templateUrl: './item-transactions.component.html',
-  styles: []
+  templateUrl: './item-transactions.component.html'
 })
 export class ItemTransactionsComponent implements OnInit {
 
@@ -71,7 +69,7 @@ export class ItemTransactionsComponent implements OnInit {
    * On init hook
    */
   ngOnInit() {
-    this._currentUser = this._userService.getCurrentUser();
+    this._currentUser = this._userService.user;
     const borrowedBy$ = this._loanService.borrowedBy$(this.item.metadata.pid);
     const requestedBy$ = this._loanService.requestedBy$(this.item.metadata.pid);
     forkJoin([borrowedBy$, requestedBy$]).subscribe(

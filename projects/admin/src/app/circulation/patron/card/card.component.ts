@@ -16,8 +16,8 @@
  */
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { User } from '@rero/shared';
 import moment from 'moment';
-import { User } from '../../../class/user';
 import { getBootstrapLevel } from '../../../utils/utils';
 
 

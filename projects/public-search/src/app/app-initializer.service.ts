@@ -16,6 +16,7 @@
 */
 
 import { Injectable } from '@angular/core';
+import { LoggedUserService, SharedConfigService } from '@rero/shared';
 import { RouteCollectionService } from './routes/route-collection.service';
 
 @Injectable({
@@ -28,12 +29,17 @@ export class AppInitializerService {
    * @param _routeCollectionService - RouteCollectionService
    */
   constructor(
-    private _routeCollectionService: RouteCollectionService
+    private _routeCollectionService: RouteCollectionService,
+    private _loggedUserService: LoggedUserService,
+    private _sharedConfigService: SharedConfigService
+
   ) { }
 
   /** load route service */
   load() {
     return new Promise((resolve) => {
+      this._sharedConfigService.init();
+      this._loggedUserService.load();
       this._routeCollectionService.load();
       resolve();
     });

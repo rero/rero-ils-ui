@@ -17,13 +17,12 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { User, UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin, Subscription } from 'rxjs';
 import { Item, ItemAction, ItemNoteType, ItemStatus } from '../../../class/items';
-import { User } from '../../../class/user';
 import { ItemsService } from '../../../service/items.service';
 import { PatronService } from '../../../service/patron.service';
-import { UserService } from '../../../service/user.service';
 
 @Component({
   selector: 'admin-loan',
@@ -94,7 +93,7 @@ export class LoanComponent implements OnInit, OnDestroy {
         });
       }
     }));
-    this.currentLibraryPid = this._userService.getCurrentUser().getCurrentLibrary();
+    this.currentLibraryPid = this._userService.user.getCurrentLibrary();
     this.searchInputFocus = true;
   }
 
@@ -131,7 +130,7 @@ export class LoanComponent implements OnInit, OnDestroy {
       }
       if (item.status === ItemStatus.IN_TRANSIT) {
         this._toastService.warning(
-          this._translate.instant('The item is ' + ItemStatus.IN_TRANSIT),
+          this._translate.instant('The item is in transit'),
           this._translate.instant('Checkin')
         );
       }
@@ -191,7 +190,7 @@ export class LoanComponent implements OnInit, OnDestroy {
           this._itemsService.doAction(
             item,
             this.currentLibraryPid,
-            this._userService.getCurrentUser().pid,
+            this._userService.user.pid,
             this.patron.pid));
       }
     }
@@ -206,7 +205,7 @@ export class LoanComponent implements OnInit, OnDestroy {
               // display a toast message if the item goes in transit...
               if (newItem.status === ItemStatus.IN_TRANSIT) {
                 this._toastService.warning(
-                  this._translate.instant('The item is ' + ItemStatus.IN_TRANSIT),
+                  this._translate.instant('The item is in transit'),
                   this._translate.instant('Checkin')
                 );
               }

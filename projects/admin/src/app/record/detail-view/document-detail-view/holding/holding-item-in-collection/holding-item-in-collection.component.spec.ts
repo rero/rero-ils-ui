@@ -19,7 +19,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppRoutingModule } from 'projects/admin/src/app/app-routing.module';
-import { SharedPipesModule } from 'projects/admin/src/app/shared/shared-pipes.module';
+import { SharedModule } from '@rero/shared';
 import { FrontpageBoardComponent } from '../../../../../widgets/frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from '../../../../../widgets/frontpage/frontpage.component';
 import { HoldingItemInCollectionComponent } from './holding-item-in-collection.component';
@@ -39,7 +39,7 @@ describe('HoldingItemInCollectionComponent', () => {
         HttpClientTestingModule,
         AppRoutingModule,
         TranslateModule.forRoot(),
-        SharedPipesModule
+        SharedModule
       ]
     })
     .compileComponents();

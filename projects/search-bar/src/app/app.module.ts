@@ -1,5 +1,22 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2019 RERO
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import { HttpClientModule } from '@angular/common/http';
-import { Injector, NgModule } from '@angular/core';
+import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -7,10 +24,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { RecordModule, TranslateLoader } from '@rero/ng-core';
-
+import { SharedModule } from '@rero/shared';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-import { SharedPipesModule } from 'projects/admin/src/app/shared/shared-pipes.module';
 import { SearchBarComponent } from 'projects/public-search/src/app/search-bar/search-bar.component';
+import { AppInitializerService } from './app-initializer.service';
+
+/** function to instantiate the application  */
+export function appInitFactory(appInitializerService: AppInitializerService) {
+  return () => appInitializerService.load();
+}
 
 
 @NgModule({
@@ -33,7 +55,10 @@ import { SearchBarComponent } from 'projects/public-search/src/app/search-bar/se
       isolate: false
     }),
     TypeaheadModule.forRoot(),
-    SharedPipesModule
+    SharedModule
+  ],
+  providers: [
+    { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true }
   ],
   entryComponents: [
     SearchBarComponent

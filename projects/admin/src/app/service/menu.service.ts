@@ -14,9 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { UserService } from './user.service';
+import { UserService } from '@rero/shared';
 
 @Injectable({
   providedIn: 'root'
@@ -80,6 +81,11 @@ export class MenuService {
           routerLink: '/records/persons',
           iconCssClass: 'fa fa-user',
           id: 'persons-menu'
+        }, {
+          name: this._translateService.instant('Corporate bodies'),
+          routerLink: '/records/corporate-bodies',
+          iconCssClass: 'fa fa-building',
+          id: 'corporate-bodies-menu'
         }]
       }, {
         name: this._translateService.instant('Acquisitions'),
@@ -183,7 +189,7 @@ export class MenuService {
    * @return logged user library url for router link
    */
   private _myLibraryRouterLink() {
-    return `/records/libraries/detail/${this._userService.getCurrentUser().currentLibrary}`;
+    return `/records/libraries/detail/${this._userService.user.currentLibrary}`;
   }
 
   /**
@@ -192,7 +198,7 @@ export class MenuService {
    * @return logged user organisation url for router link
    */
   private _myOrganisationRouterLink() {
-    return `/records/organisations/detail/${this._userService.getCurrentUser().library.organisation.pid}`;
+    return `/records/organisations/detail/${this._userService.user.library.organisation.pid}`;
   }
 
   /**
@@ -201,7 +207,7 @@ export class MenuService {
    * @return organisation pid as a dictionary
    */
   private _myDocumentsQueryParams() {
-    return {organisation: this._userService.getCurrentUser().library.organisation.pid};
+    return {organisation: this._userService.user.library.organisation.pid};
   }
 
   /**
@@ -210,6 +216,6 @@ export class MenuService {
    * @return library pid as a dictionary
    */
   private _myLibraryQueryParams() {
-    return {library: this._userService.getCurrentUser().currentLibrary};
+    return {library: this._userService.user.currentLibrary};
   }
 }

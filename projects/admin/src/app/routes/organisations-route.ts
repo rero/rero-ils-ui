@@ -37,7 +37,6 @@ export class OrganisationsRoute extends BaseRoute implements RouteInterface {
         { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] }
       ],
       data: {
-        linkPrefix: 'records',
         adminMode: () => of({
           can: false,
           message: ''

@@ -47,7 +47,6 @@ export class AcquisitionOrderLinesRoute extends BaseRoute implements RouteInterf
         { path: 'new', component: EditorComponent, canActivate: [ AcqOrderLineGuard ] }
       ],
       data: {
-        linkPrefix: 'records',
         types: [
           {
             key: this.name,
@@ -93,7 +92,7 @@ export class AcquisitionOrderLinesRoute extends BaseRoute implements RouteInterf
     const formOptions = jsonSchema.form;
     if (formOptions && formOptions.fieldMap === 'acq_account') {
       field.type = 'select';
-      const user = this._routeToolService.userService.getCurrentUser();
+      const user = this._routeToolService.userService.user;
       const recordService = this._routeToolService.recordService;
       const apiService = this._routeToolService.apiService;
       const libraryPid = user.currentLibrary;

@@ -21,11 +21,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, map } from 'rxjs/operators';
+import { User, UserService } from '@rero/shared';
 import { Item, ItemAction, ItemNoteType, ItemStatus } from '../../class/items';
-import { User } from '../../class/user';
 import { ItemsService } from '../../service/items.service';
 import { PatronService } from '../../service/patron.service';
-import { UserService } from '../../service/user.service';
 
 @Component({
   selector: 'admin-circulation-checkout',
@@ -70,12 +69,12 @@ export class CheckinComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this._loggedUser = this._userService.getCurrentUser();
+    this._loggedUser = this._userService.user;
     this._patronService.currentPatron$.subscribe(
       patron => (this.patronInfo = patron)
     );
     this.searchInputFocus = true;
-    this.currentLibraryPid = this._userService.getCurrentUser().getCurrentLibrary();
+    this.currentLibraryPid = this._userService.user.getCurrentLibrary();
     this.patronInfo = null;
   }
 

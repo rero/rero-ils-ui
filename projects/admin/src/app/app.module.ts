@@ -20,11 +20,13 @@ import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
 import { FormlyModule } from '@ngx-formly/core';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import {
   CoreConfigService, RecordModule, RemoteTypeaheadService, TranslateLoader, TranslateService, TruncateTextPipe
 } from '@rero/ng-core';
+import { MainTitlePipe, SharedModule } from '@rero/shared';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -36,29 +38,26 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DocumentsTypeahead } from './class/documents-typeahead';
 import { ItemsTypeahead } from './class/items-typeahead';
+import { MefOrganisationTypeahead } from './class/mef-organisation-typeahead';
+import { MefPersonTypeahead } from './class/mef-person-typeahead';
 import { MefTypeahead } from './class/mef-typeahead';
 import { TabOrderDirective } from './directives/tab-order.directive';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
 import { MenuComponent } from './menu/menu.component';
-import { BioInformationsPipe } from './pipe/bio-informations.pipe';
-import { BirthDatePipe } from './pipe/birth-date.pipe';
-import { MainTitlePipe } from './pipe/main-title.pipe';
 import { MarcPipe } from './pipe/marc.pipe';
-import { MefTitlePipe } from './pipe/mef-title.pipe';
 import { NotesFormatPipe } from './pipe/notes-format.pipe';
 import { AcquisitionOrderBriefViewComponent } from './record/brief-view/acquisition-order-brief-view.component';
 import { BudgetsBriefViewComponent } from './record/brief-view/budgets-brief-view.component';
 import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policies-brief-view.component';
 import { CollectionBriefViewComponent } from './record/brief-view/collection-brief-view.component';
 import { DocumentsBriefViewComponent } from './record/brief-view/documents-brief-view/documents-brief-view.component';
+import { IssuesBriefViewComponent } from './record/brief-view/issues-brief-view/issues-brief-view.component';
 import { ItemTypesBriefViewComponent } from './record/brief-view/item-types-brief-view.component';
 import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/items-brief-view.component';
-import { IssuesBriefViewComponent } from './record/brief-view/issues-brief-view/issues-brief-view.component';
 import { LibrariesBriefViewComponent } from './record/brief-view/libraries-brief-view.component';
 import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-brief-view.component';
 import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view.component';
-import { PersonsBriefViewComponent } from './record/brief-view/persons-brief-view.component';
 import { TemplatesBriefViewComponent } from './record/brief-view/templates-brief-view.component';
 import { VendorBriefViewComponent } from './record/brief-view/vendor-brief-view.component';
 import { CirculationPolicyComponent } from './record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
@@ -84,7 +83,13 @@ import { BudgetDetailViewComponent } from './record/detail-view/budget-detail-vi
 import { CircPolicyDetailViewComponent } from './record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
 import { CollectionDetailViewComponent } from './record/detail-view/collection-detail-view/collection-detail-view.component';
 import { CollectionItemsComponent } from './record/detail-view/collection-detail-view/collection-items/collection-items.component';
+import { ContributionDetailViewComponent } from './record/detail-view/contribution-detail-view/contribution-detail-view.component';
+import {
+  CorporateBodiesDetailViewComponent
+} from './record/detail-view/contribution-detail-view/corporate-bodies-detail-view/corporate-bodies-detail-view.component';
+import { PersonDetailViewComponent } from './record/detail-view/contribution-detail-view/person-detail-view/person-detail-view.component';
 import { DocumentDetailViewComponent } from './record/detail-view/document-detail-view/document-detail-view.component';
+import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
 import {
   DefaultHoldingItemComponent
 } from './record/detail-view/document-detail-view/holding/default-holding-item/default-holding-item.component';
@@ -117,20 +122,17 @@ import { BudgetSelectComponent } from './record/detail-view/organisation-detail-
 import { OrganisationDetailViewComponent } from './record/detail-view/organisation-detail-view/organisation-detail-view.component';
 import { PatronDetailViewComponent } from './record/detail-view/patron-detail-view/patron-detail-view.component';
 import { PatronTypesDetailViewComponent } from './record/detail-view/patron-types-detail-view/patron-types-detail-view.component';
-import { PersonDetailViewComponent } from './record/detail-view/person-detail-view/person-detail-view.component';
 import { TemplateDetailViewComponent } from './record/detail-view/template-detail-view/template-detail-view.component';
 import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
 import { DocumentRecordSearchComponent } from './record/document-record-search/document-record-search.component';
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { AppConfigService } from './service/app-config.service';
 import { AppInitService } from './service/app-init.service';
+import { typeaheadToken } from './service/typeahead-factory.service';
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
-import { SharedPipesModule } from './shared/shared-pipes.module';
+import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageBoardComponent } from './widgets/frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
-import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
-import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -140,8 +142,6 @@ export function appInitFactory(appInitService: AppInitService) {
 @NgModule({
   declarations: [
     AppComponent,
-    BioInformationsPipe,
-    BirthDatePipe,
     CircPoliciesBriefViewComponent,
     CirculationPolicyComponent,
     DocumentEditorComponent,
@@ -153,23 +153,17 @@ export function appInitFactory(appInitService: AppInitService) {
     ItemTypeDetailViewComponent,
     LibrariesBriefViewComponent,
     LibraryComponent,
-    MefTitlePipe,
     MenuComponent,
     PatronsBriefViewComponent,
     PatronTypesBriefViewComponent,
     PatronTypesDetailViewComponent,
-    PersonsBriefViewComponent,
     LibraryDetailViewComponent,
     DayOpeningHoursComponent,
     ExceptionDateComponent,
-    PersonDetailViewComponent,
     DocumentDetailViewComponent,
     HoldingEditorComponent,
     HoldingComponent,
     HoldingsComponent,
-    BioInformationsPipe,
-    BirthDatePipe,
-    MefTitlePipe,
     LibraryComponent,
     ExceptionDatesListComponent,
     ExceptionDatesEditComponent,
@@ -220,7 +214,10 @@ export function appInitFactory(appInitService: AppInitService) {
     HoldingItemInCollectionComponent,
     DocumentRecordSearchComponent,
     HoldingDetailComponent,
-    CustomShortcutHelpComponent
+    CustomShortcutHelpComponent,
+    ContributionDetailViewComponent,
+    PersonDetailViewComponent,
+    CorporateBodiesDetailViewComponent
   ],
   imports: [
     AppRoutingModule,
@@ -233,7 +230,6 @@ export function appInitFactory(appInitService: AppInitService) {
     HttpClientModule,
     ReactiveFormsModule,
     RecordModule,
-    SharedPipesModule,
     TabsModule.forRoot(),
     TooltipModule.forRoot(),
     PopoverModule.forRoot(),
@@ -245,7 +241,8 @@ export function appInitFactory(appInitService: AppInitService) {
       }
     }),
     TypeaheadModule,
-    HotkeysModule
+    HotkeysModule,
+    SharedModule
   ],
   providers: [
     {
@@ -259,10 +256,12 @@ export function appInitFactory(appInitService: AppInitService) {
       useClass: NoCacheHeaderInterceptor,
       multi: true
     },
-    {
-      provide: RemoteTypeaheadService,
-      useClass: UiRemoteTypeaheadService
-    },
+    { provide: RemoteTypeaheadService, useExisting: UiRemoteTypeaheadService },
+    // Use the "multi" parameter to allow the recovery of several services in the injector.
+    { provide: typeaheadToken, useExisting: DocumentsTypeahead, multi: true },
+    { provide: typeaheadToken, useExisting: ItemsTypeahead, multi: true },
+    { provide: typeaheadToken, useExisting: MefOrganisationTypeahead, multi: true },
+    { provide: typeaheadToken, useExisting: MefPersonTypeahead, multi: true },
     {
       provide: CoreConfigService,
       useClass: AppConfigService
@@ -283,7 +282,11 @@ export function appInitFactory(appInitService: AppInitService) {
     {
       provide: HotkeysService,
       useClass: HotkeysService
-    }
+    },
+    MefPersonTypeahead,
+    MefOrganisationTypeahead,
+    TruncateTextPipe,
+    MainTitlePipe
   ],
   entryComponents: [
     CircPoliciesBriefViewComponent,
@@ -300,11 +303,9 @@ export function appInitFactory(appInitService: AppInitService) {
     PatronsBriefViewComponent,
     PatronTypesDetailViewComponent,
     PatronTypesBriefViewComponent,
-    PersonsBriefViewComponent,
     ExceptionDatesEditComponent,
     LibraryDetailViewComponent,
     LibraryComponent,
-    PersonDetailViewComponent,
     DocumentDetailViewComponent,
     ExceptionDatesEditComponent,
     CircPolicyDetailViewComponent,
@@ -329,7 +330,8 @@ export function appInitFactory(appInitService: AppInitService) {
     CollectionDetailViewComponent,
     HoldingItemInCollectionComponent,
     DocumentRecordSearchComponent,
-    CustomShortcutHelpComponent
+    CustomShortcutHelpComponent,
+    ContributionDetailViewComponent
   ],
   bootstrap: [AppComponent]
 })

@@ -1,0 +1,15 @@
+{
+  "name": "@rero/shared",
+  "version": "0.0.1",
+  "author": {
+    "name": "RERO",
+    "email": "software@rero.ch"
+  },
+  "description": "Shared library for rero-ils-ui",
+  "peerDependencies": {
+    "@angular/common": "^8.2.14",
+    "@angular/core": "^8.2.14",
+    "@biesbjerg/ngx-translate-extract-marker": "^1.0.0",
+    "@ngx-translate/core": "^11.0.1"
+  }
+}

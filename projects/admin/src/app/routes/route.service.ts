@@ -25,6 +25,7 @@ import { AcquisitionOrdersRoute } from './acquisition-orders-route';
 import { BudgetsRoute } from './budgets-route';
 import { CirculationPoliciesRoute } from './circulation-policies-route';
 import { CollectionsRoute } from './collections-route';
+import { CorporateBodiesRoute } from './corporate-bodies-route';
 import { DocumentsRoute } from './documents-route';
 import { HoldingsRoute } from './holdings-route';
 import { ImportDocumentsRoute } from './import-documents-route';
@@ -84,6 +85,7 @@ export class RouteService {
       .addRoute(new VendorsRoute(this._routeToolService))
       .addRoute(new TemplatesRoute(this._routeToolService))
       .addRoute(new CollectionsRoute(this._routeToolService))
+      .addRoute(new CorporateBodiesRoute(this._routeToolService))
       // should be at the last
       .addRoute(new ImportDocumentsRoute(this._routeToolService, this._translateService))
     ;

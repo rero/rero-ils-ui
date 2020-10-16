@@ -16,7 +16,7 @@
  */
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { User } from '../../class/user';
+import { User } from '@rero/shared';
 import { ItemAction } from '../../class/items';
 
 @Component({

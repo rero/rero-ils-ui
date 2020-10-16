@@ -19,15 +19,15 @@ import { Injectable } from '@angular/core';
 import { CoreConfigService } from '@rero/ng-core';
 
 import { environment } from '../../environments/environment';
-import { ContextSettings } from '../class/ContextSettings.interface';
 import { throwError } from 'rxjs';
+import { IContextSettings } from '@rero/shared';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppConfigService extends CoreConfigService {
 
-  private settings: ContextSettings;
+  private settings: IContextSettings;
 
   public adminRoles: Array<string>;
 
@@ -46,7 +46,7 @@ export class AppConfigService extends CoreConfigService {
     this.translationsURLs = environment.translationsURLs;
   }
 
-  public setSettings(settings: ContextSettings) {
+  public setSettings(settings: IContextSettings) {
     this.settings = settings;
   }
 

@@ -18,11 +18,11 @@
 import { Injectable } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
+import { ContributionBriefComponent } from '@rero/shared';
 import { of } from 'rxjs';
 import { AppConfigService } from '../app-config.service';
 import { DocumentBriefComponent } from '../document-brief/document-brief.component';
 import { DocumentRecordSearchComponent } from '../document-record-search/document-record-search.component';
-import { PersonBriefComponent } from '../person-brief/person-brief.component';
 import { BaseRoute } from './base-route';
 import { ResourceRouteInterface } from './resource-route-interface';
 
@@ -50,7 +50,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
    * Resource name of routes
    */
   getResources(): string[] {
-    return ['documents', 'persons'];
+    return ['documents', 'persons', 'corporate-bodies'];
   }
 
   /**
@@ -93,14 +93,33 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
             },
             {
               key: 'persons',
-              component: PersonBriefComponent,
+              index: 'contributions',
+              component: ContributionBriefComponent,
               label: _('Persons'),
+              aggregationsOrder: ['sources'],
               aggregationsExpand: ['sources'],
               listHeaders: {
                 Accept: 'application/rero+json, application/json'
               },
               preFilters: {
                 view: `${viewcode}`,
+                type: 'bf:Person',
+                simple: 1
+              }
+            },
+            {
+              key: 'corporate-bodies',
+              index: 'contributions',
+              component: ContributionBriefComponent,
+              label: _('Organisations'),
+              aggregationsOrder: ['sources'],
+              aggregationsExpand: ['sources'],
+              listHeaders: {
+                Accept: 'application/rero+json, application/json'
+              },
+              preFilters: {
+                view: `${viewcode}`,
+                type: 'bf:Organisation',
                 simple: 1
               }
             }

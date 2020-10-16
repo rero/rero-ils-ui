@@ -17,7 +17,7 @@
 import { Component } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
-import { UserService } from '../../../service/user.service';
+import { UserService } from '@rero/shared';
 
 @Component({
   selector: 'admin-organisation-detail-view',
@@ -44,7 +44,7 @@ export class OrganisationDetailViewComponent implements DetailRecord {
    * @return True | False depending of the current logged user role
    */
   get isSystemLibrarian(): boolean {
-    return this._userService.hasRole('system_librarian');
+    return this._userService.user.isSystemLibrarian;
 
   }
 }

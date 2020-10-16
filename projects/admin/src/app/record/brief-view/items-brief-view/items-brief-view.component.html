@@ -17,7 +17,7 @@
 -->
 
 <h5 class="mb-0 card-title">
-  <a [routerLink]="[detailUrl.link]">
+  <a [routerLink]="['/records', 'items', 'detail', record.metadata.pid]">
       {{ record.metadata.ui_title_text }}
   </a>
 </h5>

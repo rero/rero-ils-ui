@@ -46,7 +46,6 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
         { path: 'duplicate', component: DocumentEditorComponent }
       ],
       data: {
-        linkPrefix: 'records',
         showSearchInput: false,
         types: [
           {

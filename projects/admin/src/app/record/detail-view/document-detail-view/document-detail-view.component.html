@@ -62,7 +62,7 @@
           <a
           *ngIf="contribution.agent.pid"
           [innerHTML]="contribution | contributionFormat: true"
-          [routerLink]="['/records', 'persons', 'detail', contribution.agent.pid]">
+          [routerLink]="['/records', contributionTypeParam(contribution.agent), 'detail', contribution.agent.pid]">
           </a>
           {{ last ? '' : '; ' }}
         </li>

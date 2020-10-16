@@ -284,4 +284,15 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
       }
     }
   }
+
+  contributionTypeParam(contribution: any) {
+    switch (contribution.type) {
+      case 'bf:Person':
+        return 'persons';
+      case 'bf:Organisation':
+        return 'corporate-bodies';
+      default:
+        return 'missing-contribution-type';
+    }
+  }
 }

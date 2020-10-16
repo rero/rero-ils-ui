@@ -45,7 +45,6 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
         { path: 'edit/:pid', component: EditorComponent, canActivate: [CanUpdateGuard] }
       ],
       data: {
-        linkPrefix: 'records',
         types: [
           {
             key: this.name,
@@ -120,7 +119,7 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
    * @param data: the initial data
    */
   private _addDefaultValuesForTemplate(data: any) {
-    const user = this._routeToolService.userService.getCurrentUser();
+    const user = this._routeToolService.userService.user;
     if (!data.hasOwnProperty('visibility')) {
       data.visibility = 'private';
     }
@@ -142,7 +141,7 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
   private _limitUserFormField(field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig {
     const formOptions = jsonSchema.form;
     if (formOptions && formOptions.fieldMap === 'visibility') {
-      if (!this._routeToolService.userService.getCurrentUser().hasRole('system_librarian')) {
+      if (!this._routeToolService.userService.user.isSystemLibrarian) {
         field.templateOptions.disabled = true;
       }
     }

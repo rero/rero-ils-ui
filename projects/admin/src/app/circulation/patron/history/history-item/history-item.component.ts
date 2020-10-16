@@ -17,8 +17,8 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { extractIdOnRef, RecordService } from '@rero/ng-core';
+import { ProvisionActivityType } from '@rero/shared';
 import { forkJoin } from 'rxjs';
-import { ProvisionActivityType } from '../../../../pipe/provision-activity.pipe';
 import { PatronService } from '../../../../service/patron.service';
 
 @Component({

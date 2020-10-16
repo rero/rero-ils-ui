@@ -21,7 +21,7 @@
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import * as moment from 'moment';
 import { Moment } from 'moment';
-import { User } from './user';
+import { User } from '@rero/shared';
 
 export function _(str) {
   return marker(str);

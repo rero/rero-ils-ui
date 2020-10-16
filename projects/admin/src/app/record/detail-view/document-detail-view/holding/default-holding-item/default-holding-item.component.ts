@@ -20,9 +20,9 @@ import { RecordUiService } from '@rero/ng-core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { ItemsService } from 'projects/admin/src/app/service/items.service';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
-import { UserService } from 'projects/admin/src/app/service/user.service';
 import { forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
+import { UserService } from '@rero/shared';
 import { ItemRequestComponent } from '../../item-request/item-request.component';
 
 @Component({

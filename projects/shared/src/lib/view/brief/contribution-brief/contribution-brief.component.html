@@ -1,0 +1,32 @@
+<!--
+ RERO ILS UI
+ Copyright (C) 2020 RERO
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published by
+ the Free Software Foundation, version 3 of the License.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<div *ngIf="record" [ngSwitch]="record.metadata.type">
+  <shared-person-brief
+    *ngSwitchCase="'bf:Person'"
+    [record]="record"
+    [type]="type"
+    [detailUrl]="detailUrl"
+  ></shared-person-brief>
+  <shared-organisation-brief
+    *ngSwitchCase="'bf:Organisation'"
+    [record]="record"
+    [type]="type"
+    [detailUrl]="detailUrl"
+    ></shared-organisation-brief>
+  <span *ngSwitchDefault translate>Missing contribution type.</span>
+</div>

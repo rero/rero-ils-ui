@@ -19,10 +19,10 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { UserService } from '@rero/shared';
 import { AppRouterEventService } from './service/app-router-event.service';
 import { KeyboardShortcutsService } from './service/keyboard-shortcuts.service';
 import { NavigateService } from './service/navigate.service';
-import { UserService } from './service/user.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 
 @Component({
@@ -32,14 +32,8 @@ import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/cust
 })
 export class AppComponent implements OnInit, AfterViewInit {
 
-  /** Allow interface access */
-  get allowAccess() {
-    return this._userService.allowAccess;
-  }
-
-  /** is user loaded */
-  get userLoaded() {
-    return this._userService.userLoaded;
+  get user() {
+    return this._userService.user;
   }
 
   /**

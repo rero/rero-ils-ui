@@ -41,7 +41,6 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
         { path: 'new', component: EditorComponent, canActivate: [ LibraryGuard ] }
       ],
       data: {
-        linkPrefix: 'records',
         types: [
           {
             key: this.name,
