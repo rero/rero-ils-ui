@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="row mt-1" *ngIf="item && permissions && item.metadata.issue.status !== itemIssueStatus.DELETED">
+<ng-container *ngIf="item && permissions && item.metadata.issue.status !== itemIssueStatus.DELETED">
   <div class="col-sm-3">
     <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
       {{ item.metadata.barcode }}
@@ -24,7 +24,7 @@
     {{ item.metadata.status }}
   </div>
   <div class="col-sm-3" name="issue">
-    {{ item.metadata.issue.display_text }}
+    {{ item.metadata.enumerationAndChronology }}
   </div>
   <div class="col-sm-2" name="call-number">
     {{ callNumber }}
@@ -69,7 +69,5 @@
       <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
     </ng-template>
   </div>
-  <admin-holding-item-in-collection class="col-sm-12" [itemPid]="item.metadata.pid"></admin-holding-item-in-collection>
-</div>
-
-
+  <admin-holding-item-in-collection [class]="'col-sm-12'" [itemPid]="item.metadata.pid"></admin-holding-item-in-collection>
+</ng-container>

@@ -18,7 +18,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { extractIdOnRef, RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { forkJoin, Observable, Subscription } from 'rxjs';
-import { IssueItemStatus } from '../../../class/items';
+import { IssueItemStatus, Item, ItemNote, ItemNoteType } from '../../../class/items';
 import { LoanService } from '../../../service/loan.service';
 
 @Component({
@@ -81,5 +81,9 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
 
   ngOnDestroy() {
     this._recordObs.unsubscribe();
+  }
+
+  isPublicNote(note: ItemNote): boolean {
+    return Item.PUBLIC_NOTE_TYPES.includes(note.type);
   }
 }

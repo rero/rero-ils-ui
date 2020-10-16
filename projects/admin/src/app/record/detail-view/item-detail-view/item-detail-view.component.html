@@ -35,6 +35,13 @@
             {{ record.metadata.second_call_number }}
         </dd>
       </ng-container>
+      <!-- ENUMERATION AND CHRONOLOGY / UNIT -->
+      <ng-container *ngIf="record.metadata.enumerationAndChronology">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Unit</dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.enumerationAndChronology }}
+        </dd>
+      </ng-container>
       <!-- ITEM TYPE -->
       <dt class="col-sm-3 offset-sm-2 offset-md-0">
         {{ 'Type' | translate }}:
@@ -95,9 +102,6 @@
     </header>
     <section class="mb-4">
       <dl class="row mb-0">
-        <!-- numbering -->
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Numbering</dt>
-        <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.issue.display_text }}</dd>
         <!-- received date -->
         <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Received date</dt>
         <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.issue.received_date | dateTranslate }}</dd>
@@ -126,16 +130,27 @@
     </section>
   </section>
 
+  <!-- NOTES -->
   <section *ngIf="record.metadata.notes">
     <div class="card item-notes">
       <div class="card-header" translate>Notes</div>
       <div class="card-body">
-        <div class="row mb-3" *ngFor="let note of record.metadata.notes">
-          <div class="col-12">
+        <div class="row mb-2" *ngFor="let note of record.metadata.notes">
+          <dt class="col-3 label-title">
+            <i class="fa mr-4 small"
+               [ngClass]="{
+                  'fa-eye text-success': isPublicNote(note),
+                  'fa-eye-slash text-secondary': !isPublicNote(note)
+               }"
+            ></i>
             <strong translate>{{ note.type }}</strong>
-          </div>
-          <div class="offset-1 col-11 text-justify">{{ note.content }}</div>
+          </dt>
+          <dd class="col-9 text-justify" [innerHTML]="note.content | nl2br"></dd>
         </div>
+      </div>
+      <div class="card-footer text-muted small">
+        <i class="fa fa-eye text-success"></i> {{ 'Public notes' | translate }}
+        <i class="fa fa-eye-slash text-secondary ml-4"></i> {{ 'Staff notes' | translate }}
       </div>
     </div>
   </section>

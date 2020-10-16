@@ -37,10 +37,15 @@ export enum ItemStatus {
 }
 
 export enum ItemNoteType {
-  PUBLIC = _('public_note'),
+  GENERAL = _('general_note'),
   STAFF = _('staff_note'),
   CHECKIN = _('checkin_note'),
-  CHECKOUT = _('checkout_note')
+  CHECKOUT = _('checkout_note'),
+  BINDING = _('binding_note'),
+  PROVENANCE = _('provenance_note'),
+  CONDITION = _('condition_note'),
+  PATRIMONIAL = _('patrimonial_note'),
+  ACQUISITION = _('acquisition_note'),
 }
 
 export enum IssueItemStatus {
@@ -149,6 +154,15 @@ export class ItemNote {
 }
 
 export class Item {
+
+  static PUBLIC_NOTE_TYPES: ItemNoteType[] = [
+    ItemNoteType.GENERAL,
+    ItemNoteType.BINDING,
+    ItemNoteType.PROVENANCE,
+    ItemNoteType.CONDITION,
+    ItemNoteType.PATRIMONIAL
+  ]
+
   available: boolean;
   barcode: string;
   call_number: string;
@@ -167,6 +181,7 @@ export class Item {
   location: any;
   notes: ItemNote[];
   acquisition_date: Moment;
+  enumerationAndChronology: string;
 
 
   constructor(obj?: any) {
