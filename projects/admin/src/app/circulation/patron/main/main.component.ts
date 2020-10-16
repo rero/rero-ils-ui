@@ -18,6 +18,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
+import { LoanState } from '../../../class/items';
 import { User } from '../../../class/user';
 import { OrganisationService } from '../../../service/organisation.service';
 import { PatronService } from '../../../service/patron.service';
@@ -31,6 +32,16 @@ export class MainComponent implements OnInit, OnDestroy {
 
   patron: User = undefined;
 
+  /** circulation statistics about a patron */
+  patronCirculationStatistics = {
+    loans: 0,
+    pickup: 0,
+    pending: 0,
+  };
+
+  /** current patron as observable */
+  patron$: Observable<User>;
+
   /** the total amount of all 'open' patron transactions for the current patron */
   transactionsTotalAmount = 0;
 
@@ -40,31 +51,65 @@ export class MainComponent implements OnInit, OnDestroy {
   /** Subsription to current patron */
   private _patronSubscription$: Subscription;
 
+  /** Constructor
+   * @param _route - ActivatedRoute
+   * @param _router - Router
+   * @param _patronService - PatronService
+   * @param _patronTransactionService - PatronTransactionService
+   * @param _organisationService - OrganisationService
+   */
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private patronService: PatronService,
-    private patronTransactionService: PatronTransactionService,
-    private organisationService: OrganisationService) { }
+    private _route: ActivatedRoute,
+    private _router: Router,
+    private _patronService: PatronService,
+    private _patronTransactionService: PatronTransactionService,
+    private _organisationService: OrganisationService) { }
 
   ngOnInit() {
-    const barcode = this.route.snapshot.paramMap.get('barcode');
-    this._patronSubscription$ = this.patronService.getPatron(barcode).subscribe((patron) => {
+    const barcode = this._route.snapshot.paramMap.get('barcode');
+    this._patronSubscription$ = this._patronService.getPatron(barcode).subscribe((patron) => {
       if (patron) {
         this.patron = patron;
-        this._patronTransactionSubscription$ = this.patronTransactionService.patronTransactionsSubject$.subscribe(
+        this._patronService.getCirculationStats(patron.pid).subscribe((stats) => this._parseStatistics(stats));
+        this._patronTransactionSubscription$ = this._patronTransactionService.patronTransactionsSubject$.subscribe(
           (transactions) => {
-            this.transactionsTotalAmount = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
+            this.transactionsTotalAmount = this._patronTransactionService.computeTotalTransactionsAmount(transactions);
           }
         );
-        this.patronTransactionService.emitPatronTransactionByPatron(patron.pid, undefined, 'open');
+        this._patronTransactionService.emitPatronTransactionByPatron(patron.pid, undefined, 'open');
       }
     });
   }
 
+  /** Parse statistics from API into corresponding tab statistic.
+   *
+   * @param statistics: a dictionary of loan state/value
+   */
+  private _parseStatistics(statistics: any) {
+    // reset the known stats
+    for (const key of Object.keys(this.patronCirculationStatistics)) {
+      this.patronCirculationStatistics[key] = 0;
+    }
+    // parse the stats
+    for (const key of Object.keys(statistics)) {
+      switch (key) {
+        case LoanState[LoanState.PENDING]:
+        case LoanState[LoanState.ITEM_IN_TRANSIT_FOR_PICKUP]:
+          this.patronCirculationStatistics.pending += statistics[key];
+          break;
+        case LoanState[LoanState.ITEM_AT_DESK]:
+          this.patronCirculationStatistics.pickup += statistics[key];
+          break;
+        case LoanState[LoanState.ITEM_ON_LOAN]:
+          this.patronCirculationStatistics.loans += statistics[key];
+          break;
+      }
+    }
+  }
+
   clearPatron() {
-    this.patronService.clearPatron();
-    this.router.navigate(['/circulation']);
+    this._patronService.clearPatron();
+    this._router.navigate(['/circulation']);
   }
 
   ngOnDestroy() {
@@ -74,13 +119,13 @@ export class MainComponent implements OnInit, OnDestroy {
     if (this._patronSubscription$) {
       this._patronSubscription$.unsubscribe();
     }
-    this.patronService.clearPatron();
+    this._patronService.clearPatron();
   }
 
   /** Get current organisation
    *  @return: current organisation
    */
   get organisation() {
-    return this.organisationService.organisation;
+    return this._organisationService.organisation;
   }
 }

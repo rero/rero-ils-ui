@@ -39,10 +39,12 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'loan']"
-          translate
-          >Checkin/Checkout</a
-        >
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'loan']">
+          {{ 'Checkin/Checkout' | translate }}
+          <span *ngIf="this.patronCirculationStatistics.loans > 0" class="badge badge-info font-weight-normal">
+            {{ this.patronCirculationStatistics.loans }}
+          </span>
+        </a>
       </li>
       <li class="nav-item">
         <a
@@ -50,10 +52,12 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'pickup']"
-          translate
-          >To pick up</a
-        >
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'pickup']">
+          {{ 'To pick up' | translate }}
+          <span *ngIf="this.patronCirculationStatistics.pickup > 0" class="badge badge-info font-weight-normal">
+            {{ this.patronCirculationStatistics.pickup }}
+          </span>
+        </a>
       </li>
       <li class="nav-item">
         <a
@@ -61,10 +65,12 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'pending']"
-          translate
-          >Pending</a
-        >
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'pending']">
+          {{ 'Pending' | translate }}
+          <span *ngIf="this.patronCirculationStatistics.pending > 0" class="badge badge-info font-weight-normal">
+            {{ this.patronCirculationStatistics.pending }}
+          </span>
+        </a>
       </li>
       <li class="nav-item">
         <a
@@ -84,7 +90,7 @@
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'fees']">
-          {{ 'Fees' }}
+          {{ 'Fees' | translate }}
           <span *ngIf="transactionsTotalAmount > 0" class="badge badge-warning font-weight-normal">
             {{ transactionsTotalAmount | currency: organisation.default_currency }}
           </span>

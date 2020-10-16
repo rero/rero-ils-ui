@@ -169,6 +169,16 @@ export class PatronService {
   }
 
   /**
+   * Get circulation statistics about a patron
+   * @param patronPid - string : the patron pid to search
+   * @return Observable
+   */
+  getCirculationStats(patronPid: string): Observable<any> {
+    const url = `/api/patrons/${patronPid}/circulation_stats`;
+    return this._http.get(url);
+  }
+
+  /**
    * Get Loans by query
    * @param query - string : Query to execute to find loans
    * @param sort - string : Sorting criteria
@@ -182,4 +192,5 @@ export class PatronService {
       map(hits => this._recordService.totalHits(hits.total) === 0 ? [] : hits.hits)
     );
   }
+
 }
