@@ -36,7 +36,7 @@ describe('DocumentRouteService', () => {
   });
 
   it('should retrieve the name', () => {
-    expect(service.getName()).toEqual('documents');
+    expect(service.getResources()).toEqual(['documents', 'persons']);
   });
 
   it('should create the configuration the first time, then the return is undefined', () => {
