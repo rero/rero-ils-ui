@@ -33,9 +33,6 @@ export class CollectionsRouteService extends BaseRoute implements ResourceRouteI
   /** loaded configuration (viewcode) */
   private availableConfig = [];
 
-  /** Route name */
-  private routeName = 'collections';
-
   /**
    * Constructor
    * @param translateService - TranslateService
@@ -45,10 +42,10 @@ export class CollectionsRouteService extends BaseRoute implements ResourceRouteI
   }
 
   /**
-   * Resource name of route
+   * Resource name of route(s)
    */
-  getName() {
-    return this.routeName;
+  getResources(): string[] {
+    return ['collections'];
   }
 
   /**
@@ -73,7 +70,7 @@ export class CollectionsRouteService extends BaseRoute implements ResourceRouteI
           detailUrl: `/${viewcode}/collections/:pid`,
           types: [
             {
-              key: this.getName(),
+              key: 'collections',
               component: CollectionBriefComponent,
               label: _('Collections'),
               aggregations: (aggregations: any) => this.aggFilter(aggregations),

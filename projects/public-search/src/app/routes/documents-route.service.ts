@@ -34,9 +34,6 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
   /** loaded configuration (viewcode) */
   private availableConfig = [];
 
-  /** Route name */
-  private routeName = 'documents';
-
   /**
    * Constructor
    * @param translateService - TranslateService
@@ -50,10 +47,10 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
   }
 
   /**
-   * Resource name of route
+   * Resource name of routes
    */
-  getName() {
-    return this.routeName;
+  getResources(): string[] {
+    return ['documents', 'persons'];
   }
 
   /**
@@ -79,7 +76,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
           detailUrl: `/${viewcode}/:type/:pid`,
           types: [
             {
-              key: this.getName(),
+              key: 'documents',
               component: DocumentBriefComponent,
               label: _('Documents'),
               aggregations: (aggregations: any) => this.aggFilter(aggregations),

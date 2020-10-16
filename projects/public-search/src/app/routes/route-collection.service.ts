@@ -42,7 +42,9 @@ export class RouteCollectionService {
   load() {
     const routes = this._injector.get(resourceRouteToken);
     routes.map((route: ResourceRouteInterface) => {
-      this.resourcesAvailable[route.getName()] = route;
+      route.getResources().map((resource: string) => {
+        this.resourcesAvailable[resource] = route;
+      });
     });
   }
 

@@ -37,7 +37,7 @@ describe('CollectionsRouteService', () => {
   });
 
   it('should retrieve the name', () => {
-    expect(service.getName()).toEqual('collections');
+    expect(service.getResources()).toEqual(['collections']);
   });
 
   it('should create the configuration the first time, then the return is undefined', () => {
