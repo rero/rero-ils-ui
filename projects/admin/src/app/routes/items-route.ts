@@ -248,7 +248,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
     } catch (e) { }
     // setting other issue attributes from url parameters
     const today = this._routeToolService.datePipe.transform(Date.now(), 'yyyy-MM-dd');
-    record.issue.display_text = this._routeToolService.getRouteQueryParam('display_text', '');
+    record.enumerationAndChronology = this._routeToolService.getRouteQueryParam('enumerationAndChronology', '');
     record.issue.expected_date = this._routeToolService.getRouteQueryParam('expected_date', today);
     record.issue.received_date = this._routeToolService.getRouteQueryParam('received_date', today);
 

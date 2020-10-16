@@ -16,7 +16,8 @@
 -->
 <ng-container *ngIf="collections">
   <div [class]="class" *ngIf="collections.length > 0">
-    <span class="font-weight-bold" translate>In</span>
+    <i class="fa fa-long-arrow-right pl-4 pr-1"></i>
+    <span class="label-title" translate>Temporary location</span>
     <ng-container *ngFor="let collection of collections; let last=last">
       <a [routerLink]="['/records', 'collections', 'detail', collection.metadata.pid]">
         {{ collection.metadata.title }}

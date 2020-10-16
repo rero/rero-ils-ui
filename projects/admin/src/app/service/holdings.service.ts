@@ -69,7 +69,7 @@ export class HoldingsService {
     if (displayText || receivedDate) {
       data.issue = {};
       if (displayText) {
-        data.issue.display_text = displayText;
+        data.enumerationAndChronology = displayText;
       }
       if (receivedDate) {
         data.issue.received_date = receivedDate;
