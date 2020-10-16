@@ -45,7 +45,6 @@ export class AcquisitionOrdersRoute extends BaseRoute implements RouteInterface 
         { path: 'new', component: EditorComponent }
       ],
       data: {
-        linkPrefix: 'records',
         types: [
           {
             key: this.name,
@@ -58,7 +57,7 @@ export class AcquisitionOrdersRoute extends BaseRoute implements RouteInterface 
               simple: 1
             },
             preCreateRecord: (data: any) => {
-              const user = this._routeToolService.userService.getCurrentUser();
+              const user = this._routeToolService.userService.user;
               data.order_date = formatDate(
                 new Date(),
                 'yyyy-MM-dd',

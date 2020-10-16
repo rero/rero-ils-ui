@@ -17,12 +17,11 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { UserService } from '@rero/shared';
 import moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import { interval, Subscription } from 'rxjs';
-import { UserService } from '../../service/user.service';
 import { ItemsService } from '../../service/items.service';
-
 
 @Component({
   selector: 'admin-circulation-main-request',
@@ -88,7 +87,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
 
   /** OnInit hook */
   ngOnInit() {
-    const user = this._userService.getCurrentUser();
+    const user = this._userService.user;
     if (user) {
       this._libraryPid = user.getCurrentLibrary();
       this.getRequestedLoans();

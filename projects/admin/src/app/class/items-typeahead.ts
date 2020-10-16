@@ -15,15 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, RecordService, SuggestionMetadata, TruncateTextPipe } from '@rero/ng-core';
+import { MainTitlePipe } from '@rero/shared';
 import { from, Observable, of } from 'rxjs';
 import { map, mergeMap, switchMap, toArray } from 'rxjs/operators';
-import { MainTitlePipe } from '../pipe/main-title.pipe';
+import { ITypeahead } from './ITypeahead-interface';
 
-@Injectable()
-export class ItemsTypeahead {
+@Injectable({
+  providedIn: 'root'
+})
+export class ItemsTypeahead implements ITypeahead {
 
   /** Maximum length of the suggestion */
   maxLengthSuggestion = 100;
@@ -37,12 +40,17 @@ export class ItemsTypeahead {
    * @param _translateService - TranslateService
    */
   constructor(
-    @Inject(ApiService) private _apiService: ApiService,
-    @Inject(RecordService) private _recordService: RecordService,
-    @Inject(MainTitlePipe) private _mainTitlePipe: MainTitlePipe,
-    @Inject(TruncateTextPipe) private _truncateTextPipe: TruncateTextPipe,
+    private _apiService: ApiService,
+    private _recordService: RecordService,
+    private _mainTitlePipe: MainTitlePipe,
+    private _truncateTextPipe: TruncateTextPipe,
     private _translateService: TranslateService
   ) { }
+
+  /** Get name of typeahead */
+  getName() {
+    return 'items';
+  }
 
   /**
    * Convert the input value (i.e. $ref url) into a template html code.

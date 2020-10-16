@@ -1,4 +1,3 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 /*
  * RERO ILS UI
  * Copyright (C) 2020 RERO
@@ -18,7 +17,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 /* tslint:disable:no-unused-variable */
 
-import { TestBed, async, inject } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { inject, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { AppInitService } from './app-init.service';

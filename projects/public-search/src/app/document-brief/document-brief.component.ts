@@ -85,13 +85,4 @@ export class DocumentBriefComponent {
       }
     });
   }
-
-  /**
-   * Get link to MEF person
-   * @param pid - a MEF PID
-   * @returns string - link to MEF person.
-   */
-  getPersonLink(pid: string) {
-    return `/${this.viewcode}/persons/${pid}`;
-  }
 }

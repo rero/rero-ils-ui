@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { map } from 'rxjs/operators';
 import { LoanState } from '../class/items';
-import { UserService } from './user.service';
+import { UserService } from '@rero/shared';
 
 @Injectable({
   providedIn: 'root'
@@ -86,7 +87,7 @@ export class LoanService {
       item_pid: itemPid,
       pid: loanPid,
       transaction_library_pid: transactionLibraryPid,
-      transaction_user_pid: this._userService.getCurrentUser().pid
+      transaction_user_pid: this._userService.user.pid
     }).pipe(
     map(data => {
       const itemData = data.metadata;

@@ -20,13 +20,23 @@
     ],
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@rero/shared": [
+        "dist/shared"
+      ],
+      "@rero/shared/*": [
+        "dist/shared/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true
   },
   "paths": {
-    "@app/*": ["src/app/*"]
+    "@app/*": [
+      "src/app/*"
+    ]
   }
 }

@@ -19,9 +19,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslateService } from '@ngx-translate/core';
+import { User } from '@rero/shared';
 import { Subscription } from 'rxjs';
 import { LoanState } from '../../../class/items';
-import { User } from '../../../class/user';
 import { OrganisationService } from '../../../service/organisation.service';
 import { PatronService } from '../../../service/patron.service';
 import { PatronTransactionService } from '../../patron-transaction.service';
@@ -119,7 +119,7 @@ export class MainComponent implements OnInit, OnDestroy {
   /** OnInit hook */
   ngOnInit() {
     const barcode = this._route.snapshot.paramMap.get('barcode');
-    this._patronSubscription$ = this._patronService.getPatron(barcode).subscribe((patron) => {
+    this._patronSubscription$ = this._patronService.getPatron(barcode).subscribe((patron: User) => {
       if (patron) {
         this.patron = patron;
         // We need to unregister/register the shortcuts after the patron was loaded. Otherwise, the patron could be considered has

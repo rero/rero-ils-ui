@@ -21,8 +21,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { GetRecordPipe, RecordModule } from '@rero/ng-core';
 import { AppRoutingModule } from 'projects/admin/src/app/app-routing.module';
-import { ContributionFormatPipe } from 'projects/admin/src/app/pipe/contribution-format.pipe';
-import { SharedPipesModule } from 'projects/admin/src/app/shared/shared-pipes.module';
+import { SharedModule } from '@rero/shared';
 import { FrontpageBoardComponent } from '../../../../widgets/frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from '../../../../widgets/frontpage/frontpage.component';
 import { CollectionItemsComponent } from './collection-items.component';
@@ -41,13 +40,12 @@ describe('CollectionItemsComponent', () => {
       imports: [
         AppRoutingModule,
         RecordModule,
-        SharedPipesModule,
         TranslateModule.forRoot(),
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        SharedModule
       ],
       providers: [
-        GetRecordPipe,
-        ContributionFormatPipe
+        GetRecordPipe
       ]
     })
     .compileComponents();

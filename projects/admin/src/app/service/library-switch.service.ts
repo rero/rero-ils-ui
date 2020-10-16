@@ -21,9 +21,8 @@ import { LocalStorageService, RecordEvent, RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { User } from '../class/user';
+import { User, UserService } from '@rero/shared';
 import { LibraryService } from './library.service';
-import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -93,7 +92,7 @@ export class LibrarySwitchService {
    * @return True if menu could be visible, false otherwise
    */
   get visible(): boolean {
-    return this._userService.hasRole('system_librarian');
+    return this._userService.user.hasRole('system_librarian');
   }
 
   /**
@@ -186,7 +185,7 @@ export class LibrarySwitchService {
     this._recordService.onUpdate$.subscribe((event: RecordEvent) => {
       if (event.resource === 'libraries') {
         const libraryPid = event.data.record.pid;
-        if (this._userService.getCurrentUser().getCurrentLibrary() === libraryPid) {
+        if (this._userService.user.getCurrentLibrary() === libraryPid) {
           this._loadCurrentLibrary(libraryPid);
         }
         this.generateMenu();
@@ -198,8 +197,8 @@ export class LibrarySwitchService {
     this._recordService.onDelete$.subscribe((event: RecordEvent) => {
       if (event.resource === 'libraries') {
         const libraryPid = event.data.pid;
-        if (this._userService.getCurrentUser().getCurrentLibrary() === libraryPid) {
-          const userLibrary = this._userService.getCurrentUser().library;
+        if (this._userService.user.getCurrentLibrary() === libraryPid) {
+          const userLibrary = this._userService.user.library;
           this.switch(userLibrary.pid);
         }
         this.generateMenu();
@@ -210,7 +209,7 @@ export class LibrarySwitchService {
     this._localStorageService.onSet$.subscribe((event: any) => {
       if (event.key === User.CURRENT_LIBRARY_STORAGE_KEY) {
         const local = event.data.data;
-        const user = this._userService.getCurrentUser();
+        const user = this._userService.user;
         if (user.getCurrentLibrary() !== local.currentLibrary) {
           user.setCurrentLibrary(local.currentLibrary);
           this._loadCurrentLibrary(local.currentLibrary);

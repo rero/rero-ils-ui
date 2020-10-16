@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { Subscription } from 'rxjs';
-import { User } from '../../../class/user';
+import { User } from '@rero/shared';
 import { OrganisationService } from '../../../service/organisation.service';
 import { PatronService } from '../../../service/patron.service';
 import { PatronTransaction, PatronTransactionStatus } from '../../patron-transaction';

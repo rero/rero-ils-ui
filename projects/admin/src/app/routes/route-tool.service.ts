@@ -20,8 +20,8 @@ import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionStatus, ApiService, RecordService } from '@rero/ng-core';
 import { Observable, of, Subscriber } from 'rxjs';
+import { UserService } from '@rero/shared';
 import { RecordPermission, RecordPermissionService } from '../service/record-permission.service';
-import { UserService } from '../service/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -144,7 +144,7 @@ export class RouteToolService {
    */
   canSystemLibrarian(message: string = ''): Observable<ActionStatus> {
     return of(
-      { can: this._userService.hasRole('system_librarian'), message }
+      { can: this._userService.user.isSystemLibrarian, message }
     );
   }
 

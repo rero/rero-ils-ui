@@ -15,17 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiService, UniqueValidator, cleanDictKeys, RecordService } from '@rero/ng-core';
-import { LibraryFormService } from './library-form.service';
-import { Library } from './library';
-import { ToastrService } from 'ngx-toastr';
-import { UserService } from '../../../service/user.service';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
-import { Location } from '@angular/common';
+import { ApiService, cleanDictKeys, RecordService, UniqueValidator } from '@rero/ng-core';
+import { ToastrService } from 'ngx-toastr';
+import { UserService } from '@rero/shared';
+import { Library } from './library';
+import { LibraryFormService } from './library-form.service';
 
 @Component({
   selector: 'admin-libraries-library',
@@ -52,7 +51,7 @@ export class LibraryComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe( (params) => {
-      const loggedUser = this.userService.getCurrentUser();
+      const loggedUser = this.userService.user;
       if (loggedUser) {
         this.organisationPid = loggedUser.library.organisation.pid;
       }

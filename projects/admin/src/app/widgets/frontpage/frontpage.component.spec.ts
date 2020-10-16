@@ -19,8 +19,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { UserService } from '@rero/shared';
 import { AppModule } from '../../app.module';
-import { UserService } from '../../service/user.service';
 import { FrontpageComponent } from './frontpage.component';
 
 
@@ -29,9 +29,9 @@ describe('FrontpageComponent', () => {
   let fixture: ComponentFixture<FrontpageComponent>;
 
   const userService = jasmine.createSpyObj(
-    'UserService', ['getCurrentUser']
+    'UserService', ['']
   );
-  userService.getCurrentUser.and.returnValue({
+  userService.user =  {
     first_name: 'John',
     last_name: 'Doe',
     library: {
@@ -41,7 +41,7 @@ describe('FrontpageComponent', () => {
       },
       current: '1'
     }
-  });
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

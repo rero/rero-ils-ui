@@ -19,8 +19,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
-import { UserService } from 'projects/admin/src/app/service/user.service';
 import { forkJoin } from 'rxjs';
+import { UserService } from '@rero/shared';
 
 @Component({
   selector: 'admin-holdings',
@@ -54,7 +54,7 @@ export class HoldingsComponent implements OnInit {
 
   /** Init */
   ngOnInit() {
-    const orgPid = this._userService.getCurrentUser().library.organisation.pid;
+    const orgPid = this._userService.user.library.organisation.pid;
     const query = `document.pid:${this.documentPid} AND organisation.pid:${orgPid}`;
     const holdingRecordsRef = this._recordService.getRecords('holdings', query, 1, RecordService.MAX_REST_RESULTS_SIZE);
     const permissionsRef = this._recordPermissionService.getPermission('holdings');

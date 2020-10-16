@@ -63,6 +63,8 @@ $ nvm use lts/erbium
 $ npm i -g @angular/cli@8.3.28
 # Project npm dependencies
 $ npm i
+# Build shared library
+$ ng build shared --watch
 # Launch a local server using a proxy for https://localhost:5000 (rero-ils server)
 $ npm run start-admin-proxy
 ```

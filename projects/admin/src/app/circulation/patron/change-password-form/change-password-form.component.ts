@@ -19,10 +19,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
+import { User, UserApiService } from '@rero/shared';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { User } from '../../../class/user';
-import { UserService } from '../../../service/user.service';
 
 @Component({
   selector: 'admin-change-password-form',
@@ -48,14 +47,14 @@ export class ChangePasswordFormComponent implements OnInit {
    * @param _bsModalRef - BsModalRef
    * @param _translateService - TranslateService
    * @param _toastr - ToastrService
-   * @param _userService - UserService
+   * @param _userApiService - UserApiService
    */
   constructor(
     private _modalService: BsModalService,
     private _bsModalRef: BsModalRef,
     private _translateService: TranslateService,
     private _toastr: ToastrService,
-    private _userService: UserService
+    private _userApiService: UserApiService
   ) { }
 
   /**
@@ -75,7 +74,7 @@ export class ChangePasswordFormComponent implements OnInit {
    * @param model - Object
    */
   submit(patron, model) {
-    this._userService.changePassword(patron.username, model.password).subscribe(
+    this._userApiService.changePassword(patron.username, model.password).subscribe(
       () => {
         this._toastr.success(
           this._translateService.instant('The patron password has been changed.'),

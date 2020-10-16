@@ -20,10 +20,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { recordTestingService } from 'projects/admin/tests/utils';
+import { UserService } from '@rero/shared';
 import { of } from 'rxjs';
 import { AppModule } from '../app.module';
 import { LibrarySwitchService } from '../service/library-switch.service';
-import { UserService } from '../service/user.service';
 import { MenuComponent } from './menu.component';
 
 
@@ -38,9 +38,10 @@ describe('MenuComponent', () => {
   libraryTestingSwitchService.currentLibraryRecord$ = of({code: 1});
 
   const userTestingService = jasmine.createSpyObj(
-    'UserService', ['getCurrentUser', 'hasRole']
+    'UserService', ['']
   );
-  userTestingService.getCurrentUser.and.returnValue({
+
+  userTestingService.user = {
     first_name: 'John',
     last_name: 'Doe',
     library: {
@@ -50,8 +51,7 @@ describe('MenuComponent', () => {
       },
       current: '1'
     }
-  });
-  userTestingService.hasRole.and.returnValue(true);
+  };
 
   recordTestingService.getRecord.and.returnValue(of({
     metadata: {

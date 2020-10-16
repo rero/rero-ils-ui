@@ -44,7 +44,6 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
         { path: 'new', component: CirculationPolicyComponent, canActivate: [RoleGuard], data: { roles: ['system_librarian'] } }
       ],
       data: {
-        linkPrefix: 'records',
         types: [
           {
             key: this.name,

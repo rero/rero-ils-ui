@@ -17,7 +17,10 @@
 
 <ng-container *ngIf="record">
   <h5 class="mb-0 card-title">
-    <a name="document-title" [routerLink]="[detailUrl.link]">
+    <a
+      name="document-title"
+      [routerLink]="['/records', type === 'import_bnf' ? 'import_bnf': 'documents', 'detail', record.metadata.pid]"
+    >
       <ng-container *ngIf="record.metadata.ui_title_text else mainTitle">
         {{ record.metadata.ui_title_text }}
       </ng-container>
@@ -36,7 +39,7 @@
         <span *ngIf="!contribution.agent.pid">
           {{ contribution | contributionFormat }}
         </span>
-        <a *ngIf="contribution.agent.pid" [routerLink]="['/records', 'persons', 'detail', contribution.agent.pid]">
+        <a *ngIf="contribution.agent.pid" [routerLink]="['/records', contributionTypeParam(contribution.agent), 'detail', contribution.agent.pid]">
           {{ contribution | contributionFormat }}
         </a>
         {{ last ? '' : '; ' }}

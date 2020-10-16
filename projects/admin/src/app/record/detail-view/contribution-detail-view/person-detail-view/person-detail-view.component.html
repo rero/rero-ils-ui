@@ -1,0 +1,111 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2020 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<ng-container *ngIf="record">
+  <!-- DATE OF BIRTH -->
+  <dl class="row mb-0" *ngIf="record.date_of_birth">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Birth date
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.date_of_birth }}
+    </dd>
+  </dl>
+  <!-- DATE OF DEATH -->
+  <dl class="row mb-0" *ngIf="record.date_of_death">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Death date
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.date_of_death }}
+    </dd>
+  </dl>
+  <!-- LANGUAGE -->
+  <dl class="row mb-0" *ngIf="record.language">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Language
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      <ul class="list-unstyled mb-0">
+        <li *ngFor="let language of record.language">
+          {{ ('lang_' + language) | translate }}
+        </li>
+      </ul>
+    </dd>
+  </dl>
+  <!-- GENDER -->
+  <dl class="row mb-0" *ngIf="record.Gender">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Gender
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.Gender }}
+    </dd>
+  </dl>
+  <!-- BIBLIOGRAPHICAL INFORMATION -->
+  <dl class="row mb-0" *ngIf="record.biographical_information">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Biographical information
+    </dt>
+    <dd
+      class="col-sm-7 col-md-8 mb-0"
+      [innerHtml]="record.biographical_information.join('\n') | urlActive | nl2br"
+    ></dd>
+  </dl>
+  <!-- PERMALINK -->
+  <dl class="row mb-0" *ngIf="record.identifier_for_person">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Id
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      <a href="{{ record.identifier_for_person }}">
+        {{ record.pid }}
+      </a>
+    </dd>
+  </dl>
+  <!-- NAME -->
+  <dl class="row mb-0" *ngIf="record.name">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Name
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.name }}
+    </dd>
+  </dl>
+  <!-- VARIANTE ACCESS POINT -->
+  <dl class="row mb-0" *ngIf="record.variant_access_point">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Variant name
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+    <ul class="list-unstyled mb-0">
+      <li *ngFor="let variant_name of record.variant_access_point">
+        {{ variant_name }}
+      </li>
+    </ul>
+    </dd>
+  </dl>
+  <!-- AUTHORIZED ACCESS POINT -->
+  <dl class="row mb-0" *ngIf="record.authorized_access_point">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Authorized access point
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.authorized_access_point }}
+    </dd>
+  </dl>
+</ng-container>

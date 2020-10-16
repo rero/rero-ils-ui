@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DialogService } from '@rero/ng-core';
+import { UserService } from '@rero/shared';
 import { LoanState } from 'projects/admin/src/app/class/items';
-import { UserService } from 'projects/admin/src/app/service/user.service';
-import { map } from 'rxjs/operators';
 import { ItemsService } from 'projects/admin/src/app/service/items.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'admin-item-transaction',
@@ -88,7 +89,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
    * On init hook
    */
   ngOnInit() {
-    this._currentUser = this._userService.getCurrentUser();
+    this._currentUser = this._userService.user;
     if (this._autorizedTypeToLoadPickupLocations.includes(this.type)) {
       this._pickupLocations$ = this.getPickupLocations().subscribe((pickups) => {
         this.pickupLocations = pickups;

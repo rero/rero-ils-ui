@@ -16,9 +16,10 @@
  */
 
 import { HttpClientModule } from '@angular/common/http';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { SharedModule } from '@rero/shared';
 import { CirculationModule } from '../../../circulation.module';
 import { HistoryItemComponent } from './history-item.component';
 
@@ -32,7 +33,8 @@ describe('HistoryItemComponent', () => {
         TranslateModule.forRoot(),
         RouterTestingModule,
         HttpClientModule,
-        CirculationModule
+        CirculationModule,
+        SharedModule
       ]
     })
     .compileComponents();

@@ -20,7 +20,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslateService } from '@ngx-translate/core';
-import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -32,13 +31,11 @@ export class KeyboardShortcutsService {
    * @param _router - Router
    * @param _hotKeys - HotKeysService
    * @param _translateService - TranslateService
-   * @param _userService - UserService
    */
   constructor(
     private _router: Router,
     private _hotKeys: HotkeysService,
-    private _translateService: TranslateService,
-    private _userService: UserService
+    private _translateService: TranslateService
   ) { }
 
   /**

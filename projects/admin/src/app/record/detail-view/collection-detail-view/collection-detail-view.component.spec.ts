@@ -20,9 +20,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { Nl2brPipe, RecordModule } from '@rero/ng-core';
+import { SharedModule } from '@rero/shared';
 import { AppRoutingModule } from '../../../app-routing.module';
-import { ContributionFormatPipe } from '../../../pipe/contribution-format.pipe';
-import { SharedPipesModule } from '../../../shared/shared-pipes.module';
 import { FrontpageBoardComponent } from '../../../widgets/frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from '../../../widgets/frontpage/frontpage.component';
 import { CollectionDetailViewComponent } from './collection-detail-view.component';
@@ -43,13 +42,12 @@ describe('CollectionDetailViewComponent', () => {
       imports: [
         RecordModule,
         AppRoutingModule,
-        SharedPipesModule,
         HttpClientTestingModule,
-        TranslateModule.forRoot()
+        TranslateModule.forRoot(),
+        SharedModule
       ],
       providers: [
-        Nl2brPipe,
-        ContributionFormatPipe
+        Nl2brPipe
       ]
     })
     .compileComponents();

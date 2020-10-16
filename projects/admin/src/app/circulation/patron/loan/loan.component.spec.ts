@@ -20,8 +20,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { patronTestingService, userTestingService } from 'projects/admin/tests/utils';
+import { UserService } from '@rero/shared';
 import { PatronService } from '../../../service/patron.service';
-import { UserService } from '../../../service/user.service';
 import { CirculationModule } from '../../circulation.module';
 import { LoanComponent } from './loan.component';
 

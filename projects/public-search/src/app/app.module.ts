@@ -22,9 +22,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CoreConfigService, RecordModule, TranslateLoader, TranslateService } from '@rero/ng-core';
+import { SharedModule } from '@rero/shared';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-import { SharedPipesModule } from 'projects/admin/src/app/shared/shared-pipes.module';
 import { AppConfigService } from './app-config.service';
 import { AppInitializerService } from './app-initializer.service';
 import { AppRoutingModule } from './app-routing.module';
@@ -34,10 +34,6 @@ import { DocumentBriefComponent } from './document-brief/document-brief.componen
 import { DocumentRecordSearchComponent } from './document-record-search/document-record-search.component';
 import { ErrorPageComponent } from './error/error-page.component';
 import { MainComponent } from './main/main.component';
-import { PersonBriefComponent } from './person-brief/person-brief.component';
-import { BioInformationsPipe } from './pipes/bio-informations.pipe';
-import { BirthDatePipe } from './pipes/birth-date.pipe';
-import { MefTitlePipe } from './pipes/mef-title.pipe';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 
 
@@ -51,15 +47,11 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
   declarations: [
     AppComponent,
     DocumentBriefComponent,
-    PersonBriefComponent,
-    MefTitlePipe,
-    BirthDatePipe,
-    BioInformationsPipe,
-    SearchBarComponent,
     MainComponent,
     CollectionBriefComponent,
     ErrorPageComponent,
-    DocumentRecordSearchComponent
+    DocumentRecordSearchComponent,
+    SearchBarComponent
   ],
   imports: [
     BrowserModule,
@@ -75,7 +67,7 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
       isolate: false
     }),
     TypeaheadModule.forRoot(),
-    SharedPipesModule
+    SharedModule
   ],
   providers: [
     { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
@@ -89,11 +81,10 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
   ],
   entryComponents: [
     DocumentBriefComponent,
-    PersonBriefComponent,
-    SearchBarComponent,
     CollectionBriefComponent,
     ErrorPageComponent,
-    DocumentRecordSearchComponent
+    DocumentRecordSearchComponent,
+    SearchBarComponent
   ],
   bootstrap: [AppComponent]
 })

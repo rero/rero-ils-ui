@@ -19,7 +19,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { RecordService } from '@rero/ng-core';
 import { combineLatest, Observable, of } from 'rxjs';
-import { UserService } from '../service/user.service';
+import { UserService } from '@rero/shared';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +43,7 @@ export class LibraryGuard implements CanActivate {
       this._userService.onUserLoaded$
     ).subscribe(
       ([owningLibrary, userMetadata ]) => {
-        if (owningLibrary !== this._userService.getCurrentUser().getCurrentLibrary()) {
+        if (owningLibrary !== this._userService.user.getCurrentLibrary()) {
           this._router.navigate(['/errors/403'], { skipLocationChange: true });
         }
       },

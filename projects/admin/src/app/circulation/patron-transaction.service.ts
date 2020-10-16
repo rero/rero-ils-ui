@@ -21,8 +21,8 @@ import { Record } from '@rero/ng-core/lib/record/record';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { UserService } from '@rero/shared';
 import { RouteToolService } from '../routes/route-tool.service';
-import { UserService } from '../service/user.service';
 import {
   PatronTransaction,
   PatronTransactionEvent,
@@ -167,7 +167,7 @@ export class PatronTransactionService {
    * @return: An object with `parent`, `operator` and `library` fields fill with current context
    */
   private _buildTransactionEventsSkeleton(transaction: PatronTransaction): any {
-    const currentUser = this._userService.getCurrentUser();
+    const currentUser = this._userService.user;
     return {
       parent: {
         $ref: this._routeToolService.apiService.getRefEndpoint('patron_transactions', transaction.pid)

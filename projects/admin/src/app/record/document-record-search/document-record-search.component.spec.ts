@@ -24,7 +24,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { DialogComponent, DialogService, RecordModule, RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
-import { ContributionFormatPipe } from '../../pipe/contribution-format.pipe';
+import { SharedModule } from '@rero/shared';
 import { DocumentRecordSearchComponent } from './document-record-search.component';
 
 
@@ -101,8 +101,7 @@ describe('RecordSearchComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        DocumentRecordSearchComponent,
-        ContributionFormatPipe
+        DocumentRecordSearchComponent
       ],
       imports: [
         BrowserAnimationsModule,
@@ -110,7 +109,8 @@ describe('RecordSearchComponent', () => {
         RouterTestingModule,
         TranslateModule.forRoot({
           loader: { provide: TranslateLoader, useClass: TranslateFakeLoader }
-        })
+        }),
+        SharedModule
       ],
       providers: [
         { provide: RecordService, useValue: recordServiceSpy },

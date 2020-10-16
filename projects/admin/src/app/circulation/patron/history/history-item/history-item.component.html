@@ -41,7 +41,10 @@
           <span *ngIf="!contribution.agent.pid">
             {{ contribution | contributionFormat }}
           </span>
-          <a *ngIf="contribution.agent.pid" [routerLink]="['/records', 'persons', 'detail', contribution.agent.pid]">
+          <a
+            *ngIf="contribution.agent.pid"
+            [routerLink]="['/records', contribution.agent.type | contributionType, 'detail', contribution.agent.pid]"
+          >
             {{ contribution | contributionFormat }}
           </a>
           {{ last ? '' : '; ' }}

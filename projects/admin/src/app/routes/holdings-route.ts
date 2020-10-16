@@ -45,7 +45,6 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
         { path: 'new', component: HoldingEditorComponent }
       ],
       data: {
-        linkPrefix: 'records',
         types: [
           {
             key: this.name,
@@ -91,7 +90,7 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
     const formOptions = jsonSchema.form;
     if (formOptions && formOptions.fieldMap === 'location') {
       field.type = 'select';
-      const user = this._routeToolService.userService.getCurrentUser();
+      const user = this._routeToolService.userService.user;
       const recordService = this._routeToolService.recordService;
       const apiService = this._routeToolService.apiService;
       const libraryPid = user.currentLibrary;

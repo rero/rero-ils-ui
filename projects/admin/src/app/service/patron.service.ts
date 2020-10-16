@@ -14,14 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiService, RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { User } from '@rero/shared';
 import { Item, LoanState } from '../class/items';
-import { User } from '../class/user';
 
 @Injectable({
   providedIn: 'root'
@@ -166,7 +167,11 @@ export class PatronService {
   getHistory(patronPid: string, fromLimit?: number, toLimit?: number) {
     fromLimit = fromLimit || Math.round(6 * 365 / 12);  // 6 months
     toLimit = toLimit || 0;
-    const states = [LoanState.CANCELLED, LoanState.ITEM_RETURNED];
+    const states = [
+      LoanState.CANCELLED,
+      LoanState.ITEM_IN_TRANSIT_TO_HOUSE,
+      LoanState.ITEM_RETURNED
+    ];
     const statesQuery = states.map(state => `state:${state}`).join(' OR ');
     const query = `patron_pid:${patronPid} AND (${statesQuery}) end_date:[now-${fromLimit}d/d TO now-${toLimit}d/d]`;
     return this.getLoans(query, '-end_date');

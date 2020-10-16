@@ -34,9 +34,9 @@ recordTestingService.getRecord.and.returnValue(of({
 }));
 
 export const userTestingService = jasmine.createSpyObj(
-  'UserService', ['getCurrentUser']
+  'UserService', ['']
 );
-userTestingService.getCurrentUser.and.returnValue({
+userTestingService.user =  {
   first_name: 'John',
   last_name: 'Doe',
   library: {
@@ -47,7 +47,7 @@ userTestingService.getCurrentUser.and.returnValue({
     current: '1',
   },
   getCurrentLibrary: () => '1'
-});
+};
 
 export const patronTestingService = jasmine.createSpyObj(
   'PatronService', ['getItems', 'currentPatron$']

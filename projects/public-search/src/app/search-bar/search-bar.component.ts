@@ -1,17 +1,27 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2020 RERO
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { MainTitlePipe } from '../../../../admin/src/app/pipe/main-title.pipe';
-
-
-function escapeRegExp(data) {
-  return data.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-}
+import { SearchBarConfigService } from '@rero/shared';
 
 @Component({
   selector: 'public-search-search-bar',
-  templateUrl: './search-bar.component.html',
-  styleUrls: ['./search-bar.component.css'],
-  providers: [MainTitlePipe]
+  templateUrl: './search-bar.component.html'
 })
 export class SearchBarComponent implements OnInit {
 
@@ -25,78 +35,22 @@ export class SearchBarComponent implements OnInit {
     return `/${this.viewcode}/search/documents`;
   }
 
-  recordTypes = [];
-
-  static getPersonName(metadata) {
-    for (const source of ['idref', 'gnd', 'bnf', 'rero']) {
-      if (metadata[source] && metadata[source].preferred_name_for_person) {
-        return metadata[source].preferred_name_for_person;
-      }
-    }
+  get typeaheadOptionsLimit() {
+    return this._searchBarConfigService.typeaheadOptionsLimit;
   }
+
+  recordTypes = [];
 
   constructor(
     private _translateService: TranslateService,
-    private _mainTitlePipe: MainTitlePipe
+    private _searchBarConfigService: SearchBarConfigService
   ) {
       this.placeholder = this._translateService.instant('Search');
    }
 
   ngOnInit() {
-    this.recordTypes = [{
-      type: 'documents',
-      field: 'autocomplete_title',
-      maxNumberOfSuggestions: 5,
-      getSuggestions: (query, documents) => this.getDocumentsSuggestions(query, documents),
-      preFilters: this.viewcode ? {view: this.viewcode} : {}
-    }, {
-      type: 'persons',
-      field: 'autocomplete_name',
-      maxNumberOfSuggestions: 5,
-      getSuggestions: (query, persons) => this.getPersonsSuggestions(query, persons),
-      component: this,
-      preFilters: this.viewcode ? {view: this.viewcode} : {}
-    }];
-  }
-
-  getPersonsSuggestions(query, persons) {
-    const values = [];
-    persons.hits.hits.map(hit => {
-      let text = SearchBarComponent.getPersonName(hit.metadata);
-      text = text.replace(new RegExp(escapeRegExp(query), 'gi'), `<b>${query}</b>`);
-      values.push({
-        text,
-        query: '',
-        index: 'persons',
-        category: this._translateService.instant('direct links'),
-        href: `/${this.viewcode}/persons/${hit.metadata.pid}`,
-        iconCssClass: 'fa fa-user'
-      });
-    });
-    return values;
-  }
-
-  getDocumentsSuggestions(query, documents) {
-    const values = [];
-    documents.hits.hits.map(hit => {
-      let text = this._mainTitlePipe.transform(hit.metadata.title);
-      let truncate = false;
-      if (text.length > this.maxLengthSuggestion) {
-        truncate = true;
-        text = this._mainTitlePipe.transform(hit.metadata.title).substr(0, this.maxLengthSuggestion);
-      }
-      text = text.replace(new RegExp(escapeRegExp(query), 'gi'), `<b>${query}</b>`);
-      if (truncate) {
-        text = text + ' ...';
-      }
-      values.push({
-        text,
-        query: this._mainTitlePipe.transform(hit.metadata.title).replace(/[:\-\[\]()/"]/g, ' ').replace(/\s\s+/g, ' '),
-        index: 'documents',
-        category: this._translateService.instant('documents')
-        // href: `/${this.viewcode}/documents/${hit.metadata.pid}`
-      });
-    });
-    return values;
+    this.recordTypes = this._searchBarConfigService.getConfig(
+      false, this, this.viewcode, this.maxLengthSuggestion
+    );
   }
 }

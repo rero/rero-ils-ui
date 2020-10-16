@@ -43,7 +43,6 @@ export class ItemTypesRoute extends BaseRoute implements RouteInterface {
         { path: 'new', component: EditorComponent, canActivate: [RoleGuard], data: { roles: ['system_librarian'] } }
       ],
       data: {
-        linkPrefix: 'records',
         types: [
           {
             key: this.name,
@@ -57,7 +56,7 @@ export class ItemTypesRoute extends BaseRoute implements RouteInterface {
               simple: 1
             },
             preCreateRecord: (data: any) => {
-              const user = this._routeToolService.userService.getCurrentUser();
+              const user = this._routeToolService.userService.user;
               data.organisation = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(
                   'organisations',

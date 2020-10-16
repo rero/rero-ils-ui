@@ -45,7 +45,6 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
         { path: 'new', component: EditorComponent }
       ],
       data: {
-        linkPrefix: 'records',
         types: [
           {
             key: this.name,
@@ -123,13 +122,13 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
     //   should be the current_user.current_library. Set default value for library select the current_library URI
     //   and disable the field (so the user can't change/manage other libraries)
     if (formOptions && formOptions.fieldMap === 'library') {
-      if (!this._routeToolService.userService.hasRole('system_librarian')) {
+      if (!this._routeToolService.userService.user.isLibrarian) {
         if (!field.hasOwnProperty('templateOptions')) {
           field.templateOptions = {};
         }
         const currentLibraryEndpoint = this._routeToolService.apiService.getRefEndpoint(
           'libraries',
-          this._routeToolService.userService.getCurrentUser().getCurrentLibrary()
+          this._routeToolService.userService.user.getCurrentLibrary()
         );
         field.templateOptions.disabled = true;
         field.fieldGroup[0].defaultValue = currentLibraryEndpoint;

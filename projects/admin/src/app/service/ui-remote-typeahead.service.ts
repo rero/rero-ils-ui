@@ -15,12 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ApiService, RecordService, RemoteTypeaheadService, SuggestionMetadata } from '@rero/ng-core';
 import { Observable } from 'rxjs';
-import { DocumentsTypeahead } from '../class/documents-typeahead';
-import { ItemsTypeahead } from '../class/items-typeahead';
-import { MefTypeahead } from '../class/mef-typeahead';
+import { ITypeahead } from '../class/ITypeahead-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -28,11 +26,7 @@ import { MefTypeahead } from '../class/mef-typeahead';
 export class UiRemoteTypeaheadService extends RemoteTypeaheadService {
 
   /** Custom typeahead Type */
-  private _typeaheadTypes = {
-    mef: this._injector.get(MefTypeahead),
-    documents: this._injector.get(DocumentsTypeahead),
-    items: this._injector.get(ItemsTypeahead)
-  };
+  private _typeaheadTypes = {};
 
   /**
    * Constructor
@@ -43,10 +37,20 @@ export class UiRemoteTypeaheadService extends RemoteTypeaheadService {
    */
   constructor(
     protected _recordService: RecordService,
-    protected _apiService: ApiService,
-    private _injector: Injector
+    protected _apiService: ApiService
   ) {
     super(_recordService, _apiService);
+  }
+
+  /**
+   * Add a custom typeahead
+   * @param typeahead - ITypeahead
+   */
+  addTypeahead(typeahead: ITypeahead) {
+    const typeaheadName = typeahead.getName();
+    if (!(typeaheadName in this._typeaheadTypes)) {
+      this._typeaheadTypes[typeaheadName] = typeahead;
+    }
   }
 
   /**

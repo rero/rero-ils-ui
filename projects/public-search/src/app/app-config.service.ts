@@ -29,6 +29,9 @@ export class AppConfigService extends CoreConfigService {
    */
   globalViewName: string;
 
+  /** MEF sources */
+  mefSources: string[];
+
   /**
    * Constructor
    */

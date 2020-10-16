@@ -18,20 +18,14 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, LocalStorageService, RecordService, TranslateService as CoreTranslateService } from '@rero/ng-core';
-import { MainTitlePipe } from '../pipe/main-title.pipe';
+import { SearchBarConfigService, UserService } from '@rero/shared';
 import { LibrarySwitchService } from '../service/library-switch.service';
 import { MenuService } from '../service/menu.service';
-import { UserService } from '../service/user.service';
-
-function escapeRegExp(data) {
-  return data.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-}
 
 @Component({
   selector: 'admin-menu',
   templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.scss'],
-  providers: [MainTitlePipe]
+  styleUrls: ['./menu.component.scss']
 })
 export class MenuComponent implements OnInit {
   isCollapsed = true;
@@ -62,6 +56,10 @@ export class MenuComponent implements OnInit {
     entries: []
   };
 
+  get typeaheadOptionsLimit() {
+    return this._searchBarConfigService.typeaheadOptionsLimit;
+  }
+
   constructor(
     private _appTranslateService: CoreTranslateService,
     private _translateService: TranslateService,
@@ -71,12 +69,12 @@ export class MenuComponent implements OnInit {
     private _librarySwitchService: LibrarySwitchService,
     private _localeStorageService: LocalStorageService,
     private _menuService: MenuService,
-    private _mainTitlePipe: MainTitlePipe
+    private _searchBarConfigService: SearchBarConfigService
   ) {}
 
   ngOnInit() {
     this._initLinksMenu();
-    const currentUser = this._userService.getCurrentUser();
+    const currentUser = this._userService.user;
     this.autocompleteQueryParams.organisation = currentUser.library.organisation.pid;
 
     // first call
@@ -103,18 +101,9 @@ export class MenuComponent implements OnInit {
       ]
     });
 
-    this.recordTypes = [{
-      type: 'documents',
-      field: 'autocomplete_title',
-      maxNumberOfSuggestions: 5,
-      preFilters: { organisation: currentUser.library.organisation.pid },
-      getSuggestions: (query, documents) => this.getDocumentsSuggestions(query, documents)
-    }, {
-      type: 'persons',
-      field: 'autocomplete_name',
-      maxNumberOfSuggestions: 5,
-      getSuggestions: (query, persons) => this.getPersonsSuggestions(query, persons)
-    }];
+    this.recordTypes = this._searchBarConfigService.getConfig(
+      true, this, undefined, this.maxLengthSuggestion
+    );
 
     this._recordService.getRecord('organisations', currentUser.library.organisation.pid)
       .subscribe(organisation => {
@@ -203,59 +192,8 @@ export class MenuComponent implements OnInit {
     this._initLinksMenu();
   }
 
-  getPersonsSuggestions(query, persons) {
-    const values = [];
-    persons.hits.hits.map(hit => {
-      let text = this.getPersonName(hit.metadata);
-      text = text.replace(new RegExp(escapeRegExp(query), 'gi'), `<b>${query}</b>`);
-      values.push({
-        text,
-        query: '',
-        pid: hit.metadata.pid,
-        index: 'persons',
-        category: this._translateService.instant('direct links'),
-        href: `/records/persons/detail/${hit.metadata.pid}`,
-        iconCssClass: 'fa fa-user'
-      });
-    });
-    return values;
-  }
-
-  getDocumentsSuggestions(query, documents) {
-    const values = [];
-    documents.hits.hits.map(hit => {
-      let text = this._mainTitlePipe.transform(hit.metadata.title);
-      let truncate = false;
-      if (text.length > this.maxLengthSuggestion) {
-        truncate = true;
-        text = this._mainTitlePipe.transform(hit.metadata.title).substr(0, this.maxLengthSuggestion);
-      }
-      text = text.replace(new RegExp(escapeRegExp(query), 'gi'), `<b>${query}</b>`);
-      if (truncate) {
-        text = text + ' ...';
-      }
-      values.push({
-        text,
-        query: this._mainTitlePipe.transform(hit.metadata.title).replace(/[:\-\[\]()/"]/g, ' ').replace(/\s\s+/g, ' '),
-        index: 'documents',
-        pid: undefined,
-        category: this._translateService.instant('documents')
-        // href: `/records/documents/detail/${hit.metadata.pid}`
-      });
-    });
-    return values;
-  }
-
-  private getPersonName(metadata) {
-    for (const source of ['idref', 'gnd', 'bnf', 'rero']) {
-      if (metadata[source] && metadata[source].preferred_name_for_person) {
-        return metadata[source].preferred_name_for_person;
-      }
-    }
-  }
-
   private myLibraryRouterLink() {
-    return `/records/libraries/detail/${this._userService.getCurrentUser().currentLibrary}`;
+    return `/records/libraries/detail/${this._userService.user.currentLibrary}`;
   }
 
   /**
@@ -264,6 +202,6 @@ export class MenuComponent implements OnInit {
    * @return library pid as a dictionary
    */
   private myItemListQueryParams() {
-    return {library: this._userService.getCurrentUser().currentLibrary};
+    return {library: this._userService.user.currentLibrary};
   }
 }

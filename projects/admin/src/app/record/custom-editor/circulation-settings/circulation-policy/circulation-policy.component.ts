@@ -15,17 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-
-import { CirculationPolicyService } from '../circulation-policy.service';
-import { CirculationPolicyFormService } from '../circulation-policy-form.service';
-import { CirculationPolicy } from '../circulation-policy';
-import { CirculationMappingService } from '../circulation-mapping.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../../../service/user.service';
-import { RecordService, UniqueValidator, ApiService } from '@rero/ng-core';
-import { Location } from '@angular/common';
+import { ApiService, RecordService, UniqueValidator } from '@rero/ng-core';
+import { UserService } from '@rero/shared';
+import { CirculationMappingService } from '../circulation-mapping.service';
+import { CirculationPolicy } from '../circulation-policy';
+import { CirculationPolicyFormService } from '../circulation-policy-form.service';
+import { CirculationPolicyService } from '../circulation-policy.service';
 
 
 @Component({
@@ -56,7 +55,7 @@ export class CirculationPolicyComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-      const user = this.userService.getCurrentUser();
+      const user = this.userService.user;
       if (user) {
         this.route.params.subscribe(params => {
           const pid = params.pid ? params.pid : null;

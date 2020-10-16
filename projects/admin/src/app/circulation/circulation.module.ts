@@ -21,9 +21,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { RecordModule } from '@rero/ng-core';
+import { SharedModule } from '@rero/shared';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { SharedPipesModule } from '../shared/shared-pipes.module';
 import { CheckinComponent } from './checkin/checkin.component';
 import { CirculationRoutingModule } from './circulation-routing.module';
 import { ItemComponent } from './item/item.component';
@@ -92,7 +92,7 @@ import { ProfileComponent } from './patron/profile/profile.component';
     FormsModule,
     ReactiveFormsModule,
     FormlyModule,
-    SharedPipesModule
+    SharedModule
   ],
   entryComponents: [
     PatronTransactionEventFormComponent,

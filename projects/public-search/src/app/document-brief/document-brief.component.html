@@ -38,12 +38,17 @@
               class="list-inline-item"
               *ngFor="let contribution of record.metadata.contribution.slice(0,3); let last = last; let i = index"
             >
-            <span *ngIf="!contribution.agent.pid">
+            <span *ngIf="!contribution.agent.pid; else contribLink">
               {{ contribution | contributionFormat }}
             </span>
-            <a *ngIf="contribution.agent.pid" [href]="getPersonLink(contribution.agent.pid)">
+            <ng-template #contribLink>
+            <a
+              *ngIf="contribution.agent.pid"
+              href="/{{ viewcode }}/{{ contribution.agent.type | contributionType }}/{{ contribution.agent.pid }}"
+            >
               {{ contribution | contributionFormat }}
             </a>
+            </ng-template>
             {{ last ? '' : '; ' }}
             {{ last && record.metadata.contribution.length > 3 ? '; …' : '' }}
           </li>

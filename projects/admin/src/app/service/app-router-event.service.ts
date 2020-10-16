@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { Injectable } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { LocalStorageService } from '@rero/ng-core';
 import { filter } from 'rxjs/operators';
-import { User } from '../class/user';
+import { User } from '@rero/shared';
 import { AppConfigService } from './app-config.service';
 
 @Injectable({

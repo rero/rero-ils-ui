@@ -23,7 +23,7 @@ import { Record } from '@rero/ng-core/lib/record/record';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { UserService } from '../service/user.service';
+import { UserService } from '@rero/shared';
 
 
 @Injectable({
@@ -77,7 +77,7 @@ export class ItemAccessGuard implements CanActivate {
             // Redirect to homepage
             this._router.navigate(['/']);
           }
-          const userCurrentLibrary = this._userService.getCurrentUser().currentLibrary;
+          const userCurrentLibrary = this._userService.user.currentLibrary;
           if (userCurrentLibrary !== data.metadata.library.pid) {
             this._toastr.warning(
               this._translateService.instant('Access denied'),

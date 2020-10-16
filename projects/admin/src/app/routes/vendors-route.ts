@@ -41,7 +41,6 @@ export class VendorsRoute extends BaseRoute implements RouteInterface {
         { path: 'new', component: EditorComponent }
       ],
       data: {
-        linkPrefix: 'records',
         types: [
           {
             key: this.name,
@@ -54,7 +53,7 @@ export class VendorsRoute extends BaseRoute implements RouteInterface {
               simple: 1
             },
             preCreateRecord: (data: any) => {
-              const user = this._routeToolService.userService.getCurrentUser();
+              const user = this._routeToolService.userService.user;
               data.organisation = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(
                   'organisations',

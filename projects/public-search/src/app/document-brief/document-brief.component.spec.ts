@@ -19,14 +19,10 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordModule } from '@rero/ng-core';
-import { ContributionFormatPipe } from 'projects/admin/src/app/pipe/contribution-format.pipe';
+import { SharedModule } from '@rero/shared';
 import { AppRoutingModule } from '../app-routing.module';
 import { ErrorPageComponent } from '../error/error-page.component';
 import { MainComponent } from '../main/main.component';
-import { PersonBriefComponent } from '../person-brief/person-brief.component';
-import { BioInformationsPipe } from './../pipes/bio-informations.pipe';
-import { BirthDatePipe } from './../pipes/birth-date.pipe';
-import { MefTitlePipe } from './../pipes/mef-title.pipe';
 import { DocumentBriefComponent } from './document-brief.component';
 
 
@@ -38,11 +34,6 @@ describe('DocumentBriefComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         DocumentBriefComponent,
-        ContributionFormatPipe,
-        MefTitlePipe,
-        BirthDatePipe,
-        BioInformationsPipe,
-        PersonBriefComponent,
         MainComponent,
         ErrorPageComponent
       ],
@@ -50,7 +41,8 @@ describe('DocumentBriefComponent', () => {
         RecordModule,
         HttpClientTestingModule,
         TranslateModule.forRoot(),
-        AppRoutingModule
+        AppRoutingModule,
+        SharedModule
       ]
     })
     .compileComponents();

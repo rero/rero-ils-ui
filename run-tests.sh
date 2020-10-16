@@ -33,6 +33,9 @@ set -e
 display_success_message "Linting the projects..."
 ng lint
 
+display_success_message "Build shared library"
+npm run build-shared
+
 display_success_message "Run the tests"
 ng test --no-watch --no-progress --browsers=ChromeHeadlessCI
 

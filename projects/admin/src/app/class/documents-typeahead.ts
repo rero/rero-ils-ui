@@ -16,11 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ApiService, RecordService, SuggestionMetadata } from '@rero/ng-core';
-import { of, Observable } from 'rxjs';
+import { MainTitlePipe } from '@rero/shared';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MainTitlePipe } from '../pipe/main-title.pipe';
+import { ITypeahead } from './ITypeahead-interface';
 
 /**
  * Escape string using regular expression.
@@ -29,8 +30,10 @@ function escapeRegExp(data) {
   return data.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
-@Injectable()
-export class DocumentsTypeahead {
+@Injectable({
+  providedIn: 'root'
+})
+export class DocumentsTypeahead implements ITypeahead {
 
   /** Maximum length of the suggestion */
   maxLengthSuggestion = 100;
@@ -42,10 +45,15 @@ export class DocumentsTypeahead {
    * @param _translateService - TranslateService
    */
   constructor(
-    @Inject(ApiService) private _apiService: ApiService,
-    @Inject(RecordService) private _recordService: RecordService,
-    @Inject(MainTitlePipe) private _mainTitlePipe: MainTitlePipe
+    private _apiService: ApiService,
+    private _recordService: RecordService,
+    private _mainTitlePipe: MainTitlePipe
   ) { }
+
+  /** Get name of typeahead */
+  getName() {
+    return 'documents';
+  }
 
   /**
    * Convert the input value (i.e. $ref url) into a template html code.

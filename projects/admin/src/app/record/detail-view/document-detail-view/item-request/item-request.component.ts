@@ -23,11 +23,11 @@ import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
+import { UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { debounceTime, map, shareReplay } from 'rxjs/operators';
 import { ItemsService } from '../../../../service/items.service';
 import { LoanService } from '../../../../service/loan.service';
-import { UserService } from '../../../../service/user.service';
 
 @Component({
   selector: 'admin-item-request',
@@ -93,7 +93,7 @@ export class ItemRequestComponent implements OnInit {
    * Init
    */
   ngOnInit() {
-    this.currentUser = this._userService.getCurrentUser();
+    this.currentUser = this._userService.user;
     const initialState: any = this._modalService.config.initialState;
     if (initialState.hasOwnProperty('itemPid')) {
       this.closeModal();

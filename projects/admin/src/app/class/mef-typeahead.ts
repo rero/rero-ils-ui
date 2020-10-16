@@ -14,23 +14,43 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Inject, Injectable } from '@angular/core';
-import { RecordService, SuggestionMetadata } from '@rero/ng-core';
-import { TranslateService } from '@ngx-translate/core';
-import { of, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
-@Injectable()
-export class MefTypeahead {
+import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { RecordService, SuggestionMetadata } from '@rero/ng-core';
+import { SharedConfigService } from '@rero/shared';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ITypeahead } from './ITypeahead-interface';
+@Injectable({
+  providedIn: 'root'
+})
+export class MefTypeahead implements ITypeahead {
+
+  /** Name of typeahead */
+  name = 'mef-persons';
+
+  /** Type of contribution */
+  type = 'Person';
+
+  /** Entry point for MEF Api */
+  apiMefEntryPoint = 'mef';
+
   /**
    * Constructor
    * @param _recordService - RecordService
    * @param _translateService - TranslateService
    */
   constructor(
-    @Inject(RecordService) private _recordService: RecordService,
-    @Inject(TranslateService) private _translateService: TranslateService
+    protected _recordService: RecordService,
+    protected _translateService: TranslateService,
+    protected _sharedConfigService: SharedConfigService
   ) { }
+
+  /** Get name of typeahead */
+  getName() {
+    return this.name;
+  }
 
   /**
    * Convert the input value (i.e. $ref url) into a template html code.
@@ -42,26 +62,17 @@ export class MefTypeahead {
     const url = value.split('/');
     const pid = url.pop();
     const source = url.pop();
-    let query = `${source}.pid:${pid}`;
-    switch (source) {
-      case 'mef':
-        query = `pid:${pid}`;
-        break;
-      case 'viaf':
-        query = `viaf_pid:${pid}`;
-        break;
-    }
     return this._recordService
-      .getRecords(options.type, query, 1, 1)
+      .getRecords(this.apiMefEntryPoint, `${source}.pid:${pid}`, 1, 1)
       .pipe(
         map((data: any) => {
           if (
             data.hits.hits.length > 0 &&
-            data.hits.hits[0].metadata[source].authorized_access_point_representing_a_person
+            data.hits.hits[0].metadata[source].authorized_access_point
           ) {
             return {
               source: source.toUpperCase(),
-              name: data.hits.hits[0].metadata[source].authorized_access_point_representing_a_person
+              name: data.hits.hits[0].metadata[source].authorized_access_point
             };
           }
         }),
@@ -83,10 +94,20 @@ export class MefTypeahead {
     if (!query) {
       return of([]);
     }
+
+    const sources = this._sharedConfigService.contributionSources
+      .filter((source: string) => source !== 'rero');
+
+    const contributionQuery = [
+      `autocomplete_name:'${query}'`,
+      `AND sources:(${sources.join(' OR ')})`,
+      `AND type:bf\\:${this.type}`
+    ].join(' ');
+
     return this._recordService
       .getRecords(
-        'mef',
-        `\\*.preferred_name_for_person:'${query}'`,
+        this.apiMefEntryPoint,
+        contributionQuery,
         1,
         numberOfSuggestions
       ).pipe(
@@ -96,7 +117,7 @@ export class MefTypeahead {
             return [];
           }
           results.hits.hits.map((hit: any) => {
-            for (const source of ['idref', 'gnd']) {
+            for (const source of this._sources()) {
               if (hit.metadata[source]) {
                 names.push(this._getNameRef(hit.metadata, source));
               }
@@ -116,12 +137,27 @@ export class MefTypeahead {
    */
   private _getNameRef(metadata: any, sourceName: string): SuggestionMetadata {
     return {
-      label: metadata[sourceName].authorized_access_point_representing_a_person,
+      label: metadata[sourceName].authorized_access_point,
       value: `https://mef.rero.ch/api/${sourceName}/${metadata[sourceName].pid}`,
       group: this._translateService.instant(
         'link to authority {{ sourceName }}',
         { sourceName }
       )
     };
+  }
+
+  /**
+   * Get sources
+   * @return array of sources
+   */
+  private _sources(): string[] {
+    const language = this._translateService.currentLang;
+    const order: any = this._sharedConfigService.contributionsLabelOrder;
+    const key = language in order ? language : 'fallback';
+    const contributionSources = (key === 'fallback')
+      ? order[order[key]]
+      : order[key];
+    const sources = contributionSources.filter((source: string) => source !== 'rero');
+    return sources;
   }
 }
