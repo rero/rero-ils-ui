@@ -74,6 +74,7 @@
             </div>
             <admin-serial-holding-item
                 *ngFor="let item of items | slice:0: displayItemsCounter"
+                class="row mt-1 mb-2"
                 [holding]="holding"
                 [item]="item"
                 (deleteItem)="deleteItem($event)"
@@ -98,13 +99,14 @@
         <ng-container *ngSwitchDefault>
           <ng-container *ngIf="items && items.length > 0">
             <div class="row font-weight-bold">
-              <div class="offset-sm-1 col-sm-3" translate>Barcode</div>
+              <div class="col-sm-3" translate>Barcode</div>
               <div class="col-sm-2" translate>Status</div>
+              <div class="col-sm-3" translate>Unit</div>
               <div class="col-sm-2" translate>Call number</div>
             </div>
             <admin-default-holding-item
                 *ngFor="let item of items | slice:0: displayItemsCounter"
-                class="row mt-1"
+                class="row mt-1 mb-2"
                 [holding]="holding"
                 [item]="item"
                 (deleteItem)="deleteItem($event)"
