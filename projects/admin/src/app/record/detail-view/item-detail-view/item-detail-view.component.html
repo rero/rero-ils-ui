@@ -157,5 +157,8 @@
   </section>
 
   <!-- TRANSACTIONS -->
-  <admin-item-transactions [item]="record"></admin-item-transactions>
+  <admin-item-transactions
+    [item]="record"
+    (cancelRequestEvent)="updateItemStatus()"
+  ></admin-item-transactions>
 </ng-container>
