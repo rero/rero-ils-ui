@@ -50,11 +50,11 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
    * @param _recordService - RecordService
    */
   constructor(
-    private _recordService: RecordService,
+    private _recordService: RecordService
   ) {}
 
   ngOnInit() {
-    this._recordObs = this.record$.subscribe( record => {
+    this._recordObs = this.record$.subscribe(record => {
       this.record = record;
       this._recordService.getRecord('locations', record.metadata.location.pid, 1).subscribe(data => this.location = data);
     });
@@ -66,5 +66,15 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
 
   isPublicNote(note: ItemNote): boolean {
     return Item.PUBLIC_NOTE_TYPES.includes(note.type);
+  }
+
+  /**
+   * Update item status
+   */
+  updateItemStatus() {
+    this._recordService.getRecord('items', this.record.metadata.pid).subscribe((item: any) => {
+      this.record.metadata.status = item.metadata.status;
+      this.record.metadata.available = item.metadata.available;
+    });
   }
 }
