@@ -43,7 +43,7 @@
             </button>
             <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="dropdown-animated">
               <li role="menuitem" *ngFor="let pickup of pickupLocations; let i = index">
-                <a class="dropdown-item" (click)="updateRequest(pickup.value)">{{ pickup.label }}</a>
+                <a class="dropdown-item" (click)="emitUpdatePickupLocation(pickup.value)">{{ pickup.label }}</a>
               </li>
             </ul>
           </div>

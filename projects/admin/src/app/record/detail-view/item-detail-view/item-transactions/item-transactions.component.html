@@ -50,7 +50,8 @@
           type="loan_request"
           [transaction]="request"
           [itemPid]="item.metadata.pid"
-          (removeRequest)="deleteRequest(request)"
+          (cancelRequestEvent)="cancelRequest($event)"
+          (updatePickupLocationEvent)="updateRequestPickupLocation($event)"
         ></admin-item-transaction>
       </div>
     </ng-container>

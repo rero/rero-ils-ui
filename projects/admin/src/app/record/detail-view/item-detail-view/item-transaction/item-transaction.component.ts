@@ -16,12 +16,9 @@
  */
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { DialogService, RecordService } from '@rero/ng-core';
-import { ToastrService } from 'ngx-toastr';
+import { DialogService } from '@rero/ng-core';
 import { LoanState } from 'projects/admin/src/app/class/items';
-import { LoanService } from 'projects/admin/src/app/service/loan.service';
 import { UserService } from 'projects/admin/src/app/service/user.service';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ItemsService } from 'projects/admin/src/app/service/items.service';
 
@@ -80,7 +77,12 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   /**
    * Informs parent component to remove request when it is cancelled
    */
-  @Output() removeRequest = new EventEmitter<boolean>();
+  @Output() cancelRequestEvent = new EventEmitter<any>();
+
+  /**
+   * Informs parent component to update pickup location
+   */
+  @Output() updatePickupLocationEvent = new EventEmitter<any>();
 
   /**
    * On init hook
@@ -105,17 +107,13 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
 
   /**
    * constructor
-   * @param _loanService - LoanService
    * @param _userService - User service
-   * @param _toastrService - ToastrService
    * @param _translateService - TranslateService
    * @param _dialogService: DialogService
    * @param _itemService: ItemsService
    */
   constructor(
-    private _loanService: LoanService,
     private _userService: UserService,
-    private _toastrService: ToastrService,
     private _translateService: TranslateService,
     private _dialogService: DialogService,
     private _itemService: ItemsService
@@ -140,8 +138,9 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   canCancelRequest(): boolean {
     // No permission API in backend
     // Allowed when loan state is PENDING or ITEM_IN_TRANSIT_FOR_PICKUP according to actions.md
-    return this.transaction.metadata.state === LoanState.PENDING
-    || this.transaction.metadata.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP;
+    const itemStatus = [LoanState.PENDING, LoanState.ITEM_IN_TRANSIT_FOR_PICKUP, LoanState.ITEM_AT_DESK];
+    return itemStatus.some((element) => element === this.transaction.metadata.state);
+
   }
 
   /**
@@ -151,8 +150,8 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   canUpdateRequestPickupLocation(): boolean {
     // No permission API in backend
     // Allowed when loan state is PENDING or ITEM_IN_TRANSIT_FOR_PICKUP according to actions.md
-    return this.transaction.metadata.state === LoanState.PENDING
-    || this.transaction.metadata.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP;
+    const itemStatus = [LoanState.PENDING, LoanState.ITEM_IN_TRANSIT_FOR_PICKUP];
+    return itemStatus.some((element) => element === this.transaction.metadata.state);
   }
 
   /**
@@ -172,43 +171,27 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
 
     this._dialogService.show(config).subscribe((confirm: boolean) => {
       if (confirm) {
-        this.cancelRequest();
+        this.emitCancelRequest();
       }
     });
   }
 
   /**
-   * Cancel request
+   * Inform parent to cancel the request
    */
-  cancelRequest() {
-    this._loanService
-      .cancelLoan(
-        this.itemPid,
-        this.transaction.metadata.pid,
-        this._currentUser.currentLibrary
-      )
-      .subscribe((itemData: any) => {
-        this.removeRequest.emit(true);
-      });
+  emitCancelRequest() {
+    this.cancelRequestEvent.emit(this.transaction);
   }
 
   /**
-   * Update pickup location
-   * @param pickupLocationPid - pickup location pid to change
+   * Inform parent to cancel the request
    */
-  updateRequest(pickupLocationPid: string) {
-    this._loanService
-      .updateLoanPickupLocation(
-        this.transaction.metadata.pid,
-        pickupLocationPid
-      )
-      .subscribe((data: any) => {
-        this._toastrService.success(
-          this._translateService.instant('The pickup location has been changed.'),
-          this._translateService.instant('Request')
-        );
-        this.transaction.metadata = data;
-      });
+  emitUpdatePickupLocation(pickupLocationPid: string) {
+    const data = {
+      pickupLocationPid,
+      transaction: this.transaction
+    };
+    this.updatePickupLocationEvent.emit(data);
   }
 
   /**
