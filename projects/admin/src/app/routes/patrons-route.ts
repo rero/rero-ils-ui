@@ -59,8 +59,7 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
             },
             component: PatronsBriefViewComponent,
             detailComponent: PatronDetailViewComponent,
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             postprocessRecordEditor: (record: any) => {
               // Clean-up 'blocked_note' field content if blocked is false.
               if (record.blocked === false) {
