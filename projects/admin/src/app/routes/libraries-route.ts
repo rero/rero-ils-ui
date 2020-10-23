@@ -52,8 +52,7 @@ export class LibrariesRoute extends BaseRoute implements RouteInterface {
             component: LibrariesBriefViewComponent,
             detailComponent: LibraryDetailViewComponent,
             canAdd: () => this._routeToolService.canSystemLibrarian(),
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             // use simple query for UI search
             preFilters: {
               simple: 1

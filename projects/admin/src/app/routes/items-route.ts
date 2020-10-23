@@ -66,8 +66,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             component: ItemsBriefViewComponent,
             detailComponent: ItemDetailViewComponent,
             canRead: (record: any) => this.canReadItem(record),
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preprocessRecordEditor: (record: any) => {
               // If we found an `holding` parameter into the query string then we need to pre-populated
               // the form with the corresponding holding metadata (see '_populateItemFieldFromHolding' function
