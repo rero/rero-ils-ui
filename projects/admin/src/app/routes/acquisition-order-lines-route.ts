@@ -54,8 +54,7 @@ export class AcquisitionOrderLinesRoute extends BaseRoute implements RouteInterf
             label: 'Order lines',
             detailComponent: AcquisitionOrderLineDetailViewComponent,
             canAdd: () => this._routeToolService.canSystemLibrarian(),
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => {
               data.acq_order = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(

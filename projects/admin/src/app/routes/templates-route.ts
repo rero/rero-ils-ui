@@ -53,8 +53,7 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
             component: TemplatesBriefViewComponent,
             detailComponent: TemplateDetailViewComponent,
             canAdd: () => this._routeToolService.canNot(),
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             canUse: (record: any) => this._canUse(record),
             preCreateRecord: (data: any) => this._addDefaultValuesForTemplate(data),
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {

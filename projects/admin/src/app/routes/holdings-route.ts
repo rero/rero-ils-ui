@@ -58,8 +58,7 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
               }
             },
             detailComponent: HoldingDetailViewComponent,
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => {
               data.document = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(
