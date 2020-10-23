@@ -48,8 +48,7 @@ export class VendorsRoute extends BaseRoute implements RouteInterface {
             label: 'Vendors',
             component: VendorBriefViewComponent,
             detailComponent: VendorDetailViewComponent,
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             // use simple query for UI search
             preFilters: {
               simple: 1
