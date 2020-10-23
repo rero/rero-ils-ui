@@ -5,6 +5,7 @@ import { OrganisationService } from '../../../service/organisation.service';
 
 @Component({
   selector: 'admin-patron-types-detail-view',
+  styleUrls: ['./patron-types-detail-view.component.scss'],
   templateUrl: './patron-types-detail-view.component.html'
 })
 export class PatronTypesDetailViewComponent implements DetailRecord {

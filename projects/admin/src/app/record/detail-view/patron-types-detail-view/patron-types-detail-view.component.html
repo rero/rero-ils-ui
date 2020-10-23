@@ -37,5 +37,76 @@
       <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Subscription amount</dt>
       <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.subscription_amount | currency: organisation.default_currency }}</dd>
     </ng-container>
+
+    <!-- Limits -->
+    <section *ngIf="record.metadata.limits" class="container">
+      <h2 class="mt-4" translate>Limits</h2>
+      <div class="limits">
+        <!-- Checkout limits -->
+        <div class="card">
+          <div class="card-header">
+            <i class="fa" [ngClass]="{
+              'fa-circle text-success': record.metadata.limits.checkout_limits,
+              'fa-circle-thin': !record.metadata.limits.checkout_limits
+            }"></i>
+            <span class="pl-3" translate>Limit by checkouts</span>
+          </div>
+          <div class="card-body" *ngIf="record.metadata.limits.checkout_limits">
+            <dl class="row m-0">
+              <dt class="offset-1 col-lg-2 col-sm-4 label-title" translate>General limit</dt>
+              <dd class="col">{{ record.metadata.limits.checkout_limits.general_limit }}</dd>
+              <dd class="w-100 m-0"></dd>
+              <ng-container *ngIf="record.metadata.limits.checkout_limits.library_limit">
+                <dt class="offset-1 col-lg-2 col-sm-4 label-title" translate>Library limit</dt>
+                <dd class="col">{{ record.metadata.limits.checkout_limits.library_limit }}</dd>
+                <dd class="w-100 m-0"></dd>
+              </ng-container>
+              <ng-container *ngIf="record.metadata.limits.checkout_limits.library_exceptions">
+                <dt class="offset-1 col-11 label-title" translate>Exceptions</dt>
+                <ng-container *ngFor="let exception of record.metadata.limits.checkout_limits.library_exceptions">
+                  <dd class="offset-2 col-lg-6 col-sm-9">
+                    <i class="fa fa-university pr-2"></i>
+                    {{ exception.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+                  </dd>
+                  <dd class="col-lg-4 col-sm-1">{{ exception.value }}</dd>
+                </ng-container>
+              </ng-container>
+            </dl>
+          </div>
+        </div>
+        <!-- Fee amount limits -->
+        <div class="card">
+          <div class="card-header">
+            <i class="fa" [ngClass]="{
+              'fa-circle text-success': record.metadata.limits.fee_amount_limits,
+              'fa-circle-thin': !record.metadata.limits.fee_amount_limits
+            }"></i>
+            <span class="pl-3" translate>Limit by fee amount</span>
+          </div>
+          <div class="card-body" *ngIf="record.metadata.limits.fee_amount_limits">
+            <dl class="row m-0">
+              <dt class="offset-1 col-lg-2 col-sm-4 label-title" translate>Limit</dt>
+              <dd class="col">{{ record.metadata.limits.fee_amount_limits.default_value | currency: organisation.default_currency }}</dd>
+            </dl>
+          </div>
+        </div>
+        <!-- overdue items restrictions -->
+        <div class="card">
+          <div class="card-header">
+            <i class="fa" [ngClass]="{
+              'fa-circle text-success': record.metadata.limits.overdue_items_limits,
+              'fa-circle-thin': !record.metadata.limits.overdue_items_limits
+            }"></i>
+            <span class="pl-3" translate>Limit by overdue items</span>
+          </div>
+          <div class="card-body" *ngIf="record.metadata.limits.overdue_items_limits">
+            <dl class="row m-0">
+              <dt class="offset-1 col-lg-2 col-sm-4 label-title" translate>Limit</dt>
+              <dd class="col">{{ record.metadata.limits.overdue_items_limits.default_value }}</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
   </dl>
 </ng-container>
