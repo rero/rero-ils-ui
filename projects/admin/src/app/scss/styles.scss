@@ -204,6 +204,9 @@ json-schema-form {
   .card-header:not(:first-child) {
     border-top: $card-border-width solid $card-border-color;
   }
+  .card-header + .card-header {
+    border-top: none;
+  }
 }
 
 // Adapt detailed views to not use screen width
