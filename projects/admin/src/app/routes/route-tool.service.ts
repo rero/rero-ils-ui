@@ -198,8 +198,8 @@ export class RouteToolService {
    * @param record - Object: the resource object to check
    * @param recordType - String: the record type
    * @return Observable providing object with 2 attributes :
-   *     - 'can' - Boolean: to know if the resource could be deleted
-   *     - 'message' - String: the message to display if the record cannot be deleted
+   *     - 'can' - Boolean: to know if the resource could be readable
+   *     - 'message' - String: unused until now
    */
   canRead(record: any, recordType: string): Observable<ActionStatus> {
     return new Observable((observer: Subscriber<any>): void => {
@@ -207,6 +207,35 @@ export class RouteToolService {
         .getPermission(recordType, record.metadata.pid)
         .subscribe((permission: RecordPermission) => {
           observer.next({can: permission.read.can, message: ''});
+        });
+    });
+  }
+
+  /**
+   * Check all permissions of the record
+   *
+   * @param record - Object: the resource object to check
+   * @param recordType - String: the record type
+   * @return Observable providing object contains:
+   *      - canRead permission
+   *      - canUpdate permission
+   *      - canDelete permission
+   */
+  permissions(record: any, recordType: string): Observable<any> {
+    return new Observable((observer: Subscriber<any>): void => {
+      this._recordPermissionService
+        .getPermission(recordType, record.metadata.pid)
+        .subscribe((permission: RecordPermission) => {
+          observer.next({
+            canRead: { can: permission.read.can, message: '' },
+            canUpdate: { can: permission.update.can, message: '' },
+            canDelete: {
+              can: permission.delete.can,
+              message: (permission.delete.can)
+              ? ''
+              : this._recordPermissionService.generateDeleteMessage(permission.delete.reasons)
+            },
+          });
         });
     });
   }

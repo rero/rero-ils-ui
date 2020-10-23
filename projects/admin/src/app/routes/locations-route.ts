@@ -48,8 +48,7 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
             label: 'Locations',
             detailComponent: LocationDetailViewComponent,
             canAdd: () => this._routeToolService.canSystemLibrarian(),
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preprocessRecordEditor: (record: any) => {
               // Location resource use a asynchronous validator ('valueAlreadyExists').
               // This validator needs the library pid to work ; but in creation mode, the record.library.pid isn't yet known by system
