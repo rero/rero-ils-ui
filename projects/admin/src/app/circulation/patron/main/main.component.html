@@ -83,8 +83,9 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'fees']">
-          {{ 'Fees' }}
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'fees']"
+        >
+          {{ 'Fees' | translate }}
           <span *ngIf="transactionsTotalAmount > 0" class="badge badge-warning font-weight-normal">
             {{ transactionsTotalAmount | currency: organisation.default_currency }}
           </span>
