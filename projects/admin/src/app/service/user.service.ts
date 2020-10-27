@@ -18,8 +18,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { forkJoin, of, Subject } from 'rxjs';
-import { concatAll, map } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { User } from '../class/user';
 import { AppConfigService } from './app-config.service';
 
@@ -28,15 +27,21 @@ import { AppConfigService } from './app-config.service';
 })
 export class UserService {
 
+  // CLASS ATTRIBUTES ================================================
+  /** is user already loaded */
+  public userLoaded = false;
+
+  /** Subject emitting the user loaded */
   private onUserLoaded: Subject<User> = new Subject();
 
+  /** user */
   private user: User;
-
-  public userLoaded = false;
 
   /** Allow interface access */
   private _allowInterfaceAccess = false;
 
+  // GETTER FUNCTIONS ================================================
+  /** return onUserLoaded subject as observable */
   get onUserLoaded$() {
     return this.onUserLoaded.asObservable();
   }
@@ -46,71 +51,60 @@ export class UserService {
     return this._allowInterfaceAccess;
   }
 
+  // CLASS CONSTRUCTOR ===============================================
+  /**
+   * Constructor
+   * @param http - HttpClient
+   * @param recordService - RecordService
+   * @param _appConfigService - AppConfigService
+   */
   constructor(
     private http: HttpClient,
     private recordService: RecordService,
     private _appConfigService: AppConfigService
   ) { }
 
+  // CLASS FUNCTIONS =================================================
+  /**
+   * Get the current user. Should be used only when the user is loaded
+   * @return the current user as User class
+   */
   getCurrentUser() {
     return this.user;
   }
 
-  hasRole(role: string) {
+  /**
+   * Check if the current load user has a specific role
+   * @param role - string: the role to check
+   * @return True is the user has the role, False otherwise
+   */
+  hasRole(role: string): boolean {
     return this.getCurrentUser().hasRole(role);
   }
 
-  hasRoles(roles: Array<string>) {
-    return this.getCurrentUser().hasRoles(roles);
-  }
-
-  public loadLoggedUser() {
+  /**
+   * Load the user resource corresponding to the user logged.
+   * This function will populate the `user` class parameter and emit the user at the end
+   */
+  loadLoggedUser() {
     this.http.get<any>(User.LOGGED_URL).subscribe(data => {
       const user = data.metadata;
       if (user && user.library) {
         user.currentLibrary = user.library.pid;
       }
       this.user = new User(user);
-      this.isAuthorizedAccess();
+      this._allowInterfaceAccess = this.isAuthorizedAccess();
       this.userLoaded = true;
       this.onUserLoaded.next(data);
     });
   }
 
-  getUser(pid: string) {
-    return this.recordService.getRecord('patrons', pid, 1).pipe(
-      map(data => {
-        if (data) {
-          const patron = new User(data.metadata);
-          return forkJoin(
-              of(patron),
-              this.recordService.getRecord('patron_types', patron.patron.type.pid)
-              ).pipe(
-                map(patronAndType => {
-                  const newPatron = patronAndType[0];
-                  const patronType = patronAndType[1];
-                  if (patronType) {
-                    newPatron.patron.type = patronType.metadata;
-                  }
-                  return newPatron;
-                })
-          );
-        }
-      }),
-      concatAll()
-    );
-  }
-
+  // private methods ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   /**
-   * Check if you are an access ton admin interface
+   * Check if the current logged user are an access ton admin interface
+   * @return True is access is authorized, False otherwise
    */
-  private isAuthorizedAccess() {
-    const adminRoles = this._appConfigService.adminRoles;
-    this._allowInterfaceAccess = this.user.getRoles()
-    .filter((role: string) => {
-      if (adminRoles.indexOf(role) > -1) {
-        return role;
-      }
-    }).length > 0;
+  private isAuthorizedAccess(): boolean {
+    return this.user.hasRoles(this._appConfigService.adminRoles, 'or');
  }
 }
