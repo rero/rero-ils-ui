@@ -31,12 +31,6 @@
     </div>
   </div>
 
-  <div class="row" *ngIf="patronInfo | patronBlockedMessage as message">
-    <div class="col">
-        <div class="alert alert-danger" role="alert">{{ message }}</div>
-    </div>
-  </div>
-
   <div class="row">
     <div class="col-md-12">
       <admin-circulation-items-list

@@ -21,15 +21,13 @@ import { ToastrService } from 'ngx-toastr';
 import { forkJoin, Subscription } from 'rxjs';
 import { Item, ItemAction, ItemNoteType, ItemStatus } from '../../../class/items';
 import { User } from '../../../class/user';
-import { PatronBlockedMessagePipe } from '../../../pipe/patron-blocked-message.pipe';
 import { ItemsService } from '../../../service/items.service';
 import { PatronService } from '../../../service/patron.service';
 import { UserService } from '../../../service/user.service';
 
 @Component({
   selector: 'admin-loan',
-  templateUrl: './loan.component.html',
-  providers: [PatronBlockedMessagePipe]
+  templateUrl: './loan.component.html'
 })
 export class LoanComponent implements OnInit, OnDestroy {
   public placeholder: string = this._translate.instant(
@@ -65,15 +63,13 @@ export class LoanComponent implements OnInit, OnDestroy {
    * @param _toastService: Toastr Service
    * @param _patronService: Patron Service
    * @param _userService: UserService
-   * @param _patronBlockedMessagePipe: PatronBlockingPipe
    */
   constructor(
     private _itemsService: ItemsService,
     private _translate: TranslateService,
     private _toastService: ToastrService,
     private _patronService: PatronService,
-    private _userService: UserService,
-    private _patronBlockedMessagePipe: PatronBlockedMessagePipe
+    private _userService: UserService
   ) {}
 
   ngOnInit() {
@@ -158,7 +154,7 @@ export class LoanComponent implements OnInit, OnDestroy {
             } else {
               if (newItem.pending_loans && newItem.pending_loans[0].patron_pid !== this.patron.pid) {
                 this._toastService.error(
-                  this._translate.instant('Checkout impossible: the item is pending by another patron'),
+                  this._translate.instant('Checkout impossible: the item is requested by another patron'),
                   this._translate.instant('Checkout')
                 );
                 this.searchText = '';
@@ -212,12 +208,14 @@ export class LoanComponent implements OnInit, OnDestroy {
                   this._translate.instant('Checkin')
                 );
               }
+              this.patron.decrementCirculationStatistic('loans');
               break;
             }
             case ItemAction.checkout: {
               this._displayCirculationNote(newItem, ItemNoteType.CHECKOUT);
               this.checkedOutItems.unshift(newItem);
               this.checkedInItems = this.checkedInItems.filter(currItem => currItem.pid !== newItem.pid);
+              this.patron.incrementCirculationStatistic('loans');
               break;
             }
             case ItemAction.extend_loan: {
@@ -236,23 +234,24 @@ export class LoanComponent implements OnInit, OnDestroy {
           errorMessage = err.error.message;
         }
         if (err.error.status === 403) {
-          // Specific case when user is blocked (for better user comprehension)
-          if (errorMessage !== '' && errorMessage.startsWith('BLOCKED USER')) {
-            const blockedMessage = this._patronBlockedMessagePipe.transform(this.patron);
-            this._toastService.error(
-              `${this._translate.instant('Checkout not possible.')} ${blockedMessage}`,
-              this._translate.instant('Circulation')
-            );
-          } else {
-            this._toastService.error(
-              this._translate.instant('Checkout is not allowed by circulation policy'),
-              this._translate.instant('Checkout')
-            );
+          let message = errorMessage || this._translate.instant('Checkout is not allowed by circulation policy');
+          let title =  this._translate.instant('Circulation');
+          if (message.includes(': ')) {
+            const splittedData = message.split(': ', 2);
+            title = splittedData[0].trim();
+            message = splittedData[1].trim();
+            message = message.charAt(0).toUpperCase() + message.slice(1);
           }
+          this._toastService.error(
+            message,
+            title,
+            {disableTimeOut: true, closeButton: true, enableHtml: true}
+          );
         } else {
           this._toastService.error(
             this._translate.instant('An error occurred on the server: ') + errorMessage,
-            this._translate.instant('Circulation')
+            this._translate.instant('Circulation'),
+            {disableTimeOut: true, closeButton: true, enableHtml: true}
           );
         }
         this.searchText = '';

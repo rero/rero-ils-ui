@@ -15,55 +15,63 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div m-0 *ngIf="patron && patron.patron" [ngClass]="{'text-muted': !patron.displayPatronMode}">
+<div class="m-0" *ngIf="patron && patron.patron" [ngClass]="{'text-muted': !patron.displayPatronMode}">
   <div class="row">
-    <div class="col-md-2 user-icon">
-      <i class="fa fa-user fa-5x" aria-hidden="true"></i>
-    </div>
-    <div class="col-md-10">
-      <div class="row">
-        <div class="col-md-10">
-          <h3>
-            <a [routerLink]="['/records', 'patrons','detail', patron.pid]">
-              <span id="patron-last-name" *ngIf="patron.last_name">{{ patron.last_name }}</span>
-              <span id="patron-first-name" *ngIf="patron.first_name">, {{ patron.first_name }} </span>
-            </a>
-          </h3>
-        </div>
-        <div *ngIf="patron.displayPatronMode" class="col-md-2">
-          <button id="clear-patron-button" type="button" class="btn btn-danger pull-right" (click)="clear()">
-            <i class="fa fa-close" aria-hidden="true"></i>
-          </button>
-        </div>
+    <div class="col row">
+      <div class="col-md-2 user-icon">
+        <i class="fa fa-user fa-5x" aria-hidden="true"></i>
       </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div>
-            <span id="patron-birth-date"
-              *ngIf="patron.birth_date">{{ patron.birth_date | dateTranslate:'mediumDate' }}</span>
+      <div class="col-md-10">
+        <div class="row">
+          <div class="col-md-10">
+            <h3>
+              <a [routerLink]="['/records', 'patrons','detail', patron.pid]">
+                <span id="patron-last-name">{{ patron.last_name }}</span>
+                <span id="patron-first-name" *ngIf="patron.first_name">, {{ patron.first_name }}</span>
+              </a>
+            </h3>
           </div>
-          <div>
-            <span id="patron-city" *ngIf="patron.city">{{ patron.city}}</span>
+          <div *ngIf="patron.displayPatronMode" class="col-md-2">
+            <button id="clear-patron-button" type="button" class="btn btn-danger pull-right" (click)="clear()">
+              <i class="fa fa-close" aria-hidden="true"></i>
+            </button>
           </div>
         </div>
-        <div class="col-md-6">
-          <div>
-            <span id="patron-type" *ngIf="patronType$ | async as patronType">{{ patronType }}</span>
+        <div class="row">
+          <div class="col-md-6">
+            <div id="patron-birth-date">{{ patron.birth_date | dateTranslate:'mediumDate' }}</div>
+            <div id="patron-city">{{ patron.city }}</div>
           </div>
-          <div>
-            <span id="patron-barcode">
-              {{ patron.patron.barcode }}
-            </span>
+          <div class="col-md-6">
+            <div id="patron-type"
+                 *ngIf="patron.patron.type.pid | getRecord: 'patron_types': 'string':'name' | async as patronTypeName"
+            >
+              {{ patronTypeName }}
+            </div>
+            <div id="patron-barcode">{{ patron.patron.barcode }}</div>
           </div>
         </div>
       </div>
-    </div>
       <!-- NOTES-->
-      <div *ngIf="notes && notes.length > 0" class="col alert alert-warning" role="alert">
-        <ng-container *ngFor="let note of notes">
-          <strong class="alert-heading">{{ note.type | translate }}</strong>
-          <p class="mb-0" [innerHTML]="note.content"></p>
+      <div *ngIf="patron.notes" class="alert alert-warning" role="alert">
+        <ng-container *ngFor="let note of patron.notes">
+          <strong class="alert-heading" translate>{{ note.type.toString() }}</strong>
+          <p class="mb-0 ml-3" [innerHTML]="note.content | nl2br"></p>
         </ng-container>
       </div>
-
+    </div>
+    <!-- Circulation message -->
+    <ng-container *ngIf="patron.circulation_informations">
+      <div class="col-sm-12 col-md-6">
+      <ul class="list-group">
+        <li *ngFor="let message of patron.circulation_informations.messages"
+            class="list-group-item list-group-item-{{ getBootstrapColor(message.type) }}"
+           [innerHTML]="message.content | nl2br"
+        ></li>
+      </ul>
+      </div>
+    </ng-container>
   </div>
+
+
+</div>
