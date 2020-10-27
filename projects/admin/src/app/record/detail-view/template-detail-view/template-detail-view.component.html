@@ -30,7 +30,7 @@
           </span>
         </dt>
         <dd id="template-description" [ngClass]="ddCssClass">
-          {{ record.metadata.description }}
+          {{ record.metadata.description | nl2br }}
         </dd>
       </ng-container>
       <!-- CREATOR -->

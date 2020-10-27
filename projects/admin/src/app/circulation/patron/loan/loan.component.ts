@@ -236,23 +236,17 @@ export class LoanComponent implements OnInit, OnDestroy {
           errorMessage = err.error.message;
         }
         if (err.error.status === 403) {
-          // Specific case when user is blocked (for better user comprehension)
-          if (errorMessage !== '' && errorMessage.startsWith('BLOCKED USER')) {
-            const blockedMessage = this._patronBlockedMessagePipe.transform(this.patron);
-            this._toastService.error(
-              `${this._translate.instant('Checkout not possible.')} ${blockedMessage}`,
-              this._translate.instant('Circulation')
-            );
-          } else {
-            this._toastService.error(
-              this._translate.instant('Checkout is not allowed by circulation policy'),
-              this._translate.instant('Checkout')
-            );
-          }
+          const message = errorMessage || this._translate.instant('Checkout is not allowed by circulation policy');
+          this._toastService.error(
+            message,
+            this._translate.instant('Circulation'),
+            {disableTimeOut: true, closeButton: true, enableHtml: true}
+          );
         } else {
           this._toastService.error(
             this._translate.instant('An error occurred on the server: ') + errorMessage,
-            this._translate.instant('Circulation')
+            this._translate.instant('Circulation'),
+            {disableTimeOut: true, closeButton: true, enableHtml: true}
           );
         }
         this.searchText = '';
