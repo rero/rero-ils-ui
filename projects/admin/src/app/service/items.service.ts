@@ -76,7 +76,7 @@ export class ItemsService {
   getItem(barcode: string, patronPid?: string) {
     let url = `/api/item/barcode/${barcode}`;
     if (patronPid) {
-      url = url + `?patron_pid=${patronPid}`;
+      url = url + `?patron.patron_pid=${patronPid}`;
     }
     return this._http.get<any>(url).pipe(
       map(data => {
