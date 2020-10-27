@@ -17,7 +17,8 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { LoanState } from '../../../class/items';
 import { User } from '../../../class/user';
 import { OrganisationService } from '../../../service/organisation.service';
 import { PatronService } from '../../../service/patron.service';
@@ -40,31 +41,45 @@ export class MainComponent implements OnInit, OnDestroy {
   /** Subsription to current patron */
   private _patronSubscription$: Subscription;
 
+  /** Constructor
+   * @param _route - ActivatedRoute
+   * @param _router - Router
+   * @param _patronService - PatronService
+   * @param _patronTransactionService - PatronTransactionService
+   * @param _organisationService - OrganisationService
+   */
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private patronService: PatronService,
-    private patronTransactionService: PatronTransactionService,
-    private organisationService: OrganisationService) { }
+    private _route: ActivatedRoute,
+    private _router: Router,
+    private _patronService: PatronService,
+    private _patronTransactionService: PatronTransactionService,
+    private _organisationService: OrganisationService) { }
+
 
   ngOnInit() {
-    const barcode = this.route.snapshot.paramMap.get('barcode');
-    this._patronSubscription$ = this.patronService.getPatron(barcode).subscribe((patron) => {
+    const barcode = this._route.snapshot.paramMap.get('barcode');
+    this._patronSubscription$ = this._patronService.getPatron(barcode).subscribe((patron) => {
       if (patron) {
         this.patron = patron;
-        this._patronTransactionSubscription$ = this.patronTransactionService.patronTransactionsSubject$.subscribe(
+        this._patronService.getCirculationInformations(patron.pid).subscribe((data) => {
+          this._parseStatistics(data.statistics || {});
+          for (const message of (data.messages || [])) {
+            this.patron.addCirculationMessage(message as any);
+          }
+        });
+        this._patronTransactionSubscription$ = this._patronTransactionService.patronTransactionsSubject$.subscribe(
           (transactions) => {
-            this.transactionsTotalAmount = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
+            this.transactionsTotalAmount = this._patronTransactionService.computeTotalTransactionsAmount(transactions);
           }
         );
-        this.patronTransactionService.emitPatronTransactionByPatron(patron.pid, undefined, 'open');
+        this._patronTransactionService.emitPatronTransactionByPatron(patron.pid, undefined, 'open');
       }
     });
   }
 
   clearPatron() {
-    this.patronService.clearPatron();
-    this.router.navigate(['/circulation']);
+    this._patronService.clearPatron();
+    this._router.navigate(['/circulation']);
   }
 
   ngOnDestroy() {
@@ -74,13 +89,47 @@ export class MainComponent implements OnInit, OnDestroy {
     if (this._patronSubscription$) {
       this._patronSubscription$.unsubscribe();
     }
-    this.patronService.clearPatron();
+    this._patronService.clearPatron();
   }
 
   /** Get current organisation
    *  @return: current organisation
    */
   get organisation() {
-    return this.organisationService.organisation;
+    return this._organisationService.organisation;
+  }
+
+  /** Find and return a circulation statistic.
+   * @param type: the type of circulation statistics to find.
+   */
+  getCirculationStatistics(type: string): number {
+    return (
+      this.patron
+      && 'circulation_informations' in this.patron
+      && 'statistics' in this.patron.circulation_informations
+      && type in this.patron.circulation_informations.statistics
+    ) ? this.patron.circulation_informations.statistics[type]
+      : 0;
+  }
+
+  /**
+   * Parse statistics from API into corresponding tab statistic.
+   * @param data: a dictionary of loan state/value
+   */
+  private _parseStatistics(data: any) {
+    for (const key of Object.keys(data)) {
+      switch (key) {
+        case LoanState[LoanState.PENDING]:
+        case LoanState[LoanState.ITEM_IN_TRANSIT_FOR_PICKUP]:
+          this.patron.incrementCirculationStatistic('pending', Number(data[key]));
+          break;
+        case LoanState[LoanState.ITEM_AT_DESK]:
+          this.patron.incrementCirculationStatistic('pickup',  Number(data[key]));
+          break;
+        case LoanState[LoanState.ITEM_ON_LOAN]:
+          this.patron.incrementCirculationStatistic('loans',  Number(data[key]));
+          break;
+      }
+    }
   }
 }

@@ -20,11 +20,6 @@ export function _(str) {
   return marker(str);
 }
 
-export enum UserNoteType {
-  PUBLIC = _('public_note'),
-  STAFF = _('staff_note')
-}
-
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 export class User {
@@ -63,6 +58,11 @@ export class User {
   items?: any[];
   displayPatronMode = true;
   currentLibrary: string;
+  circulation_informations: {
+    messages: Array<{type: string, content: string}>,
+    statistics: any;
+  }
+
 
   /** Locale storage name key */
   static readonly STORAGE_KEY = 'user';
@@ -98,7 +98,7 @@ export class User {
    * @return boolean
    */
   hasRoles(roles: Array<string>, operator: string = 'and') {
-    const intersection = roles.filter(role => this.roles.includes(role));
+    const intersection = roles.filter(role => this.getRoles().includes(role));
     return (operator === 'and')
       ? intersection.length == roles.length  // all requested roles are present into user roles.
       : intersection.length > 0 // at least one requested roles are present into user roles.
@@ -110,6 +110,22 @@ export class User {
    */
   getRoles() {
     return this.roles ? this.roles : [];
+  }
+
+  /**
+   * Is this user a patron?
+   * @return a boolean
+   */
+  get isPatron() {
+    return this.hasRole('patron');
+  }
+
+  /**
+   * Is this user a librarian?
+   * @return a boolean
+   */
+  get isLibrarian() {
+    return this.hasRole('librarian');
   }
 
   /**
@@ -129,21 +145,48 @@ export class User {
   }
 
   /**
-   * Is this user a patron?
-   * @return a boolean
+   * Increment a circulation statistic for this user.
+   * @param type - string: the statistic type (pending, request, loans, ...)
+   * @param idx - number: the number to increment.
+   * @return the new statistic counter
    */
-  get isPatron() {
-    return this.hasRole('patron');
+  incrementCirculationStatistic(type: string, idx: number = 1): number {
+    this.circulation_informations = this.circulation_informations || {messages: [], statistics: {}};
+    this.circulation_informations.statistics[type] = (this.circulation_informations.statistics[type] || 0) + idx;
+    return this.circulation_informations.statistics[type];
   }
 
   /**
-   * Is this user a librarian?
-   * @return a boolean
+   * Decrement a circulation statistic for this user.
+   * @param type - string: the statistic type (pending, request, loans, ...)
+   * @param idx - number: the number to decrement.
+   * @return the new statistic counter
    */
-  get isLibrarian() {
-    return this.hasRole('librarian');
+  decrementCirculationStatistic(type: string, idx: number = 1): number {
+    this.circulation_informations = this.circulation_informations || {messages: [], statistics: {}};
+    if (!(type in this.circulation_informations.statistics)) {
+      return 0;
+    }
+    const new_stat = this.circulation_informations.statistics[type] - idx;
+    this.circulation_informations.statistics[type] = (new_stat > 0)
+      ? new_stat
+      : 0;
+    return this.circulation_informations.statistics[type];
   }
 
+  /**
+   * Append a circulation message for this user.
+   * @param message: the message to append
+   */
+  addCirculationMessage(message: {type: string, content: string}) {
+    this.circulation_informations = this.circulation_informations || {messages: [], statistics: {}};
+    this.circulation_informations.messages.push(message);
+  }
+}
+
+export enum UserNoteType {
+  PUBLIC = _('public_note'),
+  STAFF = _('staff_note')
 }
 
 export interface Organisation {

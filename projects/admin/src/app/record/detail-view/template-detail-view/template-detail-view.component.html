@@ -29,9 +29,7 @@
             Description
           </span>
         </dt>
-        <dd id="template-description" [ngClass]="ddCssClass">
-          {{ record.metadata.description }}
-        </dd>
+        <dd id="template-description" [ngClass]="ddCssClass" [innerHTML]="record.metadata.description | nl2br"></dd>
       </ng-container>
       <!-- CREATOR -->
       <ng-container *ngIf="record.metadata.creator.pid | getRecord: 'patrons' | async as creator">
@@ -51,7 +49,7 @@
             Type
           </span>
         </dt>
-        <dd id="template-description" [ngClass]="ddCssClass">
+        <dd id="template-type" [ngClass]="ddCssClass">
           {{ record.metadata.template_type }}
         </dd>
       </ng-container>
