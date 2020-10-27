@@ -53,7 +53,7 @@
         <div class="card-body" *ngIf="record.metadata.limits.checkout_limits">
           <dl class="row m-0">
             <dt class="offset-1 col-lg-2 col-sm-4 label-title" translate>General limit</dt>
-            <dd class="col">{{ record.metadata.limits.checkout_limits.general_limit }}</dd>
+            <dd class="col">{{ record.metadata.limits.checkout_limits.global_limit }}</dd>
             <dd class="w-100 m-0"></dd>
             <ng-container *ngIf="record.metadata.limits.checkout_limits.library_limit">
               <dt class="offset-1 col-lg-2 col-sm-4 label-title" translate>Library limit</dt>

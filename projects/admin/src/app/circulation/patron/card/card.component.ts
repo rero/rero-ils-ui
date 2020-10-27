@@ -15,56 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { RecordService } from '@rero/ng-core';
-import { map } from 'rxjs/operators';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { User } from '../../../class/user';
+import { getBootstrapLevel } from '../../../utils/utils';
+
 
 @Component({
   selector: 'admin-circulation-patron-detailed',
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss']
 })
-export class CardComponent implements OnInit {
+export class CardComponent {
   @Input() patron: User;
+  @Input() circulationMessages = false;
   @Output() clearPatron = new EventEmitter<User>();
-  patronType$: any;
-
-  constructor(
-    private recordService: RecordService,
-    private _sanitizer: DomSanitizer
-  ) { }
-
-  ngOnInit() {
-    if (this.patron) {
-      this.patronType$ = this.recordService.getRecord('patron_types', this.patron.patron.type.pid).pipe(
-        map(patronType => patronType.metadata.name)
-      );
-    }
-  }
 
   clear() {
     if (this.patron) {
       this.clearPatron.emit(this.patron);
     }
   }
-  /**
-   * Get the patron notes.
-   *
-   * It replace a new line to the corresponding html code.
-   * Allows to render html.
-   */
-  get notes(): Array<{ type: string, content: SafeHtml }> {
-    if (!this.patron || !this.patron.notes || this.patron.notes.length < 1) {
-      return null;
-    }
-    return this.patron.notes.map((note: any) => {
-      return {
-        type: note.type,
-        content: this._sanitizer.bypassSecurityTrustHtml(
-          note.content.replace('\n', '<br>'))
-      };
-    });
+
+  getBootstrapColor(level: string): string {
+    return getBootstrapLevel(level);
   }
 }

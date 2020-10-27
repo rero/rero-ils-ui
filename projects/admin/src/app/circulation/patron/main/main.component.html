@@ -17,18 +17,11 @@
 
 <ng-container *ngIf="patron">
   <div class="col mb-4">
-    <div class="col-md-6">
-      <admin-circulation-patron-detailed
-        [patron]="patron"
-        (clearPatron)="clearPatron()"
-      ></admin-circulation-patron-detailed>
-    </div>
-  </div>
-
-  <div class="col mb-4" *ngIf="patron | patronBlockedMessage as message">
-      <div class="alert alert-danger" role="alert">
-      {{ message }}
-      </div>
+    <admin-circulation-patron-detailed
+      [patron]="patron"
+      [circulationMessages]="true"
+      (clearPatron)="clearPatron()"
+    ></admin-circulation-patron-detailed>
   </div>
 
   <div class="col">
@@ -39,10 +32,12 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'loan']"
-          translate
-          >Checkin/Checkout</a
-        >
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'loan']">
+          {{ 'Checkin/Checkout' | translate }}
+          <span *ngIf="getCirculationStatistics('loans') > 0" class="badge badge-info font-weight-normal">
+            {{ getCirculationStatistics('loans') }}
+          </span>
+        </a>
       </li>
       <li class="nav-item">
         <a
@@ -50,10 +45,12 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'pickup']"
-          translate
-          >To pick up</a
-        >
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'pickup']">
+          {{ 'To pick up' | translate }}
+          <span *ngIf="getCirculationStatistics('pickup') > 0" class="badge badge-info font-weight-normal">
+            {{ getCirculationStatistics('pickup') }}
+          </span>
+        </a>
       </li>
       <li class="nav-item">
         <a
@@ -61,10 +58,12 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'pending']"
-          translate
-          >Pending</a
-        >
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'pending']">
+          {{ 'Pending' | translate }}
+          <span *ngIf="getCirculationStatistics('pending') > 0 as stat" class="badge badge-info font-weight-normal">
+            {{ getCirculationStatistics('pending') }}
+          </span>
+        </a>
       </li>
       <li class="nav-item">
         <a
@@ -84,7 +83,7 @@
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'fees']">
-          {{ 'Fees' }}
+          {{ 'Fees' | translate }}
           <span *ngIf="transactionsTotalAmount > 0" class="badge badge-warning font-weight-normal">
             {{ transactionsTotalAmount | currency: organisation.default_currency }}
           </span>
