@@ -24,14 +24,10 @@ import { PatronService } from '../../../../service/patron.service';
 })
 export class PickupItemComponent implements OnInit {
 
-  /**
-   * Loan
-   */
+  /** Loan */
   @Input() loan = undefined;
 
-  /**
-   * Item
-   */
+  /** Item */
   item = undefined;
 
   /**
@@ -49,8 +45,7 @@ export class PickupItemComponent implements OnInit {
    */
   ngOnInit() {
     if (this.loan) {
-      this._recordService.getRecord('items', this.loan.metadata.item_pid.value)
-      .subscribe(result => {
+      this._recordService.getRecord('items', this.loan.metadata.item_pid.value).subscribe(result => {
         this._patronService.getItem(result.metadata.barcode).subscribe(
           item => this.item = item
         );
