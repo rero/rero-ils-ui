@@ -32,9 +32,7 @@ import { UserService } from '../../../service/user.service';
   providers: [PatronBlockedMessagePipe]
 })
 export class LoanComponent implements OnInit, OnDestroy {
-  public placeholder: string = this._translate.instant(
-    'Please enter an item barcode.'
-  );
+
   /** Search text (barcode) entered in search input */
   public searchText = '';
 
@@ -56,7 +54,11 @@ export class LoanComponent implements OnInit, OnDestroy {
   /** Library PID of the logged user */
   currentLibraryPid: string;
 
+  /** list of subscriptions */
   private _subcription = new Subscription();
+
+  /** checkout list sort criteria */
+  private _sortCriteria = '-transaction_date';
 
   /**
    * Constructor
@@ -82,7 +84,7 @@ export class LoanComponent implements OnInit, OnDestroy {
       if (patron) {
         this.isLoading = true;
         this.patron.displayPatronMode = true;
-        this._patronService.getItems(patron.pid).subscribe(items => {
+        this._patronService.getItems(patron.pid, this._sortCriteria).subscribe(items => {
           // items is an array of brief item data (pid, barcode). For each one, we need to
           // call the detail item service to get full data about it
           items.map((item: any) => item.loading = true);
@@ -286,6 +288,22 @@ export class LoanComponent implements OnInit, OnDestroy {
         this._translate.instant('The item has fees'),
         this._translate.instant('Checkin')
       );
+    }
+  }
+
+  selectingSortCriteria(sortCriteria: string) {
+    switch (sortCriteria) {
+      case 'duedate':
+        this.checkedOutItems.sort((a, b) => a.loan.end_date.diff(b.loan.end_date));
+        break;
+      case '-duedate':
+        this.checkedOutItems.sort((a, b) => b.loan.end_date.diff(a.loan.end_date));
+        break;
+      case 'transactiondate':
+        this.checkedOutItems.sort((a, b) => a.loan.transaction_date.diff(b.loan.transaction_date));
+        break;
+      default:
+        this.checkedOutItems.sort((a, b) => b.loan.transaction_date.diff(a.loan.transaction_date));
     }
   }
 }
