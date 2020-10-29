@@ -15,11 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { extractIdOnRef, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { forkJoin, Observable, Subscription } from 'rxjs';
-import { IssueItemStatus, Item, ItemNote, ItemNoteType } from '../../../class/items';
-import { LoanService } from '../../../service/loan.service';
+import { Observable, Subscription } from 'rxjs';
+import { IssueItemStatus, Item, ItemNote } from '../../../class/items';
 
 @Component({
   selector: 'admin-item-detail-view',
@@ -43,39 +42,21 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
   /** Location record */
   location: any;
 
-  /** Library record */
-  library: any;
-
-  /** Number of requested items */
-  numberOfRequests: number;
-
   /** reference to IssueItemStatus */
   issueItemStatus = IssueItemStatus;
 
   /**
    * Constructor
-   * @param recordService - RecordService
-   * @param loanService - LoanService
+   * @param _recordService - RecordService
    */
   constructor(
-    private recordService: RecordService,
-    private loanService: LoanService
+    private _recordService: RecordService,
   ) {}
 
   ngOnInit() {
     this._recordObs = this.record$.subscribe( record => {
       this.record = record;
-      const numberOfRequest$ = this.loanService.numberOfRequests$(record.metadata.pid);
-      const locationRecord$ = this.recordService.getRecord('locations', record.metadata.location.pid);
-      forkJoin([numberOfRequest$, locationRecord$]).subscribe(
-        ([numberOfRequest, location]) => {
-          this.numberOfRequests = numberOfRequest;
-          this.location = location;
-          this.recordService.getRecord('libraries', extractIdOnRef(location.metadata.library.$ref)).subscribe(
-            library => this.library = library
-          );
-        }
-      );
+      this._recordService.getRecord('locations', record.metadata.location.pid, 1).subscribe(data => this.location = data);
     });
   }
 

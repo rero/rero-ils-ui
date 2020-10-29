@@ -14,59 +14,46 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="borrowedBy$ | async as borrowedBy">
-  <!-- Loan borrowed -->
-  <ng-container *ngIf="borrowedBy.length > 0">
-    <div class="card mt-2">
-      <div class="card-header">
-        <b>{{ 'Borrowed by' | translate }}</b>
-      </div>
+<ng-container *ngIf="borrowedBy.length > 0 || requestedBy.length > 0">
+  <div class="card mt-2">
+    <!-- Loan borrowed -->
+    <ng-container *ngIf="borrowedBy.length > 0">
+      <div class="card-header font-weight-bold" translate>Borrowed by</div>
       <div class="card-body">
         <div class="row mb-2">
-          <div class="col-4 font-weight-bold">{{ 'Patron' | translate }}</div>
-          <div class="col-4 font-weight-bold">{{ 'Renewal' | translate }}</div>
-          <div class="col-3 font-weight-bold">{{ 'Due date' | translate }}</div>
+          <div class="col-4 font-weight-bold" translate>Patron</div>
+          <div class="col-4 font-weight-bold" translate>Renewal</div>
+          <div class="col-3 font-weight-bold" translate>Due date</div>
         </div>
         <admin-item-transaction
           type="loan_borrow"
           [transaction]="borrowedBy[0]"
         ></admin-item-transaction>
       </div>
-    </div>
-  </ng-container>
-</ng-container>
-
-<ng-container *ngIf="requestedBy$ | async as requestedBy">
-  <!-- Loan requested -->
-  <ng-container *ngIf="requestedBy.length > 0">
-    <div class="card mt-2">
+    </ng-container>
+    <!-- Loan requested -->
+    <ng-container *ngIf="requestedBy.length > 0">
       <div class="card-header">
-        <ng-container *ngIf="requestedBy.length <= 1; else requests">
-          <b>{{ 'Request' | translate }}</b>
-        </ng-container>
-        <ng-template #requests>
-          <b>{{ 'Requests' | translate }}</b>
-        </ng-template>
-        <b> ({{ requestedBy.length }})</b>
-        <button class="btn btn-outline-primary btn-link btn-sm ml-2 float-right" (click)="addRequest(item.metadata.pid)">
-          <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} ...
+        <b>{{ requestedBy.length | i18nPlural: {'=1': 'Request', 'other': 'Requests'} | translate }}</b>
+        <button class="btn btn-outline-primary btn-link btn-sm ml-2 float-right" (click)="addRequest()">
+          <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} …
         </button>
       </div>
       <div class="card-body">
         <div class="row mb-2">
-          <div class="col-4 font-weight-bold">{{ 'Patron' | translate }}</div>
-          <div class="col-4 font-weight-bold">{{ 'Pick-up Location' | translate }}</div>
-          <div class="col-3 font-weight-bold">{{ 'Request date' | translate }}</div>
+          <div class="col-4 font-weight-bold" translate>Patron</div>
+          <div class="col-4 font-weight-bold" translate>Pick-up Location</div>
+          <div class="col-3 font-weight-bold" translate>Request date</div>
         </div>
         <admin-item-transaction
-          *ngFor="let request of requestedBy; let i = index"
+          *ngFor="let request of requestedBy"
           type="loan_request"
-          [background]="i % 2"
           [transaction]="request"
           [itemPid]="item.metadata.pid"
-          (removeRequest)="updateRequestList()"
+          (removeRequest)="deleteRequest(request)"
         ></admin-item-transaction>
       </div>
-    </div>
-  </ng-container>
+    </ng-container>
+  </div>
 </ng-container>
+

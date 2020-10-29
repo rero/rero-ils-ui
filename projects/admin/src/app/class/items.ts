@@ -161,7 +161,7 @@ export class Item {
     ItemNoteType.PROVENANCE,
     ItemNoteType.CONDITION,
     ItemNoteType.PATRIMONIAL
-  ]
+  ];
 
   available: boolean;
   barcode: string;

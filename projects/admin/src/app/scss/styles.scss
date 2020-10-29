@@ -200,6 +200,12 @@ json-schema-form {
   }
 }
 
+.card {
+  .card-header:not(:first-child) {
+    border-top: $card-border-width solid $card-border-color;
+  }
+}
+
 // Adapt detailed views to not use screen width
 .main-content{
   @extend .container;
