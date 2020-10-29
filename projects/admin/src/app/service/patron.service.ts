@@ -90,13 +90,17 @@ export class PatronService {
   }
 
   /**
-   * Get Item by Patron Pid
-   * @param patronPid - string
+   * Get Items on loan for a patron
+   * @param patronPid - string: the patron pid
+   * @param sort - string: the sort criteria to use (-transaction_date by default)
    * @return observable
    */
-  getItems(patronPid: string) {
+  getItems(patronPid: string, sort?: string) {
+    if (sort === undefined) {
+      sort = '-transaction_date';
+    }
     const itemApiUrl = this._apiService.getEndpointByType('item');
-    const url = `${itemApiUrl}/loans/${patronPid}?sort=-transaction_date`;
+    const url = `${itemApiUrl}/loans/${patronPid}?sort=${sort}`;
     return this._http.get<any>(url).pipe(
       map(data => data.hits),
       map(hits => this._recordService.totalHits(hits.total === 0) ? [] : hits.hits),

@@ -17,16 +17,17 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { isObservable, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Item, ItemAction, ItemNote, ItemNoteType, Loan, LoanState } from '../../class/items';
 import { ItemsService } from '../../service/items.service';
 import { OrganisationService } from '../../service/organisation.service';
-import { Item, ItemAction, Loan, LoanState } from '../../class/items';
 import { PatronTransactionService } from '../patron-transaction.service';
 
 @Component({
   selector: 'admin-item',
-  templateUrl: './item.component.html'
+  templateUrl: './item.component.html',
+  styleUrls: ['./item.component.scss']
 })
 export class ItemComponent implements OnInit {
 
@@ -39,6 +40,9 @@ export class ItemComponent implements OnInit {
   /** Item has fees */
   @Output() hasFeesEmitter = new EventEmitter<boolean>();
 
+  /** Extend loan event emitter */
+  @Output() extendLoanClicked = new EventEmitter<any[]>();
+
   /** Is collapsed */
   isCollapsed = true;
 
@@ -50,6 +54,14 @@ export class ItemComponent implements OnInit {
 
   /** ItemAction reference */
   itemAction = ItemAction;
+
+  /**
+   * Get current organisation
+   * @return: current organisation
+   */
+  get organisation() {
+    return this._organisationService.organisation;
+  }
 
   /**
    * Constructor
@@ -71,7 +83,6 @@ export class ItemComponent implements OnInit {
   ngOnInit() {
     if (this.item && this.item.loan && this.item.loan.pid) {
       const loanPid = this.item.loan.pid;
-
       this._patronTransactionService.patronTransactionsByLoan$(loanPid, 'overdue', 'open').subscribe(
         (transactions) => {
           this.totalAmountOfFee = this._patronTransactionService.computeTotalTransactionsAmount(transactions);
@@ -80,48 +91,66 @@ export class ItemComponent implements OnInit {
           }
         }
       );
-
       this.notifications$ = this._recordService.getRecords(
-        'notifications', `loan.pid:${loanPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
+        'notifications', `loan.pid:${loanPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE
+      ).pipe(
         map((results: any) => results.hits.hits)
       );
     }
   }
 
-  /** Get transit location pid
-   * @param item: current item
+  /**
+   * Get transit location pid
    * @return: transit location pid
    */
-  getTransitLocationPid(item: Item) {
+  getTransitLocationPid() {
     if (this.patron) {
-      if (item.loan && item.loan.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP) {
-        return item.loan.pickup_location_pid;
+      if (this.item.loan && this.item.loan.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP) {
+        return this.item.loan.pickup_location_pid;
       }
-      if (item.loan && item.loan.state === LoanState.ITEM_IN_TRANSIT_TO_HOUSE) {
-        return item.location.pid;
+      if (this.item.loan && this.item.loan.state === LoanState.ITEM_IN_TRANSIT_TO_HOUSE) {
+        return this.item.location.pid;
       }
     } else {
-      const validatedLoan = new Loan(item.action_applied[ItemAction.validate]);
-      const checkedInLoan = new Loan(item.action_applied[ItemAction.checkin]);
+      const validatedLoan = new Loan(this.item.action_applied[ItemAction.validate]);
+      const checkedInLoan = new Loan(this.item.action_applied[ItemAction.checkin]);
       if (validatedLoan && validatedLoan.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP) {
         return validatedLoan.pickup_location_pid;
       }
       if (checkedInLoan && checkedInLoan.state === LoanState.ITEM_IN_TRANSIT_TO_HOUSE) {
-        return item.location.pid;
+        return this.item.location.pid;
       }
     }
     return null;
   }
 
-  /** Get current organisation
-   * @return: current organisation
+  /**
+   * Get a note related to the item for the itemAction done.
+   * @return the corresponding note if the corresponding action has been done.
    */
-  get organisation() {
-    return this._organisationService.organisation;
+  getCirculationNoteForAction(): ItemNote|null {
+    if (this.item.actionDone) {
+      if (this.item.actionDone === this.itemAction.checkin) {
+        return this.item.getNote(ItemNoteType.CHECKIN);
+      }
+      if (this.item.actionDone === this.itemAction.checkout) {
+        return this.item.getNote(ItemNoteType.CHECKOUT);
+      }
+    }
+    return null;
   }
 
-  /** Is a callout wrapper is required for this item.
-   *
+  /**
+   * Extend loan action
+   * @param event: the event fired
+   */
+  extendLoanClick(event: any) {
+    this.extendLoanClicked.emit(this.item);
+  }
+
+
+  /**
+   * Is a callout wrapper is required for this item.
    * @param item: the item to analyse
    * @param type: the callout type (error, warning, info, ...)
    */
