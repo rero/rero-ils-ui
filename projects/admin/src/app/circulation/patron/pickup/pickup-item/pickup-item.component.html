@@ -15,22 +15,18 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="item && loan; else loading">
-  <!-- BARCODE -->
   <div class="col-sm-2">
     <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
   </div>
-  <!-- TITLE -->
-  <div class="col-sm-5"><a [routerLink]="['/records', 'documents', 'detail', item.document.pid]"
-    *ngIf="item.document.title | mainTitle as title">
-    {{ title }}</a>
+  <div class="col-sm-5">
+    <a *ngIf="item.document.title | mainTitle as title" [routerLink]="['/records', 'documents', 'detail', item.document.pid]">
+      {{ title }}
+    </a>
   </div>
-  <!-- PICKUP LOCATION -->
   <div class="col-sm-3">
-    {{ loan.metadata.pickup_location_pid | getRecord: 'locations' : 'field' : 'name' | async }}
+    {{ loan.metadata.pickup_location_pid | getRecord: 'locations' : 'field' : 'pickup_name' | async }}
   </div>
-  <div class="col-sm-2">
-    &nbsp;
-  </div>
+  <div class="col"></div>
 </ng-container>
 
 <ng-template #loading>
