@@ -16,14 +16,41 @@
 -->
 
 <section *ngIf="!isLoading; else loading" class="content">
-  <div class="row">
-    <div class="col-12 col-md-6 mb-4">
+  <div class="row mb-4">
+    <div class="col-12 col-md-6">
       <ng-core-search-input
-        [placeholder]="placeholder | translate"
+        [placeholder]="'Please enter an item barcode.' | translate"
         [searchText]="searchText"
         (search)="searchValueUpdated($event)"
         [focus]="searchInputFocus"
       ></ng-core-search-input>
+    </div>
+    <div class="col"></div>
+    <!-- Sorting loans -->
+    <div class="col-md-4 d-flex align-items-end justify-content-end">
+      <ng-core-sort-list
+        [options]="[
+          {value:'duedate', label:'Due date' | translate, icon:'fa-sort-numeric-asc'},
+          {value:'-duedate', label:'Due date (desc)' | translate, icon:'fa-sort-numeric-desc'},
+          {value:'transactiondate', label:'Transaction date' | translate, icon:'fa-sort-numeric-asc'},
+          {value:'-transactiondate', label:'Transaction date (desc)' | translate, icon:'fa-sort-numeric-desc'}
+        ]"
+        [useIcon]="true"
+        (selectChange)="selectingSortCriteria($event)"
+      >
+      </ng-core-sort-list>
+
+      <!--<div class="input-group">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="sort-criteria">
+            <i class="fa fa-sort-numeric-asc"></i>
+          </label>
+        </div>
+        <select class="custom-select" id="sort-criteria" (change)="selectingSortCriteria($event.target.value)">
+          <option value="-transaction_date">Transaction date</option>
+          <option value="due_date">Due date</option>
+        </select>
+      </div>-->
     </div>
   </div>
   <div class="row">

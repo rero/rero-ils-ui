@@ -43,9 +43,6 @@ export class ItemsListComponent {
   /** Item has fees */
   @Output() hasFeesEmitter = new EventEmitter<boolean>();
 
-  /** Extend loan item action */
-  extendLoan = ItemAction.extend_loan;
-
   /** Constructor */
   constructor() {
     this.checkedOutItems = null;

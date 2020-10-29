@@ -20,59 +20,36 @@
 </div>
 <div *ngIf="(checkedOutItems && checkedOutItems.length > 0) || (checkedInItems && checkedInItems.length > 0)">
   <!-- HEADER -->
-  <div class="row mb-1 align-items-center">
-    <div class="col mr-1 d-none d-lg-block">
-      <div class="row p-2 bg-dark rounded text-light">
-        <div class="col-lg-3" translate>Item</div>
-        <div class="col-lg-4" translate>Document</div>
-        <div class="col-lg-3" translate>Circulation info</div>
-        <div class="col-lg-2">&nbsp;</div>
-      </div>
-    </div>
-    <!-- RENEW ALL -->
-    <div *ngIf="patron" class="col-sm-2 pl-0">
-      <div class="text-left">
-        <button class="btn btn-primary d-none d-lg-block"
-        (click)="extendAllLoansClick()"
-        [disabled]="loansToExtend.length < 1"
-        id="renew-all-button"
-        translate>Renew all</button>
-      </div>
+  <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
+    <div class="col-2" translate>Item</div>
+    <div class="col-6" translate>Document</div>
+    <div class="col-3" translate>Circulation info</div>
+    <div class="col-1">
+      <ng-container *ngIf="patron">
+        <button class="btn btn-primary float-right btn-sm my-1"
+                (click)="extendAllLoansClick()"
+                [disabled]="loansToExtend.length < 1"
+                id="renew-all-button"
+                translate
+        >Renew all</button>
+      </ng-container>
     </div>
   </div>
+
   <!-- CHECKED OUT ITEMS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
-  <div class="row align-items-start" *ngFor="let item of checkedOutItems">
-    <!-- CONTENT -->
-    <div class="col mr-1">
-      <admin-item [patron]="patron"
-                  [item]="item"
-                  [attr.id]="item.barcode | idAttribute:{prefix: 'item'}">
-      </admin-item>
-    </div>
-    <!-- ACTIONS -->
-    <div *ngIf="patron" class="col-md-2 text-left pl-0 mb-2">
-      <!-- extend loan action -->
-      <button type="button"
-              class="btn btn-outline-secondary mr-1 d-md-block"
-              [disabled]="!item.actions.includes(extendLoan)"
-              [attr.id]="item.barcode | idAttribute:{prefix: 'item', suffix: 'renew-button'}"
-              (click)="extendLoanClick($event, item)" translate>
-        Renew
-      </button>
-    </div>
-  </div>
+  <admin-item *ngFor="let item of checkedOutItems"
+              [patron]="patron"
+              [item]="item"
+              [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
+              (extendLoanClicked)="extendLoanClick($event, item)">
+  </admin-item>
+
   <!-- CHECKED IN ITEMS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <!--   Callout border for [TRANSIT|REQUEST|FEE] -->
-  <div class="row align-items-start" *ngFor="let item of checkedInItems">
-    <div class="col mr-1">
-      <admin-item [patron]="patron"
-                  [item]="item"
-                  [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
-                  (hasFeesEmitter)="hasFees($event)">
-      </admin-item>
-    </div>
-    <div *ngIf="patron" class="col-md-2 pl-0 mb-2">
-      <!-- No actions -->
-    </div>
-  </div>
+  <admin-item *ngFor="let item of checkedInItems"
+              [patron]="patron"
+              [item]="item"
+              [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
+              (hasFeesEmitter)="hasFees($event)">
+  </admin-item>
 </div>
