@@ -19,6 +19,7 @@ import { Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { map } from 'rxjs/operators';
+import { LoanState } from '../class/items';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -26,21 +27,17 @@ import { UserService } from './user.service';
 })
 export class LoanService {
 
-  /**
-   * Status of a borrow loan
-   */
-  statusBorrow = {
-    ON_LOAN: 'ITEM_ON_LOAN'
-  };
+  /** Statuses of a borrow loan */
+  static borrowStatuses = [
+    LoanState.ITEM_ON_LOAN
+  ];
 
-  /**
-   * Statuses of a request loan
-   */
-  statusRequest = {
-    AT_DESK: 'ITEM_AT_DESK',
-    PENDING: 'PENDING',
-    IN_TRANSIT_FOR_PICKUP: 'ITEM_IN_TRANSIT_FOR_PICKUP'
-  };
+  /** Statuses of a request loan */
+  static requestStatuses = [
+    LoanState.ITEM_AT_DESK,
+    LoanState.PENDING,
+    LoanState.ITEM_IN_TRANSIT_FOR_PICKUP
+  ];
 
   /**
    * Constructor
@@ -55,28 +52,13 @@ export class LoanService {
   ) { }
 
   /**
-   * Return the number of request(s) on item
-   * @param itemPid Item Pid
-   * @return Observable
-   */
-  numberOfRequests$(itemPid: string) {
-    const states = Object.values(this.statusRequest).join(' OR state:');
-    const query = `item_pid.value:${itemPid} AND (state:${states})`;
-    return this._recordService.getRecords('loans', query, 1, 1).pipe(
-      map((result: Record) => this._recordService.totalHits(result.hits.total))
-    );
-  }
-
-  /**
    * Return a borrowed loan record
    * @param itemPid Item Pid
    * @return Observable
    */
   borrowedBy$(itemPid: string) {
-    return this.loans$(itemPid).pipe(
-      map((results: Record) => results.hits.hits.filter((data: any) =>
-        data.metadata.state === this.statusBorrow.ON_LOAN
-      ))
+    return this.loans$(itemPid, LoanService.borrowStatuses).pipe(
+      map((results: Record) => results.hits.hits)
     );
   }
 
@@ -86,12 +68,8 @@ export class LoanService {
    * @return Observable
    */
   requestedBy$(itemPid: string) {
-    return this.loans$(itemPid).pipe(
-      map((results: Record) => results.hits.hits.filter((data: any) =>
-          data.metadata.state === this.statusRequest.AT_DESK
-          || data.metadata.state === this.statusRequest.PENDING
-          || data.metadata.state === this.statusRequest.IN_TRANSIT_FOR_PICKUP
-      ))
+    return this.loans$(itemPid, LoanService.requestStatuses).pipe(
+      map((results: Record) => results.hits.hits)
     );
   }
 
@@ -129,24 +107,23 @@ export class LoanService {
       pid: loanPid,
       pickup_location_pid: pickupLocationPid
     }).pipe(
-    map(loanData => {
+      map(loanData => {
       return loanData;
     }));
   }
 
   /**
-   * Loans
-   * @param itemPid Item Pid
+   * Search about loans related to an item
+   * @param itemPid - string: the item pid
+   * @param statuses - Array: a list of loan states to filter result.
    * @return Observable
    */
-  private loans$(itemPid: string) {
-    // TODO: Add sort parameter on transaction_date (after update ng-core)
-    const statuses = [
-      ...Object.values(this.statusBorrow),
-      ...Object.values(this.statusRequest)
-    ];
-    const states = statuses.join(' OR state:');
-    const query = `item_pid.value:${itemPid} AND (state:${states})`;
-    return this._recordService.getRecords('loans', query, 1, 100);
+  private loans$(itemPid: string, statuses?: Array<LoanState>) {
+    let query = `item_pid.value:${itemPid}`;
+    if (statuses !== undefined) {
+      const states = statuses.join(' OR state:');
+      query +=  ` AND (state:${states})`;
+    }
+    return this._recordService.getRecords('loans', query, 1, 100, [], undefined, undefined, 'created');
   }
 }

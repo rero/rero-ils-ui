@@ -17,7 +17,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { LoanService } from 'projects/admin/src/app/service/loan.service';
-import { Observable } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ItemRequestComponent } from '../../document-detail-view/item-request/item-request.component';
 
@@ -28,24 +28,18 @@ import { ItemRequestComponent } from '../../document-detail-view/item-request/it
 })
 export class ItemTransactionsComponent implements OnInit {
 
-  /**
-   * Item record
-   */
+  /** Item record */
   @Input() item: any;
 
-  /**
-   * Borrowed item
-   */
-  borrowedBy$: Observable<any>;
+  /** Borrowed loan */
+  borrowedBy: Array<any> = [];
 
-  /**
-   * Requested item(s)
-   */
-  requestedBy$: Observable<any>;
+  /** Requested loan(s) */
+  requestedBy: Array<any> = [];
 
   /**
    * Constructor
-   * @param loanService - LoanService
+   * @param _loanService - LoanService
    * @param _modalService - BsModalService
    */
   constructor(
@@ -57,27 +51,33 @@ export class ItemTransactionsComponent implements OnInit {
    * On init hook
    */
   ngOnInit() {
-    this.borrowedBy$ = this._loanService.borrowedBy$(this.item.metadata.pid);
-    this.requestedBy$ = this._loanService.requestedBy$(this.item.metadata.pid);
+    const borrowedBy$ = this._loanService.borrowedBy$(this.item.metadata.pid);
+    const requestedBy$ = this._loanService.requestedBy$(this.item.metadata.pid);
+    forkJoin([borrowedBy$, requestedBy$]).subscribe(
+      ([borrowedLoan, requestedLoans]) => {
+        this.borrowedBy = borrowedLoan;
+        this.requestedBy = requestedLoans;
+      }
+    );
   }
 
   /**
-   * Update request list
+   * Delete a request from the request list
+   * @param deletedRequest: The deletedRequest
    */
-  updateRequestList() {
-    this.requestedBy$ = this._loanService.requestedBy$(this.item.metadata.pid);
+  deleteRequest(deletedRequest: any) {
+    this.requestedBy = this.requestedBy.filter(request => request.id !== deletedRequest.id);
   }
 
   /**
-   * Add request on item
-   * @param itemPid - string
+   * Add request on this item
    */
-  addRequest(itemPid: string) {
+  addRequest() {
     const modalRef = this._modalService.show(ItemRequestComponent, {
-      initialState: { itemPid }
+      initialState: { itemPid: this.item.metadata.pid }
     });
     modalRef.content.onSubmit.pipe(first()).subscribe(value => {
-      this.updateRequestList();
+      this._loanService.requestedBy$(this.item.metadata.pid).subscribe(data => this.requestedBy = data);
     });
   }
 }

@@ -47,7 +47,7 @@
         {{ 'Type' | translate }}:
       </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.metadata.item_type.pid | getRecord:'item_types':'field':'name' | async }}
+        {{ record.metadata.item_type.pid | getRecord:'item_types': 'field':'name' | async }}
       </dd>
       <!-- DOCUMENT -->
       <dt class="col-sm-3 offset-sm-2 offset-md-0">
@@ -55,7 +55,7 @@
       </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
         <a [routerLink]="['/records', 'documents', 'detail', record.metadata.document.pid]">
-          {{ record.metadata.document.pid | getRecord:'documents':'field':'title' | async | mainTitle }}
+          {{ record.metadata.document.pid | getRecord:'documents': 'field' :'title' | async | mainTitle }}
         </a>
       </dd>
       <!-- LIBRARY -->
@@ -63,7 +63,9 @@
         {{ 'Library' | translate }}:
       </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
-        <ng-container *ngIf="library">{{ library.metadata.name }}</ng-container>
+        <ng-container *ngIf="location">
+          {{ location.metadata.library.pid | getRecord: 'libraries': 'field': 'name' | async }}
+        </ng-container>
       </dd>
       <!-- LOCATION -->
       <dt class="col-sm-3 offset-sm-2 offset-md-0">
@@ -145,7 +147,6 @@
             ></i>
             <strong translate>{{ note.type }}</strong>
           </dt>
-          <dd class="col-9 text-justify" [innerHTML]="note.content | nl2br"></dd>
         </div>
       </div>
       <div class="card-footer text-muted small">
