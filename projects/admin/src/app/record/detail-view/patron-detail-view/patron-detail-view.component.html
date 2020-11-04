@@ -77,18 +77,6 @@
           {{ patron.email }}
         </dd>
       </dl>
-      <!-- ROLES -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          <ng-container *ngIf="patron.roles.length === 1; else roles" translate>Role</ng-container>
-          <ng-template #roles translate>Roles</ng-template>:
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          <ng-container *ngFor="let role of patron.roles; let last=last">
-            {{ role | translate }}{{ last ? '' : ', ' }}
-          </ng-container>
-        </dd>
-      </dl>
     </section>
     <section class="m-2 p-2" *ngIf="patron.isLibrarian">
       <h5 translate>Librarian Information</h5>
@@ -113,6 +101,18 @@
           <a [routerLink]="['/circulation', 'patron', patron.patron.barcode]">{{ patron.patron.barcode }}</a>
         </dd>
       </dl>
+      <!-- ROLES -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0">
+          <ng-container *ngIf="patron.roles.length === 1; else roles" translate>Role</ng-container>
+          <ng-template #roles translate>Roles</ng-template>:
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <ng-container *ngFor="let role of patron.roles; let last=last">
+            {{ role | translate }}{{ last ? '' : ', ' }}
+          </ng-container>
+        </dd>
+      </dl>
       <!-- TYPE -->
       <dl class="row mb-0">
         <dt class="col-sm-3 offset-sm-2 offset-md-0">
@@ -134,7 +134,8 @@
           {{ 'Affiliation libraries' | translate }}:
         </dt>
         <dd *ngIf="patron.patron.libraries && patron.patron.libraries.length > 0" class="col-sm-7 col-md-8 mb-0">
-          <div *ngFor="let library of patron.patron.libraries">{{library.pid | getRecord: 'libraries' : 'field' : 'name' | async}}</div>
+          <div *ngFor="let library of patron.patron.libraries">
+            {{library.pid | getRecord: 'libraries' : 'field' : 'name' | async}}</div>
         </dd>
       </dl>
     </section>

@@ -176,12 +176,21 @@ export class CheckinComponent implements OnInit {
     if (barcode) {
       this.isLoading = true;
       this._recordService
-        .getRecords('patrons', `barcode:${barcode}`, 1, 1)
+        .getRecords('patrons', `${barcode}`, 1, 2, [], {simple: 1, roles: 'patron'})
         .pipe(
-          map((response: any) => (this._recordService.totalHits(response.hits.total) === 0)
-            ? null
-            : response.hits.hits[0].metadata
-          )
+          map((response: any) => {
+            const total = this._recordService.totalHits(response.hits.total);
+            if (total === 0) {
+             return null;
+            }
+            if (total > 1) {
+              this._toastService.warning(
+                this._translate.instant('Found more than one patron.'),
+                this._translate.instant('Checkin')
+              );
+            }
+            return response.hits.hits[0].metadata;
+          })
         ).subscribe(
           patron => {
             if (
