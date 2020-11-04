@@ -60,6 +60,20 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
             component: PatronsBriefViewComponent,
             detailComponent: PatronDetailViewComponent,
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            preprocessRecordEditor: (record: any) => {
+              // set the patron expiration to now + 3 years if does not exists
+              const defaultExpDate = new Date();
+              defaultExpDate.setFullYear(defaultExpDate.getFullYear() + 3);
+              record = {
+                patron: {
+                  expiration_date: this._routeToolService.datePipe.transform(defaultExpDate, 'yyyy-MM-dd')
+                }
+                , ...record
+              };
+              return record;
+            },
             postprocessRecordEditor: (record: any) => {
               // Clean-up 'blocked_note' field content if blocked is false.
               if (record.blocked === false) {

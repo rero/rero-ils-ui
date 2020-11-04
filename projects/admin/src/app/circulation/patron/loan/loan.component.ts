@@ -52,8 +52,8 @@ export class LoanComponent implements OnInit, OnDestroy {
   /** Library PID of the logged user */
   currentLibraryPid: string;
 
-  /** list of subscriptions */
-  private _subcription = new Subscription();
+  /** Observable subscription */
+  private _subscription = new Subscription();
 
   /** checkout list sort criteria */
   private _sortCriteria = '-transaction_date';
@@ -75,7 +75,7 @@ export class LoanComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this._subcription.add(this._patronService.currentPatron$.subscribe(patron => {
+    this._subscription.add(this._patronService.currentPatron$.subscribe(patron => {
       this.patron = patron;
       if (patron) {
         this.isLoading = true;
@@ -99,7 +99,7 @@ export class LoanComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this._subcription.unsubscribe();
+    this._subscription.unsubscribe();
   }
 
 

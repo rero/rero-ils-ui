@@ -15,6 +15,13 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <article *ngIf="currentPatron$ | async as patron">
+  <div *ngIf="canUpdate()" class="float-right">
+    <button [routerLink]="['/records','patrons','edit', patron.pid]"
+      class="btn btn-sm btn-primary ml-1 ng-star-inserted" id="profile-edit-button" title="Edit">
+      <i class="fa fa-pen mr-1"></i>{{ 'Edit' | translate }}
+    </button>
+  </div>
+  <h3 class="mb-3">{{ patron.last_name }} {{ patron.first_name }}</h3>
   <section class="m-2 p-2">
     <!-- USERNAME -->
     <dl class="row mb-0">
@@ -62,18 +69,8 @@
         {{ patron.email }}
       </dd>
     </dl>
-    <!-- ROLES -->
-    <dl class="row mb-0">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        <ng-container *ngIf="patron.roles.length === 1; else roles" translate>Role</ng-container>
-        <ng-template #roles translate>Roles</ng-template>:
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-        <ng-container *ngFor="let role of patron.roles; let last=last">
-          {{ role | translate }}{{ last ? '' : ', ' }}
-        </ng-container>
-      </dd>
-    </dl>
+    <button *ngIf="canUpdate()" class="btn btn-sm btn-outline-primary mt-2" id="profile-change-password-button"
+      (click)="updatePatronPassword(patron)" title="Change Password">{{ 'Change Password' | translate }}</button>
 
   </section>
   <section class="m-2 p-2" *ngIf="patron.isLibrarian">
@@ -90,6 +87,18 @@
   </section>
   <section class="m-2 p-2" *ngIf="patron.patron">
     <h5 translate>Patron Information</h5>
+    <!-- ROLES -->
+    <dl class="row mb-0">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0">
+        <ng-container *ngIf="patron.roles.length === 1; else roles" translate>Role</ng-container>
+        <ng-template #roles translate>Roles</ng-template>:
+      </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        <ng-container *ngFor="let role of patron.roles; let last=last">
+          {{ role | translate }}{{ last ? '' : ', ' }}
+        </ng-container>
+      </dd>
+    </dl>
     <!-- BARCODE -->
     <dl class="row mb-0">
       <dt class="col-sm-3 offset-sm-2 offset-md-0">
@@ -121,7 +130,8 @@
       </dt>
       <dd *ngIf="patron.patron.libraries && patron.patron.libraries.length > 0" class="col-sm-7 col-md-8 mb-0">
         <div *ngFor="let library of patron.patron.libraries">
-          {{library.pid | getRecord: 'libraries' : 'field' : 'name' | async}}</div>
+          {{library.pid | getRecord: 'libraries' : 'field' : 'name' | async}}
+        </div>
       </dd>
     </dl>
   </section>

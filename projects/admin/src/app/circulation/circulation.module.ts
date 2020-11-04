@@ -21,15 +21,18 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { RecordModule } from '@rero/ng-core';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { SharedPipesModule } from '../shared/shared-pipes.module';
 import { CheckinComponent } from './checkin/checkin.component';
 import { CirculationRoutingModule } from './circulation-routing.module';
 import { ItemComponent } from './item/item.component';
 import { ItemsListComponent } from './items-list/items-list.component';
 import { MainRequestComponent } from './main-request/main-request.component';
+import { RequestedItemComponent } from './main-request/requested-item/requested-item.component';
+import { RequestedItemsListComponent } from './main-request/requested-items-list/requested-items-list.component';
 import { CardComponent } from './patron/card/card.component';
+import { ChangePasswordFormComponent } from './patron/change-password-form/change-password-form.component';
 import { HistoryItemComponent } from './patron/history/history-item/history-item.component';
 import { HistoryComponent } from './patron/history/history.component';
 import { LoanComponent } from './patron/loan/loan.component';
@@ -46,13 +49,11 @@ import {
 } from './patron/patron-transactions/patron-transaction/overdue-transaction/overdue-transaction.component';
 import { PatronTransactionComponent } from './patron/patron-transactions/patron-transaction/patron-transaction.component';
 import { PatronTransactionsComponent } from './patron/patron-transactions/patron-transactions.component';
+import { PendingItemComponent } from './patron/pending/pending-item/pending-item.component';
+import { PendingComponent } from './patron/pending/pending.component';
 import { PickupItemComponent } from './patron/pickup/pickup-item/pickup-item.component';
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
-import { PendingItemComponent } from './patron/pending/pending-item/pending-item.component';
-import { PendingComponent } from './patron/pending/pending.component';
-import { RequestedItemsListComponent } from './main-request/requested-items-list/requested-items-list.component';
-import { RequestedItemComponent } from './main-request/requested-item/requested-item.component';
 
 
 @NgModule({
@@ -79,7 +80,8 @@ import { RequestedItemComponent } from './main-request/requested-item/requested-
     PatronTransactionEventFormComponent,
     HistoryComponent,
     HistoryItemComponent,
-    RequestedItemComponent
+    RequestedItemComponent,
+    ChangePasswordFormComponent
   ],
   imports: [
     CommonModule,
@@ -93,7 +95,8 @@ import { RequestedItemComponent } from './main-request/requested-item/requested-
     SharedPipesModule
   ],
   entryComponents: [
-    PatronTransactionEventFormComponent
+    PatronTransactionEventFormComponent,
+    ChangePasswordFormComponent
   ]
 })
 export class CirculationModule { }

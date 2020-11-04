@@ -17,10 +17,11 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
-import { Subject } from 'rxjs';
+import { forkJoin, of, Subject } from 'rxjs';
+import { ApiService, RecordService } from '@rero/ng-core';
 import { User } from '../class/user';
 import { AppConfigService } from './app-config.service';
+import { concatAll, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -51,18 +52,24 @@ export class UserService {
     return this._allowInterfaceAccess;
   }
 
+  /** API Prefix, i.e. /api. */
+  private _apiPrefix = '';
+
   // CLASS CONSTRUCTOR ===============================================
-  /**
-   * Constructor
-   * @param http - HttpClient
-   * @param recordService - RecordService
+
+  /** constructor
+   * @param _http - HttpClient
+   * @param _recordService - RecordService
    * @param _appConfigService - AppConfigService
+   * @param _apiService - ApiService
    */
   constructor(
-    private http: HttpClient,
-    private recordService: RecordService,
-    private _appConfigService: AppConfigService
-  ) { }
+    private _http: HttpClient,
+    private _appConfigService: AppConfigService,
+    private _apiService: ApiService
+  ) {
+    this._apiPrefix = this._apiService.endpointPrefix;
+   }
 
   // CLASS FUNCTIONS =================================================
   /**
@@ -82,29 +89,47 @@ export class UserService {
     return this.getCurrentUser().hasRole(role);
   }
 
-  /**
-   * Load the user resource corresponding to the user logged.
-   * This function will populate the `user` class parameter and emit the user at the end
-   */
-  loadLoggedUser() {
-    this.http.get<any>(User.LOGGED_URL).subscribe(data => {
+  hasRoles(roles: Array<string>) {
+    return this.getCurrentUser().hasRoles(roles);
+  }
+
+  public loadLoggedUser() {
+    this._http.get<any>(User.LOGGED_URL).subscribe(data => {
       const user = data.metadata;
       if (user && user.library) {
         user.currentLibrary = user.library.pid;
       }
       this.user = new User(user);
-      this._allowInterfaceAccess = this.isAuthorizedAccess();
+      this._allowInterfaceAccess = this._isAuthorizedAccess();
       this.userLoaded = true;
       this.onUserLoaded.next(data);
     });
   }
 
+  /**
+   * Update a patron password.
+   *
+   * @param username - patron username
+   * @param password - new password
+   */
+  public changePassword(username, password) {
+    const data = {
+      username,
+      new_password: password
+    };
+    const url = `${this._apiPrefix}/change-password`;
+    return this._http.post<any>(url, data).pipe(
+      map(result => console.log(result))
+    );
+  }
+
   // private methods ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   /**
    * Check if the current logged user are an access ton admin interface
    * @return True is access is authorized, False otherwise
    */
-  private isAuthorizedAccess(): boolean {
+  private _isAuthorizedAccess(): boolean {
     return this.user.hasRoles(this._appConfigService.adminRoles, 'or');
  }
 }
