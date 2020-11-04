@@ -15,8 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { removeEmptyValues } from '@rero/ng-core';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { EditorService } from '../../../service/editor.service';
 import { PredictionIssue } from '../../../service/holdings.service';
 
@@ -29,7 +31,7 @@ import { PredictionIssue } from '../../../service/holdings.service';
   templateUrl: './holding-editor.component.html',
   styleUrls: ['./holding-editor.component.scss']
 })
-export class HoldingEditorComponent {
+export class HoldingEditorComponent implements OnInit, OnDestroy {
 
   /** Initial editor values */
   model = {};
@@ -43,11 +45,45 @@ export class HoldingEditorComponent {
   /** Current error message from the backend during the serial preview example if exists */
   serialPreviewError = null;
 
+  /**  */
+  predictionModel$ = new BehaviorSubject({} as any);
+
+
+  /** Observable subscription */
+  private _subscription = new Subscription();
+
   /**
    * Constructor.
    * @param _editorService - the local editor service
    */
   constructor(private _editorService: EditorService) { }
+
+  /** Component initialization. */
+  ngOnInit() {
+    this._subscription = this.predictionModel$.pipe(
+      // wait .5s before the last change
+      debounceTime(500),
+      // only if the patterns changed
+      distinctUntilChanged((a, b) => JSON.stringify(a.patterns) === JSON.stringify(b.patterns)),
+      // cancel previous pending requests
+      switchMap(modelValue => this._editorService.getHoldingPatternPreview(
+        modelValue, this.numberOfSerialPreviewExamples))
+    ).subscribe((predictions) => {
+      if (predictions && predictions.length > 0) {
+        this.serialPreviewExamples = predictions;
+      }
+    },
+      (error: any) => {
+        if (error.error) {
+          this.serialPreviewError = error.error;
+        }
+      });
+  }
+
+  /** Component destruction. */
+  ngOnDestroy() {
+    this._subscription.unsubscribe();
+  }
 
   /**
    * Called when the editor values are changed.
@@ -56,21 +92,12 @@ export class HoldingEditorComponent {
    */
   modelChanged(modelValue) {
     modelValue = removeEmptyValues(modelValue);
-    this.serialPreviewExamples = [];
-    this.serialPreviewError = null;
-    if (modelValue.patterns && modelValue.patterns.template) {
-      this._editorService.getHoldingPatternPreview(modelValue, this.numberOfSerialPreviewExamples).subscribe(
-        (predictions) => {
-          if (predictions && predictions.length > 0) {
-            this.serialPreviewExamples = predictions;
-          }
-        },
-        (error: any) => {
-          if (error.error) {
-            this.serialPreviewError = error.error;
-          }
-        }
-      );
+    if (
+      modelValue.patterns
+      && modelValue.patterns.template
+    ) {
+      this.serialPreviewError = null;
+      this.predictionModel$.next(modelValue);
     }
   }
 }
