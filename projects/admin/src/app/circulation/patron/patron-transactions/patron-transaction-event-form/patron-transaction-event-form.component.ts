@@ -86,9 +86,15 @@ export class PatronTransactionEventFormComponent implements OnInit {
         min: 0,
         max: this._computeTotalAmount(),
         step: 0.1,
+        pattern: '^\\d*(\\.\\d{0,2})?$',
         required: true,
         addonLeft: {
           text: getCurrencySymbol(this._organisationService.organisation.default_currency, 'wide')
+        }
+      },
+      validation: {
+        messages: {
+          pattern: (error, field: FormlyFieldConfig) => `Only 2 decimals are allowed`
         }
       },
       validators: {
