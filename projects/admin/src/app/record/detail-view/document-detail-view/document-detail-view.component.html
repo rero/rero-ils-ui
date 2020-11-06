@@ -464,11 +464,17 @@
                     [attr.id]="i | idAttribute:{prefix: 'doc-identifier'}">
                       <ng-container *ngIf="identifier.type === 'uri'; else stringBlock">
                         <a class="rero-ils-external-link" href="{{ identifier.value }}">{{ identifier.value }}</a>
+                        <ng-container *ngIf="identifier.details">
+                          - {{ identifier.details }}
+                        </ng-container>
                       </ng-container>
                       <ng-template #stringBlock>
                         {{ identifier.value }}
+                        <ng-container *ngIf="identifier.details">
+                           - {{ identifier.details }}
+                        </ng-container>
                       </ng-template>
-                      <small class="badge badge-secondary text-uppercase ml-1">
+                      <small class="badge badge-secondary text-uppercase ml-1" translate>
                         {{ identifier.type }}
                       </small>
                     </li>
