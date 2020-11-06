@@ -24,6 +24,7 @@ import { ContributionFormatPipe } from './pipe/contribution-format.pipe';
 import { ContributionTypePipe } from './pipe/contribution-type.pipe';
 import { ExtractSourceFieldPipe } from './pipe/extract-source-field.pipe';
 import { IdAttributePipe } from './pipe/id-attribute.pipe';
+import { JoinPipe } from './pipe/join.pipe';
 import { MainTitlePipe } from './pipe/main-title.pipe';
 import { PatronBlockedMessagePipe } from './pipe/patron-blocked-message.pipe';
 import { ProvisionActivityPipe } from './pipe/provision-activity.pipe';
@@ -44,6 +45,7 @@ import { PersonBriefComponent } from './view/brief/person-brief/person-brief.com
     ContributionFormatPipe,
     ExtractSourceFieldPipe,
     IdAttributePipe,
+    JoinPipe,
     MainTitlePipe,
     PatronBlockedMessagePipe,
     ProvisionActivityPipe,
@@ -60,6 +62,7 @@ import { PersonBriefComponent } from './view/brief/person-brief/person-brief.com
     ContributionFormatPipe,
     ExtractSourceFieldPipe,
     IdAttributePipe,
+    JoinPipe,
     MainTitlePipe,
     PatronBlockedMessagePipe,
     ProvisionActivityPipe,
@@ -78,6 +81,7 @@ import { PersonBriefComponent } from './view/brief/person-brief/person-brief.com
     DatePipe,
     MainTitlePipe,
     ContributionTypePipe,
+    JoinPipe,
     UrlActivePipe,
     TruncateTextPipe
   ],

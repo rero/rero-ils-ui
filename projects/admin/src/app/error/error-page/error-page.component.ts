@@ -43,6 +43,11 @@ export class ErrorPageComponent implements OnInit {
    *   - level: the boostrap alert look-and-feel level to use for the error. 'danger' by default.
    */
   messages = {
+    400: {
+      title: _('Bad Request'),
+      description: [_('Malformed request syntax.')],
+      level: 'warning'
+    },
     401: {
       title: _('Unauthorized'),
       description: [_('Access denied due to invalid credentials.')],

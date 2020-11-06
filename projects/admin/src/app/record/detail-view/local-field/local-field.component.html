@@ -1,0 +1,59 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2020 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="record$ | async as record">
+  <ng-container *ngIf="record.metadata; else addLocalField">
+    <ng-container *ngFor="let field of record.metadata.fields | keyvalue">
+      <div class="row mb-0 ml-1">
+        <span class="col-2 m-0 font-weight-bold label-title" translate>
+            {{ 'local_' + field.key }}
+        </span>
+        <span class="col-10 m-0">
+          {{ field.value | join:'; ' }}
+        </span>
+      </div>
+    </ng-container>
+    <div class="ml-3 mt-2">
+      <button
+        [routerLink]="['/records', 'local_fields', 'edit', record.metadata.pid]"
+        [queryParams]="{ type: resourceType, ref: resourcePid }"
+        class="btn btn-sm btn-outline-primary ml-1"
+        name="edit"
+        type="button"
+        title="{{ 'Edit' | translate }}"
+      >
+        <i class="fa fa-pencil"></i> {{ 'Edit' | translate }}
+      </button>
+      <button
+        class="btn btn-sm btn-outline-danger ml-1"
+        title="{{ 'Delete' | translate }}"
+        (click)="delete(record.metadata.pid)"
+      >
+        <i class="fa fa-trash"></i> {{ 'Delete' | translate }}
+      </button>
+    </div>
+  </ng-container>
+</ng-container>
+
+<ng-template #addLocalField>
+  <a
+    [routerLink]="['/records', 'local_fields', 'new']"
+    [queryParams]="{ type: resourceType, ref: resourcePid }"
+    class="btn btn-sm btn-outline-primary ml-3 mt-2"
+  >
+    <i class="fa fa-plus-square-o"></i> {{ 'Add local fields' | translate }}
+  </a>
+</ng-template>
