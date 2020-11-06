@@ -25,7 +25,7 @@
         <div class="row">
           <div class="col-md-10">
             <h3>
-              <a [routerLink]="['/records', 'patrons','detail', patron.pid]">
+              <a [routerLink]="patronLink">
                 <span id="patron-last-name">{{ patron.last_name }}</span>
                 <span id="patron-first-name" *ngIf="patron.first_name">, {{ patron.first_name }}</span>
               </a>
@@ -39,7 +39,15 @@
         </div>
         <div class="row">
           <div class="col-md-6">
-            <div id="patron-birth-date">{{ patron.birth_date | dateTranslate:'mediumDate' }}</div>
+            <div id="patron-birth-date">
+              <ng-container *ngIf="patron && patron.birth_date">
+                {{ patron.birth_date | dateTranslate:'mediumDate' }} &mdash;
+                ({{ patronAge }} {{ 'years old' | translate}})&nbsp;
+                <ng-container *ngIf="isBirthday">
+                  <i class="fa fa-birthday-cake text-warning blink"></i>
+                </ng-container>
+              </ng-container>
+            </div>
             <div id="patron-city">{{ patron.city }}</div>
           </div>
           <div class="col-md-6">

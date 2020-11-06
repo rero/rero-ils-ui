@@ -16,6 +16,7 @@
  */
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import moment from 'moment';
 import { User } from '../../../class/user';
 import { getBootstrapLevel } from '../../../utils/utils';
 
@@ -26,9 +27,41 @@ import { getBootstrapLevel } from '../../../utils/utils';
   styleUrls: ['./card.component.scss']
 })
 export class CardComponent {
+
+  /** the patron */
   @Input() patron: User;
+  /** is the circulation messages should be displayed */
   @Input() circulationMessages = false;
+  /** which link should be use on the main patron name */
+  @Input() linkMode: 'circulation'|'detail' = 'detail';
+  /** event emitter when the close button are fired */
   @Output() clearPatron = new EventEmitter<User>();
+
+  /** Build the link used on the patron name */
+  get patronLink(): string {
+    if (this.patron) {
+      return (this.linkMode === 'detail')
+        ? '/records/patrons/detail/' + this.patron.pid
+        : '/circulation/patron/' + this.patron.patron.barcode + '/loan';
+    }
+  }
+
+  /** Get the patron age */
+  get patronAge(): number {
+    if (this.patron && this.patron.birth_date) {
+      return moment().diff(this.patron.birth_date, 'years');
+    }
+  }
+
+  /** Defined if it's the birthday of the patron */
+  get isBirthday(): boolean {
+    if (this.patron && this.patron.birth_date) {
+      const today = moment().format('YYYY-MM-DD');
+      const age = moment(today).diff(this.patron.birth_date, 'years', true);
+      return age % 1 === 0;
+    }
+    return false;
+  }
 
   clear() {
     if (this.patron) {
@@ -39,4 +72,5 @@ export class CardComponent {
   getBootstrapColor(level: string): string {
     return getBootstrapLevel(level);
   }
+
 }
