@@ -153,6 +153,22 @@
     </div>
   </section>
 
+  <!-- TABS -->
+  <section class="mt-3 mb-4">
+    <tabset>
+      <!-- LOCAL FIELDS TAB ------------------------------------------------------------>
+      <tab id="documents-local-field-tab" tabOrder="1">
+        <ng-template tabHeading>
+          <i class="fa fa-list-ul mr-1"></i><span translate>Local fields</span>
+        </ng-template>
+        <div class="mt-2">
+          <admin-local-field [resourceType]="'items'" [resourcePid]="record.metadata.pid"></admin-local-field>
+        </div>
+      </tab>
+      <!-- END OF LOCAL FIELDS TAB ---------------------------------------------------->
+    </tabset>
+  </section>
+
   <!-- TRANSACTIONS -->
   <admin-item-transactions
     [item]="record"

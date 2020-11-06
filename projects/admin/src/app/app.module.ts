@@ -140,6 +140,7 @@ import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service'
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageBoardComponent } from './widgets/frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
+import { LocalFieldComponent } from './record/detail-view/local-field/local-field.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -228,7 +229,8 @@ export function appInitFactory(appInitService: AppInitService) {
     IllRequestDetailViewComponent,
     CustomShortcutHelpComponent,
     HoldingItemNoteComponent,
-    MenuSwitchLibraryComponent
+    MenuSwitchLibraryComponent,
+    LocalFieldComponent
   ],
   imports: [
     AppRoutingModule,

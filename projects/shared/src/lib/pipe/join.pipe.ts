@@ -15,14 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
+import { isArray } from 'util';
 
-@Component({
-  selector: 'admin-holding-detail',
-  templateUrl: './holding-detail.component.html'
+@Pipe({
+  name: 'join',
+  pure: false
 })
-export class HoldingDetailComponent {
+export class JoinPipe implements PipeTransform {
 
-  /** Holding record */
-  @Input() holding: any;
+  /**
+   * Transform a string or array to a string with séparator
+   * @param value - string or array
+   * @param separator - string separator
+   * @return string
+   */
+  transform(value: any, separator: string = ' '): any {
+    if (!isArray(value)) {
+      return value;
+    }
+
+    return value.join(separator);
+  }
 }

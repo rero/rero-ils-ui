@@ -132,3 +132,15 @@ _('public_note');
 _('staff_note');
 _('checkin_note');
 _('checkout_note');
+
+// Local fields
+_('local_field_1');
+_('local_field_2');
+_('local_field_3');
+_('local_field_4');
+_('local_field_5');
+_('local_field_6');
+_('local_field_7');
+_('local_field_8');
+_('local_field_9');
+_('local_field_10');

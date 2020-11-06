@@ -34,6 +34,7 @@ import { IssuesRoute } from './issues-route';
 import { ItemTypesRoute } from './item-types-route';
 import { ItemsRoute } from './items-route';
 import { LibrariesRoute } from './libraries-route';
+import { LocalFieldsRoute } from './local-fields-route';
 import { LocationsRoute } from './locations-route';
 import { OrganisationsRoute } from './organisations-route';
 import { PatronTypesRoute } from './patron-types-route';
@@ -88,6 +89,7 @@ export class RouteService {
       .addRoute(new CollectionsRoute(this._routeToolService))
       .addRoute(new CorporateBodiesRoute(this._routeToolService))
       .addRoute(new IllRequestsRoute(this._routeToolService))
+      .addRoute(new LocalFieldsRoute(this._routeToolService))
       // should be at the last
       .addRoute(new ImportDocumentsRoute(this._routeToolService, this._translateService))
     ;

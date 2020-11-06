@@ -15,7 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div *ngIf="holding" class="row col-sm-11 holding-detail">
+<div *ngIf="holding" class="row col">
   <!-- CALL NUMBER -->
   <ng-container *ngIf="holding.metadata.call_number || holding.metadata.second_call_number">
     <div class="col-sm-3 font-weight-bold" translate>
@@ -83,5 +83,15 @@
       <div class="col-sm-9" [innerHtml]="note.content | nl2br">
       </div>
     </ng-container>
+  </ng-container>
+
+  <!-- VENDOR -->
+  <ng-container *ngIf="holding.metadata.vendor">
+    <div class="col-sm-3 font-weight-bold" translate>
+      Vendor
+    </div>
+    <div class="col-sm-9">
+      {{ holding.metadata.vendor.pid | getRecord: 'vendors' : 'field' : 'name' | async }}
+    </div>
   </ng-container>
 </div>

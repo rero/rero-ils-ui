@@ -20,6 +20,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule, UserService } from '@rero/shared';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { AppInitService } from './app-init.service';
 
@@ -28,11 +29,13 @@ describe('Service: AppInit', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        TranslateModule.forRoot()
+        TranslateModule.forRoot(),
+        SharedModule
       ],
       providers: [
         AppInitService,
-        BsLocaleService
+        BsLocaleService,
+        UserService
       ]
     });
   });
