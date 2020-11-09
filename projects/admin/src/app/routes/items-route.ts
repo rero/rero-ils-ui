@@ -65,7 +65,6 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             },
             component: ItemsBriefViewComponent,
             detailComponent: ItemDetailViewComponent,
-            canRead: (record: any) => this.canReadItem(record),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preprocessRecordEditor: (record: any) => {
               // If we found an `holding` parameter into the query string then we need to pre-populated

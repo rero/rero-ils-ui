@@ -16,6 +16,7 @@
  */
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { RouteCollectionService } from '@rero/ng-core';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
 import { AcquisitionAccountsRoute } from './acquisition-accounts-route';
@@ -23,8 +24,11 @@ import { AcquisitionOrderLinesRoute } from './acquisition-order-lines-route';
 import { AcquisitionOrdersRoute } from './acquisition-orders-route';
 import { BudgetsRoute } from './budgets-route';
 import { CirculationPoliciesRoute } from './circulation-policies-route';
+import { CollectionsRoute } from './collections-route';
 import { DocumentsRoute } from './documents-route';
 import { HoldingsRoute } from './holdings-route';
+import { ImportDocumentsRoute } from './import-documents-route';
+import { IssuesRoute } from './issues-route';
 import { ItemTypesRoute } from './item-types-route';
 import { ItemsRoute } from './items-route';
 import { LibrariesRoute } from './libraries-route';
@@ -36,9 +40,6 @@ import { PersonsRoute } from './persons-route';
 import { RouteToolService } from './route-tool.service';
 import { TemplatesRoute } from './templates-route';
 import { VendorsRoute } from './vendors-route';
-import { ImportDocumentsRoute } from './import-documents-route';
-import { TranslateService } from '@ngx-translate/core';
-import { CollectionsRoute } from './collections-route';
 
 @Injectable({
   providedIn: 'root'
@@ -72,6 +73,7 @@ export class RouteService {
       .addRoute(new DocumentsRoute(this._routeToolService))
       .addRoute(new HoldingsRoute(this._routeToolService))
       .addRoute(new ItemsRoute(this._routeToolService))
+      .addRoute(new IssuesRoute(this._routeToolService))
       .addRoute(new ItemTypesRoute(this._routeToolService))
       .addRoute(new LibrariesRoute(this._routeToolService))
       .addRoute(new LocationsRoute(this._routeToolService))

@@ -140,7 +140,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
     let query = `holding.pid:${this.holding.metadata.pid}`;
     let sort = '';
     if (this.holding.metadata.holdings_type === 'serial') {
-      query += ' AND -issue.status:(claimed OR deleted)';
+      query += ' AND -issue.status:(claimed OR deleted OR late)';
       sort = '-issue_expected_date';
     }
     this.itemsRef = this._recordService

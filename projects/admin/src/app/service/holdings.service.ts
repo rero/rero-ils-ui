@@ -19,6 +19,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { IssueItemStatus } from '../class/items';
 
 /**
  * Prediction issue structure
@@ -76,6 +77,19 @@ export class HoldingsService {
       }
     }
     return this._http.post<any>(url, data);
+  }
+
+  /**
+   * This function return issue icon based on its status
+   */
+  getIcon(status: IssueItemStatus): string {
+    switch (status) {
+      case IssueItemStatus.DELETED: return 'fa-circle text-danger';
+      case IssueItemStatus.CLAIMED: return 'fa-envelope text-warning';
+      case IssueItemStatus.RECEIVED: return 'fa-circle text-success';
+      case IssueItemStatus.LATE: return 'fa-envelope-open-o text-warning';
+      default: return 'fa-circle text-dark';
+    }
   }
 
 }

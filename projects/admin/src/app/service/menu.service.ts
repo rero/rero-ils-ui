@@ -100,6 +100,11 @@ export class MenuService {
           routerLink: '/records/budgets',
           iconCssClass: 'fa fa-money',
           id: 'budgets-menu'
+        }, {
+          name: this._translateService.instant('Late issues'),
+          routerLink: '/records/issues',
+          iconCssClass: 'fa fa-envelope-open-o',
+          id: 'late-issues-menu'
         }]
       }, {
         name: this._translateService.instant('Reports & monitoring'),

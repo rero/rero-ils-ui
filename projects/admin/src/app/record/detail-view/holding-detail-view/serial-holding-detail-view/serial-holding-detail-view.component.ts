@@ -197,4 +197,14 @@ export class SerialHoldingDetailViewComponent implements OnInit {
       }
     );
   }
+
+  /**
+   * Make the method getIcon from holdingService available
+   * @param status: the item status
+   *  @return: the font-awsome icon to use
+   */
+  getIcon(status: IssueItemStatus): string {
+    return this._holdingService.getIcon(status);
+  }
 }
+

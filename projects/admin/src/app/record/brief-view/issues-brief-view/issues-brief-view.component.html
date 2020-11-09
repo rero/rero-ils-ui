@@ -1,0 +1,81 @@
+<!--
+ RERO ILS UI
+  Copyright (C) 2019 RERO
+  Copyright (C) 2020 UCLouvain
+ 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+ 
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+ 
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<h5 class="mb-0 card-title">
+    <a [routerLink]="[detailUrl.link]">
+        {{ record.metadata.ui_title_text }}
+    </a>
+  </h5>
+  <ng-container class="card-text">
+    <dl class="row mb-0 ml-1">
+      <!-- CALL NUMBER -->
+      <ng-container *ngIf="record.metadata.call_number">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Call number</dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.call_number }}
+        </dd>
+      </ng-container>
+      <ng-container *ngIf="record.metadata.barcode">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Barcode</dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.barcode }}
+        </dd>
+      </ng-container>
+      <!-- ENUMERATION AND CHRONOLOGY -->
+      <ng-container *ngIf="record.metadata.enumerationAndChronology">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Numbering</dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.enumerationAndChronology }}
+        </dd>
+      </ng-container>
+      <!-- EXPECTED DATE -->
+      <ng-container *ngIf="record.metadata.issue.expected_date">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Expected date</dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.issue.expected_date | dateTranslate }}
+        </dd>
+      </ng-container>
+      <!-- NUMBER OF CLAIMS SENT -->
+      <ng-container *ngIf="record.metadata.issue.claims_count">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Claims sent</dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.issue.claims_count }}
+        </dd>
+      </ng-container>
+      <!-- VENDOR -->
+      <ng-container *ngIf="record.metadata.vendor">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Vendor</dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.vendor.pid | getRecord: 'vendors': 'field': 'name' | async }}
+        </dd>
+      </ng-container>
+      <!-- ISSUE STATUS AND DATE-->
+      <ng-container *ngIf="record.metadata.issue.status as status">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Issue status</dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <i class="fa text-warning" [ngClass]="{ 
+            'fa-envelope': status == issueItemStatus.CLAIMED,
+            'fa-envelope-open-o': status == issueItemStatus.LATE 
+          }"
+          ></i>
+        {{ status | translate }} [{{ record.metadata.issue.status_date | dateTranslate}}]
+        </dd>
+      </ng-container>
+    </dl>
+  </ng-container>
+  

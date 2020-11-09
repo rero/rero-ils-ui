@@ -121,12 +121,8 @@
         <!-- issue status -->
         <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Status</dt>
         <dd class="col-sm-7 col-md-8 mb-0">
-          <i class="fa fa-circle" [ngClass]="{
-              'text-success': record.metadata.issue.status == issueItemStatus.RECEIVED,
-              'text-danger': record.metadata.issue.status == issueItemStatus.DELETED,
-              'text-warning': record.metadata.issue.status == issueItemStatus.CLAIMED
-          }"></i>
-          {{ record.metadata.issue.status | translate }}
+          <i class="fa" [ngClass]="getIcon(record.metadata.issue.status)"></i>
+          {{ record.metadata.issue.status | translate }} [{{ record.metadata.issue.status_date | dateTranslate}}]
         </dd>
       </dl>
     </section>
