@@ -51,7 +51,8 @@ import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
 import { PendingItemComponent } from './patron/pending/pending-item/pending-item.component';
 import { PendingComponent } from './patron/pending/pending.component';
-import { RequestedItemsListComponent } from './requested-items-list/requested-items-list.component';
+import { RequestedItemsListComponent } from './main-request/requested-items-list/requested-items-list.component';
+import { RequestedItemComponent } from './main-request/requested-item/requested-item.component';
 
 
 @NgModule({
@@ -77,7 +78,8 @@ import { RequestedItemsListComponent } from './requested-items-list/requested-it
     DefaultTransactionComponent,
     PatronTransactionEventFormComponent,
     HistoryComponent,
-    HistoryItemComponent
+    HistoryItemComponent,
+    RequestedItemComponent
   ],
   imports: [
     CommonModule,

@@ -15,38 +15,57 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<ng-container *ngIf="items && items.length > 0">
-
-  <div class="row mb-4" *ngIf="!isLoading; else loading">
-    <div class="col-12 col-md-6">
-      <ng-core-search-input
-        [placeholder]="placeholder | translate"
-        [searchText]="searchText"
-        (search)="searchValueUpdated($event)"
-        [focus]="searchInputFocus"
-      ></ng-core-search-input>
-    </div>
+<div class="row mb-4">
+  <div class="col-12 col-md-6">
+    <ng-core-search-input
+      [placeholder]="placeholder"
+      [searchText]="searchText"
+      (search)="searchValueUpdated($event)"
+      [focus]="searchInputFocus"
+    ></ng-core-search-input>
   </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      <admin-circulation-requested-items-list
-        [items]="items"
-      ></admin-circulation-requested-items-list>
+  <!-- Sorting loans -->
+  <div class="col-md-6 d-flex align-items-end justify-content-end">
+    <!-- collapsed ? -->
+    <div class="custom-control custom-switch">
+      <input class="custom-control-input" type="checkbox" id="collapse-detail"
+             (click)="toggleDetailCollapsed($event.target.checked)"
+             [checked]="isDetailCollapsed"
+      >
+      <label class="custom-control-label pr-3" for="collapse-detail">{{ 'Collapse details' | translate }}</label>
     </div>
-  </div>
-</ng-container>
-
-<div *ngIf="items && items.length === 0" class="row mt-4">
-  <div class="col-md-12">
-    <div class="alert alert-info" role="alert" translate>
-      no request to validate
+    <!-- auto refresh -->
+    <div class="custom-control custom-switch">
+      <input class="custom-control-input" type="checkbox" id="auto-refresh"
+        (click)="enableAutoRefresh($event.target.checked)"
+        [checked]="refreshInterval > 0"
+      >
+      <label class="custom-control-label" for="auto-refresh">{{ 'Auto refresh' | translate }}</label>
     </div>
+    <ng-core-sort-list *ngIf="refreshInterval > 0"
+      class="pl-3"
+      [options]="refreshOptions"
+      [useIcon]="true"
+      (selectChange)="selectingIntervalTimer($event)"
+    >
+    </ng-core-sort-list>
+    <!-- Sorting loans -->
+    <ng-core-sort-list
+      class="pl-3"
+      [options]="sortingCriteria"
+      [useIcon]="true"
+      (selectChange)="selectingSortCriteria($event)"
+    >
+    </ng-core-sort-list>
   </div>
 </div>
 
-<ng-template #loading>
-  <div class="text-center my-5">
-    <i class="fa fa-spin fa-spinner fa-2x"></i>
+<div class="row">
+  <div class="col">
+    <admin-circulation-requested-items-list
+      [items]="items"
+      [isCollapsed]="isDetailCollapsed"
+      (requestValidated)="searchValueUpdated($event)"
+    ></admin-circulation-requested-items-list>
   </div>
-</ng-template>
+</div>
