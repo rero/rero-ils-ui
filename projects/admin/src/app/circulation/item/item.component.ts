@@ -19,7 +19,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Item, ItemAction, ItemNote, ItemNoteType, Loan, LoanState } from '../../class/items';
+import { Document, Item, ItemAction, ItemNote, ItemNoteType, Loan, LoanState } from '../../class/items';
 import { ItemsService } from '../../service/items.service';
 import { OrganisationService } from '../../service/organisation.service';
 import { PatronTransactionService } from '../patron-transaction.service';
@@ -54,6 +54,9 @@ export class ItemComponent implements OnInit {
 
   /** ItemAction reference */
   itemAction = ItemAction;
+
+  /** related document */
+  document = undefined;
 
   /**
    * Get current organisation
@@ -96,6 +99,9 @@ export class ItemComponent implements OnInit {
       ).pipe(
         map((results: any) => results.hits.hits)
       );
+      this._recordService.getRecord('documents', this.item.document.pid, 1, {
+        Accept: 'application/rero+json, application/json'
+      }).subscribe(document => this.document = document.metadata);
     }
   }
 

@@ -15,23 +15,47 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="item; else loading">
-  <!-- BARCODE -->
+  <!-- FIRST ROW : barcode, title, availability, action button -->
   <div class="col-sm-2">
+    <button type="button" class="pl-0 pt-0 btn"
+            (click)="isCollapsed = !isCollapsed"
+            [attr.aria-expanded]="!isCollapsed"
+            aria-controls="collapse">
+      <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" class="fa" aria-hidden="true"></i>
+    </button>
     <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
   </div>
-  <!-- TITLE -->
-  <div class="col-sm-5">
-    <a [routerLink]="['/records', 'documents', 'detail', item.document.pid]" *ngIf="item.document.title | mainTitle as title">
+  <div class="col-sm-6">
+    <a [routerLink]="['/records', 'documents', 'detail', document.pid]" *ngIf="document.title | mainTitle as title">
       {{ title }}
-    </a>
+    </a><br/>
+    <ng-container *ngIf="document.contribution && document.contribution.length > 0">
+      <ul class="list-inline mb-0 small">
+        <li *ngFor="let contribution of document.contribution; let last = last; let i = index" class="list-inline-item">
+          <span *ngIf="!contribution.agent.pid" [innerHTML]="contribution | contributionFormat: true"></span>
+          <a
+            *ngIf="contribution.agent.pid"
+            [innerHTML]="contribution | contributionFormat: true"
+            [routerLink]="['/records', 'persons', 'detail', contribution.agent.pid]">
+          </a>
+          {{ last ? '' : '; ' }}
+        </li>
+      </ul>
+    </ng-container>
   </div>
-  <!-- EXPECTED AVAILABILITY -->
-  <div class="col-sm-3">
-    -
-  </div>
-  <!-- ACTIONS -->
-  <div class="col-sm-2">
-    &nbsp;
+  <div class="col-sm-3">-</div>
+  <div class="col-sm-1"></div>
+  <!-- SECOND ROW : item detail -->
+  <div class="col-12" *ngIf="!isCollapsed">
+    <dl class="row">
+      <!-- item location -->
+      <ng-container *ngIf="item.location.pid | getRecord: 'locations' | async as location">
+        <dt class="offset-1 col-sm-3 col-md-2 col-lg-1 label-title" translate>Location</dt>
+        <dd class="col-sm-8 col-md-9 col-lg-10">
+          {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}: {{ item.location.name }}
+        </dd>
+      </ng-container>
+    </dl>
   </div>
 </ng-container>
 

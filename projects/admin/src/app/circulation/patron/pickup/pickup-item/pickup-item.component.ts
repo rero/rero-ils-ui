@@ -16,6 +16,7 @@
  */
 import { Component, Input, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
+import { forkJoin } from 'rxjs';
 import { PatronService } from '../../../../service/patron.service';
 
 @Component({
@@ -27,8 +28,9 @@ export class PickupItemComponent implements OnInit {
   /** Loan */
   @Input() loan = undefined;
 
-  /** Item */
+  /** Item, document */
   item = undefined;
+  document = undefined;
 
   /**
    * Constructor
@@ -45,11 +47,16 @@ export class PickupItemComponent implements OnInit {
    */
   ngOnInit() {
     if (this.loan) {
-      this._recordService.getRecord('items', this.loan.metadata.item_pid.value).subscribe(result => {
-        this._patronService.getItem(result.metadata.barcode).subscribe(
-          item => this.item = item
-        );
+      const item$ = this._recordService.getRecord('items', this.loan.metadata.item_pid.value, 1);
+      const document$ = this._recordService.getRecord('documents', this.loan.metadata.document_pid, 1, {
+        Accept: 'application/rero+json, application/json'
       });
+      forkJoin([item$, document$]).subscribe(
+        ([itemData, documentData]) => {
+          this.item = itemData.metadata;
+          this.document = documentData.metadata;
+        }
+      );
     }
   }
 }

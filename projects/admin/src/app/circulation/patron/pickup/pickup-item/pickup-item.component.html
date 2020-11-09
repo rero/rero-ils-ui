@@ -19,9 +19,22 @@
     <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
   </div>
   <div class="col-sm-5">
-    <a *ngIf="item.document.title | mainTitle as title" [routerLink]="['/records', 'documents', 'detail', item.document.pid]">
+    <a [routerLink]="['/records', 'documents', 'detail', document.pid]" *ngIf="document.title | mainTitle as title">
       {{ title }}
-    </a>
+    </a><br/>
+    <ng-container *ngIf="document.contribution && document.contribution.length > 0">
+      <ul class="list-inline mb-0 small">
+        <li *ngFor="let contribution of document.contribution; let last = last; let i = index" class="list-inline-item">
+          <span *ngIf="!contribution.agent.pid" [innerHTML]="contribution | contributionFormat: true"></span>
+          <a
+            *ngIf="contribution.agent.pid"
+            [innerHTML]="contribution | contributionFormat: true"
+            [routerLink]="['/records', 'persons', 'detail', contribution.agent.pid]">
+          </a>
+          {{ last ? '' : '; ' }}
+        </li>
+      </ul>
+    </ng-container>
   </div>
   <div class="col-sm-3">
     {{ loan.metadata.pickup_location_pid | getRecord: 'locations' : 'field' : 'pickup_name' | async }}
