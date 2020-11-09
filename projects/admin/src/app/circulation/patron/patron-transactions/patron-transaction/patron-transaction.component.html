@@ -16,7 +16,7 @@
         </button>
         {{ transaction.creation_date | dateTranslate :'shortDate' }}
       </div>
-      <div class="col-lg-7 d-inline-block text-truncate">{{ transaction.label }}</div>
+      <div class="col-lg-7 d-inline-block text-truncate">{{ label }}</div>
       <div class="col-lg-3 text-lg-right">{{ transactionAmount | currency: organisation.default_currency }}</div>
     </div>
     <div *ngIf="!isCollapsed" class="mt-2">

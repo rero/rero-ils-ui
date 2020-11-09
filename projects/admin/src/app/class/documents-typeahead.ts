@@ -39,7 +39,7 @@ export class DocumentsTypeahead {
    * Constructor
    * @param _apiService - ApiService
    * @param _recordService - RecordService
-   * @param _translateService - TranslateService
+   * @param _mainTitlePipe - MainTitlePipe
    */
   constructor(
     @Inject(ApiService) private _apiService: ApiService,

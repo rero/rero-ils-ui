@@ -5,7 +5,7 @@
   </div>
   <div class="col-lg-9 event-content">
     <div class="row" [ngClass]="{'event-highlight': event.type === patronTransactionEventType.DISPUTE}">
-      <div class="col-lg-9 d-inline-block text-truncate label">{{ event.label }}</div>
+      <div class="col-lg-9 d-inline-block text-truncate label">{{ label }}</div>
       <div class="col-lg-2 text-lg-right">
         <span class="badge"
               *ngIf="event.type !== patronTransactionEventType.DISPUTE"
