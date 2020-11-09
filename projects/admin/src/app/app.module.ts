@@ -54,6 +54,7 @@ import { CollectionBriefViewComponent } from './record/brief-view/collection-bri
 import { DocumentsBriefViewComponent } from './record/brief-view/documents-brief-view/documents-brief-view.component';
 import { ItemTypesBriefViewComponent } from './record/brief-view/item-types-brief-view.component';
 import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/items-brief-view.component';
+import { IssuesBriefViewComponent } from './record/brief-view/issues-brief-view/issues-brief-view.component';
 import { LibrariesBriefViewComponent } from './record/brief-view/libraries-brief-view.component';
 import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-brief-view.component';
 import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view.component';
@@ -180,6 +181,7 @@ export function appInitFactory(appInitService: AppInitService) {
     ItemTransactionComponent,
     ItemTransactionsComponent,
     ItemsBriefViewComponent,
+    IssuesBriefViewComponent,
     PatronDetailViewComponent,
     VendorDetailViewComponent,
     VendorBriefViewComponent,
@@ -283,6 +285,7 @@ export function appInitFactory(appInitService: AppInitService) {
     ItemTypesBriefViewComponent,
     ItemTypeDetailViewComponent,
     ItemsBriefViewComponent,
+    IssuesBriefViewComponent,
     LibrariesBriefViewComponent,
     PatronsBriefViewComponent,
     PatronTypesDetailViewComponent,

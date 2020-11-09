@@ -51,7 +51,8 @@ export enum ItemNoteType {
 export enum IssueItemStatus {
   RECEIVED = _('received'),
   CLAIMED = _('claimed'),
-  DELETED = _('deleted')
+  DELETED = _('deleted'),
+  LATE = _('late')
 }
 
 export enum LoanState {

@@ -19,6 +19,7 @@ import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable, Subscription } from 'rxjs';
 import { IssueItemStatus, Item, ItemNote } from '../../../class/items';
+import { HoldingsService } from '../../../service/holdings.service';
 
 @Component({
   selector: 'admin-item-detail-view',
@@ -48,9 +49,11 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
   /**
    * Constructor
    * @param _recordService - RecordService
+   * @param _holdingService - HoldingsService
    */
   constructor(
-    private _recordService: RecordService
+    private _recordService: RecordService,
+    private _holdingService: HoldingsService,
   ) {}
 
   ngOnInit() {
@@ -77,4 +80,12 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
       this.record.metadata.available = item.metadata.available;
     });
   }
+
+  /**
+   * Make the method getIcon available here
+   */
+  getIcon(status: IssueItemStatus): string {
+    return this._holdingService.getIcon(status);
+  }
+
 }
