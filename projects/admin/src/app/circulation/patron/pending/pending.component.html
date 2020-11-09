@@ -19,9 +19,9 @@
     <!-- HEADER -->
     <div class="row p-2 mb-1 bg-dark rounded text-light">
       <div class="col-sm-2" translate>Item</div>
-      <div class="col-sm-5" translate>Title</div>
+      <div class="col-sm-6" translate>Title</div>
       <div class="col-sm-3" translate>Expected availability</div>
-      <div class="col-sm-2">&nbsp;</div>
+      <div class="col-sm-1">&nbsp;</div>
     </div>
     <div *ngFor="let loan of loans">
       <admin-pending-item [loan]="loan" class="row p-2 mb-1 border rounded align-middle"></admin-pending-item>
