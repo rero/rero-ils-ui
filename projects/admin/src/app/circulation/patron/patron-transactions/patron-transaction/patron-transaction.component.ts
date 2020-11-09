@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { OrganisationService } from '../../../../service/organisation.service';
 import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '../../../patron-transaction';
@@ -23,10 +24,18 @@ export class PatronTransactionComponent implements OnInit {
   /** reference to PatronTransactionStatus -- used in HTML template */
   public patronTransactionStatus = PatronTransactionStatus;
 
+  /**
+   * Constructor
+   * @param _organisationService - OrganisationService
+   * @param _patronTransactionService - PatronTransactionService
+   * @param _modalService - BsModalService
+   * @param _translateService - TranslateService
+   */
   constructor(
     private _organisationService: OrganisationService,
     private _patronTransactionService: PatronTransactionService,
-    private _modalService: BsModalService
+    private _modalService: BsModalService,
+    private _translateService: TranslateService
   ) {}
 
   ngOnInit() {
@@ -61,6 +70,16 @@ export class PatronTransactionComponent implements OnInit {
    */
   get organisation() {
     return this._organisationService.organisation;
+  }
+
+  /**
+   * Get the label of the transaction depending of transaction.type
+   * @return label/title of the transaction as string
+   */
+  get label(): string {
+    return (this.transaction.type === 'other')
+    ? this.transaction.note
+    : this._translateService.instant(this.transaction.type);
   }
 
   /** Check if the transaction contains a 'dispute' linked event

@@ -42,7 +42,7 @@ export class DocumentsTypeahead implements ITypeahead {
    * Constructor
    * @param _apiService - ApiService
    * @param _recordService - RecordService
-   * @param _translateService - TranslateService
+   * @param _mainTitlePipe - MainTitlePipe
    */
   constructor(
     private _apiService: ApiService,

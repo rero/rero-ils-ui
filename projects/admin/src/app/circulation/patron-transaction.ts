@@ -18,8 +18,8 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-import * as moment from 'moment';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import * as moment from 'moment';
 
 export function _(str) {
   return marker(str);
@@ -53,14 +53,6 @@ export class PatronTransaction {
     Object.assign(this, obj);
   }
 
-  /**
-   * Get the label of the transaction depending of transaction.type
-   * @return label/title of the transaction as string
-   */
-  get label(): string {
-    return (this.type === 'other') ? this.note : this.type;
-  }
-
   /** Get events linked to the transaction sorted by creation date
    *  @return Array<PatronTransactionEvent>
    */
@@ -88,15 +80,5 @@ export class PatronTransactionEvent {
 
   constructor(obj?: any){
     Object.assign(this, obj);
-  }
-
-  /**
-   * Get the best possible label of the transaction event
-   * @return label to display as string
-   */
-  get label(): string {
-    return (this.subtype)
-      ? `${this.type.toString()} [${this.subtype}]`
-      : this.type.toString();
   }
 }
