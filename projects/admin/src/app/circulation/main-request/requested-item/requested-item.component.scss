@@ -15,15 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+@import 'node_modules/bootstrap/scss/bootstrap';
 
-@Component({
-  selector: 'admin-circulation-requested-items-list',
-  templateUrl: './requested-items-list.component.html'
-})
-export class RequestedItemsListComponent {
+.item {
+  margin-bottom: $spacer * .25 !important;
+  padding: $spacer * .25 !important;
+  border: $border-width solid $border-color;
+  border-radius: $border-radius;
+  position: relative;
 
-  /** Item list */
-  @Input() items: any[];
+  &:hover{
+     background-color: $light;
+  }
 
+  div.actions {
+    position: absolute;
+    top: $spacer * .25;
+    right: 15px;
+  }
 }

@@ -129,11 +129,18 @@ json-schema-form {
     margin-top: -5px;
   }
 }
-@each $name,$color in (default,#777),(primary,$primary),(success,$success),(danger,$danger),(warning,$warning),(info,$info), (dark,$dark) {
+@each $name,$color in (primary,$primary),(success,$success),(danger,$danger),(warning,$warning),(info,$info), (dark,$dark) {
   .callout-#{$name} {
     border-color: $color !important;
     h4 {
       color: $color;
+    }
+  }
+  .callout-bg-#{$name} {
+    background-color: theme-color-level(#{$name}, -10) !important;
+
+    *[class*='btn-outline-']:not(:hover) {
+      background-color: white;
     }
   }
 }

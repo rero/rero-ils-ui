@@ -166,7 +166,7 @@ export class Item {
   available: boolean;
   barcode: string;
   call_number: string;
-  document: string;
+  document: any;
   status: ItemStatus;
   organisation: Organisation;
   pid: string;

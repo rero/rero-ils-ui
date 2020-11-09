@@ -1,0 +1,68 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2019 RERO
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Item, LoanState } from '../../../class/items';
+
+@Component({
+  selector: 'admin-circulation-requested-items-list',
+  templateUrl: './requested-items-list.component.html'
+})
+export class RequestedItemsListComponent implements OnChanges {
+
+  /** Item list */
+  @Input() items: any[];
+  /** Is the item detail should be collapsed */
+  @Input() isCollapsed: boolean;
+  /** event emit when a request is validated */
+  @Output() requestValidated = new EventEmitter();
+
+
+  /** the know item barcode list */
+  private _knownItemBarcodes: Array<string> = null;
+
+  /**
+   * OnChanges hook
+   * @param changes: the changed properties.
+   */
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.hasOwnProperty('items') && !changes.items.firstChange && changes.items.previousValue) {
+      this._knownItemBarcodes = changes.items.previousValue.map((item) => item.barcode);
+    }
+  }
+
+  /**
+   * Get the callout css class for the item.
+   * If the item is new is new the list, then we would add a display indication about this fact
+   * @param item: the item to check
+   * @return the css class to use as callout
+   */
+  getItemCallout(item: Item): string {
+    if (item.loan.state !== LoanState.PENDING) {
+      return 'callout-success callout-bg-success';
+    }
+    return (this._knownItemBarcodes && !this._knownItemBarcodes.includes(item.barcode))
+      ? 'callout-warning callout-bg-warning'
+      : null;
+  }
+
+  /** when a request from the list is validated */
+  validateRequest(itemBarcode: string) {
+    this.requestValidated.emit(itemBarcode);
+  }
+
+}
