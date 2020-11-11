@@ -35,7 +35,7 @@ export class MenuService {
         iconCssClass: 'fa fa-users',
         id: 'user-services-menu',
         entries: [{
-          name: this._translateService.instant('Circulation'),
+          name: this._translateService.instant('Checkout/checkin'),
           routerLink: '/circulation',
           iconCssClass: 'fa fa-exchange',
           id: 'circulation-menu'

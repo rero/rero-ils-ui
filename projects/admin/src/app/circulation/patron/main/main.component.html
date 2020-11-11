@@ -33,7 +33,7 @@
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'loan']">
-          {{ 'Checkin/Checkout' | translate }}
+          {{ 'On loan' | translate }}
           <span *ngIf="getCirculationStatistics('loans') > 0" class="badge badge-info font-weight-normal">
             {{ getCirculationStatistics('loans') }}
           </span>
