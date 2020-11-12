@@ -129,6 +129,8 @@ import { SharedPipesModule } from './shared/shared-pipes.module';
 import { FrontpageBoardComponent } from './widgets/frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
+import { HotkeysModule } from '@ngneat/hotkeys';
+import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -217,7 +219,8 @@ export function appInitFactory(appInitService: AppInitService) {
     CollectionItemsComponent,
     HoldingItemInCollectionComponent,
     DocumentRecordSearchComponent,
-    HoldingDetailComponent
+    HoldingDetailComponent,
+    CustomShortcutHelpComponent
   ],
   imports: [
     AppRoutingModule,
@@ -241,7 +244,8 @@ export function appInitFactory(appInitService: AppInitService) {
         useClass: TranslateLoader
       }
     }),
-    TypeaheadModule
+    TypeaheadModule,
+    HotkeysModule
   ],
   providers: [
     {
@@ -318,7 +322,8 @@ export function appInitFactory(appInitService: AppInitService) {
     CollectionBriefViewComponent,
     CollectionDetailViewComponent,
     HoldingItemInCollectionComponent,
-    DocumentRecordSearchComponent
+    DocumentRecordSearchComponent,
+    CustomShortcutHelpComponent
   ],
   bootstrap: [AppComponent]
 })

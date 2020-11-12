@@ -1,0 +1,42 @@
+<!--
+  RERO ILS UI
+   Copyright (C) 2019 RERO
+   Copyright (C) 2020 UCLouvain
+  
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, version 3 of the License.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Affero General Public License for more details.
+  
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="title">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true" data-dismiss="modal" (click)="closeModal()">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <table class="hotkeys-table-help" cellspacing="0" width="100%" *ngFor="let hotkeyGroup of hotkeys">
+      <thead *ngIf="hotkeyGroup.group">
+        <tr>
+          <th class="hotkeys-table-help-group" colspan="2">{{ hotkeyGroup.group }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="hotkeys-table-help-shortcut" *ngFor="let hotkey of hotkeyGroup.hotkeys">
+          <td class="hotkeys-table-help-shortcut-description" width="75%">{{ hotkey.description }}</td>
+          <td class="hotkeys-table-help-shortcut-keys" width="25%">
+            <kbd [innerHTML]="hotkey.keys | hotkeysShortcut"></kbd>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-container>
