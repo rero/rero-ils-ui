@@ -54,7 +54,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
   /** search text used into the search input component */
   public searchText = '';
   /** requested items loaded */
-  public items = [];
+  public items = null;
   /** detect if the requested items are loading */
   public isLoading = false;
   /** the interval (in millis) between 2 calls of requested items (0 = no refresh) */

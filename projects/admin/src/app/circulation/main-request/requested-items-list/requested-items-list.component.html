@@ -22,7 +22,7 @@
   <div class="col-2" translate>Request date</div>
 </div>
 
-<ng-container *ngIf="items">
+<ng-container *ngIf="items else itemsNull">
   <ng-container *ngIf="items.length > 0 else noitems">
     <admin-requested-item
       *ngFor="let item of items"
@@ -32,13 +32,12 @@
       (requestValidated)="validateRequest($event)"
     ></admin-requested-item>
   </ng-container>
-  <ng-template #noitems>
-    {{ 'no request to validate' | translate }}
-  </ng-template>
 </ng-container>
 
-<ng-container *ngIf="items === null">
+<ng-template #noitems>
+  {{ 'no request to validate' | translate }}
+</ng-template>
+
+<ng-template #itemsNull>
   <i class="fa fa-spinner fa-spin fa-fw"></i>
-</ng-container>
-
-<ng-template #noitems></ng-template>
+</ng-template>
