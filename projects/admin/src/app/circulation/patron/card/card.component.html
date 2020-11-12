@@ -61,7 +61,7 @@
         </div>
       </div>
       <!-- NOTES-->
-      <div *ngIf="patron.notes" class="alert alert-warning" role="alert">
+      <div *ngIf="patron.notes" class="col alert alert-warning" role="alert">
         <ng-container *ngFor="let note of patron.notes">
           <strong class="alert-heading" translate>{{ note.type.toString() }}</strong>
           <p class="mb-0 ml-3" [innerHTML]="note.content | nl2br"></p>
