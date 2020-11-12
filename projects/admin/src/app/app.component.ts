@@ -15,18 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { HotkeysService } from '@ngneat/hotkeys';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AppRouterEventService } from './service/app-router-event.service';
+import { KeyboardShortcutsService } from './service/keyboard-shortcuts.service';
 import { NavigateService } from './service/navigate.service';
 import { UserService } from './service/user.service';
+import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 
 @Component({
   selector: 'admin-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
 
   /** Allow interface access */
   get allowAccess() {
@@ -44,19 +48,33 @@ export class AppComponent implements OnInit {
    * @param _appRouterEventService - AppRouterEventService
    * @param _spinner - NgxSpinnerService
    * @param _navigateService - NavigateService
+   * @param _keyboardShortcutsService - KeyboardShortcutsService
+   * @param _hotKeysService - HotkeysService,
+   * @param _modalService - BsModalService
    */
   constructor(
     private _userService: UserService,
     private _appRouterEventService: AppRouterEventService,
     private _spinner: NgxSpinnerService,
-    private _navigateService: NavigateService
-    ) {}
+    private _navigateService: NavigateService,
+    private _keyboardShortcutsService: KeyboardShortcutsService,
+    private _hotKeysService: HotkeysService,
+    private _modalService: BsModalService
+  ) {}
 
-    /** Init */
+  /** Init hook */
   ngOnInit() {
     this._spinner.show();
     this._appRouterEventService.initializeEvents();
     this._navigateService.initialize();
+    this._keyboardShortcutsService.initializeShortcuts();
     this._spinner.hide();
+  }
+
+  /** AfterViewInit hook */
+  ngAfterViewInit() {
+    this._hotKeysService.registerHelpModal(() => {
+      this._modalService.show(CustomShortcutHelpComponent);
+    });
   }
 }

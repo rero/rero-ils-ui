@@ -1,0 +1,60 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2020 RERO
+ * Copyright (C) 2020 UCLouvain
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+:host {
+  table {
+    border: 1px solid #e1e4e8;
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+  }
+
+  th {
+    background-color: #f6f8fa;
+    border-width: 0 0 1px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border: 1px solid #d1d5da;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-bottom: 0;
+    text-align: left;
+  }
+
+  td {
+    padding: 8px 16px;
+    border-top: 1px solid #dee2e6;
+  }
+
+  kbd {
+    margin-right: 6px;
+    background-color: #fafbfc;
+    border: 1px solid #d1d5da;
+    border-bottom-color: #c6cbd1;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 #c6cbd1;
+    color: #444d56;
+    font-size: 12px;
+    padding: 3px 5px;
+  }
+
+  .hotkeys-help-shortcut-keys {
+    text-align: right;
+  }
+}

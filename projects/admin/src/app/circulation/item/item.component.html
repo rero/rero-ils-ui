@@ -57,7 +57,7 @@
     <a [routerLink]="['/records','documents','detail', item.document.pid]" *ngIf="item.document.title | mainTitle as title ">
       {{ isCollapsed ? (title | truncateText: 12) : title }}
     </a>
-    <ng-container *ngIf="document.contribution && document.contribution.length > 0">
+    <ng-container *ngIf="document && document.contribution && document.contribution.length > 0">
       <ul class="list-inline mb-0 small">
         <li *ngFor="let contribution of document.contribution; let last = last; let i = index" class="list-inline-item">
           <span *ngIf="!contribution.agent.pid" [innerHTML]="contribution | contributionFormat: true"></span>
