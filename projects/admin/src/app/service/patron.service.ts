@@ -202,4 +202,18 @@ export class PatronService {
     );
   }
 
+  /**
+   * Get formatted name of a patron
+   * @param patron: the patron to format
+   * @return the formatted name (name[, firstname])
+   */
+  getFormattedName(patron: any): string {
+    return [
+      patron.last_name || null,
+      patron.first_name || null
+    ].filter(el => el !== null) // remove potential empty values
+     .map(el => el.trim())      // trim all values
+     .join(', ');               // join values
+  }
+
 }

@@ -177,9 +177,12 @@ export class MenuComponent implements OnInit {
               if (element.routerLink.indexOf('/libraries/detail') > -1) {
                 element.routerLink = this.myLibraryRouterLink();
               }
-              // update items list query params
-              if (element.routerLink.indexOf('/records/items') > -1) {
-                element.queryParams = this.myItemListQueryParams();
+              // update library query params
+              // TODO : refactoring when all UI menus will be rewritten
+              if (element.routerLink.indexOf('/records/items') > -1
+               || element.routerLink.indexOf('/records/ill_requests') > -1
+               || element.routerLink.indexOf('/records/collections') > -1) {
+                element.queryParams = this.myLibraryQueryParams();
               }
             }
           );
@@ -197,11 +200,10 @@ export class MenuComponent implements OnInit {
   }
 
   /**
-   * Query param to filter items list by current library
-   *
+   * Query param to filter resource by current logges user library
    * @return library pid as a dictionary
    */
-  private myItemListQueryParams() {
+  private myLibraryQueryParams() {
     return {library: this._userService.user.currentLibrary};
   }
 }

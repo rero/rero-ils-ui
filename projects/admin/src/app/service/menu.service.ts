@@ -24,9 +24,8 @@ import { UserService } from '@rero/shared';
 })
 export class MenuService {
 
-  /**
-   * Menu content
-   */
+  // SERVICE ATTRIBUTES ============================================================
+  /** Menu content */
   linksMenu = {
     navCssClass: 'navbar-nav',
     entries: [
@@ -44,6 +43,12 @@ export class MenuService {
           routerLink: '/circulation/requests',
           iconCssClass: 'fa fa-shopping-basket',
           id: 'requests-menu'
+        }, {
+          name: this._translateService.instant('ILL requests'),
+          routerLink: '/records/ill_requests',
+          queryParams: this._myLibraryQueryParams(),
+          iconCssClass: 'fa fa-shopping-basket',
+          id: 'ill-requests-menu'
         }, {
           name: this._translateService.instant('Users'),
           routerLink: '/records/patrons',
@@ -172,20 +177,21 @@ export class MenuService {
     ]
   };
 
+  // CONSTRUCTOR =========================================================================
   /**
    * Constructor
-   *
-   * @param _translateService : TranslateService
-   * @param _userService : UserService
+   * @param _translateService - TranslateService
+   * @param _userService - UserService
    */
   constructor(
     private _translateService: TranslateService,
     private _userService: UserService,
-  ) {}
+  ) { }
 
+
+  // PRIVATES FUNCTIONS =================================================================
   /**
    * Router link to my library
-   *
    * @return logged user library url for router link
    */
   private _myLibraryRouterLink() {
@@ -194,7 +200,6 @@ export class MenuService {
 
   /**
    * Router link to my organisation
-   *
    * @return logged user organisation url for router link
    */
   private _myOrganisationRouterLink() {
@@ -203,7 +208,6 @@ export class MenuService {
 
   /**
    * Query params to filter documents by organisation
-   *
    * @return organisation pid as a dictionary
    */
   private _myDocumentsQueryParams() {
@@ -211,8 +215,7 @@ export class MenuService {
   }
 
   /**
-   * Query param to filter items list by current library
-   *
+   * Query param to filter resource by current logged user library
    * @return library pid as a dictionary
    */
   private _myLibraryQueryParams() {

@@ -46,6 +46,11 @@ header {
   content: ":"
 }
 
+.no-data {
+  font-style: italic;
+  font-color: $light;
+}
+
 .rero-ils-logo {
   max-height: $navbar-brand-height;
   margin: 7px 0;
