@@ -18,7 +18,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService, RecordService, RemoteTypeaheadService, SuggestionMetadata } from '@rero/ng-core';
 import { Observable } from 'rxjs';
-import { ITypeahead } from '../class/ITypeahead-interface';
+import { ITypeahead } from '../class/typeahead/ITypeahead-interface';
 
 @Injectable({
   providedIn: 'root'

@@ -36,11 +36,12 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DocumentsTypeahead } from './class/documents-typeahead';
-import { ItemsTypeahead } from './class/items-typeahead';
-import { MefOrganisationTypeahead } from './class/mef-organisation-typeahead';
-import { MefPersonTypeahead } from './class/mef-person-typeahead';
-import { MefTypeahead } from './class/mef-typeahead';
+import { DocumentsTypeahead } from './class/typeahead/documents-typeahead';
+import { ItemsTypeahead } from './class/typeahead/items-typeahead';
+import { MefOrganisationTypeahead } from './class/typeahead/mef-organisation-typeahead';
+import { MefPersonTypeahead } from './class/typeahead/mef-person-typeahead';
+import { MefTypeahead } from './class/typeahead/mef-typeahead';
+import { PatronsTypeahead } from './class/typeahead/patrons-typeahead';
 import { TabOrderDirective } from './directives/tab-order.directive';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
@@ -89,7 +90,6 @@ import {
 } from './record/detail-view/contribution-detail-view/corporate-bodies-detail-view/corporate-bodies-detail-view.component';
 import { PersonDetailViewComponent } from './record/detail-view/contribution-detail-view/person-detail-view/person-detail-view.component';
 import { DocumentDetailViewComponent } from './record/detail-view/document-detail-view/document-detail-view.component';
-import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
 import {
   DefaultHoldingItemComponent
 } from './record/detail-view/document-detail-view/holding/default-holding-item/default-holding-item.component';
@@ -132,9 +132,12 @@ import { LibrarySwitchService } from './service/library-switch.service';
 import { OrganisationService } from './service/organisation.service';
 import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-factory.service';
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
-import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageBoardComponent } from './widgets/frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
+import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
+import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
+import { IllRequestsBriefViewComponent } from './record/brief-view/ill-requests-brief-view/ill-requests-brief-view.component';
+import { IllRequestDetailViewComponent } from './record/detail-view/ill-request-detail-view/ill-request-detail-view.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -216,10 +219,12 @@ export function appInitFactory(appInitService: AppInitService) {
     HoldingItemInCollectionComponent,
     DocumentRecordSearchComponent,
     HoldingDetailComponent,
-    CustomShortcutHelpComponent,
     ContributionDetailViewComponent,
     PersonDetailViewComponent,
-    CorporateBodiesDetailViewComponent
+    CorporateBodiesDetailViewComponent,
+    IllRequestsBriefViewComponent,
+    IllRequestDetailViewComponent,
+    CustomShortcutHelpComponent
   ],
   imports: [
     AppRoutingModule,
@@ -276,6 +281,7 @@ export function appInitFactory(appInitService: AppInitService) {
     { provide: typeaheadToken, useExisting: ItemsTypeahead, multi: true },
     { provide: typeaheadToken, useExisting: MefOrganisationTypeahead, multi: true },
     { provide: typeaheadToken, useExisting: MefPersonTypeahead, multi: true },
+    { provide: typeaheadToken, useExisting: PatronsTypeahead, multi: true },
     {
       provide: CoreConfigService,
       useClass: AppConfigService
@@ -289,7 +295,10 @@ export function appInitFactory(appInitService: AppInitService) {
     MefTypeahead,
     DocumentsTypeahead,
     ItemsTypeahead,
+    PatronsTypeahead,
     MainTitlePipe,
+    MefPersonTypeahead,
+    MefOrganisationTypeahead,
     TruncateTextPipe,
     // TODO: needed for production build, remove this after it is fixed in the
     // @ngneat/hotkeys library
@@ -297,12 +306,11 @@ export function appInitFactory(appInitService: AppInitService) {
       provide: HotkeysService,
       useClass: HotkeysService
     },
-    MefPersonTypeahead,
-    MefOrganisationTypeahead,
-    TruncateTextPipe,
     MainTitlePipe
   ],
   entryComponents: [
+    IllRequestsBriefViewComponent,
+    IllRequestDetailViewComponent,
     CircPoliciesBriefViewComponent,
     CirculationPolicyComponent,
     DocumentEditorComponent,
