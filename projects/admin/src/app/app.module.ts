@@ -129,7 +129,7 @@ import { SharedPipesModule } from './shared/shared-pipes.module';
 import { FrontpageBoardComponent } from './widgets/frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
-import { HotkeysModule } from '@ngneat/hotkeys';
+import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 
 /** Init application factory */
@@ -277,7 +277,13 @@ export function appInitFactory(appInitService: AppInitService) {
     DocumentsTypeahead,
     ItemsTypeahead,
     MainTitlePipe,
-    TruncateTextPipe
+    TruncateTextPipe,
+    // TODO: needed for production build, remove this after it is fixed in the
+    // @ngneat/hotkeys library
+    {
+      provide: HotkeysService,
+      useClass: HotkeysService
+    }
   ],
   entryComponents: [
     CircPoliciesBriefViewComponent,
