@@ -143,6 +143,7 @@
             ></i>
             <strong translate>{{ note.type }}</strong>
           </dt>
+          <dd class="col-9 text-justify" [innerHTML]="note.content | nl2br"></dd>
         </div>
       </div>
       <div class="card-footer text-muted small">
