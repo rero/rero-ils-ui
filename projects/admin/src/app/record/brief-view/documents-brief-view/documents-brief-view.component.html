@@ -15,41 +15,44 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<ng-container *ngIf="record">
-  <h5 class="mb-0 card-title">
-    <a
-      name="document-title"
-      [routerLink]="['/records', type === 'import_bnf' ? 'import_bnf': 'documents', 'detail', record.metadata.pid]"
-    >
-      <ng-container *ngIf="record.metadata.ui_title_text else mainTitle">
-        {{ record.metadata.ui_title_text }}
-      </ng-container>
-      <ng-template #mainTitle>
-        {{ record.metadata.title | mainTitle }}
-      </ng-template>
-    </a>
-  <small> &ndash; {{ record.metadata.type | translate }}</small></h5>
-  <ng-container class="card-text">
-    <!-- contribution -->
-    <ul class="list-inline mb-0" *ngIf="record.metadata.contribution && record.metadata.contribution.length > 0">
-      <li
-        class="list-inline-item"
-        *ngFor="let contribution of record.metadata.contribution.slice(0,3); let last = last; let i = index"
-      >
-        <span *ngIf="!contribution.agent.pid">
-          {{ contribution | contributionFormat }}
-        </span>
-        <a *ngIf="contribution.agent.pid" [routerLink]="['/records', contributionTypeParam(contribution.agent), 'detail', contribution.agent.pid]">
-          {{ contribution | contributionFormat }}
-        </a>
-        {{ last ? '' : '; ' }}
-        {{ last && record.metadata.contribution.length > 3 ? '; …' : '' }}
-      </li>
-    </ul>
-
-    <!-- provision activity publications -->
-    <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
-      <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>
-    </ul>
-  </ng-container>
-</ng-container>
+<article *ngIf="record" class="card flex-row border-0">
+  <shared-thumbnail
+    [record]="record"
+    isSmall=true>
+  </shared-thumbnail>
+  <div class="card-body w-100 py-0">
+    <h5 class="mb-0 card-title">
+      <a
+        name="document-title"
+        [routerLink]="['/records', type === 'import_bnf' ? 'import_bnf': 'documents', 'detail', record.metadata.pid]">
+        <ng-container *ngIf="record.metadata.ui_title_text else mainTitle">
+          {{ record.metadata.ui_title_text }}
+        </ng-container>
+        <ng-template #mainTitle>
+          {{ record.metadata.title | mainTitle }}
+        </ng-template>
+      </a>
+    <small> &ndash; {{ record.metadata.type | translate }}</small></h5>
+    <ng-container class="card-text">
+      <!-- contribution -->
+      <ul class="list-inline mb-0" *ngIf="record.metadata.contribution && record.metadata.contribution.length > 0">
+        <li
+          class="list-inline-item"
+          *ngFor="let contribution of record.metadata.contribution.slice(0,3); let last = last; let i = index">
+          <span *ngIf="!contribution.agent.pid">
+            {{ contribution | contributionFormat }}
+          </span>
+          <a *ngIf="contribution.agent.pid" [routerLink]="['/records', contributionTypeParam(contribution.agent), 'detail', contribution.agent.pid]">
+            {{ contribution | contributionFormat }}
+          </a>
+          {{ last ? '' : '; ' }}
+          {{ last && record.metadata.contribution.length > 3 ? '; …' : '' }}
+        </li>
+      </ul>
+      <!-- provision activity publications -->
+      <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
+        <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>
+      </ul>
+    </ng-container>
+  </div>
+</article>
