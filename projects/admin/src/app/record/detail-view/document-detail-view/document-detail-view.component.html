@@ -31,75 +31,73 @@
 </div>
 <ng-container *ngIf="record">
   <!-- HEADER -->
-  <header class="col-10 mt-3">
-    <!-- TYPE -->
-    <ng-container *ngIf="record.metadata.type">
-      <span id="doc-type">{{ record.metadata.type | translate | titlecase }}</span>
-    </ng-container>
+  <header class="col-10">
+    <div class="row mt-3 mb-3">
+      <div class="col-2">
+        <shared-thumbnail [record]="record"></shared-thumbnail>
+      </div>
+      <div class="col">
+        <!-- TITLE -->
+        <h2 id="doc-title" *ngIf="record.metadata.title && record.metadata.title | mainTitle as title" class="pl-0">
+          <ng-core-text-read-more
+            [text]="title"
+            [unit]="'character'"
+            [limit]="150"
+            [showMoreLabel]="'Show more' | translate"
+            [showLessLabel]="'Show less' | translate"
+          ></ng-core-text-read-more>
+        </h2>
 
-    <!-- TITLE -->
-    <h2 id="doc-title" *ngIf="record.metadata.title && record.metadata.title | mainTitle as title" class="pl-0">
-      <ng-core-text-read-more
-        [text]="title"
-        [unit]="'character'"
-        [limit]="150"
-        [showMoreLabel]="'Show more' | translate"
-        [showLessLabel]="'Show less' | translate"
-      ></ng-core-text-read-more>
-    </h2>
-  </header>
-  <div class="col-12 mt-3 mb-3">
-    <!-- TITLE ALTERNATIVE GRAPHICS -->
-    <ng-container *ngIf="record.metadata.ui_title_altgr">
-      <ng-container *ngFor="let altgr_title of record.metadata.ui_title_altgr; let i = index">
-        <h3 id="{{'doc-altgr-title-' + i}}">{{ altgr_title }}</h3>
-      </ng-container>
-    </ng-container>
+        <!-- TITLE ALTERNATIVE GRAPHICS -->
+        <ng-container *ngIf="record.metadata.ui_title_altgr">
+          <ng-container *ngFor="let altgr_title of record.metadata.ui_title_altgr; let i = index">
+            <h3 id="{{'doc-altgr-title-' + i}}">{{ altgr_title }}</h3>
+          </ng-container>
+        </ng-container>
 
-    <!-- CONTRIBUTION -->
-    <ng-container *ngIf="record.metadata.contribution && record.metadata.contribution.length > 0">
-      <ul class="list-inline mb-0">
-        <li
-          class="list-inline-item"
-          *ngFor="let contribution of record.metadata.contribution; let last = last; let i = index"
-          [attr.id]="i | idAttribute:{prefix: 'doc-contribution'}"
-        >
-          <span *ngIf="!contribution.agent.pid" [innerHTML]="contribution | contributionFormat: true"></span>
-          <a
-          *ngIf="contribution.agent.pid"
-          [innerHTML]="contribution | contributionFormat: true"
-          [routerLink]="['/records', contributionTypeParam(contribution.agent), 'detail', contribution.agent.pid]">
-          </a>
-          {{ last ? '' : '; ' }}
-        </li>
-      </ul>
-    </ng-container>
+        <!-- CONTRIBUTION -->
+        <ng-container *ngIf="record.metadata.contribution && record.metadata.contribution.length > 0">
+          <ul class="list-inline mb-0">
+            <li
+              class="list-inline-item"
+              *ngFor="let contribution of record.metadata.contribution; let last = last; let i = index"
+              [attr.id]="i | idAttribute:{prefix: 'doc-contribution'}"
+            >
+              <span *ngIf="!contribution.agent.pid" [innerHTML]="contribution | contributionFormat: true"></span>
+              <a
+              *ngIf="contribution.agent.pid"
+              [innerHTML]="contribution | contributionFormat: true"
+              [routerLink]="['/records', contributionTypeParam(contribution.agent), 'detail', contribution.agent.pid]">
+              </a>
+              {{ last ? '' : '; ' }}
+            </li>
+          </ul>
+        </ng-container>
 
     <!-- PUBLICATION STATEMENT -->
     <ng-container *ngFor="let provision of provisionActivity | keyvalue | callbackArrayFilter: filterPublicationProvisionActivity">
       <ul class="list-unstyled mb-0">
         <li *ngFor="let value of provision.value; let i = index"
-            [attr.id]="i | idAttribute:{prefix: 'doc-publication-statement'}"
-        >
+            [attr.id]="i | idAttribute:{prefix: 'doc-publication-statement'}">
           {{ value }}
         </li>
       </ul>
     </ng-container>
 
-    <!-- EXTENT-->
-    <ng-container *ngIf="record.metadata.extent">
-      <div id="doc-extent">{{ record.metadata.extent }}</div>
-    </ng-container>
+        <!-- EXTENT-->
+        <ng-container *ngIf="record.metadata.extent">
+          <div id="doc-extent">{{ record.metadata.extent }}</div>
+        </ng-container>
 
-    <!-- EDITION STATEMENT -->
-    <ng-container *ngIf="record.metadata.editionStatement && record.metadata.editionStatement.length > 0">
-      <ul class="list-unstyled mb-0">
-        <li *ngFor="let edition of getStatement(record.metadata.editionStatement); let i = index"
-        [attr.id]="i | idAttribute:{prefix: 'doc-edition-statement'}">
-         {{ edition.value }}
-        </li>
-      </ul>
-    </ng-container>
+        <!-- EDITION STATEMENT -->
+        <ng-container *ngIf="record.metadata.editionStatement && record.metadata.editionStatement.length > 0">
+          <ul class="list-unstyled mb-0">
+            <li *ngFor="let edition of getStatement(record.metadata.editionStatement); let i = index"
+            [attr.id]="i | idAttribute:{prefix: 'doc-edition-statement'}">
+            {{ edition.value }}
+            </li>
+          </ul>
+        </ng-container>
 
     <!-- IS PART OF -->
     <ng-container *ngFor="let document of record.metadata.partOf; let i = index">
@@ -144,17 +142,19 @@
       </ul>
     </ng-container>
 
-    <!-- SUBJECTS -->
-    <div class="row" *ngIf="record.metadata.subjects">
-      <div class="col">
-        <span *ngFor="let subject of record.metadata.subjects; let i = index"
-          class="badge badge-secondary mr-1"
-          [attr.id]="i | idAttribute:{prefix: 'doc-subject'}">
-          <i class="fa fa-tag"></i> {{ subject }}
-        </span>
+        <!-- SUBJECTS -->
+        <div class="row" *ngIf="record.metadata.subjects">
+          <div class="col">
+            <span *ngFor="let subject of record.metadata.subjects; let i = index"
+              class="badge badge-secondary mr-1"
+              [attr.id]="i | idAttribute:{prefix: 'doc-subject'}">
+              <i class="fa fa-tag"></i> {{ subject }}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </header>
 
   <!-- END OF HEADER ---------------------------------------------------------->
   <!-- TABS ------------------------------------------------------------------->
