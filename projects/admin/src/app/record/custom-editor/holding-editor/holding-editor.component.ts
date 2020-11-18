@@ -17,8 +17,8 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { removeEmptyValues } from '@rero/ng-core';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { EditorService } from '../../../service/editor.service';
 import { PredictionIssue } from '../../../service/holdings.service';
 
@@ -67,17 +67,22 @@ export class HoldingEditorComponent implements OnInit, OnDestroy {
       distinctUntilChanged((a, b) => JSON.stringify(a.patterns) === JSON.stringify(b.patterns)),
       // cancel previous pending requests
       switchMap(modelValue => this._editorService.getHoldingPatternPreview(
-        modelValue, this.numberOfSerialPreviewExamples))
+        modelValue, this.numberOfSerialPreviewExamples).pipe(
+          catchError((error) => {
+            // if the syntax is not valid the server returns an 400 error
+            // display the error and do not abort the connection with the
+            // server
+            if (error.status === 400) {
+              this.serialPreviewError = error.error;
+              return of(null);
+            }
+          })
+        ))
     ).subscribe((predictions) => {
       if (predictions && predictions.length > 0) {
         this.serialPreviewExamples = predictions;
       }
-    },
-      (error: any) => {
-        if (error.error) {
-          this.serialPreviewError = error.error;
-        }
-      });
+    });
   }
 
   /** Component destruction. */
