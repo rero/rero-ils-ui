@@ -16,62 +16,55 @@
 -->
 
 <article *ngIf="record" class="card flex-row border-0">
-    <div class="align-self-start d-flex justify-content-center">
-      <figure class="mb-0 thumb-brief">
-        <ng-container *ngIf="record.metadata.cover_art; else noLink">
-          <a href="coverUrl"><img class="img-responsive border border-light " [src]="coverUrl"></a>
-        </ng-container>
-        <ng-template #noLink>
-          <img class="img-responsive border border-light" [src]="coverUrl">
-        </ng-template>
-        <figcaption class="text-center">{{ record.metadata.type | translate }}</figcaption>
-      </figure>
-    </div>
-    <div class="card-body w-100 py-0">
-      <h4 class="card-title mb-1">
-        <a name="document-title" target="_self" [href]="detailUrl.link">{{ record.metadata.ui_title_text }}</a>
-      </h4>
-      <article class="card-text">
-        <!-- contribution -->
-        <ul class="list-inline mb-0" *ngIf="record.metadata.contribution && record.metadata.contribution.length > 0">
-          <li
-              class="list-inline-item"
-              *ngFor="let contribution of record.metadata.contribution.slice(0,3); let last = last; let i = index"
-            >
-            <span *ngIf="!contribution.agent.pid; else contribLink">
-              {{ contribution | contributionFormat }}
-            </span>
-            <ng-template #contribLink>
-            <a
-              *ngIf="contribution.agent.pid"
-              href="/{{ viewcode }}/{{ contribution.agent.type | contributionType }}/{{ contribution.agent.pid }}"
-            >
-              {{ contribution | contributionFormat }}
-            </a>
-            </ng-template>
-            {{ last ? '' : '; ' }}
-            {{ last && record.metadata.contribution.length > 3 ? '; …' : '' }}
-          </li>
-        </ul>
-
-        <!-- provision activity publications -->
-        <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
-          <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>
-        </ul>
-
-        <div *ngIf="record.metadata.type !== 'ebook'">
-          <i class="fa fa-circle text-{{ record.metadata.available ? 'success' : 'danger' }}" aria-hidden="true"></i>&nbsp;
-          <span translate *ngIf="record.metadata.available">available</span>
-          <span translate *ngIf="!record.metadata.available">not available</span>
-        </div>
-        <div *ngIf="record.explanation">
-          <a class="badge badge-info collapsed"
-              data-toggle="collapse" href="#{{'score'+record.metadata.pid }}"
-              aria-expanded="false">
-              score: {{ record.explanation.value }}
+  <shared-thumbnail
+    [record]="record"
+    (isSmall)="true">
+  </shared-thumbnail>
+  <div class="card-body w-100 py-0">
+    <h4 class="card-title mb-1">
+      <a name="document-title" target="_self" [href]="detailUrl.link">{{ record.metadata.ui_title_text }}</a>
+    </h4>
+    <article class="card-text">
+      <!-- contribution -->
+      <ul class="list-inline mb-0" *ngIf="record.metadata.contribution && record.metadata.contribution.length > 0">
+        <li
+            class="list-inline-item"
+            *ngFor="let contribution of record.metadata.contribution.slice(0,3); let last = last; let i = index"
+          >
+          <span *ngIf="!contribution.agent.pid; else contribLink">
+            {{ contribution | contributionFormat }}
+          </span>
+          <ng-template #contribLink>
+          <a
+            *ngIf="contribution.agent.pid"
+            href="/{{ viewcode }}/{{ contribution.agent.type | contributionType }}/{{ contribution.agent.pid }}"
+          >
+            {{ contribution | contributionFormat }}
           </a>
-          <pre class="collapse border border-secondary mt-1" id="{{'score'+record.metadata.pid }}">{{record.explanation|json}}</pre>
-        </div>
-      </article>
-    </div>
+          </ng-template>
+          {{ last ? '' : '; ' }}
+          {{ last && record.metadata.contribution.length > 3 ? '; …' : '' }}
+        </li>
+      </ul>
+
+      <!-- provision activity publications -->
+      <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
+        <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>
+      </ul>
+
+      <div *ngIf="record.metadata.type !== 'ebook'">
+        <i class="fa fa-circle text-{{ record.metadata.available ? 'success' : 'danger' }}" aria-hidden="true"></i>&nbsp;
+        <span translate *ngIf="record.metadata.available">available</span>
+        <span translate *ngIf="!record.metadata.available">not available</span>
+      </div>
+      <div *ngIf="record.explanation">
+        <a class="badge badge-info collapsed"
+            data-toggle="collapse" href="#{{'score'+record.metadata.pid }}"
+            aria-expanded="false">
+            score: {{ record.explanation.value }}
+        </a>
+        <pre class="collapse border border-secondary mt-1" id="{{'score'+record.metadata.pid }}">{{record.explanation|json}}</pre>
+      </div>
+    </article>
+  </div>
 </article>

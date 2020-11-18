@@ -16,7 +16,6 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { RecordService as LocalRecordService } from '../record.service';
 
 @Component({
   selector: 'public-search-document-brief',
@@ -33,20 +32,6 @@ export class DocumentBriefComponent {
   @Input() set record(value) {
     if (value !== undefined) {
       this._record = value;
-      this.coverUrl = `/static/images/icon_${value.metadata.type}.png`;
-      if (value.metadata.cover_art) {
-        this.coverUrl = value.metadata.cover_art;
-      } else if (value.metadata.identifiedBy) {
-        let isbn;
-        for (const identifier of value.metadata.identifiedBy) {
-          if (identifier.type === 'bf:Isbn') {
-            isbn = identifier.value;
-          }
-        }
-        if (isbn) {
-          this.getCover(isbn);
-        }
-      }
     }
   }
 
@@ -67,22 +52,5 @@ export class DocumentBriefComponent {
       }
     });
     return publications;
-  }
-
-  constructor(
-    private localRecordService: LocalRecordService
-  ) {  }
-
-  /**
-   * Load cover image
-   * @param isbn - isbn of the document
-   * @returns string - url of the cover if cover exists.
-   */
-  getCover(isbn: string) {
-    this.localRecordService.getCover(isbn).subscribe(result => {
-      if (result.success) {
-        this.coverUrl = result.image;
-      }
-    });
   }
 }
