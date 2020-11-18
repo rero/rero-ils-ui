@@ -17,19 +17,6 @@
 
  */
 
- .thumb-brief
-  img {
-    max-height: 122px;
-    width: 80px;
-  }
-
-@media (max-width: 960px) {
-  .thumb-brief
-    img {
-      max-width: 48px;
-    }
-  }
-
 pre {
   white-space: pre-wrap;
   max-height: 300px;

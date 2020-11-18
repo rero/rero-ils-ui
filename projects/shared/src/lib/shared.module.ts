@@ -35,6 +35,7 @@ import { ContributionBriefComponent } from './view/brief/contribution-brief/cont
 import { ContributionSourcesComponent } from './view/brief/contribution-sources/contribution-sources.component';
 import { OrganisationBriefComponent } from './view/brief/organisation-brief/organisation-brief.component';
 import { PersonBriefComponent } from './view/brief/person-brief/person-brief.component';
+import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { PersonBriefComponent } from './view/brief/person-brief/person-brief.com
     ProvisionActivityPipe,
     ContributionTypePipe,
     UrlActivePipe,
-    NgVarDirective
+    NgVarDirective,
+    ThumbnailComponent
   ],
   exports: [
     CommonModule,
@@ -69,7 +71,8 @@ import { PersonBriefComponent } from './view/brief/person-brief/person-brief.com
     ContributionTypePipe,
     UrlActivePipe,
     NgVarDirective,
-    Nl2brPipe
+    Nl2brPipe,
+    ThumbnailComponent
   ],
   imports: [
     CommonModule,
