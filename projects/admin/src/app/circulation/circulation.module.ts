@@ -23,6 +23,7 @@ import { FormlyModule } from '@ngx-formly/core';
 import { RecordModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CheckinComponent } from './checkin/checkin.component';
 import { CirculationRoutingModule } from './circulation-routing.module';
@@ -54,6 +55,7 @@ import { PendingComponent } from './patron/pending/pending.component';
 import { PickupItemComponent } from './patron/pickup/pickup-item/pickup-item.component';
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
+import { FixedDateFormComponent } from './patron/loan/fixed-date-form/fixed-date-form.component';
 
 
 @NgModule({
@@ -81,22 +83,25 @@ import { ProfileComponent } from './patron/profile/profile.component';
     HistoryComponent,
     HistoryItemComponent,
     RequestedItemComponent,
-    ChangePasswordFormComponent
+    ChangePasswordFormComponent,
+    FixedDateFormComponent
   ],
   imports: [
-    CommonModule,
-    CirculationRoutingModule,
     BsDropdownModule.forRoot(),
+    BsDatepickerModule.forRoot(),
+    CirculationRoutingModule,
     CollapseModule.forRoot(),
-    RecordModule,
+    CommonModule,
     FormsModule,
-    ReactiveFormsModule,
     FormlyModule,
+    ReactiveFormsModule,
+    RecordModule,
     SharedModule
   ],
   entryComponents: [
     PatronTransactionEventFormComponent,
-    ChangePasswordFormComponent
+    ChangePasswordFormComponent,
+    FixedDateFormComponent
   ]
 })
 export class CirculationModule { }

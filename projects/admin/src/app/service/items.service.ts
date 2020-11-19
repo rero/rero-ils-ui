@@ -97,8 +97,9 @@ export class ItemsService {
     );
   }
 
-  /** Do checkin and get applied actions
-   * @param itemBarcode: item barcode
+  /**
+   * Do checkin and get applied actions
+   * @param barcode: item barcode
    * @param transactionLibraryPid: transaction library
    */
   checkin(barcode: string, transactionLibraryPid: string) {
@@ -139,9 +140,19 @@ export class ItemsService {
     );
   }
 
-  doAction(item, transactionLibraryPid, userPid, patronPid?: string) {
+  /**
+   * Call the circulation API corresponding to the item current action
+   * @param item: the item to be proceed
+   * @param transactionLibraryPid: the transaction library pid
+   * @param userPid: the user pid operate the circulation operation
+   * @param patronPid: the patron related to the circulation operation
+   * @param additionalParams: additional parameters to send as query string arguments
+   */
+  doAction(item, transactionLibraryPid: string, userPid: string, patronPid?: string, additionalParams?: any) {
     const action = item.currentAction;
     const url = `/api/item/${action}`;
+
+    // Build the body data to send to the API
     const data: any = {
       item_pid: item.pid,
       transaction_library_pid: transactionLibraryPid,
@@ -149,11 +160,24 @@ export class ItemsService {
     };
     if (patronPid && action === ItemAction.checkout) {
       data.patron_pid = patronPid;
+      // for a checkout operation, check the additionalParams to find a fixed endDate.
+      // If found, use this endDate as the transaction end date
+      if (additionalParams && 'endDate' in additionalParams) {
+        data.end_date = additionalParams.endDate;
+      }
     }
     if (item.loan) {
       data.pid = item.loan.pid;
     }
-    return this._http.post<any>(url, data).pipe(
+
+    // Build the query param to add to the API query string
+    const queryParams = {};
+    if (additionalParams && 'overrideBlocking' in additionalParams) {
+      const key = 'override_blocking';
+      queryParams[key] = true;
+    }
+
+    return this._http.post<any>(url, data, {params: queryParams}).pipe(
       map(itemData => {
         const newItem = new Item(itemData.metadata);
         newItem.actionDone = action;

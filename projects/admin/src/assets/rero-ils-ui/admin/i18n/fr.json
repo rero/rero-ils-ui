@@ -540,5 +540,6 @@
   "{{ counter }} hidden issues": "{{ counter }} fascicules cachés",
   "{{ total }} results of {{ remoteTotal }}": "{{ total }} résultats sur {{ remoteTotal }}",
   "{{ type }} creation failed!": "Échec de la création de {{ type }} !",
-  "{{ type }} registered": "{{ type }} sauvé"
+  "{{ type }} registered": "{{ type }} sauvé",
+  "End date: {{ endDate }}": "Date de retour : {{ endDate }}"
 }
