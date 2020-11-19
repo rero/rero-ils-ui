@@ -20,7 +20,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TimeValidator } from '@rero/ng-core';
 import { WeekDays } from '../../../class/week-days';
 
-import { Library } from './library';
+import { Library } from '../../../class/library';
 
 @Injectable({
    providedIn: 'root'

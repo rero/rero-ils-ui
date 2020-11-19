@@ -16,40 +16,37 @@
  */
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { LOCALE_ID } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { patronTestingService, userTestingService } from 'projects/admin/tests/utils';
-import { UserService } from '@rero/shared';
-import { PatronService } from '../../../service/patron.service';
-import { CirculationModule } from '../../circulation.module';
-import { LoanComponent } from './loan.component';
+import { SharedModule } from '@rero/shared';
+import { BsModalRef } from 'ngx-bootstrap/modal';
+import { CirculationModule } from '../../../circulation.module';
 
+import { FixedDateFormComponent } from './fixed-date-form.component';
 
-describe('LoanComponent', () => {
-  let component: LoanComponent;
-  let fixture: ComponentFixture<LoanComponent>;
+describe('FixedDateFormComponent', () => {
+  let component: FixedDateFormComponent;
+  let fixture: ComponentFixture<FixedDateFormComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot(),
-        RouterTestingModule,
-        HttpClientTestingModule,
         CirculationModule,
-        BrowserAnimationsModule,
+        SharedModule,
+        TranslateModule.forRoot(),
+        HttpClientTestingModule,
       ],
       providers: [
-        { provide: UserService, useValue: userTestingService },
-        { provide: PatronService, useValue: patronTestingService }
+        BsModalRef,
+        { provide: LOCALE_ID, useValue: 'en-US' }
       ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LoanComponent);
+    fixture = TestBed.createComponent(FixedDateFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

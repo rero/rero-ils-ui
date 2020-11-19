@@ -1,0 +1,67 @@
+<!--
+ RERO angular core
+ Copyright (C) 2020 RERO
+ Copyright (C) 2020 UCLouvain
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published by
+ the Free Software Foundation, version 3 of the License.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<form [formGroup]="formGroup" (ngSubmit)="onSubmitForm()">
+  <div class="modal-header">
+    <h5 class="modal-title" translate>Choose a due date</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true" data-dismiss="modal" (click)="closeModal()">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <i class="fa fa-calendar input-group-text"></i>
+        </div>
+        <input type="text" class="form-control"
+               [ngClass]="{'is-invalid': formGroup.controls.endDate.touched && formGroup.controls.endDate.invalid}"
+               id="end-date" formControlName="endDate" aria-describedby="endDateHelp"
+               bsDatepicker required autocomplete="off"
+               [bsConfig]="bsConfig"
+        >
+      </div>
+      <ng-container *ngIf="formGroup.controls.endDate.valid || !formGroup.controls.endDate.touched">
+        <small class="form-text text-warning">
+          <i class="fa fa-exclamation-triangle pr-1"></i>
+          {{ 'This date will override the circulation policy behavior' | translate }}
+        </small>
+      </ng-container>
+      <ng-container *ngIf="formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('required')"
+                    [ngTemplateOutlet]="errorMessage"
+                    [ngTemplateOutletContext]="{message: 'The field is required' | translate}">
+      </ng-container>
+      <ng-container *ngIf="formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('minimum-date')"
+                    [ngTemplateOutlet]="errorMessage"
+                    [ngTemplateOutletContext]="{message: 'Selected date cannot be in the past.' | translate}">
+      </ng-container>
+    </div>
+    {{ formGroup.controls.endDate['errorMessages'] | json }}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-danger" (click)="closeModal()" translate>Cancel</button>
+    <button type="submit" class="btn btn-primary" [disabled]="this.formGroup.invalid" translate>Apply</button>
+  </div>
+</form>
+
+<ng-template #errorMessage let-message='message'>
+  <small class="form-text text-danger">
+    <i class="fa fa-times-circle pr-1"></i>
+    {{ message }}
+  </small>
+</ng-template>
