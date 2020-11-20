@@ -19,26 +19,35 @@ import { Injectable } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { CirculationPolicy } from './circulation-policy';
 import { ApiService } from '@rero/ng-core';
-import { AppConfigService } from '../../../service/app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CirculationPolicyFormService {
 
-  private form;
+  /**
+   * Current form
+   */
+  private _form: any;
 
+  /**
+   * Constructor
+   * @param _apiService - ApiService
+   * @param _fb - FormBuilder
+   */
   constructor(
-    private apiService: ApiService,
-    private fb: FormBuilder,
-    private appConfigService: AppConfigService
+    private _apiService: ApiService,
+    private _fb: FormBuilder
   ) {
-    this.build();
-    this.validators();
+    this._build();
+    this._observeFormControls();
   }
 
+  /** Poulate the form
+   * @param circulation - circulation policy used to populate the form
+   */
   public populate(circulation: CirculationPolicy) {
-    this.form.patchValue({
+    this._form.patchValue({
       name: circulation.name,
       description: circulation.description,
       allow_checkout: circulation.allow_checkout,
@@ -46,26 +55,35 @@ export class CirculationPolicyFormService {
       number_of_days_after_due_date: circulation.number_of_days_after_due_date,
       number_of_days_before_due_date: circulation.number_of_days_before_due_date,
       allow_requests: circulation.allow_requests,
+      allow_renewals: !(circulation.number_renewals === null),
       number_renewals: circulation.number_renewals,
       renewal_duration: circulation.renewal_duration,
+      loan_expiry_notice: !(circulation.number_of_days_before_due_date === null),
+      send_first_reminder: !(circulation.number_of_days_after_due_date === null),
       reminder_fee_amount: circulation.reminder_fee_amount,
       policy_library_level: circulation.policy_library_level,
       is_default: circulation.is_default,
-      settings: this.unserializeSettings(circulation.settings)
+      settings: this._unserializeSettings(circulation.settings)
     });
     if ('libraries' in circulation) {
-      this.form.get('libraries').setValue(
-        this.unserializeLibraries(circulation.libraries)
+      this._form.get('libraries').setValue(
+        this._unserializeLibraries(circulation.libraries)
       );
     }
   }
 
+  /**
+   * Get form
+   */
   public getForm() {
-    return this.form;
+    return this._form;
   }
 
-  private build() {
-    this.form = this.fb.group({
+  /**
+   * Build form
+   */
+  private _build() {
+    this._form = this._fb.group({
       name: [null, [
         Validators.required,
         Validators.minLength(2)
@@ -73,13 +91,39 @@ export class CirculationPolicyFormService {
       description: [],
       allow_requests: [true],
       allow_checkout: [true],
-      checkout_duration: [7],
-      number_of_days_after_due_date: [5],
-      number_of_days_before_due_date: [5],
+      checkout_duration: [7, [
+        Validators.required,
+        Validators.min(0),
+        Validators.pattern(/^[0-9]+([0-9]*)?$/)
+      ]],
+      number_of_days_after_due_date: [5, [
+        Validators.required,
+        Validators.min(1),
+        Validators.pattern(/^[1-9]+([0-9]*)?$/)
+      ]],
+      number_of_days_before_due_date: [5, [
+        Validators.required,
+        Validators.min(0),
+        Validators.pattern(/^[0-9]+([0-9]*)?$/)
+      ]],
       allow_renewals: [true],
-      number_renewals: [0],
-      renewal_duration: [null],
-      reminder_fee_amount: [0],
+      number_renewals: [0, [
+        Validators.required,
+        Validators.min(0),
+        Validators.pattern(/^[0-9]+([0-9]*)?$/)
+      ]],
+      renewal_duration: [null, [
+        Validators.required,
+        Validators.min(1),
+        Validators.pattern(/^[1-9]+([0-9]*)?$/)
+      ]],
+      reminder_fee_amount: [2, [
+        Validators.required,
+        Validators.min(0),
+        Validators.pattern(/^[0-9]+(\.[0-9]{1,2})?$/)
+      ]],
+      loan_expiry_notice: [true],
+      send_first_reminder: [true],
       policy_library_level: [false],
       is_default: [],
       libraries: [],
@@ -87,80 +131,77 @@ export class CirculationPolicyFormService {
     });
   }
 
-  private validators() {
-    const checkoutDurationControl = this.getControlByFieldName('checkout_duration');
-    const numberRenewalsControl = this.getControlByFieldName('number_renewals');
-    const daysAfterControl = this.getControlByFieldName('number_of_days_after_due_date');
-    const daysBeforeControl = this.getControlByFieldName('number_of_days_before_due_date');
-    const overdueAmountControl = this.getControlByFieldName('reminder_fee_amount');
-    this.form.get('allow_checkout').valueChanges.subscribe(checkout => {
+  /**
+   * Observe control forms: hide or display them according to what is checked
+   */
+  private _observeFormControls() {
+    const allowCheckoutFormControls = [
+      this._form.get('checkout_duration'),
+      this._form.get('number_renewals'),
+      this._form.get('number_of_days_after_due_date'),
+      this._form.get('number_of_days_before_due_date'),
+      this._form.get('reminder_fee_amount')
+    ];
+    const allowRenewalsFormControls = [
+      this._form.get('number_renewals'),
+      this._form.get('renewal_duration')
+    ];
+    const sendFirstReminderFormControls = [
+      this._form.get('number_of_days_after_due_date'),
+      this._form.get('reminder_fee_amount')
+    ];
+    const loanExpiryNoticeFormControl = this._form.get('number_of_days_before_due_date');
+    this._form.get('allow_checkout').valueChanges.subscribe((checkout: boolean) => {
       if (checkout) {
-        checkoutDurationControl.setValidators([
-          Validators.required,
-          Validators.min(1)
-        ]);
-        daysAfterControl.setValidators([
-          Validators.required,
-          Validators.min(1)
-        ]);
-        daysBeforeControl.setValidators([
-          Validators.required,
-          Validators.min(1)
-        ]);
-        overdueAmountControl.setValidators([
-          Validators.required,
-          Validators.min(0)
-        ]);
+        allowCheckoutFormControls.forEach((formControl: any) => formControl.enable());
       } else {
-        checkoutDurationControl.clearValidators();
-        numberRenewalsControl.clearValidators();
-        daysAfterControl.clearValidators();
-        daysBeforeControl.clearValidators();
-        overdueAmountControl.clearValidators();
+        allowCheckoutFormControls.forEach((formControl: any) => formControl.disable());
       }
     });
-    this.form.get('allow_renewals').valueChanges.subscribe(renewals => {
+    this._form.get('allow_renewals').valueChanges.subscribe((renewals: boolean) => {
       if (renewals) {
-        numberRenewalsControl.setValidators([
-          Validators.required,
-          Validators.min(0)
-        ]);
+        allowRenewalsFormControls.forEach((formControl: any) => formControl.enable());
       } else {
-        numberRenewalsControl.clearValidators();
+        allowRenewalsFormControls.forEach((formControl: any) => formControl.disable());
       }
     });
-    const renewalDuration = this.getControlByFieldName('renewal_duration');
-    numberRenewalsControl.valueChanges.subscribe(renewals => {
-      if (renewals > 0) {
-        renewalDuration.setValidators([
-          Validators.required,
-          Validators.min(1)
-        ]);
+    this._form.get('loan_expiry_notice').valueChanges.subscribe((notice: boolean) => {
+      if (notice) {
+        loanExpiryNoticeFormControl.enable();
       } else {
-        renewalDuration.clearValidators();
+        loanExpiryNoticeFormControl.disable();
+      }
+    });
+    this._form.get('send_first_reminder').valueChanges.subscribe((reminder: boolean) => {
+      if (reminder) {
+        sendFirstReminderFormControls.forEach((formControl: any) => formControl.enable());
+      } else {
+        sendFirstReminderFormControls.forEach((formControl: any) => formControl.disable());
       }
     });
   }
 
   getControlByFieldName(fieldName: string) {
-    return this.form.get(fieldName);
+    return this._form.get(fieldName);
   }
 
   getValues() {
-    const formValues = this.form.value;
+    const formValues = this._form.value;
     // delete calculate field before returns values of form
     formValues.allow_renewals = null;
-    formValues.libraries = this.serializeLibraries(formValues.libraries);
-    formValues.settings = this.serializeSettings(formValues.settings);
+    formValues.loan_expiry_notice = null;
+    formValues.send_first_reminder = null;
+    formValues.libraries = this._serializeLibraries(formValues.libraries);
+    formValues.settings = this._serializeSettings(formValues.settings);
     return formValues;
   }
 
-  private unserializeLibraries(libraries) {
+  private _unserializeLibraries(libraries: any) {
     const ulibraries = [];
     const librariesRegex = new RegExp(
-      this.apiService.getRefEndpoint('libraries', '(.+)$')
+      this._apiService.getRefEndpoint('libraries', '(.+)$')
     );
-    libraries.forEach(element => {
+    libraries.forEach((element: any) => {
       ulibraries.push(
         element.$ref.match(librariesRegex)[1]
       );
@@ -168,25 +209,25 @@ export class CirculationPolicyFormService {
     return ulibraries;
   }
 
-  private serializeLibraries(libraries) {
+  private _serializeLibraries(libraries: any) {
     const slibraries = [];
-    libraries.forEach(element => {
+    libraries.forEach((element: any) => {
       slibraries.push({
-        $ref: this.apiService.getRefEndpoint('libraries', element)
+        $ref: this._apiService.getRefEndpoint('libraries', element)
       });
     });
     return slibraries;
   }
 
-  private unserializeSettings(settings) {
+  private _unserializeSettings(settings: any) {
     const itemTypeRegex = new RegExp(
-      this.apiService.getRefEndpoint('item_types', '(.+)$')
+      this._apiService.getRefEndpoint('item_types', '(.+)$')
     );
     const patronTypeRegex = new RegExp(
-      this.apiService.getRefEndpoint('patron_types', '(.+)$')
+      this._apiService.getRefEndpoint('patron_types', '(.+)$')
     );
     const mapping = [];
-    settings.forEach(element => {
+    settings.forEach((element: any) => {
       const pkey = 'p' + element.patron_type.$ref.match(patronTypeRegex)[1];
       if (!(pkey in mapping)) {
         mapping[pkey] = [];
@@ -196,16 +237,16 @@ export class CirculationPolicyFormService {
     return mapping;
   }
 
-  private serializeSettings(settings) {
+  private _serializeSettings(settings: any) {
     const mapping = [];
     Object.keys(settings).forEach(key => {
-      settings[key].forEach(element => {
+      settings[key].forEach((element: any) => {
         mapping.push({
           patron_type: {
-            $ref: this.apiService.getRefEndpoint('patron_types', key.substr(1))
+            $ref: this._apiService.getRefEndpoint('patron_types', key.substr(1))
           },
           item_type: {
-            $ref: this.apiService.getRefEndpoint('item_types', element.substr(1))
+            $ref: this._apiService.getRefEndpoint('item_types', element.substr(1))
           }
         });
       });

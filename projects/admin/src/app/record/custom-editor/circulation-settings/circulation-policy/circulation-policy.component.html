@@ -19,23 +19,37 @@
   Loading…
 </div>
 
-<div *ngIf="circulationForm && librariesOrg">
-  <h1 translate>Circulation Policy</h1>
+<div class="main-content position-relative" *ngIf="circulationForm && librariesOrg">
   <form [formGroup]="circulationForm" (ngSubmit)="onSubmit()" class="mt-4">
-    <div class="form-group row">
+    <div class="sticky">
+      <h1 translate>Circulation policy</h1>
+      <div class="my-3 mr-0">
+        <div class="actions">
+          <button id="cipo-cancel-button" class="btn btn-sm btn-outline-danger" (click)="onCancel($event)">
+            <i class="fa fa-times"></i>
+            {{ 'Cancel' | translate }}
+          </button>
+          <button id="cipo-save-button" type="submit" class="btn btn-sm btn-primary ml-1" [disabled]="circulationForm.invalid">
+            <i class="fa fa-save"></i>
+            {{ 'Save' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row pt-3">
       <label for="name" class="col-sm-2 col-form-label required" translate>Name</label>
       <div class="col-sm-10">
         <input class="form-control" id="name" formControlName="name"
           placeholder="{{ 'Please insert a name' | translate }}" required>
         <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger pt-1">
-          <div *ngIf="name.errors.required" translate>
-            Name is required.
+          <div id="cipo-name-required" *ngIf="name.errors.required" translate>
+            This field is required.
           </div>
-          <div *ngIf="name.errors.minlength" translate>
-            Name must be at least 2 characters long.
+          <div id="cipo-name-length" *ngIf="name.errors.minlength" translate>
+            This field must be at least 2 characters long.
           </div>
-          <div *ngIf="name.errors.alreadyTakenMessage" translate>
-            Name is already taken.
+          <div id="cipo-name-unique" *ngIf="name.errors.alreadyTaken" translate>
+            This name is already taken.
           </div>
         </div>
       </div>
@@ -49,11 +63,11 @@
 
     <!-- start: circulation settings section !-->
     <fieldset class="mt-4">
-      <div class="row">
-        <legend translate>Circulation settings</legend>
-        <div class="col-sm-12 pt-4">
+      <div class="card">
+        <div class="card-header"translate>Circulation settings</div>
+        <div class="card-body">
           <div class="form-group">
-            <div class="row">
+            <div class="row mb-3">
               <div class="col-sm-4">
                 <div class='form-group'>
                   <div class="custom-control custom-switch">
@@ -62,7 +76,6 @@
                       class="custom-control-input"
                       type="checkbox"
                       id="is_pickup"
-                      (click)="allowCheckoutCheckbox($event.target.checked)"
                       [checked]="allow_checkout.value"
                     >
                     <label
@@ -74,18 +87,21 @@
                   </div>
                 </div>
               </div>
-              <div class="col-sm-8">
-                <div class="form-group row" *ngIf="allow_checkout.value">
+              <div class="col-sm-8 border rounded pt-3" *ngIf="allow_checkout.value">
+                <div class="form-group row">
                   <label for="checkoutDuration" class="col-sm-4 col-form-label required" translate>Checkout duration</label>
                   <div class="col-sm-4">
                     <input type="number" class="form-control" id="checkoutDuration" formControlName="checkout_duration">
                     <div *ngIf="checkout_duration.invalid && (checkout_duration.dirty || checkout_duration.touched)"
                       class="text-danger pt-1">
-                      <div *ngIf="checkout_duration.errors.required" translate>
-                        Checkout duration is required.
+                      <div id="cipo-checkout-duration-required" *ngIf="checkout_duration.errors.required" translate>
+                        This field is required.
                       </div>
-                      <div *ngIf="checkout_duration.errors.min" translate>
-                        Must be greater than 0
+                      <div id="cipo-checkout-duration-value" *ngIf="checkout_duration.errors.min" translate>
+                        This field must be greater than or equal to 0.
+                      </div>
+                      <div id="cipo-reminder-fee-pattern" *ngIf="checkout_duration.errors.pattern" translate>
+                        This field must be an integer.
                       </div>
                     </div>
                   </div>
@@ -101,7 +117,6 @@
                       class="custom-control-input"
                       type="checkbox"
                       id="renewals"
-                      (click)="allowRenewalsCheckbox($event.target.checked)"
                       [checked]="allow_renewals.value"
                     >
                     <label
@@ -113,19 +128,21 @@
                   </div>
                 </div>
               </div>
-              <div class="col-sm-8">
-                <div class="form-group row" *ngIf="allow_checkout.value && allow_renewals.value">
+              <div class="border rounded pt-3 col-sm-8" *ngIf="allow_checkout.value && allow_renewals.value">
+                <div class="form-group row">
                   <label for="numberRenewals" class="col-sm-4 col-form-label required" translate>Number of renewals</label>
                   <div class="col-sm-4">
-                    <input type="number" class="form-control" id="numberRenewals" formControlName="number_renewals"
-                      (blur)="numberRenewalsCheck()">
+                    <input type="number" class="form-control" id="numberRenewals" formControlName="number_renewals">
                     <div *ngIf="number_renewals.invalid && (number_renewals.dirty || number_renewals.touched)"
                       class="text-danger pt-1">
-                      <div *ngIf="number_renewals.errors.required" translate>
-                        Checkout duration is required.
+                      <div id="cipo-number-renewals-required" *ngIf="number_renewals.errors.required" translate>
+                        This field is required.
                       </div>
-                      <div *ngIf="number_renewals.errors.min" translate>
-                        Must be greater than 0
+                      <div id="cipo-number-renewals-value" *ngIf="number_renewals.errors.min" translate>
+                        This field must be greater than 0
+                      </div>
+                      <div id="cipo-reminder-fee-pattern" *ngIf="number_renewals.errors.pattern" translate>
+                        This field must be an integer.
                       </div>
                     </div>
                   </div>
@@ -137,11 +154,14 @@
                     <input type="number" class="form-control" id="renewalDuration" formControlName="renewal_duration">
                     <div *ngIf="renewal_duration.invalid && (renewal_duration.dirty || renewal_duration.touched)"
                       class="text-danger pt-1">
-                      <div *ngIf="renewal_duration.errors.required" translate>
-                        Renewal duration is required.
+                      <div id="cipo-renewal-duration-required" *ngIf="renewal_duration.errors.required" translate>
+                        This field is required.
                       </div>
-                      <div *ngIf="renewal_duration.errors.min" translate>
-                        Must be greater than 0
+                      <div id="cipo-renewal-duration-value" *ngIf="renewal_duration.errors.min" translate>
+                        This field must be greater than 0
+                      </div>
+                      <div id="cipo-reminder-fee-pattern" *ngIf="renewal_duration.errors.pattern" translate>
+                        This field must be an integer.
                       </div>
                     </div>
                   </div>
@@ -177,57 +197,112 @@
 
     <!-- start: notifications and fees section !-->
     <fieldset class="mt-4" *ngIf="allow_checkout.value">
-      <div class="row">
-        <legend translate>Notifications and fees</legend>
-        <div class="col-sm-12 pt-4">
-          <div class="form-group row" *ngIf="allow_checkout.value">
-            <label for="daysAfterControl" class="col-sm-2 col-form-label required" translate>First reminder days</label>
+      <div class="card">
+        <div class="card-header" translate>Notifications and fees</div>
+        <div class="card-body">
+          <!-- Sent loan expiry notice-->
+          <div class="form-group row">
             <div class="col-sm-4">
-              <input type="number" class="form-control" id="daysAfterControl"
-                formControlName="number_of_days_after_due_date">
-              <div
-                *ngIf="number_of_days_after_due_date.invalid && (number_of_days_after_due_date.dirty || number_of_days_after_due_date.touched)"
-                class="text-danger pt-1">
-                <div *ngIf="number_of_days_after_due_date.errors.required" translate>
-                  First reminder days is required.
+              <div class='form-group'>
+                <div class="custom-control custom-switch">
+                  <input
+                    formControlName="loan_expiry_notice"
+                    class="custom-control-input"
+                    type="checkbox"
+                    id="loan_expiry_notice"
+                    [checked]="loan_expiry_notice.value">
+                  <label class="custom-control-label" for="loan_expiry_notice" translate>
+                    Send a loan expiry notice
+                  </label>
                 </div>
-                <div *ngIf="number_of_days_after_due_date.errors.min" translate>
-                  First reminder days must be greater than 0.
+              </div>
+            </div>
+            <div class="col-sm-8 border rounded pt-3" *ngIf="loan_expiry_notice.value">
+              <div class="form-group row">
+                <label class="col-sm-6 col-form-label text-right" for="daysBeforeControl" translate>
+                  Sending how many days before the due date
+                </label>
+                <input type="number" class="form-control col-sm-3" id="daysBeforeControl"
+                  formControlName="number_of_days_before_due_date">
+                <div
+                  *ngIf="number_of_days_before_due_date.invalid && (number_of_days_before_due_date.dirty || number_of_days_before_due_date.touched)"
+                  class="text-danger pt-1 offset-sm-6">
+                  <div id="cipo-expiry-notice-required" *ngIf="number_of_days_before_due_date.errors.required" translate>
+                    This field is required.
+                  </div>
+                  <div id="cipo-expiry-notice-value" *ngIf="number_of_days_before_due_date.errors.min" translate>
+                    This field must be greater than or equal to 0.
+                  </div>
+                  <div id="cipo-reminder-fee-pattern" *ngIf="number_of_days_before_due_date.errors.pattern" translate>
+                    This field must be an integer.
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="form-group row" *ngIf="allow_checkout.value">
-            <label for="daysBeforeControl" class="col-sm-2 col-form-label required" translate>Days before due date</label>
+          <!-- Send first reminder-->
+          <div class="form-group row">
             <div class="col-sm-4">
-              <input type="number" class="form-control" id="daysBeforeControl"
-                formControlName="number_of_days_before_due_date">
-              <div
-                *ngIf="number_of_days_before_due_date.invalid && (number_of_days_before_due_date.dirty || number_of_days_before_due_date.touched)"
-                class="text-danger pt-1">
-                <div *ngIf="number_of_days_before_due_date.errors.required" translate>
-                  Days before due date is required.
-                </div>
-                <div *ngIf="number_of_days_before_due_date.errors.min" translate>
-                  Days before due date must be greater or equal to 0.
+              <div class='form-group'>
+                <div class="custom-control custom-switch">
+                  <input
+                    formControlName="send_first_reminder"
+                    class="custom-control-input"
+                    type="checkbox"
+                    id="send_first_reminder"
+                    [checked]="send_first_reminder.value">
+                  <label class="custom-control-label" for="send_first_reminder" translate>
+                    Send a first reminder
+                  </label>
                 </div>
               </div>
             </div>
-          </div>
-
-          <div class="form-group row" *ngIf="allow_checkout.value">
-            <label for="overdueAmount" class="col-sm-2 col-form-label required">{{ 'Fees' | translate }}
-              ({{ currency }})</label>
-            <div class="col-sm-4">
-              <input type="number" class="form-control" id="overdueAmount" formControlName="reminder_fee_amount">
-              <div *ngIf="reminder_fee_amount.invalid && (reminder_fee_amount.dirty || reminder_fee_amount.touched)"
-                class="text-danger pt-1">
-                <div *ngIf="reminder_fee_amount.errors.required" translate>
-                  Overdue amount is required.
+            <div class="col-sm-8 border rounded pt-3" *ngIf="send_first_reminder.value">
+              <div class="form-group row">
+                <label class="col-sm-6 col-form-label text-right" for="daysAfterControl" translate>
+                  Sending how many days after the due date
+                </label>
+                <input
+                  type="number"
+                  class="form-control required col-sm-3"
+                  id="daysAfterControl"
+                  formControlName="number_of_days_after_due_date">
+                <div
+                  *ngIf="number_of_days_after_due_date.invalid && (number_of_days_after_due_date.dirty || number_of_days_after_due_date.touched)"
+                  class="text-danger pt-1 offset-sm-6">
+                  <div id="cipo-first-reminder-required" *ngIf="number_of_days_after_due_date.errors.required" translate>
+                    This field is required.
+                  </div>
+                  <div id="cipo-first-reminder-value" *ngIf="number_of_days_after_due_date.errors.min" translate>
+                    This field must be greater than 0.
+                  </div>
+                  <div id="cipo-reminder-fee-pattern" *ngIf="number_of_days_after_due_date.errors.pattern" translate>
+                    This field must be an integer.
+                  </div>
                 </div>
-                <div *ngIf="reminder_fee_amount.errors.min" translate>
-                  Overdue amount must be great than 0.
+              </div>
+              <div class="form-group row" *ngIf="allow_checkout.value">
+                <label for="overdueAmount" class="col-sm-6 col-form-label required text-right" translate>Fees</label>
+                <div class="col-sm-3 p-0">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">{{ currency }}</span>
+                    </div>
+                    <input type="number" class="form-control" id="overdueAmount" formControlName="reminder_fee_amount">
+                  </div>
                 </div>
+                <div *ngIf="reminder_fee_amount.invalid && (reminder_fee_amount.dirty || reminder_fee_amount.touched)"
+                    class="text-danger pt-1 offset-sm-6">
+                    <div id="cipo-reminder-fee-required" *ngIf="reminder_fee_amount.errors.required" translate>
+                      This field is required.
+                    </div>
+                    <div id="cipo-reminder-fee-required" *ngIf="reminder_fee_amount.errors.min" translate>
+                      This field must be greater than 0.
+                    </div>
+                    <div id="cipo-reminder-fee-pattern" *ngIf="reminder_fee_amount.errors.pattern" translate>
+                      This field must not have more than 2 decimals.
+                    </div>
+                  </div>
               </div>
             </div>
           </div>
@@ -237,78 +312,69 @@
     <!-- end: notifications and fees section !-->
 
     <!-- start: application section !-->
-    <fieldset class="mt-4">
-      <div class="row">
-        <legend translate>Application</legend>
-        <div class="col-sm-12">
-          <div *ngIf="is_default.value === false">
-            <!-- start: library -->
-            <div class="form-group row">
-              <label for="policyLibraryLevel" class="col-sm-2 col-form-label required" translate>Level</label>
-              <div class="col-sm-10">
-                <div class="form-check-inline">
-                  <label class="form-check-label">
-                    <input type="radio" class="form-check-input" formControlName="policy_library_level" [value]=false
-                      (click)="policyLevelEvent(false)"> {{ 'Organisation' | translate }}
-                  </label>
-                </div>
-                <div class="form-check-inline">
-                  <label class="form-check-label">
-                    <input type="radio" class="form-check-input" formControlName="policy_library_level" [value]=true
-                      (click)="policyLevelEvent(true)"> {{ 'Library' | translate }}
-                  </label>
-                </div>
+    <fieldset class="mt-4" *ngIf="is_default.value === false">
+      <div class="card">
+        <div class="card-header" translate>Application</div>
+        <div class="card-body">
+          <!-- start: library -->
+          <div class="form-group row">
+            <label for="policyLibraryLevel" class="col-sm-2 col-form-label required" translate>Level</label>
+            <div class="col-sm-10">
+              <div class="form-check-inline">
+                <label class="form-check-label">
+                  <input id="policy-level-org" type="radio" class="form-check-input" formControlName="policy_library_level" [value]=false
+                    (click)="policyLevelEvent(false)"> {{ 'Organisation' | translate }}
+                </label>
+              </div>
+              <div class="form-check-inline">
+                <label class="form-check-label">
+                  <input id="policy-level-lib" type="radio" class="form-check-input" formControlName="policy_library_level" [value]=true
+                    (click)="policyLevelEvent(true)"> {{ 'Library' | translate }}
+                </label>
               </div>
             </div>
-            <div class="form-group row" *ngIf="policy_library_level.value == true">
-              <label for="policyLibrary" class="col-sm-2 col-form-label">&nbsp;</label>
-              <div class="col-sm-10">
-                <div *ngFor="let library of librariesOrg">
-                  <input type="checkbox" value="{{ library.id }}" [checked]="libraryCheck(library.id)"
-                    (click)="libraryClickEvent($event.target.checked, library.id)">
-                  {{ library.name }}
-                </div>
-              </div>
-            </div>
-            <!-- end: library -->
-
-            <!-- start: settings -->
-            <div class="form-group row">
-              <label for="policySettings" class="col-sm-2 col-form-label required" translate>Applies to patron types</label>
-              <div class="col-sm-10">
-                <div *ngFor="let patronType of patronTypes()">
-                  <input type="checkbox" class="mr-1" [checked]="isPatronTypeChecked(patronType.id)"
-                    [disabled]="isPatronTypeDisabled(patronType.id)"
-                    [indeterminate]="isPatronTypeDisabled(patronType.id)"
-                    (click)="patronTypeClickEvent($event.target.checked, patronType.id)"> <span
-                    [ngClass]="isPatronTypeDisabled(patronType.id) ? 'text-muted' : ''">{{ patronType.name }}</span>
-                  <div *ngIf="isPatronTypeChecked(patronType.id)" class="ml-3">
-                    <span translate>Circulation categories</span>:
-                    <ul class="d-inline list-inline mb-0">
-                      <li class="list-inline-item" *ngFor="let itemType of itemTypes()">
-                        <input class="mr-1" type="checkbox" [checked]="isItemTypeChecked(patronType.id, itemType.id)"
-                          [disabled]="isItemTypeDisabled(patronType.id, itemType.id)"
-                          [indeterminate]="isItemTypeDisabled(patronType.id, itemType.id)"
-                          (click)="itemTypeClickEvent($event.target.checked, patronType.id, itemType.id)"> <span
-                          [ngClass]="isItemTypeDisabled(patronType.id, itemType.id) ? 'text-muted' : ''">{{ itemType.name }}</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- end: settings -->
           </div>
+          <div class="form-group row" *ngIf="policy_library_level.value == true">
+            <label for="policyLibrary" class="col-sm-2 col-form-label">&nbsp;</label>
+            <div class="col-sm-10">
+              <div *ngFor="let library of librariesOrg">
+                <input type="checkbox" value="{{ library.id }}" [checked]="libraryCheck(library.id)"
+                  (click)="libraryClickEvent($event.target.checked, library.id)">
+                {{ library.name }}
+              </div>
+            </div>
+          </div>
+          <!-- end: library -->
+
+          <!-- start: settings -->
+          <div class="form-group row">
+            <label for="policySettings" class="col-sm-2 col-form-label required" translate>Applies to patron types</label>
+            <div class="col-sm-10">
+              <div *ngFor="let patronType of patronTypes()">
+                <input id="ptty-{{patronType.id}}" type="checkbox" class="mr-1" [checked]="isPatronTypeChecked(patronType.id)"
+                  [disabled]="isPatronTypeDisabled(patronType.id)"
+                  [indeterminate]="isPatronTypeDisabled(patronType.id)"
+                  (click)="patronTypeClickEvent($event.target.checked, patronType.id)"> <span
+                  [ngClass]="isPatronTypeDisabled(patronType.id) ? 'text-muted' : ''">{{ patronType.name }}</span>
+                <div *ngIf="isPatronTypeChecked(patronType.id)" class="ml-3">
+                  <span translate>Circulation categories</span>:
+                  <ul class="d-inline list-inline mb-0">
+                    <li class="list-inline-item" *ngFor="let itemType of itemTypes()">
+                      <input id="ptty-{{patronType.id}}-itty-{{itemType.id}}"class="mr-1" type="checkbox" [checked]="isItemTypeChecked(patronType.id, itemType.id)"
+                        [disabled]="isItemTypeDisabled(patronType.id, itemType.id)"
+                        [indeterminate]="isItemTypeDisabled(patronType.id, itemType.id)"
+                        (click)="itemTypeClickEvent($event.target.checked, patronType.id, itemType.id)"> <span
+                        [ngClass]="isItemTypeDisabled(patronType.id, itemType.id) ? 'text-muted' : ''">{{ itemType.name }}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end: settings -->
         </div>
       </div>
     </fieldset>
     <!-- end: application section !-->
-
-    <div class="clearfix">
-      <div class="btn-group float-right" role="group" aria-label="Form Button">
-        <button class="btn btn-warning" (click)="onCancel($event)" translate>Cancel</button>
-        <button type="submit" class="btn btn-success" [disabled]="circulationForm.invalid" translate>Save</button>
-      </div>
-    </div>
   </form>
 </div>

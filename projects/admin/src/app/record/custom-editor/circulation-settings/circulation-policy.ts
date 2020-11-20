@@ -42,20 +42,21 @@ export class CirculationPolicy {
   settings: Array<any> = [];
 
   constructor(obj?: any) {
-    this.setDefault();
     if (obj) {
       this.update(obj);
+    } else {
+      this.setDefault();
     }
   }
 
   setDefault() {
-    this.allow_requests = true;
-    this.allow_checkout = true;
-    this.checkout_duration = 7;
-    this.number_of_days_after_due_date = 5;
-    this.number_of_days_before_due_date = 5;
-    this.number_renewals = 0;
-    this.reminder_fee_amount = 0;
+    this.allow_requests = this.getDefaultAllowRequests();
+    this.allow_checkout = this.getDefaultAllowCheckout();
+    this.checkout_duration = this.getDefaultCheckoutDuration();
+    this.number_of_days_after_due_date = this.getDefaultNumberOfDaysAfterDueDate();
+    this.number_of_days_before_due_date = this.getNumberOfDaysBeforeDueDate();
+    this.number_renewals = this.getDefaultNumberOfRenewals();
+    this.reminder_fee_amount = this.getDefaultReminderFeeAmount();
     this.policy_library_level = false;
     this.is_default = false;
     this.organisation = {
@@ -65,7 +66,35 @@ export class CirculationPolicy {
     this.settings = [];
   }
 
-  update(obj) {
+  update(obj: any) {
     Object.assign(this, obj);
+  }
+
+  public getDefaultAllowRequests() {
+    return true;
+  }
+
+  public getDefaultAllowCheckout() {
+    return true;
+  }
+
+  public getDefaultCheckoutDuration() {
+    return 7;
+  }
+
+  public getDefaultNumberOfDaysAfterDueDate(){
+    return 5;
+  }
+
+  public getNumberOfDaysBeforeDueDate() {
+    return 5;
+  }
+
+  public getDefaultNumberOfRenewals() {
+    return 0;
+  }
+
+  public getDefaultReminderFeeAmount() {
+    return 2;
   }
 }
