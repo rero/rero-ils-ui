@@ -45,6 +45,8 @@ import { PatronsTypeahead } from './class/typeahead/patrons-typeahead';
 import { TabOrderDirective } from './directives/tab-order.directive';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
+import { MenuSwitchLibraryComponent } from './menu/menu-switch-library/menu-switch-library.component';
+import { LibrarySwitchService } from './menu/menu-switch-library/service/library-switch.service';
 import { MenuComponent } from './menu/menu.component';
 import { MarcPipe } from './pipe/marc.pipe';
 import { NotesFormatPipe } from './pipe/notes-format.pipe';
@@ -53,6 +55,7 @@ import { BudgetsBriefViewComponent } from './record/brief-view/budgets-brief-vie
 import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policies-brief-view.component';
 import { CollectionBriefViewComponent } from './record/brief-view/collection-brief-view.component';
 import { DocumentsBriefViewComponent } from './record/brief-view/documents-brief-view/documents-brief-view.component';
+import { IllRequestsBriefViewComponent } from './record/brief-view/ill-requests-brief-view/ill-requests-brief-view.component';
 import { IssuesBriefViewComponent } from './record/brief-view/issues-brief-view/issues-brief-view.component';
 import { ItemTypesBriefViewComponent } from './record/brief-view/item-types-brief-view.component';
 import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/items-brief-view.component';
@@ -90,12 +93,14 @@ import {
 } from './record/detail-view/contribution-detail-view/corporate-bodies-detail-view/corporate-bodies-detail-view.component';
 import { PersonDetailViewComponent } from './record/detail-view/contribution-detail-view/person-detail-view/person-detail-view.component';
 import { DocumentDetailViewComponent } from './record/detail-view/document-detail-view/document-detail-view.component';
+import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
 import {
   DefaultHoldingItemComponent
 } from './record/detail-view/document-detail-view/holding/default-holding-item/default-holding-item.component';
 import {
   HoldingItemInCollectionComponent
 } from './record/detail-view/document-detail-view/holding/holding-item-in-collection/holding-item-in-collection.component';
+import { HoldingItemNoteComponent } from './record/detail-view/document-detail-view/holding/holding-item-note/holding-item-note.component';
 import { HoldingComponent } from './record/detail-view/document-detail-view/holding/holding.component';
 import {
   SerialHoldingItemComponent
@@ -108,6 +113,7 @@ import { HoldingDetailViewComponent } from './record/detail-view/holding-detail-
 import {
   SerialHoldingDetailViewComponent
 } from './record/detail-view/holding-detail-view/serial-holding-detail-view/serial-holding-detail-view.component';
+import { IllRequestDetailViewComponent } from './record/detail-view/ill-request-detail-view/ill-request-detail-view.component';
 import { ItemDetailViewComponent } from './record/detail-view/item-detail-view/item-detail-view.component';
 import { ItemTransactionComponent } from './record/detail-view/item-detail-view/item-transaction/item-transaction.component';
 import { ItemTransactionsComponent } from './record/detail-view/item-detail-view/item-transactions/item-transactions.component';
@@ -128,17 +134,12 @@ import { DocumentRecordSearchComponent } from './record/document-record-search/d
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { AppConfigService } from './service/app-config.service';
 import { AppInitService } from './service/app-init.service';
-import { LibrarySwitchService } from './service/library-switch.service';
 import { OrganisationService } from './service/organisation.service';
 import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-factory.service';
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
+import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageBoardComponent } from './widgets/frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
-import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
-import { IllRequestsBriefViewComponent } from './record/brief-view/ill-requests-brief-view/ill-requests-brief-view.component';
-import { IllRequestDetailViewComponent } from './record/detail-view/ill-request-detail-view/ill-request-detail-view.component';
-import { HoldingItemNoteComponent } from './record/detail-view/document-detail-view/holding/holding-item-note/holding-item-note.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -226,7 +227,8 @@ export function appInitFactory(appInitService: AppInitService) {
     IllRequestsBriefViewComponent,
     IllRequestDetailViewComponent,
     CustomShortcutHelpComponent,
-    HoldingItemNoteComponent
+    HoldingItemNoteComponent,
+    MenuSwitchLibraryComponent
   ],
   imports: [
     AppRoutingModule,

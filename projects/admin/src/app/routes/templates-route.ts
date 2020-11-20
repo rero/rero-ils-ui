@@ -124,7 +124,7 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
       data.visibility = 'private';
     }
     data.organisation = {
-      $ref: this._routeToolService.apiService.getRefEndpoint('organisations', user.library.organisation.pid)
+      $ref: this._routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation)
     };
     data.creator = {
       $ref: this._routeToolService.apiService.getRefEndpoint('patrons', user.pid)
@@ -142,7 +142,12 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
     const formOptions = jsonSchema.form;
     if (formOptions && formOptions.fieldMap === 'visibility') {
       if (!this._routeToolService.userService.user.isSystemLibrarian) {
-        field.templateOptions.disabled = true;
+        field.hooks = {
+          ...field.hooks,
+          afterContentInit: (f: FormlyFieldConfig) => {
+            f.templateOptions.disabled = true;
+          }
+        };
       }
     }
     return field;

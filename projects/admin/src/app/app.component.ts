@@ -22,7 +22,6 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { UserService } from '@rero/shared';
 import { AppRouterEventService } from './service/app-router-event.service';
 import { KeyboardShortcutsService } from './service/keyboard-shortcuts.service';
-import { NavigateService } from './service/navigate.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 
 @Component({
@@ -32,8 +31,14 @@ import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/cust
 })
 export class AppComponent implements OnInit, AfterViewInit {
 
-  get user() {
-    return this._userService.user;
+  /** User loaded */
+  get loaded() {
+    return this._userService.loaded;
+  }
+
+  /** Allowed access to admin interface */
+  get allowed() {
+    return this._userService.allowAdminInterfaceAddess;
   }
 
   /**
@@ -41,7 +46,6 @@ export class AppComponent implements OnInit, AfterViewInit {
    * @param _userService - UserService
    * @param _appRouterEventService - AppRouterEventService
    * @param _spinner - NgxSpinnerService
-   * @param _navigateService - NavigateService
    * @param _keyboardShortcutsService - KeyboardShortcutsService
    * @param _hotKeysService - HotkeysService,
    * @param _modalService - BsModalService
@@ -50,7 +54,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     private _userService: UserService,
     private _appRouterEventService: AppRouterEventService,
     private _spinner: NgxSpinnerService,
-    private _navigateService: NavigateService,
     private _keyboardShortcutsService: KeyboardShortcutsService,
     private _hotKeysService: HotkeysService,
     private _modalService: BsModalService
@@ -60,7 +63,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this._spinner.show();
     this._appRouterEventService.initializeEvents();
-    this._navigateService.initialize();
     this._keyboardShortcutsService.initializeShortcuts();
     this._spinner.hide();
   }

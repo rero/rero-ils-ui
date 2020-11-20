@@ -54,7 +54,7 @@ export class HoldingsComponent implements OnInit {
 
   /** Init */
   ngOnInit() {
-    const orgPid = this._userService.user.library.organisation.pid;
+    const orgPid = this._userService.user.currentOrganisation;
     const query = `document.pid:${this.documentPid} AND organisation.pid:${orgPid}`;
     const holdingRecordsRef = this._recordService.getRecords('holdings', query, 1, RecordService.MAX_REST_RESULTS_SIZE);
     const permissionsRef = this._recordPermissionService.getPermission('holdings');

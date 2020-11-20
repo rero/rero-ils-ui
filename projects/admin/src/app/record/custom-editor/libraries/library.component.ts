@@ -53,7 +53,7 @@ export class LibraryComponent implements OnInit {
     this.route.params.subscribe( (params) => {
       const loggedUser = this.userService.user;
       if (loggedUser) {
-        this.organisationPid = loggedUser.library.organisation.pid;
+        this.organisationPid = loggedUser.currentOrganisation;
       }
       if (params && params.pid) {
         this.recordService.getRecord('libraries', params.pid, 1).subscribe(record => {

@@ -91,29 +91,35 @@ export class AcquisitionOrderLinesRoute extends BaseRoute implements RouteInterf
     const formOptions = jsonSchema.form;
     if (formOptions && formOptions.fieldMap === 'acq_account') {
       field.type = 'select';
-      const user = this._routeToolService.userService.user;
-      const recordService = this._routeToolService.recordService;
-      const apiService = this._routeToolService.apiService;
-      const libraryPid = user.currentLibrary;
-      const query = `library.pid:${libraryPid}`;
-      field.templateOptions.options = recordService.getRecords(
-        'acq_accounts',
-        query, 1,
-        RecordService.MAX_REST_RESULTS_SIZE
-      ).pipe(
-        map((result: Record) => this._routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-        map(hits => {
-          return hits.map((hit: any) => {
-            return {
-              label: hit.metadata.name,
-              value: apiService.getRefEndpoint(
-                'acq_accounts',
-                hit.metadata.pid
-              )
-            };
-          });
-        })
-      );
+      field.hooks = {
+        ...field.hooks,
+        afterContentInit: (f: FormlyFieldConfig) => {
+          const user = this._routeToolService.userService.user;
+          const recordService = this._routeToolService.recordService;
+          const apiService = this._routeToolService.apiService;
+          const libraryPid = user.currentLibrary;
+          const query = `library.pid:${libraryPid}`;
+          f.templateOptions.options = recordService.getRecords(
+            'acq_accounts',
+            query, 1,
+            RecordService.MAX_REST_RESULTS_SIZE
+          ).pipe(
+            map((result: Record) => this._routeToolService
+              .recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+            map(hits => {
+              return hits.map((hit: any) => {
+                return {
+                  label: hit.metadata.name,
+                  value: apiService.getRefEndpoint(
+                    'acq_accounts',
+                    hit.metadata.pid
+                  )
+                };
+              });
+            })
+          );
+        }
+      };
     }
     return field;
   }

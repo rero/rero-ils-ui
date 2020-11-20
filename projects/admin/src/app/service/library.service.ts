@@ -61,12 +61,32 @@ export class LibraryService {
   }
 
   /**
-   * Get all order by column name
+   * Find all order by column name
+   * @param order - string, order name
+   * @return Observable
+   */
+  findAllOrderBy$(order: string = 'name') {
+    return this._query(undefined);
+  }
+
+  /**
+   * Find libraries by Pid and order by column name
+   * @param pids array of string
+   * @param order - string, order name
+   * @return Observable
+   */
+  findByLibrariesPidAndOrderBy$(pids: string[], order: string = 'name') {
+    return this._query('pid:' + pids.join(' OR pid:'));
+  }
+
+  /**
+   * Query
+   * @param query - any
    * @param order - string, order name
    */
-  allOrderBy$(order: string = 'name') {
+  private _query(query: any, order: string = 'name') {
     return this._recordService.getRecords(
-      LibraryService.resource, undefined, 1, RecordService.MAX_REST_RESULTS_SIZE,
+      LibraryService.resource, query, 1, RecordService.MAX_REST_RESULTS_SIZE,
       undefined, undefined, undefined, order
     );
   }

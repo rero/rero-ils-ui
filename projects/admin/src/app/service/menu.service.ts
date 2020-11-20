@@ -203,7 +203,7 @@ export class MenuService {
    * @return logged user organisation url for router link
    */
   private _myOrganisationRouterLink() {
-    return `/records/organisations/detail/${this._userService.user.library.organisation.pid}`;
+    return `/records/organisations/detail/${this._userService.user.organisation}`;
   }
 
   /**
@@ -211,7 +211,7 @@ export class MenuService {
    * @return organisation pid as a dictionary
    */
   private _myDocumentsQueryParams() {
-    return {organisation: this._userService.user.library.organisation.pid};
+    return {organisation: this._userService.user.organisation};
   }
 
   /**

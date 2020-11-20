@@ -184,7 +184,11 @@ export class ItemRequestComponent implements OnInit {
                   return new Promise((resolve) => {
                     const value = fc.value;
                     if (value.length > 2) {
-                      this._itemService.canRequest(this.itemPid, this.currentUser.library.pid, value).subscribe((result: any) => {
+                      this._itemService.canRequest(
+                        this.itemPid,
+                        this.currentUser.currentLibrary,
+                        value
+                      ).subscribe((result: any) => {
                         if (!result.can) {
                           const reasons = result.reasons.others || {'Not defined error': true};
                           this.canRequestMessage = Object.keys(reasons)[0];

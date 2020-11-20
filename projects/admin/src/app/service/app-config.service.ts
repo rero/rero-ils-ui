@@ -33,6 +33,8 @@ export class AppConfigService extends CoreConfigService {
 
   public sessionExpiredSeconds: number;
 
+  public librarySwitchCheckParamsUrl: string[];
+
   constructor() {
     super();
     this.production = environment.production;
@@ -44,6 +46,7 @@ export class AppConfigService extends CoreConfigService {
     this.adminRoles = environment.adminRoles;
     this.sessionExpiredSeconds = environment.sessionExpiredSeconds;
     this.translationsURLs = environment.translationsURLs;
+    this.librarySwitchCheckParamsUrl = environment.librarySwitchCheckParamsUrl;
   }
 
   public setSettings(settings: IContextSettings) {

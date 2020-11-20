@@ -30,7 +30,8 @@ export const environment = {
   translationsURLs: [
     '/assets/rero-ils-ui/admin/i18n/${lang}.json',
     '/api/translations/${lang}.json'
-  ]
+  ],
+  librarySwitchCheckParamsUrl: ['new', 'edit']
 };
 
 /*

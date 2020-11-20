@@ -62,10 +62,10 @@ export class CirculationPolicyComponent implements OnInit {
           this.circulationPolicyService
           .loadOrCreateCirculationPolicy(pid)
           .subscribe((circulation: CirculationPolicy) => {
-            circulation.organisation.$ref = this.apiService.getRefEndpoint('organisations', user.library.organisation.pid);
+            circulation.organisation.$ref = this.apiService.getRefEndpoint('organisations', user.currentOrganisation);
             this.circulationPolicy = circulation;
             // Load organisation
-            this.recordService.getRecord('organisations', user.library.organisation.pid)
+            this.recordService.getRecord('organisations', user.currentOrganisation)
             .subscribe(data => this.organisation = data.metadata);
             // Load all required elements
             this.circulationPolicyService.loadAllItemTypesPatronTypesCirculationPolicies().subscribe(

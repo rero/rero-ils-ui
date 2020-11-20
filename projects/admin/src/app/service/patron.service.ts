@@ -215,5 +215,4 @@ export class PatronService {
      .map(el => el.trim())      // trim all values
      .join(', ');               // join values
   }
-
 }

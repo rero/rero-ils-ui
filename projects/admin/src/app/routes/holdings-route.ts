@@ -89,33 +89,38 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
     const formOptions = jsonSchema.form;
     if (formOptions && formOptions.fieldMap === 'location') {
       field.type = 'select';
-      const user = this._routeToolService.userService.user;
-      const recordService = this._routeToolService.recordService;
-      const apiService = this._routeToolService.apiService;
-      const libraryPid = user.currentLibrary;
-      const query = `library.pid:${libraryPid}`;
-      recordService.getRecords(
-        'locations',
-        query, 1,
-        RecordService.MAX_REST_RESULTS_SIZE,
-        undefined,
-        undefined,
-        undefined,
-        'name'
-      ).pipe(
-        map((result: Record) => this._routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-        map(hits => {
-          return hits.map((hit: any) => {
-            return {
-              label: hit.metadata.name,
-              value: apiService.getRefEndpoint(
-                'locations',
-                hit.metadata.pid
-              )
-            };
-          });
-        })
-      ).subscribe(options => field.templateOptions.options = options);
+      field.hooks = {
+        ...field.hooks,
+        afterContentInit: (f: FormlyFieldConfig) => {
+          const user = this._routeToolService.userService.user;
+          const recordService = this._routeToolService.recordService;
+          const apiService = this._routeToolService.apiService;
+          const libraryPid = user.currentLibrary;
+          const query = `library.pid:${libraryPid}`;
+          f.templateOptions.options = recordService.getRecords(
+            'locations',
+            query, 1,
+            RecordService.MAX_REST_RESULTS_SIZE,
+            undefined,
+            undefined,
+            undefined,
+            'name'
+          ).pipe(
+            map((result: Record) => this._routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+            map(hits => {
+              return hits.map((hit: any) => {
+                return {
+                  label: hit.metadata.name,
+                  value: apiService.getRefEndpoint(
+                    'locations',
+                    hit.metadata.pid
+                  )
+                };
+              });
+            })
+          );
+        }
+      };
     }
     return field;
   }

@@ -19,11 +19,11 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
+import { User, UserService } from '@rero/shared';
 import { recordTestingService } from 'projects/admin/tests/utils';
-import { UserService } from '@rero/shared';
 import { of } from 'rxjs';
 import { AppModule } from '../app.module';
-import { LibrarySwitchService } from '../service/library-switch.service';
+import { LibrarySwitchMenuService } from './menu-switch-library/service/library-switch-menu.service';
 import { MenuComponent } from './menu.component';
 
 
@@ -31,12 +31,10 @@ describe('MenuComponent', () => {
   let component: MenuComponent;
   let fixture: ComponentFixture<MenuComponent>;
 
-  const libraryTestingSwitchService = jasmine.createSpyObj(
-    'LibrarySwitchService', ['generateMenu']);
-  libraryTestingSwitchService.entries = [{ entries: [] }];
-  libraryTestingSwitchService.onGenerate$ = of([]);
-  libraryTestingSwitchService.currentLibraryRecord$ = of({code: 1});
-
+  const librarySwitchMenuServiceSpy = jasmine.createSpyObj('LibrarySwitchMenuService', ['']);
+  librarySwitchMenuServiceSpy._user = new User({
+    roles: ['system_librarian']
+  });
   const userTestingService = jasmine.createSpyObj(
     'UserService', ['init']
   );
@@ -71,7 +69,7 @@ describe('MenuComponent', () => {
       providers: [
         { provide: RecordService, useValue: recordTestingService },
         { provide: UserService, useValue: userTestingService },
-        { provide: LibrarySwitchService, useValue: libraryTestingSwitchService }
+        { provide: LibrarySwitchMenuService, useValue: librarySwitchMenuServiceSpy },
       ]
     })
       .compileComponents();
