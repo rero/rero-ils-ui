@@ -26,5 +26,6 @@ export const environment = {
   translationsURLs: [
     'static/node_modules/@rero/rero-ils-ui/dist/admin/assets/rero-ils-ui/admin/i18n/${lang}.json',
     '/api/translations/${lang}.json'
-  ]
+  ],
+  librarySwitchCheckParamsUrl: ['new', 'edit']
 };

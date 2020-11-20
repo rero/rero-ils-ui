@@ -43,7 +43,7 @@ export class AcquisitionAccountsRoute extends BaseRoute implements RouteInterfac
               const user = this._routeToolService.userService.user;
               data.organisation = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(
-                  'organisations', user.library.organisation.pid
+                  'organisations', user.currentOrganisation
                 )
               };
               data.library = {

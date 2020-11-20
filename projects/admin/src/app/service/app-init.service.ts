@@ -17,8 +17,9 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageService, TranslateService } from '@rero/ng-core';
 import { LoggedUserService, SharedConfigService, User, UserService } from '@rero/shared';
+import { LibrarySwitchMenuService } from '../menu/menu-switch-library/service/library-switch-menu.service';
+import { LibrarySwitchService } from '../menu/menu-switch-library/service/library-switch.service';
 import { AppConfigService } from './app-config.service';
-import { LibrarySwitchService } from './library-switch.service';
 import { OrganisationService } from './organisation.service';
 import { TypeaheadFactoryService } from './typeahead-factory.service';
 
@@ -46,6 +47,7 @@ export class AppInitService {
     private _organisationService: OrganisationService,
     private _localeStorageService: LocalStorageService,
     private _librarySwitchService: LibrarySwitchService,
+    private _librarySwitchMenuService: LibrarySwitchMenuService,
     private _loggedUserService: LoggedUserService,
     private _sharedConfigService: SharedConfigService,
     private _typeaheadFactoryService: TypeaheadFactoryService
@@ -59,18 +61,20 @@ export class AppInitService {
       this._typeaheadFactoryService.init();
       this._userService.init();
       this._sharedConfigService.init();
+      this._librarySwitchMenuService.init();
       this._loggedUserService.load();
       this._loggedUserService.onLoggedUserLoaded$.subscribe((data: any) => {
         this._appConfigService.setSettings(data.settings);
         this.initTranslateService();
         // User is logged
         if (data.metadata) {
-          if (this._userService.user.adminInterfaceAccess) {
-            this._librarySwitchService.switch(data.metadata.library.pid);
-            this._organisationService.loadOrganisationByPid(
-              data.metadata.library.organisation.pid
-            );
+          if (this._userService.allowAdminInterfaceAddess) {
             this.initializeLocaleStorage();
+            const userLocale = this._localeStorageService.get(User.STORAGE_KEY);
+            this._organisationService.loadOrganisationByPid(
+              userLocale.libraries[0].organisation.pid
+            );
+            this._librarySwitchService.switch(userLocale.currentLibrary);
           }
         }
       });
@@ -94,18 +98,19 @@ export class AppInitService {
 
   /** Initialize locale storage */
   private initializeLocaleStorage() {
-    this._organisationService.onOrganisationLoaded.subscribe(() => {
-      const user = this._userService.user;
-      if (!this._localeStorageService.has(User.STORAGE_KEY)) {
+    const user = this._userService.user;
+    if (!this._localeStorageService.has(User.STORAGE_KEY)) {
+      user.setCurrentLibrary(user.libraries[0].pid);
+      this._localeStorageService.set(User.STORAGE_KEY, user);
+    } else {
+      const userLocal = this._localeStorageService.get(User.STORAGE_KEY);
+      if (userLocal.pid !== user.pid) {
+        user.setCurrentLibrary(user.libraries[0].pid);
         this._localeStorageService.set(User.STORAGE_KEY, user);
       } else {
-        const userLocal = this._localeStorageService.get(User.STORAGE_KEY);
-        if (userLocal.pid !== user.pid) {
-          this._localeStorageService.set(User.STORAGE_KEY, user);
-        }
         const locale = this._localeStorageService.get(User.STORAGE_KEY);
         user.setCurrentLibrary(locale.currentLibrary);
       }
-    });
+    }
   }
 }

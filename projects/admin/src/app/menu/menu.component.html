@@ -39,12 +39,10 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent" [collapse]="isCollapsed" [isAnimated]="true">
       <ng-core-menu class="mr-auto" [menu]="linksMenu"></ng-core-menu>
-      <!-- RIGHT MENU ENTRIES -->
-      <ng-core-menu *ngIf="isVisibleLibrarySwitchMenu"
-        class="userMenu"
-        [menu]="librariesSwitchMenu"
-        (clickItem)="changeLibrary($event)"
-      ></ng-core-menu>
+
+      <!-- Libraries switch menu -->
+      <admin-menu-swith-library></admin-menu-swith-library>
+
       <ng-core-menu [menu]="languagesMenu" (clickItem)="changeLang($event)"></ng-core-menu>
       <ng-core-menu [menu]="userMenu"></ng-core-menu>
     </div>

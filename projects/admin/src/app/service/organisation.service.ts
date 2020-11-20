@@ -65,7 +65,6 @@ export class OrganisationService {
       map((record: any) => this._record = record.metadata)
     )
     .subscribe((organisation: any) => {
-      this._record = organisation;
       this._onOrganisationLoaded.next(organisation);
     });
   }

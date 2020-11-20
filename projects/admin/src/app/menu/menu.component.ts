@@ -19,7 +19,6 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, LocalStorageService, RecordService, TranslateService as CoreTranslateService } from '@rero/ng-core';
 import { SearchBarConfigService, UserService } from '@rero/shared';
-import { LibrarySwitchService } from '../service/library-switch.service';
 import { MenuService } from '../service/menu.service';
 
 @Component({
@@ -37,16 +36,6 @@ export class MenuComponent implements OnInit {
   linksMenu: any;
 
   autocompleteQueryParams: any = { page: '1', size: '10' };
-
-  librariesSwitchMenu = {
-    navCssClass: 'navbar-nav',
-    dropdownMenuCssClass: 'dropdown-menu-right',
-    entries: [{
-      name: '',  // start with empty value, it will be changed when menu is generated
-      iconCssClass: 'fa fa-random',
-      entries: []
-    }]
-  };
 
   languagesMenu = {};
 
@@ -66,7 +55,6 @@ export class MenuComponent implements OnInit {
     private _configService: CoreConfigService,
     private _userService: UserService,
     private _recordService: RecordService,
-    private _librarySwitchService: LibrarySwitchService,
     private _localeStorageService: LocalStorageService,
     private _menuService: MenuService,
     private _searchBarConfigService: SearchBarConfigService
@@ -75,7 +63,7 @@ export class MenuComponent implements OnInit {
   ngOnInit() {
     this._initLinksMenu();
     const currentUser = this._userService.user;
-    this.autocompleteQueryParams.organisation = currentUser.library.organisation.pid;
+    this.autocompleteQueryParams.organisation = currentUser.organisation;
 
     // first call
     this._initLanguageMenu();
@@ -105,15 +93,10 @@ export class MenuComponent implements OnInit {
       true, this, undefined, this.maxLengthSuggestion
     );
 
-    this._recordService.getRecord('organisations', currentUser.library.organisation.pid)
+    this._recordService.getRecord('organisations', currentUser.organisation)
       .subscribe(organisation => {
         this.userMenu.entries[0].entries[0].href = `/${organisation.metadata.code}/`;
       });
-
-    // SWITCH LIBRARY MENU ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    this._librarySwitchService.generateMenu();
-    this._librarySwitchService.onGenerate$.subscribe((entries: any) => this.librariesSwitchMenu.entries[0].entries = entries);
-    this._librarySwitchService.currentLibraryRecord$.subscribe((library: any) => this.librariesSwitchMenu.entries[0].name = library.code);
   }
 
   /**
@@ -150,18 +133,6 @@ export class MenuComponent implements OnInit {
       }
     }
     this.languagesMenu = languagesMenu;
-  }
-
-  changeLibrary(item: { name: string, id: string }) {
-    this._librarySwitchService.switch(item.id);
-  }
-
-  /** Is the library switch menu should be displayed.
-   *  To be displayed, the current logged used must be allowed and the menu must contains more than one entry
-   *  @return `true if the menu should be display, `false` otherwise
-   */
-  get isVisibleLibrarySwitchMenu(): boolean {
-    return this._librarySwitchService.visible && (this._librarySwitchService.length > 1);
   }
 
   /**

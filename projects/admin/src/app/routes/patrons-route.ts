@@ -15,8 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
-import { JSONSchema7 } from '@rero/ng-core';
+import {
+  DetailComponent, EditorComponent, extractIdOnRef, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface
+} from '@rero/ng-core';
 import { map } from 'rxjs/operators';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-view.component';
@@ -125,18 +126,55 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
     //   If current logged user doesn't have the 'system_librarian' role, then the only library available
     //   should be the current_user.current_library. Set default value for library select the current_library URI
     //   and disable the field (so the user can't change/manage other libraries)
-    if (formOptions && formOptions.fieldMap === 'library') {
-      if (!this._routeToolService.userService.user.isLibrarian) {
-        if (!field.hasOwnProperty('templateOptions')) {
-          field.templateOptions = {};
+    if (formOptions && formOptions.fieldMap === 'libraries') {
+      field.type = 'select';
+      field.hooks = {
+        ...field.hooks,
+        afterContentInit: (f: FormlyFieldConfig) => {
+          const recordService = this._routeToolService.recordService;
+          const apiService = this._routeToolService.apiService;
+          const libraryPid = this._routeToolService.userService.user.getCurrentLibrary();
+          let query = '';
+          // Filter select for a librarian
+          if (!this._routeToolService.userService.user.isSystemLibrarian) {
+            // On edit record
+            if (f.formControl.value) {
+              const selectLibraryPid = extractIdOnRef(f.formControl.value);
+              query = `pid:${selectLibraryPid}`;
+              // If the current value is not the current librarian library
+              // Deactivating the select menu
+              if (selectLibraryPid !== libraryPid) {
+                f.templateOptions.disabled = true;
+              }
+            } else {
+              query = `pid:${libraryPid}`;
+            }
+          }
+          f.templateOptions.options = recordService.getRecords(
+            'libraries',
+            query, 1,
+            RecordService.MAX_REST_RESULTS_SIZE,
+            undefined,
+            undefined,
+            undefined,
+            'name'
+          ).pipe(
+            map((result: Record) => this._routeToolService
+              .recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+            map(hits => {
+              return hits.map((hit: any) => {
+                return {
+                  label: hit.metadata.name,
+                  value: apiService.getRefEndpoint(
+                    'libraries',
+                    hit.metadata.pid
+                  )
+                };
+              });
+            })
+          );
         }
-        const currentLibraryEndpoint = this._routeToolService.apiService.getRefEndpoint(
-          'libraries',
-          this._routeToolService.userService.user.getCurrentLibrary()
-        );
-        field.templateOptions.disabled = true;
-        field.fieldGroup[0].defaultValue = currentLibraryEndpoint;
-      }
+      };
     }
     return field;
   }

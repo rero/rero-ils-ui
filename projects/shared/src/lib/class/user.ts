@@ -31,7 +31,7 @@ export class User {
   email?: string;
   first_name: string;
   last_name: string;
-  library: Library;
+  libraries: Library[];
   name: string;
   phone: string;
   pid: string;
@@ -55,22 +55,17 @@ export class User {
     type: UserNoteType,
     content: string
   }>;
-  organisation_pid: string;
   items?: any[];
   displayPatronMode = true;
   currentLibrary: string;
+  currentOrganisation: string;
   circulation_informations: {
     messages: Array<{type: string, content: string}>,
     statistics: any;
   }
 
-  adminInterfaceAccess = false;
-
   /** Locale storage name key */
   static readonly STORAGE_KEY = 'user';
-
-  /** Locale storage for current library for user */
-  static readonly CURRENT_LIBRARY_STORAGE_KEY = 'user_current_library';
 
   /** Logged user API url */
   static readonly LOGGED_URL = '/patrons/logged_user?resolve';
@@ -99,6 +94,26 @@ export class User {
     return this.hasRole('patron');
   }
 
+  /**
+   * Organisation
+   * @return string, pid of current organisation
+   */
+  get organisation() {
+    return this.getCurrentOrganisation();
+  }
+
+  /**
+   * Set organisation
+   * @param organisation - string or null, pid of organisation
+   */
+  set organisation(organisation: null | string) {
+    this.currentOrganisation = organisation;
+  }
+
+  /**
+   * Constructor
+   * @param user - any
+   */
   constructor(user: any) {
     Object.assign(this, user);
   }
@@ -152,6 +167,23 @@ export class User {
   }
 
   /**
+   * Set current organisation
+   * @param pid - string
+   */
+  setCurrentOrganisation(pid: string) {
+    this.currentOrganisation = pid;
+    return this;
+  }
+
+  /**
+   * Get current organisation pid
+   * @return pid - string
+   */
+  getCurrentOrganisation() {
+    return this.currentOrganisation;
+  }
+
+  /**
    * Increment a circulation statistic for this user.
    * @param type - string: the statistic type (pending, request, loans, ...)
    * @param idx - number: the number to increment.
@@ -188,20 +220,6 @@ export class User {
   addCirculationMessage(message: {type: string, content: string}) {
     this.circulation_informations = this.circulation_informations || {messages: [], statistics: {}};
     this.circulation_informations.messages.push(message);
-  }
-
-  /**
-  * Set admin interface access
-  * @return User
-  */
-  setAdminInterfaceAccess(access: boolean) {
-    this.adminInterfaceAccess = access;
-    return this;
-  }
-
-  /** Get admin interface access */
-  getAdminInterfaceAccess() {
-    return this.adminInterfaceAccess;
   }
 }
 

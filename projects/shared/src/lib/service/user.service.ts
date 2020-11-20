@@ -37,6 +37,9 @@ export class UserService {
    */
   private _user: User = undefined;
 
+  /** Flag service loaded after loggedUser is done */
+  private _loaded = false;
+
   /**
    * Allowed access to admin interface
    */
@@ -56,6 +59,10 @@ export class UserService {
    */
   get user() {
     return this._user;
+  }
+
+  get loaded() {
+    return this._loaded;
   }
 
   /**
@@ -86,15 +93,18 @@ export class UserService {
   private _subscribeEvent() {
     this._loggedUserService.onLoggedUserLoaded$
       .pipe(map(data => {
-        return data.metadata ? data.metadata : {};
+        return data.metadata ? data.metadata : undefined;
       })).subscribe(user => {
-        if (user !== {}) {
+        if (user) {
+          const library = user.libraries[0];
           this._user = new User(user);
           this.user
-              .setCurrentLibrary(user.library.pid)
-              .setAdminInterfaceAccess(this._isAuthorizedAccess());
+              .setCurrentLibrary(library.pid)
+              .setCurrentOrganisation(library.organisation.pid);
+          this._allowAdminInterfaceAccess = this._isAuthorizedAccess();
           this._onUserLoaded.next(this._user);
         }
+        this._loaded = true;
       });
   }
 

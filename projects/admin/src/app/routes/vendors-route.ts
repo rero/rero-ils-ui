@@ -57,7 +57,7 @@ export class VendorsRoute extends BaseRoute implements RouteInterface {
               data.organisation = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(
                   'organisations',
-                  user.library.organisation.pid
+                  user.currentOrganisation
                 )
               };
               return data;

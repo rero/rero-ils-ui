@@ -97,7 +97,7 @@ export class CheckinComponent implements OnInit {
     this._itemsService.checkin(itemBarcode, this._loggedUser.getCurrentLibrary()).subscribe(
       item => {
         // TODO: remove this when policy will be in place
-        if (item === null || item.location.organisation.pid !== this._loggedUser.library.organisation.pid) {
+        if (item === null || item.location.organisation.pid !== this._loggedUser.getCurrentOrganisation()) {
           this._toastService.error(
             this._translate.instant('Item or patron not found!'),
             this._translate.instant('Checkin')
@@ -195,7 +195,7 @@ export class CheckinComponent implements OnInit {
             if (
               patron !== null &&
               patron.organisation.pid !==
-                this._loggedUser.library.organisation.pid
+                this._loggedUser.getCurrentOrganisation()
             ) {
               this._toastService.warning(
                 this._translate.instant('Patron not found!'),
