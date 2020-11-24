@@ -23,14 +23,9 @@ import { PatronService } from '../../../service/patron.service';
 })
 export class PickupComponent implements OnInit {
 
-  /**
-   * Loans
-   */
+  /** Loans */
   loans: [];
-
-  /**
-   * Is loading
-   */
+  /** is the component is loading */
   isLoading = false;
 
   /**
@@ -39,9 +34,7 @@ export class PickupComponent implements OnInit {
    */
   constructor(private _patronService: PatronService) { }
 
-  /**
-   * Init
-   */
+  /** OnInit hook */
   ngOnInit() {
     this._patronService.currentPatron$.subscribe(patron => {
       if (patron) {
