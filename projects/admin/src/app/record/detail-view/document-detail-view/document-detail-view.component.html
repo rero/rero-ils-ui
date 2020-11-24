@@ -228,8 +228,8 @@
             <ng-container *ngIf="record.metadata.seriesStatement">
               <ng-container *ngFor="let serie of getStatement(record.metadata.seriesStatement); first as isFirst; let i = index">
                 <dt class="col-sm-4 offset-sm-2 offset-md-0">
-                  <ng-container *ngIf="isFirst; else empty" translate>
-                    <span id="doc-series-statement-label">Series statement</span>
+                  <ng-container *ngIf="isFirst; else empty">
+                    <span id="doc-series-statement-label" translate>Series statement</span>
                   </ng-container>
                   <ng-template #empty>
                     &nbsp;
@@ -247,7 +247,7 @@
                 Mode of issuance
               </dt>
               <dd id="doc-issuance" [ngClass]="ddCssClass">
-                {{ record.metadata.issuance.main_type }} / {{ record.metadata.issuance.subtype }}
+                {{ record.metadata.issuance.main_type | translate}} / {{ record.metadata.issuance.subtype }}
               </dd>
             </ng-container>
 
@@ -370,7 +370,9 @@
                   Colors
                 </dt>
                 <dd id="doc-colors" [ngClass]="ddCssClass">
-                  {{ colors.join(", ") }}
+                  <ng-container *ngFor="let color of colors; last as isLast">
+                    {{ color | translate }}<ng-container *ngIf="!isLast">, </ng-container>
+                  </ng-container>
                 </dd>
               </ng-container>
             </ng-container>

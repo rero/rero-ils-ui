@@ -29,8 +29,9 @@ describe('FrontpageComponent', () => {
   let fixture: ComponentFixture<FrontpageComponent>;
 
   const userService = jasmine.createSpyObj(
-    'UserService', ['']
+    'UserService', ['init']
   );
+  userService.init.and.returnValue(null);
   userService.user =  {
     first_name: 'John',
     last_name: 'Doe',

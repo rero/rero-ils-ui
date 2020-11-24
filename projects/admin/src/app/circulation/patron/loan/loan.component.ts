@@ -32,28 +32,23 @@ export class LoanComponent implements OnInit, OnDestroy {
 
   /** Search text (barcode) entered in search input */
   public searchText = '';
-
   /** Current patron */
   public patron: User;
-
   /** Is loading */
   public isLoading = false;
-
   /** List of checked out items */
   public checkedOutItems = [];
-
   /** List of checked in items */
   public checkedInItems = [];
-
   /** Focus attribute of the search input */
   searchInputFocus = false;
-
   /** Library PID of the logged user */
   currentLibraryPid: string;
 
+  /** ready to pickup items */
+  private _pickupItems = [];
   /** Observable subscription */
   private _subscription = new Subscription();
-
   /** checkout list sort criteria */
   private _sortCriteria = '-transaction_date';
 
@@ -79,18 +74,26 @@ export class LoanComponent implements OnInit, OnDestroy {
       if (patron) {
         this.isLoading = true;
         this.patron.displayPatronMode = true;
-        this._patronService.getItems(patron.pid, this._sortCriteria).subscribe(items => {
-          // items is an array of brief item data (pid, barcode). For each one, we need to
-          // call the detail item service to get full data about it
-          items.map((item: any) => item.loading = true);
-          this.checkedOutItems = items;
-          this.isLoading = false;
 
-          // for each checkedOutElement call the detail item service.
-          items.forEach((data: any, index) => {
-            this._patronService.getItem(data.barcode).subscribe(item => items[index] = item);
-          });
-        });
+        const loanedItems$ = this._patronService.getItems(patron.pid, this._sortCriteria);
+        const pickupItems$ = this._patronService.getItemsPickup(patron.pid);
+        forkJoin([loanedItems$, pickupItems$]).subscribe(
+          ([loanedItems, pickupItems]) => {
+            // loanedItems is an array of brief item data (pid, barcode). For each one, we need to
+            // call the detail item service to get full data about it
+            loanedItems.map((item: any) => item.loading = true);
+            this.checkedOutItems = loanedItems;
+            this.isLoading = false;
+            // for each checkedOutElement call the detail item service.
+            loanedItems.forEach((data: any, index) => {
+              this._patronService.getItem(data.barcode).subscribe(item => loanedItems[index] = item);
+            });
+
+            // we need to know which items are ready to pickup to decrement the counter if a checkout
+            // operation is done on one of this items.
+            this._pickupItems = pickupItems;
+          }, error => {}
+        );
       }
     }));
     this.currentLibraryPid = this._userService.user.getCurrentLibrary();
@@ -217,6 +220,12 @@ export class LoanComponent implements OnInit, OnDestroy {
               this.checkedOutItems.unshift(newItem);
               this.checkedInItems = this.checkedInItems.filter(currItem => currItem.pid !== newItem.pid);
               this.patron.incrementCirculationStatistic('loans');
+              // check if items was ready to pickup. if yes, then we need to decrement the counter
+              const idx = this._pickupItems.findIndex(item => item.metadata.item_pid.value === newItem.pid);
+              if (idx > -1) {
+                this._pickupItems.splice(idx, 1);
+                this.patron.decrementCirculationStatistic('pickup');
+              }
               break;
             }
             case ItemAction.extend_loan: {

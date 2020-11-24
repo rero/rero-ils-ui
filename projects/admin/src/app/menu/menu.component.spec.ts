@@ -38,8 +38,9 @@ describe('MenuComponent', () => {
   libraryTestingSwitchService.currentLibraryRecord$ = of({code: 1});
 
   const userTestingService = jasmine.createSpyObj(
-    'UserService', ['']
+    'UserService', ['init']
   );
+  userTestingService.init.and.returnValue(null);
 
   userTestingService.user = {
     first_name: 'John',
