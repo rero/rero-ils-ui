@@ -78,6 +78,10 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
               if (record.blocked === false) {
                 delete record.blocked_note;
               }
+              // Clean-up 'patron' data from record if the patron doesn't have the 'patron' role
+              if (!record.roles.includes('patron') && 'patron' in record) {
+                delete record.patron;
+              }
               return record;
             },
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
