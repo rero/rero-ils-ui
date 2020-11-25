@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
@@ -25,7 +25,7 @@ describe('PersonDetailViewComponent', () => {
   let component: PersonDetailViewComponent;
   let fixture: ComponentFixture<PersonDetailViewComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         PersonDetailViewComponent

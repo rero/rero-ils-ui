@@ -16,7 +16,7 @@
  */
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { CirculationModule } from '../../circulation.module';
@@ -27,7 +27,7 @@ describe('ChangePasswordFormComponent', () => {
   let component: ChangePasswordFormComponent;
   let fixture: ComponentFixture<ChangePasswordFormComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),

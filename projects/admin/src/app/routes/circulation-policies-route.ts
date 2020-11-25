@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { DetailComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
+import { DetailComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { RoleGuard } from '../guard/role.guard';
 import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-policies-brief-view.component';
@@ -38,7 +38,7 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchComponent },
+        { path: '', component: RecordSearchPageComponent },
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: CirculationPolicyComponent, canActivate: [CanUpdateGuard] },
         { path: 'new', component: CirculationPolicyComponent, canActivate: [RoleGuard], data: { roles: ['system_librarian'] } }

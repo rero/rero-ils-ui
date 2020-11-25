@@ -18,7 +18,7 @@
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { LOCALE_ID } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppModule } from '../../../../app.module';
 import { ExceptionDatesListComponent } from './exception-dates-list.component';
@@ -27,7 +27,7 @@ describe('ExceptionDatesListComponent', () => {
   let component: ExceptionDatesListComponent;
   let fixture: ComponentFixture<ExceptionDatesListComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         AppModule,

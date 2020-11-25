@@ -16,8 +16,7 @@
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DetailComponent, RecordService, RouteInterface } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
-import { JSONSchema7 } from 'json-schema';
+import { Record, JSONSchema7 } from '@rero/ng-core';
 import { map } from 'rxjs/operators';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { HoldingEditorComponent } from '../record/custom-editor/holding-editor/holding-editor.component';

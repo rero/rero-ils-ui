@@ -28,7 +28,7 @@ describe('IdAttributePipe', () => {
       ]
     });
 
-    idAttributePipe = TestBed.get(IdAttributePipe);
+    idAttributePipe = TestBed.inject(IdAttributePipe);
   });
 
   it('create an instance', () => {

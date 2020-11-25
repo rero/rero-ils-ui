@@ -17,7 +17,7 @@
 
 import { DatePipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordModule } from '@rero/ng-core';
@@ -37,7 +37,7 @@ describe('PersonBriefComponent', () => {
   let component: PersonBriefComponent;
   let fixture: ComponentFixture<PersonBriefComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         PersonBriefComponent,

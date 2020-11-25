@@ -28,7 +28,7 @@ describe('LibraryFormService', () => {
   }));
 
   it('should be created', () => {
-    const service: LibraryFormService = TestBed.get(LibraryFormService);
+    const service: LibraryFormService = TestBed.inject(LibraryFormService);
     expect(service).toBeTruthy();
   });
 });

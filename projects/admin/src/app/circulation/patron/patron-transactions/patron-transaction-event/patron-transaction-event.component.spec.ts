@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CirculationModule } from '../../../circulation.module';
 import { PatronTransactionEventComponent } from './patron-transaction-event.component';
@@ -8,7 +8,7 @@ describe('PatronTransactionEventComponent', () => {
   let component: PatronTransactionEventComponent;
   let fixture: ComponentFixture<PatronTransactionEventComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),

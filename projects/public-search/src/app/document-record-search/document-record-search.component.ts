@@ -17,7 +17,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RecordSearchComponent, RecordSearchService, RecordService, SearchResult } from '@rero/ng-core';
+import { RecordSearchPageComponent, RecordSearchService, RecordService, SearchResult } from '@rero/ng-core';
 import { AppConfigService } from '../app-config.service';
 import { RouteFactoryService } from '../routes/route-factory.service';
 
@@ -25,7 +25,7 @@ import { RouteFactoryService } from '../routes/route-factory.service';
   selector: 'public-search-document-record-search',
   templateUrl: './document-record-search.component.html'
 })
-export class DocumentRecordSearchComponent extends RecordSearchComponent implements OnInit {
+export class DocumentRecordSearchComponent extends RecordSearchPageComponent implements OnInit {
 
   /** Base url */
   private _baseUrl: string;

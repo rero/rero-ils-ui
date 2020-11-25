@@ -37,7 +37,7 @@ describe('Pipe: ContributionType', () => {
         { provide: SharedConfigService, useValue: sharedConfigServiceSpy }
       ]
     });
-    contributionTypePipe = TestBed.get(ContributionTypePipe);
+    contributionTypePipe = TestBed.inject(ContributionTypePipe);
   });
 
   it('create an instance', () => {

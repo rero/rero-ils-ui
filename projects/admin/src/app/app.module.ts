@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -24,9 +24,9 @@ import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
 import { FormlyModule } from '@ngx-formly/core';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import {
-  CoreConfigService, RecordModule, RemoteTypeaheadService, TranslateLoader, TranslateService, TruncateTextPipe
+  CoreConfigService, LocalStorageService, RecordModule, RemoteTypeaheadService, TranslateLoader, TranslateService, TruncateTextPipe
 } from '@rero/ng-core';
-import { MainTitlePipe, SharedModule } from '@rero/shared';
+import { LoggedUserService, MainTitlePipe, SharedConfigService, SharedModule, UserService } from '@rero/shared';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -128,7 +128,9 @@ import { DocumentRecordSearchComponent } from './record/document-record-search/d
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { AppConfigService } from './service/app-config.service';
 import { AppInitService } from './service/app-init.service';
-import { typeaheadToken } from './service/typeahead-factory.service';
+import { LibrarySwitchService } from './service/library-switch.service';
+import { OrganisationService } from './service/organisation.service';
+import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-factory.service';
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageBoardComponent } from './widgets/frontpage/frontpage-board/frontpage-board.component';
@@ -237,7 +239,8 @@ export function appInitFactory(appInitService: AppInitService) {
     TranslateModule.forRoot({
       loader: {
         provide: BaseTranslateLoader,
-        useClass: TranslateLoader
+        useClass: TranslateLoader,
+        deps: [CoreConfigService, HttpClient]
       }
     }),
     TypeaheadModule,
@@ -248,7 +251,18 @@ export function appInitFactory(appInitService: AppInitService) {
     {
       provide: APP_INITIALIZER,
       useFactory: appInitFactory,
-      deps: [AppInitService],
+      deps: [
+        AppInitService,
+        UserService,
+        AppConfigService,
+        TranslateService,
+        OrganisationService,
+        LocalStorageService,
+        LibrarySwitchService,
+        LoggedUserService,
+        SharedConfigService,
+        TypeaheadFactoryService
+      ],
       multi: true
     },
     {
@@ -335,4 +349,4 @@ export function appInitFactory(appInitService: AppInitService) {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

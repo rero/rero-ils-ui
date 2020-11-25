@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { formatDate } from '@angular/common';
-import { DetailComponent, EditorComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
+import { DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { AcquisitionOrderBriefViewComponent } from '../record/brief-view/acquisition-order-brief-view.component';
 import {
@@ -39,7 +39,7 @@ export class AcquisitionOrdersRoute extends BaseRoute implements RouteInterface 
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchComponent },
+        { path: '', component: RecordSearchPageComponent },
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: EditorComponent, canActivate: [CanUpdateGuard] },
         { path: 'new', component: EditorComponent }

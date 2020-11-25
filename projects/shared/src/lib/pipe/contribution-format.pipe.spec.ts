@@ -93,8 +93,8 @@ describe('Pipe: ContributionFormate', () => {
         TranslateService
       ]
     });
-    contributionFormatPipe = TestBed.get(ContributionFormatPipe);
-    translateService = TestBed.get(TranslateService);
+    contributionFormatPipe = TestBed.inject(ContributionFormatPipe);
+    translateService = TestBed.inject(TranslateService);
   });
 
   it('create an instance', () => {

@@ -16,7 +16,7 @@
  */
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppModule } from '../../../../app.module';
 import { ResourceComponent } from './resource.component';
@@ -25,7 +25,7 @@ describe('ResourceComponent', () => {
   let component: ResourceComponent;
   let fixture: ComponentFixture<ResourceComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),

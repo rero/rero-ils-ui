@@ -43,7 +43,7 @@ describe('Service: LoggedUser', () => {
         { provide: UserApiService, useValue: userApiServiceSpy }
       ]
     });
-    loggedUserService = TestBed.get(LoggedUserService);
+    loggedUserService = TestBed.inject(LoggedUserService);
   });
 
   it('should create a logged user service', () => {

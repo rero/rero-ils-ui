@@ -37,7 +37,7 @@ describe('RouteFactoryService', () => {
         TranslateModule.forRoot()
       ]
     });
-    service = TestBed.get(RouteFactoryService);
+    service = TestBed.inject(RouteFactoryService);
   });
 
   it('should be created', () => {

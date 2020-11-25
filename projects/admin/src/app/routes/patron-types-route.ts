@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { DetailComponent, EditorComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
+import { DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { RoleGuard } from '../guard/role.guard';
 import { PatronTypesBriefViewComponent } from '../record/brief-view/patron-types-brief-view.component';
@@ -38,7 +38,7 @@ export class PatronTypesRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchComponent },
+        { path: '', component: RecordSearchPageComponent },
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: EditorComponent, canActivate: [CanUpdateGuard] },
         { path: 'new', component: EditorComponent, canActivate: [RoleGuard], data: { roles: ['system_librarian'] } }

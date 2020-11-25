@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { DetailComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
+import { DetailComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { ContributionBriefComponent } from '@rero/shared';
 import { ContributionDetailViewComponent } from '../record/detail-view/contribution-detail-view/contribution-detail-view.component';
@@ -33,7 +33,7 @@ export class CorporateBodiesRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchComponent },
+        { path: '', component: RecordSearchPageComponent },
         { path: 'detail/:pid', component: DetailComponent }
       ],
       data: {

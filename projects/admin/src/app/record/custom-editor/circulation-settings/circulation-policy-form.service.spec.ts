@@ -29,7 +29,7 @@ describe('CirculationPolicyFormService', () => {
   }));
 
   it('should be created', () => {
-    const service: CirculationPolicyFormService = TestBed.get(CirculationPolicyFormService);
+    const service: CirculationPolicyFormService = TestBed.inject(CirculationPolicyFormService);
     expect(service).toBeTruthy();
   });
 });

@@ -34,7 +34,7 @@ describe('CirculationPolicyService', () => {
   }));
 
   it('should be created', () => {
-    const service: CirculationPolicyService = TestBed.get(CirculationPolicyService);
+    const service: CirculationPolicyService = TestBed.inject(CirculationPolicyService);
     expect(service).toBeTruthy();
   });
 });

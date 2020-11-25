@@ -31,7 +31,7 @@ describe('KeyboardShortutsService', () => {
   }));
 
   it('should be created', () => {
-    const service: KeyboardShortcutsService = TestBed.get(KeyboardShortcutsService);
+    const service: KeyboardShortcutsService = TestBed.inject(KeyboardShortcutsService);
     expect(service).toBeTruthy();
   });
 });

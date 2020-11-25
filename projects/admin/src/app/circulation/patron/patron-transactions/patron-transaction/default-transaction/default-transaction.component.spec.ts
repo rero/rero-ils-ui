@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { DefaultTransactionComponent } from './default-transaction.component';
 
 describe('DefaultTransactionComponent', () => {
   let component: DefaultTransactionComponent;
   let fixture: ComponentFixture<DefaultTransactionComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DefaultTransactionComponent ]
     })

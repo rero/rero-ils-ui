@@ -23,7 +23,7 @@ describe('RouteCollectionService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: RouteCollectionService = TestBed.get(RouteCollectionService);
+    const service: RouteCollectionService = TestBed.inject(RouteCollectionService);
     expect(service).toBeTruthy();
   });
 });

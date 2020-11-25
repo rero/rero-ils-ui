@@ -30,7 +30,7 @@ describe('ResourcePermissionService', () => {
   }));
 
   it('should be created', () => {
-    const service: RecordPermissionService = TestBed.get(RecordPermissionService);
+    const service: RecordPermissionService = TestBed.inject(RecordPermissionService);
     expect(service).toBeTruthy();
   });
 });

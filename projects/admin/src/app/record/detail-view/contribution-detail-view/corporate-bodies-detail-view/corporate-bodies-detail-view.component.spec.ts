@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CorporateBodiesDetailViewComponent } from './corporate-bodies-detail-view.component';
 
@@ -23,7 +23,7 @@ describe('CorporateBodiesDetailViewComponent', () => {
   let component: CorporateBodiesDetailViewComponent;
   let fixture: ComponentFixture<CorporateBodiesDetailViewComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         CorporateBodiesDetailViewComponent

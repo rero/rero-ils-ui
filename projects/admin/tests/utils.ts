@@ -50,9 +50,10 @@ userTestingService.user =  {
 };
 
 export const patronTestingService = jasmine.createSpyObj(
-  'PatronService', ['getItems', 'currentPatron$']
+  'PatronService', ['getItems', 'currentPatron$', 'getItemsPickup']
 );
 patronTestingService.getItems.and.returnValue(of([]));
 patronTestingService.currentPatron$ = of({
   pid: '1'
 });
+patronTestingService.getItemsPickup.and.returnValue(of([]));

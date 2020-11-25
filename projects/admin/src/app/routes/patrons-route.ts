@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { DetailComponent, EditorComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
-import { JSONSchema7 } from 'json-schema';
+import { DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { JSONSchema7 } from '@rero/ng-core';
 import { map } from 'rxjs/operators';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-view.component';
@@ -39,7 +39,7 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchComponent },
+        { path: '', component: RecordSearchPageComponent },
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: EditorComponent, canActivate: [CanUpdateGuard] },
         { path: 'new', component: EditorComponent }

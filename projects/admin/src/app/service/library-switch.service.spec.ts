@@ -31,7 +31,7 @@ describe('LibrarySwitchService', () => {
   }));
 
   it('should be created', () => {
-    const service: LibrarySwitchService = TestBed.get(LibrarySwitchService);
+    const service: LibrarySwitchService = TestBed.inject(LibrarySwitchService);
     expect(service).toBeTruthy();
   });
 });

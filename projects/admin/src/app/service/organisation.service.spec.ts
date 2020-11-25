@@ -30,7 +30,7 @@ describe('OrganisationService', () => {
   }));
 
   it('should be created', () => {
-    const service: OrganisationService = TestBed.get(OrganisationService);
+    const service: OrganisationService = TestBed.inject(OrganisationService);
     expect(service).toBeTruthy();
   });
 });

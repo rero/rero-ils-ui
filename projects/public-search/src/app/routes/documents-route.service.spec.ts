@@ -28,7 +28,7 @@ describe('DocumentRouteService', () => {
         TranslateModule.forRoot()
       ]
     });
-    service = TestBed.get(DocumentsRouteService);
+    service = TestBed.inject(DocumentsRouteService);
   });
 
   it('should be created', () => {
