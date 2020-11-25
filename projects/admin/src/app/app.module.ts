@@ -138,6 +138,7 @@ import { HoldingDetailComponent } from './record/detail-view/document-detail-vie
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { IllRequestsBriefViewComponent } from './record/brief-view/ill-requests-brief-view/ill-requests-brief-view.component';
 import { IllRequestDetailViewComponent } from './record/detail-view/ill-request-detail-view/ill-request-detail-view.component';
+import { HoldingItemNoteComponent } from './record/detail-view/document-detail-view/holding/holding-item-note/holding-item-note.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -224,7 +225,8 @@ export function appInitFactory(appInitService: AppInitService) {
     CorporateBodiesDetailViewComponent,
     IllRequestsBriefViewComponent,
     IllRequestDetailViewComponent,
-    CustomShortcutHelpComponent
+    CustomShortcutHelpComponent,
+    HoldingItemNoteComponent
   ],
   imports: [
     AppRoutingModule,

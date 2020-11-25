@@ -28,7 +28,6 @@ export class HoldingItemInCollectionComponent implements OnInit {
 
   /** Item pid */
   @Input() itemPid: string;
-
   /** CSS Class for div element */
   @Input() class: string;
 
@@ -39,9 +38,11 @@ export class HoldingItemInCollectionComponent implements OnInit {
    * Constructor
    * @param _recordService - RecordService
    */
-  constructor(private _recordService: RecordService) { }
+  constructor(
+    private _recordService: RecordService
+  ) { }
 
-  /** Init */
+  /** OnInit hook */
   ngOnInit() {
     this.isItemInCollection(this.itemPid);
   }
@@ -62,9 +63,9 @@ export class HoldingItemInCollectionComponent implements OnInit {
       'title'
     ).pipe(
       map((result: any) => {
-        return this._recordService.totalHits(result.hits.total) === 0
-        ? []
-        : result.hits.hits;
+        return (this._recordService.totalHits(result.hits.total) === 0)
+          ? []
+          : result.hits.hits;
       })
     ).subscribe(collections => this.collections = collections);
   }
