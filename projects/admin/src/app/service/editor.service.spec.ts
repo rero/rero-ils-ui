@@ -47,7 +47,7 @@ describe('EditorService', () => {
   }));
 
   beforeEach(() => {
-    editorService = TestBed.get(EditorService);
+    editorService = TestBed.inject(EditorService);
   });
 
   it('should be created', () => {

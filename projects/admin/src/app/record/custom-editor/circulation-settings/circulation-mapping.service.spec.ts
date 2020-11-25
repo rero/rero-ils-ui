@@ -23,7 +23,7 @@ describe('CirculationMappingService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: CirculationMappingService = TestBed.get(CirculationMappingService );
+    const service: CirculationMappingService = TestBed.inject(CirculationMappingService );
     expect(service).toBeTruthy();
   });
 });

@@ -17,7 +17,7 @@
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { LOCALE_ID } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { AppModule } from '../../../../app.module';
@@ -27,7 +27,7 @@ describe('ExceptionDatesEditComponent', () => {
   let component: ExceptionDatesEditComponent;
   let fixture: ComponentFixture<ExceptionDatesEditComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         AppModule,

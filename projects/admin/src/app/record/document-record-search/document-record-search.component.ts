@@ -17,13 +17,13 @@
 
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SearchResult, RecordSearchComponent, RecordSearchService, RecordService } from '@rero/ng-core';
+import { SearchResult, RecordSearchPageComponent, RecordSearchService, RecordService } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-document-record-search',
   templateUrl: './document-record-search.component.html'
 })
-export class DocumentRecordSearchComponent extends RecordSearchComponent implements OnInit {
+export class DocumentRecordSearchComponent extends RecordSearchPageComponent implements OnInit {
 
   /** Base url */
   private _baseUrl: string;

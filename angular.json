@@ -14,27 +14,19 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "preserveSymlinks": true,
-            "outputPath": "dist/admin",
+            "outputPath": "build/dist/admin",
             "index": "projects/admin/src/index.html",
             "main": "projects/admin/src/main.ts",
             "polyfills": "projects/admin/src/polyfills.ts",
             "tsConfig": "projects/admin/tsconfig.app.json",
-            "aot": false,
+            "aot": true,
             "assets": [
               "projects/admin/src/assets"
             ],
             "styles": [
-              "node_modules/bootstrap/scss/bootstrap.scss",
-              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
-              "node_modules/font-awesome/scss/font-awesome.scss",
               "projects/admin/src/app/scss/styles.scss"
             ],
-            "scripts": [
-              "node_modules/jquery/dist/jquery.js",
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              }
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -47,9 +39,7 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": false,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -57,8 +47,12 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
+                  "maximumWarning": "2.5mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             }
@@ -90,9 +84,6 @@
             "karmaConfig": "projects/admin/karma.conf.js",
             "assets": [],
             "styles": [
-              "node_modules/bootstrap/scss/bootstrap.scss",
-              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
-              "node_modules/font-awesome/scss/font-awesome.scss",
               "projects/admin/src/app/scss/styles.scss"
             ],
             "scripts": []
@@ -136,19 +127,17 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "preserveSymlinks": true,
-            "outputPath": "dist/public-search",
+            "outputPath": "build/dist/public-search",
             "index": "projects/public-search/src/index.html",
             "main": "projects/public-search/src/main.ts",
             "polyfills": "projects/public-search/src/polyfills.ts",
             "tsConfig": "projects/public-search/tsconfig.app.json",
-            "aot": false,
+            "aot": true,
             "assets": [
               "projects/public-search/src/favicon.ico",
               "projects/public-search/src/assets"
             ],
-            "styles": [
-              "projects/public-search/src/styles.css"
-            ],
+            "styles": [],
             "scripts": []
           },
           "configurations": {
@@ -162,9 +151,7 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": false,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -174,6 +161,10 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             }
@@ -205,9 +196,7 @@
             "tsConfig": "projects/public-search/tsconfig.spec.json",
             "karmaConfig": "projects/public-search/karma.conf.js",
             "assets": [],
-            "styles": [
-              "projects/public-search/src/styles.css"
-            ],
+            "styles": [],
             "scripts": []
           }
         },
@@ -248,16 +237,14 @@
         "build": {
           "builder": "ngx-build-plus:build",
           "options": {
-            "outputPath": "dist/search-bar",
+            "outputPath": "build/dist/search-bar",
             "index": "projects/search-bar/src/index.html",
             "main": "projects/search-bar/src/main.ts",
             "polyfills": "projects/search-bar/src/polyfills.ts",
             "tsConfig": "projects/search-bar/tsconfig.app.json",
             "aot": false,
             "assets": [],
-            "styles": [
-              "projects/search-bar/src/styles.css"
-            ],
+            "styles": [],
             "scripts": []
           },
           "configurations": {
@@ -271,7 +258,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": false,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -338,10 +324,15 @@
       "prefix": "shared",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/shared/tsconfig.lib.json",
             "project": "projects/shared/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/shared/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {

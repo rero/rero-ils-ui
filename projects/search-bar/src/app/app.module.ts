@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -23,7 +23,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { RecordModule, TranslateLoader } from '@rero/ng-core';
+import { CoreConfigService, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { SearchBarComponent } from 'projects/public-search/src/app/search-bar/search-bar.component';
@@ -51,6 +51,7 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
       loader: {
         provide: BaseTranslateLoader,
         useClass: TranslateLoader,
+        deps: [CoreConfigService, HttpClient]
       },
       isolate: false
     }),

@@ -16,7 +16,7 @@
  */
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { Nl2brPipe, RecordModule } from '@rero/ng-core';
 import { HoldingDetailComponent } from './holding-detail.component';
@@ -26,7 +26,7 @@ describe('HoldingDetailComponent', () => {
   let component: HoldingDetailComponent;
   let fixture: ComponentFixture<HoldingDetailComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ HoldingDetailComponent ],
       imports: [

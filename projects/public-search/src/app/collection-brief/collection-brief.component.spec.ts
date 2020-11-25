@@ -16,7 +16,7 @@
  */
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
@@ -30,7 +30,7 @@ describe('CollectionBriefComponent', () => {
   let component: CollectionBriefComponent;
   let fixture: ComponentFixture<CollectionBriefComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         MainComponent,

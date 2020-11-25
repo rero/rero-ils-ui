@@ -199,7 +199,7 @@ export class LoanComponent implements OnInit, OnDestroy {
     }
     forkJoin(observables).subscribe(
       newItems => {
-        newItems.map(newItem => {
+        newItems.map((newItem: Item) => {
           switch (newItem.actionDone) {
             case ItemAction.checkin: {
               this._displayCirculationNote(newItem, ItemNoteType.CHECKIN);

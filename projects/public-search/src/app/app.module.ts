@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, Injector, LOCALE_ID, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
@@ -63,6 +63,7 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
       loader: {
         provide: BaseTranslateLoader,
         useClass: TranslateLoader,
+        deps: [CoreConfigService, HttpClient]
       },
       isolate: false
     }),

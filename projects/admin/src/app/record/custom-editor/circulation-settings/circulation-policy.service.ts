@@ -50,11 +50,11 @@ export class CirculationPolicyService {
   }
 
   loadAllItemTypesPatronTypesCirculationPolicies() {
-    return forkJoin(
+    return forkJoin([
       this.recordService.getRecords('item_types', '', 1, RecordService.MAX_REST_RESULTS_SIZE),
       this.recordService.getRecords('patron_types', '', 1, RecordService.MAX_REST_RESULTS_SIZE),
       this.recordService.getRecords('circ_policies', '', 1, RecordService.MAX_REST_RESULTS_SIZE)
-    );
+    ]);
   }
 
   save(circulationPolicy: CirculationPolicy) {

@@ -35,7 +35,7 @@ describe('TypeaheadFactoryService', () => {
   }));
 
   it('should be created', () => {
-    const service: TypeaheadFactoryService = TestBed.get(TypeaheadFactoryService);
+    const service: TypeaheadFactoryService = TestBed.inject(TypeaheadFactoryService);
     expect(service).toBeTruthy();
   });
 });

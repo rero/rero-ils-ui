@@ -18,7 +18,7 @@
 import { Injectable } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordSearchComponent } from '@rero/ng-core';
+import { RecordSearchPageComponent } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { CollectionBriefComponent } from '../collection-brief/collection-brief.component';
 import { CollectionAccessGuard } from '../guard/collection-access.guard';
@@ -60,7 +60,7 @@ export class CollectionsRouteService extends BaseRoute implements ResourceRouteI
       return {
         path: `${viewcode}/search/:type`,
         children: [
-          { path: '', component: RecordSearchComponent, canActivate: [CollectionAccessGuard] }
+          { path: '', component: RecordSearchPageComponent, canActivate: [CollectionAccessGuard] }
         ],
         data: {
           adminMode: () => of({

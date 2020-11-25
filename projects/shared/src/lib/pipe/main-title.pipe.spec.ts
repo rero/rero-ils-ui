@@ -39,7 +39,7 @@ describe('MainTitlePipe', () => {
       ]
     });
 
-    mainTitlePipe = TestBed.get(MainTitlePipe);
+    mainTitlePipe = TestBed.inject(MainTitlePipe);
   });
 
   it('create an instance', () => {

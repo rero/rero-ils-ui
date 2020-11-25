@@ -29,7 +29,7 @@ describe('CollectionsRouteService', () => {
         TranslateModule.forRoot()
       ]
     });
-    service = TestBed.get(CollectionsRouteService);
+    service = TestBed.inject(CollectionsRouteService);
   });
 
   it('should be created', () => {

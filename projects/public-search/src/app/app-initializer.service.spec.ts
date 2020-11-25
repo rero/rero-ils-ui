@@ -28,7 +28,7 @@ describe('AppInitializerService', () => {
   }));
 
   it('should be created', () => {
-    const service: AppInitializerService = TestBed.get(AppInitializerService);
+    const service: AppInitializerService = TestBed.inject(AppInitializerService);
     expect(service).toBeTruthy();
   });
 });

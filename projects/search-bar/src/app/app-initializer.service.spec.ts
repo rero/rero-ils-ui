@@ -38,7 +38,7 @@ describe('AppInitializerService', () => {
         SharedConfigService
       ]
     });
-    appInitializerService = TestBed.get(AppInitializerService);
+    appInitializerService = TestBed.inject(AppInitializerService);
   });
 
   it('should be created', () => {

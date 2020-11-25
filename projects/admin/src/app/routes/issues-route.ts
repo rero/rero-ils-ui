@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { RecordSearchComponent, RouteInterface } from '@rero/ng-core';
+import { RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { IssuesBriefViewComponent } from '../record/brief-view/issues-brief-view/issues-brief-view.component';
 import { BaseRoute } from './base-route';
@@ -36,7 +36,7 @@ export class IssuesRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchComponent }
+        { path: '', component: RecordSearchPageComponent }
       ],
       data: {
         adminMode: () => of({

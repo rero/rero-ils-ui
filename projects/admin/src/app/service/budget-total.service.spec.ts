@@ -23,7 +23,7 @@ describe('BudgetTotalService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: BudgetTotalService = TestBed.get(BudgetTotalService);
+    const service: BudgetTotalService = TestBed.inject(BudgetTotalService);
     expect(service).toBeTruthy();
   });
 });

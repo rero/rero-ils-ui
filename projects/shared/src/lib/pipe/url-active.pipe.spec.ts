@@ -37,7 +37,7 @@ describe('Pipe: UrlActivee', () => {
       ]
     });
 
-    urlActivePipe = TestBed.get(UrlActivePipe);
+    urlActivePipe = TestBed.inject(UrlActivePipe);
   });
 
   it('create an instance', () => {

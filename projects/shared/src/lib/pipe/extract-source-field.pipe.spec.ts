@@ -63,8 +63,8 @@ describe('Pipe: ExtractFieldSource', () => {
       ]
     });
 
-    extractSourceFieldPipe = TestBed.get(ExtractSourceFieldPipe);
-    translateService = TestBed.get(TranslateService);
+    extractSourceFieldPipe = TestBed.inject(ExtractSourceFieldPipe);
+    translateService = TestBed.inject(TranslateService);
   });
 
   it('create an instance', () => {

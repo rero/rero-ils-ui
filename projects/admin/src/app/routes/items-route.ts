@@ -15,9 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { DetailComponent, EditorComponent, RecordSearchComponent, RecordService, RouteInterface } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
-import { JSONSchema7 } from 'json-schema';
+import { DetailComponent, EditorComponent, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
+import { Record, JSONSchema7 } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ItemType } from '../class/items';
@@ -43,7 +42,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
         // TODO: add guards
-        { path: '', component: RecordSearchComponent },
+        { path: '', component: RecordSearchPageComponent },
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
         { path: 'new', component: EditorComponent }

@@ -16,7 +16,7 @@
  */
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppRoutingModule } from 'projects/admin/src/app/app-routing.module';
 import { SharedModule } from '@rero/shared';
@@ -28,7 +28,7 @@ describe('HoldingItemInCollectionComponent', () => {
   let component: HoldingItemInCollectionComponent;
   let fixture: ComponentFixture<HoldingItemInCollectionComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         HoldingItemInCollectionComponent,

@@ -47,7 +47,7 @@ describe('UiRemoteTypeaheadService', () => {
   }));
 
   it('should be created', () => {
-    const service: UiRemoteTypeaheadService = TestBed.get(UiRemoteTypeaheadService);
+    const service: UiRemoteTypeaheadService = TestBed.inject(UiRemoteTypeaheadService);
     expect(service).toBeTruthy();
   });
 });

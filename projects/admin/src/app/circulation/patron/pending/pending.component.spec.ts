@@ -16,7 +16,7 @@
  */
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CirculationModule } from '../../circulation.module';
 import { PendingComponent } from './pending.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -25,7 +25,7 @@ describe('PendingComponent', () => {
   let component: PendingComponent;
   let fixture: ComponentFixture<PendingComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,

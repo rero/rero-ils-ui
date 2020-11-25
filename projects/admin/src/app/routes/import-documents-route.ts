@@ -16,7 +16,7 @@
  */
 
 import { TranslateService } from '@ngx-translate/core';
-import { DetailComponent, RecordSearchComponent, RouteInterface } from '@rero/ng-core';
+import { DetailComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
@@ -48,7 +48,7 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
     return {
       path: 'records/:type',
       children: [
-        { path: '', component: RecordSearchComponent },
+        { path: '', component: RecordSearchPageComponent },
         { path: 'detail/:pid', component: DetailComponent }
       ],
       data: {

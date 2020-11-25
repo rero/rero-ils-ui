@@ -31,7 +31,7 @@ describe('NavigateService', () => {
   }));
 
   it('should be created', () => {
-    const service: NavigateService = TestBed.get(NavigateService);
+    const service: NavigateService = TestBed.inject(NavigateService);
     expect(service).toBeTruthy();
   });
 });

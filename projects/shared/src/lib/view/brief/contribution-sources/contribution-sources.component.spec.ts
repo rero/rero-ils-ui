@@ -19,7 +19,7 @@
 
 import { CommonModule } from '@angular/common';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ContributionSourcesComponent } from './contribution-sources.component';
 
 
@@ -27,7 +27,7 @@ describe('ContributionSourcesComponent', () => {
   let component: ContributionSourcesComponent;
   let fixture: ComponentFixture<ContributionSourcesComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         CommonModule

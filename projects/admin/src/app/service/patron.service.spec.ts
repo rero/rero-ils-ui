@@ -30,7 +30,7 @@ describe('PatronService', () => {
   }));
 
   it('should be created', () => {
-    const service: PatronService = TestBed.get(PatronService);
+    const service: PatronService = TestBed.inject(PatronService);
     expect(service).toBeTruthy();
   });
 });

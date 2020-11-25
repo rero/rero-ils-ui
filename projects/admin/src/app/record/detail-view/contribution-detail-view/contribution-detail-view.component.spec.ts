@@ -17,7 +17,7 @@
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
@@ -44,7 +44,7 @@ describe('ContributionDetailViewComponent', () => {
   const recordTestingServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords']);
   recordTestingServiceSpy.getRecords.and.returnValue(of(emptyRecords));
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         ContributionDetailViewComponent

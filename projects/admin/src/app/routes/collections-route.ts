@@ -16,9 +16,8 @@
  */
 
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { DetailComponent, EditorComponent, RecordSearchComponent, RecordService, RouteInterface } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
-import { JSONSchema7 } from 'json-schema';
+import { DetailComponent, EditorComponent, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
+import { Record, JSONSchema7 } from '@rero/ng-core';
 import { map } from 'rxjs/operators';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { CollectionBriefViewComponent } from '../record/brief-view/collection-brief-view.component';
@@ -41,7 +40,7 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchComponent },
+        { path: '', component: RecordSearchPageComponent },
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
         { path: 'new', component: EditorComponent }
