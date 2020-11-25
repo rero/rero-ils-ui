@@ -154,6 +154,11 @@ export class ItemNote {
   content: string;
 }
 
+export enum ItemType {
+  STANDARD = 'standard',
+  ISSUE = 'issue'
+}
+
 export class Item {
 
   static PUBLIC_NOTE_TYPES: ItemNoteType[] = [

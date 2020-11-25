@@ -20,6 +20,7 @@ import { Record } from '@rero/ng-core/lib/record/record';
 import { JSONSchema7 } from 'json-schema';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ItemType } from '../class/items';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { ItemsBriefViewComponent } from '../record/brief-view/items-brief-view/items-brief-view.component';
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
@@ -75,7 +76,9 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
                 this._populateItemFieldFromHolding(record, holdingPid);
               }
               // for new item creation, fill the acquisition date field with the current timestamp
-              if (!record.hasOwnProperty('pid')) {
+              // issue should don't have the new acquisition date by default.
+              const recordType = ('type' in record) ? record.type : ItemType.STANDARD;
+              if (!record.hasOwnProperty('pid') && recordType !== ItemType.ISSUE) {
                 record.acquisition_date = this._routeToolService.datePipe.transform(Date.now(), 'yyyy-MM-dd');
               }
               return record;
@@ -232,7 +235,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
    * @param holdingPid: the holding pid
    */
   private _populateItemFieldFromHolding(record: any, holdingPid: string) {
-    record.type = 'issue';
+    record.type = ItemType.ISSUE;
     record.issue = record.issue || {};
     record.issue.regular = true;  // default to true
 
