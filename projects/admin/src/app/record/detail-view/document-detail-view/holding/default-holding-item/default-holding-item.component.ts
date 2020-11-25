@@ -31,18 +31,29 @@ import { ItemRequestComponent } from '../../item-request/item-request.component'
 })
 export class DefaultHoldingItemComponent implements OnInit {
 
+  // COMPONENT ATTRIBUTES ============================================================
   /** Holding record */
   @Input() holding: any;
-
   /** Item Record */
   @Input() item: any;
-
   /** Event for delete Item */
   @Output() deleteItem = new EventEmitter();
 
   /** Item permissions */
   permissions: any;
 
+  // GETTER & SETTER =================================================================
+  /**
+   * Get formatted item call numbers
+   * @return formatted string
+   */
+  get callNumbers(): string {
+    return [this.item.metadata.call_number, this.item.metadata.second_call_number || null]
+      .filter(element => element !== null)
+      .join(' | ');
+  }
+
+  // CONSTRUCTOR & HOOKS ==============================================================
   /**
    * Constructor
    * @param _recordUiService - RecordUiService
@@ -59,13 +70,15 @@ export class DefaultHoldingItemComponent implements OnInit {
     protected _itemService: ItemsService
   ) { }
 
-  /** Init */
+  /** OnInit hook */
   ngOnInit() {
-    this.getPermissions();
+    this._getPermissions();
   }
 
+
+  // COMPONENT FUNCTIONS ================================================================
   /** Get permissions */
-  getPermissions() {
+  private _getPermissions() {
     const permissionObs = this._recordPermissionService.getPermission('items', this.item.metadata.pid);
     const canRequestObs = this._itemService.canRequest(this.item.metadata.pid);
     forkJoin([permissionObs, canRequestObs]).subscribe(
@@ -75,18 +88,6 @@ export class DefaultHoldingItemComponent implements OnInit {
     });
   }
 
-  /**
-   * Get formatted call number
-   *
-   * Join call number and second call number separate by ` - `
-   * @returns - formatted string
-   */
-  get callNumber(): string {
-    if (this.item.metadata.second_call_number) {
-      return this.item.metadata.call_number + ' | ' + this.item.metadata.second_call_number;
-    }
-    return this.item.metadata.call_number;
-  }
 
   /**
    * Add request on item and refresh permissions
@@ -96,9 +97,7 @@ export class DefaultHoldingItemComponent implements OnInit {
     const modalRef = this._modalService.show(ItemRequestComponent, {
       initialState: { itemPid }
     });
-    modalRef.content.onSubmit.pipe(first()).subscribe(value => {
-      this.getPermissions();
-    });
+    modalRef.content.onSubmit.pipe(first()).subscribe(_ => this._getPermissions());
   }
 
   /**

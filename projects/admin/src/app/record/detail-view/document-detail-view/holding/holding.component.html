@@ -74,7 +74,6 @@
             </div>
             <admin-serial-holding-item
                 *ngFor="let item of items | slice:0: displayItemsCounter"
-                class="row mt-1 mb-2"
                 [holding]="holding"
                 [item]="item"
                 (deleteItem)="deleteItem($event)"
@@ -106,7 +105,6 @@
             </div>
             <admin-default-holding-item
                 *ngFor="let item of items | slice:0: displayItemsCounter"
-                class="row mt-1 mb-2"
                 [holding]="holding"
                 [item]="item"
                 (deleteItem)="deleteItem($event)"
