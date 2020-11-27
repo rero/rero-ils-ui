@@ -117,6 +117,15 @@
         {{ patron.patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
       </dd>
     </dl>
+    <!-- KEEP HISTORY -->
+    <dl class="row mb-0">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Keep history</dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        <i class="fa" [ngClass]="patron.patron.keep_history ? 'fa-check text-success' : 'fa-times text-danger'"
+          aria-hidden="true">
+        </i>
+      </dd>
+    </dl>
     <!-- ACCOUNT EXPIRATION -->
     <dl class="row mb-0">
       <dt class="col-sm-3 offset-sm-2 offset-md-0">
@@ -125,12 +134,14 @@
       <dd class="col-sm-7 col-md-8 mb-0">
         {{ patron.patron.expiration_date | dateTranslate:'mediumDate' }}
       </dd>
+    </dl>
+    <dl *ngIf="patron.patron.libraries && patron.patron.libraries.length > 0" class="row mb-0">
       <dt class="col-sm-3 offset-sm-2 offset-md-0">
         {{ 'Affiliation libraries' | translate }}:
       </dt>
-      <dd *ngIf="patron.patron.libraries && patron.patron.libraries.length > 0" class="col-sm-7 col-md-8 mb-0">
+      <dd class="col-sm-7 col-md-8 mb-0">
         <div *ngFor="let library of patron.patron.libraries">
-          {{library.pid | getRecord: 'libraries' : 'field' : 'name' | async}}
+          {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
         </div>
       </dd>
     </dl>
