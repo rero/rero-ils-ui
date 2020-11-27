@@ -46,6 +46,7 @@ export class User {
     communication_channel: string,
     communication_language: string,
     expiration_date: string,
+    keep_history: boolean,
     libraries?: Array<Library>,
     // When patron is blocked, add 'blocked' and 'blocked_note' fields.
     blocked?: false,
