@@ -210,6 +210,11 @@ export class MainComponent implements OnInit, OnDestroy {
         case LoanState[LoanState.ITEM_ON_LOAN]:
           this.patron.incrementCirculationStatistic('loans',  Number(data[key]));
           break;
+        case LoanState[LoanState.CANCELLED]:
+        case LoanState[LoanState.ITEM_IN_TRANSIT_TO_HOUSE]:
+        case LoanState[LoanState.ITEM_RETURNED]:
+          this.patron.incrementCirculationStatistic('history',  Number(data[key]));
+          break;
       }
     }
   }
