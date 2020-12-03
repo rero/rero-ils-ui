@@ -27,7 +27,7 @@ import {
   CoreConfigService, LocalStorageService, RecordModule, RemoteTypeaheadService,
   TranslateLoader, TranslateService, TruncateTextPipe
 } from '@rero/ng-core';
-import { LoggedUserService, MainTitlePipe, SharedConfigService, SharedModule, UserService } from '@rero/shared';
+import { ItemHoldingsCallNumberPipe, LoggedUserService, MainTitlePipe, SharedConfigService, SharedModule, UserService } from '@rero/shared';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -323,7 +323,8 @@ export function appInitFactory(appInitService: AppInitService) {
       provide: HotkeysService,
       useClass: HotkeysService
     },
-    MainTitlePipe
+    MainTitlePipe,
+    ItemHoldingsCallNumberPipe
   ],
   entryComponents: [
     IllRequestsBriefViewComponent,

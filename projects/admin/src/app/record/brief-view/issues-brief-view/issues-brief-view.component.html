@@ -23,13 +23,15 @@
   </h5>
   <ng-container class="card-text">
     <dl class="row mb-0 ml-1">
-      <!-- CALL NUMBER -->
-      <ng-container *ngIf="record.metadata.call_number">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Call number</dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ record.metadata.call_number }}
-        </dd>
-      </ng-container>
+
+    <!-- INHERITED CALL NUMBER -->
+    <ng-container *ngIf="record | itemHoldingsCallNumber | async as callNumber">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Call number </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        <shared-inherited-call-number [item]="record" context="first"></shared-inherited-call-number>
+      </dd>
+    </ng-container>
+
       <ng-container *ngIf="record.metadata.barcode">
         <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Barcode</dt>
         <dd class="col-sm-7 col-md-8 mb-0">
@@ -68,9 +70,9 @@
       <ng-container *ngIf="record.metadata.issue.status as status">
         <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Issue status</dt>
         <dd class="col-sm-7 col-md-8 mb-0">
-          <i class="fa text-warning" [ngClass]="{ 
+          <i class="fa text-warning" [ngClass]="{
             'fa-envelope': status == issueItemStatus.CLAIMED,
-            'fa-envelope-open-o': status == issueItemStatus.LATE 
+            'fa-envelope-open-o': status == issueItemStatus.LATE
           }"
           ></i>
         {{ status | translate }} [{{ record.metadata.issue.status_date | dateTranslate}}]
@@ -78,4 +80,3 @@
       </ng-container>
     </dl>
   </ng-container>
-  

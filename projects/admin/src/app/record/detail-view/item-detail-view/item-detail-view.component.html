@@ -21,11 +21,12 @@
   </header>
   <section class="mb-4">
     <dl class="row mb-0">
-      <!-- CALL NUMBER -->
-      <ng-container *ngIf="record.metadata.call_number">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Call number</dt>
+
+      <!-- INHERITED CALL NUMBER -->
+      <ng-container *ngIf="record | itemHoldingsCallNumber | async as callNumber">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Call number </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
-          {{ record.metadata.call_number }}
+          <shared-inherited-call-number [item]="record" context="first"></shared-inherited-call-number>
         </dd>
       </ng-container>
       <!-- SECOND CALL NUMBER -->
@@ -122,7 +123,7 @@
         <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Status</dt>
         <dd class="col-sm-7 col-md-8 mb-0">
           <i class="fa" [ngClass]="getIcon(record.metadata.issue.status)"></i>
-          {{ record.metadata.issue.status | translate }} [{{ record.metadata.issue.status_date | dateTranslate}}]
+          {{ record.metadata.issue.status | translate }} ({{ record.metadata.issue.status_date | dateTranslate}})
         </dd>
       </dl>
     </section>

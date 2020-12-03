@@ -52,13 +52,12 @@
               <span class="font-weight-bold" translate>Barcode</span>:
               {{ itemData.metadata.barcode }}
             </div>
-            <div *ngIf="itemData.metadata.call_number">
+            <!-- INHERITED CALL NUMBER -->
+            <div *ngIf="itemData | itemHoldingsCallNumber | async as callNumber">
               <span class="font-weight-bold" translate>Call number</span>:
-              {{ itemData.metadata.call_number }}
-              <span *ngIf="itemData.metadata.second_call_number">
-              | {{ itemData.metadata.second_call_number }}
-              </span>
+              <shared-inherited-call-number [item]="itemData"></shared-inherited-call-number>
             </div>
+
             <div *ngIf="itemData.metadata.location.pid | getRecord:'locations' | async as location">
               <span class="font-weight-bold" translate>Library</span>:
               <ng-container *ngIf="location.metadata.library.pid | getRecord: 'libraries' | async as library">

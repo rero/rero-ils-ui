@@ -23,15 +23,10 @@
     <a [routerLink]="['/records', 'documents', 'detail', document.metadata.pid]" class="col-1">
       <i class="fa fa-arrow-left"></i>
     </a>
-    <admin-documents-brief-view
-      class="col"
-      [record]="document"
-      [type]="'documents'"
-      [detailUrl]="{
+    <admin-documents-brief-view class="col" [record]="document" [type]="'documents'" [detailUrl]="{
         link: '/records/documents/detail/' + document.metadata.pid,
         external: false
-      }"
-    ></admin-documents-brief-view>
+      }"></admin-documents-brief-view>
   </div>
 </div>
 
@@ -51,8 +46,7 @@
                 'holding': holding.id,
                 'irregular': true,
                 'redirectTo': 'records/holdings/detail/' + holding.id
-            }"
-          >
+            }">
             <i class="fa fa-plus-square-o"></i>
             {{ 'Add irregular issue' | translate }} ...
           </button>
@@ -116,7 +110,9 @@
                   [ngClass]="getIcon(item.metadata.issue.status)"
                 ></i>
               </div>
-              <div class="col-sm-2 text">{{ item.metadata.call_number }}</div>
+              <div class="col-sm-2 text">
+                <shared-inherited-call-number [item]="item"></shared-inherited-call-number>
+              </div>
               <div class="col-sm-3 text">{{ item.metadata.issue.received_date | dateTranslate }}</div>
               <div class="col-sm-2 text-right">
                 <!-- DETAIL BUTTON -->

@@ -23,7 +23,9 @@
     </div>
     <div class="col-sm-2" name="status">{{ item.metadata.status | translate }}</div>
     <div class="col-sm-3" name="issue">{{ item.metadata.enumerationAndChronology }}</div>
-    <div class="col-sm-2" name="call-number">{{ callNumbers }}</div>
+    <div class="col-sm-2" name="call-number">
+      <shared-inherited-call-number [item]="item"></shared-inherited-call-number>
+    </div>
     <div class="col-sm-2 text-right" name="buttons">
       <button *ngIf="permissions.canRequest && permissions.canRequest.can; else notRequest"
               type="button" class="btn btn-sm btn-outline-primary " (click)="addRequest(item.metadata.pid)"

@@ -27,6 +27,7 @@ export * from './lib/pipe/contribution-format.pipe';
 export * from './lib/pipe/contribution-type.pipe';
 export * from './lib/pipe/extract-source-field.pipe';
 export * from './lib/pipe/id-attribute.pipe';
+export * from './lib/pipe/item-holdings-call-number.pipe';
 export * from './lib/pipe/join.pipe';
 export * from './lib/pipe/main-title.pipe';
 export * from './lib/pipe/patron-blocked-message.pipe';
@@ -41,3 +42,4 @@ export * from './lib/view/brief/contribution-brief/contribution-brief.component'
 export * from './lib/view/brief/contribution-sources/contribution-sources.component';
 export * from './lib/view/brief/organisation-brief/organisation-brief.component';
 export * from './lib/view/brief/person-brief/person-brief.component';
+export * from './lib/view/inherited-call-number/inherited-call-number.component';
