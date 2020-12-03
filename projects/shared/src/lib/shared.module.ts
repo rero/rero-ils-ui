@@ -18,7 +18,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CoreModule, Nl2brPipe, TruncateTextPipe } from '@rero/ng-core';
+import { CoreModule, Nl2brPipe, RecordModule, TruncateTextPipe } from '@rero/ng-core';
 import { NgVarDirective } from './directive/ng-var.directive';
 import { ContributionFormatPipe } from './pipe/contribution-format.pipe';
 import { ContributionTypePipe } from './pipe/contribution-type.pipe';
@@ -35,6 +35,8 @@ import { ContributionBriefComponent } from './view/brief/contribution-brief/cont
 import { ContributionSourcesComponent } from './view/brief/contribution-sources/contribution-sources.component';
 import { OrganisationBriefComponent } from './view/brief/organisation-brief/organisation-brief.component';
 import { PersonBriefComponent } from './view/brief/person-brief/person-brief.component';
+import { ItemHoldingsCallNumberPipe } from './pipe/item-holdings-call-number.pipe';
+import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,9 @@ import { PersonBriefComponent } from './view/brief/person-brief/person-brief.com
     ProvisionActivityPipe,
     ContributionTypePipe,
     UrlActivePipe,
-    NgVarDirective
+    NgVarDirective,
+    ItemHoldingsCallNumberPipe,
+    InheritedCallNumberComponent
   ],
   exports: [
     CommonModule,
@@ -69,11 +73,14 @@ import { PersonBriefComponent } from './view/brief/person-brief/person-brief.com
     ContributionTypePipe,
     UrlActivePipe,
     NgVarDirective,
-    Nl2brPipe
+    Nl2brPipe,
+    ItemHoldingsCallNumberPipe,
+    InheritedCallNumberComponent
   ],
   imports: [
     CommonModule,
     CoreModule,
+    RecordModule,
     RouterModule
   ],
   providers: [

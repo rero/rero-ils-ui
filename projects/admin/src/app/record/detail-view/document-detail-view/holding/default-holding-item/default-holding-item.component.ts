@@ -17,12 +17,12 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordUiService } from '@rero/ng-core';
+import { ItemHoldingsCallNumberPipe, UserService } from '@rero/shared';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { ItemsService } from 'projects/admin/src/app/service/items.service';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { UserService } from '@rero/shared';
 import { ItemRequestComponent } from '../../item-request/item-request.component';
 
 @Component({
@@ -41,17 +41,6 @@ export class DefaultHoldingItemComponent implements OnInit {
 
   /** Item permissions */
   permissions: any;
-
-  // GETTER & SETTER =================================================================
-  /**
-   * Get formatted item call numbers
-   * @return formatted string
-   */
-  get callNumbers(): string {
-    return [this.item.metadata.call_number, this.item.metadata.second_call_number || null]
-      .filter(element => element !== null)
-      .join(' | ');
-  }
 
   // CONSTRUCTOR & HOOKS ==============================================================
   /**
