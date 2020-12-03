@@ -56,7 +56,16 @@ export class HoldingsComponent implements OnInit {
   ngOnInit() {
     const orgPid = this._userService.user.currentOrganisation;
     const query = `document.pid:${this.documentPid} AND organisation.pid:${orgPid}`;
-    const holdingRecordsRef = this._recordService.getRecords('holdings', query, 1, RecordService.MAX_REST_RESULTS_SIZE);
+    const holdingRecordsRef = this._recordService.getRecords(
+      'holdings',
+      query,
+      1,
+      RecordService.MAX_REST_RESULTS_SIZE,
+      undefined,
+      undefined,
+      undefined,
+      'library_location'
+    );
     const permissionsRef = this._recordPermissionService.getPermission('holdings');
     forkJoin([holdingRecordsRef, permissionsRef]).subscribe(
       (result: [Record, any]) => {
