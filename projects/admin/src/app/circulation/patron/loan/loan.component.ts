@@ -213,6 +213,7 @@ export class LoanComponent implements OnInit, OnDestroy {
                 );
               }
               this.patron.decrementCirculationStatistic('loans');
+              this.patron.incrementCirculationStatistic('history');
               break;
             }
             case ItemAction.checkout: {

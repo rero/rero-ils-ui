@@ -95,8 +95,12 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'history']"
-          translate>History</a>
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'history']">
+          {{ 'History' | translate }}
+          <span *ngIf="getCirculationStatistics('history') > 0" class="badge badge-info font-weight-normal">
+            {{ getCirculationStatistics('history') }}
+          </span>
+        </a>
       </li>
     </ul>
     <div class="mt-4">

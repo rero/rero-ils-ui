@@ -174,7 +174,7 @@ export class PatronService {
     ];
     const statesQuery = states.map(state => `state:${state}`).join(' OR ');
     const query = `patron_pid:${patronPid} AND (${statesQuery}) end_date:[now-${fromLimit}d/d TO now-${toLimit}d/d]`;
-    return this.getLoans(query, '-end_date');
+    return this.getLoans(query, 'duedate');
   }
 
   /**

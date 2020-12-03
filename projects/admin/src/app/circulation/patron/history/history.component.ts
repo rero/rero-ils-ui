@@ -26,7 +26,6 @@ export class HistoryComponent implements OnInit {
 
   /** history Loans */
   loans = [];
-
   /** is loading */
   isLoading = false;
 
@@ -40,20 +39,14 @@ export class HistoryComponent implements OnInit {
 
   /**
    * Component initialization.
-   * Load current parton loans history.
+   * Load current patron loans history.
    */
   ngOnInit() {
     this._patronService.currentPatron$.subscribe(patron => {
       if (patron) {
         this._patronService.getHistory(patron.pid).subscribe(
           (loans) => {
-            // Despite `getHistory` should be sort by loan 'end_date' property, it seems not to be :(
-            // So use a simple javascript sort function
-            this.loans = loans.sort((a, b): number => {
-              if (a.metadata.end_date > b.metadata.end_date) { return -1; }
-              if (a.metadata.end_date < b.metadata.end_date) { return 1; }
-              return 0;
-            });
+            this.loans = loans;
             this.isLoading = true;
           });
       }
