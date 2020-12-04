@@ -15,30 +15,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { inject, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule, UserService } from '@rero/shared';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { AppInitService } from './app-init.service';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { IdAttributePipe, SharedModule } from '@rero/shared';
+import { SubMenuComponent } from './sub-menu.component';
 
-describe('Service: AppInit', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
+
+describe('SubMenuComponent', () => {
+  let component: SubMenuComponent;
+  let fixture: ComponentFixture<SubMenuComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ SubMenuComponent ],
       imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
         SharedModule
       ],
       providers: [
-        AppInitService,
-        BsLocaleService,
-        UserService
+        IdAttributePipe
       ]
-    });
+    })
+    .compileComponents();
   });
 
-  it('should initialize app', inject([AppInitService], (service: AppInitService) => {
-    expect(service).toBeTruthy();
-  }));
+  beforeEach(() => {
+    fixture = TestBed.createComponent(SubMenuComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

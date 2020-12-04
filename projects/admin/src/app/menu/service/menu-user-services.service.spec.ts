@@ -16,29 +16,24 @@
  */
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { inject, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule, UserService } from '@rero/shared';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { AppInitService } from './app-init.service';
+import { MenuUserServicesService } from './menu-user-services.service';
 
-describe('Service: AppInit', () => {
+describe('MenuLanguageService', () => {
+  let service: MenuUserServicesService;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        TranslateModule.forRoot(),
-        SharedModule
-      ],
-      providers: [
-        AppInitService,
-        BsLocaleService,
-        UserService
+        TranslateModule.forRoot()
       ]
     });
+    service = TestBed.inject(MenuUserServicesService);
   });
 
-  it('should initialize app', inject([AppInitService], (service: AppInitService) => {
+  it('should be created', () => {
     expect(service).toBeTruthy();
-  }));
+  });
 });

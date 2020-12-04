@@ -1,18 +1,18 @@
 <!--
   RERO ILS UI
-   Copyright (C) 2019 RERO
-  
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU Affero General Public License as published by
-   the Free Software Foundation, version 3 of the License.
-  
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-   GNU Affero General Public License for more details.
-  
-   You should have received a copy of the GNU Affero General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  Copyright (C) 2020 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark d-flex">
   <div class="container">
@@ -32,19 +32,28 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light rero-ils-header mb-3">
   <div class="container-fluid px-5">
-    <button type="button" class="navbar-toggler" (click)="isCollapsed = !isCollapsed"
-      [attr.aria-expanded]="!isCollapsed" aria-controls="navbarSupportedContent">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent" [collapse]="isCollapsed" [isAnimated]="true">
-      <ng-core-menu class="mr-auto" [menu]="linksMenu"></ng-core-menu>
-
+    <div class="collapse navbar-collapse">
+      <!-- User Services menu -->
+      <admin-menu-user-services class="mr-auto"></admin-menu-user-services>
       <!-- Libraries switch menu -->
       <admin-menu-swith-library></admin-menu-swith-library>
-
-      <ng-core-menu [menu]="languagesMenu" (clickItem)="changeLang($event)"></ng-core-menu>
-      <ng-core-menu [menu]="userMenu"></ng-core-menu>
+      <!-- Languages menu -->
+      <admin-menu-language></admin-menu-language>
+      <!-- Help menu -->
+      <a class="mx-2 text-secondary" href="/help">
+        <i class="fa fa-info"></i>
+        {{ 'Help' | translate }}
+      </a>
+      <!-- User menu -->
+      <admin-menu-user></admin-menu-user>
     </div>
+  </div>
+
+  <button type="button" class="navbar-toggler d-block d-sm-none" (click)="isCollapsed = !isCollapsed"
+    [attr.aria-expanded]="!isCollapsed" aria-controls="navbarSupportedContent">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="d-block d-sm-none navbar-collapse" id="navbarSupportedContent">
+    <admin-menu-mobile class="mt-2" [class]="{'d-none': isCollapsed, 'd-block': !isCollapsed}"></admin-menu-mobile>
   </div>
 </nav>

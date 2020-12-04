@@ -17,10 +17,10 @@
 
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { MenuFactory, MenuItem, Record, RecordEvent, RecordService } from '@rero/ng-core';
+import { MenuFactory, MenuItemInterface, Record, RecordEvent, RecordService } from '@rero/ng-core';
 import { User } from '@rero/shared';
 import { map } from 'rxjs/operators';
-import { LibraryService } from '../../../service/library.service';
+import { LibraryService } from '../../service/library.service';
 import { LibrarySwitchService } from './library-switch.service';
 
 @Injectable({
@@ -32,10 +32,10 @@ export class LibrarySwitchMenuService {
   private _user: User;
 
   /** Menu */
-  private _menu: any;
+  private _menu: MenuItemInterface;
 
   /** Current Library */
-  private _currentLibrary: MenuItem;
+  private _currentLibrary: MenuItemInterface;
 
   /** Available libraries */
   private _librariesMenu = {};
@@ -156,7 +156,7 @@ export class LibrarySwitchMenuService {
 
   /** Init observable */
   private _initObservable() {
-    // library swith observable
+    // library switch observable
     this._librarySwitchService.librarySwitch$.subscribe((user: User) => {
       this._user = user;
       // If the proxy is empty

@@ -22,7 +22,7 @@ describe('IllRequestsService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: IllRequestsService = TestBed.get(IllRequestsService);
+    const service: IllRequestsService = TestBed.inject(IllRequestsService);
     expect(service).toBeTruthy();
   });
 });

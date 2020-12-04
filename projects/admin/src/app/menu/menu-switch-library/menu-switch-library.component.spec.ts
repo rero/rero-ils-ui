@@ -21,8 +21,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
 import { User } from '@rero/shared';
+import { LibrarySwitchMenuService } from '../service/library-switch-menu.service';
 import { MenuSwitchLibraryComponent } from './menu-switch-library.component';
-import { LibrarySwitchMenuService } from './service/library-switch-menu.service';
 
 
 describe('MenuSwithLibraryComponent', () => {

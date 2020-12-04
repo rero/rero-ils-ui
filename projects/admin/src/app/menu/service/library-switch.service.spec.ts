@@ -57,7 +57,7 @@ describe('LibrarySwitchService', () => {
         { provide: UserService, useValue: userServiceSpy }
       ]
     });
-    librarySwitchService = TestBed.get(LibrarySwitchService);
+    librarySwitchService = TestBed.inject(LibrarySwitchService);
   });
 
   it('should be created', () => {

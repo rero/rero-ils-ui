@@ -16,7 +16,6 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { isArray } from 'util';
 
 @Pipe({
   name: 'join',
@@ -31,7 +30,7 @@ export class JoinPipe implements PipeTransform {
    * @return string
    */
   transform(value: any, separator: string = ' '): any {
-    if (!isArray(value)) {
+    if (!Array.isArray(value)) {
       return value;
     }
 

@@ -43,7 +43,7 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
       children: [
         { path: '', component: RecordSearchPageComponent },
         { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [CanUpdateGuard] },
         { path: 'new', component: EditorComponent }
       ],
       data: {

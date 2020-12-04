@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2020 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,12 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { MenuItemInterface } from '@rero/ng-core';
 
 @Component({
-  selector: 'admin-frontpage',
-  templateUrl: './frontpage.component.html',
-  styles: []
+  selector: 'admin-sub-menu',
+  templateUrl: './sub-menu.component.html'
 })
-export class FrontpageComponent {
+export class SubMenuComponent {
+  /** menu */
+  @Input() menu: MenuItemInterface;
 }

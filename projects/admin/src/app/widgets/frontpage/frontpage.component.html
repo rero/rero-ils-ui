@@ -19,9 +19,5 @@
   <div class="col mb-3">
     <h1 class="text-center" translate>RERO ILS administration</h1>
   </div>
-  <div class="row justify-content-center">
-    <div *ngFor="let entry of linksMenu.entries" class="col-lg-2">
-      <admin-frontpage-board [item]="entry"></admin-frontpage-board>
-    </div>
-  </div>
+  <admin-menu-dashboard class="col"></admin-menu-dashboard>
 </div>

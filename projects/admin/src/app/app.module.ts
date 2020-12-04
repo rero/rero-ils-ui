@@ -24,7 +24,8 @@ import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
 import { FormlyModule } from '@ngx-formly/core';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import {
-  CoreConfigService, LocalStorageService, RecordModule, RemoteTypeaheadService, TranslateLoader, TranslateService, TruncateTextPipe
+  CoreConfigService, LocalStorageService, RecordModule, RemoteTypeaheadService,
+  TranslateLoader, TranslateService, TruncateTextPipe
 } from '@rero/ng-core';
 import { LoggedUserService, MainTitlePipe, SharedConfigService, SharedModule, UserService } from '@rero/shared';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
@@ -45,9 +46,13 @@ import { PatronsTypeahead } from './class/typeahead/patrons-typeahead';
 import { TabOrderDirective } from './directives/tab-order.directive';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
+import { MenuDashboardComponent } from './menu/menu-dashboard/menu-dashboard.component';
+import { MenuLanguageComponent } from './menu/menu-language/menu-language.component';
 import { MenuSwitchLibraryComponent } from './menu/menu-switch-library/menu-switch-library.component';
-import { LibrarySwitchService } from './menu/menu-switch-library/service/library-switch.service';
+import { MenuUserServicesComponent } from './menu/menu-user-services/menu-user-services.component';
+import { MenuUserComponent } from './menu/menu-user/menu-user.component';
 import { MenuComponent } from './menu/menu.component';
+import { LibrarySwitchService } from './menu/service/library-switch.service';
 import { MarcPipe } from './pipe/marc.pipe';
 import { NotesFormatPipe } from './pipe/notes-format.pipe';
 import { AcquisitionOrderBriefViewComponent } from './record/brief-view/acquisition-order-brief-view.component';
@@ -122,6 +127,7 @@ import { DayOpeningHoursComponent } from './record/detail-view/library-detail-vi
 import { ExceptionDateComponent } from './record/detail-view/library-detail-view/exception-date/exception-date.component';
 import { LibraryDetailViewComponent } from './record/detail-view/library-detail-view/library-detail-view.component';
 import { LocationComponent } from './record/detail-view/library-detail-view/location/location.component';
+import { LocalFieldComponent } from './record/detail-view/local-field/local-field.component';
 import { LocationDetailViewComponent } from './record/detail-view/location-detail-view/location-detail-view.component';
 import { BudgetSelectLineComponent } from './record/detail-view/organisation-detail-view/budget-select-line/budget-select-line.component';
 import { BudgetSelectComponent } from './record/detail-view/organisation-detail-view/budget-select/budget-select.component';
@@ -138,9 +144,9 @@ import { OrganisationService } from './service/organisation.service';
 import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-factory.service';
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
-import { FrontpageBoardComponent } from './widgets/frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { LocalFieldComponent } from './record/detail-view/local-field/local-field.component';
+import { MenuMobileComponent } from './menu/menu-mobile/menu-mobile.component';
+import { SubMenuComponent } from './menu/menu-mobile/sub-menu/sub-menu.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -201,7 +207,6 @@ export function appInitFactory(appInitService: AppInitService) {
     OrganisationDetailViewComponent,
     BudgetSelectComponent,
     BudgetSelectLineComponent,
-    FrontpageBoardComponent,
     RelatedResourceComponent,
     ResourceComponent,
     ItemRequestComponent,
@@ -230,7 +235,13 @@ export function appInitFactory(appInitService: AppInitService) {
     CustomShortcutHelpComponent,
     HoldingItemNoteComponent,
     MenuSwitchLibraryComponent,
-    LocalFieldComponent
+    LocalFieldComponent,
+    MenuUserServicesComponent,
+    MenuLanguageComponent,
+    MenuUserComponent,
+    MenuDashboardComponent,
+    MenuMobileComponent,
+    SubMenuComponent
   ],
   imports: [
     AppRoutingModule,
