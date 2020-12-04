@@ -17,7 +17,7 @@
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { LOCALE_ID } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from '@rero/shared';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -29,7 +29,7 @@ describe('FixedDateFormComponent', () => {
   let component: FixedDateFormComponent;
   let fixture: ComponentFixture<FixedDateFormComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         CirculationModule,

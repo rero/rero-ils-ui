@@ -22,7 +22,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordModule } from '@rero/ng-core';
 import { AppRoutingModule } from 'projects/admin/src/app/app-routing.module';
-import { FrontpageBoardComponent } from 'projects/admin/src/app/widgets/frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from 'projects/admin/src/app/widgets/frontpage/frontpage.component';
 import { NgVarDirective } from '../../../directive/ng-var.directive';
 import { ContributionTypePipe } from '../../../pipe/contribution-type.pipe';
@@ -44,7 +43,6 @@ describe('PersonBriefComponent', () => {
         ContributionSourcesComponent,
         ExtractSourceFieldPipe,
         FrontpageComponent,
-        FrontpageBoardComponent,
         UrlActivePipe,
         IdAttributePipe,
         ContributionTypePipe,

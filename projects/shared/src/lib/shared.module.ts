@@ -18,7 +18,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CoreModule, TruncateTextPipe } from '@rero/ng-core';
+import { CoreModule, Nl2brPipe, TruncateTextPipe } from '@rero/ng-core';
 import { NgVarDirective } from './directive/ng-var.directive';
 import { ContributionFormatPipe } from './pipe/contribution-format.pipe';
 import { ContributionTypePipe } from './pipe/contribution-type.pipe';
@@ -68,7 +68,8 @@ import { PersonBriefComponent } from './view/brief/person-brief/person-brief.com
     ProvisionActivityPipe,
     ContributionTypePipe,
     UrlActivePipe,
-    NgVarDirective
+    NgVarDirective,
+    Nl2brPipe
   ],
   imports: [
     CommonModule,
@@ -83,7 +84,8 @@ import { PersonBriefComponent } from './view/brief/person-brief/person-brief.com
     ContributionTypePipe,
     JoinPipe,
     UrlActivePipe,
-    TruncateTextPipe
+    TruncateTextPipe,
+    Nl2brPipe
   ],
   entryComponents: [
     ContributionBriefComponent

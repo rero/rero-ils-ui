@@ -22,7 +22,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { GetRecordPipe, RecordModule } from '@rero/ng-core';
 import { AppRoutingModule } from 'projects/admin/src/app/app-routing.module';
 import { SharedModule } from '@rero/shared';
-import { FrontpageBoardComponent } from '../../../../widgets/frontpage/frontpage-board/frontpage-board.component';
 import { FrontpageComponent } from '../../../../widgets/frontpage/frontpage.component';
 import { CollectionItemsComponent } from './collection-items.component';
 
@@ -34,8 +33,7 @@ describe('CollectionItemsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         CollectionItemsComponent,
-        FrontpageComponent,
-        FrontpageBoardComponent
+        FrontpageComponent
       ],
       imports: [
         AppRoutingModule,

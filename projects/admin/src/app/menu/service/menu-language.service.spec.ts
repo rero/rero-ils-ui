@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2020 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,37 +14,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { AppModule } from '../../../app.module';
-import { FrontpageBoardComponent } from './frontpage-board.component';
 
+import { MenuLanguageService } from './menu-language.service';
 
-describe('FrontpageBoardComponent', () => {
-  let component: FrontpageBoardComponent;
-  let fixture: ComponentFixture<FrontpageBoardComponent>;
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        TranslateModule.forRoot({}),
-        HttpClientTestingModule,
-        AppModule
-      ]
-    })
-    .compileComponents();
-  }));
+describe('MenuLanguageService', () => {
+  let service: MenuLanguageService;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FrontpageBoardComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule,
+        TranslateModule.forRoot()
+      ]
+    });
+    service = TestBed.inject(MenuLanguageService);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should be created', () => {
+    expect(service).toBeTruthy();
   });
 });

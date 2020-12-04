@@ -112,6 +112,25 @@ export class User {
   }
 
   /**
+   * User symbol name
+   */
+  get symbolName(): string {
+    let result = [];
+    if (this.first_name) {
+      result = [
+        this.first_name[0],
+        this.last_name[0],
+      ];
+    } else {
+      result = [
+        this.last_name[0],
+        this.last_name[1],
+      ]
+    }
+    return result.join('').toUpperCase();
+  }
+
+  /**
    * Constructor
    * @param user - any
    */

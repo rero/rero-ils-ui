@@ -15,8 +15,22 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<ng-core-menu-widget
-  *ngIf="isVisible"
-  [menu]="menuLibrariesSwitch"
-  (clickItem)="eventMenuClick($event)"
-></ng-core-menu-widget>
+<admin-sub-menu [menu]="menuUserServices"></admin-sub-menu>
+<admin-sub-menu
+  [class]="{'d-block': librariesSwitchIsVisible, 'd-none': !librariesSwitchIsVisible}"
+  [menu]="menuLibrariesSwitch"></admin-sub-menu>
+<admin-sub-menu [menu]="menuLanguages"></admin-sub-menu>
+<div class="card mb-2">
+  <div class="card-body">
+    <h5 class="card-title" translate>Tools</h5>
+    <ul class="list-unstyled m-0">
+      <li>
+        <a class="mx-2 text-secondary" href="/help">
+          <i class="fa fa-info"></i>
+          {{ 'Help' | translate }}
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+<admin-sub-menu [menu]="menuUser"></admin-sub-menu>

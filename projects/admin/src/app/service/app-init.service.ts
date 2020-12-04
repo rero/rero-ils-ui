@@ -17,8 +17,8 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageService, TranslateService } from '@rero/ng-core';
 import { LoggedUserService, SharedConfigService, User, UserService } from '@rero/shared';
-import { LibrarySwitchMenuService } from '../menu/menu-switch-library/service/library-switch-menu.service';
-import { LibrarySwitchService } from '../menu/menu-switch-library/service/library-switch.service';
+import { LibrarySwitchMenuService } from '../menu/service/library-switch-menu.service';
+import { LibrarySwitchService } from '../menu/service/library-switch.service';
 import { AppConfigService } from './app-config.service';
 import { OrganisationService } from './organisation.service';
 import { TypeaheadFactoryService } from './typeahead-factory.service';
@@ -61,7 +61,6 @@ export class AppInitService {
       this._typeaheadFactoryService.init();
       this._userService.init();
       this._sharedConfigService.init();
-      this._librarySwitchMenuService.init();
       this._loggedUserService.load();
       this._loggedUserService.onLoggedUserLoaded$.subscribe((data: any) => {
         this._appConfigService.setSettings(data.settings);
@@ -70,6 +69,7 @@ export class AppInitService {
         if (data.metadata) {
           if (this._userService.allowAdminInterfaceAddess) {
             this.initializeLocaleStorage();
+            this._librarySwitchMenuService.init();
             const userLocale = this._localeStorageService.get(User.STORAGE_KEY);
             this._organisationService.loadOrganisationByPid(
               userLocale.libraries[0].organisation.pid

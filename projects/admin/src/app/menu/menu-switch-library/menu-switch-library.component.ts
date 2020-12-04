@@ -16,13 +16,13 @@
  */
 
 import { Component } from '@angular/core';
-import { PRIMARY_OUTLET, Router, UrlSerializer } from '@angular/router';
+import { PRIMARY_OUTLET, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { DialogService, MenuItem } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { AppConfigService } from '../../service/app-config.service';
-import { LibrarySwitchMenuService } from './service/library-switch-menu.service';
-import { LibrarySwitchService } from './service/library-switch.service';
+import { LibrarySwitchMenuService } from '../service/library-switch-menu.service';
+import { LibrarySwitchService } from '../service/library-switch.service';
 
 @Component({
   selector: 'admin-menu-swith-library',
@@ -55,31 +55,33 @@ export class MenuSwitchLibraryComponent {
     private _librarySwitchService: LibrarySwitchService,
     private _dialogService: DialogService,
     private _translateService: TranslateService,
-    private _router: Router,
-    private _urlSerializer: UrlSerializer
+    private _router: Router
   ) { }
 
   /**
    * Event on menu click
    * @param event - MenuItem
    */
-  eventMenuClick(event: MenuItem) {
-    // TODO: Implement this with a guard (implement in ng-core and ui)
+  eventMenuClick(event: MenuItem): void {
     const url = this._router.url;
-    const urlParams = this._urlSerializer.parse(url).root
-      .children[PRIMARY_OUTLET].segments.map(segment => segment.path);
-    if (
-      this._appConfigService.librarySwitchCheckParamsUrl
-      .some(param => urlParams.includes(param))
-    ) {
-      this._dialog().subscribe((confirmation: boolean) => {
-        if (confirmation) {
-          this._switchAndNavigate(event.getExtra('id'));
-        }
-      });
-    } else {
-      this._switchAndNavigate(event.getExtra('id'));
+    const urlTree = this._router.parseUrl(url);
+    const children = urlTree.root.children[PRIMARY_OUTLET];
+    if (children) {
+      const urlParams = children.segments.map(segment => segment.path);
+      if (
+        this._appConfigService.librarySwitchCheckParamsUrl
+          .some(param => urlParams.includes(param))
+      ) {
+        this._dialog().subscribe((confirmation: boolean) => {
+          if (confirmation) {
+            this._switchAndNavigate(event.getExtra('id'));
+          }
+        });
+      } else {
+        this._switchAndNavigate(event.getExtra('id'));
+      }
     }
+    this._switchAndNavigate(event.getExtra('id'));
   }
 
   /**
@@ -105,7 +107,7 @@ export class MenuSwitchLibraryComponent {
    * Switch and navigate
    * @param id - string, library pid
    */
-  private _switchAndNavigate(id: string) {
+  private _switchAndNavigate(id: string): void {
     this._librarySwitchService.switch(id);
     this._router.navigate(['/']);
   }

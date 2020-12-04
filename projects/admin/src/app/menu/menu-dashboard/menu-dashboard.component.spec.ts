@@ -16,35 +16,40 @@
  */
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { AppRoutingModule } from 'projects/admin/src/app/app-routing.module';
-import { SharedModule } from '@rero/shared';
-import { FrontpageComponent } from '../../../../../widgets/frontpage/frontpage.component';
-import { HoldingItemInCollectionComponent } from './holding-item-in-collection.component';
+import { IdAttributePipe, SharedModule, User, UserService } from '@rero/shared';
 
-describe('HoldingItemInCollectionComponent', () => {
-  let component: HoldingItemInCollectionComponent;
-  let fixture: ComponentFixture<HoldingItemInCollectionComponent>;
+import { MenuDashboardComponent } from './menu-dashboard.component';
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        HoldingItemInCollectionComponent,
-        FrontpageComponent
-      ],
+describe('MenuDashboardComponent', () => {
+  let component: MenuDashboardComponent;
+  let fixture: ComponentFixture<MenuDashboardComponent>;
+
+  const user = new User({
+    currentLibrary: 1
+  });
+  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
+  userServiceSpy.user = user;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [MenuDashboardComponent],
       imports: [
+        SharedModule,
         HttpClientTestingModule,
-        AppRoutingModule,
-        TranslateModule.forRoot(),
-        SharedModule
+        TranslateModule.forRoot()
+      ],
+      providers: [
+        IdAttributePipe,
+        { provide: UserService, useValue: userServiceSpy }
       ]
     })
-    .compileComponents();
-  }));
+      .compileComponents();
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HoldingItemInCollectionComponent);
+    fixture = TestBed.createComponent(MenuDashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

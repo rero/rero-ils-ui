@@ -1,4 +1,3 @@
-
 /*
  * RERO ILS UI
  * Copyright (C) 2020 RERO
@@ -17,42 +16,38 @@
  */
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { Nl2brPipe, RecordModule } from '@rero/ng-core';
-import { SharedModule } from '@rero/shared';
-import { AppRoutingModule } from '../../../app-routing.module';
-import { FrontpageComponent } from '../../../widgets/frontpage/frontpage.component';
-import { CollectionDetailViewComponent } from './collection-detail-view.component';
-import { CollectionItemsComponent } from './collection-items/collection-items.component';
+import { User, UserService } from '@rero/shared';
+import { MenuUserServicesComponent } from './menu-user-services.component';
 
-describe('CollectionDetailViewComponent', () => {
-  let component: CollectionDetailViewComponent;
-  let fixture: ComponentFixture<CollectionDetailViewComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        CollectionDetailViewComponent,
-        CollectionItemsComponent,
-        FrontpageComponent
-      ],
+describe('MenuUserComponent', () => {
+  let component: MenuUserServicesComponent;
+  let fixture: ComponentFixture<MenuUserServicesComponent>;
+
+  const user = new User({
+    currentLibrary: 1
+  });
+  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
+  userServiceSpy.user = user;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ MenuUserServicesComponent ],
       imports: [
-        RecordModule,
-        AppRoutingModule,
         HttpClientTestingModule,
-        TranslateModule.forRoot(),
-        SharedModule
+        TranslateModule.forRoot()
       ],
       providers: [
-        Nl2brPipe
+        { provide: UserService, useValue: userServiceSpy }
       ]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CollectionDetailViewComponent);
+    fixture = TestBed.createComponent(MenuUserServicesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
