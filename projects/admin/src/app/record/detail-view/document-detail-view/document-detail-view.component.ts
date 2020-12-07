@@ -175,22 +175,35 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
     if (undefined === provisions) {
       return [];
     }
-
     const results = {};
-    provisions.map((element: any) => {
-      const type =  element.type;
-      if ('_text' in element) {
-        const elementText = element._text;
-        if (!(type in results)) {
+    provisions
+      .filter((element: any) => '_text' in element)  // Keep only element with '_text'
+      .map((element: any) => {
+        const type =  element.type;
+        if (!(type in results)) {  // if type isn't yet init
           results[type] = [];
         }
-        elementText.map(
-          (e: {language: string, value: string}) => results[type].push(e.value)
-        );
-      }
-    });
-
+        element._text.map((e: {language: string, value: string}) => results[type].push(e.value));
+      });
     return results;
+  }
+
+  /**
+   * Allow to filter provisionActivity keeping only activities that aren't 'Publication'
+   * @param element: the element to check
+   * @return True if element isn't a 'Publication', False otherwise
+   */
+  filterNotPublicationProvisionActivity(element: any): boolean {
+    return ('key' in element && element.key !== 'bf:Publication');
+  }
+
+  /**
+   * Allow to filter provisionActivity keeping only activities that are 'Publication'
+   * @param element: the element to check
+   * @return True if element is a 'Publication', False otherwise
+   */
+  filterPublicationProvisionActivity(element: any): boolean {
+    return ('key' in element && element.key === 'bf:Publication');
   }
 
   /**

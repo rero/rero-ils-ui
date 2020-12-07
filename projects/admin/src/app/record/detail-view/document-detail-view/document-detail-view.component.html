@@ -16,17 +16,22 @@
 -->
 <!-- import button for external source importation such as BNF -->
 <div *ngIf="record && record.metadata && !record.metadata.pid && pid && source" class="float-right ml-4 mt-2 mb-4">
-  <a [routerLink]="['/records', 'documents', 'new']" [queryParams]="{source: source, pid: pid}" class="btn btn-sm btn-primary"
-    translate>Import</a>
+  <a [routerLink]="['/records', 'documents', 'new']"
+     [queryParams]="{source: source, pid: pid}"
+     class="btn btn-sm btn-outline-primary"
+     translate
+  >Import</a>
 </div>
 <!-- duplicate button -->
 <div *ngIf="record && record.metadata && record.metadata.pid" class="float-right mt-2 mb-4 btn-duplicate">
-  <a [routerLink]="['/records', 'documents', 'duplicate']" [queryParams]="{type: 'documents', pid: record.metadata.pid}" class="btn btn-sm btn-primary"
-    translate>Duplicate</a>
+  <a [routerLink]="['/records', 'documents', 'duplicate']"
+     [queryParams]="{type: 'documents', pid: record.metadata.pid}"
+     class="btn btn-sm btn-outline-primary n-mr-4"
+     translate>Duplicate</a>
 </div>
 <ng-container *ngIf="record">
   <!-- HEADER -->
-  <header class="col-10 mt-3 mb-3">
+  <header class="col-10 mt-3">
     <!-- TYPE -->
     <ng-container *ngIf="record.metadata.type">
       <span id="doc-type">{{ record.metadata.type | translate | titlecase }}</span>
@@ -42,7 +47,8 @@
         [showLessLabel]="'Show less' | translate"
       ></ng-core-text-read-more>
     </h2>
-
+  </header>
+  <div class="col-12 mt-3 mb-3">
     <!-- TITLE ALTERNATIVE GRAPHICS -->
     <ng-container *ngIf="record.metadata.ui_title_altgr">
       <ng-container *ngFor="let altgr_title of record.metadata.ui_title_altgr; let i = index">
@@ -70,15 +76,14 @@
     </ng-container>
 
     <!-- PUBLICATION STATEMENT -->
-    <ng-container *ngFor="let provision of provisionActivity | keyvalue">
-      <ng-container *ngIf="provision.key === 'bf:Publication'">
-        <ul class="list-unstyled mb-0">
-          <li *ngFor="let value of provision.value; let i = index"
-          [attr.id]="i | idAttribute:{prefix: 'doc-publication-statement'}">
-            {{ value }}
-          </li>
-        </ul>
-      </ng-container>
+    <ng-container *ngFor="let provision of provisionActivity | keyvalue | callbackArrayFilter: filterPublicationProvisionActivity">
+      <ul class="list-unstyled mb-0">
+        <li *ngFor="let value of provision.value; let i = index"
+            [attr.id]="i | idAttribute:{prefix: 'doc-publication-statement'}"
+        >
+          {{ value }}
+        </li>
+      </ul>
     </ng-container>
 
     <!-- EXTENT-->
@@ -105,7 +110,7 @@
           </dt>
           <dd class="col mb-0">
             <div class="row">
-              <a id="{{'doc-part-of-' + i}}"[routerLink]="['/records', 'documents', 'detail', document.document.pid]">
+              <a id="{{'doc-part-of-' + i}}" [routerLink]="['/records', 'documents', 'detail', document.document.pid]">
                 {{ getShortMainTitle(hostDocument.metadata.title) }}
               </a>
               <ng-container *ngIf="document.numbering">
@@ -124,11 +129,16 @@
 
     <!-- ABSTRACT -->
     <ng-container *ngIf=" record.metadata.abstracts && record.metadata.abstracts.length > 0">
-      <ul class="list-unstyled mb-0">
+      <ul class="list-unstyled my-3">
         <li *ngFor="let abstract of record.metadata.abstracts; let i = index"
         [attr.id]="i | idAttribute:{prefix: 'doc-abstract'}">
-          <ng-core-text-read-more [text]="abstract" [unit]="'word'" [limit]="100"
-            [showMoreLabel]="'Show more' | translate" [showLessLabel]="'Show less' | translate">
+          <ng-core-text-read-more
+            [text]="abstract"
+            [unit]="'word'"
+            [limit]="100"
+            [showMoreLabel]="'Show more' | translate"
+            [showLessLabel]="'Show less' | translate"
+          >
           </ng-core-text-read-more>
         </li>
       </ul>
@@ -144,7 +154,8 @@
         </span>
       </div>
     </div>
-  </header>
+  </div>
+
   <!-- END OF HEADER ---------------------------------------------------------->
   <!-- TABS ------------------------------------------------------------------->
   <div>
@@ -182,41 +193,27 @@
           <dl class="row mb-0 ml-1">
             <!-- RESPONSIBILITY -->
             <ng-container *ngIf="record.metadata.ui_responsibilities">
-              <ng-container *ngFor="let responsibility of record.metadata.ui_responsibilities;
-                  first as isFirst; let i = index">
+              <ng-container *ngFor="let responsibility of record.metadata.ui_responsibilities; first as isFirst">
                 <dt class="col-sm-4 offset-sm-2 offset-md-0">
-                  <span id="doc-resp-label" *ngIf="isFirst; else elseBlock" translate>
-                    Statement of responsibility
-                  </span>
-                  <ng-template #elseBlock>&nbsp;</ng-template>
+                  <span *ngIf="isFirst" translate>Statement of responsibility</span>
                 </dt>
-                <dd id="{{'doc-responsibility-' + i}}" [ngClass]="ddCssClass">
-                  {{ responsibility }}
-                </dd>
+                <dd [ngClass]="ddCssClass">{{ responsibility }}</dd>
               </ng-container>
             </ng-container>
 
             <!-- VARIANT TITLE -->
             <ng-container *ngIf="record.metadata.ui_title_variants">
-              <ng-container *ngFor="let variant_title of record.metadata.ui_title_variants;
-                  first as isFirst; let i = index">
+              <ng-container *ngFor="let variant_title of record.metadata.ui_title_variants; first as isFirst">
                 <dt class="col-sm-4 offset-sm-2 offset-md-0">
-                  <span id="doc-variant-title-label" *ngIf="isFirst; else elseBlock" translate>
-                    Variant title
-                  </span>
-                  <ng-template #elseBlock>&nbsp;</ng-template>
+                  <span *ngIf="isFirst" translate>Variant title</span>
                 </dt>
-                <dd id="{{'doc-variant-title-' + i}}" [ngClass]="ddCssClass">
-                  {{ variant_title }}
-                </dd>
+                <dd [ngClass]="ddCssClass">{{ variant_title }}</dd>
               </ng-container>
             </ng-container>
 
             <!-- LANGUAGE -->
             <ng-container *ngIf="record.metadata.language && record.metadata.language.length > 0">
-              <dt id="doc-language-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                Language
-              </dt>
+              <dt id="doc-language-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Language</dt>
               <dd [ngClass]="ddCssClass">
                 <ng-container *ngFor="let lang of record.metadata.language; last as isLast; let i = index">
                   <span id="{{'doc-language-' + i}}">{{ lang.value | translateLanguage: currentLanguage }}</span><ng-container *ngIf="!isLast">, </ng-container>
@@ -228,24 +225,15 @@
             <ng-container *ngIf="record.metadata.seriesStatement">
               <ng-container *ngFor="let serie of getStatement(record.metadata.seriesStatement); first as isFirst; let i = index">
                 <dt class="col-sm-4 offset-sm-2 offset-md-0">
-                  <ng-container *ngIf="isFirst; else empty">
-                    <span id="doc-series-statement-label" translate>Series statement</span>
-                  </ng-container>
-                  <ng-template #empty>
-                    &nbsp;
-                  </ng-template>
+                  <span id="doc-series-statement-label" *ngIf="isFirst" translate>Series statement</span>
                 </dt>
-                <dd id="{{'doc-series-statement-' + i}}" [ngClass]="ddCssClass">
-                    {{ serie.value }}
-                </dd>
+                <dd id="{{'doc-series-statement-' + i}}" [ngClass]="ddCssClass">{{ serie.value }}</dd>
               </ng-container>
             </ng-container>
 
             <!-- MODE OF ISSUANCE -->
             <ng-container *ngIf="record.metadata.issuance">
-              <dt id="doc-issuance-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                Mode of issuance
-              </dt>
+              <dt id="doc-issuance-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Mode of issuance</dt>
               <dd id="doc-issuance" [ngClass]="ddCssClass">
                 {{ record.metadata.issuance.main_type | translate}} / {{ record.metadata.issuance.subtype }}
               </dd>
@@ -253,9 +241,7 @@
 
             <!-- COPYRIGHT DATE -->
             <ng-container *ngIf="record.metadata.copyrightDate">
-              <dt id="doc-copyright-date-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                Copyright date
-              </dt>
+              <dt id="doc-copyright-date-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Copyright date</dt>
               <dd id="doc-copyright-date" [ngClass]="ddCssClass">
                 {{ record.metadata.copyrightDate.join(", ") }}
               </dd>
@@ -264,9 +250,7 @@
             <!-- NOTES -->
             <ng-container *ngIf="record.metadata.note && record.metadata.note.length > 0 && record.metadata.note | notesFormat as notes">
               <ng-container *ngIf="notes.general">
-                <dt id="doc-note-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                  Note
-                </dt>
+                <dt id="doc-note-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Note</dt>
                 <dd [ngClass]="ddCssClass">
                   <ul class="list-unstyled mb-0">
                     <li *ngFor="let note of notes.general; let i = index"
@@ -277,9 +261,7 @@
                 </dd>
               </ng-container>
               <ng-container *ngIf="notes.otherPhysicalDetails">
-                <dt id="doc-physical-details-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                  Physical details
-                </dt>
+                <dt id="doc-physical-details-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Physical details</dt>
                 <dd [ngClass]="ddCssClass">
                   <ul class="list-unstyled mb-0">
                     <li *ngFor="let note of notes.otherPhysicalDetails; let i = index"
@@ -290,9 +272,7 @@
                 </dd>
               </ng-container>
               <ng-container *ngIf="notes.accompanyingMaterial">
-                <dt id="doc-accompanying-material-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                  Accompanying material
-                </dt>
+                <dt id="doc-accompanying-material-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Accompanying material</dt>
                 <dd [ngClass]="ddCssClass">
                   <ul class="list-unstyled mb-0">
                     <li *ngFor="let note of notes.accompanyingMaterial; let i = index"
@@ -305,29 +285,25 @@
             </ng-container>
 
             <!-- PUBLICATION STATEMENT -->
-            <ng-container *ngFor="let provision of provisionActivity | keyvalue">
-              <ng-container *ngIf="provision.key !== 'bf:Publication'">
-                <dt id="doc-provision-activity-label" class="col-sm-4 offset-sm-2 offset-md-0">
-                  {{ provision.key | translate }}
-                </dt>
-                <dd [ngClass]="ddCssClass">
-                  <ul class="list-unstyled mb-0">
-                    <li *ngFor="let value of provision.value; let i = index"
-                    [attr.id]="i | idAttribute:{prefix: 'doc-provision-activity'}">
-                      {{ value }}
-                    </li>
-                  </ul>
-                </dd>
-              </ng-container>
+            <ng-container *ngFor="let provision of provisionActivity | keyvalue | callbackArrayFilter: filterNotPublicationProvisionActivity">
+              <dt id="doc-provision-activity-label" class="col-sm-4 offset-sm-2 offset-md-0">
+                {{ provision.key | translate }}
+              </dt>
+              <dd [ngClass]="ddCssClass">
+                <ul class="list-unstyled mb-0">
+                  <li *ngFor="let value of provision.value; let i = index"
+                  [attr.id]="i | idAttribute:{prefix: 'doc-provision-activity'}">
+                    {{ value }}
+                  </li>
+                </ul>
+              </dd>
             </ng-container>
 
             <!-- PHYSICAL DESCRIPTION -->
             <ng-container *ngIf="
                 record.metadata.otherMaterialCharacteristics ||
                 record.metadata.formats">
-              <dt id="doc-physical-description-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                Physical description
-              </dt>
+              <dt id="doc-physical-description-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Physical description</dt>
               <dd [ngClass]="ddCssClass">
                 <ng-container *ngIf="record.metadata.otherMaterialCharacteristics">
                   <span id="doc-physical-description">{{ record.metadata.otherMaterialCharacteristics }}</span>
@@ -340,93 +316,66 @@
             </ng-container>
 
             <!-- DURATION -->
-            <ng-container *ngIf="record.metadata.duration as duration">
-              <ng-container *ngIf="duration.length > 0">
-                <dt id="doc-duration-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                  Duration
-                </dt>
-                <dd id="doc-duration" [ngClass]="ddCssClass">
-                  {{ duration.join(", ") }}
-                </dd>
-              </ng-container>
+            <ng-container *ngIf="record.metadata.duration && record.metadata.duration.length > 0">
+              <dt id="doc-duration-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Duration</dt>
+              <dd id="doc-duration" [ngClass]="ddCssClass">
+                {{ record.metadata.duration.join(", ") }}
+              </dd>
             </ng-container>
 
             <!-- ILLUSTRATIVE CONTENT -->
-            <ng-container *ngIf="record.metadata.illustrativeContent as illustrativeContent">
-              <ng-container *ngIf="illustrativeContent.length > 0">
-                <dt id="doc-illustrative-content-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                  Illustrations
-                </dt>
-                <dd id="doc-illustrative-content" [ngClass]="ddCssClass">
-                  {{ illustrativeContent.join(", ") }}
-                </dd>
-              </ng-container>
+            <ng-container *ngIf="record.metadata.illustrativeContent && record.metadata.illustrativeContent.length > 0">
+              <dt id="doc-illustrative-content-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Illustrations</dt>
+              <dd id="doc-illustrative-content" [ngClass]="ddCssClass">
+                {{ record.metadata.illustrativeContent.join(", ") }}
+              </dd>
             </ng-container>
 
             <!-- COLOR CONTENT -->
-            <ng-container *ngIf="record.metadata.colorContent as colors">
-              <ng-container *ngIf="colors.length > 0">
-                <dt id="doc-colors-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                  Colors
-                </dt>
-                <dd id="doc-colors" [ngClass]="ddCssClass">
-                  <ng-container *ngFor="let color of colors; last as isLast">
-                    {{ color | translate }}<ng-container *ngIf="!isLast">, </ng-container>
-                  </ng-container>
-                </dd>
-              </ng-container>
+            <ng-container *ngIf="record.metadata.colorContent && record.metadata.colorContent.length > 0">
+              <dt id="doc-colors-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Colors</dt>
+              <dd id="doc-colors" [ngClass]="ddCssClass">
+                <ng-container *ngFor="let color of record.metadata.colorContent; last as isLast">
+                  {{ color | translate }}<ng-container *ngIf="!isLast">, </ng-container>
+                </ng-container>
+              </dd>
             </ng-container>
+
             <!-- PRODUCTION METHOD -->
-            <ng-container *ngIf="record.metadata.productionMethod as productionMethod">
-              <ng-container *ngIf="productionMethod.length > 0">
-                <dt id="doc-production-method-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                  Production method
-                </dt>
-                <dd id="doc-production-method" [ngClass]="ddCssClass">
-                  {{ productionMethod.join(", ") }}
-                </dd>
-              </ng-container>
+            <ng-container *ngIf="record.metadata.productionMethod && record.metadata.productionMethod.length > 0">
+              <dt id="doc-production-method-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Production method</dt>
+              <dd id="doc-production-method" [ngClass]="ddCssClass">
+                {{ record.metadata.productionMethod.join(", ") }}
+              </dd>
             </ng-container>
 
             <!-- BOOK FORMAT -->
-            <ng-container *ngIf="record.metadata.bookFormat as bookFormat">
-              <ng-container *ngIf="bookFormat.length > 0">
-                <dt id="doc-book-format-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                  Format
-                </dt>
-                <dd id="doc-book-format" [ngClass]="ddCssClass">
-                  {{ bookFormat.join(", ") }}
-                </dd>
-              </ng-container>
+            <ng-container *ngIf="record.metadata.bookFormat && record.metadata.bookFormat.length > 0">
+              <dt id="doc-book-format-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Format</dt>
+              <dd id="doc-book-format" [ngClass]="ddCssClass">
+                {{ record.metadata.bookFormat.join(", ") }}
+              </dd>
             </ng-container>
 
             <!-- DIMENSION -->
-            <ng-container *ngIf="record.metadata.dimensions as dimensions">
-              <ng-container *ngIf="dimensions.length > 0">
-                <dt id="doc-dimension-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                  Dimensions
-                </dt>
-                <dd id="doc-dimension" [ngClass]="ddCssClass">
-                  {{ dimensions.join(", ") }}
-                </dd>
-              </ng-container>
+            <ng-container *ngIf="record.metadata.dimensions && record.metadata.dimensions.length > 0">
+              <dt id="doc-dimension-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Dimensions</dt>
+              <dd id="doc-dimension" [ngClass]="ddCssClass">
+                {{ record.metadata.dimensions.join(", ") }}
+              </dd>
             </ng-container>
 
             <!-- ADDITIONAL MATERIALS -->
             <ng-container *ngIf="record.metadata.additionalMaterials">
-              <dt id="doc-add-materials-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                Additional materials
-              </dt>
+              <dt id="doc-add-materials-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Additional materials</dt>
               <dd id="doc-add-materials" [ngClass]="ddCssClass">
                 {{ record.metadata.additionalMaterials }}
               </dd>
             </ng-container>
 
             <!-- UNIFORM TITLE -->
-            <ng-container *ngIf="record.metadata.titlesProper">
-              <dt id="doc-uniform-title-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                Uniform title
-              </dt>
+            <ng-container *ngIf="record.metadata.titlesProper && record.metadata.titlesProper.length > 0">
+              <dt id="doc-uniform-title-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Uniform title</dt>
               <dd id="doc-uniform-title" [ngClass]="ddCssClass">
                 {{ record.metadata.titlesProper.join("; ") }}
               </dd>
@@ -435,31 +384,19 @@
             <!-- RELATED RESOURCE -->
             <ng-container *ngIf="relatedResources">
               <ng-container *ngFor="let eloc of relatedResources; first as isFirst; let i = index">
-                <ng-container *ngIf="isFirst; else elseBlock">
-                  <dt id="doc-related-resource-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                    Related resource
-                  </dt>
-                  <dd id="{{'doc-related-resource-' + i}}" [ngClass]="ddCssClass">
-                    <admin-related-resource [electronicLocator]="eloc"></admin-related-resource>
-                  </dd>
-                </ng-container>
-                <ng-template #elseBlock>
-                  <dt class="col-sm-4 offset-sm-2 offset-md-0">
-                    &nbsp;
-                  </dt>
-                  <dd id="{{'doc-related-resource-' + i}}" [ngClass]="ddCssClass">
-                    <admin-related-resource [electronicLocator]="eloc"></admin-related-resource>
-                  </dd>
-                </ng-template>
+                <dt id="doc-related-resource-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
+                  <span *ngIf="isFirst">Related resource</span>
+                </dt>
+                <dd id="{{'doc-related-resource-' + i}}" [ngClass]="ddCssClass">
+                  <admin-related-resource [electronicLocator]="eloc"></admin-related-resource>
+                </dd>
               </ng-container>
             </ng-container>
 
             <!-- IDENTIFIED BY -->
             <ng-container *ngIf="identifiedBy as identifiers">
               <ng-container *ngIf="identifiers.length > 0">
-                <dt id="doc-identifier-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                  Identifier
-                </dt>
+                <dt id="doc-identifier-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Identifier</dt>
                 <dd [ngClass]="ddCssClass">
                   <ul class="list-unstyled mb-0">
                     <li *ngFor="let identifier of identifiers; let i = index"
@@ -480,19 +417,15 @@
             </ng-container>
 
             <!-- ELECTRONIC LOCATION -->
-            <ng-container *ngIf="
-                record.metadata.electronic_location &&
-                record.metadata.electronic_location.length > 0
-              ">
-              <dt id="doc-electronic-location-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                Online access
-              </dt>
+            <ng-container *ngIf="record.metadata.electronic_location && record.metadata.electronic_location.length > 0">
+              <dt id="doc-electronic-location-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Online access</dt>
               <dd [ngClass]="ddCssClass">
                 <ul class="list-unstyled mb-0">
                   <li *ngFor="let location of record.metadata.electronic_location; let i = index"
-                  [attr.id]="i | idAttribute:{prefix: 'doc-electronic-location'}">
+                      [attr.id]="i | idAttribute:{prefix: 'doc-electronic-location'}">
                     <a href="{{ location.uri }}">
-                      <i class="fa fa-lock fa-fw"></i> {{ location.uri }}
+                      <i class="fa fa-lock fa-fw"></i>
+                      {{ location.uri }}
                     </a>
                   </li>
                 </ul>
@@ -501,13 +434,9 @@
 
             <!-- SOURCE -->
             <ng-container *ngIf="record.metadata.source">
-              <dt id="doc-source-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                Source
-              </dt>
+              <dt id="doc-source-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Source</dt>
               <dd id="doc-source" [ngClass]="ddCssClass">
-                <a href="{{ record.metadata.source }}">
-                  {{ record.metadata.source }}
-                </a>
+                <a href="{{ record.metadata.source }}">{{ record.metadata.source }}</a>
               </dd>
             </ng-container>
           </dl>

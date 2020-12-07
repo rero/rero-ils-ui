@@ -214,6 +214,34 @@ json-schema-form {
   }
 }
 
+.informations {
+  position: relative;
+  padding-left: 3rem;
+  width: calc(100% - 3rem);
+
+  .name {
+    font-weight: bold;
+    z-index: 0;
+    padding: 0;
+
+    &::before {
+      content: "";
+      border-top: 1px dotted $secondary;
+      width: calc(100% - .25rem);
+      position: absolute;
+      left: 0;
+      top: 1rem;
+      z-index: -1;
+    }
+
+    span {
+      background-color: #FFF;
+      padding-right: .25rem;
+      display: inline;
+    }
+  }
+}
+
 .card {
   .card-header:not(:first-child) {
     border-top: $card-border-width solid $card-border-color;
