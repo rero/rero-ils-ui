@@ -82,6 +82,7 @@ export class DocumentEditorComponent {
       record => {
         if (record) {
           delete (record.metadata.pid);
+          delete (record.metadata.harvested);
           this.model = record.metadata;
           this._toastrService.success('Document duplicated');
         } else {
