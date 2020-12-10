@@ -95,13 +95,14 @@ export class UserService {
       .pipe(map(data => {
         return data.metadata ? data.metadata : undefined;
       })).subscribe(user => {
-        if (user) {
+        const access = this._isAuthorizedAccess(user);
+        if (access) {
           const library = user.libraries[0];
           this._user = new User(user);
           this.user
               .setCurrentLibrary(library.pid)
               .setCurrentOrganisation(library.organisation.pid);
-          this._allowAdminInterfaceAccess = this._isAuthorizedAccess();
+          this._allowAdminInterfaceAccess = access;
           this._onUserLoaded.next(this._user);
         }
         this._loaded = true;
@@ -110,15 +111,14 @@ export class UserService {
 
   /**
    * Is authorized to admin access
+   * @param user - User logged json from rero-ils
    * @return boolean
    */
-  private _isAuthorizedAccess() {
+  private _isAuthorizedAccess(user: any) {
+    if (!(user) || !('roles' in user) || !(user.libraries)) {
+      return false;
+    }
     const adminRoles = this._sharedConfigService.adminRoles;
-    return this._allowAdminInterfaceAccess = this._user.getRoles()
-    .filter((role: string) => {
-      if (adminRoles.indexOf(role) > -1) {
-        return role;
-      }
-    }).length > 0 ? true : false;
+    return user.roles.some((role: string) => adminRoles.indexOf(role) > -1 );
  }
 }

@@ -16,7 +16,7 @@
  */
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
@@ -29,12 +29,13 @@ describe('MenuSwithLibraryComponent', () => {
   let component: MenuSwitchLibraryComponent;
   let fixture: ComponentFixture<MenuSwitchLibraryComponent>;
 
-  const librarySwitchMenuServiceSpy = jasmine.createSpyObj('LibrarySwitchMenuService', ['']);
+  const librarySwitchMenuServiceSpy = jasmine.createSpyObj('LibrarySwitchMenuService', ['init']);
   librarySwitchMenuServiceSpy._user = new User({
     roles: ['system_librarian']
   });
+  librarySwitchMenuServiceSpy.init.and.returnValue(null);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ MenuSwitchLibraryComponent ],
       imports: [
