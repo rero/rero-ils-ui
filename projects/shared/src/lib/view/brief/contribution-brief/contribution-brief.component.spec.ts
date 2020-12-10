@@ -22,7 +22,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule, Nl2brPipe } from '@rero/ng-core';
-import { NgVarDirective } from '../../../directive/ng-var.directive';
+import { NgVarDirective } from '@rero/ng-core';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
 import { UrlActivePipe } from '../../../pipe/url-active.pipe';
 import { ContributionSourcesComponent } from '../contribution-sources/contribution-sources.component';
