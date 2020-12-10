@@ -15,7 +15,7 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="borrowedBy.length > 0 || requestedBy.length > 0">
-  <div class="card mt-2">
+  <div class="card mt-2" id="item-loans-requests">
     <!-- Loan borrowed -->
     <ng-container *ngIf="borrowedBy.length > 0">
       <div class="card-header font-weight-bold" translate>Borrowed by</div>
