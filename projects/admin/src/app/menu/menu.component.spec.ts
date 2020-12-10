@@ -31,10 +31,11 @@ describe('MenuComponent', () => {
   let component: MenuComponent;
   let fixture: ComponentFixture<MenuComponent>;
 
-  const librarySwitchMenuServiceSpy = jasmine.createSpyObj('LibrarySwitchMenuService', ['']);
+  const librarySwitchMenuServiceSpy = jasmine.createSpyObj('LibrarySwitchMenuService', ['init']);
   librarySwitchMenuServiceSpy._user = new User({
     roles: ['system_librarian']
   });
+  librarySwitchMenuServiceSpy.init.and.returnValue(null);
   const userTestingService = jasmine.createSpyObj(
     'UserService', ['init']
   );
