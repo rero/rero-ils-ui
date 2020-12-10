@@ -144,3 +144,9 @@ _('local_field_7');
 _('local_field_8');
 _('local_field_9');
 _('local_field_10');
+
+// Show more resources
+_('{{ counter }} hidden issue');
+_('{{ counter }} hidden issues');
+_('{{ counter }} hidden item');
+_('{{ counter }} hidden items');
