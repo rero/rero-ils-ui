@@ -18,8 +18,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CoreModule, Nl2brPipe, RecordModule, TruncateTextPipe } from '@rero/ng-core';
-import { NgVarDirective } from './directive/ng-var.directive';
+import { CoreModule, NgVarDirective, Nl2brPipe, RecordModule, TruncateTextPipe } from '@rero/ng-core';
 import { ContributionFormatPipe } from './pipe/contribution-format.pipe';
 import { ContributionTypePipe } from './pipe/contribution-type.pipe';
 import { ExtractSourceFieldPipe } from './pipe/extract-source-field.pipe';
@@ -53,7 +52,6 @@ import { InheritedCallNumberComponent } from './view/inherited-call-number/inher
     ProvisionActivityPipe,
     ContributionTypePipe,
     UrlActivePipe,
-    NgVarDirective,
     ItemHoldingsCallNumberPipe,
     InheritedCallNumberComponent
   ],
@@ -72,7 +70,6 @@ import { InheritedCallNumberComponent } from './view/inherited-call-number/inher
     ProvisionActivityPipe,
     ContributionTypePipe,
     UrlActivePipe,
-    NgVarDirective,
     Nl2brPipe,
     ItemHoldingsCallNumberPipe,
     InheritedCallNumberComponent
@@ -92,7 +89,8 @@ import { InheritedCallNumberComponent } from './view/inherited-call-number/inher
     JoinPipe,
     UrlActivePipe,
     TruncateTextPipe,
-    Nl2brPipe
+    Nl2brPipe,
+    NgVarDirective
   ],
   entryComponents: [
     ContributionBriefComponent

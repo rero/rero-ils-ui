@@ -23,7 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RecordModule } from '@rero/ng-core';
 import { AppRoutingModule } from 'projects/admin/src/app/app-routing.module';
 import { FrontpageComponent } from 'projects/admin/src/app/widgets/frontpage/frontpage.component';
-import { NgVarDirective } from '../../../directive/ng-var.directive';
+import { NgVarDirective } from '@rero/ng-core';
 import { ContributionTypePipe } from '../../../pipe/contribution-type.pipe';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
 import { IdAttributePipe } from '../../../pipe/id-attribute.pipe';

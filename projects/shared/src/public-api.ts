@@ -22,7 +22,6 @@
 export * from './lib/api/user-api.service';
 export * from './lib/class/ContextSettings.interface';
 export * from './lib/class/user';
-export * from './lib/directive/ng-var.directive';
 export * from './lib/pipe/contribution-format.pipe';
 export * from './lib/pipe/contribution-type.pipe';
 export * from './lib/pipe/extract-source-field.pipe';
