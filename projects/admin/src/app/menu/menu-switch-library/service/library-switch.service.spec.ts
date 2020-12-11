@@ -76,6 +76,7 @@ describe('LibrarySwitchService', () => {
 
   it('should be able to switch libraries (system librarian).', () => {
     user.roles.push('system_librarian');
+    userServiceSpy.user = user;
     librarySwitchService.librarySwitch$.subscribe((u: User) => {
       expect(u.currentLibrary).toEqual('4');
     });
