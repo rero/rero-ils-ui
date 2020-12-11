@@ -66,7 +66,7 @@ describe('LibrarySwitchService', () => {
 
   it('should be able to switch libraries', () => {
     if (user.hasRole('system_librarian')) {
-      user.roles = user.roles.filter(role => role !== 'system_librarian');
+      user.roles = user.roles.filter((role: string) => role !== 'system_librarian');
     }
     librarySwitchService.librarySwitch$.subscribe((u: User) => {
       expect(u.currentLibrary).toEqual('2');
@@ -83,6 +83,9 @@ describe('LibrarySwitchService', () => {
   });
 
   it('should have an exception if the library does not exist in the list (librarian).', () => {
+    if (user.hasRole('system_librarian')) {
+      user.roles = user.roles.filter((role: string) => role !== 'system_librarian');
+    }
     expect(() => {
       librarySwitchService.switch('3');
     }).toThrowError(LibrarySwitchError);
