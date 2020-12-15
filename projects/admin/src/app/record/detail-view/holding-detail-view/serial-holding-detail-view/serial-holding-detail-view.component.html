@@ -43,9 +43,9 @@
       <ng-template tabHeading>
         <i class="fa fa-list-ul mr-1"></i><span translate>Issues</span>
       </ng-template>
-      <div class="row mt-2">
-        <div class="col mt-1">
-          <button class="btn btn-sm btn-outline-primary float-right"
+      <div class="mt-2">
+        <div class="d-flex flex-row-reverse">
+          <button class="btn btn-sm btn-outline-primary"
             [routerLink]="['/records', 'items', 'new']"
             [queryParams]="{
                 'holding': holding.id,
@@ -57,109 +57,107 @@
             {{ 'Add irregular issue' | translate }} ...
           </button>
         </div>
-        <div class="col">
-          <div class="card mt-2">
-            <div class="card-header">
-              <div class="row">
-                <div class="col-sm-4" translate>Numbering</div>
-                <div class="col-sm-1 text-center" translate>Status</div>
-                <div class="col-sm-2" translate>Call number</div>
-                <div class="col-sm-3" translate>Reception date</div>
+        <div class="card mt-2">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-sm-4" translate>Numbering</div>
+              <div class="col-sm-1 text-center" translate>Status</div>
+              <div class="col-sm-2" translate>Call number</div>
+              <div class="col-sm-3" translate>Reception date</div>
+            </div>
+          </div>
+          <div class="card-body">
+
+            <!-- SHOW MORE PREDICTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+            <div class="row mt-1 mb-2">
+              <a [routerLink]="" (click)="showMore('prediction', 3)" class="col">
+                <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i>
+                {{ 'Show more' | translate }} ...
+              </a>
+            </div>
+            <!-- PREDICTIONS ISSUES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+            <div class="row mt-1 expected-issue" *ngFor="let prediction of predictionsItems; let last = last">
+              <div class="col-sm-5 text" [ngClass]="{'pb-2': !last}">{{ prediction.issue }}</div>
+              <div class="offset-sm-2 col-sm-3 text">
+                {{'expected at' | translate }}
+                {{ prediction.expected_date | dateTranslate }}
+              </div>
+              <div class="col-sm-2 text-right" *ngIf="last">
+                <!-- QUICK RECEIVE BUTTON -->
+                <button type="button" class="btn btn-sm btn-outline-primary ml-1"
+                        title="{{ 'Quick receive' | translate }}"
+                        (click)="quickIssueReceive()">
+                  <i class="fa fa-file-text-o"></i>
+                </button>
+                <!-- RECEIVE ISSUE BUTTON -->
+                <button type="button" class="btn btn-sm btn-outline-primary ml-1"
+                        title="{{ 'Receive and edit this issue' | translate }}"
+                        [routerLink]="['/records', 'items', 'new']"
+                        [queryParams]="{
+                            'holding': holding.id,
+                            'redirectTo': 'records/holdings/detail/' + holding.id,
+                            'enumerationAndChronology': prediction.issue,
+                            'expected_date': prediction.expected_date
+                        }">
+                  <i class="fa fa-pencil"></i>
+                </button>
               </div>
             </div>
-            <div class="card-body">
-
-              <!-- SHOW MORE PREDICTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-              <div class="row mt-1 mb-2">
-                <a [routerLink]="" (click)="showMore('prediction', 3)" class="col">
-                  <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i>
+            <!-- RECEIVED ISSUES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+            <div class="row mt-1 "
+                *ngFor="let item of this.receivedItems"
+                [ngClass]="{'deleted-status': item.metadata.issue.status == 'deleted'}">
+              <div class="col-sm-4 text">
+                {{ item.metadata.enumerationAndChronology }}
+                <span class="badge badge-pill badge-info pl-2" *ngIf="item.new_issue" translate>New</span>
+              </div>
+              <div class="col-sm-1 text-center">
+                <i class="fa" title="{{ item.metadata.issue.status | translate }}"
+                  [ngClass]="getIcon(item.metadata.issue.status)"
+                ></i>
+              </div>
+              <div class="col-sm-2 text">{{ item.metadata.call_number }}</div>
+              <div class="col-sm-3 text">{{ item.metadata.issue.received_date | dateTranslate }}</div>
+              <div class="col-sm-2 text-right">
+                <!-- DETAIL BUTTON -->
+                <button type="button"  class="btn btn-sm btn-outline-primary"
+                        title="{{ 'Detail' | translate }}"
+                        [routerLink]="['/records', 'items', 'detail', item.metadata.pid]">
+                  <i class="fa fa-eye"></i>
+                </button>
+                <!-- EDIT BUTTON -->
+                <button *ngIf="item.permissions && item.permissions.update && item.permissions.update.can"
+                        type="button" class="btn btn-sm btn-outline-primary ml-1"
+                        title="{{ 'Edit' | translate}}"
+                        [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
+                        [queryParams]="{'redirectTo': 'records/holdings/detail/' + holding.id }">
+                  <i class="fa fa-pencil"></i>
+                </button>
+                <!-- DELETE BUTTON -->
+                <button *ngIf="item.permissions && item.permissions.delete && item.permissions.delete.can; else deleteInfo"
+                        type="button" class="btn btn-outline-danger btn-sm ml-1"
+                        title="{{ 'Delete' | translate}}"
+                        (click)="deleteIssue(item)">
+                  <i class="fa fa-trash" ></i>
+                </button>
+                <ng-template #deleteInfo>
+                  <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"
+                          title="{{ 'Delete' | translate}}"
+                          [popover]="tolTemplate" triggers="mouseenter:mouseleave">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                  <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage(item) | nl2br"></div></ng-template>
+                </ng-template>
+              </div>
+            </div>
+            <!-- SHOW MORE RECEIVED ISSUE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+            <div class="row mt-1" *ngIf="receivedItems.length < totalReceivedItems">
+              <div class="col">
+                <a [routerLink]="" (click)="showMore('received', 5)">
+                  <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
                   {{ 'Show more' | translate }} ...
                 </a>
-              </div>
-              <!-- PREDICTIONS ISSUES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-              <div class="row mt-1 expected-issue" *ngFor="let prediction of predictionsItems; let last = last">
-                <div class="col-sm-5 text" [ngClass]="{'pb-2': !last}">{{ prediction.issue }}</div>
-                <div class="offset-sm-2 col-sm-3 text">
-                  {{'expected at' | translate }}
-                  {{ prediction.expected_date | dateTranslate }}
-                </div>
-                <div class="col-sm-2 text-right" *ngIf="last">
-                  <!-- QUICK RECEIVE BUTTON -->
-                  <button type="button" class="btn btn-sm btn-outline-primary ml-1"
-                          title="{{ 'Quick receive' | translate }}"
-                          (click)="quickIssueReceive()">
-                    <i class="fa fa-file-text-o"></i>
-                  </button>
-                  <!-- RECEIVE ISSUE BUTTON -->
-                  <button type="button" class="btn btn-sm btn-outline-primary ml-1"
-                          title="{{ 'Receive and edit this issue' | translate }}"
-                          [routerLink]="['/records', 'items', 'new']"
-                          [queryParams]="{
-                              'holding': holding.id,
-                              'redirectTo': 'records/holdings/detail/' + holding.id,
-                              'enumerationAndChronology': prediction.issue,
-                              'expected_date': prediction.expected_date
-                          }">
-                    <i class="fa fa-pencil"></i>
-                  </button>
-                </div>
-              </div>
-              <!-- RECEIVED ISSUES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-              <div class="row mt-1 "
-                  *ngFor="let item of this.receivedItems"
-                  [ngClass]="{'deleted-status': item.metadata.issue.status == 'deleted'}">
-                <div class="col-sm-4 text">
-                  {{ item.metadata.enumerationAndChronology }}
-                  <span class="badge badge-pill badge-info pl-2" *ngIf="item.new_issue" translate>New</span>
-                </div>
-                <div class="col-sm-1 text-center">
-                  <i class="fa" title="{{ item.metadata.issue.status | translate }}"
-                    [ngClass]="getIcon(item.metadata.issue.status)"
-                  ></i>
-                </div>
-                <div class="col-sm-2 text">{{ item.metadata.call_number }}</div>
-                <div class="col-sm-3 text">{{ item.metadata.issue.received_date | dateTranslate }}</div>
-                <div class="col-sm-2 text-right">
-                  <!-- DETAIL BUTTON -->
-                  <button type="button"  class="btn btn-sm btn-outline-primary"
-                          title="{{ 'Detail' | translate }}"
-                          [routerLink]="['/records', 'items', 'detail', item.metadata.pid]">
-                    <i class="fa fa-eye"></i>
-                  </button>
-                  <!-- EDIT BUTTON -->
-                  <button *ngIf="item.permissions && item.permissions.update && item.permissions.update.can"
-                          type="button" class="btn btn-sm btn-outline-primary ml-1"
-                          title="{{ 'Edit' | translate}}"
-                          [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
-                          [queryParams]="{'redirectTo': 'records/holdings/detail/' + holding.id }">
-                    <i class="fa fa-pencil"></i>
-                  </button>
-                  <!-- DELETE BUTTON -->
-                  <button *ngIf="item.permissions && item.permissions.delete && item.permissions.delete.can; else deleteInfo"
-                          type="button" class="btn btn-outline-danger btn-sm ml-1"
-                          title="{{ 'Delete' | translate}}"
-                          (click)="deleteIssue(item)">
-                    <i class="fa fa-trash" ></i>
-                  </button>
-                  <ng-template #deleteInfo>
-                    <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"
-                            title="{{ 'Delete' | translate}}"
-                            [popover]="tolTemplate" triggers="mouseenter:mouseleave">
-                      <i class="fa fa-trash"></i>
-                    </button>
-                    <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage(item) | nl2br"></div></ng-template>
-                  </ng-template>
-                </div>
-              </div>
-              <!-- SHOW MORE RECEIVED ISSUE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-              <div class="row mt-1" *ngIf="receivedItems.length < totalReceivedItems">
-                <div class="col">
-                  <a [routerLink]="" (click)="showMore('received', 5)">
-                    <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
-                    {{ 'Show more' | translate }} ...
-                  </a>
-                  <span class="pl-3 small text-secondary">({{ showMoreIssuesCounter }})</span>
-                </div>
+                <span class="pl-3 small text-secondary">({{ showMoreIssuesCounter }})</span>
               </div>
             </div>
           </div>
