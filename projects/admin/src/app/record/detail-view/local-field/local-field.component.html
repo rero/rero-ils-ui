@@ -49,11 +49,13 @@
 </ng-container>
 
 <ng-template #addLocalField>
-  <a
-    [routerLink]="['/records', 'local_fields', 'new']"
-    [queryParams]="{ type: resourceType, ref: resourcePid }"
-    class="btn btn-sm btn-outline-primary ml-3 mt-2"
-  >
-    <i class="fa fa-plus-square-o"></i> {{ 'Add local fields' | translate }}
-  </a>
+  <div class="d-flex flex-row-reverse">
+    <a
+      [routerLink]="['/records', 'local_fields', 'new']"
+      [queryParams]="{ type: resourceType, ref: resourcePid }"
+      class="btn btn-sm btn-outline-primary"
+    >
+      <i class="fa fa-plus-square-o"></i> {{ 'Add local fields' | translate }}
+    </a>
+  </div>
 </ng-template>
