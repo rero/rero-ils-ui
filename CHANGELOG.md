@@ -1,11 +1,51 @@
 # Changelog
 
+## [v0.9.0](https://github.com/rero/rero-ils-ui/tree/v0.9.0) (2020-12-16)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.8.0...v0.9.0)
+
+**Implemented enhancements:**
+
+- documents: group holdings by libraries [\#453](https://github.com/rero/rero-ils-ui/pull/453) ([Garfield-fr](https://github.com/Garfield-fr))
+
+**Fixed bugs:**
+
+- general: fix several UI issues. [\#446](https://github.com/rero/rero-ils-ui/pull/446) ([zannkukai](https://github.com/zannkukai))
+- editor: fix patron editor [\#443](https://github.com/rero/rero-ils-ui/pull/443) ([zannkukai](https://github.com/zannkukai))
+
+**Merged pull requests:**
+
+- library switch: fix redirection issue [\#474](https://github.com/rero/rero-ils-ui/pull/474) ([Garfield-fr](https://github.com/Garfield-fr))
+- menus: add ILL request management into menu. [\#473](https://github.com/rero/rero-ils-ui/pull/473) ([zannkukai](https://github.com/zannkukai))
+- holdings: fix holding detail page display [\#472](https://github.com/rero/rero-ils-ui/pull/472) ([zannkukai](https://github.com/zannkukai))
+- search: fix ILL request search results errors [\#471](https://github.com/rero/rero-ils-ui/pull/471) ([jma](https://github.com/jma))
+- translation: fix show more resources link [\#466](https://github.com/rero/rero-ils-ui/pull/466) ([zannkukai](https://github.com/zannkukai))
+- item: sort notifications by chronological order [\#465](https://github.com/rero/rero-ils-ui/pull/465) ([zannkukai](https://github.com/zannkukai))
+- permissions: improve access control [\#464](https://github.com/rero/rero-ils-ui/pull/464) ([Garfield-fr](https://github.com/Garfield-fr))
+- document: improve document detail view [\#461](https://github.com/rero/rero-ils-ui/pull/461) ([zannkukai](https://github.com/zannkukai))
+- document: fix duplicate harvested document [\#460](https://github.com/rero/rero-ils-ui/pull/460) ([zannkukai](https://github.com/zannkukai))
+- Widget: fix dashboard widget [\#457](https://github.com/rero/rero-ils-ui/pull/457) ([zannkukai](https://github.com/zannkukai))
+- menu: generation of menus by services [\#456](https://github.com/rero/rero-ils-ui/pull/456) ([Garfield-fr](https://github.com/Garfield-fr))
+- item: display item notes [\#454](https://github.com/rero/rero-ils-ui/pull/454) ([zannkukai](https://github.com/zannkukai))
+- circulation: adds a counter on history tab [\#452](https://github.com/rero/rero-ils-ui/pull/452) ([zannkukai](https://github.com/zannkukai))
+- circulation: allow checkout with fixed due date [\#449](https://github.com/rero/rero-ils-ui/pull/449) ([zannkukai](https://github.com/zannkukai))
+- users: display keep\_history for patron [\#447](https://github.com/rero/rero-ils-ui/pull/447) ([BadrAly](https://github.com/BadrAly))
+- dependencies: update to angular 11 [\#445](https://github.com/rero/rero-ils-ui/pull/445) ([jma](https://github.com/jma))
+- items: make acquisition default date optional [\#444](https://github.com/rero/rero-ils-ui/pull/444) ([zannkukai](https://github.com/zannkukai))
+- menu: allow the librarian to switch library [\#442](https://github.com/rero/rero-ils-ui/pull/442) ([Garfield-fr](https://github.com/Garfield-fr))
+- circulation policy: improve editor [\#440](https://github.com/rero/rero-ils-ui/pull/440) ([AoNoOokami](https://github.com/AoNoOokami))
+- request: implement basic ILL request management [\#439](https://github.com/rero/rero-ils-ui/pull/439) ([zannkukai](https://github.com/zannkukai))
+- git: update PR template [\#428](https://github.com/rero/rero-ils-ui/pull/428) ([AoNoOokami](https://github.com/AoNoOokami))
+- circulation: improve labels [\#427](https://github.com/rero/rero-ils-ui/pull/427) ([AoNoOokami](https://github.com/AoNoOokami))
+- data: implement local fields [\#418](https://github.com/rero/rero-ils-ui/pull/418) ([Garfield-fr](https://github.com/Garfield-fr))
+
 ## [v0.8.0](https://github.com/rero/rero-ils-ui/tree/v0.8.0) (2020-11-24)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.7.1...v0.8.0)
 
 **Merged pull requests:**
 
+- release: v0.8.0 [\#441](https://github.com/rero/rero-ils-ui/pull/441) ([jma](https://github.com/jma))
 - holdings: fix prediction preview [\#437](https://github.com/rero/rero-ils-ui/pull/437) ([jma](https://github.com/jma))
 - items: fix display notes content. [\#436](https://github.com/rero/rero-ils-ui/pull/436) ([zannkukai](https://github.com/zannkukai))
 - ui: adapt templates for cypress tests [\#435](https://github.com/rero/rero-ils-ui/pull/435) ([AoNoOokami](https://github.com/AoNoOokami))
@@ -113,7 +153,6 @@
 - Translations update from Weblate [\#359](https://github.com/rero/rero-ils-ui/pull/359) ([weblate](https://github.com/weblate))
 - search: fix contribution facet [\#354](https://github.com/rero/rero-ils-ui/pull/354) ([rerowep](https://github.com/rerowep))
 - search: fix contribution link [\#352](https://github.com/rero/rero-ils-ui/pull/352) ([lauren-d](https://github.com/lauren-d))
-- editor: define custom documents typeahead type [\#350](https://github.com/rero/rero-ils-ui/pull/350) ([lauren-d](https://github.com/lauren-d))
 - ui: adapt templates for cypress tests [\#349](https://github.com/rero/rero-ils-ui/pull/349) ([AoNoOokami](https://github.com/AoNoOokami))
 - document: clear '\_draft' key when saving document. [\#347](https://github.com/rero/rero-ils-ui/pull/347) ([zannkukai](https://github.com/zannkukai))
 - circulation: fix patron info in loan view [\#345](https://github.com/rero/rero-ils-ui/pull/345) ([AoNoOokami](https://github.com/AoNoOokami))
@@ -248,7 +287,6 @@
 
 - holdings: add patterns support [\#251](https://github.com/rero/rero-ils-ui/pull/251) ([jma](https://github.com/jma))
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'ar' [\#249](https://github.com/rero/rero-ils-ui/pull/249) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
-- Patrons : history tab [\#244](https://github.com/rero/rero-ils-ui/pull/244) ([zannkukai](https://github.com/zannkukai))
 
 ## [v0.1.0](https://github.com/rero/rero-ils-ui/tree/v0.1.0) (2020-04-09)
 
@@ -276,6 +314,7 @@
 
 **Merged pull requests:**
 
+- Patrons : history tab [\#244](https://github.com/rero/rero-ils-ui/pull/244) ([zannkukai](https://github.com/zannkukai))
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'en' [\#241](https://github.com/rero/rero-ils-ui/pull/241) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'fr' [\#240](https://github.com/rero/rero-ils-ui/pull/240) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'de' [\#239](https://github.com/rero/rero-ils-ui/pull/239) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
