@@ -30,6 +30,9 @@ export class MenuUserServicesService extends MenuBase {
   /** Menu */
   private _menu: MenuItemInterface = null;
 
+  /** ILL request menu */
+  private _illRequestsMenu: MenuItemInterface;
+
   /** Collection menu */
   private _collectionsMenu: MenuItemInterface;
 
@@ -104,6 +107,14 @@ export class MenuUserServicesService extends MenuBase {
     .setAttribute('id', 'requests-menu')
     .setExtra('iconClass', 'fa fa-shopping-basket');
     this._translatedName(requestsMenu, 'Requests');
+
+    // ----- ILL REQUESTS
+    this._illRequestsMenu = servicesMenu.addChild('ILL Requests')
+      .setRouterLink(['/', 'records', 'ill_requests'])
+      .setQueryParam('library', this._userService.user.currentLibrary)
+      .setAttribute('id', 'ill-requests-menu')
+      .setExtra('iconClass', 'fa fa-shopping-basket');
+    this._translatedName(this._illRequestsMenu, 'ILL requests');
 
     // ----- USERS
     const usersMenu = servicesMenu.addChild('Users')
@@ -300,7 +311,8 @@ export class MenuUserServicesService extends MenuBase {
   private _initObservable(): void {
     // library switch observable
     this._librarySwitchService.librarySwitch$.subscribe((user: User) => {
-      // USER SERVICES: COLLECTIONS
+      // USER SERVICES: COLLECTIONS, ILL REQUESTS
+      this._illRequestsMenu.setQueryParam('library', user.currentLibrary);
       this._collectionsMenu.setQueryParam('library', user.currentLibrary);
       // CATALOG: DOCUMENTS
       this._documentsMenu.setQueryParam('organisation', user.currentOrganisation);
