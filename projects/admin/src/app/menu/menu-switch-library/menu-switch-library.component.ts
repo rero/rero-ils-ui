@@ -19,6 +19,7 @@ import { Component } from '@angular/core';
 import { PRIMARY_OUTLET, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { DialogService, MenuItem } from '@rero/ng-core';
+import { UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { AppConfigService } from '../../service/app-config.service';
 import { LibrarySwitchMenuService } from '../service/library-switch-menu.service';
@@ -48,6 +49,7 @@ export class MenuSwitchLibraryComponent {
    * @param _dialogService - DialogService
    * @param _translateService - TranslateService
    * @param _router - Router
+   * @param _userService - UserService
    */
   constructor(
     private _appConfigService: AppConfigService,
@@ -55,7 +57,8 @@ export class MenuSwitchLibraryComponent {
     private _librarySwitchService: LibrarySwitchService,
     private _dialogService: DialogService,
     private _translateService: TranslateService,
-    private _router: Router
+    private _router: Router,
+    private _userService: UserService
   ) { }
 
   /**
@@ -63,25 +66,28 @@ export class MenuSwitchLibraryComponent {
    * @param event - MenuItem
    */
   eventMenuClick(event: MenuItem): void {
-    const url = this._router.url;
-    const urlTree = this._router.parseUrl(url);
-    const children = urlTree.root.children[PRIMARY_OUTLET];
-    if (children) {
-      const urlParams = children.segments.map(segment => segment.path);
-      if (
-        this._appConfigService.librarySwitchCheckParamsUrl
-          .some(param => urlParams.includes(param))
-      ) {
-        this._dialog().subscribe((confirmation: boolean) => {
-          if (confirmation) {
-            this._switchAndNavigate(event.getExtra('id'));
-          }
-        });
+    if (this._userService.user.currentLibrary !== event.getExtra('id')) {
+      const url = this._router.url;
+      const urlTree = this._router.parseUrl(url);
+      const children = urlTree.root.children[PRIMARY_OUTLET];
+      if (children) {
+        const urlParams = children.segments.map(segment => segment.path);
+        if (
+          this._appConfigService.librarySwitchCheckParamsUrl
+            .some(param => urlParams.includes(param))
+        ) {
+          this._dialog().subscribe((confirmation: boolean) => {
+            if (confirmation) {
+              this._switchAndNavigate(event.getExtra('id'));
+            }
+          });
+        } else {
+          this._switchAndNavigate(event.getExtra('id'));
+        }
       } else {
         this._switchAndNavigate(event.getExtra('id'));
       }
     }
-    this._switchAndNavigate(event.getExtra('id'));
   }
 
   /**
