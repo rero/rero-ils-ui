@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { DetailComponent, EditorComponent, RouteInterface } from '@rero/ng-core';
+import { DetailComponent, EditorComponent, IRoute } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { LibraryGuard } from '../guard/library.guard';
 import { LocationDetailViewComponent } from '../record/detail-view/location-detail-view/location-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export class LocationsRoute extends BaseRoute implements RouteInterface {
+export class LocationsRoute extends BaseRoute implements IRoute {
 
   /** Route name */
   readonly name = 'locations';

@@ -15,8 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { DetailComponent, EditorComponent, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
-import { Record, JSONSchema7 } from '@rero/ng-core';
+import {
+  DetailComponent, EditorComponent, IRoute, JSONSchema7, Record,
+  RecordSearchPageComponent, RecordService
+} from '@rero/ng-core';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ItemType } from '../class/items';
@@ -25,7 +27,7 @@ import { ItemsBriefViewComponent } from '../record/brief-view/items-brief-view/i
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export class ItemsRoute extends BaseRoute implements RouteInterface {
+export class ItemsRoute extends BaseRoute implements IRoute {
 
   /** Route name */
   readonly name = 'items';

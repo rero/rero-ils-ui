@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { DetailComponent, RouteInterface } from '@rero/ng-core';
+import { DetailComponent, IRoute } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentEditorComponent } from '../record/custom-editor/document-editor/document-editor.component';
@@ -23,7 +23,7 @@ import { DocumentDetailViewComponent } from '../record/detail-view/document-deta
 import { DocumentRecordSearchComponent } from '../record/document-record-search/document-record-search.component';
 import { BaseRoute } from './base-route';
 
-export class DocumentsRoute extends BaseRoute implements RouteInterface {
+export class DocumentsRoute extends BaseRoute implements IRoute {
 
   /** Route name */
   readonly name = 'documents';

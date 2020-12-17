@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { DetailComponent, RecordService, RouteInterface } from '@rero/ng-core';
+import { DetailComponent, IRoute, RecordService } from '@rero/ng-core';
 import { Record, JSONSchema7 } from '@rero/ng-core';
 import { map } from 'rxjs/operators';
 import { CanUpdateGuard } from '../guard/can-update.guard';
@@ -23,7 +23,7 @@ import { HoldingEditorComponent } from '../record/custom-editor/holding-editor/h
 import { HoldingDetailViewComponent } from '../record/detail-view/holding-detail-view/holding-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export class HoldingsRoute extends BaseRoute implements RouteInterface {
+export class HoldingsRoute extends BaseRoute implements IRoute {
 
   /** Route name */
   readonly name = 'holdings';

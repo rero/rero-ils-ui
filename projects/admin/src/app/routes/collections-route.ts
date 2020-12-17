@@ -17,7 +17,8 @@
 
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import {
-  DetailComponent, EditorComponent, extractIdOnRef, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface
+  DetailComponent, EditorComponent, extractIdOnRef, IRoute, JSONSchema7,
+  Record, RecordSearchPageComponent, RecordService
 } from '@rero/ng-core';
 import { map } from 'rxjs/operators';
 import { CanUpdateGuard } from '../guard/can-update.guard';
@@ -25,7 +26,7 @@ import { CollectionBriefViewComponent } from '../record/brief-view/collection-br
 import { CollectionDetailViewComponent } from '../record/detail-view/collection-detail-view/collection-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export class CollectionsRoute extends BaseRoute implements RouteInterface {
+export class CollectionsRoute extends BaseRoute implements IRoute {
 
   /** Route name */
   readonly name = 'collections';

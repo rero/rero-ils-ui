@@ -23,9 +23,9 @@ import { HistoryComponent } from './patron/history/history.component';
 import { LoanComponent } from './patron/loan/loan.component';
 import { MainComponent } from './patron/main/main.component';
 import { PatronTransactionsComponent } from './patron/patron-transactions/patron-transactions.component';
+import { PendingComponent } from './patron/pending/pending.component';
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
-import { PendingComponent } from './patron/pending/pending.component';
 
 const routes: Routes = [
   {
@@ -80,4 +80,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class CirculationRoutingModule { }
+export class CirculationRoutingModule {
+}

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { DetailComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { DetailComponent, IRoute, RecordSearchPageComponent } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { RoleGuard } from '../guard/role.guard';
 import { LibrariesBriefViewComponent } from '../record/brief-view/libraries-brief-view.component';
@@ -22,7 +22,7 @@ import { LibraryComponent } from '../record/custom-editor/libraries/library.comp
 import { LibraryDetailViewComponent } from '../record/detail-view/library-detail-view/library-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export class LibrariesRoute extends BaseRoute implements RouteInterface {
+export class LibrariesRoute extends BaseRoute implements IRoute {
 
   /** Route name */
   readonly name = 'libraries';

@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { IRoute, RecordSearchPageComponent } from '@rero/ng-core';
 import { of } from 'rxjs';
+import { IssueItemStatus } from '../class/items';
 import { IssuesBriefViewComponent } from '../record/brief-view/issues-brief-view/issues-brief-view.component';
 import { BaseRoute } from './base-route';
-import { IssueItemStatus } from '../class/items';
 
-export class IssuesRoute extends BaseRoute implements RouteInterface {
+export class IssuesRoute extends BaseRoute implements IRoute {
 
   /** Route name */
   readonly name = 'issues';

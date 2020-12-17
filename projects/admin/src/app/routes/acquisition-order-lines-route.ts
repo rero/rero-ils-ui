@@ -15,8 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { DetailComponent, EditorComponent, RecordService, RouteInterface } from '@rero/ng-core';
-import { Record, JSONSchema7 } from '@rero/ng-core';
+import { DetailComponent, EditorComponent, IRoute, JSONSchema7, Record, RecordService } from '@rero/ng-core';
 import { map } from 'rxjs/operators';
 import { AcqOrderLineGuard } from '../guard/acq-order-line.guard';
 import { CanUpdateGuard } from '../guard/can-update.guard';
@@ -25,7 +24,7 @@ import {
 } from '../record/detail-view/acquisition-order-line-detail-view/acquisition-order-line-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export class AcquisitionOrderLinesRoute extends BaseRoute implements RouteInterface {
+export class AcquisitionOrderLinesRoute extends BaseRoute implements IRoute {
 
   /** Route name */
   readonly name = 'acq_order_lines';

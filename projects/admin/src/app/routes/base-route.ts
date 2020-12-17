@@ -21,6 +21,9 @@ import { of } from 'rxjs';
 
 export class BaseRoute {
 
+  /** Priority of current route */
+  readonly priority = 0;
+
   /**
    * Constructor
    * @param routeToolService - RouteToolService

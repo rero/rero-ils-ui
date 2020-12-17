@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { EditorComponent, RouteInterface } from '@rero/ng-core';
+import { EditorComponent, IRoute } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { BaseRoute } from './base-route';
 
-export class AcquisitionAccountsRoute extends BaseRoute implements RouteInterface {
+export class AcquisitionAccountsRoute extends BaseRoute implements IRoute {
 
   /** Route name */
   readonly name = 'acq_accounts';

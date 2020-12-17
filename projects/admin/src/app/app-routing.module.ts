@@ -16,32 +16,76 @@
  */
 
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { RouteService } from './routes/route.service';
-
-const routes: Routes = [
-  {
-    path: '',
-    component: FrontpageComponent
-  },
-  {
-    path: 'circulation',
-    loadChildren: () => import('./circulation/circulation.module').then(m => m.CirculationModule)
-  }
-];
+import { Router, RouterModule } from '@angular/router';
+import { RouteFactoryService, routeToken } from '@rero/ng-core';
+import { AcquisitionAccountsRoute } from './routes/acquisition-accounts-route';
+import { AcquisitionOrderLinesRoute } from './routes/acquisition-order-lines-route';
+import { AcquisitionOrdersRoute } from './routes/acquisition-orders-route';
+import { BudgetsRoute } from './routes/budgets-route';
+import { CirculationPoliciesRoute } from './routes/circulation-policies-route';
+import { CollectionsRoute } from './routes/collections-route';
+import { CorporateBodiesRoute } from './routes/corporate-bodies-route';
+import { DocumentsRoute } from './routes/documents-route';
+import { ErrorRoute } from './routes/error-route';
+import { HoldingsRoute } from './routes/holdings-route';
+import { IllRequestsRoute } from './routes/ill-requests-route';
+import { ImportDocumentsRoute } from './routes/import-documents-route';
+import { InitialRoute } from './routes/initial-route';
+import { IssuesRoute } from './routes/issues-route';
+import { ItemTypesRoute } from './routes/item-types-route';
+import { ItemsRoute } from './routes/items-route';
+import { LibrariesRoute } from './routes/libraries-route';
+import { LocalFieldsRoute } from './routes/local-fields-route';
+import { LocationsRoute } from './routes/locations-route';
+import { OrganisationsRoute } from './routes/organisations-route';
+import { PatronTypesRoute } from './routes/patron-types-route';
+import { PatronsRoute } from './routes/patrons-route';
+import { PersonsRoute } from './routes/persons-route';
+import { RouteToolService } from './routes/route-tool.service';
+import { TemplatesRoute } from './routes/templates-route';
+import { VendorsRoute } from './routes/vendors-route';
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  imports: [RouterModule.forRoot([])],
+  exports: [RouterModule],
+  providers: [
+    { provide: routeToken, useClass: InitialRoute, multi: true },
+    { provide: routeToken, useClass: ErrorRoute, multi: true },
+    { provide: routeToken, useClass: AcquisitionAccountsRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: AcquisitionOrderLinesRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: AcquisitionOrdersRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: BudgetsRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: CirculationPoliciesRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: CollectionsRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: CorporateBodiesRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: DocumentsRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: HoldingsRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: IllRequestsRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: ImportDocumentsRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: IssuesRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: ItemTypesRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: ItemsRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: LibrariesRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: LocalFieldsRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: LocationsRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: OrganisationsRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: PatronTypesRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: PatronsRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: PersonsRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: TemplatesRoute, multi: true, deps: [RouteToolService] },
+    { provide: routeToken, useClass: VendorsRoute, multi: true, deps: [RouteToolService] },
+  ]
 })
 export class AppRoutingModule {
-
   /**
    * Constructor
-   * @param _routeService - RouteService
+   * @param _router - Router
+   * @param routerFactoryService - RouteFactoryService
    */
-  constructor(private _routeService: RouteService) {
-    this._routeService.initializeRoutes();
+  constructor(
+    private _router: Router,
+    private routerFactoryService: RouteFactoryService
+  ) {
+    _router.resetConfig(routerFactoryService.createRoutes());
   }
 }

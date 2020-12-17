@@ -16,7 +16,8 @@
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import {
-  DetailComponent, EditorComponent, extractIdOnRef, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface
+  DetailComponent, EditorComponent, extractIdOnRef, IRoute, JSONSchema7,
+  Record, RecordSearchPageComponent, RecordService
 } from '@rero/ng-core';
 import { map } from 'rxjs/operators';
 import { CanUpdateGuard } from '../guard/can-update.guard';
@@ -24,7 +25,7 @@ import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-vi
 import { PatronDetailViewComponent } from '../record/detail-view/patron-detail-view/patron-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export class PatronsRoute extends BaseRoute implements RouteInterface {
+export class PatronsRoute extends BaseRoute implements IRoute {
 
   /** Route name */
   readonly name = 'patrons';

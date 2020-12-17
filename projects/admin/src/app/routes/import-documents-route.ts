@@ -16,14 +16,14 @@
  */
 
 import { TranslateService } from '@ngx-translate/core';
-import { DetailComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { DetailComponent, IRoute, RecordSearchPageComponent } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
 import { BaseRoute } from './base-route';
 import { RouteToolService } from './route-tool.service';
 
-export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
+export class ImportDocumentsRoute extends BaseRoute implements IRoute {
 
   /** Route name */
   readonly name = 'import';

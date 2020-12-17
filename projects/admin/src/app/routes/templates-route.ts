@@ -16,15 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { ActionStatus, DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
-import { JSONSchema7 } from '@rero/ng-core';
+import { ActionStatus, DetailComponent, EditorComponent, IRoute, JSONSchema7, RecordSearchPageComponent } from '@rero/ng-core';
 import { Observable, Subscriber } from 'rxjs';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { TemplatesBriefViewComponent } from '../record/brief-view/templates-brief-view.component';
 import { TemplateDetailViewComponent } from '../record/detail-view/template-detail-view/template-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export class TemplatesRoute extends BaseRoute implements RouteInterface {
+export class TemplatesRoute extends BaseRoute implements IRoute {
 
   /** Route name */
   readonly name = 'templates';
