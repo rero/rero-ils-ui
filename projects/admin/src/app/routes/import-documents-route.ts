@@ -64,11 +64,12 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
             resultsText: (hits: any) => this.getResultsText(hits),
             aggregationsBucketSize: 10,
             aggregationsOrder: [
-              'type',
+              'document_type',
               'author',
+              'language',
               'year'
             ],
-            aggregationsExpand: ['type', 'author', 'year'],
+            aggregationsExpand: ['document_type', 'author', 'language', 'year'],
             itemHeaders: {
               Accept: 'application/rero+json, application/json'
             },
