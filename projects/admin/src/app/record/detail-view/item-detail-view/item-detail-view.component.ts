@@ -17,6 +17,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { IssueItemStatus, Item, ItemNote } from '../../../class/items';
 import { HoldingsService } from '../../../service/holdings.service';
@@ -43,8 +44,6 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
   /** Location record */
   location: any;
 
-  /** reference to IssueItemStatus */
-  issueItemStatus = IssueItemStatus;
 
   /**
    * Constructor
@@ -69,6 +68,14 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
 
   isPublicNote(note: ItemNote): boolean {
     return Item.PUBLIC_NOTE_TYPES.includes(note.type);
+  }
+
+  hasTemporaryItemType(): boolean {
+    if ('temporary_item_type' in this.record.metadata) {
+      const endDateValue = this.record.metadata.temporary_item_type.end_date || undefined;
+      return !(endDateValue && moment(endDateValue).isBefore(moment()));
+    }
+    return false;
   }
 
   /**

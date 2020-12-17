@@ -147,6 +147,7 @@ import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/cust
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 import { MenuMobileComponent } from './menu/menu-mobile/menu-mobile.component';
 import { SubMenuComponent } from './menu/menu-mobile/sub-menu/sub-menu.component';
+import { HoldingItemTemporaryItemTypeComponent } from './record/detail-view/document-detail-view/holding/holding-item-temporary-item-type/holding-item-temporary-item-type.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -241,7 +242,8 @@ export function appInitFactory(appInitService: AppInitService) {
     MenuUserComponent,
     MenuDashboardComponent,
     MenuMobileComponent,
-    SubMenuComponent
+    SubMenuComponent,
+    HoldingItemTemporaryItemTypeComponent
   ],
   imports: [
     AppRoutingModule,

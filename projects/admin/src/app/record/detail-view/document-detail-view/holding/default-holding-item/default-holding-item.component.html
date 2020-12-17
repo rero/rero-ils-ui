@@ -68,6 +68,7 @@
     </div>
   </div>
   <admin-holding-item-note [note]="note" *ngFor="let note of item.metadata.notes"></admin-holding-item-note>
+  <admin-holding-item-temporary-item-type [record]="item"></admin-holding-item-temporary-item-type>
   <admin-holding-item-in-collection [itemPid]="item.metadata.pid"></admin-holding-item-in-collection>
 </div>
 
