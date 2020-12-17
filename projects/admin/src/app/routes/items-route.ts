@@ -57,6 +57,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             label: 'Items',
             editorSettings: {
+              longMode: true,
               template: {
                 recordType: 'templates',
                 loadFromTemplate: true,

@@ -47,8 +47,17 @@
       <dt class="col-sm-3 offset-sm-2 offset-md-0">
         {{ 'Type' | translate }}:
       </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.metadata.item_type.pid | getRecord:'item_types': 'field':'name' | async }}
+      <dd class="col-sm-7 col-md-8 mb-0" *ngVar="record.metadata.item_type.pid | getRecord:'item_types': 'field':'name' | async as defaultItty">
+        <ng-container *ngIf="hasTemporaryItemType(); else defaultItemTypeBlock">
+          <del class="text-muted mr-2">{{ defaultItty }}</del>
+          {{ record.metadata.temporary_item_type.pid | getRecord:'item_types': 'field':'name' | async }}
+          <span *ngIf="record.metadata.temporary_item_type.end_date as endDate" class="ml-1 small text-secondary">
+            (<i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }})
+          </span>
+        </ng-container>
+        <ng-template #defaultItemTypeBlock>
+          {{ defaultItty }}
+        </ng-template>
       </dd>
       <!-- DOCUMENT -->
       <dt class="col-sm-3 offset-sm-2 offset-md-0">
