@@ -25,6 +25,7 @@ import { SearchBarConfigService } from '@rero/shared';
 })
 export class SearchBarComponent implements OnInit {
 
+  @Input() language: string;
   @Input() viewcode: string;
   @Input() size: string = undefined;
   @Input() placeholder: string;
@@ -49,6 +50,9 @@ export class SearchBarComponent implements OnInit {
    }
 
   ngOnInit() {
+    if (this.language) {
+      this._translateService.use(this.language);
+    }
     this.recordTypes = this._searchBarConfigService.getConfig(
       false, this, this.viewcode, this.maxLengthSuggestion
     );
