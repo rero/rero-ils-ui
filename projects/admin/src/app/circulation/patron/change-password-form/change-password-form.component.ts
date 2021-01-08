@@ -82,7 +82,6 @@ export class ChangePasswordFormComponent implements OnInit {
         this.closeModal();
       },
       (resp) => {
-        console.log('Error: Update Patron Password', resp);
         let error = this._translateService.instant('An error has occurred.');
         if (resp.error && resp.error.message) {
           error = `${error}: (${resp.error.message})`;

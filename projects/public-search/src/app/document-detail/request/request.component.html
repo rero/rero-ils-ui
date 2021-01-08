@@ -1,0 +1,35 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="userLogged">
+  <ng-container *ngIf="!requestDialog; else requestPickupDialog">
+    <ng-container *ngIf="canRequest">
+      <div *ngIf="canRequest.can" id="item-request-{{ item.metadata.pid }}" class="row pl-4">
+        <dt class="my-2 col-lg-2 col-sm-3">&nbsp;</dt>
+        <dd class="my-2 col-lg-9 col-sm-8">
+          <button
+            class="btn btn-sm btn-primary"
+            (click)="showRequestDialog()"
+            translate
+          >Request</button>
+        </dd>
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-template #requestPickupDialog>
+    <public-search-pickup-location [item]="item" [viewcode]="viewcode" class="row pl-4"></public-search-pickup-location>
+  </ng-template>
+</ng-container>
