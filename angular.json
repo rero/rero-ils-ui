@@ -116,6 +116,96 @@
         }
       }
     },
+    "public-holdings-items": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/public-holdings-items",
+      "sourceRoot": "projects/public-holdings-items/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "ngx-build-plus:build",
+          "options": {
+            "outputPath": "build/dist/public-holdings-items",
+            "index": "projects/public-holdings-items/src/index.html",
+            "main": "projects/public-holdings-items/src/main.ts",
+            "polyfills": "projects/public-holdings-items/src/polyfills.ts",
+            "tsConfig": "projects/public-holdings-items/tsconfig.app.json",
+            "aot": false,
+            "assets": [],
+            "styles": [],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/public-holdings-items/src/environments/environment.ts",
+                  "with": "projects/public-holdings-items/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "public-holdings-items:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "public-holdings-items:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "public-holdings-items:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/public-holdings-items/tsconfig.app.json",
+              "projects/public-holdings-items/tsconfig.spec.json",
+              "projects/public-holdings-items/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/public-holdings-items/e2e/protractor.conf.js",
+            "devServerTarget": "public-holdings-items:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "public-holdings-items:serve:production"
+            }
+          }
+        }
+      }
+    },
     "public-search": {
       "projectType": "application",
       "schematics": {},

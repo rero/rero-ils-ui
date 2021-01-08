@@ -150,3 +150,5 @@ _('{{ counter }} hidden issue');
 _('{{ counter }} hidden issues');
 _('{{ counter }} hidden item');
 _('{{ counter }} hidden items');
+_('{{ counter }} hidden holding');
+_('{{ counter }} hidden holdings');
