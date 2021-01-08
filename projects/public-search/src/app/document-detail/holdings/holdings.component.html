@@ -1,0 +1,27 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="holdings.length > 0">
+  <div class="card mt-2" *ngFor="let holding of holdings">
+    <public-search-holding [holding]="holding" [viewcode]="viewcode"></public-search-holding>
+  </div>
+  <ng-container *ngIf="isLinkShowMore">
+    <button type="button" id="show-more-{{ documentpid }}" class="btn btn-link pr-1" (click)="showMore()">
+      <i class="fa fa-plus-square-o"></i> {{ 'Show more' | translate }}
+    </button>
+    <small>({{ hiddenHoldings }})</small>
+  </ng-container>
+</ng-container>

@@ -15,13 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { enableProdMode } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-// _('Your string');
+import { AppModule } from './app/app.module';
+import { environment } from './environments/environment';
 
-// Document type
-_('other');
+if (environment.production) {
+  enableProdMode();
+}
 
-// Item count
-_('item');
-_('items');
+platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.error(err));

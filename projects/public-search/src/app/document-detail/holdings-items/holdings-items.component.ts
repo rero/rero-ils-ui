@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2021 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,14 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { Component, Input } from '@angular/core';
 
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+@Component({
+  selector: 'public-search-holdings-items',
+  templateUrl: './holdings-items.component.html'
+})
+export class HoldingsItemsComponent {
 
-// _('Your string');
+  /** Document type */
+  @Input() documenttype: string;
 
-// Document type
-_('other');
+  /** Document pid */
+  @Input() documentpid: string;
 
-// Item count
-_('item');
-_('items');
+  /** View code */
+  @Input() viewcode: string;
+
+}
