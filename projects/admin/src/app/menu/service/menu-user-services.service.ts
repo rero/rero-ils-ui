@@ -263,7 +263,7 @@ export class MenuUserServicesService extends MenuBase {
     .setRouterLink(['/', 'records', 'item_types'])
     .setAttribute('id', 'item-types-menu')
     .setExtra('iconClass', 'fa fa-file-o');
-    this._translatedName(itemTypesMenu, 'Patron types');
+    this._translatedName(itemTypesMenu, 'Item types');
 
     // ----- PATRON TYPES
     const patronTypesMenu = adminMenu.addChild('Patron types')
