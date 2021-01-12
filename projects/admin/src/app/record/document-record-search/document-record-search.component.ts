@@ -74,6 +74,7 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
 
   /** Init */
   ngOnInit() {
+    console.log(this._documentType);
     super.ngOnInit();
     this._baseUrl = super.getCurrentUrl(this._documentType);
   }

@@ -24,7 +24,14 @@
       <ng-template #noLink>
         <img [ngClass]="imageCssClass" [src]="coverUrl">
       </ng-template>
-      <figcaption class="text-center" translate>{{ record.metadata.type }}</figcaption>
+      <ng-container *ngFor="let type of record.metadata.type">
+        <ng-container *ngIf="type.subtype; else mainTypeBlock">
+          <figcaption class="figure-caption text-center" translate>{{ type.subtype }}</figcaption>
+        </ng-container>
+        <ng-template #mainTypeBlock>
+          <figcaption class="figure-caption text-center" translate>{{ type.main_type }}</figcaption>
+        </ng-template>
+      </ng-container>
     </figure>
   </div>
 </ng-container>
