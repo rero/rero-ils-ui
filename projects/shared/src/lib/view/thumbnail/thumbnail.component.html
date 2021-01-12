@@ -16,7 +16,7 @@
 -->
 
 <ng-container *ngIf="record && record.metadata">
-  <div class="align-self-start d-flex justify-content-center">
+  <div class="align-self-start d-flex">
     <figure class="mb-0" [ngClass]="figureStyle">
       <ng-container *ngIf="record.metadata.cover_art; else noLink">
         <a href="coverUrl"><img [ngClass]="imageCssClass" [src]="coverUrl"></a>
@@ -24,7 +24,14 @@
       <ng-template #noLink>
         <img [ngClass]="imageCssClass" [src]="coverUrl">
       </ng-template>
-      <figcaption class="text-center" translate>{{ record.metadata.type }}</figcaption>
+      <ng-container *ngFor="let type of record.metadata.type">
+        <ng-container *ngIf="type.subtype; else mainTypeBlock">
+          <figcaption class="figure-caption text-left" translate>{{ type.subtype }}</figcaption>
+        </ng-container>
+        <ng-template #mainTypeBlock>
+          <figcaption class="figure-caption text-left" translate>{{ type.main_type }}</figcaption>
+        </ng-template>
+      </ng-container>
     </figure>
   </div>
 </ng-container>

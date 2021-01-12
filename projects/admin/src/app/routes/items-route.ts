@@ -125,12 +125,13 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             redirectUrl: (record: any) => this.getUrl(record),
             aggregationsBucketSize: 10,
             aggregationsOrder: [
+              'document_type',
               'library',
               'location',
               'item_type',
               'status',
             ],
-            aggregationsExpand: ['library', 'location', 'item_type', 'status'],
+            aggregationsExpand: ['document_type', 'library', 'location', 'item_type', 'status'],
             listHeaders: {
               Accept: 'application/rero+json, application/json'
             },
