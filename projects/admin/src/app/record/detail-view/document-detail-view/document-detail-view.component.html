@@ -1,42 +1,38 @@
 <!--
   RERO ILS UI
   Copyright (C) 2019 RERO
-
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
   the Free Software Foundation, version 3 of the License.
-
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU Affero General Public License for more details.
-
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <!-- import button for external source importation such as BNF -->
 <div *ngIf="record && record.metadata && !record.metadata.pid && pid && source" class="float-right ml-4 mt-2 mb-4">
   <a [routerLink]="['/records', 'documents', 'new']"
-     [queryParams]="{source: source, pid: pid}"
-     class="btn btn-sm btn-outline-primary"
-     translate
-  >Import</a>
+    [queryParams]="{source: source, pid: pid}"
+    class="btn btn-sm btn-outline-primary"
+    translate>Import</a>
 </div>
 <!-- duplicate button -->
 <div *ngIf="record && record.metadata && record.metadata.pid" class="float-right mt-2 mb-4 btn-duplicate">
   <a [routerLink]="['/records', 'documents', 'duplicate']"
-     [queryParams]="{type: 'documents', pid: record.metadata.pid}"
-     class="btn btn-sm btn-outline-primary n-mr-4"
-     translate>Duplicate</a>
+    [queryParams]="{type: 'documents', pid: record.metadata.pid}"
+    class="btn btn-sm btn-outline-primary"
+    translate>Duplicate</a>
 </div>
 <ng-container *ngIf="record">
   <!-- HEADER -->
   <header class="col-10">
     <div class="row mt-3 mb-3">
-      <div class="col-2">
+      <div class="col-lg-3 d-none d-sm-block">
         <shared-thumbnail [record]="record"></shared-thumbnail>
       </div>
-      <div class="col">
+      <div class="col-lg-9">
         <!-- TITLE -->
         <h2 id="doc-title" *ngIf="record.metadata.title && record.metadata.title | mainTitle as title" class="pl-0">
           <ng-core-text-read-more
@@ -74,15 +70,15 @@
           </ul>
         </ng-container>
 
-    <!-- PUBLICATION STATEMENT -->
-    <ng-container *ngFor="let provision of provisionActivity | keyvalue | callbackArrayFilter: filterPublicationProvisionActivity">
-      <ul class="list-unstyled mb-0">
-        <li *ngFor="let value of provision.value; let i = index"
-            [attr.id]="i | idAttribute:{prefix: 'doc-publication-statement'}">
-          {{ value }}
-        </li>
-      </ul>
-    </ng-container>
+        <!-- PUBLICATION STATEMENT -->
+        <ng-container *ngFor="let provision of provisionActivity | keyvalue | callbackArrayFilter: filterPublicationProvisionActivity">
+          <ul class="list-unstyled mb-0">
+            <li *ngFor="let value of provision.value; let i = index"
+              [attr.id]="i | idAttribute:{prefix: 'doc-publication-statement'}">
+              {{ value }}
+            </li>
+          </ul>
+        </ng-container>
 
         <!-- EXTENT-->
         <ng-container *ngIf="record.metadata.extent">
@@ -443,7 +439,6 @@
         </div>
       </tab>
       <!-- END OF DESCRIPTION TAB --------------------------------------------->
-
       <!-- LOCAL FIELDS TAB ------------------------------------------------------------>
       <tab id="documents-local-field-tab" tabOrder="4" *ngIf="!record.metadata.harvested">
         <ng-template tabHeading>
@@ -454,7 +449,6 @@
         </div>
       </tab>
       <!-- END OF LOCAL FIELDS TAB ---------------------------------------------------->
-
       <!-- MARC TAB ------------------------------------------------------------>
       <tab id="documents-marc-tab" tabOrder="5" *ngIf="marc$ | async as marc">
         <ng-template tabHeading>
