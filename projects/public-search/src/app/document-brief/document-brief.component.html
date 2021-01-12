@@ -17,8 +17,9 @@
 
 <article *ngIf="record" class="card flex-row border-0">
   <shared-thumbnail
+    class="col-sm-2"
     [record]="record"
-    (isSmall)="true">
+    isSmall="true">
   </shared-thumbnail>
   <div class="card-body w-100 py-0">
     <h4 class="card-title mb-1">

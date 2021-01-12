@@ -35,7 +35,7 @@ export class ThumbnailComponent implements OnInit {
   isbn: string;
 
   /** Css classes for the image */
-  imageCssClass = 'img-responsive img-thumbnail border border-light';
+  imageCssClass = 'img-thumbnail img-fluid border border-light';
 
   /** Style for image container */
   figureStyle = 'thumb-detail';
@@ -66,7 +66,7 @@ export class ThumbnailComponent implements OnInit {
         }
       })
     ).subscribe(result => {
-      if (result.success) {
+      if (result !== null && result.success) {
         this.coverUrl = result.image;
       }
     });
@@ -78,9 +78,14 @@ export class ThumbnailComponent implements OnInit {
    */
   ngOnInit() {
     if (this.record && this.record.metadata) {
-      this.coverUrl = `/static/images/icon_${this.record.metadata.type}.png`;
-      if (this.record.metadata.cover_art) {
-        this.coverUrl = this.record.metadata.cover_art;
+      this.coverUrl = `/static/images/icon_${this.record.metadata.type[0].main_type}.svg`;
+      if (this.record.metadata.electronicLocator) {
+        for (const electronicLocator of this.record.metadata.electronicLocator) {
+          if (electronicLocator.content === 'coverImage' && electronicLocator.type === 'relatedResource') {
+            this.coverUrl = electronicLocator.url;
+            break;
+          }
+        }
       } else if (this.record.metadata.identifiedBy) {
         for (const identifier of this.record.metadata.identifiedBy) {
           if (identifier.type === 'bf:Isbn') {

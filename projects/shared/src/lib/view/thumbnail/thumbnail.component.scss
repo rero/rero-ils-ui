@@ -18,10 +18,10 @@
 .thumb-brief
 img {
   max-height: 122px;
-  width: 80px;
+  max-width: 80px;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 768px) {
 .thumb-brief
   img {
     max-width: 48px;
@@ -31,10 +31,10 @@ img {
 .thumb-detail
 img {
   max-height: 244px;
-  width: 160px;
+  max-width: 160px;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 768px) {
 .thumb-detail
   img {
     max-width: 48px;
