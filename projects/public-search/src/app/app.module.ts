@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, Injector, LOCALE_ID, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
@@ -33,6 +33,7 @@ import { CollectionBriefComponent } from './collection-brief/collection-brief.co
 import { DocumentBriefComponent } from './document-brief/document-brief.component';
 import { DocumentRecordSearchComponent } from './document-record-search/document-record-search.component';
 import { ErrorPageComponent } from './error/error-page.component';
+import { CustomRequestInterceptor } from './interceptor/custom-request.interceptor';
 import { MainComponent } from './main/main.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 
@@ -73,11 +74,8 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
   providers: [
     { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
     { provide: CoreConfigService, useClass: AppConfigService },
-    {
-      provide: LOCALE_ID,
-      useFactory: (translate: TranslateService) => translate.currentLanguage,
-      deps: [TranslateService]
-    },
+    { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.currentLanguage, deps: [TranslateService] },
+    { provide: HTTP_INTERCEPTORS, useClass: CustomRequestInterceptor, multi: true },
     BsLocaleService
   ],
   entryComponents: [
