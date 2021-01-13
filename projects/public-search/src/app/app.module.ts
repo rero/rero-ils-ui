@@ -92,8 +92,10 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
 export class AppModule {
 
   constructor(private injector: Injector) {
-    const searchBar = createCustomElement(SearchBarComponent, { injector: this.injector });
-    customElements.define('main-search-bar', searchBar);
+    if (!customElements.get('main-search-bar')) {
+      const searchBar = createCustomElement(SearchBarComponent, { injector: this.injector });
+      customElements.define('main-search-bar', searchBar);
+    }
   }
 
 }
