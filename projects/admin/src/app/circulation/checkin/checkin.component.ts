@@ -119,7 +119,7 @@ export class CheckinComponent implements OnInit {
             break;
           case ItemAction.checkin:
             this._displayCirculationNote(item, ItemNoteType.CHECKIN);
-            if (item.action_applied.checkin) {
+            if (item.action_applied && item.action_applied.checkin) {
               this.getPatronInfo(item.action_applied.checkin.patron.barcode);
             }
             if (item.status === ItemStatus.IN_TRANSIT) {
@@ -276,6 +276,7 @@ export class CheckinComponent implements OnInit {
           const library_code = item.loan.item_destination.library_code;
           const location_name = item.loan.item_destination.location_name;
           message += ` (${this._translate.instant('to')} ${library_code}:${location_name})`;
+          this._itemsList.unshift(item); // Display item info
         }
       },
       () => {
