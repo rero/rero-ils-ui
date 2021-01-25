@@ -117,7 +117,7 @@ export class ItemComponent implements OnInit {
    * @return: transit location pid
    */
   getTransitLocationPid() {
-    if (this.patron) {
+    if (this.patron || this.item.action_applied === undefined) {
       if (this.item.loan && this.item.loan.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP) {
         return this.item.loan.pickup_location_pid;
       }
