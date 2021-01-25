@@ -35,7 +35,7 @@ export class ThumbnailComponent implements OnInit {
   isbn: string;
 
   /** Css classes for the image */
-  imageCssClass = 'img-responsive img-thumbnail border border-light';
+  imageCssClass = 'img-thumbnail img-fluid border border-light';
 
   /** Style for image container */
   figureStyle = 'thumb-detail';
