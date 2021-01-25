@@ -49,6 +49,7 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             label: 'Holdings',
             editorSettings: {
+              longMode: true,
               template: {
                 recordType: 'templates',
                 loadFromTemplate: true,
