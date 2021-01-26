@@ -480,4 +480,9 @@
     </tabset>
   </div>
   <!-- END OF TABS ------------------------------------------------------------>
+  <admin-operation-logs-dialog
+    *ngIf="isEnabledOperationLog && record.metadata.pid"
+    resourceType="documents"
+    [resourcePid]="record.metadata.pid"
+  ></admin-operation-logs-dialog>
 </ng-container>

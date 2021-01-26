@@ -19,6 +19,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable, Subscription } from 'rxjs';
 import { User } from '@rero/shared';
+import { OperationLogsService } from '../../../service/operation-logs.service';
 
 @Component({
   selector: 'admin-patron-detail-view',
@@ -38,12 +39,25 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
   /** Subscription to (un)follow the record$ Observable */
   private _subscription$ = new Subscription();
 
+  /** Load operation logs on show */
+  showOperationLogs = false;
+
+  /**
+   * Is operation log enabled
+   * @return boolean
+   */
+  get isEnabledOperationLog(): boolean {
+    return this._operationLogsService.isLogVisible('patrons');
+  }
+
   /**
    * Constructor.
    * @param _sanitizer - DomSanitizer, to render html.
+   * @param _operationLogsService - OperationLogsService
    */
   constructor(
-    private _sanitizer: DomSanitizer
+    private _sanitizer: DomSanitizer,
+    private _operationLogsService: OperationLogsService
   ) {}
 
   /**

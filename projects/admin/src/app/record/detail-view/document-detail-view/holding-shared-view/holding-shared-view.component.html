@@ -1,0 +1,65 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!-- CALL NUMBER -->
+<ng-container *ngIf="holding">
+  <ng-container *ngIf="holding.metadata.call_number || holding.metadata.second_call_number">
+    <div class="col-sm-3 font-weight-bold" translate>
+      Call number
+    </div>
+    <div id="holding-call-number-{{ holding.metadata.pid }}" class="col-sm-9 pl-4">
+      <ng-container *ngIf="holding.metadata.call_number">
+      {{ holding.metadata.call_number }}
+      </ng-container>
+      <ng-container *ngIf="holding.metadata.call_number && holding.metadata.second_call_number">
+        |
+      </ng-container>
+      <ng-container *ngIf="holding.metadata.second_call_number">
+        {{ holding.metadata.second_call_number }}
+        </ng-container>
+    </div>
+  </ng-container>
+
+  <!-- AVAILABLE COLLECTION -->
+  <ng-container *ngIf="holding.metadata.enumerationAndChronology">
+    <div class="col-sm-3 font-weight-bold" translate>
+      Available collection
+    </div>
+    <div  id="holding-enum-chrono-{{ holding.metadata.pid }}" class="col-sm-9 pl-4">
+      {{ holding.metadata.enumerationAndChronology }}
+    </div>
+  </ng-container>
+
+  <!-- SUPPLEMENTARY CONTENT -->
+  <ng-container *ngIf="holding.metadata.supplementaryContent">
+    <div class="col-sm-3 font-weight-bold" translate>
+      Supplementary content
+    </div>
+    <div  id="holding-sup-content-{{ holding.metadata.pid }}" class="col-sm-9 pl-4">
+      {{ holding.metadata.supplementaryContent }}
+    </div>
+  </ng-container>
+
+  <!-- INDEXES -->
+  <ng-container *ngIf="holding.metadata.index">
+    <div class="col-sm-3 font-weight-bold" translate>
+      Indexes
+    </div>
+    <div  id="holding-index-{{ holding.metadata.pid }}" class="col-sm-9 pl-4">
+      {{ holding.metadata.index }}
+    </div>
+  </ng-container>
+<ng-container>

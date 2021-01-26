@@ -20,6 +20,7 @@ import { RecordService, RecordUiService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { ToastrService } from 'ngx-toastr';
 import { HoldingsService, PredictionIssue } from 'projects/admin/src/app/service/holdings.service';
+import { OperationLogsService } from 'projects/admin/src/app/service/operation-logs.service';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { IssueItemStatus } from '../../../../class/items';
 
@@ -53,6 +54,14 @@ export class SerialHoldingDetailViewComponent implements OnInit {
   issueItemStatus = IssueItemStatus;
 
   /**
+   * Is operation log enabled
+   * @return boolean
+   */
+  get isEnabledOperationLog(): boolean {
+    return this._operationLogsService.isLogVisible('holdings');
+  }
+
+  /**
    * Constructor
    *
    * @param _holdingService: HoldingService
@@ -61,6 +70,7 @@ export class SerialHoldingDetailViewComponent implements OnInit {
    * @param _recordPermissionService: RecordPermissionService
    * @param _translateService: TranslateService,
    * @param _toastrService: ToastrService
+   * @param _operationLogsService: OperationLogsService
    */
   constructor(
     private _holdingService: HoldingsService,
@@ -68,7 +78,8 @@ export class SerialHoldingDetailViewComponent implements OnInit {
     private _recordUiService: RecordUiService,
     private _recordPermissionService: RecordPermissionService,
     private _translateService: TranslateService,
-    private _toastrService: ToastrService
+    private _toastrService: ToastrService,
+    private _operationLogsService: OperationLogsService
   ) {}
 
   /**

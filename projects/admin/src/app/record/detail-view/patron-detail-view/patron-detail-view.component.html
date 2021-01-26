@@ -164,7 +164,15 @@
           </div>
         </dd>
       </dl>
-  
+
     </section>
   </article>
+
+  <!-- OPERATION LOGS-->
+  <admin-operation-logs
+    *ngIf="isEnabledOperationLog"
+    resourceType="patrons"
+    [resourcePid]="patron.pid"
+  ></admin-operation-logs>
+
 </ng-container>

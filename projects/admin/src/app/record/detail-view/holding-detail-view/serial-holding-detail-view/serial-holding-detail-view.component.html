@@ -15,7 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <h1 class="mb-5">
-  {{ 'Holdings' | translate }} : {{ 'Receive an issue' | translate }}
+  {{ 'Holdings' | translate }}
 </h1>
 
 <div class="card mb-3" *ngIf="holding.metadata.document.pid | getRecord:'documents' | async as document">
@@ -30,8 +30,12 @@
   </div>
 </div>
 
+<div *ngIf="holding">
+  <admin-holding-shared-view [holding]="holding" class="row col"></admin-holding-shared-view>
+</div>
+
 <!-- TABS -->
-<section class="mt-3 mb-4">
+<section class="mt-3 mb-2">
   <tabset>
     <!-- ISSUES TAB ------------------------------------------------------------>
     <tab id="holding-local-field-tab" tabOrder="1">
@@ -168,7 +172,7 @@
         <i class="fa fa-list-ul mr-1"></i><span translate>Details</span>
       </ng-template>
       <div class="mt-3">
-        <admin-holding-detail [holding]="holding"></admin-holding-detail>
+        <admin-holding-detail context="holdings" [holding]="holding"></admin-holding-detail>
       </div>
     </tab>
     <!-- END OF DETAILS TAB ---------------------------------------------------->
@@ -185,3 +189,10 @@
     <!-- END OF LOCAL FIELDS TAB ---------------------------------------------------->
   </tabset>
 </section>
+
+<!-- OPERATION LOGS-->
+<admin-operation-logs-dialog
+  *ngIf="isEnabledOperationLog"
+  resourceType="holdings"
+  [resourcePid]="holding.metadata.pid"
+></admin-operation-logs-dialog>

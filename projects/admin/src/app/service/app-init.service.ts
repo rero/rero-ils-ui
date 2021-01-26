@@ -78,7 +78,7 @@ export class AppInitService {
           }
         }
       });
-      resolve();
+      resolve(true);
     });
   }
 
