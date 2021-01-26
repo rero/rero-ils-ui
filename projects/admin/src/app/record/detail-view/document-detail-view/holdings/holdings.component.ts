@@ -18,8 +18,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
-import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
-import { forkJoin } from 'rxjs';
 import { UserService } from '@rero/shared';
 
 @Component({
@@ -27,8 +25,8 @@ import { UserService } from '@rero/shared';
   templateUrl: './holdings.component.html'
 })
 export class HoldingsComponent implements OnInit {
-  /** Document pid */
-  @Input() documentPid: string;
+  /** Document */
+  @Input() document: any;
 
   /** Holdings */
   holdings: Array<any>;
@@ -48,15 +46,15 @@ export class HoldingsComponent implements OnInit {
   constructor(
     private _userService: UserService,
     private _recordService: RecordService,
-    private _recordUiService: RecordUiService,
-    private _recordPermissionService: RecordPermissionService
+    private _recordUiService: RecordUiService
   ) { }
 
-  /** Init */
+  /** onInit hook */
   ngOnInit() {
+    this.canAdd = (!('harvested' in this.document.metadata));
     const orgPid = this._userService.user.currentOrganisation;
-    const query = `document.pid:${this.documentPid} AND organisation.pid:${orgPid}`;
-    const holdingRecordsRef = this._recordService.getRecords(
+    const query = `document.pid:${this.document.metadata.pid} AND organisation.pid:${orgPid}`;
+    this._recordService.getRecords(
       'holdings',
       query,
       1,
@@ -65,22 +63,16 @@ export class HoldingsComponent implements OnInit {
       undefined,
       undefined,
       'library_location'
-    );
-    const permissionsRef = this._recordPermissionService.getPermission('holdings');
-    forkJoin([holdingRecordsRef, permissionsRef]).subscribe(
-      (result: [Record, any]) => {
-        const holdingsData = result[0];
-        const permissions = result[1];
-        if (this._recordService.totalHits(holdingsData.hits.total) > 0) {
-          this.holdings = holdingsData.hits.hits;
-        }
-        this.canAdd = permissions.create.can;
+    )
+    .subscribe((response: Record) => {
+      if (this._recordService.totalHits(response.hits.total) > 0) {
+        this.holdings = response.hits.hits;
       }
-    );
+    });
   }
 
-  /** Delete a given holding.
-   *
+  /**
+   * Delete a given holding.
    * @param data: object with 2 keys :
    *          * 'holding' : the holding to delete
    *          * 'callBakend' : boolean if backend API should be called

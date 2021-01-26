@@ -167,7 +167,7 @@
         </ng-template>
         <div class="mt-2">
           <!-- HOLDINGS -->
-          <admin-holdings [holdingType]="holdingType" [documentPid]="record.metadata.pid">
+          <admin-holdings [holdingType]="holdingType" [document]="record">
           </admin-holdings>
         </div>
       </tab>
@@ -445,7 +445,11 @@
       <!-- END OF DESCRIPTION TAB --------------------------------------------->
 
       <!-- LOCAL FIELDS TAB ------------------------------------------------------------>
-      <tab id="documents-local-field-tab" tabOrder="4" *ngIf="!record.metadata.harvested">
+      <tab
+        *ngIf="!record.metadata.harvested && record.metadata.pid"
+        id="documents-local-field-tab"
+        tabOrder="4"
+      >
         <ng-template tabHeading>
           <i class="fa fa-list-ul mr-1"></i> {{ 'Local fields' | translate }}
         </ng-template>
