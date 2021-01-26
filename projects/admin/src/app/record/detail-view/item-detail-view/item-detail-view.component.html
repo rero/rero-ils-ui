@@ -184,4 +184,11 @@
     [item]="record"
     (cancelRequestEvent)="updateItemStatus()"
   ></admin-item-transactions>
+
+  <!-- OPERATION LOGS-->
+  <admin-operation-logs-dialog
+    *ngIf="isEnabledOperationLog"
+    resourceType="items"
+    [resourcePid]="record.metadata.pid"
+  ></admin-operation-logs-dialog>
 </ng-container>

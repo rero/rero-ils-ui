@@ -21,6 +21,7 @@ import moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { IssueItemStatus, Item, ItemNote } from '../../../class/items';
 import { HoldingsService } from '../../../service/holdings.service';
+import { OperationLogsService } from '../../../service/operation-logs.service';
 
 @Component({
   selector: 'admin-item-detail-view',
@@ -45,14 +46,27 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
   location: any;
 
 
+  /** Load operation logs on show */
+  showOperationLogs = false;
+
+  /**
+   * Is operation log enabled
+   * @return boolean
+   */
+  get isEnabledOperationLog(): boolean {
+    return this._operationLogsService.isLogVisible('items');
+  }
+
   /**
    * Constructor
    * @param _recordService - RecordService
    * @param _holdingService - HoldingsService
+   * @param _operationLogsService - OperationLogsService
    */
   constructor(
     private _recordService: RecordService,
     private _holdingService: HoldingsService,
+    private _operationLogsService: OperationLogsService
   ) {}
 
   ngOnInit() {

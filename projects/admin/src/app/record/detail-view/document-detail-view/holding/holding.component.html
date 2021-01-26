@@ -49,7 +49,7 @@
             <i class="fa fa-trash"></i>
           </button>
         </div>
-        <admin-holding-detail *ngIf="holdingType === 'serial'" [holding]="holding" class="col-sm-12"></admin-holding-detail>
+        <admin-holding-detail *ngIf="holdingType === 'serial'" context="document" [holding]="holding" class="col-sm-12"></admin-holding-detail>
       </div>
 
     </div>

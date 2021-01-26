@@ -83,5 +83,12 @@
         </ng-container>
       </tabset>
     </section>
+
+    <!-- OPERATION LOGS-->
+    <admin-operation-logs
+      *ngIf="isEnabledOperationLog"
+      resourceType="vendors"
+      [resourcePid]="record.metadata.pid"
+    ></admin-operation-logs>
   </article>
 </ng-container>

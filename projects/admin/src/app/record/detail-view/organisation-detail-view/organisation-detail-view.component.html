@@ -47,4 +47,11 @@
       </ng-template>
     </dd>
   </dl>
+
+  <!-- OPERATION LOGS-->
+  <admin-operation-logs
+    *ngIf="isEnabledOperationLog"
+    resourceType="organisations"
+    [resourcePid]="record.metadata.pid"
+  ></admin-operation-logs>
 </ng-container>

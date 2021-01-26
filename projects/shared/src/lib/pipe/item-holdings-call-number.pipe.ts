@@ -32,6 +32,9 @@ export class ItemHoldingsCallNumberPipe implements PipeTransform {
    * @return object: first, second are the item first, second call numbers.
    */
   transform(record: any): Observable<any> {
+    if ('metadata' in record) {
+      record = record.metadata;
+    }
     if (record.call_number) {
       return of({
         first: {

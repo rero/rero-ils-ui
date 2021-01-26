@@ -148,6 +148,9 @@ import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 import { MenuMobileComponent } from './menu/menu-mobile/menu-mobile.component';
 import { SubMenuComponent } from './menu/menu-mobile/sub-menu/sub-menu.component';
 import { HoldingItemTemporaryItemTypeComponent } from './record/detail-view/document-detail-view/holding/holding-item-temporary-item-type/holding-item-temporary-item-type.component';
+import { OperationLogsComponent } from './record/operation-logs/operation-logs.component';
+import { HoldingSharedViewComponent } from './record/detail-view/document-detail-view/holding-shared-view/holding-shared-view.component';
+import { OperationLogsDialogComponent } from './record/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -243,7 +246,10 @@ export function appInitFactory(appInitService: AppInitService) {
     MenuDashboardComponent,
     MenuMobileComponent,
     SubMenuComponent,
-    HoldingItemTemporaryItemTypeComponent
+    HoldingItemTemporaryItemTypeComponent,
+    OperationLogsComponent,
+    HoldingSharedViewComponent,
+    OperationLogsDialogComponent
   ],
   imports: [
     AppRoutingModule,
@@ -373,7 +379,8 @@ export function appInitFactory(appInitService: AppInitService) {
     HoldingItemInCollectionComponent,
     DocumentRecordSearchComponent,
     CustomShortcutHelpComponent,
-    ContributionDetailViewComponent
+    ContributionDetailViewComponent,
+    OperationLogsComponent
   ],
   bootstrap: [AppComponent]
 })

@@ -21,6 +21,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable, of, Subscription } from 'rxjs';
+import { OperationLogsService } from '../../../service/operation-logs.service';
 
 @Component({
   selector: 'admin-document-detail-view',
@@ -47,15 +48,25 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   /** Css class for dd in template */
   ddCssClass = 'col-sm-6 col-md-8 mb-0';
 
+  /**
+   * Is operation log enabled
+   * @return boolean
+   */
+  get isEnabledOperationLog(): boolean {
+    return this._operationLogsService.isLogVisible('documents');
+  }
+
   /** constructor
    * @param _translateService - TranslateService to translate some strings.
    * @param _router - ActivatedRoute to get url parameters.
    * @param _recordService - RecordService to the MARC version for the record.
+   * @param _operationLogsService - OperationLogsService
    */
   constructor(
     private _translateService: TranslateService,
     private _router: ActivatedRoute,
-    private _recordService: RecordService
+    private _recordService: RecordService,
+    private _operationLogsService: OperationLogsService
   ) { }
 
   /** On init hook */

@@ -39,6 +39,9 @@ export class HoldingEditorComponent implements OnInit, OnDestroy {
   /** Current list of the serial preview examples */
   serialPreviewExamples: Array<PredictionIssue> = [];
 
+  /** Store serial patterns template from model */
+  serialPatternsTemplate = null;
+
   /** Number of the serial preview examples */
   numberOfSerialPreviewExamples = 100;
 
@@ -101,8 +104,11 @@ export class HoldingEditorComponent implements OnInit, OnDestroy {
       modelValue.patterns
       && modelValue.patterns.template
     ) {
+      this.serialPatternsTemplate = modelValue.patterns.template;
       this.serialPreviewError = null;
       this.predictionModel$.next(modelValue);
+    } else {
+      this.serialPatternsTemplate = null;
     }
   }
 }

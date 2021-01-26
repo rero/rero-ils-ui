@@ -15,10 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import { OperationLogsService } from '../../../service/operation-logs.service';
 
 @Component({
   selector: 'admin-vendor-detail-view',
@@ -33,11 +34,26 @@ export class VendorDetailViewComponent implements DetailRecord {
   /** Resource type */
   type: string;
 
+  /** Load operation logs on show */
+  showOperationLogs = false;
+
+  /**
+   * Is operation log enabled
+   * @return boolean
+   */
+  get isEnabledOperationLog(): boolean {
+    return this._operationLogsService.isLogVisible('vendors');
+  }
+
   /**
    * Constructor
-   * @param _translateService : TranslateService
+   * @param _translateService - TranslateService
+   * @param _operationLogsService - OperationLogsService
    */
-  constructor(private _translateService: TranslateService) { }
+  constructor(
+    private _translateService: TranslateService,
+    private _operationLogsService: OperationLogsService
+  ) {}
 
   /**
    * Get Current language interface
