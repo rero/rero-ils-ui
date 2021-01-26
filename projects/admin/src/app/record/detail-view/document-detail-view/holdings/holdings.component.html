@@ -16,15 +16,40 @@
 -->
 
 <div class="row" *ngIf="canAdd">
-  <div class="col" [ngSwitch]="holdingType">
-    <a *ngSwitchCase="'standard'" class="btn btn-sm btn-outline-primary mt-2 float-right"
-      [routerLink]="['/', 'records', 'items', 'new']" [queryParams]="{ document: documentPid }">
-      <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }}...
-    </a>
-    <a *ngSwitchCase="'serial'" class="btn btn-sm btn-outline-primary float-right"
-      [routerLink]="['/', 'records', 'holdings', 'new']" [queryParams]="{ document: documentPid }">
-      <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }}...
-    </a>
+  <div class="col">
+    <div class="btn-group pull-right" dropdown>
+      <button
+        id="document-add-actions"
+        dropdownToggle
+        type="button"
+        class="btn btn-sm btn-outline-primary dropdown-toggle"
+        aria-controls="dropdown-animated">
+        {{ 'Add' | translate }}
+        <span class="caret"></span>
+      </button>
+      <ul
+        id="document-add-actions-animated"
+        *dropdownMenu class="dropdown-menu dropdown-menu-right"
+        role="menu"
+        aria-labelledby="document-add-actions"
+      >
+        <li class="text-right" role="menuitem">
+          <a
+            class="dropdown-item"
+            [routerLink]="['/', 'records', 'items', 'new']"
+            [queryParams]="{ document: document.metadata.pid }" translate
+          >an item</a>
+        </li>
+        <li class="text-right" role="menuitem">
+          <a
+            class="dropdown-item"
+            [routerLink]="['/', 'records', 'holdings', 'new']"
+            [queryParams]="{ document: document.metadata.pid }"
+          translate
+          >a holdings</a>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
 
