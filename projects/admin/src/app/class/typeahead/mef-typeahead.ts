@@ -72,12 +72,13 @@ export class MefTypeahead implements ITypeahead {
           ) {
             return {
               source: source.toUpperCase(),
-              name: data.hits.hits[0].metadata[source].authorized_access_point
+              name: data.hits.hits[0].metadata[source].authorized_access_point,
+              url: data.hits.hits[0].metadata[source].identifier
             };
           }
         }),
-        map((v: { name: string, source: string }) => `
-          <strong>${v.name}</strong>
+        map((v: { name: string, source: string, url: string }) => `
+          <a href="${v.url}" target="_blank">${v.name} <i class="fa fa-external-link"></i></a>
           <small class="badge badge-secondary ml-1">${v.source}</small>
         `)
       );
@@ -136,8 +137,11 @@ export class MefTypeahead implements ITypeahead {
    * @return Metadata the label, $ref and group.
    */
   private _getNameRef(metadata: any, sourceName: string): SuggestionMetadata {
+    const label = metadata[sourceName].authorized_access_point;
+    const url = metadata[sourceName].identifier;
     return {
-      label: metadata[sourceName].authorized_access_point,
+      label: `${label}`,
+      externalLink: url,
       value: `https://mef.rero.ch/api/${sourceName}/${metadata[sourceName].pid}`,
       group: this._translateService.instant(
         'link to authority {{ sourceName }}',
