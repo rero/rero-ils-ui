@@ -8,13 +8,13 @@
       "^/patrons": "https://localhost:5000/patrons"
     }
   },
-  "/schemaform": {
+  "/schemas": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
     "pathRewrite": {
-      "^/schemaform": "https://localhost:5000/schemaform"
+      "^/schemas": "https://localhost:5000/schemas"
     }
   },
   "/api/*": {

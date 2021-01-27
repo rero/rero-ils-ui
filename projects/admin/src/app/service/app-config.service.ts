@@ -40,7 +40,7 @@ export class AppConfigService extends CoreConfigService {
     this.production = environment.production;
     this.apiBaseUrl = environment.apiBaseUrl;
     this.$refPrefix = environment.$refPrefix;
-    this.schemaFormEndpoint = '/schemaform';
+    this.schemaFormEndpoint = '/schemas';
     this.languages = environment.languages;
     this.defaultLanguage = environment.defaultLanguage;
     this.adminRoles = environment.adminRoles;
