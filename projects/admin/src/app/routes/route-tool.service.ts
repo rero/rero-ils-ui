@@ -15,12 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { DatePipe } from '@angular/common';
-import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { AbstractType, Injectable, InjectionToken, Injector, Type } from '@angular/core';
 import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionStatus, ApiService, RecordService } from '@rero/ng-core';
-import { Observable, of, Subscriber } from 'rxjs';
 import { UserService } from '@rero/shared';
+import { Observable, of, Subscriber } from 'rxjs';
 import { RecordPermission, RecordPermissionService } from '../service/record-permission.service';
 
 @Injectable({
@@ -29,96 +30,109 @@ import { RecordPermission, RecordPermissionService } from '../service/record-per
 export class RouteToolService {
 
   /**
+   * Proxy for translate service
    * @return TranslateService
    */
   get translateService() {
-    return this._translateService;
+    return this._injector.get(TranslateService);
   }
 
   /**
+   * Proxy for user service
    * @return UserService
    */
   get userService() {
-    return this._userService;
+    return this._injector.get(UserService);
   }
 
   /**
+   * Proxy for api service
    * @return ApiService
    */
   get apiService() {
-    return this._apiService;
+    return this._injector.get(ApiService);
   }
 
   /**
+   * Proxy for actived route
    * @return ActivedRoute
    */
-  get ActivatedRoute() {
-    return this._activatedRoute;
+  get activatedRoute() {
+    return this._injector.get(ActivatedRoute);
   }
 
   /**
+   * Proxy for record service
    * @return recordService
    */
   get recordService() {
-    return this._recordService;
+    return this._injector.get(RecordService);
   }
 
   /**
+   * Proxy for record permission service
    * @return recordPermissionService
    */
   get recordPermissionService() {
-    return this._recordPermissionService;
+    return this._injector.get(RecordPermissionService);
   }
 
   /**
+   * Proxy for date pipe
    * @return datePipe
    */
   get datePipe() {
-    return this._datePipe;
+    return this._injector.get(DatePipe);
   }
 
   /**
+   * Proxy for router
    * @return router
    */
   get router() {
-    return this._router;
+    return this._injector.get(Router);
   }
 
   /**
+   * Proxy for url serializer
    * @return urlSerializer
    */
   get urlSerializer() {
-    return this._urlSerializer;
+    return this._injector.get(UrlSerializer);
+  }
+
+  /**
+   * Proxy for http client
+   * @return httpClient
+   */
+  get httpClient() {
+    return this._injector.get(HttpClient);
+  }
+
+  /**
+   * Proxy for injector
+   * @return Injector
+   */
+  get injector() {
+    return this._injector;
   }
 
   /**
    * Constructor
-   *
-   * @param _translateService - TranslateService
-   * @param _userService - UserService
-   * @param _apiService - ApiService
-   * @param _activatedRoute - ActivatedRoute
-   * @param _recordService - RecordService
-   * @param _recordPermissionService - RecordPermissionService
-   * @param _datePipe - DatePipe,
-   * @param _router - Router
-   * @param _urlSerializer - UrlSerializer
+   * @param _injector - Injector
    */
-  constructor(
-    private _translateService: TranslateService,
-    private _userService: UserService,
-    private _apiService: ApiService,
-    private _activatedRoute: ActivatedRoute,
-    private _recordService: RecordService,
-    private _recordPermissionService: RecordPermissionService,
-    private _datePipe: DatePipe,
-    private _router: Router,
-    private _urlSerializer: UrlSerializer
-  ) { }
+  constructor(private _injector: Injector) { }
+
+  /**
+   * Get Token in injector
+   * @param token - Token
+   */
+  getInjectorToken<T>(token: Type<T> | InjectionToken<T> | AbstractType<T>) {
+    return this._injector.get(token);
+  }
 
   /**
    * Enabled action
-   *
    * @param message - string
    * @return Observable
    */
@@ -128,7 +142,6 @@ export class RouteToolService {
 
   /**
    * Disabled action
-   *
    * @param message - string
    * @return Observable
    */
@@ -138,19 +151,17 @@ export class RouteToolService {
 
   /**
    * Access only for system librarian
-   *
    * @param message - string
    * @return Observable
    */
   canSystemLibrarian(message: string = ''): Observable<ActionStatus> {
     return of(
-      { can: this._userService.user.isSystemLibrarian, message }
+      { can: this.userService.user.isSystemLibrarian, message }
     );
   }
 
   /**
    * Check if a record can be updated
-   *
    * @param record - Object: the resource object to check
    * @param recordType - String: the record type
    * @return Observable providing object with 2 attributes :
@@ -159,17 +170,16 @@ export class RouteToolService {
    */
   canUpdate(record: any, recordType: string): Observable<ActionStatus> {
     return new Observable((observer: Subscriber<any>): void => {
-      this._recordPermissionService
+      this.recordPermissionService
           .getPermission(recordType, record.metadata.pid)
           .subscribe((permission: RecordPermission) => {
-            observer.next({can: permission.update.can, message: ''});
+            observer.next({ can: permission.update.can, message: '' });
           });
     });
   }
 
   /**
    * Check if a record can be deleted
-   *
    * @param record - Object: the resource object to check
    * @param recordType - String: the record type
    * @return Observable providing object with 2 attributes :
@@ -178,14 +188,14 @@ export class RouteToolService {
    */
   canDelete(record: any, recordType: string): Observable<ActionStatus> {
     return new Observable((observer: Subscriber<any>): void => {
-      this._recordPermissionService
+      this.recordPermissionService
           .getPermission(recordType, record.metadata.pid)
           .subscribe((permission: RecordPermission) => {
             observer.next({
               can: permission.delete.can,
               message: (permission.delete.can)
                 ? ''
-                : this._recordPermissionService.generateDeleteMessage(permission.delete.reasons)
+                : this.recordPermissionService.generateDeleteMessage(permission.delete.reasons)
             });
           });
     });
@@ -194,7 +204,6 @@ export class RouteToolService {
 
   /**
    * Check if a record can be read
-   *
    * @param record - Object: the resource object to check
    * @param recordType - String: the record type
    * @return Observable providing object with 2 attributes :
@@ -203,17 +212,16 @@ export class RouteToolService {
    */
   canRead(record: any, recordType: string): Observable<ActionStatus> {
     return new Observable((observer: Subscriber<any>): void => {
-      this._recordPermissionService
+      this.recordPermissionService
         .getPermission(recordType, record.metadata.pid)
         .subscribe((permission: RecordPermission) => {
-          observer.next({can: permission.read.can, message: ''});
+          observer.next({ can: permission.read.can, message: '' });
         });
     });
   }
 
   /**
    * Check all permissions of the record
-   *
    * @param record - Object: the resource object to check
    * @param recordType - String: the record type
    * @return Observable providing object contains:
@@ -223,7 +231,7 @@ export class RouteToolService {
    */
   permissions(record: any, recordType: string): Observable<any> {
     return new Observable((observer: Subscriber<any>): void => {
-      this._recordPermissionService
+      this.recordPermissionService
         .getPermission(recordType, record.metadata.pid)
         .subscribe((permission: RecordPermission) => {
           observer.next({
@@ -233,7 +241,7 @@ export class RouteToolService {
               can: permission.delete.can,
               message: (permission.delete.can)
               ? ''
-              : this._recordPermissionService.generateDeleteMessage(permission.delete.reasons)
+              : this.recordPermissionService.generateDeleteMessage(permission.delete.reasons)
             },
           });
         });
@@ -241,15 +249,30 @@ export class RouteToolService {
   }
 
   /**
+   * Get route param by name
+   * Check the query string to found a requested parameter. If the param is not
+   * part of the query string, return the default value specified as function parameter.
+   * @param name - string
+   * @param defaultValue: the default value to return if name is not found as query parameter
+   * @return mixed - string | null
+   */
+  getRouteQueryParam(name: string, defaultValue = null) {
+    const queryParams = this.activatedRoute.snapshot.queryParams;
+    return (name in queryParams && queryParams[name].length > 0)
+      ? queryParams[name]
+      : defaultValue;
+  }
+
+  /**
    * Aggregation filter
-   *
    * @param aggregations - Object
+   * @return Observable
    */
   aggregationFilter(aggregations: object): Observable<any> {
     const obs = new Observable((observer: Subscriber<any>): void => {
-      observer.next(this.aggFilter(aggregations));
-      this._translateService.onLangChange.subscribe(() => {
-        observer.next(this.aggFilter(aggregations));
+      observer.next(this._aggFilter(aggregations));
+      this.translateService.onLangChange.subscribe(() => {
+        observer.next(this._aggFilter(aggregations));
       });
     });
     return obs;
@@ -257,16 +280,15 @@ export class RouteToolService {
 
   /**
    * Aggregation filter
-   *
    * @param aggregations - Object
    * @return array
    */
-  private aggFilter(aggregations: object) {
+  private _aggFilter(aggregations: object) {
     const aggs = {};
     Object.keys(aggregations).map(aggregation => {
       if (aggregation.indexOf('__') > -1) {
         const splitted = aggregation.split('__');
-        if (this._translateService.currentLang === splitted[1]) {
+        if (this.translateService.currentLang === splitted[1]) {
           aggs[aggregation] = aggregations[aggregation];
         }
       } else {
@@ -274,21 +296,5 @@ export class RouteToolService {
       }
     });
     return aggs;
-  }
-
-  /**
-   * Get route param by name
-   * Check the query string to found a requested parameter. If the param is not
-   * part of the query string, return the default value specified as function parameter.
-   *
-   * @param name - string
-   * @param defaultValue: the default value to return if name is not found as query parameter
-   * @return mixed - string | null
-   */
-  getRouteQueryParam(name: string, defaultValue = null) {
-    const queryParams = this._activatedRoute.snapshot.queryParams;
-    return ( name in queryParams && queryParams[name].length > 0 )
-      ? queryParams[name]
-      : defaultValue;
   }
 }
