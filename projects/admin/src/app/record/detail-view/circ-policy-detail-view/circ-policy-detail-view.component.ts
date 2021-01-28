@@ -17,6 +17,7 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
+import { OrganisationService } from '../../../service/organisation.service';
 
 @Component({
   selector: 'admin-circ-policy-detail-view',
@@ -34,6 +35,12 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
   /** The record */
   record: any;
 
+  /** Reminders */
+  reminders = [];
+
+  /** Overdues */
+  overdues = [];
+
   /** The settings to display, patron type pid as a key */
   settings = new Map<string, string[]>();
 
@@ -42,6 +49,17 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
 
   /** The list of item types concerned by the circulation policy */
   itemTypes = new Set();
+
+  /** Organisation currency */
+  get currency() {
+    return this._organisationService.organisation.default_currency;
+  }
+
+  /**
+   * Constructor
+   * @param _organisationService - OrganisationService
+   */
+  constructor(private _organisationService: OrganisationService) {}
 
   /** On init hook */
   ngOnInit() {
@@ -61,6 +79,17 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
             this.itemTypes.add(setting.item_type.pid);
           }
         });
+
+        // reminders order
+        this.reminders = record.metadata.reminders
+          .sort((a: any, b: any) => (a.type > b.type)
+            ? 1
+            : (a.days_delay > b.days_delay) ? 1 : -1
+          );
+
+        // Overdue fees
+        this.overdues = record.metadata.overdue_fees.intervals
+          .sort((a: any, b: any) => (a.from > b.from) ? 1 : -1);
       }
     });
   }
