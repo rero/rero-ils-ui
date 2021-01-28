@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2021 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,16 +14,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { Injectable } from '@angular/core';
+import { Record, RecordService } from '@rero/ng-core';
+import { map } from 'rxjs/operators';
 
-import { TestBed } from '@angular/core/testing';
+@Injectable({
+  providedIn: 'root'
+})
+export class ItemTypeApiService {
 
-import { CirculationMappingService } from './circulation-mapping.service';
+  /**
+   * Constructor
+   * @param _recordService - RecordService
+   */
+  constructor(private _recordService: RecordService) {}
 
-describe('CirculationMappingService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
-
-  it('should be created', () => {
-    const service: CirculationMappingService = TestBed.inject(CirculationMappingService );
-    expect(service).toBeTruthy();
-  });
-});
+  /**
+   * Get All
+   * @return Observable, array of records
+   */
+  getAll() {
+    return this._recordService
+      .getRecords('item_types', '', 1, RecordService.MAX_REST_RESULTS_SIZE)
+      .pipe(map((response: Record) => response.hits.hits));
+  }
+}

@@ -122,36 +122,56 @@
         </dl>
       </div>
     </section>
-    <!-- NOTIFICATION AND FEES -->
-    <section class="card mt-4" *ngIf="data.number_of_days_after_due_date ||
-        data.number_of_days_before_due_date || data.reminder_fee_amount">
+
+    <!-- REMINDERS -->
+    <section class="card mt-2" *ngIf="data.reminders">
       <div class="card-header">
-        <b translate>Notifications and fees</b>
+        <b translate>Reminders</b>
       </div>
       <div class="card-body">
-        <!-- DAYS AFTER DUE DATE -->
-        <dl class="row mb-0" *ngIf="data.number_of_days_after_due_date">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Number of days after due date</dt>
-          <dd id="cipo-after-due-date" class="col-sm-7 col-md-8 mb-0">
-            {{ data.number_of_days_after_due_date }}
-          </dd>
-        </dl>
-        <!-- DAYS BEFORE DUE DATE -->
-        <dl class="row mb-0" *ngIf="data.number_of_days_before_due_date">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Number of days before due date</dt>
-          <dd id="cipo-before-due-date" class="col-sm-7 col-md-8 mb-0">
-            {{ data.number_of_days_before_due_date }}
-          </dd>
-        </dl>
-        <!-- REMINDER FEE AMOUNT -->
-        <dl class="row mb-0" *ngIf="data.reminder_fee_amount">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Reminder fee amount</dt>
-          <dd id="cipo-first-reminder-fee-amount" class="col-sm-7 col-md-8 mb-0">
-            {{ data.reminder_fee_amount }}
-          </dd>
-        </dl>
+        <div class="row col">
+          <div class="col-lg-3 font-weight-bold pl-0" translate>Type</div>
+          <div class="col-lg-3 font-weight-bold" translate>Days Delay</div>
+          <div class="col-lg-3 font-weight-bold" translate>Communication channel</div>
+          <div class="col-lg-3 font-weight-bold" translate>Amount</div>
+          <ng-container *ngFor="let reminder of reminders">
+            <div class="col-lg-3 pl-0">{{ reminder.type | translate }}</div>
+            <div class="col-lg-3">{{ reminder.days_delay }}</div>
+            <div class="col-lg-3">{{ reminder.communication_channel | translate }}</div>
+            <div class="col-lg-3" *ngIf="reminder.fee_amount; else noAmount">
+              {{ reminder.fee_amount | currency:currency:true }}
+            </div>
+          </ng-container>
+          <ng-template #noAmount>
+            <div class="col-lg-3">-</div>
+          </ng-template>
+        </div>
       </div>
     </section>
+
+    <!-- OVERDUE FEES -->
+    <section class="card mt-2" *ngIf="data.overdue_fees">
+      <div class="card-header">
+        <b translate>Overdue fees</b>
+      </div>
+      <div class="card-body">
+        <div class="row col">
+          <div class="col-lg-3 font-weight-bold pl-0" translate>Interval of days</div>
+          <div class="col-lg-9 font-weight-bold" translate>Amount</div>
+          <ng-container *ngFor="let overdue of overdues">
+            <div class="col-lg-3 pl-0">{{ overdue.from }} - {{ overdue.to }}</div>
+            <div class="col-lg-9">{{ overdue.fee_amount | currency:currency:true }} / {{ 'day' | translate }}</div>
+          </ng-container>
+        </div>
+        <div class="row col mt-3" *ngIf="data.overdue_fees.maximum_total_amount">
+          <div class="col-lg-3 font-weight-bold pl-0" translate>Maximun total amount</div>
+          <div class="col-lg-9">
+            {{ data.overdue_fees.maximum_total_amount | currency:currency:true }}
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- APPLICATION -->
     <section class="m-2 p-2" *ngIf="record.metadata.settings">
       <h3 translate>Application</h3>
