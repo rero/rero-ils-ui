@@ -1,7 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2021 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,24 +14,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { ItemTypeApiService } from './item-type-api.service';
 
-@import "node_modules/bootstrap/scss/functions";
-@import "node_modules/bootstrap/scss/mixins";
-@import 'node_modules/bootstrap/scss/variables';
-@import 'node_modules/bootstrap/scss/bootstrap';
 
-.sticky {
-  @supports (position: sticky) {
-    position: sticky;
-    top: 0rem;
-    z-index: 500;
-    background: white;
-    height: 100%;
-  }
-  border-bottom: 1px solid #ccc;
-  }
-  .actions {
-    position: absolute;
-    right: 2rem;
-    top: 0.75rem;
-}
+describe('ItemTypeService', () => {
+  let service: ItemTypeApiService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule,
+        TranslateModule.forRoot()
+      ],
+    });
+    service = TestBed.inject(ItemTypeApiService);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});

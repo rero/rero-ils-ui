@@ -48,6 +48,8 @@ import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
 import { MenuDashboardComponent } from './menu/menu-dashboard/menu-dashboard.component';
 import { MenuLanguageComponent } from './menu/menu-language/menu-language.component';
+import { MenuMobileComponent } from './menu/menu-mobile/menu-mobile.component';
+import { SubMenuComponent } from './menu/menu-mobile/sub-menu/sub-menu.component';
 import { MenuSwitchLibraryComponent } from './menu/menu-switch-library/menu-switch-library.component';
 import { MenuUserServicesComponent } from './menu/menu-user-services/menu-user-services.component';
 import { MenuUserComponent } from './menu/menu-user/menu-user.component';
@@ -69,7 +71,6 @@ import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-
 import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view.component';
 import { TemplatesBriefViewComponent } from './record/brief-view/templates-brief-view.component';
 import { VendorBriefViewComponent } from './record/brief-view/vendor-brief-view.component';
-import { CirculationPolicyComponent } from './record/custom-editor/circulation-settings/circulation-policy/circulation-policy.component';
 import { DocumentEditorComponent } from './record/custom-editor/document-editor/document-editor.component';
 import { HoldingEditorComponent } from './record/custom-editor/holding-editor/holding-editor.component';
 import { ExceptionDatesEditComponent } from './record/custom-editor/libraries/exception-dates-edit/exception-dates-edit.component';
@@ -99,6 +100,7 @@ import {
 import { PersonDetailViewComponent } from './record/detail-view/contribution-detail-view/person-detail-view/person-detail-view.component';
 import { DocumentDetailViewComponent } from './record/detail-view/document-detail-view/document-detail-view.component';
 import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
+import { HoldingSharedViewComponent } from './record/detail-view/document-detail-view/holding-shared-view/holding-shared-view.component';
 import {
   DefaultHoldingItemComponent
 } from './record/detail-view/document-detail-view/holding/default-holding-item/default-holding-item.component';
@@ -106,6 +108,7 @@ import {
   HoldingItemInCollectionComponent
 } from './record/detail-view/document-detail-view/holding/holding-item-in-collection/holding-item-in-collection.component';
 import { HoldingItemNoteComponent } from './record/detail-view/document-detail-view/holding/holding-item-note/holding-item-note.component';
+import { HoldingItemTemporaryItemTypeComponent } from './record/detail-view/document-detail-view/holding/holding-item-temporary-item-type/holding-item-temporary-item-type.component';
 import { HoldingComponent } from './record/detail-view/document-detail-view/holding/holding.component';
 import {
   SerialHoldingItemComponent
@@ -137,7 +140,10 @@ import { PatronTypesDetailViewComponent } from './record/detail-view/patron-type
 import { TemplateDetailViewComponent } from './record/detail-view/template-detail-view/template-detail-view.component';
 import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
 import { DocumentRecordSearchComponent } from './record/document-record-search/document-record-search.component';
+import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patron-type-item-type/cipo-patron-type-item-type.component';
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
+import { OperationLogsDialogComponent } from './record/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
+import { OperationLogsComponent } from './record/operation-logs/operation-logs.component';
 import { AppConfigService } from './service/app-config.service';
 import { AppInitService } from './service/app-init.service';
 import { OrganisationService } from './service/organisation.service';
@@ -145,12 +151,6 @@ import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-fac
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { MenuMobileComponent } from './menu/menu-mobile/menu-mobile.component';
-import { SubMenuComponent } from './menu/menu-mobile/sub-menu/sub-menu.component';
-import { HoldingItemTemporaryItemTypeComponent } from './record/detail-view/document-detail-view/holding/holding-item-temporary-item-type/holding-item-temporary-item-type.component';
-import { OperationLogsComponent } from './record/operation-logs/operation-logs.component';
-import { HoldingSharedViewComponent } from './record/detail-view/document-detail-view/holding-shared-view/holding-shared-view.component';
-import { OperationLogsDialogComponent } from './record/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -161,7 +161,6 @@ export function appInitFactory(appInitService: AppInitService) {
   declarations: [
     AppComponent,
     CircPoliciesBriefViewComponent,
-    CirculationPolicyComponent,
     DocumentEditorComponent,
     DocumentsBriefViewComponent,
     ExceptionDatesEditComponent,
@@ -185,7 +184,6 @@ export function appInitFactory(appInitService: AppInitService) {
     LibraryComponent,
     ExceptionDatesListComponent,
     ExceptionDatesEditComponent,
-    CirculationPolicyComponent,
     CircPolicyDetailViewComponent,
     ExceptionDateComponent,
     LocationDetailViewComponent,
@@ -249,7 +247,8 @@ export function appInitFactory(appInitService: AppInitService) {
     HoldingItemTemporaryItemTypeComponent,
     OperationLogsComponent,
     HoldingSharedViewComponent,
-    OperationLogsDialogComponent
+    OperationLogsDialogComponent,
+    CipoPatronTypeItemTypeComponent
   ],
   imports: [
     AppRoutingModule,
@@ -265,7 +264,11 @@ export function appInitFactory(appInitService: AppInitService) {
     TabsModule.forRoot(),
     TooltipModule.forRoot(),
     PopoverModule.forRoot(),
-    FormlyModule.forRoot(),
+    FormlyModule.forRoot({
+      types: [
+        { name: 'cipo-pt-it', component: CipoPatronTypeItemTypeComponent }
+      ]
+    }),
     TranslateModule.forRoot({
       loader: {
         provide: BaseTranslateLoader,
@@ -338,7 +341,6 @@ export function appInitFactory(appInitService: AppInitService) {
     IllRequestsBriefViewComponent,
     IllRequestDetailViewComponent,
     CircPoliciesBriefViewComponent,
-    CirculationPolicyComponent,
     DocumentEditorComponent,
     HoldingEditorComponent,
     DocumentsBriefViewComponent,
@@ -357,7 +359,6 @@ export function appInitFactory(appInitService: AppInitService) {
     DocumentDetailViewComponent,
     ExceptionDatesEditComponent,
     CircPolicyDetailViewComponent,
-    CirculationPolicyComponent,
     LocationDetailViewComponent,
     ItemDetailViewComponent,
     PatronDetailViewComponent,
