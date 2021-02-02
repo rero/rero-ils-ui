@@ -40,6 +40,7 @@ export * from './lib/shared.module';
 export * from './lib/view/brief/contribution-brief/contribution-brief.component';
 export * from './lib/view/brief/contribution-sources/contribution-sources.component';
 export * from './lib/view/brief/organisation-brief/organisation-brief.component';
+export * from './lib/view/brief/part-of/part-of.component';
 export * from './lib/view/brief/person-brief/person-brief.component';
 export * from './lib/view/inherited-call-number/inherited-call-number.component';
 export * from './lib/view/thumbnail/thumbnail.component';

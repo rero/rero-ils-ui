@@ -54,6 +54,7 @@
       <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
         <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>
       </ul>
+      <shared-part-of [record]="record"></shared-part-of>
     </ng-container>
   </div>
 </article>
