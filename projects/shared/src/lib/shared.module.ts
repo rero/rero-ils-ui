@@ -37,6 +37,7 @@ import { PersonBriefComponent } from './view/brief/person-brief/person-brief.com
 import { ItemHoldingsCallNumberPipe } from './pipe/item-holdings-call-number.pipe';
 import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
+import { PartOfComponent } from './view/brief/part-of/part-of.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     UrlActivePipe,
     ItemHoldingsCallNumberPipe,
     InheritedCallNumberComponent,
-    ThumbnailComponent
+    ThumbnailComponent,
+    PartOfComponent
   ],
   exports: [
     CommonModule,
@@ -75,7 +77,8 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     Nl2brPipe,
     ItemHoldingsCallNumberPipe,
     InheritedCallNumberComponent,
-    ThumbnailComponent
+    ThumbnailComponent,
+    PartOfComponent
   ],
   imports: [
     CommonModule,
