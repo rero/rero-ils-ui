@@ -21,31 +21,19 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 
 // Resources
 _('acq_accounts');
-_('Acquisition accounts');
 _('acq_order_lines');
-_('Order lines');
 _('acq_orders');
-_('Orders');
 _('budgets');
-_('Budgets');
 _('circ_policies');
-_('Circulation policies');
 _('documents');
 _('item_types');
-_('Item types');
 _('libraries');
-_('Libraries');
 _('locations');
-_('Locations');
 _('organisations');
-_('Organisations');
 _('Patrons');
 _('patron_types');
-_('Patron types');
 _('persons');
-_('Persons');
 _('vendors');
-_('Vendors');
 
 // Facets
 _('author');
@@ -152,3 +140,17 @@ _('{{ counter }} hidden item');
 _('{{ counter }} hidden items');
 _('{{ counter }} hidden holding');
 _('{{ counter }} hidden holdings');
+
+// Menu entries
+_('User services');
+_('ILL requests');
+_('Import from the web');
+_('Corporate bodies');
+_('Late issues');
+_('Reports & monitoring');
+_('Inventory list');
+_('Admin');
+_('My organisation');
+_('My library');
+_('Public interface');
+_('Logout');

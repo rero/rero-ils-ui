@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { formatDate } from '@angular/common';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { AcquisitionOrderBriefViewComponent } from '../record/brief-view/acquisition-order-brief-view.component';
@@ -48,7 +49,7 @@ export class AcquisitionOrdersRoute extends BaseRoute implements RouteInterface 
         types: [
           {
             key: this.name,
-            label: 'Orders',
+            label: _('Orders'),
             component: AcquisitionOrderBriefViewComponent,
             detailComponent: AcquisitionOrderDetailViewComponent,
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),

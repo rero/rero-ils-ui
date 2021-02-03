@@ -19,6 +19,7 @@ import { of } from 'rxjs';
 import { ContributionBriefComponent } from '@rero/shared';
 import { ContributionDetailViewComponent } from '../record/detail-view/contribution-detail-view/contribution-detail-view.component';
 import { BaseRoute } from './base-route';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 
 export class PersonsRoute extends BaseRoute implements RouteInterface {
 
@@ -45,7 +46,7 @@ export class PersonsRoute extends BaseRoute implements RouteInterface {
           {
             key: 'persons',
             index: 'contributions',
-            label: 'Persons',
+            label: _('Persons'),
             component: ContributionBriefComponent,
             detailComponent: ContributionDetailViewComponent,
             aggregationsOrder: ['sources'],

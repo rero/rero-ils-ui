@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { ActionStatus, DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
-import { JSONSchema7 } from '@rero/ng-core';
+import { ActionStatus, DetailComponent, EditorComponent, JSONSchema7, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { Observable, Subscriber } from 'rxjs';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { TemplatesBriefViewComponent } from '../record/brief-view/templates-brief-view.component';
@@ -48,7 +48,7 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
         types: [
           {
             key: this.name,
-            label: 'Templates',
+            label: _('Templates'),
             component: TemplatesBriefViewComponent,
             detailComponent: TemplateDetailViewComponent,
             canAdd: () => this._routeToolService.canNot(),

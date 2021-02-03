@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { VendorBriefViewComponent } from '../record/brief-view/vendor-brief-view.component';
 import { VendorDetailViewComponent } from '../record/detail-view/vendor-detail-view/vendor-detail-view.component';
@@ -44,7 +45,7 @@ export class VendorsRoute extends BaseRoute implements RouteInterface {
         types: [
           {
             key: this.name,
-            label: 'Vendors',
+            label: _('Vendors'),
             component: VendorBriefViewComponent,
             detailComponent: VendorDetailViewComponent,
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
