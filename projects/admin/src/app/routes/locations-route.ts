@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, EditorComponent, RouteInterface } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { LibraryGuard } from '../guard/library.guard';
@@ -44,7 +45,7 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
         types: [
           {
             key: this.name,
-            label: 'Locations',
+            label: _('Locations'),
             detailComponent: LocationDetailViewComponent,
             canAdd: () => this._routeToolService.canSystemLibrarian(),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),

@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, EditorComponent, RouteInterface } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { CanUpdateGuard } from '../guard/can-update.guard';
@@ -44,7 +45,7 @@ export class OrganisationsRoute extends BaseRoute implements RouteInterface {
         types: [
           {
             key: this.name,
-            label: 'Organisations',
+            label: _('Organisations'),
             detailComponent: OrganisationDetailViewComponent
           }
         ]

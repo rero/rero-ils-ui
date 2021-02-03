@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { RoleGuard } from '../guard/role.guard';
@@ -47,7 +48,7 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
         types: [
           {
             key: this.name,
-            label: 'Circulation policies',
+            label: _('Circulation policies'),
             component: CircPoliciesBriefViewComponent,
             detailComponent: CircPolicyDetailViewComponent,
             canAdd: () => this._routeToolService.canSystemLibrarian(),

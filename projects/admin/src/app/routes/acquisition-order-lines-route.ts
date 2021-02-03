@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { DetailComponent, EditorComponent, RecordService, RouteInterface } from '@rero/ng-core';
-import { Record, JSONSchema7 } from '@rero/ng-core';
+import { DetailComponent, EditorComponent, JSONSchema7, Record, RecordService, RouteInterface } from '@rero/ng-core';
 import { map } from 'rxjs/operators';
 import { AcqOrderLineGuard } from '../guard/acq-order-line.guard';
 import { CanUpdateGuard } from '../guard/can-update.guard';
@@ -49,7 +49,7 @@ export class AcquisitionOrderLinesRoute extends BaseRoute implements RouteInterf
         types: [
           {
             key: this.name,
-            label: 'Order lines',
+            label: _('Order lines'),
             detailComponent: AcquisitionOrderLineDetailViewComponent,
             canAdd: () => this._routeToolService.canSystemLibrarian(),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
