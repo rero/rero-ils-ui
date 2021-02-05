@@ -17,12 +17,16 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
+import { UserService } from '@rero/shared';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Document, Item, ItemAction, ItemNote, ItemNoteType, Loan, LoanState } from '../../class/items';
 import { ItemsService } from '../../service/items.service';
 import { OrganisationService } from '../../service/organisation.service';
+import { UpdateLoanFormComponent } from '../forms/update-loan-form/update-loan-form.component';
 import { PatronTransactionService } from '../patron-transaction.service';
+import { FixedDateFormComponent } from '../patron/loan/fixed-date-form/fixed-date-form.component';
 
 @Component({
   selector: 'admin-item',
@@ -31,33 +35,31 @@ import { PatronTransactionService } from '../patron-transaction.service';
 })
 export class ItemComponent implements OnInit {
 
+  // COMPONENT ATTRIBUTES ============================================
   /** Current item */
   @Input() item: any;
-
   /** Current patron */
   @Input() patron: any;
-
   /** Item has fees */
   @Output() hasFeesEmitter = new EventEmitter<boolean>();
-
   /** Extend loan event emitter */
   @Output() extendLoanClicked = new EventEmitter<any[]>();
 
   /** Is collapsed */
   isCollapsed = true;
-
   /** Total amount of fee */
   totalAmountOfFee = 0;
-
   /** Notifications related to the current loan */
   notifications$: Observable<any>;
-
   /** ItemAction reference */
   itemAction = ItemAction;
-
   /** related document */
   document = undefined;
 
+  /** modal reference */
+  private _modalRef: BsModalRef;
+
+  // GETTER & SETTER ================================================
   /**
    * Get current organisation
    * @return: current organisation
@@ -67,26 +69,40 @@ export class ItemComponent implements OnInit {
   }
 
   /**
+   * Get the loan pid related to this item
+   * @return: the loan PID.
+   */
+  get loanPid() {
+    return (this.item && this.item.loan && this.item.loan.pid)
+      ? this.item.loan.pid
+      : null;
+  }
+
+  // CONSTRUCTOR & HOOKS ============================================
+  /**
    * Constructor
-   * @param _recordService: Record Service
-   * @param _organisationService: Organisation Service
-   * @param _patronTransactionService: Patron transaction Service
-   * @param _itemService: Item Service
+   * @param _recordService - Record Service
+   * @param _organisationService - Organisation Service
+   * @param _patronTransactionService - Patron transaction Service
+   * @param _itemService - Item Service
+   * @param _userService - UserService
+   * @param _modalService - BsModalService
    */
   constructor(
     private _recordService: RecordService,
     private _organisationService: OrganisationService,
     private _patronTransactionService: PatronTransactionService,
-    private _itemService: ItemsService
+    private _itemService: ItemsService,
+    private _userService: UserService,
+    private _modalService: BsModalService,
   ) {  }
 
   /**
    * On init hook
    */
   ngOnInit() {
-    if (this.item && this.item.loan && this.item.loan.pid) {
-      const loanPid = this.item.loan.pid;
-      this._patronTransactionService.patronTransactionsByLoan$(loanPid, 'overdue', 'open').subscribe(
+    if (this.loanPid) {
+      this._patronTransactionService.patronTransactionsByLoan$(this.loanPid, 'overdue', 'open').subscribe(
         (transactions) => {
           this.totalAmountOfFee = this._patronTransactionService.computeTotalTransactionsAmount(transactions);
           if (this.totalAmountOfFee > 0) {
@@ -96,7 +112,7 @@ export class ItemComponent implements OnInit {
       );
       this.notifications$ = this._recordService.getRecords(
         'notifications',
-        `loan.pid:${loanPid}`,
+        `loan.pid:${this.loanPid}`,
         1,
         RecordService.MAX_REST_RESULTS_SIZE,
         [],
@@ -112,6 +128,7 @@ export class ItemComponent implements OnInit {
     }
   }
 
+  // COMPONENT FUNCTIONS ============================================
   /**
    * Get transit location pid
    * @return: transit location pid
@@ -169,5 +186,30 @@ export class ItemComponent implements OnInit {
    */
   needCallout(item: Item, type?: string): boolean {
     return this._itemService.needCallout(item, type);
+  }
+
+  /**
+   * Is the current user can edit the current loan related to the item
+   * @return boolean
+   */
+  canEditLoan(): boolean {
+    return (this.loanPid !== null)
+      ? this._userService.user.hasRole('system_librarian')
+      : false;
+  }
+
+  /**
+   * Open a modal dialog form allowing to user to update loan data.
+   * Subscribe to modal onHide event to get data entered by user and perform job if needed.
+   */
+  openFixedEndDateDialog() {
+    this._modalRef = this._modalService.show(UpdateLoanFormComponent, {
+      ignoreBackdropClick: true,
+      keyboard: true,
+      initialState: {
+        loan: this.item.loan
+      },
+      class: 'modal-lg'
+    });
   }
 }

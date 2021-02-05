@@ -116,11 +116,16 @@ export class Loan {
   item_destination?: LoanDestination;
 
   constructor(obj?: any) {
+    this.assign(obj);
+  }
+
+  public assign(obj: any) {
     Object.assign(this, obj);
     this.request_expire_date = this.convertToMoment(this.request_expire_date);
     this.start_date = this.convertToMoment(this.start_date);
     this.end_date = this.convertToMoment(this.end_date);
     this.transaction_date = this.convertToMoment(this.transaction_date);
+    return this;
   }
 
   private convertToMoment(data) {

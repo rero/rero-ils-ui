@@ -56,6 +56,7 @@ import { PickupItemComponent } from './patron/pickup/pickup-item/pickup-item.com
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
 import { FixedDateFormComponent } from './patron/loan/fixed-date-form/fixed-date-form.component';
+import { UpdateLoanFormComponent } from './forms/update-loan-form/update-loan-form.component';
 
 
 @NgModule({
@@ -84,7 +85,8 @@ import { FixedDateFormComponent } from './patron/loan/fixed-date-form/fixed-date
     HistoryItemComponent,
     RequestedItemComponent,
     ChangePasswordFormComponent,
-    FixedDateFormComponent
+    FixedDateFormComponent,
+    UpdateLoanFormComponent
   ],
   imports: [
     BsDropdownModule.forRoot(),

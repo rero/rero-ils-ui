@@ -16,7 +16,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControlOptions, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TimeValidator } from '@rero/ng-core';
 import { WeekDays } from '../../../class/week-days';
 
@@ -91,7 +91,7 @@ export class LibraryFormService {
       day: [day],
       times
     }, {
-      validator: [TimeValidator.RangePeriodValidator()]
+      validators: [TimeValidator.RangePeriodValidator()]
     });
   }
 
@@ -111,7 +111,7 @@ export class LibraryFormService {
         ]
       }]
     }, {
-      validator: TimeValidator.greaterThanValidator('start_time', 'end_time')
+      validators: TimeValidator.greaterThanValidator('start_time', 'end_time')
     });
   }
 

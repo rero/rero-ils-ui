@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { map } from 'rxjs/operators';
-import { LoanState } from '../class/items';
+import { Loan, LoanState } from '../class/items';
 import { UserService } from '@rero/shared';
 
 @Injectable({
@@ -98,7 +98,7 @@ export class LoanService {
 
   /**
    * Update the pickup location of a loan
-   * @param loan: loan to update
+   * @param loanPid: loan to update
    * @param pickupLocationPid: pickup location pid to update
    * @return loan data
    */

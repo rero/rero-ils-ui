@@ -25,9 +25,15 @@
   <!-- ACTION BUTTONS -->
   <ng-container *ngIf="patron">
     <div class="actions">
+      <button class="btn btn-sm btn-outline-primary mr-1"
+              [attr.id]="item.barcode | idAttribute:{ prefix: 'item', suffix: 'edit-loan-button' }"
+              *ngIf="this.canEditLoan()"
+              (click)="openFixedEndDateDialog()">
+        <i class="fa fa-pencil"></i>
+      </button>
       <button class="btn btn-sm btn-outline-secondary"
               [disabled]="!item.actions.includes(itemAction.extend_loan)"
-              [attr.id]="item.barcode | idAttribute:{prefix: 'item', suffix: 'renew-button'}"
+              [attr.id]="item.barcode | idAttribute:{ prefix: 'item', suffix: 'renew-button' }"
               (click)="extendLoanClick($event)" >
         <i class="fa fa-refresh pr-1"></i>
         {{ 'Renew' | translate }}
