@@ -1,0 +1,33 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<ng-container *ngIf="user$ | async as user; else create">
+  <strong>
+    {{user.metadata.last_name}}, {{ user.metadata.first_name }} ({{ user.metadata.city}})
+  </strong>
+  <button type="button" class="btn btn-outline-primary btn-sm align-baseline ml-2" (click)="openModal()" translate>
+    Edit
+  </button>
+</ng-container>
+
+<ng-template #create>
+  <h3>
+    <button type="button" class="btn btn-outline-primary btn-sm align-baseline" (click)="openModal()" translate>
+      Edit
+    </button>
+  </h3>
+</ng-template>

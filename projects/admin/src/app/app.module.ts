@@ -151,6 +151,8 @@ import { HoldingItemTemporaryItemTypeComponent } from './record/detail-view/docu
 import { OperationLogsComponent } from './record/operation-logs/operation-logs.component';
 import { HoldingSharedViewComponent } from './record/detail-view/document-detail-view/holding-shared-view/holding-shared-view.component';
 import { OperationLogsDialogComponent } from './record/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
+import { UserIdComponent } from './record/editor/wrappers/user-id/user-id.component';
+import { UserIdEditorComponent } from './record/custom-editor/user-id-editor/user-id-editor.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -249,7 +251,9 @@ export function appInitFactory(appInitService: AppInitService) {
     HoldingItemTemporaryItemTypeComponent,
     OperationLogsComponent,
     HoldingSharedViewComponent,
-    OperationLogsDialogComponent
+    OperationLogsDialogComponent,
+    UserIdComponent,
+    UserIdEditorComponent
   ],
   imports: [
     AppRoutingModule,
@@ -265,7 +269,12 @@ export function appInitFactory(appInitService: AppInitService) {
     TabsModule.forRoot(),
     TooltipModule.forRoot(),
     PopoverModule.forRoot(),
-    FormlyModule.forRoot(),
+    FormlyModule.forRoot({
+      wrappers: [{
+        name: 'user-id',
+        component: UserIdComponent
+      }]
+    }),
     TranslateModule.forRoot({
       loader: {
         provide: BaseTranslateLoader,
@@ -380,7 +389,8 @@ export function appInitFactory(appInitService: AppInitService) {
     DocumentRecordSearchComponent,
     CustomShortcutHelpComponent,
     ContributionDetailViewComponent,
-    OperationLogsComponent
+    OperationLogsComponent,
+    UserIdEditorComponent
   ],
   bootstrap: [AppComponent]
 })
