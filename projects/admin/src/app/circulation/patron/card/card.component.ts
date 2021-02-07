@@ -42,7 +42,7 @@ export class CardComponent {
     if (this.patron) {
       return (this.linkMode === 'detail')
         ? '/records/patrons/detail/' + this.patron.pid
-        : '/circulation/patron/' + this.patron.patron.barcode + '/loan';
+        : '/circulation/patron/' + this.patron.patron.barcode[0] + '/loan';
     }
   }
 

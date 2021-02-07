@@ -27,20 +27,33 @@ export class User {
   $schema: string;
   username: string;
   birth_date: string;
-  city: string;
+  city?: string;
+  country?: string;
+  gender?: string;
   email?: string;
   first_name: string;
   last_name: string;
-  libraries: Library[];
+  libraries?: Library[];
   name: string;
-  phone: string;
+  home_phone?: string;
+  business_phone?: string;
+  mobile_phone?: string;
+  other_phone?: string;
   pid: string;
   circulation_location_pid?: string;
-  postal_code: string;
+  postal_code?: string;
+  source?: string;
+  local_code?: string;
+  second_address?: {
+    street?: string;
+    postal_code?: string;
+    city?: string;
+    country?: string;
+  };
   roles: string[];
-  street: string;
+  street?: string;
   user_id: string;
-  patron: {
+  patron?: {
     barcode: string,
     type: PatronType,
     communication_channel: string,
