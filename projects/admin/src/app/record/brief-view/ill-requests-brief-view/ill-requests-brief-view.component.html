@@ -26,7 +26,7 @@
   <dl class="mt-2 row">
     <dt class="col-sm-6 col-md-3 label-title" translate>Requested by</dt>
     <dd class="col-sm-6 col-md-9 mb-0">
-      <a *ngIf="requester && requester.patron && requester.patron.barcode" [routerLink]="['/circulation', 'patron', requester.patron.barcode]">
+      <a *ngIf="requester && requester.patron && requester.patron.barcode[0]" [routerLink]="['/circulation', 'patron', requester.patron.barcode[0]]">
         <span id="patron-last-name">{{ requester.last_name }}</span>
         <span id="patron-first-name" *ngIf="requester.first_name as firstName">, {{ firstName }}</span>
       </a>

@@ -32,7 +32,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'loan']">
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode[0], 'loan']">
           {{ 'On loan' | translate }}
           <span *ngIf="getCirculationStatistics('loans') > 0" class="badge badge-info font-weight-normal">
             {{ getCirculationStatistics('loans') }}
@@ -45,7 +45,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'pickup']">
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode[0], 'pickup']">
           {{ 'To pick up' | translate }}
           <span *ngIf="getCirculationStatistics('pickup') > 0" class="badge badge-info font-weight-normal">
             {{ getCirculationStatistics('pickup') }}
@@ -58,7 +58,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'pending']">
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode[0], 'pending']">
           {{ 'Pending' | translate }}
           <span *ngIf="getCirculationStatistics('pending') > 0 as stat" class="badge badge-info font-weight-normal">
             {{ getCirculationStatistics('pending') }}
@@ -71,7 +71,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'profile']"
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode[0], 'profile']"
           translate
           >Profile</a
         >
@@ -82,7 +82,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'fees']">
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode[0], 'fees']">
           {{ 'Fees' | translate }}
           <span *ngIf="transactionsTotalAmount > 0" class="badge badge-warning font-weight-normal">
             {{ transactionsTotalAmount | currency: organisation.default_currency }}
@@ -95,7 +95,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'history']">
+          [routerLink]="['/circulation', 'patron', patron.patron.barcode[0], 'history']">
           {{ 'History' | translate }}
           <span *ngIf="getCirculationStatistics('history') > 0" class="badge badge-info font-weight-normal">
             {{ getCirculationStatistics('history') }}

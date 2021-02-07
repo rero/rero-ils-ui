@@ -120,7 +120,7 @@ export class CheckinComponent implements OnInit {
           case ItemAction.checkin:
             this._displayCirculationNote(item, ItemNoteType.CHECKIN);
             if (item.action_applied && item.action_applied.checkin) {
-              this.getPatronInfo(item.action_applied.checkin.patron.barcode);
+              this.getPatronInfo(item.action_applied.checkin.patron.barcode[0]);
             }
             if (item.status === ItemStatus.IN_TRANSIT) {
               this._toastService.warning(
@@ -214,8 +214,9 @@ export class CheckinComponent implements OnInit {
                 this.checkin(barcode);
               }
             } else {
+              // TODO: which barcode we will take
               this._router.navigate(
-                ['/circulation', 'patron', patron.patron.barcode, 'loan']
+                ['/circulation', 'patron', patron.patron.barcode[0], 'loan']
               );
             }
             this.isLoading = false;

@@ -70,7 +70,7 @@
       <dt class="col-sm-4 col-md-3 col-lg-2 label-title text-right" translate>Requested by</dt>
       <dd class="col-sm-8 col-md-9 col-lg-10">
         <ng-container *ngIf="item.loan.patron.name as patronName">
-          <a name="patron-name" [routerLink]="['/circulation', 'patron', item.loan.patron.barcode]">{{ patronName }}</a>
+          <a name="patron-name" [routerLink]="['/circulation', 'patron', item.loan.patron.barcode[0]]">{{ patronName }}</a>
         </ng-container>
       </dd>
       <!-- item shelf location + destination -->

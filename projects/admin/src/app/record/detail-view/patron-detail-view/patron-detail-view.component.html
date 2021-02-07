@@ -63,14 +63,46 @@
           {{ patron.postal_code }} {{ patron.city }}
         </dd>
       </dl>
-
-      <!-- PHONE -->
-      <dl class="row mb-0" *ngIf="patron.phone">
+      <!-- Country -->
+      <dl class="row mb-0" *ngIf="patron.country">
         <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Phone
+          Country
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.phone }}
+          {{ 'country_' + patron.country | translate}}
+        </dd>
+      </dl>
+      <!-- PHONE -->
+      <dl class="row mb-0" *ngIf="patron.home_phone">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Home phone number
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ patron.home_phone }}
+        </dd>
+      </dl>
+      <dl class="row mb-0" *ngIf="patron.business_phone">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Business phone number
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ patron.business_phone }}
+        </dd>
+      </dl>
+      <dl class="row mb-0" *ngIf="patron.mobile_phone">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Mobile phone
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ patron.mobile_phone }}
+        </dd>
+      </dl>
+      <dl class="row mb-0" *ngIf="patron.other_phone">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Other phone
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ patron.other_phone }}
         </dd>
       </dl>
       <!-- EMAIL -->
@@ -82,7 +114,66 @@
           {{ patron.email }}
         </dd>
       </dl>
+      <!-- SOURCE -->
+      <dl *ngIf="patron.source" class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Source
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ patron.source }}
+        </dd>
+      </dl>
+      <!-- Local Code -->
+      <dl *ngIf="patron.local_code" class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Local code
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ patron.local_code }}
+        </dd>
+      </dl>
     </section>
+
+    <section class="m-2 p-2" *ngIf="patron.second_address">
+      <h5 translate>Second address</h5>
+      <!-- STREET -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title"
+            *ngIf="patron.second_address.street"
+            translate>
+          Street
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ patron.second_address.street }}
+        </dd>
+      </dl>
+      <!-- CITY -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title"
+            *ngIf="patron.second_address.postal_code ||  patron.second_address.city"
+            translate>
+          City
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <span *ngIf="patron.second_address.postal_code">
+            {{ patron.second_address.postal_code }}
+          </span>
+          <span *ngIf="patron.second_address.city">
+            {{ patron.second_address.city }}
+          </span>
+        </dd>
+      </dl>
+      <!-- Country -->
+      <dl class="row mb-0" *ngIf="patron.second_address.country">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Country
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ 'country_' + patron.second_address.country | translate}}
+        </dd>
+      </dl>
+    </section>
+
     <section class="m-2 p-2" *ngIf="patron.isLibrarian">
       <h5 translate>Librarian Information</h5>
       <!-- LIBRARY -->
@@ -104,15 +195,18 @@
         </dd>
       </dl>
     </section>
+
     <section class="m-2 p-2" *ngIf="patron.patron">
       <h5 translate>Patron Information</h5>
       <!-- BARCODE -->
       <dl class="row mb-0">
         <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Barcode
+          Patron's barcodes or cards number
         </dt>
         <dd class="col-sm-7 col-md-8 mb-0">
-          <a [routerLink]="['/circulation', 'patron', patron.patron.barcode]">{{ patron.patron.barcode }}</a>
+          <a [routerLink]="['/circulation', 'patron', patron.patron.barcode[0]]">
+            {{ patron.patron.barcode | join: ', '}}
+          </a>
         </dd>
       </dl>
       <!-- ROLES -->
@@ -139,9 +233,8 @@
       <dl class="row mb-0">
         <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Keep history</dt>
         <dd class="col-sm-7 col-md-8 mb-0">
-          <i class="fa"
-             [ngClass]="patron.patron.keep_history ? 'fa-check text-success' : 'fa-times text-danger'"
-             aria-hidden="true">
+          <i class="fa" [ngClass]="patron.patron.keep_history ? 'fa-check text-success' : 'fa-times text-danger'"
+            aria-hidden="true">
           </i>
         </dd>
       </dl>
@@ -169,10 +262,7 @@
   </article>
 
   <!-- OPERATION LOGS-->
-  <admin-operation-logs
-    *ngIf="isEnabledOperationLog"
-    resourceType="patrons"
-    [resourcePid]="patron.pid"
-  ></admin-operation-logs>
+  <admin-operation-logs *ngIf="isEnabledOperationLog" resourceType="patrons" [resourcePid]="patron.pid">
+  </admin-operation-logs>
 
 </ng-container>

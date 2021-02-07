@@ -1,0 +1,43 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="modal-header">
+    <h4 id="dialog-sizes-name2" class="modal-title pull-left" translate>User Editor</h4>
+    <div class="d-flex">
+      <form>
+        <ng-core-search-input [placeholder]="'username or email' | translate" [searchText]="searchText"
+          (search)="searchValueUpdated($event)" class="form-inline mr-3" [focus]="false" [displayLabel]="false">
+        </ng-core-search-input>
+      </form>
+      <button type="button" id="editor-delete-button" class="btn btn-outline-danger btn-sm mr-1"
+        (click)="bsModalRef.hide()">
+        <i class="fa fa-times"></i>
+        {{ 'Cancel' | translate }}
+      </button>
+      <button type="submit" id="editor-save-button" class="btn btn-primary btn-sm">
+        <i class="fa fa-save"></i>
+        {{ 'Save' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <!-- ngx-formly -->
+    <formly-form [model]="model" [fields]="fields" [form]="form"></formly-form>
+  </div>
+</form>

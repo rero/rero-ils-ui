@@ -27,7 +27,7 @@ import { ResultItem } from '@rero/ng-core';
         {{ record.metadata.last_name }}, {{ record.metadata.first_name }}
       </a>
       <small class="ml-3" *ngIf="record.metadata.patron">
-        <a id="{{record.metadata.patron.barcode + '-loans'}}" [routerLink]="['/circulation', 'patron', record.metadata.patron.barcode]">
+        <a id="{{record.metadata.patron.barcode[0] + '-loans'}}" [routerLink]="['/circulation', 'patron', record.metadata.patron.barcode[0]]">
           <i class="fa fa-exchange mr-2"></i>
           <span translate>Circulation</span>
         </a>

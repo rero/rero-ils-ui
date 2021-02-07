@@ -17,9 +17,9 @@
 
 <ng-container *ngIf="transaction">
   <ng-container *ngIf="transaction.metadata.patron_pid | getRecord:'patrons' | async as patron">
-    <div id="{{patron.metadata.patron.barcode}}" class="row mb-2">
+    <div id="{{patron.metadata.patron.barcode[0]}}" class="row mb-2">
       <div class="col-4">
-        <a name="loans" [routerLink]="['/circulation', 'patron', patron.metadata.patron.barcode]">
+        <a name="loans" [routerLink]="['/circulation', 'patron', patron.metadata.patron.barcode[0]]">
           {{ patron.metadata.last_name }} {{ patron.metadata.first_name }} ({{ patron.metadata.patron.barcode }})
         </a>
       </div>

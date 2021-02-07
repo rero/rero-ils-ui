@@ -62,7 +62,7 @@ export class RequestComponent implements OnInit {
     ) {
       this._itemApiService.canRequest(
         this.item.metadata.pid,
-        this._userService.user.patron.barcode
+        this._userService.user.patron.barcode[0]
       ).subscribe((can: any) => this.canRequest = can);
     }
   }
