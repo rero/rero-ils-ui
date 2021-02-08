@@ -107,7 +107,7 @@ export class HoldingsComponent implements OnInit {
         this.holdings = result[0];
         this.holdingsTotal = result[1];
         const permissions = result[2];
-        this.canAdd = permissions.create.can;
+        this.canAdd = this.canAdd && permissions.create.can;
       });
   }
 
