@@ -16,7 +16,7 @@
  */
 
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -25,18 +25,39 @@ import { ToastrService } from 'ngx-toastr';
 import { UserService } from '@rero/shared';
 import { Library } from '../../../classes/library';
 import { LibraryFormService } from './library-form.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'admin-libraries-library',
   templateUrl: './library.component.html',
   styleUrls: ['./library.component.scss']
 })
-export class LibraryComponent implements OnInit {
+export class LibraryComponent implements OnInit, OnDestroy {
 
+  /** The current library. */
   public library: Library;
-  public libForm: FormGroup;
-  public organisationPid;
 
+  /** The angular form to edit the library. */
+  public libForm: FormGroup;
+
+  /** The current organisation pid. */
+  public organisationPid: string;
+
+  /** Form build event subscription to release the memory. */
+  private eventForm: Subscription;
+
+  /**
+   *
+   * @param recordService - ng-core eventForm
+   * @param libraryForm - LibraryFormService
+   * @param route - angular ActivatedRoute
+   * @param router - angular Router
+   * @param userService - ng-core UserService
+   * @param apiService - ng-core ApiService
+   * @param toastService - ToastrService
+   * @param translateService - ngx-translate TranslateService
+   * @param location - angular Location
+   */
   constructor(
     private recordService: RecordService,
     private libraryForm: LibraryFormService,
@@ -49,28 +70,39 @@ export class LibraryComponent implements OnInit {
     private location: Location
   ) { }
 
+  /**
+   * Component initialization.
+   */
   ngOnInit() {
     this.route.params.subscribe( (params) => {
       const loggedUser = this.userService.user;
       if (loggedUser) {
         this.organisationPid = loggedUser.currentOrganisation;
       }
-      if (params && params.pid) {
-        this.recordService.getRecord('libraries', params.pid, 1).subscribe(record => {
-          this.library = new Library(record.metadata);
-          this.libraryForm.populate(record.metadata);
+      this.libraryForm.create();
+      this.eventForm = this.libraryForm.getBuildEvent().subscribe((buildEvent: any) => {
+        if (params && params.pid) {
+          this.recordService.getRecord('libraries', params.pid, 1).subscribe(record => {
+            this.library = new Library(record.metadata);
+            this.libraryForm.populate(record.metadata);
+            this.libForm = this.libraryForm.form;
+            this.setAsyncValidator();
+          });
+        } else {
+          this.library = new Library({});
           this.libForm = this.libraryForm.form;
           this.setAsyncValidator();
-        });
-      } else {
-        this.libraryForm.reset();
-        this.library = new Library({});
-        this.libForm = this.libraryForm.form;
-        this.setAsyncValidator();
-      }
+        }
+      });
     });
   }
 
+  /** Component destruction. */
+  ngOnDestroy() {
+    this.eventForm.unsubscribe();
+  }
+
+  /** Create the form async validators. */
   setAsyncValidator() {
     this.libForm.controls.code.setAsyncValidators([
       UniqueValidator.createValidator(
@@ -82,12 +114,26 @@ export class LibraryComponent implements OnInit {
     ]);
   }
 
+  /** Name of the library. */
   get name() { return this.libraryForm.name; }
+
+  /** Address of the library. */
   get address() { return this.libraryForm.address; }
+
+  /** Contact email of the library. */
   get email() { return this.libraryForm.email; }
+
+  /** Code of the library. */
   get code() { return this.libraryForm.code; }
+
+  /** Hours when the library is open. */
   get openingHours() { return this.libraryForm.opening_hours as FormArray; }
 
+  /** Notificaition settings. */
+  get notificationSettings() {
+    return this.libraryForm.notification_settings as FormArray; }
+
+  /** Form submission. */
   onSubmit() {
     this._cleanFormValues(this.libraryForm.getValues());
     this.library.update(this.libraryForm.getValues());
@@ -112,7 +158,7 @@ export class LibraryComponent implements OnInit {
         this.router.navigate(['../detail', record.metadata.pid], {relativeTo: this.route, replaceUrl: true});
       });
     }
-    this.libraryForm.reset();
+    this.libraryForm.build();
   }
 
   /**
@@ -126,17 +172,22 @@ export class LibraryComponent implements OnInit {
         day.times = [];
       }
     });
+    formValues.notification_settings = formValues.notification_settings.filter(element => element.email !== '');
   }
 
+  /** Cancel the edition. */
   onCancel(event) {
     event.preventDefault();
     this.location.back();
-    this.libraryForm.reset();
+    this.libraryForm.build();
   }
+
+  /** Add new opening hours. */
   addTime(dayIndex): void {
     this.libraryForm.addTime(dayIndex);
   }
 
+  /** Delete existing opening hours. */
   deleteTime(dayIndex, timeIndex): void {
     this.libraryForm.deleteTime(dayIndex, timeIndex);
   }

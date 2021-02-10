@@ -16,79 +16,104 @@
 -->
 <ng-container *ngIf="record$ | async as record">
   <h1>{{ record.metadata.name }}</h1>
-  <section class="row">
+  <dl class="row mb-3">
     <!-- ADDRESS -->
     <ng-container *ngIf="record.metadata.address">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-            {{ 'Address' | translate }}:
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ record.metadata.address }}
-          </dd>
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+        Address
+      </dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        {{ record.metadata.address }}
+      </dd>
     </ng-container>
     <!-- CODE -->
-    <dt class="col-sm-3 offset-sm-2 offset-md-0" *ngIf="record.metadata.code">
-      {{ 'Code' | translate }}:
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" *ngIf="record.metadata.code" translate>
+      Code
     </dt>
     <dd class="col-sm-7 col-md-8 mb-0">
       {{ record.metadata.code }}
     </dd>
     <!-- EMAIL -->
-    <dt class="col-sm-3 offset-sm-2 offset-md-0" *ngIf="record.metadata.email">
-      {{ 'Email' | translate }}:
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" *ngIf="record.metadata.email" translate>
+      Email
     </dt>
     <dd class="col-sm-7 col-md-8 mb-0">
       {{ record.metadata.email }}
     </dd>
-  </section>
+  </dl>
 
-  <!-- OPENING HOURS -->
-  <article class="card mt-4">
-    <header class="card-header">
-      <b translate>Opening Hours</b>
-    </header>
-    <article class="card-body collapse show">
-      <ul class="list-unstyled">
-        <li *ngFor="let day of record.metadata.opening_hours">
-          <admin-day-opening-hours [day]="day"></admin-day-opening-hours>
-        </li>
-      </ul>
-    </article>
-  </article>
+  <tabset #staticTabs>
+    <!-- OPENING HOURS -->
+    <tab>
+      <ng-template tabHeading>
+        <i class="fa fa-clock-o mr-2"></i>{{ 'Opening Hours' | translate }}
+      </ng-template>
+      <article>
+        <ul class="list-unstyled">
+          <li *ngFor="let day of record.metadata.opening_hours">
+            <admin-day-opening-hours [day]="day"></admin-day-opening-hours>
+          </li>
+        </ul>
+      </article>
+    </tab>
 
-  <!-- EXCEPTIONS -->
-  <article class="card mt-4" *ngIf="record.metadata.exception_dates">
-    <header class="card-header">
-      <b translate>Exceptions (holidays, etc.)</b>
-    </header>
-    <article class="card-body collapse show">
-      <ul class="list-unstyled">
-        <li *ngFor="let exception of record.metadata.exception_dates">
-          <admin-exception-date [exception]="exception"></admin-exception-date>
-        </li>
-      </ul>
-    </article>
-  </article>
+    <!-- EXCEPTIONS -->
+    <tab>
+      <ng-template tabHeading>
+        <i class="fa fa-exclamation-triangle mr-2"></i>{{ 'Exceptions (holidays, etc.)' | translate }}
+      </ng-template>
+      <article *ngIf="record.metadata.exception_dates">
+        <ul class="list-unstyled">
+          <li *ngFor="let exception of record.metadata.exception_dates">
+            <admin-exception-date [exception]="exception"></admin-exception-date>
+          </li>
+        </ul>
+      </article>
+    </tab>
+    <tab>
+      <ng-template tabHeading>
+        <i class="fa fa-envelope-o mr-2"></i>{{ 'Notification settings' | translate }}
+      </ng-template>
+      <!-- NOTIFICATION SETTINGS -->
+      <article *ngIf="record.metadata.notification_settings as notificationSettings">
+        <section *ngFor="let setting of notificationSettings">
+          <h5 translate>{{ setting.type }}</h5>
+          <dl class="row mb-3 ml-2">
+            <!-- EMAIL -->
+            <dt class="col-sm-3 offset-sm-2 offset-md-0">{{ 'Email' | translate }}:</dt>
+            <dd class="col-sm-7 col-md-8 mb-0">{{ setting.email }}</dd>
+            <!-- DELAY AVAILABILITY -->
+            <dt class="col-sm-3 offset-sm-2 offset-md-0" *ngIf="setting.delay">{{ 'Delay' | translate }}</dt>
+            <dd class="col-sm-7 col-md-8 mb-0">{{ setting.delay }}</dd>
+          </dl>
+        </section>
+      </article>
+    </tab>
+  </tabset>
 
   <!-- LOCATIONS -->
   <article class="card mt-4">
     <header class="card-header">
       <b translate>Locations</b>
-      <a class="ml-2 btn btn-sm btn-outline-primary float-right"
-         *ngIf="isUserCanAddLocation"
-         [routerLink]="['/', 'records', 'locations', 'new']"
-         [queryParams]="{ library: record.metadata.pid }">
+      <a class="ml-2 btn btn-sm btn-outline-primary float-right" *ngIf="isUserCanAddLocation"
+        [routerLink]="['/', 'records', 'locations', 'new']" [queryParams]="{ library: record.metadata.pid }">
         <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} ...
       </a>
     </header>
     <article class="card-body collapsed show">
       <ul class="list-group list-group-flush" *ngIf="locations; else no_locations">
         <li *ngFor="let location of locations" class="list-group-item p-1">
-          <admin-location [location]="location" [library]="record" class="row" (deleteLocation)="deleteLocation($event)"></admin-location>
+          <admin-location [location]="location" [library]="record" class="row"
+            (deleteLocation)="deleteLocation($event)"></admin-location>
         </li>
       </ul>
-      <ng-template #no_locations><p translate>no location</p></ng-template>
+      <ng-template #no_locations>
+        <p translate>no location</p>
+      </ng-template>
     </article>
-
   </article>
 </ng-container>
+
+<ng-template #no_locations>
+  <p translate>no location</p>
+</ng-template>

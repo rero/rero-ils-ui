@@ -24,7 +24,7 @@ import { UserService } from '@rero/shared';
 @Component({
   selector: 'admin-library-detail-view',
   templateUrl: './library-detail-view.component.html',
-  styles: []
+  styles: ['tab {margin: 1rem;}']
 })
 export class LibraryDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
 
