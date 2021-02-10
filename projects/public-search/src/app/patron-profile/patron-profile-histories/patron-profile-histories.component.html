@@ -1,0 +1,51 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!-- header -->
+<section id="histories-section" class="row px-3 mt-2 my-1">
+  <div class="col mr-1 d-none d-lg-block">
+    <div class="row p-2 bg-dark rounded text-light">
+      <div class="col-6 pl-0" translate>Title</div>
+      <div class="col-4 pl-0" translate>Author(s)</div>
+      <div class="col-2 pl-0" translate>Return date</div>
+    </div>
+  </div>
+</section>
+
+<ng-container *ngIf="!loaded; else display">
+  <div class="row">
+    <div class="col-12 ml-2 mt-2 font-weight-bold" translate>Loading in progress</div>
+  </div>
+</ng-container>
+
+<ng-template #display>
+  <ng-container *ngIf="paginator.getRecordsCount() > 0; else noRecord">
+    <div id="histories-data" class="row px-3">
+      <ul class="list-unstyled p-0 mb-1 col-12">
+        <li *ngFor="let record of records; let index = index" [ngClass]="{ 'bg-light': !(index % 2) }">
+          <public-search-patron-profile-history [record]="record"></public-search-patron-profile-history>
+        </li>
+      </ul>
+      <shared-search-show-more-pager id="show-more-histories" [paginator]="paginator"></shared-search-show-more-pager>
+    </div>
+  </ng-container>
+
+  <ng-template #noRecord>
+    <div class="row">
+      <div class="col-12 ml-2 mt-2 font-weight-bold" translate>No history</div>
+    </div>
+  </ng-template>
+</ng-template>

@@ -1,0 +1,145 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="row py-2">
+  <div class="col-lg-5">
+    <button
+      id="ill-request-{{ record.metadata.pid }}"
+      type="button"
+      class="pl-0 pr-2 pt-0 btn btn-toogle"
+      (click)="isCollapsed = !isCollapsed"
+      [attr.aria-expanded]="!isCollapsed"
+      aria-controls="collapseEvent"
+    >
+      <i class="fa pr-0" [ngClass]="{ 'fa-caret-right': isCollapsed, 'fa-caret-down': !isCollapsed }"></i>
+    </button>
+    {{ record.metadata.document.title }}
+  </div>
+  <div class="col-lg-5">{{ record.metadata.document.authors }}</div>
+  <div class="col-lg-2 pr-0 text-lg-right">
+    <span class="badge px-2 py-1 mr-1 font-weight-normal" [ngClass]="statusBadge(record.metadata.status)">
+      {{ record.metadata.status | translate }}
+    </span>
+    <ng-container *ngIf="record.metadata.loan_status">
+      <br>
+      <span class="badge px-2 py-1 mr-1 font-weight-normal badge-secondary"  [ngClass]="loanStatusBadge(record.metadata.loan_status)">
+        {{ record.metadata.loan_status | translate }}
+      </span>
+    </ng-container>
+  </div>
+
+  <!-- Detail -->
+  <section id="ill-detail-{{ record.metadata.pid }}" [collapse]="isCollapsed" [isAnimated]="true" class="col-lg-12 pl-3">
+
+    <dl class="container row">
+      <!-- PUBLISHER -->
+      <ng-container *ngIf="record.metadata.document.publisher">
+        <dt class="col-2 label-title" translate>
+          Publisher
+        </dt>
+        <dd class="col-10">
+          {{ record.metadata.document.publisher }}
+        </dd>
+      </ng-container>
+      <!-- YEAR -->
+      <ng-container *ngIf="record.metadata.document.year">
+        <dt class="col-2 label-title" translate>
+          Year
+        </dt>
+        <dd class="col-10">
+          {{ record.metadata.document.year }}
+        </dd>
+      </ng-container>
+      <!-- IDENTIFIER -->
+      <ng-container *ngIf="record.metadata.document.identifier">
+        <dt class="col-2 label-title" translate>
+          Identifier
+        </dt>
+        <dd class="col-10">
+          {{ record.metadata.document.identifier }}
+        </dd>
+      </ng-container>
+      <!-- PUBLISHED IN -->
+      <ng-container *ngIf="record.metadata.document.published_in">
+        <dt class="col-2 label-title" translate>
+          Source
+        </dt>
+        <dd class="col-10">
+          {{ record.metadata.document.published_in.journal_title }}
+          <ng-container *ngIf="record.metadata.document.published_in.volume || record.metadata.document.published_in.number">
+            {{ journalVolume(record.metadata.document.published_in) }}
+          </ng-container>
+        </dd>
+      </ng-container>
+      <!-- PICKUP LOCATION -->
+      <dt class="col-2 label-title" translate>
+        Pickup location
+      </dt>
+      <dd class="col-10">
+        {{ record.metadata.pickup_location.name }}
+      </dd>
+      <!-- SCOPE -->
+      <dt class="col-2 label-title" translate>
+        Scope
+      </dt>
+      <dd class="col-10">
+        <ng-container *ngIf="record.metadata.copy; else scopeLoan">
+          {{ 'Copy' | translate }}
+        </ng-container>
+        <ng-template #scopeLoan>
+          {{ 'Loan' | translate }}
+        </ng-template>
+      </dd>
+      <!-- PAGES -->
+      <ng-container *ngIf="record.metadata.copy && record.metadata.pages">
+        <dt class="col-2 label-title" translate>
+          Pages
+        </dt>
+        <dd class="col-10">
+          {{ record.metadata.pages }}
+        </dd>
+      </ng-container>
+      <!-- FOUND IN -->
+      <ng-container *ngIf="record.metadata.found_in">
+        <dt class="col-2 label-title" translate>
+          Found in
+        </dt>
+        <dd class="col-10">
+          <a href="{{ record.metadata.found_in.url }}">{{ record.metadata.found_in.url }}</a>
+          <span class="badge badge-light px-2 py-1 ml-2">
+            {{ record.metadata.found_in.source }}
+          </span>
+        </dd>
+      </ng-container>
+      <!-- NOTES -->
+      <ng-container *ngIf="record.metadata.notes && record.metadata.notes.length > 0">
+        <dt class="col-2 label-title" translate>
+          Note
+        </dt>
+        <dd class="col-10">
+          <blockquote>
+          <ul class="list-unstyled">
+            <li
+              *ngFor="let note of record.metadata.notes | notesFilter:['public_note']"
+              [innerHTML]="note.content | nl2br"
+            ></li>
+          </ul>
+          </blockquote>
+        </dd>
+      </ng-container>
+    </dl>
+  </section>
+</div>

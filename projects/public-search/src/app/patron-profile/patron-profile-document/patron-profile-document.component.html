@@ -1,0 +1,59 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="row mt-2" *ngIf="record.metadata && record.metadata.document as document">
+  <dl class="container row">
+    <!-- CONTRIBUTION -->
+    <ng-container *ngIf="document.contribution">
+      <dt class="col-2 label-title" translate>
+        Contribution
+      </dt>
+      <dd class="col-10">
+        <ul class="list-inline mb-0">
+          <li class="list-inline-item" *ngFor="let contribution of document.contribution | contributionFilter:language; let last = last">
+            <ng-container *ngIf="contribution.pid && contribution.target !== undefined; else agentNoLink">
+              <a href="/{{ viewcode }}/{{ contribution.target }}/{{ contribution.pid }}">
+                {{ contribution.authorizedAccessPoint }}
+              </a>
+            </ng-container>
+            <ng-template #agentNoLink>
+              {{ contribution.authorizedAccessPoint }}
+            </ng-template>
+            <ng-container *ngIf="!last">; </ng-container>
+          </li>
+        </ul>
+      </dd>
+    </ng-container>
+    <!-- CALL NUMBER -->
+    <ng-container *ngIf="record.metadata.item.call_number">
+      <dt class="col-2 label-title" translate>
+        Call number
+      </dt>
+      <dd class="col-10">
+        {{ record.metadata.item.call_number }}
+      </dd>
+    </ng-container>
+    <!-- ENUMERATION AND CHRONOLOGY -->
+    <ng-container *ngIf="record.metadata.item.enumerationAndChronology">
+      <dt class="col-2 label-title" translate>
+        Unit
+      </dt>
+      <dd class="col-10">
+        {{ record.metadata.item.enumerationAndChronology }}
+      </dd>
+    </ng-container>
+  </dl>
+</div>

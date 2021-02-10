@@ -21,29 +21,24 @@ import { IssueItemStatus } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { QueryResponse } from '../record';
-import { HoldingsApiService } from './holdings-api.service';
+import { BaseApi } from './base-api';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ItemApiService {
-
-  /** Http headers */
-  private _headers = {
-    Accept: 'application/rero+json, application/json'
-  };
+export class ItemApiService extends BaseApi {
 
   /**
    * Constructor
    * @param _recordService - RecordService
    * @param _httpClient - HttpClient
-   * @param _holdingsApiService - HoldingsService
    */
   constructor(
     private _recordService: RecordService,
-    private _httpClient: HttpClient,
-    private _holdingsApiService: HoldingsApiService
-  ) { }
+    private _httpClient: HttpClient
+  ) {
+    super();
+  }
 
   /**
    * Get items by holdings pid and viewcode
@@ -59,7 +54,7 @@ export class ItemApiService {
       ? `holding.pid:${holdings.metadata.pid} AND issue.status:${IssueItemStatus.RECEIVED}`
       : `holding.pid:${holdings.metadata.pid}`;
     return this._recordService
-      .getRecords('items', query, page, itemsPerPage, undefined, { view: viewcode }, this._headers, 'enumeration_chronology')
+      .getRecords('items', query, page, itemsPerPage, undefined, { view: viewcode }, BaseApi.reroJsonheaders, 'enumeration_chronology')
       .pipe(map((response: Record) => response.hits));
   }
 

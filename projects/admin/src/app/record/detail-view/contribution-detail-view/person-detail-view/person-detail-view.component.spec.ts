@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
@@ -31,6 +32,7 @@ describe('PersonDetailViewComponent', () => {
         PersonDetailViewComponent
       ],
       imports: [
+        HttpClientTestingModule,
         TranslateModule.forRoot(),
         SharedModule,
         CoreModule

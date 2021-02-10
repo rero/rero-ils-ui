@@ -41,7 +41,7 @@ export class AppInitializerService {
       this._sharedConfigService.init();
       this._loggedUserService.load();
       this._routeCollectionService.load();
-      resolve();
+      resolve(true);
     });
   }
 }

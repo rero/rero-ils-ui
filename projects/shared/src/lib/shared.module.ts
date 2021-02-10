@@ -19,10 +19,12 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CoreModule, NgVarDirective, Nl2brPipe, RecordModule, TruncateTextPipe } from '@rero/ng-core';
+import { ShowMorePagerComponent } from './paginator/show-more-pager/show-more-pager.component';
 import { ContributionFormatPipe } from './pipe/contribution-format.pipe';
 import { ContributionTypePipe } from './pipe/contribution-type.pipe';
 import { ExtractSourceFieldPipe } from './pipe/extract-source-field.pipe';
 import { IdAttributePipe } from './pipe/id-attribute.pipe';
+import { ItemHoldingsCallNumberPipe } from './pipe/item-holdings-call-number.pipe';
 import { JoinPipe } from './pipe/join.pipe';
 import { MainTitlePipe } from './pipe/main-title.pipe';
 import { PatronBlockedMessagePipe } from './pipe/patron-blocked-message.pipe';
@@ -33,11 +35,10 @@ import { SharedConfigService } from './service/shared-config.service';
 import { ContributionBriefComponent } from './view/brief/contribution-brief/contribution-brief.component';
 import { ContributionSourcesComponent } from './view/brief/contribution-sources/contribution-sources.component';
 import { OrganisationBriefComponent } from './view/brief/organisation-brief/organisation-brief.component';
+import { PartOfComponent } from './view/brief/part-of/part-of.component';
 import { PersonBriefComponent } from './view/brief/person-brief/person-brief.component';
-import { ItemHoldingsCallNumberPipe } from './pipe/item-holdings-call-number.pipe';
 import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
-import { PartOfComponent } from './view/brief/part-of/part-of.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { PartOfComponent } from './view/brief/part-of/part-of.component';
     ItemHoldingsCallNumberPipe,
     InheritedCallNumberComponent,
     ThumbnailComponent,
-    PartOfComponent
+    PartOfComponent,
+    ShowMorePagerComponent
   ],
   exports: [
     CommonModule,
@@ -78,7 +80,8 @@ import { PartOfComponent } from './view/brief/part-of/part-of.component';
     ItemHoldingsCallNumberPipe,
     InheritedCallNumberComponent,
     ThumbnailComponent,
-    PartOfComponent
+    PartOfComponent,
+    ShowMorePagerComponent
   ],
   imports: [
     CommonModule,
