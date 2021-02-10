@@ -1,0 +1,69 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ngx-loading-bar [includeSpinner]="false" height="3px"></ngx-loading-bar>
+<ng-container *ngIf="user">
+  <header>
+    <h3>{{ fullname }}</h3>
+  </header>
+  <section class="mt-2">
+    <public-search-patron-profile-message></public-search-patron-profile-message>
+  </section>
+  <section class="mt-4">
+    <tabset id="profile-tabs">
+      <tab>
+        <ng-template tabHeading>
+          {{ 'Loans' | translate }}
+          <span class="badge badge-info">{{ tabs.loan.count }}</span>
+        </ng-template>
+        <public-search-patron-profile-loans [count]="tabs.loan.count"></public-search-patron-profile-loans>
+      </tab>
+      <tab (selectTab)="selectTab('request')">
+        <ng-template tabHeading>
+          {{ 'Requests' | translate }}
+          <span class="badge badge-info">{{ tabs.request.count }}</span>
+        </ng-template>
+        <public-search-patron-profile-requests></public-search-patron-profile-requests>
+      </tab>
+      <tab (selectTab)="selectTab('fee')">
+        <ng-template tabHeading>
+          {{ 'Fees' | translate }}
+          <span *ngIf="feeTotal > 0" class="badge badge-warning font-weight-normal">
+            {{ feeTotal | currency:user.organisation.currency:'symbol' }}
+          </span>
+        </ng-template>
+        <public-search-patron-profile-fees [feesTotal]="feeTotal"></public-search-patron-profile-fees>
+      </tab>
+      <tab (selectTab)="selectTab('history')" [customClass]="showHideHistory">
+        <ng-template tabHeading>
+          {{ 'History' | translate }}
+          <span class="badge badge-info">{{ tabs.history.count }}</span>
+        </ng-template>
+        <public-search-patron-profile-histories></public-search-patron-profile-histories>
+      </tab>
+      <tab (selectTab)="selectTab('illRequest')">
+        <ng-template tabHeading>
+          {{ 'ILL requests' | translate }}
+          <span class="badge badge-info">{{ tabs.illRequest.count }}</span>
+        </ng-template>
+        <public-search-patron-profile-ill-requests></public-search-patron-profile-ill-requests>
+      </tab>
+      <tab heading="{{ 'Personal details' | translate }}">
+        <public-search-patron-profile-personal [record]="user"></public-search-patron-profile-personal>
+      </tab>
+    </tabset>
+  </section>
+</ng-container>

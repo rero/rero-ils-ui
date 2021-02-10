@@ -14,32 +14,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { QueryResponse } from '../record';
+import { BaseApi } from './base-api';
 
 @Injectable({
   providedIn: 'root'
 })
-export class HoldingsApiService {
-
-  /** Http headers */
-  private _headers = {
-    Accept: 'application/rero+json, application/json'
-  };
+export class HoldingsApiService extends BaseApi {
 
   /**
    * Constructor
    * @param _recordService - RecordService
-   * @param _httpClient - HttpClient
    */
-  constructor(
-    private _recordService: RecordService,
-    private _httpClient: HttpClient
-  ) {}
+  constructor(private _recordService: RecordService) {
+    super();
+  }
 
   /**
    * Get Holdings by document pid and viewcode
@@ -50,7 +43,7 @@ export class HoldingsApiService {
   getHoldingsByDocumentPidAndViewcode(
     documentPid: string, viewcode: string, page: number, itemsPerPage: number = 5): Observable<QueryResponse> {
     return this._recordService
-    .getRecords('holdings', `document.pid:${documentPid}`, page, itemsPerPage, undefined, { view: viewcode }, this._headers)
+    .getRecords('holdings', `document.pid:${documentPid}`, page, itemsPerPage, undefined, { view: viewcode }, BaseApi.reroJsonheaders)
     .pipe(map((response: Record) => response.hits));
   }
 }

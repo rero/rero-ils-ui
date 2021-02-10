@@ -446,6 +446,104 @@
           }
         }
       }
+    },
+    "public-patron-profile": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/public-patron-profile",
+      "sourceRoot": "projects/public-patron-profile/src",
+      "prefix": "public-patron-profile",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "preserveSymlinks": true,
+            "outputPath": "build/dist/public-patron-profile",
+            "index": "projects/public-patron-profile/src/index.html",
+            "main": "projects/public-patron-profile/src/main.ts",
+            "polyfills": "projects/public-patron-profile/src/polyfills.ts",
+            "tsConfig": "projects/public-patron-profile/tsconfig.app.json",
+            "aot": true,
+            "assets": [],
+            "styles": [
+              "projects/public-search/src/app/scss/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/public-patron-profile/src/environments/environment.ts",
+                  "with": "projects/public-patron-profile/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/public-patron-profile/",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "public-patron-profile:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "public-patron-profile:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "public-patron-profile:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/public-patron-profile/tsconfig.app.json",
+              "projects/public-patron-profile/tsconfig.spec.json",
+              "projects/public-patron-profile/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/public-patron-profile/e2e/protractor.conf.js",
+            "devServerTarget": "public-patron-profile:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "public-patron-profile:serve:production"
+            }
+          }
+        }
+      }
     }
   },
   "defaultProject": "admin"

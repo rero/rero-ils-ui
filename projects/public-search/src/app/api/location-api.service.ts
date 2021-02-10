@@ -17,11 +17,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
+import { BaseApi } from './base-api';
 
 @Injectable({
   providedIn: 'root'
 })
-export class LocationApiService {
+export class LocationApiService extends BaseApi {
 
   /**
    * Constructor
@@ -29,7 +30,9 @@ export class LocationApiService {
    */
   constructor(
     private _httpClient: HttpClient
-  ) { }
+  ) {
+    super();
+  }
 
   /**
    * Get pickup locations by viewcode

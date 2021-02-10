@@ -17,11 +17,13 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { LoggedUserService } from '@rero/shared';
+import { of } from 'rxjs';
 import { UserService } from './user.service';
 
 
 describe('UserService', () => {
   let service: UserService;
+  let loggedUserService: LoggedUserService;
 
   const userRecord = {
     metadata: {
@@ -29,7 +31,7 @@ describe('UserService', () => {
     }
   };
   const loggedUserServiceSpy = jasmine.createSpyObj('LoggedUserService', ['']);
-  loggedUserServiceSpy.onLoggedUserLoaded$ = userRecord;
+  loggedUserServiceSpy.onLoggedUserLoaded$ = of(userRecord);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -37,13 +39,21 @@ describe('UserService', () => {
         HttpClientTestingModule
       ],
       providers: [
-        { provide: LoggedUserService, useValue: loggedUserServiceSpy}
+        { provide: LoggedUserService, useValue: loggedUserServiceSpy }
       ]
     });
     service = TestBed.inject(UserService);
+    loggedUserService = TestBed.inject(LoggedUserService);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should return the user', () => {
+    loggedUserService.onLoggedUserLoaded$.subscribe((data: any) => {
+      expect(data).toEqual(userRecord);
+    });
+    service.init();
   });
 });

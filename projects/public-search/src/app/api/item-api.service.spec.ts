@@ -34,7 +34,7 @@ describe('ItemService', () => {
     }
   };
 
-  const emptyRecords = {
+  const apiResponse = {
     aggregations: {},
     hits: {
       total: {
@@ -59,12 +59,8 @@ describe('ItemService', () => {
   };
 
   const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
-  recordServiceSpy.getRecords.and.returnValue(of(emptyRecords));
+  recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
   recordServiceSpy.totalHits.and.returnValue(1);
-
-  const holdingsPids = ['100', '120'];
-  const holdingsServiceSpy = jasmine.createSpyObj('HoldingsService', ['getHoldingsPidsByDocumentPidAndViewcode']);
-  holdingsServiceSpy.getHoldingsPidsByDocumentPidAndViewcode.and.returnValue(of(holdingsPids));
 
   const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   httpClientSpy.get.and.returnValue(of(canRequest));
@@ -77,8 +73,7 @@ describe('ItemService', () => {
       ],
       providers: [
         { provide: RecordService, useValue: recordServiceSpy },
-        { provide: HttpClient, useValue: httpClientSpy },
-        { provide: HoldingsApiService, useValue: holdingsServiceSpy }
+        { provide: HttpClient, useValue: httpClientSpy }
       ]
     });
     service = TestBed.inject(ItemApiService);
