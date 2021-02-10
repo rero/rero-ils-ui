@@ -26,6 +26,15 @@
       "^/api": "https://localhost:5000/api"
     }
   },
+  "/notifications/*": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/notifications": "https://localhost:5000/notifications"
+    }
+  },
   "/lang/*": {
     "target": "https://localhost:5000",
     "secure": false,
