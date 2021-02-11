@@ -19,9 +19,9 @@
 // required as json properties is not lowerCamelCase
 
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import * as moment from 'moment';
 import { Moment } from 'moment';
 import { User } from '@rero/shared';
+import { Loan } from './loans'
 
 export function _(str) {
   return marker(str);
@@ -55,17 +55,6 @@ export enum IssueItemStatus {
   LATE = _('late')
 }
 
-export enum LoanState {
-  CREATED = _('CREATED'),
-  PENDING = _('PENDING'),
-  ITEM_ON_LOAN = _('ITEM_ON_LOAN'),
-  ITEM_RETURNED = _('ITEM_RETURNED'),
-  ITEM_IN_TRANSIT_FOR_PICKUP = _('ITEM_IN_TRANSIT_FOR_PICKUP'),
-  ITEM_IN_TRANSIT_TO_HOUSE = _('ITEM_IN_TRANSIT_TO_HOUSE'),
-  ITEM_AT_DESK = _('ITEM_AT_DESK'),
-  CANCELLED = _('CANCELLED')
-}
-
 export interface Organisation {
   pid: string
 }
@@ -89,65 +78,6 @@ export enum ItemAction {
 }
 
 type ItemActionObjectType<R> = {[key in keyof typeof ItemAction]: R };
-
-
-export class LoanDestination {
-  location_name?: string;
-  library_name?: string;
-  library_code?: string;
-  location_code?: string;
-
-  constructor(obj?: any) {
-    Object.assign(this, obj)
-  }
-}
-
-export class Loan {
-
-  pid?: string;
-  state: LoanState;
-  transaction_date?: Moment;
-  patron_pid?: string;
-  item_pid?: string;
-  start_date?: Moment;
-  end_date?: Moment;
-  request_expire_date?: Moment;
-  pickup_location_pid?: string;
-  item_destination?: LoanDestination;
-
-  constructor(obj?: any) {
-    Object.assign(this, obj);
-    this.request_expire_date = this.convertToMoment(this.request_expire_date);
-    this.start_date = this.convertToMoment(this.start_date);
-    this.end_date = this.convertToMoment(this.end_date);
-    this.transaction_date = this.convertToMoment(this.transaction_date);
-  }
-
-  private convertToMoment(data) {
-    if (data) {
-      return moment(data);
-    }
-    return null;
-  }
-
-  get dueDate() {
-    switch (this.state) {
-      case LoanState.PENDING:
-        return this.request_expire_date;
-      case LoanState.ITEM_ON_LOAN:
-        return this.end_date;
-      default:
-        return null;
-    }
-  }
-
-  public get expired() {
-    if (this.dueDate) {
-      return this.dueDate.isBefore();
-    }
-    return false;
-  }
-}
 
 export class ItemNote {
   type: ItemNoteType;

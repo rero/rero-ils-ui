@@ -19,7 +19,7 @@ import { DetailComponent, EditorComponent, RecordSearchPageComponent, RecordServ
 import { Record, JSONSchema7 } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ItemType } from '../class/items';
+import { ItemType } from '../classes/items';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { ItemsBriefViewComponent } from '../record/brief-view/items-brief-view/items-brief-view.component';
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';

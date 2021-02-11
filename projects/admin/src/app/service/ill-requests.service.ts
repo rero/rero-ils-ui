@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { ILLRequestStatus } from '../class/ill-request';
-import { LoanState } from '../class/items';
+import { ILLRequestStatus } from '../classes/ill-request';
+import { LoanState } from '../classes/loans';
 
 @Injectable({
   providedIn: 'root'

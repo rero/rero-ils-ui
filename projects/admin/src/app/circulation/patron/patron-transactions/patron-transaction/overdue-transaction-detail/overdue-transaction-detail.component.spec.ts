@@ -20,12 +20,12 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CirculationModule } from '../../../../circulation.module';
-import { OverdueTransactionComponent } from './overdue-transaction.component';
+import { OverdueTransactionDetailComponent } from './overdue-transaction-detail.component';
 
 
-describe('OverdueTransactionComponent', () => {
-  let component: OverdueTransactionComponent;
-  let fixture: ComponentFixture<OverdueTransactionComponent>;
+describe('OverdueTransactionDetailComponent', () => {
+  let component: OverdueTransactionDetailComponent;
+  let fixture: ComponentFixture<OverdueTransactionDetailComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -40,7 +40,7 @@ describe('OverdueTransactionComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OverdueTransactionComponent);
+    fixture = TestBed.createComponent(OverdueTransactionDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

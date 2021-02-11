@@ -1,0 +1,81 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2021 RERO
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+@import '~bootstrap/scss/_functions';
+@import '~bootstrap/scss/_variables';
+@import '../../../scss/variables';
+
+.vertical-tabs-panes{
+  min-height: 400px;
+  margin: map_get($spacers, 3);
+
+  .tabs-list{
+
+    padding: 0;
+    border-right: 1px solid $border-color;
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li{
+        padding: map-get($spacers, 1);
+        border-bottom: 1px solid $border-color;
+        border-right: 1px solid $border-color;
+        margin-right: -1px;
+
+        .btn {
+          text-align: left;
+          strong {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+          }
+          .float-right{
+            margin-top: map-get($spacers, 1);
+          }
+          .badge{
+            font-weight: normal !important;
+          }
+          .badge-secondary.badge-opacity-30{
+            background-color: rgba($secondary, .3);
+          }
+          &:focus{
+            box-shadow: none;
+          }
+          &:hover{
+            text-decoration: none;
+            color: $link-color;
+          }
+        }
+
+        &.open-tab {
+          background-color: white;
+          border-right-color: white;
+        }
+        &:not(.open-tab):hover {
+          background-color: #DDD;
+        }
+      }
+
+    }
+  }
+
+  .tabs-content {
+    padding: map_get($spacers, 2) map-get($spacers, 4);
+  }
+}

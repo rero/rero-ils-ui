@@ -20,7 +20,7 @@ import { Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { map } from 'rxjs/operators';
-import { LoanState } from '../class/items';
+import { LoanState } from '../classes/loans';
 import { UserService } from '@rero/shared';
 
 @Injectable({

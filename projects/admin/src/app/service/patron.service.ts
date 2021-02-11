@@ -22,7 +22,8 @@ import { Record } from '@rero/ng-core/lib/record/record';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { User } from '@rero/shared';
-import { Item, LoanState } from '../class/items';
+import { Item } from '../classes/items';
+import { Loan, LoanOverduePreview, LoanState } from '../classes/loans';
 
 @Injectable({
   providedIn: 'root'
@@ -185,6 +186,23 @@ export class PatronService {
   getCirculationInformations(patronPid: string): Observable<any> {
     const url = [this._apiService.getEndpointByType('patrons'), patronPid, 'circulation_informations'].join('/');
     return this._http.get(url);
+  }
+
+  /**
+   * Get overdue preview about overdue loans related to a patron.
+   * @param patronPid - string : the patron pid to search
+   * @return Observable
+   */
+  getOverduesPreview(patronPid: string): Observable<Array<{fees: LoanOverduePreview, loan: Loan}>> {
+    const url = [this._apiService.getEndpointByType('patrons'), patronPid, 'overdues', 'preview'].join('/');
+    return this._http.get(url).pipe(
+      map((data: Array<any>) => data.map(record => {
+        return {
+          fees: record.fees as LoanOverduePreview,
+          loan: new Loan(record.loan)
+        };
+      }))
+    );
   }
 
   /**

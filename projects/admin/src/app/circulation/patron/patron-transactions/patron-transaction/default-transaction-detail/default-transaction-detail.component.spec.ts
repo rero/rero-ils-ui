@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { DefaultTransactionComponent } from './default-transaction.component';
+import { DefaultTransactionDetailComponent } from './default-transaction-detail.component';
 
 describe('DefaultTransactionComponent', () => {
-  let component: DefaultTransactionComponent;
-  let fixture: ComponentFixture<DefaultTransactionComponent>;
+  let component: DefaultTransactionDetailComponent;
+  let fixture: ComponentFixture<DefaultTransactionDetailComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DefaultTransactionComponent ]
+      declarations: [ DefaultTransactionDetailComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DefaultTransactionComponent);
+    fixture = TestBed.createComponent(DefaultTransactionDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

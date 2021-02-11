@@ -21,7 +21,8 @@ import { RecordService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { UserService } from '@rero/shared';
-import { Item, ItemAction, ItemNoteType, ItemStatus } from '../class/items';
+import { Item, ItemAction, ItemNoteType, ItemStatus } from '../classes/items';
+import { Loan } from '../classes/loans';
 
 @Injectable({
   providedIn: 'root'
@@ -233,9 +234,7 @@ export class ItemsService {
    * @return true if the callout is required, false otherwise
    */
   needCallout(item: Item, type?: string): boolean {
-    if (type == null) {
-      type = 'warning';
-    }
+    type = type || 'warning';
     // WARNING ~~~~~~~~~~~~~~~~~~~~~~~
     if (type === 'warning') {
       if (item.actionDone && item.actionDone === ItemAction.checkin) {

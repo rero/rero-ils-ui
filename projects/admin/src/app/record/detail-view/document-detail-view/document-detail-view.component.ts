@@ -45,7 +45,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   /** Document record */
   record: any;
 
-  /** Css class for dd in template */
+  /** Css classes for dd in template */
   ddCssClass = 'col-sm-6 col-md-8 mb-0';
 
   /**

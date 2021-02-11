@@ -18,9 +18,9 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TimeValidator } from '@rero/ng-core';
-import { WeekDays } from '../../../class/week-days';
+import { WeekDays } from '../../../classes/week-days';
 
-import { Library } from '../../../class/library';
+import { Library } from '../../../classes/library';
 
 @Injectable({
    providedIn: 'root'

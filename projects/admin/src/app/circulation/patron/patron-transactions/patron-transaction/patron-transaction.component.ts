@@ -1,9 +1,26 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2021 RERO
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { OrganisationService } from '../../../../service/organisation.service';
-import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '../../../patron-transaction';
-import { PatronTransactionService } from '../../../patron-transaction.service';
+import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '../../../classes/patron-transaction';
+import { PatronTransactionService } from '../../../services/patron-transaction.service';
 import {
   PatronTransactionEventFormComponent
 } from '../patron-transaction-event-form/patron-transaction-event-form.component';
@@ -15,35 +32,15 @@ import {
 })
 export class PatronTransactionComponent implements OnInit {
 
+  // COMPONENT ATTRIBUTES ============================================
   /** Patron transaction */
   @Input() transaction: PatronTransaction;
-
   /** Is collapsed */
   isCollapsed = true;
-
   /** reference to PatronTransactionStatus -- used in HTML template */
-  public patronTransactionStatus = PatronTransactionStatus;
+  patronTransactionStatus = PatronTransactionStatus;
 
-  /**
-   * Constructor
-   * @param _organisationService - OrganisationService
-   * @param _patronTransactionService - PatronTransactionService
-   * @param _modalService - BsModalService
-   * @param _translateService - TranslateService
-   */
-  constructor(
-    private _organisationService: OrganisationService,
-    private _patronTransactionService: PatronTransactionService,
-    private _modalService: BsModalService,
-    private _translateService: TranslateService
-  ) {}
-
-  ngOnInit() {
-    if (this.transaction) {
-      this._patronTransactionService.loadTransactionHistory(this.transaction);
-    }
-  }
-
+  // GETTER & SETTER ================================================
   /** get the total amount for a patron transaction :
    *  If transaction is still open, then return the total transaction amount
    *  If transaction is closed, then transaction total amount should be zero. In this case, the transaction will be
@@ -71,7 +68,30 @@ export class PatronTransactionComponent implements OnInit {
   get organisation() {
     return this._organisationService.organisation;
   }
+  // CONSTRUCTOR & HOOKS ============================================
+  /**
+   * Constructor
+   * @param _organisationService - OrganisationService
+   * @param _patronTransactionService - PatronTransactionService
+   * @param _modalService - BsModalService
+   * @param _translateService - TranslateService
+   */
+  constructor(
+    private _organisationService: OrganisationService,
+    private _patronTransactionService: PatronTransactionService,
+    private _modalService: BsModalService,
+    private _translateService: TranslateService
+  ) {}
 
+  /** OnInit hook */
+  ngOnInit() {
+    if (this.transaction) {
+      this._patronTransactionService.loadTransactionHistory(this.transaction);
+    }
+  }
+
+
+  // COMPONENT FUNCTIONS ========================================================
   /**
    * Get the label of the transaction depending of transaction.type
    * @return label/title of the transaction as string
@@ -89,12 +109,6 @@ export class PatronTransactionComponent implements OnInit {
     return (this.transaction.status === PatronTransactionStatus.OPEN)
       ? this.transaction.events.some( e => e.type === PatronTransactionEventType.DISPUTE)
       : false;
-  }
-
-
-  /** Load and show details about the transaction */
-  public showDetail() {
-    this.isCollapsed = !this.isCollapsed;
   }
 
   /**
