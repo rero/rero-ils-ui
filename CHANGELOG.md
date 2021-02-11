@@ -1,11 +1,24 @@
 # Changelog
 
+## [v0.12.0](https://github.com/rero/rero-ils-ui/tree/v0.12.0) (2021-02-11)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.11.1...v0.12.0)
+
+**Merged pull requests:**
+
+- editor: add an external link to the mef authority  [\#503](https://github.com/rero/rero-ils-ui/pull/503) ([jma](https://github.com/jma))
+
+## [v0.11.1](https://github.com/rero/rero-ils-ui/tree/v0.11.1) (2021-02-08)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.11.0...v0.11.1)
+
 ## [v0.11.0](https://github.com/rero/rero-ils-ui/tree/v0.11.0) (2021-02-08)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.10.0...v0.11.0)
 
 **Merged pull requests:**
 
+- release: v0.11.0 [\#514](https://github.com/rero/rero-ils-ui/pull/514) ([jma](https://github.com/jma))
 - documents: fix items/holdings creation for harvested document [\#513](https://github.com/rero/rero-ils-ui/pull/513) ([zannkukai](https://github.com/zannkukai))
 - documents: allow to add either holdings or items [\#502](https://github.com/rero/rero-ils-ui/pull/502) ([Garfield-fr](https://github.com/Garfield-fr))
 - operation logs: implement operation history [\#501](https://github.com/rero/rero-ils-ui/pull/501) ([Garfield-fr](https://github.com/Garfield-fr))
@@ -15,7 +28,6 @@
 - documents: rewrite public holdings/items view in Angular [\#493](https://github.com/rero/rero-ils-ui/pull/493) ([Garfield-fr](https://github.com/Garfield-fr))
 - dependencies: update and fix vulnerabilities [\#492](https://github.com/rero/rero-ils-ui/pull/492) ([jma](https://github.com/jma))
 - Implement document types [\#490](https://github.com/rero/rero-ils-ui/pull/490) ([AoNoOokami](https://github.com/AoNoOokami))
-- Translations update from Weblate [\#489](https://github.com/rero/rero-ils-ui/pull/489) ([weblate](https://github.com/weblate))
 - search: fix encoding parameters problem [\#485](https://github.com/rero/rero-ils-ui/pull/485) ([zannkukai](https://github.com/zannkukai))
 - search: adapt the suggestions to the locale [\#481](https://github.com/rero/rero-ils-ui/pull/481) ([Garfield-fr](https://github.com/Garfield-fr))
 - general: use ngVarDirective from @rero/ng-core [\#463](https://github.com/rero/rero-ils-ui/pull/463) ([zannkukai](https://github.com/zannkukai))
@@ -165,6 +177,7 @@
 
 - translations: for release 0.5.2 [\#375](https://github.com/rero/rero-ils-ui/pull/375) ([jma](https://github.com/jma))
 - form: improve toogle switch [\#372](https://github.com/rero/rero-ils-ui/pull/372) ([Garfield-fr](https://github.com/Garfield-fr))
+- translations: fix show more item link [\#370](https://github.com/rero/rero-ils-ui/pull/370) ([zannkukai](https://github.com/zannkukai))
 
 ## [v0.5.1](https://github.com/rero/rero-ils-ui/tree/v0.5.1) (2020-09-14)
 
@@ -192,6 +205,7 @@
 - editor: define custom documents typeahead type [\#350](https://github.com/rero/rero-ils-ui/pull/350) ([lauren-d](https://github.com/lauren-d))
 - ui: adapt templates for cypress tests [\#349](https://github.com/rero/rero-ils-ui/pull/349) ([AoNoOokami](https://github.com/AoNoOokami))
 - document: clear '\_draft' key when saving document. [\#347](https://github.com/rero/rero-ils-ui/pull/347) ([zannkukai](https://github.com/zannkukai))
+- templates: create route for the resource [\#346](https://github.com/rero/rero-ils-ui/pull/346) ([zannkukai](https://github.com/zannkukai))
 - circulation: fix patron info in loan view [\#345](https://github.com/rero/rero-ils-ui/pull/345) ([AoNoOokami](https://github.com/AoNoOokami))
 - Translations update from Weblate [\#344](https://github.com/rero/rero-ils-ui/pull/344) ([weblate](https://github.com/weblate))
 - circulation: update request permissions [\#343](https://github.com/rero/rero-ils-ui/pull/343) ([AoNoOokami](https://github.com/AoNoOokami))
@@ -269,7 +283,6 @@
 - release: v0.2.1 [\#276](https://github.com/rero/rero-ils-ui/pull/276) ([jma](https://github.com/jma))
 - Translate '/projects/admin/src/assets/rero-ils-ui/admin/i18n/en\_US.json' in 'fr' [\#275](https://github.com/rero/rero-ils-ui/pull/275) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
 - Translate '/projects/public-search/src/assets/rero-ils-ui/public-search/i18n/en\_US.json' in 'fr' [\#274](https://github.com/rero/rero-ils-ui/pull/274) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
-- documentation: improve issue template [\#270](https://github.com/rero/rero-ils-ui/pull/270) ([iGormilhit](https://github.com/iGormilhit))
 
 ## [v0.2.0](https://github.com/rero/rero-ils-ui/tree/v0.2.0) (2020-05-28)
 
@@ -290,6 +303,7 @@
 **Merged pull requests:**
 
 - translations: use server side translations [\#271](https://github.com/rero/rero-ils-ui/pull/271) ([jma](https://github.com/jma))
+- documentation: improve issue template [\#270](https://github.com/rero/rero-ils-ui/pull/270) ([iGormilhit](https://github.com/iGormilhit))
 - editor: link persons to source instead of MEF [\#269](https://github.com/rero/rero-ils-ui/pull/269) ([rerowep](https://github.com/rerowep))
 - permissions: refactoring permissions usage [\#268](https://github.com/rero/rero-ils-ui/pull/268) ([zannkukai](https://github.com/zannkukai))
 - locations: paging request adaptation [\#266](https://github.com/rero/rero-ils-ui/pull/266) ([zannkukai](https://github.com/zannkukai))
