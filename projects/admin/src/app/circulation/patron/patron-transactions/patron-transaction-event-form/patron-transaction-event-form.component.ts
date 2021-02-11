@@ -5,8 +5,8 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { OrganisationService } from '../../../../service/organisation.service';
-import { PatronTransaction } from '../../../patron-transaction';
-import { PatronTransactionService } from '../../../patron-transaction.service';
+import { PatronTransaction } from '../../../classes/patron-transaction';
+import { PatronTransactionService } from '../../../services/patron-transaction.service';
 
 
 @Component({

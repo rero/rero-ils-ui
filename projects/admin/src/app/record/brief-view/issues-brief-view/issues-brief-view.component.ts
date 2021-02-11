@@ -17,7 +17,7 @@
 
 import { Component, Input } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
-import { IssueItemStatus } from '../../../class/items';
+import { IssueItemStatus } from '../../../classes/items';
 
 @Component({
   selector: 'admin-inventory-brief-view',

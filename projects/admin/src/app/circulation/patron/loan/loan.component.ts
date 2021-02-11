@@ -21,7 +21,7 @@ import { DateTranslatePipe } from '@rero/ng-core';
 import { User, UserService } from '@rero/shared';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { Item, ItemAction, ItemNoteType, ItemStatus } from 'projects/admin/src/app/class/items';
+import { Item, ItemAction, ItemNoteType, ItemStatus } from 'projects/admin/src/app/classes/items';
 import { ItemsService } from 'projects/admin/src/app/service/items.service';
 import { PatronService } from 'projects/admin/src/app/service/patron.service';
 import { forkJoin, Subscription } from 'rxjs';
@@ -171,7 +171,7 @@ export class LoanComponent implements OnInit, OnDestroy {
     this._subscription.unsubscribe();
   }
 
-
+  // COMPONENT FUNCTIONS ========================================================
   /**
    * Search value with search input
    * @param searchText: value to search for (barcode)

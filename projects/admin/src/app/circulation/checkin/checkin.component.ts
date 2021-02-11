@@ -22,7 +22,7 @@ import { RecordService } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, map } from 'rxjs/operators';
 import { User, UserService } from '@rero/shared';
-import { Item, ItemAction, ItemNoteType, ItemStatus } from '../../class/items';
+import { Item, ItemAction, ItemNoteType, ItemStatus } from '../../classes/items';
 import { ItemsService } from '../../service/items.service';
 import { PatronService } from '../../service/patron.service';
 

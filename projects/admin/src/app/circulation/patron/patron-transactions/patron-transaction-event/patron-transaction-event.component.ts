@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { OrganisationService } from '../../../../service/organisation.service';
-import { PatronTransactionEvent, PatronTransactionEventType } from '../../../patron-transaction';
+import { PatronTransactionEvent, PatronTransactionEventType } from '../../../classes/patron-transaction';
 
 @Component({
   selector: 'admin-patron-transaction-event',

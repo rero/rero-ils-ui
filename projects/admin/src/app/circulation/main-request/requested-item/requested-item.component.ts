@@ -17,7 +17,7 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { Item, LoanState } from '../../../class/items';
+import { LoanState } from 'projects/admin/src/app/classes/loans';
 
 @Component({
   selector: 'admin-requested-item',
@@ -44,18 +44,16 @@ export class RequestedItemComponent implements OnInit {
   /** reference to LoanState class :: To use LoanState into template */
   LoanState = LoanState;
 
-  // COMPONENT CONSTRUCTOR & HOOKS ============================================
+  // CONSTRUCTOR & HOOKS ====================================================
   /**
    * Constructor
-   * @param _recordService: RecordService
+   * @param _recordService - RecordService
    */
   constructor(
     private _recordService: RecordService
   ) { }
 
-  /**
-   * Init hook
-   */
+  /** OnInit hook */
   ngOnInit() {
     if (this.item) {
       this._recordService.getRecord('documents', this.item.document.pid, 1, {
