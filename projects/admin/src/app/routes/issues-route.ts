@@ -18,7 +18,7 @@ import { RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { IssuesBriefViewComponent } from '../record/brief-view/issues-brief-view/issues-brief-view.component';
 import { BaseRoute } from './base-route';
-import { IssueItemStatus } from '../class/items';
+import { IssueItemStatus } from '../classes/items';
 
 export class IssuesRoute extends BaseRoute implements RouteInterface {
 

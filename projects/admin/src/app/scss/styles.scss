@@ -197,7 +197,7 @@ json-schema-form {
           &:after {
             content: ' ';
             position: absolute;
-            border: .5px dashed #EEE;
+            border-top: 1px dashed #EEE;
             top: calc(.55rem - 1px);
             width: 100%;
           }

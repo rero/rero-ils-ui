@@ -15,10 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { HttpClientModule } from '@angular/common/http';
 import { ThumbnailComponent } from './thumbnail.component';
-
 
 describe('ThumbnailComponent', () => {
   let component: ThumbnailComponent;

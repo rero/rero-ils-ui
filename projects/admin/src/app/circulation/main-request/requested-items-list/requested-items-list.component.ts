@@ -16,7 +16,8 @@
  */
 
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { Item, LoanState } from '../../../class/items';
+import { Item } from 'projects/admin/src/app/classes/items';
+import { LoanState } from 'projects/admin/src/app/classes/loans';
 
 @Component({
   selector: 'admin-circulation-requested-items-list',
@@ -24,6 +25,7 @@ import { Item, LoanState } from '../../../class/items';
 })
 export class RequestedItemsListComponent implements OnChanges {
 
+  // COMPONENT ATTRIBUTES ====================================================
   /** Item list */
   @Input() items: any[];
   /** Is the item detail should be collapsed */
@@ -35,6 +37,7 @@ export class RequestedItemsListComponent implements OnChanges {
   /** the know item barcode list */
   private _knownItemBarcodes: Array<string> = null;
 
+  // CONSTRUCTOR & HOOKS ====================================================
   /**
    * OnChanges hook
    * @param changes: the changed properties.
@@ -45,10 +48,11 @@ export class RequestedItemsListComponent implements OnChanges {
     }
   }
 
+  // COMPONENT FUNCTIONS ====================================================
   /**
    * Get the callout css class for the item.
    * If the item is new is new the list, then we would add a display indication about this fact
-   * @param item: the item to check
+   * @param item - Item : the item to check
    * @return the css class to use as callout
    */
   getItemCallout(item: Item): string {

@@ -18,7 +18,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RecordService, ResultItem } from '@rero/ng-core';
 import { User } from '@rero/shared';
-import { ILLRequestStatus } from '../../../class/ill-request';
+import { ILLRequestStatus } from '../../../classes/ill-request';
 
 @Component({
   selector: 'admin-ill-requests-brief-view',

@@ -16,7 +16,7 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { AddressType } from '../../../class/address-type';
+import { AddressType } from '../../../classes/address-type';
 
 @Component({
   selector: 'admin-address-type',

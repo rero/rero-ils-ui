@@ -22,13 +22,13 @@ import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserService } from '@rero/shared';
-import { RouteToolService } from '../routes/route-tool.service';
+import { RouteToolService } from '../../routes/route-tool.service';
 import {
   PatronTransaction,
   PatronTransactionEvent,
   PatronTransactionEventType,
   PatronTransactionStatus
-} from './patron-transaction';
+} from '../classes/patron-transaction';
 
 @Injectable({
   providedIn: 'root'

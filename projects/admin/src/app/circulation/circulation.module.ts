@@ -43,11 +43,11 @@ import {
 } from './patron/patron-transactions/patron-transaction-event-form/patron-transaction-event-form.component';
 import { PatronTransactionEventComponent } from './patron/patron-transactions/patron-transaction-event/patron-transaction-event.component';
 import {
-  DefaultTransactionComponent
-} from './patron/patron-transactions/patron-transaction/default-transaction/default-transaction.component';
+  DefaultTransactionDetailComponent
+} from './patron/patron-transactions/patron-transaction/default-transaction-detail/default-transaction-detail.component';
 import {
-  OverdueTransactionComponent
-} from './patron/patron-transactions/patron-transaction/overdue-transaction/overdue-transaction.component';
+  OverdueTransactionDetailComponent
+} from './patron/patron-transactions/patron-transaction/overdue-transaction-detail/overdue-transaction-detail.component';
 import { PatronTransactionComponent } from './patron/patron-transactions/patron-transaction/patron-transaction.component';
 import { PatronTransactionsComponent } from './patron/patron-transactions/patron-transactions.component';
 import { PendingItemComponent } from './patron/pending/pending-item/pending-item.component';
@@ -56,6 +56,7 @@ import { PickupItemComponent } from './patron/pickup/pickup-item/pickup-item.com
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
 import { FixedDateFormComponent } from './patron/loan/fixed-date-form/fixed-date-form.component';
+import { OverdueTransactionComponent } from './patron/patron-transactions/overdue-transaction/overdue-transaction.component';
 
 
 @NgModule({
@@ -78,13 +79,15 @@ import { FixedDateFormComponent } from './patron/loan/fixed-date-form/fixed-date
     PatronTransactionEventComponent,
     PatronTransactionEventFormComponent,
     OverdueTransactionComponent,
-    DefaultTransactionComponent,
+    DefaultTransactionDetailComponent,
+    OverdueTransactionDetailComponent,
     PatronTransactionEventFormComponent,
     HistoryComponent,
     HistoryItemComponent,
     RequestedItemComponent,
     ChangePasswordFormComponent,
-    FixedDateFormComponent
+    FixedDateFormComponent,
+    OverdueTransactionComponent
   ],
   imports: [
     BsDropdownModule.forRoot(),

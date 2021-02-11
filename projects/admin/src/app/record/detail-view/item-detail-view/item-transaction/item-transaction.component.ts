@@ -19,8 +19,9 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { TranslateService } from '@ngx-translate/core';
 import { DialogService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { LoanState } from 'projects/admin/src/app/class/items';
+import { LoanState } from 'projects/admin/src/app/classes/loans';
 import { ItemsService } from 'projects/admin/src/app/service/items.service';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -28,84 +29,50 @@ import { map } from 'rxjs/operators';
   templateUrl: './item-transaction.component.html'
 })
 export class ItemTransactionComponent implements OnInit, OnDestroy {
-  /**
-   * Loan Record
-   */
+
+  // COMPONENTS ATTRIBUTES ===============================================================
+  /** Loan Record */
   @Input() transaction: any;
-
-  /**
-   * Ressource type
-   */
+  /** Ressource type */
   @Input() type: string;
-
-  /**
-   * Flag for cell background
-   */
+  /** Flag for cell background */
   @Input() background: boolean;
-
-  /**
-   * Item pid
-   */
+  /** Item pid */
   @Input() itemPid: string;
+  /** Informs parent component to remove request when it is cancelled */
+  @Output() cancelRequestEvent = new EventEmitter<any>();
+  /** Informs parent component to update pickup location */
+  @Output() updatePickupLocationEvent = new EventEmitter<any>();
 
-  /**
-   * Pickup locations of the organisation
-   */
+  /** Pickup locations of the organisation */
   pickupLocations: any;
 
-  /**
-   * Pickup default $ref
-   */
+  /** Pickup default $ref */
   private _pickupDefaultValue: string;
-
-  /**
-   * Current user
-   */
+  /** Current user */
   private _currentUser: any;
-
-  /**
-   * Pickup locations observable reference
-   */
+  /** Pickup locations observable reference */
   private _pickupLocations$: any;
-
-  /**
-   * Autorized Transaction Type to load pickup locations
-   */
+  /** Authorized Transaction Type to load pickup locations */
   private _autorizedTypeToLoadPickupLocations = [
     'loan_request'
   ];
 
+  // GETTER & SETTER ======================================================================
   /**
-   * Informs parent component to remove request when it is cancelled
+   * Get current pickup location
+   * @return pickup location name
    */
-  @Output() cancelRequestEvent = new EventEmitter<any>();
-
-  /**
-   * Informs parent component to update pickup location
-   */
-  @Output() updatePickupLocationEvent = new EventEmitter<any>();
-
-  /**
-   * On init hook
-   */
-  ngOnInit() {
-    this._currentUser = this._userService.user;
-    if (this._autorizedTypeToLoadPickupLocations.includes(this.type)) {
-      this._pickupLocations$ = this.getPickupLocations().subscribe((pickups) => {
-        this.pickupLocations = pickups;
-      });
+  get currentPickupLocation(): string {
+    const location = this.pickupLocations.find(loc => loc.value === this.transaction.metadata.pickup_location_pid);
+    if (location != null) {
+      return location.label;
     }
+    return this._translateService.instant('No pickup location');
   }
 
-  /**
-   * On destroy hook
-   */
-  ngOnDestroy() {
-    if (this._autorizedTypeToLoadPickupLocations.includes(this.type)) {
-      this._pickupLocations$.unsubscribe();
-    }
-  }
 
+  // CONSTRUCTOR & HOOKS ==================================================================
   /**
    * constructor
    * @param _userService - User service
@@ -120,22 +87,26 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
     private _itemService: ItemsService
   ) {}
 
-  /**
-   * Get current pickup location
-   * @return pickup location name
-   */
-  get currentPickupLocation(): string {
-    const location = this.pickupLocations.find(loc => loc.value === this.transaction.metadata.pickup_location_pid);
-    if (location != null) {
-      return location.label;
+  /** OnInit hook */
+  ngOnInit() {
+    this._currentUser = this._userService.user;
+    if (this._autorizedTypeToLoadPickupLocations.includes(this.type)) {
+      this._pickupLocations$ = this.getPickupLocations().subscribe((pickups) => {
+        this.pickupLocations = pickups;
+      });
     }
-    return this._translateService.instant('No pickup location');
   }
 
-  /**
-   * Check if request can be cancelled
-   * @return: true or false
-   */
+  /** OnDestroy hook */
+  ngOnDestroy() {
+    if (this._autorizedTypeToLoadPickupLocations.includes(this.type)) {
+      this._pickupLocations$.unsubscribe();
+    }
+  }
+
+
+  // COMPONENT FUNCTIONS ==================================================================
+  /** Check if request can be cancelled. */
   canCancelRequest(): boolean {
     // No permission API in backend
     // Allowed when loan state is PENDING or ITEM_IN_TRANSIT_FOR_PICKUP according to actions.md
@@ -144,10 +115,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
 
   }
 
-  /**
-   * Check if request pickup location can be changed
-   * @return: true or false
-   */
+  /** Check if request pickup location can be changed. */
   canUpdateRequestPickupLocation(): boolean {
     // No permission API in backend
     // Allowed when loan state is PENDING or ITEM_IN_TRANSIT_FOR_PICKUP according to actions.md
@@ -155,10 +123,8 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
     return itemStatus.some((element) => element === this.transaction.metadata.state);
   }
 
-  /**
-   * Show a confirmation dialog box for cancel request.
-   */
-  showCancelRequestDialog() {
+  /** Show a confirmation dialog box for cancel request. */
+  showCancelRequestDialog(): void {
     const config = {
       ignoreBackdropClick: true,
       initialState: {
@@ -169,7 +135,6 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
         confirmTitleButton: this._translateService.instant('Yes')
       }
     };
-
     this._dialogService.show(config).subscribe((confirm: boolean) => {
       if (confirm) {
         this.emitCancelRequest();
@@ -177,17 +142,13 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Inform parent to cancel the request
-   */
-  emitCancelRequest() {
+  /** Inform parent to cancel the request. */
+  emitCancelRequest(): void {
     this.cancelRequestEvent.emit(this.transaction);
   }
 
-  /**
-   * Inform parent to cancel the request
-   */
-  emitUpdatePickupLocation(pickupLocationPid: string) {
+  /** Inform parent to cancel the request. */
+  emitUpdatePickupLocation(pickupLocationPid: string): void {
     const data = {
       pickupLocationPid,
       transaction: this.transaction
@@ -195,12 +156,8 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
     this.updatePickupLocationEvent.emit(data);
   }
 
-  /**
-   * Get pickups by organisation pid
-   * @param organisationPid - string
-   * @return observable
-   */
-  private getPickupLocations() {
+  /** Get pickups by organisation pid */
+  private getPickupLocations(): Observable<{label: string, value: string}> {
     const currentLibrary = this._currentUser.currentLibrary;
     return this._itemService.getPickupLocations(this.itemPid).pipe(
         map(locations => locations.map((loc: any) => {

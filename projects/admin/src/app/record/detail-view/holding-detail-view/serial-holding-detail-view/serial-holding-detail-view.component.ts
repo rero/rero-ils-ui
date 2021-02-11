@@ -22,7 +22,7 @@ import { ToastrService } from 'ngx-toastr';
 import { HoldingsService, PredictionIssue } from 'projects/admin/src/app/service/holdings.service';
 import { OperationLogsService } from 'projects/admin/src/app/service/operation-logs.service';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
-import { IssueItemStatus } from '../../../../class/items';
+import { IssueItemStatus } from '../../../../classes/items';
 
 
 @Component({

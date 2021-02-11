@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component } from '@angular/core';
-import { IssueItemStatus } from 'projects/admin/src/app/class/items';
+import { IssueItemStatus } from 'projects/admin/src/app/classes/items';
 import { DefaultHoldingItemComponent } from '../default-holding-item/default-holding-item.component';
 
 @Component({
