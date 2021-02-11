@@ -20,11 +20,11 @@ import { TestBed } from '@angular/core/testing';
 import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { RecordModule, TruncateTextPipe } from '@rero/ng-core';
 import { MainTitlePipe, SharedModule } from '@rero/shared';
-import { DocumentsTypeahead } from '../class/typeahead/documents-typeahead';
-import { ItemsTypeahead } from '../class/typeahead/items-typeahead';
-import { MefOrganisationTypeahead } from '../class/typeahead/mef-organisation-typeahead';
-import { MefPersonTypeahead } from '../class/typeahead/mef-person-typeahead';
-import { PatronsTypeahead } from '../class/typeahead/patrons-typeahead';
+import { DocumentsTypeahead } from '../classes/typeahead/documents-typeahead';
+import { ItemsTypeahead } from '../classes/typeahead/items-typeahead';
+import { MefOrganisationTypeahead } from '../classes/typeahead/mef-organisation-typeahead';
+import { MefPersonTypeahead } from '../classes/typeahead/mef-person-typeahead';
+import { PatronsTypeahead } from '../classes/typeahead/patrons-typeahead';
 import { UiRemoteTypeaheadService } from './ui-remote-typeahead.service';
 
 describe('UiRemoteTypeaheadService', () => {

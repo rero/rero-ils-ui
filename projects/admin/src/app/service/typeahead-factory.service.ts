@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable, InjectionToken, Injector } from '@angular/core';
-import { ITypeahead } from '../class/typeahead/ITypeahead-interface';
+import { ITypeahead } from '../classes/typeahead/ITypeahead-interface';
 import { UiRemoteTypeaheadService } from './ui-remote-typeahead.service';
 
 // Pattern to find all typeahead into the dependency injection

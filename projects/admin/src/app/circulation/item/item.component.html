@@ -18,7 +18,7 @@
 <div *ngIf="item && !(item.loading || false) else loading"
      [ngClass]="{
        'callout callout-warning': needCallout(item, 'warning') || (item.actionDone === itemAction.checkin && totalAmountOfFee > 0),
-       'text-secondary': item.status !== 'on_loan'
+       'text-secondary': item.status !== ItemStatus.ON_LOAN
      }"
      class="row d-flex align-items-start item">
 
@@ -75,8 +75,14 @@
   <div name="circ-info" class="col-2">
     <ul class="list-unstyled mb-0">
       <ng-container [ngSwitch]="item.status">
-        <li name="status" *ngSwitchCase="'on_loan'" >{{ item.status | translate }} <i class="fa fa-arrow-right" aria-hidden="true"></i>
-          {{ item.loan.dueDate | dateTranslate :'shortDate' }}</li>
+        <li name="status" *ngSwitchCase="'on_loan'" >
+          [{{ item.loan.pid }}]
+          {{ item.status | translate }}
+          <i class="fa fa-arrow-right" aria-hidden="true"></i>
+          <span [class.text-warning]="loan && loan.expired">
+            {{ item.loan.dueDate | dateTranslate :'shortDate' }}
+          </span>
+        </li>
         <li name="status" *ngSwitchCase="'in_transit'">{{ item.status | translate }}
           <ng-container *ngIf="getTransitLocationPid() | getRecord: 'locations' | async as location">
             ({{ 'to' | translate }}

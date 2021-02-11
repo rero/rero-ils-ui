@@ -1,21 +1,24 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { map, mergeMap } from 'rxjs/operators';
-import { Item } from '../../../../../class/items';
-import { PatronTransaction } from '../../../../patron-transaction';
+import { Item } from 'projects/admin/src/app/classes/items';
+import { PatronTransaction } from 'projects/admin/src/app/circulation/classes/patron-transaction';
 
 @Component({
-  selector: 'admin-overdue-transaction',
-  templateUrl: './overdue-transaction.component.html'
+  selector: 'admin-overdue-transaction-detail',
+  templateUrl: './overdue-transaction-detail.component.html'
 })
-export class OverdueTransactionComponent implements OnInit {
+export class OverdueTransactionDetailComponent implements OnInit {
 
   /** Patron transaction */
   @Input() transaction: PatronTransaction;
-
   /** item linked to this transaction if transaction linked to a loan */
   item: Item;
 
+  /**
+   * constructor
+   * @param _recordService - RecordService
+   */
   constructor(
     private _recordService: RecordService
   ) { }

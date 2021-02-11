@@ -30,7 +30,7 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
 
   /**
    * Constructor
-   * @param routeToolService - RouteToolService for the parent class.
+   * @param routeToolService - RouteToolService for the parent classes.
    * @param _translateService - TranslateService to translate the number of results.
    */
   constructor(

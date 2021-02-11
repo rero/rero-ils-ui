@@ -25,7 +25,7 @@ import { UserService } from '@rero/shared';
 import moment from 'moment';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { Library } from 'projects/admin/src/app/class/library';
+import { Library } from 'projects/admin/src/app/classes/library';
 import { DateValidators } from 'projects/admin/src/app/utils/validators';
 
 

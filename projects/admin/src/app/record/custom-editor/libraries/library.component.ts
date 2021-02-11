@@ -23,7 +23,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ApiService, cleanDictKeys, RecordService, UniqueValidator } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '@rero/shared';
-import { Library } from '../../../class/library';
+import { Library } from '../../../classes/library';
 import { LibraryFormService } from './library-form.service';
 
 @Component({

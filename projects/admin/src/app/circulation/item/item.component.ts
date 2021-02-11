@@ -19,10 +19,11 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Document, Item, ItemAction, ItemNote, ItemNoteType, Loan, LoanState } from '../../class/items';
-import { ItemsService } from '../../service/items.service';
-import { OrganisationService } from '../../service/organisation.service';
-import { PatronTransactionService } from '../patron-transaction.service';
+import { Item, ItemAction, ItemNote, ItemNoteType, ItemStatus} from 'projects/admin/src/app/classes/items';
+import { Loan, LoanState } from 'projects/admin/src/app/classes/loans';
+import { ItemsService } from 'projects/admin/src/app/service/items.service';
+import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
+import { PatronTransactionService } from '../services/patron-transaction.service';
 
 @Component({
   selector: 'admin-item',
@@ -31,33 +32,32 @@ import { PatronTransactionService } from '../patron-transaction.service';
 })
 export class ItemComponent implements OnInit {
 
+  // COMPONENT ATTRIBUTES ====================================================
   /** Current item */
   @Input() item: any;
-
   /** Current patron */
   @Input() patron: any;
-
   /** Item has fees */
   @Output() hasFeesEmitter = new EventEmitter<boolean>();
-
   /** Extend loan event emitter */
   @Output() extendLoanClicked = new EventEmitter<any[]>();
 
+  /** loan corresponding to the item */
+  loan: Loan;
   /** Is collapsed */
   isCollapsed = true;
-
   /** Total amount of fee */
   totalAmountOfFee = 0;
-
   /** Notifications related to the current loan */
   notifications$: Observable<any>;
-
   /** ItemAction reference */
   itemAction = ItemAction;
-
   /** related document */
   document = undefined;
+  /** ItemStatus class reference */
+  ItemStatus = ItemStatus;
 
+  // GETTER & SETTER =========================================================
   /**
    * Get current organisation
    * @return: current organisation
@@ -66,6 +66,8 @@ export class ItemComponent implements OnInit {
     return this._organisationService.organisation;
   }
 
+
+  // CONSTRUCTOR & HOOKS ====================================================
   /**
    * Constructor
    * @param _recordService: Record Service
@@ -80,11 +82,10 @@ export class ItemComponent implements OnInit {
     private _itemService: ItemsService
   ) {  }
 
-  /**
-   * On init hook
-   */
+  /** OnInit hook */
   ngOnInit() {
-    if (this.item && this.item.loan && this.item.loan.pid) {
+    this.loan = (this.item && this.item.loan) ? new Loan(this.item.loan) : null;
+    if (this.loan) {
       const loanPid = this.item.loan.pid;
       this._patronTransactionService.patronTransactionsByLoan$(loanPid, 'overdue', 'open').subscribe(
         (transactions) => {
@@ -112,6 +113,7 @@ export class ItemComponent implements OnInit {
     }
   }
 
+  // COMPONENT FUNCTIONS ====================================================
   /**
    * Get transit location pid
    * @return: transit location pid

@@ -21,10 +21,10 @@ import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslateService } from '@ngx-translate/core';
 import { User } from '@rero/shared';
 import { Subscription } from 'rxjs';
-import { LoanState } from '../../../class/items';
-import { OrganisationService } from '../../../service/organisation.service';
-import { PatronService } from '../../../service/patron.service';
-import { PatronTransactionService } from '../../patron-transaction.service';
+import { LoanState } from 'projects/admin/src/app/classes/loans';
+import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
+import { PatronService } from 'projects/admin/src/app/service/patron.service';
+import { PatronTransactionService } from '../../services/patron-transaction.service';
 
 @Component({
   selector: 'admin-main',
@@ -32,6 +32,7 @@ import { PatronTransactionService } from '../../patron-transaction.service';
 })
 export class MainComponent implements OnInit, OnDestroy {
 
+  // COMPONENT ATTRIBUTES ====================================================
   /** shortcuts for patron tabs */
   private _shortcuts = [
     {
@@ -79,17 +80,18 @@ export class MainComponent implements OnInit, OnDestroy {
     }
   ];
 
+  /** the current logged patron */
   patron: User = undefined;
-
   /** the total amount of all 'open' patron transactions for the current patron */
   transactionsTotalAmount = 0;
 
   /** Subscription to 'open' patron transactions */
   private _patronTransactionSubscription$: Subscription;
-
   /** Subsription to current patron */
   private _patronSubscription$: Subscription;
 
+
+  // GETTER & SETTER ====================================================
   /** Get current organisation
    *  @returns current organisation
    */
@@ -97,6 +99,7 @@ export class MainComponent implements OnInit, OnDestroy {
     return this._organisationService.organisation;
   }
 
+  // CONSTRUCTOR & HOOKS ====================================================
   /** Constructor
    * @param _route - ActivatedRoute
    * @param _router - Router
@@ -154,6 +157,7 @@ export class MainComponent implements OnInit, OnDestroy {
     this._patronService.clearPatron();
   }
 
+  // COMPONENT FUNCTIONS ====================================================
   /** reset the patron currently viewed */
   clearPatron() {
     this._patronService.clearPatron();
@@ -179,7 +183,6 @@ export class MainComponent implements OnInit, OnDestroy {
     }
   }
 
-
   /** Find and return a circulation statistic.
    * @param type: the type of circulation statistics to find.
    */
@@ -193,8 +196,7 @@ export class MainComponent implements OnInit, OnDestroy {
       : 0;
   }
 
-  /**
-   * Parse statistics from API into corresponding tab statistic.
+  /** Parse statistics from API into corresponding tab statistic.
    * @param data: a dictionary of loan state/value
    */
   private _parseStatistics(data: any) {

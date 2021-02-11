@@ -15,73 +15,96 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <section *ngIf="!isLoading; else loading" class="content">
-  <ng-container *ngIf="transactions.length > 0; else noTransaction">
-    <!-- HEADER ~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <div class="row mb-1 align-items-center">
-      <div class="col mr-1 d-none d-lg-block">
-        <div class="row p-2 bg-dark rounded text-light">
-          <div class="col-lg-2 pl-20" translate>Date</div>
-          <div class="col-lg-7" translate>Category</div>
-          <div class="col-lg-3 text-lg-right">
-            {{ 'Total amount' | translate }} : {{ transactionsTotalAmount | currency: organisation.default_currency }}
-          </div>
-        </div>
-      </div>
-      <!-- Pay all patron-transactions button -->
-      <div class="col-sm-1 pl-0">
-        <button class="btn btn-outline-primary btn-block d-none d-lg-block"
-                type="button"
-                (click)="payAllTransactions()"
-                [disabled]="transactionsTotalAmount <= 0"
-                translate
-        >
-          Pay all
-        </button>
-      </div>
-    </div>
-    <!-- FEES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <admin-patron-transaction
-      class="row mb-1"
-      *ngFor="let transaction of transactions"
-      [transaction]="transaction">
-    </admin-patron-transaction>
-  </ng-container>
-</section>
 
-<section class="mt-4">
-  <div class="row">
-    <div class="col col-12">
-      <button type="button"
-              class="pl-0 pt-0 btn"
-              (click)="toggleFeesHistory()"
-              [attr.aria-expanded]="!isHistoryCollapsed"
-              aria-controls="collapse">
-        <i [ngClass]="{ 'fa-caret-down pr-0': !isHistoryCollapsed, 'fa-caret-right pr-1': isHistoryCollapsed }" class="fa" aria-hidden="true"></i>
-      </button>
-      <h5 class="d-inline-block" translate>History</h5>
+  <div class="vertical-tabs-panes border row">
+    <!-- vertical tabs list -->
+    <div class="tabs-list col-lg-2 col-md-3 bg-light">
+      <ul>
+        <li [class.open-tab]="tabs.engagedFees.isOpen">
+          <button class="btn btn-link btn-block clearfix" (click)="openTab(tabs.engagedFees)">
+            <strong translate>Engaged fees</strong>
+            <span class="badge badge-warning float-right" *ngIf="tabs.engagedFees.totalAmount > 0">
+              {{ tabs.engagedFees.totalAmount | currency: organisation.default_currency }}
+            </span>
+          </button>
+        </li>
+        <li [class.open-tab]="tabs.overduePreviewFees.isOpen">
+          <button class="btn btn-link btn-block clearfix" (click)="openTab(tabs.overduePreviewFees); loadFeesHistory()">
+            <strong translate>Overdue preview fees</strong>
+            <span class="badge badge-secondary badge-opacity-30 float-right" *ngIf="tabs.overduePreviewFees.totalAmount > 0">
+              {{ tabs.overduePreviewFees.totalAmount | currency: organisation.default_currency }}
+            </span>
+          </button>
+        </li>
+        <li [class.open-tab]="tabs.historyFees.isOpen">
+          <button class="btn btn-link btn-block clearfix" (click)="openTab(tabs.historyFees); loadFeesHistory()">
+            <strong translate>History</strong>
+          </button>
+        </li>
+      </ul>
+    </div>
+    <!-- tabs content -->
+    <div class="tabs-content col">
+      <!-- engaged fees ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <div [hidden]="!tabs.engagedFees.isOpen">
+        <ng-container *ngIf="tabs.engagedFees.transactions.length > 0; else noTransaction">
+          <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
+            <div class="col-2 pl-20" translate>Date</div>
+            <div class="col-7" translate>Category</div>
+            <div class="col-2 text-right">
+              {{ 'Total amount' | translate }} : {{ tabs.engagedFees.totalAmount | currency: organisation.default_currency }}
+            </div>
+            <div class="col-1 pl-0">
+              <button class="btn btn-primary btn-block d-md-block float-right btn-sm my-1"
+                      (click)="payAllTransactions()" [disabled]="tabs.engagedFees.totalAmount <= 0"
+                      translate
+              >Pay all</button>
+            </div>
+          </div>
+          <admin-patron-transaction
+            *ngFor="let t of tabs.engagedFees.transactions" [transaction]="t"
+            class="row mb-1">
+          </admin-patron-transaction>
+        </ng-container>
+      </div>
+      <!-- OVERDUE PREVIEW FEES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <div [hidden]="!tabs.overduePreviewFees.isOpen">
+        <ng-container *ngIf="tabs.overduePreviewFees.transactions.length > 0; else noOverdueTransaction">
+          <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
+            <div class="col-2 pl-20 my-2" translate>Due date</div>
+            <div class="col-7" translate>Document</div>
+            <div class="col-2 text-right">
+              {{ 'Total amount' | translate }} : {{ tabs.overduePreviewFees.totalAmount | currency: organisation.default_currency }}
+            </div>
+            <div class="col-1"></div>
+          </div>
+          <admin-overdue-transaction
+            *ngFor="let t of tabs.overduePreviewFees.transactions" [transaction]="t"
+            class="row mb-1">
+          </admin-overdue-transaction>
+        </ng-container>
+      </div>
+      <!-- fees history ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <div [hidden]="!tabs.historyFees.isOpen">
+        <ng-container *ngIf="tabs.historyFees.transactions !== null && tabs.historyFees.transactions.length > 0; else noHistory">
+          <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
+            <div class="col-2 pl-20 my-2" translate>Date</div>
+            <div class="col-10" translate>Category</div>
+          </div>
+          <admin-patron-transaction
+            class="row mb-1 align-items-start"
+            *ngFor="let t of tabs.historyFees.transactions" [transaction]="t">
+          </admin-patron-transaction>
+        </ng-container>
+      </div>
     </div>
   </div>
-  <ng-container *ngIf="!isHistoryCollapsed">
-     <ng-container *ngIf="!historyIsLoading; else loading">
-       <ng-container *ngIf="historyTransactions.length > 0; else noHistory">
-         <admin-patron-transaction
-            class="row mb-1 align-items-start"
-            *ngFor="let transaction of historyTransactions"
-            [transaction]="transaction">
-         </admin-patron-transaction>
-       </ng-container>
-     </ng-container>
-  </ng-container>
 </section>
 
-<ng-template #noTransaction>
-  {{ 'No pending fee for this patron.' | translate }}
-</ng-template>
 
-<ng-template #noHistory>
-  {{ 'No fee history for this patron.' | translate }}
-</ng-template>
-
+<ng-template #noTransaction translate>No pending fee for this patron</ng-template>
+<ng-template #noOverdueTransaction translate>No overdue fees for this patron</ng-template>
+<ng-template #noHistory translate>No fee history for this patron</ng-template>
 <ng-template #loading>
   <div class="text-center my-5">
     <i class="fa fa-spin fa-spinner fa-2x"></i>

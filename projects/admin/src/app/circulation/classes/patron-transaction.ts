@@ -68,7 +68,7 @@ export class PatronTransaction {
 
 export class PatronTransactionEvent {
 
-  pid: string;
+  pid?: string;
   creation_date: string = null;
   amount: number = 0;
   type: PatronTransactionEventType;
@@ -77,6 +77,7 @@ export class PatronTransactionEvent {
   library?: any;
   operator: any;
   parent: PatronTransaction;
+  steps?: Array<{timestamp: string, amount: string}>;
 
   constructor(obj?: any){
     Object.assign(this, obj);
