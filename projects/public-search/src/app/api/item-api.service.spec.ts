@@ -89,7 +89,13 @@ describe('ItemService', () => {
   });
 
   it('should return a set of Items by holdings pid', () => {
-    service.getItemsByHoldingsPidAndViewcode('1', 'global', 1).subscribe((result: QueryResponse) => {
+    const holdings = {
+      metadata: {
+        pid: '1',
+        holdings_type: 'regular'
+      }
+    };
+    service.getItemsByHoldingsAndViewcode(holdings, 'global', 1).subscribe((result: QueryResponse) => {
       expect(result.hits[0]).toEqual(record);
     });
   });
