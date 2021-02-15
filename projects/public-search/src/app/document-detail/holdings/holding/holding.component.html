@@ -98,6 +98,6 @@
   [hidden]="isCollapsed"
 >
   <div class="card-body p-2">
-    <public-search-items [holdingpid]="holding.metadata.pid" [viewcode]="viewcode" (eItemsCount)="eItemsCount($event)"></public-search-items>
+    <public-search-items [holding]="holding" [viewcode]="viewcode" (eItemsCount)="eItemsCount($event)"></public-search-items>
   </div>
 </div>

@@ -37,10 +37,17 @@ describe('ItemComponent', () => {
     hits: []
   };
 
+  const holding = {
+    metadata: {
+      pid: '1',
+      holdings_type: 'regular'
+    }
+  };
+
   const recordServiceSpy = jasmine.createSpyObj('ItemService', [
-    'getItemsByHoldingsPidAndViewcode'
+    'getItemsByHoldingsAndViewcode'
   ]);
-  recordServiceSpy.getItemsByHoldingsPidAndViewcode.and.returnValue(of(records));
+  recordServiceSpy.getItemsByHoldingsAndViewcode.and.returnValue(of(records));
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -63,7 +70,7 @@ describe('ItemComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ItemsComponent);
     component = fixture.componentInstance;
-    component.holdingpid = '1';
+    component.holding = holding;
     fixture.detectChanges();
   });
 

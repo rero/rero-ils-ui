@@ -19,6 +19,7 @@ import { Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { IssueItemStatus } from '../../../../admin/src/app/class/items';
 import { QueryResponse } from '../record';
 import { HoldingsApiService } from './holdings-api.service';
 
@@ -36,7 +37,7 @@ export class ItemApiService {
    * Constructor
    * @param _recordService - RecordService
    * @param _httpClient - HttpClient
-   * @param _holdingsService - HoldingsService
+   * @param _holdingsApiService - HoldingsService
    */
   constructor(
     private _recordService: RecordService,
@@ -46,19 +47,20 @@ export class ItemApiService {
 
   /**
    * Get items by holdings pid and viewcode
-   * @param holdingsPid - string
-   * @param viewcode - string
-   * @param page - number
-   * @param itemsPerPage - number
-   * @return Observable
+   * @param holdings - any: the holding to search
+   * @param viewcode - string: the view to filter
+   * @param page - number: page number
+   * @param itemsPerPage - number: number of item to return
+   * @return Observable<QueryResponse>
    */
-  getItemsByHoldingsPidAndViewcode(
-    holdingsPid: string, viewcode: string, page: number, itemsPerPage: number = 5): Observable<QueryResponse> {
+  getItemsByHoldingsAndViewcode(
+    holdings: any, viewcode: string, page: number, itemsPerPage: number = 5): Observable<QueryResponse> {
+    const query = (holdings.metadata.holdings_type === 'serial')
+      ? `holding.pid:${holdings.metadata.pid} AND issue.status:${IssueItemStatus.RECEIVED}`
+      : `holding.pid:${holdings.metadata.pid}`;
     return this._recordService
-      .getRecords(
-        'items', `holding.pid:${holdingsPid}`, page, itemsPerPage, undefined,
-        { view: viewcode }, this._headers, 'enumeration_chronology'
-      ).pipe(map((response: Record) => response.hits));
+      .getRecords('items', query, page, itemsPerPage, undefined, { view: viewcode }, this._headers, 'enumeration_chronology')
+      .pipe(map((response: Record) => response.hits));
   }
 
   /**

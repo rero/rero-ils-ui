@@ -18,7 +18,7 @@
   <public-search-item context="holding" [item]="item" [viewcode]="viewcode" [index]="index"></public-search-item>
 </ng-container>
 <ng-container *ngIf="isLinkShowMore">
-  <button type="button" id="show-more-{{ holdingpid }}" class="btn btn-link pr-1" (click)="showMore()">
+  <button type="button" id="show-more-{{ holding.metadata.pid }}" class="btn btn-link pr-1" (click)="showMore()">
     <i class="fa fa-plus-square-o"></i> {{ 'Show more' | translate }}
   </button>
   <small>({{ hiddenItems }})</small>

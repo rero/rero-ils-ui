@@ -17,6 +17,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
 import { ItemApiService } from '../../../api/item-api.service';
 import { QueryResponse } from '../../../record';
 
@@ -26,27 +27,26 @@ import { QueryResponse } from '../../../record';
 })
 export class ItemsComponent implements OnInit {
 
-  /** Holding pid */
-  @Input() holdingpid: string;
-
+  // COMPONENT ATTRIBUTE ====================================================
+  /** Holding */
+  @Input() holding: any;
   /** View code */
   @Input() viewcode: string;
-
   /** Event items count */
   @Output() eItemsCount: EventEmitter<number> = new EventEmitter<number>();
 
   /** Items total */
   itemsTotal = 0;
+  /** Page */
+  page = 1;
+  /** Items records */
+  items = [];
 
   /** Items per page */
   private itemsPerPage = 4;
 
-  /** Page */
-  page = 1;
 
-  /** Items records */
-  items = [];
-
+  // GETTER & SETTER ========================================================
   /**
    * Is link show more
    * @return boolean
@@ -71,6 +71,7 @@ export class ItemsComponent implements OnInit {
     return this._translateService.instant(linkText, { counter: count });
   }
 
+  // CONSTRUCTOR & HOOKS ====================================================
   /**
    * Constructor
    * @param _itemApiService - ItemApiService
@@ -91,6 +92,7 @@ export class ItemsComponent implements OnInit {
     });
   }
 
+  // COMPONENT FUNCTIONS ==================================================
   /** Show more */
   showMore() {
     this.page++;
@@ -104,8 +106,12 @@ export class ItemsComponent implements OnInit {
    * @param page - number
    * @return Observable
    */
-  private _ItemsQuery(page: number) {
-    return this._itemApiService
-      .getItemsByHoldingsPidAndViewcode(this.holdingpid, this.viewcode, page, this.itemsPerPage);
+  private _ItemsQuery(page: number): Observable<QueryResponse> {
+    return this._itemApiService.getItemsByHoldingsAndViewcode(
+      this.holding,
+      this.viewcode,
+      page,
+      this.itemsPerPage
+    );
   }
 }
