@@ -53,14 +53,4 @@ export class HoldingsApiService {
     .getRecords('holdings', `document.pid:${documentPid}`, page, itemsPerPage, undefined, { view: viewcode }, this._headers)
     .pipe(map((response: Record) => response.hits));
   }
-
-  /**
-   * Get Holdings pids by document pid and viewcode
-   * @param documentPid - string
-   * @param viewcode - string
-   * @return Observable
-   */
-  getHoldingsPidsByDocumentPidAndViewcode(documentPid: string, viewcode: string): Observable<string[]> {
-    return this._httpClient.get<string[]>(`/api/holding/pids/${documentPid}?view=${viewcode}`);
-  }
 }

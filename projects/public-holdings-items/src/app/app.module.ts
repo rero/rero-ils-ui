@@ -28,8 +28,6 @@ import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-tr
 import { CoreConfigService, CoreModule, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-import { BookComponent } from 'projects/public-search/src/app/document-detail/book/book.component';
-import { HoldingsItemsComponent } from 'projects/public-search/src/app/document-detail/holdings-items/holdings-items.component';
 import { HoldingComponent } from 'projects/public-search/src/app/document-detail/holdings/holding/holding.component';
 import { HoldingsComponent } from 'projects/public-search/src/app/document-detail/holdings/holdings.component';
 import { ItemsComponent } from 'projects/public-search/src/app/document-detail/holdings/items/items.component';
@@ -48,8 +46,6 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
 
 @NgModule({
   declarations: [
-    BookComponent,
-    HoldingsItemsComponent,
     HoldingsComponent,
     ItemComponent,
     ItemsComponent,
@@ -88,8 +84,6 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
     }
   ],
   entryComponents: [
-    BookComponent,
-    HoldingsItemsComponent,
     HoldingsComponent,
     ItemComponent,
     ItemsComponent
@@ -104,9 +98,9 @@ export class AppModule {
   }
 
   ngDoBootstrap() {
-    if (!customElements.get('public-holdings-items')) {
-      const searchBar = createCustomElement(HoldingsItemsComponent, { injector: this.injector });
-      customElements.define('public-holdings-items', searchBar);
+    if (!customElements.get('public-search-holdings')) {
+      const searchBar = createCustomElement(HoldingsComponent, { injector: this.injector });
+      customElements.define('public-search-holdings', searchBar);
     }
   }
 }

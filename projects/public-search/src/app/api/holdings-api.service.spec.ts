@@ -79,10 +79,4 @@ describe('HoldingsService', () => {
       expect(result.hits[0]).toEqual(record);
     });
   });
-
-  it('should return a set of Holdings Pids', () => {
-    service.getHoldingsPidsByDocumentPidAndViewcode('1', 'global').subscribe((result: string[]) => {
-      expect(result).toEqual(holdingsPids);
-    });
-  });
 });

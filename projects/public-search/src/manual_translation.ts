@@ -14,21 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
 
-@Component({
-  selector: 'public-search-holdings-items',
-  templateUrl: './holdings-items.component.html'
-})
-export class HoldingsItemsComponent {
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 
-  /** Document type */
-  @Input() documenttype: string;
-
-  /** Document pid */
-  @Input() documentpid: string;
-
-  /** View code */
-  @Input() viewcode: string;
-
-}
+_('available');
+_('no items received');
+_('not available');
+_('request');
+_('requests');
+_('see collections and items');

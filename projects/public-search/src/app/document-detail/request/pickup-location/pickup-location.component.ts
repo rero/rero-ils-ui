@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -34,6 +34,9 @@ export class PickupLocationComponent implements OnInit {
 
   /** View code */
   @Input() viewcode: string;
+
+  /** Close request dialog event */
+  @Output() closeEvent = new EventEmitter<boolean>();
 
   /** Form */
   form = new FormGroup({});
@@ -88,6 +91,11 @@ export class PickupLocationComponent implements OnInit {
           }
         });
       });
+  }
+
+  /** Close request dialog */
+  closeDialog(): void {
+    this.closeEvent.emit(true);
   }
 
   /** Submit form */

@@ -30,6 +30,11 @@
     </ng-container>
   </ng-container>
   <ng-template #requestPickupDialog>
-    <public-search-pickup-location [item]="item" [viewcode]="viewcode" class="row pl-4"></public-search-pickup-location>
+    <public-search-pickup-location
+      [item]="item"
+      [viewcode]="viewcode"
+      (closeEvent)="closeDialog()"
+      class="row pl-4"
+    ></public-search-pickup-location>
   </ng-template>
 </ng-container>
