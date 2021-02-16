@@ -94,12 +94,6 @@ describe('ItemService', () => {
     });
   });
 
-  it('should return a set of Items by document pid', () => {
-    service.getItemsByDocumentPidAndViewcode('1', 'global', 1).subscribe((result: QueryResponse) => {
-      expect(result.hits[0]).toEqual(record);
-    });
-  });
-
   it('should return item can request', () => {
     service.canRequest('1', 'xxxxxxxx').subscribe((result: any) => {
       expect(result).toEqual(canRequest);

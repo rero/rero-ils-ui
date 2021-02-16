@@ -63,8 +63,13 @@ export class RequestComponent implements OnInit {
       this._itemApiService.canRequest(
         this.item.metadata.pid,
         this._userService.user.patron.barcode
-      ).subscribe((can: any) => this.canRequest = can );
+      ).subscribe((can: any) => this.canRequest = can);
     }
+  }
+
+  /** Close request dialog */
+  closeDialog(): void {
+    this.requestDialog = false;
   }
 
   /** show Request Dialog */

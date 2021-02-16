@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { ItemApiService } from '../../../api/item-api.service';
 import { QueryResponse } from '../../../record';
@@ -65,9 +66,9 @@ export class ItemsComponent implements OnInit {
       count = 0;
     }
     const linkText = (count > 1)
-      ? '{{ counter }} hidden items'
-      : '{{ counter }} hidden item';
-    return this._translateService.instant(linkText, { counter: count});
+      ? _('{{ counter }} hidden items')
+      : _('{{ counter }} hidden item');
+    return this._translateService.instant(linkText, { counter: count });
   }
 
   /**

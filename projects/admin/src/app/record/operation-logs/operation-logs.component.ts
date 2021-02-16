@@ -15,10 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnInit } from '@angular/core';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { Record } from '@rero/ng-core';
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { OperationLogsApiService } from '../../api/operation-logs-api.service';
 import { OperationLogsService } from '../../service/operation-logs.service';
 
@@ -117,8 +118,8 @@ export class OperationLogsComponent implements OnInit {
     let count = this.recordTotals - (this.page * this.itemsPerPage);
     if (count < 0) { count = 0; }
     const linkText = (count > 1)
-      ? '{{ counter }} hidden operation logs'
-      : '{{ counter }} hidden operation log';
+      ? _('{{ counter }} hidden operation logs')
+      : _('{{ counter }} hidden operation log');
     return this._translateService.instant(linkText, { counter: count });
   }
 

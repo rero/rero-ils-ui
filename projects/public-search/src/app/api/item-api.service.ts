@@ -18,7 +18,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { QueryResponse } from '../record';
 import { HoldingsApiService } from './holdings-api.service';
 
@@ -59,40 +59,6 @@ export class ItemApiService {
         'items', `holding.pid:${holdingsPid}`, page, itemsPerPage, undefined,
         { view: viewcode }, this._headers, 'enumeration_chronology'
       ).pipe(map((response: Record) => response.hits));
-  }
-
-  /**
-   * Get items by holdings pids and viewcode
-   * @param documentPid - string
-   * @param viewcode - string
-   * @param page - number
-   * @param itemsPerPage - number
-   * @return Observable
-   */
-  getItemsByDocumentPidAndViewcode(
-    documentPid: string, viewcode: string, page: number, itemsPerPage: number = 5): Observable<QueryResponse> {
-    return this._holdingsApiService.getHoldingsPidsByDocumentPidAndViewcode(documentPid, viewcode)
-    .pipe(
-      switchMap((holdingPids: string[]) => {
-        return this.getItemsByHoldingsPids(holdingPids, viewcode, page, itemsPerPage);
-      })
-    );
-  }
-
-  /**
-   * Get Items by holdings pids
-   * @param holdingsPids - array of string
-   * @param viewcode - string
-   * @param page - number
-   * @param itemsPerPage -number
-   * @return Observable
-   */
-  getItemsByHoldingsPids(
-    holdingsPids: string[], viewcode: string, page: number, itemsPerPage: number = 5): Observable<QueryResponse> {
-    const query = 'holding.pid:' + holdingsPids.join(' OR holding.pid:');
-    return this._recordService
-      .getRecords('items', query, page, itemsPerPage, undefined, { view: viewcode }, this._headers, 'library')
-      .pipe(map((response: Record) => response.hits));
   }
 
   /**

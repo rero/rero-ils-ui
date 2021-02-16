@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnInit } from '@angular/core';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { HoldingsApiService } from '../../api/holdings-api.service';
@@ -63,9 +64,9 @@ export class HoldingsComponent implements OnInit {
       count = 0;
     }
     const linkText = (count > 1)
-      ? '{{ counter }} hidden holdings'
-      : '{{ counter }} hidden holding';
-    return this._translateService.instant(linkText, { counter: count});
+      ? _('{{ counter }} hidden holdings')
+      : _('{{ counter }} hidden holding');
+    return this._translateService.instant(linkText, { counter: count });
   }
 
   /**
