@@ -26,40 +26,46 @@ import { OrganisationService } from '../../../service/organisation.service';
 
 export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
 
+  // COMPONENT ATTIBUTES ======================================================
   /** The observable resolving record data */
   record$: Observable<any>;
-
   /** The resource type */
   type: string;
-
   /** The record */
   record: any;
-
   /** Reminders */
   reminders = [];
-
   /** Overdues */
   overdues = [];
-
   /** The settings to display, patron type pid as a key */
   settings = new Map<string, string[]>();
+  /** The list of item types concerned by the circulation policy */
+  itemTypes = new Set();
 
   /** The observer to the record observable */
   private _recordObs = null;
 
-  /** The list of item types concerned by the circulation policy */
-  itemTypes = new Set();
-
+  // GETTER & SETTER ==========================================================
   /** Organisation currency */
-  get currency() {
+  get org_currency() {
     return this._organisationService.organisation.default_currency;
   }
 
+  /** checkout is allowed ? */
+  get checkoutIsAllowed() {
+    return this.record && this.record.metadata.checkout_duration > 0;
+  }
+
+
+
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param _organisationService - OrganisationService
    */
-  constructor(private _organisationService: OrganisationService) {}
+  constructor(
+    private _organisationService: OrganisationService
+  ) {}
 
   /** On init hook */
   ngOnInit() {
@@ -80,16 +86,20 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
           }
         });
 
-        // reminders order
+        // sort reminders to ensure a better display
         this.reminders = record.metadata.reminders
-          .sort((a: any, b: any) => (a.type > b.type)
-            ? 1
-            : (a.days_delay > b.days_delay) ? 1 : -1
+          .sort((a: any, b: any) => {
+            return (a.type > b.type)
+              ? 1
+              : a.days_delay - b.days_delay;
+            }
           );
 
-        // Overdue fees
-        this.overdues = record.metadata.overdue_fees.intervals
-          .sort((a: any, b: any) => (a.from > b.from) ? 1 : -1);
+        // sort incremental overdue intervals
+        if (record.metadata.hasOwnProperty('overdue_fees') && record.metadata.overdue_fees.hasOwnProperty('intervals')) {
+          this.overdues = record.metadata.overdue_fees.intervals
+            .sort((a: any, b: any) => a.from - b.from);
+        }
       }
     });
   }

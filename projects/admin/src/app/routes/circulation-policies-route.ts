@@ -155,7 +155,7 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
         f.templateOptions.options = this._routeToolService.httpClient
-          .get('/notifications/templates/list')
+          .get('/api/notifications/templates/list')
           .pipe(
             map((response: any) => {
               return response.templates.map((tpl: any) => {
