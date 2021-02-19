@@ -84,8 +84,8 @@
           [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', patron.patron.barcode, 'fees']">
           {{ 'Fees' | translate }}
-          <span *ngIf="transactionsTotalAmount > 0" class="badge badge-warning font-weight-normal">
-            {{ transactionsTotalAmount | currency: organisation.default_currency }}
+          <span *ngIf="feesTotalAmount > 0" class="badge badge-warning font-weight-normal">
+            {{ feesTotalAmount | currency: organisation.default_currency }}
           </span>
         </a>
       </li>

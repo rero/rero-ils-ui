@@ -46,7 +46,7 @@ export class ItemComponent implements OnInit {
   loan: Loan;
   /** Is collapsed */
   isCollapsed = true;
-  /** Total amount of fee */
+  /** Fees related to the item/loan */
   totalAmountOfFee = 0;
   /** Notifications related to the current loan */
   notifications$: Observable<any>;
@@ -70,10 +70,10 @@ export class ItemComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ====================================================
   /**
    * Constructor
-   * @param _recordService: Record Service
-   * @param _organisationService: Organisation Service
-   * @param _patronTransactionService: Patron transaction Service
-   * @param _itemService: Item Service
+   * @param _recordService - Record Service
+   * @param _organisationService - Organisation Service
+   * @param _patronTransactionService - Patron transaction Service
+   * @param _itemService - Item Service
    */
   constructor(
     private _recordService: RecordService,
@@ -96,14 +96,8 @@ export class ItemComponent implements OnInit {
         }
       );
       this.notifications$ = this._recordService.getRecords(
-        'notifications',
-        `loan.pid:${loanPid}`,
-        1,
-        RecordService.MAX_REST_RESULTS_SIZE,
-        [],
-        {},
-        null,
-        'mostrecent'
+        'notifications', `loan.pid:${loanPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE,
+        [], {}, null, 'mostrecent'
       ).pipe(
         map((results: any) => results.hits.hits)
       );
