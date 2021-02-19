@@ -18,11 +18,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
+import { IssueItemStatus } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
 import { HoldingsService, PredictionIssue } from 'projects/admin/src/app/service/holdings.service';
 import { OperationLogsService } from 'projects/admin/src/app/service/operation-logs.service';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
-import { IssueItemStatus } from '../../../../classes/items';
 
 
 @Component({

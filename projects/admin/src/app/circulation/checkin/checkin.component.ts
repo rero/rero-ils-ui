@@ -19,10 +19,11 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
+import { ItemStatus } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, map } from 'rxjs/operators';
 import { User, UserService } from '@rero/shared';
-import { Item, ItemAction, ItemNoteType, ItemStatus } from '../../classes/items';
+import { Item, ItemAction, ItemNoteType } from '../../classes/items';
 import { ItemsService } from '../../service/items.service';
 import { PatronService } from '../../service/patron.service';
 
