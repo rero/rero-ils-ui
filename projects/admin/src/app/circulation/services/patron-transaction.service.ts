@@ -19,7 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { ToastrService } from 'ngx-toastr';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserService } from '@rero/shared';
 import { RouteToolService } from '../../routes/route-tool.service';
@@ -37,6 +37,8 @@ export class PatronTransactionService {
 
   /** subject containing current loaded PatronTransactions */
   patronTransactionsSubject$: BehaviorSubject<Array<PatronTransaction>> = new BehaviorSubject([]);
+  /** subject emitting accounting transaction about patron fees */
+  patronFeesOperationSubject$: Subject<number> = new Subject();
 
   constructor(
     private _recordService: RecordService,
@@ -192,6 +194,7 @@ export class PatronTransactionService {
     record.type = PatronTransactionEventType.PAYMENT;
     record.subtype = paymentMethod;
     record.amount = amount;
+    this.patronFeesOperationSubject$.next(0 - amount);
     this._createTransactionEvent(record, transaction.patron.pid);
   }
 
@@ -217,6 +220,7 @@ export class PatronTransactionService {
     record.type = PatronTransactionEventType.CANCEL;
     record.amount = amount;
     record.note = reason;
+    this.patronFeesOperationSubject$.next(0 - amount);
     this._createTransactionEvent(record, transaction.patron.pid);
   }
 
