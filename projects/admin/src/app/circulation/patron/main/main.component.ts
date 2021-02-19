@@ -82,13 +82,13 @@ export class MainComponent implements OnInit, OnDestroy {
 
   /** the current logged patron */
   patron: User = undefined;
-  /** the total amount of all 'open' patron transactions for the current patron */
-  transactionsTotalAmount = 0;
+  /** the total amount of all fees related to the current patron */
+  feesTotalAmount = 0;
 
-  /** Subscription to 'open' patron transactions */
-  private _patronTransactionSubscription$: Subscription;
-  /** Subsription to current patron */
+  /** Subscription to current patron */
   private _patronSubscription$: Subscription;
+  /** Subscription to the fees accounting operation subject (allowing to know if some fees are paid, deleted, ...) */
+  private _patronFeesOperationSubscription$: Subscription;
 
 
   // GETTER & SETTER ====================================================
@@ -130,17 +130,19 @@ export class MainComponent implements OnInit, OnDestroy {
         this._unregisterShortcuts();
         this._registerShortcuts();
         this._patronService.getCirculationInformations(patron.pid).subscribe((data) => {
+          this.feesTotalAmount = data.fees.engaged + data.fees.preview;
           this._parseStatistics(data.statistics || {});
           for (const message of (data.messages || [])) {
             this.patron.addCirculationMessage(message as any);
           }
+          // subscribe to fees accounting operations for this patron
+          this._patronFeesOperationSubscription$ = this._patronTransactionService.patronFeesOperationSubject$.subscribe(
+            (amount) => {
+              const total = this.feesTotalAmount + amount;
+              this.feesTotalAmount = (total > 0) ? total : 0;
+            }
+          );
         });
-        this._patronTransactionSubscription$ = this._patronTransactionService.patronTransactionsSubject$.subscribe(
-          (transactions) => {
-            this.transactionsTotalAmount = this._patronTransactionService.computeTotalTransactionsAmount(transactions);
-          }
-        );
-        this._patronTransactionService.emitPatronTransactionByPatron(patron.pid, undefined, 'open');
       }
     });
   }
@@ -148,8 +150,8 @@ export class MainComponent implements OnInit, OnDestroy {
   /** OnDestroy hook */
   ngOnDestroy() {
     this._unregisterShortcuts();
-    if (this._patronTransactionSubscription$) {
-      this._patronTransactionSubscription$.unsubscribe();
+    if (this._patronFeesOperationSubscription$) {
+      this._patronFeesOperationSubscription$.unsubscribe();
     }
     if (this._patronSubscription$) {
       this._patronSubscription$.unsubscribe();

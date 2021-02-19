@@ -31,9 +31,7 @@ import { Loan, LoanOverduePreview, LoanState } from '../classes/loans';
 export class PatronService {
 
   /** Current patron */
-  private _currentPatron: BehaviorSubject<User> = new BehaviorSubject(
-    undefined
-  );
+  private _currentPatron: BehaviorSubject<User> = new BehaviorSubject(undefined);
 
   /**
    * Constructor
