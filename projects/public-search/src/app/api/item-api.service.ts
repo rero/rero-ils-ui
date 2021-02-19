@@ -17,9 +17,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
+import { IssueItemStatus } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { IssueItemStatus } from '../../../../admin/src/app/class/items';
 import { QueryResponse } from '../record';
 import { HoldingsApiService } from './holdings-api.service';
 

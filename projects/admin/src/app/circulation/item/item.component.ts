@@ -17,9 +17,10 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
+import { ItemStatus } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Item, ItemAction, ItemNote, ItemNoteType, ItemStatus} from 'projects/admin/src/app/classes/items';
+import { Item, ItemAction, ItemNote, ItemNoteType} from 'projects/admin/src/app/classes/items';
 import { Loan, LoanState } from 'projects/admin/src/app/classes/loans';
 import { ItemsService } from 'projects/admin/src/app/service/items.service';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';

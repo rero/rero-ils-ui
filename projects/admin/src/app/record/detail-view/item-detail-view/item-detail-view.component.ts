@@ -17,9 +17,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { IssueItemStatus } from '@rero/shared';
 import moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
-import { IssueItemStatus, Item, ItemNote } from '../../../classes/items';
+import { Item, ItemNote } from '../../../classes/items';
 import { HoldingsService } from '../../../service/holdings.service';
 import { OperationLogsService } from '../../../service/operation-logs.service';
 

@@ -20,20 +20,11 @@
 
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { Moment } from 'moment';
-import { User } from '@rero/shared';
+import { ItemStatus, User } from '@rero/shared';
 import { Loan } from './loans'
 
 export function _(str) {
   return marker(str);
-}
-
-export enum ItemStatus {
-  ON_SHELF = _('on_shelf'),
-  AT_DESK = _('at_desk'),
-  ON_LOAN = _('on_loan'),
-  IN_TRANSIT = _('in_transit'),
-  EXCLUDED = _('excluded'),
-  MISSING = _('missing')
 }
 
 export enum ItemNoteType {
@@ -46,13 +37,6 @@ export enum ItemNoteType {
   CONDITION = _('condition_note'),
   PATRIMONIAL = _('patrimonial_note'),
   ACQUISITION = _('acquisition_note'),
-}
-
-export enum IssueItemStatus {
-  RECEIVED = _('received'),
-  CLAIMED = _('claimed'),
-  DELETED = _('deleted'),
-  LATE = _('late')
 }
 
 export interface Organisation {
