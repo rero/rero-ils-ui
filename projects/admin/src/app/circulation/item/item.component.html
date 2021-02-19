@@ -76,7 +76,6 @@
     <ul class="list-unstyled mb-0">
       <ng-container [ngSwitch]="item.status">
         <li name="status" *ngSwitchCase="'on_loan'" >
-          [{{ item.loan.pid }}]
           {{ item.status | translate }}
           <i class="fa fa-arrow-right" aria-hidden="true"></i>
           <span [class.text-warning]="loan && loan.expired">
