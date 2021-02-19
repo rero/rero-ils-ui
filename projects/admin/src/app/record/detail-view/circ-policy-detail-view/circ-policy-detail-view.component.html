@@ -20,81 +20,73 @@
   <article>
     <!-- DETAILS -->
     <section class="m-2 p-2">
-      <!-- NAME -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Name</dt>
-        <dd id="cipo-name" class="col-sm-7 col-md-8 mb-0">
-          {{ data.name }}
+      <dl class="row">
+        <dt class="col-3 label-title" translate>Name</dt>
+        <dd id="cipo-name" class="col-9">{{ data.name }}</dd>
+        <ng-container *ngIf="data.description">
+          <dt class="col-3 label-title" translate>Description</dt>
+          <dd id="cipo-description" class="col-9">{{ data.description }}</dd>
+        </ng-container>
+        <dt class="col-3 label-title" translate>Level</dt>
+        <dd id="cipo-level" class="col-9">
+          <ng-container *ngIf="data.policy_library_level; else organisationLevel">
+            {{ 'Library' | translate }}
+            <ul *ngFor="let lib of data.libraries" class="pl-4">
+              <li>
+                <i class="fa fa-university pr-2"></i>
+                {{ lib.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+              </li>
+            </ul>
+          </ng-container>
+          <ng-template #organisationLevel>{{ 'Organisation' | translate }}</ng-template>
         </dd>
-      </dl>
-      <!-- DESCRIPTION -->
-      <dl *ngIf="data.description" class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Description</dt>
-        <dd id="cipo-description" class="col-sm-7 col-md-8 mb-0">
-          {{ data.description }}
-        </dd>
-      </dl>
-      <!-- LEVEL -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Level</dt>
-        <ng-container *ngIf="data.policy_library_level; then thenBlock else elseBlock"></ng-container>
-        <ng-template #thenBlock>
-          <dd id="cipo-level" class="col-sm-7 col-md-8 mb-0" translate>
-            Library
-          </dd>
-        </ng-template>
-        <ng-template #elseBlock>
-          <dd id="cipo-level" class="col-sm-7 col-md-8 mb-0" translate>
-            Organisation
-          </dd>
-        </ng-template>
       </dl>
     </section>
+
     <!-- CIRCULATION SETTINGS -->
     <section class="card mt-4">
-      <div class="card-header"x>
-        <b translate>Circulation settings</b>
-      </div>
+      <div class="card-header"><h5 class="mb-0" translate>Circulation settings</h5></div>
       <div class="card-body">
-        <!-- ALLOW CHECKOUT -->
         <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Allow checkout</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            <ng-container *ngIf="data.allow_checkout; then thenCheckoutBlock else elseCheckoutBlock">
-            </ng-container>
-            <ng-template #thenCheckoutBlock>
+          <!-- IS DEFAULT -->
+          <dt class="col-3 label-title" translate>Is default</dt>
+          <dd class="col-9">
+            <ng-container *ngIf="data.is_default; then thenDefaultBlock else elseDefaultBlock"></ng-container>
+            <ng-template #thenDefaultBlock>
+              <i id="cipo-is-default" class="fa fa-check  text-success" aria-hidden="true"></i>
+            </ng-template>
+            <ng-template #elseDefaultBlock>
+              <i id="cipo-is-default" class="fa fa-times text-danger" aria-hidden="true"></i>
+            </ng-template>
+          </dd>
+          <!-- CHECKOUT SETTINGS-->
+          <dt class="col-3 mb-0 label-title" translate>Allow checkout</dt>
+          <ng-container *ngIf="checkoutIsAllowed; else elseCheckoutBlock">
+            <dd class="col-1 mb-0">
               <i id="cipo-allow-checkout" class="fa fa-check text-success" aria-hidden="true"></i>
-            </ng-template>
-            <ng-template #elseCheckoutBlock>
+            </dd>
+            <dt class="col-3 label-title" translate>Checkout duration</dt>
+            <dd id="cipo-checkout-duration" class="col-3 mb-0">
+              {{ data.checkout_duration }}
+              {{ data.checkout_duration | i18nPlural: {'=1': 'day', 'other': 'days'} | translate }}
+            </dd>
+            <dt class="col-3 offset-4 label-title" translate>Number of renewals</dt>
+            <dd id="cipo-cnumber-renewals" class="col-5 mb-0">
+              {{ data.number_renewals }}
+            </dd>
+            <dt class="col-3 offset-4 label-title" translate>Renewal duration</dt>
+            <dd id="cipo-renewal-duration" class="col-5 mb-0">
+              {{ data.renewal_duration }}
+              {{ data.renewal_duration | i18nPlural: {'=1': 'day', 'other': 'days'} | translate }}
+            </dd>
+          </ng-container>
+          <ng-template #elseCheckoutBlock>
+            <dd class="col-9">
               <i id="cipo-allow-checkout" class="fa fa-times text-danger" aria-hidden="true"></i>
-            </ng-template>
-          </dd>
-        </dl>
-        <!-- CHECKOUT DURATION -->
-        <dl class="row mb-0" *ngIf="data.checkout_duration || data.checkout_duration >= 0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Checkout duration</dt>
-          <dd id="cipo-checkout-duration" class="col-sm-7 col-md-8 mb-0">
-            {{ data.checkout_duration }}
-          </dd>
-        </dl>
-        <!-- NUMBER OF RENEWALS -->
-        <dl class="row mb-0" *ngIf="data.number_renewals">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Number of renewals</dt>
-          <dd id="cipo-cnumber-renewals" class="col-sm-7 col-md-8 mb-0">
-            {{ data.number_renewals }}
-          </dd>
-        </dl>
-        <!-- RENEWAL DURATION -->
-        <dl class="row mb-0" *ngIf="data.renewal_duration">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Renewal duration</dt>
-          <dd id="cipo-renewal-duration" class="col-sm-7 col-md-8 mb-0">
-            {{ data.renewal_duration }}
-          </dd>
-        </dl>
-        <!-- ALLOW REQUESTS -->
-        <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Allow requests</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
+            </dd>
+          </ng-template>
+          <dt class="col-3 label-title" translate>Allow requests</dt>
+          <dd class="col-9">
             <ng-container *ngIf="data.allow_requests; then thenRequestBlock else elseRequestBlock"></ng-container>
             <ng-template #thenRequestBlock>
               <i id="cipo-allow-request" class="fa fa-check  text-success" aria-hidden="true"></i>
@@ -104,78 +96,82 @@
             </ng-template>
           </dd>
         </dl>
-        <!-- IS DEFAULT -->
-        <dl class="row mb-0">
-          <dt
-          class="col-sm-3 offset-sm-2 offset-md-0 label-title"
-          title="{{ 'This circulation policy is applied by default, if no other circulation policy is defined ?' | translate }}"
-          translate>Is default</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            <ng-container *ngIf="data.is_default; then thenDefaultBlock else elseDefaultBlock"></ng-container>
-            <ng-template #thenDefaultBlock>
-              <i id="cipo-is-default" class="fa fa-check  text-success" aria-hidden="true"></i>
-            </ng-template>
-            <ng-template #elseDefaultBlock>
-              <i id="cipo-is-default" class="fa fa-times text-danger" aria-hidden="true"></i>
-            </ng-template>
-          </dd>
-        </dl>
       </div>
     </section>
 
     <!-- REMINDERS -->
     <section class="card mt-2" *ngIf="data.reminders">
-      <div class="card-header">
-        <b translate>Reminders</b>
-      </div>
+      <div class="card-header"><h5 class="mb-0" translate>Reminders</h5></div>
       <div class="card-body">
-        <div class="row col">
-          <div class="col-lg-3 font-weight-bold pl-0" translate>Type</div>
-          <div class="col-lg-3 font-weight-bold" translate>Days Delay</div>
-          <div class="col-lg-3 font-weight-bold" translate>Communication channel</div>
-          <div class="col-lg-3 font-weight-bold" translate>Amount</div>
-          <ng-container *ngFor="let reminder of reminders">
-            <div class="col-lg-3 pl-0">{{ reminder.type | translate }}</div>
-            <div class="col-lg-3">{{ reminder.days_delay }}</div>
-            <div class="col-lg-3">{{ reminder.communication_channel | translate }}</div>
-            <div class="col-lg-3" *ngIf="reminder.fee_amount; else noAmount">
-              {{ reminder.fee_amount | currency:currency:true }}
-            </div>
-          </ng-container>
-          <ng-template #noAmount>
-            <div class="col-lg-3">-</div>
-          </ng-template>
-        </div>
+        <table class="table table-hover table-sm">
+          <thead class="thead-light">
+            <th scope="col">#</th>
+            <th scope="col" translate>Type</th>
+            <th scope="col" translate>Days Delay</th>
+            <th scope="col" translate>Communication channel</th>
+            <th scope="col" translate>Amount</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let reminder of reminders; let idx = index">
+              <th scope="row">{{ idx + 1 }}</th>
+              <td>{{ reminder.type | translate }}</td>
+              <td>
+                <i class="fa" [ngClass]="{
+                  'fa-calendar-minus-o': reminder.type == 'due_soon',
+                  'fa-calendar-plus-o': reminder.type == 'overdue'
+                }"></i>
+                {{ reminder.days_delay }}
+              </td>
+              <td>{{ reminder.communication_channel | translate }}</td>
+              <td>
+                <ng-container *ngIf="reminder.fee_amount; else noAmount">
+                  {{ reminder.fee_amount | currency: org_currency:true }}
+                </ng-container>
+                <ng-template #noAmount>&mdash;</ng-template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
 
     <!-- OVERDUE FEES -->
     <section class="card mt-2" *ngIf="data.overdue_fees">
-      <div class="card-header">
-        <b translate>Overdue fees</b>
-      </div>
+      <div class="card-header"><h5 class="mb-0" translate>Overdue fees</h5></div>
       <div class="card-body">
-        <div class="row col">
-          <div class="col-lg-3 font-weight-bold pl-0" translate>Interval of days</div>
-          <div class="col-lg-9 font-weight-bold" translate>Amount</div>
-          <ng-container *ngFor="let overdue of overdues">
-            <div class="col-lg-3 pl-0">{{ overdue.from }} - {{ overdue.to }}</div>
-            <div class="col-lg-9">{{ overdue.fee_amount | currency:currency:true }} / {{ 'day' | translate }}</div>
-          </ng-container>
-        </div>
+        <table class="table table-hover table-sm">
+          <thead class="thead-light">
+            <th scope="col" translate>Interval of days</th>
+            <th scope="col" translate>Amount/day</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let interval of overdues">
+              <td scope="row">
+                {{ interval.from }}
+                <i class="fa fa-long-arrow-right px-4"></i>
+                <ng-container *ngIf="interval.to; else noLimit">{{ interval.to }}</ng-container>
+                <ng-template #noLimit><span class="text-muted" translate>No limit</span></ng-template>
+              </td>
+              <td>
+                {{ interval.fee_amount | currency: org_currency:true }} / {{ 'day' | translate }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
         <div class="row col mt-3" *ngIf="data.overdue_fees.maximum_total_amount">
           <div class="col-lg-3 font-weight-bold pl-0" translate>Maximun total amount</div>
           <div class="col-lg-9">
-            {{ data.overdue_fees.maximum_total_amount | currency:currency:true }}
+            {{ data.overdue_fees.maximum_total_amount | currency: org_currency:true }}
           </div>
         </div>
       </div>
     </section>
 
     <!-- APPLICATION -->
-    <section class="m-2 p-2" *ngIf="record.metadata.settings">
-      <h3 translate>Application</h3>
-      <ng-container class="table-responsive">
+
+    <section class="card mt-2 " *ngIf="record.metadata.settings">
+      <div class="card-header"><h6 class="mb-0" translate>Application</h6></div>
+      <div class="card-body table-responsive">
         <table class="table table-striped table-sm">
           <thead>
             <tr>
@@ -203,7 +199,7 @@
             </tr>
           </tbody>
         </table>
-      </ng-container>
+      </div>
     </section>
   </article>
 </ng-container>
