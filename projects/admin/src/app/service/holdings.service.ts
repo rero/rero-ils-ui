@@ -17,9 +17,9 @@
 
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { IssueItemStatus } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { IssueItemStatus } from '../classes/items';
 
 /**
  * Prediction issue structure

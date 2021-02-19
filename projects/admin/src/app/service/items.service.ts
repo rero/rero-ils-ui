@@ -20,9 +20,8 @@ import { Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { UserService } from '@rero/shared';
-import { Item, ItemAction, ItemNoteType, ItemStatus } from '../classes/items';
-import { Loan } from '../classes/loans';
+import { ItemStatus, UserService } from '@rero/shared';
+import { Item, ItemAction, ItemNoteType } from '../classes/items';
 
 @Injectable({
   providedIn: 'root'

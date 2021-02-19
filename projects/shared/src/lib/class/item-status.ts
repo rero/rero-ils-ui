@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2021 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,16 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
-import { IssueItemStatus } from '@rero/shared';
-import { DefaultHoldingItemComponent } from '../default-holding-item/default-holding-item.component';
 
-@Component({
-  selector: 'admin-serial-holding-item',
-  templateUrl: './serial-holding-item.component.html'
-})
-export class SerialHoldingItemComponent extends DefaultHoldingItemComponent {
+import { _ } from './user';
 
-  /** reference to ItemIssueStatus */
-  itemIssueStatus = IssueItemStatus;
+export enum ItemStatus {
+  ON_SHELF = _('on_shelf'),
+  AT_DESK = _('at_desk'),
+  ON_LOAN = _('on_loan'),
+  IN_TRANSIT = _('in_transit'),
+  EXCLUDED = _('excluded'),
+  MISSING = _('missing')
+}
+
+export enum IssueItemStatus {
+  RECEIVED = _('received'),
+  CLAIMED = _('claimed'),
+  DELETED = _('deleted'),
+  LATE = _('late')
 }
