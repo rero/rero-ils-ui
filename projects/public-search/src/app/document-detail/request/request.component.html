@@ -21,6 +21,7 @@
         <dt class="my-2 col-lg-2 col-sm-3">&nbsp;</dt>
         <dd class="my-2 col-lg-9 col-sm-8">
           <button
+            id="item-{{ item.metadata.pid }}-request-button"
             class="btn btn-sm btn-primary"
             (click)="showRequestDialog()"
             translate

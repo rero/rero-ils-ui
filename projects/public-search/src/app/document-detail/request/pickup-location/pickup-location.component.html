@@ -21,12 +21,13 @@
       <form class="my-2" [formGroup]="form" (ngSubmit)="submit()">
         <formly-form [model]="model" [fields]="fields" [form]="form"></formly-form>
         <button
+          id="pickup-location-{{ item.metadata.pid }}-cancel-button"
           *ngIf="!requestInProgress"
           class="btn btn-sm btn-outline-secondary mr-2"
           (click)="closeDialog()"
           translate
         >Cancel</button>
-        <button type="submit" class="btn btn-sm btn-primary" [disabled]="!form.valid || requestInProgress">
+        <button id="pickup-location-{{ item.metadata.pid }}-confirm-button" type="submit" class="btn btn-sm btn-primary" [disabled]="!form.valid || requestInProgress">
           <ng-container *ngIf="!requestInProgress; else inProcess">
             {{ 'Confirm your request' | translate }}
           </ng-container>
