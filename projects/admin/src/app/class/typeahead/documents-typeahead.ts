@@ -119,9 +119,8 @@ export class DocumentsTypeahead implements ITypeahead {
       truncate = true;
       text = this._mainTitlePipe.transform(metadata.title).substr(0, this.maxLengthSuggestion);
     }
-    text = text.replace(new RegExp(escapeRegExp(query), 'gi'), `<b>${query}</b>`);
     if (truncate) {
-      text = text + ' ...';
+      text = text + '…';
     }
     return {
       label: text,

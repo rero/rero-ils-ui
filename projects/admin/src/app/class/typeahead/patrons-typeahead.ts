@@ -106,12 +106,8 @@ export class PatronsTypeahead implements ITypeahead {
    * @return Metadata - the label, $ref.
    */
   private _getPatronsRef(metadata: any, query: string): SuggestionMetadata {
-    let label = this._patronService.getFormattedName(metadata);
-    if (metadata.hasOwnProperty('birth_date')) {
-      label += `<small class="ml-2 font-weight-bold">[${metadata.birth_date}]</small>`;
-    }
     return {
-      label,
+      label: this._patronService.getFormattedName(metadata),
       value: this._apiService.getRefEndpoint('patrons', metadata.pid)
     };
   }
