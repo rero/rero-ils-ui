@@ -17,7 +17,7 @@
  */
 
 import { formatDate } from '@angular/common';
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
@@ -27,13 +27,14 @@ import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Library } from 'projects/admin/src/app/classes/library';
 import { DateValidators } from 'projects/admin/src/app/utils/validators';
+import { Subscription } from 'rxjs';
 
 
 @Component({
   selector: 'admin-fixed-date-form',
   templateUrl: './fixed-date-form.component.html'
 })
-export class FixedDateFormComponent implements OnInit {
+export class FixedDateFormComponent implements OnInit, OnDestroy {
 
   /** the date format to used */
   static DATE_FORMAT = 'YYYY-MM-DD';
@@ -55,10 +56,14 @@ export class FixedDateFormComponent implements OnInit {
     containerClass: 'theme-dark-blue',
     dateInputFormat: FixedDateFormComponent.DATE_FORMAT,
     minDate: moment().toDate(),
-    daysDisabled: []
+    daysDisabled: [],
+    datesDisabled: []
   };
   /** fixed date emitter */
   onSubmit = new EventEmitter();
+
+  /** component subscriptions */
+  private _subscription = new Subscription();
 
 
   // CONSTRUCTOR & HOOKS =====================================
@@ -89,17 +94,18 @@ export class FixedDateFormComponent implements OnInit {
         (data: any) => {
           const library = new Library(data.metadata);
           this.bsConfig.daysDisabled = library.closedDays;
-          // TODO :: Try to manage the exception dates
-          //   The problem is the exception dates generation is not perfect (repeatability is not managed) and take a long time.
-          //   If user has already clicked on the input, the datePicker widget is used without this configuration (it's pity)
-          //   --> but if user choose an exception closed date, then the backend will compute the best opening day and return this value ;
-          //       if asked end_date is different from API response, the `LoanComponent` will display a toastr message to inform the staff
-          //       member.
-          // this.bsConfig.datesDisabled(library.exceptionClosedDates);
         }
       );
+      this._subscription.add(this._userService.user.currentLibraryClosedDates$.subscribe(
+        data => this.bsConfig.datesDisabled = data
+      ));
     }
     this._initValueChange();
+  }
+
+  /** OnDestroy hook */
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
   }
 
   // FUNCTIONS =================================================
