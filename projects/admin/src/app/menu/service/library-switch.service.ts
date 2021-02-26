@@ -19,6 +19,7 @@ import { Injectable } from '@angular/core';
 import { LocalStorageService } from '@rero/ng-core';
 import { User, UserService } from '@rero/shared';
 import { Subject } from 'rxjs';
+import { LibraryApiService } from '../../api/library-api.service';
 
 export class LibrarySwitchError extends Error {
   constructor(message: string) {
@@ -43,10 +44,12 @@ export class LibrarySwitchService {
   /**
    * Constructor
    * @param _userService - UserService
+   * @param _libraryApiService - LibraryApiService
    * @param _localStorageService - LocalStorageService
    */
   constructor(
     private _userService: UserService,
+    private _libraryApiService: LibraryApiService,
     private _localStorageService: LocalStorageService,
   ) { }
 
@@ -70,6 +73,9 @@ export class LibrarySwitchService {
     }
     // Update current library on user
     user.setCurrentLibrary(libraryPid);
+    this._libraryApiService.getClosedDates(libraryPid).subscribe(
+      (dates) => user.currentLibraryClosedDates = dates
+    );
     // Storage user to the current session
     this._localStorageService.set(User.STORAGE_KEY, user);
     // Emit a new event with user

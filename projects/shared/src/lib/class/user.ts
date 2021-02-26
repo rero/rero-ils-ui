@@ -16,6 +16,8 @@
  */
 
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import moment from 'moment';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export function _(str: any) {
   return marker(str);
@@ -76,13 +78,23 @@ export class User {
   circulation_informations: {
     messages: Array<{type: string, content: string}>,
     statistics: any;
-  }
+  };
+  currentLibraryClosedDates$: BehaviorSubject<Array<moment>> = new BehaviorSubject([]);
+  private _currentLibraryClosedDates: Array<moment> = [];
 
   /** Locale storage name key */
   static readonly STORAGE_KEY = 'user';
-
   /** Logged user API url */
   static readonly LOGGED_URL = '/patrons/logged_user?resolve';
+
+  /** Get closed dates of the user current library */
+  get currentLibraryClosedDates(): Array<moment> {
+    return this._currentLibraryClosedDates;
+  }
+  set currentLibraryClosedDates(closedDates: Array<moment>) {
+    this._currentLibraryClosedDates = closedDates;
+    this.currentLibraryClosedDates$.next(closedDates);
+  }
 
   /**
    * Is this user a librarian?
@@ -186,6 +198,7 @@ export class User {
    * Set current library pid
    * @param pid - string
    */
+
   setCurrentLibrary(pid: string) {
     this.currentLibrary = pid;
     return this;
