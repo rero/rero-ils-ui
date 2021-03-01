@@ -35,17 +35,20 @@ export class DateValidators {
       if (control.value == null) {
         return null;
       }
-      const controlDate = moment(control.value, DateValidators.FORMAT_DATE);
-      if (!controlDate.isValid()) {
+      const controlMoment = moment(control.value, DateValidators.FORMAT_DATE);
+      if (!controlMoment.isValid()) {
         return null;
       }
-      const validationDate = moment(minDate, DateValidators.FORMAT_DATE);
-      return controlDate.isAfter(validationDate) ? null : {
-        'minimum-date': {
-          'date-minimum': validationDate.format(DateValidators.FORMAT_DATE),
-          actual: controlDate.format(DateValidators.FORMAT_DATE)
-        }
-      };
+      const validationDate = minDate.setHours(0, 0, 0, 0);
+      const controlDate = controlMoment.toDate().setHours(0, 0, 0, 0);
+      return controlDate >= validationDate
+        ? null
+        : {
+          'minimum-date': {
+            'date-minimum': moment(validationDate).format(DateValidators.FORMAT_DATE),
+            actual: controlMoment.format(DateValidators.FORMAT_DATE)
+          }
+        };
     };
   }
 }

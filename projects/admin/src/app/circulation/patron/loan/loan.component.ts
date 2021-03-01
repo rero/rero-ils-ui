@@ -19,6 +19,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DateTranslatePipe } from '@rero/ng-core';
 import { User, UserService } from '@rero/shared';
+import moment from 'moment';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { Item, ItemAction, ItemNoteType, ItemStatus } from 'projects/admin/src/app/class/items';
@@ -437,12 +438,12 @@ export class LoanComponent implements OnInit, OnDestroy {
     });
     this._modalRef.content.onSubmit.subscribe(result => {
       if ('action' in result && result.action === 'submit') {
-        const checkoutEndDate = result.content.endDate;
+        const checkoutEndDate = moment(result.content.endDate, FixedDateFormComponent.DATE_FORMAT).toDate().setHours(23, 59);
         const formattedDate = this._dateTranslatePipe.transform(checkoutEndDate, 'shortDate');
         this._setCheckoutSetting({
           key: 'endDate',
           label: this._translateService.instant('End date: {{ endDate }}', {endDate: formattedDate}),
-          value: checkoutEndDate
+          value: new Date(checkoutEndDate).toISOString()
         });
       }
     });
