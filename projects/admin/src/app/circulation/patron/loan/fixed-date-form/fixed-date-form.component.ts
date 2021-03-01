@@ -44,7 +44,7 @@ export class FixedDateFormComponent implements OnInit {
     endDate: new FormControl('', [
       Validators.required,
       DateValidators.minimumDateValidator(
-        moment().toDate(),
+        new Date(),
         FixedDateFormComponent.DATE_FORMAT
       )
     ])
