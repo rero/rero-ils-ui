@@ -1,11 +1,24 @@
 # Changelog
 
+## [v0.12.1](https://github.com/rero/rero-ils-ui/tree/v0.12.1) (2021-03-02)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.12.0...v0.12.1)
+
+**Merged pull requests:**
+
+- tests: fix cypress tests [\#524](https://github.com/rero/rero-ils-ui/pull/524) ([AoNoOokami](https://github.com/AoNoOokami))
+- document: improvement of the display get tab [\#521](https://github.com/rero/rero-ils-ui/pull/521) ([Garfield-fr](https://github.com/Garfield-fr))
+- public-search: hide not received issues for public [\#520](https://github.com/rero/rero-ils-ui/pull/520) ([zannkukai](https://github.com/zannkukai))
+- menu: translate menu entries [\#508](https://github.com/rero/rero-ils-ui/pull/508) ([AoNoOokami](https://github.com/AoNoOokami))
+- documents: display 'part of' in brief views [\#506](https://github.com/rero/rero-ils-ui/pull/506) ([AoNoOokami](https://github.com/AoNoOokami))
+
 ## [v0.12.0](https://github.com/rero/rero-ils-ui/tree/v0.12.0) (2021-02-11)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.11.1...v0.12.0)
 
 **Merged pull requests:**
 
+- release: v0.12.0 [\#517](https://github.com/rero/rero-ils-ui/pull/517) ([jma](https://github.com/jma))
 - editor: add an external link to the mef authority  [\#503](https://github.com/rero/rero-ils-ui/pull/503) ([jma](https://github.com/jma))
 
 ## [v0.11.1](https://github.com/rero/rero-ils-ui/tree/v0.11.1) (2021-02-08)
@@ -201,11 +214,9 @@
 
 - Translations update from Weblate [\#359](https://github.com/rero/rero-ils-ui/pull/359) ([weblate](https://github.com/weblate))
 - search: fix contribution facet [\#354](https://github.com/rero/rero-ils-ui/pull/354) ([rerowep](https://github.com/rerowep))
-- search: fix contribution link [\#352](https://github.com/rero/rero-ils-ui/pull/352) ([lauren-d](https://github.com/lauren-d))
 - editor: define custom documents typeahead type [\#350](https://github.com/rero/rero-ils-ui/pull/350) ([lauren-d](https://github.com/lauren-d))
 - ui: adapt templates for cypress tests [\#349](https://github.com/rero/rero-ils-ui/pull/349) ([AoNoOokami](https://github.com/AoNoOokami))
 - document: clear '\_draft' key when saving document. [\#347](https://github.com/rero/rero-ils-ui/pull/347) ([zannkukai](https://github.com/zannkukai))
-- templates: create route for the resource [\#346](https://github.com/rero/rero-ils-ui/pull/346) ([zannkukai](https://github.com/zannkukai))
 - circulation: fix patron info in loan view [\#345](https://github.com/rero/rero-ils-ui/pull/345) ([AoNoOokami](https://github.com/AoNoOokami))
 - Translations update from Weblate [\#344](https://github.com/rero/rero-ils-ui/pull/344) ([weblate](https://github.com/weblate))
 - circulation: update request permissions [\#343](https://github.com/rero/rero-ils-ui/pull/343) ([AoNoOokami](https://github.com/AoNoOokami))
@@ -213,11 +224,11 @@
 - circulation: fixes the display of the due date [\#340](https://github.com/rero/rero-ils-ui/pull/340) ([AoNoOokami](https://github.com/AoNoOokami))
 - circulation : toastr message when item goes in transit [\#339](https://github.com/rero/rero-ils-ui/pull/339) ([zannkukai](https://github.com/zannkukai))
 - request: fix update of request pickup location [\#338](https://github.com/rero/rero-ils-ui/pull/338) ([AoNoOokami](https://github.com/AoNoOokami))
+- circulation: replace pickup location name by library name [\#337](https://github.com/rero/rero-ils-ui/pull/337) ([AoNoOokami](https://github.com/AoNoOokami))
 - document: replace authors by contribution field [\#333](https://github.com/rero/rero-ils-ui/pull/333) ([Garfield-fr](https://github.com/Garfield-fr))
 - item: update UI to manage 'new\_acquisition' field [\#331](https://github.com/rero/rero-ils-ui/pull/331) ([zannkukai](https://github.com/zannkukai))
 - ui: add `id=` HTML attributes on item lists [\#330](https://github.com/rero/rero-ils-ui/pull/330) ([blankoworld](https://github.com/blankoworld))
 - Translations update from Weblate [\#329](https://github.com/rero/rero-ils-ui/pull/329) ([weblate](https://github.com/weblate))
-- document: adapt detailed view for cypress tests [\#324](https://github.com/rero/rero-ils-ui/pull/324) ([AoNoOokami](https://github.com/AoNoOokami))
 - Merge the update of invenio-circulation and major refactoring of RERO ILS circulation module \(US 1394\) [\#320](https://github.com/rero/rero-ils-ui/pull/320) ([AoNoOokami](https://github.com/AoNoOokami))
 - Translations update from Weblate [\#310](https://github.com/rero/rero-ils-ui/pull/310) ([weblate](https://github.com/weblate))
 
@@ -229,6 +240,7 @@
 
 - release: v0.4.0 [\#326](https://github.com/rero/rero-ils-ui/pull/326) ([jma](https://github.com/jma))
 - document: fix holding type serial detection [\#325](https://github.com/rero/rero-ils-ui/pull/325) ([jma](https://github.com/jma))
+- document: adapt detailed view for cypress tests [\#324](https://github.com/rero/rero-ils-ui/pull/324) ([AoNoOokami](https://github.com/AoNoOokami))
 - Us1491 item inventory list [\#323](https://github.com/rero/rero-ils-ui/pull/323) ([jma](https://github.com/jma))
 - document editor: fix bnf import [\#322](https://github.com/rero/rero-ils-ui/pull/322) ([jma](https://github.com/jma))
 - ui: replace getId\(\) by idAttribute Pipe [\#321](https://github.com/rero/rero-ils-ui/pull/321) ([blankoworld](https://github.com/blankoworld))
@@ -416,6 +428,7 @@
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'es' [\#194](https://github.com/rero/rero-ils-ui/pull/194) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'nl' [\#193](https://github.com/rero/rero-ils-ui/pull/193) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
 - circulation: fix requests list with library switch [\#175](https://github.com/rero/rero-ils-ui/pull/175) ([jma](https://github.com/jma))
+- release: v0.0.11 [\#167](https://github.com/rero/rero-ils-ui/pull/167) ([jma](https://github.com/jma))
 
 ## [v0.0.11](https://github.com/rero/rero-ils-ui/tree/v0.0.11) (2020-02-26)
 
@@ -432,7 +445,6 @@
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'nl' [\#173](https://github.com/rero/rero-ils-ui/pull/173) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
 - item: fix item available actions on document detail view [\#172](https://github.com/rero/rero-ils-ui/pull/172) ([Garfield-fr](https://github.com/Garfield-fr))
 - document: revert list headers to application/rero+json [\#170](https://github.com/rero/rero-ils-ui/pull/170) ([Garfield-fr](https://github.com/Garfield-fr))
-- release: v0.0.11 [\#167](https://github.com/rero/rero-ils-ui/pull/167) ([jma](https://github.com/jma))
 - homepage: fix my library switch on board [\#165](https://github.com/rero/rero-ils-ui/pull/165) ([Garfield-fr](https://github.com/Garfield-fr))
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'fr' [\#160](https://github.com/rero/rero-ils-ui/pull/160) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
 - admin: improve frontpage [\#159](https://github.com/rero/rero-ils-ui/pull/159) ([AoNoOokami](https://github.com/AoNoOokami))
