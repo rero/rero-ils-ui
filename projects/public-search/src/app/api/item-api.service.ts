@@ -55,11 +55,15 @@ export class ItemApiService {
    */
   getItemsByHoldingsAndViewcode(
     holdings: any, viewcode: string, page: number, itemsPerPage: number = 5): Observable<QueryResponse> {
+    const sort = (holdings.metadata.holdings_type === 'serial')
+      ? '-issue_expected_date'
+      : 'enumeration_chronology';
+    console.log(sort);
     const query = (holdings.metadata.holdings_type === 'serial')
       ? `holding.pid:${holdings.metadata.pid} AND issue.status:${IssueItemStatus.RECEIVED}`
       : `holding.pid:${holdings.metadata.pid}`;
     return this._recordService
-      .getRecords('items', query, page, itemsPerPage, undefined, { view: viewcode }, this._headers, 'enumeration_chronology')
+      .getRecords('items', query, page, itemsPerPage, undefined, { view: viewcode }, this._headers, sort)
       .pipe(map((response: Record) => response.hits));
   }
 

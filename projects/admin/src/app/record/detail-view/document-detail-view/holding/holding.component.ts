@@ -27,33 +27,29 @@ import { RecordPermission, RecordPermissionService } from 'projects/admin/src/ap
   templateUrl: './holding.component.html'
 })
 export class HoldingComponent implements OnInit, OnDestroy {
+
+  // COMPONENT ATTRIBUTES =====================================================
   /** Holding record */
   @Input() holding: any;
+  /** Event for delete holding */
+  @Output() deleteHolding = new EventEmitter();
 
   /** shortcut for holding type */
   holdingType: 'electronic' | 'serial' | 'standard';
-
   /** Items */
   items: any = null;
-
   /** Items observable reference */
   itemsRef: any;
-
   /** Items collapsed */
   isItemsCollapsed = false;
-
-  /** Event for delete Holding */
-  @Output() deleteHolding = new EventEmitter();
-
   /** Holding permissions */
   permissions: RecordPermission;
-
   /** total number of items for this holding */
   totalItemsCounter = 0;
-
   /** number of item to load/display */
   displayItemsCounter = 5;
 
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * constructor
    * @param _recordUiService - RecordUiService
@@ -68,75 +64,31 @@ export class HoldingComponent implements OnInit, OnDestroy {
     private _translateService: TranslateService,
   ) { }
 
-  /** Init */
+  /** onInit hook */
   ngOnInit() {
     this.holdingType = this.holding.metadata.holdings_type;
     if (this.holdingType !== 'electronic') {
       this._loadItems();
     }
-    this.getPermissions();
+    this._getPermissions();
   }
 
-  /** Destroy */
+  /** onDestroy hook */
   ngOnDestroy() {
     if (this.itemsRef != null) {
       this.itemsRef.unsubscribe();
     }
   }
 
-  /**
-   * Reload items when they are displayed.
-   */
-  toggleCollapse() {
-    if (this.isItemsCollapsed) {
-      this._loadItems();
-    }
-    this.isItemsCollapsed = !this.isItemsCollapsed;
-  }
-
-  /** Remove an item given the item PID.
-   *
-   * @param itemPid - the PID of the item to remove.
-   */
-  deleteItem(itemPid) {
-    this._recordUiService.deleteRecord('items', itemPid).subscribe((success: any) => {
-      if (success) {
-        this.items = this.items.filter((i: any) => itemPid !== i.metadata.pid);
-        if (this.items.length === 0) {
-          this.deleteHolding.emit({holding: this.holding, callBackend: false});
-        }
-      }
-    });
-  }
-
   /** Get permissions */
-  getPermissions() {
+  private _getPermissions(): void {
     this._recordPermissionService
       .getPermission('holdings', this.holding.metadata.pid)
       .subscribe(permissions => this.permissions = permissions);
   }
 
-  /**
-   * Delete the holding.
-   */
-  delete() {
-    this.deleteHolding.emit({holding: this.holding});
-  }
-
-  /**
-   * Display message if the record cannot be deleted
-   * @return the delete info message use hover the delete button
-   */
-  get deleteInfoMessage(): string {
-    return this._recordPermissionService.generateDeleteMessage(
-      this.permissions.delete.reasons
-    );
-  }
-
-  /**
-   * Load the items corresponding to a given holding PID.
-   */
-  private _loadItems() {
+  /** Load the items corresponding to a given holding PID. */
+  private _loadItems(): void {
     let query = `holding.pid:${this.holding.metadata.pid}`;
     let sort = '';
     if (this.holding.metadata.holdings_type === 'serial') {
@@ -151,11 +103,59 @@ export class HoldingComponent implements OnInit, OnDestroy {
       });
   }
 
+  // COMPONENT FUNCTIONS ======================================================
+  /** Reload items when they are displayed. */
+  toggleCollapse() {
+    if (this.isItemsCollapsed) {
+      this._loadItems();
+    }
+    this.isItemsCollapsed = !this.isItemsCollapsed;
+  }
+
+  /**
+   * Remove an item given the item PID.
+   * @param itemPid: string - the PID of the item to remove.
+   */
+  deleteItem(itemPid: string): void {
+    this._recordUiService.deleteRecord('items', itemPid).subscribe(
+      (success: boolean) => {
+        if (success) {
+          this.items = this.items.filter((i: any) => itemPid !== i.metadata.pid);
+          if (this.items.length === 0) {
+            this.delete(true);
+          }
+        }
+      }
+    );
+  }
+
+  /**
+   * Delete the holding.
+   * @param callBackend: boolean - is backend should be called.
+   */
+  delete(callBackend?: boolean) {
+    const params: any = { holding: this.holding };
+    if (callBackend !== undefined) {
+      params.callBackend = callBackend;
+    }
+    this.deleteHolding.emit(params);
+  }
+
+  /**
+   * Display message if the record cannot be deleted
+   * @return the delete info message use hover the delete button
+   */
+  get deleteInfoMessage(): string {
+    return this._recordPermissionService.generateDeleteMessage(
+      this.permissions.delete.reasons
+    );
+  }
+
   /**
    * Load more items
    * @param increment : number of items to add into the item list
    */
-  showMore(increment = 5) {
+  showMore(increment: number = 5) {
     this.displayItemsCounter += increment;
   }
 
