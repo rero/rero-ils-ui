@@ -97,10 +97,10 @@
 
       <!-- IS PART OF -->
       <shared-part-of [record]="record" isBrief="false"></shared-part-of>
-      
+
       <!-- ABSTRACT -->
       <ng-container *ngIf=" record.metadata.abstracts && record.metadata.abstracts.length > 0">
-        <ul class="list-unstyled my-3">
+        <ul class="list-unstyled my-0">
           <li *ngFor="let abstract of record.metadata.abstracts; let i = index"
           [attr.id]="i | idAttribute:{prefix: 'doc-abstract'}">
             <ng-core-text-read-more
@@ -114,6 +114,9 @@
           </li>
         </ul>
       </ng-container>
+
+      <!-- MASKED -->
+      <admin-record-masked *ngIf="record.metadata._masked" [record]="record" [withLabel]="true"></admin-record-masked>
 
       <!-- SUBJECTS -->
       <div class="row" *ngIf="record.metadata.subjects">

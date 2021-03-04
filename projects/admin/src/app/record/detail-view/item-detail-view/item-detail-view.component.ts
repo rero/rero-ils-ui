@@ -23,6 +23,7 @@ import { Observable, Subscription } from 'rxjs';
 import { Item, ItemNote } from '../../../classes/items';
 import { HoldingsService } from '../../../service/holdings.service';
 import { OperationLogsService } from '../../../service/operation-logs.service';
+import { OrganisationService } from '../../../service/organisation.service';
 
 @Component({
   selector: 'admin-item-detail-view',
@@ -46,7 +47,6 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
   /** Location record */
   location: any;
 
-
   /** Load operation logs on show */
   showOperationLogs = false;
 
@@ -59,32 +59,54 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
   }
 
   /**
+   * Get organisation currency
+   * @return string
+   */
+  get organisationCurrency(): string {
+    return this._organisationService.organisation.default_currency;
+  }
+
+  /**
    * Constructor
    * @param _recordService - RecordService
    * @param _holdingService - HoldingsService
    * @param _operationLogsService - OperationLogsService
+   * @param _organisationService - OrganisationService
    */
   constructor(
     private _recordService: RecordService,
     private _holdingService: HoldingsService,
-    private _operationLogsService: OperationLogsService
+    private _operationLogsService: OperationLogsService,
+    private _organisationService: OrganisationService
   ) {}
 
-  ngOnInit() {
+  /** OnInit hook */
+  ngOnInit(): void {
+    console.log(this._organisationService.organisation);
     this._recordObs = this.record$.subscribe(record => {
       this.record = record;
       this._recordService.getRecord('locations', record.metadata.location.pid, 1).subscribe(data => this.location = data);
     });
   }
 
+  /** OnDestroy hook */
   ngOnDestroy() {
     this._recordObs.unsubscribe();
   }
 
+  /**
+   * Is public note
+   * @param note - ItemNote
+   * @returns boolean
+   */
   isPublicNote(note: ItemNote): boolean {
     return Item.PUBLIC_NOTE_TYPES.includes(note.type);
   }
 
+  /**
+   * has temporary item type
+   * @return boolean
+   */
   hasTemporaryItemType(): boolean {
     if ('temporary_item_type' in this.record.metadata) {
       const endDateValue = this.record.metadata.temporary_item_type.end_date || undefined;
@@ -93,10 +115,8 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
     return false;
   }
 
-  /**
-   * Update item status
-   */
-  updateItemStatus() {
+  /** Update item status */
+  updateItemStatus(): void {
     this._recordService.getRecord('items', this.record.metadata.pid).subscribe((item: any) => {
       this.record.metadata.status = item.metadata.status;
       this.record.metadata.available = item.metadata.available;
@@ -105,6 +125,7 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
 
   /**
    * Make the method getIcon available here
+   * @return string
    */
   getIcon(status: IssueItemStatus): string {
     return this._holdingService.getIcon(status);

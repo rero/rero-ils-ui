@@ -26,6 +26,7 @@ import { ExtractSourceFieldPipe } from './pipe/extract-source-field.pipe';
 import { IdAttributePipe } from './pipe/id-attribute.pipe';
 import { ItemHoldingsCallNumberPipe } from './pipe/item-holdings-call-number.pipe';
 import { JoinPipe } from './pipe/join.pipe';
+import { KeyExistsPipe } from './pipe/key-exists.pipe';
 import { MainTitlePipe } from './pipe/main-title.pipe';
 import { PatronBlockedMessagePipe } from './pipe/patron-blocked-message.pipe';
 import { ProvisionActivityPipe } from './pipe/provision-activity.pipe';
@@ -59,7 +60,8 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     InheritedCallNumberComponent,
     ThumbnailComponent,
     PartOfComponent,
-    ShowMorePagerComponent
+    ShowMorePagerComponent,
+    KeyExistsPipe
   ],
   exports: [
     CommonModule,
@@ -81,7 +83,8 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     InheritedCallNumberComponent,
     ThumbnailComponent,
     PartOfComponent,
-    ShowMorePagerComponent
+    ShowMorePagerComponent,
+    KeyExistsPipe
   ],
   imports: [
     CommonModule,
@@ -99,7 +102,8 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     UrlActivePipe,
     TruncateTextPipe,
     Nl2brPipe,
-    NgVarDirective
+    NgVarDirective,
+    KeyExistsPipe
   ],
   entryComponents: [
     ContributionBriefComponent

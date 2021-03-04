@@ -58,6 +58,13 @@
       <dd class="mb-0 col-lg-9 col-sm-8" [innerHTML]="note.content | nl2br"></dd>
     </ng-container>
   </ng-container>
+  <!-- URL -->
+  <ng-container *ngIf="item.metadata.url">
+    <dt class="mb-0 col-lg-2 col-sm-3 label-title" translate>URL</dt>
+    <dd class="mb-0 col-lg-9 col-sm-8">
+      <a href="{{ item.metadata.url }}">{{ item.metadata.url }}</a>
+    </dd>
+  </ng-container>
   <!-- STATUS -->
   <dt class="mb-0 col-lg-2 col-sm-3" translate>Status</dt>
   <dd id="item-status-{{ item.metadata.pid }}" class="mb-0 col-lg-9 col-sm-8">
@@ -72,6 +79,7 @@
       ({{ item.metadata.availability.request }} {{ (item.metadata.availability.request > 1 ? 'requests' : 'request') | translate }})
     </ng-container>
   </dd>
+
   <!-- REQUEST DIALOG -->
   <public-search-request [item]="item" [viewcode]="viewcode" class="col-11"></public-search-request>
 </div>

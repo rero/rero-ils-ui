@@ -16,18 +16,20 @@
 -->
 
 <ng-container *ngIf="record">
-  <header class="row mb-3">
+  <header class="row mb-2">
     <h1>{{ 'Barcode' | translate }} {{ record.metadata.barcode }}</h1>
   </header>
   <section class="mb-4">
+    <admin-record-masked *ngIf="record.metadata._masked" [record]="record" [withLabel]="true"></admin-record-masked>
     <dl class="row mb-0">
-
       <!-- INHERITED CALL NUMBER -->
       <ng-container *ngIf="record | itemHoldingsCallNumber | async as callNumber">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Call number </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          <shared-inherited-call-number [item]="record" context="first"></shared-inherited-call-number>
-        </dd>
+        <ng-container *ngIf="(callNumber | json) != ({ first: {}, second: {} } | json)">
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Call number </dt>
+          <dd class="col-sm-7 col-md-8 mb-0">
+            <shared-inherited-call-number [item]="record" context="first"></shared-inherited-call-number>
+          </dd>
+        </ng-container>
       </ng-container>
       <!-- SECOND CALL NUMBER -->
       <ng-container *ngIf="record.metadata.second_call_number">
@@ -44,8 +46,8 @@
         </dd>
       </ng-container>
       <!-- ITEM TYPE -->
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Type' | translate }}:
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+        Type
       </dt>
       <dd class="col-sm-7 col-md-8 mb-0" *ngVar="record.metadata.item_type.pid | getRecord:'item_types': 'field':'name' | async as defaultItty">
         <ng-container *ngIf="hasTemporaryItemType(); else defaultItemTypeBlock">
@@ -60,8 +62,8 @@
         </ng-template>
       </dd>
       <!-- DOCUMENT -->
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Document' | translate }}:
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+        Document
       </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
         <a [routerLink]="['/records', 'documents', 'detail', record.metadata.document.pid]">
@@ -69,8 +71,8 @@
         </a>
       </dd>
       <!-- LIBRARY -->
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Library' | translate }}:
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+        Library
       </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
         <ng-container *ngIf="location">
@@ -78,22 +80,22 @@
         </ng-container>
       </dd>
       <!-- LOCATION -->
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Location' | translate }}:
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+        Location
       </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
         <ng-container *ngIf="location">{{ location.metadata.name }}</ng-container>
       </dd>
       <!-- AVAILIBILITY -->
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'Availability' | translate }}:
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+        Availability
       </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
         <admin-item-availability [item]="record"></admin-item-availability>
       </dd>
       <!-- ACQUISITION -->
-      <dt class="col-sm-3 offset-sm-2 offset-md-0">
-        {{ 'New acquisition' | translate }}:
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+        New acquisition
       </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
         <i class="fa"
@@ -104,6 +106,33 @@
           ({{ record.metadata.acquisition_date | dateTranslate : 'shortDate' }})
         </span>
       </dd>
+      <!-- PRICE -->
+      <ng-container *ngIf="record.metadata | keyExists:'price'">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Price
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.price | currency:organisationCurrency:'symbol' }}
+        </dd>
+      </ng-container>
+      <!-- PAC CODE -->
+      <ng-container *ngIf="record.metadata | keyExists:'pac_code'">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          PAC code
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          {{ record.metadata.pac_code | translate }}
+        </dd>
+      </ng-container>
+      <!-- URL -->
+      <ng-container *ngIf="record.metadata | keyExists:'url'">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+          Online access
+        </dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <a href="{{ record.metadata.url }}">{{ record.metadata.url }}</a>
+        </dd>
+      </ng-container>
     </dl>
   </section>
 
@@ -162,6 +191,82 @@
       </div>
     </div>
   </section>
+
+  <!-- LEGACY -->
+  <ng-container *ngIf="(record.metadata | keyExists:'legacy_checkout_count') || (record.metadata | keyExists:'legacy_circulation_rules')">
+    <section class="mb-4 mt-4">
+      <header class="row">
+        <h4 translate>Legacy circulation rules</h4>
+      </header>
+      <dl class="row mb-0">
+        <!-- LEGACY CHECKOUT COUNT -->
+        <ng-container *ngIf="record.metadata | keyExists:'legacy_checkout_count'">
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+            Checkout count
+          </dt>
+          <dd class="col-sm-7 col-md-8 mb-0">
+            {{ record.metadata.legacy_checkout_count }}
+          </dd>
+        </ng-container>
+        <!-- LEGACY LOAN DURATION -->
+        <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'loan_duration'">
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+            Loan duration
+          </dt>
+          <dd class="col-sm-7 col-md-8 mb-0">
+            {{ record.metadata.legacy_circulation_rules.loan_duration }}
+          </dd>
+        </ng-container>
+        <!-- LEGACY USE ITEM SPECIFIC RULES -->
+        <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'use_item_specific_rules'">
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+            Use item specific rules
+          </dt>
+          <dd class="col-sm-7 col-md-8 mb-0">
+            <i
+              class="fa fa-circle"
+              [ngClass]="{
+                'text-danger': !record.metadata.legacy_circulation_rules.use_item_specific_rules,
+                'text-success': !record.metadata.legacy_circulation_rules.use_item_specific_rules
+              }"
+              aria-hidden="true"
+            ></i>
+          </dd>
+        </ng-container>
+        <!-- LEGACY ALLOW REQUEST -->
+        <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'allow_request'">
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+            Allow request
+          </dt>
+          <dd class="col-sm-7 col-md-8 mb-0">
+            <i
+              class="fa fa-circle"
+              [ngClass]="{
+                'text-danger': !record.metadata.legacy_circulation_rules.allow_request,
+                'text-success': record.metadata.legacy_circulation_rules.allow_request }"
+              aria-hidden="true"
+            ></i>
+          </dd>
+        </ng-container>
+        <!-- LEGACY ALLOW REQUEST -->
+        <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'floats'">
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+            Floats
+          </dt>
+          <dd class="col-sm-7 col-md-8 mb-0">
+            <i
+              class="fa fa-circle"
+              [ngClass]="{
+                'text-danger': !record.metadata.legacy_circulation_rules.floats,
+                'text-success': record.metadata.legacy_circulation_rules.floats
+              }"
+              aria-hidden="true"
+            ></i>
+          </dd>
+        </ng-container>
+      </dl>
+    </section>
+  </ng-container>
 
   <!-- TABS -->
   <section class="mt-3 mb-4">
