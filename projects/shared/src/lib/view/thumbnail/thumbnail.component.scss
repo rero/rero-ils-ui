@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
  * Copyright (C) 2019 RERO
+ * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,28 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-.thumb-brief
-img {
-  max-height: 122px;
-  max-width: 80px;
-}
-
-@media (max-width: 768px) {
-.thumb-brief
-  img {
-    max-width: 48px;
-  }
-}
-
-.thumb-detail
-img {
-  max-height: 244px;
-  max-width: 160px;
-}
-
-@media (max-width: 768px) {
-.thumb-detail
-  img {
-    max-width: 48px;
-  }
+figure, .thumb-brief img, .thumb-detail img {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
 }
