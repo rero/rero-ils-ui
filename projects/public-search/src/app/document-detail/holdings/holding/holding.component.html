@@ -40,7 +40,7 @@
         <ng-template #available>
           <i
             class="fa fa-circle"
-            [ngClass="{'text-success': holding.metadata.available === true, {'text-danger': holding.metadata.available === false }}"]
+            [ngClass]="{'text-success': holding.metadata.available, 'text-danger': !holding.metadata.available }"
           ></i>
           {{ (holding.metadata.available ? 'available' : 'not available') | translate }}
         </ng-template>

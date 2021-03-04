@@ -154,3 +154,7 @@ _('My organisation');
 _('My library');
 _('Public interface');
 _('Logout');
+
+
+_('Masked');
+_('No masked');

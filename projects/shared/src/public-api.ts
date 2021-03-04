@@ -31,6 +31,7 @@ export * from './lib/pipe/extract-source-field.pipe';
 export * from './lib/pipe/id-attribute.pipe';
 export * from './lib/pipe/item-holdings-call-number.pipe';
 export * from './lib/pipe/join.pipe';
+export * from './lib/pipe/key-exists.pipe';
 export * from './lib/pipe/main-title.pipe';
 export * from './lib/pipe/patron-blocked-message.pipe';
 export * from './lib/pipe/provision-activity.pipe';

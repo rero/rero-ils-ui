@@ -16,7 +16,7 @@
  */
 
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
+import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -153,6 +153,7 @@ import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/cust
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 import { UserIdComponent } from './record/editor/wrappers/user-id/user-id.component';
 import { UserIdEditorComponent } from './record/custom-editor/user-id-editor/user-id-editor.component';
+import { RecordMaskedComponent } from './record/detail-view/record-masked/record-masked.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -252,7 +253,8 @@ export function appInitFactory(appInitService: AppInitService) {
     OperationLogsDialogComponent,
     CipoPatronTypeItemTypeComponent,
     UserIdComponent,
-    UserIdEditorComponent
+    UserIdEditorComponent,
+    RecordMaskedComponent
   ],
   imports: [
     AppRoutingModule,
@@ -392,6 +394,9 @@ export function appInitFactory(appInitService: AppInitService) {
     OperationLogsComponent,
     UserIdEditorComponent
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
+  ]
 })
 export class AppModule { }
