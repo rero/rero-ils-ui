@@ -59,10 +59,10 @@
     <div class="col-md-4 d-flex align-items-end justify-content-end">
       <ng-core-sort-list
         [options]="[
-          {value:'duedate', label:'Due date' | translate, icon:'fa-sort-numeric-asc'},
-          {value:'-duedate', label:'Due date (desc)' | translate, icon:'fa-sort-numeric-desc'},
+          {value:'-transactiondate', label:'Transaction date (desc)' | translate, icon:'fa-sort-numeric-desc'},
           {value:'transactiondate', label:'Transaction date' | translate, icon:'fa-sort-numeric-asc'},
-          {value:'-transactiondate', label:'Transaction date (desc)' | translate, icon:'fa-sort-numeric-desc'}
+          {value:'-duedate', label:'Due date (desc)' | translate, icon:'fa-sort-numeric-desc'},
+          {value:'duedate', label:'Due date' | translate, icon:'fa-sort-numeric-asc'}
         ]"
         [useIcon]="true"
         (selectChange)="selectingSortCriteria($event)"
