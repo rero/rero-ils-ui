@@ -138,7 +138,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
     this._cleanFormValues(this.libraryForm.getValues());
     this.library.update(this.libraryForm.getValues());
     if (this.library.pid) {
-      this.recordService.update('libraries', cleanDictKeys(this.library)).subscribe(record => {
+      this.recordService.update('libraries', this.library.pid, cleanDictKeys(this.library)).subscribe(record => {
         this.toastService.success(
           this.translateService.instant('Record Updated!'),
           this.translateService.instant('libraries')

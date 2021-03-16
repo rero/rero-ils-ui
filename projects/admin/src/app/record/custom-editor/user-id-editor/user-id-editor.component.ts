@@ -195,7 +195,7 @@ export class UserIdEditorComponent implements OnInit {
     }
     if (this.userID != null) {
       data.pid = this.userID;
-      this._recordService.update('users', data).subscribe(() => {
+      this._recordService.update('users', data.pid, data).subscribe(() => {
         this.bsModalRef.hide();
       });
     } else {
