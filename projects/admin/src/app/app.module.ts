@@ -125,7 +125,7 @@ import { IllRequestDetailViewComponent } from './record/detail-view/ill-request-
 import { ItemDetailViewComponent } from './record/detail-view/item-detail-view/item-detail-view.component';
 import { ItemTransactionComponent } from './record/detail-view/item-detail-view/item-transaction/item-transaction.component';
 import { ItemTransactionsComponent } from './record/detail-view/item-detail-view/item-transactions/item-transactions.component';
-import { ItemTypeDetailViewComponent } from './record/detail-view/item-type-detail-view.component';
+import { ItemTypeDetailViewComponent } from './record/detail-view/item-type-detail-view/item-type-detail-view.component';
 import { DayOpeningHoursComponent } from './record/detail-view/library-detail-view/day-opening-hours/day-opening-hours.component';
 import { ExceptionDateComponent } from './record/detail-view/library-detail-view/exception-date/exception-date.component';
 import { LibraryDetailViewComponent } from './record/detail-view/library-detail-view/library-detail-view.component';

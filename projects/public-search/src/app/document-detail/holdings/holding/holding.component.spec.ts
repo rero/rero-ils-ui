@@ -18,6 +18,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
+import { GetTranslatedLabelPipe } from '@rero/shared';
 import { NotesFilterPipe } from '../../../pipe/notes-filter.pipe';
 import { HoldingComponent } from './holding.component';
 
@@ -58,7 +59,7 @@ describe('HoldingComponent', () => {
         TranslateModule.forRoot(),
         CoreModule
       ],
-      declarations: [ HoldingComponent, NotesFilterPipe ],
+      declarations: [ HoldingComponent, NotesFilterPipe, GetTranslatedLabelPipe],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
       ]

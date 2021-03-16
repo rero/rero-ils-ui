@@ -17,7 +17,7 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordUiService } from '@rero/ng-core';
-import { ItemHoldingsCallNumberPipe, UserService } from '@rero/shared';
+import { UserService } from '@rero/shared';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { ItemsService } from 'projects/admin/src/app/service/items.service';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
@@ -27,6 +27,7 @@ import { ItemRequestComponent } from '../../item-request/item-request.component'
 
 @Component({
   selector: 'admin-default-holding-item',
+  styles: ['.action-buttons { position: absolute; top: 0; right: 0}'],
   templateUrl: './default-holding-item.component.html'
 })
 export class DefaultHoldingItemComponent implements OnInit {
@@ -41,6 +42,7 @@ export class DefaultHoldingItemComponent implements OnInit {
 
   /** Item permissions */
   permissions: any;
+
 
   // CONSTRUCTOR & HOOKS ==============================================================
   /**

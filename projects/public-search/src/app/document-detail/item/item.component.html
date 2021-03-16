@@ -68,11 +68,18 @@
   <!-- STATUS -->
   <dt class="mb-0 col-lg-2 col-sm-3" translate>Status</dt>
   <dd id="item-status-{{ item.metadata.pid }}" class="mb-0 col-lg-9 col-sm-8">
-    <i class="mr-1 fa fa-circle text-{{ item.metadata.available ? 'success' : 'danger' }}"></i>
+    <i class="mr-1 fa fa-circle"
+       [ngClass]="{
+          'text-success': item.metadata.availability.available,
+          'text-danger': !item.metadata.availability.available
+       }"></i>
     <ng-container [ngSwitch]="item.metadata.status">
-      <span *ngSwitchCase="'on_loan'">{{ 'due until' | translate }} {{ item.metadata.availability.due_date | dateTranslate :'shortDate' }}</span>
+      <span *ngSwitchCase="'on_loan'">
+        {{ 'due until' | translate }}
+        {{ item.metadata.availability.due_date | dateTranslate :'shortDate' }}
+      </span>
       <span *ngSwitchDefault>
-        {{ item.metadata.availability.display_text | translate }}
+        {{ item.metadata.availability.display_text | getTranslatedLabel }}
       </span>
     </ng-container>
     <ng-container *ngIf="item.metadata.availability.request > 0">
