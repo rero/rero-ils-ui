@@ -46,6 +46,7 @@ export class PatronTransaction {
   events: Array<PatronTransactionEvent> = [];
   note?: string = null;
   document?: any = null;
+  library?: any = null;
   loan?: any = null;
   patron: any = null;
 
