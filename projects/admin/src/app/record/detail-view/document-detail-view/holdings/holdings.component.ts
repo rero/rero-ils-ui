@@ -166,7 +166,7 @@ export class HoldingsComponent implements OnInit {
   private _holdingsQuery(page: number, query: string) {
     return this._recordService.getRecords(
       'holdings', query, page, this.holdingsPerPage,
-      undefined, undefined, undefined, 'library_location'
+      undefined, undefined, {Accept: 'application/rero+json'}, 'library_location'
     ).pipe(map((holdings: Record) => {
       return holdings.hits.hits;
     }));

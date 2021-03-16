@@ -28,6 +28,7 @@ export * from './lib/paginator/show-more-pager/show-more-pager.component';
 export * from './lib/pipe/contribution-format.pipe';
 export * from './lib/pipe/contribution-type.pipe';
 export * from './lib/pipe/extract-source-field.pipe';
+export * from './lib/pipe/get-translated-label.pipe';
 export * from './lib/pipe/id-attribute.pipe';
 export * from './lib/pipe/item-holdings-call-number.pipe';
 export * from './lib/pipe/join.pipe';

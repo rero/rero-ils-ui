@@ -24,16 +24,13 @@ export class HoldingComponent {
 
   /** Holdings record */
   @Input() holding: any;
-
   /** View code */
   @Input() viewcode: string;
 
   /** Is collapsed holdings */
   isCollapsed = false;
-
   /** Items count */
   itemsCount = 0;
-
   /** Authorized types of note */
   noteAuthorizedTypes: string[] = [
     'general_note'
@@ -46,4 +43,6 @@ export class HoldingComponent {
   eItemsCount(event: number): void {
     this.itemsCount = event;
   }
+
+
 }

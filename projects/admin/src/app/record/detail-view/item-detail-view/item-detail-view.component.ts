@@ -82,7 +82,6 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
 
   /** OnInit hook */
   ngOnInit(): void {
-    console.log(this._organisationService.organisation);
     this._recordObs = this.record$.subscribe(record => {
       this.record = record;
       this._recordService.getRecord('locations', record.metadata.location.pid, 1).subscribe(data => this.location = data);

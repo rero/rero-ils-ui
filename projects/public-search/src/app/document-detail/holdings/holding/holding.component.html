@@ -18,24 +18,24 @@
   <div class="row">
     <div id="holding-location-{{ holding.metadata.pid }}" class="col-sm-4">
       <a href="#" class="collapse-link mr-2" data-toggle="collapse" aria-expanded="false" (click)="isCollapsed = !isCollapsed">
-        <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" class="fa fa-lg" aria-hidden="true"></i>
+        <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" [hidden]="itemsCount==0" class="fa fa-lg" aria-hidden="true"></i>
       </a>
       {{ holding.metadata.library.name }}: {{ holding.metadata.location.name }}
     </div>
     <div id="holding-category-name-{{ holding.metadata.pid }}" class="col-sm-3">
-      {{ holding.metadata.circulation_category.name }}
+      {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel }}
     </div>
     <div class="col-sm-2">
       <span [hidden]="itemsCount == 0">
         {{ itemsCount }}
-        {{ itemsCount | i18nPlural: { '<=1': 'item', 'other': 'items' } | translate }}
+        {{ itemsCount | i18nPlural: { '=1': 'item', 'other': 'items' } | translate }}
       </span>
     </div>
     <div id="holding-available-{{ holding.metadata.pid }}" class="col-sm-3">
       <span [hidden]="!isCollapsed">
         <ng-container *ngIf="holding.metadata.holdings_type === 'serial'; else available">
           <i class="fa fa-circle text-warning"></i>
-          {{ (itemsCount > 0 ? 'see collections and items' : 'no items received') | translate }}
+          {{ 'see collections and items' | translate }}
         </ng-container>
         <ng-template #available>
           <i

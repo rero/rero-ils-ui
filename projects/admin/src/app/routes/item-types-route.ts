@@ -19,7 +19,7 @@ import { DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInter
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { RoleGuard } from '../guard/role.guard';
 import { ItemTypesBriefViewComponent } from '../record/brief-view/item-types-brief-view.component';
-import { ItemTypeDetailViewComponent } from '../record/detail-view/item-type-detail-view.component';
+import { ItemTypeDetailViewComponent } from '../record/detail-view/item-type-detail-view/item-type-detail-view.component';
 import { BaseRoute } from './base-route';
 
 export class ItemTypesRoute extends BaseRoute implements RouteInterface {

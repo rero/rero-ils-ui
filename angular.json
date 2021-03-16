@@ -165,7 +165,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "public-holdings-items:build"
+            "browserTarget": "public-holdings-items:build",
+            "port": 4201
           },
           "configurations": {
             "production": {
@@ -263,7 +264,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "public-search:build"
+            "browserTarget": "public-search:build",
+            "port": 4202
           },
           "configurations": {
             "production": {
@@ -366,7 +368,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "search-bar:build"
+            "browserTarget": "search-bar:build",
+            "port": 4203
           },
           "configurations": {
             "production": {
@@ -504,7 +507,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "public-patron-profile:build"
+            "browserTarget": "public-patron-profile:build",
+            "port": 4204
           },
           "configurations": {
             "production": {

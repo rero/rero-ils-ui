@@ -96,7 +96,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
       sort = '-issue_expected_date';
     }
     this.itemsRef = this._recordService
-      .getRecords('items', query, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, null, sort)
+      .getRecords('items', query, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, {Accept: 'application/rero+json'}, sort)
       .subscribe((result: Record) => {
         this.items = (this._recordService.totalHits(result.hits.total) > 0) ? result.hits.hits : null;
         this.totalItemsCounter = this._recordService.totalHits(result.hits.total);

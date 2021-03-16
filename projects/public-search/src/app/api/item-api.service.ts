@@ -53,7 +53,6 @@ export class ItemApiService extends BaseApi {
     const sort = (holdings.metadata.holdings_type === 'serial')
       ? '-issue_expected_date'
       : 'enumeration_chronology';
-    console.log(sort);
     const query = (holdings.metadata.holdings_type === 'serial')
       ? `holding.pid:${holdings.metadata.pid} AND issue.status:${IssueItemStatus.RECEIVED}`
       : `holding.pid:${holdings.metadata.pid}`;

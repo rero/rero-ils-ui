@@ -20,12 +20,8 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'admin-item-type-detail-view',
-  template: `
-  <ng-container *ngIf="record$ | async as record">
-    <h1>{{ record.metadata.name }}</h1>
-    {{ record.metadata.description }}
-  </ng-container>`,
-  styles: []
+  templateUrl: './item-type-detail-view.component.html',
+  styles: ['.language-statement { width: 4rem; display: inline-block; }']
 })
 export class ItemTypeDetailViewComponent implements DetailRecord {
 

@@ -29,9 +29,7 @@
             {{ location.metadata.name }}
           </ng-container>
         </div>
-        <div class="col-sm-2 mt-1">
-          {{ holding.metadata.circulation_category.pid | getRecord: 'item_types' : 'field' : 'name' | async }}
-        </div>
+        <div class="col-sm-2 mt-1">{{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel }}</div>
         <div *ngIf="holdingType === 'serial'" class="col-sm-4 text-right">
           <!-- HOLDING VIEW -->
           <button [routerLink]="['/', 'records', 'holdings', 'detail', holding.metadata.pid]"
@@ -98,19 +96,17 @@
         <!-- DEFAULT HOLDING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         <ng-container *ngSwitchDefault>
           <ng-container *ngIf="items && items.length > 0">
-            <div class="row font-weight-bold">
-              <div class="col-sm-3" translate>Barcode</div>
-              <div class="col-sm-2" translate>Status</div>
-              <div class="col-sm-3" translate>Unit</div>
-              <div class="col-sm-2" translate>Call number</div>
-            </div>
-            <admin-default-holding-item
-                *ngFor="let item of items | slice:0: displayItemsCounter"
-                [holding]="holding"
-                [item]="item"
-                (deleteItem)="deleteItem($event)"
-                [attr.id]="item.metadata.barcode | idAttribute:{prefix: 'item'}">
-            </admin-default-holding-item>
+            <ng-container *ngFor="let item of items | slice:0: displayItemsCounter; let last = last">
+              <admin-default-holding-item
+                  [holding]="holding"
+                  [item]="item"
+                  (deleteItem)="deleteItem($event)"
+                  [attr.id]="item.metadata.barcode | idAttribute:{prefix: 'item'}">
+              </admin-default-holding-item>
+              <ng-container *ngIf="!last">
+                <hr>
+              </ng-container>
+            </ng-container>
             <div class="row pl-3" *ngIf="displayItemsCounter < totalItemsCounter">
               <a [routerLink]="" (click)="showMore(5)" [attr.id]="holding.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
                 <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
