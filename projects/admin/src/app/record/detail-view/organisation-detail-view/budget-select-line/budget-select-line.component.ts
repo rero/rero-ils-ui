@@ -79,7 +79,7 @@ export class BudgetSelectLineComponent implements OnDestroy {
     if (this.organisation.metadata.current_budget_pid !== budgetPid) {
       this.organisation.metadata.current_budget_pid = event.target.id;
       this._subcription.add(
-        this._recordService.update('organisations', this.organisation.metadata)
+        this._recordService.update('organisations', this.organisation.metadata.pid, this.organisation.metadata)
         .subscribe(() => {
           const message = this._translateService.instant(
             `The organisation\'s active budget is now on {{ budgetName }}`,
