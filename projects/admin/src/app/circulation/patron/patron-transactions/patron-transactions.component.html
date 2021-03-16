@@ -50,15 +50,26 @@
         <ng-container *ngIf="tabs.engagedFees.transactions.length > 0; else noTransaction">
           <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
             <div class="col-2 pl-20" translate>Date</div>
-            <div class="col-7" translate>Category</div>
+            <div class="col-4" translate>Category</div>
+            <div class="col-3" translate>Library</div>
             <div class="col-2 text-right">
               {{ 'Total amount' | translate }} : {{ tabs.engagedFees.totalAmount | currency: organisation.default_currency }}
             </div>
             <div class="col-1 pl-0">
-              <button class="btn btn-primary btn-block d-md-block float-right btn-sm my-1"
-                      (click)="payAllTransactions()" [disabled]="tabs.engagedFees.totalAmount <= 0"
-                      translate
-              >Pay all</button>
+              <div class="btn-group" dropdown>
+                <button class="btn btn-primary btn-sm btn-block d-md-block float-right my-1"
+                (click)="payAllTransactions()" [disabled]="tabs.engagedFees.totalAmount <= 0"
+                translate
+                >Pay all</button>
+                <button id="fees-pay-all-my-library-btn" type="button" dropdownToggle class="btn btn-primary btn-sm my-1 dropdown-toggle dropdown-toggle-split"
+                        aria-controls="dropdown-split">
+                  <span class="caret"></span>
+                </button>
+                <div id="fees-pay-all-my-library-menu" *dropdownMenu class="dropdown-menu"
+                    role="menu" aria-labelledby="button-split">
+                  <a [ngClass]="{'disabled': myLibraryEngagedFees.length === 0}" class="dropdown-item" (click)="payAllTransactionsInMyLibrary()" translate>for my library</a>
+              </div>
+              </div>
             </div>
           </div>
           <admin-patron-transaction
@@ -89,7 +100,8 @@
         <ng-container *ngIf="tabs.historyFees.transactions !== null && tabs.historyFees.transactions.length > 0; else noHistory">
           <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
             <div class="col-2 pl-20 my-2" translate>Date</div>
-            <div class="col-10" translate>Category</div>
+            <div class="col-4" translate>Category</div>
+            <div class="col-5" translate>Library</div>
           </div>
           <admin-patron-transaction
             class="row mb-1 align-items-start"

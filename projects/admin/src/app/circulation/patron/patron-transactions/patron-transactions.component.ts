@@ -18,7 +18,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { Subscription } from 'rxjs';
-import { User } from '@rero/shared';
+import { User, UserService } from '@rero/shared';
 import { Loan, LoanOverduePreview } from '../../../classes/loans';
 import { OrganisationService } from '../../../service/organisation.service';
 import { PatronService } from '../../../service/patron.service';
@@ -82,7 +82,8 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
     private _patronService: PatronService,
     private _organisationService: OrganisationService,
     private _patronTransactionService: PatronTransactionService,
-    private _modalService: BsModalService
+    private _modalService: BsModalService,
+    private _userService: UserService
   ) {}
 
   /** OnInit hook */
@@ -138,6 +139,20 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
     };
     this._modalService.show(PatronTransactionEventFormComponent, {initialState});
   }
+    get myLibraryEngagedFees() {
+      const libraryPID = this._userService.user.getCurrentLibrary();
+      return this.tabs.engagedFees.transactions.filter(t => t.library != null && t.library.pid === libraryPID);
+    }
+
+    /** Allow to pay the total of each pending patron transactions */
+    public payAllTransactionsInMyLibrary() {
+      const initialState = {
+        action: 'pay',
+        mode: 'full',
+        transactions: this.myLibraryEngagedFees
+      };
+      this._modalService.show(PatronTransactionEventFormComponent, {initialState});
+    }
 
   /**
    * Behavior to perform when user asked to open a 'vertical tab'.
