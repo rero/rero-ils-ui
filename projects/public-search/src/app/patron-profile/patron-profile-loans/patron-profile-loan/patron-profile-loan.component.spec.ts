@@ -19,16 +19,19 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
-import { SharedModule } from '@rero/shared';
+import { SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
+import { cloneDeep } from 'lodash-es';
 import { ToastrModule } from 'ngx-toastr';
+import { of } from 'rxjs';
 import { ArrayTranslatePipe } from '../../../pipe/array-translate.pipe';
-import { UserService } from '../../../user.service';
+import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 import { PatronProfileLoanComponent } from './patron-profile-loan.component';
-
 
 describe('PatronProfileLoanComponent', () => {
   let component: PatronProfileLoanComponent;
   let fixture: ComponentFixture<PatronProfileLoanComponent>;
+  let userService: UserService;
+  let patronProfileMenuService: PatronProfileMenuService;
 
   const record = {
     metadata: {
@@ -49,8 +52,8 @@ describe('PatronProfileLoanComponent', () => {
       }
     }
   };
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = { organisation: { code: 'org1' }};
+
+  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -66,7 +69,7 @@ describe('PatronProfileLoanComponent', () => {
         CoreModule
       ],
       providers: [
-        { provide: UserService, useValue: userServiceSpy }
+        { provide: UserApiService, useValue: userApiServiceSpy }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
@@ -77,6 +80,11 @@ describe('PatronProfileLoanComponent', () => {
     fixture = TestBed.createComponent(PatronProfileLoanComponent);
     component = fixture.componentInstance;
     component.record = record;
+    userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
+    patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
+    patronProfileMenuService.init();
+    userService = TestBed.inject(UserService);
+    userService.load();
     fixture.detectChanges();
   });
 

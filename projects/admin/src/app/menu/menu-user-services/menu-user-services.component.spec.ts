@@ -16,21 +16,19 @@
  */
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { User, UserService } from '@rero/shared';
+import { MenuUserServicesService } from '../service/menu-user-services.service';
 import { MenuUserServicesComponent } from './menu-user-services.component';
 
 
-describe('MenuUserComponent', () => {
+describe('MenuUserServicesComponent', () => {
   let component: MenuUserServicesComponent;
   let fixture: ComponentFixture<MenuUserServicesComponent>;
 
-  const user = new User({
-    currentLibrary: 1
-  });
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = user;
+  const menuUserServicesServiceSpy = jasmine.createSpyObj('MenuUserServicesService', ['']);
+  menuUserServicesServiceSpy.menu = [];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -40,7 +38,10 @@ describe('MenuUserComponent', () => {
         TranslateModule.forRoot()
       ],
       providers: [
-        { provide: UserService, useValue: userServiceSpy }
+        { provide: MenuUserServicesService, useValue: menuUserServicesServiceSpy }
+      ],
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
       ]
     })
     .compileComponents();

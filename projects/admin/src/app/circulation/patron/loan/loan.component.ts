@@ -18,7 +18,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DateTranslatePipe } from '@rero/ng-core';
-import { ItemStatus, User, UserService } from '@rero/shared';
+import { ItemStatus, UserService } from '@rero/shared';
 import moment from 'moment';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
@@ -26,8 +26,8 @@ import { Item, ItemAction, ItemNoteType } from 'projects/admin/src/app/classes/i
 import { ItemsService } from 'projects/admin/src/app/service/items.service';
 import { PatronService } from 'projects/admin/src/app/service/patron.service';
 import { forkJoin, Subscription } from 'rxjs';
+import { CirculationService } from '../../services/circulation.service';
 import { FixedDateFormComponent } from './fixed-date-form/fixed-date-form.component';
-
 
 /** Interface to declare a special circulation settings */
 export interface CirculationSetting {
@@ -48,7 +48,7 @@ export class LoanComponent implements OnInit, OnDestroy {
   /** Search text (barcode) entered in search input */
   public searchText = '';
   /** Current patron */
-  public patron: User;
+  public patron: any;
   /** Is loading */
   public isLoading = false;
   /** List of checked out items */
@@ -123,6 +123,7 @@ export class LoanComponent implements OnInit, OnDestroy {
    * @param _userService - UserService
    * @param _modalService - BsModalService
    * @param _dateTranslatePipe - DateTranslatePipe
+   * @param _circulationService - CirculationService
    */
   constructor(
     private _itemsService: ItemsService,
@@ -131,12 +132,13 @@ export class LoanComponent implements OnInit, OnDestroy {
     private _patronService: PatronService,
     private _userService: UserService,
     private _modalService: BsModalService,
-    private _dateTranslatePipe: DateTranslatePipe
+    private _dateTranslatePipe: DateTranslatePipe,
+    private _circulationService: CirculationService
   ) {}
 
   /** OnInit hook */
   ngOnInit() {
-    this._subscription.add(this._patronService.currentPatron$.subscribe(patron => {
+    this._subscription.add(this._patronService.currentPatron$.subscribe((patron: any) => {
       this.patron = patron;
       if (patron) {
         this.isLoading = true;
@@ -163,7 +165,7 @@ export class LoanComponent implements OnInit, OnDestroy {
         );
       }
     }));
-    this.currentLibraryPid = this._userService.user.getCurrentLibrary();
+    this.currentLibraryPid = this._userService.user.currentLibrary;
     this.searchInputFocus = true;
   }
 
@@ -208,7 +210,7 @@ export class LoanComponent implements OnInit, OnDestroy {
         );
       }
     } else {
-      this._itemsService.getItem(barcode, this.patron.pid).subscribe(
+      this._itemsService.getItem(barcode, this.patron.id).subscribe(
         newItem => {
           if (newItem === null) {
             this._toastService.error(
@@ -226,7 +228,7 @@ export class LoanComponent implements OnInit, OnDestroy {
               this.searchText = '';
               this.searchInputFocus = true;
             } else {
-              if (newItem.pending_loans && newItem.pending_loans[0].patron_pid !== this.patron.pid) {
+              if (newItem.pending_loans && newItem.pending_loans[0].patron_pid !== this.patron.id) {
                 this._toastService.error(
                   this._translateService.instant('Checkout impossible: the item is requested by another patron'),
                   this._translateService.instant('Checkout')
@@ -268,7 +270,8 @@ export class LoanComponent implements OnInit, OnDestroy {
           this._itemsService.doAction(
             item,
             this.currentLibraryPid,
-            this._userService.user.pid,
+            // TODO: user or patron ?
+            this._userService.user.patronLibrarian.pid,
             this.patron.pid,
             additionalParams
           )
@@ -290,8 +293,8 @@ export class LoanComponent implements OnInit, OnDestroy {
                   this._translateService.instant('Checkin')
                 );
               }
-              this.patron.decrementCirculationStatistic('loans');
-              this.patron.incrementCirculationStatistic('history');
+              this._circulationService.decrementCirculationStatistic('loans');
+              this._circulationService.incrementCirculationStatistic('history');
               break;
             }
             case ItemAction.checkout: {
@@ -299,12 +302,12 @@ export class LoanComponent implements OnInit, OnDestroy {
               this._displayCirculationNote(newItem, ItemNoteType.CHECKOUT);
               this.checkedOutItems.unshift(newItem);
               this.checkedInItems = this.checkedInItems.filter(currItem => currItem.pid !== newItem.pid);
-              this.patron.incrementCirculationStatistic('loans');
+              this._circulationService.incrementCirculationStatistic('loans');
               // check if items was ready to pickup. if yes, then we need to decrement the counter
               const idx = this._pickupItems.findIndex(item => item.metadata.item_pid.value === newItem.pid);
               if (idx > -1) {
                 this._pickupItems.splice(idx, 1);
-                this.patron.decrementCirculationStatistic('pickup');
+                this._circulationService.decrementCirculationStatistic('pickup');
               }
               break;
             }

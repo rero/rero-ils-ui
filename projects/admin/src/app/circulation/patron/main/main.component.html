@@ -19,6 +19,7 @@
   <div class="col mb-4">
     <admin-circulation-patron-detailed
       [patron]="patron"
+      [barcode]="barcode"
       [circulationMessages]="true"
       (clearPatron)="clearPatron()"
     ></admin-circulation-patron-detailed>
@@ -32,7 +33,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode[0], 'loan']">
+          [routerLink]="['/circulation', 'patron', barcode, 'loan']">
           {{ 'On loan' | translate }}
           <span *ngIf="getCirculationStatistics('loans') > 0" class="badge badge-info font-weight-normal">
             {{ getCirculationStatistics('loans') }}
@@ -45,7 +46,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode[0], 'pickup']">
+          [routerLink]="['/circulation', 'patron', barcode, 'pickup']">
           {{ 'To pick up' | translate }}
           <span *ngIf="getCirculationStatistics('pickup') > 0" class="badge badge-info font-weight-normal">
             {{ getCirculationStatistics('pickup') }}
@@ -58,7 +59,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode[0], 'pending']">
+          [routerLink]="['/circulation', 'patron', barcode, 'pending']">
           {{ 'Pending' | translate }}
           <span *ngIf="getCirculationStatistics('pending') > 0 as stat" class="badge badge-info font-weight-normal">
             {{ getCirculationStatistics('pending') }}
@@ -71,7 +72,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode[0], 'profile']"
+          [routerLink]="['/circulation', 'patron', barcode, 'profile']"
           translate
           >Profile</a
         >
@@ -82,7 +83,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode[0], 'fees']">
+          [routerLink]="['/circulation', 'patron', barcode, 'fees']">
           {{ 'Fees' | translate }}
           <span *ngIf="feesTotalAmount > 0" class="badge badge-warning font-weight-normal">
             {{ feesTotalAmount | currency: organisation.default_currency }}
@@ -95,7 +96,7 @@
           class="nav-link"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', patron.patron.barcode[0], 'history']">
+          [routerLink]="['/circulation', 'patron', barcode, 'history']">
           {{ 'History' | translate }}
           <span *ngIf="getCirculationStatistics('history') > 0" class="badge badge-info font-weight-normal">
             {{ getCirculationStatistics('history') }}

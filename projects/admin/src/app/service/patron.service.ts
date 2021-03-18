@@ -14,14 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiService, RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
+import { User } from '@rero/shared';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { User } from '@rero/shared';
 import { Item } from '../classes/items';
 import { Loan, LoanOverduePreview, LoanState } from '../classes/loans';
 
@@ -76,7 +75,7 @@ export class PatronService {
               break;
             }
             case 1: {
-              const patron = new User(response.hits.hits[0].metadata);
+              const patron = response.hits.hits[0].metadata;
               this._currentPatron.next(patron);
               break;
             }

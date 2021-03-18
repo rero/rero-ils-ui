@@ -139,7 +139,7 @@ export class Item {
   public requestedPosition(patron: User) {
     return (!patron || !this.pending_loans)
       ? 0
-      : this.pending_loans.findIndex(loan => loan.patron_pid === patron.pid) + 1;
+      : this.pending_loans.findIndex(loan => loan.patron_pid === patron.patronLibrarian.pid) + 1;
   }
 
   public get hasRequests() {

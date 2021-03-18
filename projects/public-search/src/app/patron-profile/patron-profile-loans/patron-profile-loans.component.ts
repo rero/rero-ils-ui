@@ -20,7 +20,7 @@ import { Error, Record } from '@rero/ng-core';
 import { Paginator } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { LoanApiService } from '../../api/loan-api.service';
-import { UserService } from '../../user.service';
+import { PatronProfileMenuService } from '../patron-profile-menu.service';
 
 @Component({
   selector: 'public-search-patron-profile-loans',
@@ -48,11 +48,11 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
   /**
    * Constructor
    * @param _loanApiService - LoanApiService
-   * @param _userService - UserService
+   * @param _patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
     private _loanApiService: LoanApiService,
-    private _userService: UserService
+    private _patronProfileMenuService: PatronProfileMenuService
   ) {}
 
   /** OnInit hook */
@@ -70,10 +70,13 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
         });
       })
     );
+    this._subscription.add(
+      this._patronProfileMenuService.onChange$.subscribe(() => {
+        this._initialLoad();
+      })
+    );
     this._loanQuery(1).subscribe((response: Record) => {
-      this._paginator.setRecordsCount(response.hits.total.value);
-      this.records = response.hits.hits;
-      this.loaded = true;
+      this._initialLoad();
     });
   }
 
@@ -82,13 +85,23 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
     this._subscription.unsubscribe();
   }
 
+  /** Initial records load */
+  private _initialLoad(): void {
+    this._loanQuery(1).subscribe((response: Record) => {
+      this._paginator.setRecordsCount(response.hits.total.value);
+      this.records = response.hits.hits;
+      this.loaded = true;
+    });
+  }
+
   /**
    * Loan query
    * @param page - number
    * @return Observable
    */
   private _loanQuery(page: number): Observable<Record | Error> {
+    const patronPid = this._patronProfileMenuService.currentPatron.pid;
     return this._loanApiService
-      .getOnLoan(this._userService.user.pid, page, this._paginator.getRecordsPerPage());
+      .getOnLoan(patronPid, page, this._paginator.getRecordsPerPage());
   }
 }

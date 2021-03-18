@@ -16,10 +16,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { LocalStorageService } from '@rero/ng-core';
-import { User, UserService } from '@rero/shared';
+import { ILibrary, User, UserService } from '@rero/shared';
 import { Subject } from 'rxjs';
-import { LibraryApiService } from '../../api/library-api.service';
 
 export class LibrarySwitchError extends Error {
   constructor(message: string) {
@@ -44,14 +42,8 @@ export class LibrarySwitchService {
   /**
    * Constructor
    * @param _userService - UserService
-   * @param _libraryApiService - LibraryApiService
-   * @param _localStorageService - LocalStorageService
    */
-  constructor(
-    private _userService: UserService,
-    private _libraryApiService: LibraryApiService,
-    private _localStorageService: LocalStorageService,
-  ) { }
+  constructor(private _userService: UserService) {}
 
   /**
    * Switch library
@@ -61,23 +53,21 @@ export class LibrarySwitchService {
     const user = this._userService.user;
     // If the person is a librarian, we check the existence
     // of the library in her libraries
-    if (!user.hasRole('system_librarian')) {
-      const libraries = user.libraries.map(library => {
-        return String(library.pid);
-      });
-      if (libraries.find(lib => lib === libraryPid) === undefined) {
+    if (!user.isSystemLibrarian) {
+      const libraries = user.patronLibrarian.libraries;
+      // const libraries = user.patrons.libraries.map(library => {
+      //   return String(library.pid);
+      // });
+      if (libraries.find((lib: ILibrary) => lib.pid === libraryPid) === undefined) {
         throw new LibrarySwitchError(
           `This library with pid ${libraryPid} is not available.`
         );
       }
     }
     // Update current library on user
-    user.setCurrentLibrary(libraryPid);
-    this._libraryApiService.getClosedDates(libraryPid).subscribe(
-      (dates) => user.currentLibraryClosedDates = dates
-    );
+    user.currentLibrary = libraryPid;
     // Storage user to the current session
-    this._localStorageService.set(User.STORAGE_KEY, user);
+    this._userService.setOnLocaleStorage(user);
     // Emit a new event with user
     this.onLibrarySwitch.next(user);
   }

@@ -16,8 +16,9 @@
  */
 import { Component, Input } from '@angular/core';
 import { Record } from '@rero/ng-core';
+import { IOrganisation } from '@rero/shared/public-api';
 import { PatronTransactionEventApiService } from '../../../api/patron-transaction-event-api.service';
-import { UserService } from '../../../user.service';
+import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 
 @Component({
   selector: 'public-search-patron-profile-fee',
@@ -38,23 +39,19 @@ export class PatronProfileFeeComponent {
   /** loaded */
   private _loaded = false;
 
-  /**
-   * Get current logged user
-   * @return user
-   */
-  get user() {
-    return this._userService.user;
+  get organisation(): IOrganisation {
+    return this._patronProfileMenuService.currentPatron.organisation;
   }
 
   /**
    * Constructor
-   * @param _userService - UserService
    * @param _patronTransactionEventApiService - PatronTransactionEventApiService
+   * @param _patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
-    private _userService: UserService,
-    private _patronTransactionEventApiService: PatronTransactionEventApiService
-  ) { }
+    private _patronTransactionEventApiService: PatronTransactionEventApiService,
+    private _patronProfileMenuService: PatronProfileMenuService
+  ) {}
 
   /**
    * Expanded
@@ -63,8 +60,7 @@ export class PatronProfileFeeComponent {
   expanded(feePid: string): void {
     if (!this._loaded) {
       this._patronTransactionEventApiService
-        .getEvents(feePid)
-        .subscribe((response: Record) => {
+        .getEvents(feePid).subscribe((response: Record) => {
           this._loaded = true;
           this.events = response.hits.hits;
         });

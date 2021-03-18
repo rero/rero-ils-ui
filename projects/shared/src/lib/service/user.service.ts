@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2021 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,111 +14,106 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { User } from '../class/user';
-import { LoggedUserService } from './logged-user.service';
-import { SharedConfigService } from './shared-config.service';
+import { LocalStorageService } from '@rero/ng-core';
+import { Observable, Subject } from 'rxjs';
+import { UserApiService } from '../api/user-api.service';
+import { IUser, User } from '../class/user';
+import { AppSettingsService, ISettings } from './app-settings.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  /**
-   * Observable on user loaded
-   */
-  private _onUserLoaded: Subject<User> = new Subject();
+  /** Loaded observable */
+  private _loaded: Subject<IUser> = new Subject();
+
+  /** user */
+  private _user: User;
 
   /**
-   * User
+   * Get loaded observable
+   * @return Observable<IUser>
    */
-  private _user: User = undefined;
-
-  /** Flag service loaded after loggedUser is done */
-  private _loaded = false;
-
-  /**
-   * Allowed access to admin interface
-   */
-  private _allowAdminInterfaceAccess = false;
-
-  /**
-   * On user loaded
-   * @return observable
-   */
-  get onUserLoaded$() {
-    return this._onUserLoaded.asObservable();
+  get loaded$(): Observable<IUser> {
+    return this._loaded.asObservable();
   }
 
   /**
-   * Get User
+   * Get user
    * @return User
    */
-  get user() {
+  get user(): User {
     return this._user;
   }
 
-  get loaded() {
-    return this._loaded;
-  }
-
   /**
-   * Get Access admin allowed
-   */
-  get allowAdminInterfaceAddess() {
-    return this._allowAdminInterfaceAccess;
-  }
-
-  /**
-   *
-   * @param _loggedUserService - LoggedUserService
-   * @param _sharedConfigService - SharedConfigService
+   * Constructor
+   * @param _userApiService - UserApiService
+   * @param _appSettingsService - AppSettingsService
+   * @param _localeStorageService - LocalStorageService
    */
   constructor(
-    private _loggedUserService: LoggedUserService,
-    private _sharedConfigService: SharedConfigService
-  ) { }
+    private _userApiService: UserApiService,
+    private _appSettingsService: AppSettingsService,
+    private _localeStorageService: LocalStorageService
+  ) {}
 
-  /** Init */
-  init() {
-    this._subscribeEvent();
+  /** load */
+  load(): void {
+    this._userApiService.getLoggedUser().subscribe((loggedUser: any) => {
+      const settingsKey = 'settings';
+      const settings: ISettings = loggedUser.settings;
+      this._appSettingsService.settings = settings;
+      delete loggedUser[settingsKey];
+      this._user = new User(loggedUser, this._appSettingsService.librarianRoles);
+      this._loaded.next(this._user);
+    });
   }
 
   /**
-   * Subcribe to event
-   */
-  private _subscribeEvent() {
-    this._loggedUserService.onLoggedUserLoaded$
-      .pipe(map(data => {
-        return data.metadata ? data.metadata : undefined;
-      })).subscribe(user => {
-        const access = this._isAuthorizedAccess(user);
-        if (access) {
-          const library = user.libraries[0];
-          this._user = new User(user);
-          this.user
-              .setCurrentLibrary(library.pid)
-              .setCurrentOrganisation(library.organisation.pid);
-          this._allowAdminInterfaceAccess = access;
-          this._onUserLoaded.next(this._user);
-        }
-        this._loaded = true;
-      });
-  }
-
-  /**
-   * Is authorized to admin access
-   * @param user - User logged json from rero-ils
+   * Has user on locale storage
    * @return boolean
    */
-  private _isAuthorizedAccess(user: any) {
-    if (!(user) || !('roles' in user) || !(user.libraries)) {
-      return false;
+  hasOnLocaleStorage(): boolean {
+    return this._localeStorageService.has(User.STORAGE_KEY);
+  }
+
+  /**
+   * Get user on locale storage
+   * @return User or undefined
+   */
+  getOnLocaleStorage(): IUserLocaleStorage | undefined {
+    if (this.hasOnLocaleStorage()) {
+      return this._localeStorageService.get(User.STORAGE_KEY);
     }
-    const adminRoles = this._sharedConfigService.adminRoles;
-    return user.roles.some((role: string) => adminRoles.indexOf(role) > -1 );
- }
+    return undefined;
+  }
+
+  /**
+   * Set user on locale storage
+   * @param user - User
+   */
+  setOnLocaleStorage(user: User): IUserLocaleStorage {
+    const data: IUserLocaleStorage = {
+      id: user.id,
+      currentLibrary: user.currentLibrary,
+      currentOrganisation: user.currentOrganisation
+    };
+    this._localeStorageService.set(User.STORAGE_KEY, data);
+    return data;
+  }
+
+  /** Clear user on locale storage */
+  clearOnLocaleStorage(): void {
+    this._localeStorageService.remove(User.STORAGE_KEY);
+  }
+}
+
+/** Interface user data for locale storage */
+export interface IUserLocaleStorage {
+  id: number;
+  currentLibrary: string;
+  currentOrganisation: string;
 }

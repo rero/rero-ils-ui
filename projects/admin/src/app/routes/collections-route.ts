@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import {
   DetailComponent, EditorComponent, extractIdOnRef, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface
@@ -116,7 +115,7 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
       afterContentInit: (f: FormlyFieldConfig) => {
         const recordService = this._routeToolService.recordService;
         const apiService = this._routeToolService.apiService;
-        const libraryPid = this._routeToolService.userService.user.getCurrentLibrary();
+        const libraryPid = this._routeToolService.userService.user.currentLibrary;
         let query = '';
         if (!this._routeToolService.userService.user.isSystemLibrarian) {
           // On edit record

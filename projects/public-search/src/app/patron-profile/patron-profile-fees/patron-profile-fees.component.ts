@@ -20,7 +20,7 @@ import { Error, Record } from '@rero/ng-core';
 import { Paginator } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
-import { UserService } from '../../user.service';
+import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { ITabEvent, PatronProfileService } from '../patron-profile.service';
 
 @Component({
@@ -49,21 +49,20 @@ export class PatronProfileFeesComponent implements OnInit, OnDestroy {
     return this._paginator;
   }
 
-  /** Get current logged user */
-  get user() {
-    return this._userService.user;
+  get currency() {
+    return this._patronProfileMenuService.currentPatron.organisation.currency;
   }
 
   /**
    * Constuctor
    * @param _patronTransactionApiService - PatronTransactionApiService
-   * @param _userService - UserService
    * @param _patronProfileService - PatronProfileService
+   * @param _patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
     private _patronTransactionApiService: PatronTransactionApiService,
-    private _userService: UserService,
-    private _patronProfileService: PatronProfileService
+    private _patronProfileService: PatronProfileService,
+    private _patronProfileMenuService: PatronProfileMenuService
   ) {}
 
   /** OnInit hook */
@@ -96,6 +95,14 @@ export class PatronProfileFeesComponent implements OnInit, OnDestroy {
         }
       })
     );
+    /** Cleaning up after the change of organization */
+    this._subscription.add(
+      this._patronProfileMenuService.onChange$.subscribe(() => {
+        this.paginator.setRecordsCount(0);
+        this.records = [];
+        this.loaded = false;
+      })
+    );
   }
 
   /** OnDestroy hook */
@@ -110,7 +117,8 @@ export class PatronProfileFeesComponent implements OnInit, OnDestroy {
    * @return Observable
    */
   private _queryFee(page: number, status: string = 'open'): Observable<Record | Error> {
+    const patronPid = this._patronProfileMenuService.currentPatron.pid;
     return this._patronTransactionApiService
-      .getFees(this.user.pid, status, page, this._paginator.getRecordsPerPage());
+      .getFees(patronPid, status, page, this._paginator.getRecordsPerPage());
   }
 }

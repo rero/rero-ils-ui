@@ -14,17 +14,18 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+<ngx-loading-bar [includeSpinner]="false" height="3px"></ngx-loading-bar>
 <ngx-spinner type="ball-spin-clockwise" size="medium"></ngx-spinner>
-<ng-container *ngIf="loaded">
+<ng-container *ngIf="user">
   <header>
-    <admin-menu *ngIf="allowed"></admin-menu>
+    <admin-menu *ngIf="user.isAuthorizedAdminAccess"></admin-menu>
   </header>
-  <div class="container-fluid px-5" *ngIf="allowed; else noaccess">
+  <div class="container-fluid px-5" *ngIf="user.isAuthorizedAdminAccess; else noaccess">
     <router-outlet></router-outlet>
   </div>
   <footer class="rero-ils-footer container-fluid px-5 d-flex justify-content-center align-items-center border-top mt-4 py-4">
     <p class="text-secondary mb-0">
-      {{ 'Developed by' | translate }} <a href="https://www.rero.ch" target="_blank">RERO</a>
+      {{ 'Developed by' | translate }} <a href="https://www.rero.ch" target="_blank">RERO</a>
       {{ 'using' | translate }} <a href="https://inveniosoftware.org" target="_blank">Invenio</a>
     </p>
   </footer>

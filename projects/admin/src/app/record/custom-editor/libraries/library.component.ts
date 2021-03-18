@@ -47,7 +47,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
   private eventForm: Subscription;
 
   /**
-   *
+   * Constructor
    * @param recordService - ng-core eventForm
    * @param libraryForm - LibraryFormService
    * @param route - angular ActivatedRoute
@@ -73,7 +73,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
   /**
    * Component initialization.
    */
-  ngOnInit() {
+  ngOnInit() {
     this.route.params.subscribe( (params) => {
       const loggedUser = this.userService.user;
       if (loggedUser) {

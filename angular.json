@@ -13,6 +13,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "crypto-js"
+            ],
             "preserveSymlinks": true,
             "outputPath": "build/dist/admin",
             "index": "projects/admin/src/index.html",
@@ -126,6 +129,9 @@
         "build": {
           "builder": "ngx-build-plus:build",
           "options": {
+            "allowedCommonJsDependencies": [
+              "crypto-js"
+            ],
             "outputPath": "build/dist/public-holdings-items",
             "index": "projects/public-holdings-items/src/index.html",
             "main": "projects/public-holdings-items/src/main.ts",
@@ -217,6 +223,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "crypto-js",
+              "zone.js"
+            ],
             "preserveSymlinks": true,
             "outputPath": "build/dist/public-search",
             "index": "projects/public-search/src/index.html",
@@ -329,6 +339,9 @@
         "build": {
           "builder": "ngx-build-plus:build",
           "options": {
+            "allowedCommonJsDependencies": [
+              "crypto-js"
+            ],
             "outputPath": "build/dist/search-bar",
             "index": "projects/search-bar/src/index.html",
             "main": "projects/search-bar/src/main.ts",
@@ -460,6 +473,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "crypto-js",
+              "zone.js"
+            ],
             "preserveSymlinks": true,
             "outputPath": "build/dist/public-patron-profile",
             "index": "projects/public-patron-profile/src/index.html",

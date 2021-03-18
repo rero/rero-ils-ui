@@ -16,23 +16,22 @@
  */
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { User, UserService } from '@rero/shared';
+import { testUserLibrarianWithSettings, UserApiService, UserService } from '@rero/shared';
+import { cloneDeep } from 'lodash-es';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-
+import { of } from 'rxjs';
 import { MenuUserComponent } from './menu-user.component';
 
 describe('MenuUserComponent', () => {
   let component: MenuUserComponent;
   let fixture: ComponentFixture<MenuUserComponent>;
+  let userService: UserService;
 
-  const user = new User({
-    first_name: 'first',
-    last_name: 'last'
-  });
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = user;
+  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
+  userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserLibrarianWithSettings)));
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -43,13 +42,17 @@ describe('MenuUserComponent', () => {
       ],
       providers: [
         BsLocaleService,
-        { provide: UserService, useValue: userServiceSpy },
-      ]
+        { provide: UserApiService, useValue: userApiServiceSpy },
+      ],
+      schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
+    userService = TestBed.inject(UserService);
+    userService.load();
+    userService.user.currentLibrary = testUserLibrarianWithSettings.patrons[0].libraries[0].pid;
     fixture = TestBed.createComponent(MenuUserComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

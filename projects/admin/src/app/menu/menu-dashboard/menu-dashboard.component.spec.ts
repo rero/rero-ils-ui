@@ -18,19 +18,18 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { IdAttributePipe, SharedModule, User, UserService } from '@rero/shared';
-
+import { IdAttributePipe, SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
+import { cloneDeep } from 'lodash-es';
+import { of } from 'rxjs';
 import { MenuDashboardComponent } from './menu-dashboard.component';
 
 describe('MenuDashboardComponent', () => {
   let component: MenuDashboardComponent;
   let fixture: ComponentFixture<MenuDashboardComponent>;
+  let userService: UserService;
 
-  const user = new User({
-    currentLibrary: 1
-  });
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = user;
+  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
+  userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -42,15 +41,18 @@ describe('MenuDashboardComponent', () => {
       ],
       providers: [
         IdAttributePipe,
-        { provide: UserService, useValue: userServiceSpy }
+        { provide: UserApiService, useValue: userApiServiceSpy }
       ]
     })
-      .compileComponents();
+    .compileComponents();
+    userService = TestBed.inject(UserService);
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MenuDashboardComponent);
     component = fixture.componentInstance;
+    userService.load();
+    userService.user.currentLibrary = testUserPatronWithSettings.patrons[1].libraries[0].pid;
     fixture.detectChanges();
   });
 

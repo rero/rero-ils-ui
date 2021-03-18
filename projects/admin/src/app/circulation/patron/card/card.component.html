@@ -14,7 +14,6 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <div class="m-0" *ngIf="patron && patron.patron" [ngClass]="{'text-muted': !patron.displayPatronMode}">
   <div class="row">
     <div class="col row">
@@ -41,9 +40,10 @@
           <div class="col-md-6">
             <div id="patron-birth-date">
               <ng-container *ngIf="patron && patron.birth_date">
-                {{ patron.birth_date | dateTranslate:'mediumDate' }} &mdash;
-                ({{ patronAge }} {{ 'years old' | translate}})&nbsp;
+                {{ patron.birth_date | dateTranslate:'mediumDate' }}
+                ({{ patronAge }} {{ 'years old' | translate }})
                 <ng-container *ngIf="isBirthday">
+                  &nbsp;
                   <i class="fa fa-birthday-cake text-warning blink"></i>
                 </ng-container>
               </ng-container>
@@ -56,12 +56,12 @@
             >
               {{ patronTypeName }}
             </div>
-            <div id="patron-barcode">{{ patron.patron.barcode[0]}}</div>
+            <div id="patron-barcode">{{ barcode }}</div>
           </div>
         </div>
       </div>
       <!-- NOTES-->
-      <div *ngIf="patron.notes" class="col alert alert-warning" role="alert">
+      <div *ngIf="patron.notes" class="col mt-2 alert alert-warning" role="alert">
         <ng-container *ngFor="let note of patron.notes">
           <strong class="alert-heading" translate>{{ note.type.toString() }}</strong>
           <p class="mb-0 ml-3" [innerHTML]="note.content | nl2br"></p>
@@ -80,6 +80,4 @@
       </div>
     </ng-container>
   </div>
-
-
 </div>

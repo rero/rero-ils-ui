@@ -15,13 +15,6 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <article *ngIf="currentPatron$ | async as patron">
-  <div *ngIf="canUpdate()" class="float-right">
-    <button [routerLink]="['/records','patrons','edit', patron.pid]"
-      class="btn btn-sm btn-primary ml-1 ng-star-inserted" id="profile-edit-button" title="Edit">
-      <i class="fa fa-pen mr-1"></i>{{ 'Edit' | translate }}
-    </button>
-  </div>
-  <h3 class="mb-3">{{ patron.last_name }} {{ patron.first_name }}</h3>
   <section class="m-2 p-2">
     <!-- USERNAME -->
     <dl class="row mb-0">
@@ -119,13 +112,22 @@
         {{ patron.local_code }}
       </dd>
     </dl>
+    <!-- Keep history -->
+    <dl class="row mb-0">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Keep history</dt>
+      <dd class="col-sm-7 col-md-8 mb-0">
+        <i class="fa" [ngClass]="patron.keep_history ? 'fa-check text-success' : 'fa-times text-danger'"
+          aria-hidden="true">
+        </i>
+      </dd>
+    </dl>
     <button *ngIf="canUpdate()" class="btn btn-sm btn-outline-primary mt-2" id="profile-change-password-button"
       (click)="updatePatronPassword(patron)" title="Change Password">{{ 'Change Password' | translate }}
     </button>
   </section>
 
   <section class="m-2 p-2" *ngIf="patron.second_address">
-    <h5 translate>Second address</h5>
+    <h5 class="mb-0" translate>Second address</h5>
     <!-- STREET -->
     <dl class="row mb-0">
       <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" *ngIf="patron.second_address.street" translate>
@@ -162,7 +164,7 @@
   </section>
 
   <section class="m-2 p-2" *ngIf="patron.isLibrarian">
-    <h5 translate>Librarian Information</h5>
+    <h5 class="mb-0" translate>Librarian Information</h5>
     <!-- LIBRARY -->
     <dl class="row mb-0">
       <dt class="col-sm-3 offset-sm-2 offset-md-0">
@@ -174,7 +176,7 @@
     </dl>
   </section>
   <section class="m-2 p-2" *ngIf="patron.patron">
-    <h5 translate>Patron Information</h5>
+    <h5 class="mb-0" translate>Patron Information</h5>
     <!-- ROLES -->
     <dl class="row mb-0">
       <dt class="col-sm-3 offset-sm-2 offset-md-0">
@@ -207,15 +209,6 @@
         {{ patron.patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
       </dd>
     </dl>
-    <!-- KEEP HISTORY -->
-    <dl class="row mb-0">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Keep history</dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-        <i class="fa" [ngClass]="patron.patron.keep_history ? 'fa-check text-success' : 'fa-times text-danger'"
-          aria-hidden="true">
-        </i>
-      </dd>
-    </dl>
     <!-- ACCOUNT EXPIRATION -->
     <dl class="row mb-0">
       <dt class="col-sm-3 offset-sm-2 offset-md-0">
@@ -236,4 +229,10 @@
       </dd>
     </dl>
   </section>
+
+  <button *ngIf="canUpdate()" [routerLink]="['/records','patrons','edit', patron.pid]"
+    class="btn btn-sm btn-primary ml-3 ng-star-inserted" id="profile-edit-button" title="{{ 'Edit' | translate }}">
+    <i class="fa fa-pen mr-1"></i>{{ 'Edit' | translate }}
+  </button>
+
 </article>

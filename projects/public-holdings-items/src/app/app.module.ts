@@ -24,6 +24,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { FormlyModule } from '@ngx-formly/core';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CoreConfigService, CoreModule, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
@@ -74,7 +76,9 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
       isolate: false
     }),
     TypeaheadModule.forRoot(),
-    SharedModule
+    SharedModule,
+    LoadingBarHttpClientModule,
+    LoadingBarModule
   ],
   providers: [
     { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },

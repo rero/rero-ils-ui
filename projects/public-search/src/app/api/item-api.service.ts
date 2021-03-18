@@ -64,11 +64,15 @@ export class ItemApiService extends BaseApi {
   /**
    * Item Can request
    * @param itemPid - string
+   * @param libraryPid - string
    * @param patronBarcode - string
    * @return Observable
    */
-  canRequest(itemPid: string, patronBarcode: string): Observable<any> {
-    return this._httpClient.get<any>(`/api/item/${itemPid}/can_request?patron_barcode=${patronBarcode}`);
+  canRequest(itemPid: string, libraryPid: string, patronBarcode: string): Observable<any> {
+    return this._httpClient
+      .get<any>(
+        `/api/item/${itemPid}/can_request?library_pid=${libraryPid}&patron_barcode=${patronBarcode}`
+      );
   }
 
   /**
@@ -76,7 +80,7 @@ export class ItemApiService extends BaseApi {
    * @param data - Object
    * @return Obserable
    */
-  request(data: object): Observable<any> {
-    return this._httpClient.post('/api/item/request', data);
+  request(data: { item_pid: string, pickup_location_pid: string }): Observable<any> {
+    return this._httpClient.post('/api/item/patron_request', data);
   }
 }

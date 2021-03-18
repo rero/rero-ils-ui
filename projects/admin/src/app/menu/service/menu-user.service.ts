@@ -17,7 +17,7 @@
 
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { MenuFactory, MenuItem, MenuItemInterface } from '@rero/ng-core';
+import { MenuFactory, MenuItemInterface } from '@rero/ng-core';
 import { User, UserService } from '@rero/shared';
 import { MenuBase } from './menu-base';
 

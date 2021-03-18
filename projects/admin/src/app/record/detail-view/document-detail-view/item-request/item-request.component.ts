@@ -23,7 +23,7 @@ import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { UserService } from '@rero/shared';
+import { User, UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { debounceTime, map, shareReplay } from 'rxjs/operators';
 import { ItemsService } from '../../../../service/items.service';
@@ -63,7 +63,7 @@ export class ItemRequestComponent implements OnInit {
   private pickupDefaultValue: string;
 
   /** Current user */
-  private currentUser: any;
+  private currentUser: User;
 
   /**
    * Constructor
@@ -113,7 +113,7 @@ export class ItemRequestComponent implements OnInit {
       pickup_location_pid: model.pickupPid,
       patron_pid: this.patron.pid,
       transaction_library_pid: this.currentUser.currentLibrary,
-      transaction_user_pid: this.currentUser.pid
+      transaction_user_pid: this.currentUser.patronLibrarian.pid
     };
     this._http.post('/api/item/request', body).subscribe(
       () => {

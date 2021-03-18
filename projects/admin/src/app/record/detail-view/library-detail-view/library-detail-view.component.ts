@@ -43,14 +43,17 @@ export class LibraryDetailViewComponent implements DetailRecord, OnInit, OnDestr
   /** Is the current logged user can add locations */
   isUserCanAddLocation = false;
 
+  /**
+   * Constructor
+   * @param _recordService - RecordService
+   * @param _userService - UserService
+   */
   constructor(
     private _recordService: RecordService,
     private _userService: UserService
   ) { }
 
-  /**
-   * Init
-   */
+  /** OnInit hook */
   ngOnInit() {
     // Load linked locations
     this._recordObs = this.record$.subscribe(
@@ -70,14 +73,12 @@ export class LibraryDetailViewComponent implements DetailRecord, OnInit, OnDestr
           .subscribe((record: Record) => {
             this.locations = record.hits.hits || [];
           });
-        this.isUserCanAddLocation = this._userService.user.getCurrentLibrary() === libraryPid;
+        this.isUserCanAddLocation = this._userService.user.currentLibrary === libraryPid;
       }
     );
   }
 
-  /**
-   * Destroy
-   */
+  /** OnDestroy hook */
   ngOnDestroy(): void {
     this._recordObs.unsubscribe();
   }

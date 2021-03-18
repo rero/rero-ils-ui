@@ -127,7 +127,7 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
       $ref: this._routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation)
     };
     data.creator = {
-      $ref: this._routeToolService.apiService.getRefEndpoint('patrons', user.pid)
+      $ref: this._routeToolService.apiService.getRefEndpoint('patrons', user.patronLibrarian.pid)
     };
     return data;
   }

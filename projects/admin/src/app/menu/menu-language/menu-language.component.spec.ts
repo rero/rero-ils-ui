@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
@@ -34,6 +35,9 @@ describe('MenuLanguageComponent', () => {
       ],
       providers: [
         BsLocaleService
+      ],
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
       ]
     })
     .compileComponents();

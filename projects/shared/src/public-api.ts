@@ -20,7 +20,6 @@
  */
 
 export * from './lib/api/user-api.service';
-export * from './lib/class/ContextSettings.interface';
 export * from './lib/class/item-status';
 export * from './lib/class/user';
 export * from './lib/paginator/paginator';
@@ -37,9 +36,8 @@ export * from './lib/pipe/main-title.pipe';
 export * from './lib/pipe/patron-blocked-message.pipe';
 export * from './lib/pipe/provision-activity.pipe';
 export * from './lib/pipe/url-active.pipe';
-export * from './lib/service/logged-user.service';
+export * from './lib/service/app-settings.service';
 export * from './lib/service/search-bar-config.service';
-export * from './lib/service/shared-config.service';
 export * from './lib/service/user.service';
 export * from './lib/shared.module';
 export * from './lib/view/brief/contribution-brief/contribution-brief.component';
@@ -49,3 +47,4 @@ export * from './lib/view/brief/part-of/part-of.component';
 export * from './lib/view/brief/person-brief/person-brief.component';
 export * from './lib/view/inherited-call-number/inherited-call-number.component';
 export * from './lib/view/thumbnail/thumbnail.component';
+export * from './tests/user';

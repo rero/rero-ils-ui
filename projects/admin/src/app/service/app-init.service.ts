@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { LocalStorageService, TranslateService } from '@rero/ng-core';
-import { LoggedUserService, SharedConfigService, User, UserService } from '@rero/shared';
+import { TranslateService } from '@rero/ng-core';
+import { AppSettingsService, User, UserService } from '@rero/shared';
 import { LibrarySwitchMenuService } from '../menu/service/library-switch-menu.service';
 import { LibrarySwitchService } from '../menu/service/library-switch.service';
 import { AppConfigService } from './app-config.service';
@@ -34,23 +34,20 @@ export class AppInitService {
    * @param _appConfigService - AppConfigService
    * @param _translateService - TranslateService
    * @param _organisationService - OrganisationService
-   * @param _localeStorageService - LocalStorageService
    * @param _librarySwitchService - LibrarySwitchService
-   * @param _loggedUserService - LoggedUserService
-   * @param _sharedConfigService - SharedConfigService
+   * @param _librarySwitchMenuService - LibrarySwitchMenuService
    * @param _typeaheadFactoryService - TypeaheadFactoryService
+   * @param _appSettingsService - AppSettingsService
    */
   constructor(
     private _userService: UserService,
     private _appConfigService: AppConfigService,
     private _translateService: TranslateService,
     private _organisationService: OrganisationService,
-    private _localeStorageService: LocalStorageService,
     private _librarySwitchService: LibrarySwitchService,
     private _librarySwitchMenuService: LibrarySwitchMenuService,
-    private _loggedUserService: LoggedUserService,
-    private _sharedConfigService: SharedConfigService,
-    private _typeaheadFactoryService: TypeaheadFactoryService
+    private _typeaheadFactoryService: TypeaheadFactoryService,
+    private _appSettingsService: AppSettingsService
   ) { }
 
   /**
@@ -59,32 +56,31 @@ export class AppInitService {
   load() {
     return new Promise((resolve) => {
       this._typeaheadFactoryService.init();
-      this._userService.init();
-      this._sharedConfigService.init();
-      this._loggedUserService.load();
-      this._loggedUserService.onLoggedUserLoaded$.subscribe((data: any) => {
-        this._appConfigService.setSettings(data.settings);
+      this._userService.loaded$.subscribe((user: User) => {
         this.initTranslateService();
-        // User is logged
-        if (data.metadata) {
-          if (this._userService.allowAdminInterfaceAddess) {
-            this.initializeLocaleStorage();
-            this._librarySwitchMenuService.init();
-            const userLocale = this._localeStorageService.get(User.STORAGE_KEY);
-            this._organisationService.loadOrganisationByPid(
-              userLocale.libraries[0].organisation.pid
-            );
-            this._librarySwitchService.switch(userLocale.currentLibrary);
-          }
+        if (user.isAuthorizedAdminAccess) {
+          this._librarySwitchMenuService.init();
+          // Set current library and organisation
+          // for librarian or system_librarian roles
+          const library = user.patronLibrarian.libraries[0];
+          user.currentLibrary = library.pid;
+          user.currentOrganisation = library.organisation.pid;
+          this._organisationService.loadOrganisationByPid(
+            user.patronLibrarian.libraries[0].organisation.pid
+          );
+          this.initializeLocaleStorage(user);
+          const userLocale = this._userService.getOnLocaleStorage();
+          this._librarySwitchService.switch(userLocale.currentLibrary);
         }
       });
+      this._userService.load();
       resolve(true);
     });
   }
 
   /** Initialize Translate Service */
-  private initTranslateService() {
-    const language = this._appConfigService.getSettings().language;
+  private initTranslateService(): void {
+    const language = this._appSettingsService.settings.language;
     if (language) {
       this._translateService.setLanguage(language);
     } else {
@@ -96,21 +92,21 @@ export class AppInitService {
     }
   }
 
-  /** Initialize locale storage */
-  private initializeLocaleStorage() {
-    const user = this._userService.user;
-    if (!this._localeStorageService.has(User.STORAGE_KEY)) {
-      user.setCurrentLibrary(user.libraries[0].pid);
-      this._localeStorageService.set(User.STORAGE_KEY, user);
+  /**
+   * Initialize locale storage
+   * @param user - User
+   */
+  private initializeLocaleStorage(user: User): void {
+    if (!this._userService.hasOnLocaleStorage()) {
+      this._userService.setOnLocaleStorage(user);
     } else {
-      const userLocal = this._localeStorageService.get(User.STORAGE_KEY);
-      if (userLocal.pid !== user.pid) {
-        user.setCurrentLibrary(user.libraries[0].pid);
-        this._localeStorageService.set(User.STORAGE_KEY, user);
-      } else {
-        const locale = this._localeStorageService.get(User.STORAGE_KEY);
-        user.setCurrentLibrary(locale.currentLibrary);
+      let userLocale = this._userService.getOnLocaleStorage();
+      if (userLocale.id !== user.id) {
+        userLocale = this._userService.setOnLocaleStorage(user);
       }
+      // Store current values for library switch
+      user.currentLibrary = userLocale.currentLibrary;
+      user.currentOrganisation = userLocale.currentOrganisation;
     }
   }
 }

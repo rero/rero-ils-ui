@@ -16,12 +16,15 @@
  */
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreConfigService } from '@rero/ng-core';
-import { IdAttributePipe, SharedModule, User, UserService } from '@rero/shared';
+import { IdAttributePipe, SharedModule, testUserLibrarianWithSettings, UserApiService, UserService } from '@rero/shared';
+import { of } from 'rxjs';
 import { LibrarySwitchMenuService } from '../service/library-switch-menu.service';
+import { LibrarySwitchService } from '../service/library-switch.service';
 import { MenuMobileComponent } from './menu-mobile.component';
 import { SubMenuComponent } from './sub-menu/sub-menu.component';
 
@@ -30,21 +33,15 @@ describe('MenuMobileComponent', () => {
   let component: MenuMobileComponent;
   let fixture: ComponentFixture<MenuMobileComponent>;
   let translate: TranslateService;
+  let userService: UserService;
+  let librarySwitchMenuService: LibrarySwitchMenuService;
+  let librarySwitchService: LibrarySwitchService;
 
-  const user = new User({
-    first_name: 'first',
-    last_name: 'last',
-    roles: ['system_librarian'],
-    currentLibrary: 1
-  });
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = user;
+  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
+  userApiServiceSpy.getLoggedUser.and.returnValue(of(testUserLibrarianWithSettings));
 
   const configServiceSpy = jasmine.createSpyObj('CoreConfigService', ['']);
   configServiceSpy.languages = ['fr', 'de'];
-
-  const librarySwitchMenuServiceSpy = jasmine.createSpyObj('LibrarySwitchMenuService', ['']);
-  librarySwitchMenuServiceSpy._user = user;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -61,15 +58,24 @@ describe('MenuMobileComponent', () => {
       providers: [
         IdAttributePipe,
         TranslateService,
-        { provide: LibrarySwitchMenuService, useValue: librarySwitchMenuServiceSpy },
-        { provide: UserService, useValue: userServiceSpy },
+        { provide: UserApiService, useValue: userApiServiceSpy },
         { provide: CoreConfigService, useValue: configServiceSpy }
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
+    librarySwitchMenuService = TestBed.inject(LibrarySwitchMenuService);
+    librarySwitchMenuService.init();
+    userService = TestBed.inject(UserService);
+    userService.load();
+    const currentLibrary = testUserLibrarianWithSettings.patrons[0].libraries[0].pid;
+    userService.user.currentLibrary = currentLibrary;
+    userService.user.currentOrganisation = testUserLibrarianWithSettings.patrons[0].organisation.pid;
+    librarySwitchService = TestBed.inject(LibrarySwitchService);
+    librarySwitchService.switch(currentLibrary);
     translate = TestBed.inject(TranslateService);
     translate.use('en');
     fixture = TestBed.createComponent(MenuMobileComponent);

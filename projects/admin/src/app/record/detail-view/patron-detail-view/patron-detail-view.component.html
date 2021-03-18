@@ -17,25 +17,23 @@
 
 <ng-container *ngIf="patron">
   <!-- BIRTH DATE -->
-  <h1 class="mb-3">{{ patron.last_name }} {{ patron.first_name }}</h1>
-  <b class="label-title" translate>
-    Date of birth
-  </b>
+  <h1 class="mb-1">{{ patron.last_name }} {{ patron.first_name }}</h1>
+  <span class="font-weight-bold label-title" translate>Date of birth</span>
   {{ patron.birth_date | dateTranslate:'mediumDate' }}
 
   <!-- BLOCKED OR NOT? -->
-  <div *ngIf="patron | patronBlockedMessage as message" class="alert alert-danger" role="alert">
+  <div *ngIf="patron | patronBlockedMessage as message" class="mt-2 alert alert-danger" role="alert">
     {{ message }}
   </div>
   <!-- NOTES-->
-  <div *ngIf="notes && notes.length > 0" class="alert alert-warning" role="alert">
+  <div *ngIf="notes && notes.length > 0" class="mt-2 alert alert-warning" role="alert">
     <ng-container *ngFor="let note of notes">
       <strong class="alert-heading">{{ note.type | translate }}</strong>
       <p class="mb-0" [innerHTML]="note.content"></p>
     </ng-container>
   </div>
-  <article>
-    <section class="m-2 p-2">
+  <article class="mt-2">
+    <section>
       <!-- USERNAME -->
       <dl class="row mb-0">
         <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
@@ -114,6 +112,15 @@
           {{ patron.email }}
         </dd>
       </dl>
+      <!-- KEEP HISTORY -->
+      <dl class="row mb-0">
+        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Keep history</dt>
+        <dd class="col-sm-7 col-md-8 mb-0">
+          <i class="fa" [ngClass]="patron.keep_history ? 'fa-check text-success' : 'fa-times text-danger'"
+            aria-hidden="true">
+          </i>
+        </dd>
+      </dl>
       <!-- SOURCE -->
       <dl *ngIf="patron.source" class="row mb-0">
         <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
@@ -134,8 +141,8 @@
       </dl>
     </section>
 
-    <section class="m-2 p-2" *ngIf="patron.second_address">
-      <h5 translate>Second address</h5>
+    <section class="mt-3" *ngIf="patron.second_address">
+      <h5 class="mb-0" translate>Second address</h5>
       <!-- STREET -->
       <dl class="row mb-0">
         <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title"
@@ -174,8 +181,8 @@
       </dl>
     </section>
 
-    <section class="m-2 p-2" *ngIf="patron.isLibrarian">
-      <h5 translate>Librarian Information</h5>
+    <section class="mt-3" *ngIf="patron.isLibrarian">
+      <h5 class="mb-0" translate>Librarian Information</h5>
       <!-- LIBRARY -->
       <dl class="row mb-0">
         <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
@@ -196,8 +203,8 @@
       </dl>
     </section>
 
-    <section class="m-2 p-2" *ngIf="patron.patron">
-      <h5 translate>Patron Information</h5>
+    <section class="mt-3" *ngIf="patron.patron">
+      <h5 class="mb-0" translate>Patron Information</h5>
       <!-- BARCODE -->
       <dl class="row mb-0">
         <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
@@ -229,15 +236,6 @@
           {{ patron.patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
         </dd>
       </dl>
-      <!-- KEEP HISTORY -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Keep history</dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          <i class="fa" [ngClass]="patron.patron.keep_history ? 'fa-check text-success' : 'fa-times text-danger'"
-            aria-hidden="true">
-          </i>
-        </dd>
-      </dl>
       <!-- ACCOUNT EXPIRATION -->
       <dl class="row mb-0">
         <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
@@ -257,7 +255,6 @@
           </div>
         </dd>
       </dl>
-
     </section>
   </article>
 

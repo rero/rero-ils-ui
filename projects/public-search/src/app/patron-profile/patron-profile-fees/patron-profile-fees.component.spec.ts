@@ -19,23 +19,20 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
+import { testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
+import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
-import { UserService } from '../../user.service';
+import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { PatronProfileService } from '../patron-profile.service';
 import { PatronProfileFeesComponent } from './patron-profile-fees.component';
-
 
 describe('PatronProfileFeeComponent', () => {
   let component: PatronProfileFeesComponent;
   let fixture: ComponentFixture<PatronProfileFeesComponent>;
   let patronProfileService: PatronProfileService;
-
-  const user = {
-    organisation: {
-      currency: 'EUR'
-    }
-  };
+  let patronProfileMenuService: PatronProfileMenuService;
+  let userService: UserService;
 
   const apiResponse = {
     aggregations: {},
@@ -58,8 +55,8 @@ describe('PatronProfileFeeComponent', () => {
   const patronTransactionApiServiceSpy = jasmine.createSpyObj('PatronTransactionApiService', ['getFees']);
   patronTransactionApiServiceSpy.getFees.and.returnValue(of(apiResponse));
 
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = user;
+  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
+  userApiServiceSpy.getLoggedUser.and.returnValue(of(testUserPatronWithSettings));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -70,7 +67,7 @@ describe('PatronProfileFeeComponent', () => {
         CoreModule
       ],
       providers: [
-        { provide: UserService, useValue: userServiceSpy },
+        { provide: UserApiService, useValue: userApiServiceSpy },
         { provide: PatronTransactionApiService, useValue: patronTransactionApiServiceSpy }
       ],
       schemas: [NO_ERRORS_SCHEMA]
@@ -79,10 +76,15 @@ describe('PatronProfileFeeComponent', () => {
   });
 
   beforeEach(() => {
-    patronProfileService = TestBed.inject(PatronProfileService);
     fixture = TestBed.createComponent(PatronProfileFeesComponent);
+    patronProfileService = TestBed.inject(PatronProfileService);
     component = fixture.componentInstance;
     component.feesTotal = 12.50;
+    userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
+    patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
+    patronProfileMenuService.init();
+    userService = TestBed.inject(UserService);
+    userService.load();
     fixture.detectChanges();
   });
 

@@ -18,43 +18,23 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { User, UserService } from '@rero/shared';
-import { LibrarySwitchService, LibrarySwitchError } from './library-switch.service';
+import { UserApiService } from '@rero/shared';
+import { LibrarySwitchService } from './library-switch.service';
 
 describe('LibrarySwitchService', () => {
-
   let librarySwitchService: LibrarySwitchService;
 
-  const user = new User({
-    roles: ['librarian'],
-    currentLibrary: 1,
-    libraries: [
-      {
-        pid: 1,
-        organisation: {
-          pid: 1
-        }
-      },
-      {
-        pid: 2,
-        organisation: {
-          pid: 2
-        }
-      }
-    ]
-  });
-
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = user;
+  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        RouterTestingModule
+        RouterTestingModule,
+        HttpClientTestingModule
       ],
       providers: [
-        { provide: UserService, useValue: userServiceSpy }
+        { provide: UserApiService, useValue: userApiServiceSpy }
       ]
     });
     librarySwitchService = TestBed.inject(LibrarySwitchService);
@@ -64,30 +44,4 @@ describe('LibrarySwitchService', () => {
     expect(librarySwitchService).toBeTruthy();
   });
 
-  it('should be able to switch libraries', () => {
-    if (user.hasRole('system_librarian')) {
-      user.roles = user.roles.filter((role: string) => role !== 'system_librarian');
-    }
-    librarySwitchService.librarySwitch$.subscribe((u: User) => {
-      expect(u.currentLibrary).toEqual('2');
-    });
-    librarySwitchService.switch('2');
-  });
-
-  it('should be able to switch libraries (system librarian).', () => {
-    user.roles.push('system_librarian');
-    librarySwitchService.librarySwitch$.subscribe((u: User) => {
-      expect(u.currentLibrary).toEqual('4');
-    });
-    librarySwitchService.switch('4');
-  });
-
-  it('should have an exception if the library does not exist in the list (librarian).', () => {
-    if (user.hasRole('system_librarian')) {
-      user.roles = user.roles.filter((role: string) => role !== 'system_librarian');
-    }
-    expect(() => {
-      librarySwitchService.switch('3');
-    }).toThrowError(LibrarySwitchError);
-  });
 });

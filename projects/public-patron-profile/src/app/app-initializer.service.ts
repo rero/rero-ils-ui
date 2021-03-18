@@ -16,8 +16,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { LoggedUserService } from '@rero/shared';
-import { UserService } from 'projects/public-search/src/app/user.service';
+import { UserService } from '@rero/shared';
+import { PatronProfileMenuService } from 'projects/public-search/src/app/patron-profile/patron-profile-menu.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,19 +26,19 @@ export class AppInitializerService {
 
   /**
    * Constructor
-   * @param _loggedUserService - LoggedUserService
    * @param _userService - UserService
+   * @param _patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
-    private _loggedUserService: LoggedUserService,
-    private _userService: UserService
+    private _userService: UserService,
+    private _patronProfileMenuService: PatronProfileMenuService
   ) { }
 
   /** Load */
   load() {
     return new Promise((resolve) => {
-      this._userService.init();
-      this._loggedUserService.load();
+      this._patronProfileMenuService.init();
+      this._userService.load();
       resolve(true);
     });
   }

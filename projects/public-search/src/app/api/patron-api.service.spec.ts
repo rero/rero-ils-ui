@@ -50,7 +50,7 @@ describe('PatronApiService', () => {
   });
 
   it('should return user messages', () => {
-    service.getMessages().subscribe((response: any) => {
+    service.getMessages('4').subscribe((response: any) => {
       expect(response).toEqual(messages);
     });
   });

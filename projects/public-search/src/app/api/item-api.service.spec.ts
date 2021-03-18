@@ -20,7 +20,6 @@ import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { QueryResponse } from '../record';
-import { HoldingsApiService } from './holdings-api.service';
 import { ItemApiService } from './item-api.service';
 
 
@@ -96,13 +95,13 @@ describe('ItemService', () => {
   });
 
   it('should return item can request', () => {
-    service.canRequest('1', 'xxxxxxxx').subscribe((result: any) => {
+    service.canRequest('1', '1', 'xxxxxxxx').subscribe((result: any) => {
       expect(result).toEqual(canRequest);
     });
   });
 
   it('should return a result of request', () => {
-    service.request({}).subscribe((result: any) => {
+    service.request({ item_pid: '1', pickup_location_pid: '1' }).subscribe((result: any) => {
       expect(result).toEqual(request);
     });
   });

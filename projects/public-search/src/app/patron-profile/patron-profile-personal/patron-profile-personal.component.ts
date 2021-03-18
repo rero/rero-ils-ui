@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
+import { IPatron } from '@rero/shared';
 
 @Component({
   selector: 'public-search-patron-profile-personal',
@@ -22,6 +23,10 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./patron-profile-personal.component.scss']
 })
 export class PatronProfilePersonalComponent {
+
   /** User record */
-  @Input() record: any;
+  @Input() user: any;
+
+  /** patron record */
+  @Input() patron: IPatron;
 }

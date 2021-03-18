@@ -17,6 +17,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
+import { AppSettingsService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { HoldingsApiService } from '../../api/holdings-api.service';
 import { QueryResponse } from '../../record';
@@ -73,14 +74,18 @@ export class HoldingsComponent implements OnInit {
    * Constructor
    * @param _holdingsApiService - HoldingsApiService
    * @param _translateService - TranslateService
+   * @param _appSettingsService - AppSettingsService
    */
   constructor(
     private _holdingsApiService: HoldingsApiService,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
+    private _appSettingsService: AppSettingsService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
+    // Set view code to app settings
+    this._appSettingsService.currentViewCode = this.viewcode;
     this._HoldingsQuery(1).subscribe((response: QueryResponse) => {
       this.holdingsTotal = response.total.value;
       this.holdings = response.hits;

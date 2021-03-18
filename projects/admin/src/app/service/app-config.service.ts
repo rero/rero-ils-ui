@@ -17,17 +17,12 @@
 
 import { Injectable } from '@angular/core';
 import { CoreConfigService } from '@rero/ng-core';
-
 import { environment } from '../../environments/environment';
-import { throwError } from 'rxjs';
-import { IContextSettings } from '@rero/shared';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppConfigService extends CoreConfigService {
-
-  private settings: IContextSettings;
 
   public adminRoles: Array<string>;
 
@@ -47,20 +42,5 @@ export class AppConfigService extends CoreConfigService {
     this.sessionExpiredSeconds = environment.sessionExpiredSeconds;
     this.translationsURLs = environment.translationsURLs;
     this.librarySwitchCheckParamsUrl = environment.librarySwitchCheckParamsUrl;
-  }
-
-  public setSettings(settings: IContextSettings) {
-    this.settings = settings;
-  }
-
-  public getSettings() {
-    return this.settings;
-  }
-
-  public getSetting(name: string) {
-    if (!(name in this.settings)) {
-      return throwError('Missing setting key: ' + name);
-    }
-    return this.settings[name];
   }
 }

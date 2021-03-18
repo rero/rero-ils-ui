@@ -18,7 +18,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
-import { SharedConfigService } from '@rero/shared';
+import { AppSettingsService } from '@rero/shared';
 import { MefTypeahead } from './mef-typeahead';
 
 @Injectable({
@@ -28,12 +28,12 @@ export class MefPersonTypeahead extends MefTypeahead {
   constructor(
     protected _recordService: RecordService,
     protected _translateService: TranslateService,
-    protected _sharedConfigService: SharedConfigService
+    protected _appSettingsService: AppSettingsService
   ) {
     super(
       _recordService,
       _translateService,
-      _sharedConfigService
+      _appSettingsService
     );
     this.name = 'mef-persons';
     this.type = 'Person';

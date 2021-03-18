@@ -19,17 +19,19 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
-import { MainTitlePipe } from '@rero/shared';
+import { MainTitlePipe, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
+import { cloneDeep } from 'lodash-es';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { of } from 'rxjs';
 import { PatronTransactionEventApiService } from '../../../api/patron-transaction-event-api.service';
-import { UserService } from '../../../user.service';
+import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 import { PatronProfileFeeComponent } from './patron-profile-fee.component';
-
 
 describe('PatronProfileFeeComponent', () => {
   let component: PatronProfileFeeComponent;
   let fixture: ComponentFixture<PatronProfileFeeComponent>;
+  let userService: UserService;
+  let patronProfileMenuService: PatronProfileMenuService;
 
   const record = {
     metadata: {
@@ -76,15 +78,7 @@ describe('PatronProfileFeeComponent', () => {
     links: {}
   };
 
-  const user = {
-    organisation: {
-      code: 'org1',
-      currency: 'EUR'
-    }
-  };
-
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = user;
+  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
 
   const patronTransactionEventsApiServiceSpy = jasmine.createSpyObj('PatronTransactionEventApiService', ['getEvents']);
   patronTransactionEventsApiServiceSpy.getEvents.and.returnValue(of(apiResponse));
@@ -102,8 +96,8 @@ describe('PatronProfileFeeComponent', () => {
       ],
       providers: [
         BsLocaleService,
-        { provide: UserService, useValue: userServiceSpy },
-        { provide: PatronTransactionEventApiService, useValue: patronTransactionEventsApiServiceSpy}
+        { provide: PatronTransactionEventApiService, useValue: patronTransactionEventsApiServiceSpy },
+        { provide: UserApiService, useValue: userApiServiceSpy }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
@@ -116,6 +110,11 @@ describe('PatronProfileFeeComponent', () => {
     component.record = record;
     component.isCollapsed = false;
     component.expanded('1');
+    userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
+    patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
+    patronProfileMenuService.init();
+    userService = TestBed.inject(UserService);
+    userService.load();
     fixture.detectChanges();
   });
 
@@ -132,7 +131,7 @@ describe('PatronProfileFeeComponent', () => {
 
     const divs = fixture.nativeElement.querySelectorAll('div > div');
     expect(divs[2].textContent).toContain('fee-type');
-    expect(divs[3].textContent).toContain('€2.50');
+    expect(divs[3].textContent).toContain('CHF2.50');
 
     const note = fixture.nativeElement.querySelector('#fee-note-1');
     expect(note.textContent).toContain('Note record note');
@@ -150,7 +149,7 @@ describe('PatronProfileFeeComponent', () => {
 
     event = fixture.nativeElement.querySelectorAll('#fee-1-transaction .event-content > div > div');
     expect(event[0].textContent).toContain('subscription  [sub]');
-    expect(event[1].textContent).toContain('€10.00');
+    expect(event[1].textContent).toContain('CHF10.00');
 
     event = fixture.nativeElement
       .querySelector('#fee-1-transaction .event-content > div > div:nth-child(3) > div:nth-child(2)');

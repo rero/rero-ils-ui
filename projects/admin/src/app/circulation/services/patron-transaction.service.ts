@@ -175,7 +175,7 @@ export class PatronTransactionService {
         $ref: this._routeToolService.apiService.getRefEndpoint('patron_transactions', transaction.pid)
       },
       operator: {
-        $ref: this._routeToolService.apiService.getRefEndpoint('patrons', currentUser.pid)
+        $ref: this._routeToolService.apiService.getRefEndpoint('patrons', currentUser.patronLibrarian.pid)
       },
       library: {
         $ref: this._routeToolService.apiService.getRefEndpoint('libraries', currentUser.currentLibrary)

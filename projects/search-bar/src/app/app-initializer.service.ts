@@ -16,7 +16,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { LoggedUserService, SharedConfigService } from '@rero/shared';
+import { UserService } from '@rero/shared';
 
 @Injectable({
   providedIn: 'root'
@@ -25,20 +25,17 @@ export class AppInitializerService {
 
   /**
    * Constructor
-   * @param _loggedUserService - LoggedUserService
-   * @param _sharedConfigService - SharedConfigService
+   * @param _userService - UserService
    */
   constructor(
-    private _loggedUserService: LoggedUserService,
-    private _sharedConfigService: SharedConfigService
+    private _userService: UserService
   ) { }
 
   /** Load */
   load() {
     return new Promise((resolve) => {
-      this._sharedConfigService.init();
-      this._loggedUserService.load();
-      resolve();
+      this._userService.load();
+      resolve(true);
     });
   }
 }

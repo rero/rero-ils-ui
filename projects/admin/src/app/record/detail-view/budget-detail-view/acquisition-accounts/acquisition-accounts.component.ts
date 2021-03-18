@@ -75,7 +75,7 @@ export class AcquisitionAccountsComponent implements OnInit {
    * Load acquisition accounts for current budget
    */
   private _loadAcqAccounts() {
-    const currentLibrary = this._userService.user.getCurrentLibrary();
+    const currentLibrary = this._userService.user.currentLibrary;
     const query = `budget.pid:${this.budgetPid} AND library.pid:${currentLibrary}`;
     this._recordService
         .getRecords('acq_accounts', query, 1, RecordService.MAX_REST_RESULTS_SIZE)

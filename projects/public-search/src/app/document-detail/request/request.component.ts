@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnInit } from '@angular/core';
+import { IPatron, UserService } from '@rero/shared';
 import { ItemApiService } from '../../api/item-api.service';
-import { UserService } from '../../user.service';
 
 @Component({
   selector: 'public-search-request',
@@ -39,9 +39,12 @@ export class RequestComponent implements OnInit {
   /** Request dialog */
   requestDialog = false;
 
+  /** current patron */
+  private _patron: IPatron;
+
   /** Patron is logged */
-  get userLogged() {
-    return this._userService.user !== undefined;
+  get patron() {
+    return this._patron !== undefined;
   }
 
   /**
@@ -56,14 +59,17 @@ export class RequestComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    if (
-      this._userService.user !== undefined
-      && 'patron' in this._userService.user
-    ) {
-      this._itemApiService.canRequest(
-        this.item.metadata.pid,
-        this._userService.user.patron.barcode[0]
-      ).subscribe((can: any) => this.canRequest = can);
+    if (this._userService.user) {
+      this._patron = this._userService.user.getPatronByOrganisationPid(
+        this.item.metadata.organisation.pid
+      );
+      if (this._patron) {
+        this._itemApiService.canRequest(
+          this.item.metadata.pid,
+          this.item.metadata.library.pid,
+          this._patron.patron.barcode[0],
+        ).subscribe((can: any) => this.canRequest = can );
+      }
     }
   }
 

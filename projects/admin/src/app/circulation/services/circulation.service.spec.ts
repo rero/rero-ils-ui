@@ -14,32 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
-import { LoggedUserService } from '@rero/shared';
-import { map } from 'rxjs/operators';
+import { TestBed } from '@angular/core/testing';
+import { CirculationService } from './circulation.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class UserService {
 
-  /** Current user loggegd */
-  private currentUser: any;
+describe('CirculationService', () => {
+  let service: CirculationService;
 
-  /** Get user */
-  get user() {
-    return this.currentUser;
-  }
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(CirculationService);
+  });
 
-  /**
-   * Constructor
-   * @param _loggedUserService - LoggedUserService
-   */
-  constructor(private _loggedUserService: LoggedUserService) {}
-
-  init() {
-    this._loggedUserService.onLoggedUserLoaded$
-      .pipe(map(data => data.metadata ? data.metadata : undefined))
-      .subscribe(user => this.currentUser = user);
-  }
-}
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});

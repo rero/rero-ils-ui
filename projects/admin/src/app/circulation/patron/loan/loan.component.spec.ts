@@ -25,6 +25,7 @@ import { UserService } from '@rero/shared';
 import { PatronService } from '../../../service/patron.service';
 import { CirculationModule } from '../../circulation.module';
 import { LoanComponent } from './loan.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 
 describe('LoanComponent', () => {
@@ -43,6 +44,9 @@ describe('LoanComponent', () => {
       providers: [
         { provide: UserService, useValue: userTestingService },
         { provide: PatronService, useValue: patronTestingService }
+      ],
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
       ]
     })
     .compileComponents();

@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable, Subscription } from 'rxjs';
-import { User } from '@rero/shared';
 import { OperationLogsService } from '../../../service/operation-logs.service';
 
 @Component({
@@ -31,7 +31,7 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
   record$: Observable<any>;
 
   /** Current displayed/used patron */
-  patron: User;
+  patron: any;
 
   /** record type */
   type: string;
@@ -65,7 +65,7 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
    */
   ngOnInit() {
     this._subscription$ = this.record$.subscribe(record => {
-      this.patron = new User(record.metadata);
+      this.patron = record.metadata;
     });
   }
 

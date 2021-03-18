@@ -18,6 +18,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiService } from '@rero/ng-core';
+import { Observable } from 'rxjs';
 import { User } from '../class/user';
 
 @Injectable({
@@ -43,7 +44,7 @@ export class UserApiService {
    * Get logged user
    * @return Observable
    */
-  getLoggedUser() {
+  getLoggedUser(): Observable<any> {
     return this._httpClient.get<any>(User.LOGGED_URL);
   }
 

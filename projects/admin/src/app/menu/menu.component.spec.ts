@@ -15,32 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreModule, TruncateTextPipe } from '@rero/ng-core';
-import { MainTitlePipe, User, UserService } from '@rero/shared';
+import { MainTitlePipe, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+import { of } from 'rxjs';
 import { MenuComponent } from './menu.component';
-import { LibrarySwitchMenuService } from './service/library-switch-menu.service';
 
 describe('MenuComponent', () => {
   let component: MenuComponent;
   let fixture: ComponentFixture<MenuComponent>;
   let translate: TranslateService;
+  let userService: UserService;
 
-  const user = new User({
-    first_name: 'first',
-    last_name: 'last',
-    currentOrganisation: 1,
-    roles: ['system_librarian']
-  });
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = user;
-
-  const librarySwitchMenuServiceSpy = jasmine.createSpyObj('LibrarySwitchMenuService', ['']);
-  librarySwitchMenuServiceSpy._user = user;
+  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
+  userApiServiceSpy.getLoggedUser.and.returnValue(of(testUserPatronWithSettings));
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -51,22 +43,24 @@ describe('MenuComponent', () => {
         CoreModule,
         HttpClientTestingModule,
         RouterTestingModule,
-        TranslateModule.forRoot(),
-        BrowserAnimationsModule
+        TranslateModule.forRoot()
       ],
       providers: [
+        BsLocaleService,
         MainTitlePipe,
         TruncateTextPipe,
-        BsLocaleService,
-        { provide: UserService, useValue: userServiceSpy },
-        { provide: LibrarySwitchMenuService, useValue: librarySwitchMenuServiceSpy }
-      ]
+        { provide: UserApiService, useValue: userApiServiceSpy }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
     translate = TestBed.inject(TranslateService);
+    userService = TestBed.inject(UserService);
+    userService.load();
+    userService.user.currentOrganisation = testUserPatronWithSettings.patrons[1].organisation.pid;
     translate.use('en');
     fixture = TestBed.createComponent(MenuComponent);
     component = fixture.componentInstance;

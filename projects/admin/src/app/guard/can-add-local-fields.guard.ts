@@ -17,8 +17,7 @@
 
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { LocalStorageService } from '@rero/ng-core';
-import { User } from '@rero/shared';
+import { IUserLocaleStorage, UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LocalFieldApiService } from '../api/local-field-api.service';
@@ -42,12 +41,12 @@ export class CanAddLocalFieldsGuard implements CanActivate {
 
   /**
    * Constructor
-   * @param _localeStorageService - LocalStorageService
+   * @param _userService - UserService
    * @param _localFieldsApiService - LocalFieldApiService
    * @param _router - Router
    */
   constructor(
-    private _localeStorageService: LocalStorageService,
+    private _userService: UserService,
     private _localFieldsApiService: LocalFieldApiService,
     private _router: Router
   ) {}
@@ -67,7 +66,7 @@ export class CanAddLocalFieldsGuard implements CanActivate {
        * Use of User local storage, because the loading of the routing
        * is done before the load of the application.
        */
-      const userLocale: User = this._localeStorageService.get(User.STORAGE_KEY);
+      const userLocale: IUserLocaleStorage = this._userService.getOnLocaleStorage();
       if (userLocale) {
         const organisationPid = userLocale.currentOrganisation;
         return this._localFieldsApiService.getByResourceTypeAndResourcePidAndOrganisationId(

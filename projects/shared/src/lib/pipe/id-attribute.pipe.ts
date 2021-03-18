@@ -23,7 +23,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class IdAttributePipe implements PipeTransform {
 
   /**
-   *
+   * Transform
    * @param value - value
    * @param options - object
    * @param args - array

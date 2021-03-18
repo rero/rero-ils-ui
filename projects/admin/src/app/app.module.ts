@@ -22,12 +22,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
 import { FormlyModule } from '@ngx-formly/core';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import {
   CoreConfigService, LocalStorageService, RecordModule, RemoteTypeaheadService,
   TranslateLoader, TranslateService, TruncateTextPipe
 } from '@rero/ng-core';
-import { ItemHoldingsCallNumberPipe, LoggedUserService, MainTitlePipe, SharedConfigService, SharedModule, UserService } from '@rero/shared';
+import { ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -76,6 +78,7 @@ import { HoldingEditorComponent } from './record/custom-editor/holding-editor/ho
 import { ExceptionDatesEditComponent } from './record/custom-editor/libraries/exception-dates-edit/exception-dates-edit.component';
 import { ExceptionDatesListComponent } from './record/custom-editor/libraries/exception-dates-list/exception-dates-list.component';
 import { LibraryComponent } from './record/custom-editor/libraries/library.component';
+import { UserIdEditorComponent } from './record/custom-editor/user-id-editor/user-id-editor.component';
 import {
   AcquisitionOrderDetailViewComponent
 } from './record/detail-view/acquisition-order-detail-view/acquisition-order-detail-view.component';
@@ -98,6 +101,7 @@ import {
   CorporateBodiesDetailViewComponent
 } from './record/detail-view/contribution-detail-view/corporate-bodies-detail-view/corporate-bodies-detail-view.component';
 import { PersonDetailViewComponent } from './record/detail-view/contribution-detail-view/person-detail-view/person-detail-view.component';
+import { DialogImportComponent } from './record/detail-view/document-detail-view/dialog-import/dialog-import.component';
 import { DocumentDetailViewComponent } from './record/detail-view/document-detail-view/document-detail-view.component';
 import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
 import { HoldingSharedViewComponent } from './record/detail-view/document-detail-view/holding-shared-view/holding-shared-view.component';
@@ -137,9 +141,12 @@ import { BudgetSelectComponent } from './record/detail-view/organisation-detail-
 import { OrganisationDetailViewComponent } from './record/detail-view/organisation-detail-view/organisation-detail-view.component';
 import { PatronDetailViewComponent } from './record/detail-view/patron-detail-view/patron-detail-view.component';
 import { PatronTypesDetailViewComponent } from './record/detail-view/patron-types-detail-view/patron-types-detail-view.component';
+import { RecordMaskedComponent } from './record/detail-view/record-masked/record-masked.component';
 import { TemplateDetailViewComponent } from './record/detail-view/template-detail-view/template-detail-view.component';
 import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
 import { DocumentRecordSearchComponent } from './record/document-record-search/document-record-search.component';
+import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
+import { UserIdComponent } from './record/editor/wrappers/user-id/user-id.component';
 import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patron-type-item-type/cipo-patron-type-item-type.component';
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { OperationLogsDialogComponent } from './record/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
@@ -151,11 +158,6 @@ import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-fac
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { UserIdComponent } from './record/editor/wrappers/user-id/user-id.component';
-import { UserIdEditorComponent } from './record/custom-editor/user-id-editor/user-id-editor.component';
-import { RecordMaskedComponent } from './record/detail-view/record-masked/record-masked.component';
-import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
-import { DialogImportComponent } from './record/detail-view/document-detail-view/dialog-import/dialog-import.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -292,7 +294,9 @@ export function appInitFactory(appInitService: AppInitService) {
     }),
     TypeaheadModule,
     HotkeysModule,
-    SharedModule
+    SharedModule,
+    LoadingBarHttpClientModule,
+    LoadingBarModule
   ],
   providers: [
     {
@@ -306,8 +310,6 @@ export function appInitFactory(appInitService: AppInitService) {
         OrganisationService,
         LocalStorageService,
         LibrarySwitchService,
-        LoggedUserService,
-        SharedConfigService,
         TypeaheadFactoryService
       ],
       multi: true

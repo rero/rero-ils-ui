@@ -47,6 +47,9 @@ import {
 import {
   PatronProfileLoansComponent
 } from 'projects/public-search/src/app/patron-profile/patron-profile-loans/patron-profile-loans.component';
+import {
+  PatronProfileMenuComponent
+} from 'projects/public-search/src/app/patron-profile/patron-profile-menu/patron-profile-menu.component';
 import { PatronProfileMessageComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-message/patron-profile-message.component';
 import { PatronProfilePersonalComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-personal/patron-profile-personal.component';
 import { PatronProfileRequestComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-requests/patron-profile-request/patron-profile-request.component';
@@ -54,7 +57,10 @@ import { PatronProfileRequestsComponent } from 'projects/public-search/src/app/p
 import { PatronProfileComponent } from 'projects/public-search/src/app/patron-profile/patron-profile.component';
 import { ArrayTranslatePipe } from 'projects/public-search/src/app/pipe/array-translate.pipe';
 import { ContributionFilterPipe } from 'projects/public-search/src/app/pipe/contribution-filter.pipe';
+import { JournalVolumePipe } from 'projects/public-search/src/app/pipe/journal-volume.pipe';
+import { LoanStatusBadgePipe } from 'projects/public-search/src/app/pipe/loan-status-badge.pipe';
 import { NotesFilterPipe } from 'projects/public-search/src/app/pipe/notes-filter.pipe';
+import { StatusBadgePipe } from 'projects/public-search/src/app/pipe/status-badge.pipe';
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
 
@@ -82,7 +88,11 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
     ContributionFilterPipe,
     ArrayTranslatePipe,
     PatronProfileDocumentComponent,
-    PatronProfileHistoryComponent
+    PatronProfileHistoryComponent,
+    PatronProfileMenuComponent,
+    JournalVolumePipe,
+    StatusBadgePipe,
+    LoanStatusBadgePipe
   ],
   imports: [
     BrowserModule,

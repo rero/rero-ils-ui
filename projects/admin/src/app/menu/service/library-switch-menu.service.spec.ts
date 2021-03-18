@@ -15,11 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { inject, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { LibrarySwitchMenuService } from './library-switch-menu.service';
 
 describe('Service: LibrarySwitchMenu', () => {
+  let service: LibrarySwitchMenuService;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -27,9 +29,10 @@ describe('Service: LibrarySwitchMenu', () => {
         TranslateModule.forRoot()
       ]
     });
+    service = TestBed.inject(LibrarySwitchMenuService);
   });
 
-  it('should be created', inject([LibrarySwitchMenuService], (service: LibrarySwitchMenuService) => {
+  it('should be created', () => {
     expect(service).toBeTruthy();
-  }));
+  });
 });

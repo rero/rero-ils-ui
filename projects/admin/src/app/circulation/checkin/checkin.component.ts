@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -37,6 +36,7 @@ export class CheckinComponent implements OnInit {
   );
   public searchText = '';
   public patronInfo: User;
+  public barcode: string;
   public isLoading = false;
   currentLibraryPid: string;
 
@@ -72,11 +72,12 @@ export class CheckinComponent implements OnInit {
   ngOnInit() {
     this._loggedUser = this._userService.user;
     this._patronService.currentPatron$.subscribe(
-      patron => (this.patronInfo = patron)
+      patron => this.patronInfo = patron
     );
     this.searchInputFocus = true;
-    this.currentLibraryPid = this._userService.user.getCurrentLibrary();
+    this.currentLibraryPid = this._loggedUser.currentLibrary;
     this.patronInfo = null;
+    this.barcode = null;
   }
 
   /** Search value with search input
@@ -95,10 +96,10 @@ export class CheckinComponent implements OnInit {
    */
   checkin(itemBarcode: string) {
     this.searchInputFocus = false;
-    this._itemsService.checkin(itemBarcode, this._loggedUser.getCurrentLibrary()).subscribe(
+    this._itemsService.checkin(itemBarcode, this._loggedUser.currentLibrary).subscribe(
       item => {
         // TODO: remove this when policy will be in place
-        if (item === null || item.location.organisation.pid !== this._loggedUser.getCurrentOrganisation()) {
+        if (item === null || item.location.organisation.pid !== this._loggedUser.currentOrganisation) {
           this._toastService.error(
             this._translate.instant('Item or patron not found!'),
             this._translate.instant('Checkin')
@@ -143,11 +144,13 @@ export class CheckinComponent implements OnInit {
     );
   }
 
-  /** Get patron information
+  /**
+   * Get patron information
    * @param barcode: item barcode
    */
   getPatronInfo(barcode: string) {
     if (barcode) {
+      this.barcode = barcode;
       this.isLoading = true;
       this._patronService.getPatron(barcode).pipe(
         map(patron => {
@@ -166,6 +169,7 @@ export class CheckinComponent implements OnInit {
         );
     } else {
       this.patronInfo = null;
+      this.barcode = null;
     }
   }
 
@@ -196,7 +200,7 @@ export class CheckinComponent implements OnInit {
             if (
               patron !== null &&
               patron.organisation.pid !==
-                this._loggedUser.getCurrentOrganisation()
+                this._loggedUser.currentOrganisation
             ) {
               this._toastService.warning(
                 this._translate.instant('Patron not found!'),
