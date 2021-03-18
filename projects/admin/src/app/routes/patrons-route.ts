@@ -138,7 +138,7 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
         afterContentInit: (f: FormlyFieldConfig) => {
           const recordService = this._routeToolService.recordService;
           const apiService = this._routeToolService.apiService;
-          const libraryPid = this._routeToolService.userService.user.getCurrentLibrary();
+          const libraryPid = this._routeToolService.userService.user.currentLibrary;
           let query = '';
           // Filter select for a librarian
           if (!this._routeToolService.userService.user.isSystemLibrarian) {

@@ -23,10 +23,10 @@ import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { FormlyModule } from '@ngx-formly/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
+import { UserService } from '@rero/shared';
 import { of } from 'rxjs';
 import { ItemApiService } from '../../../api/item-api.service';
 import { LocationApiService } from '../../../api/location-api.service';
-import { UserService } from '../../../user.service';
 import { PickupLocationComponent } from './pickup-location.component';
 
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { AppConfigService } from './app-config.service';
+import { AppSettingsService } from '@rero/shared';
 
 @Injectable({
   providedIn: 'root'
@@ -24,9 +24,9 @@ export class OperationLogsService {
 
   /**
    * Constructor
-   * @param _appConfigService - AppConfigService
+   * @param _appSettingsService - AppSettingsService
    */
-  constructor(private _appConfigService: AppConfigService) {}
+  constructor(private _appSettingsService: AppSettingsService) {}
 
   /**
    * Is operation logs is visible
@@ -54,6 +54,6 @@ export class OperationLogsService {
    * @return Object
    */
   private _setting(): any {
-    return this._appConfigService.getSetting('operation_logs');
+    return this._appSettingsService.settings.operationLogs;
   }
 }

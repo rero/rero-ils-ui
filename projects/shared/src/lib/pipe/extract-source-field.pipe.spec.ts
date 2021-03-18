@@ -14,14 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { SharedConfigService } from '../service/shared-config.service';
+import { testUserPatronWithSettings } from '../../tests/user';
+import { AppSettingsService } from '../service/app-settings.service';
 import { ExtractSourceFieldPipe } from './extract-source-field.pipe';
 
 
 describe('Pipe: ExtractFieldSource', () => {
+
+  let extractSourceFieldPipe: ExtractSourceFieldPipe;
+  let translateService: TranslateService;
+  let appSettingsService: AppSettingsService;
 
   const metadata = {
     idref: {
@@ -37,19 +41,8 @@ describe('Pipe: ExtractFieldSource', () => {
 
   const field = 'authorized_access_point';
 
-  const sharedConfigServiceSpy = jasmine.createSpyObj('SharedConfigService', ['']);
-  sharedConfigServiceSpy.contributionsLabelOrder = {
-    de: ['gnd', 'idref', 'rero'],
-    fr: ['idref', 'gnd', 'rero'],
-    fallback: 'fr'
-  };
-
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['']);
   translateServiceSpy.currentLang = 'en';
-
-  let extractSourceFieldPipe: ExtractSourceFieldPipe;
-
-  let translateService: TranslateService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -58,13 +51,14 @@ describe('Pipe: ExtractFieldSource', () => {
       ],
       providers: [
         ExtractSourceFieldPipe,
-        { provide: SharedConfigService, useValue: sharedConfigServiceSpy },
         { provide: TranslateService, useValue: translateServiceSpy }
       ]
     });
 
     extractSourceFieldPipe = TestBed.inject(ExtractSourceFieldPipe);
     translateService = TestBed.inject(TranslateService);
+    appSettingsService = TestBed.inject(AppSettingsService);
+    appSettingsService.settings = testUserPatronWithSettings.settings;
   });
 
   it('create an instance', () => {

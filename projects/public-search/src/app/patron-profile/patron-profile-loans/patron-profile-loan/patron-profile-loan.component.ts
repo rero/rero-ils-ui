@@ -18,7 +18,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { CanExtend, LoanApiService } from '../../../api/loan-api.service';
-import { UserService } from '../../../user.service';
+import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 
 @Component({
   selector: 'public-search-patron-profile-loan',
@@ -49,21 +49,21 @@ export class PatronProfileLoanComponent implements OnInit {
 
   /** Get current viewcode */
   get viewcode(): string {
-    return this._userService.user.organisation.code;
+    return this._patronProfileMenuService.currentPatron.organisation.code;
   }
 
   /**
    * Constructor
    * @param _loanApiService - LoanApiService
-   * @param _userService - UserService
    * @param _translateService - TranslateService
    * @param _toastService - ToastrService
+   * @param _patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
     private _loanApiService: LoanApiService,
-    private _userService: UserService,
     private _translateService: TranslateService,
-    private _toastService: ToastrService
+    private _toastService: ToastrService,
+    private _patronProfileMenuService: PatronProfileMenuService
   ) {}
 
   /** OnInit hook */
@@ -75,12 +75,13 @@ export class PatronProfileLoanComponent implements OnInit {
 
   /** Renew the current loan */
   renew(): void {
+    const patronPid = this._patronProfileMenuService.currentPatron.pid;
     this.renewInProgress = true;
     this._loanApiService.renew({
       pid: this.record.metadata.pid,
       item_pid: this.record.metadata.item.pid,
       transaction_location_pid: this.record.metadata.item.location.pid,
-      transaction_user_pid: this._userService.user.pid
+      transaction_user_pid: patronPid
     }).subscribe((extendLoan: any) => {
       this.actionDone = true;
       if (extendLoan !== undefined) {

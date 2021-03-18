@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
@@ -89,7 +88,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const user = this._userService.user;
     if (user) {
-      this._libraryPid = user.getCurrentLibrary();
+      this._libraryPid = user.currentLibrary;
       this.getRequestedLoans();
       this._enableAutoRefresh();
     }
@@ -111,7 +110,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
       this._intervalSubscription = new Subscription();
     }
     if (this.refreshInterval > 0) {
-      this._intervalSubscription = interval(this.refreshInterval).subscribe( () => this.getRequestedLoans());
+      this._intervalSubscription = interval(this.refreshInterval).subscribe(() => this.getRequestedLoans());
     }
   }
 

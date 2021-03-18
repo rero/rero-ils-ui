@@ -19,7 +19,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { TruncateTextPipe } from '@rero/ng-core';
 import { MainTitlePipe } from '../pipe/main-title.pipe';
-import { SharedConfigService } from './shared-config.service';
+import { AppSettingsService } from './app-settings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -52,13 +52,13 @@ export class SearchBarConfigService {
    * Constructor
    * @param _translateService - TranslateService
    * @param _mainTitlePipe - MainTitlePipe
-   * @param _sharedConfigService - SharedConfigService
+   * @param _appSettingsService - AppSettingsService
    * @param _truncatePipe - TruncateTextPipe
    */
   constructor(
     private _translateService: TranslateService,
     private _mainTitlePipe: MainTitlePipe,
-    private _sharedConfigService: SharedConfigService,
+    private _appSettingsService: AppSettingsService,
     private _truncatePipe: TruncateTextPipe
   ) {}
 
@@ -239,7 +239,7 @@ export class SearchBarConfigService {
    */
   private _getContributionName(metadata: any): string {
     const language = this._translateService.currentLang;
-    const order: any = this._sharedConfigService.contributionsLabelOrder;
+    const order: any = this._appSettingsService.contributionsLabelOrder;
     const key = (language in order) ? language : 'fallback';
     const contributionSources = (key === 'fallback')
       ? order[order[key]]

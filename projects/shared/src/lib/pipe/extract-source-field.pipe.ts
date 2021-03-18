@@ -17,7 +17,7 @@
 
 import { Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { SharedConfigService } from '../service/shared-config.service';
+import { AppSettingsService } from '../service/app-settings.service';
 
 @Pipe({
   name: 'extractSourceField',
@@ -27,10 +27,11 @@ export class ExtractSourceFieldPipe implements PipeTransform {
 
   /**
    * Constructor
-   * @param _appConfigService - AppConfigService
+   * @param _appSettingsService - AppSettingsService
+   * @param _translateService - TranslateService
    */
   constructor(
-    private _sharedConfigService: SharedConfigService,
+    private _appSettingsService: AppSettingsService,
     private _translateService: TranslateService
     ) {}
 
@@ -41,7 +42,7 @@ export class ExtractSourceFieldPipe implements PipeTransform {
    * @return string or null
    */
   transform(metadata: any, field: string): string | null {
-    const contributionsLabel: any = this._sharedConfigService.contributionsLabelOrder;
+    const contributionsLabel: any = this._appSettingsService.contributionsLabelOrder;
     const language = this._translateService.currentLang;
     const contributionsLabelOrder = (language in contributionsLabel)
       ? contributionsLabel[language]

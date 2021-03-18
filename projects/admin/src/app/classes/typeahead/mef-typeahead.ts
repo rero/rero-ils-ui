@@ -18,7 +18,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService, SuggestionMetadata } from '@rero/ng-core';
-import { SharedConfigService } from '@rero/shared';
+import { AppSettingsService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ITypeahead } from './ITypeahead-interface';
@@ -40,11 +40,12 @@ export class MefTypeahead implements ITypeahead {
    * Constructor
    * @param _recordService - RecordService
    * @param _translateService - TranslateService
+   * @param _appSettingsService - AppSettingsService
    */
   constructor(
     protected _recordService: RecordService,
     protected _translateService: TranslateService,
-    protected _sharedConfigService: SharedConfigService
+    protected _appSettingsService: AppSettingsService
   ) { }
 
   /** Get name of typeahead */
@@ -96,7 +97,7 @@ export class MefTypeahead implements ITypeahead {
       return of([]);
     }
 
-    const sources = this._sharedConfigService.contributionSources
+    const sources = this._appSettingsService.constributionSources
       .filter((source: string) => source !== 'rero');
 
     const contributionQuery = [
@@ -156,7 +157,7 @@ export class MefTypeahead implements ITypeahead {
    */
   private _sources(): string[] {
     const language = this._translateService.currentLang;
-    const order: any = this._sharedConfigService.contributionsLabelOrder;
+    const order: any = this._appSettingsService.contributionsLabelOrder;
     const key = language in order ? language : 'fallback';
     const contributionSources = (key === 'fallback')
       ? order[order[key]]

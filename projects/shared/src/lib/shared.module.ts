@@ -32,7 +32,6 @@ import { PatronBlockedMessagePipe } from './pipe/patron-blocked-message.pipe';
 import { ProvisionActivityPipe } from './pipe/provision-activity.pipe';
 import { UrlActivePipe } from './pipe/url-active.pipe';
 import { SearchBarConfigService } from './service/search-bar-config.service';
-import { SharedConfigService } from './service/shared-config.service';
 import { ContributionBriefComponent } from './view/brief/contribution-brief/contribution-brief.component';
 import { ContributionSourcesComponent } from './view/brief/contribution-sources/contribution-sources.component';
 import { OrganisationBriefComponent } from './view/brief/organisation-brief/organisation-brief.component';
@@ -96,7 +95,6 @@ import { GetTranslatedLabelPipe } from './pipe/get-translated-label.pipe';
     RouterModule
   ],
   providers: [
-    SharedConfigService,
     SearchBarConfigService,
     DatePipe,
     MainTitlePipe,

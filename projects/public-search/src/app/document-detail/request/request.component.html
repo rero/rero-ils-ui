@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="userLogged">
+<ng-container *ngIf="patron">
   <ng-container *ngIf="!requestDialog; else requestPickupDialog">
     <ng-container *ngIf="canRequest">
       <div *ngIf="canRequest.can" id="item-request-{{ item.metadata.pid }}" class="row pl-4">

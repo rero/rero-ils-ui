@@ -17,7 +17,6 @@
  */
 import { Component, Input, OnInit } from '@angular/core';
 import { RecordService, ResultItem } from '@rero/ng-core';
-import { User } from '@rero/shared';
 import { ILLRequestStatus } from '../../../classes/ill-request';
 
 @Component({
@@ -35,7 +34,7 @@ export class IllRequestsBriefViewComponent  implements ResultItem, OnInit {
   @Input() detailUrl: { link: string, external: boolean };
 
   /** the requester of the ILL request */
-  requester: User = null;
+  requester = null;
 
 
   // GETTER FUNCTIONS ==========================================================
@@ -57,15 +56,13 @@ export class IllRequestsBriefViewComponent  implements ResultItem, OnInit {
    * Constructor
    * @param _recordService - RecordService
    */
-  constructor(
-    private _recordService: RecordService
-  ) {}
+  constructor(private _recordService: RecordService) {}
 
   /** Init hook */
   ngOnInit() {
     if (this.record) {
       this._recordService.getRecord('patrons', this.record.metadata.patron.pid).subscribe(
-        (patron) => this.requester = new User(patron.metadata)
+        (patron) => this.requester = patron.metadata
       );
     }
   }

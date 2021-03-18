@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { Component, OnInit } from '@angular/core';
 import { PatronService } from '../../../service/patron.service';
 
@@ -36,7 +37,7 @@ export class PickupComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit() {
-    this._patronService.currentPatron$.subscribe(patron => {
+    this._patronService.currentPatron$.subscribe((patron: any) => {
       if (patron) {
         this._patronService.getItemsPickup(patron.pid)
         .subscribe(loans => {

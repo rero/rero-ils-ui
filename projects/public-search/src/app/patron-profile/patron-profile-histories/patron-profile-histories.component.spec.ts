@@ -18,9 +18,11 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
+import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { LoanApiService } from '../../api/loan-api.service';
-import { UserService } from '../../user.service';
+import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { PatronProfileService } from '../patron-profile.service';
 import { PatronProfileHistoriesComponent } from './patron-profile-histories.component';
 
@@ -29,6 +31,8 @@ describe('PatronProfileHistoryComponent', () => {
   let component: PatronProfileHistoriesComponent;
   let fixture: ComponentFixture<PatronProfileHistoriesComponent>;
   let patronProfileService: PatronProfileService;
+  let userService: UserService;
+  let patronProfileMenuService: PatronProfileMenuService;
 
   const apiResponse = {
     aggregations: {},
@@ -48,8 +52,8 @@ describe('PatronProfileHistoryComponent', () => {
     links: {}
   };
 
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = { user: { pid: 1 }};
+  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
+  userApiServiceSpy.getLoggedUser.and.returnValue(of(testUserPatronWithSettings));
 
   const loanApiServiceSpy = jasmine.createSpyObj('LoanApiService', ['getHistory']);
   loanApiServiceSpy.getHistory.and.returnValue(of(apiResponse));
@@ -62,7 +66,7 @@ describe('PatronProfileHistoryComponent', () => {
         TranslateModule.forRoot()
       ],
       providers: [
-        {provide: UserService, useValue: userServiceSpy },
+        {provide: UserApiService, useValue: userApiServiceSpy },
         { provide: LoanApiService, useValue: loanApiServiceSpy }
       ],
       schemas: [NO_ERRORS_SCHEMA]
@@ -74,6 +78,11 @@ describe('PatronProfileHistoryComponent', () => {
     patronProfileService = TestBed.inject(PatronProfileService);
     fixture = TestBed.createComponent(PatronProfileHistoriesComponent);
     component = fixture.componentInstance;
+    userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
+    patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
+    patronProfileMenuService.init();
+    userService = TestBed.inject(UserService);
+    userService.load();
     fixture.detectChanges();
   });
 

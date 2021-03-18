@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2021 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,44 +14,73 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* tslint:disable:no-unused-variable */
-
-import { TestBed, async, inject } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { testPatronLibrarianRoles, testUserLibrarianWithSettings, testUserPatronLibrarian } from '@rero/shared';
+import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
-import { LoggedUserService } from './logged-user.service';
-import { SharedConfigService } from './shared-config.service';
-import { UserService } from './user.service';
+import { testUserPatronWithSettings } from '../../tests/user';
+import { UserApiService } from '../api/user-api.service';
+import { User } from '../class/user';
+import { AppSettingsService } from './app-settings.service';
+import { IUserLocaleStorage, UserService } from './user.service';
 
-const record = {
-  metadata: {
-    pid: 1,
-    roles: ['librarian'],
-    library: {
-      pid: 4
-    }
-  },
-  settings: {}
-};
+describe('UserService', () => {
+  let service: UserService;
+  let appSettingsService: AppSettingsService;
 
-const loggedUserServiceSpy = jasmine.createSpyObj('LoggedUserService', ['']);
-loggedUserServiceSpy.onLoggedUserLoaded$ = of(record);
+  const dataStorage = new User(testUserPatronLibrarian, testPatronLibrarianRoles);
+  dataStorage.currentLibrary = '1';
+  dataStorage.currentOrganisation = 'org1';
 
-const sharedConfigServiceSpy = jasmine.createSpyObj('SharedConfigService', ['']);
-sharedConfigServiceSpy.adminRoles = ['librarian', 'system_librarian'];
+  const dataResultStorage: IUserLocaleStorage = {
+    id: dataStorage.id,
+    currentLibrary: dataStorage.currentLibrary,
+    currentOrganisation: dataStorage.currentOrganisation
+  };
 
-describe('Service: User', () => {
+  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
+  userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep((testUserLibrarianWithSettings))));
+
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule
+      ],
       providers: [
-        UserService,
-        { provide: LoggedUserService, useValue: loggedUserServiceSpy },
-        { provide: SharedConfigService, useValue: sharedConfigServiceSpy },
+        { provide: UserApiService, useValue: userApiServiceSpy }
       ]
     });
+    service = TestBed.inject(UserService);
+    appSettingsService = TestBed.inject(AppSettingsService);
   });
 
-  it('should ...', inject([UserService], (service: UserService) => {
+  it('should be created', () => {
     expect(service).toBeTruthy();
-  }));
+  });
+
+  it('should return the user and settings separately', () => {
+    service.loaded$.subscribe((user: User) => {
+      expect(user instanceof User).toBeTruthy();
+      const appSettings = JSON.stringify(appSettingsService.settings);
+      const recordSettings = JSON.stringify(testUserLibrarianWithSettings.settings);
+      expect(appSettings === recordSettings).toBeTruthy();
+      expect(user.currentLibrary === testUserLibrarianWithSettings.patrons[0].libraries[0].pid);
+      expect(user.currentOrganisation === testUserLibrarianWithSettings.patrons[0].libraries[0].organisation.pid);
+    });
+    service.load();
+  });
+
+  it('should return a boolean on the hasOnLocaleStorage function', () => {
+    service.clearOnLocaleStorage();
+    expect(service.hasOnLocaleStorage()).toBeFalsy();
+    service.setOnLocaleStorage(dataStorage);
+    expect(service.hasOnLocaleStorage()).toBeTruthy();
+  });
+
+  it('should return an object of the stored parameters', () => {
+    service.clearOnLocaleStorage();
+    service.setOnLocaleStorage(dataStorage);
+    expect(service.getOnLocaleStorage()).toEqual(dataResultStorage);
+  });
 });

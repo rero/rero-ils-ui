@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2021 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,10 +14,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { Pipe, PipeTransform } from '@angular/core';
 
-export interface IContextSettings {
-  language: string;
-  baseUrl: string;
-  global_view: string;
-  contributionsLabelOrder: Array<any>;
+@Pipe({
+  name: 'loanStatusBadge'
+})
+export class LoanStatusBadgePipe implements PipeTransform {
+
+  /**
+   * Transform status to class
+   * @param status - string
+   * @return string
+   */
+  transform(status: string): string {
+    switch (status) {
+      case 'PENDING':
+        return 'badge-warning';
+      case 'ITEM_AT_DESK':
+        return 'badge-success';
+      case 'ITEM_ON_LOAN':
+        return 'badge-info';
+      default:
+        return 'badge-light';
+    }
+  }
 }

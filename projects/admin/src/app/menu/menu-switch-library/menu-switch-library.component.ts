@@ -18,7 +18,7 @@
 import { Component } from '@angular/core';
 import { PRIMARY_OUTLET, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { DialogService, MenuItem } from '@rero/ng-core';
+import { DialogService, MenuItem, MenuItemInterface } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { AppConfigService } from '../../service/app-config.service';
@@ -26,18 +26,18 @@ import { LibrarySwitchMenuService } from '../service/library-switch-menu.service
 import { LibrarySwitchService } from '../service/library-switch.service';
 
 @Component({
-  selector: 'admin-menu-swith-library',
+  selector: 'admin-menu-switch-library',
   templateUrl: './menu-switch-library.component.html'
 })
 export class MenuSwitchLibraryComponent {
 
   /** Menu libraries switch */
-  get menuLibrariesSwitch() {
+  get menuLibrariesSwitch(): MenuItemInterface {
     return this._librarySwitchMenuService.menu;
   }
 
   /** Menu is visible */
-  get isVisible() {
+  get isVisible(): boolean {
     return this._librarySwitchMenuService.visible;
   }
 

@@ -18,9 +18,9 @@
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { ApiService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { UserApiService } from './user-api.service';
-import { ApiService } from '@rero/ng-core';
 
 describe('Service: UserApi', () => {
 

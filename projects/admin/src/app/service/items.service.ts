@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
@@ -40,7 +39,12 @@ export class ItemsService {
     private _recordService: RecordService
   ) { }
 
-  getRequestedLoans(libraryPid) {
+  /**
+   * Get Requested loans
+   * @param libraryPid - string
+   * @return Observable<any>
+   */
+  getRequestedLoans(libraryPid): Observable<any> {
     const url = `/api/item/requested_loans/${libraryPid}`;
     return this._http.get<any>(url).pipe(
       map(data => data.hits),
@@ -57,13 +61,19 @@ export class ItemsService {
       );
   }
 
-  doValidateRequest(item, transactionLibraryPid) {
+  /**
+   * Do validate quest
+   * @param item - object
+   * @param transactionLibraryPid - string
+   * @return Observable<any>
+   */
+  doValidateRequest(item, transactionLibraryPid): Observable<any> {
     const url = '/api/item/validate_request';
     return this._http.post<any>(url, {
       item_pid: item.pid,
       pid: item.loan.pid,
       transaction_library_pid: transactionLibraryPid,
-      transaction_user_pid: this._userService.user.pid
+      transaction_user_pid: this._userService.user.patronLibrarian.pid
     }).pipe(
     map(data => {
       const itemData = data.metadata;
@@ -73,7 +83,13 @@ export class ItemsService {
     );
   }
 
-  getItem(barcode: string, patronPid?: string) {
+  /**
+   * Get item
+   * @param barcode - string
+   * @param patronPid - string
+   * @return Observable<any>
+   */
+  getItem(barcode: string, patronPid?: string): Observable<any> {
     let url = `/api/item/barcode/${barcode}`;
     if (patronPid) {
       url = url + `?patron.patron_pid=${patronPid}`;
@@ -106,7 +122,7 @@ export class ItemsService {
     return this._http.post<any>('/api/item/checkin', {
       item_barcode: barcode,
       transaction_library_pid: transactionLibraryPid,
-      transaction_user_pid: this._userService.user.pid
+      transaction_user_pid: this._userService.user.patronLibrarian.pid
     }).pipe(
       map(data => {
         const item = new Item(data.metadata);

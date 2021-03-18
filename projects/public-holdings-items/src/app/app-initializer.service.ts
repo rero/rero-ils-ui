@@ -17,8 +17,7 @@
 
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@rero/ng-core';
-import { LoggedUserService, SharedConfigService } from '@rero/shared';
-import { UserService } from 'projects/public-search/src/app/user.service';
+import { AppSettingsService, UserService } from '@rero/shared';
 
 @Injectable({
   providedIn: 'root'
@@ -27,34 +26,30 @@ export class AppInitializerService {
 
   /**
    * Constructor
-   * @param _loggedUserService - LoggedUserService
-   * @param _sharedConfigService - SharedConfigService
    * @param _translateService - TranslateService
    * @param _userService - UserService
+   * @param _appSettingsService - AppSettingsService
    */
   constructor(
-    private _loggedUserService: LoggedUserService,
-    private _sharedConfigService: SharedConfigService,
     private _translateService: TranslateService,
-    private _userService: UserService
+    private _userService: UserService,
+    private _appSettingsService: AppSettingsService
   ) { }
 
   /** Load */
-  load() {
+  load(): Promise<boolean> {
     this._initiliazeObservable();
     return new Promise((resolve) => {
-      this._sharedConfigService.init();
-      this._userService.init();
-      this._loggedUserService.load();
+      this._userService.load();
       resolve(true);
     });
   }
 
   /** initialize observable */
-  private _initiliazeObservable() {
+  private _initiliazeObservable(): void {
     // Set current language interface
-    this._loggedUserService.onLoggedUserLoaded$.subscribe(data => {
-      this._translateService.setLanguage(data.settings.language);
+    this._userService.loaded$.subscribe(() => {
+      this._translateService.setLanguage(this._appSettingsService.currentLanguage);
     });
   }
 }

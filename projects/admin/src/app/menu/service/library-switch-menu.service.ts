@@ -42,9 +42,9 @@ export class LibrarySwitchMenuService {
 
   /** menu is visible */
   get visible() {
-    return this._user.hasRole('system_librarian')
+    return this._user.isSystemLibrarian
       ? true
-      : this._user.libraries.length > 1;
+      : this._user.patronLibrarian.libraries.length > 1;
   }
 
   /** Get menu */
@@ -73,9 +73,9 @@ export class LibrarySwitchMenuService {
 
   /** Generate */
   private _generate() {
-    if (this._user.hasRole('system_librarian')) {
+    if (this._user.isSystemLibrarian) {
       this._systemLibrarianLibraries();
-    } else if (this._user.libraries.length > 1) {
+    } else if (this._user.patronLibrarian.libraries.length > 1) {
       this._librarianLibraries();
     }
   }
@@ -89,7 +89,7 @@ export class LibrarySwitchMenuService {
 
   /** Librarian libraries */
   private _librarianLibraries() {
-    const librariesPid = this._user.libraries.map(library =>  library.pid);
+    const librariesPid = this._user.patronLibrarian.libraries.map(library =>  library.pid);
     this._executeLibrariesQuery(
       this._libraryService.findByLibrariesPidAndOrderBy$(librariesPid, 'name')
     ).subscribe((libraries: any) => this._generateMenu(libraries));
@@ -200,7 +200,7 @@ export class LibrarySwitchMenuService {
       if (event.resource === 'libraries') {
         const library = event.data;
         if (this._user.currentLibrary === library.pid) {
-          this._librarySwitchService.switch(this._user.libraries[0].pid);
+          this._librarySwitchService.switch(this._user.patronLibrarian.libraries[0].pid);
         }
         this._generate();
       }

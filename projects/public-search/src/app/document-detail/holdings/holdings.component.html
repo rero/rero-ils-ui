@@ -14,6 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+<ngx-loading-bar [includeSpinner]="false" height="3px"></ngx-loading-bar>
 <ng-container *ngIf="holdings.length > 0">
   <div class="card mt-2" *ngFor="let holding of holdings">
     <public-search-holding [holding]="holding" [viewcode]="viewcode"></public-search-holding>

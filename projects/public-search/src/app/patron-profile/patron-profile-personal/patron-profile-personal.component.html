@@ -25,111 +25,111 @@
 <section id="personal-data" class="row px-3 mt-2">
   <dl class="container row">
     <!-- GENDER -->
-    <ng-container *ngIf="record.gender">
-      <dt class="col-2 label-title" translate>
+    <ng-container *ngIf="user.gender">
+      <dt class="col-3 label-title" translate>
         Gender
       </dt>
-      <dd class="col-10">
-        {{ record.gender }}
+      <dd class="col-9">
+        {{ user.gender }}
       </dd>
     </ng-container>
     <!-- USERNAME -->
-    <ng-container *ngIf="record.username">
-      <dt class="col-2 label-title" translate>
+    <ng-container *ngIf="user.username">
+      <dt class="col-3 label-title" translate>
         Username
       </dt>
-      <dd class="col-10">
-        {{ record.username }}
+      <dd class="col-9">
+        {{ user.username }}
       </dd>
     </ng-container>
     <!-- PRIMARY ADDRESS -->
-    <ng-container *ngIf="record.street || record.city || record.country">
-      <dt class="col-2 label-title" translate>
+    <ng-container *ngIf="user.street || user.city || user.country">
+      <dt class="col-3 label-title" translate>
         Primary address
       </dt>
-      <dd class="col-10">
-        <ng-container *ngIf="record.street">
-          {{ record.street }}<br>
+      <dd class="col-9">
+        <ng-container *ngIf="user.street">
+          {{ user.street }}<br>
         </ng-container>
-        <ng-container *ngIf="record.city">
-          {{ record.postal_code }} {{ record.city }}<br>
+        <ng-container *ngIf="user.city">
+          {{ user.postal_code }} {{ user.city }}<br>
         </ng-container>
-        <ng-container *ngIf="record.country">
-          {{ record.country | translate }}
+        <ng-container *ngIf="user.country">
+          {{ ('country_' + user.country) | translate }}
         </ng-container>
       </dd>
     </ng-container>
     <!-- SECONDARY ADDRESS -->
-    <ng-container *ngIf="record.second_address">
-      <dt class="col-2 label-title" translate>
+    <ng-container *ngIf="patron.second_address">
+      <dt class="col-3 label-title" translate>
         Secondary address
       </dt>
-      <dd class="col-10">
-        <ng-container *ngIf="record.second_address.street">
-          {{ record.second_address.street }}<br>
+      <dd class="col-9">
+        <ng-container *ngIf="patron.second_address.street">
+          {{ patron.second_address.street }}<br>
         </ng-container>
-        <ng-container *ngIf="record.second_address.city">
-          {{ record.second_address.postal_code }} {{ record.second_address.city }}<br>
+        <ng-container *ngIf="patron.second_address.city">
+          {{ patron.second_address.postal_code }} {{ patron.second_address.city }}<br>
         </ng-container>
-        <ng-container *ngIf="record.second_address.country">
-          {{ record.country | translate }}
+        <ng-container *ngIf="patron.second_address.country">
+          {{ ('country_' + patron.second_address.country) | translate }}
         </ng-container>
       </dd>
     </ng-container>
 
     <!-- HOME PHONE -->
-    <ng-container *ngIf="record.home_phone">
-      <dt class="col-2 label-title" translate>
+    <ng-container *ngIf="user.home_phone">
+      <dt class="col-3 label-title" translate>
         Home phone
       </dt>
-      <dd class="col-10">
-        {{ record.home_phone }}
+      <dd class="col-9">
+        {{ user.home_phone }}
       </dd>
     </ng-container>
     <!-- BUSINESS PHONE -->
-    <ng-container *ngIf="record.business_phone">
-      <dt class="col-2 label-title" translate>
-        Home phone
+    <ng-container *ngIf="user.business_phone">
+      <dt class="col-3 label-title" translate>
+        Business phone
       </dt>
-      <dd class="col-10">
-        {{ record.business_phone }}
+      <dd class="col-9">
+        {{ user.business_phone }}
       </dd>
     </ng-container>
     <!-- MOBILE PHONE -->
-    <ng-container *ngIf="record.mobile_phone">
-      <dt class="col-2 label-title" translate>
-        Home phone
+    <ng-container *ngIf="user.mobile_phone">
+      <dt class="col-3 label-title" translate>
+        Mobile phone
       </dt>
-      <dd class="col-10">
-        {{ record.mobile_phone }}
+      <dd class="col-9">
+        {{ user.mobile_phone }}
       </dd>
     </ng-container>
     <!-- OTHER PHONE -->
-    <ng-container *ngIf="record.other_phone">
-      <dt class="col-2 label-title" translate>
-        Home phone
+    <ng-container *ngIf="user.other_phone">
+      <dt class="col-3 label-title" translate>
+        Other phone
       </dt>
-      <dd class="col-10">
-        {{ record.other_phone }}
+      <dd class="col-9">
+        {{ user.other_phone }}
       </dd>
     </ng-container>
     <!-- EMAIL -->
-    <ng-container *ngIf="record.email">
-      <dt class="col-2 label-title" translate>
+    <ng-container *ngIf="user.email">
+      <dt class="col-3 label-title" translate>
         Email
       </dt>
-      <dd class="col-10">
-        {{ record.email }}
+      <dd class="col-9">
+        {{ user.email }}
       </dd>
     </ng-container>
     <!-- PATRON BARCODE -->
-    <ng-container *ngIf="record.patron.barcode">
-      <dt class="col-2 label-title" translate>
+    <ng-container *ngIf="patron.patron.barcode">
+      <dt class="col-3 label-title" translate>
         Patron number
       </dt>
-      <dd class="col-10">
+      <dd class="col-9">
         <ul class="list-unstyled mb-0">
-          <li *ngFor="let barcode of record.patron.barcode; let last = last">
+          <li *ngFor="let barcode of patron.patron.barcode; let last = last">
             {{ barcode }}
             <ng-container *ngIf="!last">;</ng-container>
           </li>
@@ -137,21 +137,21 @@
       </dd>
     </ng-container>
     <!-- PATRON BARCODE -->
-    <ng-container *ngIf="record.patron.expiration_date">
-      <dt class="col-2 label-title" translate>
+    <ng-container *ngIf="patron.patron.expiration_date">
+      <dt class="col-3 label-title" translate>
         Account expiration
       </dt>
-      <dd class="col-10">
-        {{ record.patron.expiration_date | dateTranslate: 'shortDate' }}
+      <dd class="col-9">
+        {{ patron.patron.expiration_date | dateTranslate: 'shortDate' }}
       </dd>
     </ng-container>
     <!-- KEEP HISTORY -->
-    <dt class="col-2 label-title" translate>
+    <dt class="col-3 label-title" translate>
         Keep history
       </dt>
-      <dd class="col-10">
-        <i class="fa fa-circle" [ngClass]="{'text-success': record.patron.keep_history, 'text-danger': !record.patron.keep_history}"></i>
-        <ng-container *ngIf="!record.patron.keep_history; else keep">
+      <dd class="col-9">
+        <i class="fa fa-circle" [ngClass]="{'text-success': user.keep_history, 'text-danger': !user.keep_history}"></i>
+        <ng-container *ngIf="!user.keep_history; else keep">
           {{ 'The loan history is not saved.' | translate }}
         </ng-container>
         <ng-template #keep>

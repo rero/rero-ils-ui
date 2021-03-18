@@ -16,7 +16,7 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { SharedConfigService } from '../service/shared-config.service';
+import { AppSettingsService } from '../service/app-settings.service';
 
 @Pipe({
   name: 'contributionType'
@@ -25,9 +25,9 @@ export class ContributionTypePipe implements PipeTransform {
 
   /**
    * Constructor
-   * @param _sharedConfig - SharedConfigService
+   * @param _appSettingsService - AppSettingsService
    */
-  constructor(private _sharedConfig: SharedConfigService) {}
+  constructor(private _appSettingsService: AppSettingsService) {}
 
   /**
    * Transform
@@ -36,7 +36,7 @@ export class ContributionTypePipe implements PipeTransform {
    * @throws Error on missing type
    */
   transform(type: string): any {
-    const configType = this._sharedConfig.contributionAgentTypes[type];
+    const configType = this._appSettingsService.contributionAgentTypes[type];
     if (configType) {
       return configType;
     }

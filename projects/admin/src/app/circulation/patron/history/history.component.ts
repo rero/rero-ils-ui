@@ -42,7 +42,7 @@ export class HistoryComponent implements OnInit {
    * Load current patron loans history.
    */
   ngOnInit() {
-    this._patronService.currentPatron$.subscribe(patron => {
+    this._patronService.currentPatron$.subscribe((patron: any) => {
       if (patron) {
         this._patronService.getHistory(patron.pid).subscribe(
           (loans) => {

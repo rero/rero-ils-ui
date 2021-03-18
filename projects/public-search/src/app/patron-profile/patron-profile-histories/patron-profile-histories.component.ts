@@ -20,7 +20,7 @@ import { Error, Record } from '@rero/ng-core';
 import { Paginator } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { LoanApiService } from '../../api/loan-api.service';
-import { UserService } from '../../user.service';
+import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { ITabEvent, PatronProfileService } from '../patron-profile.service';
 @Component({
   selector: 'public-search-patron-profile-histories',
@@ -51,14 +51,14 @@ export class PatronProfileHistoriesComponent implements OnInit, OnDestroy {
   /**
    * Constructor
    * @param _loanApiService - LoanApiService
-   * @param _userService - UserService
    * @param _patronProfileService - PatronProfileService
+   * @param _patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
     private _loanApiService: LoanApiService,
-    private _userService: UserService,
-    private _patronProfileService: PatronProfileService
-  ) { }
+    private _patronProfileService: PatronProfileService,
+    private _patronProfileMenuService: PatronProfileMenuService
+  ) {}
 
   /** OnInit hook */
   ngOnInit(): void {
@@ -97,6 +97,14 @@ export class PatronProfileHistoriesComponent implements OnInit, OnDestroy {
         this._paginator.setRecordsCount(0);
       })
     );
+    /** Cleaning up after the change of organization */
+    this._subscription.add(
+      this._patronProfileMenuService.onChange$.subscribe(() => {
+        this.paginator.setRecordsCount(0);
+        this.records = [];
+        this.loaded = false;
+      })
+    );
   }
 
   /** OnDestroy hook */
@@ -110,7 +118,8 @@ export class PatronProfileHistoriesComponent implements OnInit, OnDestroy {
    * @return Observable
    */
   private _historyQuery(page: number): Observable<Record | Error> {
+    const patronPid = this._patronProfileMenuService.currentPatron.pid;
     return this._loanApiService
-      .getHistory(this._userService.user.pid, page, this._paginator.getRecordsPerPage());
+      .getHistory(patronPid, page, this._paginator.getRecordsPerPage());
   }
 }

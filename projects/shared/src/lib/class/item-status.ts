@@ -14,8 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
-import { _ } from './user';
+export function _(str: any) {
+  return marker(str);
+}
 
 export enum ItemStatus {
   ON_SHELF = _('on_shelf'),

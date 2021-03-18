@@ -40,10 +40,10 @@ export class LibraryGuard implements CanActivate {
     : Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     combineLatest([
       this.getOwningLibrary$(next),
-      this._userService.onUserLoaded$
+      this._userService.loaded$
     ]).subscribe(
       ([owningLibrary, userMetadata ]) => {
-        if (owningLibrary !== this._userService.user.getCurrentLibrary()) {
+        if (owningLibrary !== this._userService.user.currentLibrary) {
           this._router.navigate(['/errors/403'], { skipLocationChange: true });
         }
       },

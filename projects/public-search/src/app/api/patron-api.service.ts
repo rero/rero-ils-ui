@@ -36,8 +36,8 @@ export class PatronApiService extends BaseApi {
    * Get Messages
    * @return Observable
    */
-  getMessages(): Observable<Message[]> {
-    return this._httpClient.get<Message[]>('/patrons/messages');
+  getMessages(patronPid: string): Observable<Message[]> {
+    return this._httpClient.get<Message[]>(`/api/patrons/${patronPid}/messages`);
   }
 }
 

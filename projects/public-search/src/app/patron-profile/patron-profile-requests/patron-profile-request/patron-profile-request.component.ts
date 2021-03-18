@@ -18,7 +18,7 @@ import { Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { LoanApiService } from '../../../api/loan-api.service';
-import { UserService } from '../../../user.service';
+import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 import { PatronProfileService } from '../../patron-profile.service';
 
 @Component({
@@ -44,32 +44,33 @@ export class PatronProfileRequestComponent {
 
   /** Get current viewcode */
   get viewcode(): string {
-    return this._userService.user.organisation.code;
+    return this._patronProfileMenuService.currentPatron.organisation.code;
   }
 
   /**
    * Constructor
    * @param _loanApiService - LoanApiService
-   * @param _userService - UserService
    * @param _translateService - TranslateService
    * @param _toastService - ToastrService
    * @param _patronProfileService - PatronProfileService
+   * @param _patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
     private _loanApiService: LoanApiService,
-    private _userService: UserService,
     private _translateService: TranslateService,
     private _toastService: ToastrService,
-    private _patronProfileService: PatronProfileService
-  ) { }
+    private _patronProfileService: PatronProfileService,
+    private _patronProfileMenuService: PatronProfileMenuService
+  ) {}
 
   /** Cancel a request */
   cancel(): void {
+    const patronPid = this._patronProfileMenuService.currentPatron.pid;
     this.cancelInProgress = true;
     this._loanApiService.cancel({
       pid: this.record.metadata.pid,
       transaction_location_pid: this.record.metadata.item.location.pid,
-      transaction_user_pid: this._userService.user.pid
+      transaction_user_pid: patronPid
     }).subscribe((cancelLoan: any) => {
       if (cancelLoan !== undefined) {
         this._patronProfileService.cancelRequest(this.record.metadata.pid);

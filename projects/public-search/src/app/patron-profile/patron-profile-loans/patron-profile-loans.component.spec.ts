@@ -18,16 +18,19 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
+import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { LoanApiService } from '../../api/loan-api.service';
-import { UserService } from '../../user.service';
+import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { PatronProfileLoansComponent } from './patron-profile-loans.component';
-
 
 describe('PatronProfileLoanComponent', () => {
   let component: PatronProfileLoansComponent;
   let fixture: ComponentFixture<PatronProfileLoansComponent>;
   let loanApiService: LoanApiService;
+  let userService: UserService;
+  let patronProfileMenuService: PatronProfileMenuService;
 
   const apiResponse = {
     aggregations: {},
@@ -48,8 +51,7 @@ describe('PatronProfileLoanComponent', () => {
     links: {}
   };
 
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = { pid: '1' };
+  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -59,7 +61,7 @@ describe('PatronProfileLoanComponent', () => {
         TranslateModule.forRoot()
       ],
       providers: [
-        { provide: UserService, useValue: userServiceSpy },
+        { provide: UserApiService, useValue: userApiServiceSpy },
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
@@ -69,8 +71,13 @@ describe('PatronProfileLoanComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PatronProfileLoansComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
     loanApiService = TestBed.inject(LoanApiService);
+    userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
+    patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
+    patronProfileMenuService.init();
+    userService = TestBed.inject(UserService);
+    userService.load();
+    fixture.detectChanges();
   });
 
   it('should create', () => {

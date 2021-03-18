@@ -16,7 +16,7 @@
  */
 import { Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { UserService } from '../../user.service';
+import { PatronProfileMenuService } from '../patron-profile-menu.service';
 
 @Component({
   selector: 'public-search-patron-profile-document',
@@ -29,7 +29,7 @@ export class PatronProfileDocumentComponent {
 
   /** Get current viewcode */
   get viewcode(): string {
-    return this._userService.user.organisation.code;
+    return this._patronProfileMenuService.currentPatron.organisation.code;
   }
 
   /** Get current language */
@@ -39,11 +39,11 @@ export class PatronProfileDocumentComponent {
 
   /**
    * Constructor
-   * @param _userService - UserService
+   * @param _patronProfileMenuService - PatronProfileMenuService
    * @param _translateService - TranslateService
    */
   constructor(
-    private _userService: UserService,
+    private _patronProfileMenuService: PatronProfileMenuService,
     private _translateService: TranslateService
   ) {}
 }

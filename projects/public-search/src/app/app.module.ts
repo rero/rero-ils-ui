@@ -15,11 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
-import { APP_INITIALIZER, Injector, LOCALE_ID, NgModule } from '@angular/core';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, Injector, LOCALE_ID, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CoreConfigService, RecordModule, TranslateLoader, TranslateService } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
@@ -69,7 +72,10 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
       isolate: false
     }),
     TypeaheadModule.forRoot(),
-    SharedModule
+    SharedModule,
+    LoadingBarHttpClientModule,
+    LoadingBarRouterModule,
+    LoadingBarModule
   ],
   providers: [
     { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
@@ -85,10 +91,15 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
     DocumentRecordSearchComponent,
     SearchBarComponent
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
 export class AppModule {
 
+  /**
+   * Constructor
+   * @param injector - Injector
+   */
   constructor(private injector: Injector) {
     if (!customElements.get('main-search-bar')) {
       const searchBar = createCustomElement(SearchBarComponent, { injector: this.injector });

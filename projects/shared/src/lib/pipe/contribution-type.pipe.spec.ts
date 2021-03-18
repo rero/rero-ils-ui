@@ -14,30 +14,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 import { TestBed } from '@angular/core/testing';
-import { SharedConfigService } from '../service/shared-config.service';
+import { testUserPatronWithSettings } from '../../tests/user';
+import { AppSettingsService } from '../service/app-settings.service';
 import { ContributionTypePipe } from './contribution-type.pipe';
 
 describe('Pipe: ContributionType', () => {
 
   let contributionTypePipe: ContributionTypePipe;
-
-  const sharedConfigServiceSpy = jasmine.createSpyObj('SharedConfigService', ['']);
-  sharedConfigServiceSpy.contributionAgentTypes = {
-    'bf:person': 'Person',
-    'bf:Organisation': 'Organisation'
-  };
+  let appSettingsService: AppSettingsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        ContributionTypePipe,
-        { provide: SharedConfigService, useValue: sharedConfigServiceSpy }
+        ContributionTypePipe
       ]
     });
     contributionTypePipe = TestBed.inject(ContributionTypePipe);
+    appSettingsService = TestBed.inject(AppSettingsService);
+    appSettingsService.settings = testUserPatronWithSettings.settings;
   });
 
   it('create an instance', () => {
@@ -45,6 +40,6 @@ describe('Pipe: ContributionType', () => {
   });
 
   it('should return the type of contribution', () => {
-    expect(contributionTypePipe.transform('bf:person')).toEqual('Person');
+    expect(contributionTypePipe.transform('bf:Person')).toEqual('persons');
   });
 });

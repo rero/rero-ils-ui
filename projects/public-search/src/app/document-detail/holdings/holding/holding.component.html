@@ -28,7 +28,7 @@
     <div class="col-sm-2">
       <span [hidden]="itemsCount == 0">
         {{ itemsCount }}
-        {{ itemsCount | i18nPlural: { '=1': 'item', 'other': 'items' } | translate }}
+        {{ itemsCount | i18nPlural: { '=0': 'item', '=1': 'item', 'other': 'items' } | translate }}
       </span>
     </div>
     <div id="holding-available-{{ holding.metadata.pid }}" class="col-sm-3">

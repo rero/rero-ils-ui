@@ -16,11 +16,11 @@
  */
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
-import { User } from '@rero/shared';
 import { LibrarySwitchMenuService } from '../service/library-switch-menu.service';
 import { MenuSwitchLibraryComponent } from './menu-switch-library.component';
 
@@ -29,11 +29,9 @@ describe('MenuSwithLibraryComponent', () => {
   let component: MenuSwitchLibraryComponent;
   let fixture: ComponentFixture<MenuSwitchLibraryComponent>;
 
-  const librarySwitchMenuServiceSpy = jasmine.createSpyObj('LibrarySwitchMenuService', ['init']);
-  librarySwitchMenuServiceSpy._user = new User({
-    roles: ['system_librarian']
-  });
-  librarySwitchMenuServiceSpy.init.and.returnValue(null);
+  const librarySwitchMenuServiceSpy = jasmine.createSpyObj('LibrarySwitchMenuService', ['']);
+  librarySwitchMenuServiceSpy.menu = [];
+  librarySwitchMenuServiceSpy.isVisible = false;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -46,6 +44,9 @@ describe('MenuSwithLibraryComponent', () => {
       ],
       providers: [
         { provide: LibrarySwitchMenuService, useValue: librarySwitchMenuServiceSpy }
+      ],
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
       ]
     })
     .compileComponents();

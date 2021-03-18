@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2021 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,161 +15,198 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import moment from 'moment';
-import { BehaviorSubject, Observable } from 'rxjs';
+// tslint:disable: variable-name
+export class User implements IUser {
 
-export function _(str: any) {
-  return marker(str);
-}
+  /** Locale storage name key */
+  static readonly STORAGE_KEY = 'user';
 
-// required as json properties is not lowerCamelCase
-/* tslint:disable */
-export class User {
-  $schema: string;
-  username: string;
-  birth_date: string;
-  city?: string;
-  country?: string;
-  gender?: string;
-  email?: string;
+  /** Logged user API url */
+  static readonly LOGGED_URL = '/patrons/logged_user?resolve';
+
+  id: number;
   first_name: string;
   last_name: string;
-  libraries?: Library[];
-  name: string;
+  birth_date: string;
+  gender: string;
+  username: string;
+  street?: string;
+  postal_code?: string;
+  city?: string;
+  country?: string;
   home_phone?: string;
   business_phone?: string;
   mobile_phone?: string;
   other_phone?: string;
-  pid: string;
-  circulation_location_pid?: string;
-  postal_code?: string;
-  source?: string;
-  local_code?: string;
-  second_address?: {
-    street?: string;
-    postal_code?: string;
-    city?: string;
-    country?: string;
-  };
-  roles: string[];
-  street?: string;
-  user_id: string;
-  patron?: {
-    barcode: string,
-    type: PatronType,
-    communication_channel: string,
-    communication_language: string,
-    expiration_date: string,
-    keep_history: boolean,
-    libraries?: Array<Library>,
-    // When patron is blocked, add 'blocked' and 'blocked_note' fields.
-    blocked?: false,
-    blocked_note?: string
-  };
-  notes?: Array<{
-    type: UserNoteType,
-    content: string
-  }>;
-  items?: any[];
-  displayPatronMode = true;
-  currentLibrary: string;
-  currentOrganisation: string;
-  circulation_informations: {
-    messages: Array<{type: string, content: string}>,
-    statistics: any;
-  };
-  currentLibraryClosedDates$: BehaviorSubject<Array<moment>> = new BehaviorSubject([]);
-  private _currentLibraryClosedDates: Array<moment> = [];
+  keep_history: boolean;
+  email?: string;
+  roles: string[] = [];
+  patrons?: IPatron[] = [];
 
-  /** Locale storage name key */
-  static readonly STORAGE_KEY = 'user';
-  /** Logged user API url */
-  static readonly LOGGED_URL = '/patrons/logged_user?resolve';
+  /** private _isLogged */
+  private _isAuthenticated = false;
 
-  /** Get closed dates of the user current library */
-  get currentLibraryClosedDates(): Array<moment> {
-    return this._currentLibraryClosedDates;
-  }
-  set currentLibraryClosedDates(closedDates: Array<moment>) {
-    this._currentLibraryClosedDates = closedDates;
-    this.currentLibraryClosedDates$.next(closedDates);
-  }
+  /** Display Patron Mode */
+  private _displayPatronMode = true;
+
+  /** Admin roles */
+  private _adminRoles: string[];
+
+  /** Current library */
+  private _currentLibrary?: string;
+
+  /** Current organisation */
+  private _currentOrganisation?: string;
+
+  /** Librarian (patron record) */
+  private _patronLibrarian?: IPatron;
+
+  /** User symbol name (2 letters) */
+  private _symbolName: string;
+
+  /** All patron roles */
+  private _patronRoles: string[];
 
   /**
-   * Is this user a librarian?
-   * @return a boolean
+   * Is authenticated
+   * @return boolean
    */
-  get isLibrarian() {
-    return this.hasRole('librarian');
+  get isAuthenticated(): boolean {
+    return this._isAuthenticated;
   }
 
   /**
-   * Is this user a system librarian
-   * @return a boolean
+   * Set display patron mode
+   * @param mode - boolean
    */
-  get isSystemLibrarian() {
-    return this.hasRole('system_librarian');
+  set displayPatronMode(mode: boolean) {
+    this._displayPatronMode = mode;
   }
 
   /**
-   * Is this user a patron?
-   * @return a boolean
+   * Get display patron mode
+   * @return boolean
    */
-  get isPatron() {
-    return this.hasRole('patron');
+  get displayPatronMode(): boolean {
+    return this._displayPatronMode;
   }
 
   /**
-   * Organisation
-   * @return string, pid of current organisation
+   * Is authorized admin access
+   * @return boolean
    */
-  get organisation() {
-    return this.getCurrentOrganisation();
+  get isAuthorizedAdminAccess(): boolean {
+    return this._patronLibrarian !== undefined;
   }
 
   /**
-   * Set organisation
-   * @param organisation - string or null, pid of organisation
+   * Get patron record librarian
+   * @return IPatron
    */
-  set organisation(organisation: null | string) {
-    this.currentOrganisation = organisation;
+  get patronLibrarian(): IPatron {
+    return this._patronLibrarian;
   }
 
   /**
-   * User symbol name
+   * Get user symbol name (2 letters)
+   * @return string
    */
   get symbolName(): string {
-    let result = [];
-    if (this.first_name) {
-      result = [
-        this.first_name[0],
-        this.last_name[0],
-      ];
-    } else {
-      result = [
-        this.last_name[0],
-        this.last_name[1],
-      ]
-    }
-    return result.join('').toUpperCase();
+    return this._symbolName;
+  }
+
+  /**
+   * Is the user a patron
+   * @return boolean
+   */
+  get isPatron(): boolean {
+    return this._patronRoles.includes('patron');
+  }
+
+  /**
+   * Is the user a librarian
+   * @return boolean
+   */
+  get isLibrarian(): boolean {
+    return this._patronRoles.includes('librarian');
+  }
+
+  /**
+   * Is the user a system_librarian
+   * @return boolean
+   */
+  get isSystemLibrarian(): boolean {
+    return this._patronRoles.includes('system_librarian');
+  }
+
+  /**
+   * Set current library
+   * @param library - string
+   */
+  set currentLibrary(library: string) {
+    this._currentLibrary = library;
+  }
+
+  /**
+   * Get current library
+   * @return string
+   */
+  get currentLibrary(): string {
+    return this._currentLibrary;
+  }
+
+  /**
+   * Set current organisation
+   * @param organisation - string
+   */
+  set currentOrganisation(organisation: string) {
+    this._currentOrganisation = organisation;
+  }
+
+  /**
+   * Get current organisation
+   * @retun string
+   */
+  get currentOrganisation(): string {
+    return this._currentOrganisation;
+  }
+
+  /**
+   * Get all patrons roles
+   * @return array of role
+   */
+  get patronRoles(): string[] {
+    return this._patronRoles;
   }
 
   /**
    * Constructor
-   * @param user - any
+   * @param user - object | User
+   * @param adminRoles - array of roles
    */
-  constructor(user: any) {
-    Object.assign(this, user);
+  constructor(user: any, adminRoles: string[]) {
+    this._adminRoles = adminRoles;
+    // Check if the user is authenticated
+    // by looking if keys exist in the object
+    if (Object.keys(user).length > 0) {
+      this._isAuthenticated = true;
+      this._initialize(user);
+    }
   }
 
   /**
-   * Check if the user has a specific role
-   * @param role: string the role to check
-   * @return boolean: if the user has the requested role
+   * Get patron by organisation pid
+   * @param pid - string
+   * @return IPatron or undefined
    */
-  hasRole(role: string) {
-    return this.roles.includes(role);
+   getPatronByOrganisationPid(pid: string): IPatron | undefined {
+    if (this.patrons && this.patrons.length > 0) {
+      const patrons = this.patrons.filter(
+        (patron: IPatron) => patron.organisation.pid === pid
+      );
+      return (patrons.length === 1) ? patrons[0] : undefined;
+    }
+    return undefined;
   }
 
   /**
@@ -179,112 +216,139 @@ export class User {
    *                  If 'or', then the user need to have at least one of requested roles.
    * @return boolean
    */
-  hasRoles(roles: Array<string>, operator: string = 'and') {
-    const intersection = roles.filter(role => this.getRoles().includes(role));
+   hasRoles(roles: string[], operator: 'and' | 'or' = 'and'): boolean {
+    const intersection = roles.filter(role => this._patronRoles.includes(role));
     return (operator === 'and')
-      ? intersection.length == roles.length  // all requested roles are present into user roles.
-      : intersection.length > 0 // at least one requested roles are present into user roles.
+      ? intersection.length === roles.length  // all requested roles are present into user roles.
+      : intersection.length > 0; // at least one requested roles are present into user roles.
   }
 
   /**
-   * Get All roles
-   * @return array of roles
+   * Initialize user object
+   * @param user - IUser
    */
-  getRoles() {
-    return this.roles ? this.roles : [];
+  private _initialize(user: IUser): void {
+    Object.assign(this, user);
+    this._patronLibrarian = this._extractLibrarian();
+    this._symbolName = this._generateSymbolName();
+    this._patronRoles = this._extractPatronRoles();
   }
 
   /**
-   * Set current library pid
-   * @param pid - string
+   * Extract librarian (patron record)
+   * @return IPatron or undefined
    */
-
-  setCurrentLibrary(pid: string) {
-    this.currentLibrary = pid;
-    return this;
+  private _extractLibrarian(): IPatron | undefined {
+    const patrons = this.patrons.filter((patron: IPatron) => {
+      if (patron.roles.some((role: string) => this._adminRoles.includes(role))) {
+        return patron;
+      }
+    });
+    return patrons.length > 0 ? patrons[0] : undefined;
   }
 
   /**
-   * Get current Library
-   * @return pid - string
+   * Generate Symbol name
+   * @returns string with 2 positions
    */
-  getCurrentLibrary() {
-    return this.currentLibrary;
+   private _generateSymbolName(): string {
+    let result = [];
+    result = this.first_name
+      ? [this.first_name[0], this.last_name[0]]
+      : [this.last_name[0], this.last_name[1]];
+    return result.join('').toUpperCase();
   }
 
   /**
-   * Set current organisation
-   * @param pid - string
+   * Extract all roles for current user
+   * @returns array of roles
    */
-  setCurrentOrganisation(pid: string) {
-    this.currentOrganisation = pid;
-    return this;
-  }
-
-  /**
-   * Get current organisation pid
-   * @return pid - string
-   */
-  getCurrentOrganisation() {
-    return this.currentOrganisation;
-  }
-
-  /**
-   * Increment a circulation statistic for this user.
-   * @param type - string: the statistic type (pending, request, loans, ...)
-   * @param idx - number: the number to increment.
-   * @return the new statistic counter
-   */
-  incrementCirculationStatistic(type: string, idx: number = 1): number {
-    this.circulation_informations = this.circulation_informations || {messages: [], statistics: {}};
-    this.circulation_informations.statistics[type] = (this.circulation_informations.statistics[type] || 0) + idx;
-    return this.circulation_informations.statistics[type];
-  }
-
-  /**
-   * Decrement a circulation statistic for this user.
-   * @param type - string: the statistic type (pending, request, loans, ...)
-   * @param idx - number: the number to decrement.
-   * @return the new statistic counter
-   */
-  decrementCirculationStatistic(type: string, idx: number = 1): number {
-    this.circulation_informations = this.circulation_informations || {messages: [], statistics: {}};
-    if (!(type in this.circulation_informations.statistics)) {
-      return 0;
-    }
-    const new_stat = this.circulation_informations.statistics[type] - idx;
-    this.circulation_informations.statistics[type] = (new_stat > 0)
-      ? new_stat
-      : 0;
-    return this.circulation_informations.statistics[type];
-  }
-
-  /**
-   * Append a circulation message for this user.
-   * @param message: the message to append
-   */
-  addCirculationMessage(message: {type: string, content: string}) {
-    this.circulation_informations = this.circulation_informations || {messages: [], statistics: {}};
-    this.circulation_informations.messages.push(message);
+  private _extractPatronRoles() {
+    let roles = [];
+    this.patrons.forEach((patron: IPatron) => {
+      roles = [...roles, ...patron.roles];
+    });
+    // Deduplicate roles
+    return roles.filter((item, pos) => roles.indexOf(item) === pos).sort();
   }
 }
 
-
-export interface Organisation {
-  pid: string;
+/** Interface for user */
+export interface IUser {
+  id: number;
+  first_name: string;
+  last_name: string;
+  birth_date: string;
+  gender: string;
+  username: string;
+  street?: string;
+  postal_code?: string;
+  city?: string;
+  country?: string;
+  home_phone?: string;
+  business_phone?: string;
+  mobile_phone?: string;
+  other_phone?: string;
+  keep_history: boolean;
+  email?: string;
+  roles: string[];
+  patrons?: IPatron[];
 }
 
-export interface Library {
+/** Interface for patron */
+export interface IPatron {
   pid: string;
-  organisation: Organisation;
+  source?: string;
+  local_code?: string;
+  second_address?: {
+    street?: string;
+    postal_code?: string;
+    city?: string;
+    country?: string
+  };
+  patron?: {
+    barcode: Array<string>;
+    type: IPatronType;
+    expiration_date: Date;
+    communication_channel: string;
+    additional_communication_email?: string;
+    communication_language: string;
+    subscriptions?: {
+      start_date: Date;
+      end_date: Date;
+      patron_type: {
+        pid: string;
+      };
+      patron_transaction?: {
+        pid: string;
+      }
+    };
+    blocked?: boolean;
+    blocked_note?: string;
+    libraries?: ILibrary[];
+    organisation?: IOrganisation;
+  };
+  libraries?: ILibrary[];
+  organisation?: IOrganisation;
+  roles: string[];
 }
 
-export interface PatronType {
+/** Interface for organisation */
+export interface IOrganisation {
   pid: string;
+  code?: string;
   name?: string;
+  currency?: string;
 }
 
-export enum UserNoteType {
-  PUBLIC = _('public_note'),
-  STAFF = _('staff_note')
+/** Interface for library */
+export interface ILibrary {
+  pid: string;
+  organisation: IOrganisation;
+}
+
+/** Interface for patron type */
+export interface IPatronType {
+  pid: string;
+  type?: string;
 }

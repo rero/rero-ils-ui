@@ -87,7 +87,8 @@ export class LoanService {
       item_pid: itemPid,
       pid: loanPid,
       transaction_library_pid: transactionLibraryPid,
-      transaction_user_pid: this._userService.user.pid
+      // TODO: Fix this with multiple patron
+      transaction_user_pid: this._userService.user.patrons[0].pid
     }).pipe(
     map(data => {
       const itemData = data.metadata;

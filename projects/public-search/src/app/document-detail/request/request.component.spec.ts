@@ -18,33 +18,33 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
+import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { ItemApiService } from '../../api/item-api.service';
-import { UserService } from '../../user.service';
 import { RequestComponent } from './request.component';
-
 
 describe('RequestComponent', () => {
   let component: RequestComponent;
   let fixture: ComponentFixture<RequestComponent>;
-
-  const userRecord = {
-    patron: {
-      barcode: 'B123456'
-    }
-  };
+  let userService: UserService;
 
   const itemRecord = {
     metadata: {
-      pid: '1'
+      pid: '10',
+      organisation: {
+        pid: '2'
+      },
+      library: {
+        pid: '1'
+      }
     }
   };
 
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = userRecord;
+  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
 
-  const itemServiceSpy = jasmine.createSpyObj('ItemService', ['canRequest']);
-  itemServiceSpy.canRequest.and.returnValue(of({ can: true }));
+  const itemApiServiceSpy = jasmine.createSpyObj('ItemApiService', ['canRequest']);
+  itemApiServiceSpy.canRequest.and.returnValue(of({ can: true }));
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -54,8 +54,8 @@ describe('RequestComponent', () => {
       ],
       declarations: [ RequestComponent ],
       providers: [
-        { provide: UserService, useValue: userServiceSpy },
-        { provide: ItemApiService, useValue: itemServiceSpy }
+        { provide: UserApiService, useValue: userApiServiceSpy },
+        { provide: ItemApiService, useValue: itemApiServiceSpy }
       ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
@@ -68,6 +68,9 @@ describe('RequestComponent', () => {
     fixture = TestBed.createComponent(RequestComponent);
     component = fixture.componentInstance;
     component.item = itemRecord;
+    userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
+    userService = TestBed.inject(UserService);
+    userService.load();
     fixture.detectChanges();
   });
 
@@ -76,7 +79,8 @@ describe('RequestComponent', () => {
   });
 
   it('should have the request button', () => {
-    const showMore = fixture.nativeElement.querySelector('#item-request-1');
+    const id = `#item-${itemRecord.metadata.pid}-request-button`;
+    const showMore = fixture.nativeElement.querySelector(id);
     expect(showMore.textContent).toBeTruthy('Request');
   });
 });

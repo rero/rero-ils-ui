@@ -21,7 +21,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { tap } from 'rxjs/operators';
 import { ItemApiService } from '../../../api/item-api.service';
 import { LocationApiService } from '../../../api/location-api.service';
-import { UserService } from '../../../user.service';
 
 @Component({
   selector: 'public-search-pickup-location',
@@ -61,13 +60,11 @@ export class PickupLocationComponent implements OnInit {
   /**
    * Construtor
    * @param _locationApiService - LocationApiService
-   * @param _userService - UserService
    * @param _itemApiService - ItemApiService
    * @param _translateService - TranslateService
    */
   constructor(
     private _locationApiService: LocationApiService,
-    private _userService: UserService,
     private _itemApiService: ItemApiService,
     private _translateService: TranslateService
   ) { }
@@ -100,14 +97,10 @@ export class PickupLocationComponent implements OnInit {
 
   /** Submit form */
   submit() {
-    const user = this._userService.user;
     this.requestInProgress = true;
     this._itemApiService.request({
       item_pid: this.item.metadata.pid,
       pickup_location_pid: this.model.pickup,
-      patron_pid: user.pid,
-      transaction_location_pid: this.model.pickup,
-      transaction_user_pid: user.pid
     })
     .pipe(tap(() => {
       this.showForm = false;
@@ -115,13 +108,13 @@ export class PickupLocationComponent implements OnInit {
       this.requested = true;
     }))
     .subscribe(
-      (response) => {
+      () => {
         this.requestMessage = {
           success: true,
           message: this._translateService.instant('A request has been placed on this item.')
         };
       },
-      (error) => {
+      () => {
         this.requestMessage = {
           success: false,
           message: this._translateService.instant('Error on this request.')

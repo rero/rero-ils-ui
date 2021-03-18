@@ -14,12 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { User } from '@rero/shared';
 import moment from 'moment';
 import { getBootstrapLevel } from '../../../utils/utils';
-
 
 @Component({
   selector: 'admin-circulation-patron-detailed',
@@ -29,20 +26,24 @@ import { getBootstrapLevel } from '../../../utils/utils';
 export class CardComponent {
 
   /** the patron */
-  @Input() patron: User;
+  @Input() patron: any;
+
+  /** the patron barcode */
+  @Input() barcode: string;
+
   /** is the circulation messages should be displayed */
   @Input() circulationMessages = false;
   /** which link should be use on the main patron name */
   @Input() linkMode: 'circulation'|'detail' = 'detail';
   /** event emitter when the close button are fired */
-  @Output() clearPatron = new EventEmitter<User>();
+  @Output() clearPatron = new EventEmitter<any>();
 
   /** Build the link used on the patron name */
   get patronLink(): string {
     if (this.patron) {
       return (this.linkMode === 'detail')
         ? '/records/patrons/detail/' + this.patron.pid
-        : '/circulation/patron/' + this.patron.patron.barcode[0] + '/loan';
+        : '/circulation/patron/' + this.barcode + '/loan';
     }
   }
 
@@ -63,12 +64,18 @@ export class CardComponent {
     return false;
   }
 
-  clear() {
+  /** Clear current patron */
+  clear(): void {
     if (this.patron) {
       this.clearPatron.emit(this.patron);
     }
   }
 
+  /**
+   * Get boostrap color by level
+   * @param level - string
+   * @return string
+   */
   getBootstrapColor(level: string): string {
     return getBootstrapLevel(level);
   }

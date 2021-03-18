@@ -19,21 +19,22 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
-import { LoggedUserService, SharedModule, UserApiService } from '@rero/shared';
+import { SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
+import { cloneDeep } from 'lodash-es';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { of } from 'rxjs';
 import { IllRequestApiService } from '../api/ill-request-api.service';
 import { LoanApiService } from '../api/loan-api.service';
 import { PatronTransactionApiService } from '../api/patron-transaction-api.service';
+import { PatronProfileMenuService } from './patron-profile-menu.service';
 import { PatronProfileComponent } from './patron-profile.component';
-import { PatronProfileService } from './patron-profile.service';
-
 
 describe('PatronProfileComponent', () => {
   let component: PatronProfileComponent;
   let fixture: ComponentFixture<PatronProfileComponent>;
-  let loggedUser: LoggedUserService;
+  let userService: UserService;
+  let patronProfileMenuService: PatronProfileMenuService;
 
   const apiResponse = {
     aggregations: {
@@ -51,22 +52,8 @@ describe('PatronProfileComponent', () => {
     links: {}
   };
 
-  const user = {
-    metadata: {
-      pid: '1',
-      first_name: 'first',
-      last_name: 'last',
-      patron: {
-        keep_history: true
-      },
-      organisation: {
-        currency: 'CHF'
-      }
-    }
-  };
-
   const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
-  userApiServiceSpy.getLoggedUser.and.returnValue(of(user));
+  userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
 
   const loanApiServiceSpy = jasmine.createSpyObj('LoanApiService', ['getOnLoan', 'getRequest', 'getHistory']);
   loanApiServiceSpy.getOnLoan.and.returnValue(of(apiResponse));
@@ -93,7 +80,6 @@ describe('PatronProfileComponent', () => {
       ],
       providers: [
         BsLocaleService,
-        PatronProfileService,
         { provide: UserApiService, useValue: userApiServiceSpy },
         { provide: LoanApiService, useValue: loanApiServiceSpy },
         { provide: PatronTransactionApiService, useValue: patronTransactionApiServiceSpy },
@@ -102,13 +88,14 @@ describe('PatronProfileComponent', () => {
       schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
-    loggedUser = TestBed.inject(LoggedUserService);
   });
 
   beforeEach(() => {
+    patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
+    patronProfileMenuService.init();
+    userService = TestBed.inject(UserService);
     fixture = TestBed.createComponent(PatronProfileComponent);
     component = fixture.componentInstance;
-    component.language = 'en';
     fixture.detectChanges();
   });
 
@@ -117,22 +104,23 @@ describe('PatronProfileComponent', () => {
   });
 
   it('should display the user\'s name and tabs info', () => {
-    loggedUser.load();
-    fixture.detectChanges();
-    const fullname = fixture.nativeElement.querySelector('header > h3');
-    expect(fullname.textContent).toContain('first last');
+    userService.loaded$.subscribe(() => {
+      const fullname = fixture.nativeElement.querySelector('header > h3');
+      expect(fullname.textContent).toContain('Simonetta Casalini');
 
-    let tab = fixture.nativeElement.querySelector('#profile-tabs li:nth-child(1)');
-    expect(tab.textContent).toContain('Loans 12');
-    tab = fixture.nativeElement.querySelector('#profile-tabs li:nth-child(2)');
-    expect(tab.textContent).toContain('Requests 12');
-    tab = fixture.nativeElement.querySelector('#profile-tabs li:nth-child(3)');
-    expect(tab.textContent).toContain('Fees  CHF14.00');
-    tab = fixture.nativeElement.querySelector('#profile-tabs li:nth-child(4)');
-    expect(tab.textContent).toContain('History 12');
-    tab = fixture.nativeElement.querySelector('#profile-tabs li:nth-child(5)');
-    expect(tab.textContent).toContain('ILL requests 12');
-    tab = fixture.nativeElement.querySelector('#profile-tabs li:nth-child(6)');
-    expect(tab.textContent).toContain('Personal details');
+      let tab = fixture.nativeElement.querySelector('.nav-tabs li:nth-child(1)');
+      expect(tab.textContent).toContain('Loans 12');
+      tab = fixture.nativeElement.querySelector('.nav-tabs li:nth-child(2)');
+      expect(tab.textContent).toContain('Requests 12');
+      tab = fixture.nativeElement.querySelector('.nav-tabs li:nth-child(3)');
+      expect(tab.textContent).toContain('Fees  CHF14.00');
+      tab = fixture.nativeElement.querySelector('.nav-tabs li:nth-child(4)');
+      expect(tab.textContent).toContain('History 12');
+      tab = fixture.nativeElement.querySelector('.nav-tabs li:nth-child(5)');
+      expect(tab.textContent).toContain('Interlibrary loan 12');
+      tab = fixture.nativeElement.querySelector('.nav-tabs li:nth-child(6)');
+      expect(tab.textContent).toContain('Personal details');
+    });
+    userService.load();
   });
 });

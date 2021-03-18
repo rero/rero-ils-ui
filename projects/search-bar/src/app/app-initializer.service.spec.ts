@@ -17,8 +17,8 @@
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { SharedConfigService, SharedModule } from '@rero/shared';
+import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from '@rero/shared';
 import { AppInitializerService } from './app-initializer.service';
 
 
@@ -32,10 +32,6 @@ describe('AppInitializerService', () => {
         HttpClientTestingModule,
         TranslateModule.forRoot(),
         SharedModule
-      ],
-      providers: [
-        TranslateService,
-        SharedConfigService
       ]
     });
     appInitializerService = TestBed.inject(AppInitializerService);

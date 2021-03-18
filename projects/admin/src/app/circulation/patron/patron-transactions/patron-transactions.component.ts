@@ -16,9 +16,9 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { UserService } from '@rero/shared';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { Subscription } from 'rxjs';
-import { User, UserService } from '@rero/shared';
 import { Loan, LoanOverduePreview } from '../../../classes/loans';
 import { OrganisationService } from '../../../service/organisation.service';
 import { PatronService } from '../../../service/patron.service';
@@ -57,7 +57,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   };
 
   /** Current patron */
-  private _patron: User = undefined;
+  private _patron: any = undefined;
 
 
   // GETTER & SETTER ======================================================================
@@ -88,7 +88,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
 
   /** OnInit hook */
   ngOnInit() {
-    this._patronService.currentPatron$.subscribe(patron => {
+    this._patronService.currentPatron$.subscribe((patron: any) => {
       if (patron) {
         this._patron = patron;
         // engaged fees
@@ -123,7 +123,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   loadFeesHistory() {
     if (this._patron && this.tabs.historyFees.transactions === null) {
       this._patronTransactionService
-        .patronTransactionsByPatron$(this._patron.pid, undefined, PatronTransactionStatus.CLOSED.toString())
+        .patronTransactionsByPatron$(this._patron.id, undefined, PatronTransactionStatus.CLOSED.toString())
         .subscribe(transactions => {
           this.tabs.historyFees.transactions = transactions;
         });
@@ -140,7 +140,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
     this._modalService.show(PatronTransactionEventFormComponent, {initialState});
   }
     get myLibraryEngagedFees() {
-      const libraryPID = this._userService.user.getCurrentLibrary();
+      const libraryPID = this._userService.user.currentLibrary;
       return this.tabs.engagedFees.transactions.filter(t => t.library != null && t.library.pid === libraryPID);
     }
 

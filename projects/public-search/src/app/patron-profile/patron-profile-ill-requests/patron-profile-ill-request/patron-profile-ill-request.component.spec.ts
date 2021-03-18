@@ -19,8 +19,10 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { Nl2brPipe } from '@rero/ng-core';
-import { exec } from 'child_process';
+import { JournalVolumePipe } from '../../../pipe/journal-volume.pipe';
+import { LoanStatusBadgePipe } from '../../../pipe/loan-status-badge.pipe';
 import { NotesFilterPipe } from '../../../pipe/notes-filter.pipe';
+import { StatusBadgePipe } from '../../../pipe/status-badge.pipe';
 import { PatronProfileIllRequestComponent } from './patron-profile-ill-request.component';
 
 
@@ -68,7 +70,10 @@ describe('PatronProfileIllRequestComponent', () => {
       declarations: [
         PatronProfileIllRequestComponent,
         NotesFilterPipe,
-        Nl2brPipe
+        Nl2brPipe,
+        StatusBadgePipe,
+        LoanStatusBadgePipe,
+        JournalVolumePipe
       ],
       imports: [
         HttpClientTestingModule,
@@ -106,7 +111,7 @@ describe('PatronProfileIllRequestComponent', () => {
     expect(dd[0].textContent).toContain('Document publisher');
     expect(dd[1].textContent).toContain('2021');
     expect(dd[2].textContent).toContain('Document:identifier');
-    expect(dd[3].textContent).toContain('Vol. {{ volume }} -- n°. {{ number }}');
+    expect(dd[3].textContent).toContain('Vol. {{ volume }} &mdash; n°. {{ number }}');
     expect(dd[4].textContent).toContain('Pickup location');
     expect(dd[5].textContent).toContain('Copy');
     expect(dd[6].textContent).toContain('10-21');

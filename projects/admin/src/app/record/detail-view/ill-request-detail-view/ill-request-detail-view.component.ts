@@ -17,7 +17,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { User } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { IllRequestsService } from '../../../service/ill-requests.service';
 
@@ -36,7 +35,7 @@ export class IllRequestDetailViewComponent implements DetailRecord, OnInit {
   record: any;
 
   /** the requester of the ILL request */
-  requester: User = null;
+  requester = null;
 
   // CONSTRUCTOR & HOOKS =======================================================
   /**
@@ -54,7 +53,7 @@ export class IllRequestDetailViewComponent implements DetailRecord, OnInit {
     this.record$.subscribe((record) => {
       this.record = record;
       this._recordService.getRecord('patrons', this.record.metadata.patron.pid).subscribe(
-        (patron) => this.requester = new User(patron.metadata)
+        (patron) => this.requester = patron.metadata
       );
     });
   }

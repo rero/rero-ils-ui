@@ -14,8 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Message, PatronApiService } from '../../api/patron-api.service';
+import { PatronProfileMenuService } from '../patron-profile-menu.service';
 
 @Component({
   selector: 'public-search-patron-profile-message',
@@ -25,22 +27,42 @@ import { Message, PatronApiService } from '../../api/patron-api.service';
     [innerHTML]="message.content | nl2br"
   ></div>`
 })
-export class PatronProfileMessageComponent implements OnInit {
+export class PatronProfileMessageComponent implements OnInit, OnDestroy {
+
+  /** Observable subscription */
+  private _subscription = new Subscription();
 
   /** patron messages */
   messages: Message[] = [];
 
   /**
    * Constructor
-   * @param _patronApiService - PatronApiService
+   * @param _patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
-    private _patronApiService: PatronApiService
+    private _patronApiService: PatronApiService,
+    private _patronProfileMenuService: PatronProfileMenuService
   ) {}
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._patronApiService.getMessages()
+    this._loanMessage();
+    this._subscription.add(
+      this._patronProfileMenuService.onChange$.subscribe(() => {
+        this._loanMessage();
+      })
+    );
+  }
+
+  /** OnDestroy hook */
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
+  }
+
+  /** load message */
+  private _loanMessage(): void {
+    const patronPid = this._patronProfileMenuService.currentPatron.pid;
+    this._patronApiService.getMessages(patronPid)
       .subscribe((messages: Message[]) => this.messages = messages);
   }
 }

@@ -37,11 +37,12 @@ describe('CanAddLocalFieldsGuard', () => {
     .getByResourceTypeAndResourcePidAndOrganisationId
     .and.returnValue(of({}));
 
-  const localStorageServiceSpy = jasmine.createSpyObj('LocalStorageService', ['get']);
+  const localStorageServiceSpy = jasmine.createSpyObj('LocalStorageService', ['get', 'has']);
   localStorageServiceSpy.get.and.returnValue({
     currentLibrary: 1,
     currentOrganisation: 1
   });
+  localStorageServiceSpy.has.and.returnValue(true);
 
   const activatedRouteSnapshotSpy = jasmine.createSpyObj('ActivatedRouteSnapshot', ['']);
   activatedRouteSnapshotSpy.queryParams = {type: 'documents', ref: '240'};

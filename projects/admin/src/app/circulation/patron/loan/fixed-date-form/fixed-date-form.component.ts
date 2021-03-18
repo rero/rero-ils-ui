@@ -24,10 +24,11 @@ import { RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import moment from 'moment';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { Library } from 'projects/admin/src/app/classes/library';
 import { DateValidators } from 'projects/admin/src/app/utils/validators';
 import { Subscription } from 'rxjs';
+import { CirculationService } from '../../../services/circulation.service';
 
 
 @Component({
@@ -70,19 +71,19 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
   /**
    * Constructor
    * @param _localeService - BsLocaleService
-   * @param _modalService - BsModalService
    * @param _bsModalRef - BsModalRef
    * @param _translateService - TranslateService,
    * @param _userService - UserService
    * @param _recordService - RecordService
+   * @param _circulationService - CirculationService
    */
   constructor(
     private _localeService: BsLocaleService,
-    private _modalService: BsModalService,
     protected _bsModalRef: BsModalRef,
     private _translateService: TranslateService,
     private _userService: UserService,
     private _recordService: RecordService,
+    private _circulationService: CirculationService
   ) { }
 
 
@@ -90,13 +91,13 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._localeService.use(this._translateService.currentLang);
     if (this._userService.user) {
-      this._recordService.getRecord('libraries', this._userService.user.getCurrentLibrary(), 1).subscribe(
+      this._recordService.getRecord('libraries', this._userService.user.currentLibrary, 1).subscribe(
         (data: any) => {
           const library = new Library(data.metadata);
           this.bsConfig.daysDisabled = library.closedDays;
         }
       );
-      this._subscription.add(this._userService.user.currentLibraryClosedDates$.subscribe(
+      this._subscription.add(this._circulationService.currentLibraryClosedDates$.subscribe(
         data => this.bsConfig.datesDisabled = data
       ));
     }
