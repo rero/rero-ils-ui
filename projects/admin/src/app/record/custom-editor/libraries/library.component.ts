@@ -82,7 +82,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
       this.libraryForm.create();
       this.eventForm = this.libraryForm.getBuildEvent().subscribe((buildEvent: any) => {
         if (params && params.pid) {
-          this.recordService.getRecord('libraries', params.pid, 1).subscribe(record => {
+          this.recordService.getRecord('libraries', params.pid).subscribe(record => {
             this.library = new Library(record.metadata);
             this.libraryForm.populate(record.metadata);
             this.libForm = this.libraryForm.form;
