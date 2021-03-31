@@ -63,8 +63,10 @@ describe('OperationLogsService', () => {
   });
 
   it('should return a list of operations on a record', () => {
-    service.getLogs('documents', '1', 'create', 1).subscribe((response: Record) => {
-      expect(response).toEqual(responseRecords);
+    service
+      .getLogs('documents', '1', 'create', 1)
+      .subscribe({
+        next: (response: Record) => expect(response).toEqual(responseRecords)
     });
   });
 });
