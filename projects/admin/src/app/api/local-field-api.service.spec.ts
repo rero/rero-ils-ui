@@ -67,15 +67,16 @@ describe('Service: LocalFieldApi', () => {
   it('should return an empty object', () => {
     localFieldApiService
       .getByResourceTypeAndResourcePidAndOrganisationId('doc', '1', '1')
-      .subscribe(result => {
-        expect('metadata' in result).toBeFalsy();
+      .subscribe({
+        next: (result) => expect('metadata' in result).toBeFalsy()
       });
   });
 
   it('should return true on the deletion of the record', () => {
     localFieldApiService
-      .delete('1').subscribe((success: boolean) => {
-        expect(success).toBeTruthy();
+      .delete('1')
+      .subscribe({
+        next: (success: boolean) => expect(success).toBeTruthy()
       });
   });
 });
