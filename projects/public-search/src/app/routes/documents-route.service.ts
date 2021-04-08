@@ -80,6 +80,9 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
               component: DocumentBriefComponent,
               label: _('Documents'),
               aggregations: (aggregations: any) => this.aggFilter(aggregations),
+              aggregationsName: {
+                organisation: _('Library')
+              },
               aggregationsOrder: this.aggregations(viewcode),
               aggregationsExpand: ['document_type'],
               aggregationsBucketSize: 10,
@@ -111,7 +114,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
               key: 'corporate-bodies',
               index: 'contributions',
               component: ContributionBriefComponent,
-              label: _('Organisations'),
+              label: _('Corporate bodies'),
               aggregationsOrder: ['sources'],
               aggregationsExpand: ['sources'],
               listHeaders: {

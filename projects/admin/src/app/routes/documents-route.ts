@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, RouteInterface } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
@@ -74,6 +75,9 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             },
             aggregations: (aggregations: any) => this._routeToolService
               .aggregationFilter(aggregations),
+            aggregationsName: {
+              organisation: _('Library')
+            },
             aggregationsOrder: [
               'document_type',
               'author',
