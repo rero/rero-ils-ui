@@ -123,13 +123,13 @@ export class MenuUserServicesService extends MenuBase {
     .setExtra('iconClass', 'fa fa-users');
     this._translatedName(usersMenu, 'Users');
 
-    // ----- COLLECTIONS
-    this._collectionsMenu = servicesMenu.addChild('Collections')
+    // ----- EXHIBITION/COURSE
+    this._collectionsMenu = servicesMenu.addChild('Exhibition/course')
     .setRouterLink(['/', 'records', 'collections'])
     .setQueryParam('library', this._userService.user.currentLibrary)
     .setAttribute('id', 'collections-menu')
     .setExtra('iconClass', 'fa fa-graduation-cap');
-    this._translatedName(this._collectionsMenu, 'Collections');
+    this._translatedName(this._collectionsMenu, 'Exhibition/course');
   }
 
   /**

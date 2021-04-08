@@ -50,7 +50,7 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
         types: [
           {
             key: this.name,
-            label: 'Collections',
+            label: 'Exhibition/course',
             component: CollectionBriefViewComponent,
             detailComponent: CollectionDetailViewComponent,
             canAdd: () => this._routeToolService.can(),
