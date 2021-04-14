@@ -13,8 +13,7 @@
 -->
 <!-- import button for external source importation such as BNF -->
 <div *ngIf="record && record.metadata && !record.metadata.pid && pid && source" class="float-right ml-4 mt-2 mb-4">
-  <a [routerLink]="['/records', 'documents', 'new']"
-    [queryParams]="{source: source, pid: pid}"
+  <a (click)="importDocument($event, record, { source: source, pid: pid })"
     class="btn btn-sm btn-outline-primary"
     translate>Import</a>
 </div>

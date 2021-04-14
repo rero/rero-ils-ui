@@ -154,6 +154,8 @@ import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 import { UserIdComponent } from './record/editor/wrappers/user-id/user-id.component';
 import { UserIdEditorComponent } from './record/custom-editor/user-id-editor/user-id-editor.component';
 import { RecordMaskedComponent } from './record/detail-view/record-masked/record-masked.component';
+import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
+import { DialogImportComponent } from './record/detail-view/document-detail-view/dialog-import/dialog-import.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -254,7 +256,9 @@ export function appInitFactory(appInitService: AppInitService) {
     CipoPatronTypeItemTypeComponent,
     UserIdComponent,
     UserIdEditorComponent,
-    RecordMaskedComponent
+    RecordMaskedComponent,
+    IdentifiedbyValueComponent,
+    DialogImportComponent
   ],
   imports: [
     AppRoutingModule,
@@ -274,10 +278,10 @@ export function appInitFactory(appInitService: AppInitService) {
       types: [
         { name: 'cipo-pt-it', component: CipoPatronTypeItemTypeComponent }
       ],
-      wrappers: [{
-        name: 'user-id',
-        component: UserIdComponent
-      }]
+      wrappers: [
+        { name: 'user-id', component: UserIdComponent },
+        { name: 'identifiedby-value', component: IdentifiedbyValueComponent }
+      ]
     }),
     TranslateModule.forRoot({
       loader: {

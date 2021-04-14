@@ -85,6 +85,7 @@
     "document-register-element": "^1.14.10",
     "font-awesome": "^4.7.0",
     "https-proxy-agent": "^2.2.4",
+    "issn": "^1.0.6",
     "jquery": "^3.6.0",
     "lodash-es": "4.17.14",
     "moment": "^2.29.1",
@@ -94,6 +95,7 @@
     "ngx-spinner": "^10.0.1",
     "ngx-toastr": "^13.2.1",
     "rxjs": "^6.6.7",
+    "simple-isbn": "^1.1.5",
     "tslib": "^2.1.0",
     "zone.js": "~0.10.2"
   },
