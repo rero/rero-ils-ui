@@ -72,6 +72,8 @@ export class UserIdComponent extends FieldWrapper implements OnInit {
         const userID = this.modalRef.content.userID;
         if (userID != null) {
           this.formControl.setValue(userID);
+          // need to force the role validation as the user can be changed
+          this.formControl.root.get('roles').updateValueAndValidity();
           return this._recordService.getRecord('users', userID);
         }
         return of(null);

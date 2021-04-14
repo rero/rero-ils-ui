@@ -21,6 +21,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { TranslateService } from '@ngx-translate/core';
 import { JSONSchema7, orderedJsonSchema, RecordService, removeEmptyValues } from '@rero/ng-core';
+import { UserService } from '@rero/shared';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
@@ -61,13 +62,15 @@ export class UserIdEditorComponent implements OnInit {
    * @param _formlyJsonschema - ngx-formly FormlyJsonschema
    * @param _toastService - ngx-toastr ToastrService
    * @param _translateService - ngx-translate TranslateService
+   * @param _userService - rero/shared UserService
    */
   constructor(
     private _recordService: RecordService,
     public bsModalRef: BsModalRef,
     private _formlyJsonschema: FormlyJsonschema,
     private _toastService: ToastrService,
-    private _translateService: TranslateService) {
+    private _translateService: TranslateService,
+    private _userService: UserService) {
     this.form = new FormGroup({});
   }
 
@@ -106,7 +109,7 @@ export class UserIdEditorComponent implements OnInit {
                     Object.keys(field.validation.messages).map(msg => {
                       if (msg.endsWith('Message')) {
                         const val = field.validation.messages[msg];
-                        delete(field.validation.messages[msg]);
+                        delete (field.validation.messages[msg]);
                         const newMsg = msg.replace(/Message$/, '');
                         field.validation.messages[newMsg] = val;
                       }
@@ -155,10 +158,14 @@ export class UserIdEditorComponent implements OnInit {
         if (model == null) {
           return null;
         }
-        const roles = model.metadata.roles as Array<string>;
-        if (roles) {
-          const alreadyExists = roles.some(v => ['patron', 'librarian', 'system_librarian'].some(r => r === v));
-          if (alreadyExists) {
+        // current logged user organisation
+        const currentOrgPid = this._userService.user.currentOrganisation;
+        const patronAccounts = model.metadata.patrons;
+        // user has patron accounts
+        if (patronAccounts && patronAccounts.length > 0) {
+          const patronAccount = patronAccounts.filter(ptrn => ptrn.organisation.pid === currentOrgPid).pop();
+          // user has already an account in the logged librarian organisation
+          if (patronAccount != null) {
             this._toastService.info(
               this._translateService.instant('This person is already registered in your organisation.')
             );

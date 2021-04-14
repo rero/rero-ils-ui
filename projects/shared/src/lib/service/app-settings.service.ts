@@ -71,9 +71,9 @@ export class AppSettingsService {
    * Get contribution sources
    * @return array of string
    */
-  get constributionSources(): string[] {
+  get contributionSources(): string[] {
     this._checkSettings();
-    return this._settings.constributionSources;
+    return this._settings.contributionSources;
   }
 
   /**
@@ -144,7 +144,7 @@ export class AppSettingsService {
 /** Interface for settings */
 export interface ISettings {
   baseUrl: string;
-  constributionSources: string[];
+  contributionSources: string[];
   contributionAgentTypes: any;
   contributionsLabelOrder: any;
   globalView: string;

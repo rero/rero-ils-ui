@@ -48,9 +48,9 @@ describe('ApplicationSettingsService', () => {
     expect(service.baseUrl).toEqual(settings.baseUrl);
   });
 
-  it('should return the parameter constribution sources', () => {
+  it('should return the parameter contribution sources', () => {
     service.settings = settings;
-    expect(service.constributionSources).toEqual(settings.constributionSources);
+    expect(service.contributionSources).toEqual(settings.contributionSources);
   });
 
   it('should return the parameter contributions agent types', () => {

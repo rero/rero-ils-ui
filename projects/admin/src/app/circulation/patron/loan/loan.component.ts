@@ -210,7 +210,7 @@ export class LoanComponent implements OnInit, OnDestroy {
         );
       }
     } else {
-      this._itemsService.getItem(barcode, this.patron.id).subscribe(
+      this._itemsService.getItem(barcode, this.patron.pid).subscribe(
         newItem => {
           if (newItem === null) {
             this._toastService.error(
@@ -228,7 +228,7 @@ export class LoanComponent implements OnInit, OnDestroy {
               this.searchText = '';
               this.searchInputFocus = true;
             } else {
-              if (newItem.pending_loans && newItem.pending_loans[0].patron_pid !== this.patron.id) {
+              if (newItem.pending_loans && newItem.pending_loans[0].patron_pid !== this.patron.pid) {
                 this._toastService.error(
                   this._translateService.instant('Checkout impossible: the item is requested by another patron'),
                   this._translateService.instant('Checkout')
