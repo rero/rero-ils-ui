@@ -1,0 +1,40 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="modal-header">
+  <h4 class="modal-title pull-left" translate>Import</h4>
+</div>
+<div class="modal-body">
+  <h5 *ngIf="records.length < 2; else plurial" translate>A document is available</h5>
+  <ng-template #plurial>
+    <h5 translate>Documents are available</h5>
+  </ng-template>
+  <ul class="list-unstyled mb-0">
+    <li *ngFor="let record of records">
+      <a [routerLink]="['/records', 'documents', 'detail', record.metadata.pid]" (click)="close()">
+      <ng-container *ngIf="record.metadata.ui_title_text_responsibility; else noTitle">
+        {{ record.metadata.ui_title_text_responsibility }}
+      </ng-container>
+      <ng-template #noTitle>{{ 'Document' | translate }}</ng-template>
+      </a>
+    </li>
+  </ul>
+  <div class="font-weight-bold mt-3" translate>Do you want to import this document?</div>
+</div>
+<div class="modal-footer">
+  <button id="modal-cancel-button" type="button" class="btn btn-light" (click)="decline()" translate>Cancel</button>
+  <button id="modal-confirm-button" type="button" class="btn btn-primary" (click)="confirm()" translate>Import</button>
+</div>

@@ -19,7 +19,7 @@ import { Component, OnInit } from '@angular/core';
 import { FieldWrapper } from '@ngx-formly/core';
 import { RecordService } from '@rero/ng-core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { UserIdEditorComponent } from '../../../custom-editor/user-id-editor/user-id-editor.component';
 
@@ -35,9 +35,6 @@ export class UserIdComponent extends FieldWrapper implements OnInit {
   /** current user */
   user$: Observable<any>;
 
-  /** Modal observable subscription */
-  private _subscription = new Subscription();
-
   /**
    * constructor
    * @param _modalService - ngx-boostrap BsModalService
@@ -45,7 +42,8 @@ export class UserIdComponent extends FieldWrapper implements OnInit {
    */
   constructor(
     private _modalService: BsModalService,
-    private _recordService: RecordService) {
+    private _recordService: RecordService
+  ) {
     super();
   }
 
@@ -72,12 +70,10 @@ export class UserIdComponent extends FieldWrapper implements OnInit {
     this.user$ = this.modalRef.onHidden.pipe(
       switchMap(() => {
         const userID = this.modalRef.content.userID;
-        console.log(userID);
         if (userID != null) {
           this.formControl.setValue(userID);
           return this._recordService.getRecord('users', userID);
         }
-        console.log('return null');
         return of(null);
       })
     );
