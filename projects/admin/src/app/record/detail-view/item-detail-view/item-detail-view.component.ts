@@ -28,27 +28,26 @@ import { OrganisationService } from '../../../service/organisation.service';
 @Component({
   selector: 'admin-item-detail-view',
   templateUrl: './item-detail-view.component.html',
-  styles: []
+  styles: ['dl * { margin-bottom: 0; }']
 })
 export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
 
   /** Observable resolving record data */
   record$: Observable<any>;
+  /** Resource type */
+  type: string;
+  /** Document record */
+  record: any;
+  /** Location record */
+  location: any;
+  /** Load operation logs on show */
+  showOperationLogs = false;
+  /** reference to ItemIssueStatus */
+  issueItemStatus = IssueItemStatus;
 
   /** Record subscription */
   private _recordObs: Subscription;
 
-  /** Resource type */
-  type: string;
-
-  /** Document record */
-  record: any;
-
-  /** Location record */
-  location: any;
-
-  /** Load operation logs on show */
-  showOperationLogs = false;
 
   /**
    * Is operation log enabled
