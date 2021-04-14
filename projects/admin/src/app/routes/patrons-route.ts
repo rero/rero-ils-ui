@@ -14,12 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { FormControl } from '@angular/forms';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import {
   DetailComponent, EditorComponent, extractIdOnRef, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface
 } from '@rero/ng-core';
-import { map } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-view.component';
 import { PatronDetailViewComponent } from '../record/detail-view/patron-detail-view/patron-detail-view.component';
@@ -87,6 +89,12 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
               return record;
             },
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
+              if (field.templateOptions.label === 'Role') {
+                if (field.asyncValidators == null) {
+                  field.asyncValidators = {};
+                }
+                field.asyncValidators.role = this._getRoleValidator(field);
+              }
               return this._limitUserFormField(field, jsonSchema);
             },
             // use simple query for UI search
@@ -100,6 +108,43 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
             }
           }
         ]
+      }
+    };
+  }
+  /**
+   * Create an Async validator to avoid multiple organisation prfessional accouts.
+   *
+   * @param field - formly field config.
+   */
+   private _getRoleValidator(field: FormlyFieldConfig) {
+    return {
+      expression: (control: FormControl) => {
+        const value = control.value;
+        const userId = control.root.get('user_id').value;
+        // user_id should be defined and a prof role should be selected
+        if (userId == null || !value.some(role => ['librarian', 'system_librarian'].some(r => r === role))) {
+          return of(true);
+        }
+        return this._routeToolService.recordService.getRecord('users', userId).pipe(
+          debounceTime(1000),
+          map((user: any) => {
+            // current logged user organisation
+            const currentOrgPid = this._routeToolService.userService.user.currentOrganisation;
+            const patronAccounts = user.metadata.patrons;
+            if (patronAccounts && patronAccounts.length > 0) {
+              // accounts in other organisations
+              return !patronAccounts.some(ptrn => {
+                if (ptrn.organisation.pid !== currentOrgPid) {
+                  if (ptrn.roles.some(role => ['librarian', 'system_librarian'].some(r => r === role))) {
+                    return true;
+                  }
+                }
+                return false;
+              });
+            }
+            return true;
+          })
+        );
       }
     };
   }

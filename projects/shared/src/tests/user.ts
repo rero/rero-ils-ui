@@ -98,7 +98,7 @@ export const testUserPatronWithSettings = {
   ],
   settings: {
     baseUrl: 'https://ils.rero.ch',
-    constributionSources: [
+    contributionSources: [
       'idref',
       'gnd',
       'rero'
@@ -306,7 +306,7 @@ export const testUserPatronMultipleOrganisationsWithSettings = {
   ],
   settings: {
     baseUrl: 'https://ils.rero.ch',
-    constributionSources: [
+    contributionSources: [
       'idref',
       'gnd',
       'rero'
@@ -382,7 +382,7 @@ export const testUserLibrarianWithSettings = {
   ],
   settings: {
     baseUrl: 'https://ils.rero.ch',
-    constributionSources: [
+    contributionSources: [
       'idref',
       'gnd',
       'rero'

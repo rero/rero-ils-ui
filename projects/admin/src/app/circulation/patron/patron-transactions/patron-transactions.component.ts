@@ -123,7 +123,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   loadFeesHistory() {
     if (this._patron && this.tabs.historyFees.transactions === null) {
       this._patronTransactionService
-        .patronTransactionsByPatron$(this._patron.id, undefined, PatronTransactionStatus.CLOSED.toString())
+        .patronTransactionsByPatron$(this._patron.pid, undefined, PatronTransactionStatus.CLOSED.toString())
         .subscribe(transactions => {
           this.tabs.historyFees.transactions = transactions;
         });

@@ -97,7 +97,7 @@ export class MefTypeahead implements ITypeahead {
       return of([]);
     }
 
-    const sources = this._appSettingsService.constributionSources
+    const sources = this._appSettingsService.contributionSources
       .filter((source: string) => source !== 'rero');
 
     const contributionQuery = [
