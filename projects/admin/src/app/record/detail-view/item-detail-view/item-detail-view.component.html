@@ -16,40 +16,34 @@
 -->
 
 <ng-container *ngIf="record">
-  <header class="row mb-2">
-    <h1>{{ 'Barcode' | translate }} {{ record.metadata.barcode }}</h1>
-  </header>
   <section class="mb-4">
+    <header>
+      <h1>{{ 'Barcode' | translate }} {{ record.metadata.barcode }}</h1>
+    </header>
     <admin-record-masked *ngIf="record.metadata._masked" [record]="record" [withLabel]="true"></admin-record-masked>
-    <dl class="row mb-0">
+    <dl class="row">
       <!-- INHERITED CALL NUMBER -->
       <ng-container *ngIf="record | itemHoldingsCallNumber | async as callNumber">
         <ng-container *ngIf="(callNumber | json) != ({ first: {}, second: {} } | json)">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Call number </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
+          <dt class="col-3 label-title" translate>Call number </dt>
+          <dd class="col-9">
             <shared-inherited-call-number [item]="record" context="first"></shared-inherited-call-number>
           </dd>
         </ng-container>
       </ng-container>
       <!-- SECOND CALL NUMBER -->
       <ng-container *ngIf="record.metadata.second_call_number">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Second call number</dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-            {{ record.metadata.second_call_number }}
-        </dd>
+        <dt class="col-3 label-title" translate>Second call number</dt>
+        <dd class="col-9">{{ record.metadata.second_call_number }}</dd>
       </ng-container>
       <!-- ENUMERATION AND CHRONOLOGY / UNIT -->
       <ng-container *ngIf="record.metadata.enumerationAndChronology">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Unit</dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ record.metadata.enumerationAndChronology }}
-        </dd>
+        <dt class="col-3 label-title" translate>Unit</dt>
+        <dd class="col-9">{{ record.metadata.enumerationAndChronology }}</dd>
       </ng-container>
       <!-- ITEM TYPE -->
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-        Type
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0" *ngVar="record.metadata.item_type.pid | getRecord:'item_types': 'field':'name' | async as defaultItty">
+      <dt class="col-3 label-title" translate>Type</dt>
+      <dd class="col-9" *ngVar="record.metadata.item_type.pid | getRecord:'item_types': 'field':'name' | async as defaultItty">
         <ng-container *ngIf="hasTemporaryItemType(); else defaultItemTypeBlock">
           <del class="text-muted mr-2">{{ defaultItty }}</del>
           {{ record.metadata.temporary_item_type.pid | getRecord:'item_types': 'field':'name' | async }}
@@ -57,47 +51,35 @@
             (<i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }})
           </span>
         </ng-container>
-        <ng-template #defaultItemTypeBlock>
-          {{ defaultItty }}
-        </ng-template>
+        <ng-template #defaultItemTypeBlock>{{ defaultItty }}</ng-template>
       </dd>
       <!-- DOCUMENT -->
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-        Document
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
+      <dt class="col-3 label-title" translate>Document</dt>
+      <dd class="col-9">
         <a [routerLink]="['/records', 'documents', 'detail', record.metadata.document.pid]">
           {{ record.metadata.document.pid | getRecord:'documents': 'field' :'title' | async | mainTitle }}
         </a>
       </dd>
       <!-- LIBRARY -->
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-        Library
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
+      <dt class="col-3 label-title" translate>Library</dt>
+      <dd class="col-9">
         <ng-container *ngIf="location">
           {{ location.metadata.library.pid | getRecord: 'libraries': 'field': 'name' | async }}
         </ng-container>
       </dd>
       <!-- LOCATION -->
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-        Location
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
+      <dt class="col-3 label-title" translate>Location</dt>
+      <dd class="col-9">
         <ng-container *ngIf="location">{{ location.metadata.name }}</ng-container>
       </dd>
       <!-- AVAILIBILITY -->
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-        Availability
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
+      <dt class="col-3 label-title" translate>Availability</dt>
+      <dd class="col-9">
         <admin-item-availability [item]="record"></admin-item-availability>
       </dd>
       <!-- ACQUISITION -->
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-        New acquisition
-      </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
+      <dt class="col-3 label-title" translate>New acquisition</dt>
+      <dd class="col-9">
         <i class="fa"
            [ngClass]="(record.metadata.acquisition_date) ? 'fa-check text-success' : 'fa-times text-danger'"
            aria-hidden="true">
@@ -108,63 +90,56 @@
       </dd>
       <!-- PRICE -->
       <ng-container *ngIf="record.metadata | keyExists:'price'">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Price
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ record.metadata.price | currency:organisationCurrency:'symbol' }}
-        </dd>
+        <dt class="col-3 label-title" translate>Price</dt>
+        <dd class="col-9">{{ record.metadata.price | currency:organisationCurrency:'symbol' }}</dd>
       </ng-container>
       <!-- PAC CODE -->
       <ng-container *ngIf="record.metadata | keyExists:'pac_code'">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          PAC code
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ record.metadata.pac_code | translate }}
-        </dd>
+        <dt class="col-3 label-title" translate>PAC code</dt>
+        <dd class="col-9">{{ record.metadata.pac_code | translate }}</dd>
       </ng-container>
       <!-- URL -->
       <ng-container *ngIf="record.metadata | keyExists:'url'">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Online access
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          <a href="{{ record.metadata.url }}">{{ record.metadata.url }}</a>
-        </dd>
+        <dt class="col-3 label-title" translate>Online access</dt>
+        <dd class="col-9"><a href="{{ record.metadata.url }}">{{ record.metadata.url }}</a></dd>
       </ng-container>
     </dl>
   </section>
 
   <!-- ISSUE DATA -->
   <section *ngIf="record.metadata.type == 'issue'">
-    <header class="row">
+    <header>
       <h3 translate>Issue data</h3>
     </header>
-    <section class="mb-4">
-      <dl class="row mb-0">
-        <!-- received date -->
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Received date</dt>
-        <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.issue.received_date | dateTranslate }}</dd>
-        <!-- expected date -->
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Expected date</dt>
-        <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.issue.expected_date | dateTranslate }}</dd>
-        <!-- is regular -->
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Regular issue</dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          <i class="fa"
-             [ngClass]="(record.metadata.issue.regular) ? 'fa-check text-success' : 'fa-times text-danger'"
-             aria-hidden="true">
-          </i>
-        </dd>
-        <!-- issue status -->
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Status</dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          <i class="fa" [ngClass]="getIcon(record.metadata.issue.status)"></i>
-          {{ record.metadata.issue.status | translate }} ({{ record.metadata.issue.status_date | dateTranslate}})
-        </dd>
-      </dl>
-    </section>
+    <dl class="row">
+      <!-- is regular -->
+      <dt class="col-3 label-title" translate>Regular issue</dt>
+      <dd class="col-9">
+        <i class="fa"
+           [ngClass]="(record.metadata.issue.regular) ? 'fa-check text-success' : 'fa-times text-danger'"
+           aria-hidden="true">
+        </i>
+      </dd>
+      <!-- expected date -->
+      <dt class="col-3 label-title" translate>Expected date</dt>
+      <dd class="col-9">{{ record.metadata.issue.expected_date | dateTranslate }}</dd>
+      <!-- received date -->
+      <dt class="col-3 label-title" translate>Received date</dt>
+      <dd class="col-9">
+        <ng-container *ngIf="record.metadata.issue.status === issueItemStatus.RECEIVED; else notYetReceived">
+          {{ record.metadata.issue.received_date | dateTranslate }}
+        </ng-container>
+        <ng-template #notYetReceived>
+          <span class="no-data">{{ 'Not yet recieved' | translate }}</span>
+        </ng-template>
+      </dd>
+      <!-- issue status -->
+      <dt class="col-3 abel-title" translate>Status</dt>
+      <dd class="col-9">
+        <i class="fa" [ngClass]="getIcon(record.metadata.issue.status)"></i>
+        {{ record.metadata.issue.status | translate }} ({{ record.metadata.issue.status_date | dateTranslate }})
+      </dd>
+    </dl>
   </section>
 
   <!-- NOTES -->
