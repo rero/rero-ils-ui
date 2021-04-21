@@ -100,6 +100,17 @@
       <!-- MASKED -->
       <admin-record-masked *ngIf="record.metadata._masked" [record]="record" [withLabel]="true"></admin-record-masked>
 
+      <!-- RELATED RESOURCE -->
+      <div class="row" *ngIf="relatedResources">
+        <div class="col">
+          <ul class="list-unstyled mt-1 mb-0">
+            <li *ngFor="let eloc of relatedResources">
+              <admin-related-resource [electronicLocator]="eloc"></admin-related-resource>
+            </li>
+          </ul>
+        </div>
+      </div>
+
       <!-- SUBJECTS -->
       <div class="row" *ngIf="record.metadata.subjects">
         <div class="col">
@@ -108,7 +119,7 @@
             class="badge badge-secondary mr-1"
             title="{{ subject.type | translate }}"
             [attr.id]="i | idAttribute:{prefix: 'doc-subject'}">
-            <i class="fa fa-tag"></i> {{ subject.text }}
+            <i class="fa fa-tag"></i> {{ subject.term }}
           </span>
         </div>
       </div>
@@ -135,11 +146,11 @@
     </div>
   </header>
 
-  <!-- END OF HEADER ---------------------------------------------------------->
-  <!-- TABS ------------------------------------------------------------------->
-  <div>
+  <!-- END OF HEADER -->
+  <!-- TABS -->
+  <div class="mt-2">
     <tabset>
-      <!-- GET TAB ------------------------------------------------------------>
+      <!-- GET TAB -->
       <tab id="documents-get-tab" tabOrder="1" [active]="true" *ngIf="record.metadata.pid">
         <ng-template tabHeading>
           <i class="fa fa-list-ul mr-1"></i>{{ 'Get' | translate }}
@@ -150,8 +161,8 @@
           </admin-holdings>
         </div>
       </tab>
-      <!-- END OF GET TAB ----------------------------------------------------->
-      <!-- ONLINE ACCESS TAB -------------------------------------------------->
+      <!-- END OF GET TAB -->
+      <!-- ONLINE ACCESS TAB -->
       <tab id="documents-online-access-tab" tabOrder="2" *ngIf="resources && resources.length > 0">
         <ng-template tabHeading>
           <i class="fa fa-download mr-1"></i><span translate>Online access</span>
@@ -162,8 +173,8 @@
           </admin-resource>
         </div>
       </tab>
-      <!-- END OF ONLINE ACCESS TAB ------------------------------------------->
-      <!-- DESCRIPTION TAB ---------------------------------------------------->
+      <!-- END OF ONLINE ACCESS TAB -->
+      <!-- DESCRIPTION TAB -->
       <tab id="documents-description-tab" tabOrder="3" [active]="!record.metadata.pid">
         <ng-template tabHeading>
           <i class="fa fa-bars mr-1"></i> {{ 'Description' | translate }}
@@ -352,16 +363,12 @@
               </dd>
             </ng-container>
 
-            <!-- RELATED RESOURCE -->
-            <ng-container *ngIf="relatedResources">
-              <ng-container *ngFor="let eloc of relatedResources; first as isFirst; let i = index">
-                <dt id="doc-related-resource-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>
-                  <span *ngIf="isFirst">Related resource</span>
-                </dt>
-                <dd id="{{'doc-related-resource-' + i}}" [ngClass]="ddCssClass">
-                  <admin-related-resource [electronicLocator]="eloc"></admin-related-resource>
-                </dd>
-              </ng-container>
+            <!-- UNIFORM TITLE -->
+            <ng-container *ngIf="record.metadata.titlesProper && record.metadata.titlesProper.length > 0">
+              <dt id="doc-uniform-title-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Uniform title</dt>
+              <dd id="doc-uniform-title" [ngClass]="ddCssClass">
+                {{ record.metadata.titlesProper.join("; ") }}
+              </dd>
             </ng-container>
 
             <!-- IDENTIFIED BY -->
@@ -414,8 +421,8 @@
           </dl>
         </div>
       </tab>
-      <!-- END OF DESCRIPTION TAB --------------------------------------------->
-      <!-- LOCAL FIELDS TAB ------------------------------------------------------------>
+      <!-- END OF DESCRIPTION TAB -->
+      <!-- LOCAL FIELDS TAB -->
       <tab
         *ngIf="!record.metadata.harvested && record.metadata.pid"
         id="documents-local-field-tab"
@@ -428,8 +435,8 @@
           <admin-local-field [resourceType]="'documents'" [resourcePid]="record.metadata.pid"></admin-local-field>
         </div>
       </tab>
-      <!-- END OF LOCAL FIELDS TAB ---------------------------------------------------->
-      <!-- MARC TAB ------------------------------------------------------------>
+      <!-- END OF LOCAL FIELDS TAB -->
+      <!-- MARC TAB -->
       <tab id="documents-marc-tab" tabOrder="5" *ngIf="marc$ | async as marc">
         <ng-template tabHeading>
           <i class="fa fa-list-ul mr-1"></i><span translate>Marc</span>
@@ -450,10 +457,10 @@
           </table>
         </div>
       </tab>
-      <!-- END OF MARC TAB ---------------------------------------------------->
+      <!-- END OF MARC TAB -->
     </tabset>
   </div>
-  <!-- END OF TABS ------------------------------------------------------------>
+  <!-- END OF TABS -->
   <admin-operation-logs-dialog
     *ngIf="isEnabledOperationLog && record.metadata.pid"
     resourceType="documents"

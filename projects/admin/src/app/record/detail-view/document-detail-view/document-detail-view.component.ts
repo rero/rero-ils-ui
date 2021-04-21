@@ -285,7 +285,9 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   get relatedResources() {
     if (this.record.metadata.electronicLocator) {
       return this.record.metadata.electronicLocator.filter(
-        (electronicLocator: any) => ['noInfo', 'relatedResource', 'hiddenUrl'].some(t => t === electronicLocator.type)
+        (electronicLocator: any) => [
+          'hiddenUrl', 'noInfo', 'resource', 'relatedResource', 'versionOfResource'
+        ].some(t => t === electronicLocator.type && electronicLocator.content !== 'coverImage')
       );
     }
   }
