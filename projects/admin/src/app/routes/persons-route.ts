@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
-import { of } from 'rxjs';
 import { ContributionBriefComponent } from '@rero/shared';
+import { of } from 'rxjs';
 import { ContributionDetailViewComponent } from '../record/detail-view/contribution-detail-view/contribution-detail-view.component';
 import { BaseRoute } from './base-route';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 
 export class PersonsRoute extends BaseRoute implements RouteInterface {
 
@@ -49,12 +49,13 @@ export class PersonsRoute extends BaseRoute implements RouteInterface {
             label: _('Persons'),
             component: ContributionBriefComponent,
             detailComponent: ContributionDetailViewComponent,
+            searchFilters: [
+              this.expertSearchFilter()
+            ],
             aggregationsOrder: ['sources'],
             aggregationsExpand: ['sources'],
-            // use simple query for UI search
             preFilters: {
-              type: 'bf:Person',
-              simple: 1
+              type: 'bf:Person'
             }
           }
         ]

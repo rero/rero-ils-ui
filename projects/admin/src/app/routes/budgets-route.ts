@@ -50,13 +50,12 @@ export class BudgetsRoute extends BaseRoute implements RouteInterface {
             label: _('Budgets'),
             component: BudgetsBriefViewComponent,
             detailComponent: BudgetDetailViewComponent,
+            searchFilters: [
+              this.expertSearchFilter()
+            ],
             canAdd: () => this._routeToolService.canSystemLibrarian(),
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: () => this._routeToolService.canNot(),
-            // use simple query for UI search
-            preFilters: {
-              simple: 1
-            },
             preCreateRecord: (data: any) => {
               const user = this._routeToolService.userService.user;
               data.organisation = {

@@ -20,6 +20,7 @@ import { AppComponent } from './app.component';
 import { RecordModule } from '@rero/ng-core';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
 
 
 describe('AppComponent', () => {
@@ -29,6 +30,7 @@ describe('AppComponent', () => {
         RouterTestingModule,
         HttpClientModule,
         TranslateModule.forRoot({}),
+        LoadingBarModule,
         RecordModule
       ],
       declarations: [

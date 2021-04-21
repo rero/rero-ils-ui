@@ -17,7 +17,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RecordSearchPageComponent, RecordSearchService, RecordService, SearchResult } from '@rero/ng-core';
+import { RecordSearchPageComponent, RecordSearchService, RecordService, RecordUiService, SearchResult } from '@rero/ng-core';
 import { AppConfigService } from '../app-config.service';
 import { RouteFactoryService } from '../routes/route-factory.service';
 
@@ -65,6 +65,7 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
    * Constructor
    * @param _route - ActivatedRoute
    * @param _router - Router
+   * @param _recordUiService - RecordUiService
    * @param _recordSearchService - RecordSearchService
    * @param _recordService - RecordService
    * @param _appConfigService - AppConfigService
@@ -73,12 +74,13 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
   constructor(
     protected _route: ActivatedRoute,
     protected _router: Router,
+    protected _recordUiService: RecordUiService,
     protected _recordSearchService: RecordSearchService,
     private _recordService: RecordService,
     private _appConfigService: AppConfigService,
     private _routeFactoryService: RouteFactoryService
   ) {
-    super(_route, _router, _recordSearchService);
+    super(_route, _router, _recordSearchService, _recordUiService);
   }
 
   /** Init */

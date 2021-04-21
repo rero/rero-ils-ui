@@ -15,9 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { UrlSegment } from '@angular/router';
-import { RouteToolService } from './route-tool.service';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { extractIdOnRef } from '@rero/ng-core';
 import { of } from 'rxjs';
+import { RouteToolService } from './route-tool.service';
 
 export class BaseRoute {
 
@@ -93,4 +94,41 @@ export class BaseRoute {
       : recordMetadata.pid;
     return of(`${baseUrl}/${pid}`);
   }
+
+  /**
+   * Expert search filter configuration
+   * @return Object - Search filter configuration
+   */
+  protected expertSearchFilter() {
+    return {
+      label: _('Expert search'),
+      filter: 'simple',
+      value: '0',
+      disabledValue: '1',
+      persistent: true,
+      // TODO: activate this part when the help is online
+      // and correct the links of the help
+      // url: {
+      //   external: true,
+      //   link: this._expertSearchLink(),
+      //   title: this._routeToolService.translateService.instant('Link to expert search help')
+      // }
+    };
+  }
+
+  /**
+   * Expert search link
+   * @return string, link of help page
+   */
+  private _expertSearchLink() {
+    const defaultPath = 'help/recherche';
+    const searchPaths = {
+      fr: 'help/recherche'
+      // TODO: Add other paths
+    };
+    const availableLanguages = Object.keys(searchPaths);
+    return (this._routeToolService.translateService.currentLang in availableLanguages)
+      ? searchPaths[this._routeToolService.translateService.currentLang]
+      : defaultPath;
+    }
  }

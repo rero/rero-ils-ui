@@ -52,12 +52,11 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
             label: 'Exhibition/course',
             component: CollectionBriefViewComponent,
             detailComponent: CollectionDetailViewComponent,
+            searchFilters: [
+              this.expertSearchFilter()
+            ],
             canAdd: () => this._routeToolService.can(),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
-            // use simple query for UI search
-            preFilters: {
-              simple: 1
-            },
             aggregationsOrder: ['type', 'library', 'teacher', 'subject'],
             aggregationsExpand: ['type'],
             preprocessRecordEditor: (record: any) => {

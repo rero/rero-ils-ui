@@ -17,6 +17,7 @@
 
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { MenuLanguageComponent } from './menu-language.component';
@@ -31,7 +32,8 @@ describe('MenuLanguageComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ MenuLanguageComponent ],
       imports: [
-        TranslateModule.forRoot()
+        TranslateModule.forRoot(),
+        RouterTestingModule
       ],
       providers: [
         BsLocaleService

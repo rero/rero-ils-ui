@@ -47,7 +47,6 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
         { path: 'duplicate', component: DocumentEditorComponent }
       ],
       data: {
-        showSearchInput: false,
         types: [
           {
             key: this.name,
@@ -63,11 +62,10 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             },
             component: DocumentsBriefViewComponent,
             detailComponent: DocumentDetailViewComponent,
+            searchFilters: [
+              this.expertSearchFilter()
+            ],
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
-            // use simple query for UI search
-            preFilters: {
-              simple: 1
-            },
             preprocessRecordEditor: (record: any) => {
               record = this.removeKey(record, '_text');
               record = this.removeKey(record, '_draft');

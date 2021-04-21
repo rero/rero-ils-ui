@@ -62,12 +62,11 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
             },
             component: CircPoliciesBriefViewComponent,
             detailComponent: CircPolicyDetailViewComponent,
+            searchFilters: [
+              this.expertSearchFilter()
+            ],
             canAdd: () => this._routeToolService.canSystemLibrarian(),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
-            // use simple query for UI search
-            preFilters: {
-              simple: 1
-            },
             preCreateRecord: (data: any) => {
               const user: User = this._routeToolService.userService.user;
               if (data.parent == null) {

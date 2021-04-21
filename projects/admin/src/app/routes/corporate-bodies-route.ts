@@ -48,13 +48,11 @@ export class CorporateBodiesRoute extends BaseRoute implements RouteInterface {
             label: 'corporate-bodies',
             component: ContributionBriefComponent,
             detailComponent: ContributionDetailViewComponent,
+            searchFilters: [
+              this.expertSearchFilter()
+            ],
             aggregationsOrder: ['sources'],
-            aggregationsExpand: ['sources'],
-            // use simple query for UI search
-            preFilters: {
-              type: 'bf:Organisation',
-              simple: 1
-            }
+            aggregationsExpand: ['sources']
           }
         ]
       }

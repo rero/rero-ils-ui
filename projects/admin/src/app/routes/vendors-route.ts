@@ -48,11 +48,10 @@ export class VendorsRoute extends BaseRoute implements RouteInterface {
             label: _('Vendors'),
             component: VendorBriefViewComponent,
             detailComponent: VendorDetailViewComponent,
+            searchFilters: [
+              this.expertSearchFilter()
+            ],
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
-            // use simple query for UI search
-            preFilters: {
-              simple: 1
-            },
             preCreateRecord: (data: any) => {
               const user = this._routeToolService.userService.user;
               data.organisation = {

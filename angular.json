@@ -64,7 +64,12 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "admin:build"
+            "browserTarget": "admin:build",
+            "sourceMap": {
+              "scripts": true,
+              "styles": false,
+              "vendor": true
+            }
           },
           "configurations": {
             "production": {

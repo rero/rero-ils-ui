@@ -52,11 +52,10 @@ export class AcquisitionOrdersRoute extends BaseRoute implements RouteInterface 
             label: _('Orders'),
             component: AcquisitionOrderBriefViewComponent,
             detailComponent: AcquisitionOrderDetailViewComponent,
+            searchFilters: [
+              this.expertSearchFilter()
+            ],
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
-            // use simple query for UI search
-            preFilters: {
-              simple: 1
-            },
             preCreateRecord: (data: any) => {
               const user = this._routeToolService.userService.user;
               data.order_date = formatDate(
