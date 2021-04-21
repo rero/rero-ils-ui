@@ -27,7 +27,7 @@ import { AppSettingsService, ISettings } from './app-settings.service';
 export class UserService {
 
   /** Loaded observable */
-  private _loaded: Subject<IUser> = new Subject();
+  private _loaded: Subject<IUser>;
 
   /** user */
   private _user: User;
@@ -58,7 +58,9 @@ export class UserService {
     private _userApiService: UserApiService,
     private _appSettingsService: AppSettingsService,
     private _localeStorageService: LocalStorageService
-  ) {}
+  ) {
+     this._loaded = new Subject();
+  }
 
   /** load */
   load(): void {

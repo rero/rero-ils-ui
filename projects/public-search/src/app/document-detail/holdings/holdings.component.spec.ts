@@ -16,6 +16,7 @@
  */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
 import { of } from 'rxjs';
@@ -47,6 +48,7 @@ describe('HoldingsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
+        LoadingBarModule,
         CoreModule
       ],
       declarations: [ HoldingsComponent ],

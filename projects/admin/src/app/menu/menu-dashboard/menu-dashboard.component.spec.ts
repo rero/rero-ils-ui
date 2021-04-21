@@ -17,6 +17,7 @@
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { IdAttributePipe, SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
@@ -37,6 +38,7 @@ describe('MenuDashboardComponent', () => {
       imports: [
         SharedModule,
         HttpClientTestingModule,
+        RouterTestingModule,
         TranslateModule.forRoot()
       ],
       providers: [

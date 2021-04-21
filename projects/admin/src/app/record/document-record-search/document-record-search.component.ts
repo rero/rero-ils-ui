@@ -17,7 +17,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SearchResult, RecordSearchPageComponent, RecordSearchService, RecordService } from '@rero/ng-core';
+import { SearchResult, RecordSearchPageComponent, RecordSearchService, RecordService, RecordUiService } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-document-record-search',
@@ -58,18 +58,20 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
 
   /**
    * Constructor
-   * @param _route - ActivatedRoute
+   * @param _activatedRoute - ActivatedRoute
    * @param _router - Router
    * @param _recordSearchService - RecordSearchService
+   * @param _recordUiService - RecordUiService
    * @param _recordService - RecordService
    */
   constructor(
-    protected _route: ActivatedRoute,
+    protected _activatedRoute: ActivatedRoute,
     protected _router: Router,
     protected _recordSearchService: RecordSearchService,
-    private _recordService: RecordService
+    protected _recordUiService: RecordUiService,
+    private _recordService: RecordService,
   ) {
-    super(_route, _router, _recordSearchService);
+    super(_activatedRoute, _router, _recordSearchService, _recordUiService);
   }
 
   /** Init */
@@ -94,7 +96,7 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
    */
   linkToGlobalDocuments(event: any) {
     event.preventDefault();
-    const queryParams = this._route.snapshot.queryParams;
+    const queryParams = this._activatedRoute.snapshot.queryParams;
     this._router.navigate(
       [this._baseUrl],
       { relativeTo: this._route, queryParams: {

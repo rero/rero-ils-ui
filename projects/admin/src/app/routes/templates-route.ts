@@ -51,6 +51,9 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
             label: _('Templates'),
             component: TemplatesBriefViewComponent,
             detailComponent: TemplateDetailViewComponent,
+            searchFilters: [
+              this.expertSearchFilter()
+            ],
             canAdd: () => this._routeToolService.canNot(),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             canUse: (record: any) => this._canUse(record),
@@ -71,11 +74,7 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
             aggregationsExpand: [
               'type',
               'visibility'
-            ],
-            // use simple query for UI search
-            preFilters: {
-              simple: 1
-            }
+            ]
           }
         ]
       }

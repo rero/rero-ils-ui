@@ -20,7 +20,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { AppModule } from '../../app.module';
+import { AppInitService } from '../../service/app-init.service';
 import { FrontpageComponent } from './frontpage.component';
 
 
@@ -28,8 +30,13 @@ describe('FrontpageComponent', () => {
   let component: FrontpageComponent;
   let fixture: ComponentFixture<FrontpageComponent>;
 
+  const appInitService = jasmine.createSpyObj(
+    'AppInitService', ['initTranslateService', 'load']
+  );
+
+  appInitService.initTranslateService.and.returnValue(null);
   const userService = jasmine.createSpyObj(
-    'UserService', ['init']
+    'UserService', ['init', 'load']
   );
   userService.init.and.returnValue(null);
   userService.user =  {
@@ -43,6 +50,7 @@ describe('FrontpageComponent', () => {
       current: '1'
     }
   };
+  userService.loaded$ = new BehaviorSubject(userService.user);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -53,6 +61,7 @@ describe('FrontpageComponent', () => {
         AppModule
       ],
       providers: [
+        { provide: AppInitService, useValue: appInitService },
         { provide: UserService, useValue: userService }
       ]
     })

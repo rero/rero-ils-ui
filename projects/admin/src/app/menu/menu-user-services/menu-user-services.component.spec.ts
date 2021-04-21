@@ -18,6 +18,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { MenuUserServicesService } from '../service/menu-user-services.service';
 import { MenuUserServicesComponent } from './menu-user-services.component';
@@ -35,6 +36,7 @@ describe('MenuUserServicesComponent', () => {
       declarations: [ MenuUserServicesComponent ],
       imports: [
         HttpClientTestingModule,
+        RouterTestingModule,
         TranslateModule.forRoot()
       ],
       providers: [

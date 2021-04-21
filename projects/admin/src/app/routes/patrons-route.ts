@@ -62,6 +62,9 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
             },
             component: PatronsBriefViewComponent,
             detailComponent: PatronDetailViewComponent,
+            searchFilters: [
+              this.expertSearchFilter()
+            ],
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
@@ -96,10 +99,6 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
                 field.asyncValidators.role = this._getRoleValidator(field);
               }
               return this._limitUserFormField(field, jsonSchema);
-            },
-            // use simple query for UI search
-            preFilters: {
-              simple: 1
             },
             aggregationsExpand: ['roles', 'city', 'patron_type'],
             aggregationsOrder: ['roles', 'city', 'patron_type'],

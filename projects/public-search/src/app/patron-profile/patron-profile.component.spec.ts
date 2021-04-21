@@ -17,6 +17,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
 import { SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
@@ -76,7 +77,8 @@ describe('PatronProfileComponent', () => {
         TranslateModule.forRoot(),
         TabsModule.forRoot(),
         CoreModule,
-        SharedModule
+        SharedModule,
+        LoadingBarModule
       ],
       providers: [
         BsLocaleService,

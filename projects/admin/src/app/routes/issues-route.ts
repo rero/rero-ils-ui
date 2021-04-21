@@ -50,10 +50,11 @@ export class IssuesRoute extends BaseRoute implements RouteInterface {
             label: 'Issues',
             index: 'items',
             component: IssuesBriefViewComponent,
+            searchFilters: [
+              this.expertSearchFilter()
+            ],
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
-            // use simple query for UI search
             preFilters: {
-                simple: 1,
                 or_issue_status: [IssueItemStatus.LATE, IssueItemStatus.CLAIMED]
               },
             aggregationsBucketSize: 10,

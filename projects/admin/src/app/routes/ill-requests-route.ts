@@ -50,12 +50,12 @@ export class IllRequestsRoute extends BaseRoute implements RouteInterface {
             label: 'ILL request',
             component: IllRequestsBriefViewComponent,
             detailComponent: IllRequestDetailViewComponent,
+            searchFilters: [
+              this.expertSearchFilter()
+            ],
             canAdd: () => this._routeToolService.can(),
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
-            preFilters: {
-              simple: 1
-            },
             aggregationsExpand: ['status', 'loan_status', 'requester'],
             aggregationsOrder: ['status', 'loan_status', 'requester', 'library'],
             listHeaders: {
