@@ -17,11 +17,15 @@
 
 <ng-container *ngIf="electronicLocator">
   <ng-container *ngIf="electronicLocator.content; else url">
-    <a class="rero-ils-external-link" href="{{ electronicLocator.url }}">{{ electronicLocator.content }}</a>
+    <a href="{{ electronicLocator.url }}">
+      <i class="fa fa-link"></i> {{ electronicLocator.type | translate }}: {{ electronicLocator.content | translate }}
+    </a>
     <ng-container *ngIf="publicNotes"> ({{ publicNotes }})</ng-container>
   </ng-container>
   <ng-template #url>
-    <a class="rero-ils-external-link" href="{{ electronicLocator.url }}">{{ electronicLocator.url }}</a>
+    <a href="{{ electronicLocator.url }}">
+      <i class="fa fa-link"></i> {{ electronicLocator.type | translate }}: {{ electronicLocator.url }}
+    </a>
     <ng-container *ngIf="publicNotes"> ({{ publicNotes }})</ng-container>
   </ng-template>
 </ng-container>
