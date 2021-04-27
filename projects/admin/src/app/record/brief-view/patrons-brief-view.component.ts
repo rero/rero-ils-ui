@@ -36,8 +36,8 @@ import { ResultItem } from '@rero/ng-core';
     <div class="card-text px-2">
       <p class="mb-0">{{ record.metadata.birth_date | dateTranslate:'mediumDate' }} &mdash; {{ record.metadata.city }}</p>
       <span class="font-weight-bold">
-        <ng-container *ngIf="record.metadata.roles.length === 1; else roles" translate>Role</ng-container>
-        <ng-template #roles translate>Roles</ng-template>:
+        <ng-container *ngIf="record.metadata.roles.length === 1; else roles">{{ 'Role' | translate }}</ng-container>
+        <ng-template #roles>{{ 'Roles' | translate }}</ng-template>:
       </span>
       <span *ngFor="let role of record.metadata.roles; let isLast=last">
         {{ role | translate }}{{isLast ? '' : ', '}}

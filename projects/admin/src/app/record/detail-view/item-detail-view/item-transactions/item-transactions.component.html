@@ -33,7 +33,7 @@
   <!-- Loan requested -->
 
   <div class="card-header">
-    <b>{{ requestedBy.length | i18nPlural: {'=0': 'Request', '=1': 'Request', 'other': 'Requests'} | translate }}</b>
+    <b translate>Requested by</b>
     <button class="btn btn-outline-primary btn-link btn-sm ml-2 float-right" (click)="addRequest()">
       <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} …
     </button>
