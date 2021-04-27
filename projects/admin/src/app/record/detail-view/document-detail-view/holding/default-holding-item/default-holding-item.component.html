@@ -14,100 +14,104 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="container position-relative item px-0 mt-1 mb-2" *ngIf="item && permissions">
+<div class="container item px-0 mt-1 mb-2" *ngIf="item && permissions">
 
-  <!-- ACTIONS BUTTONS -->
-  <div class="action-buttons" name="buttons">
-    <button *ngIf="permissions.canRequest && permissions.canRequest.can; else notRequest"
-            type="button" class="btn btn-sm btn-outline-primary " (click)="addRequest(item.metadata.pid)"
-            title="{{ 'Item request' | translate}}"
-            name="request">
-      <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-    </button>
-    <ng-template #notRequest>
-      <button type="buttton" class="btn btn-sm btn-outline-primary disabled"
+  <div class="row">
+    <!-- METADATA COLUMN -->
+    <div class="col-10">
+      <div class="row">
+        <!-- Barcode -->
+        <div class="col-4 pl-5 font-weight-bold label-title" translate>Barcode</div>
+        <div class="col-8">
+          <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
+            {{ item.metadata.barcode }}
+          </a>
+        </div>
+        <!-- Unit -->
+        <ng-container *ngIf="item.metadata.enumerationAndChronology">
+          <div class="col-4 pl-5 font-weight-bold label-title" translate>Unit</div>
+          <div class="col-8">
+            {{ item.metadata.enumerationAndChronology }}
+          </div>
+        </ng-container>
+        <!-- Call numbers -->
+        <div class="col-4 pl-5 font-weight-bold label-title" translate>Call number</div>
+        <div class="col-8">
+          <shared-inherited-call-number [item]="item"></shared-inherited-call-number>
+        </div>
+        <!-- Status -->
+        <div class="col-4 pl-5 font-weight-bold label-title" translate>Status</div>
+        <div class="col-8">
+          <i class="mr-1 fa fa-circle" [ngClass]="{
+          'text-success': item.metadata.availability.available,
+          'text-danger': !item.metadata.availability.available
+          }"></i>
+          <ng-container [ngSwitch]="item.metadata.status">
+            <span *ngSwitchCase="'on_loan'">
+              {{ 'due until' | translate }}
+              {{ item.metadata.availability.due_date | dateTranslate :'shortDate' }}
+            </span>
+            <span *ngSwitchDefault>
+              {{ item.metadata.availability.display_text | getTranslatedLabel }}
+            </span>
+          </ng-container>
+          <ng-container *ngIf="item.metadata.availability.request > 0">
+            ({{ item.metadata.availability.request }} {{ (item.metadata.availability.request > 1 ? 'requests' : 'request') | translate }})
+          </ng-container>
+        </div>
+        <!-- URL -->
+        <ng-container *ngIf="item.metadata.url">
+          <div class="col-4 pl-5 font-weight-bold label-title" translate>Online access</div>
+          <div class="col-8"><a target="_blank" href="{{ item.metadata.url }}">{{ item.metadata.url }}</a></div>
+        </ng-container>
+      </div>
+      <admin-holding-item-note [note]="note" *ngFor="let note of item.metadata.notes"></admin-holding-item-note>
+      <admin-holding-item-temporary-item-type [record]="item"></admin-holding-item-temporary-item-type>
+      <admin-holding-item-in-collection [itemPid]="item.metadata.pid"></admin-holding-item-in-collection>
+    </div>
+    <!-- ACTIONS BUTTONS -->
+    <div class="col-2 text-right" name="buttons">
+      <button *ngIf="permissions.canRequest && permissions.canRequest.can; else notRequest"
+              type="button" class="btn btn-sm btn-outline-primary " (click)="addRequest(item.metadata.pid)"
               title="{{ 'Item request' | translate }}"
-              [popover]="tolTemplate" triggers="mouseenter:mouseleave"
               name="request">
         <i class="fa fa-shopping-basket" aria-hidden="true"></i>
       </button>
-      <ng-template #tolTemplate><div [innerHtml]="cannotRequestInfoMessage | nl2br"></div></ng-template>
-    </ng-template>
-    <button *ngIf="permissions.update && permissions.update.can"
-            type="button" class="btn btn-sm btn-outline-primary ml-1"
-            title="{{ 'Edit' | translate }}"
-            [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
-            name="edit">
-      <i class="fa fa-pencil"></i>
-    </button>
-    <button *ngIf="permissions.delete && permissions.delete.can; else deleteInfo"
-            type="button" class="btn btn-outline-danger btn-sm ml-1"
-            title="{{ 'Delete' | translate }}"
-            (click)="delete(item.metadata.pid)"
-            name="delete">
-      <i class="fa fa-trash"></i>
-    </button>
-    <ng-template #deleteInfo>
-      <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"
+      <ng-template #notRequest>
+        <button type="button" class="btn btn-sm btn-outline-primary disabled"
+                title="{{ 'Item request' | translate }}"
+                [popover]="tolTemplate" triggers="mouseenter:mouseleave"
+                name="request">
+          <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+        </button>
+        <ng-template #tolTemplate><div [innerHtml]="cannotRequestInfoMessage | nl2br"></div></ng-template>
+      </ng-template>
+      <button *ngIf="permissions.update && permissions.update.can"
+              type="button" class="btn btn-sm btn-outline-primary ml-1"
+              title="{{ 'Edit' | translate }}"
+              [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
+              name="edit">
+        <i class="fa fa-pencil"></i>
+      </button>
+      <button *ngIf="permissions.delete && permissions.delete.can; else deleteInfo"
+              type="button" class="btn btn-outline-danger btn-sm ml-1"
               title="{{ 'Delete' | translate }}"
-              [popover]="tolTemplate" triggers="mouseenter:mouseleave"
+              (click)="delete(item.metadata.pid)"
               name="delete">
         <i class="fa fa-trash"></i>
       </button>
-      <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
-    </ng-template>
+      <ng-template #deleteInfo>
+        <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"
+                title="{{ 'Delete' | translate }}"
+                [popover]="tolTemplate" triggers="mouseenter:mouseleave"
+                name="delete">
+          <i class="fa fa-trash"></i>
+        </button>
+        <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
+      </ng-template>
+    </div>
   </div>
 
-  <!-- METADATA -->
-  <div>
-  <div class="row">
-    <!-- Barcodes -->
-    <div class="col-3 pl-5 font-weight-bold label-title" translate>Barcode</div>
-    <div class="col-9">
-      <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
-        {{ item.metadata.barcode }}
-      </a>
-    </div>
-    <!-- Unit -->
-    <ng-container *ngIf="item.metadata.enumerationAndChronology">
-      <div class="col-3 pl-5 font-weight-bold label-title" translate>Unit</div>
-      <div class="col-9">
-        {{ item.metadata.enumerationAndChronology }}
-      </div>
-    </ng-container>
-    <!-- Call numbers -->
-    <div class="col-3 pl-5 font-weight-bold label-title" translate>Call number</div>
-    <div class="col-9">
-      <shared-inherited-call-number [item]="item"></shared-inherited-call-number>
-    </div>
-    <!-- Status -->
-    <div class="col-3 pl-5 font-weight-bold label-title" translate>Status</div>
-    <div class="col-9">
-      <i class="mr-1 fa fa-circle" [ngClass]="{
-            'text-success': item.metadata.availability.available,
-            'text-danger': !item.metadata.availability.available
-         }"></i>
-      <ng-container [ngSwitch]="item.metadata.status">
-        <span *ngSwitchCase="'on_loan'">
-          {{ 'due until' | translate }}
-          {{ item.metadata.availability.due_date | dateTranslate :'shortDate' }}
-        </span>
-        <span *ngSwitchDefault>
-          {{ item.metadata.availability.display_text | getTranslatedLabel }}
-        </span>
-      </ng-container>
-      <ng-container *ngIf="item.metadata.availability.request > 0">
-        ({{ item.metadata.availability.request }} {{ (item.metadata.availability.request > 1 ? 'requests' : 'request') | translate }})
-      </ng-container>
-    </div>
-    <!-- URL -->
-    <ng-container *ngIf="item.metadata.url">
-      <div class="col-3 pl-5 font-weight-bold label-title" translate>Online access</div>
-      <div class="col-9"><a target="_blank" href="{{ item.metadata.url }}">{{ item.metadata.url }}</a></div>
-    </ng-container>
-  </div>
-  <admin-holding-item-note [note]="note" *ngFor="let note of item.metadata.notes"></admin-holding-item-note>
-  <admin-holding-item-temporary-item-type [record]="item"></admin-holding-item-temporary-item-type>
-  <admin-holding-item-in-collection [itemPid]="item.metadata.pid"></admin-holding-item-in-collection>
-  </div>
+
+
 </div>

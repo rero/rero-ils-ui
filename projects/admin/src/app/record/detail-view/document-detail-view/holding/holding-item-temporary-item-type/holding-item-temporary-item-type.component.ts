@@ -23,12 +23,12 @@ import moment from 'moment';
   template: `
     <ng-container *ngIf="hasTemporaryItemType()">
       <div class="row">
-        <div class="col-sm-4 col-md-3 pl-5">
+        <div class="col-4 pl-5">
           <i class="fa fa-long-arrow-right pr-1"></i>
           <i class="fa fa-exclamation-triangle text-warning pr-1"></i>
           <span class="label-title text-warning" translate>Temporary circulation category</span>
         </div>
-        <div class="col-sm-8 col-md-9">
+        <div class="col-8">
           {{ record.metadata.temporary_item_type.pid | getRecord:'item_types': 'field':'name' | async }}
           <span *ngIf="record.metadata.temporary_item_type.end_date as endDate" class="ml-1 small text-secondary">
             (<i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }})
