@@ -383,6 +383,7 @@
                       <ng-template #stringBlock>
                         {{ identifier.value }}
                       </ng-template>
+                      <ng-container *ngIf="identifier.details"> - {{ identifier.details }}</ng-container>
                       <small class="badge badge-secondary text-uppercase ml-1" translate>
                         {{ identifier.type }}
                       </small>

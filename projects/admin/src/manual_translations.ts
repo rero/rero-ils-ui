@@ -196,6 +196,7 @@ _('{{ counter }} hidden holdings');
 
 // Menu entries
 _('User services');
+_('Catalog');
 _('ILL requests');
 _('Import from the web');
 _('Corporate bodies');
