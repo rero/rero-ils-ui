@@ -27,7 +27,6 @@ import { ItemRequestComponent } from '../../item-request/item-request.component'
 
 @Component({
   selector: 'admin-default-holding-item',
-  styles: ['.action-buttons { position: absolute; top: 0; right: 0}'],
   templateUrl: './default-holding-item.component.html'
 })
 export class DefaultHoldingItemComponent implements OnInit {

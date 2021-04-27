@@ -16,11 +16,11 @@
 -->
 <ng-container *ngIf="collections && collections.length > 0">
   <div class="row">
-    <div class="col-sm-4 col-md-3 pl-5">
+    <div class="col-4 pl-5">
       <i class="fa fa-long-arrow-right pr-1"></i>
       <span class="label-title" translate>Temporary location</span>
     </div>
-    <div class="col-sm-8 col-md-9">
+    <div class="col-8">
       <ng-container *ngFor="let collection of collections; let last=last">
         <a [routerLink]="['/records', 'collections', 'detail', collection.metadata.pid]">
           {{ collection.metadata.title }}

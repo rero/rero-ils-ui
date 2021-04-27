@@ -21,8 +21,8 @@ import { ItemNote } from 'projects/admin/src/app/classes/items';
   selector: 'admin-holding-item-note',
   template: `
     <div class="row" *ngIf="note">
-      <div class="col-sm-4 col-md-3 font-weight-bold label-title pl-5">{{ note.type.toString() | translate}}</div>
-      <div class="col-sm-8 col-md-9" [innerHTML]="note.content"></div>
+      <div class="col-4 font-weight-bold label-title pl-5">{{ note.type.toString() | translate}}</div>
+      <div class="col-8" [innerHTML]="note.content"></div>
     </div>
   `
 })
