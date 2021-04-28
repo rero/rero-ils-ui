@@ -104,7 +104,7 @@ describe('PatronProfileIllRequestComponent', () => {
   it('should display the list of records', () => {
     patronProfileService.changeTab({ name: 'illRequest', count: 1 });
     fixture.detectChanges();
-    const li = fixture.nativeElement.querySelectorAll('li');
-    expect(li.length).toEqual(1);
+    const elements = fixture.nativeElement.querySelectorAll('#loans-data public-search-patron-profile-ill-request');
+    expect(elements.length).toEqual(1);
   });
 });

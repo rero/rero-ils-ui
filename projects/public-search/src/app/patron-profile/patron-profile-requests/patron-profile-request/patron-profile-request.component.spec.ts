@@ -88,7 +88,7 @@ describe('PatronProfileRequestComponent', () => {
     expect(documentLink.attributes.href.textContent).toContain('/org1/documents/1');
     expect(documentLink.textContent).toContain('Document title');
 
-    const pickupName = fixture.nativeElement.querySelectorAll('div')[2];
+    const pickupName = fixture.nativeElement.querySelectorAll('div')[1];
     expect(pickupName.textContent).toContain('Pickup name');
   });
 
@@ -96,7 +96,7 @@ describe('PatronProfileRequestComponent', () => {
     record.metadata.state = 'ITEM_AT_DESK';
     component.record = record;
     fixture.detectChanges();
-    const div = fixture.nativeElement.querySelectorAll('div')[3];
+    const div = fixture.nativeElement.querySelectorAll('div')[2];
     expect(div.textContent).toContain('to pick up');
   });
 
@@ -104,7 +104,7 @@ describe('PatronProfileRequestComponent', () => {
     record.metadata.state = 'PENDING';
     component.record = record;
     fixture.detectChanges();
-    const div = fixture.nativeElement.querySelectorAll('div')[3];
+    const div = fixture.nativeElement.querySelectorAll('div')[2];
     expect(div.textContent).toContain('waiting (position {{ rank }} in waiting list)');
     const button = fixture.nativeElement.querySelector('button#request-cancel-1');
     expect(button.textContent).toContain('Cancel');

@@ -14,11 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreModule, DateTranslatePipe } from '@rero/ng-core';
 import { testUserPatronWithSettings } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
+import { SharedModule } from '@rero/shared';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { PatronProfilePersonalComponent } from './patron-profile-personal.component';
 
@@ -40,7 +42,9 @@ describe('PatronProfilePersonalComponent', () => {
       ],
       imports: [
         CoreModule,
-        TranslateModule.forRoot()
+        TranslateModule.forRoot(),
+        SharedModule,
+        HttpClientTestingModule
       ],
       providers: [
         BsLocaleService

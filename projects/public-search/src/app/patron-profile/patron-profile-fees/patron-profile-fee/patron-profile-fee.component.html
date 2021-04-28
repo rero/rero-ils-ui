@@ -14,114 +14,113 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="row mt-1 p-2">
-  <div class="col-lg-2 col-sm-2">
-    <button
-      id="fee-{{ record.metadata.pid }}"
-      type="button"
-      class="pl-0 pr-2 pt-0 btn btn-toogle"
-      (click)="isCollapsed = !isCollapsed"
-      [attr.aria-expanded]="!isCollapsed"
-      aria-controls="collapseEvent"
-    >
-      <i class="fa pr-0" [ngClass]="{ 'fa-caret-right': isCollapsed, 'fa-caret-down': !isCollapsed }"></i>
-    </button>
-    {{ record.metadata.creation_date | dateTranslate: 'short' }}
-  </div>
-  <div class="col-7">{{ record.metadata.type | translate }}</div>
-  <div class="col-3 text-lg-right">{{ record.metadata.total_amount | currency:organisation.currency:'symbol' }}</div>
 
-  <!-- fee events -->
-  <div id="fee-event-{{ record.metadata.pid }}" [collapse]="isCollapsed" (expanded)="expanded(record.metadata.pid)" [isAnimated]="true" class="col-lg-12 pl-3">
-    <div class="mt-2">
-      <!-- NOTE -->
-      <section id="fee-note-{{ record.metadata.pid }}" *ngIf="record.metadata.note">
-        <h5 class="mt-3" translate>Note</h5>
-        {{ record.metadata.note }}
-      </section>
+<div class="col-2 pl-0">
+  <button
+    id="fee-{{ record.metadata.pid }}"
+    type="button"
+    class="pl-0 pr-2 pt-0 btn btn-toogle"
+    (click)="isCollapsed = !isCollapsed"
+    [attr.aria-expanded]="!isCollapsed"
+    aria-controls="collapseEvent"
+  >
+    <i class="fa pr-0" [ngClass]="{ 'fa-caret-right': isCollapsed, 'fa-caret-down': !isCollapsed }"></i>
+  </button>
+  {{ record.metadata.creation_date | dateTranslate: 'short' }}
+</div>
+<div class="col-7">{{ record.metadata.type | translate }}</div>
+<div class="col-3 text-lg-right">{{ record.metadata.total_amount | currency:organisation.currency:'symbol' }}</div>
 
-      <!-- DOCUMENT -->
-      <section id="fee-{{ record.metadata.pid }}-document" *ngIf="record.metadata.document as document">
-        <h5 class="mt-3" translate>Document</h5>
-        <dl class="container row">
-          <!-- TITLE -->
+<!-- fee events -->
+<div id="fee-event-{{ record.metadata.pid }}" [collapse]="isCollapsed" (expanded)="expanded(record.metadata.pid)" [isAnimated]="true" class="col-lg-12 pl-3">
+  <div class="mt-2">
+    <!-- NOTE -->
+    <section id="fee-note-{{ record.metadata.pid }}" *ngIf="record.metadata.note">
+      <h5 class="mt-3" translate>Note</h5>
+      {{ record.metadata.note }}
+    </section>
+
+    <!-- DOCUMENT -->
+    <section id="fee-{{ record.metadata.pid }}-document" *ngIf="record.metadata.document as document">
+      <h5 class="mt-3" translate>Document</h5>
+      <dl class="container row">
+        <!-- TITLE -->
+        <dt class="col-2 label-title" translate>
+          Title
+        </dt>
+        <dd class="col-10">
+          <a href="/{{ organisation.code }}/documents/{{ document.pid }}">{{ document.title | mainTitle }}</a>
+        </dd>
+        <!-- CALL NUMBER -->
+        <ng-container *ngIf="record.metadata.loan.item.call_number">
           <dt class="col-2 label-title" translate>
-            Title
+            Call number
           </dt>
           <dd class="col-10">
-            <a href="/{{ organisation.code }}/documents/{{ document.pid }}">{{ document.title | mainTitle }}</a>
+            {{ record.metadata.loan.item.call_number }}
           </dd>
-          <!-- CALL NUMBER -->
-          <ng-container *ngIf="record.metadata.loan.item.call_number">
-            <dt class="col-2 label-title" translate>
-              Call number
-            </dt>
-            <dd class="col-10">
-              {{ record.metadata.loan.item.call_number }}
-            </dd>
-          </ng-container>
-          <!-- TITLE -->
-          <dt class="col-2 label-title" translate>
-            Loan started at
-          </dt>
-          <dd class="col-10">
-            {{ record.metadata.loan.transaction_date | dateTranslate: 'short' }}
-          </dd>
-        </dl>
-      </section>
+        </ng-container>
+        <!-- TITLE -->
+        <dt class="col-2 label-title" translate>
+          Loan started at
+        </dt>
+        <dd class="col-10">
+          {{ record.metadata.loan.transaction_date | dateTranslate: 'short' }}
+        </dd>
+      </dl>
+    </section>
 
-      <!-- TRANSACTIONS HISTORY -->
-      <h5 class="mt-3" translate>Transactions history</h5>
-      <section id="fee-{{ record.metadata.pid }}-transaction" class="row">
-        <div *ngFor="let event of events" class="col-12 events-timeline">
-          <div class="row pl-2 pr-2 align-items-start timeline-event">
-            <div class="col-3 pr-4 event-timestamp">
-              <i class="fa fa-calendar-o"></i>
-              {{ event.metadata.creation_date | dateTranslate: 'shortDate' }}
-              <i class="fa fa-clock-o pl-1"></i>
-              {{ event.metadata.creation_date | dateTranslate: 'HH:mm' }}
-            </div>
-            <div class="col-9 event-content">
-              <div class="row" [ngClass]="{ 'event-highlight': (event.metadata.type === 'dispute'), '': !(event.metadata.type === 'dispute') }">
-                <div class="col-10 d-inline-block text-truncate label">
-                  {{ event.metadata.type | translate }}
-                  <ng-container *ngIf="event.metadata.subtype">
-                      [{{ event.metadata.subtype | translate }}]
-                  </ng-container>
-                </div>
-                <div class="col-2 amount">
-                  <ng-container *ngIf="event.metadata.amount; else noAmount">
-                    <span class="badge" [ngClass]="{ 'badge-success': (event.type === 'payment'), 'badge-danger': (event.type !== 'payment') }">
-                    {{ event.metadata.amount | currency:organisation.currency:'symbol' }}
-                    </span>
-                  </ng-container>
-                  <ng-template #noAmount>&nbsp;</ng-template>
-                </div>
-                <ng-container *ngIf="event.metadata.note">
-                  <div class="row mt-2">
-                    <div class="col-2 label-title">
-                      <i class="fa fa-comment-o pr-1" title="{{ 'Note' | translate }}"></i>
-                    </div>
-                    <div class="col-10">
-                      <blockquote>{{ event.metadata.note }}</blockquote>
-                    </div>
-                  </div>
-                </ng-container>
-                <ng-container *ngIf="event.metadata.library">
-                  <div class="row mt-2">
-                    <div class="col-2 label-title">
-                      <i class="fa fa-map-marker pr-1" title="{{ 'Library' | translate }}"></i>
-                    </div>
-                    <div class="col-10">
-                      {{ event.metadata.library.name }}
-                    </div>
-                  </div>
+    <!-- TRANSACTIONS HISTORY -->
+    <h5 class="mt-3" translate>Transactions history</h5>
+    <section id="fee-{{ record.metadata.pid }}-transaction" class="row">
+      <div *ngFor="let event of events" class="col-12 events-timeline">
+        <div class="row pl-2 pr-2 align-items-start timeline-event">
+          <div class="col-3 pr-4 event-timestamp">
+            <i class="fa fa-calendar-o"></i>
+            {{ event.metadata.creation_date | dateTranslate: 'shortDate' }}
+            <i class="fa fa-clock-o pl-1"></i>
+            {{ event.metadata.creation_date | dateTranslate: 'HH:mm' }}
+          </div>
+          <div class="col-9 event-content">
+            <div class="row" [ngClass]="{ 'event-highlight': (event.metadata.type === 'dispute'), '': !(event.metadata.type === 'dispute') }">
+              <div class="col-10 d-inline-block text-truncate label">
+                {{ event.metadata.type | translate }}
+                <ng-container *ngIf="event.metadata.subtype">
+                    [{{ event.metadata.subtype | translate }}]
                 </ng-container>
               </div>
+              <div class="col-2 amount">
+                <ng-container *ngIf="event.metadata.amount; else noAmount">
+                  <span class="badge" [ngClass]="{ 'badge-success': (event.type === 'payment'), 'badge-danger': (event.type !== 'payment') }">
+                  {{ event.metadata.amount | currency:organisation.currency:'symbol' }}
+                  </span>
+                </ng-container>
+                <ng-template #noAmount>&nbsp;</ng-template>
+              </div>
+              <ng-container *ngIf="event.metadata.note">
+                <div class="row mt-2">
+                  <div class="col-2 label-title">
+                    <i class="fa fa-comment-o pr-1" title="{{ 'Note' | translate }}"></i>
+                  </div>
+                  <div class="col-10">
+                    <blockquote>{{ event.metadata.note }}</blockquote>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="event.metadata.library">
+                <div class="row mt-2">
+                  <div class="col-2 label-title">
+                    <i class="fa fa-map-marker pr-1" title="{{ 'Library' | translate }}"></i>
+                  </div>
+                  <div class="col-10">
+                    {{ event.metadata.library.name }}
+                  </div>
+                </div>
+              </ng-container>
             </div>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   </div>
 </div>

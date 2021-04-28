@@ -103,11 +103,11 @@ describe('PatronProfileLoanComponent', () => {
     expect(documentLink.textContent).toContain('Document title');
 
     const divs = fixture.nativeElement.querySelectorAll('div');
-    expect(divs[2].textContent).toContain('Library name');
-    expect(divs[3].textContent).toContain('3/28/21');
-    expect(divs[4].textContent).toContain('2  renewals');
-    expect(divs[5].textContent).toContain('overdue');
-    expect(divs[6].querySelector('button').textContent).toContain('Renew');
+    expect(divs[1].textContent).toContain('Library name');
+    expect(divs[2].textContent).toContain('3/28/21');
+    expect(divs[3].textContent).toContain('2  renewals');
+    expect(divs[4].textContent).toContain('overdue');
+    expect(divs[5].querySelector('button').textContent).toContain('Renew');
   });
 
   it('should return a disabled button', () => {
@@ -115,7 +115,7 @@ describe('PatronProfileLoanComponent', () => {
     notRenewRecord.metadata.renew = { can: false, reasons: ['no renew'] };
     component.record = notRenewRecord;
     fixture.detectChanges();
-    const button = fixture.nativeElement.querySelectorAll('div')[6].querySelector('button');
+    const button = fixture.nativeElement.querySelectorAll('div')[5].querySelector('button');
     expect(button.attributes.class.textContent).toContain('disabled');
   });
 });
