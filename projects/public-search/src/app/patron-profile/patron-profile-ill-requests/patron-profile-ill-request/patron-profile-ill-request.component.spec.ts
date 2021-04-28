@@ -99,9 +99,9 @@ describe('PatronProfileIllRequestComponent', () => {
     const button = fixture.nativeElement.querySelector('button');
     expect(button.attributes.id.textContent).toContain('ill-request-1');
     const divs = fixture.nativeElement.querySelectorAll('div > div');
-    expect(divs[1].textContent).toContain('ill document title');
-    expect(divs[2].textContent).toContain('author1, author2');
-    const badges = divs[3].querySelectorAll('span');
+    expect(divs[0].textContent).toContain('ill document title');
+    expect(divs[1].textContent).toContain('author1, author2');
+    const badges = divs[2].querySelectorAll('span');
     expect(badges[0].attributes.class.textContent).toContain('badge-success');
     expect(badges[0].textContent).toContain('validated');
     expect(badges[1].attributes.class.textContent).toContain('badge-info');

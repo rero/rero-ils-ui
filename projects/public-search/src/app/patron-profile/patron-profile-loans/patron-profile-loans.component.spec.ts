@@ -107,7 +107,7 @@ describe('PatronProfileLoanComponent', () => {
     component.loaded = true;
     component.records = apiResponse.hits.hits;
     fixture.detectChanges();
-    const li = fixture.nativeElement.querySelectorAll('li');
-    expect(li.length).toEqual(1);
+    const elements = fixture.nativeElement.querySelectorAll('#loans-data public-search-patron-profile-loan');
+    expect(elements.length).toEqual(1);
   });
 });
