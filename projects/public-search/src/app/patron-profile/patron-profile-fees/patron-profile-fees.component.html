@@ -15,40 +15,42 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <!-- header -->
-<section id="fees-section" class="row px-3 mt-2 my-1">
-  <div class="col mr-1 d-none d-lg-block">
-    <div class="row p-2 bg-dark rounded text-light">
+<section id="fees-section" class="container my-2">
+  <div class="d-none d-lg-block">
+    <div class="row bg-dark rounded text-light p-2">
       <div class="col-2 pl-0" translate>Date</div>
-      <div class="col-7 pl-0" translate>Category</div>
-      <div class="col-3 pl-0 text-lg-right">
+      <div class="col-7" translate>Category</div>
+      <div class="col-3 text-right">
         {{ 'Total amount' | translate }}:
         {{ feesTotal | currency:currency:'symbol' }}
       </div>
     </div>
   </div>
-</section>
 
-<ng-container *ngIf="!loaded; else display">
-  <div class="row">
-    <div class="col-12 ml-2 mt-2 font-weight-bold" translate>Loading in progress</div>
-  </div>
-</ng-container>
-
-<ng-template #display>
-  <ng-container *ngIf="paginator.getRecordsCount() > 0; else noRecord">
-    <div id="fees-data" class="row px-3">
-      <ul class="list-unstyled p-0 mb-1 col-12">
-        <li *ngFor="let record of records; let index = index" [ngClass]="{ 'bg-light': !(index % 2) }">
-          <public-search-patron-profile-fee [record]="record"></public-search-patron-profile-fee>
-        </li>
-      </ul>
-      <shared-search-show-more-pager id="show-more-fees" [paginator]="paginator"></shared-search-show-more-pager>
+  <ng-container *ngIf="!loaded; else display">
+    <div class="row">
+      <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
     </div>
   </ng-container>
 
-  <ng-template #noRecord>
-    <div class="row">
-      <div class="col-12 ml-2 mt-2 font-weight-bold" translate>No fee</div>
-    </div>
+  <ng-template #display>
+    <ng-container *ngIf="paginator.getRecordsCount() > 0; else noRecord">
+      <div id="fees-data">
+        <public-search-patron-profile-fee
+          *ngFor="let record of records; let index = index"
+          [ngClass]="{ 'bg-light': !(index % 2) }"
+          id="fee-{{ record.metadata.pid }}"
+          class="row my-1 p-2"
+          [record]="record">
+        </public-search-patron-profile-fee>
+        <shared-search-show-more-pager id="show-more-fees" [paginator]="paginator"></shared-search-show-more-pager>
+      </div>
+    </ng-container>
+
+    <ng-template #noRecord>
+      <div class="row">
+        <div class="col mt-2 font-weight-bold" translate>No fee</div>
+      </div>
+    </ng-template>
   </ng-template>
-</ng-template>
+</section>

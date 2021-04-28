@@ -26,28 +26,18 @@
   <dl class="container row">
     <!-- GENDER -->
     <ng-container *ngIf="user.gender">
-      <dt class="col-3 label-title" translate>
-        Gender
-      </dt>
-      <dd class="col-9">
-        {{ user.gender }}
-      </dd>
+      <dt class="col-lg-3 col-sm-6 label-title" translate>Gender</dt>
+      <dd class="col-lg-9 col-sm-6">{{ user.gender }}</dd>
     </ng-container>
     <!-- USERNAME -->
     <ng-container *ngIf="user.username">
-      <dt class="col-3 label-title" translate>
-        Username
-      </dt>
-      <dd class="col-9">
-        {{ user.username }}
-      </dd>
+      <dt class="col-lg-3 col-sm-6 label-title" translate>Username</dt>
+      <dd class="col-lg-9 col-sm-6">{{ user.username }}</dd>
     </ng-container>
     <!-- PRIMARY ADDRESS -->
     <ng-container *ngIf="user.street || user.city || user.country">
-      <dt class="col-3 label-title" translate>
-        Primary address
-      </dt>
-      <dd class="col-9">
+      <dt class="col-lg-3 col-sm-6 label-title" translate>Primary address</dt>
+      <dd class="col-lg-9 col-sm-6">
         <ng-container *ngIf="user.street">
           {{ user.street }}<br>
         </ng-container>
@@ -61,10 +51,8 @@
     </ng-container>
     <!-- SECONDARY ADDRESS -->
     <ng-container *ngIf="patron.second_address">
-      <dt class="col-3 label-title" translate>
-        Secondary address
-      </dt>
-      <dd class="col-9">
+      <dt class="col-lg-3 col-sm-6 label-title" translate>Secondary address</dt>
+      <dd class="col-lg-9 col-sm-6">
         <ng-container *ngIf="patron.second_address.street">
           {{ patron.second_address.street }}<br>
         </ng-container>
@@ -76,91 +64,54 @@
         </ng-container>
       </dd>
     </ng-container>
-
     <!-- HOME PHONE -->
     <ng-container *ngIf="user.home_phone">
-      <dt class="col-3 label-title" translate>
-        Home phone
-      </dt>
-      <dd class="col-9">
-        {{ user.home_phone }}
-      </dd>
+      <dt class="col-lg-3 col-sm-6 label-title" translate>Home phone</dt>
+      <dd class="col-lg-9 col-sm-6">{{ user.home_phone }}</dd>
     </ng-container>
     <!-- BUSINESS PHONE -->
     <ng-container *ngIf="user.business_phone">
-      <dt class="col-3 label-title" translate>
-        Business phone
-      </dt>
-      <dd class="col-9">
-        {{ user.business_phone }}
-      </dd>
+      <dt class="col-lg-3 col-sm-6 label-title" translate>Business phone</dt>
+      <dd class="col-lg-9 col-sm-6">{{ user.business_phone }}</dd>
     </ng-container>
     <!-- MOBILE PHONE -->
     <ng-container *ngIf="user.mobile_phone">
-      <dt class="col-3 label-title" translate>
-        Mobile phone
-      </dt>
-      <dd class="col-9">
-        {{ user.mobile_phone }}
-      </dd>
+      <dt class="col-lg-3 col-sm-6 label-title" translate>Mobile phone</dt>
+      <dd class="col-lg-9 col-sm-6">{{ user.mobile_phone }}</dd>
     </ng-container>
     <!-- OTHER PHONE -->
     <ng-container *ngIf="user.other_phone">
-      <dt class="col-3 label-title" translate>
-        Other phone
-      </dt>
-      <dd class="col-9">
-        {{ user.other_phone }}
-      </dd>
+      <dt class="col-lg-3 col-sm-6 label-title" translate>Other phone</dt>
+      <dd class="col-lg-9 col-sm-6">{{ user.other_phone }}</dd>
     </ng-container>
     <!-- EMAIL -->
     <ng-container *ngIf="user.email">
-      <dt class="col-3 label-title" translate>
-        Email
-      </dt>
-      <dd class="col-9">
-        {{ user.email }}
-      </dd>
+      <dt class="col-lg-3 col-sm-6 label-title" translate>Email</dt>
+      <dd class="col-lg-9 col-sm-6">{{ user.email }}</dd>
     </ng-container>
     <!-- PATRON BARCODE -->
     <ng-container *ngIf="patron.patron.barcode">
-      <dt class="col-3 label-title" translate>
-        Patron number
-      </dt>
-      <dd class="col-9">
-        <ul class="list-unstyled mb-0">
-          <li *ngFor="let barcode of patron.patron.barcode; let last = last">
-            {{ barcode }}
-            <ng-container *ngIf="!last">;</ng-container>
-          </li>
-        </ul>
-      </dd>
+      <dt class="col-lg-3 col-sm-6 label-title" translate>Patron number</dt>
+      <dd class="col-lg-9 col-sm-6">{{ patron.patron.barcode | join : ', ' }}</dd>
     </ng-container>
     <!-- PATRON BARCODE -->
     <ng-container *ngIf="patron.patron.expiration_date">
-      <dt class="col-3 label-title" translate>
-        Account expiration
-      </dt>
-      <dd class="col-9">
-        {{ patron.patron.expiration_date | dateTranslate: 'shortDate' }}
-      </dd>
+      <dt class="col-lg-3 col-sm-6 label-title" translate>Account expiration</dt>
+      <dd class="col-lg-9 col-sm-6">{{ patron.patron.expiration_date | dateTranslate: 'shortDate' }}</dd>
     </ng-container>
     <!-- KEEP HISTORY -->
-    <dt class="col-3 label-title" translate>
-        Keep history
-      </dt>
-      <dd class="col-9">
-        <i class="fa fa-circle" [ngClass]="{'text-success': user.keep_history, 'text-danger': !user.keep_history}"></i>
-        <ng-container *ngIf="!user.keep_history; else keep">
-          {{ 'The loan history is not saved.' | translate }}
-        </ng-container>
-        <ng-template #keep>
-          {{ 'The loan history is saved for a maximum of six months. It is visible to you and the library staff.' | translate }}
-        </ng-template>
-      </dd>
+    <dt class="col-lg-3 col-sm-6 label-title" translate>Keep history</dt>
+    <dd class="col-lg-9 col-sm-6">
+      <i class="fa fa-circle" [ngClass]="{'text-success': user.keep_history, 'text-danger': !user.keep_history}"></i>
+      <ng-container *ngIf="!user.keep_history; else keep">
+        {{ 'The loan history is not saved.' | translate }}
+      </ng-container>
+      <ng-template #keep>
+        {{ 'The loan history is saved for a maximum of six months. It is visible to you and the library staff.' | translate }}
+      </ng-template>
+    </dd>
   </dl>
-
-  <div class="col-12 mt-3 pl-3">
+  <div class="col mt-3 pl-3">
     <a id="profile-edit" class="btn btn-sm btn-primary" href="/account/settings/profile/" translate>Edit</a>
   </div>
 </section>

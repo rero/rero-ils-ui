@@ -15,68 +15,66 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="record">
-  <div class="row mt-1 p-2">
-    <div class="col-lg-4 col-sm-4" translate>
+  <div class="col-lg-4 col-md-6 col-sm-12 pl-0">
+    <button
+      id="request-{{ record.metadata.pid }}"
+      type="button"
+      class="pl-0 pr-2 pt-0 btn btn-toogle"
+      (click)="isCollapsed = !isCollapsed"
+      [attr.aria-expanded]="!isCollapsed"
+      aria-controls="collapseEvent"
+    >
+      <i class="fa pr-0" [ngClass]="{ 'fa-caret-right': isCollapsed, 'fa-caret-down': !isCollapsed }"></i>
+    </button>
+    <a href="/{{ viewcode }}/documents/{{ record.metadata.document.pid }}">{{ record.metadata.document.title | mainTitle }}</a>
+  </div>
+  <div class="col-lg-4 col-md-6 col-sm-12 ">
+    {{ record.metadata.pickup_name }}
+  </div>
+  <div class="col-lg-2 col-md-6 col-sm-6">
+    <!-- ITEM AT DESK -->
+    <ng-container *ngIf="record.metadata.state === 'ITEM_AT_DESK'">
+      <i class="fa fa-check"  title="{{ 'item at desk' | translate }}" aria-hidden="true"></i>
+      {{ 'to pick up' | translate }}
+    </ng-container>
+
+    <!-- PENDING OR ITEM IN TRANSIT FOR PICKUP -->
+    <ng-container *ngIf="record.metadata.state === 'PENDING' || record.metadata.state === 'ITEM_IN_TRANSIT_FOR_PICKUP'">
+      <i class="fa fa-bullseye"  title="{{ 'pending' | translate }}" aria-hidden="true"></i>
+      <!-- TODO: Add expired date and remove "waiting" text
+      expected availability 00.00.0000  -->
+      {{ 'waiting' | translate }}
+    </ng-container>
+
+    <!-- PENDING -->
+    <ng-container *ngIf="record.metadata.state === 'PENDING' && record.metadata.rank && record.metadata.rank > 0">
+      <br>
+      <span [translate]="'(position {{ rank }} in waiting list)'" [translateParams]="{ rank: record.metadata.rank }"></span>
+    </ng-container>
+  </div>
+  <div class="col-lg-2 col-md-6 col-sm-6 p-0 text-right">
+    <ng-container *ngIf="record.metadata.state === 'PENDING' || record.metadata.state === 'ITEM_IN_TRANSIT_FOR_PICKUP'; else noAction">
       <button
-        id="request-{{ record.metadata.pid }}"
+        id="request-cancel-{{ record.metadata.pid }}"
         type="button"
-        class="pl-0 pr-2 pt-0 btn btn-toogle"
-        (click)="isCollapsed = !isCollapsed"
-        [attr.aria-expanded]="!isCollapsed"
-        aria-controls="collapseEvent"
+        class="btn btn-sm btn-primary"
+        (click)="cancel()"
+        [disabled]="cancelInProgress"
       >
-        <i class="fa pr-0" [ngClass]="{ 'fa-caret-right': isCollapsed, 'fa-caret-down': !isCollapsed }"></i>
+        <ng-container *ngIf="!cancelInProgress || actionDone; else inProcess">
+          {{ 'Cancel' | translate }}
+        </ng-container>
+        <ng-template #inProcess>
+          <span class="spinner-border spinner-border-sm mr-1" role="status"></span>
+          {{ 'Cancel' | translate }}
+        </ng-template>
       </button>
-      <a href="/{{ viewcode }}/documents/{{ record.metadata.document.pid }}">{{ record.metadata.document.title | mainTitle }}</a>
-    </div>
-    <div class="col-4" translate>
-      {{ record.metadata.pickup_name }}
-    </div>
-    <div class="col-2" translate>
-      <!-- ITEM AT DESK -->
-      <ng-container *ngIf="record.metadata.state === 'ITEM_AT_DESK'">
-        <i class="fa fa-check"  title="{{ 'item at desk' | translate }}" aria-hidden="true"></i>
-        {{ 'to pick up' | translate }}
-      </ng-container>
+    </ng-container>
+    <ng-template #noAction>&nbsp;</ng-template>
+  </div>
 
-      <!-- PENDING OR ITEM IN TRANSIT FOR PICKUP -->
-      <ng-container *ngIf="record.metadata.state === 'PENDING' || record.metadata.state === 'ITEM_IN_TRANSIT_FOR_PICKUP'">
-        <i class="fa fa-bullseye"  title="{{ 'pending' | translate }}" aria-hidden="true"></i>
-        <!-- TODO: Add expired date and remove "waiting" text
-        expected availability 00.00.0000  -->
-        {{ 'waiting' | translate }}
-      </ng-container>
-
-      <!-- PENDING -->
-      <ng-container *ngIf="record.metadata.state === 'PENDING' && record.metadata.rank && record.metadata.rank > 0">
-        <br>
-        <span [translate]="'(position {{ rank }} in waiting list)'" [translateParams]="{ rank: record.metadata.rank }"></span>
-      </ng-container>
-    </div>
-    <div class="col-2 text-right">
-      <ng-container *ngIf="record.metadata.state === 'PENDING' || record.metadata.state === 'ITEM_IN_TRANSIT_FOR_PICKUP'; else noAction">
-        <button
-          id="request-cancel-{{ record.metadata.pid }}"
-          type="button"
-          class="btn btn-sm btn-primary"
-          (click)="cancel()"
-          [disabled]="cancelInProgress"
-        >
-          <ng-container *ngIf="!cancelInProgress || actionDone; else inProcess">
-            {{ 'Cancel' | translate }}
-          </ng-container>
-          <ng-template #inProcess>
-            <span class="spinner-border spinner-border-sm mr-1" role="status"></span>
-            {{ 'Cancel' | translate }}
-          </ng-template>
-        </button>
-      </ng-container>
-      <ng-template #noAction>&nbsp;</ng-template>
-    </div>
-
-    <!-- Document detail -->
-    <div [collapse]="isCollapsed" [isAnimated]="true" class="col-12 mt-1">
-      <public-search-patron-profile-document [record]="record"></public-search-patron-profile-document>
-    </div>
+  <!-- Document detail -->
+  <div [collapse]="isCollapsed" [isAnimated]="true" class="col-12 mt-1">
+    <public-search-patron-profile-document [record]="record"></public-search-patron-profile-document>
   </div>
 </ng-container>

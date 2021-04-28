@@ -130,8 +130,8 @@ describe('PatronProfileFeeComponent', () => {
     expect(date.textContent).toContain('2/2/21, 12:00 PM');
 
     const divs = fixture.nativeElement.querySelectorAll('div > div');
-    expect(divs[2].textContent).toContain('fee-type');
-    expect(divs[3].textContent).toContain('CHF2.50');
+    expect(divs[1].textContent).toContain('fee-type');
+    expect(divs[2].textContent).toContain('CHF2.50');
 
     const note = fixture.nativeElement.querySelector('#fee-note-1');
     expect(note.textContent).toContain('Note record note');

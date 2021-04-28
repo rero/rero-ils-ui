@@ -117,7 +117,7 @@ describe('PatronProfileRequestComponent', () => {
   it('should display the list of records', () => {
     patronProfileService.changeTab({ name: 'request', count: 1 });
     fixture.detectChanges();
-    const li = fixture.nativeElement.querySelectorAll('li');
-    expect(li.length).toEqual(1);
+    const elements = fixture.nativeElement.querySelectorAll('#requests-data public-search-patron-profile-request');
+    expect(elements.length).toEqual(1);
   });
 });

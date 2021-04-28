@@ -14,42 +14,42 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section id="requests-section" class="row px-3 mt-2 my-1">
-  <div class="col mr-1 d-none d-lg-block">
-    <div class="row p-2 bg-dark rounded text-light">
+<section id="requests-section" class="container my-2">
+  <div class="d-none d-lg-block">
+    <div class="row bg-dark rounded text-light p-2">
       <div class="col-4 pl-0" translate>Title</div>
-      <div class="col-4 pl-0" translate>Pickup location</div>
-      <div class="col-2 pl-0" translate>Status</div>
-      <div class="col-2 pl-0">&nbsp;</div>
+      <div class="col-4" translate>Pickup location</div>
+      <div class="col-2" translate>Status</div>
+      <div class="col-2">&nbsp;</div>
     </div>
   </div>
-</section>
 
-<ng-container *ngIf="!loaded; else display">
-  <div class="row">
-    <div class="col-12 ml-2 mt-2 font-weight-bold" translate>Loading in progress</div>
-  </div>
-</ng-container>
 
-<ng-template #display>
-  <ng-container *ngIf="paginator.getRecordsCount() > 0; else noRecord">
-    <div id="requests-data" class="row px-3">
-      <ul class="list-unstyled p-0 mb-1 col-12">
-        <li
-          id="request-{{ request.metadata.pid }}"
-          *ngFor="let request of records; let index = index"
-          class="mb-1"
-          [ngClass]="{ 'bg-light': !(index % 2), 'border border-success': request.metadata.state === 'ITEM_AT_DESK' }"
-        >
-          <public-search-patron-profile-request [record]="request"></public-search-patron-profile-request>
-        </li>
-      </ul>
-      <shared-search-show-more-pager id="show-more-requests" [paginator]="paginator"></shared-search-show-more-pager>
+  <ng-container *ngIf="!loaded; else display">
+    <div class="row">
+      <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
     </div>
   </ng-container>
-  <ng-template #noRecord>
-    <div class="row">
-      <div class="col-12 ml-2 mt-2 font-weight-bold" translate>No request</div>
-    </div>
+
+  <ng-template #display>
+    <ng-container *ngIf="paginator.getRecordsCount() > 0; else noRecord">
+      <div id="requests-data">
+        <public-search-patron-profile-request
+          *ngFor="let request of records; let index = index"
+          [record]="request"
+          id="request-{{ request.metadata.pid }}"
+          class="row my-1 p-2"
+          [ngClass]="{ 'bg-light': !(index % 2), 'border border-success': request.metadata.state === 'ITEM_AT_DESK' }">
+        </public-search-patron-profile-request>
+        <shared-search-show-more-pager id="show-more-requests" [paginator]="paginator"></shared-search-show-more-pager>
+      </div>
+    </ng-container>
+
+    <ng-template #noRecord>
+      <div class="row">
+        <div class="col mt-2 font-weight-bold" translate>No request</div>
+      </div>
+    </ng-template>
+
   </ng-template>
-</ng-template>
+</section>
