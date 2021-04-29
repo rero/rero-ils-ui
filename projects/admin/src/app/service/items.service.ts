@@ -105,7 +105,7 @@ export class ItemsService {
       catchError(e => {
         switch (e.status) {
           case 404:
-            throw new Error('item not found');
+            throw new Error('Item not found');
           default:
             throw e;
         }
