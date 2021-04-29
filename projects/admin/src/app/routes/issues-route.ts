@@ -71,7 +71,9 @@ export class IssuesRoute extends BaseRoute implements RouteInterface {
             exportFormats: [
               {
                 label: 'CSV',
-                format: 'csv'
+                format: 'csv',
+                endpoint: this._routeToolService.apiService.getEndpointByType('item/inventory'),
+                disableMaxRestResultsSize: true,
               }
             ],
           }

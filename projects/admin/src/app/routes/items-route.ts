@@ -48,6 +48,10 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
         { path: 'new', component: EditorComponent }
       ],
       data: {
+        adminMode: () => of({
+          can: false,
+          message: ''
+        }),
         types: [
           {
             key: this.name,
@@ -134,8 +138,10 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             exportFormats: [
               {
                 label: 'CSV',
-                format: 'csv'
-              }
+                format: 'csv',
+                endpoint: this._routeToolService.apiService.getEndpointByType('item/inventory'),
+                disableMaxRestResultsSize: true,
+              },
             ],
           }
         ],
