@@ -114,6 +114,12 @@ _('The item status does not allow requests.');
 _('Library not found.');
 _('Patron not found.');
 _('Request possible');
+_('Circulation policy disallows the operation.');
+_('No circulation action performed');
+_('Item returned at owning library');
+_('The item is {{ status }}');
+_('The item is in transit to [{{ destination }}]');
+_('Checkout is not allowed by circulation policy');
 
 // item note
 _('public_note');

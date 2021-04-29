@@ -112,10 +112,9 @@ export class ItemTransactionsComponent implements OnInit {
         this._currentUser.currentLibrary
       )
       .subscribe((itemData: any) => {
-        const status = itemData.status;
+        const status = this._translateService.instant(itemData.status);
         this._toastrService.warning(
-          this._translateService.instant('The item is ' + status),
-          // this._translateService.instant('The item is {{ status }}', { status }),
+          this._translateService.instant('The item is {{ status }}', { status }),
           this._translateService.instant('Request')
         );
         this.cancelRequestEvent.emit();

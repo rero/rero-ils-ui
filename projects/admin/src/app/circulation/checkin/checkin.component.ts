@@ -263,8 +263,9 @@ export class CheckinComponent implements OnInit {
   private _checkinErrorManagement(error: any, barcode: string) {
     // get the error message from the raised error. This will be the toastr message core.
     let message = (error.hasOwnProperty('error') && error.error.hasOwnProperty('status'))
-      ? error.error.status.replace(/^error:/, '')
+      ? error.error.status.replace(/^error:/, '').trim()
       : error.message;
+    message = this._translate.instant(message);
 
     // the message could contains some data information from the item. So we need to load the item
     this._itemsService.getItem(barcode).pipe(

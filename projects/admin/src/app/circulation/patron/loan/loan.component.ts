@@ -244,7 +244,7 @@ export class LoanComponent implements OnInit, OnDestroy {
         },
         error => {
           this._toastService.error(
-            error.message,
+            this._translateService.instant(error.message),
             this._translateService.instant('Checkout')
           );
           this.searchText = '';
@@ -288,8 +288,9 @@ export class LoanComponent implements OnInit, OnDestroy {
               this.checkedInItems.unshift(newItem);
               // display a toast message if the item goes in transit...
               if (newItem.status === ItemStatus.IN_TRANSIT) {
+                const destination = newItem.loan.item_destination.library_name;
                 this._toastService.warning(
-                  this._translateService.instant('The item is in transit'),
+                  this._translateService.instant('The item is in transit to [{{ destination }}]', {destination}),
                   this._translateService.instant('Checkin')
                 );
               }
@@ -327,7 +328,7 @@ export class LoanComponent implements OnInit, OnDestroy {
           errorMessage = err.error.message;
         }
         if (err.error.status === 403) {
-          let message = errorMessage || this._translateService.instant('Checkout is not allowed by circulation policy');
+          let message = this._translateService.instant(errorMessage) || this._translateService.instant('Checkout is not allowed by circulation policy');
           let title =  this._translateService.instant('Circulation');
           if (message.includes(': ')) {
             const splittedData = message.split(': ', 2);
