@@ -18,22 +18,17 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import * as moment from 'moment';
 
-export function _(str) {
-  return marker(str);
-}
-
 export enum PatronTransactionStatus {
-  OPEN = _('open'),
-  CLOSED = _('closed')
+  OPEN = 'open',
+  CLOSED = 'closed'
 }
 export enum PatronTransactionEventType {
-  FEE = _('fee'),
-  PAYMENT = _('payment'),
-  DISPUTE = _('dispute'),
-  CANCEL = _('cancel')
+  FEE = 'fee',
+  PAYMENT = 'payment',
+  DISPUTE = 'dispute',
+  CANCEL = 'cancel'
 }
 
 export class PatronTransaction {

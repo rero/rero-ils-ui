@@ -19,15 +19,9 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-
-export function _(str) {
-  return marker(str);
-}
-
 export enum ILLRequestStatus {
-  PENDING = _('pending'),
-  VALIDATED = _('validated'),
-  DENIED = _('denied'),
-  CLOSED = _('closed'),
+  PENDING = 'pending',
+  VALIDATED = 'validated',
+  DENIED = 'denied',
+  CLOSED = 'closed'
 }

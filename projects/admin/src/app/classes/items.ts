@@ -18,25 +18,20 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { Moment } from 'moment';
 import { ItemStatus, User } from '@rero/shared';
 import { Loan } from './loans'
 
-export function _(str) {
-  return marker(str);
-}
-
 export enum ItemNoteType {
-  GENERAL = _('general_note'),
-  STAFF = _('staff_note'),
-  CHECKIN = _('checkin_note'),
-  CHECKOUT = _('checkout_note'),
-  BINDING = _('binding_note'),
-  PROVENANCE = _('provenance_note'),
-  CONDITION = _('condition_note'),
-  PATRIMONIAL = _('patrimonial_note'),
-  ACQUISITION = _('acquisition_note'),
+  GENERAL = 'general_note',
+  STAFF = 'staff_note',
+  CHECKIN = 'checkin_note',
+  CHECKOUT = 'checkout_note',
+  BINDING = 'binding_note',
+  PROVENANCE = 'provenance_note',
+  CONDITION = 'condition_note',
+  PATRIMONIAL = 'patrimonial_note',
+  ACQUISITION = 'acquisition_note',
 }
 
 export interface Organisation {
@@ -49,16 +44,15 @@ export interface Document {
 }
 
 export enum ItemAction {
-  checkout = _('checkout'),
-  checkin = _('checkin'),
-  request = _('request'),
-  lose = _('lose'),
-  receive = _('receive'),
-  return_missing = _('return_missing'),
-  // cancel_loan = _('cancel_loan'),
-  extend_loan = _('extend_loan'),
-  validate = _('validate'),
-  no = _('no')
+  checkout = 'checkout',
+  checkin = 'checkin',
+  request = 'request',
+  lose = 'lose',
+  receive = 'receive',
+  return_missing = 'return_missing',
+  extend_loan = 'extend_loan',
+  validate = 'validate',
+  no = 'no'
 }
 
 type ItemActionObjectType<R> = {[key in keyof typeof ItemAction]: R };

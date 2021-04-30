@@ -19,14 +19,9 @@
 // required as json properties is not lowerCamelCase
 
 import { WeekDay } from '@angular/common';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import * as moment from 'moment';
 import { WeekDays } from './week-days';
 
-
-export function _(str) {
-  return marker(str);
-}
 
 export interface OpeningHours {
   day: string;
@@ -59,10 +54,10 @@ export interface ExceptionDates {
 }
 
 export enum NotificationType {
-  DUE_SOON = _('due_soon'),
-  RECALL = _('recall'),
-  OVERDUE = _('overdue'),
-  AVAILABILITY = _('availability')
+  DUE_SOON = 'due_soon',
+  RECALL = 'recall',
+  OVERDUE = 'overdue',
+  AVAILABILITY = 'availability'
 }
 
 export interface NotificationSettings {
