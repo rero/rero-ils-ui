@@ -69,7 +69,6 @@ _('ordered');
 _('pending');
 _('received');
 
-
 // Electronic locator types
 _('noInfo');
 _('resource');
@@ -105,6 +104,54 @@ _('pressReview');
 _('webSite');
 _('tableOfContents');
 _('fullText');
+
+// Enum values
+//  - patron transaction
+_('open');
+_('closed');
+_('fee');
+_('payment');
+_('dispute');
+_('cancel');
+//  - ill requests
+_('pending');
+_('validated');
+_('denied');
+_('closed');
+//  - notification type
+_('due_soon');
+_('recall');
+_('overdue');
+_('availability');
+//  - loan state
+_('CREATED');
+_('PENDING');
+_('ITEM_ON_LOAN');
+_('ITEM_RETURNED');
+_('ITEM_IN_TRANSIT_FOR_PICKUP');
+_('ITEM_IN_TRANSIT_TO_HOUSE');
+_('ITEM_AT_DESK');
+_('CANCELLED');
+//  - Item note type
+_('general_note');
+_('staff_note');
+_('checkin_note');
+_('checkout_note');
+_('binding_note');
+_('provenance_note');
+_('condition_note');
+_('patrimonial_note');
+_('acquisition_note');
+//  - Item circulation action
+_('checkout');
+_('checkin');
+_('request');
+_('lose');
+_('receive');
+_('return_missing');
+_('extend_loan');
+_('validate');
+_('no');
 
 // Item Request messages
 _('Request not allowed by the circulation policy.');
@@ -160,7 +207,6 @@ _('My organisation');
 _('My library');
 _('Public interface');
 _('Logout');
-
 
 _('Masked');
 _('No masked');

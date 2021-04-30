@@ -17,25 +17,19 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import moment, { Moment } from 'moment';
-
-
-export function _(str) {
-  return marker(str);
-}
 
 // ENUM ========================================================================
 /** All possible state about a loan */
 export enum LoanState {
-  CREATED = _('CREATED'),
-  PENDING = _('PENDING'),
-  ITEM_ON_LOAN = _('ITEM_ON_LOAN'),
-  ITEM_RETURNED = _('ITEM_RETURNED'),
-  ITEM_IN_TRANSIT_FOR_PICKUP = _('ITEM_IN_TRANSIT_FOR_PICKUP'),
-  ITEM_IN_TRANSIT_TO_HOUSE = _('ITEM_IN_TRANSIT_TO_HOUSE'),
-  ITEM_AT_DESK = _('ITEM_AT_DESK'),
-  CANCELLED = _('CANCELLED')
+  CREATED = 'CREATED',
+  PENDING = 'PENDING',
+  ITEM_ON_LOAN = 'ITEM_ON_LOAN',
+  ITEM_RETURNED = 'ITEM_RETURNED',
+  ITEM_IN_TRANSIT_FOR_PICKUP = 'ITEM_IN_TRANSIT_FOR_PICKUP',
+  ITEM_IN_TRANSIT_TO_HOUSE = 'ITEM_IN_TRANSIT_TO_HOUSE',
+  ITEM_AT_DESK = 'ITEM_AT_DESK',
+  CANCELLED = 'CANCELLED'
 }
 
 // INTERFACE ===================================================================
