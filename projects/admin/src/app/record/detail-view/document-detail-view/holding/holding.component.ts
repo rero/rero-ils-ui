@@ -121,9 +121,13 @@ export class HoldingComponent implements OnInit, OnDestroy {
     this._recordUiService.deleteRecord('items', itemPid).subscribe(
       (success: boolean) => {
         if (success) {
+          // Remove the corresponding item from the item list.
+          // If after this delete operation, the list if empty, then we could remove the holding BUT
+          // we don't need to call the backend because the holding should already be removed
+          // by backend.
           this.items = this.items.filter((i: any) => itemPid !== i.metadata.pid);
           if (this.items.length === 0) {
-            this.delete(true);
+            this.delete(false);
           }
         }
       }
