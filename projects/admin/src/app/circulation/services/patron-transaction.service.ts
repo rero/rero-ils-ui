@@ -233,19 +233,15 @@ export class PatronTransactionService {
     this._recordService.create('patron_transaction_events', record).subscribe(
       () => {
         this.emitPatronTransactionByPatron(affectedPatron, undefined, 'open');
-        this._toastService.success(this._translateService.instant(
-          '{{ type }} registered',
-          {type: record.type}
-        ));
+        const translateType = this._translateService.instant(record.type);
+        this._toastService.success(this._translateService.instant('{{ type }} registered', {type: translateType}));
       },
       (error) => {
         const message = '[' + error.status + ' - ' + error.statusText + '] ' + error.error.message;
+        const translateType = this._translateService.instant(record.type);
         this._toastService.error(
           message,
-          this._translateService.instant(
-            '{{ type }} creation failed!',
-            { type: record.type }
-          )
+          this._translateService.instant('{{ type }} creation failed!', { type: translateType })
         );
       }
     );
