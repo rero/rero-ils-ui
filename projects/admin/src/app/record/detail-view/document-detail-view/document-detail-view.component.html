@@ -120,10 +120,12 @@
       <!-- SUBJECTS -->
       <div class="row" *ngIf="record.metadata.subjects">
         <div class="col">
-          <span *ngFor="let subject of record.metadata.subjects; let i = index"
+          <span
+            *ngFor="let subject of record.metadata.subjects | subjectProcess:currentLanguage; let i = index"
             class="badge badge-secondary mr-1"
+            title="{{ subject.type | translate }}"
             [attr.id]="i | idAttribute:{prefix: 'doc-subject'}">
-            <i class="fa fa-tag"></i> {{ subject }}
+            <i class="fa fa-tag"></i> {{ subject.text }}
           </span>
         </div>
       </div>

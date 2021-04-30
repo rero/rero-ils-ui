@@ -59,6 +59,7 @@ import { MenuComponent } from './menu/menu.component';
 import { LibrarySwitchService } from './menu/service/library-switch.service';
 import { MarcPipe } from './pipe/marc.pipe';
 import { NotesFormatPipe } from './pipe/notes-format.pipe';
+import { SubjectProcessPipe } from './pipe/subject-process.pipe';
 import { AcquisitionOrderBriefViewComponent } from './record/brief-view/acquisition-order-brief-view.component';
 import { BudgetsBriefViewComponent } from './record/brief-view/budgets-brief-view.component';
 import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policies-brief-view.component';
@@ -260,7 +261,8 @@ export function appInitFactory(appInitService: AppInitService) {
     UserIdEditorComponent,
     RecordMaskedComponent,
     IdentifiedbyValueComponent,
-    DialogImportComponent
+    DialogImportComponent,
+    SubjectProcessPipe
   ],
   imports: [
     AppRoutingModule,
