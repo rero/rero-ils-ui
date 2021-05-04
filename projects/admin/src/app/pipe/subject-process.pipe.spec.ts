@@ -42,17 +42,24 @@ describe('SubjectProcessPipe', () => {
     {
       preferred_name: 'author',
       type: 'bf:Person'
+    },
+    {
+      title: 'Le dragon du Muveran',
+      creator: 'Voltenauer, Marc',
+      type: 'bf:Work'
     }
   ];
   const outputFr = [
     { type: 'bf:Person', text: 'idref preferred name' },
     { type: 'bf:Topic', text: 'subject vocabulary' },
-    { type: 'bf:Person', text: 'author' }
+    { type: 'bf:Person', text: 'author' },
+    { type: 'bf:Work', text: 'Le dragon du Muveran / Voltenauer, Marc' }
   ];
   const outputDe = [
     { type: 'bf:Person', text: 'gnd preferred name' },
     { type: 'bf:Topic', text: 'subject vocabulary' },
-    { type: 'bf:Person', text: 'author' }
+    { type: 'bf:Person', text: 'author' },
+    { type: 'bf:Work', text: 'Le dragon du Muveran / Voltenauer, Marc' }
   ];
 
   let pipe: SubjectProcessPipe;
