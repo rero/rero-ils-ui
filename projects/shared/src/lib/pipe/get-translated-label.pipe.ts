@@ -62,7 +62,7 @@ export class GetTranslatedLabelPipe implements PipeTransform {
     if (labels.length > 0) {  // We find a correct entry ! Return the label
       return labels[0].label;
     } else if (entries.length > 0) {  // we didn't find any entry. Return the first label from the input entries.
-      return entries[0].label;
+      return this._translateService.instant(entries[0].label);
     }
     return null;
   }
