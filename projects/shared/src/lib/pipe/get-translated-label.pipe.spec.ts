@@ -27,8 +27,9 @@ describe('GetTranslatedLabelPipe', () => {
     {language: 'it', label: 'la mia etichetta'}
   ];
 
-  const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['']);
-  translateServiceSpy.currentLang = 'en';
+  const entriesDefault = [
+    {language: 'default', label: 'on_shelf' }
+  ];
 
   let getTranslatedLabelPipe: GetTranslatedLabelPipe;
   let translateService: TranslateService;
@@ -40,8 +41,7 @@ describe('GetTranslatedLabelPipe', () => {
         TranslateModule.forRoot()
       ],
       providers: [
-        GetTranslatedLabelPipe,
-        { provide: TranslateService, useValue: translateServiceSpy }
+        GetTranslatedLabelPipe
       ]
     });
     getTranslatedLabelPipe = TestBed.inject(GetTranslatedLabelPipe);
@@ -72,5 +72,13 @@ describe('GetTranslatedLabelPipe', () => {
     expect(
       getTranslatedLabelPipe.transform(undefined)
     ).toEqual(null);
+  });
+
+  it('found default value', () => {
+    translateService.setTranslation('fr', { on_shelf : 'en rayon' });
+    translateService.use('fr');
+    expect(
+      getTranslatedLabelPipe.transform(entriesDefault)
+    ).toEqual('en rayon');
   });
 });
