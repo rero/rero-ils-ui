@@ -64,7 +64,7 @@ export class SubjectProcessPipe implements PipeTransform {
         } else {
           if ('title' in subject) {
             let text = subject.title;
-            if ('creactor' in subject) {
+            if ('creator' in subject) {
               text += ' / ' + subject.creator;
             }
             data.text = text;
