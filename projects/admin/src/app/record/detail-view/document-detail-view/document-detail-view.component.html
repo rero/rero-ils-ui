@@ -97,23 +97,6 @@
       <!-- IS PART OF -->
       <shared-part-of [record]="record" isBrief="false"></shared-part-of>
 
-      <!-- ABSTRACT -->
-      <ng-container *ngIf=" record.metadata.abstracts && record.metadata.abstracts.length > 0">
-        <ul class="list-unstyled my-0">
-          <li *ngFor="let abstract of record.metadata.abstracts; let i = index"
-          [attr.id]="i | idAttribute:{prefix: 'doc-abstract'}">
-            <ng-core-text-read-more
-              [text]="abstract"
-              [unit]="'word'"
-              [limit]="100"
-              [showMoreLabel]="'Show more' | translate"
-              [showLessLabel]="'Show less' | translate"
-            >
-            </ng-core-text-read-more>
-          </li>
-        </ul>
-      </ng-container>
-
       <!-- MASKED -->
       <admin-record-masked *ngIf="record.metadata._masked" [record]="record" [withLabel]="true"></admin-record-masked>
 
@@ -129,6 +112,26 @@
           </span>
         </div>
       </div>
+
+      <!-- SUMMARY -->
+      <ng-container *ngIf="record.metadata.summary">
+        <ng-container *ngFor="let sum of record.metadata.summary">
+          <div *ngFor="let data of sum.label">
+            <!--
+            <span *ngIf="data.language" class="badge badge-secondary mr-1">
+              {{ ('lang_script_' + data.language) | translate }}
+            </span>
+            -->
+            <ng-core-text-read-more
+              [text]="data.value"
+              [unit]="'character'"
+              [limit]="400"
+              [showMoreLabel]="'Show more' | translate"
+              [showLessLabel]="'Show less' | translate"
+            ></ng-core-text-read-more>
+          </div>
+        </ng-container>
+      </ng-container>
     </div>
   </header>
 
@@ -346,14 +349,6 @@
               <dt id="doc-add-materials-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Additional materials</dt>
               <dd id="doc-add-materials" [ngClass]="ddCssClass">
                 {{ record.metadata.additionalMaterials }}
-              </dd>
-            </ng-container>
-
-            <!-- UNIFORM TITLE -->
-            <ng-container *ngIf="record.metadata.titlesProper && record.metadata.titlesProper.length > 0">
-              <dt id="doc-uniform-title-label" class="col-sm-4 offset-sm-2 offset-md-0" translate>Uniform title</dt>
-              <dd id="doc-uniform-title" [ngClass]="ddCssClass">
-                {{ record.metadata.titlesProper.join("; ") }}
               </dd>
             </ng-container>
 
