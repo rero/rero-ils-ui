@@ -57,7 +57,7 @@
       <!-- shared part -->
       <shared-part-of [record]="record"></shared-part-of>
       <!-- availability -->
-      <div *ngIf="record.metadata.type !== 'ebook'">
+      <div *ngIf="type !== 'import_bnf' && record.metadata.type !== 'ebook'">
         <i class="fa fa-circle text-{{ record.metadata.available ? 'success' : 'danger' }}" aria-hidden="true"></i>&nbsp;
         <span translate *ngIf="record.metadata.available">available</span>
         <span translate *ngIf="!record.metadata.available">not available</span>
