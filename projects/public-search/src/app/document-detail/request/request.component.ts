@@ -63,7 +63,7 @@ export class RequestComponent implements OnInit {
       this._patron = this._userService.user.getPatronByOrganisationPid(
         this.item.metadata.organisation.pid
       );
-      if (this._patron) {
+      if (this._patron?.patron) {
         this._itemApiService.canRequest(
           this.item.metadata.pid,
           this.item.metadata.library.pid,

@@ -16,7 +16,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TranslateService } from '@rero/ng-core';
+import { TranslateService } from '@ngx-translate/core';
 import { AppSettingsService, UserService } from '@rero/shared';
 
 @Injectable({
@@ -38,8 +38,8 @@ export class AppInitializerService {
 
   /** Load */
   load(): Promise<boolean> {
-    this._initiliazeObservable();
     return new Promise((resolve) => {
+      this._initiliazeObservable();
       this._userService.load();
       resolve(true);
     });
@@ -49,7 +49,7 @@ export class AppInitializerService {
   private _initiliazeObservable(): void {
     // Set current language interface
     this._userService.loaded$.subscribe(() => {
-      this._translateService.setLanguage(this._appSettingsService.currentLanguage);
+      this._translateService.use(this._appSettingsService.currentLanguage);
     });
   }
 }
