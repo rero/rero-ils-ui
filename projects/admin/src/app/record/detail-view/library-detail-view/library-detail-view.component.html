@@ -75,19 +75,18 @@
         <i class="fa fa-envelope-o mr-2"></i>{{ 'Notification settings' | translate }}
       </ng-template>
       <!-- NOTIFICATION SETTINGS -->
-      <article *ngIf="record.metadata.notification_settings as notificationSettings">
-        <section *ngFor="let setting of notificationSettings">
-          <h5 translate>{{ setting.type }}</h5>
-          <dl class="row mb-3 ml-2">
-            <!-- EMAIL -->
-            <dt class="col-sm-3 offset-sm-2 offset-md-0">{{ 'Email' | translate }}:</dt>
-            <dd class="col-sm-7 col-md-8 mb-0">{{ setting.email }}</dd>
-            <!-- DELAY AVAILABILITY -->
-            <dt class="col-sm-3 offset-sm-2 offset-md-0" *ngIf="setting.delay">{{ 'Delay' | translate }}</dt>
-            <dd class="col-sm-7 col-md-8 mb-0">{{ setting.delay }}</dd>
-          </dl>
-        </section>
-      </article>
+      <dl class="row" *ngIf="record.metadata.notification_settings as notificationSettings">
+        <ng-container *ngFor="let setting of notificationSettings">
+          <dt class="col-3">{{ setting.type | ucfirst | translate }}:</dt>
+          <dd class="col-7">
+            {{ setting.email }}
+            <ng-container *ngIf="setting.delay">
+              ; {{ 'Delay' | translate }}: {{ setting.delay }}
+              {{ setting.delay > 1 ? ('minutes' | translate) : ('minute' | translate) }}
+            </ng-container>
+          </dd>
+        </ng-container>
+      </dl>
     </tab>
   </tabset>
 
