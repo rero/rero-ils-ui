@@ -15,10 +15,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="item && loan; else loading">
-  <div class="col-sm-2">
+  <div class="col-2">
     <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
   </div>
-  <div class="col-sm-5">
+  <div class="col-5">
     <a [routerLink]="['/records', 'documents', 'detail', document.pid]" *ngIf="document.title | mainTitle as title">
       {{ title }}
     </a><br/>
@@ -36,10 +36,10 @@
       </ul>
     </ng-container>
   </div>
-  <div class="col-sm-3">
+  <div class="col-3">
     {{ loan.metadata.pickup_location_pid | getRecord: 'locations' : 'field' : 'pickup_name' | async }}
   </div>
-  <div class="col"></div>
+  <div class="col-2">-<!-- TODO :: display the computed to_pick_up_until_date --></div>
 </ng-container>
 
 <ng-template #loading>

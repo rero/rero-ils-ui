@@ -18,10 +18,10 @@
   <div *ngIf="loans.length > 0; else noPickup">
     <!-- HEADER -->
     <div class="row p-2 mb-1 bg-dark rounded text-light row">
-      <div class="col-sm-2" translate>Item</div>
-      <div class="col-sm-5" translate>Title</div>
-      <div class="col-sm-3" translate>Pickup location</div>
-      <div class="col-sm-2">&nbsp;</div>
+      <div class="col-2" translate>Item</div>
+      <div class="col-5" translate>Title</div>
+      <div class="col-3" translate>Pickup location</div>
+      <div class="col-2" translate>To pick-up until</div>
     </div>
     <admin-pickup-item *ngFor="let loan of loans" [loan]="loan" class="row p-2 mb-1 border rounded align-middle"></admin-pickup-item>
   </div>

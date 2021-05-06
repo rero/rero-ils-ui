@@ -16,7 +16,7 @@
 -->
 <ng-container *ngIf="item; else loading">
   <!-- FIRST ROW : barcode, title, availability, action button -->
-  <div class="col-sm-2">
+  <div class="col-2">
     <button type="button" class="pl-0 pt-0 btn"
             (click)="isCollapsed = !isCollapsed"
             [attr.aria-expanded]="!isCollapsed"
@@ -25,7 +25,7 @@
     </button>
     <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
   </div>
-  <div class="col-sm-6">
+  <div class="col-6">
     <a [routerLink]="['/records', 'documents', 'detail', document.pid]" *ngIf="document.title | mainTitle as title">
       {{ title }}
     </a><br/>
@@ -43,8 +43,8 @@
       </ul>
     </ng-container>
   </div>
-  <div class="col-sm-3">-</div>
-  <div class="col-sm-1"></div>
+  <div class="col-2">{{ loan.created | dateTranslate: 'short' }}</div>
+  <div class="col-2">-<!-- TODO :: display the computed expected_date --></div>
   <!-- SECOND ROW : item detail -->
   <div class="col-12" *ngIf="!isCollapsed">
     <dl class="row">

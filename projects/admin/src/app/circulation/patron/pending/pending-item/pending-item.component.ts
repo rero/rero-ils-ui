@@ -46,7 +46,7 @@ export class PendingItemComponent implements OnInit {
   ) { }
 
   /**
-   * Init
+   * OnInit hook
    */
   ngOnInit() {
     if (this.loan) {
