@@ -91,6 +91,11 @@ span.no-data {
   cursor: not-allowed;
 }
 
+// Data list into brief view
+dl.brief-view dd {
+  margin-bottom: 0;
+}
+
 json-schema-form {
   input.ng-valid,
   textarea.ng-valid {
