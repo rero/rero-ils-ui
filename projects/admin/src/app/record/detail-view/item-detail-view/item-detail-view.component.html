@@ -16,10 +16,16 @@
 -->
 
 <ng-container *ngIf="record">
+  <div *ngIf="isIssue">
+    <a [routerLink]="parentHoldingUrl">
+      <i class="fa fa-arrow-left mr-1"></i>
+      {{ 'Back to parent holding' | translate }}
+    </a>
+  </div>
+  <header>
+    <h1>{{ 'Barcode' | translate }} {{ record.metadata.barcode }}</h1>
+  </header>
   <section class="mb-4">
-    <header>
-      <h1>{{ 'Barcode' | translate }} {{ record.metadata.barcode }}</h1>
-    </header>
     <admin-record-masked *ngIf="record.metadata._masked" [record]="record" [withLabel]="true"></admin-record-masked>
     <dl class="row">
       <!-- INHERITED CALL NUMBER -->
@@ -107,7 +113,7 @@
   </section>
 
   <!-- ISSUE DATA -->
-  <section *ngIf="record.metadata.type == 'issue'">
+  <section *ngIf="isIssue">
     <header>
       <h3 translate>Issue data</h3>
     </header>
