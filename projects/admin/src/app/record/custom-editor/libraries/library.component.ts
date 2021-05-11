@@ -131,7 +131,18 @@ export class LibraryComponent implements OnInit, OnDestroy {
 
   /** Notificaition settings. */
   get notificationSettings() {
-    return this.libraryForm.notification_settings as FormArray; }
+    return this.libraryForm.notification_settings as FormArray;
+  }
+
+  /** Communication language. */
+  get communicationLanguage() {
+    return this.libraryForm.communication_language;
+  }
+
+  /** Available communication languages */
+  get availableCommunicationLanguages() {
+    return this.libraryForm.available_communication_languages;
+  }
 
   /** Form submission. */
   onSubmit() {

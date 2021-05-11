@@ -19,10 +19,10 @@
     <h1 translate>Library</h1>
     <form [formGroup]="libForm" (ngSubmit)="onSubmit()">
       <div class="form-group row">
-        <label for="name" class="col-sm-2 col-form-label required">
+        <label for="name" class="col-2 col-form-label required">
           {{ 'Name' | translate }} <strong class="text-danger">*</strong>
         </label>
-        <div class="col-sm-10">
+        <div class="col-10">
           <input class="form-control" id="name" formControlName="name"
             placeholder="{{ 'Please insert a name' | translate }}" required>
           <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger pt-1">
@@ -36,8 +36,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label for="address" class="col-sm-2 col-form-label" translate>Address</label>
-        <div class="col-sm-10">
+        <label for="address" class="col-2 col-form-label" translate>Address</label>
+        <div class="col-10">
           <input id="address" class="form-control" formControlName="address">
           <div *ngIf="address.invalid && (address.dirty || address.touched)" class="text-danger pt-1">
             <div *ngIf="address.errors.minlength" translate>
@@ -47,8 +47,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label for="email" class="col-sm-2 col-form-label" translate>Email</label>
-        <div class="col-sm-10">
+        <label for="email" class="col-2 col-form-label" translate>Email</label>
+        <div class="col-10">
           <input id="email" class="form-control" formControlName="email">
           <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger pt-1">
             <div *ngIf="email.errors.email" translate>
@@ -57,11 +57,11 @@
           </div>
         </div>
       </div>
-      <div class="form-group row mb-4">
-        <label for="email" class="col-sm-2 col-form-label required">
+      <div class="form-group row">
+        <label for="email" class="col-2 col-form-label required">
           {{ 'Code' | translate }} <strong class="text-danger">*</strong>
         </label>
-        <div class="col-sm-10">
+        <div class="col-10">
           <input id="code" class="form-control" formControlName="code"
             placeholder="{{ 'Please insert a code' | translate }}" required>
           <div *ngIf="code.invalid && (code.dirty || code.touched)" class="text-danger pt-1">
@@ -69,6 +69,24 @@
               Code is already taken.
             </div>
             <div *ngIf="code.pending" translate>Validating…</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="communication_language" class="col-2 col-form-label">
+          {{ 'Communication language' | translate }} <strong class="text-danger">*</strong>
+        </label>
+        <div class="col-10">
+          <select id="communication_language" class="form-control" formControlName="communication_language" required>
+            <option value="" disabled translate>Choose a language</option>
+            <option [ngValue]="language" *ngFor="let language of availableCommunicationLanguages">
+              {{ ('lang_' + language) | translate }}
+            </option>
+          </select>
+          <div *ngIf="communicationLanguage.invalid && (communicationLanguage.dirty || communicationLanguage.touched)" class="text-danger pt-1">
+            <div *ngIf="communicationLanguage.errors.required" translate>
+              Communication language is required.
+            </div>
           </div>
         </div>
       </div>
@@ -167,7 +185,7 @@
             *ngFor="let setting of notificationSettings.controls; let i=index">
             <div [formGroupName]="i" class="card my-2">
               <div class="card-header">
-                {{ setting.controls.type.value}}
+                {{ setting.controls.type.value | translate | ucfirst }}
               </div>
               <div class="card-body p-3 form-group mb-0">
                 <!-- email -->
@@ -176,9 +194,12 @@
                     translate>Email</label>
                   <div class="col-md-5">
                     <input formControlName="email" class="form-control" [id]="setting.controls.type.value + '-email'">
-                    <div class="text-secondary" translate>
+                    <div *ngIf="setting.controls.type.value | notificationType:'patron'" class="text-secondary" translate>
                       The notifications for patrons without e-mail are sent to this address. No notification is sent if
                       the field is empty.
+                    </div>
+                    <div *ngIf="setting.controls.type.value | notificationType:'library'" class="text-secondary" translate>
+                      No notification is sent if the field is empty.
                     </div>
                   </div>
                 </div>
