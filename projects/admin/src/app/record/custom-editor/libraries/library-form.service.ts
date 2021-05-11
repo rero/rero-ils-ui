@@ -39,6 +39,9 @@ export class LibraryFormService {
   /** Observable for build event */
   private buildEvent = new Subject();
 
+  /** RERO ILS communication languages */
+  private availableCommunicationLanguages = [];
+
   /**
    * Constructor
    *
@@ -67,7 +70,8 @@ export class LibraryFormService {
         ]
       }],
       opening_hours: this._fb.array([]),
-      notification_settings: this._fb.array([])
+      notification_settings: this._fb.array([]),
+      communication_language: ['', Validators.required]
     });
     this.initializeOpeningHours();
     this.initializeNotificationSettings();
@@ -87,6 +91,11 @@ export class LibraryFormService {
         this.notificationTypes = jsonSchema.schema.properties.notification_type.enum;
         this.build();
         this.buildEvent.next(true);
+      });
+    this._recordService
+      .getSchemaForm('libraries')
+      .subscribe((jsonSchema: any) => {
+        this.availableCommunicationLanguages = jsonSchema.schema.properties.communication_language.enum;
       });
   }
 
@@ -181,6 +190,7 @@ export class LibraryFormService {
       address:  library.address,
       email: library.email,
       code: library.code,
+      communication_language: library.communication_language
     });
     this.setOpeningHours(library.opening_hours);
     this.setNotificationSettings(library.notification_settings);
@@ -248,6 +258,13 @@ export class LibraryFormService {
   }
   get notification_settings(): FormArray {
     return this.form.get('notification_settings') as FormArray;
+  }
+  get communication_language(): AbstractControl {
+    return this.form.get('communication_language');
+  }
+
+  get available_communication_languages() {
+    return this.availableCommunicationLanguages;
   }
 
   getValues(): any { return this.form.value; }

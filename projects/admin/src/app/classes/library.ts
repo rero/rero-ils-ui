@@ -75,6 +75,7 @@ export class Library {
   email: string = null;
   address: string = null;
   code: string = null;
+  communication_language: string = null;
   opening_hours: Array<OpeningHours> = [];
   exception_dates?: Array<ExceptionDates>;
   notification_settings?: Array<NotificationSettings>;

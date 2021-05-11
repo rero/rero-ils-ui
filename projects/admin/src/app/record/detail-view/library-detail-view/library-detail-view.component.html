@@ -19,27 +19,36 @@
   <dl class="row mb-3">
     <!-- ADDRESS -->
     <ng-container *ngIf="record.metadata.address">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      <dt class="col-3 label-title" translate>
         Address
       </dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
+      <dd class="col-7 mb-0">
         {{ record.metadata.address }}
       </dd>
     </ng-container>
     <!-- CODE -->
-    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" *ngIf="record.metadata.code" translate>
+    <dt class="col-3 label-title" *ngIf="record.metadata.code" translate>
       Code
     </dt>
-    <dd class="col-sm-7 col-md-8 mb-0">
+    <dd class="col-7 mb-0">
       {{ record.metadata.code }}
     </dd>
     <!-- EMAIL -->
-    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" *ngIf="record.metadata.email" translate>
+    <dt class="col-3 label-title" *ngIf="record.metadata.email" translate>
       Email
     </dt>
-    <dd class="col-sm-7 col-md-8 mb-0">
+    <dd class="col-7 mb-0">
       {{ record.metadata.email }}
     </dd>
+    <!-- COMMUNICATION LANGUAGE -->
+    <ng-container *ngIf="record.metadata.communication_language">
+      <dt class="col-3 label-title" translate>
+        Communication language
+      </dt>
+      <dd class="col-7 mb-0">
+        {{ ('lang_' + record.metadata.communication_language) | translate | ucfirst }}
+      </dd>
+    </ng-container>
   </dl>
 
   <tabset #staticTabs>

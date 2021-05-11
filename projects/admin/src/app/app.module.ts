@@ -79,6 +79,7 @@ import { HoldingEditorComponent } from './record/custom-editor/holding-editor/ho
 import { ExceptionDatesEditComponent } from './record/custom-editor/libraries/exception-dates-edit/exception-dates-edit.component';
 import { ExceptionDatesListComponent } from './record/custom-editor/libraries/exception-dates-list/exception-dates-list.component';
 import { LibraryComponent } from './record/custom-editor/libraries/library.component';
+import { NotificationTypePipe } from './record/custom-editor/libraries/pipe/notificationType.pipe';
 import { UserIdEditorComponent } from './record/custom-editor/user-id-editor/user-id-editor.component';
 import {
   AcquisitionOrderDetailViewComponent
@@ -262,7 +263,8 @@ export function appInitFactory(appInitService: AppInitService) {
     RecordMaskedComponent,
     IdentifiedbyValueComponent,
     DialogImportComponent,
-    SubjectProcessPipe
+    SubjectProcessPipe,
+    NotificationTypePipe
   ],
   imports: [
     AppRoutingModule,
