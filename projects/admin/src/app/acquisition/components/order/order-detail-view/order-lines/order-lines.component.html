@@ -1,0 +1,46 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="card container">
+  <div class="card-header px-0 row">
+    <h5 class="col-8" translate>Order lines</h5>
+    <div class="col-4 text-right">
+      <a *ngIf="permissions && permissions.update.can"
+         class="btn btn-sm btn-outline-primary"
+         [routerLink]="['/', 'records', 'acq_order_lines', 'new']"
+         [queryParams]="{ order: order.metadata.pid }"
+      >
+        <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
+      </a>
+    </div>
+  </div>
+  <div class="card-body p-0">
+    <ng-container *ngIf="orderLines$ | async as orderLines; else loading">
+      <ng-container *ngIf="orderLines.length > 0; else noOrderLines">
+        <admin-order-line *ngFor="let orderLine of orderLines"
+                          class="row order-line"
+                          [orderLine]="orderLine"
+                          [order]="order"
+                          (delete)="deleteOrderLine($event)"
+        ></admin-order-line>
+      </ng-container>
+      <ng-template #noOrderLines>
+        <div class="py-3" translate>No order lines</div>
+      </ng-template>
+    </ng-container>
+    <ng-template #loading><i class="fa fa-spinner"></i></ng-template>
+  </div>
+</div>

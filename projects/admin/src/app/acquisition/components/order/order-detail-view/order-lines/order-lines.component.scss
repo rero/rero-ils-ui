@@ -16,28 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* tslint:disable */
-// required as json properties is not lowerCamelCase
+@import '../../../../../../../../../node_modules/bootstrap/scss/functions';
+@import '../../../../../../../../../node_modules/bootstrap/scss/variables';
+@import '/projects/admin/src/app/scss/variables';
 
-/**
- * Interface to describe an internal resource reference
- * Either the `pid` and `type` is available, either the `$ref`.
- * TODO :: It should be possible to compute $ref from pid/type and reversely */
-export interface ObjectReference {
-  pid?: string;
-  type?: string;
-  $ref?: string;
-}
+.order-line {
 
-/** Interface to describe an `Organisation` resource */
-export interface Organisation {
-  $schema: string;
-  pid: string;
-  name: string;
-  code: string;
-  address?: string;
-  default_currency: string;
-  current_budget_pid?: string;
-  online_harvested_source?: string;
-  collection_enabled_on_public_view?: boolean;
+  padding-top: map_get($spacers, 2);
+  padding-bottom: map_get($spacers, 2);
+
+  &:hover {
+    background-color: $light;
+  }
+
+  & + .order-line {
+    border-top: 1px solid $border-color;
+  }
 }

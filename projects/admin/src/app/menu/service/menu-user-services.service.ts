@@ -217,6 +217,13 @@ export class MenuUserServicesService extends MenuBase {
     .setExtra('iconClass', 'fa fa-money');
     this._translatedName(budgetsMenu, 'Budgets');
 
+    // ----- ACCOUNTS
+    const accountsMenu = acquisitionMenu.addChild('Accounts')
+      .setRouterLink(['/', 'acquisition', 'accounts'])
+      .setAttribute('id', 'accounts-menu')
+      .setExtra('iconClass', 'fa fa-folder-open-o');
+    this._translatedName(accountsMenu, 'Accounts');
+
     // ----- LATE ISSUES
     this._lateIssuesMenu = acquisitionMenu.addChild('Late issues')
       .setRouterLink(['/', 'records', 'issues'])

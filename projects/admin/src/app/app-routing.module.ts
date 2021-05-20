@@ -24,10 +24,12 @@ const routes: Routes = [
   {
     path: '',
     component: FrontpageComponent
-  },
-  {
+  }, {
     path: 'circulation',
     loadChildren: () => import('./circulation/circulation.module').then(m => m.CirculationModule)
+  }, {
+    path: 'acquisition',
+    loadChildren: () => import('./acquisition/acquisition.module').then(m => m.AcquisitionModule)
   }
 ];
 

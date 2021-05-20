@@ -16,28 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* tslint:disable */
-// required as json properties is not lowerCamelCase
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AccountListComponent } from './components/account/account-list/account-list.component';
+import { AccountTransferComponent } from './components/account/account-transfer/account-transfer.component';
 
-/**
- * Interface to describe an internal resource reference
- * Either the `pid` and `type` is available, either the `$ref`.
- * TODO :: It should be possible to compute $ref from pid/type and reversely */
-export interface ObjectReference {
-  pid?: string;
-  type?: string;
-  $ref?: string;
-}
+const routes: Routes = [
+  { path: '', redirectTo: 'accounts', pathMatch: 'full'},
+  { path: 'accounts/transfer', component: AccountTransferComponent },
+  { path: 'accounts', component: AccountListComponent }
+];
 
-/** Interface to describe an `Organisation` resource */
-export interface Organisation {
-  $schema: string;
-  pid: string;
-  name: string;
-  code: string;
-  address?: string;
-  default_currency: string;
-  current_budget_pid?: string;
-  online_harvested_source?: string;
-  collection_enabled_on_public_view?: boolean;
-}
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class AcquisitionRoutingModule { }
