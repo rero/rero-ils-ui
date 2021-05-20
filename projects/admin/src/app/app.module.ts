@@ -60,8 +60,6 @@ import { LibrarySwitchService } from './menu/service/library-switch.service';
 import { MarcPipe } from './pipe/marc.pipe';
 import { NotesFormatPipe } from './pipe/notes-format.pipe';
 import { SubjectProcessPipe } from './pipe/subject-process.pipe';
-import { AcquisitionOrderBriefViewComponent } from './record/brief-view/acquisition-order-brief-view.component';
-import { BudgetsBriefViewComponent } from './record/brief-view/budgets-brief-view.component';
 import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policies-brief-view.component';
 import { CollectionBriefViewComponent } from './record/brief-view/collection-brief-view.component';
 import { DocumentsBriefViewComponent } from './record/brief-view/documents-brief-view/documents-brief-view.component';
@@ -80,20 +78,7 @@ import { ExceptionDatesEditComponent } from './record/custom-editor/libraries/ex
 import { ExceptionDatesListComponent } from './record/custom-editor/libraries/exception-dates-list/exception-dates-list.component';
 import { LibraryComponent } from './record/custom-editor/libraries/library.component';
 import { UserIdEditorComponent } from './record/custom-editor/user-id-editor/user-id-editor.component';
-import {
-  AcquisitionOrderDetailViewComponent
-} from './record/detail-view/acquisition-order-detail-view/acquisition-order-detail-view.component';
-import {
-  AcquisitionOrderLinesComponent
-} from './record/detail-view/acquisition-order-detail-view/order-lines/acquisition-order-lines.component';
-import { OrderLineComponent } from './record/detail-view/acquisition-order-detail-view/order-lines/order-line/order-line.component';
-import {
-  AcquisitionOrderLineDetailViewComponent
-} from './record/detail-view/acquisition-order-line-detail-view/acquisition-order-line-detail-view.component';
 import { AddressTypeComponent } from './record/detail-view/address-type/address-type.component';
-import { AcquisitionAccountComponent } from './record/detail-view/budget-detail-view/acquisition-account/acquisition-account.component';
-import { AcquisitionAccountsComponent } from './record/detail-view/budget-detail-view/acquisition-accounts/acquisition-accounts.component';
-import { BudgetDetailViewComponent } from './record/detail-view/budget-detail-view/budget-detail-view.component';
 import { CircPolicyDetailViewComponent } from './record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
 import { CollectionDetailViewComponent } from './record/detail-view/collection-detail-view/collection-detail-view.component';
 import { CollectionItemsComponent } from './record/detail-view/collection-detail-view/collection-items/collection-items.component';
@@ -206,14 +191,6 @@ export function appInitFactory(appInitService: AppInitService) {
     VendorDetailViewComponent,
     VendorBriefViewComponent,
     AddressTypeComponent,
-    AcquisitionOrderDetailViewComponent,
-    AcquisitionOrderBriefViewComponent,
-    AcquisitionOrderLineDetailViewComponent,
-    AcquisitionOrderLinesComponent,
-    BudgetsBriefViewComponent,
-    BudgetDetailViewComponent,
-    AcquisitionAccountsComponent,
-    AcquisitionAccountComponent,
     OrganisationDetailViewComponent,
     BudgetSelectComponent,
     BudgetSelectLineComponent,
@@ -221,7 +198,6 @@ export function appInitFactory(appInitService: AppInitService) {
     ResourceComponent,
     ItemRequestComponent,
     ErrorPageComponent,
-    OrderLineComponent,
     SerialHoldingItemComponent,
     SerialHoldingDetailViewComponent,
     HoldingDetailViewComponent,
@@ -297,8 +273,7 @@ export function appInitFactory(appInitService: AppInitService) {
     TypeaheadModule,
     HotkeysModule,
     SharedModule,
-    LoadingBarHttpClientModule,
-    LoadingBarModule
+    LoadingBarHttpClientModule
   ],
   providers: [
     {
@@ -382,11 +357,6 @@ export function appInitFactory(appInitService: AppInitService) {
     PatronDetailViewComponent,
     VendorDetailViewComponent,
     VendorBriefViewComponent,
-    AcquisitionOrderDetailViewComponent,
-    AcquisitionOrderBriefViewComponent,
-    AcquisitionOrderLineDetailViewComponent,
-    BudgetsBriefViewComponent,
-    BudgetDetailViewComponent,
     OrganisationDetailViewComponent,
     ItemRequestComponent,
     ErrorPageComponent,

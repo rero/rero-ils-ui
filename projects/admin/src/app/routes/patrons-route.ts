@@ -111,7 +111,7 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
     };
   }
   /**
-   * Create an Async validator to avoid multiple organisation prfessional accouts.
+   * Create an Async validator to avoid multiple organisation professional accounts.
    *
    * @param field - formly field config.
    */
