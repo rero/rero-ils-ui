@@ -1,0 +1,97 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="orderLine && permissions else loading">
+  <!-- ROW#1 :: DOCUMENT TITLE & ACTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <div class="col-9 d-flex" [ngClass]="{'order-canceled': orderLine.metadata.status === 'canceled'}">
+    <button type="button" class="p-0 pr-2 btn"
+            (click)="isCollapsed = !isCollapsed"
+            [attr.aria-expanded]="!isCollapsed"
+            aria-controls="collapse">
+      <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" class="fa" aria-hidden="true"></i>
+    </button>
+    <i class="fa py-1 px-2"
+       title="{{ orderLine.metadata.status | translate }}"
+       [ngClass]="{
+      'fa-envelope-open-o': orderLine.metadata.status === 'approved',
+      'fa-envelope-o': orderLine.metadata.status === 'ordered',
+      'text-muted': orderLine.metadata.status === 'approved' || orderLine.metadata.status === 'ordered',
+      'fa-check-square text-success': orderLine.metadata.status === 'received',
+      'fa-window-close-o text-danger': orderLine.metadata.status === 'canceled'
+    }"></i>
+    <div *ngIf="orderLine.metadata.document.pid | getRecord: 'documents' | async as document">
+      <a *ngIf="document.metadata.title | mainTitle as title"
+         [routerLink]="['/records', 'documents', 'detail', document.metadata.pid]">
+        {{ title | truncateText }}
+      </a>
+    </div>
+  </div>
+  <div class="col-3 text-right">
+    <button *ngIf="permissions.update.can" type="button" class="btn btn-outline-primary btn-sm mr-1"
+            [routerLink]="['/records', 'acq_order_lines', 'edit', orderLine.metadata.pid]">
+      <i class="fa fa-pencil"></i>
+    </button>
+
+    <button *ngIf="this.permissions.delete.can; else deleteInfo"
+            type="button" class="btn btn-outline-danger btn-sm"
+            title="{{ 'Delete' | translate }}"
+            (click)="delete.emit(orderLine.metadata.pid)">
+      <i class="fa fa-trash" ></i>
+    </button>
+    <ng-template #deleteInfo>
+      <button type="button" class="btn btn-sm btn-outline-danger disabled"
+              title="{{ 'Delete' | translate }}"
+              [popover]="tolTemplate" triggers="mouseenter:mouseleave">
+        <i class="fa fa-trash"></i>
+      </button>
+      <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
+    </ng-template>
+  </div>
+  <!-- ROW#2 :: DETAILED METADATA ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <div class="col-11 offset-1" [hidden]="isCollapsed">
+    <dl class="row">
+      <dt class="col-2 label-title" translate>Account</dt>
+      <dd class="col-10">
+        {{ orderLine.metadata.acq_account.pid | getRecord: 'acq_accounts': 'field': 'name' | async }}
+      </dd>
+      <dt class="col-2 label-title" translate>Status</dt>
+      <dd class="col-10">{{ orderLine.metadata.status | translate }}</dd>
+      <ng-container *ngIf="orderLine.metadata.exchangeRate">
+        <dt class="col-2 label-title" translate>Exchange rate</dt>
+        <dd class="col-10">{{ orderLine.metadata.exchange_rate }}</dd>
+      </ng-container>
+      <ng-container *ngIf="orderLine.metadata.note">
+        <dt class="col-2 label-title" translate>Note</dt>
+        <dd class="col-10">{{ orderLine.metadata.note }}</dd>
+      </ng-container>
+    </dl>
+  </div>
+  <!-- ROW#3 :: ACCOUNTING METADATA ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <div class="col-3 offset-4 text-right">
+    {{ orderLine.metadata.quantity }} x {{ orderLine.metadata.amount | currency:order.metadata.currency:'symbol' }}
+  </div>
+  <div class="col-2 text-muted text-right">
+    <ng-container *ngIf="orderLine.metadata.discount_amount">
+      {{ orderLine.metadata.discount_amount | negativeAmount | currency:order.metadata.currency:'symbol' }}
+    </ng-container>
+  </div>
+  <div class="col-2 font-weight-bold text-right">
+    {{ orderLine.metadata.total_amount | currency:order.metadata.currency:'symbol' }}
+  </div>
+</ng-container>
+<ng-template #loading>
+  <i class="fa fa-spin fa-spinner"></i>
+</ng-template>

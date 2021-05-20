@@ -1,0 +1,49 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2021 RERO
+ * Copyright (C) 2021 UCLouvain
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+@import '~bootstrap/scss/_functions';
+@import '~bootstrap/scss/_variables';
+@import '/projects/admin/src/app/scss/variables';
+
+.account {
+
+  $DEPTH-PADDING: 50px;
+  $MAX-DEPTH: 10;
+
+  margin-bottom: map-get($spacers, 1);
+
+  &:hover{
+    background-color: #F8F8F8;
+  }
+  .account-name {
+    font-weight: bold;
+  }
+  .account-number {
+    text-transform: uppercase;
+    font-size: .9rem;
+  }
+  .amount {
+    text-align: right;
+  }
+
+  @for $level from 1 to $MAX-DEPTH {
+    .depth-padding-#{$level} {
+      padding-left: calc(#{$DEPTH-PADDING} * #{$level});
+    }
+  }
+}

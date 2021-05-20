@@ -1,0 +1,62 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div *ngIf="record$ | async as record" class="container">
+  <h1 class="mb-3">{{ record.metadata.order_number }}</h1>
+  <section class="my-3 row">
+    <!-- ORDER DETAIL (:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <div class="col-8 border rounded">
+      <dl class="row my-2">
+        <!-- VENDOR -->
+        <ng-container *ngIf="record.metadata.vendor">
+          <dt class="col-4 label-title" translate>Vendor</dt>
+          <dd class="col-8">{{ record.metadata.vendor.pid | getRecord: 'vendors' : 'field' : 'name' | async }}</dd>
+        </ng-container>
+        <!-- ORDER DATE -->
+        <dt class="col-4 label-title" translate>Order date</dt>
+        <dd class="col-8">{{ record.metadata.order_date | dateTranslate :'shortDate' }}</dd>
+        <!-- ORDER TYPE -->
+        <dt class="col-4 label-title" translate>Order type</dt>
+        <dd class="col-8">{{ record.metadata.order_type | translate }}</dd>
+        <!-- ORDER STATUS -->
+        <dt class="col-4" translate>Order status</dt>
+        <dd class="col-8">{{ record.metadata.order_status | translate }}</dd>
+        <!-- DESCRIPTION -->
+        <ng-container *ngIf="record.metadata.description">
+          <dt class="col-4 label-title" translate>Description</dt>
+          <dd class="col-8">{{ record.metadata.description }}</dd>
+        </ng-container>
+        <!-- CURRENCY -->
+        <dt class="col-4 label-title" translate>Currency</dt>
+        <dd class="col-8">{{ record.metadata.currency }}</dd>
+      </dl>
+    </div>
+    <!-- ORDER TOTAL AMOUNT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <div class="col-4 pr-0">
+      <div class="border h-100 rounded bg-light text-center" *ngIf="totalAmount$ | async as totalAmount">
+        <span class="total-amount">{{ totalAmount | currency:record.metadata.currency:'symbol' }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORDER LINES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <admin-order-lines
+    class="row"
+    [order]="record"
+    [orderLines$]="orderLines$"
+    (delete)="deleteOrderLine($event)"
+  ></admin-order-lines>
+</div>
