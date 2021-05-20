@@ -142,7 +142,7 @@ export class LibraryFormService {
       day: [day],
       times
     }, {
-      validator: [TimeValidator.RangePeriodValidator()]
+      validators: [TimeValidator.RangePeriodValidator()]
     });
   }
 
@@ -167,7 +167,7 @@ export class LibraryFormService {
         ]
       }]
     }, {
-      validator: TimeValidator.greaterThanValidator('start_time', 'end_time')
+      validators: TimeValidator.greaterThanValidator('start_time', 'end_time')
     });
   }
 
