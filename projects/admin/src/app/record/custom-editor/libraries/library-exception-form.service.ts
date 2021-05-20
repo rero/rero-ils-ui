@@ -49,7 +49,7 @@ export class LibraryExceptionFormService {
       period: [null],
       data: this.fb.array([])
     }, {
-      validator: [TimeValidator.RangePeriodValidator()]
+      validators: [TimeValidator.RangePeriodValidator()]
     });
   }
 
@@ -70,7 +70,7 @@ export class LibraryExceptionFormService {
         updateOn: 'blur'
       }]
     }, {
-      validator: TimeValidator.greaterThanValidator('start_time', 'end_time')
+      validators: TimeValidator.greaterThanValidator('start_time', 'end_time')
     });
   }
 
