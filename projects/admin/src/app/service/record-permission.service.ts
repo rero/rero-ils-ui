@@ -169,7 +169,7 @@ export class RecordPermissionService {
       },
       acq_accounts: {
         '=1': this._translateService.instant('has 1 acquisition account attached'),
-        other: this._translateService.instant('has # acquisition accounts attached')
+        other: this._translateService.instant('has # acquisition account attached')
       },
       budgets: {
         '=1': this._translateService.instant('has 1 budget attached'),

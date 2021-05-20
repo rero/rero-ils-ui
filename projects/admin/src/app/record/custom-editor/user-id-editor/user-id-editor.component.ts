@@ -161,7 +161,7 @@ export class UserIdEditorComponent implements OnInit {
         // current logged user organisation
         const currentOrgPid = this._userService.user.currentOrganisation;
         const patronAccounts = model.metadata.patrons;
-        // user has patron accounts
+        // user has patron account
         if (patronAccounts && patronAccounts.length > 0) {
           const patronAccount = patronAccounts.filter(ptrn => ptrn.organisation.pid === currentOrgPid).pop();
           // user has already an account in the logged librarian organisation
