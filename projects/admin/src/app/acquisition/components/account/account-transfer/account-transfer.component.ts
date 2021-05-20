@@ -1,0 +1,186 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2021 RERO
+ * Copyright (C) 2021 UCLouvain
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import { getCurrencySymbol } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
+import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
+import { AcqAccountApiService } from '../../../api/acq-account-api.service';
+import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';
+import { AcqAccount } from '../../../classes/account';
+
+@Component({
+  selector: 'admin-account-transfer',
+  templateUrl: './account-transfer.component.html',
+  styleUrls: ['../../../acquisition.scss']
+})
+export class AccountTransferComponent implements OnInit {
+
+  // COMPONENT ATTRIBUTES =======================================================
+  /** the accounts available for transfer */
+  accountsToDisplay: Array<AcqAccount> = [];
+  /** active budgets */
+  budgets: Array<string> = [];
+  /** the transfer form group */
+  form: FormGroup;
+
+  /** the accounts available for transfer */
+  private _accountsTree: Array<AcqAccount> = [];
+  /** store the selected budgets */
+  private _selectedBudgetPid: string = undefined;
+
+  // GETTER & SETTER ============================================================
+  /** Get the current organisation */
+  get organisation(): any {
+    return this._organisationService.organisation;
+  }
+
+  /** Get the currency symbol for the organisation */
+  get currencySymbol(): any {
+    return getCurrencySymbol(this.organisation.default_currency, 'wide');
+  }
+
+  // CONSTRUCTOR & HOOKS ========================================================
+  /**
+   * Constructor
+   * @param _accountApiService: AcqAccountApiService
+   * @param _budgetApiService: BudgetApiService
+   * @param _organisationService: OrganisationService
+   * @param _formBuilder: FormBuilder,
+   * @param _toastrService: ToastrService,
+   * @param _translateService: TranslateService
+   * @param _router: Router
+   */
+  constructor(
+    private _accountApiService: AcqAccountApiService,
+    private _budgetApiService: AcqBudgetApiService,
+    private _organisationService: OrganisationService,
+    private _formBuilder: FormBuilder,
+    private _toastrService: ToastrService,
+    private _translateService: TranslateService,
+    private _router: Router
+  ) {
+    this.form = this._formBuilder.group({
+      source: [undefined, Validators.required],
+      target: [undefined, Validators.required],
+      amount: [0, Validators.min(0.01)]
+    });
+  }
+
+  /** OnInit hook */
+  ngOnInit(): void {
+    this._loadData();
+    this.form.controls.source.valueChanges.subscribe((account: AcqAccount) => {
+      const maxTransferAmount = account.remaining_balance.self;
+      this.form.controls.amount.setValidators([
+        Validators.min(0.01),
+        Validators.max(maxTransferAmount)
+      ]);
+    });
+  }
+
+  // PUBLIC FUNCTIONS =========================================================
+  /** get the URL to access account detail view */
+  getDetailUrl(account: AcqAccount): Array<string> {
+    return ['/', 'records', 'acq_accounts', 'detail', account.pid];
+  }
+
+  /** Handle event when a budget is selected */
+  selectBudget(event: any): void {
+    this._selectedBudgetPid = event.target.value;
+    this._filterAccountToDisplay();
+  }
+
+  /**
+   * Handle event when use choose source/target account
+   * @param destination: the account destination (source || target)
+   * @param account: the selected.
+   */
+  selectAccount(destination: string, account: AcqAccount): void {
+    this.form.controls[destination].patchValue(account);
+  }
+
+  /** Submit the form */
+  submit(): void {
+    this._accountApiService
+      .transferFunds(this.form.value.source.pid, this.form.value.target.pid, this.form.value.amount)
+      .subscribe(
+        () => {
+          this._toastrService.success(this._translateService.instant('Fund transfer successful!'));
+          this._router.navigate(['/', 'acquisition', 'accounts']);
+        },
+        (err) => { this._toastrService.error(this._translateService.instant(err.error.message)); }
+      );
+  }
+
+  /**
+   * Check an input form field to know if it's valid
+   * @param fieldName: the field name to check
+   */
+  checkInput(fieldName: string): boolean {
+    if (this.form.get(fieldName) === undefined) {
+      return true;
+    }
+    return this.form.get(fieldName).invalid
+        && this.form.get(fieldName).errors
+        && (this.form.get(fieldName).dirty || this.form.get(fieldName).touched);
+  }
+
+  // PRIVATE FUNCTIONS ========================================================
+  /** Load accounts and budgets. Order accounts as a hierarchical tree */
+  private _loadData(): void {
+    this._accountApiService.getAccounts(undefined, 'depth').subscribe((accounts: AcqAccount[]) => {
+      this._accountsTree = accounts;
+      this._orderAccounts();
+
+      this.budgets = Array.from(new Set(this._accountsTree.map((account: AcqAccount) => account.budget.pid)));
+      this._selectedBudgetPid = this.budgets.find(Boolean);  // get the first element
+      this._filterAccountToDisplay();
+    });
+  }
+
+  /** Allow to sort accounts to render it correctly (corresponding to hierarchical tree structure) */
+  private _orderAccounts(): void {
+    /** Append an account and children accounts into the `accounts` list */
+    const _appendAccount = (account: AcqAccount, list: Array<AcqAccount>) => {
+      list.push(account);
+      this._accountsTree
+        .filter(acc => acc.parent !== undefined && acc.parent.pid === account.pid)
+        .forEach(acc => _appendAccount(acc, list));
+    };
+    // First sort on depth and name.
+    this._accountsTree.sort((a, b) => {
+      return (a.depth === b.depth)
+        ? a.name.localeCompare(b.name)
+        : a.depth - b.depth;
+    });
+    // Rebuild hierarchical account tree.
+    const accounts: Array<AcqAccount> = [];
+    this._accountsTree.filter(acc => acc.depth === 0).forEach(acc => _appendAccount(acc, accounts));
+    this._accountsTree = accounts;
+  }
+
+  /** Allow to filter loaded accounts by the selected budget */
+  private _filterAccountToDisplay(): void {
+    this.accountsToDisplay = this._accountsTree.filter((acc: AcqAccount) => acc.budget.pid === this._selectedBudgetPid);
+  }
+
+}
