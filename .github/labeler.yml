@@ -1,0 +1,56 @@
+"professional ui":
+  - projects/admin/src/app/**/*
+
+"public ui":
+  - projects/public-search/src/app/**/*
+  - projects/public-holdings-items/src/app/**/*
+  - projects/public-patron-profile/src/app/**/*
+
+# Add label circulation to
+circulation:
+  - projects/admin/src/app/circulation/**/*
+  - projects/admin/src/app/circulation/patron/history/**/*
+  - projects/admin/src/app/circulation/patron/loan/**/*
+  - projects/admin/src/app/circulation/patron/patron-transactions/**/*
+  - projects/admin/src/app/circulation/patron/pending/**/*
+  - projects/admin/src/app/circulation/patron/pickup/**/*
+  - projects/admin/src/app/circulation/patron/profile/**/*
+  - projects/admin/src/app/circulation/services/patron-transaction.service.*
+  - projects/public-search/src/app/patron-profile/patron-profile-fees/**/*
+  - projects/public-search/src/app/patron-profile/patron-profile-loans/**/*
+  - projects/public-search/src/app/patron-profile/patron-profile-requests/**/*
+  - projects/public-search/src/app/patron-profile/patron-profile-ill-requests/**/*
+  - projects/public-search/src/app/patron-profile/patron-profile-histories/**/*
+  - projects/admin/src/app/record/item-availability/**/*
+  - projects/shared/src/lib/class/item-status.ts
+
+"user management":
+  - projects/admin/src/app/circulation/patron/**/*
+  - projects/public-search/src/app/patron-profile/**/*
+
+translations:
+  - projects/public-search/src/assets/**/*
+  - projects/admin/src/assets/**/*
+  - projects/**/*/manual_translations.ts
+
+search:
+  - projects/public-search/src/app/collection-brief/**/*
+  - projects/public-search/src/app/document-brief/**/*
+  - projects/public-search/src/app/document-record-search/**/*
+  - projects/public-search/src/app/search-bar/**/*
+  - projects/search-bar/src/app/**/**
+  - projects/admin/src/app/record/brief-view/**/*
+  - projects/admin/src/app/record/document-record-search/**/*
+  - projects/shared/src/lib/view/brief/**/*
+
+documentation:
+  - CHANGELOG.json
+  - README.md
+
+activity-logs:
+  - projects/admin/src/app/record/operation-logs/**/*
+
+editor:
+  - projects/admin/src/app/record/custom-editor/**/*
+  - projects/admin/src/app/record/editor/**/*
+  - projects/admin/src/app/record/formly/**/*
