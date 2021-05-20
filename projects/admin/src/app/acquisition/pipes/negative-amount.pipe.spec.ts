@@ -15,29 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { NegativeAmountPipe } from './negative-amount.pipe';
 
-/* tslint:disable */
-// required as json properties is not lowerCamelCase
-
-/**
- * Interface to describe an internal resource reference
- * Either the `pid` and `type` is available, either the `$ref`.
- * TODO :: It should be possible to compute $ref from pid/type and reversely */
-export interface ObjectReference {
-  pid?: string;
-  type?: string;
-  $ref?: string;
-}
-
-/** Interface to describe an `Organisation` resource */
-export interface Organisation {
-  $schema: string;
-  pid: string;
-  name: string;
-  code: string;
-  address?: string;
-  default_currency: string;
-  current_budget_pid?: string;
-  online_harvested_source?: string;
-  collection_enabled_on_public_view?: boolean;
-}
+describe('NegativeAmountPipe', () => {
+  it('create an instance', () => {
+    const pipe = new NegativeAmountPipe();
+    expect(pipe).toBeTruthy();
+  });
+});

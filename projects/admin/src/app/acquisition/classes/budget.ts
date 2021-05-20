@@ -19,25 +19,23 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-/**
- * Interface to describe an internal resource reference
- * Either the `pid` and `type` is available, either the `$ref`.
- * TODO :: It should be possible to compute $ref from pid/type and reversely */
-export interface ObjectReference {
-  pid?: string;
-  type?: string;
-  $ref?: string;
-}
+import { ObjectReference } from '../../classes/core';
 
-/** Interface to describe an `Organisation` resource */
-export interface Organisation {
-  $schema: string;
-  pid: string;
-  name: string;
-  code: string;
-  address?: string;
-  default_currency: string;
-  current_budget_pid?: string;
-  online_harvested_source?: string;
-  collection_enabled_on_public_view?: boolean;
+/** Wrapping class to describe an AcqAccount */
+export class AcqBudget {
+  $schema: string = null;
+  pid: string = null;
+  name: string = '';
+  start_date: string = '';
+  end_date: string = '';
+  is_active: boolean = false;
+  organisation: ObjectReference;
+
+  /**
+   * Constructor
+   * @param obj - the JSON parsed object to load.
+   */
+  constructor(obj?: any){
+    Object.assign(this, obj);
+  }
 }
