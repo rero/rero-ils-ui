@@ -16,7 +16,9 @@
  */
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import moment from 'moment';
+import { hasOwnProp } from 'ngx-bootstrap/chronos/utils/type-checks';
 import { getBootstrapLevel } from '../../../utils/utils';
+import { CirculationService } from '../../services/circulation.service';
 
 @Component({
   selector: 'admin-circulation-patron-detailed',
@@ -25,19 +27,19 @@ import { getBootstrapLevel } from '../../../utils/utils';
 })
 export class CardComponent {
 
+  // COMPONENT ATTRIBUTES =====================================================
   /** the patron */
   @Input() patron: any;
-
   /** the patron barcode */
   @Input() barcode: string;
-
   /** is the circulation messages should be displayed */
-  @Input() circulationMessages = false;
+  @Input() displayCirculationMessages = false;
   /** which link should be use on the main patron name */
   @Input() linkMode: 'circulation'|'detail' = 'detail';
   /** event emitter when the close button are fired */
   @Output() clearPatron = new EventEmitter<any>();
 
+  // GETTER & SETTER ==========================================================
   /** Build the link used on the patron name */
   get patronLink(): string {
     if (this.patron) {
@@ -64,6 +66,24 @@ export class CardComponent {
     return false;
   }
 
+  /** Get the circulation messages about the loaded patron if exists */
+  get circulationMessages(): Array<{type: string, content: string}> {
+    return (this._circulationService.hasOwnProperty('circulationInformations'))
+      ? this._circulationService.circulationInformations.messages
+      : [];
+  }
+
+  // CONSTRUCTOR ==============================================================
+  /**
+   * constructor
+   * @param _circulationService - CirculationService
+   */
+  constructor(
+    private _circulationService: CirculationService
+  ) {}
+
+
+  // COMPONENT FUNCTIONS ======================================================
   /** Clear current patron */
   clear(): void {
     if (this.patron) {
