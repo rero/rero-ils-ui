@@ -17,6 +17,11 @@
 <ng-container *ngIf="record$ | async as record">
   <h1 class="mb-3">{{ record.metadata.name }}</h1>
   <dl class="row">
+    <!-- CODE -->
+    <ng-container *ngIf="record.metadata.code">
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Code</dt>
+      <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.code }}</dd>
+    </ng-container>
     <!-- DESCRIPTIION -->
     <ng-container *ngIf="record.metadata.description">
       <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Description</dt>
