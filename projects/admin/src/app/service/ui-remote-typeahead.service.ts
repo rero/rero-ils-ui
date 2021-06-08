@@ -70,11 +70,12 @@ export class UiRemoteTypeaheadService extends RemoteTypeaheadService {
    * @param options - remote typeahead options
    * @param query - search query to retrieve the suggestions list
    * @param numberOfSuggestions - the max number of suggestion to return
+   * @param currentPid - current edited record PID or null in case of add.
    * @returns - an observable of the list of suggestions.
    */
-  getSuggestions(options: any, query: string, numberOfSuggestions: number): Observable<Array<SuggestionMetadata>> {
+  getSuggestions(options: any, query: string, numberOfSuggestions: number, currentPid: string): Observable<Array<SuggestionMetadata>> {
     return (options.hasOwnProperty('type') && options.type in this._typeaheadTypes)
     ? this._typeaheadTypes[options.type].getSuggestions(options, query, numberOfSuggestions)
-    : super.getSuggestions(options, query, numberOfSuggestions);
+    : super.getSuggestions(options, query, numberOfSuggestions, currentPid);
   }
 }
