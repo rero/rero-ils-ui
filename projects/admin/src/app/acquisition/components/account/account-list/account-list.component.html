@@ -19,8 +19,7 @@
   <header class="row d-flex align-items-baseline">
     <h1 class="col">{{ 'Acquisition accounts' | translate }}</h1>
     <div class="col-3 text-right">
-      <a *ngIf="rootAccounts.length > 1"
-         [routerLink]="['/', 'acquisition', 'accounts', 'transfer']"
+      <a [routerLink]="['/', 'acquisition', 'accounts', 'transfer']"
          class="btn btn-sm btn-outline-primary mr-2"
       >
         <i class="fa fa-exchange"></i> {{ 'Transfer funds' | translate }} &hellip;

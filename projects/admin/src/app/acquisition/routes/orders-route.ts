@@ -51,11 +51,20 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
             ],
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
+            preUpdateRecord: (data: any) => this._cleanRecord(data),
             aggregations: (aggregations: any) => this._routeToolService.aggregationFilter(aggregations),
-            aggregationsExpand: ['library'],
+            aggregationsExpand: [
+              'library',
+              'order_date',
+              'status'
+            ],
             aggregationsOrder: [
               'library',
-              'status'
+              'status',
+              'account',
+              'vendor',
+              'order_date',
+              'type'
             ],
             aggregationsBucketSize: 10,
             listHeaders: {
@@ -74,7 +83,6 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
    */
   private _addDefaultInformation(data: any): any {
     const user = this._routeToolService.userService.user;
-    data.order_date = formatDate(new Date(), 'yyyy-MM-dd', this._routeToolService.translateService.currentLang);
     data.organisation = {
       $ref: this._routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation)
     };
@@ -83,4 +91,21 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
     };
     return data;
   }
+
+  /**
+   * Remove some fields from model. These field are added to record during
+   * dumping but are not present into the `Order` JSON schema.
+   * @param data: the data to update
+   * @return: the cleaned data
+   */
+   private _cleanRecord(data: any): any {
+      // remove dynamic fields
+      const fieldsToRemoved = ['total_amount', 'status'];
+      fieldsToRemoved.forEach(key => {
+        if (data.hasOwnProperty(key)) {
+          delete data[key];
+        }
+      });
+      return data;
+    }
 }
