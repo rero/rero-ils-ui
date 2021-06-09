@@ -17,14 +17,11 @@
 
 import { Component, Input } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
+import { OrderStatus } from '../../../classes/order';
 
 @Component({
   selector: 'admin-acquisition-order-brief-view',
-  template: `
-    <h5 class="mb-0 card-title">
-      <a [routerLink]="[detailUrl.link]">{{ record.metadata.order_number }}</a>
-    </h5>
-  `,
+  templateUrl: './order-brief-view.component.html',
   styleUrls: []
 })
 export class OrderBriefViewComponent implements ResultItem {
@@ -35,4 +32,20 @@ export class OrderBriefViewComponent implements ResultItem {
   @Input() type: string;
   /** the ur to the record detail view */
   @Input() detailUrl: { link: string, external: boolean };
+
+  /** order status reference */
+  orderStatus = OrderStatus;
+
+  /** get the numbers of items related to this order */
+  get itemsCounter(): number {
+    return this.record.metadata.order_lines.reduce((acc, line) => acc + 1, 0);
+  }
+
+  /** get order date (based on orderLine order date */
+  get orderDate(): string | null {
+    return this.record.metadata.order_lines
+      .filter((line) => line.hasOwnProperty('order_date'))
+      .map((line) => line.order_date)
+      .find(Boolean);  // get first value if exists
+  }
 }

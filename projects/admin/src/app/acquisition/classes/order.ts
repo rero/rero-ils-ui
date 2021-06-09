@@ -16,17 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import '~bootstrap/scss/_functions';
-@import '~bootstrap/scss/_variables';
+/* tslint:disable */
+// required as json properties is not lowerCamelCase
 
-.dropdown-toggle.btn {
-  border: $input-border-width solid $input-border-color;
-}
-.amount {
-  font-family: Arial;
-}
-
-.is_invalid {
-  border: 1px solid $danger !important;
-  color: $danger;
+export enum OrderStatus {
+  CANCELED = 'canceled',
+  ORDERED = 'ordered',
+  PENDING = 'pending',
+  PARTIALLY_RECEIVED = 'partially_received',
+  RECEIVED = 'received',
 }

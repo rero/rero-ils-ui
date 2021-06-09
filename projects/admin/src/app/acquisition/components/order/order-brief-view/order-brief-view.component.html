@@ -1,0 +1,45 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+  Copyright (C) 2021 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<article class="row">
+  <!-- first row : main elements -->
+  <div class="col-7 d-flex pl-0">
+    <h5 class="m-0"><a [routerLink]="[detailUrl.link]">{{ record.metadata.reference }}</a></h5>
+  </div>
+  <div class="col-2">
+    <span class="small" *ngIf="itemsCounter > 0">
+      {{ itemsCounter }} {{ itemsCounter | i18nPlural: {'=1': 'item', 'other': 'items'} }}
+    </span>
+  </div>
+  <div class="col-3 text-right font-weight-bold">
+    <ng-container *ngIf="record.metadata.total_amount > 0">
+      {{ record.metadata.total_amount | currency : record.metadata.currency  }}
+    </ng-container>
+  </div>
+  <!-- order details -->
+  <dl class="row brief-view ml-1">
+    <dd class="col-12 font-italic py-2">{{ record.metadata.description }}</dd>
+    <dt class="col-3 label-title" translate>Status</dt>
+    <dd class="col-9">{{ record.metadata.status | translate }}</dd>
+    <ng-container *ngIf="orderDate">
+      <dt class="col-3 label-title" translate>Order date</dt>
+      <dd class="col-9">{{ orderDate | dateTranslate: 'shortDate' }}</dd>
+    </ng-container>
+    <dt class="col-3 label-title" translate>Vendor</dt>
+    <dd class="col-9">{{ record.metadata.vendor.pid | getRecord: 'vendors': 'field': 'name' | async }}</dd>
+  </dl>
+</article>

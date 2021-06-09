@@ -45,6 +45,9 @@ export class MenuUserServicesService extends MenuBase {
   /** My library menu */
   private _myLibraryMenu: MenuItemInterface;
 
+  /** Orders menu */
+  private _ordersMenu: MenuItemInterface;
+
   /** Inventory menu */
   private _inventoryMenu: MenuItemInterface;
 
@@ -201,11 +204,12 @@ export class MenuUserServicesService extends MenuBase {
     this._translatedName(vendorsMenu, 'Vendors');
 
     // ----- ORDERS
-    const ordersMenu = acquisitionMenu.addChild('Orders')
+    this._ordersMenu = acquisitionMenu.addChild('Orders')
     .setRouterLink(['/', 'records', 'acq_orders'])
+    .setQueryParam('library', this._userService.user.currentLibrary)
     .setAttribute('id', 'orders-menu')
     .setExtra('iconClass', 'fa fa-shopping-cart');
-    this._translatedName(ordersMenu, 'Orders');
+    this._translatedName(this._ordersMenu, 'Orders');
 
     // ----- BUDGETS
     const budgetsMenu = acquisitionMenu.addChild('Budgets')
@@ -323,6 +327,8 @@ export class MenuUserServicesService extends MenuBase {
       this._collectionsMenu.setQueryParam('library', user.currentLibrary);
       // CATALOG: DOCUMENTS
       this._documentsMenu.setQueryParam('organisation', user.currentOrganisation);
+      // ACQUISITION:
+      this._ordersMenu.setQueryParam('library', user.currentLibrary);
       // REPORT: INVENTORY LIST
       this._inventoryMenu.setQueryParam('library', user.currentLibrary);
       // ADMIN: MY ORGANISATION

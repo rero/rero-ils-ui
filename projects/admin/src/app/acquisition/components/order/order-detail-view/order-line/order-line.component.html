@@ -16,7 +16,7 @@
 -->
 <ng-container *ngIf="orderLine && permissions else loading">
   <!-- ROW#1 :: DOCUMENT TITLE & ACTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <div class="col-9 d-flex" [ngClass]="{'order-canceled': orderLine.metadata.status === 'canceled'}">
+  <div class="col-10 d-flex align-items-center" [ngClass]="{'order-canceled': orderLine.metadata.status === 'canceled'}">
     <button type="button" class="p-0 pr-2 btn"
             (click)="isCollapsed = !isCollapsed"
             [attr.aria-expanded]="!isCollapsed"
@@ -38,8 +38,11 @@
         {{ title | truncateText }}
       </a>
     </div>
+    <div class="ml-auto small">
+      [{{ account.metadata.number }}]
+    </div>
   </div>
-  <div class="col-3 text-right">
+  <div class="col-2 text-right">
     <button *ngIf="permissions.update.can" type="button" class="btn btn-outline-primary btn-sm mr-1"
             [routerLink]="['/records', 'acq_order_lines', 'edit', orderLine.metadata.pid]">
       <i class="fa fa-pencil"></i>
@@ -60,18 +63,26 @@
       <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
     </ng-template>
   </div>
-  <!-- ROW#2 :: DETAILED METADATA ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ROW#3 :: DETAILED METADATA ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <div class="col-11 offset-1" [hidden]="isCollapsed">
     <dl class="row">
       <dt class="col-2 label-title" translate>Account</dt>
       <dd class="col-10">
-        {{ orderLine.metadata.acq_account.pid | getRecord: 'acq_accounts': 'field': 'name' | async }}
+        {{ account.metadata.name }} <span class="ml-4 small">[{{ account.metadata.number }}]</span>
       </dd>
       <dt class="col-2 label-title" translate>Status</dt>
       <dd class="col-10">{{ orderLine.metadata.status | translate }}</dd>
       <ng-container *ngIf="orderLine.metadata.exchangeRate">
         <dt class="col-2 label-title" translate>Exchange rate</dt>
         <dd class="col-10">{{ orderLine.metadata.exchange_rate }}</dd>
+      </ng-container>
+      <ng-container *ngIf="orderLine.metadata.order_date">
+        <dt class="col-2 label-title" translate>Order date</dt>
+        <dd class="col-10">{{ orderLine.metadata.order_date | dateTranslate: 'shortDate' }}</dd>
+      </ng-container>
+      <ng-container *ngIf="orderLine.metadata.reception_date">
+        <dt class="col-2 label-title" translate>Reception date</dt>
+        <dd class="col-10">{{ orderLine.metadata.reception_date | dateTranslate: 'shortDate' }}</dd>
       </ng-container>
       <ng-container *ngIf="orderLine.metadata.note">
         <dt class="col-2 label-title" translate>Note</dt>
