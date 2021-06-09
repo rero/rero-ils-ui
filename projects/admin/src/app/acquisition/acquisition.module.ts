@@ -34,6 +34,9 @@ import { OrderDetailViewComponent } from './components/order/order-detail-view/o
 import { OrderLineComponent } from './components/order/order-detail-view/order-line/order-line.component';
 import { OrderLinesComponent } from './components/order/order-detail-view/order-lines/order-lines.component';
 import { NegativeAmountPipe } from './pipes/negative-amount.pipe';
+import {
+  SelectAccountEditorWidgetComponent
+} from './components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +50,8 @@ import { NegativeAmountPipe } from './pipes/negative-amount.pipe';
     OrderDetailViewComponent,
     OrderLinesComponent,
     OrderLineComponent,
-    NegativeAmountPipe
+    NegativeAmountPipe,
+    SelectAccountEditorWidgetComponent
   ],
   imports: [
     PopoverModule.forRoot(),
