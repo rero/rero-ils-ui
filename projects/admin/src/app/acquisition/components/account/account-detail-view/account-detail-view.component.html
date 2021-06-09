@@ -60,7 +60,7 @@
         <dd class="col-7 amount" [ngClass]="{'text-danger': account.encumbrance_amount.self > 0}">
           {{ account.encumbrance_amount.self | negativeAmount | currency: organisation.default_currency }}
         </dd>
-        <dt class="offset-3 col-2 label-title">childen</dt>
+        <dt class="offset-3 col-2 label-title">children</dt>
         <dd class="col-7 amount" [ngClass]="{'text-danger': account.encumbrance_amount.children > 0}">
           {{ account.encumbrance_amount.children | negativeAmount | currency: organisation.default_currency }}
         </dd>
@@ -69,7 +69,7 @@
         <dd class="col-7 amount" [ngClass]="{'text-danger': account.expenditure_amount.self > 0}">
           {{ account.expenditure_amount.self | negativeAmount | currency: organisation.default_currency }}
         </dd>
-        <dt class="offset-3 col-2 label-title">childen</dt>
+        <dt class="offset-3 col-2 label-title">children</dt>
         <dd class="col-7 amount" [ngClass]="{'text-danger': account.expenditure_amount.children > 0}">
           {{ account.expenditure_amount.children | negativeAmount | currency: organisation.default_currency }}
         </dd>

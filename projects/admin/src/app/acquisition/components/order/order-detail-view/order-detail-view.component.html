@@ -15,7 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div *ngIf="record$ | async as record" class="container">
-  <h1 class="mb-3">{{ record.metadata.order_number }}</h1>
+  <h1 class="mb-3">{{ record.metadata.reference }}</h1>
   <section class="my-3 row">
     <!-- ORDER DETAIL (:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <div class="col-8 border rounded">
@@ -27,13 +27,20 @@
         </ng-container>
         <!-- ORDER DATE -->
         <dt class="col-4 label-title" translate>Order date</dt>
-        <dd class="col-8">{{ record.metadata.order_date | dateTranslate :'shortDate' }}</dd>
+        <dd class="col-8">
+          <ng-container *ngIf="record.metadata.order_date else notYetOrdered">
+            {{ record.metadata.order_date | dateTranslate :'shortDate' }}
+          </ng-container>
+          <ng-template #notYetOrdered>
+            <i class="text-muted" translate>Not yet ordered</i>
+          </ng-template>
+        </dd>
         <!-- ORDER TYPE -->
         <dt class="col-4 label-title" translate>Order type</dt>
-        <dd class="col-8">{{ record.metadata.order_type | translate }}</dd>
+        <dd class="col-8">{{ record.metadata.type | translate }}</dd>
         <!-- ORDER STATUS -->
-        <dt class="col-4" translate>Order status</dt>
-        <dd class="col-8">{{ record.metadata.order_status | translate }}</dd>
+        <dt class="col-4 label-title" translate>Order status</dt>
+        <dd class="col-8">{{ record.metadata.status | translate }}</dd>
         <!-- DESCRIPTION -->
         <ng-container *ngIf="record.metadata.description">
           <dt class="col-4 label-title" translate>Description</dt>
