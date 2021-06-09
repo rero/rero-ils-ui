@@ -39,6 +39,9 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import {
+  SelectAccountEditorWidgetComponent
+} from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DocumentsTypeahead } from './classes/typeahead/documents-typeahead';
@@ -281,7 +284,8 @@ export function appInitFactory(appInitService: AppInitService) {
     PopoverModule.forRoot(),
     FormlyModule.forRoot({
       types: [
-        { name: 'cipo-pt-it', component: CipoPatronTypeItemTypeComponent }
+        { name: 'cipo-pt-it', component: CipoPatronTypeItemTypeComponent },
+        { name: 'account-select', component: SelectAccountEditorWidgetComponent}
       ],
       wrappers: [
         { name: 'user-id', component: UserIdComponent },

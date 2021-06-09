@@ -14,10 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { getCurrencySymbol } from '@angular/common';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { DetailComponent, EditorComponent, RouteInterface } from '@rero/ng-core';
+import { FormlyFieldConfig } from '@ngx-formly/core';
+import { DetailComponent, EditorComponent, JSONSchema7, RouteInterface } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { CanUpdateGuard } from 'projects/admin/src/app/guard/can-update.guard';
+import { OrganisationService } from '../../service/organisation.service';
 import { AccountDetailViewComponent } from '../components/account/account-detail-view/account-detail-view.component';
 import { BaseRoute } from 'projects/admin/src/app/routes/base-route';
 
@@ -45,7 +48,14 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
             detailComponent: AccountDetailViewComponent,
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
-            redirectUrl: () => of('/acquisition/accounts')
+            redirectUrl: () => of('/acquisition/accounts'),
+            formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
+              const formOptions = jsonSchema.form;
+              if (formOptions && formOptions.fieldMap === 'amount') {
+                return this._amountSymbol(field);
+              }
+              return field;
+            }
           }
         ]
       }
@@ -54,8 +64,8 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
 
   /**
    * Add default informations to an account record before creating it.
-   * @param data: the data to improve
-   * @return: the enrich data
+   * @param data - the data to improve
+   * @return the enrich data
    */
   private _addDefaultInformation(data: any): any {
     const user = this._routeToolService.userService.user;
@@ -66,5 +76,20 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
       $ref: this._routeToolService.apiService.getRefEndpoint('budgets', this._routeToolService.getRouteQueryParam('budget'))
     };
     return data;
+  }
+
+  /**
+   * Make currency symbol before input
+   * @param field - the field configuration.
+   * @return The updated configuration.
+   */
+  private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
+    const service = this._routeToolService.getInjectorToken(OrganisationService);
+    if (service.organisation) {
+      field.templateOptions.addonLeft = {
+        text: getCurrencySymbol(service.organisation.default_currency, 'wide')
+      };
+    }
+    return field;
   }
 }

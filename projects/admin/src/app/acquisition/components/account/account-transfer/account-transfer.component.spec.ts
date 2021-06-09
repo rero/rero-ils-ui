@@ -20,10 +20,10 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { testUserPatronMultipleOrganisationsWithSettings, UserApiService, UserService } from '@rero/shared';
+import { UserService } from '@rero/shared';
 import { of } from 'rxjs';
 import { AcquisitionModule } from '../../../acquisition.module';
-import { AcqAccountApiService } from '../../../api/acq-account-api.service';
+import { RecordService } from '@rero/ng-core';
 
 import { AccountTransferComponent } from './account-transfer.component';
 
@@ -31,7 +31,8 @@ describe('AccountTransferComponent', () => {
   let component: AccountTransferComponent;
   let fixture: ComponentFixture<AccountTransferComponent>;
 
-  const accountsApiServiceSpy = jasmine.createSpyObj('AcqAccountApiService', ['getAccounts']);
+  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
+  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -43,14 +44,17 @@ describe('AccountTransferComponent', () => {
         AcquisitionModule
       ],
       providers: [
-        { provide: AcqAccountApiService, useValue: accountsApiServiceSpy }
+        { provide: RecordService, useValue: recordServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
       ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    accountsApiServiceSpy.getAccounts.and.returnValue(of([]));
+    userServiceSpy.user = {currentLibrary: 1};
+    recordServiceSpy.totalHits.and.returnValue(0);
+    recordServiceSpy.getRecords.and.returnValue(of({hits: {total: 0}}));
     fixture = TestBed.createComponent(AccountTransferComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
