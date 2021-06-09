@@ -98,4 +98,29 @@ export class AcqAccountApiService {
     return this._http.get<any>(apiUrl, { params });
   }
 
+
+  /**
+   * Allow to sort accounts to render it correctly (corresponding to hierarchical tree structure)
+   * @param accounts - the accounts to sort.
+   * @return Account list sorted as a hierarchical tree.
+   */
+  orderAccountsAsTree(accounts: Array<AcqAccount>): Array<AcqAccount> {
+    /** Append an account and children accounts into the `accounts` list */
+    const _appendAccount = (account: AcqAccount, list: Array<AcqAccount>) => {
+      list.push(account);
+      accounts.filter(acc => acc.parent !== undefined && acc.parent.pid === account.pid)
+              .forEach(acc => _appendAccount(acc, list));
+    };
+    // First sort on depth and name.
+    accounts.sort((a, b) => {
+      return (a.depth === b.depth)
+        ? a.name.localeCompare(b.name)
+        : a.depth - b.depth;
+    });
+    // Rebuild hierarchical account tree.
+    const sortedAccounts: Array<AcqAccount> = [];
+    accounts.filter(acc => acc.depth === 0).forEach(acc => _appendAccount(acc, sortedAccounts));
+    return sortedAccounts;
+  }
+
 }
