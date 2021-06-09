@@ -45,12 +45,7 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
             canAdd: () => this._routeToolService.canSystemLibrarian(),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
-            redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_order, '/records/acq_orders/detail'),
-            formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
-              return this.populateAcquisitionAccountsByCurrentUserLibrary(
-                field, jsonSchema
-              );
-            },
+            redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_order, '/records/acq_orders/detail')
           }
         ]
       }
@@ -67,50 +62,5 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
       $ref: this._routeToolService.apiService.getRefEndpoint('acq_orders', this._routeToolService.getRouteQueryParam('order'))
     };
     return data;
-  }
-
-  /**
-   * Populate select menu with acquisition accounts of current user library
-   * @param field - FormlyFieldConfig
-   * @param jsonSchema - JSONSchema7
-   * @return FormlyFieldConfig
-   */
-  private populateAcquisitionAccountsByCurrentUserLibrary(
-    field: FormlyFieldConfig,
-    jsonSchema: JSONSchema7): FormlyFieldConfig {
-    const formOptions = jsonSchema.form;
-    if (formOptions && formOptions.fieldMap === 'acq_account') {
-      field.type = 'select';
-      field.hooks = {
-        ...field.hooks,
-        afterContentInit: (f: FormlyFieldConfig) => {
-          const user = this._routeToolService.userService.user;
-          const recordService = this._routeToolService.recordService;
-          const apiService = this._routeToolService.apiService;
-          const libraryPid = user.currentLibrary;
-          const query = `library.pid:${libraryPid}`;
-          f.templateOptions.options = recordService.getRecords(
-            'acq_accounts',
-            query, 1,
-            RecordService.MAX_REST_RESULTS_SIZE
-          ).pipe(
-            map((result: Record) => this._routeToolService
-              .recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-            map(hits => {
-              return hits.map((hit: any) => {
-                return {
-                  label: hit.metadata.name,
-                  value: apiService.getRefEndpoint(
-                    'acq_accounts',
-                    hit.metadata.pid
-                  )
-                };
-              });
-            })
-          );
-        }
-      };
-    }
-    return field;
   }
 }

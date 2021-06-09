@@ -148,34 +148,12 @@ export class AccountTransferComponent implements OnInit {
   /** Load accounts and budgets. Order accounts as a hierarchical tree */
   private _loadData(): void {
     this._accountApiService.getAccounts(undefined, 'depth').subscribe((accounts: AcqAccount[]) => {
-      this._accountsTree = accounts;
-      this._orderAccounts();
+      this._accountsTree = this._accountApiService.orderAccountsAsTree(accounts);
 
       this.budgets = Array.from(new Set(this._accountsTree.map((account: AcqAccount) => account.budget.pid)));
       this._selectedBudgetPid = this.budgets.find(Boolean);  // get the first element
       this._filterAccountToDisplay();
     });
-  }
-
-  /** Allow to sort accounts to render it correctly (corresponding to hierarchical tree structure) */
-  private _orderAccounts(): void {
-    /** Append an account and children accounts into the `accounts` list */
-    const _appendAccount = (account: AcqAccount, list: Array<AcqAccount>) => {
-      list.push(account);
-      this._accountsTree
-        .filter(acc => acc.parent !== undefined && acc.parent.pid === account.pid)
-        .forEach(acc => _appendAccount(acc, list));
-    };
-    // First sort on depth and name.
-    this._accountsTree.sort((a, b) => {
-      return (a.depth === b.depth)
-        ? a.name.localeCompare(b.name)
-        : a.depth - b.depth;
-    });
-    // Rebuild hierarchical account tree.
-    const accounts: Array<AcqAccount> = [];
-    this._accountsTree.filter(acc => acc.depth === 0).forEach(acc => _appendAccount(acc, accounts));
-    this._accountsTree = accounts;
   }
 
   /** Allow to filter loaded accounts by the selected budget */
