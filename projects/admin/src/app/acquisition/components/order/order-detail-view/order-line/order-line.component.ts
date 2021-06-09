@@ -15,7 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { RecordService } from '@rero/ng-core';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'admin-order-line',
@@ -34,21 +36,30 @@ export class OrderLineComponent implements OnInit {
 
   /** order line permission */
   permissions: any;
+  /** order line relate account */
+  account: any;
   /** Is the line is collapsed */
   isCollapsed = true;
 
   // CONSTRUCTOR & HOOKS ======================================================
   /** Constructor
    * @param _recordPermissionService - RecordPermissionService
+   * @param _recordService - RecordService
    */
   constructor(
-    private _recordPermissionService: RecordPermissionService
+    private _recordPermissionService: RecordPermissionService,
+    private _recordService: RecordService
   ) { }
 
   /** OnInit hook */
   ngOnInit() {
-    this._recordPermissionService.getPermission('acq_order_lines', this.orderLine.metadata.pid).subscribe(
-      (permissions) => this.permissions = permissions
+    const permissions$ = this._recordPermissionService.getPermission('acq_order_lines', this.orderLine.metadata.pid);
+    const account$ = this._recordService.getRecord('acq_accounts', this.orderLine.metadata.acq_account.pid);
+    forkJoin([permissions$, account$]).subscribe(
+      ([permissions, account]) => {
+        this.permissions = permissions;
+        this.account = account;
+      }
     );
   }
 
