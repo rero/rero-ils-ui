@@ -15,8 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { DetailComponent, EditorComponent, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
-import { Record, JSONSchema7 } from '@rero/ng-core';
+import { DetailComponent, EditorComponent, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ItemType } from '../classes/items';
@@ -48,10 +47,6 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
         { path: 'new', component: EditorComponent }
       ],
       data: {
-        adminMode: () => of({
-          can: false,
-          message: ''
-        }),
         types: [
           {
             key: this.name,
@@ -69,7 +64,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             searchFilters: [
               this.expertSearchFilter()
             ],
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
             preprocessRecordEditor: (record: any) => {
               // If we found an `holding` parameter into the query string then we need to pre-populated
               // the form with the corresponding holding metadata (see '_populateItemFieldFromHolding' function
@@ -168,23 +163,6 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             '/records/documents/detail'
           )
     ;
-  }
-
-  /**
-   * Check if the item is in the same organisation of connected user.
-   * @param record - Object
-   * @return Observable
-   */
-  private canReadItem(record: any) {
-    const organisationPid = this._routeToolService.userService.user
-      .currentOrganisation;
-    if ('organisation' in record.metadata) {
-      return of({
-        can: organisationPid === record.metadata.organisation.pid,
-        message: ''
-      });
-    }
-    return of({ can: false, message: '' });
   }
 
   /**

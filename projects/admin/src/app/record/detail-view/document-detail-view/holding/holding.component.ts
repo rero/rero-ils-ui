@@ -19,7 +19,9 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
+import { UserService } from '@rero/shared';
 import { RecordPermission, RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
+import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -51,17 +53,19 @@ export class HoldingComponent implements OnInit, OnDestroy {
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
-   * constructor
+   * Constructor
    * @param _recordUiService - RecordUiService
    * @param _recordService - RecordService
    * @param _recordPermissionService - RecordPermissionService
    * @param _translateService - TranslateService
+   * @param _userService - UserService
    */
   constructor(
     private _recordUiService: RecordUiService,
     private _recordService: RecordService,
     private _recordPermissionService: RecordPermissionService,
     private _translateService: TranslateService,
+    protected _userService: UserService
   ) { }
 
   /** onInit hook */
@@ -84,6 +88,13 @@ export class HoldingComponent implements OnInit, OnDestroy {
   private _getPermissions(): void {
     this._recordPermissionService
       .getPermission('holdings', this.holding.metadata.pid)
+      .pipe(map((permissions: RecordPermission) => {
+        return this._recordPermissionService.membership(
+          this._userService.user,
+          this.holding.metadata.library.pid,
+          permissions
+        );
+      }))
       .subscribe(permissions => this.permissions = permissions);
   }
 

@@ -18,7 +18,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
-import { IssueItemStatus } from '@rero/shared';
+import { IssueItemStatus, UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
 import { HoldingsService, PredictionIssue } from 'projects/admin/src/app/service/holdings.service';
 import { OperationLogsService } from 'projects/admin/src/app/service/operation-logs.service';
@@ -71,6 +71,7 @@ export class SerialHoldingDetailViewComponent implements OnInit {
    * @param _translateService: TranslateService,
    * @param _toastrService: ToastrService
    * @param _operationLogsService: OperationLogsService
+   * @param _userService: UserService
    */
   constructor(
     private _holdingService: HoldingsService,
@@ -79,7 +80,8 @@ export class SerialHoldingDetailViewComponent implements OnInit {
     private _recordPermissionService: RecordPermissionService,
     private _translateService: TranslateService,
     private _toastrService: ToastrService,
-    private _operationLogsService: OperationLogsService
+    private _operationLogsService: OperationLogsService,
+    private _userService: UserService
   ) {}
 
   /**
@@ -126,12 +128,14 @@ export class SerialHoldingDetailViewComponent implements OnInit {
    * @return Return the item with linked permissions
    */
   private _loadItem(item: any) {
-    this._recordPermissionService.getPermission('items', item.id).subscribe(
-      (permissions) => item.permissions = permissions
-    );
+    const recordPermission = this._recordPermissionService;
+    recordPermission.getPermission('items', item.id)
+    .subscribe((permission) => {
+      item.permissions = recordPermission
+        .membership(this._userService.user, item.metadata.library.pid, permission);
+    });
     return item;
   }
-
 
   /**
    * Action to perform when user click on a showMore link

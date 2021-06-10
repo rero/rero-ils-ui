@@ -15,7 +15,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div class="container item px-0 mt-1 mb-2" *ngIf="item && permissions">
-
   <div class="row">
     <!-- METADATA COLUMN -->
     <div class="col-10">
@@ -23,6 +22,7 @@
         <!-- Barcode -->
         <div class="col-4 pl-5 font-weight-bold label-title" translate>Barcode</div>
         <div class="col-8">
+          <admin-record-masked *ngIf="item.metadata._masked" [record]="item"></admin-record-masked>
           <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
             {{ item.metadata.barcode }}
           </a>
@@ -111,7 +111,4 @@
       </ng-template>
     </div>
   </div>
-
-
-
 </div>
