@@ -23,6 +23,7 @@ circulation:
   - projects/public-search/src/app/patron-profile/patron-profile-histories/**/*
   - projects/admin/src/app/record/item-availability/**/*
   - projects/shared/src/lib/class/item-status.ts
+  - projects/admin/src/app/record/formly/type/cipo-patron-type-item-type/**/*
 
 "user management":
   - projects/admin/src/app/circulation/patron/**/*
@@ -44,8 +45,10 @@ search:
   - projects/shared/src/lib/view/brief/**/*
 
 documentation:
+  - .github/**/*
   - CHANGELOG.json
   - README.md
+  - LICENSE
 
 activity-logs:
   - projects/admin/src/app/record/operation-logs/**/*
@@ -54,3 +57,12 @@ editor:
   - projects/admin/src/app/record/custom-editor/**/*
   - projects/admin/src/app/record/editor/**/*
   - projects/admin/src/app/record/formly/**/*
+
+acquisitions:
+  - projects/admin/src/app/acquisition/**/*
+
+developers:
+  - scripts/**/*
+
+activity-logs:
+  - projects/admin/src/app/record/operation-logs/**/*
