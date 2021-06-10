@@ -42,8 +42,10 @@ export class HoldingsApiService extends BaseApi {
    */
   getHoldingsByDocumentPidAndViewcode(
     documentPid: string, viewcode: string, page: number, itemsPerPage: number = 5): Observable<QueryResponse> {
+    const query = `document.pid:${documentPid}
+    AND ((holdings_type:standard AND public_items_count:[1 TO *]) OR holdings_type:serial)`;
     return this._recordService
-    .getRecords('holdings', `document.pid:${documentPid}`, page, itemsPerPage, undefined, { view: viewcode }, BaseApi.reroJsonheaders)
+    .getRecords('holdings', query, page, itemsPerPage, undefined, { view: viewcode }, BaseApi.reroJsonheaders)
     .pipe(map((response: Record) => response.hits));
   }
 }

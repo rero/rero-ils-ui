@@ -19,6 +19,7 @@ import { I18nPluralPipe, NgLocaleLocalization } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { UserService } from '@rero/shared/public-api';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -135,6 +136,24 @@ export class RecordPermissionService {
   }
 
   /**
+   * Membership
+   * @param user - any
+   * @param libraryPid - string
+   * @param permission - any
+   * @returns permissions of current record
+   */
+  membership(user: any, libraryPid: string, permission: any): any {
+    if (user.isSystemLibrarian && user.currentLibrary !== libraryPid) {
+      const membershipExcludePermission = {
+        update: { can: false },
+        delete: { can: false, reasons: { other: { record_not_in_current_library : '' }}}
+      };
+      permission = {...permission, ...membershipExcludePermission};
+    }
+    return permission;
+  }
+
+  /**
    * Plurial links messages
    * @return array
    */
@@ -212,7 +231,8 @@ export class RecordPermissionService {
       is_default: this._translateService.instant('The default record cannot be deleted'),
       has_settings: this._translateService.instant('The record contains settings'),
       harvested: this._translateService.instant('The record has been harvested'),
-      regular_issue_cannot_be_deleted: this._translateService.instant('A regular issue cannot be deleted')
+      regular_issue_cannot_be_deleted: this._translateService.instant('A regular issue cannot be deleted'),
+      record_not_in_current_library: this._translateService.instant('The record does not belong to the current library.')
     };
   }
 }

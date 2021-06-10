@@ -61,29 +61,33 @@ export class DefaultHoldingItemComponent implements OnInit {
   ) { }
 
   /** OnInit hook */
-  ngOnInit() {
+  ngOnInit(): void {
     this._getPermissions();
   }
 
 
   // COMPONENT FUNCTIONS ================================================================
   /** Get permissions */
-  private _getPermissions() {
+  private _getPermissions(): void {
     const permissionObs = this._recordPermissionService.getPermission('items', this.item.metadata.pid);
     const canRequestObs = this._itemService.canRequest(this.item.metadata.pid);
     forkJoin([permissionObs, canRequestObs]).subscribe(
       ([permissions, canRequest]) => {
-        this.permissions = permissions;
+        this.permissions = this._recordPermissionService
+          .membership(
+            this._userService.user,
+            this.item.metadata.library.pid,
+            permissions
+          );
         this.permissions.canRequest = canRequest;
     });
   }
-
 
   /**
    * Add request on item and refresh permissions
    * @param itemPid - string
    */
-  addRequest(itemPid: string) {
+  addRequest(itemPid: string): void {
     const modalRef = this._modalService.show(ItemRequestComponent, {
       initialState: { itemPid }
     });
@@ -94,7 +98,7 @@ export class DefaultHoldingItemComponent implements OnInit {
    * Delete item
    * @param itemPid - Item pid
    */
-  delete(itemPid) {
+  delete(itemPid): void {
     this.deleteItem.emit(itemPid);
   }
 

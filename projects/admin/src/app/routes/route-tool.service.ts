@@ -22,6 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ActionStatus, ApiService, RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { Observable, of, Subscriber } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { RecordPermission, RecordPermissionService } from '../service/record-permission.service';
 
 @Injectable({
@@ -224,26 +225,38 @@ export class RouteToolService {
    * Check all permissions of the record
    * @param record - Object: the resource object to check
    * @param recordType - String: the record type
+   * @param membership - boolean: Check if the record is in the same library
    * @return Observable providing object contains:
    *      - canRead permission
    *      - canUpdate permission
    *      - canDelete permission
    */
-  permissions(record: any, recordType: string): Observable<any> {
+  permissions(record: any, recordType: string, membership = false): Observable<any> {
     return new Observable((observer: Subscriber<any>): void => {
-      this.recordPermissionService
-        .getPermission(recordType, record.metadata.pid)
-        .subscribe((permission: RecordPermission) => {
-          observer.next({
+      const permissionService = this.recordPermissionService;
+      permissionService.getPermission(recordType, record.metadata.pid)
+        .pipe(map((permission: RecordPermission) => {
+          const user = this.userService.user;
+          if (membership && ('library' in record.metadata)) {
+            // Extract library pid
+            const libraryPid = ('$ref' in record.metadata.library)
+              ? record.metadata.library.$ref.split('/').pop()
+              : record.metadata.library.pid;
+            permission = permissionService.membership(user, libraryPid, permission);
+          }
+          return {
             canRead: { can: permission.read.can, message: '' },
             canUpdate: { can: permission.update.can, message: '' },
             canDelete: {
               can: permission.delete.can,
               message: (permission.delete.can)
               ? ''
-              : this.recordPermissionService.generateDeleteMessage(permission.delete.reasons)
-            },
-          });
+              : permissionService.generateDeleteMessage(permission.delete.reasons)
+            }
+          };
+        }))
+        .subscribe((permission: any) => {
+          observer.next(permission);
         });
     });
   }

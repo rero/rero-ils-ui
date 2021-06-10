@@ -98,7 +98,8 @@ export class HoldingsComponent implements OnInit {
   ngOnInit() {
     this.canAdd = (!('harvested' in this.document.metadata));
     const orgPid = this._userService.user.currentOrganisation;
-    this.query = `document.pid:${this.document.metadata.pid} AND organisation.pid:${orgPid}`;
+    this.query = `document.pid:${this.document.metadata.pid} AND organisation.pid:${orgPid}
+    AND ((holdings_type:standard AND items_count:[1 TO *]) OR holdings_type:serial)`;
     const holdingsRecords = this._holdingsQuery(1, this.query);
     const holdingsCount = this._holdingsCountQuery(this.query);
     const permissionsRef = this._recordPermissionService.getPermission('holdings');
