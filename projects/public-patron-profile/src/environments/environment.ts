@@ -22,7 +22,7 @@
 export const environment = {
   production: false,
   apiBaseUrl: '',
-  $refPrefix: 'https://ils.rero.ch',
+  $refPrefix: 'https://bib.rero.ch',
   languages: ['fr', 'de', 'it', 'en'],
   globalViewName: 'global',
   translationsURLs: [

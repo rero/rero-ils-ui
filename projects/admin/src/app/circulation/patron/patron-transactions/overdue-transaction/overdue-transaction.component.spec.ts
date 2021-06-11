@@ -39,7 +39,7 @@ describe('OverdueTransctionComponent', () => {
           value: '955'
         },
         organisation: {
-          $ref: 'https://ils.rero.ch/api/organisations/1'
+          $ref: 'https://bib.rero.ch/api/organisations/1'
         },
         patron_pid: '11',
         pickup_location_pid: '11',
