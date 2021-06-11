@@ -23,7 +23,7 @@ import { SubjectProcessPipe } from './subject-process.pipe';
 describe('SubjectProcessPipe', () => {
   const input = [
     {
-      $schema: 'https://ils.rero.ch/schemas/contributions/contribution-v0.0.1.json',
+      $schema: 'https://bib.rero.ch/schemas/contributions/contribution-v0.0.1.json',
       type: 'bf:Person',
       gnd: {
         preferred_name: 'gnd preferred name'
@@ -79,7 +79,7 @@ describe('SubjectProcessPipe', () => {
     pipe = TestBed.inject(SubjectProcessPipe);
     appSettings = TestBed.inject(AppSettingsService);
     appSettings.settings = {
-      baseUrl: 'https://ils.rero.ch',
+      baseUrl: 'https://bib.rero.ch',
       contributionSources: [],
       contributionAgentTypes: '',
       contributionsLabelOrder: {
