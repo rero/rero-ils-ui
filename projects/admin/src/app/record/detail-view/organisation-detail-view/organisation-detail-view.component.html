@@ -19,27 +19,27 @@
   <dl class="row">
     <!-- ADDRESS -->
     <ng-container *ngIf="record.metadata.address">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title">Address</dt>
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Address</dt>
       <dd class="col-sm-7 col-md-8 mb-0">
         {{ record.metadata.address }}
       </dd>
     </ng-container>
     <!-- CODE -->
     <ng-container *ngIf="record.metadata.address">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title">Code</dt>
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Code</dt>
       <dd class="col-sm-7 col-md-8 mb-0">
         {{ record.metadata.code }}
       </dd>
     </ng-container>
     <!-- DEFAULT CURRENCY -->
     <ng-container *ngIf="record.metadata.default_currency">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title">Default currency</dt>
+      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Default currency</dt>
       <dd class="col-sm-7 col-md-8 mb-0">
         {{ record.metadata.default_currency }}
       </dd>
     </ng-container>
     <!-- ACTIVE BUDGET -->
-    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title">Active budget</dt>
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Active budget</dt>
     <dd class="col-sm-7 col-md-8 mb-0">
       <admin-budget-select *ngIf="isSystemLibrarian; else librarian" [organisation]="record"></admin-budget-select>
       <ng-template #librarian>
