@@ -86,7 +86,7 @@
       <!-- NOTIFICATION SETTINGS -->
       <dl class="row" *ngIf="record.metadata.notification_settings as notificationSettings">
         <ng-container *ngFor="let setting of notificationSettings">
-          <dt class="col-3">{{ setting.type | ucfirst | translate }}:</dt>
+          <dt class="col-3">{{ setting.type | translate | ucfirst }}:</dt>
           <dd class="col-7">
             {{ setting.email }}
             <ng-container *ngIf="setting.delay">
