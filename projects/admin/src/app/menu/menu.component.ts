@@ -89,8 +89,11 @@ export class MenuComponent implements OnInit {
 
   /** Search the resource to determine whether to hide the search  */
   private _hideSearch(): void {
-    this.hideSearchElement =
-      this._router.parseUrl(this._router.url).root.children.primary?.segments
-      .some((segment: UrlSegment) => this.hideSearchResources.includes(segment.path));
+    const paths = [];
+    this._router.parseUrl(this._router.url).root.children.primary?.segments
+      .some((segment: UrlSegment) => { paths.push(segment.path); });
+    const resourceFlag = paths.some((path: string) => this.hideSearchResources.includes(path));
+    const detailFlag = paths.includes('detail');
+    this.hideSearchElement = !(resourceFlag && detailFlag);
   }
 }
