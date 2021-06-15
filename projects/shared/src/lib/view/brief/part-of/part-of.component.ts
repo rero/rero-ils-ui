@@ -27,6 +27,12 @@ export class PartOfComponent {
   /** Document */
   @Input() record: any;
 
+  /** View code */
+  @Input() viewcode: string = null;
+
+  /** is public view */
+  @Input() isPublicView = false;
+
   /** Is it brief or detailed view? */
   @Input() isBrief = true;
 
