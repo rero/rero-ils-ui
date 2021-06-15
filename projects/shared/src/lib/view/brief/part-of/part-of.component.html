@@ -22,9 +22,16 @@
       <ng-container *ngIf="partOf.document.pid | getRecord: 'documents' : 'object' : '': { 'Content-Type': 'application/rero+json' } | async as hostDocument">
         <div class="mb-0">
             {{ getPartOfLabel(hostDocument) }}:
-            <a id="{{'doc-part-of-' + i}}" [routerLink]="['/records', 'documents', 'detail', partOf.document.pid]">
-              {{ getShortMainTitle(hostDocument.metadata.title) }}
-            </a>
+            <ng-container *ngIf="isPublicView; else adminLink">
+              <a id="{{'doc-part-of-' + i}}" href="/{{ viewcode }}/documents/{{ partOf.document.pid }}">
+                {{ getShortMainTitle(hostDocument.metadata.title) }}
+              </a>
+            </ng-container>
+            <ng-template #adminLink>
+              <a id="{{'doc-part-of-' + i}}" [routerLink]="['/records', 'documents', 'detail', partOf.document.pid]">
+                {{ getShortMainTitle(hostDocument.metadata.title) }}
+              </a>
+            </ng-template>
             <ng-container *ngIf="partOf.numbering">
               <span>;</span>
               <ul class="list-unstyled mb-0 ml-1">
@@ -59,9 +66,16 @@
           </dt>
           <dd class="col mb-0">
             <div class="row">
-              <a id="{{'doc-part-of-' + i}}" [routerLink]="['/records', 'documents', 'detail', document.document.pid]">
-                {{ getShortMainTitle(hostDocument.metadata.title) }}
-              </a>
+              <ng-container *ngIf="isPublicView; else adminLink">
+                <a id="{{'doc-part-of-' + i}}" href="/{{ viewcode }}/documents/{{ document.document.pid }}">
+                  {{ getShortMainTitle(hostDocument.metadata.title) }}
+                </a>
+              </ng-container>
+              <ng-template #adminLink>
+                <a id="{{'doc-part-of-' + i}}" [routerLink]="['/records', 'documents', 'detail', document.document.pid]">
+                  {{ getShortMainTitle(hostDocument.metadata.title) }}
+                </a>
+              </ng-template>
               <ng-container *ngIf="document.numbering">
                 <span>;</span>
                 <ul class="list-unstyled mb-0 ml-1">

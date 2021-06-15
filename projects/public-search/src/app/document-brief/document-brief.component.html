@@ -66,7 +66,7 @@
         </a>
         <pre class="collapse border border-secondary mt-1" id="{{'score'+record.metadata.pid }}">{{record.explanation|json}}</pre>
       </div>
-      <shared-part-of [record]="record"></shared-part-of>
+      <shared-part-of [record]="record" [viewcode]="viewcode" [isPublicView]="true"></shared-part-of>
     </article>
   </div>
 </article>
