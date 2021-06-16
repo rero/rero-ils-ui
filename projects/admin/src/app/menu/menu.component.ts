@@ -93,7 +93,11 @@ export class MenuComponent implements OnInit {
     this._router.parseUrl(this._router.url).root.children.primary?.segments
       .some((segment: UrlSegment) => { paths.push(segment.path); });
     const resourceFlag = paths.some((path: string) => this.hideSearchResources.includes(path));
-    const detailFlag = paths.includes('detail');
-    this.hideSearchElement = !(resourceFlag && detailFlag);
+    if (!resourceFlag) {
+      this.hideSearchElement = false;
+    } else {
+      const detailFlag = paths.includes('detail');
+      this.hideSearchElement = !(resourceFlag && detailFlag);
+    }
   }
 }
