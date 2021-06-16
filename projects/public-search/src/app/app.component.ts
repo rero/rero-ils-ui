@@ -14,19 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit, Injector } from '@angular/core';
-import { TranslateService } from '@rero/ng-core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'public-search-root',
   templateUrl: './app.component.html'
 })
-export class AppComponent implements OnInit {
-  lang: string = document.documentElement.lang;
+export class AppComponent {
 
-   constructor(private injector: Injector) { }
-
-  ngOnInit(): void {
-    this.injector.get<TranslateService>(TranslateService).setLanguage(this.lang);
-  }
 }
