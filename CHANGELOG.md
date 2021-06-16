@@ -1,5 +1,58 @@
 # Changelog
 
+## [v0.15.0](https://github.com/rero/rero-ils-ui/tree/v0.15.0) (2021-06-16)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.14.1...v0.15.0)
+
+**Implemented enhancements:**
+
+- Issue: update links on late issue brief view [\#602](https://github.com/rero/rero-ils-ui/pull/602) ([zannkukai](https://github.com/zannkukai))
+- circulation: add data into pending/pickup patron profile [\#601](https://github.com/rero/rero-ils-ui/pull/601) ([zannkukai](https://github.com/zannkukai))
+
+**Fixed bugs:**
+
+- circulation: display circulation messages [\#620](https://github.com/rero/rero-ils-ui/pull/620) ([zannkukai](https://github.com/zannkukai))
+
+**Merged pull requests:**
+
+- ui: fix hide or show searchbar on pro interface [\#636](https://github.com/rero/rero-ils-ui/pull/636) ([Garfield-fr](https://github.com/Garfield-fr))
+- serials: inform when there's no item attached to the holdings [\#635](https://github.com/rero/rero-ils-ui/pull/635) ([Garfield-fr](https://github.com/Garfield-fr))
+- ui: fix language setting on the public interface [\#634](https://github.com/rero/rero-ils-ui/pull/634) ([Garfield-fr](https://github.com/Garfield-fr))
+- organisations: fix translation of labels [\#633](https://github.com/rero/rero-ils-ui/pull/633) ([Garfield-fr](https://github.com/Garfield-fr))
+- documents: enable the search bar on the detail view [\#632](https://github.com/rero/rero-ils-ui/pull/632) ([Garfield-fr](https://github.com/Garfield-fr))
+- documents: fix detailed view [\#631](https://github.com/rero/rero-ils-ui/pull/631) ([Garfield-fr](https://github.com/Garfield-fr))
+- libraries: fix translation on notification settings [\#630](https://github.com/rero/rero-ils-ui/pull/630) ([Garfield-fr](https://github.com/Garfield-fr))
+- translations: translate v1.3.0 [\#629](https://github.com/rero/rero-ils-ui/pull/629) ([iGormilhit](https://github.com/iGormilhit))
+- instance: change base URL [\#628](https://github.com/rero/rero-ils-ui/pull/628) ([rerowep](https://github.com/rerowep))
+- documents: filters holdings by items [\#625](https://github.com/rero/rero-ils-ui/pull/625) ([Garfield-fr](https://github.com/Garfield-fr))
+- patron types: add a code field on the detail view [\#622](https://github.com/rero/rero-ils-ui/pull/622) ([Garfield-fr](https://github.com/Garfield-fr))
+- projects: update dependencies [\#621](https://github.com/rero/rero-ils-ui/pull/621) ([sebastiendeleze](https://github.com/sebastiendeleze))
+- users: improve patron profile responsiveness [\#611](https://github.com/rero/rero-ils-ui/pull/611) ([zannkukai](https://github.com/zannkukai))
+- documentation: create gh-actions labeler [\#610](https://github.com/rero/rero-ils-ui/pull/610) ([iGormilhit](https://github.com/iGormilhit))
+- 1.3.0 to dev [\#607](https://github.com/rero/rero-ils-ui/pull/607) ([zannkukai](https://github.com/zannkukai))
+- libraries: implement three new types of notification [\#606](https://github.com/rero/rero-ils-ui/pull/606) ([Garfield-fr](https://github.com/Garfield-fr))
+- libraries: improve display of notification settings [\#599](https://github.com/rero/rero-ils-ui/pull/599) ([Garfield-fr](https://github.com/Garfield-fr))
+- issue: fix issue display problems [\#598](https://github.com/rero/rero-ils-ui/pull/598) ([zannkukai](https://github.com/zannkukai))
+- documents: update field display [\#591](https://github.com/rero/rero-ils-ui/pull/591) ([Garfield-fr](https://github.com/Garfield-fr))
+- reports: improve inventory list for items [\#576](https://github.com/rero/rero-ils-ui/pull/576) ([lauren-d](https://github.com/lauren-d))
+- documents: improve online access information [\#570](https://github.com/rero/rero-ils-ui/pull/570) ([Garfield-fr](https://github.com/Garfield-fr))
+- search: implement advanced search [\#569](https://github.com/rero/rero-ils-ui/pull/569) ([Garfield-fr](https://github.com/Garfield-fr))
+
+## [v0.14.1](https://github.com/rero/rero-ils-ui/tree/v0.14.1) (2021-05-06)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.14.0...v0.14.1)
+
+**Merged pull requests:**
+
+- release: v0.14.1 [\#597](https://github.com/rero/rero-ils-ui/pull/597) ([jma](https://github.com/jma))
+- holdings: fix prediction preview [\#437](https://github.com/rero/rero-ils-ui/pull/437) ([jma](https://github.com/jma))
+- items: fix display notes content. [\#436](https://github.com/rero/rero-ils-ui/pull/436) ([zannkukai](https://github.com/zannkukai))
+- ui: adapt templates for cypress tests [\#435](https://github.com/rero/rero-ils-ui/pull/435) ([AoNoOokami](https://github.com/AoNoOokami))
+- ui: fix translation issues [\#424](https://github.com/rero/rero-ils-ui/pull/424) ([AoNoOokami](https://github.com/AoNoOokami))
+- contribution: implements organisation agents [\#398](https://github.com/rero/rero-ils-ui/pull/398) ([Garfield-fr](https://github.com/Garfield-fr))
+
+# Changelog
+
 ## [v0.14.0](https://github.com/rero/rero-ils-ui/tree/v0.14.0) (2021-05-06)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.13.1...v0.14.0)
@@ -657,6 +710,9 @@
 - build: Optimization on build [\#2](https://github.com/rero/rero-ils-ui/pull/2) ([sebastiendeleze](https://github.com/sebastiendeleze))
 - project: Libraries dependencies [\#1](https://github.com/rero/rero-ils-ui/pull/1) ([sebastiendeleze](https://github.com/sebastiendeleze))
 
+
+
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
 
 
 \* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
