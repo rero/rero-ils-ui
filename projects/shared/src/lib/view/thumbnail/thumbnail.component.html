@@ -26,10 +26,10 @@
       </ng-template>
       <ng-container *ngFor="let type of record.metadata.type">
         <ng-container *ngIf="type.subtype; else mainTypeBlock">
-          <figcaption class="figure-caption text-left" translate>{{ type.subtype }}</figcaption>
+          <figcaption class="figure-caption text-center" translate>{{ type.subtype }}</figcaption>
         </ng-container>
         <ng-template #mainTypeBlock>
-          <figcaption class="figure-caption text-left" translate>{{ type.main_type }}</figcaption>
+          <figcaption class="figure-caption text-center" translate>{{ type.main_type }}</figcaption>
         </ng-template>
       </ng-container>
     </figure>

@@ -53,11 +53,7 @@
         <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>
       </ul>
 
-      <div *ngIf="record.metadata.type !== 'ebook'">
-        <i class="fa fa-circle text-{{ record.metadata.available ? 'success' : 'danger' }}" aria-hidden="true"></i>&nbsp;
-        <span translate *ngIf="record.metadata.available">available</span>
-        <span translate *ngIf="!record.metadata.available">not available</span>
-      </div>
+      <!-- explanation -->
       <div *ngIf="record.explanation">
         <a class="badge badge-info collapsed"
             data-toggle="collapse" href="#{{'score'+record.metadata.pid }}"
@@ -66,7 +62,16 @@
         </a>
         <pre class="collapse border border-secondary mt-1" id="{{'score'+record.metadata.pid }}">{{record.explanation|json}}</pre>
       </div>
+
+      <!-- part of -->
       <shared-part-of [record]="record" [viewcode]="viewcode" [isPublicView]="true"></shared-part-of>
+
+      <!-- availability -->
+      <div *ngIf="record.metadata.type !== 'ebook'">
+        <i class="fa fa-circle text-{{ record.metadata.available ? 'success' : 'danger' }}" aria-hidden="true"></i>&nbsp;
+        <span translate *ngIf="record.metadata.available">available</span>
+        <span translate *ngIf="!record.metadata.available">not available</span>
+      </div>
     </article>
   </div>
 </article>
