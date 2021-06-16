@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { ContributionBriefComponent } from '@rero/shared';
@@ -45,14 +46,17 @@ export class CorporateBodiesRoute extends BaseRoute implements RouteInterface {
           {
             key: 'corporate-bodies',
             index: 'contributions',
-            label: 'corporate-bodies',
+            label: _('Organisation'),
             component: ContributionBriefComponent,
             detailComponent: ContributionDetailViewComponent,
             searchFilters: [
               this.expertSearchFilter()
             ],
             aggregationsOrder: ['sources'],
-            aggregationsExpand: ['sources']
+            aggregationsExpand: ['sources'],
+            preFilters: {
+              type: 'bf:Organisation',
+            }
           }
         ]
       }
