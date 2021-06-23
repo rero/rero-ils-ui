@@ -30,20 +30,36 @@ import { Settings } from './class/settings';
 })
 export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements OnInit {
 
+  // COMPONENT ATTRIBUTES =====================================================
   /** Patron types */
   patronTypes = [];
-
   /** Settings */
   settings: any;
 
+  /** Item types / Circulation category */
+  private _itemTypes = [];
+  /** already known circulation policies */
+  private _circPolicies = [];
+  /** previous appliedTo libraries */
+  private _prevSelectedLibraries = [];
+
+   // GETTER & SETTER ==========================================================
   /** Section title */
-  get title() {
-    return `label` in this.field.templateOptions
+  get title(): string {
+    return 'label' in this.field.templateOptions
       ? this.field.templateOptions.label
       : this._translateService.instant('Item types / Patron types matching');
   }
 
-
+  // CONSTRUCTOR & HOOKS ======================================================
+  /**
+   * Constructor
+   * @param _patronTypeApiService - PatronTypeApiService
+   * @param _itemTypeApiService - ItemTypeApiService
+   * @param _circulationPolicyApiService - CirculationPolicyApiService
+   * @param _translateService - TranslateService
+   * @param _apiService - ApiService
+   */
   constructor(
     private _patronTypeApiService: PatronTypeApiService,
     private _itemTypeApiService: ItemTypeApiService,
@@ -56,25 +72,37 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
 
   /** OnInit hook */
   ngOnInit() {
+    const appliedLibraries = this.field.parent.model.libraries || [];
+    this._prevSelectedLibraries = this._getLibrariesRef(appliedLibraries);
+
     forkJoin([
       this._patronTypeApiService.getAll(),
       this._itemTypeApiService.getAll(),
       this._circulationPolicyApiService.getAll(this.field.parent.model.pid)
     ]).subscribe(([patronTypes, itemTypes, circPolicies]) => {
       this.patronTypes = patronTypes;
-      const settings = new Settings(this._apiService);
-      this.settings = settings
-        .setCirculationPolicy(this.form.value)
-        .createStructure(itemTypes, patronTypes, circPolicies)
-        .getStructure();
+      this._itemTypes = itemTypes;
+      this._circPolicies = circPolicies;
+      this._loadSettings();
+    });
+
+    // Detect form changes : If user choose to create a "library level" cipo, then we need
+    // to rebuild the settings table according to selected libraries.
+    this.form.valueChanges.subscribe((changes) => {
+      const formLibraries = changes.hasOwnProperty('libraries') ? this._getLibrariesRef(changes.libraries) : [];
+      if (JSON.stringify(formLibraries) !== JSON.stringify(this._prevSelectedLibraries)) {
+        this._prevSelectedLibraries = formLibraries;
+        this._loadSettings(); // Rebuild the settings
+      }
     });
   }
 
+  // PUBLIC FUNCTIONS =========================================================
   /**
-   * Checkbox click
-   * @param checked - boolean
-   * @param itemTypePid - string
-   * @param patronTypePid - string
+   * Manage click on a setting checkbox
+   * @param checked - boolean : is the checkbox is checked
+   * @param itemTypePid - string : the corresponding item type pid
+   * @param patronTypePid - string : the corresponding patron type pid
    */
   onClick(checked: boolean, itemTypePid: string, patronTypePid: string): void {
     const settings = this.form.get('settings');
@@ -89,10 +117,12 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
     }
   }
 
+  // PRIVATES FUNCTIONS ======================================================
   /**
-   * Setting
-   * @param itemTypePid - string
-   * @param patronTypePid - string
+   * Create a setting object
+   * @param itemTypePid - string : the item type pid
+   * @param patronTypePid - string : the patron type pid
+   * @return: the corresponding `Setting` structure
    */
   private _setting(itemTypePid: string, patronTypePid: string): Setting {
     return {
@@ -103,6 +133,22 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
         $ref: this._apiService.getRefEndpoint('patron_types', patronTypePid)
       }
     };
+  }
+
+  /** Build and load the settings table */
+  private _loadSettings(): void {
+    const settings = new Settings(this._apiService);
+    this.settings = settings
+      .setCirculationPolicy(this.form.value)
+      .createStructure(this._itemTypes, this.patronTypes, this._circPolicies, this._prevSelectedLibraries)
+      .getStructure();
+  }
+
+  /** Get libraries references */
+  private _getLibrariesRef(libraries: Array<any>): Array<string> {
+    return Array.from(new Set(
+      libraries.map(library => library.$ref).filter(Boolean)  // Removes `null` or `undefined` values
+    ));
   }
 }
 
