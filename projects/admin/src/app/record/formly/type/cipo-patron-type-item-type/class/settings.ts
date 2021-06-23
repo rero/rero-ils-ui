@@ -51,13 +51,15 @@ export class Settings {
    * @param itemTypes - array of item types
    * @param patronTypes - array of patron types
    * @param circPolicies - array of circulation policies
+   * @param appliedToLibraries - the libraries for which the policy applied.
    * @return this
    */
-  createStructure(itemTypes: any[], patronTypes: any[], circPolicies: any[]): this {
+  createStructure(itemTypes: any[], patronTypes: any[], circPolicies: any[], appliedToLibraries: any[]): this {
     if ('settings' in this._circulationPolicy) {
       this._circulationMatching = this._processSettings(this._circulationPolicy.settings, []);
     }
-    this._processCirculationPolicies(circPolicies);
+    const appliedToLibrariesPids = appliedToLibraries.map(uri => uri.substring(uri.lastIndexOf('/') + 1));
+    this._processCirculationPolicies(circPolicies, appliedToLibrariesPids);
     itemTypes.forEach(itemType => {
       const item = {
         pid: itemType.metadata.pid,
@@ -72,7 +74,7 @@ export class Settings {
           label: patronType.metadata.name,
           value: this._apiService.getRefEndpoint('patron_types', patronType.metadata.pid),
           checked: this._circulationMatching.some(e => e === key),
-          disabled: this._matching.some(e => e === key) ? true : false
+          disabled: this._matching.some(e => e === key)
         });
       });
       this._settings.push(item);
@@ -90,11 +92,24 @@ export class Settings {
 
   /**
    * Process Circulation policies
-   * @param circPolicies - array of circulation policies
+   * @param circPolicies - array of circulation policies.
+   * @param appliedToLibraries - the libraries for which the policy applied.
    */
-  private _processCirculationPolicies(circPolicies: any[]): void {
+  private _processCirculationPolicies(circPolicies: any[], appliedToLibraries: any[]): void {
     circPolicies.forEach(policy => {
       if ('settings' in policy.metadata) {
+
+        // Library level control
+        //   * Check if `policy` applied on libraries ?
+        //   * If yes, if some `policyLibraries` exists into `appliedToLibraries`
+        //   * If no --> skip this policy
+        if (policy.metadata.hasOwnProperty('libraries')) {
+          const policyLibraryPids = policy.metadata.libraries.map(lib => lib.pid);
+          if (!policyLibraryPids.some(pid => appliedToLibraries.includes(pid))) {
+            return;  // Skip the policy
+          }
+        }
+
         this._matching = this._matching.concat(
           this._processSettings(policy.metadata.settings, this._matching)
         );
