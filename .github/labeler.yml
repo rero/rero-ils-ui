@@ -63,6 +63,3 @@ acquisitions:
 
 developers:
   - scripts/**/*
-
-activity-logs:
-  - projects/admin/src/app/record/operation-logs/**/*
