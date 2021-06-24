@@ -122,7 +122,6 @@ import {
 import { HoldingsComponent } from './record/detail-view/document-detail-view/holdings/holdings.component';
 import { ItemRequestComponent } from './record/detail-view/document-detail-view/item-request/item-request.component';
 import { RelatedResourceComponent } from './record/detail-view/document-detail-view/related-resource/related-resource.component';
-import { ResourceComponent } from './record/detail-view/document-detail-view/resource/resource.component';
 import { HoldingDetailViewComponent } from './record/detail-view/holding-detail-view/holding-detail-view.component';
 import {
   SerialHoldingDetailViewComponent
@@ -219,7 +218,6 @@ export function appInitFactory(appInitService: AppInitService) {
     BudgetSelectComponent,
     BudgetSelectLineComponent,
     RelatedResourceComponent,
-    ResourceComponent,
     ItemRequestComponent,
     ErrorPageComponent,
     OrderLineComponent,
