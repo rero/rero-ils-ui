@@ -106,7 +106,8 @@ describe('PatronProfileComponent', () => {
   });
 
   it('should display the user\'s name and tabs info', () => {
-    userService.loaded$.subscribe(() => {
+    userService.loaded$.subscribe((data) => {
+      fixture.detectChanges();
       const fullname = fixture.nativeElement.querySelector('header > h3');
       expect(fullname.textContent).toContain('Simonetta Casalini');
 

@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="item; else loading">
+<ng-container *ngIf="item && document; else loading">
   <!-- FIRST ROW : barcode, title, availability, action button -->
   <div class="col-2">
     <button type="button" class="pl-0 pt-0 btn"
@@ -48,10 +48,15 @@
   <!-- SECOND ROW : item detail -->
   <div class="col-12" *ngIf="!isCollapsed">
     <dl class="row">
+      <!-- position into queue -->
+      <dt class="offset-1 col-1 label-title" translate>Position</dt>
+      <dd class="col-10">
+        <span class="badge badge-info">{{ loan.metadata.rank }} / {{ item.pending_loans.length }}</span>
+      </dd>
       <!-- item location -->
       <ng-container *ngIf="item.location.pid | getRecord: 'locations' | async as location">
-        <dt class="offset-1 col-sm-3 col-md-2 col-lg-1 label-title" translate>Location</dt>
-        <dd class="col-sm-8 col-md-9 col-lg-10">
+        <dt class="offset-1 col-1 label-title" translate>Location</dt>
+        <dd class="col-10">
           {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}: {{ item.location.name }}
         </dd>
       </ng-container>
