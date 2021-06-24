@@ -16,16 +16,11 @@
 -->
 
 <ng-container *ngIf="electronicLocator">
-  <ng-container *ngIf="electronicLocator.content; else url">
-    <a href="{{ electronicLocator.url }}">
-      <i class="fa fa-link"></i> {{ electronicLocator.type | translate }}: {{ electronicLocator.content | translate }}
-    </a>
-    <ng-container *ngIf="publicNotes"> ({{ publicNotes }})</ng-container>
+  <a href="{{ electronicLocator.url }}">
+  <i class="fa fa-link"></i> {{ electronicLocator.type | translate }}
+  <ng-container *ngIf="electronicLocator.content">
+    : {{ electronicLocator.content | translate }}
   </ng-container>
-  <ng-template #url>
-    <a href="{{ electronicLocator.url }}">
-      <i class="fa fa-link"></i> {{ electronicLocator.type | translate }}: {{ electronicLocator.url }}
-    </a>
-    <ng-container *ngIf="publicNotes"> ({{ publicNotes }})</ng-container>
-  </ng-template>
+  </a>
+  <ng-container *ngIf="publicNotes"> ({{ publicNotes }})</ng-container>
 </ng-container>
