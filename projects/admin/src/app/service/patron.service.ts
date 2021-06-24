@@ -210,7 +210,7 @@ export class PatronService {
    */
   private getLoans(query: string, sort?: string) {
     return this._recordService.getRecords(
-      'loans', query, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, null, sort
+      'loans', query, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, {Accept: 'application/rero+json'}, sort
     ).pipe(
       map((data: Record) => data.hits),
       map(hits => this._recordService.totalHits(hits.total) === 0 ? [] : hits.hits)

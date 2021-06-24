@@ -17,7 +17,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
-import { PatronService } from '../../../../service/patron.service';
+import { ItemsService } from '../../../../service/items.service';
 
 @Component({
   selector: 'admin-pending-item',
@@ -25,38 +25,34 @@ import { PatronService } from '../../../../service/patron.service';
 })
 export class PendingItemComponent implements OnInit {
 
+  // COMPONENT ATTRIBUTES =====================================================
   /** Loan */
   @Input() loan = undefined;
-
   /** Item, document */
   item = undefined;
   document = undefined;
-
   /** detail is collapsed */
   isCollapsed = true;
 
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param _recordService - RecordService
-   * @param _patronService - PatronService
+   * @param _itemService - ItemService
    */
   constructor(
     private _recordService: RecordService,
-    private _patronService: PatronService
+    private _itemService: ItemsService
   ) { }
 
-  /**
-   * OnInit hook
-   */
+  /** OnInit hook */
   ngOnInit() {
     if (this.loan) {
-      const item$ = this._recordService.getRecord('items', this.loan.metadata.item_pid.value, 1);
-      const document$ = this._recordService.getRecord('documents', this.loan.metadata.document_pid, 1, {
-        Accept: 'application/rero+json, application/json'
-      });
-      forkJoin([item$, document$]).subscribe(
+      const item$ = this._itemService.getItem(this.loan.metadata.item.barcode, this.loan.metadata.paton_pid);
+      const doc$ = this._recordService.getRecord('documents', this.loan.metadata.item.document.pid, 1, {Accept: 'application/rero+json'});
+      forkJoin([item$, doc$]).subscribe(
         ([itemData, documentData]) => {
-          this.item = itemData.metadata;
+          this.item = itemData;
           this.document = documentData.metadata;
         }
       );
