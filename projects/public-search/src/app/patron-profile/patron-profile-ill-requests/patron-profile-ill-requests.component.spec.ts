@@ -54,8 +54,8 @@ describe('PatronProfileIllRequestComponent', () => {
   const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
   userApiServiceSpy.getLoggedUser.and.returnValue(of(testUserPatronWithSettings));
 
-  const illRequestApiServiceSpy = jasmine.createSpyObj('IllRequestApiService', ['getIllRequest']);
-  illRequestApiServiceSpy.getIllRequest.and.returnValue(of(apiResponse));
+  const illRequestApiServiceSpy = jasmine.createSpyObj('IllRequestApiService', ['getPublicIllRequest']);
+  illRequestApiServiceSpy.getPublicIllRequest.and.returnValue(of(apiResponse));
 
   beforeEach(() => {
     TestBed.configureTestingModule({

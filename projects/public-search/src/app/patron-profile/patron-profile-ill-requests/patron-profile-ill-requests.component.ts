@@ -49,7 +49,6 @@ export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
   /**
    * Constructor
    * @param _illRequestApiService - IllRequestApiService
-   * @param _userService - UserService
    * @param _patronProfileService - PatronProfileService
    * @param _patronProfileMenuService - PatronProfileMenuService
    */
@@ -112,6 +111,6 @@ export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
   private _illRequestQuery(page: number): Observable<Record | Error> {
     const patronPid = this._patronProfileMenuService.currentPatron.pid;
     return this._illRequestApiService
-      .getIllRequest(patronPid, page, this._paginator.getRecordsPerPage());
+      .getPublicIllRequest(patronPid, page, this._paginator.getRecordsPerPage());
   }
 }

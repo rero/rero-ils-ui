@@ -42,13 +42,30 @@ export class IllRequestApiService extends BaseApi {
    * @return Observable
    */
   getIllRequest(
-    patronPid: string, page: number,
-    itemsPerPage: number = 10, headers = BaseApi.reroJsonheaders
+    patronPid: string,
+    page: number,
+    itemsPerPage: number = 10,
+    headers = BaseApi.reroJsonheaders
   ): Observable<Record | Error> {
     const query = `patron.pid:${patronPid}`;
-    return this._recordService.getRecords(
-      'ill_requests', query, page, itemsPerPage,
-      undefined, undefined, headers
-    );
+    return this._recordService.getRecords('ill_requests', query, page, itemsPerPage, undefined, undefined, headers);
+  }
+
+  /**
+   * Get ILL request for public view (filtered on statuses)
+   * @param patronPid - string
+   * @param page - number
+   * @param itemsPerPage - number
+   * @param headers - object
+   * @return Observable
+   */
+  getPublicIllRequest(
+    patronPid: string,
+    page: number,
+    itemsPerPage: number = 10,
+    headers = BaseApi.reroJsonheaders
+  ): Observable<Record | Error> {
+    const query = `patron.pid:${patronPid} AND -status:denied AND -status:closed AND -loan_status:ITEM_RETURNED`;
+    return this._recordService.getRecords('ill_requests', query, page, itemsPerPage, undefined, undefined, headers);
   }
 }
