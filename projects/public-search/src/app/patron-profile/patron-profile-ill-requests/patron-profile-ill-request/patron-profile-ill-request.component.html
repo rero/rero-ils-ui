@@ -29,15 +29,20 @@
 </div>
 <div class="col-lg-5 col-sm-10">{{ record.metadata.document.authors }}</div>
 <div class="col-2 pr-0 text-lg-right">
-  <span class="badge px-2 py-1 mr-1 font-weight-normal" [ngClass]="record.metadata.status  | statusBadge">
+  <span *ngIf="record.metadata.status !== 'validated' else notValidated"
+        class="badge px-2 py-1 mr-1 font-weight-normal"
+        [ngClass]="record.metadata.status | statusBadge"
+  >
     {{ record.metadata.status | translate }}
   </span>
-  <ng-container *ngIf="record.metadata.loan_status">
-    <br>
-    <span class="badge px-2 py-1 mr-1 font-weight-normal badge-secondary"  [ngClass]="record.metadata.loan_status | loanStatusBadge ">
+  <ng-template #notValidated>
+    <span  *ngIf="record.metadata.loan_status"
+           class="badge px-2 py-1 mr-1 font-weight-normal badge-secondary"
+           [ngClass]="record.metadata.loan_status | loanStatusBadge"
+    >
       {{ record.metadata.loan_status | translate }}
     </span>
-  </ng-container>
+  </ng-template>
 </div>
 
 <!-- Detail -->

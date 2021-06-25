@@ -64,8 +64,8 @@ describe('PatronProfileComponent', () => {
   const patronTransactionApiServiceSpy = jasmine.createSpyObj('PatronTransactionApi', ['getFees']);
   patronTransactionApiServiceSpy.getFees.and.returnValue(of(apiResponse));
 
-  const illRequestApiServiceSpy = jasmine.createSpyObj('IllRequestApi', ['getIllRequest']);
-  illRequestApiServiceSpy.getIllRequest.and.returnValue(of(apiResponse));
+  const illRequestApiServiceSpy = jasmine.createSpyObj('IllRequestApi', ['getPublicIllRequest']);
+  illRequestApiServiceSpy.getPublicIllRequest.and.returnValue(of(apiResponse));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
