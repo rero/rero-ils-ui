@@ -64,10 +64,24 @@
           <div class="col-4 pl-5 font-weight-bold label-title" translate>Online access</div>
           <div class="col-8"><a target="_blank" href="{{ item.metadata.url }}">{{ item.metadata.url }}</a></div>
         </ng-container>
+        <!-- TEMPORARY LOCATION -->
+        <ng-container *ngIf="item.metadata.temporary_location">
+          <div class="col-4 pl-5 font-weight-bold label-title" translate>Temporary location</div>
+          <div class="col-8">{{ item.metadata.temporary_location.name }}</div>
+        </ng-container>
+        <!-- ITEM IN COLLECTION -->
+        <ng-container *ngIf="item.metadata.pid | itemInCollection | async as collections">
+          <div class="col-4 pl-5 font-weight-bold label-title" translate>Exhibition/course</div>
+          <div class="col-8">
+            <ng-container *ngFor="let collection of collections; let last=last">
+              <a [routerLink]="['/records', 'collections', 'detail', collection.metadata.pid]">{{ collection.metadata.title }}</a>
+              {{ last ? '' : '; ' }}
+            </ng-container>
+          </div>
+        </ng-container>
       </div>
       <admin-holding-item-note [note]="note" *ngFor="let note of item.metadata.notes"></admin-holding-item-note>
       <admin-holding-item-temporary-item-type [record]="item"></admin-holding-item-temporary-item-type>
-      <admin-holding-item-in-collection [itemPid]="item.metadata.pid"></admin-holding-item-in-collection>
     </div>
     <!-- ACTIONS BUTTONS -->
     <div class="col-2 text-right" name="buttons">

@@ -57,6 +57,7 @@ import { MenuUserServicesComponent } from './menu/menu-user-services/menu-user-s
 import { MenuUserComponent } from './menu/menu-user/menu-user.component';
 import { MenuComponent } from './menu/menu.component';
 import { LibrarySwitchService } from './menu/service/library-switch.service';
+import { ItemInCollectionPipe } from './pipe/item-in-collection.pipe';
 import { MarcPipe } from './pipe/marc.pipe';
 import { NotesFormatPipe } from './pipe/notes-format.pipe';
 import { SubjectProcessPipe } from './pipe/subject-process.pipe';
@@ -74,6 +75,9 @@ import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-
 import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view.component';
 import { TemplatesBriefViewComponent } from './record/brief-view/templates-brief-view.component';
 import { VendorBriefViewComponent } from './record/brief-view/vendor-brief-view.component';
+import { CirculationLogComponent } from './record/circulation-logs/circulation-log/circulation-log.component';
+import { CirculationLogsDialogComponent } from './record/circulation-logs/circulation-logs-dialog/circulation-logs-dialog.component';
+import { CirculationLogsComponent } from './record/circulation-logs/circulation-logs.component';
 import { DocumentEditorComponent } from './record/custom-editor/document-editor/document-editor.component';
 import { HoldingEditorComponent } from './record/custom-editor/holding-editor/holding-editor.component';
 import { ExceptionDatesEditComponent } from './record/custom-editor/libraries/exception-dates-edit/exception-dates-edit.component';
@@ -110,9 +114,6 @@ import { HoldingSharedViewComponent } from './record/detail-view/document-detail
 import {
   DefaultHoldingItemComponent
 } from './record/detail-view/document-detail-view/holding/default-holding-item/default-holding-item.component';
-import {
-  HoldingItemInCollectionComponent
-} from './record/detail-view/document-detail-view/holding/holding-item-in-collection/holding-item-in-collection.component';
 import { HoldingItemNoteComponent } from './record/detail-view/document-detail-view/holding/holding-item-note/holding-item-note.component';
 import { HoldingItemTemporaryItemTypeComponent } from './record/detail-view/document-detail-view/holding/holding-item-temporary-item-type/holding-item-temporary-item-type.component';
 import { HoldingComponent } from './record/detail-view/document-detail-view/holding/holding.component';
@@ -159,9 +160,6 @@ import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-fac
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { CirculationLogsComponent } from './record/circulation-logs/circulation-logs.component';
-import { CirculationLogsDialogComponent } from './record/circulation-logs/circulation-logs-dialog/circulation-logs-dialog.component';
-import { CirculationLogComponent } from './record/circulation-logs/circulation-log/circulation-log.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -236,7 +234,6 @@ export function appInitFactory(appInitService: AppInitService) {
     CollectionBriefViewComponent,
     CollectionDetailViewComponent,
     CollectionItemsComponent,
-    HoldingItemInCollectionComponent,
     DocumentRecordSearchComponent,
     HoldingDetailComponent,
     ContributionDetailViewComponent,
@@ -268,7 +265,8 @@ export function appInitFactory(appInitService: AppInitService) {
     NotificationTypePipe,
     CirculationLogsComponent,
     CirculationLogsDialogComponent,
-    CirculationLogComponent
+    CirculationLogComponent,
+    ItemInCollectionPipe
   ],
   imports: [
     AppRoutingModule,
@@ -401,7 +399,6 @@ export function appInitFactory(appInitService: AppInitService) {
     TemplateDetailViewComponent,
     CollectionBriefViewComponent,
     CollectionDetailViewComponent,
-    HoldingItemInCollectionComponent,
     DocumentRecordSearchComponent,
     CustomShortcutHelpComponent,
     ContributionDetailViewComponent,

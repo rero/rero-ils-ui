@@ -34,7 +34,7 @@
     </dd>
   </ng-container>
   <!-- ITEM IN COLLECTION -->
-  <ng-container *ngIf="item.metadata.in_collection">
+  <ng-container *ngIf="item.metadata.in_collection; else temporaryLocation">
     <dt class="mb-0 col-lg-2 col-sm-3" translate>Temporary location</dt>
     <dd id="item-location-temporary-{{ item.metadata.pid }}" class="mb-0 col-lg-9 col-sm-8">
       <ng-container *ngFor="let collection of item.metadata.in_collection; let last = last">
@@ -43,6 +43,13 @@
       </ng-container>
     </dd>
   </ng-container>
+  <!-- ITEM TEMPORARY LOCATION -->
+  <ng-template #temporaryLocation>
+    <ng-container *ngIf="item.metadata.temporary_location">
+      <dt class="mb-0 col-lg-2 col-sm-3 label-title" translate>Temporary location</dt>
+      <dd class="mb-0 col-lg-9 col-sm-8">{{ item.metadata.temporary_location.name }}</dd>
+    </ng-container>
+  </ng-template>
   <!-- ENUMERATION AND CHRONOLOGY -->
   <ng-container *ngIf="item.metadata.enumerationAndChronology">
     <dt class="mb-0 col-lg-2 col-sm-3 label-title" translate>Unit</dt>
