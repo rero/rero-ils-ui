@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2021 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,44 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-@Component({
-  selector: 'admin-holding-item-in-collection',
-  templateUrl: './holding-item-in-collection.component.html'
+@Pipe({
+  name: 'itemInCollection'
 })
-export class HoldingItemInCollectionComponent implements OnInit {
-
-  /** Item pid */
-  @Input() itemPid: string;
-  /** CSS Class for div element */
-  @Input() class: string;
-
-  /** Collections */
-  collections: [];
+export class ItemInCollectionPipe implements PipeTransform {
 
   /**
    * Constructor
    * @param _recordService - RecordService
    */
-  constructor(
-    private _recordService: RecordService
-  ) { }
-
-  /** OnInit hook */
-  ngOnInit() {
-    this.isItemInCollection(this.itemPid);
-  }
+  constructor(private _recordService: RecordService) {}
 
   /**
-   * Is this item in a collection
-   * @param itemPid - string, pid for item
+   * Get Exhibition/course for current item
+   * @param itemPid - Item pid
+   * @returns Observable
    */
-  private isItemInCollection(itemPid: string) {
-    this._recordService.getRecords(
+  transform(itemPid: string): Observable<[] | null> {
+    return this._recordService.getRecords(
       'collections',
       `items.pid:${itemPid} AND published:true`,
       1,
@@ -64,9 +49,9 @@ export class HoldingItemInCollectionComponent implements OnInit {
     ).pipe(
       map((result: any) => {
         return (this._recordService.totalHits(result.hits.total) === 0)
-          ? []
+          ? null
           : result.hits.hits;
       })
-    ).subscribe(collections => this.collections = collections);
+    );
   }
 }

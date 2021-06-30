@@ -27,7 +27,7 @@
   </header>
   <section class="mb-4">
     <admin-record-masked *ngIf="record.metadata._masked" [record]="record" [withLabel]="true"></admin-record-masked>
-    <dl class="row">
+    <dl class="row mb-0">
       <!-- INHERITED CALL NUMBER -->
       <ng-container *ngIf="record | itemHoldingsCallNumber | async as callNumber">
         <ng-container *ngIf="(callNumber | json) != ({ first: {}, second: {} } | json)">
@@ -78,6 +78,21 @@
       <dd class="col-9">
         <ng-container *ngIf="location">{{ location.metadata.name }}</ng-container>
       </dd>
+      <!-- TEMPORARY LOCATION -->
+      <ng-container *ngIf="record.metadata.temporary_location">
+        <dt class="col-3 label-title" translate>Temporary location</dt>
+        <dd class="col-9">{{ record.metadata.temporary_location.pid | getRecord: 'locations' : 'field' : 'name' | async }}</dd>
+      </ng-container>
+      <!-- ITEM IN COLLECTION -->
+      <ng-container *ngIf="record.metadata.pid | itemInCollection | async as collections">
+        <dt class="col-3 label-title" translate>Exhibition/course</dt>
+        <dd class="col-9">
+          <ng-container *ngFor="let collection of collections; let last=last">
+            <a [routerLink]="['/records', 'collections', 'detail', collection.metadata.pid]">{{ collection.metadata.title }}</a>
+            {{ last ? '' : '; ' }}
+          </ng-container>
+        </dd>
+      </ng-container>
       <!-- AVAILIBILITY -->
       <dt class="col-3 label-title" translate>Availability</dt>
       <dd class="col-9">
@@ -111,6 +126,7 @@
       </ng-container>
     </dl>
   </section>
+
 
   <!-- ISSUE DATA -->
   <section *ngIf="isIssue">
