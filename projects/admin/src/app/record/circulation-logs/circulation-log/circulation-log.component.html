@@ -1,0 +1,62 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="row col">
+  <div class="log-date">
+    <button
+      id="circulation-history-{{ record.metadata.pid }}"
+      type="button"
+      class="pl-0 pr-2 pt-0 btn btn-toogle"
+      (click)="isCollapsed = !isCollapsed"
+      [attr.aria-expanded]="!isCollapsed"
+      aria-controls="collapseEvent"
+    >
+      <i class="fa pr-0" [ngClass]="{ 'fa-caret-right': isCollapsed, 'fa-caret-down': !isCollapsed }"></i>
+    </button>
+    {{ record.metadata.record.transaction_date | dateTranslate :'shortDate' }}
+    {{ record.metadata.record.transaction_date | dateTranslate :'mediumTime' }}
+  </div>
+  <div class="log-action text-bold">
+    {{ record.metadata.record.trigger | translate }}
+  </div>
+  <div class="log-library">
+    <ng-container *ngIf="record.metadata.record.transaction_location_pid | getRecord: 'locations' | async as location">
+      {{ location.metadata.library.pid | getRecord: 'libraries' : 'field': 'name' | async }}
+    </ng-container>
+  </div>
+  <div class="log-patron">
+    <ng-container *ngIf="record.metadata.record.patron_pid; else anonymous">
+      <ng-container *ngIf="record.metadata.record.patron_pid | getRecord : 'patrons' | async as patron">
+        <a [routerLink]="['/circulation', 'patron', patron.metadata.patron.barcode[0]]" (click)="closeDialog()">
+          {{ patron.metadata.last_name }}, {{ patron.metadata.first_name }}
+        </a>
+      </ng-container>
+    </ng-container>
+    <ng-template #anonymous>
+      {{ 'Patron type' | translate }}: {{ record.metadata.loan.patron.type }}
+    </ng-template>
+  </div>
+</div>
+<div id="circulation-history-{{ record.metadata.pid }}" [collapse]="isCollapsed" [isAnimated]="true" class="col-lg-12 pl-3">
+  <dl class="row pl-1">
+    <dt class="col-2 mb-0" translate>Loan status</dt>
+    <dd class="col-10 mb-0 pl-1">{{ record.metadata.record.state | translate }}</dd>
+    <dt class="col-2 mb-0" translate>Pickup location</dt>
+    <dd class="col-10 mb-0 pl-1">{{ record.metadata.record.pickup_location_pid | getRecord : 'locations' : 'field': 'name' | async }}</dd>
+    <dt class="col-2 mb-0" translate>Operator</dt>
+    <dd class="col-10 mb-0 pl-1">{{ record.metadata.user_name }}</dd>
+  </dl>
+</div>

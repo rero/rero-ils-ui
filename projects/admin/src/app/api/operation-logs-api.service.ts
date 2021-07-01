@@ -49,4 +49,20 @@ export class OperationLogsApiService {
       undefined, undefined, undefined, sort
     );
   }
+
+  /**
+   * Get Circulation logs by item
+   * @param resourcePid - string
+   * @param page - number
+   * @param itemPerPage - number
+   * @param sort - string
+   * @returns Observable
+   */
+  getCirculationLogs(resourcePid: string, page: number, itemPerPage = 5, sort = 'mostrecent'): Observable<Record | Error> {
+    const query = `_exists_:loan AND record.item_pid.value:${resourcePid}`;
+    return this._recordService.getRecords(
+      'operation_logs', query, page, itemPerPage,
+      undefined, undefined, undefined, sort
+    );
+  }
 }

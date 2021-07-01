@@ -69,4 +69,12 @@ describe('OperationLogsService', () => {
         next: (response: Record) => expect(response).toEqual(responseRecords)
     });
   });
+
+  it('should return a list of circulation history on a item', () => {
+    service
+      .getCirculationLogs('documents', 1)
+      .subscribe({
+        next: (response: Record) => expect(response).toEqual(responseRecords)
+    });
+  });
 });
