@@ -24,6 +24,7 @@ circulation:
   - projects/admin/src/app/record/item-availability/**/*
   - projects/shared/src/lib/class/item-status.ts
   - projects/admin/src/app/record/formly/type/cipo-patron-type-item-type/**/*
+  - projects/admin/src/app/record/circulation-logs/**/*
 
 "user management":
   - projects/admin/src/app/circulation/patron/**/*
@@ -52,6 +53,8 @@ documentation:
 
 activity-logs:
   - projects/admin/src/app/record/operation-logs/**/*
+  - projects/admin/src/app/api/operation*
+  - projects/admin/src/app/record/circulation-logs/**/*
 
 editor:
   - projects/admin/src/app/record/custom-editor/**/*
