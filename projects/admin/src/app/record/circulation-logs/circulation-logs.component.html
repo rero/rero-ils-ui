@@ -1,0 +1,49 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="modal d-block" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" translate>Circulation history</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="closeDialog()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body overflow-auto overflow-max-size">
+        <ng-container *ngIf="loadedRecord; else loaded">
+          <ul *ngIf="recordTotals > 0; else noRecord" class="list-unstyled mx-2 mb-0">
+            <li *ngFor="let record of records; let index = index" class="py-1" [ngClass]="{ 'bg-light': index % 2 }">
+              <admin-circulation-log [record]="record" (closeDialogEvent)="closeDialog()"></admin-circulation-log>
+            </li>
+          </ul>
+          <ng-container *ngIf="isLinkShowMore">
+            <button type="button" id="show-more-items-{{ resourcePid }}" class="btn btn-link pl-1" (click)="showMore()">
+              <i class="fa fa-arrow-circle-o-down"></i> {{ 'Show more' | translate }}
+            </button>
+            <small *ngIf="isLinkShowMore">({{ hiddenOperationLogs }})</small>
+          </ng-container>
+          <ng-template #noRecord>
+            {{ 'No history for this item' | translate }}
+          </ng-template>
+        </ng-container>
+        <ng-template #loaded>
+          {{ 'loading in progress' | translate }}
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
