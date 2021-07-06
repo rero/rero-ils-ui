@@ -223,13 +223,10 @@ export class UserIdEditorComponent implements OnInit {
     return {
       expression: (control: FormControl) => {
         const value = control.value;
-        if (value == null) {
+        if (value == null || value.length === 0) {
           return of(true);
         }
-        return this._recordService.getRecords(
-          'users',
-          `${fieldName}:${value}`
-        ).pipe(
+        return this._recordService.getRecords('users', `${fieldName}:${value}`).pipe(
           debounceTime(1000),
           map((res: any) => {
             const id = this.loadedUserID ? this.loadedUserID : this.userID;
