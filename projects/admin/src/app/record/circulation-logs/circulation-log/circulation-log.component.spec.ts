@@ -27,67 +27,46 @@ describe('CirculationLogComponent', () => {
   let component: CirculationLogComponent;
   let fixture: ComponentFixture<CirculationLogComponent>;
 
-  const record = {
-    created: '2021-06-30T06:55:28.261181+00:00',
-    id: '273a0b3e-d970-11eb-b8f9-8c859092e74d',
-    links: {
-      self: 'https://localhost:5000/api/operation_logs/273a0b3e-d970-11eb-b8f9-8c859092e74d'
-    },
-    metadata: {
-      date: '2021-06-30T06:55:28.048793+00:00',
-      loan: {
+  const record = { metadata: {
+    date: '2021-07-06T06:40:24.015413+00:00',
+    library: { type: 'lib', value: '4' },
+    loan: {
         item: {
-          call_number: '00177',
-          category: 'standard',
-          document: {
-            title: 'Poema de Mio Cid',
-            type: 'docsubtype_other_book'
-          },
-          holding: {
-            location_name: 'Section enfants',
-            pid: '172'
-          }
+            call_number: '00437',
+            category: 'standard',
+            document: {
+                pid: '2000017',
+                title: 'Les maléfices d\'Halequin',
+                type: 'docsubtype_other_book'
+            },
+            holding: { location_name: 'Magasin A', pid: '424' },
+            library_pid: '1',
+            pid: '437'
         },
         override_flag: false,
         patron: {
-          age: 59,
-          gender: 'other',
-          name: 'Broglio, Giulia',
-          postal_code: '6500',
-          type: 'Standard'
+            age: 40,
+            gender: 'other',
+            hashed_pid: '6512bd43d9caa6e02c990b0a82652dca',
+            name: 'Carron, Katie',
+            pid: '11',
+            postal_code: '1920',
+            type: 'Standard'
         },
-        pickup_location_name: 'Espaces publics',
+        pickup_location: { name: 'Espaces publics', pid: '11' },
+        pid: '211',
         transaction_channel: 'system',
-        transaction_location_name: 'Espaces publics',
-        transaction_user_name: 'Rodriguez, Elena'
-      },
-      operation: 'create',
-      pid: '273a0b3e-d970-11eb-b8f9-8c859092e74d',
-      record: {
-        $schema: 'https://bib.rero.ch/schemas/loans/loan-ils-v0.0.1.json',
-        document_pid: '276',
-        end_date: '2021-07-14T22:00:28.047793+00:00',
-        item_pid: {
-          type: 'item', value: '177'
-        },
-        organisation: {
-          $ref: 'https://bib.rero.ch/api/organisations/1'
-        },
-        patron_pid: '10',
-        pickup_location_pid: '11',
-        pid: '31',
-        start_date: '2021-06-30T06:55:28.048793+00:00',
-        state: 'ITEM_ON_LOAN',
-        to_anonymize: false,
-        transaction_date: '2021-06-30T06:55:28.048793+00:00',
-        transaction_location_pid: '11',
-        transaction_user_pid: '3',
-        trigger: 'checkout'
-      },
-      user_name: 'system'
+        transaction_location: { name: 'Espaces publics', pid: '13' },
+        transaction_user: { name: 'Müller, Astrid', pid: '1' },
+        trigger: 'request'
     },
-    updated: '2021-06-30T06:55:28.261181+00:00'
-  };
+    operation: 'create',
+    organisation: { type: 'org', value: '1' },
+    pid: '0b30c55e-de25-11eb-b1b4-8c859092e74d',
+    record: { type: 'loan', value: '211' },
+    user: { type: 'ptrn', value: '1' },
+    user_name: 'Müller, Astrid'
+}};
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
