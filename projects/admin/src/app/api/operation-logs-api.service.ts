@@ -43,7 +43,7 @@ export class OperationLogsApiService {
   getLogs(
     resourceType: string, resourcePid: string, action: 'create'|'update',
     page: number, itemPerPage = 5, sort = 'mostrecent'): Observable<Record | Error> {
-    const query = `record.type:${resourceType} AND record.pid:${resourcePid} AND operation:${action}`;
+    const query = `record.type:${resourceType} AND record.value:${resourcePid} AND operation:${action}`;
     return this._recordService.getRecords(
       'operation_logs', query, page, itemPerPage,
       undefined, undefined, undefined, sort
@@ -59,7 +59,7 @@ export class OperationLogsApiService {
    * @returns Observable
    */
   getCirculationLogs(resourcePid: string, page: number, itemPerPage = 5, sort = 'mostrecent'): Observable<Record | Error> {
-    const query = `_exists_:loan AND record.item_pid.value:${resourcePid}`;
+    const query = `_exists_:loan AND loan.item.pid:${resourcePid}`;
     return this._recordService.getRecords(
       'operation_logs', query, page, itemPerPage,
       undefined, undefined, undefined, sort

@@ -26,20 +26,23 @@
     >
       <i class="fa pr-0" [ngClass]="{ 'fa-caret-right': isCollapsed, 'fa-caret-down': !isCollapsed }"></i>
     </button>
-    {{ record.metadata.record.transaction_date | dateTranslate :'shortDate' }}
-    {{ record.metadata.record.transaction_date | dateTranslate :'mediumTime' }}
+    {{ record.metadata.date | dateTranslate :'shortDate' }}
+    {{ record.metadata.date | dateTranslate :'mediumTime' }}
   </div>
   <div class="log-action text-bold">
-    {{ record.metadata.record.trigger | translate }}
+    {{ record.metadata.loan.trigger | translate }}
   </div>
   <div class="log-library">
-    <ng-container *ngIf="record.metadata.record.transaction_location_pid | getRecord: 'locations' | async as location">
-      {{ location.metadata.library.pid | getRecord: 'libraries' : 'field': 'name' | async }}
+    <ng-container *ngIf="record.metadata.loan.transaction_location; else noLibrary">
+      <ng-container *ngIf="record.metadata.loan.transaction_location.pid | getRecord : 'locations' | async as location">
+        {{ location.metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
+      </ng-container>
     </ng-container>
+    <ng-template #noLibrary>---</ng-template>
   </div>
   <div class="log-patron">
-    <ng-container *ngIf="record.metadata.record.patron_pid; else anonymous">
-      <ng-container *ngIf="record.metadata.record.patron_pid | getRecord : 'patrons' | async as patron">
+    <ng-container *ngIf="record.metadata.loan.patron.pid; else anonymous">
+      <ng-container *ngIf="record.metadata.loan.patron.pid | getRecord : 'patrons' | async as patron">
         <a [routerLink]="['/circulation', 'patron', patron.metadata.patron.barcode[0]]" (click)="closeDialog()">
           {{ patron.metadata.last_name }}, {{ patron.metadata.first_name }}
         </a>
@@ -52,10 +55,8 @@
 </div>
 <div id="circulation-history-{{ record.metadata.pid }}" [collapse]="isCollapsed" [isAnimated]="true" class="col-lg-12 pl-3">
   <dl class="row pl-1">
-    <dt class="col-2 mb-0" translate>Loan status</dt>
-    <dd class="col-10 mb-0 pl-1">{{ record.metadata.record.state | translate }}</dd>
     <dt class="col-2 mb-0" translate>Pickup location</dt>
-    <dd class="col-10 mb-0 pl-1">{{ record.metadata.record.pickup_location_pid | getRecord : 'locations' : 'field': 'name' | async }}</dd>
+    <dd class="col-10 mb-0 pl-1">{{ record.metadata.loan.pickup_location.name }}</dd>
     <dt class="col-2 mb-0" translate>Operator</dt>
     <dd class="col-10 mb-0 pl-1">{{ record.metadata.user_name }}</dd>
   </dl>
