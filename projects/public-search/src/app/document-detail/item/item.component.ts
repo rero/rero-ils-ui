@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'public-search-item',
@@ -42,4 +43,15 @@ export class ItemComponent {
     'patrimonial_note',
     'provenance_note'
   ];
+
+  /** Current interface language */
+  get language() {
+    return this._translateService.currentLang;
+  }
+
+  /**
+   * Constructor
+   * @param _translateService - TranslateService
+   */
+  constructor(private _translateService: TranslateService) {}
 }

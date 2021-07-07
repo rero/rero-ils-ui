@@ -52,7 +52,7 @@
               {{ item.metadata.availability.due_date | dateTranslate :'shortDate' }}
             </span>
             <span *ngSwitchDefault>
-              {{ item.metadata.availability.display_text | getTranslatedLabel }}
+              {{ item.metadata.availability.display_text | getTranslatedLabel : language }}
             </span>
           </ng-container>
           <ng-container *ngIf="item.metadata.availability.request > 0">

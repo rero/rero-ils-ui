@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'public-search-holding',
@@ -35,6 +36,17 @@ export class HoldingComponent {
   noteAuthorizedTypes: string[] = [
     'general_note'
   ];
+
+  /** Current interface language */
+  get language() {
+    return this._translateService.currentLang;
+  }
+
+  /**
+   * Constructor
+   * @param _translateService - TranslateService
+   */
+  constructor(private _translateService: TranslateService) {}
 
   /**
    * Event items count

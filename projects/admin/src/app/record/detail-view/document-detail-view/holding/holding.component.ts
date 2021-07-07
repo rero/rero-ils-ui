@@ -51,6 +51,11 @@ export class HoldingComponent implements OnInit, OnDestroy {
   /** number of item to load/display */
   displayItemsCounter = 5;
 
+  /** Current interface language */
+  get language() {
+    return this._translateService.currentLang;
+  }
+
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor

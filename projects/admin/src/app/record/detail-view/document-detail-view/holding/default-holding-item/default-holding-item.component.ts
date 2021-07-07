@@ -16,6 +16,7 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -42,6 +43,10 @@ export class DefaultHoldingItemComponent implements OnInit {
   /** Item permissions */
   permissions: any;
 
+  /** Current interface language */
+  get language() {
+    return this._translateService.currentLang;
+  }
 
   // CONSTRUCTOR & HOOKS ==============================================================
   /**
@@ -51,13 +56,15 @@ export class DefaultHoldingItemComponent implements OnInit {
    * @param _recordPermissionService - RecordPermissionService
    * @param _modalService - BsModalService
    * @param _itemService - ItemService
+   * @param _translateService - TranslateService
    */
   constructor(
     protected _recordUiService: RecordUiService,
     protected _recordPermissionService: RecordPermissionService,
     protected _userService: UserService,
     protected _modalService: BsModalService,
-    protected _itemService: ItemsService
+    protected _itemService: ItemsService,
+    protected _translateService: TranslateService
   ) { }
 
   /** OnInit hook */
