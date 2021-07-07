@@ -29,7 +29,7 @@
             {{ location.metadata.name }}
           </ng-container>
         </div>
-        <div class="col-sm-2 mt-1">{{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel }}</div>
+        <div class="col-sm-2 mt-1">{{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}</div>
         <div *ngIf="holdingType === 'serial'" class="col-sm-4 text-right">
           <!-- HOLDING VIEW -->
           <button [routerLink]="['/', 'records', 'holdings', 'detail', holding.metadata.pid]"

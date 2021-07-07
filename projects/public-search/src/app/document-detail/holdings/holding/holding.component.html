@@ -23,7 +23,7 @@
       {{ holding.metadata.library.name }}: {{ holding.metadata.location.name }}
     </div>
     <div id="holding-category-name-{{ holding.metadata.pid }}" class="col-sm-3">
-      {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel }}
+      {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}
     </div>
     <div class="col-sm-2">
       <span [hidden]="itemsCount == 0">
