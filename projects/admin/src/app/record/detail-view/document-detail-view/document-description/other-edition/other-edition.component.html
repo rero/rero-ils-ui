@@ -1,0 +1,47 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div *ngIf="!header; else editionHeader">
+  <admin-description-zone>
+    <ng-container label>{{ fieldLabel }}</ng-container>
+    <ng-container content>
+      <ul class="list-unstyled mb-0">
+        <li *ngFor="let edition of field">
+          <ng-container *ngIf="edition.label; else editionLink">{{ edition.label }}</ng-container>
+          <ng-template #editionLink>
+            <ng-container *ngIf="edition.pid | getRecord : 'documents' : 'field' : 'title' | async as documentTitle">
+              <a [routerLink]="['/records', 'documents', 'detail', edition.pid]">{{ documentTitle | mainTitleRelation }}</a>
+            </ng-container>
+          </ng-template>
+        </li>
+      </ul>
+    </ng-container>
+  </admin-description-zone>
+</div>
+<ng-template #editionHeader>
+  <div class="mb-0">
+    <b>{{ fieldLabel }}</b>:
+    <ng-container *ngFor="let edition of field; last as isLast">
+      <ng-container *ngIf="edition.label; else editionLink">{{ edition.label }}</ng-container>
+      <ng-template #editionLink>
+        <ng-container *ngIf="edition.pid | getRecord : 'documents' : 'field' : 'title' | async as documentTitle">
+          <a [routerLink]="['/records', 'documents', 'detail', edition.pid]">{{ documentTitle | mainTitleRelation }}</a>
+        </ng-container>
+      </ng-template>
+      <ng-container *ngIf="!isLast">; </ng-container>
+    </ng-container>
+  </div>
+</ng-template>

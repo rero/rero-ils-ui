@@ -1,0 +1,445 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<div class="container div-striped p-0">
+  <!-- -------------- WORK / EXPRESSION -------------- -->
+
+  <!-- SUPPLEMENT, RELATED TO -->
+  <div class="striped" *ngIf="record.metadata.supplement">
+    <admin-other-edition fieldLabel="{{ 'Supplement' | translate }}" [field]="record.metadata.supplement"></admin-other-edition>
+  </div>
+  <div class="striped" *ngIf="record.metadata.relatedTo">
+    <admin-other-edition fieldLabel="{{ 'Related to' | translate }}" [field]="record.metadata.relatedTo"></admin-other-edition>
+  </div>
+
+  <!-- NOTE (TYPE GENERAL) -->
+  <div class="striped" *ngIf="notesGeneral">
+    <admin-description-zone>
+      <ng-container label>{{ 'General note' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let note of notesGeneral.general">{{ note }}</li>
+        </ul>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!--CREDITS -->
+  <div class="striped" *ngIf="record.metadata.credits">
+    <admin-description-zone>
+      <ng-container label>{{ 'Other responsibilities' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let credit of record.metadata.credits">{{ credit }}</li>
+        </ul>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- LANGUAGE -->
+  <div class="striped" *ngIf="record.metadata.language && record.metadata.language.length > 0">
+    <admin-description-zone>
+      <ng-container label>{{ 'Language' | translate }}</ng-container>
+      <ng-container content>
+        <ng-container *ngFor="let lang of record.metadata.language; last as isLast">
+          {{ lang.value | translateLanguage: currentLanguage }}<ng-container *ngIf="!isLast">, </ng-container>
+        </ng-container>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- ORIGINAL LANGUAGE -->
+  <div class="striped" *ngIf="record.metadata.originalLanguage">
+    <admin-description-zone>
+      <ng-container label>{{ 'Original language' | translate }}</ng-container>
+      <ng-container content>
+        <ng-container *ngFor="let lang of record.metadata.originalLanguage; last as isLast">
+          {{ lang | translateLanguage: currentLanguage }}<ng-container *ngIf="!isLast">, </ng-container>
+        </ng-container>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- ORIGINAL TITLE -->
+  <div class="striped" *ngIf="record.metadata.originalTitle">
+    <admin-description-zone>
+      <ng-container label>{{ 'Original title' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let title of record.metadata.originalTitle">{{ title }}</li>
+        </ul>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- WORK ACCESS POINT -->
+  <ng-container *ngVar="workAccessPoint as works">
+    <div class="striped" *ngIf="works.length > 0">
+      <admin-description-zone>
+        <ng-container label>{{ 'Work' | translate }}</ng-container>
+        <ng-container content>
+          <ul class="list-unstyled mb-0">
+            <li *ngFor="let work of works">{{ work }}</li>
+          </ul>
+        </ng-container>
+      </admin-description-zone>
+    </div>
+  </ng-container>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="striped" *ngIf="record.metadata.tableOfContents">
+    <admin-description-zone>
+      <ng-container label>{{ 'Contents' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let table of record.metadata.tableOfContents">{{ table }}</li>
+        </ul>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- DISSERTATION -->
+  <div class="striped" *ngIf="record.metadata.dissertation">
+    <admin-description-zone>
+      <ng-container label>{{ 'Thesis' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="list-unstyled mb-0">
+          <ng-container *ngFor="let dissertation of record.metadata.dissertation">
+            <ng-container *ngFor="let label of dissertation.label">
+              <li>{{ label.value }}</li>
+            </ng-container>
+          </ng-container>
+        </ul>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- INTENTED AUDIENCE -->
+  <div class="striped" *ngIf="record.metadata.intendedAudience">
+    <admin-description-zone>
+      <ng-container label>{{ 'Intended audience' | translate }}</ng-container>
+      <ng-container content>
+        <ng-container *ngFor="let audience of record.metadata.intendedAudience; last as isLast">
+          {{ audience.value | translate }}<ng-container *ngIf="!isLast">, </ng-container>
+        </ng-container>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- ILLUSTRATIVE CONTENT -->
+  <div class="striped" *ngIf="record.metadata.illustrativeContent">
+    <admin-description-zone>
+      <ng-container label>{{ 'Illustrations' | translate }}</ng-container>
+      <ng-container content>
+        {{ record.metadata.illustrativeContent.join(', ') }}
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- COLOR CONTENT -->
+  <div class="striped" *ngIf="record.metadata.colorContent">
+    <admin-description-zone>
+      <ng-container label>{{ 'Colors' | translate }}</ng-container>
+      <ng-container content>
+        <ng-container *ngFor="let color of record.metadata.colorContent; last as isLast">
+          {{ color | translate }}<ng-container *ngIf="!isLast">, </ng-container>
+        </ng-container>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- SCALE -->
+  <div class="striped" *ngIf="record.metadata.scale">
+    <admin-description-zone>
+      <ng-container label>{{ 'Scale' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let scale of record.metadata.scale">{{ scale.label }}</li>
+        </ul>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- CARTOGRAPHIC ATTRIBUTES -->
+  <div class="striped" *ngIf="cartographicAttributes.length > 0">
+    <admin-description-zone>
+      <ng-container label>{{ 'Cartographic data' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let cartographic of cartographicAttributes">
+            <ng-container *ngIf="cartographic.projection">{{ cartographic.projection }}</ng-container>
+            <ng-container *ngIf="cartographic.projection && cartographic.coordinates && cartographic.coordinates.label">;</ng-container>
+            <ng-container *ngIf="cartographic.coordinates && cartographic.coordinates.label">
+              {{ cartographic.coordinates.label }}
+            </ng-container>
+          </li>
+        </ul>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- CLASSIFICATION -->
+  <div class="striped" *ngIf="record.metadata.classification">
+    <admin-description-zone>
+      <ng-container label>{{ 'Classification' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let classification of record.metadata.classification">
+            {{ classification.classificationPortion }}
+            <ng-container *ngIf="classification.subdivision">
+            - {{ classification.subdivision.join(' - ') }}
+            </ng-container>
+            ({{ classification.type | translate }})
+          </li>
+        </ul>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- -------------- MANIFESTATION -------------- -->
+
+  <!-- USAGE AND ACCESS POLICY -->
+  <div class="striped" *ngIf="record.metadata.usageAndAccessPolicy">
+    <admin-description-zone>
+      <ng-container label>{{ 'Use and access condition' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="list-unstyled mb-0">
+        <li *ngFor="let usage of record.metadata.usageAndAccessPolicy">{{ usage.label }}</li>
+      </ul>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- OTHER EDITION, OTHER PHYSICAL FORMAT, HAS REPRODUCTION -->
+  <div class="striped" *ngIf="record.metadata.otherEdition">
+    <admin-other-edition fieldLabel="{{ 'Other edition' | translate }}" [field]="record.metadata.otherEdition"></admin-other-edition>
+  </div>
+  <div class="striped" *ngIf="record.metadata.otherPhysicalFormat">
+    <admin-other-edition fieldLabel="{{ 'Also issued as' | translate }}" [field]="record.metadata.otherPhysicalFormat"></admin-other-edition>
+  </div>
+  <div class="striped" *ngIf="record.metadata.hasReproduction">
+    <admin-other-edition fieldLabel="{{ 'Reproduced as' | translate }}" [field]="record.metadata.hasReproduction"></admin-other-edition>
+  </div>
+
+  <!-- TITLE (KEY TITLE, ABBREVIATED TITLE, VARIANT TITLE)-->
+  <ng-container *ngIf="titleVariants != {}">
+    <div class="striped" *ngFor="let title of titleVariants | keyvalue">
+      <admin-description-zone>
+        <ng-container label>{{ title.key | translate | ucfirst }}</ng-container>
+        <ng-container content>
+          <ul class="list-unstyled mb-0">
+            <li *ngFor="let value of title.value">{{ value }}</li>
+          </ul>
+        </ng-container>
+      </admin-description-zone>
+    </div>
+  </ng-container>
+
+  <!-- RESPONSABILITY STATEMENT -->
+  <div class="striped" *ngIf="record.metadata.ui_responsibilities">
+    <admin-description-zone>
+      <ng-container label>{{ 'Statement of responsibility' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let responsibility of record.metadata.ui_responsibilities">{{ responsibility }}</li>
+        </ul>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- SERIES STATEMENT -->
+  <div class="striped" *ngIf="record.metadata.seriesStatement">
+    <admin-description-zone>
+      <ng-container label>{{ 'Series statement' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let serie of editionStatement">{{ serie.value }}</li>
+        </ul>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- PROVISION ACTIVITY STATEMENT (TYPES PRODUCTION, DIFFUSION/DISTRIBUTION, FABRICATION) -->
+  <ng-container *ngVar="record.metadata.provisionActivity | documentProvisionActivity | keyvalue | callbackArrayFilter: filterNotPublicationProvisionActivity as provisionActivity">
+    <div class="striped" *ngFor="let provision of provisionActivity">
+    <admin-description-zone>
+      <ng-container label>{{ provision.key | translate }}</ng-container>
+      <ng-container content>
+        <ul class="list-unstyled mb-0">
+        <li *ngFor="let value of provision.value; last as isLast">
+          {{ value }}<ng-container *ngIf="!isLast">, </ng-container>
+        </li>
+        </ul>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+  </ng-container>
+
+  <!-- PROVISION ACTIVITY ORIGINAL DATE (TYPES PRODUCTION, DIFFUSION/DISTRIBUTION, FABRICATION) -->
+  <div class="striped" *ngIf="provisionActivityOriginalDate.length > 0">
+    <admin-description-zone>
+      <ng-container label>{{ 'Date of the original' | translate }}</ng-container>
+      <ng-container content>
+        <ng-container *ngFor="let provision of provisionActivityOriginalDate; last as isLast">
+          {{ provision.original_date }}<ng-container *ngIf="!isLast">, </ng-container>
+        </ng-container>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- COPYRIGHT DATE -->
+  <div class="striped" *ngIf="record.metadata.copyrightDate">
+    <admin-description-zone>
+      <ng-container label>{{ 'Copyright date' | translate }}</ng-container>
+      <ng-container content>
+        {{ record.metadata.copyrightDate.join(", ") }}
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- SEQUENCE NUMBERING -->
+  <div class="striped" *ngIf="record.metadata.sequence_numbering">
+    <admin-description-zone>
+      <ng-container label>{{ 'Numbering' | translate }}</ng-container>
+      <ng-container content>
+        {{ record.metadata.sequence_numbering }}
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- DIMENSIONS -->
+  <div class="striped" *ngIf="record.metadata.dimensions">
+    <admin-description-zone>
+      <ng-container label>{{ 'Dimensions' | translate }}</ng-container>
+      <ng-container content>
+        {{ record.metadata.dimensions.join(", ") }}
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- BOOK FORMAT -->
+  <div class="striped" *ngIf="record.metadata.bookFormat">
+    <admin-description-zone>
+      <ng-container label>{{ 'Format' | translate }}</ng-container>
+      <ng-container content>
+        {{ record.metadata.bookFormat.join(", ") }}
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- PRODUCTION METHOD -->
+  <div class="striped" *ngIf="record.metadata.productionMethod">
+    <admin-description-zone>
+      <ng-container label>{{ 'Production method' | translate }}</ng-container>
+      <ng-container content>
+        <ng-container *ngFor="let method of record.metadata.productionMethod; last as isLast">
+          {{ method | translate }}<ng-container *ngIf="!isLast">, </ng-container>
+        </ng-container>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- NOTE (TYPE: CITED BY, OTHER PHYSICAL DETAILS, ACCOMPANYING MATERIAL) -->
+  <ng-container *ngIf="notesExceptGeneral">
+    <div class="striped" *ngFor="let noteType of notesExceptGeneral | keyvalue">
+      <admin-description-zone>
+        <ng-container label>{{ noteType.key | translate | ucfirst }}</ng-container>
+        <ng-container content>
+          <ul class="list-unstyled mb-0">
+            <li *ngFor="let note of noteType.value">{{ note }}</li>
+          </ul>
+        </ng-container>
+      </admin-description-zone>
+    </div>
+  </ng-container>
+
+  <!-- SUPPLEMENTARY CONTENT -->
+  <div class="striped" *ngIf="record.metadata.supplementaryContent">
+    <admin-description-zone>
+      <ng-container label>{{ 'Supplementary content' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let sup of record.metadata.supplementaryContent">{{ sup }}</li>
+        </ul>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- ACQUISITION TERMS -->
+  <div class="striped" *ngIf="record.metadata.acquisitionTerms">
+    <admin-description-zone>
+      <ng-container label>{{ 'Terms of availability' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let term of record.metadata.acquisitionTerms">{{ term }}</li>
+        </ul>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- IDENTIFIED BY -->
+  <div class="striped" *ngIf="identifiedBy && identifiedBy.length > 0">
+    <admin-description-zone>
+      <ng-container label>{{ 'Identifier' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let identifier of identifiedBy; let i = index"
+          [attr.id]="i | idAttribute:{prefix: 'doc-identifier'}">
+            <ng-container *ngIf="identifier.type === 'uri'; else stringBlock">
+              <a class="rero-ils-external-link" href="{{ identifier.value }}">{{ identifier.value }}</a>
+            </ng-container>
+            <ng-template #stringBlock>
+              {{ identifier.value }}
+            </ng-template>
+            <ng-container *ngIf="identifier.details"> - {{ identifier.details }}</ng-container>
+            <small class="badge badge-secondary text-uppercase ml-1" translate>
+              {{ identifier.type }}
+            </small>
+          </li>
+        </ul>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- -------------- TYPOLOGY -------------- -->
+
+  <!-- CONTENT MEDIA CARRIER -->
+  <div class="striped" *ngIf="record.metadata.contentMediaCarrier">
+    <admin-description-zone>
+      <ng-container label>{{ 'Carrier and content type' | translate }}</ng-container>
+      <ng-container content>
+        <ng-container *ngFor="let content of record.metadata.contentMediaCarrier; last as isLastL1">
+          {{ content.carrierType | translate }}
+          <ng-container *ngIf="content.contentType">
+            (<ng-container *ngFor="let type of content.contentType; last as isLast">{{ type | translate }}<ng-container *ngIf="!isLast">, </ng-container></ng-container>)
+          </ng-container>
+          <ng-container *ngIf="!isLastL1">, </ng-container>
+        </ng-container>
+      </ng-container>
+    </admin-description-zone>
+  </div>
+
+  <!-- ISSUANCE -->
+  <div class="striped" *ngIf="record.metadata.issuance">
+    <admin-description-zone>
+      <ng-container label>{{ 'Mode of issuance' | translate }}</ng-container>
+      <ng-container content>
+        {{ record.metadata.issuance.main_type | translate }} / {{ record.metadata.issuance.subtype }}
+      </ng-container>
+    </admin-description-zone>
+  </div>
+</div>
