@@ -275,3 +275,19 @@ json-schema-form {
   background-color: #f8f9fa;
   border-radius: 5px;
 }
+
+.striped {
+  padding-top: 2px;
+}
+
+.div-striped .striped:nth-of-type(odd) {
+  background: #F8F8F8;
+}
+
+.div-striped .striped:nth-of-type(even) {
+  background: #FFFFFF;
+}
+
+.div-striped .striped .row div:first-of-type {
+  padding-left: map-get($spacers, 4);
+}

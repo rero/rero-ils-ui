@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2021 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,13 +14,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<ng-container *ngIf="electronicLocator">
-  <a href="{{ electronicLocator.url }}">
-    <i class="fa fa-link"></i> {{ electronicLocator.type | translate }}
-    <ng-container *ngIf="electronicLocator.content">
-      : {{ electronicLocator.content | translate }}
-    </ng-container>
-  </a>
-  <ng-container *ngIf="publicNotes"> ({{ publicNotes }})</ng-container>
-</ng-container>
+<div class="row">
+  <div class="font-weight-bold col-3">
+    <ng-content select="[label]"></ng-content>
+  </div>
+  <div class="col-9">
+    <ng-content select="[content]"></ng-content>
+  </div>
+</div>

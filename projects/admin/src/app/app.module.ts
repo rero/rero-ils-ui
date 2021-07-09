@@ -58,7 +58,9 @@ import { MenuUserServicesComponent } from './menu/menu-user-services/menu-user-s
 import { MenuUserComponent } from './menu/menu-user/menu-user.component';
 import { MenuComponent } from './menu/menu.component';
 import { LibrarySwitchService } from './menu/service/library-switch.service';
+import { DocumentProvisionActivityPipe } from './pipe/document-provision-activity.pipe';
 import { ItemInCollectionPipe } from './pipe/item-in-collection.pipe';
+import { MainTitleRelationPipe } from './pipe/main-title-relation.pipe';
 import { MarcPipe } from './pipe/marc.pipe';
 import { NotesFormatPipe } from './pipe/notes-format.pipe';
 import { SubjectProcessPipe } from './pipe/subject-process.pipe';
@@ -109,6 +111,13 @@ import {
 } from './record/detail-view/contribution-detail-view/corporate-bodies-detail-view/corporate-bodies-detail-view.component';
 import { PersonDetailViewComponent } from './record/detail-view/contribution-detail-view/person-detail-view/person-detail-view.component';
 import { DialogImportComponent } from './record/detail-view/document-detail-view/dialog-import/dialog-import.component';
+import { DescriptionZoneComponent } from './record/detail-view/document-detail-view/document-description/description-zone/description-zone.component';
+import {
+  DocumentDescriptionComponent
+} from './record/detail-view/document-detail-view/document-description/document-description.component';
+import {
+  OtherEditionComponent
+} from './record/detail-view/document-detail-view/document-description/other-edition/other-edition.component';
 import { DocumentDetailViewComponent } from './record/detail-view/document-detail-view/document-detail-view.component';
 import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
 import { HoldingSharedViewComponent } from './record/detail-view/document-detail-view/holding-shared-view/holding-shared-view.component';
@@ -267,7 +276,12 @@ export function appInitFactory(appInitService: AppInitService) {
     CirculationLogsComponent,
     CirculationLogsDialogComponent,
     CirculationLogComponent,
-    ItemInCollectionPipe
+    ItemInCollectionPipe,
+    DocumentDescriptionComponent,
+    OtherEditionComponent,
+    DescriptionZoneComponent,
+    DocumentProvisionActivityPipe,
+    MainTitleRelationPipe
   ],
   imports: [
     AppRoutingModule,
