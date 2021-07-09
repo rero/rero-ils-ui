@@ -146,7 +146,7 @@ export class RecordPermissionService {
     if (user.isSystemLibrarian && user.currentLibrary !== libraryPid) {
       const membershipExcludePermission = {
         update: { can: false },
-        delete: { can: false, reasons: { other: { record_not_in_current_library : '' }}}
+        delete: { can: false, reasons: { others: { record_not_in_current_library : '' }}}
       };
       permission = {...permission, ...membershipExcludePermission};
     }
