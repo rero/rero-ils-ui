@@ -125,8 +125,16 @@ export class MainRequestComponent implements OnInit, OnDestroy {
       const bTime = moment(b.loan.transaction_date);
       switch (this._sortCriteria) {
         case '-requestdate': return bTime.diff(aTime);
-        case 'callnumber': return a.call_number.localeCompare(b.call_number);
-        case '-callnumber': return b.call_number.localeCompare(a.call_number);
+        case 'callnumber':
+          if (('call_number' in a) && ('call_number' in b)) {
+            return a.call_number.localeCompare(b.call_number);
+          }
+          return 1;
+        case '-callnumber':
+          if (('call_number' in a) && ('call_number' in b)) {
+            return b.call_number.localeCompare(a.call_number);
+          }
+          return 1;
         default: return aTime.diff(bTime);
       }
     });

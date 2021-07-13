@@ -69,24 +69,14 @@
       <!-- Patron information -->
       <dt class="col-2 label-title text-right" translate>Requested by</dt>
       <dd class="col-10">
-        <ng-container *ngIf="item.loan.patron.name as patronName">
-          <a name="patron-name" [routerLink]="['/circulation', 'patron', item.loan.patron.barcode[0]]">{{ patronName }}</a>
-        </ng-container>
-      </dd>
-      <!-- rank in the queue -->
-      <dt class="col-2 label-title text-right" translate>Position</dt>
-      <dd class="col-10">
-        <span class="badge badge-info">
-          {{ item.loan.rank }} / {{ item.pending_loans.length }}
-        </span>
+        <a name="patron-name" [routerLink]="['/circulation', 'patron', item.loan.patron.barcode[0]]">
+          {{ item.loan.patron.name }}
+        </a>
       </dd>
       <!-- item shelf location + destination -->
       <dt class="col-2 label-title text-right" translate>Location</dt>
       <dd  name="location" class="col-10">
-        <ng-container *ngIf="item.location.pid | getRecord: 'locations' | async as location">
-          {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }} &mdash;
-        </ng-container>
-        {{ item.location.name }}
+        {{ item.library.name }} {{ item.location.name }}
       </dd>
       <dt class="col-2 label-title text-right" translate>Pick-up Location</dt>
       <dd name="pickup-location" class="col-10">
