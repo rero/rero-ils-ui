@@ -27,7 +27,7 @@ import { QueryResponse } from '../../../record';
 })
 export class ItemsComponent implements OnInit {
 
-  // COMPONENT ATTRIBUTE ====================================================
+  // COMPONENT ATTRIBUTES =====================================================
   /** Holding */
   @Input() holding: any;
   /** View code */
@@ -43,27 +43,26 @@ export class ItemsComponent implements OnInit {
   items = [];
 
   /** Items per page */
-  private itemsPerPage = 4;
+  private itemsPerPage = 10;
 
 
   // GETTER & SETTER ========================================================
   /**
-   * Is link show more
+   * Is the link `show more items` must be displayed
    * @return boolean
    */
   get isLinkShowMore() {
-    return this.itemsTotal > 0
-      && ((this.page * this.itemsPerPage) < this.itemsTotal);
+    return this.itemsTotal > 0 && ((this.page * this.itemsPerPage) < this.itemsTotal);
   }
 
   /**
-   * Hidden items count
+   * Get the string to use when some items are still hidden.
    * @return string
    */
   get hiddenItems(): string {
-    let count = this.itemsTotal - (this.page * this.itemsPerPage);
-    if (count < 0) {
-      count = 0;
+    const count = this.itemsTotal - (this.page * this.itemsPerPage);
+    if (count <= 0) {
+      return '';
     }
     const linkText = (count > 1)
       ? _('{{ counter }} hidden items')
@@ -93,7 +92,7 @@ export class ItemsComponent implements OnInit {
   }
 
   // COMPONENT FUNCTIONS ==================================================
-  /** Show more */
+  /** Handler when 'show more items' link is clicked. */
   showMore() {
     this.page++;
     this._ItemsQuery(this.page).subscribe((response: QueryResponse) => {
@@ -102,7 +101,7 @@ export class ItemsComponent implements OnInit {
   }
 
   /**
-   * Return a selected items by page number
+   * Return selected items by page number
    * @param page - number
    * @return Observable
    */

@@ -16,11 +16,15 @@
 -->
 <ngx-loading-bar [includeSpinner]="false" height="3px"></ngx-loading-bar>
 <ng-container *ngIf="holdings.length > 0">
-  <div class="card mt-2" *ngFor="let holding of holdings">
-    <public-search-holding [holding]="holding" [viewcode]="viewcode"></public-search-holding>
-  </div>
+  <public-search-holding *ngFor="let holding of holdings"
+                         [holding]="holding"
+                         [viewcode]="viewcode"
+                         [isCollapsed]="holdingsTotal > 1"
+                         [attr.id]="holding.metadata.pid | idAttribute : {prefix: 'holding'}"
+                         class="card mt-2 w-100">
+  </public-search-holding>
   <ng-container *ngIf="isLinkShowMore">
-    <button type="button" id="show-more-{{ documentpid }}" class="btn btn-link pr-1" (click)="showMore()">
+    <button class="btn btn-link p-0 pr-1 show-more-holdings" (click)="showMore($event)">
       <i class="fa fa-plus-square-o"></i> {{ 'Show more' | translate }}
     </button>
     <small>({{ hiddenHoldings }})</small>

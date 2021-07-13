@@ -142,7 +142,7 @@
             "main": "projects/public-holdings-items/src/main.ts",
             "polyfills": "projects/public-holdings-items/src/polyfills.ts",
             "tsConfig": "projects/public-holdings-items/tsconfig.app.json",
-            "aot": false,
+            "aot": true,
             "assets": [],
             "styles": [],
             "scripts": []

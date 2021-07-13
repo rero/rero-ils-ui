@@ -69,7 +69,7 @@ describe('PatronTranslationApiService', () => {
 
   it('should load the fees', () => {
     service.getFees('1', 'open', 1).subscribe((response: any) => {
-      expect(response).toBeTruthy(apiResponse);
+      expect(response).toEqual(apiResponse);
     });
   });
 });

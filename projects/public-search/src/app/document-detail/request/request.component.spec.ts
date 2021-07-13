@@ -81,6 +81,6 @@ describe('RequestComponent', () => {
   it('should have the request button', () => {
     const id = `#item-${itemRecord.metadata.pid}-request-button`;
     const showMore = fixture.nativeElement.querySelector(id);
-    expect(showMore.textContent).toBeTruthy('Request');
+    expect(showMore.textContent).toContain('Request');
   });
 });

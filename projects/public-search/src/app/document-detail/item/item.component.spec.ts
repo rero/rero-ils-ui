@@ -14,11 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+import { IdAttributePipe, SharedModule} from '@rero/shared';
 import { NotesFilterPipe } from '../../pipe/notes-filter.pipe';
 import { ItemComponent } from './item.component';
 
@@ -63,7 +65,9 @@ describe('ItemComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot()
+        TranslateModule.forRoot(),
+        SharedModule,
+        HttpClientTestingModule
       ],
       declarations: [
         ItemComponent,
@@ -72,6 +76,7 @@ describe('ItemComponent', () => {
         DateTranslatePipe
       ],
       providers: [
+        IdAttributePipe,
         BsLocaleService
       ],
       schemas: [
@@ -95,24 +100,25 @@ describe('ItemComponent', () => {
 
   it('should display all data into the template', () => {
     let data = fixture.nativeElement.querySelector('#item-location-1');
-    expect(data.textContent).toBeTruthy('library name: location name');
+    expect(data.textContent).toContain('library name: location name');
 
     data = fixture.nativeElement.querySelector('#item-call-number-1');
-    expect(data.textContent).toBeTruthy('F123456');
+    expect(data.textContent).toContain('F123456');
 
     data = fixture.nativeElement.querySelector('#item-call-number-1');
-    expect(data.textContent).toBeTruthy('F123456');
+    expect(data.textContent).toContain('F123456');
 
     data = fixture.nativeElement.querySelector('#item-location-temporary-1');
-    expect(data.textContent).toBeTruthy('collection');
+    expect(data.textContent).toContain('collection');
 
     data = fixture.nativeElement.querySelector('#item-enum-chrono-1');
-    expect(data.textContent).toBeTruthy('enum and chro');
+    expect(data.textContent).toContain('enum and chro');
 
     data = fixture.nativeElement.querySelector('#item-barcode-1');
-    expect(data.textContent).toBeTruthy('B12222');
+    expect(data.textContent).toContain('B12222');
 
     data = fixture.nativeElement.querySelector('#item-status-1');
-    expect(data.textContent).toBeTruthy('due until 2/1/21 (2 requests)');
+    expect(data.textContent).toContain('due until 2/1/21');
+    expect(data.textContent).toContain('(2 requests)');
   });
 });

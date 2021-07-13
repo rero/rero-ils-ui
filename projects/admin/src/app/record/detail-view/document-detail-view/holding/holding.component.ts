@@ -26,7 +26,8 @@ import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'admin-document-holding',
-  templateUrl: './holding.component.html'
+  templateUrl: './holding.component.html',
+  styles: ['a.collapse-link i { min-width: 16px}']
 })
 export class HoldingComponent implements OnInit, OnDestroy {
 
@@ -35,6 +36,8 @@ export class HoldingComponent implements OnInit, OnDestroy {
   @Input() holding: any;
   /** Event for delete holding */
   @Output() deleteHolding = new EventEmitter();
+  /** Items collapsed */
+  @Input() isItemsCollapsed = true;
 
   /** shortcut for holding type */
   holdingType: 'electronic' | 'serial' | 'standard';
@@ -42,15 +45,14 @@ export class HoldingComponent implements OnInit, OnDestroy {
   items: any = null;
   /** Items observable reference */
   itemsRef: any;
-  /** Items collapsed */
-  isItemsCollapsed = false;
   /** Holding permissions */
   permissions: RecordPermission;
   /** total number of items for this holding */
   totalItemsCounter = 0;
   /** number of item to load/display */
-  displayItemsCounter = 5;
+  displayItemsCounter = 10;
 
+  // GETTER & SETTER ==========================================================
   /** Current interface language */
   get language() {
     return this._translateService.currentLang;
@@ -121,7 +123,8 @@ export class HoldingComponent implements OnInit, OnDestroy {
 
   // COMPONENT FUNCTIONS ======================================================
   /** Reload items when they are displayed. */
-  toggleCollapse() {
+  toggleCollapse(event: Event) {
+    event.preventDefault();
     if (this.isItemsCollapsed) {
       this._loadItems();
     }

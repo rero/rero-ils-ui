@@ -14,86 +14,93 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div id="item-detail-{{ item.metadata.pid }}" class="row pl-4 py-2 mx-1" [class]="{'bg-light': index % 2 === 0}">
-  <!-- LIBRARY AND LOCATION -->
-  <ng-container *ngIf="context === 'book'">
-    <dt class="mb-0 col-lg-2 col-sm-3" translate>Location</dt>
-    <dd id="item-location-{{ item.metadata.pid }}" class="mb-0 col-lg-9 col-sm-8">
-      {{ item.metadata.library.name }}:
-      {{ item.metadata.location.name }}
+<div [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-detail'}"
+     class="mx-1"
+     [class]="{'bg-light': index % 2 === 0}">
+  <dl class="m-0 ml-4 py-2 row">
+    <!-- LIBRARY AND LOCATION -->
+    <ng-container *ngIf="context === 'book'">
+      <dt class="mb-0 col-lg-2 col-sm-3" translate>Location</dt>
+      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location'}" class="mb-0 col-lg-10 col-sm-9">
+        {{ item.metadata.library.name }}: {{ item.metadata.location.name }}
+      </dd>
+    </ng-container>
+    <!-- CALL NUMBER -->
+    <ng-container *ngIf="item.metadata.call_number">
+      <dt class="mb-0 col-lg-2 col-sm-3" translate>Call number</dt>
+      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-call-number'}" class="mb-0 col-lg-10 col-sm-9">
+        {{ item.metadata.call_number }}
+        <ng-container *ngIf="item.metadata.second_call_number">
+          | {{ item.metadata.second_call_number }}
+        </ng-container>
+      </dd>
+    </ng-container>
+    <!-- ITEM IN COLLECTION -->
+    <ng-container *ngIf="item.metadata.in_collection; else temporaryLocation">
+      <dt class="mb-0 col-lg-2 col-sm-3" translate>Temporary location</dt>
+      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location-temporary'}" class="mb-0 col-lg-10 col-sm-9">
+        <ng-container *ngFor="let collection of item.metadata.in_collection; let last = last">
+          <a [routerLink]="[collection.viewcode, 'collections', collection.pid]">{{ collection.title }}</a>
+          {{ last ? '' : '; ' }}
+        </ng-container>
+      </dd>
+    </ng-container>
+    <!-- ITEM TEMPORARY LOCATION -->
+    <ng-template #temporaryLocation>
+      <ng-container *ngIf="item.metadata.temporary_location">
+        <dt class="mb-0 col-lg-2 col-sm-3 label-title" translate>Temporary location</dt>
+        <dd class="mb-0 col-lg-10 col-sm-9">{{ item.metadata.temporary_location.name }}</dd>
+      </ng-container>
+    </ng-template>
+    <!-- ENUMERATION AND CHRONOLOGY -->
+    <ng-container *ngIf="item.metadata.enumerationAndChronology">
+      <dt class="mb-0 col-lg-2 col-sm-3 label-title" translate>Unit</dt>
+      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-enum-chrono'}" class="mb-0 col-lg-10 col-sm-9">
+        {{ item.metadata.enumerationAndChronology }}
+      </dd>
+    </ng-container>
+    <!-- BARCODE -->
+    <dt class="mb-0 col-lg-2 col-sm-3" translate>Barcode</dt>
+    <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-barcode'}" class="mb-0 col-lg-10 col-sm-9">
+      {{ item.metadata.barcode }}
     </dd>
-  </ng-container>
-  <!-- CALL NUMBER -->
-  <ng-container *ngIf="item.metadata.call_number">
-    <dt class="mb-0 col-lg-2 col-sm-3" translate>Call number</dt>
-    <dd id="item-call-number-{{ item.metadata.pid }}" class="mb-0 col-lg-9 col-sm-8">
-      {{ item.metadata.call_number }}
-      <ng-container *ngIf="item.metadata.second_call_number">
-        | {{ item.metadata.second_call_number }}
+    <!-- NOTES -->
+    <ng-container *ngIf="item.metadata.notes && item.metadata.notes.length > 0">
+      <ng-container *ngFor="let note of item.metadata.notes | notesFilter : noteAuthorizedTypes">
+        <dt class="mb-0 col-lg-2 col-sm-3">{{ note.type | translate }}</dt>
+        <dd class="mb-0 col-lg-10 col-sm-9" [innerHTML]="note.content | nl2br"></dd>
+      </ng-container>
+    </ng-container>
+    <!-- URL -->
+    <ng-container *ngIf="item.metadata.url">
+      <dt class="mb-0 col-lg-2 col-sm-3 label-title" translate>URL</dt>
+      <dd class="mb-0 col-lg-10 col-sm-9">
+        <a href="{{ item.metadata.url }}">{{ item.metadata.url }}</a>
+      </dd>
+    </ng-container>
+    <!-- STATUS -->
+    <dt class="mb-0 col-lg-2 col-sm-3" translate>Status</dt>
+    <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-status'}" class="mb-0 col-lg-10 col-sm-9">
+      <i class="mr-1 fa fa-circle"
+         [ngClass]="{
+            'text-success': item.metadata.availability.available,
+            'text-danger': !item.metadata.availability.available
+         }"></i>
+      <ng-container [ngSwitch]="item.metadata.status">
+        <span *ngSwitchCase="'on_loan'">
+          {{ 'due until' | translate }}
+          {{ item.metadata.availability.due_date | dateTranslate :'shortDate' }}
+        </span>
+        <span *ngSwitchDefault>
+          {{ item.metadata.availability.display_text | getTranslatedLabel : language }}
+        </span>
+      </ng-container>
+      <ng-container *ngIf="item.metadata.availability.request > 0">
+        ({{ item.metadata.availability.request }} {{ (item.metadata.availability.request > 1 ? 'requests' : 'request') | translate }})
       </ng-container>
     </dd>
-  </ng-container>
-  <!-- ITEM IN COLLECTION -->
-  <ng-container *ngIf="item.metadata.in_collection; else temporaryLocation">
-    <dt class="mb-0 col-lg-2 col-sm-3" translate>Temporary location</dt>
-    <dd id="item-location-temporary-{{ item.metadata.pid }}" class="mb-0 col-lg-9 col-sm-8">
-      <ng-container *ngFor="let collection of item.metadata.in_collection; let last = last">
-        <a href="/{{ collection.viewcode }}/collections/{{ collection.pid }}">{{ collection.title }}</a>
-        {{ last ? '' : '; ' }}
-      </ng-container>
-    </dd>
-  </ng-container>
-  <!-- ITEM TEMPORARY LOCATION -->
-  <ng-template #temporaryLocation>
-    <ng-container *ngIf="item.metadata.temporary_location">
-      <dt class="mb-0 col-lg-2 col-sm-3 label-title" translate>Temporary location</dt>
-      <dd class="mb-0 col-lg-9 col-sm-8">{{ item.metadata.temporary_location.name }}</dd>
-    </ng-container>
-  </ng-template>
-  <!-- ENUMERATION AND CHRONOLOGY -->
-  <ng-container *ngIf="item.metadata.enumerationAndChronology">
-    <dt class="mb-0 col-lg-2 col-sm-3 label-title" translate>Unit</dt>
-    <dd id="item-enum-chrono-{{ item.metadata.pid }}" class="mb-0 col-lg-9 col-sm-8">{{ item.metadata.enumerationAndChronology }}</dd>
-  </ng-container>
-  <!-- BARCODE -->
-  <dt class="mb-0 col-lg-2 col-sm-3" translate>Barcode</dt>
-  <dd id="item-barcode-{{ item.metadata.pid }}" class="mb-0 col-lg-9 col-sm-8">{{ item.metadata.barcode }}</dd>
-  <!-- NOTES -->
-  <ng-container *ngIf="item.metadata.notes && item.metadata.notes.length > 0">
-    <ng-container *ngFor="let note of item.metadata.notes | notesFilter : noteAuthorizedTypes">
-      <dt class="mb-0 col-lg-2 col-sm-3">{{ note.type | translate }}</dt>
-      <dd class="mb-0 col-lg-9 col-sm-8" [innerHTML]="note.content | nl2br"></dd>
-    </ng-container>
-  </ng-container>
-  <!-- URL -->
-  <ng-container *ngIf="item.metadata.url">
-    <dt class="mb-0 col-lg-2 col-sm-3 label-title" translate>URL</dt>
-    <dd class="mb-0 col-lg-9 col-sm-8">
-      <a href="{{ item.metadata.url }}">{{ item.metadata.url }}</a>
-    </dd>
-  </ng-container>
-  <!-- STATUS -->
-  <dt class="mb-0 col-lg-2 col-sm-3" translate>Status</dt>
-  <dd id="item-status-{{ item.metadata.pid }}" class="mb-0 col-lg-9 col-sm-8">
-    <i class="mr-1 fa fa-circle"
-       [ngClass]="{
-          'text-success': item.metadata.availability.available,
-          'text-danger': !item.metadata.availability.available
-       }"></i>
-    <ng-container [ngSwitch]="item.metadata.status">
-      <span *ngSwitchCase="'on_loan'">
-        {{ 'due until' | translate }}
-        {{ item.metadata.availability.due_date | dateTranslate :'shortDate' }}
-      </span>
-      <span *ngSwitchDefault>
-        {{ item.metadata.availability.display_text | getTranslatedLabel : language }}
-      </span>
-    </ng-container>
-    <ng-container *ngIf="item.metadata.availability.request > 0">
-      ({{ item.metadata.availability.request }} {{ (item.metadata.availability.request > 1 ? 'requests' : 'request') | translate }})
-    </ng-container>
-  </dd>
+  </dl>
 
   <!-- REQUEST DIALOG -->
-  <public-search-request [item]="item" [viewcode]="viewcode" class="col-11"></public-search-request>
+  <public-search-request [item]="item" [viewcode]="viewcode" class="col-12"></public-search-request>
 </div>

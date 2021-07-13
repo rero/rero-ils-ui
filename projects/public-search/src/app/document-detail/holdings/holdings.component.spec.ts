@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
@@ -22,6 +23,7 @@ import { CoreModule } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { HoldingsApiService } from '../../api/holdings-api.service';
 import { QueryResponse } from '../../record';
+import { IdAttributePipe, SharedModule } from '@rero/shared';
 import { HoldingsComponent } from './holdings.component';
 
 
@@ -34,9 +36,11 @@ describe('HoldingsComponent', () => {
       value: 10,
       relation: 'eq'
     },
-    hits: [
-      { pid: 1 }
-    ]
+    hits: [{
+      metadata: {
+        pid: 1
+      }
+    }]
   };
 
   const recordServiceSpy = jasmine.createSpyObj('HoldingsService', [
@@ -49,10 +53,13 @@ describe('HoldingsComponent', () => {
       imports: [
         TranslateModule.forRoot(),
         LoadingBarModule,
-        CoreModule
+        HttpClientTestingModule,
+        CoreModule,
+        SharedModule
       ],
       declarations: [ HoldingsComponent ],
       providers: [
+        IdAttributePipe,
         { provide: HoldingsApiService, useValue: recordServiceSpy }
       ],
       schemas: [
@@ -74,16 +81,16 @@ describe('HoldingsComponent', () => {
   });
 
   it('should display the link more holdings', () => {
-    component.holdingsTotal = 10;
+    component.holdingsTotal = 20;
     fixture.detectChanges();
-    const showMore = fixture.nativeElement.querySelector('#show-more-1');
+    const showMore = fixture.nativeElement.querySelector('.show-more-holdings');
     expect(showMore.textContent.trim()).toEqual('Show more');
   });
 
   it('should don\'t display the link more holdings', () => {
     component.holdingsTotal = 4;
     fixture.detectChanges();
-    const showMore = fixture.nativeElement.querySelector('#show-more-1');
+    const showMore = fixture.nativeElement.querySelector('.show-more-holdings');
     expect(showMore).toBeNull();
   });
 });

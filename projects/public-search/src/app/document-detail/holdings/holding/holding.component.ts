@@ -19,38 +19,42 @@ import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'public-search-holding',
-  templateUrl: './holding.component.html'
+  templateUrl: './holding.component.html',
+  styles: ['a.collapse-link i { min-width: 16px}']
 })
 export class HoldingComponent {
 
+  // COMPONENT ATTRIBUTES =====================================================
   /** Holdings record */
   @Input() holding: any;
   /** View code */
   @Input() viewcode: string;
-
   /** Is collapsed holdings */
-  isCollapsed = false;
+  @Input() isCollapsed = true;
+
   /** Items count */
   itemsCount = 0;
   /** Authorized types of note */
-  noteAuthorizedTypes: string[] = [
-    'general_note'
-  ];
+  noteAuthorizedTypes: string[] = ['general_note'];
 
+  // GETTER & SETTER ==========================================================
   /** Current interface language */
   get language() {
     return this._translateService.currentLang;
   }
 
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param _translateService - TranslateService
    */
   constructor(private _translateService: TranslateService) {}
 
+
+  // COMPONENT FUNCTIONS ======================================================
   /**
-   * Event items count
-   * @param event - number
+   * Handler to manage event items count emitter
+   * @param event - number : the number of items for this holding
    */
   eItemsCount(event: number): void {
     this.itemsCount = event;

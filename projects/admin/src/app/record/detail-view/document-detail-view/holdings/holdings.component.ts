@@ -29,32 +29,30 @@ import { RecordPermissionService } from '../../../../service/record-permission.s
   templateUrl: './holdings.component.html'
 })
 export class HoldingsComponent implements OnInit {
+
+  // COMPONENT ATTRIBUTES =====================================================
   /** Document */
   @Input() document: any;
-
-  /** Holdings total */
-  holdingsTotal = 0;
-
-  /** Holdings per page */
-  private holdingsPerPage = 5;
-
-  /** Current page */
-  page = 1;
-
-  /** query */
-  query: string;
-
-  /** Holdings */
-  holdings: any[];
-
   /** Holding type related to the parent document. */
   @Input() holdingType: 'electronic' | 'serial' | 'standard';
 
+  /** Holdings total */
+  holdingsTotal = 0;
+  /** Current page */
+  page = 1;
+  /** query */
+  query: string;
+  /** Holdings */
+  holdings: any[];
   /** Can a new holding be added? */
   canAdd = false;
 
+  /** Holdings per page */
+  private holdingsPerPage = 10;
+
+  // GETTER & SETTER ==========================================================
   /**
-   * Is link show more
+   * Is the link `show more holdings` must be displayed.
    * @return boolean
    */
   get isLinkShowMore(): boolean {
@@ -78,6 +76,7 @@ export class HoldingsComponent implements OnInit {
     return linkTextTranslate.replace('{{ counter }}', count);
   }
 
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param _userService - UserService
@@ -112,7 +111,8 @@ export class HoldingsComponent implements OnInit {
       });
   }
 
-  /** Show more */
+  // COMPONENT FUNCTIONS ======================================================
+  /** Handler when `show more` ink is clicked */
   showMore() {
     this.page++;
     this._holdingsQuery(this.page, this.query).subscribe((holdings: any[]) => {
