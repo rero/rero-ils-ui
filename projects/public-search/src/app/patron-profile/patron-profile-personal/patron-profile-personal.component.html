@@ -27,7 +27,7 @@
     <!-- GENDER -->
     <ng-container *ngIf="user.gender">
       <dt class="col-lg-3 col-sm-6 label-title" translate>Gender</dt>
-      <dd class="col-lg-9 col-sm-6">{{ user.gender }}</dd>
+      <dd class="col-lg-9 col-sm-6">{{ user.gender | translate }}</dd>
     </ng-container>
     <!-- USERNAME -->
     <ng-container *ngIf="user.username">
