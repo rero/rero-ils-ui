@@ -54,10 +54,14 @@
 </div>
 
 <ng-container *ngIf="holdings">
-  <admin-document-holding *ngFor="let holding of holdings" [holding]="holding" (deleteHolding)="deleteHolding($event)">
+  <admin-document-holding *ngFor="let holding of holdings"
+                          [holding]="holding"
+                          [isItemsCollapsed]="holdingsTotal > 1"
+                          (deleteHolding)="deleteHolding($event)"
+  >
   </admin-document-holding>
   <ng-container *ngIf="isLinkShowMore">
-    <button type="button" id="show-more-{{ document.metadata.pid }}" class="btn btn-link" (click)="showMore()">
+    <button class="btn btn-link" (click)="showMore()">
       <i class="fa fa-arrow-circle-o-down"></i>
         {{ 'Show more' | translate }}
     </button>

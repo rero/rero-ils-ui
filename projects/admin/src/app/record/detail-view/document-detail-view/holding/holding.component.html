@@ -15,42 +15,43 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container>
-  <div class="card mt-2">
-    <div class="card-header">
-      <div class="row">
-        <div class="col-sm-6">
-          <button class="btn btn-link" (click)="toggleCollapse()" aria-expanded="false" aria-controls="itemsList">
-            <i [ngClass]="{ 'fa-caret-down':!isItemsCollapsed, 'fa-caret-right': isItemsCollapsed }"
-               class="fa mr-1" aria-hidden="true"></i>
-          </button>
-          <admin-record-masked *ngIf="holding.metadata._masked" [record]="holding"></admin-record-masked>
-          <ng-container *ngIf="holding.metadata.location.pid | getRecord: 'locations' | async as location" class="col-sm-5">
-            {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}:
-            {{ location.metadata.name }}
-          </ng-container>
-        </div>
-        <div class="col-sm-2 mt-1">{{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}</div>
-        <div *ngIf="holdingType === 'serial'" class="col-sm-4 text-right">
-          <!-- HOLDING VIEW -->
-          <button [routerLink]="['/', 'records', 'holdings', 'detail', holding.metadata.pid]"
-                  class="btn btn-outline-primary btn-sm ml-1">
-            <i class="fa fa-file-text-o"></i>
-          </button>
-          <!-- EDIT BUTTON -->
-          <button *ngIf="permissions && permissions.update && permissions.update.can"
-                  [routerLink]="['/', 'records', 'holdings', 'edit', holding.metadata.pid]"
-                  class="btn btn-outline-primary btn-sm ml-1">
-            <i class="fa fa-pencil"></i>
-          </button>
-          <!-- DELETE BUTTON -->
-          <button *ngIf="permissions && permissions.delete && permissions.delete.can; else deleteInfo" type="button"
-            class="btn btn-outline-danger btn-sm ml-1" (click)="delete()">
-            <i class="fa fa-trash"></i>
-          </button>
-        </div>
-        <admin-holding-detail *ngIf="holdingType === 'serial'" context="document" [holding]="holding" class="col-sm-12"></admin-holding-detail>
+  <div class="card container mt-2">
+    <div class="card-header row p-2">
+      <div class="col-sm-6">
+        <a href="#" (click)="toggleCollapse($event)"
+           class="collapse-link float-left h-100" data-toggle="collapse"
+           aria-expanded="false" aria-controls="itemsList">
+          <i [ngClass]="{ 'fa-caret-down':!isItemsCollapsed, 'fa-caret-right': isItemsCollapsed }"
+             class="fa fa-lg" aria-hidden="true"></i>
+        </a>
+        <admin-record-masked *ngIf="holding.metadata._masked" [record]="holding"></admin-record-masked>
+        <ng-container *ngIf="holding.metadata.location.pid | getRecord: 'locations' | async as location" class="col-sm-5">
+          {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}:
+          {{ location.metadata.name }}
+        </ng-container>
       </div>
-
+      <div class="col-sm-2 mt-1">
+        {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}
+      </div>
+      <div *ngIf="holdingType === 'serial'" class="col-sm-4 text-right">
+        <!-- HOLDING VIEW -->
+        <button [routerLink]="['/', 'records', 'holdings', 'detail', holding.metadata.pid]"
+                class="btn btn-outline-primary btn-sm ml-1">
+          <i class="fa fa-file-text-o"></i>
+        </button>
+        <!-- EDIT BUTTON -->
+        <button *ngIf="permissions && permissions.update && permissions.update.can"
+                [routerLink]="['/', 'records', 'holdings', 'edit', holding.metadata.pid]"
+                class="btn btn-outline-primary btn-sm ml-1">
+          <i class="fa fa-pencil"></i>
+        </button>
+        <!-- DELETE BUTTON -->
+        <button *ngIf="permissions && permissions.delete && permissions.delete.can; else deleteInfo" type="button"
+          class="btn btn-outline-danger btn-sm ml-1" (click)="delete()">
+          <i class="fa fa-trash"></i>
+        </button>
+      </div>
+      <admin-holding-detail *ngIf="holdingType === 'serial'" context="document" [holding]="holding" class="col-sm-12"></admin-holding-detail>
     </div>
     <div class="card-body" *ngIf="!isItemsCollapsed">
       <ng-container [ngSwitch]="holdingType">

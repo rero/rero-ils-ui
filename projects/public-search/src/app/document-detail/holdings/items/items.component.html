@@ -15,18 +15,23 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="items.length > 0; else noItems">
-  <ng-container *ngFor="let item of items; let index = index">
-    <public-search-item context="holding" [item]="item" [viewcode]="viewcode" [index]="index"></public-search-item>
-  </ng-container>
+  <public-search-item *ngFor="let item of items; let index = index"
+                      context="holding"
+                      [item]="item"
+                      [viewcode]="viewcode"
+                      [index]="index">
+
+  </public-search-item>
   <ng-container *ngIf="isLinkShowMore">
-    <button type="button" id="show-more-{{ holding.metadata.pid }}" class="btn btn-link pr-1" (click)="showMore()">
+    <button type="button" class="btn btn-link pr-1" (click)="showMore()">
       <i class="fa fa-plus-square-o"></i> {{ 'Show more' | translate }}
     </button>
     <small>({{ hiddenItems }})</small>
   </ng-container>
 </ng-container>
+
 <ng-template #noItems>
   <div class="row">
-    <div class="ml-2 col-sm-11" translate>No item received.</div>
+    <div class="col-12 pl-2" translate>No item received.</div>
   </div>
 </ng-template>

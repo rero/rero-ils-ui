@@ -89,7 +89,7 @@ describe('PickupLocationComponent', () => {
   });
 
   it('should have the request button', () => {
-    const pickup = fixture.nativeElement.querySelector('#pickup-location-1');
-    expect(pickup.textContent).toBeTruthy('Request');
+    const pickup = fixture.nativeElement.querySelector('#pickup-location-1-confirm-button');
+    expect(pickup.textContent).toBeTruthy();
   });
 });

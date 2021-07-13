@@ -14,11 +14,15 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div id="holding-{{ holding.metadata.pid }}" class="card-header p-2">
+<div class="card-header p-2">
   <div class="row">
     <div id="holding-location-{{ holding.metadata.pid }}" class="col-sm-4">
-      <a href="#" class="collapse-link mr-2" data-toggle="collapse" aria-expanded="false" (click)="isCollapsed = !isCollapsed">
-        <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" [hidden]="itemsCount==0" class="fa fa-lg" aria-hidden="true"></i>
+      <a href="#" class="collapse-link float-left h-100" data-toggle="collapse" aria-expanded="false"
+         (click)="$event.preventDefault(); isCollapsed = !isCollapsed">
+        <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }"
+           [hidden]="itemsCount==0"
+           class="fa fa-lg" aria-hidden="true">
+        </i>
       </a>
       {{ holding.metadata.library.name }}: {{ holding.metadata.location.name }}
     </div>
@@ -38,10 +42,9 @@
           {{ 'see collections and items' | translate }}
         </ng-container>
         <ng-template #available>
-          <i
-            class="fa fa-circle"
-            [ngClass]="{'text-success': holding.metadata.available, 'text-danger': !holding.metadata.available }"
-          ></i>
+          <i class="fa fa-circle"
+             [ngClass]="{'text-success': holding.metadata.available, 'text-danger': !holding.metadata.available }">
+          </i>
           {{ (holding.metadata.available ? 'available' : 'not available') | translate }}
         </ng-template>
       </span>
@@ -92,12 +95,6 @@
     </div>
   </div>
 </div>
-<div
-  id="holding-{{ holding.metadata.pid }}"
-  class="collapse show"
-  [hidden]="isCollapsed"
->
-  <div class="card-body p-2">
-    <public-search-items [holding]="holding" [viewcode]="viewcode" (eItemsCount)="eItemsCount($event)"></public-search-items>
-  </div>
+<div class="card-body p-2" [hidden]="isCollapsed">
+  <public-search-items [holding]="holding" [viewcode]="viewcode" (eItemsCount)="eItemsCount($event)"></public-search-items>
 </div>

@@ -37,7 +37,9 @@ describe('HoldingComponent', () => {
         name: 'location name'
       },
       circulation_category: {
-        name: 'default'
+        circulation_information: [
+          { label: 'default', language: 'en'}
+        ]
       },
       holdings_type: 'serial',
       available: true,
@@ -81,34 +83,32 @@ describe('HoldingComponent', () => {
 
   it('should display all data into the template', () => {
     let data = fixture.nativeElement.querySelector('#holding-location-1');
-    expect(data.textContent).toBeTruthy('library name: location name');
+    expect(data.textContent).toContain('library name: location name');
 
     data = fixture.nativeElement.querySelector('#holding-category-name-1');
-    expect(data.textContent).toBeTruthy('default');
-
-    data = fixture.nativeElement.querySelector('#holding-category-name-1');
-    expect(data.textContent).toBeTruthy('default');
+    expect(data.textContent).toContain('default');
 
     component.isCollapsed = true;
     data = fixture.nativeElement.querySelector('#holding-available-1');
-    expect(data.textContent).toBeTruthy('see collections and items');
+    expect(data.textContent).toContain('see collections and items');
 
     data = fixture.nativeElement.querySelector('#holding-call-number-1');
-    expect(data.textContent).toBeTruthy('F123456 | S123456');
+    expect(data.textContent).toContain('F123456');
+    expect(data.textContent).toContain('S123456');
 
     data = fixture.nativeElement.querySelector('#holding-enum-chro-1');
-    expect(data.textContent).toBeTruthy('enum and chro');
+    expect(data.textContent).toContain('enum and chro');
 
     data = fixture.nativeElement.querySelector('#holding-sup-content-1');
-    expect(data.textContent).toBeTruthy('sup content');
+    expect(data.textContent).toContain('sup content');
 
     data = fixture.nativeElement.querySelector('#holding-index-1');
-    expect(data.textContent).toBeTruthy('record index');
+    expect(data.textContent).toContain('record index');
 
     data = fixture.nativeElement.querySelector('#holding-missing-issues-1');
-    expect(data.textContent).toBeTruthy('missing');
+    expect(data.textContent).toContain('missing');
 
     data = fixture.nativeElement.querySelector('#holding-note-1');
-    expect(data.textContent).toBeTruthy('public note');
+    expect(data.textContent).toContain('public note');
   });
 });

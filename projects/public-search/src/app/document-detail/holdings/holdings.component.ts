@@ -28,41 +28,39 @@ import { QueryResponse } from '../../record';
 })
 export class HoldingsComponent implements OnInit {
 
+  // COMPONENTS ATTRIBUTES ====================================================
   /** View code */
   @Input() viewcode: string;
-
   /** Document pid */
   @Input() documentpid: string;
 
   /** Holdings total */
   holdingsTotal = 0;
-
-  /** Holdings per page */
-  private holdingsPerPage = 4;
-
   /** Current page */
   page = 1;
-
   /** Holdings records */
   holdings = [];
 
+  /** Holdings per page */
+  private holdingsPerPage = 10;
+
+  // GETTER & SETTER ==========================================================
   /**
-   * Is link show more
+   * Is the link `show more holdings` must be displayed
    * @return boolean
    */
   get isLinkShowMore() {
-    return this.holdingsTotal > 0
-      && ((this.page * this.holdingsPerPage) < this.holdingsTotal);
+    return this.holdingsTotal > 0 && ((this.page * this.holdingsPerPage) < this.holdingsTotal);
   }
 
   /**
-   * Hidden holdings count
+   * Get the string to use when some holdings are still hidden
    * @return string
    */
   get hiddenHoldings(): string {
-    let count = this.holdingsTotal - (this.page * this.holdingsPerPage);
-    if (count < 0) {
-      count = 0;
+    const count = this.holdingsTotal - (this.page * this.holdingsPerPage);
+    if (count <= 0) {
+      return '';
     }
     const linkText = (count > 1)
       ? _('{{ counter }} hidden holdings')
@@ -70,6 +68,7 @@ export class HoldingsComponent implements OnInit {
     return this._translateService.instant(linkText, { counter: count });
   }
 
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param _holdingsApiService - HoldingsApiService
@@ -86,18 +85,18 @@ export class HoldingsComponent implements OnInit {
   ngOnInit(): void {
     // Set view code to app settings
     this._appSettingsService.currentViewCode = this.viewcode;
-    this._HoldingsQuery(1).subscribe((response: QueryResponse) => {
+    this._holdingsQuery(1).subscribe((response: QueryResponse) => {
       this.holdingsTotal = response.total.value;
       this.holdings = response.hits;
     });
   }
 
-  /** Show more */
-  showMore() {
+  // COMPONENT FUNCTIONS ======================================================
+  /** Handler when 'show more holdings' link is clicked. */
+  showMore(event: Event) {
+    event.preventDefault();  // Doesn't follow any `href` link
     this.page++;
-    this._HoldingsQuery(this.page).subscribe((response: QueryResponse) => {
-      this.holdings = this.holdings.concat(response.hits);
-    });
+    this._holdingsQuery(this.page).subscribe((response: QueryResponse) => this.holdings = this.holdings.concat(response.hits));
   }
 
   /**
@@ -105,7 +104,7 @@ export class HoldingsComponent implements OnInit {
    * @param page - number
    * @return Observable
    */
-  private _HoldingsQuery(page: number): Observable<QueryResponse> {
+  private _holdingsQuery(page: number): Observable<QueryResponse> {
     return this._holdingsApiService
       .getHoldingsByDocumentPidAndViewcode(this.documentpid, this.viewcode, page, this.holdingsPerPage);
   }

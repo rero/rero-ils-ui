@@ -78,7 +78,7 @@ export class ItemApiService extends BaseApi {
   /**
    * Item request
    * @param data - Object
-   * @return Obserable
+   * @return Observable
    */
   request(data: { item_pid: string, pickup_location_pid: string }): Observable<any> {
     return this._httpClient.post('/api/item/patron_request', data);
