@@ -33,7 +33,7 @@
           <dt class="col-sm-5 col-md-3 col-lg-2 offset-1 label-title" translate>Edition</dt>
           <dd class="col-sm-6 col-md-8 col-lg-9 mb-1">
             <ng-container *ngIf="record.metadata.document.publisher as publisher">{{ publisher }}</ng-container>
-            <ng-container *ngIf="record.metadata.document.year as year">&nbsp;({{ year }})</ng-container>)
+            <ng-container *ngIf="record.metadata.document.year as year">&nbsp;({{ year }})</ng-container>
           </dd>
         </ng-container>
         <ng-container *ngIf="record.metadata.document.identifier as identifier">
@@ -44,11 +44,10 @@
           <dt class="col-sm-5 col-md-3 col-lg-2 offset-1 label-title" translate>Published in</dt>
           <dd class="col-sm-6 col-md-8 col-lg-9 mb-1">
             {{ source.journal_title }}
-            <ng-container *ngIf="source.title || source.number">
-              &nbsp;(
-              <ng-container *ngIf="source.volume">Vol.{{ source.volume }}</ng-container>
-              <ng-container *ngIf="source.number"> &mdash; n° {{ source.number }}</ng-container>
-              )
+            <ng-container *ngIf="source.volume || source.number">
+              &nbsp;(<ng-container *ngIf="source.volume">Vol.{{ source.volume }}</ng-container>
+              <ng-container *ngIf="source.volume && source.number"> &mdash; </ng-container>
+              <ng-container *ngIf="source.number">n° {{ source.number }}</ng-container>)
             </ng-container>
           </dd>
         </ng-container>
