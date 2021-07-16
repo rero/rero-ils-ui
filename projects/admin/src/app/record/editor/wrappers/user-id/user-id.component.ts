@@ -65,6 +65,7 @@ export class UserIdComponent extends FieldWrapper implements OnInit {
       UserIdEditorComponent,
       {
         class: 'modal-lg',
+        ignoreBackdropClick: true,
         initialState: { userID: this.formControl.value }
       });
     this.user$ = this.modalRef.onHidden.pipe(
