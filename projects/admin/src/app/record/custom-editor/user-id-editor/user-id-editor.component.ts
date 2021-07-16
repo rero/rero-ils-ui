@@ -85,7 +85,7 @@ export class UserIdEditorComponent implements OnInit {
             this.fields = [
               this._formlyJsonschema.toFieldConfig(orderedJsonSchema(schema.schema), {
 
-                // post process JSONSChema7 to FormlyFieldConfig conversion
+                // post process JSONSchema7 to FormlyFieldConfig conversion
                 map: (field: FormlyFieldConfig, jsonSchema: JSONSchema7) => {
                   // selection option i.e. countries
                   if (jsonSchema.form && jsonSchema.form.options) {
