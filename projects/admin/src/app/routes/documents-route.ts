@@ -76,6 +76,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             aggregationsName: {
               organisation: _('Library')
             },
+            allowEmptySearch: false,
             aggregationsOrder: [
               'document_type',
               'author',

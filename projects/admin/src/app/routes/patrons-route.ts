@@ -102,6 +102,7 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
             },
             aggregationsExpand: ['roles', 'city', 'patron_type'],
             aggregationsOrder: ['roles', 'city', 'patron_type'],
+            allowEmptySearch: false,
             listHeaders: {
               Accept: 'application/rero+json'
             }
