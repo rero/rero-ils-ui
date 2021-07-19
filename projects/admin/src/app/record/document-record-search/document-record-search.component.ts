@@ -40,7 +40,8 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
    */
   get showLink(): boolean {
     return this.total === 0
-      && ('organisation' in this._route.snapshot.queryParams);
+      && ('organisation' in this._route.snapshot.queryParams)
+      && this._route.snapshot.queryParams.q;
   }
 
   /**
