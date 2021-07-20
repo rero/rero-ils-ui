@@ -82,7 +82,12 @@
       <dd name="pickup-location" class="col-10">
         <i class="fa fa-truck fa-flip-horizontal"></i>
         <i class="fa fa-long-arrow-right mx-1"></i>
-        {{ item.loan.pickup_location.library_name }}
+        <ng-container *ngIf="item.loan.pickup_location.pickup_name else library_name">
+          {{ item.loan.pickup_location.pickup_name }}
+        </ng-container>
+        <ng-template #library_name>
+          {{ item.loan.pickup_location.library_name }}: {{ item.loan.pickup_location.name }}
+        </ng-template>
       </dd>
     </dl>
   </div>
