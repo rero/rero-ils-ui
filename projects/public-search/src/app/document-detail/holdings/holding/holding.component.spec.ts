@@ -41,6 +41,7 @@ describe('HoldingComponent', () => {
           { label: 'default', language: 'en'}
         ]
       },
+      items_count: 5,
       holdings_type: 'serial',
       available: true,
       call_number: 'F123456',
@@ -73,7 +74,6 @@ describe('HoldingComponent', () => {
     fixture = TestBed.createComponent(HoldingComponent);
     component = fixture.componentInstance;
     component.holding = record;
-    component.itemsCount = 5;
     fixture.detectChanges();
   });
 

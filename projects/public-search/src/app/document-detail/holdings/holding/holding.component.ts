@@ -32,8 +32,6 @@ export class HoldingComponent {
   /** Is collapsed holdings */
   @Input() isCollapsed = true;
 
-  /** Items count */
-  itemsCount = 0;
   /** Authorized types of note */
   noteAuthorizedTypes: string[] = ['general_note'];
 
@@ -49,16 +47,5 @@ export class HoldingComponent {
    * @param _translateService - TranslateService
    */
   constructor(private _translateService: TranslateService) {}
-
-
-  // COMPONENT FUNCTIONS ======================================================
-  /**
-   * Handler to manage event items count emitter
-   * @param event - number : the number of items for this holding
-   */
-  eItemsCount(event: number): void {
-    this.itemsCount = event;
-  }
-
 
 }
