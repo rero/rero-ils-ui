@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
 import { ItemApiService } from '../../../api/item-api.service';
 import { QueryResponse } from '../../../record';
 
@@ -25,15 +24,13 @@ import { QueryResponse } from '../../../record';
   selector: 'public-search-items',
   templateUrl: './items.component.html'
 })
-export class ItemsComponent implements OnInit {
+export class ItemsComponent {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Holding */
   @Input() holding: any;
   /** View code */
   @Input() viewcode: string;
-  /** Event items count */
-  @Output() eItemsCount: EventEmitter<number> = new EventEmitter<number>();
 
   /** Items total */
   itemsTotal = 0;
@@ -41,12 +38,29 @@ export class ItemsComponent implements OnInit {
   page = 1;
   /** Items records */
   items = [];
+  /** is data are loading */
+  isLoading = false;
 
   /** Items per page */
-  private itemsPerPage = 10;
+  private itemsPerPage = 1;
+  /** Is items are hidden */
+  private _hidden = true;
 
 
   // GETTER & SETTER ========================================================
+
+  /** Handler to detect change on input `hidden` property */
+  @Input() set hidden(value: boolean) {
+    this._hidden = value;
+    if (!this._hidden && this.items.length === 0 && !this.isLoading) {
+      this.isLoading = true;
+      this._loadItems();
+    }
+  }
+  get hidden(): boolean {
+    return this._hidden;
+  }
+
   /**
    * Is the link `show more items` must be displayed
    * @return boolean
@@ -81,36 +95,23 @@ export class ItemsComponent implements OnInit {
     private _translateService: TranslateService
   ) { }
 
-  /** OnInit hook */
-  ngOnInit(): void {
-    this._ItemsQuery(1).subscribe((response: QueryResponse) => {
-      const total = response.total.value;
-      this.itemsTotal = total;
-      this.eItemsCount.emit(total);
-      this.items = response.hits;
-    });
-  }
-
   // COMPONENT FUNCTIONS ==================================================
   /** Handler when 'show more items' link is clicked. */
   showMore() {
     this.page++;
-    this._ItemsQuery(this.page).subscribe((response: QueryResponse) => {
-      this.items = this.items.concat(response.hits);
-    });
+    this._loadItems();
   }
 
-  /**
-   * Return selected items by page number
-   * @param page - number
-   * @return Observable
-   */
-  private _ItemsQuery(page: number): Observable<QueryResponse> {
-    return this._itemApiService.getItemsByHoldingsAndViewcode(
+  private _loadItems(): void {
+    this._itemApiService.getItemsByHoldingsAndViewcode(
       this.holding,
       this.viewcode,
-      page,
+      this.page,
       this.itemsPerPage
-    );
+    ).subscribe((response: QueryResponse) => {
+      this.itemsTotal = response.total.value;
+      this.items = this.items.concat(response.hits);
+      this.isLoading = false;
+    });
   }
 }
