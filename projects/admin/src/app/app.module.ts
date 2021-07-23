@@ -72,7 +72,7 @@ import { ItemTypesBriefViewComponent } from './record/brief-view/item-types-brie
 import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/items-brief-view.component';
 import { LibrariesBriefViewComponent } from './record/brief-view/libraries-brief-view.component';
 import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-brief-view.component';
-import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view.component';
+import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view/patrons-brief-view.component';
 import { TemplatesBriefViewComponent } from './record/brief-view/templates-brief-view.component';
 import { VendorBriefViewComponent } from './record/brief-view/vendor-brief-view.component';
 import { CirculationLogComponent } from './record/circulation-logs/circulation-log/circulation-log.component';
