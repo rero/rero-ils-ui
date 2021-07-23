@@ -23,7 +23,7 @@ import {
 import { of } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { CanUpdateGuard } from '../guard/can-update.guard';
-import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-view.component';
+import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-view/patrons-brief-view.component';
 import { PatronDetailViewComponent } from '../record/detail-view/patron-detail-view/patron-detail-view.component';
 import { BaseRoute } from './base-route';
 
