@@ -16,6 +16,7 @@
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DetailComponent, JSONSchema7, Record, RecordService, RouteInterface } from '@rero/ng-core';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { HoldingEditorComponent } from '../record/custom-editor/holding-editor/holding-editor.component';
@@ -35,6 +36,7 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
    * @return Object
    */
   getConfiguration() {
+
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
@@ -70,6 +72,20 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
               return this.populateLocationsByCurrentUserLibrary(
                 field, jsonSchema
               );
+            },
+            deleteMessage: (pid: string): Observable<string[]> => {
+              return of([
+                this._routeToolService.translateService.instant('Do you really want to delete this record?'),
+                this._routeToolService.translateService.instant('This will also delete all items and issues of the holdings.')
+              ]);
+            },
+            redirectUrl: (record: any, action: string) => {
+              switch (action) {
+                case 'delete':
+                  return of(`/records/documents/detail/${record.metadata.document.pid}`);
+                default:
+                  return of(`/records/holdings/detail/${record.metadata.pid}`);
+              }
             }
           }
         ]

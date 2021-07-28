@@ -17,6 +17,7 @@
 
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, RouteInterface } from '@rero/ng-core';
+import { Observable, of } from 'rxjs';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentEditorComponent } from '../record/custom-editor/document-editor/document-editor.component';
@@ -92,6 +93,16 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             },
             listHeaders: {
               Accept: 'application/rero+json, application/json'
+            }
+          },
+          {
+            key: 'holdings',
+            name: 'holdings',
+            deleteMessage: (pid: string): Observable<string[]> => {
+              return of([
+                this._routeToolService.translateService.instant('Do you really want to delete this record?'),
+                this._routeToolService.translateService.instant('This will also delete all items and issues of the holdings.')
+              ]);
             }
           }
         ]
