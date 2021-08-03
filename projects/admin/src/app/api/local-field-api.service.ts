@@ -53,9 +53,9 @@ export class LocalFieldApiService {
 
     return this._recordService.getRecords('local_fields', query, 1, 1).pipe(
       map((result: any) => {
-        return this._recordService.totalHits(result.hits.total) === 1
-          ? result.hits.hits[0]
-          : {};
+        return this._recordService.totalHits(result.hits.total) === 0
+          ? {}
+          : result.hits.hits[0];
       })
     );
   }
