@@ -16,19 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
+import { APP_BASE_HREF } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { ApiService, RecordService, SuggestionMetadata } from '@rero/ng-core';
 import { MainTitlePipe } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { ITypeahead } from './ITypeahead-interface';
-
-/**
- * Escape string using regular expression.
- */
-function escapeRegExp(data) {
-  return data.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-}
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +41,8 @@ export class DocumentsTypeahead implements ITypeahead {
   constructor(
     private _apiService: ApiService,
     private _recordService: RecordService,
-    private _mainTitlePipe: MainTitlePipe
+    private _mainTitlePipe: MainTitlePipe,
+    @Inject(APP_BASE_HREF) private _baseHref
   ) { }
 
   /** Get name of typeahead */
@@ -98,7 +93,7 @@ export class DocumentsTypeahead implements ITypeahead {
             return [];
           }
           results.hits.hits.map((hit: any) => {
-            documents.push(this._getDocumentRef(hit.metadata, query));
+            documents.push(this._getDocumentRef(hit.metadata));
           });
           return documents;
         }),
@@ -117,22 +112,63 @@ export class DocumentsTypeahead implements ITypeahead {
    * Returns label and $ref.
    *
    * @param metadata - the meta data.
-   * @param query - search query term.
    * @return Metadata - the label, $ref.
    */
-  private _getDocumentRef(metadata: any, query: string): SuggestionMetadata {
+  private _getDocumentRef(metadata: any): SuggestionMetadata {
     let text = this._mainTitlePipe.transform(metadata.title);
-    let truncate = false;
+
+    // Truncate text if the length of text great than maxLengthSuggestion
     if (text.length > this.maxLengthSuggestion) {
-      truncate = true;
-      text = this._mainTitlePipe.transform(metadata.title).substr(0, this.maxLengthSuggestion);
+      text = text.substr(0, this.maxLengthSuggestion) + '…';
     }
-    if (truncate) {
-      text = text + '…';
+
+    // Process identifiedBy
+    if ('identifiedBy' in metadata) {
+      const ids = [];
+      const identifiers = this._extractIdentifier(metadata.identifiedBy);
+      const keys = Object.keys(identifiers);
+      keys.forEach((key: string) => {
+        ids.push(`${key}: ${identifiers[key].join(', ')}`);
+      });
+      text += `<br><small>${ids.join(' / ')}</small>`;
     }
+    // remove last trailing slash
+    const baseHref = this._baseHref.replace(/\/$/, '');
     return {
       label: text,
-      value: this._apiService.getRefEndpoint('documents', metadata.pid)
+      value: this._apiService.getRefEndpoint('documents', metadata.pid),
+      externalLink: `${baseHref}/records/documents/detail/${metadata.pid}`
     };
+  }
+
+  /**
+   * Extract identifers of identifiedBy field
+   * @param identifiers - identifiedBy field
+   * @returns Object
+   */
+  private _extractIdentifier(identifiers: any) {
+    const availableIdentifiers = {
+      'bf:Ean': 'ISBN',
+      'bf:Isbn': 'ISBN',
+      'bf:Issn': 'ISSN',
+      'bf:IssnL': 'ISSN'
+    };
+    const keys = Object.keys(availableIdentifiers);
+    const result = {};
+    identifiers.filter(
+      (identifier: any) => keys.includes(identifier.type)
+    ).forEach((element: any) => {
+      let data = element.value;
+      const key = availableIdentifiers[element.type];
+      if (!(key in result)) {
+        result[key] = [];
+      }
+      if ('qualifier' in element) {
+        data += ` (${element.qualifier})`;
+      }
+      result[key].push(data);
+    });
+
+    return result;
   }
 }
