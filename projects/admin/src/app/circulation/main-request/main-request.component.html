@@ -18,10 +18,11 @@
 <div class="row mb-4">
   <div class="col-12 col-md-6">
     <ng-core-search-input
-      [placeholder]="placeholder"
+      [placeholder]="placeholder | translate"
       [searchText]="searchText"
       (search)="searchValueUpdated($event)"
       [focus]="searchInputFocus"
+      [disabled]="searchInputDisabled"
     ></ng-core-search-input>
   </div>
   <!-- Sorting loans -->
@@ -29,10 +30,10 @@
     <!-- collapsed ? -->
     <div class="custom-control custom-switch">
       <input class="custom-control-input" type="checkbox" id="collapse-detail"
-             (click)="toggleDetailCollapsed($event.target.checked)"
-             [checked]="isDetailCollapsed"
+        (click)="toggleDetailCollapsed($event.target.checked)"
+        [checked]="isDetailCollapsed"
       >
-      <label class="custom-control-label pr-3" for="collapse-detail">{{ 'Collapse details' | translate }}</label>
+      <label class="custom-control-label pr-3" for="collapse-detail" translate>Collapse details</label>
     </div>
     <!-- auto refresh -->
     <div class="custom-control custom-switch">
@@ -40,7 +41,7 @@
         (click)="enableAutoRefresh($event.target.checked)"
         [checked]="refreshInterval > 0"
       >
-      <label class="custom-control-label" for="auto-refresh">{{ 'Auto refresh' | translate }}</label>
+      <label class="custom-control-label" for="auto-refresh" translate>Auto refresh</label>
     </div>
     <ng-core-sort-list *ngIf="refreshInterval > 0"
       class="pl-3"

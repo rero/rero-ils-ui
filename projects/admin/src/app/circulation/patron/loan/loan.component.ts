@@ -57,6 +57,8 @@ export class LoanComponent implements OnInit, OnDestroy {
   public checkedInItems = [];
   /** Focus attribute of the search input */
   searchInputFocus = false;
+  /** Disabled attribute of the search input */
+  searchInputDisabled = false;
   /** Library PID of the logged user */
   currentLibraryPid: string;
 
@@ -193,6 +195,7 @@ export class LoanComponent implements OnInit, OnDestroy {
    */
   getItem(barcode: string) {
     this.searchInputFocus = false;
+    this.searchInputDisabled = true;
     const item = this.checkedOutItems.find(currItem => currItem.barcode === barcode);
     if (item && item.actions.includes(ItemAction.checkin)) {
       item.currentAction = ItemAction.checkin;
@@ -217,24 +220,21 @@ export class LoanComponent implements OnInit, OnDestroy {
               this._translateService.instant('Item not found'),
               this._translateService.instant('Checkout')
             );
-            this.searchText = '';
-            this.searchInputFocus = true;
+            this._resetSearchInput();
           } else {
             if (newItem.status === ItemStatus.ON_LOAN) {
               this._toastService.error(
                 this._translateService.instant('The item is already on loan'),
                 this._translateService.instant('Checkout')
               );
-              this.searchText = '';
-              this.searchInputFocus = true;
+              this._resetSearchInput();
             } else {
               if (newItem.pending_loans && newItem.pending_loans[0].patron_pid !== this.patron.pid) {
                 this._toastService.error(
                   this._translateService.instant('Checkout impossible: the item is requested by another patron'),
                   this._translateService.instant('Checkout')
                 );
-                this.searchText = '';
-                this.searchInputFocus = true;
+                this._resetSearchInput();
               } else {
                 newItem.currentAction = ItemAction.checkout;
                 this.applyItems([newItem]);
@@ -247,8 +247,7 @@ export class LoanComponent implements OnInit, OnDestroy {
             this._translateService.instant(error.message),
             this._translateService.instant('Checkout')
           );
-          this.searchText = '';
-          this.searchInputFocus = true;
+          this._resetSearchInput();
         }
       );
     }
@@ -305,7 +304,7 @@ export class LoanComponent implements OnInit, OnDestroy {
               this.checkedInItems = this.checkedInItems.filter(currItem => currItem.pid !== newItem.pid);
               this._circulationService.incrementCirculationStatistic('loans');
               // check if items was ready to pickup. if yes, then we need to decrement the counter
-              const idx = this._pickupItems.findIndex(item => item.metadata.item_pid.value === newItem.pid);
+              const idx = this._pickupItems.findIndex(item => item.metadata.item.pid === newItem.pid);
               if (idx > -1) {
                 this._pickupItems.splice(idx, 1);
                 this._circulationService.decrementCirculationStatistic('pickup');
@@ -318,9 +317,9 @@ export class LoanComponent implements OnInit, OnDestroy {
               break;
             }
           }
+          this._resetSearchInput();
         });
-        this.searchText = '';
-        this.searchInputFocus = true;
+        this._resetSearchInput();
       },
       err => {
         let errorMessage = '';
@@ -348,8 +347,7 @@ export class LoanComponent implements OnInit, OnDestroy {
             {disableTimeOut: true, closeButton: true, enableHtml: true}
           );
         }
-        this.searchText = '';
-        this.searchInputFocus = true;
+        this._resetSearchInput();
       }
     );
   }
@@ -462,6 +460,15 @@ export class LoanComponent implements OnInit, OnDestroy {
       key: 'overrideBlocking',
       label: this._translateService.instant('Override blockings'),
       value: true
+    });
+  }
+
+  /** Reset search input */
+  private _resetSearchInput(): void {
+    setTimeout(() => {
+      this.searchInputDisabled = false;
+      this.searchInputFocus = true;
+      this.searchText = '';
     });
   }
 }

@@ -31,9 +31,7 @@ import { PatronService } from '../../service/patron.service';
   templateUrl: './checkin.component.html'
 })
 export class CheckinComponent implements OnInit {
-  public placeholder: string = this._translate.instant(
-    'Please enter a patron card number or an item barcode.'
-  );
+  public placeholder = 'Please enter a patron card number or an item barcode.';
   public searchText = '';
   public patronInfo: User;
   public barcode: string;
@@ -48,7 +46,10 @@ export class CheckinComponent implements OnInit {
   }
 
   /** Focus attribute of the search input */
-  searchInputFocus = false;
+  searchInputFocus = true;
+
+  /** Disabled attribute of the search input */
+  searchInputDisabled = false;
 
   /** Constructor
    * @param _userService: UserService
@@ -74,7 +75,6 @@ export class CheckinComponent implements OnInit {
     this._patronService.currentPatron$.subscribe(
       patron => this.patronInfo = patron
     );
-    this.searchInputFocus = true;
     this.currentLibraryPid = this._loggedUser.currentLibrary;
     this.patronInfo = null;
     this.barcode = null;
@@ -96,6 +96,7 @@ export class CheckinComponent implements OnInit {
    */
   checkin(itemBarcode: string) {
     this.searchInputFocus = false;
+    this.searchInputDisabled = true;
     this._itemsService.checkin(itemBarcode, this._loggedUser.currentLibrary).subscribe(
       item => {
         // TODO: remove this when policy will be in place
@@ -104,6 +105,7 @@ export class CheckinComponent implements OnInit {
             this._translate.instant('Item or patron not found!'),
             this._translate.instant('Checkin')
           );
+          this._resetSearchInput();
           return;
         }
         if (item.hasRequests) {
@@ -133,8 +135,7 @@ export class CheckinComponent implements OnInit {
             break;
         }
         this._itemsList.unshift(item);
-        this.searchText = '';
-        this.searchInputFocus = true;
+        this._resetSearchInput();
       },
       error => {
         // If no action could be done by the '/item/checkin' api, an error will be raised.
@@ -225,6 +226,7 @@ export class CheckinComponent implements OnInit {
               );
             }
             this.isLoading = false;
+            this._resetSearchInput();
           },
           error =>
             this._toastService.error(
@@ -299,5 +301,14 @@ export class CheckinComponent implements OnInit {
         this._translate.instant('Checkin')
       );
     }
+  }
+
+  /** Reset search input */
+  private _resetSearchInput(): void {
+    setTimeout(() => {
+      this.searchInputDisabled = false;
+      this.searchInputFocus = true;
+      this.searchText = '';
+    });
   }
 }
