@@ -48,7 +48,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
   ];
 
   /** the placeholder string used on the */
-  public placeholder: string = this._translateService.instant('Please enter an item barcode.');
+  public placeholder = 'Please enter an item barcode.';
   /** search text used into the search input component */
   public searchText = '';
   /** requested items loaded */
@@ -60,7 +60,9 @@ export class MainRequestComponent implements OnInit, OnDestroy {
   /** is the requested items detail should be collapsed or not */
   public isDetailCollapsed = true;
   /** Focus attribute of the search input */
-  public searchInputFocus = false;
+  public searchInputFocus = true;
+  /** Disabled attribute of the search input */
+  public searchInputDisabled = false;
 
   /** the library pid for which load the requested items */
   private _libraryPid: string;
@@ -92,7 +94,6 @@ export class MainRequestComponent implements OnInit, OnDestroy {
       this.getRequestedLoans();
       this._enableAutoRefresh();
     }
-    this.searchInputFocus = true;
   }
 
   /** OnDestroy hook */
@@ -159,6 +160,8 @@ export class MainRequestComponent implements OnInit, OnDestroy {
     if (! searchText) {
       return null;
     }
+    this.searchInputFocus = false;
+    this.searchInputDisabled = true;
     this.searchText = searchText;
     const item = this.items.find(currItem => currItem.barcode === searchText);
     if (item === undefined) {
@@ -166,6 +169,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
         this._translateService.instant('No request corresponding to the given item has been found.'),
         this._translateService.instant('request')
       );
+      this._resetSearchInput();
     } else {
       /*const items = this.items;
       this.items = null;*/
@@ -176,11 +180,10 @@ export class MainRequestComponent implements OnInit, OnDestroy {
             this._translateService.instant('The item is ').concat(this._translateService.instant(newItem.status)),
             this._translateService.instant('request')
           );
-          this.searchText = '';
+          this._resetSearchInput();
         }
       );
     }
-    this.searchInputFocus = true;
   }
 
   /**
@@ -216,5 +219,14 @@ export class MainRequestComponent implements OnInit, OnDestroy {
   selectingSortCriteria(criteria: string) {
     this._sortCriteria = criteria;
     this._sortingRequestedLoans(this.items);
+  }
+
+  /** Reset search input */
+  private _resetSearchInput(): void {
+    setTimeout(() => {
+      this.searchInputDisabled = false;
+      this.searchInputFocus = true;
+      this.searchText = '';
+    });
   }
 }
