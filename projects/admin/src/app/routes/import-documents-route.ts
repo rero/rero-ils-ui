@@ -75,7 +75,8 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
             },
             listHeaders: {
               Accept: 'application/rero+json, application/json'
-            }
+            },
+            allowEmptySearch: false
           }
         ]
       }

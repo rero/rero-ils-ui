@@ -52,7 +52,6 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
           {
             key: this.name,
             label: 'Documents',
-            showLabel: false,
             editorSettings: {
               longMode: true,
               template: {
@@ -103,7 +102,8 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
                 this._routeToolService.translateService.instant('Do you really want to delete this record?'),
                 this._routeToolService.translateService.instant('This will also delete all items and issues of the holdings.')
               ]);
-            }
+            },
+            hideInTabs: true
           }
         ]
       }
