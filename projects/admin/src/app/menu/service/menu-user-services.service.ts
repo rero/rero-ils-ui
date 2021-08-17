@@ -48,6 +48,9 @@ export class MenuUserServicesService extends MenuBase {
   /** Inventory menu */
   private _inventoryMenu: MenuItemInterface;
 
+  /** late issue menu */
+  private _lateIssuesMenu: MenuItemInterface;
+
   /**
    * User services menu
    * @return MenuItemInterface
@@ -215,11 +218,12 @@ export class MenuUserServicesService extends MenuBase {
     this._translatedName(budgetsMenu, 'Budgets');
 
     // ----- LATE ISSUES
-    const lateIssuesMenu = acquisitionMenu.addChild('Late issues')
-    .setRouterLink(['/', 'records', 'issues'])
-    .setAttribute('id', 'late-issues-menu')
-    .setExtra('iconClass', 'fa fa-envelope-open-o');
-    this._translatedName(lateIssuesMenu, 'Late issues');
+    this._lateIssuesMenu = acquisitionMenu.addChild('Late issues')
+      .setRouterLink(['/', 'records', 'issues'])
+      .setQueryParam('library', this._userService.user.currentLibrary)
+      .setAttribute('id', 'late-issues-menu')
+      .setExtra('iconClass', 'fa fa-envelope-open-o');
+    this._translatedName(this._lateIssuesMenu, 'Late issues');
   }
 
   /**
@@ -316,6 +320,8 @@ export class MenuUserServicesService extends MenuBase {
       this._collectionsMenu.setQueryParam('library', user.currentLibrary);
       // CATALOG: DOCUMENTS
       this._documentsMenu.setQueryParam('organisation', user.currentOrganisation);
+      // ACQUISITIONS: LATE ISSUES
+      this._lateIssuesMenu.setQueryParam('library', user.currentLibrary);
       // REPORT: INVENTORY LIST
       this._inventoryMenu.setQueryParam('library', user.currentLibrary);
       // ADMIN: MY ORGANISATION
