@@ -25,4 +25,19 @@ export class PersonDetailViewComponent {
 
   /** record metadata */
   @Input() record: any;
+
+  /** record source */
+  @Input() source: string;
+
+  /** Disabled source link */
+  disabledSourceLink = ['rero'];
+
+  /**
+   * Disabled link
+   * @param source - string
+   * @returns boolean
+   */
+  disabledLink(source: string) {
+    return !this.disabledSourceLink.includes(source);
+  }
 }

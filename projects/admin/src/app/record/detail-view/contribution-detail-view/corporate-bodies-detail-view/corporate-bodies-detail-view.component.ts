@@ -25,4 +25,19 @@ export class CorporateBodiesDetailViewComponent {
 
   /** Record metadata */
   @Input() record: any;
+
+  /** Record source */
+  @Input() source: string;
+
+  /** Disabled source link */
+  disabledSourceLink = ['rero'];
+
+  /**
+   * Disabled link
+   * @param source - string
+   * @returns boolean
+   */
+  disabledLink(source: string) {
+    return !this.disabledSourceLink.includes(source);
+  }
 }

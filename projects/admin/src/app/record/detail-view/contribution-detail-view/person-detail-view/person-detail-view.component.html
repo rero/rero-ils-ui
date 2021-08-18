@@ -66,17 +66,6 @@
       [innerHtml]="record.biographical_information.join('\n') | urlActive | nl2br"
     ></dd>
   </dl>
-  <!-- PERMALINK -->
-  <dl class="row mb-0" *ngIf="record.identifier_for_person">
-    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-      Id
-    </dt>
-    <dd class="col-sm-7 col-md-8 mb-0">
-      <a href="{{ record.identifier_for_person }}">
-        {{ record.pid }}
-      </a>
-    </dd>
-  </dl>
   <!-- NAME -->
   <dl class="row mb-0" *ngIf="record.name">
     <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
@@ -106,6 +95,22 @@
     </dt>
     <dd class="col-sm-7 col-md-8 mb-0">
       {{ record.authorized_access_point }}
+    </dd>
+  </dl>
+  <!-- ID -->
+  <dl class="row mb-0" *ngIf="record.identifier">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Id
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      <ng-container *ngIf="disabledLink(source); else noLink">
+      <a href="{{ record.identifier }}">
+        {{ record.pid }}
+      </a>
+      </ng-container>
+      <ng-template #noLink>
+        {{ record.pid }}
+      </ng-template>
     </dd>
   </dl>
 </ng-container>
