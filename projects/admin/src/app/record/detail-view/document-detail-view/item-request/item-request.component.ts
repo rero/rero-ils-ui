@@ -25,7 +25,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { User, UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
-import { debounceTime, map, shareReplay } from 'rxjs/operators';
+import { debounceTime, map, shareReplay, tap } from 'rxjs/operators';
 import { ItemsService } from '../../../../service/items.service';
 import { LoanService } from '../../../../service/loan.service';
 
@@ -35,36 +35,32 @@ import { LoanService } from '../../../../service/loan.service';
 })
 export class ItemRequestComponent implements OnInit {
 
+  // COMPONENTS ATTRIBUTES ====================================================
   /** Item pid */
   itemPid: string;
-
   /** form */
   form: FormGroup = new FormGroup({});
-
   /** form fields */
   formFields: FormlyFieldConfig[];
-
   /** model */
   model: FormModel;
-
   /** patron record */
   patron: any;
-
   /** Dynamic message for can_request validator */
   canRequestMessage: string;
-
   /** On submit event */
   onSubmit: EventEmitter<any> = new EventEmitter();
-
   /** Requested item(s) */
   requestedBy$: Observable<any>;
+  /** Request in progress */
+  requestInProgress = false;
 
   /** Pickup default $ref */
   private pickupDefaultValue: string;
-
   /** Current user */
   private currentUser: User;
 
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param _modalService - BsModalService
@@ -89,9 +85,7 @@ export class ItemRequestComponent implements OnInit {
     private _itemService: ItemsService
   ) { }
 
-  /**
-   * Init
-   */
+  /** OnInit hook */
   ngOnInit() {
     this.currentUser = this._userService.user;
     const initialState: any = this._modalService.config.initialState;
@@ -103,11 +97,13 @@ export class ItemRequestComponent implements OnInit {
     this.initForm();
   }
 
+  // COMPONENTS FUNCTIONS =====================================================
   /**
    * Submit form
    * @param model - Object
    */
   submit(model: FormModel) {
+    this.requestInProgress = true;
     const body = {
       item_pid: this.itemPid,
       pickup_location_pid: model.pickupPid,
@@ -115,23 +111,25 @@ export class ItemRequestComponent implements OnInit {
       transaction_library_pid: this.currentUser.currentLibrary,
       transaction_user_pid: this.currentUser.patronLibrarian.pid
     };
-    this._http.post('/api/item/request', body).subscribe(
-      () => {
-        this.onSubmit.next();
-        this.closeModal();
-        this._toastr.success(
-          this._translateService.instant('Request registered.'),
-          this._translateService.instant('Item request')
-        );
-      },
-      () => {
-        this._toastr.error(
-          this._translateService.instant('An error has occurred. Please try again.'),
-          this._translateService.instant('Item request'),
-          { disableTimeOut: true }
-        );
-      }
-    );
+    this._http.post('/api/item/request', body)
+      .pipe(tap(() => this.requestInProgress = false))
+      .subscribe(
+        (_: unknown) => {
+          this.onSubmit.next();
+          this.closeModal();
+          this._toastr.success(
+            this._translateService.instant('Request registered.'),
+            this._translateService.instant('Item request')
+          );
+        },
+        (error: unknown) => {
+          this._toastr.error(
+            this._translateService.instant('An error has occurred. Please try again.'),
+            this._translateService.instant('Item request'),
+            { disableTimeOut: true }
+          );
+        }
+      );
   }
 
   /**

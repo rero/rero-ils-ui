@@ -59,7 +59,16 @@
         <form [formGroup]="form" (ngSubmit)="submit(model)">
           <formly-form [form]="form" [fields]="formFields" [model]="model"></formly-form>
           <div class="text-right">
-            <button id="new-request-button" class="btn btn-primary" [disabled]="!form.valid" translate>New request</button>
+            <button id="new-request-button"
+                    type="submit"
+                    class="btn btn-sm btn-primary"
+                    [disabled]="!form.valid || requestInProgress">
+              <ng-container *ngIf="!requestInProgress; else inProcess">{{ 'New request' | translate }}</ng-container>
+              <ng-template #inProcess>
+                <span class="spinner-border spinner-border-sm mr-1" role="status"></span>
+                {{ 'Request in progress' | translate }}
+              </ng-template>
+            </button>
           </div>
         </form>
       </div>
