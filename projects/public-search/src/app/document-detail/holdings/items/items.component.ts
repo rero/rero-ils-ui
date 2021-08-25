@@ -42,7 +42,7 @@ export class ItemsComponent {
   isLoading = false;
 
   /** Items per page */
-  private itemsPerPage = 1;
+  private itemsPerPage = 10;
   /** Is items are hidden */
   private _hidden = true;
 
