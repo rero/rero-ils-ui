@@ -30,6 +30,7 @@ let importFiles = [
 ];
 let rawdata = fs.readFileSync(fileName);
 let data = JSON.parse(rawdata);
+delete (data.private);
 delete (data.devDependencies);
 delete (data.dependencies);
 delete (data.scripts);
