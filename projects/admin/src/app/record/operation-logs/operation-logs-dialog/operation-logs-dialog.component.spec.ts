@@ -51,6 +51,6 @@ describe('OperationLogsDialogComponent', () => {
 
   it('should display operation history button', () => {
     const data = fixture.nativeElement.querySelector('#documents-operation-history');
-    expect(data.textContent).toBeTruthy('operation history');
+    expect(data.textContent).toContain('Operation history');
   });
 });
