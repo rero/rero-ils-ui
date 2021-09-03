@@ -51,21 +51,21 @@ describe('HoldingSharedViewComponent', () => {
 
   it('should display the call number field', () => {
     const data = fixture.nativeElement.querySelector('#holding-call-number-1');
-    expect(data.textContent).toBeTruthy('A11111');
+    expect(data.textContent).toContain('A11111');
   });
 
   it('should display the enumeration and chronology field', () => {
     const data = fixture.nativeElement.querySelector('#holding-enum-chrono-1');
-    expect(data.textContent).toBeTruthy('enum');
+    expect(data.textContent).toContain('enum');
   });
 
   it('should display the enumeration and chronology field', () => {
     const data = fixture.nativeElement.querySelector('#holding-sup-content-1');
-    expect(data.textContent).toBeTruthy('supp');
+    expect(data.textContent).toContain('supp');
   });
 
   it('should display the index field', () => {
     const data = fixture.nativeElement.querySelector('#holding-index-1');
-    expect(data.textContent).toBeTruthy('index field');
+    expect(data.textContent).toContain('index field');
   });
 });
