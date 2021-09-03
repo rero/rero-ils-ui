@@ -20,7 +20,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { ApiService, cleanDictKeys, RecordService, UniqueValidator } from '@rero/ng-core';
+import { ApiService, cleanDictKeys, RecordService, removeEmptyValues, UniqueValidator } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '@rero/shared';
 import { Library } from '../../../classes/library';
@@ -34,18 +34,40 @@ import { Subscription } from 'rxjs';
 })
 export class LibraryComponent implements OnInit, OnDestroy {
 
+  // COMPONENT ATTRIBUTES =====================================================
   /** The current library. */
   public library: Library;
-
   /** The angular form to edit the library. */
   public libForm: FormGroup;
-
   /** The current organisation pid. */
   public organisationPid: string;
 
   /** Form build event subscription to release the memory. */
   private eventForm: Subscription;
 
+
+  // GETTER & SETTER ==========================================================
+  /** Name of the library. */
+  get name() { return this.libraryForm.name; }
+  /** Address of the library. */
+  get address() { return this.libraryForm.address; }
+  /** Contact email of the library. */
+  get email() { return this.libraryForm.email; }
+  /** Code of the library. */
+  get code() { return this.libraryForm.code; }
+  /** Communication language. */
+  get communicationLanguage() { return this.libraryForm.communication_language; }
+  /** Country list */
+  get countries_iso_codes() { return this.libraryForm.countries_iso_codes; }
+  /** Hours when the library is open. */
+  get openingHours() { return this.libraryForm.opening_hours as FormArray; }
+  /** Notification settings. */
+  get notificationSettings() { return this.libraryForm.notification_settings as FormArray; }
+  /** Available communication languages */
+  get availableCommunicationLanguages() { return this.libraryForm.available_communication_languages; }
+
+
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param recordService - ng-core eventForm
@@ -70,9 +92,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
     private location: Location
   ) { }
 
-  /**
-   * Component initialization.
-   */
+  /** NgOnInit hook. */
   ngOnInit() {
     this.route.params.subscribe( (params) => {
       const loggedUser = this.userService.user;
@@ -97,14 +117,15 @@ export class LibraryComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Component destruction. */
+  /** NgOnDestroy hook. */
   ngOnDestroy() {
     this.eventForm.unsubscribe();
   }
 
+  // COMPONENT FUNCTIONS ======================================================
   /** Create the form async validators. */
   setAsyncValidator() {
-    this.libForm.controls.code.setAsyncValidators([
+    this.libraryForm.form.controls.code.setAsyncValidators([
       UniqueValidator.createValidator(
         this.recordService,
         'libraries',
@@ -112,36 +133,6 @@ export class LibraryComponent implements OnInit, OnDestroy {
         this.library.pid
       )
     ]);
-  }
-
-  /** Name of the library. */
-  get name() { return this.libraryForm.name; }
-
-  /** Address of the library. */
-  get address() { return this.libraryForm.address; }
-
-  /** Contact email of the library. */
-  get email() { return this.libraryForm.email; }
-
-  /** Code of the library. */
-  get code() { return this.libraryForm.code; }
-
-  /** Hours when the library is open. */
-  get openingHours() { return this.libraryForm.opening_hours as FormArray; }
-
-  /** Notificaition settings. */
-  get notificationSettings() {
-    return this.libraryForm.notification_settings as FormArray;
-  }
-
-  /** Communication language. */
-  get communicationLanguage() {
-    return this.libraryForm.communication_language;
-  }
-
-  /** Available communication languages */
-  get availableCommunicationLanguages() {
-    return this.libraryForm.available_communication_languages;
   }
 
   /** Form submission. */
@@ -157,10 +148,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
         this.router.navigate(['../../detail', this.library.pid], {relativeTo: this.route, replaceUrl: true});
       });
     } else {
-      const organisation = {
-        $ref: this.apiService.getRefEndpoint('organisations', this.organisationPid)
-      };
-      this.library.organisation = organisation;
+      this.library.organisation = { $ref: this.apiService.getRefEndpoint('organisations', this.organisationPid) };
       this.recordService.create('libraries', cleanDictKeys(this.library)).subscribe(record => {
         this.toastService.success(
           this.translateService.instant('Record created!'),
@@ -183,7 +171,10 @@ export class LibraryComponent implements OnInit, OnDestroy {
         day.times = [];
       }
     });
+    // NOTIFICATIONS
     formValues.notification_settings = formValues.notification_settings.filter(element => element.email !== '');
+    // ACQUISITION SETTINGS
+    formValues.acquisition_settings = removeEmptyValues(formValues.acquisition_settings);
   }
 
   /** Cancel the edition. */
@@ -193,12 +184,19 @@ export class LibraryComponent implements OnInit, OnDestroy {
     this.libraryForm.build();
   }
 
-  /** Add new opening hours. */
+  /**
+   * Add new opening hours for a specific day.
+   * @param dayIndex: the day index where to add a period time.
+   */
   addTime(dayIndex): void {
     this.libraryForm.addTime(dayIndex);
   }
 
-  /** Delete existing opening hours. */
+  /**
+   * Delete an existing opening hours.
+   * @param dayIndex: the day index where to delete.
+   * @param timeIndex: the time period index to delete.
+   */
   deleteTime(dayIndex, timeIndex): void {
     this.libraryForm.deleteTime(dayIndex, timeIndex);
   }
