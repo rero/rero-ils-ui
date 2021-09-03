@@ -70,6 +70,6 @@ describe('OperationLogsComponent', () => {
 
   it('should display operation history title', () => {
     const data = fixture.nativeElement.querySelector('h5');
-    expect(data.textContent).toBeTruthy('Operation history');
+    expect(data.textContent).toContain('Operation history');
   });
 });
