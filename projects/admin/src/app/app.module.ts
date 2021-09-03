@@ -148,6 +148,7 @@ import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-fac
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
+import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -245,7 +246,8 @@ export function appInitFactory(appInitService: AppInitService) {
     CirculationLogsComponent,
     CirculationLogsDialogComponent,
     CirculationLogComponent,
-    ItemInCollectionPipe
+    ItemInCollectionPipe,
+    CountryCodeTranslatePipe
   ],
   imports: [
     AppRoutingModule,
