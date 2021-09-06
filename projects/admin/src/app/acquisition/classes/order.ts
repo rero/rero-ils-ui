@@ -19,10 +19,99 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-export enum OrderStatus {
+import { ObjectReference } from '../../classes/core';
+
+// ORDER ======================================================================
+/** Enumeration about order status */
+export enum AcqOrderStatus {
   CANCELED = 'canceled',
   ORDERED = 'ordered',
   PENDING = 'pending',
   PARTIALLY_RECEIVED = 'partially_received',
   RECEIVED = 'received',
+}
+
+/** Enumeration about order type */
+export enum AcqOrderType {
+  MONOGRAPH = 'monograph',
+  SERIAL = 'serial',
+  STANDING_ORDER = 'standing_order',
+  MONOGRAPHIC_SET = 'monographic_set',
+  PLANNED_ORDER = 'planned_order',
+  MULTI_VOLUME = 'multi_volume'
+}
+
+/** Enumeration about note type */
+export enum AcqNoteType {
+  STAFF_NOTE = 'staff_note',
+  VENDOR_NOTE = 'vendor_note'
+}
+
+/** Interface to describe an order note */
+export class AcqNote {
+  type: AcqNoteType = null;
+  content: string = null;
+}
+
+/** Wrapping class to describe an AcqAccount */
+export class AcqOrder {
+  $schema: string = null;
+  pid: string = null;
+  reference: string = null;
+  description: string = null;
+  type: AcqOrderType = AcqOrderType.MONOGRAPH;
+  status: AcqOrderStatus = AcqOrderStatus.PENDING;
+  currency: string = null;
+  notes: Array<AcqNote> = [];
+  vendor: ObjectReference;
+  library: ObjectReference;
+  organisation: ObjectReference;
+  total_amount: number = 0;
+  order_date: Date = null;
+
+  /**
+   * Constructor
+   * @param obj - the JSON parsed object to load.
+   */
+  constructor(obj?: any){
+    Object.assign(this, obj);
+  }
+}
+
+// ORDER LINES ================================================================
+/** Enumeration about order line status */
+export enum AcqOrderLineStatus {
+  APPROVED = 'approved',
+  CANCELED = 'canceled',
+  ORDERED = 'ordered',
+  RECEIVED = 'received'
+}
+
+/** Wrapping class to describe an OrderLine */
+export class AcqOrderLine {
+  $schema: string = null;
+  pid: string = null;
+  status: AcqOrderLineStatus = AcqOrderLineStatus.APPROVED;
+  quantity: number = 0;
+  amount: number = 0;
+  discount_amount: number = 0;
+  total_amount: number = 0;
+  exchange_rate: number = 0;
+  notes: Array<AcqNote> = [];
+  order_date: Date = null;
+  reception_date: Date = null;
+
+  acq_account: ObjectReference = null;
+  acq_order: ObjectReference = null;
+  document: ObjectReference = null;
+  organisation: ObjectReference = null;
+  library: ObjectReference = null;
+
+  /**
+   * Constructor
+   * @param obj - the JSON parsed object to load.
+   */
+  constructor(obj?: any){
+    Object.assign(this, obj);
+  }
 }
