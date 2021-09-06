@@ -45,50 +45,76 @@
   </div>
 
   <!-- Account accounting informations -->
-  <div class="card my-2">
+  <div class="card my-2 accounting-infos">
     <h6 class="card-header" translate>Accounting informations</h6>
     <div class="card-body">
-      <dl class="row">
-        <dt class="col-4 label-title" translate>Allocated amount</dt>
-        <dd class="col-8 amount text-success">{{ account.allocated_amount | currency: organisation.default_currency }}</dd>
-        <dt class="col-4 label-title" translate>Distribution</dt>
-        <dd class="col-8 amount" [ngClass]="{'text-danger': account.distribution > 0}">
-          {{ account.distribution | negativeAmount | currency: organisation.default_currency }}
-        </dd>
-        <dt class="col-3" translate>Current encumbrance</dt>
-        <dt class="col-2 label-title">self</dt>
-        <dd class="col-7 amount" [ngClass]="{'text-danger': account.encumbrance_amount.self > 0}">
-          {{ account.encumbrance_amount.self | negativeAmount | currency: organisation.default_currency }}
-        </dd>
-        <dt class="offset-3 col-2 label-title">children</dt>
-        <dd class="col-7 amount" [ngClass]="{'text-danger': account.encumbrance_amount.children > 0}">
-          {{ account.encumbrance_amount.children | negativeAmount | currency: organisation.default_currency }}
-        </dd>
-        <dt class="col-3" translate>Current expenditure</dt>
-        <dt class="col-2 label-title">self</dt>
-        <dd class="col-7 amount" [ngClass]="{'text-danger': account.expenditure_amount.self > 0}">
-          {{ account.expenditure_amount.self | negativeAmount | currency: organisation.default_currency }}
-        </dd>
-        <dt class="offset-3 col-2 label-title">children</dt>
-        <dd class="col-7 amount" [ngClass]="{'text-danger': account.expenditure_amount.children > 0}">
-          {{ account.expenditure_amount.children | negativeAmount | currency: organisation.default_currency }}
-        </dd>
-        <dt class="col-9 label-title" translate>Balance</dt>
-        <dd class="col-3 amount border-top" [ngClass]="{
-          'text-success': account.remaining_balance.self > 0,
-          'text-danger': account.remaining_balance.self < 0
-        }">
-          {{ account.remaining_balance.self | currency: organisation.default_currency }}
-        </dd>
-      </dl>
-      <dl class="row mt-4">
-        <dt class="col-4 label-title" translate>Allowed encumbrance exceedance</dt>
-        <dd class="col-2">{{ account.encumbrance_exceedance.value }}%</dd>
-        <dd class="col-6 amount">({{ account.encumbrance_exceedance.amount | currency: organisation.default_currency }})</dd>
-        <dt class="col-4 label-title" translate>Allowed expenditure exceedance</dt>
-        <dd class="col-2">{{ account.expenditure_exceedance.value }}%</dd>
-        <dd class="col-6 amount">({{ account.expenditure_exceedance.amount | currency: organisation.default_currency }})</dd>
-      </dl>
+      <table class="table table-sm">
+        <tbody>
+        <tr>
+          <th colspan="2" class="main-level" translate>Allocated amount</th>
+          <td colspan="2" class="amount text-success">
+            {{ account.allocated_amount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr>
+          <th colspan="2" class="main-level" translate>Distribution</th>
+          <td colspan="2" class="amount" [ngClass]="{'text-danger': account.distribution > 0}">
+            {{ account.distribution | negativeAmount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr>
+          <th class="main-level" translate>Current encumbrance</th>
+          <th class="sub-level" translate>Self</th>
+          <td colspan="2" class="amount" [ngClass]="{'text-danger': account.encumbrance_amount.self > 0}">
+            {{ account.encumbrance_amount.self | negativeAmount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr>
+          <th></th>
+          <th class="sub-level">Children</th>
+          <td colspan="2" class="amount" [ngClass]="{'text-danger': account.encumbrance_amount.children > 0}">
+            {{ account.encumbrance_amount.children | negativeAmount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr>
+          <th class="main-level" translate>Current expenditure</th>
+          <th class="sub-level" translate>Self</th>
+          <td colspan="2" class="amount" [ngClass]="{'text-danger': account.expenditure_amount.self > 0}">
+            {{ account.expenditure_amount.self | negativeAmount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr>
+          <th></th>
+          <th class="sub-level">Children</th>
+          <td colspan="2" class="amount" [ngClass]="{'text-danger': account.expenditure_amount.children > 0}">
+            {{ account.expenditure_amount.children | negativeAmount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr class="result">
+          <th colspan="2" class="main-level" translate>Balance</th>
+          <td colspan="2" class="amount" [ngClass]="{
+              'text-success': account.remaining_balance.self > 0,
+              'text-danger': account.remaining_balance.self < 0
+            }">
+            {{ account.remaining_balance.self | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr>
+          <th colspan="2" class="main-level" translate>Allowed encumbrance exceedance</th>
+          <td class="amount percentage">{{ account.encumbrance_exceedance.value }}%</td>
+          <td class="amount">
+            {{ account.encumbrance_exceedance.amount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr>
+          <th colspan="2" class="main-level" translate>Allowed encumbrance exceedance</th>
+          <td class="percentage amount">{{ account.expenditure_exceedance.value }}%</td>
+          <td class="amount">
+            {{ account.expenditure_exceedance.amount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </ng-container>

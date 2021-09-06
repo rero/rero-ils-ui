@@ -14,22 +14,22 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div *ngIf="record$ | async as record" class="container">
-  <h1 class="mb-3">{{ record.metadata.reference }}</h1>
+<div *ngIf="order" class="container">
+  <h1 class="mb-3">{{ order.reference }}</h1>
   <section class="my-3 row">
     <!-- ORDER DETAIL (:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <div class="col-8 border rounded">
       <dl class="row my-2">
         <!-- VENDOR -->
-        <ng-container *ngIf="record.metadata.vendor">
+        <ng-container *ngIf="order.vendor">
           <dt class="col-4 label-title" translate>Vendor</dt>
-          <dd class="col-8">{{ record.metadata.vendor.pid | getRecord: 'vendors' : 'field' : 'name' | async }}</dd>
+          <dd class="col-8">{{ order.vendor.pid | getRecord: 'vendors' : 'field' : 'name' | async }}</dd>
         </ng-container>
         <!-- ORDER DATE -->
         <dt class="col-4 label-title" translate>Order date</dt>
         <dd class="col-8">
-          <ng-container *ngIf="record.metadata.order_date else notYetOrdered">
-            {{ record.metadata.order_date | dateTranslate :'shortDate' }}
+          <ng-container *ngIf="order.order_date else notYetOrdered">
+            {{ order.order_date | dateTranslate :'shortDate' }}
           </ng-container>
           <ng-template #notYetOrdered>
             <i class="text-muted" translate>Not yet ordered</i>
@@ -37,24 +37,30 @@
         </dd>
         <!-- ORDER TYPE -->
         <dt class="col-4 label-title" translate>Order type</dt>
-        <dd class="col-8">{{ record.metadata.type | translate }}</dd>
+        <dd class="col-8">{{ order.type | translate }}</dd>
         <!-- ORDER STATUS -->
         <dt class="col-4 label-title" translate>Order status</dt>
-        <dd class="col-8">{{ record.metadata.status | translate }}</dd>
+        <dd class="col-8">{{ order.status | translate }}</dd>
         <!-- DESCRIPTION -->
-        <ng-container *ngIf="record.metadata.description">
+        <ng-container *ngIf="order.description">
           <dt class="col-4 label-title" translate>Description</dt>
-          <dd class="col-8">{{ record.metadata.description }}</dd>
+          <dd class="col-8">{{ order.description }}</dd>
         </ng-container>
-        <!-- CURRENCY -->
-        <dt class="col-4 label-title" translate>Currency</dt>
-        <dd class="col-8">{{ record.metadata.currency }}</dd>
+        <!-- NOTES -->
+        <ng-container *ngIf="order.notes && order.notes.length > 0">
+          <dt class="col-4 label-title" translate>Notes</dt>
+          <dd class="col-8">
+            <a href (click)="scrollTo($event, 'notes'); notesCollapsed = false;" *ngFor="let note of order.notes">
+              <span class="badge {{ getBadgeColor(note.type) }} mr-2">{{ note.type | translate }}</span>
+            </a>
+          </dd>
+        </ng-container>
       </dl>
     </div>
     <!-- ORDER TOTAL AMOUNT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <div class="col-4 pr-0">
-      <div class="border h-100 rounded bg-light text-center" *ngIf="totalAmount$ | async as totalAmount">
-        <span class="total-amount">{{ totalAmount | currency:record.metadata.currency:'symbol' }}</span>
+      <div class="border h-100 rounded bg-light text-center">
+        <span class="total-amount">{{ order.total_amount || 0 | currency:order.currency:'symbol' }}</span>
       </div>
     </div>
   </section>
@@ -62,8 +68,32 @@
   <!-- ORDER LINES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <admin-order-lines
     class="row"
-    [order]="record"
+    [order]="order"
     [orderLines$]="orderLines$"
-    (delete)="deleteOrderLine($event)"
   ></admin-order-lines>
+
+  <!-- ORDER NOTES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <div class="row mt-3" *ngIf="order.notes && order.notes.length > 0">
+    <a id="notes"></a>
+    <div class="card container notes">
+      <div class="card-header row">
+        <h5 class="m-0">
+          <button type="button" class="btn p-0 mr-1"
+                  (click)="notesCollapsed = !notesCollapsed"
+                  [attr.aria-expanded]="!notesCollapsed"
+                  aria-controls="collapse">
+            <i [ngClass]="{ 'fa-caret-down': !notesCollapsed, 'fa-caret-right': notesCollapsed }" class="fa" aria-hidden="true"></i>
+          </button>
+          {{ order.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} }}
+          <span *ngIf="notesCollapsed" class="badge badge-secondary ml-2">{{ order.notes.length }}</span>
+        </h5>
+      </div>
+      <div class="card-body py-2" *ngIf="!notesCollapsed">
+        <div class="row note" *ngFor="let note of order.notes">
+          <div class="col-2"><span class="badge {{ getBadgeColor(note.type) }}">{{ note.type | translate }}</span></div>
+          <blockquote class="col" [innerHTML]="note.content | nl2br"></blockquote>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
