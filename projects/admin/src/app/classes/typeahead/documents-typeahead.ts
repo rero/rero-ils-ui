@@ -20,7 +20,7 @@ import { Injectable } from '@angular/core';
 import { ApiService, RecordService, SuggestionMetadata } from '@rero/ng-core';
 import { MainTitlePipe } from '@rero/shared';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { ITypeahead } from './ITypeahead-interface';
 
 /**
@@ -88,7 +88,7 @@ export class DocumentsTypeahead implements ITypeahead {
     return this._recordService
       .getRecords(
         'documents',
-        `autocomplete_title:'${query}'`,
+        `(autocomplete_title:${query})^2 OR ${query}`,
         1,
         numberOfSuggestions
       ).pipe(
@@ -101,6 +101,14 @@ export class DocumentsTypeahead implements ITypeahead {
             documents.push(this._getDocumentRef(hit.metadata, query));
           });
           return documents;
+        }),
+        catchError(e => {
+          switch (e.status) {
+            case 400:
+              return of([]);
+            default:
+              throw e;
+          }
         })
       );
   }
