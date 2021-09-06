@@ -28,7 +28,7 @@ import { AcqBudget } from '../classes/budget';
 })
 export class AcqBudgetApiService {
 
-  /** The resource name of acquisition account */
+  /** The resource name of acquisition budget */
   resourceName = 'budgets';
 
   /**
