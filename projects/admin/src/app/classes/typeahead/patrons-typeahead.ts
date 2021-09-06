@@ -19,7 +19,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { ApiService, RecordService, SuggestionMetadata } from '@rero/ng-core';
 import { of, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { PatronService } from '../../service/patron.service';
 import { ITypeahead } from './ITypeahead-interface';
 
@@ -95,6 +95,14 @@ export class PatronsTypeahead implements ITypeahead {
             });
           }
           return patrons;
+        }),
+        catchError(e => {
+          switch (e.status) {
+            case 400:
+              return of([]);
+            default:
+              throw e;
+          }
         })
       );
   }

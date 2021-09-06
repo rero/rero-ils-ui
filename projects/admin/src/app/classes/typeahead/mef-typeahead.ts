@@ -20,7 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { RecordService, SuggestionMetadata } from '@rero/ng-core';
 import { AppSettingsService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { ITypeahead } from './ITypeahead-interface';
 @Injectable({
   providedIn: 'root'
@@ -101,7 +101,7 @@ export class MefTypeahead implements ITypeahead {
       .filter((source: string) => source !== 'rero');
 
     const contributionQuery = [
-      `autocomplete_name:'${query}'`,
+      `((autocomplete_name:${query})^2 OR ${query})`,
       `AND sources:(${sources.join(' OR ')})`,
       `AND type:bf\\:${this.type}`
     ].join(' ');
@@ -126,6 +126,14 @@ export class MefTypeahead implements ITypeahead {
             }
           });
           return names;
+        }),
+        catchError(e => {
+          switch (e.status) {
+            case 400:
+              return of([]);
+            default:
+              throw e;
+          }
         })
       );
   }
