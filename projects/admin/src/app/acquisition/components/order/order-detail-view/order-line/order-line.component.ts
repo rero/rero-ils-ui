@@ -18,6 +18,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { forkJoin } from 'rxjs';
+import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
+import { AcqNote, AcqNoteType, AcqOrderLine } from '../../../../classes/order';
 
 @Component({
   selector: 'admin-order-line',
@@ -28,11 +30,9 @@ export class OrderLineComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** order line */
-  @Input() orderLine: any;
+  @Input() orderLine: AcqOrderLine;
   /** parent order */
   @Input() order: any;
-  /** Event for delete order line */
-  @Output() delete = new EventEmitter();
 
   /** order line permission */
   permissions: any;
@@ -41,20 +41,31 @@ export class OrderLineComponent implements OnInit {
   /** Is the line is collapsed */
   isCollapsed = true;
 
+  // GETTER & SETTER ==========================================================
+  /**
+   * Get a message containing the reasons why the order line cannot be deleted
+   * @return the message to display into the tooltip box
+   */
+  get deleteInfoMessage(): string {
+    return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
+  }
+
   // CONSTRUCTOR & HOOKS ======================================================
   /** Constructor
    * @param _recordPermissionService - RecordPermissionService
    * @param _recordService - RecordService
+   * @param _acqOrderApiService - AcqOrderApiService
    */
   constructor(
     private _recordPermissionService: RecordPermissionService,
-    private _recordService: RecordService
+    private _recordService: RecordService,
+    private _acqOrderApiService: AcqOrderApiService,
   ) { }
 
   /** OnInit hook */
   ngOnInit() {
-    const permissions$ = this._recordPermissionService.getPermission('acq_order_lines', this.orderLine.metadata.pid);
-    const account$ = this._recordService.getRecord('acq_accounts', this.orderLine.metadata.acq_account.pid);
+    const permissions$ = this._recordPermissionService.getPermission('acq_order_lines', this.orderLine.pid);
+    const account$ = this._recordService.getRecord('acq_accounts', this.orderLine.acq_account.pid);
     forkJoin([permissions$, account$]).subscribe(
       ([permissions, account]) => {
         this.permissions = permissions;
@@ -64,12 +75,20 @@ export class OrderLineComponent implements OnInit {
   }
 
   // COMPONENT FUNCTIONS ======================================================
-  /**
-   * Get a message containing the reasons why the order line cannot be deleted
-   * @return the message to display into the tooltip box
-   */
-  get deleteInfoMessage(): string {
-    return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
+
+  /** Delete the order line */
+  deleteOrderLine() {
+    this._acqOrderApiService.deleteOrderLine(this.orderLine);
   }
 
+  /** Get the color to use for the bullet
+   *  @param note - the note to analyze
+   */
+  getNoteColor(note: AcqNote): string {
+    switch (note.type) {
+      case AcqNoteType.STAFF_NOTE: return 'info';
+      case AcqNoteType.VENDOR_NOTE: return 'warning';
+      default: return 'secondary';
+    }
+  }
 }

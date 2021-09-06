@@ -18,21 +18,19 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { Observable } from 'rxjs';
+import { AcqOrder, AcqOrderLine } from '../../../../classes/order';
 
 @Component({
   selector: 'admin-order-lines',
-  templateUrl: './order-lines.component.html',
-  styleUrls: ['./order-lines.component.scss']
+  templateUrl: './order-lines.component.html'
 })
 export class OrderLinesComponent implements OnInit {
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** Acquisition order pid */
-  @Input() order: any;
+  @Input() order: AcqOrder;
   /** Acquisition order Line observable */
   @Input() orderLines$: Observable<Array<any>>;
-  /** Event for delete order line */
-  @Output() delete = new EventEmitter();
 
   /** record permissions */
   permissions: any;
@@ -52,17 +50,8 @@ export class OrderLinesComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._recordPermissionService.getPermission('acq_orders', this.order.metadata.pid).subscribe(
+    this._recordPermissionService.getPermission('acq_orders', this.order.pid).subscribe(
       (permissions) => this.permissions = permissions
     );
-  }
-
-  // COMPONENTS FUNCTIONS =====================================================
-  /**
-   * Delete order line
-   * @param orderLinePid: the order line pid to remove from the list
-   */
-  deleteOrderLine(orderLinePid: string) {
-    this.delete.emit(orderLinePid);
   }
 }

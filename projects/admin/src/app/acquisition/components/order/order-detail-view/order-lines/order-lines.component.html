@@ -21,7 +21,7 @@
       <a *ngIf="permissions && permissions.update.can"
          class="btn btn-sm btn-outline-primary"
          [routerLink]="['/', 'records', 'acq_order_lines', 'new']"
-         [queryParams]="{ order: order.metadata.pid }"
+         [queryParams]="{ order: order.pid }"
       >
         <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
       </a>
@@ -31,10 +31,8 @@
     <ng-container *ngIf="orderLines$ | async as orderLines; else loading">
       <ng-container *ngIf="orderLines.length > 0; else noOrderLines">
         <admin-order-line *ngFor="let orderLine of orderLines"
-                          class="row order-line"
                           [orderLine]="orderLine"
                           [order]="order"
-                          (delete)="deleteOrderLine($event)"
         ></admin-order-line>
       </ng-container>
       <ng-template #noOrderLines>
