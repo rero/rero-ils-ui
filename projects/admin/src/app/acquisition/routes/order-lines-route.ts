@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { getCurrencySymbol } from '@angular/common';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { EditorComponent, JSONSchema7, Record, RecordService, RouteInterface } from '@rero/ng-core';
-import { map } from 'rxjs/operators';
+import { EditorComponent, JSONSchema7, RouteInterface } from '@rero/ng-core';
 import { AcqOrderLineGuard } from '../../guard/acq-order-line.guard';
 import { CanUpdateGuard } from '../../guard/can-update.guard';
 import { BaseRoute } from '../../routes/base-route';
+import { OrganisationService } from '../../service/organisation.service';
 
 export class OrderLinesRoute extends BaseRoute implements RouteInterface {
 
@@ -42,10 +43,20 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
           {
             key: this.name,
             label: _('Order lines'),
+            editorSettings: {
+              longMode: true,
+            },
             canAdd: () => this._routeToolService.canSystemLibrarian(),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
-            redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_order, '/records/acq_orders/detail')
+            redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_order, '/records/acq_orders/detail'),
+            formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
+              const formOptions = jsonSchema.form;
+              if (formOptions && formOptions.fieldMap === 'amount') {
+                return this._amountSymbol(field);
+              }
+              return field;
+            }
           }
         ]
       }
@@ -62,5 +73,20 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
       $ref: this._routeToolService.apiService.getRefEndpoint('acq_orders', this._routeToolService.getRouteQueryParam('order'))
     };
     return data;
+  }
+
+  /**
+   * Make currency symbol before input
+   * @param field - FormlyFieldConfig
+   * @return FormlyFieldConfig
+   */
+  private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
+    // TODO :: This isn't the organisation currency that we need to use, it's the order related vendor currency
+    //         But how to retrieve the order from here ??? and how get quickly currency to use into
+    const service = this._routeToolService.getInjectorToken(OrganisationService);
+    field.templateOptions.addonLeft = {
+      text: getCurrencySymbol(service.organisation.default_currency, 'wide')
+    };
+    return field;
   }
 }

@@ -16,11 +16,121 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import '../../../../../../../../../node_modules/bootstrap/scss/functions';
-@import '../../../../../../../../../node_modules/bootstrap/scss/variables';
+@import '~font-awesome/scss/font-awesome';
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
 @import '/projects/admin/src/app/scss/variables';
 
-.order-canceled a {
-  text-decoration: line-through !important;
-  color: $danger !important;
+
+.order-line {
+
+  border-bottom: 1px solid $border-color;
+
+  &:hover {
+    background-color: $light;
+  }
+
+  *[class^="col-"] {
+    padding-top: map-get($spacers, 2);
+    padding-bottom: map-get($spacers, 2);
+  }
+
+  .account-number{
+    font-size: small;
+    color: $secondary;
+    font-weight: bold;
+
+    &:before {
+      content: '[';
+    }
+    &:after {
+      content: ']';
+    }
+  }
+
+  dl > * {
+    padding: 0;
+    margin: 0;
+  }
+
+  .order-canceled a {
+    text-decoration: line-through !important;
+    color: $danger !important;
+  }
+
+  /* NOTES ================================================================= */
+  .bullet-notes {
+    margin-left: map-get($spacers, 2);
+
+    .fa-bullet {
+      font-size: 0.75rem;
+      margin-left: map-get($spacers, 1);
+
+      @each $name,$color in (primary,$primary),(success,$success),(danger,$danger),(warning,$warning),(info,$info), (dark,$dark) {
+        &.bullet-#{$name} {
+          color: $color;
+        }
+      }
+    }
+  }
+
+  .note-content {
+    border-left: 2px solid $border-color;
+    padding-left: map-get($spacers, 2) !important;
+    margin-top: map-get($spacers, 1) !important;
+    font-style: italic;
+    font-size: 0.8rem;
+  }
+
+  .note-spacer {
+    margin-top: map-get($spacers, 3) !important;
+  }
+
+  /* SHOW MORE BUTTON ====================================================== */
+  .btn-shore-more {
+    border: 1px solid $border-color;
+    border-radius: 2rem;
+    height: 30px;
+    width: 30px;
+    background-color: $white;
+    margin-right: map-get($spacers, 3);
+
+    &.btn-expanded::before {
+      font-family: 'FontAwesome';
+      font-weight: 100;
+      content: " \f0d7";
+    }
+
+    &.btn-collapsed::before {
+      font-family: 'FontAwesome';
+      font-weight: 100;
+      content: " \f0da";
+    }
+  }
+
+  /* AMOUNT ================================================================ */
+  .amount {
+    border-left: 1px solid $border-color;
+    border-right: 1px solid $border-color;
+    background-color: $light;
+    text-align: right;
+    padding: map-get($spacers, 1) map-get($spacers, 2);
+
+    .total-amount {
+      font-weight: bold;
+    }
+    .computation {
+      font-size: small;
+      color: $secondary;
+    }
+  }
+
+  .status {
+    width: map-get($spacers, 4);
+    padding: map-get($spacers, 1) 0;
+  }
+
+  .order-line-content {
+    margin-left: map-get($spacers, 4); // to be align with .status width
+  }
 }

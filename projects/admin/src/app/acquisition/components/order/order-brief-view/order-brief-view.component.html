@@ -15,31 +15,25 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<article class="row">
-  <!-- first row : main elements -->
-  <div class="col-7 d-flex pl-0">
+<article class="row order-brief-view">
+  <div class="col-9 pl-0">
     <h5 class="m-0"><a [routerLink]="[detailUrl.link]">{{ record.metadata.reference }}</a></h5>
+    <div class="description" *ngIf="record.metadata.description">{{ record.metadata.description }}</div>
+    <div class="metadata">
+      {{ record.metadata.status | translate }}
+      <ng-container [ngSwitch]="record.metadata.status">
+        <ng-container *ngSwitchCase="orderStatus.ORDERED"> - {{ orderDate | dateTranslate: 'shortDate' }}</ng-container>
+        <ng-container *ngSwitchCase="orderStatus.RECEIVED"> - {{ receptionDate | dateTranslate: 'shortDate' }}</ng-container>
+      </ng-container>
+      <ng-container *ngVar="record.metadata.vendor.pid | getRecord: 'vendors': 'field': 'name' | async as vendor">
+        - {{ vendor | truncateText : 10 : '...'}}
+      </ng-container>
+    </div>
   </div>
-  <div class="col-2">
-    <span class="small" *ngIf="itemsCounter > 0">
+  <div class="col-3 ordinal-infos" *ngIf="record.metadata.total_amount > 0">
+    <div class="total-amount">{{ record.metadata.total_amount | currency : record.metadata.currency }}</div>
+    <div class="items-counter" *ngIf="itemsCounter > 0">
       {{ itemsCounter }} {{ itemsCounter | i18nPlural: {'=1': 'item', 'other': 'items'} }}
-    </span>
+    </div>
   </div>
-  <div class="col-3 text-right font-weight-bold">
-    <ng-container *ngIf="record.metadata.total_amount > 0">
-      {{ record.metadata.total_amount | currency : record.metadata.currency  }}
-    </ng-container>
-  </div>
-  <!-- order details -->
-  <dl class="row brief-view ml-1">
-    <dd class="col-12 font-italic py-2">{{ record.metadata.description }}</dd>
-    <dt class="col-3 label-title" translate>Status</dt>
-    <dd class="col-9">{{ record.metadata.status | translate }}</dd>
-    <ng-container *ngIf="orderDate">
-      <dt class="col-3 label-title" translate>Order date</dt>
-      <dd class="col-9">{{ orderDate | dateTranslate: 'shortDate' }}</dd>
-    </ng-container>
-    <dt class="col-3 label-title" translate>Vendor</dt>
-    <dd class="col-9">{{ record.metadata.vendor.pid | getRecord: 'vendors': 'field': 'name' | async }}</dd>
-  </dl>
 </article>
