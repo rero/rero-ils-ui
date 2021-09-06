@@ -20,49 +20,43 @@
 @import '/node_modules/bootstrap/scss/variables';
 @import '/projects/admin/src/app/scss/variables';
 
-.accounting-infos {
+.order-brief-view {
 
-  .card-body {
-    padding: 0;
+  .description {
+    font-style: italic;
+    margin-left: map-get($spacers, 4);  // related to .metadata margin
   }
 
-  .table {
-    margin-bottom: 0;
+  .metadata {
+    font-size: small;
+    color: $secondary;
+    font-weight: bold;
+    margin-left: map-get($spacers, 4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
-    th, td {
-      border-top: none;
+    &:before {
+      content: '[';
     }
-    tr *:first-child {
-      padding-left: map-get($spacers, 5);
+    &:after {
+      content: ']';
     }
-    tr *:last-child {
-      padding-right: map-get($spacers, 3);
-    }
-    tr:first-child * {
-      padding-top: map-get($spacers, 4);
-    }
-    tr:last-child * {
-      padding-bottom: map-get($spacers, 4);
-    }
-
-    .percentage {
-      text-align: center !important;
-    }
-
-    .amount {
-      font-family: Arial;
-      text-align: right;
-      border-left: 1px solid $border-color;
-      flex: 0 0 15%;
-      max-width: 15%;
-    }
-
-    .result {
-      border-top: 1px solid $border-color;
-      border-bottom: 1px solid $border-color;
-      background-color: $light;
-    }
-
   }
 
+  .ordinal-infos {
+    text-align: right;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    background-color: $light;
+
+    .total-amount {
+      font-weight: bold;
+    }
+    .items-counter {
+      font-size: small;
+      color: $secondary;
+      font-style: italic;
+    }
+  }
 }
