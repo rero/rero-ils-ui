@@ -19,12 +19,12 @@ import { RecordService } from '@rero/ng-core';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { forkJoin } from 'rxjs';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
-import { AcqNote, AcqNoteType, AcqOrderLine } from '../../../../classes/order';
+import { AcqNote, AcqNoteType, AcqOrderLine, AcqOrderLineStatus } from '../../../../classes/order';
 
 @Component({
   selector: 'admin-order-line',
   templateUrl: './order-line.component.html',
-  styleUrls: ['./order-line.component.scss']
+  styleUrls: ['../../../../acquisition.scss', './order-line.component.scss']
 })
 export class OrderLineComponent implements OnInit {
 
@@ -40,6 +40,8 @@ export class OrderLineComponent implements OnInit {
   account: any;
   /** Is the line is collapsed */
   isCollapsed = true;
+  /** reference to AcqOrderLineStatus */
+  orderLineStatus = AcqOrderLineStatus;
 
   // GETTER & SETTER ==========================================================
   /**

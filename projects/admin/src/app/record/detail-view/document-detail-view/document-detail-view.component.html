@@ -21,7 +21,7 @@
     translate>Import</a>
 </div>
 <!-- duplicate button -->
-<div *ngIf="record && record.metadata && record.metadata.pid" class="float-right mt-2 mb-4 n-mr-4 btn-duplicate">
+<div *ngIf="record && record.metadata && record.metadata.pid" class="float-right mt-2 mb-4 mr-n4 btn-duplicate">
   <a [routerLink]="['/records', 'documents', 'duplicate']"
     [queryParams]="{type: 'documents', pid: record.metadata.pid}"
     class="btn btn-sm btn-outline-primary"
