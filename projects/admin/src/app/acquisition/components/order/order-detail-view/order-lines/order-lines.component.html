@@ -28,7 +28,7 @@
     </div>
   </div>
   <div class="card-body p-0">
-    <ng-container *ngIf="orderLines$ | async as orderLines; else loading">
+    <ng-container *ngIf="orderLines; else loading">
       <ng-container *ngIf="orderLines.length > 0; else noOrderLines">
         <admin-order-line *ngFor="let orderLine of orderLines"
                           [orderLine]="orderLine"
