@@ -22,6 +22,12 @@
 import { ObjectReference } from '../../classes/core';
 
 // ORDER ======================================================================
+/** Interface for order recipient */
+export interface AcqAddressRecipient {
+  type: string;
+  address: string;
+}
+
 /** Enumeration about order status */
 export enum AcqOrderStatus {
   CANCELED = 'canceled',
@@ -58,7 +64,7 @@ export class AcqOrder {
   $schema: string = null;
   pid: string = null;
   reference: string = null;
-  description: string = null;
+  priority: number = 0;
   type: AcqOrderType = AcqOrderType.MONOGRAPH;
   status: AcqOrderStatus = AcqOrderStatus.PENDING;
   currency: string = null;
@@ -82,7 +88,7 @@ export class AcqOrder {
 /** Enumeration about order line status */
 export enum AcqOrderLineStatus {
   APPROVED = 'approved',
-  CANCELED = 'canceled',
+  CANCELLED = 'cancelled',
   ORDERED = 'ordered',
   RECEIVED = 'received'
 }
@@ -92,6 +98,7 @@ export class AcqOrderLine {
   $schema: string = null;
   pid: string = null;
   status: AcqOrderLineStatus = AcqOrderLineStatus.APPROVED;
+  priority: number = 0;
   quantity: number = 0;
   amount: number = 0;
   discount_amount: number = 0;
@@ -113,5 +120,28 @@ export class AcqOrderLine {
    */
   constructor(obj?: any){
     Object.assign(this, obj);
+  }
+}
+
+
+// ORDER PREVIEW
+export class AcqOrderPreview {
+  data: any;
+  preview: string;
+  message?: Array<{
+    type: string,
+    content: string
+  }>;
+
+  /**
+   * Constructor
+   * @param obj - the JSON parsed object to load.
+   */
+  constructor(obj?: any){
+    Object.assign(this, obj);
+  }
+
+  get content(): string{
+    return this.preview.substring(this.preview.indexOf('\n')+1).trim();
   }
 }

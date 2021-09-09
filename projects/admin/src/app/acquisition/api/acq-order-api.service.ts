@@ -15,11 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { RecordService, RecordUiService } from '@rero/ng-core';
+import { Record, RecordService, RecordUiService } from '@rero/ng-core';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AcqOrder, AcqOrderLine } from '../classes/order';
+import { AcqAddressRecipient, AcqOrder, AcqOrderLine, AcqOrderPreview } from '../classes/order';
+import { Notification } from '../../classes/notification';
 
 @Injectable({
   providedIn: 'root'
@@ -32,10 +34,9 @@ export class AcqOrderApiService {
 
   /** Subject emitted when an order line is deleted. The order line pid will be emitted */
   private _deletedOrderLineSubject$: Subject<AcqOrderLine> = new Subject();
-  /** already loaded order */
-  private _knownOrders: Array<AcqOrder> = [];
 
   // GETTER AND SETTER ========================================================
+  /** expose _deletedOrderLineSubject$ in 'readonly' mode */
   get deletedOrderLineSubject$(): Observable<AcqOrderLine> { return this._deletedOrderLineSubject$.asObservable(); }
 
   // CONSTRUCTOR ==============================================================
@@ -43,29 +44,68 @@ export class AcqOrderApiService {
    * Constructor
    * @param _recordService - RecordService
    * @param _recordUiService - RecordUiService
+   * @param _http - HttpClient
    */
   constructor(
     private _recordService: RecordService,
     private _recordUiService: RecordUiService,
+    private _http: HttpClient
   ) { }
 
   // SERVICE PUBLIC FUNCTIONS =================================================
-
   /**
-   * Get an order based on its pid.
-   * @param pid: the order pid
-   * @return Observable the corresponding AcqOrder object
+   * Load an order from this pid
+   * @param orderPid: the order pid
+   * @return: the corresponding AcqOrder
    */
-  getOrder(pid: string): Observable<AcqOrder> {
-    return this._recordService.getRecord(this.resourceName, pid).pipe(
-      map((record: any) => {
-        const acqOrder = new AcqOrder(record.metadata);
-        this._addKnownOrder(acqOrder);
-        return acqOrder;
-      })
+  getOrder(orderPid: string): Observable<AcqOrder> {
+    const apiUrl = `/api/${this.resourceName}/${orderPid}`;
+    return this._http.get<any>(apiUrl).pipe(
+      map((data: any) => new AcqOrder(data.metadata))
     );
   }
 
+  /**
+   * Get an order preview.
+   * @param orderPid: the order pid
+   */
+  getOrderPreview(orderPid: string): Observable<AcqOrderPreview> {
+    const apiUrl = `/api/acq_order/${orderPid}/acquisition_order/preview`;
+    return this._http.get<any>(apiUrl).pipe(
+      map((data: any) => new AcqOrderPreview(data))
+    );
+  }
+
+  /**
+   * Validate and send an order.
+   * @param orderPid: the order pid
+   * @param emails: the recipients emails address
+   */
+  sendOrder(orderPid: string, emails: Array<AcqAddressRecipient>): Observable<any> {
+    const apiUrl = `/api/acq_order/${orderPid}/send_order`;
+    return this._http.post<any>(apiUrl, {emails}).pipe(
+      map((data: any) => new Notification(data.data))
+    );
+
+  }
+
+
+  // ORDER LINES RELATED METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /**
+   * Get order lines related to an order
+   * @param orderPid: the order pid
+   * @return: an Observable of order lines
+   */
+  getOrderLines(orderPid: string): Observable<Array<AcqOrderLine>> {
+    const query = `acq_order.pid:${orderPid}`;
+    return this._recordService
+      .getRecords('acq_order_lines', query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, 'priority')
+      .pipe(
+        map((result: Record) => result.hits.hits),
+        map((hits: Array<any>) => hits.map(hit => new AcqOrderLine(hit.metadata)))
+      );
+  }
 
   /**
    * Allow to delete an order line based on its pid.
@@ -83,20 +123,5 @@ export class AcqOrderApiService {
         }
       }
     );
-  }
-
-  // SERVICE PRIVATE FUNCTIONS ================================================
-
-  /**
-   * Allow to add an order in the list of knownOrder
-   * @param order: the order to add.
-   */
-  private _addKnownOrder(order: AcqOrder) {
-    const idx = this._knownOrders.findIndex((o) => o.pid === order.pid);
-    if (idx >= 0) {
-      this._knownOrders[idx] = order;
-    } else {
-      this._knownOrders.push(order);
-    }
   }
 }
