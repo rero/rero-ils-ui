@@ -18,11 +18,12 @@ import { ViewportScroller } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Record } from '@rero/ng-core/lib/record/record';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
-import { AcqNoteType, AcqOrder, AcqOrderLine } from '../../../classes/order';
+import { AcqNoteType, AcqOrder, AcqOrderLine, AcqOrderStatus } from '../../../classes/order';
+import { PlaceOrderFormComponent } from '../place-order-form/place-order-form.component';
 
 @Component({
   selector: 'admin-acquisition-order-detail-view',
@@ -40,11 +41,30 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy, DetailRecord
   order: AcqOrder;
   /** Is order notes are collapsed */
   notesCollapsed = true;
-  /** Acquisition order Line observable */
-  orderLines$: Observable<Array<any>>;
+  /** reference to AcqOrderStatus class */
+  acqOrderStatus = AcqOrderStatus;
 
+  /** modal reference */
+  private _modalRef: BsModalRef;
   /** all component subscription */
   private _subscriptions = new Subscription();
+
+  // GETTER & SETTER ==========================================================
+  /** Get the badge color to use for a note type
+   *  @param noteType - the note type
+   */
+  getBadgeColor(noteType: AcqNoteType): string {
+    switch (noteType) {
+      case AcqNoteType.STAFF_NOTE: return 'badge-info';
+      case AcqNoteType.VENDOR_NOTE: return 'badge-warning';
+      default: return 'badge-secondary';
+    }
+  }
+
+  /** Determine if the order could be "placed/ordered" */
+  get canPlaceOrder(): boolean {
+    return this.order.status === AcqOrderStatus.PENDING && this.order.total_amount > 0;
+  }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /** Constructor
@@ -52,12 +72,14 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy, DetailRecord
    * @param _recordService - RecordService
    * @param _recordUiService - RecordUiService
    * @param _scroller - ViewportScroller
+   * @param _modalService - BsModalService
    */
   constructor(
     private _acqOrderApiService: AcqOrderApiService,
     private _recordService: RecordService,
     private _recordUiService: RecordUiService,
-    private _scroller: ViewportScroller
+    private _scroller: ViewportScroller,
+    private _modalService: BsModalService,
   ) { }
 
   /** OnInit hook */
@@ -66,19 +88,27 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy, DetailRecord
     this.record$.subscribe(
       (record: any) => {
         this.order = new AcqOrder(record.metadata);
-        const query = `acq_order.pid:${this.order.pid}`;
-        this.orderLines$ = this._recordService.getRecords(
-          'acq_order_lines', query, 1, RecordService.MAX_REST_RESULTS_SIZE,
-          undefined, undefined, undefined, 'pid'
-        ).pipe(
-          map((result: Record) => result.hits.hits),
-          map((hits: Array<any>) => hits.map(hit => new AcqOrderLine(hit.metadata)))
-        );
+
+        /* UPDATE 'EDIT' BUTTON
+         *   if the related order has the PENDING status, then a new action 'place order' button should be
+         *   added near the 'edit' button. This new button should be considered as the new primary button,
+         *   then the edit button should loose this privilege.
+         */
+        setTimeout(() => {
+          if (this.order.status === AcqOrderStatus.PENDING) {
+            const button = document.getElementById('detail-edit-button');
+            button.classList.remove('btn-primary');
+            button.classList.add('btn-outline-primary');
+          }
+        });
       }
     );
+
     // Subscription when an order line is deleted
     this._subscriptions.add(
-      this._acqOrderApiService.deletedOrderLineSubject$.subscribe((orderLine: AcqOrderLine) => this._deleteOrderLine(orderLine))
+      this._acqOrderApiService.deletedOrderLineSubject$.subscribe((orderLine: AcqOrderLine) => {
+        this.order.total_amount -= orderLine.total_amount;
+      })
     );
   }
 
@@ -98,27 +128,23 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy, DetailRecord
     this._scroller.scrollToAnchor(anchorId);
   }
 
-  /** Get the badge color to use for a note type
-   *  @param noteType - the note type
-   */
-  getBadgeColor(noteType: AcqNoteType): string {
-    switch (noteType) {
-      case AcqNoteType.STAFF_NOTE: return 'badge-info';
-      case AcqNoteType.VENDOR_NOTE: return 'badge-warning';
-      default: return 'badge-secondary';
-    }
-  }
-
-  // COMPONENT PRIVATE FUNCTIONS ==============================================
   /**
-   * Delete an order line
-   * @param orderLine - The order line to remove
+   * Open a modal dialog to allow user to validate the order.
+   * If the user submit the form (and submitting is success), then update the order to get the updated data.
    */
-  private _deleteOrderLine(orderLine: AcqOrderLine) {
-    this.order.total_amount -= orderLine.total_amount;
-    this.orderLines$ = this.orderLines$.pipe(
-      map(orderLines => orderLines.filter((line: any) => line.pid !== orderLine.pid))
-    );
+  placeOrderDialog() {
+    this._modalRef = this._modalService.show(PlaceOrderFormComponent, {
+      ignoreBackdropClick: true,
+      keyboard: true,
+      class: 'modal-lg',
+      initialState: {
+        order: this.order
+      }
+    });
+    this._modalRef.content.onOrderSentEvent.subscribe((order: AcqOrder) => {
+      if (this.order.pid === order.pid) {
+        this.order = order;
+      }
+    });
   }
-
 }
