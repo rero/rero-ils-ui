@@ -34,6 +34,20 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
   /** loaded configuration (viewcode) */
   private availableConfig = [];
 
+  /** Sort initial configuration */
+  private _options = [
+    {
+      label: _('Relevance'),
+      value: 'bestmatch',
+      defaultQuery: true
+    },
+    {
+      label: _('Name'),
+      value: 'fr_name',
+      defaultNoQuery: true
+    }
+  ];
+
   /**
    * Constructor
    * @param translateService - TranslateService
@@ -92,7 +106,26 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
               },
               listHeaders: {
                 Accept: 'application/rero+json, application/json'
-              }
+              },
+              sortOptions: [
+                {
+                  label: _('Relevance'),
+                  value: 'bestmatch',
+                  defaultNoQuery: true
+                },
+                {
+                  label: _('Date (newest)'),
+                  value: 'pub_date_new'
+                },
+                {
+                  label: _('Date (oldest)'),
+                  value: 'pub_date_old',
+                },
+                {
+                  label: _('Title'),
+                  value: 'title'
+                }
+              ]
             },
             {
               key: 'persons',
@@ -108,7 +141,8 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
                 view: `${viewcode}`,
                 type: 'bf:Person',
                 simple: 1
-              }
+              },
+              sortOptions: this._sortOptions()
             },
             {
               key: 'corporate-bodies',
@@ -124,7 +158,8 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
                 view: `${viewcode}`,
                 type: 'bf:Organisation',
                 simple: 1
-              }
+              },
+              sortOptions: this._sortOptions()
             }
           ]
         }
@@ -157,5 +192,25 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
         _('status')
       ];
     }
+  }
+
+  /**
+   * Sort configuration
+   *
+   * @returns array with sort configuration
+   */
+  private _sortOptions() {
+    const options = this._options;
+    this._translateService.onLangChange.subscribe((translate: any) => {
+      const key = options.findIndex((option: any) => option.label === 'Name');
+      switch (translate.lang) {
+        case 'de':
+          options[key].value = 'de_name';
+          break;
+        default:
+          options[key].value = 'fr_name';
+      }
+    });
+    return options;
   }
 }

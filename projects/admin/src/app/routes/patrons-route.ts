@@ -105,7 +105,19 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
             allowEmptySearch: false,
             listHeaders: {
               Accept: 'application/rero+json'
-            }
+            },
+            sortOptions: [
+              {
+                label: _('Relevance'),
+                value: 'bestmatch',
+                defaultQuery: true
+              },
+              {
+                label: _('Name'),
+                value: 'full_name',
+                defaultNoQuery: true
+              }
+            ]
           }
         ]
       }

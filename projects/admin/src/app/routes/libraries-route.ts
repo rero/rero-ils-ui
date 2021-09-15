@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { RoleGuard } from '../guard/role.guard';
@@ -64,7 +65,23 @@ export class LibrariesRoute extends BaseRoute implements RouteInterface {
                 )
               };
               return data;
-            }
+            },
+            sortOptions: [
+              {
+                label: _('Relevance'),
+                value: 'bestmatch',
+                defaultQuery: true
+              },
+              {
+                label: _('Name'),
+                value: 'name',
+                defaultNoQuery: true
+              },
+              {
+                label: _('Code'),
+                value: 'code'
+              }
+            ]
           }
         ]
       }

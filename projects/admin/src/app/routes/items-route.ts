@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DetailComponent, EditorComponent, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
 import { of } from 'rxjs';
@@ -141,6 +142,26 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
                 disableMaxRestResultsSize: true,
               },
             ],
+            sortOptions: [
+              {
+                label: _('Relevance'),
+                value: 'bestmatch',
+                defaultQuery: true,
+                defaultNoQuery: true
+              },
+              {
+                label: _('Barcode'),
+                value: 'barcode'
+              },
+              {
+                label: _('Call number'),
+                value: 'call_number'
+              },
+              {
+                label: _('Second call number'),
+                value: 'second_call_number'
+              }
+            ]
           }
         ],
       }

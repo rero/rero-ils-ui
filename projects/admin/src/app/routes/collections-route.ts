@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import {
   DetailComponent, EditorComponent, extractIdOnRef, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface
@@ -95,7 +96,19 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
             },
             listHeaders: {
               Accept: 'application/rero+json, application/json'
-            }
+            },
+            sortOptions: [
+              {
+                label: _('Relevance'),
+                value: 'bestmatch',
+                defaultQuery: true
+              },
+              {
+                label: _('Title'),
+                value: 'title',
+                defaultNoQuery: true
+              }
+            ]
           }
         ]
       }

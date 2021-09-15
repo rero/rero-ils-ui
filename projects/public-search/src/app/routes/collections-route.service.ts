@@ -84,7 +84,19 @@ export class CollectionsRouteService extends BaseRoute implements ResourceRouteI
               },
               listHeaders: {
                 Accept: 'application/rero+json, application/json'
-              }
+              },
+              sortOptions: [
+                {
+                  label: _('Relevance'),
+                  value: 'bestmatch',
+                  defaultQuery: true
+                },
+                {
+                  label: _('Title'),
+                  value: 'title',
+                  defaultNoQuery: true
+                }
+              ]
             }
           ]
         }

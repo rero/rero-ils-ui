@@ -92,7 +92,26 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             },
             listHeaders: {
               Accept: 'application/rero+json, application/json'
-            }
+            },
+            sortOptions: [
+              {
+                label: _('Relevance'),
+                value: 'bestmatch',
+                defaultNoQuery: true
+              },
+              {
+                label: _('Date (newest)'),
+                value: 'pub_date_new'
+              },
+              {
+                label: _('Date (oldest)'),
+                value: 'pub_date_old',
+              },
+                {
+                  label: _('Title'),
+                  value: 'title'
+                }
+            ]
           },
           {
             key: 'holdings',

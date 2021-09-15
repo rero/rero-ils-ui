@@ -94,7 +94,19 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
                 return this._feeAmountSymbol(field);
               }
               return field;
-            }
+            },
+            sortOptions: [
+              {
+                label: _('Relevance'),
+                value: 'bestmatch',
+                defaultQuery: true
+              },
+              {
+                label: _('Name'),
+                value: 'name',
+                defaultNoQuery: true
+              }
+            ]
           }
         ]
       }

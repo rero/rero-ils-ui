@@ -28,6 +28,8 @@
       <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Call number </dt>
       <dd class="col-sm-7 col-md-8 mb-0">
         <shared-inherited-call-number [item]="record" context="first"></shared-inherited-call-number>
+        <ng-container *ngIf="record.metadata.second_call_number">| {{ record.metadata.second_call_number }}</ng-container>
+
       </dd>
     </ng-container>
     <ng-container *ngIf="record.metadata.barcode">
