@@ -26,6 +26,20 @@ export class PersonsRoute extends BaseRoute implements RouteInterface {
   /** Route name */
   readonly name = 'persons';
 
+  /** Sort initial configuration */
+  private _options = [
+    {
+      label: _('Relevance'),
+      value: 'bestmatch',
+      defaultQuery: true
+    },
+    {
+      label: _('Name'),
+      value: 'fr_name',
+      defaultNoQuery: true
+    }
+  ];
+
   /**
    * Get Configuration
    * @return Object
@@ -56,10 +70,31 @@ export class PersonsRoute extends BaseRoute implements RouteInterface {
             aggregationsExpand: ['sources'],
             preFilters: {
               type: 'bf:Person'
-            }
+            },
+            sortOptions: this._sortOptions()
           }
         ]
       }
     };
   }
+
+  /**
+   * Sort configuration
+   *
+   * @returns array with sort configuration
+   */
+     private _sortOptions() {
+      const options = this._options;
+      this._routeToolService.translateService.onLangChange.subscribe((translate: any) => {
+        const key = options.findIndex((option: any) => option.label === 'Name');
+        switch (translate.lang) {
+          case 'de':
+            options[key].value = 'de_name';
+            break;
+          default:
+            options[key].value = 'fr_name';
+        }
+      });
+      return options;
+    }
 }

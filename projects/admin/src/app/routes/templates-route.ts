@@ -74,6 +74,18 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
             aggregationsExpand: [
               'type',
               'visibility'
+            ],
+            sortOptions: [
+              {
+                label: _('Relevance'),
+                value: 'bestmatch',
+                defaultQuery: true
+              },
+              {
+                label: _('Name'),
+                value: 'name',
+                defaultNoQuery: true
+              }
             ]
           }
         ]

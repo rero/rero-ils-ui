@@ -61,7 +61,19 @@ export class VendorsRoute extends BaseRoute implements RouteInterface {
                 )
               };
               return data;
-            }
+            },
+            sortOptions: [
+              {
+                label: _('Relevance'),
+                value: 'bestmatch',
+                defaultQuery: true
+              },
+              {
+                label: _('Name'),
+                value: 'name',
+                defaultNoQuery: true
+              }
+            ]
           }
         ]
       }
