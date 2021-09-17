@@ -18,6 +18,8 @@
 import { TranslateService } from '@ngx-translate/core';
 import { DetailComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
+import { ImportSourceApiService } from '../api/import-source-api.service';
+import { ExternalSourceSetting } from '../classes/external-source';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
 import { BaseRoute } from './base-route';
@@ -28,9 +30,24 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
   /** Route name */
   readonly name = 'import';
 
+  private _baseTypeConfig = {
+    component: DocumentsBriefViewComponent,
+    detailComponent: DocumentDetailViewComponent,
+    canAdd: () => of(false),
+    canUpdate: () => of(false),
+    canDelete: () => of(false),
+    resultsText: (hits: any) => this.getResultsText(hits),
+    aggregationsBucketSize: 10,
+    aggregationsOrder: ['document_type', 'author', 'language', 'year'],
+    aggregationsExpand: ['document_type', 'author', 'language', 'year'],
+    itemHeaders: { Accept: 'application/rero+json, application/json'},
+    listHeaders: { Accept: 'application/rero+json, application/json'},
+    allowEmptySearch: false
+  };
+
   /**
    * Constructor
-   * @param routeToolService - RouteToolService for the parent classes.
+   * @param _routeToolService - RouteToolService for the parent classes.
    * @param _translateService - TranslateService to translate the number of results.
    */
   constructor(
@@ -45,58 +62,51 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
    * @return Object
    */
   getConfiguration() {
-    return {
+    const config = {
       path: 'records/:type',
       children: [
         { path: '', component: RecordSearchPageComponent },
         { path: 'detail/:pid', component: DetailComponent }
       ],
       data: {
-        types: [
-          {
-            key: 'import_bnf',
-            label: 'BNF Importation',
-            component: DocumentsBriefViewComponent,
-            detailComponent: DocumentDetailViewComponent,
-            canAdd: () => of(false),
-            canUpdate: () => of(false),
-            canDelete: () => of(false),
-            resultsText: (hits: any) => this.getResultsText(hits),
-            aggregationsBucketSize: 10,
-            aggregationsOrder: [
-              'document_type',
-              'author',
-              'language',
-              'year'
-            ],
-            aggregationsExpand: ['document_type', 'author', 'language', 'year'],
-            itemHeaders: {
-              Accept: 'application/rero+json, application/json'
-            },
-            listHeaders: {
-              Accept: 'application/rero+json, application/json'
-            },
-            allowEmptySearch: false
-          }
-        ]
+        types: []
       }
     };
+    this._routeToolService.injector.get(ImportSourceApiService)
+      .getSources()
+      .subscribe((sources: Array<ExternalSourceSetting>) => {
+        sources.forEach((source: ExternalSourceSetting) => {
+          const sourceConfig = this._loadConfigSource(source);
+          config.data.types.push(sourceConfig);
+        });
+      });
+    return config;
   }
+
   /**
-   *
+   * Get the string used to display the search result number.
    * @param hits list of hit results.
    * @return observable of the string representation of the number of results.
    */
   getResultsText(hits: any): Observable<string> {
     const total = this._routeToolService.recordService.totalHits(hits.total);
-    if (total === 0) {
-      return this._translateService.stream('no result');
-    }
-    return this._translateService.stream('{{ total }} results of {{ remoteTotal }}',
-      {
-        total,
-        remoteTotal: hits.remote_total
-      }
-    );
+    return (total === 0)
+      ? this._translateService.stream('no result')
+      : this._translateService.stream('{{ total }} results of {{ remoteTotal }}', {
+          total, remoteTotal: hits.remote_total
+        });
+  }
+
+  /**
+   * Allow to build the external source configuration
+   * @param source
+   * @private
+   */
+  private _loadConfigSource(source: ExternalSourceSetting) {
+    const sourceConfig = {
+      key: source.getImportEndpoint(),
+      label: source.label
+    };
+    return {...this._baseTypeConfig, ...sourceConfig};
   }
 }

@@ -297,13 +297,13 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
    */
    private _extractAndFormatQueryParams(identifier: any): string {
     const query = [];
-    const type = identifier.type.replace(/:/g, '\\:');
-    const value = identifier.value.replace(/:/g, '\\:');
-    query.push(`identifiedBy.type:${type}`);
-    query.push(`identifiedBy.value:${value}`);
+    /* const type = identifier.type.replace(/:/g, '\\:');
+    const value = identifier.value.replace(/:/g, '\\:'); */
+    query.push(`identifiedBy.type:"${identifier.type}"`);
+    query.push(`identifiedBy.value:"${identifier.value}"`);
     if (identifier.source) {
-      const source = identifier.source.replace(/:/g, '\\:');
-      query.push(`identifiedBy.source:${source}`);
+      /* const source = identifier.source.replace(/:/g, '\\:'); */
+      query.push(`identifiedBy.source:"${identifier.source}"`);
     }
     return `(${query.join(' AND ')})`;
   }
