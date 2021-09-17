@@ -25,7 +25,7 @@
     <h5 class="mb-0 card-title">
       <a
         name="document-title"
-        [routerLink]="['/records', type === 'import_bnf' ? 'import_bnf': 'documents', 'detail', record.metadata.pid]">
+        [routerLink]="['/records', type.startsWith('import_') ? type: 'documents', 'detail', record.metadata.pid]">
         <ng-container *ngIf="record.metadata.ui_title_text else mainTitle">
           {{ record.metadata.ui_title_text }}
         </ng-container>
@@ -57,7 +57,7 @@
       <!-- shared part -->
       <shared-part-of [record]="record"></shared-part-of>
       <!-- availability -->
-      <div *ngIf="type !== 'import_bnf' && record.metadata.type !== 'ebook'">
+      <div *ngIf="!type.startsWith('import_') && record.metadata.type !== 'ebook'">
         <i class="fa fa-circle text-{{ record.metadata.available ? 'success' : 'danger' }}" aria-hidden="true"></i>&nbsp;
         <span translate *ngIf="record.metadata.available">available</span>
         <span translate *ngIf="!record.metadata.available">not available</span>
