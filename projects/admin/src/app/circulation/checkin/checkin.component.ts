@@ -35,7 +35,6 @@ export class CheckinComponent implements OnInit {
   public searchText = '';
   public patronInfo: User;
   public barcode: string;
-  public isLoading = false;
   currentLibraryPid: string;
 
   private _loggedUser: User;
@@ -152,7 +151,6 @@ export class CheckinComponent implements OnInit {
   getPatronInfo(barcode: string) {
     if (barcode) {
       this.barcode = barcode;
-      this.isLoading = true;
       this._patronService.getPatron(barcode).pipe(
         map(patron => {
           if (patron) {
@@ -160,7 +158,7 @@ export class CheckinComponent implements OnInit {
           }
         })
       ).subscribe(
-        () => this.isLoading = false,
+        () => null,
         (error) => {
             this._toastService.error(
               error.message,
@@ -179,7 +177,6 @@ export class CheckinComponent implements OnInit {
    */
   getPatronOrItem(barcode: string) {
     if (barcode) {
-      this.isLoading = true;
       this._recordService
         .getRecords('patrons', `${barcode}`, 1, 2, [], {simple: 1, roles: 'patron'})
         .pipe(
@@ -225,7 +222,6 @@ export class CheckinComponent implements OnInit {
                 ['/circulation', 'patron', patron.patron.barcode[0], 'loan']
               );
             }
-            this.isLoading = false;
             this._resetSearchInput();
           },
           error =>
