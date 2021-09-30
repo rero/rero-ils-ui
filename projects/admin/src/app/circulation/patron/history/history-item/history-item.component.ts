@@ -36,9 +36,6 @@ export class HistoryItemComponent implements OnInit {
   /** Document linked to the loan */
   document: any;
 
-  /** is loading */
-  isLoading = false;
-
   /** Is collapsed */
   isCollapsed = true;
 

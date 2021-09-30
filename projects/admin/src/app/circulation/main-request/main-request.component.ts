@@ -53,8 +53,6 @@ export class MainRequestComponent implements OnInit, OnDestroy {
   public searchText = '';
   /** requested items loaded */
   public items = null;
-  /** detect if the requested items are loading */
-  public isLoading = false;
   /** the interval (in millis) between 2 calls of requested items (0 = no refresh) */
   public refreshInterval = 0;
   /** is the requested items detail should be collapsed or not */
@@ -145,10 +143,8 @@ export class MainRequestComponent implements OnInit, OnDestroy {
 
   /** Get the requested loans for the library of the current user */
   getRequestedLoans() {
-   this.isLoading = true;
    this._itemsService.getRequestedLoans(this._libraryPid).subscribe(items => {
      this._sortingRequestedLoans(items);
-     this.isLoading = false;
    });
   }
 

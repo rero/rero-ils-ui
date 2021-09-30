@@ -15,7 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <h4 translate>Checkout/checkin</h4>
-<section *ngIf="!isLoading; else loading" class="content">
+<section class="content">
   <div class="row">
     <div class="col col-md-6 mb-4">
       <ng-core-search-input
@@ -42,9 +42,3 @@
     </div>
   </div>
 </section>
-
-<ng-template #loading>
-  <div class="text-center my-5">
-    <i class="fa fa-spin fa-spinner fa-2x"></i>
-  </div>
-</ng-template>

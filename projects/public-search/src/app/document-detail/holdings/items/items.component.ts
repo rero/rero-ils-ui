@@ -38,8 +38,6 @@ export class ItemsComponent {
   page = 1;
   /** Items records */
   items = [];
-  /** is data are loading */
-  isLoading = false;
 
   /** Items per page */
   private itemsPerPage = 10;
@@ -52,8 +50,7 @@ export class ItemsComponent {
   /** Handler to detect change on input `hidden` property */
   @Input() set hidden(value: boolean) {
     this._hidden = value;
-    if (!this._hidden && this.items.length === 0 && !this.isLoading) {
-      this.isLoading = true;
+    if (!this._hidden && this.items.length === 0) {
       this._loadItems();
     }
   }
@@ -111,7 +108,6 @@ export class ItemsComponent {
     ).subscribe((response: QueryResponse) => {
       this.itemsTotal = response.total.value;
       this.items = this.items.concat(response.hits);
-      this.isLoading = false;
     });
   }
 }

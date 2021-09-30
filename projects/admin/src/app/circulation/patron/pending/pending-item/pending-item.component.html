@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="item && document; else loading">
+<ng-container *ngIf="item && document">
   <!-- FIRST ROW : barcode, title, availability, action button -->
   <div class="col-2">
     <button type="button" class="pl-0 pt-0 btn"
@@ -63,7 +63,3 @@
     </dl>
   </div>
 </ng-container>
-
-<ng-template #loading>
-  <i class="fa fa-spin fa-spinner"></i>
-</ng-template>

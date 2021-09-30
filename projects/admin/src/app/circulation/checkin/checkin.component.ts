@@ -35,15 +35,10 @@ export class CheckinComponent implements OnInit {
   public searchText = '';
   public patronInfo: User;
   public barcode: string;
-  public isLoading = false;
   currentLibraryPid: string;
 
   private _loggedUser: User;
-  private _itemsList = [];
-
-  public get items() {
-    return this._itemsList;
-  }
+  items = [];
 
   /** Focus attribute of the search input */
   searchInputFocus = true;
@@ -134,7 +129,7 @@ export class CheckinComponent implements OnInit {
             }
             break;
         }
-        this._itemsList.unshift(item);
+        this.items.unshift(item);
         this._resetSearchInput();
       },
       error => {
@@ -152,7 +147,6 @@ export class CheckinComponent implements OnInit {
   getPatronInfo(barcode: string) {
     if (barcode) {
       this.barcode = barcode;
-      this.isLoading = true;
       this._patronService.getPatron(barcode).pipe(
         map(patron => {
           if (patron) {
@@ -160,7 +154,7 @@ export class CheckinComponent implements OnInit {
           }
         })
       ).subscribe(
-        () => this.isLoading = false,
+        () => {},
         (error) => {
             this._toastService.error(
               error.message,
@@ -179,7 +173,6 @@ export class CheckinComponent implements OnInit {
    */
   getPatronOrItem(barcode: string) {
     if (barcode) {
-      this.isLoading = true;
       this._recordService
         .getRecords('patrons', `${barcode}`, 1, 2, [], {simple: 1, roles: 'patron'})
         .pipe(
@@ -225,7 +218,6 @@ export class CheckinComponent implements OnInit {
                 ['/circulation', 'patron', patron.patron.barcode[0], 'loan']
               );
             }
-            this.isLoading = false;
             this._resetSearchInput();
           },
           error =>
@@ -285,7 +277,7 @@ export class CheckinComponent implements OnInit {
           const library_code = item.loan.item_destination.library_code;
           const location_name = item.loan.item_destination.location_name;
           message += ` (${this._translate.instant('to')} ${library_code}:${location_name})`;
-          this._itemsList.unshift(item); // Display item info
+          this.items.unshift(item); // Display item info
         }
       },
       () => {

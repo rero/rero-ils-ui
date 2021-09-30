@@ -27,9 +27,6 @@ export class PendingComponent implements OnInit {
   /** Array of loans */
   loans: [];
 
-  /** Is loading */
-  isLoading = false;
-
   /**
    * Constructor
    * @param _patronService - PatronService
@@ -45,7 +42,6 @@ export class PendingComponent implements OnInit {
         this._patronService.getItemsRequested(patron.pid)
         .subscribe(loans => {
           this.loans = loans;
-          this.isLoading = true;
         });
       }
     });

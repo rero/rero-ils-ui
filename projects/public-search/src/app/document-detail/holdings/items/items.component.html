@@ -16,7 +16,6 @@
 -->
 <ng-container *ngIf="!hidden">
   <div class="card-body p-2">
-    <ng-container *ngIf="!isLoading; else loading">
       <ng-container *ngIf="items.length > 0; else noItems">
         <public-search-item
           *ngFor="let item of items; let index = index"
@@ -32,14 +31,8 @@
           <small>({{ hiddenItems }})</small>
         </ng-container>
       </ng-container>
-    </ng-container>
   </div>
 </ng-container>
-
-<ng-template #loading>
-  <div class="pl-4"><i class="fa fa-spin fa-spinner"></i></div>
-</ng-template>
-
 
 <ng-template #noItems>
   <div class="card-body pl-4" translate>No item received.</div>
