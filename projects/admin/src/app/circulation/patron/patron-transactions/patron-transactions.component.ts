@@ -36,8 +36,6 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   // COMPONENTS ATTRIBUTES ===============================================================
   /** Subscription to PatronTransaction.service.ts --> patronTransactionByPatronSubject */
   patronTransactionSubscription$: Subscription;
-  /** boolean to know if we need to display a spinner */
-  isLoading = true;
   /** all tab reference array */
   tabs = {
     engagedFees: {
@@ -106,7 +104,6 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
             this.tabs.overduePreviewFees.totalAmount = overdues.reduce((acc, overdue) => acc + overdue.fees.total, 0);
           }
         );
-        this.isLoading = false;
       }
     });
   }

@@ -14,8 +14,8 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section *ngIf="isLoading; else loading" class="content">
-  <div *ngIf="loans.length > 0; else noPickup">
+<section class="content">
+  <div *ngIf="loans && loans.length > 0; else noPickup">
     <!-- HEADER -->
     <div class="row p-2 mb-1 bg-dark rounded text-light row">
       <div class="col-2" translate>Item</div>
@@ -29,10 +29,4 @@
 
 <ng-template #noPickup>
   {{ 'No items' | translate }}
-</ng-template>
-
-<ng-template #loading>
-  <div class="text-center my-5">
-    <i class="fa fa-spin fa-spinner fa-2x"></i>
-  </div>
 </ng-template>

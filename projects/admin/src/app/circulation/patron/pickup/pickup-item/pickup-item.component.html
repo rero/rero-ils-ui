@@ -14,7 +14,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="item && loan; else loading">
+<ng-container *ngIf="item && loan">
   <div class="col-2">
     <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
   </div>
@@ -41,7 +41,3 @@
   </div>
   <div class="col-2">-<!-- TODO :: display the computed to_pick_up_until_date --></div>
 </ng-container>
-
-<ng-template #loading>
-  <i class="fa fa-spin fa-spinner"></i>
-</ng-template>

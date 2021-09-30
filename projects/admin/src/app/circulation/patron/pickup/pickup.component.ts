@@ -26,8 +26,6 @@ export class PickupComponent implements OnInit {
 
   /** Loans */
   loans: [];
-  /** is the component is loading */
-  isLoading = false;
 
   /**
    * Constructor
@@ -42,7 +40,6 @@ export class PickupComponent implements OnInit {
         this._patronService.getItemsPickup(patron.pid)
         .subscribe(loans => {
           this.loans = loans;
-          this.isLoading = true;
         });
       }
     });

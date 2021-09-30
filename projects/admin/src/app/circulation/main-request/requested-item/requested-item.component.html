@@ -16,7 +16,7 @@
 -->
 
 <div class="row p-2 mb-1 align-middle item"
-     *ngIf="document != null else loading"
+     *ngIf="document != null"
      [ngClass]="getCallout()"
      id="request-{{item.barcode}}"
   >
@@ -93,8 +93,3 @@
   </div>
 
 </div>
-<ng-template #loading>
-  <div class="row p-2 mb-1 border rounded item">
-    <i class="fa fa-spinner fa-spin fa-fw"></i>
-  </div>
-</ng-template>

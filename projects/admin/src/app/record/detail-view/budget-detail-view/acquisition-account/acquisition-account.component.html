@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="row mt-3" *ngIf="account && permissions else loading">
+<div class="row mt-3" *ngIf="account && permissions">
   <div class="col-6 offset-1">
     <h5 class="mb-0">{{ account.metadata.name }}</h5>
     {{ account.metadata.description }}
@@ -43,6 +43,3 @@
     </ng-template>
   </div>
 </div>
-<ng-template #loading>
-  <i class="fa fa-spinner"></i>
-</ng-template>

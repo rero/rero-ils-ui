@@ -14,7 +14,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div *ngIf="item && loan; else loading" class="col">
+<div *ngIf="item && loan" class="col">
   <!-- Basic loan informations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <div class="row">
     <div class="col-sm-6 position-relative">
@@ -123,7 +123,3 @@
     </section>
   </div>
 </div>
-
-<ng-template #loading>
-  <i class="fa fa-spin fa-spinner"></i>
-</ng-template>

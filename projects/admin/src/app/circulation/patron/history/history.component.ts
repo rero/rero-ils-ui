@@ -26,8 +26,6 @@ export class HistoryComponent implements OnInit {
 
   /** history Loans */
   loans = [];
-  /** is loading */
-  isLoading = false;
 
   /**
    * Constructor
@@ -47,7 +45,6 @@ export class HistoryComponent implements OnInit {
         this._patronService.getHistory(patron.pid).subscribe(
           (loans) => {
             this.loans = loans;
-            this.isLoading = true;
           });
       }
     });

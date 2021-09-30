@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="orderLine && permissions else loading">
+<ng-container *ngIf="orderLine && permissions">
   <div class="row p-2 mb-1 border rounded align-middle">
     <!-- DOCUMENT -->
     <ng-container *ngIf="orderLine.metadata.document.pid | getRecord: 'documents' | async as document">
@@ -69,6 +69,3 @@
     </div>
   </div>
 </ng-container>
-<ng-template #loading>
-  <i class="fa fa-spin fa-spinner"></i>
-</ng-template>

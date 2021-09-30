@@ -49,8 +49,6 @@ export class LoanComponent implements OnInit, OnDestroy {
   public searchText = '';
   /** Current patron */
   public patron: any;
-  /** Is loading */
-  public isLoading = false;
   /** List of checked out items */
   public checkedOutItems = [];
   /** List of checked in items */
@@ -143,7 +141,6 @@ export class LoanComponent implements OnInit, OnDestroy {
     this._subscription.add(this._patronService.currentPatron$.subscribe((patron: any) => {
       this.patron = patron;
       if (patron) {
-        this.isLoading = true;
         this.patron.displayPatronMode = true;
 
         const loanedItems$ = this._patronService.getItems(patron.pid, this._sortCriteria);
@@ -154,7 +151,6 @@ export class LoanComponent implements OnInit, OnDestroy {
             // call the detail item service to get full data about it
             loanedItems.map((item: any) => item.loading = true);
             this.checkedOutItems = loanedItems;
-            this.isLoading = false;
             // for each checkedOutElement call the detail item service.
             loanedItems.forEach((data: any, index) => {
               this._patronService.getItem(data.barcode).subscribe(item => loanedItems[index] = item);

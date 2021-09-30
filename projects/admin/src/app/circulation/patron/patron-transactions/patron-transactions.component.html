@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section *ngIf="!isLoading; else loading" class="content">
+<section class="content">
 
   <div class="vertical-tabs-panes border row">
     <!-- vertical tabs list -->
@@ -117,8 +117,3 @@
 <ng-template #noTransaction translate>No pending fee for this patron</ng-template>
 <ng-template #noOverdueTransaction translate>No overdue fees for this patron</ng-template>
 <ng-template #noHistory translate>No fee history for this patron</ng-template>
-<ng-template #loading>
-  <div class="text-center my-5">
-    <i class="fa fa-spin fa-spinner fa-2x"></i>
-  </div>
-</ng-template>

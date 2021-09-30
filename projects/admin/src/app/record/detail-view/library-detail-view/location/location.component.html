@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="permissions else loading">
+<ng-container *ngIf="permissions">
   <div class="col">
     <a [routerLink]="['/records/locations/detail', location.metadata.pid]">{{ location.metadata.name }}</a>
   </div>
@@ -50,6 +50,3 @@
     </div>
   </div>
 </ng-container>
-<ng-template #loading>
-  <i class="fa fa-spinner"></i>
-</ng-template>
