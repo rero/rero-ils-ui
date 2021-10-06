@@ -1,11 +1,21 @@
 # Changelog
 
+## [v0.17.1](https://github.com/rero/rero-ils-ui/tree/v0.17.1) (2021-10-06)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.17.0...v0.17.1)
+
+**Merged pull requests:**
+
+- circulation: remove loading wheels [\#714](https://github.com/rero/rero-ils-ui/pull/714) ([jma](https://github.com/jma))
+- document: fix wrong URL on collection [\#710](https://github.com/rero/rero-ils-ui/pull/710) ([Garfield-fr](https://github.com/Garfield-fr))
+
 ## [v0.17.0](https://github.com/rero/rero-ils-ui/tree/v0.17.0) (2021-09-30)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.16.13...v0.17.0)
 
 **Merged pull requests:**
 
+- release: v0.17.0 [\#713](https://github.com/rero/rero-ils-ui/pull/713) ([iGormilhit](https://github.com/iGormilhit))
 - translations: complete v0.17.0 translations [\#712](https://github.com/rero/rero-ils-ui/pull/712) ([iGormilhit](https://github.com/iGormilhit))
 - translations: translate v0.17.0 [\#708](https://github.com/rero/rero-ils-ui/pull/708) ([iGormilhit](https://github.com/iGormilhit))
 - contributions: remove link on source title [\#695](https://github.com/rero/rero-ils-ui/pull/695) ([Garfield-fr](https://github.com/Garfield-fr))
@@ -29,10 +39,6 @@
 ## [v0.16.12](https://github.com/rero/rero-ils-ui/tree/v0.16.12) (2021-08-26)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.16.11...v0.16.12)
-
-**Closed issues:**
-
-- The README is not up to date [\#596](https://github.com/rero/rero-ils-ui/issues/596)
 
 **Merged pull requests:**
 
@@ -123,7 +129,6 @@
 - items: add temporary location field [\#652](https://github.com/rero/rero-ils-ui/pull/652) ([Garfield-fr](https://github.com/Garfield-fr))
 - global: fix HTML copyright [\#651](https://github.com/rero/rero-ils-ui/pull/651) ([zannkukai](https://github.com/zannkukai))
 - ILL requests: fix public view [\#650](https://github.com/rero/rero-ils-ui/pull/650) ([zannkukai](https://github.com/zannkukai))
-- Translations update from Weblate [\#649](https://github.com/rero/rero-ils-ui/pull/649) ([weblate](https://github.com/weblate))
 - circulation: display position into request queue [\#647](https://github.com/rero/rero-ils-ui/pull/647) ([zannkukai](https://github.com/zannkukai))
 - documentation: remove duplicate label rule [\#646](https://github.com/rero/rero-ils-ui/pull/646) ([iGormilhit](https://github.com/iGormilhit))
 - documentation: extend gh-actions labeler rules [\#644](https://github.com/rero/rero-ils-ui/pull/644) ([iGormilhit](https://github.com/iGormilhit))
@@ -224,6 +229,7 @@
 - release: v0.14.0 [\#595](https://github.com/rero/rero-ils-ui/pull/595) ([jma](https://github.com/jma))
 - documents: fix typo in subject process pipe [\#587](https://github.com/rero/rero-ils-ui/pull/587) ([Garfield-fr](https://github.com/Garfield-fr))
 - translations: translate v0.14.0 [\#586](https://github.com/rero/rero-ils-ui/pull/586) ([iGormilhit](https://github.com/iGormilhit))
+- translations: fix string extraction problem [\#583](https://github.com/rero/rero-ils-ui/pull/583) ([zannkukai](https://github.com/zannkukai))
 - documents: update subject display [\#579](https://github.com/rero/rero-ils-ui/pull/579) ([Garfield-fr](https://github.com/Garfield-fr))
 - documents: validate and check the identifier [\#568](https://github.com/rero/rero-ils-ui/pull/568) ([Garfield-fr](https://github.com/Garfield-fr))
 - patrons: add a role async validator [\#567](https://github.com/rero/rero-ils-ui/pull/567) ([jma](https://github.com/jma))
@@ -410,6 +416,7 @@
 
 **Merged pull requests:**
 
+- release 0.6.0 [\#396](https://github.com/rero/rero-ils-ui/pull/396) ([jma](https://github.com/jma))
 - patron: improve performance of the patron account display [\#395](https://github.com/rero/rero-ils-ui/pull/395) ([zannkukai](https://github.com/zannkukai))
 - routing: fix dynamic routing [\#393](https://github.com/rero/rero-ils-ui/pull/393) ([Garfield-fr](https://github.com/Garfield-fr))
 - refactors user resource [\#389](https://github.com/rero/rero-ils-ui/pull/389) ([jma](https://github.com/jma))
@@ -422,6 +429,7 @@
 - app: standardize initialization [\#377](https://github.com/rero/rero-ils-ui/pull/377) ([Garfield-fr](https://github.com/Garfield-fr))
 - collection: create public and professional views  [\#376](https://github.com/rero/rero-ils-ui/pull/376) ([AoNoOokami](https://github.com/AoNoOokami))
 - document: allow record duplication [\#367](https://github.com/rero/rero-ils-ui/pull/367) ([Garfield-fr](https://github.com/Garfield-fr))
+- application: compatibility with Elasticsearch 7 [\#366](https://github.com/rero/rero-ils-ui/pull/366) ([Garfield-fr](https://github.com/Garfield-fr))
 
 ## [v0.5.2](https://github.com/rero/rero-ils-ui/tree/v0.5.2) (2020-09-21)
 
@@ -436,7 +444,6 @@
 - translations: for release 0.5.2 [\#375](https://github.com/rero/rero-ils-ui/pull/375) ([jma](https://github.com/jma))
 - form: improve toogle switch [\#372](https://github.com/rero/rero-ils-ui/pull/372) ([Garfield-fr](https://github.com/Garfield-fr))
 - translations: fix show more item link [\#370](https://github.com/rero/rero-ils-ui/pull/370) ([zannkukai](https://github.com/zannkukai))
-- application: compatibility with Elasticsearch 7 [\#366](https://github.com/rero/rero-ils-ui/pull/366) ([Garfield-fr](https://github.com/Garfield-fr))
 
 ## [v0.5.1](https://github.com/rero/rero-ils-ui/tree/v0.5.1) (2020-09-14)
 
@@ -506,14 +513,20 @@
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.2.1...v0.3.0)
 
+**Implemented enhancements:**
+
+- Replace checkbox by switch [\#37](https://github.com/rero/rero-ils-ui/issues/37)
+
 **Closed issues:**
 
+- Redirect URL parameter page manually set [\#75](https://github.com/rero/rero-ils-ui/issues/75)
 - Flash messages should always start with a capitalized initial [\#73](https://github.com/rero/rero-ils-ui/issues/73)
 
 **Merged pull requests:**
 
 - release: v0.3.0 [\#297](https://github.com/rero/rero-ils-ui/pull/297) ([iGormilhit](https://github.com/iGormilhit))
 - package: upgrade ng-core to version 0.5.0 [\#296](https://github.com/rero/rero-ils-ui/pull/296) ([Garfield-fr](https://github.com/Garfield-fr))
+- circulation: adapt loan object [\#294](https://github.com/rero/rero-ils-ui/pull/294) ([AoNoOokami](https://github.com/AoNoOokami))
 - Translate '/projects/public-search/src/assets/rero-ils-ui/public-search/i18n/en\_US.json' in 'en' [\#293](https://github.com/rero/rero-ils-ui/pull/293) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
 - Translate '/projects/admin/src/assets/rero-ils-ui/admin/i18n/en\_US.json' in 'en' [\#292](https://github.com/rero/rero-ils-ui/pull/292) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
 - Translate '/projects/admin/src/assets/rero-ils-ui/admin/i18n/en\_US.json' in 'fr' [\#291](https://github.com/rero/rero-ils-ui/pull/291) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
@@ -582,6 +595,7 @@
 - request: fix pickup location update [\#258](https://github.com/rero/rero-ils-ui/pull/258) ([AoNoOokami](https://github.com/AoNoOokami))
 - documentation: add dependencies in PR template [\#257](https://github.com/rero/rero-ils-ui/pull/257) ([iGormilhit](https://github.com/iGormilhit))
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'ar' [\#256](https://github.com/rero/rero-ils-ui/pull/256) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
+- git: merge US1355 Cancel and edit a request [\#254](https://github.com/rero/rero-ils-ui/pull/254) ([AoNoOokami](https://github.com/AoNoOokami))
 - autocomplete: fix suggestions are not displayed [\#253](https://github.com/rero/rero-ils-ui/pull/253) ([jma](https://github.com/jma))
 - Merge "US Subscriptions" into dev [\#247](https://github.com/rero/rero-ils-ui/pull/247) ([zannkukai](https://github.com/zannkukai))
 - document: filter results by org in admin view [\#208](https://github.com/rero/rero-ils-ui/pull/208) ([AoNoOokami](https://github.com/AoNoOokami))
@@ -593,9 +607,9 @@
 
 **Merged pull requests:**
 
-- git: merge US1355 Cancel and edit a request [\#254](https://github.com/rero/rero-ils-ui/pull/254) ([AoNoOokami](https://github.com/AoNoOokami))
 - holdings: add patterns support [\#251](https://github.com/rero/rero-ils-ui/pull/251) ([jma](https://github.com/jma))
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'ar' [\#249](https://github.com/rero/rero-ils-ui/pull/249) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
+- Patrons : history tab [\#244](https://github.com/rero/rero-ils-ui/pull/244) ([zannkukai](https://github.com/zannkukai))
 
 ## [v0.1.0](https://github.com/rero/rero-ils-ui/tree/v0.1.0) (2020-04-09)
 
@@ -623,7 +637,6 @@
 
 **Merged pull requests:**
 
-- Patrons : history tab [\#244](https://github.com/rero/rero-ils-ui/pull/244) ([zannkukai](https://github.com/zannkukai))
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'en' [\#241](https://github.com/rero/rero-ils-ui/pull/241) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'fr' [\#240](https://github.com/rero/rero-ils-ui/pull/240) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'de' [\#239](https://github.com/rero/rero-ils-ui/pull/239) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
@@ -667,6 +680,7 @@
 **Closed issues:**
 
 - Group of issues found during tests of next release candidate [\#108](https://github.com/rero/rero-ils-ui/issues/108)
+- Cannot delete ci-po with settings [\#76](https://github.com/rero/rero-ils-ui/issues/76)
 
 **Merged pull requests:**
 
@@ -735,15 +749,14 @@
 - person: implement documents on detail view [\#126](https://github.com/rero/rero-ils-ui/pull/126) ([Garfield-fr](https://github.com/Garfield-fr))
 - routing: implement new route collection with classes [\#125](https://github.com/rero/rero-ils-ui/pull/125) ([Garfield-fr](https://github.com/Garfield-fr))
 - acquisition: link order line to a document [\#124](https://github.com/rero/rero-ils-ui/pull/124) ([lauren-d](https://github.com/lauren-d))
-- Acquisition [\#120](https://github.com/rero/rero-ils-ui/pull/120) ([lauren-d](https://github.com/lauren-d))
 - document: refactoring provision activity field for new structure [\#118](https://github.com/rero/rero-ils-ui/pull/118) ([Garfield-fr](https://github.com/Garfield-fr))
-- public search: fixing the facet display [\#117](https://github.com/rero/rero-ils-ui/pull/117) ([Garfield-fr](https://github.com/Garfield-fr))
 - service: add new service to load organisation before application start [\#114](https://github.com/rero/rero-ils-ui/pull/114) ([Garfield-fr](https://github.com/Garfield-fr))
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'fr' [\#113](https://github.com/rero/rero-ils-ui/pull/113) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'en' [\#111](https://github.com/rero/rero-ils-ui/pull/111) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'es' [\#110](https://github.com/rero/rero-ils-ui/pull/110) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
 - budgets: add component budget and accounts [\#107](https://github.com/rero/rero-ils-ui/pull/107) ([Garfield-fr](https://github.com/Garfield-fr))
 - git: automate release process [\#105](https://github.com/rero/rero-ils-ui/pull/105) ([AoNoOokami](https://github.com/AoNoOokami))
+- circulation: split checkin/checkout and requests [\#100](https://github.com/rero/rero-ils-ui/pull/100) ([jma](https://github.com/jma))
 
 ## [v0.0.9](https://github.com/rero/rero-ils-ui/tree/v0.0.9) (2020-01-13)
 
@@ -774,6 +787,7 @@
 - translation: fix checkin flash messages [\#86](https://github.com/rero/rero-ils-ui/pull/86) ([AoNoOokami](https://github.com/AoNoOokami))
 - Translate '/projects/public-search/src/app/translate/i18n/en\_US.json' in 'fr' [\#84](https://github.com/rero/rero-ils-ui/pull/84) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
 - documentation: update translation section [\#82](https://github.com/rero/rero-ils-ui/pull/82) ([AoNoOokami](https://github.com/AoNoOokami))
+- circulation : fix circulation permission problems [\#80](https://github.com/rero/rero-ils-ui/pull/80) ([zannkukai](https://github.com/zannkukai))
 
 ## [v0.0.6](https://github.com/rero/rero-ils-ui/tree/v0.0.6) (2019-12-11)
 
@@ -824,6 +838,7 @@
 - public-search: third organisation and facet correction [\#56](https://github.com/rero/rero-ils-ui/pull/56) ([AoNoOokami](https://github.com/AoNoOokami))
 - Us987 admin public final [\#55](https://github.com/rero/rero-ils-ui/pull/55) ([jma](https://github.com/jma))
 - Translate '/projects/admin/src/app/translate/i18n/en\_US.json' in 'en' [\#49](https://github.com/rero/rero-ils-ui/pull/49) ([transifex-integration[bot]](https://github.com/apps/transifex-integration))
+- Us986 admin homepage [\#36](https://github.com/rero/rero-ils-ui/pull/36) ([jma](https://github.com/jma))
 - template: update PR template [\#35](https://github.com/rero/rero-ils-ui/pull/35) ([AoNoOokami](https://github.com/AoNoOokami))
 - git: add PR and issue template [\#24](https://github.com/rero/rero-ils-ui/pull/24) ([AoNoOokami](https://github.com/AoNoOokami))
 
