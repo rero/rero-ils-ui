@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
 import moment from 'moment';
@@ -48,7 +49,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
   ];
 
   /** the placeholder string used on the */
-  public placeholder = 'Please enter an item barcode.';
+  public placeholder = _('Please enter an item barcode.');
   /** search text used into the search input component */
   public searchText = '';
   /** requested items loaded */
