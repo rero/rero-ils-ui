@@ -16,12 +16,12 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
-import { ItemStatus } from '@rero/shared';
+import { ItemStatus, User, UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, map } from 'rxjs/operators';
-import { User, UserService } from '@rero/shared';
 import { Item, ItemAction, ItemNoteType } from '../../classes/items';
 import { ItemsService } from '../../service/items.service';
 import { PatronService } from '../../service/patron.service';
@@ -31,7 +31,7 @@ import { PatronService } from '../../service/patron.service';
   templateUrl: './checkin.component.html'
 })
 export class CheckinComponent implements OnInit {
-  public placeholder = 'Please enter a patron card number or an item barcode.';
+  public placeholder = _('Please enter a patron card number or an item barcode.');
   public searchText = '';
   public patronInfo: User;
   public barcode: string;
