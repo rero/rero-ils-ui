@@ -16,247 +16,168 @@
 -->
 
 <ng-container *ngIf="patron">
-  <!-- BIRTH DATE -->
-  <h1 class="mb-1">{{ patron.last_name }} {{ patron.first_name }}</h1>
-  <span class="font-weight-bold label-title" translate>Date of birth</span>
-  {{ patron.birth_date | dateTranslate:'mediumDate' }}
 
   <!-- BLOCKED OR NOT? -->
-  <div *ngIf="patron | patronBlockedMessage as message" class="mt-2 alert alert-danger" role="alert">
-    {{ message }}
+  <div *ngIf="patron.patron && patron.patron.blocked" class="mt-3 alert alert-danger" role="alert">
+    <h4 class="alert-heading" translate>This patron is currently blocked</h4>
+    <hr/>
+    <p>{{ patron.patron.blocked_note }}</p>
   </div>
-  <!-- NOTES-->
-  <div *ngIf="notes && notes.length > 0" class="mt-2 alert alert-warning" role="alert">
-    <ng-container *ngFor="let note of notes">
-      <strong class="alert-heading">{{ note.type | translate }}</strong>
-      <p class="mb-0" [innerHTML]="note.content"></p>
-    </ng-container>
-  </div>
-  <article class="mt-2">
-    <section>
-      <!-- USERNAME -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Username
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.username }}
-        </dd>
-      </dl>
-      <!-- STREET -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Street
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.street }}
-        </dd>
-      </dl>
-      <!-- CITY -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          City
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.postal_code }} {{ patron.city }}
-        </dd>
-      </dl>
-      <!-- Country -->
-      <dl class="row mb-0" *ngIf="patron.country">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Country
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ 'country_' + patron.country | translate}}
-        </dd>
-      </dl>
-      <!-- PHONE -->
-      <dl class="row mb-0" *ngIf="patron.home_phone">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Home phone number
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.home_phone }}
-        </dd>
-      </dl>
-      <dl class="row mb-0" *ngIf="patron.business_phone">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Business phone number
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.business_phone }}
-        </dd>
-      </dl>
-      <dl class="row mb-0" *ngIf="patron.mobile_phone">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Mobile phone
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.mobile_phone }}
-        </dd>
-      </dl>
-      <dl class="row mb-0" *ngIf="patron.other_phone">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Other phone
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.other_phone }}
-        </dd>
-      </dl>
-      <!-- EMAIL -->
-      <dl *ngIf="patron.email" class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Email
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.email }}
-        </dd>
-      </dl>
-      <!-- KEEP HISTORY -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Keep history</dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          <i class="fa" [ngClass]="patron.keep_history ? 'fa-check text-success' : 'fa-times text-danger'"
-            aria-hidden="true">
-          </i>
-        </dd>
-      </dl>
-      <!-- SOURCE -->
-      <dl *ngIf="patron.source" class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Source
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.source }}
-        </dd>
-      </dl>
-      <!-- Local Code -->
-      <dl *ngIf="patron.local_code" class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Local code
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.local_code }}
-        </dd>
-      </dl>
-    </section>
 
-    <section class="mt-3" *ngIf="patron.second_address">
-      <h5 class="mb-0" translate>Second address</h5>
-      <!-- STREET -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title"
-            *ngIf="patron.second_address.street"
-            translate>
-          Street
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.second_address.street }}
-        </dd>
-      </dl>
-      <!-- CITY -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title"
-            *ngIf="patron.second_address.postal_code ||  patron.second_address.city"
-            translate>
-          City
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          <span *ngIf="patron.second_address.postal_code">
-            {{ patron.second_address.postal_code }}
-          </span>
-          <span *ngIf="patron.second_address.city">
-            {{ patron.second_address.city }}
-          </span>
-        </dd>
-      </dl>
-      <!-- Country -->
-      <dl class="row mb-0" *ngIf="patron.second_address.country">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Country
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ 'country_' + patron.second_address.country | translate}}
-        </dd>
-      </dl>
-    </section>
-
-    <section class="mt-3" *ngIf="patron.isLibrarian">
-      <h5 class="mb-0" translate>Librarian Information</h5>
-      <!-- LIBRARY -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          <ng-container *ngIf="patron.libraries.length <= 1; else libraries" translate>
-            Library
+  <section id="contact-profile" class="container-fluid card p-0 mt-3">
+    <!-- MAIN PROFILE SECTION ================================================== -->
+    <div class="card-body row">
+      <div class="col-2">
+        <div class="profile-image">
+          <i class="fa fa-user-o fa-4x text-white"></i>
+        </div>
+      </div>
+      <div class="col-10">
+        <h1>{{ patron.last_name }} {{ patron.first_name }}</h1>
+        <dl class="row">
+          <dt class="col-1 text-right"><i class="fa fa-calendar-o"></i></dt>
+          <dt class="col-3" translate>Date of birth</dt>
+          <dd class="col-8">{{ patron.birth_date | dateTranslate:'mediumDate' }}</dd>
+          <ng-container *ngIf="patron.email">
+            <dt class="col-1 text-right"><i class="fa fa-envelope"></i></dt>
+            <dt class="col-3" translate>Email</dt>
+            <dd class="col-8">{{ patron.email }}</dd>
           </ng-container>
-          <ng-template #libraries translate>
-            Libraries
-          </ng-template>
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          <ul class="pl-0">
-            <li *ngFor="let library of patron.libraries" class="list-unstyled">
+          <ng-container *ngVar="phones as patronPhones">
+            <ng-container *ngIf="patronPhones.length > 0">
+              <dt class="col-1 text-right"><i class="fa fa-phone"></i></dt>
+              <dt class="col-3">{{ patronPhones.length | i18nPlural: {'=1': 'Phone', 'other': 'Phones'} }}</dt>
+              <dd class="col-8">
+                <ul class="list-unstyled m-0">
+                  <li *ngFor="let phone of patronPhones">
+                    <span class="metadata">{{ phone.type }}</span> {{ phone.value }}
+                  </li>
+                </ul>
+              </dd>
+            </ng-container>
+          </ng-container>
+          <dt class="col-1 text-right"><i class="fa fa-home"></i></dt>
+          <dt class="col-3" translate>Address</dt>
+          <dd class="col-8">
+            {{ patron.street }}<br/>
+            {{ patron.postal_code }} {{ patron.city }}<br/>
+            {{ 'country_' + patron.country | translate }}
+          </dd>
+        </dl>
+      </div>
+    </div>
+    <!-- NOTES ================================================================= -->
+    <ng-container *ngIf="patron.notes && patron.notes.length > 0">
+      <div class="card-header">
+        <button type="button" class="btn-shore-more"
+                [ngClass]="{'btn-expanded': !sectionCollapsed.notes, 'btn-collapsed': sectionCollapsed.notes}"
+                (click)="sectionCollapsed.notes = !sectionCollapsed.notes"
+                [attr.aria-expanded]="!sectionCollapsed.notes" aria-controls="collapse">
+        </button>
+        {{ patron.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} }}
+        <span *ngIf="sectionCollapsed.notes" class="badge badge-secondary ml-2">{{ patron.notes.length }}</span>
+      </div>
+      <div class="card-body py-2" [hidden]="sectionCollapsed.notes">
+        <div class="row note" *ngFor="let note of patron.notes">
+          <div class="col-2"><span class="badge {{ getNoteBadgeColor(note.type) }}">{{ note.type | translate }}</span></div>
+          <blockquote class="col" [innerHTML]="note.content | nl2br"></blockquote>
+        </div>
+      </div>
+    </ng-container>
+    <!-- USER INFORMATIONS SECTION ============================================= -->
+    <div class="card-header">
+      <button type="button" class="btn-shore-more"
+              [ngClass]="{'btn-expanded': !sectionCollapsed.user, 'btn-collapsed': sectionCollapsed.user}"
+              (click)="sectionCollapsed.user = !sectionCollapsed.user"
+              [attr.aria-expanded]="!sectionCollapsed.user" aria-controls="collapse">
+      </button>
+      {{ 'User informations' | translate }}
+    </div>
+    <dl class="card-body row" [hidden]="sectionCollapsed.user">
+      <dt class="col-1 text-right"><i class="fa fa-user"></i></dt>
+      <dt class="col-3" translate>Username</dt>
+      <dd class="col-8">{{ patron.username }}</dd>
+      <dt class="col-1 text-right"><i class="fa fa-history"></i></dt>
+      <dt class="col-3" translate>Keep history</dt>
+      <dd class="col-8">
+        <i class="fa" [ngClass]="patron.keep_history ? 'fa-check text-success' : 'fa-times text-danger'" aria-hidden="true"></i>
+      </dd>
+      <dt class="col-3 offset-1" translate>{{ patron.roles | i18nPlural: {'=1': 'Role', 'other': 'Roles'} }}</dt>
+      <dd class="col-8">
+        <small class="badge mr-2" [class]="getRoleBadgeColor(role)" *ngFor="let role of patron.roles">
+          {{ role | translate }}
+        </small>
+      </dd>
+    </dl>
+    <!-- PATRON INFORMATIONS SECTION =========================================== -->
+    <ng-container *ngIf="patron.patron">
+      <div class="card-header">
+        <button type="button" class="btn-shore-more"
+                [ngClass]="{'btn-expanded': !sectionCollapsed.patron, 'btn-collapsed': sectionCollapsed.patron}"
+                (click)="sectionCollapsed.patron = !sectionCollapsed.patron"
+                [attr.aria-expanded]="!sectionCollapsed.patron" aria-controls="collapse">
+        </button>
+        {{ 'Patron Information' | translate }}
+      </div>
+      <dl class="card-body row" [hidden]="sectionCollapsed.patron">
+        <dt class="col-1 text-right"><i class="fa fa-barcode"></i></dt>
+        <dt class="col-3" translate>Barcode</dt>
+        <dd class="col-8">
+          <a [routerLink]="['/circulation', 'patron', patron.patron.barcode[0]]">{{ patron.patron.barcode | join: ', ' }}</a>
+        </dd>
+        <dt class="col-3 offset-1" translate>Type</dt>
+        <dd class="col-8">{{ patron.patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}</dd>
+        <dt class="col-3 offset-1" translate>Account expiration</dt>
+        <dd class="col-8">{{ patron.patron.expiration_date | dateTranslate:'mediumDate' }}</dd>
+        <ng-container *ngIf="patron.patron.libraries && patron.patron.libraries.length > 0">
+          <dt class="col-1 text-right"><i class="fa fa-university"></i></dt>
+          <dt class="col-3" translate>Affiliation libraries</dt>
+          <ul class="col-8">
+            <li *ngFor="let library of patron.patron.libraries">
               {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
             </li>
           </ul>
-        </dd>
+        </ng-container>
+        <ng-container *ngIf="patron.source">
+          <dt class="col-3 offset-1" translate>Source</dt>
+          <dd class="col-8">{{ patron.source }}</dd>
+        </ng-container>
+        <ng-container *ngIf="patron.local_codes">
+          <dt class="col-3 offset-1" translate>Local code</dt>
+          <dd class="col-8">{{ patron.local_codes | join: ',' }}</dd>
+        </ng-container>
+        <ng-container *ngIf="patron.second_address">
+          <dt class="col-1 text-right"><i class="fa fa-home"></i> </dt>
+          <dt class="col-3" translate>Second address</dt>
+          <dd class="col-8">
+            {{ patron.second_address.street }}<br/>
+            {{ patron.second_address.postal_code }} {{ patron.second_address.city }}<br/>
+            {{ 'country_' + patron.second_address.country | translate }}
+          </dd>
+        </ng-container>
       </dl>
-    </section>
-
-    <section class="mt-3" *ngIf="patron.patron">
-      <h5 class="mb-0" translate>Patron Information</h5>
-      <!-- BARCODE -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Patron's barcodes or cards number
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          <a [routerLink]="['/circulation', 'patron', patron.patron.barcode[0]]">
-            {{ patron.patron.barcode | join: ', '}}
-          </a>
-        </dd>
-      </dl>
-      <!-- ROLES -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          {{ patron.roles.length | i18nPlural: {'=1': 'Role', 'other': 'Roles'} }}
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          <ng-container *ngFor="let role of patron.roles; let last=last">
-            {{ role | translate }}{{ last ? '' : ', ' }}
-          </ng-container>
-        </dd>
-      </dl>
-      <!-- TYPE -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Type
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
-        </dd>
-      </dl>
-      <!-- ACCOUNT EXPIRATION -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-          Account expiration
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ patron.patron.expiration_date | dateTranslate:'mediumDate' }}
-        </dd>
-      </dl>
-      <dl *ngIf="patron.patron.libraries && patron.patron.libraries.length > 0" class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0">
-          {{ 'Affiliation libraries' | translate }}:
-        </dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          <div *ngFor="let library of patron.patron.libraries">
+    </ng-container>
+    <!-- LIBRARIAN INFORMATIONS SECTION ======================================== -->
+    <ng-container *ngIf="isLibrarian">
+      <div class="card-header">
+        <button type="button" class="btn-shore-more"
+                [ngClass]="{'btn-expanded': !sectionCollapsed.librarian, 'btn-collapsed': sectionCollapsed.librarian}"
+                (click)="sectionCollapsed.librarian = !sectionCollapsed.librarian"
+                [attr.aria-expanded]="!sectionCollapsed.librarian" aria-controls="collapse">
+        </button>
+        {{ 'Librarian Information' | translate }}
+      </div>
+      <dl class="card-body row" [hidden]="sectionCollapsed.librarian">
+        <dt class="col-1 text-right"><i class="fa fa-university"></i></dt>
+        <dt class="col-3" translate>{{ patron.libraries.length | i18nPlural: {'=1': 'Library', 'other': 'Libraries'} }}</dt>
+        <ul class="col-8">
+          <li *ngFor="let library of patron.libraries">
             {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
-          </div>
-        </dd>
+          </li>
+        </ul>
       </dl>
-    </section>
-  </article>
+    </ng-container>
+  </section>
 
   <!-- OPERATION LOGS-->
   <admin-operation-logs *ngIf="isEnabledOperationLog" resourceType="patrons" [resourcePid]="patron.pid">
