@@ -125,6 +125,29 @@ json-schema-form {
   vertical-align: top;
 }
 
+
+/* SHOW MORE BUTTON ====================================================== */
+.btn-shore-more {
+  border: $border-width solid $border-color;
+  border-radius: 2rem;
+  height: 30px;
+  width: 30px;
+  background-color: $white;
+  margin-right: map-get($spacers, 3);
+
+  &.btn-expanded::before {
+    font-family: 'FontAwesome';
+    font-weight: 100;
+    content: " \f0d7";
+  }
+
+  &.btn-collapsed::before {
+    font-family: 'FontAwesome';
+    font-weight: 100;
+    content: " \f0da";
+  }
+}
+
 // source: https://codepen.io/superjaberwocky/pen/AXdEWj
 .callout {
   border: 1px solid #eee;
