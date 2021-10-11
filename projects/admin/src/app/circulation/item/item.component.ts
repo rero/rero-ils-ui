@@ -97,7 +97,7 @@ export class ItemComponent implements OnInit {
         }
       );
       this.notifications$ = this._recordService.getRecords(
-        'notifications', `loan.pid:${loanPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE,
+        'notifications', `context.loan.pid:${loanPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE,
         [], {}, null, 'mostrecent'
       ).pipe(
         map((results: any) => results.hits.hits)
