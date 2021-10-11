@@ -26,10 +26,10 @@
       {{ role | translate }}
     </small>
     <div *ngIf="record.metadata.patron" class="float-right mb-2 mr-n5">
-      <button class="btn btn-sm btn-outline-primary ml-2" [routerLink]="['/circulation', 'patron', record.metadata.patron.barcode[0]]">
+      <a [routerLink]="['/circulation', 'patron', record.metadata.patron.barcode[0]]" class="btn-link btn btn-sm btn-outline-primary">
         <i class="fa fa-exchange mr-2"></i>
-        <span translate>Circulation</span>
-      </button>
+        {{ 'Circulation' | translate }}
+      </a>
     </div>
   </h5>
   <div class="card-text">
