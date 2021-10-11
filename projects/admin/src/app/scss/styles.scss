@@ -26,20 +26,23 @@
 html [type=button] {
   -webkit-appearance: none;
 }
-button:disabled:hover {
-  cursor: not-allowed;
-}
-
-button.disabled {
-  cursor: not-allowed !important;
-}
-
 body {
   height: 100vh;      // With block page body div to flex-grow-1
 }
-
 header {
   position: relative;
+}
+
+// BUTTONS & BUTTON-LINKS -----------------------
+button:disabled:hover {
+  cursor: not-allowed;
+}
+button.disabled {
+  cursor: not-allowed !important;
+}
+.btn-link.btn-outline-primary:hover {
+  color: #fff !important;
+  text-decoration: none !important;
 }
 
 .label-title:after {
