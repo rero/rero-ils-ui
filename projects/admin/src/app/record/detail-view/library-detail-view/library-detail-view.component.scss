@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
- * Copyright (C) 2021 UCLouvain
+ * Copyright (C) 2022 RERO
+ * Copyright (C) 2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,8 +20,8 @@
 @import '~bootstrap/scss/_variables';
 @import '/projects/admin/src/app/scss/variables';
 
-#contact-profile {
-  .profile-image {
+#library-profile {
+  .library-logo {
     width: $resource-logo-width;
     height: $resource-logo-height;
     border-radius: $resource-logo-radius;
@@ -30,22 +30,20 @@
     vertical-align: middle;
     display: table-cell;
   }
-
-  .metadata {
-    text-transform: lowercase;
-    font-size: $small-font-size;
-    font-weight: $font-weight-bold;
-    color: $secondary;
-    &:before {
-      content: '(';
+  .library-metadata {
+    dt:before {
+      font-family: 'FontAwesome';
+      font-weight: $font-weight-lighter;
+      padding-right: map-get($spacers, 3);
     }
-    &:after {
-      content: ')';
-      padding-right: map-get($spacers, 2);
-    }
+    .metadata-code::before { content: "\f121"; }
+    .metadata-address::before { content: "\f015"; }
+    .metadata-language::before { content: "\f1ab"; }
+    .metadata-email::before { content: "\f1fa"; }
   }
-
-  .btn-show-more {
-    border-color: $card-border-color;
-  }
+}
+tabset tab {
+  padding: map-get($spacers, 3);
+  border: $border-width solid $border-color;
+  border-top: none;
 }

@@ -40,12 +40,11 @@
     </div>
     <!-- Date -->
     <div class="form-group row">
-      <label for="title" class="col-sm-2 col-form-label">&nbsp;</label>
-      <div class="col-sm-10">
+      <div class="offset-2 col-sm-10">
         <div class="form-check-inline">
           <label class="form-check-label mr-2">
             <input type="radio" class="form-check-input" name="day-period" value="false" [checked]="is_period.value === false" (change)="onPeriodChange($event)">
-            {{ 'Day' | translate }}
+            {{ 'Day' | translate }}
           </label>
           <label class="form-check-label">
             <input type="radio" class="form-check-input" name="day-period" value="true" [checked]="is_period.value === true" (change)="onPeriodChange($event)">
@@ -82,14 +81,42 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-2 mt-2">
-        &nbsp;
+    </div>
+    <!-- Period -->
+    <div class="form-group row" *ngIf="is_period.value">
+      <label for="date" class="col-sm-2 col-form-label required">
+        {{ 'Dates' | translate }} <strong class="text-danger">*</strong>
+      </label>
+      <div class="col-sm-10">
+        <div class="input-group">
+          <input type="text"
+            class="form-control"
+            formControlName="dates"
+            #dp="bsDaterangepicker"
+            bsDaterangepicker
+            [bsConfig]="{ containerClass: 'theme-default' }">
+            <div class="input-group-append">
+              <span class="input-group-text" (click)="dp.toggle()">
+                <i class="fa fa-calendar"></i>
+              </span>
+            </div>
+        </div>
+        <div *ngIf="dates.invalid && (dates.dirty || dates.touched)" class="text-danger pt-1">
+          <div *ngIf="dates.errors.required" translate>
+            Date range is required.
+          </div>
+          <div *ngIf="dates.errors.bsDate && dates.errors.bsDate.invalid" translate>
+            Date range is invalid.
+          </div>
+        </div>
       </div>
-      <div class="col-sm-10 mt-2">
+    </div>
+    <!-- open/close + times -->
+    <div class="offset-2 col-sm-10 mt-2">
         <div class="form-check-inline">
           <label class="form-check-label mr-2">
             <input type="radio" class="form-check-input" name="date-status" value="false" [checked]="is_open.value === false" (change)="onDateStatusChange($event)">
-            {{ 'Closed' | translate }}
+            {{ 'Closed' | translate }}
           </label>
           <label class="form-check-label">
             <input type="radio" class="form-check-input" name="date-status" value="true" [checked]="is_open.value === true" (change)="onDateStatusChange($event)">
@@ -135,7 +162,7 @@
                 <div
                   *ngIf="time.controls.start_time.invalid && (time.controls.start_time.dirty || time.controls.start_time.touched)"
                   class="text-danger pt-1"
-                  >
+                >
                   <div *ngIf="time.controls.start_time.errors.required" translate>
                     Start time is required.
                   </div>
@@ -146,7 +173,7 @@
                 <div
                   *ngIf="time.controls.end_time.invalid && (time.controls.end_time.dirty || time.controls.end_time.touched)"
                   class="text-danger pt-1"
-                  >
+                >
                   <div *ngIf="time.controls.end_time.errors.required" translate>
                     End time is required.
                   </div>
@@ -169,37 +196,6 @@
           </div>
         </div>
       </div>
-    <!-- Period -->
-    </div>
-    <div class="form-group row" *ngIf="is_period.value">
-      <label for="date" class="col-sm-2 col-form-label required">
-        {{ 'Start-End Date' | translate }} <strong class="text-danger">*</strong>
-      </label>
-      <div class="col-sm-10">
-        <div class="input-group">
-          <input type="text"
-            class="form-control"
-            formControlName="dates"
-            #dp="bsDaterangepicker"
-            bsDaterangepicker
-            [bsConfig]="{ containerClass: 'theme-default' }">
-            <div class="input-group-append">
-              <span class="input-group-text" (click)="dp.toggle()">
-                <i class="fa fa-calendar"></i>
-              </span>
-            </div>
-        </div>
-        <em translate>Library will be closed during this period.</em>
-        <div *ngIf="dates.invalid && (dates.dirty || dates.touched)" class="text-danger pt-1">
-          <div *ngIf="dates.errors.required" translate>
-            Date range is required.
-          </div>
-          <div *ngIf="dates.errors.bsDate && dates.errors.bsDate.invalid" translate>
-            Date range is invalid.
-          </div>
-        </div>
-      </div>
-    </div>
     <!-- Repeat -->
     <div class="form-group row">
       <div class="col-sm-2">

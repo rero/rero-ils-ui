@@ -14,77 +14,55 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="record$ | async as record">
-  <h1>{{ record.metadata.name }}</h1>
-  <dl class="row mb-3">
-    <!-- ADDRESS -->
-    <ng-container *ngIf="record.metadata.address">
-      <dt class="col-3 label-title" translate>
-        Address
-      </dt>
-      <dd class="col-7 mb-0">
-        {{ record.metadata.address }}
-      </dd>
-    </ng-container>
-    <!-- CODE -->
-    <dt class="col-3 label-title" *ngIf="record.metadata.code" translate>
-      Code
-    </dt>
-    <dd class="col-7 mb-0">
-      {{ record.metadata.code }}
-    </dd>
-    <!-- EMAIL -->
-    <dt class="col-3 label-title" *ngIf="record.metadata.email" translate>
-      Email
-    </dt>
-    <dd class="col-7 mb-0">
-      {{ record.metadata.email }}
-    </dd>
-    <!-- COMMUNICATION LANGUAGE -->
-    <ng-container *ngIf="record.metadata.communication_language">
-      <dt class="col-3 label-title" translate>
-        Communication language
-      </dt>
-      <dd class="col-7 mb-0">
-        {{ ('lang_' + record.metadata.communication_language) | translate | ucfirst }}
-      </dd>
-    </ng-container>
-  </dl>
+<ng-container *ngIf="record">
+  <section id="library-profile" class="container-fluid card p-0 my-3">
+    <div class="card-body row">
+      <div class="col-2">
+        <div class="library-logo">
+          <!-- TODO :: add a field to store the library logo url and display it here ? -->
+          <i class="fa fa-university fa-4x text-white"></i>
+        </div>
+      </div>
+      <div class="col">
+        <h1>{{ record.name }}</h1>
+        <dl class="row library-metadata">
+          <dt class="metadata-code offset-1 col-3" translate>Code</dt>
+          <dd class="col-8">{{ record.code }}</dd>
+          <ng-container *ngIf="record.email">
+            <dt class="metadata-email offset-1 col-3" translate>Email</dt>
+            <dd class="col-8">{{ record.email }}</dd>
+          </ng-container>
+          <ng-container *ngIf="record.address">
+            <dt class="metadata-address offset-1 col-3" translate>Address</dt>
+            <dd class="col-8">{{ record.address }}</dd>
+          </ng-container>
+          <dt class="metadata-language offset-1 col-3" translate>Language</dt>
+          <dd class="col-8">{{ ('lang_' + record.communication_language) | translate | ucfirst }}</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
 
-  <tabset #staticTabs>
-    <!-- OPENING HOURS -->
-    <tab>
+  <tabset>
+    <tab><!-- OPENING HOURS TABS -->
       <ng-template tabHeading>
         <i class="fa fa-clock-o mr-2"></i>{{ 'Opening Hours' | translate }}
       </ng-template>
-      <article>
-        <ul class="list-unstyled">
-          <li *ngFor="let day of record.metadata.opening_hours">
-            <admin-day-opening-hours [day]="day"></admin-day-opening-hours>
-          </li>
-        </ul>
-      </article>
+      <admin-day-opening-hours [day]="day" *ngFor="let day of record.opening_hours"></admin-day-opening-hours>
     </tab>
-
-    <!-- EXCEPTIONS -->
-    <tab>
+    <tab><!-- EXCEPTIONS DATES -->
       <ng-template tabHeading>
         <i class="fa fa-exclamation-triangle mr-2"></i>{{ 'Exceptions (holidays, etc.)' | translate }}
       </ng-template>
-      <article *ngIf="record.metadata.exception_dates">
-        <ul class="list-unstyled">
-          <li *ngFor="let exception of record.metadata.exception_dates">
-            <admin-exception-date [exception]="exception"></admin-exception-date>
-          </li>
-        </ul>
-      </article>
+      <ng-container *ngIf="record.exception_dates">
+        <admin-exception-date [exception]="exception" *ngFor="let exception of record.exception_dates"></admin-exception-date>
+      </ng-container>
     </tab>
-    <tab>
+    <tab><!-- NOTIFICATIONS SETTINGS -->
       <ng-template tabHeading>
         <i class="fa fa-envelope-o mr-2"></i>{{ 'Notification settings' | translate }}
       </ng-template>
-      <!-- NOTIFICATION SETTINGS -->
-      <dl class="row" *ngIf="record.metadata.notification_settings as notificationSettings">
+      <dl class="row" *ngIf="record.notification_settings as notificationSettings">
         <ng-container *ngFor="let setting of notificationSettings">
           <dt class="col-3">{{ setting.type | translate | ucfirst }}:</dt>
           <dd class="col-7">
@@ -97,12 +75,11 @@
         </ng-container>
       </dl>
     </tab>
-    <tab>
+    <tab> <!-- ACQUISITION SETTINGS -->
       <ng-template tabHeading>
         <i class="fa fa-university mr-2"></i>{{ 'Acquisition settings' | translate }}
       </ng-template>
-      <!-- ACQUISITION SETTINGS -->
-      <dl class="row" *ngIf="record.metadata.acquisition_settings as acquisitionSettings">
+      <dl class="row" *ngIf="record.acquisition_settings as acquisitionSettings">
         <ng-container *ngIf="acquisitionSettings.shipping_informations as acqInfos"
                       [ngTemplateOutlet]="address_block"
                       [ngTemplateOutletContext]="{ label: 'Shipping informations' | translate, data: acqInfos}"
@@ -120,15 +97,18 @@
     <div class="card-header">
       <b translate>Locations</b>
       <a class="ml-2 btn btn-sm btn-outline-primary float-right" *ngIf="isUserCanAddLocation"
-        [routerLink]="['/', 'records', 'locations', 'new']" [queryParams]="{ library: record.metadata.pid }">
+        [routerLink]="['/', 'records', 'locations', 'new']" [queryParams]="{ library: record.pid }">
         <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
       </a>
     </div>
     <div class="card-body collapsed show">
       <ul class="list-group list-group-flush" *ngIf="locations; else no_locations">
         <li *ngFor="let location of locations" class="list-group-item p-1">
-          <admin-location [location]="location" [library]="record" class="row"
-            (deleteLocation)="deleteLocation($event)"></admin-location>
+          <admin-location
+            [location]="location"
+            [library]="record" class="row"
+            (deleteLocation)="deleteLocation($event)"
+          ></admin-location>
         </li>
       </ul>
       <ng-template #no_locations>

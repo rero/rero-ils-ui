@@ -137,21 +137,37 @@ export class Library {
   // CONSTRUCTOR ===================================================
   /**
    * Constructor
-   * @param obj: the metadata to use to create a Library object.
+   * @param obj - the metadata to use to create a Library object.
    */
   constructor(obj?: any) {
     this._initOpeningHours();
     if (obj) {
       this.update(obj);
     }
-    if (!this.exception_dates) {
+    if (!this.exception_dates) {
       this.exception_dates = [];
     }
+    // Keep only valid exception dates
+    //   The received data could contains some obsolete exception dates. We will filter the exception dates
+    //   list to remove exception is event is over.
+    //   For repeatable exception dates (these exceptions are never over), we will compute the next valid date/period.
+    //   At the end, for user best comprehension, the exception dates list will be sorted on event start date for more
+    //   readability for users.
+    this.exception_dates = this.exception_dates.filter((exception) => !Library._isExceptionDateOver(exception));
+    this.exception_dates = this.exception_dates.map((exception) => {
+      if (exception.repeat){
+        while(Library._isExceptionDateOver(exception, false)) {
+          exception = Library._incrementExceptionDate(exception);
+        }
+      }
+      return exception;
+    });
+    this.exception_dates = this.exception_dates.sort((a, b) => moment(a.start_date) - moment(b.start_date));
   }
 
   /**
    * Update the library
-   * @param obj: the metadata to use to create a Library object.
+   * @param obj - the metadata to use to create a Library object.
    */
   update(obj) {
     Object.assign(this, obj);
@@ -198,6 +214,46 @@ export class Library {
   }
 
   /**
+   * Check if an exception is obsolete or not.
+   *
+   * An exception date is over when it is not repeatable (repeatable exceptions
+   * are never over) and when end_date/start_date is passed depending of
+   * availability of `end_date` field for this exception.
+   * @param exception - The exception date/period to check.
+   * @param checkRepeat - is the repeat field is checked or not ?
+   *                      If not then, only check about exception dates
+   * @returns boolean is the exception is over or not.
+   */
+  private static _isExceptionDateOver(exception: ExceptionDates, checkRepeat: boolean = true): boolean {
+    if (exception.repeat && checkRepeat) {
+      return false;
+    }
+    const checked_date = (exception.end_date) ? moment(exception.end_date) : moment(exception.start_date);
+    return checked_date < moment();
+  }
+
+  /**
+   * Increment a repeatable exception date by interval defined into `repeat` metadata.
+   * @param exception - the exception to increment.
+   * @returns ExceptionDates the incremented exception date.
+   */
+  private static _incrementExceptionDate(exception: ExceptionDates): ExceptionDates {
+    // only repeatable exception date could be increment
+    if (!exception.repeat) {
+      throw new Error('Unable to increment not repeatable exception date.');
+    }
+    const momentJsUnitMapper = {daily: 'd', weekly: 'w', monthly: 'M', yearly: 'y'};
+    const unity = (momentJsUnitMapper.hasOwnProperty(exception.repeat.period))
+      ? momentJsUnitMapper[exception.repeat.period]
+      : 'd';
+    exception.start_date = moment(exception.start_date).add(exception.repeat.interval, unity).format('YYYY-MM-DD');
+    if (exception.end_date) {
+      exception.end_date = moment(exception.end_date).add(exception.repeat.interval, unity).format('YYYY-MM-DD');
+    }
+    return exception;
+  }
+
+  /**
    * Clean acquisition setting.
    *
    * For each acquisition information, we need to have a special process to clean the address field because
@@ -221,8 +277,8 @@ export class Library {
 
   /**
    * Convert a string day name to the corresponding day of the week constant.
-   * @param dayName: the name of the day
-   * @return A WeekDay enum value (0=Sunday, 6=Saturday) or null if conversion failed.
+   * @param dayName - the name of the day
+   * @returns A WeekDay enum value (0=Sunday, 6=Saturday) or null if conversion failed.
    */
   private static convertDayToWeekDay(dayName: string): WeekDay | null {
     const daysOfWeek = {
@@ -240,9 +296,9 @@ export class Library {
 
   /**
    * Get all "day" dates contains into a range of two dates
-   * @param startDate: the lower interval value
-   * @param endDate: the upper interval value
-   * @return An array of date (one per day)
+   * @param startDate - the lower interval value
+   * @param endDate - the upper interval value
+   * @returns An array of date (one per day)
    */
   private static _getIntervalDates(startDate: Date, endDate: Date): Array<Date> {
     let dateArray = [];
