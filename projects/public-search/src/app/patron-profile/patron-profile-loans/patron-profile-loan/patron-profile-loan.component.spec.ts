@@ -38,7 +38,7 @@ describe('PatronProfileLoanComponent', () => {
       pid: '1',
       end_date: '2021-03-28 12:00:00',
       extension_count: 2,
-      overdue: true,
+      is_late: true,
       state: 'ITEM_ON_LOAN',
       renew: {
         can: true
