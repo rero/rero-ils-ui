@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
- * Copyright (C) 2021 UCLouvain
+ * Copyright (C) 2022 RERO
+ * Copyright (C) 2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,34 +18,9 @@
 
 @import '~bootstrap/scss/_functions';
 @import '~bootstrap/scss/_variables';
-@import '/projects/admin/src/app/scss/variables';
 
-#contact-profile {
-  .profile-image {
-    width: $resource-logo-width;
-    height: $resource-logo-height;
-    border-radius: $resource-logo-radius;
-    background-color: $secondary;
-    text-align: center;
-    vertical-align: middle;
-    display: table-cell;
-  }
-
-  .metadata {
-    text-transform: lowercase;
-    font-size: $small-font-size;
-    font-weight: $font-weight-bold;
-    color: $secondary;
-    &:before {
-      content: '(';
-    }
-    &:after {
-      content: ')';
-      padding-right: map-get($spacers, 2);
-    }
-  }
-
-  .btn-show-more {
-    border-color: $card-border-color;
-  }
+.period + .period:before {
+  content: ";";
+  margin-left: map-get($spacers, 2);
+  margin-right: map-get($spacers, 2);
 }

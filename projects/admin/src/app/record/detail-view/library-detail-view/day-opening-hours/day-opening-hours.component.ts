@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2022 RERO
+ * Copyright (C) 2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,12 +19,21 @@ import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'admin-day-opening-hours',
-  templateUrl: './day-opening-hours.component.html',
-  styles: []
+  template: `
+    <dl class="row my-0">
+      <dt class="col-2">{{ day.day | translate }}</dt>
+      <dd class="col">
+        <ng-container *ngIf="day.is_open; else closed">
+          <span class="period" *ngFor="let time of day.times">{{ time.start_time }} - {{ time.end_time }}</span>
+        </ng-container>
+        <ng-template #closed>
+          <span class="text-danger" translate>Closed</span>
+        </ng-template>
+      </dd>
+    </dl>
+  `,
+  styleUrls: ['./day-opening-hours.component.scss']
 })
 export class DayOpeningHoursComponent {
-
   @Input() day: any;
-
-  constructor() { }
 }

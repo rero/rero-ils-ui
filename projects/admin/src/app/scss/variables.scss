@@ -33,3 +33,7 @@ $form-check-input-margin-y:           .2rem !default;
 $form_error: #a94442;
 $form_required: red;
 $form_valid: green;
+
+$resource-logo-width:     140px;
+$resource-logo-height:    $resource-logo-width;
+$resource-logo-radius:    ($resource-logo-width / 2);
