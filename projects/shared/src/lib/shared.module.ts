@@ -40,6 +40,7 @@ import { PersonBriefComponent } from './view/brief/person-brief/person-brief.com
 import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
 import { GetTranslatedLabelPipe } from './pipe/get-translated-label.pipe';
+import { ContributionFilterPipe } from '../public-api';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { GetTranslatedLabelPipe } from './pipe/get-translated-label.pipe';
     PartOfComponent,
     ShowMorePagerComponent,
     KeyExistsPipe,
-    GetTranslatedLabelPipe
+    GetTranslatedLabelPipe,
+    ContributionFilterPipe
   ],
   exports: [
     CommonModule,
@@ -86,7 +88,8 @@ import { GetTranslatedLabelPipe } from './pipe/get-translated-label.pipe';
     PartOfComponent,
     ShowMorePagerComponent,
     KeyExistsPipe,
-    GetTranslatedLabelPipe
+    GetTranslatedLabelPipe,
+    ContributionFilterPipe
   ],
   imports: [
     CommonModule,

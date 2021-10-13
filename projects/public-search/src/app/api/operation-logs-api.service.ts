@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { Record, RecordService } from '@rero/ng-core';
-import { Error } from '@rero/ng-core/lib/error/error';
+import { Error, Record, RecordService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
+import moment from 'moment';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class IllRequestApiService extends BaseApi {
+export class OperationLogsApiService extends BaseApi {
 
   /**
    * Constructor
@@ -34,38 +34,22 @@ export class IllRequestApiService extends BaseApi {
   }
 
   /**
-   * Get ill request
+   * Get history
    * @param patronPid - string
    * @param page - number
    * @param itemsPerPage - number
    * @param headers - object
    * @return Observable
    */
-  getIllRequest(
-    patronPid: string,
-    page: number,
-    itemsPerPage: number = 10,
-    headers = BaseApi.reroJsonheaders
+  getHistory(
+    patronPid: string, page: number,
+    itemsPerPage: number = 10
   ): Observable<Record | Error> {
-    const query = `patron.pid:${patronPid}`;
-    return this._recordService.getRecords('ill_requests', query, page, itemsPerPage, undefined, undefined, headers);
-  }
-
-  /**
-   * Get ILL request for public view (filtered on statuses)
-   * @param patronPid - string
-   * @param page - number
-   * @param itemsPerPage - number
-   * @param headers - object
-   * @return Observable
-   */
-  getPublicIllRequest(
-    patronPid: string,
-    page: number,
-    itemsPerPage: number = 10,
-    headers = BaseApi.reroJsonheaders
-  ): Observable<Record | Error> {
-    const query = `patron.pid:${patronPid} AND -status:denied AND -status:closed AND -loan_status:ITEM_RETURNED`;
-    return this._recordService.getRecords('ill_requests', query, page, itemsPerPage, undefined, undefined, headers);
+    const date = moment().subtract(6, 'months').utc().format('YYYY-MM-DDTHH:mm:ss');
+    const query = `loan.patron.pid:${patronPid} AND loan.trigger:checkin AND date:[${date} TO *]`;
+    return this._recordService.getRecords(
+      'operation_logs', query, page, itemsPerPage,
+      undefined, undefined, undefined, 'mostrecent'
+      );
   }
 }

@@ -16,11 +16,10 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Record, RecordService } from '@rero/ng-core';
-import { Error } from '@rero/ng-core/lib/error/error';
+import { Error, Record, RecordService } from '@rero/ng-core';
+import { BaseApi } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { BaseApi } from './base-api';
 
 @Injectable({
   providedIn: 'root'
@@ -73,29 +72,6 @@ export class LoanApiService extends BaseApi {
     const requestStates = ['PENDING', 'ITEM_AT_DESK', 'ITEM_IN_TRANSIT_FOR_PICKUP'];
     return this._recordService.getRecords(
       'loans', this._patronStateQuery(patronPid, requestStates), page, itemsPerPage,
-      undefined, undefined, headers
-    );
-  }
-
-  /**
-   * Get history
-   * @param patronPid - string
-   * @param page - number
-   * @param itemsPerPage - number
-   * @param headers - object
-   * @return Observable
-   */
-  getHistory(
-    patronPid: string, page: number,
-    itemsPerPage: number = 10, headers = BaseApi.reroJsonheaders
-  ): Observable<Record | Error> {
-    const historyStates = ['ITEM_RETURNED', 'ITEM_IN_TRANSIT_TO_HOUSE', 'CANCELLED'];
-    const queryHistory = [
-      this._patronStateQuery(patronPid, historyStates),
-      '_exists_:end_date'
-    ].join(' AND ');
-    return this._recordService.getRecords(
-      'loans', queryHistory, page, itemsPerPage,
       undefined, undefined, headers
     );
   }

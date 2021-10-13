@@ -14,26 +14,22 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section class="content">
-  <div *ngIf="loans.length > 0; else noHistory">
+<section *ngIf="historyLogs$ | async as logs" class="content">
+  <ng-container *ngIf="logs.length > 0; else noHistory">
     <!-- HEADER -->
     <div class="row p-2 mb-1 bg-dark rounded text-light">
       <div class="col-sm-6" translate>Title</div>
       <div class="col-sm-4" translate>Authors</div>
       <div class="col-sm-2" translate>Return date</div>
     </div>
-    <div *ngFor="let loan of loans">
-      <admin-history-item [loan]="loan" class="row mb-1 p-2 border rounded"></admin-history-item>
+    <!-- LINES -->
+    <div *ngFor="let log of logs">
+      <admin-history-log [log]="log" class="row mb-1 p-1 border rounded"></admin-history-log>
     </div>
-  </div>
+  </ng-container>
+  <ng-template #noHistory>
+    {{ 'No history.' | translate }}
+  </ng-template>
 </section>
 
-<ng-template #noHistory>
-  {{ 'No history.' | translate }}
-</ng-template>
 
-<ng-template #loading>
-  <div class="text-center my-5">
-    <i class="fa fa-spin fa-spinner fa-2x"></i>
-  </div>
-</ng-template>

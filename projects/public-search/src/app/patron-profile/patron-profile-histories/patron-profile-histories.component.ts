@@ -19,7 +19,7 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { Error, Record } from '@rero/ng-core';
 import { Paginator } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
-import { LoanApiService } from '../../api/loan-api.service';
+import { OperationLogsApiService } from '../../api/operation-logs-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { ITabEvent, PatronProfileService } from '../patron-profile.service';
 @Component({
@@ -50,12 +50,12 @@ export class PatronProfileHistoriesComponent implements OnInit, OnDestroy {
 
   /**
    * Constructor
-   * @param _loanApiService - LoanApiService
+   * @param _operationLogsApiService - OperationLogsApiService
    * @param _patronProfileService - PatronProfileService
    * @param _patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
-    private _loanApiService: LoanApiService,
+    private _operationLogsApiService: OperationLogsApiService,
     private _patronProfileService: PatronProfileService,
     private _patronProfileMenuService: PatronProfileMenuService
   ) {}
@@ -119,7 +119,7 @@ export class PatronProfileHistoriesComponent implements OnInit, OnDestroy {
    */
   private _historyQuery(page: number): Observable<Record | Error> {
     const patronPid = this._patronProfileMenuService.currentPatron.pid;
-    return this._loanApiService
+    return this._operationLogsApiService
       .getHistory(patronPid, page, this._paginator.getRecordsPerPage());
   }
 }

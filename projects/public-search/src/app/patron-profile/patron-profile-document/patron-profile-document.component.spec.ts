@@ -18,8 +18,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateService } from '@rero/ng-core';
-import { testUserPatronLibrarian } from '@rero/shared';
-import { ContributionFilterPipe } from '../../pipe/contribution-filter.pipe';
+import { ContributionFilterPipe, testUserPatronLibrarian } from '@rero/shared';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { PatronProfileDocumentComponent } from './patron-profile-document.component';
 

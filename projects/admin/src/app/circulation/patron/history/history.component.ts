@@ -16,6 +16,10 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { RecordService } from '@rero/ng-core';
+import { Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { OperationLogsApiService } from '../../../api/operation-logs-api.service';
 import { PatronService } from '../../../service/patron.service';
 
 @Component({
@@ -24,30 +28,33 @@ import { PatronService } from '../../../service/patron.service';
 })
 export class HistoryComponent implements OnInit {
 
-  /** history Loans */
-  loans = [];
+  /** History logs */
+  historyLogs$: Observable<any>;
 
   /**
    * Constructor
    * @param _patronService - PatronService
+   * @param _operationLogsApiService - OperationLogsApiService
    */
   constructor(
-    private _patronService: PatronService
-  ) { }
+    private _patronService: PatronService,
+    private _operationLogsApiService: OperationLogsApiService
+  ) {}
 
-  /**
-   * Component initialization.
-   * Load current patron loans history.
-   */
+  /** OnInit hook */
   ngOnInit() {
-    this._patronService.currentPatron$.subscribe((patron: any) => {
-      if (patron) {
-        this._patronService.getHistory(patron.pid).subscribe(
-          (loans) => {
-            this.loans = loans;
-          });
-      }
-    });
+    this.historyLogs$ = this._patronService.currentPatron$.pipe(
+      switchMap((patron: any) => {
+        return this._operationLogsApiService.getCheckInHistory(
+          patron.pid,
+          1,
+          RecordService.MAX_REST_RESULTS_SIZE
+        ).pipe(
+          map((result: any) => {
+            return result.hits.hits;
+          })
+        );
+      })
+    );
   }
-
 }

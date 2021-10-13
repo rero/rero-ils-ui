@@ -1,0 +1,99 @@
+<!--
+ RERO ILS UI
+ Copyright (C) 2021 RERO
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published by
+ the Free Software Foundation, version 3 of the License.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="col" *ngVar="log.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document">
+  <!-- Basic loan informations -->
+  <div class="row">
+    <div class="col-sm-6 position-relative">
+      <button type="button" class="pl-0 pt-0 btn float-left"
+              (click)="isCollapsed = !isCollapsed; loadCheckout()"
+              [attr.aria-expanded]="!isCollapsed"
+              aria-controls="collapse">
+        <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" class="fa" aria-hidden="true"></i>
+      </button>
+      <a *ngIf="document; else noDocument" [routerLink]="['/records','documents','detail', log.metadata.loan.item.document.pid]">
+         {{ log.metadata.loan.item.document.title }}
+      </a>
+      <ng-template #noDocument>
+        {{ log.metadata.loan.item.document.title }}
+      </ng-template>
+    </div>
+    <div class="col-sm-4">
+      <ng-container *ngIf="document && document.metadata.contribution; else noContributionRecord">
+        <ul class="list-inline mb-0">
+          <li class="list-inline-item" *ngFor="let contribution of document.metadata.contribution.slice(0,3) | contributionFilter:language; let last = last; let i = index">
+            <ng-container *ngIf="contribution.pid && contribution.target !== undefined; else agentNoLink">
+              <a [routerLink]="['/', 'records', contribution.type | contributionType, 'detail', contribution.pid]">
+                {{ contribution.authorizedAccessPoint }}
+              </a>
+            </ng-container>
+            <ng-template #agentNoLink>
+              {{ contribution.authorizedAccessPoint }}
+            </ng-template>
+            {{ last ? '' : '; ' }}
+            {{ last && i === 2 ? '; …' : '' }}
+          </li>
+        </ul>
+      </ng-container>
+      <ng-template #noContributionRecord>
+        &nbsp;
+      </ng-template>
+    </div>
+    <div class="col-sm-2">
+      {{ log.metadata.date | dateTranslate: 'short' }}
+    </div>
+  </div>
+  <!-- Transaction history checkin / checkout -->
+  <div class="mt-1" *ngIf="!isCollapsed">
+    <h6 class="mt-2" translate>Transaction history</h6>
+    <section class="col events-timeline">
+      <!-- checkin event -->
+      <div class="row pl-2 pr-2 align-items-start timeline-event">
+        <div class="col-lg-2 pr-4 text-right event-timestamp">
+          <i class="fa fa-calendar-o"></i> {{ log.metadata.date | dateTranslate: 'short' }}
+        </div>
+        <div class="col-lg-10 event-content">
+          <div class="row">
+            <div class="col-3 pl-3">
+              <i class="fa fa-angle-double-left text-success pr-2"></i>
+              {{ 'Checkin' | translate }}
+            </div>
+            <div class="col-9">
+              <admin-history-log-library [location]="log.metadata.loan.transaction_location"></admin-history-log-library>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- checkout event -->
+      <div *ngIf="checkout" class="row pl-2 pr-2 align-items-start timeline-event">
+        <div class="col-lg-2 pr-4 text-right event-timestamp">
+          <i class="fa fa-calendar-o"></i> {{ checkout.metadata.date | dateTranslate: 'short' }}
+        </div>
+        <div class="col-lg-10 event-content">
+          <div class="row">
+            <div class="col-3 pl-3">
+              <i class="fa fa-angle-double-right text-danger pr-2"></i>
+              {{ 'Checkout' | translate }}
+            </div>
+            <div class="col-9">
+              <admin-history-log-library [location]="checkout.metadata.loan.transaction_location"></admin-history-log-library>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

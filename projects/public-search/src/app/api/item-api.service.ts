@@ -17,11 +17,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
-import { IssueItemStatus } from '@rero/shared';
+import { BaseApi, IssueItemStatus } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { QueryResponse } from '../record';
-import { BaseApi } from './base-api';
 
 @Injectable({
   providedIn: 'root'

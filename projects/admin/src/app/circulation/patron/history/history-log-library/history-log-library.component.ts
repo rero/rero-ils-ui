@@ -14,35 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { BaseApi } from '@rero/shared';
-import { Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'admin-history-log-library',
+  templateUrl: './history-log-library.component.html'
 })
-export class PatronApiService extends BaseApi {
+export class HistoryLogLibraryComponent {
 
-  /**
-   * Constructor
-   * @param _httpClient - HttpClient
-   */
-  constructor(private _httpClient: HttpClient) {
-    super();
-  }
-
-  /**
-   * Get Messages
-   * @return Observable
-   */
-  getMessages(patronPid: string): Observable<Message[]> {
-    return this._httpClient.get<Message[]>(`/api/patrons/${patronPid}/messages`);
-  }
-}
-
-/** Message envelop */
-export interface Message {
-  type: string;
-  content: string;
+  /** Transaction location */
+  @Input() location: any;
 }

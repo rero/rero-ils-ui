@@ -19,12 +19,19 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { of } from 'rxjs';
+import { PatronService } from '../../../service/patron.service';
 import { CirculationModule } from '../../circulation.module';
 import { HistoryComponent } from './history.component';
 
 describe('HistoryComponent', () => {
   let component: HistoryComponent;
   let fixture: ComponentFixture<HistoryComponent>;
+
+  const patronServiceSpy = jasmine.createSpyObj('PatronService', ['currentPatron$']);
+  patronServiceSpy.currentPatron$ = of({
+    pid: '1'
+  });
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -33,7 +40,10 @@ describe('HistoryComponent', () => {
         RouterTestingModule,
         HttpClientTestingModule,
         CirculationModule
-      ]
+      ],
+      providers: [
+        { provide: PatronService, useValue: patronServiceSpy }
+      ],
     })
     .compileComponents();
   }));

@@ -104,12 +104,6 @@ describe('LoanApiService', () => {
     });
   });
 
-  it('should load the histories', () => {
-    service.getHistory('1', 1, 10).subscribe((response: any) => {
-      expect(response.hits.hits[0]).toEqual(record);
-    });
-  });
-
   it('should extend the loan', () => {
     spyOn(httpClient, 'get').and.returnValue(of(canExtend));
     service.canExtend('1')

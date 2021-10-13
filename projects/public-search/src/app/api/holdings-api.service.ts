@@ -16,11 +16,10 @@
  */
 import { Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
+import { BaseApi } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { QueryResponse } from '../record';
-import { BaseApi } from './base-api';
-
 @Injectable({
   providedIn: 'root'
 })

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2021 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,34 +15,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientModule } from '@angular/common/http';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule } from '@rero/shared';
-import { CirculationModule } from '../../../circulation.module';
-import { HistoryItemComponent } from './history-item.component';
+import { RecordModule } from '@rero/ng-core';
+import { HistoryLogComponent } from './history-log.component';
 
-describe('HistoryItemComponent', () => {
-  let component: HistoryItemComponent;
-  let fixture: ComponentFixture<HistoryItemComponent>;
+describe('HistoryLogComponent', () => {
+  let component: HistoryLogComponent;
+  let fixture: ComponentFixture<HistoryLogComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  const log = {
+    metadata: {
+      date: '2021-10-13T13:38:45.388419+00:00',
+      loan: {
+        item: {
+          document: {
+            title: 'document title',
+            pid: '1'
+          }
+        }
+      }
+    }
+  };
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
-        RouterTestingModule,
-        HttpClientModule,
-        CirculationModule,
-        SharedModule
-      ]
+        HttpClientTestingModule,
+        RecordModule
+      ],
+      declarations: [ HistoryLogComponent ]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HistoryItemComponent);
+    fixture = TestBed.createComponent(HistoryLogComponent);
     component = fixture.componentInstance;
+    component.log = log;
     fixture.detectChanges();
   });
 
