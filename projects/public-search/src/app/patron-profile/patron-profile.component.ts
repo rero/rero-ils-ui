@@ -21,6 +21,7 @@ import { TabsetComponent } from 'ngx-bootstrap/tabs';
 import { forkJoin, Subscription } from 'rxjs';
 import { IllRequestApiService } from '../api/ill-request-api.service';
 import { LoanApiService } from '../api/loan-api.service';
+import { OperationLogsApiService } from '../api/operation-logs-api.service';
 import { PatronTransactionApiService } from '../api/patron-transaction-api.service';
 import { IMenu, PatronProfileMenuService } from './patron-profile-menu.service';
 import { PatronProfileService } from './patron-profile.service';
@@ -92,6 +93,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
    * @param _patronProfileService - PatronProfileService
    * @param _userService - UserService
    * @param _patronProfileMenuService - PatronProfileMenuService
+   * @param _operationLogsService - OperationLogsService
    */
   constructor(
     private _translateService: TranslateService,
@@ -101,7 +103,8 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
     private _illRequestApiService: IllRequestApiService,
     private _patronProfileService: PatronProfileService,
     private _userService: UserService,
-    private _patronProfileMenuService: PatronProfileMenuService
+    private _patronProfileMenuService: PatronProfileMenuService,
+    private _operationLogsApiService: OperationLogsApiService
   ) {}
 
   /** OnInit hook */
@@ -124,7 +127,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
               const loanQuery = this._loanApiService.getOnLoan(this._patronPid, 1, 1, undefined);
               const requestQuery = this._loanApiService.getRequest(this._patronPid, 1, 1, undefined);
               const feeQuery = this._patronTransactionApiService.getFees(this._patronPid, 'open', 1, 1, undefined);
-              const historyQuery = this._loanApiService.getHistory(this._patronPid, 1, 1, undefined);
+              const historyQuery = this._operationLogsApiService.getHistory(this._patronPid, 1, 1);
               const illRequestQuery = this._illRequestApiService.getPublicIllRequest(this._patronPid, 1, 1, undefined);
               forkJoin([loanQuery, requestQuery, feeQuery, historyQuery, illRequestQuery])
               .subscribe((
@@ -145,7 +148,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
             this._patronProfileService.cancelRequestEvent$.subscribe(() => {
               this.tabs.request.count--;
               this.tabs.history.loaded = false;
-              this._loanApiService.getHistory(this._patronPid, 1, 1, undefined).subscribe((historyResponse: Record) => {
+              this._operationLogsApiService.getHistory(this._patronPid, 1, 1).subscribe((historyResponse: Record) => {
                 this.tabs.history = {
                   loaded: false,
                   count: this._recordService.totalHits(historyResponse.hits.total)

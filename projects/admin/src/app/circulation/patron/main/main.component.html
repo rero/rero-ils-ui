@@ -98,8 +98,8 @@
           [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', barcode, 'history']">
           {{ 'History' | translate }}
-          <span *ngIf="getCirculationStatistics('history') > 0" class="badge badge-info font-weight-normal">
-            {{ getCirculationStatistics('history') }}
+          <span class="badge badge-info font-weight-normal">
+            {{ historyCount }}
           </span>
         </a>
       </li>

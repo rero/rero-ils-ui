@@ -17,18 +17,23 @@
 import { Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { Error } from '@rero/ng-core/lib/error/error';
+import { BaseApi } from '@rero/shared';
+import moment from 'moment';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class OperationLogsApiService {
+export class OperationLogsApiService extends BaseApi {
 
   /**
    * Constructor
    * @param _recordService - RecordService
    */
-  constructor(private _recordService: RecordService) { }
+  constructor(private _recordService: RecordService) {
+    super();
+  }
 
   /**
    * Get Operation logs by resource type and resource pid
@@ -64,5 +69,39 @@ export class OperationLogsApiService {
       'operation_logs', query, page, itemPerPage,
       undefined, undefined, undefined, sort
     );
+  }
+
+  /**
+   * Get history
+   * @param patronPid - string
+   * @param page - number
+   * @param itemsPerPage - number
+   * @return Observable
+   */
+   getCheckInHistory(patronPid: string, page: number, itemsPerPage: number = 10): Observable<Record | Error> {
+    const date = moment().subtract(6, 'months').utc().format('YYYY-MM-DDTHH:mm:ss');
+    const query = `_exists_:loan AND loan.patron.pid:${patronPid} AND loan.trigger:checkin AND date:[${date} TO *]`;
+    return this._recordService.getRecords(
+      'operation_logs', query, page, itemsPerPage,
+      undefined, undefined, BaseApi.reroJsonheaders, 'mostrecent'
+    );
+  }
+
+  /**
+   * Get history by load pid
+   * @param loanPid - string
+   * @param type - string
+   * @returns Observable
+   */
+  getHistoryByLoanPid(loanPid: string, type: string = 'checkin'): Observable<Record | Error> {
+    const query = `_exists_:loan AND loan.pid:${loanPid} AND loan.trigger:${type}`;
+    return this._recordService.getRecords(
+      'operation_logs', query, 1, 1,
+      undefined, undefined, BaseApi.reroJsonheaders
+    ).pipe(map((result: any) => {
+      return this._recordService.totalHits(result.hits.total) === 1
+      ? result.hits.hits[0]
+      : {};
+    }));
   }
 }

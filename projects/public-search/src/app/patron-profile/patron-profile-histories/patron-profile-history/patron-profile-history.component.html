@@ -14,24 +14,19 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<div class="row mt-1 p-2">
-  <div class="col-lg-6 col-sm-6">
-    <button
-      id="history-{{ record.metadata.pid }}"
-      type="button"
-      class="pl-0 pr-2 pt-0 btn btn-toogle"
-      (click)="isCollapsed = !isCollapsed"
-      [attr.aria-expanded]="!isCollapsed"
-      aria-controls="collapseEvent"
-    >
-      <i class="fa pr-0" [ngClass]="{ 'fa-caret-right': isCollapsed, 'fa-caret-down': !isCollapsed }"></i>
-    </button>
-    <a href="/{{ viewcode }}/documents/{{ record.metadata.document.pid }}">{{ record.metadata.document.title | mainTitle }}</a>
+<div class="row mt-1 p-2" *ngVar="record.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document">
+  <div class="col-6 col-sm-6">
+    <a *ngIf="document; else nodocument" href="/{{ viewcode }}/documents/{{ record.metadata.loan.item.document.pid }}">
+      {{ record.metadata.loan.item.document.title }}
+    </a>
+    <ng-template #nodocument>
+      {{ record.metadata.loan.item.document.title }}
+    </ng-template>
   </div>
-  <div class="col-lg-4 col-sm-4">
+  <div class="col-4 col-sm-4">
+    <ng-container *ngIf="document; else norecord">
     <ul class="list-inline">
-      <li *ngFor="let contribution of record.metadata.document.contribution | contributionFilter:language; let last = last">
+      <li *ngFor="let contribution of document.metadata.contribution | contributionFilter:language; let last = last">
         <ng-container *ngIf="contribution.pid && contribution.target !== undefined; else agentNoLink">
           <a href="/{{ viewcode }}/{{ contribution.target }}/{{ contribution.pid }}">
             {{ contribution.authorizedAccessPoint }}
@@ -43,51 +38,12 @@
         <ng-container *ngIf="!last">; </ng-container>
       </li>
     </ul>
+    </ng-container>
+    <ng-template #norecord>
+      &nbsp;
+    </ng-template>
   </div>
-  <div class="col-lg-2 col-sm-2">
-    {{ record.metadata.end_date | dateTranslate: 'shortDate' }}
-  </div>
-
-  <!-- History events -->
-  <div id="history-events-{{ record.metadata.pid }}" [collapse]="isCollapsed" [isAnimated]="true" class="col-lg-12 pl-3">
-    <h5 class="mt-3" translate>Transaction history</h5>
-    <section class="col events-timeline">
-      <div class="row pl-2 pr-2 align-items-start timeline-event">
-        <div class="col-lg-2 pr-4 text-right event-timestamp">
-          <i class="fa fa-calendar-o"></i>
-          {{ record.metadata.end_date | dateTranslate: 'short' }}
-        </div>
-        <div class="col-lg-10 event-content">
-          <div class="row">
-            <div class="col-3 pl-3">
-              <i class="fa fa-angle-double-left text-success pr-2"></i>
-              {{ 'Checkin' | translate }}
-            </div>
-            <div class="col-9 ng-star-inserted">
-              <i class="fa fa-map-marker"></i>
-              {{ record.metadata.transaction_library_name }}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row pl-2 pr-2 align-items-start timeline-event">
-        <div class="col-lg-2 pr-4 text-right event-timestamp">
-          <i class="fa fa-calendar-o"></i>
-          {{ record.metadata.start_date | dateTranslate: 'short' }}
-        </div>
-        <div class="col-lg-10 event-content">
-          <div class="row">
-            <div class="col-3 pl-3">
-              <i class="fa fa-angle-double-right text-danger pr-2"></i>
-              {{ 'Checkout' | translate }}
-            </div>
-            <div class="col-9 ng-star-inserted">
-              <i class="fa fa-map-marker"></i>
-              {{ record.metadata.pickup_library_name }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+  <div class="col-2 col-sm-2">
+    {{ record.metadata.date | dateTranslate: 'shortDate' }}
   </div>
 </div>

@@ -24,6 +24,8 @@ import { OrganisationService } from 'projects/admin/src/app/service/organisation
 import { PatronService } from 'projects/admin/src/app/service/patron.service';
 import { PatronTransactionService } from '../../services/patron-transaction.service';
 import { CirculationService } from '../../services/circulation.service';
+import { RecordService } from '@rero/ng-core';
+import { OperationLogsApiService } from '../../../api/operation-logs-api.service';
 
 @Component({
   selector: 'admin-main',
@@ -94,6 +96,8 @@ export class MainComponent implements OnInit, OnDestroy {
   /** Subscription to the fees accounting operation subject (allowing to know if some fees are paid, deleted, ...) */
   private _patronFeesOperationSubscription$: Subscription;
 
+  historyCount = 0;
+
 
   // GETTER & SETTER ====================================================
   /**
@@ -123,6 +127,7 @@ export class MainComponent implements OnInit, OnDestroy {
    * @param _hotKeysService - HotkeysService
    * @param _translateService - TranslateService
    * @param _circulationService - CirculationService
+   * @param _recordService: RecordService
    */
   constructor(
     private _route: ActivatedRoute,
@@ -132,7 +137,9 @@ export class MainComponent implements OnInit, OnDestroy {
     private _organisationService: OrganisationService,
     private _hotKeysService: HotkeysService,
     private _translateService: TranslateService,
-    private _circulationService: CirculationService
+    private _circulationService: CirculationService,
+    private _operationLogsApiService: OperationLogsApiService,
+    private _recordService: RecordService
   ) { }
 
   /** OnInit hook */
@@ -146,6 +153,9 @@ export class MainComponent implements OnInit, OnDestroy {
         // null and this will cause error for navigation url construction
         this._unregisterShortcuts();
         this._registerShortcuts();
+        this._operationLogsApiService.getCheckInHistory(patron.pid, 1, 1).subscribe((result: any) => {
+          this.historyCount = this._recordService.totalHits(result.hits.total);
+        });
         this._patronService.getCirculationInformations(patron.pid).subscribe((data) => {
           this.feesTotalAmount = data.fees.engaged + data.fees.preview;
           this._parseStatistics(data.statistics || {});

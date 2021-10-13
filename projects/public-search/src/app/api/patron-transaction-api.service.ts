@@ -17,8 +17,8 @@
 import { Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { Error } from '@rero/ng-core/lib/error/error';
+import { BaseApi } from '@rero/shared';
 import { Observable } from 'rxjs';
-import { BaseApi } from './base-api';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +49,7 @@ export class PatronTransactionApiService extends BaseApi {
     const query = `patron.pid:${patronPid} AND status:${status}`;
     return this._recordService.getRecords(
       'patron_transactions', query, page, itemsPerPage,
-      undefined, undefined, headers
+      undefined, undefined, headers, undefined, ['total']
     );
   }
 }

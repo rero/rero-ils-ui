@@ -16,8 +16,8 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BaseApi } from '@rero/shared';
 import { map } from 'rxjs/operators';
-import { BaseApi } from './base-api';
 
 @Injectable({
   providedIn: 'root'

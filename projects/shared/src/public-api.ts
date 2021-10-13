@@ -19,11 +19,13 @@
  * Public API Surface of shared
  */
 
+export * from './lib/api/base-api';
 export * from './lib/api/user-api.service';
 export * from './lib/class/item-status';
 export * from './lib/class/user';
 export * from './lib/paginator/paginator';
 export * from './lib/paginator/show-more-pager/show-more-pager.component';
+export * from './lib/pipe/contribution-filter.pipe';
 export * from './lib/pipe/contribution-format.pipe';
 export * from './lib/pipe/contribution-type.pipe';
 export * from './lib/pipe/extract-source-field.pipe';
