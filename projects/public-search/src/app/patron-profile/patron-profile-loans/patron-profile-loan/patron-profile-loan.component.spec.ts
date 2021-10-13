@@ -33,12 +33,16 @@ describe('PatronProfileLoanComponent', () => {
   let userService: UserService;
   let patronProfileMenuService: PatronProfileMenuService;
 
+  // NOTE FOR DEVS :
+  //   * 'is_late' means that the loan should be returned by doesn't yet. 'overdue'
+  //   * 'overdue' means that the loan match the first overdue step related to the corresponding CIPO.
+  //   So, a loan could be 'in_late' but doesn't yet 'overdue' if the first overdue step occurs 5 days after the end_date.
   const record = {
     metadata: {
       pid: '1',
       end_date: '2021-03-28 12:00:00',
       extension_count: 2,
-      overdue: true,
+      is_late: true,
       state: 'ITEM_ON_LOAN',
       renew: {
         can: true
