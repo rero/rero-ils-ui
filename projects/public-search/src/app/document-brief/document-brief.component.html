@@ -39,6 +39,12 @@
         {{ last && record.metadata.contribution.length > 3 ? '; …' : '' }}
       </li>
     </ul>
+    <!-- edition statement -->
+    <ng-container *ngIf="record.metadata.editionStatement">
+      <ul class="list-unstyled mb-0">
+        <li *ngFor="let edition of record.metadata.editionStatement">{{ edition._text[0].value }}</li>
+      </ul>
+    </ng-container>
     <!-- provision activity publications -->
     <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
       <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>
