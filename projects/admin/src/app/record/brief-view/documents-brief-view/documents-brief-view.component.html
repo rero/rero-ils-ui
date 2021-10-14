@@ -23,9 +23,7 @@
   </shared-thumbnail>
   <div class="card-body w-100 py-0">
     <h5 class="mb-0 card-title">
-      <a
-        name="document-title"
-        [routerLink]="['/records', type === 'import_bnf' ? 'import_bnf': 'documents', 'detail', record.metadata.pid]">
+      <a [routerLink]="['/records', type === 'import_bnf' ? 'import_bnf': 'documents', 'detail', record.metadata.pid]">
         <ng-container *ngIf="record.metadata.ui_title_text else mainTitle">
           {{ record.metadata.ui_title_text }}
         </ng-container>
@@ -50,6 +48,12 @@
           {{ last && record.metadata.contribution.length > 3 ? '; …' : '' }}
         </li>
       </ul>
+      <!-- edition statement -->
+      <ng-container *ngIf="record.metadata.editionStatement">
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let edition of record.metadata.editionStatement">{{ edition._text[0].value }}</li>
+        </ul>
+      </ng-container>
       <!-- provision activity publications -->
       <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
         <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>
