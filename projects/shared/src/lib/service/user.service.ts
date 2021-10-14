@@ -71,7 +71,7 @@ export class UserService {
         const settings: ISettings = loggedUser.settings;
         this._appSettingsService.settings = settings;
         delete loggedUser[settingsKey];
-        this._user = new User(loggedUser, this._appSettingsService.librarianRoles);
+        this._user = new User(loggedUser, this._appSettingsService);
         this._loaded.next(this._user);
         return this._user;
       })

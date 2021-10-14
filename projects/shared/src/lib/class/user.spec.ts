@@ -16,13 +16,13 @@
  */
 
 import { cloneDeep } from 'lodash-es';
-import { testPatronLibrarianRoles, testUserPatronLibrarian } from '../../tests/user';
+import { testPatronSettings, testUserPatronLibrarian } from '../../tests/user';
 import { User } from './user';
 
 describe('User', () => {
   let user: User;
   beforeEach(() => {
-    user = new User(testUserPatronLibrarian, testPatronLibrarianRoles);
+    user = new User(testUserPatronLibrarian, testPatronSettings);
   });
 
   it('should create an instance', () => {
@@ -30,7 +30,7 @@ describe('User', () => {
   });
 
   it('should return false if the user is not present', () => {
-    user = new User({}, testPatronLibrarianRoles);
+    user = new User({}, testPatronSettings);
     expect(user.isAuthenticated).toBeFalsy();
   });
 
@@ -56,10 +56,10 @@ describe('User', () => {
     const user1 = cloneDeep(testUserPatronLibrarian);
     const user2 = cloneDeep(testUserPatronLibrarian);
     user1.patrons = user1.patrons.splice(0, 1);
-    user = new User(user1, testPatronLibrarianRoles);
+    user = new User(user1, testPatronSettings);
     expect(user.isPatron).toBeTruthy();
     user2.patrons = user2.patrons.splice(1, 1);
-    user = new User(user2, testPatronLibrarianRoles);
+    user = new User(user2, testPatronSettings);
     expect(user.isPatron).toBeFalsy();
   });
 

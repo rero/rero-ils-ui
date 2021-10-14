@@ -16,10 +16,9 @@
  */
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { testPatronLibrarianRoles, testUserLibrarianWithSettings, testUserPatronLibrarian } from '@rero/shared';
+import { testPatronSettings, testUserLibrarianWithSettings, testUserPatronLibrarian } from '../../tests/user';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
-import { testUserPatronWithSettings } from '../../tests/user';
 import { UserApiService } from '../api/user-api.service';
 import { User } from '../class/user';
 import { AppSettingsService } from './app-settings.service';
@@ -28,8 +27,7 @@ import { IUserLocaleStorage, UserService } from './user.service';
 describe('UserService', () => {
   let service: UserService;
   let appSettingsService: AppSettingsService;
-
-  const dataStorage = new User(testUserPatronLibrarian, testPatronLibrarianRoles);
+  const dataStorage = new User(testUserPatronLibrarian, testPatronSettings);
   dataStorage.currentLibrary = '1';
   dataStorage.currentOrganisation = 'org1';
 

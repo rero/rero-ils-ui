@@ -17,7 +17,11 @@
 import { IUser } from '../lib/class/user';
 
 /** admin Roles for a patron */
-export const testPatronLibrarianRoles = ['librarian', 'system_librarian'];
+export const testPatronSettings = {
+  librarianRoles: ['librarian', 'system_librarian'],
+  readOnlyProfile: false
+};
+
 
 /** User with 2 patrons record */
 export const testUserPatronWithSettings = {
@@ -127,7 +131,8 @@ export const testUserPatronWithSettings = {
       holdings: 'hold',
       items: 'item'
     },
-    librarianRoles: ['librarian', 'system_librarian']
+    librarianRoles: ['librarian', 'system_librarian'],
+    readOnlyProfile: false
   },
   street: 'Via Croix Noire 3',
   username: 'simonetta'
@@ -335,7 +340,8 @@ export const testUserPatronMultipleOrganisationsWithSettings = {
       holdings: 'hold',
       items: 'item'
     },
-    librarianRoles: ['librarian', 'system_librarian']
+    librarianRoles: ['librarian', 'system_librarian'],
+    readOnlyProfile: false
   },
   street: 'Via Croix Noire 3',
   username: 'simonetta'
@@ -411,7 +417,8 @@ export const testUserLibrarianWithSettings = {
       holdings: 'hold',
       items: 'item'
     },
-    librarianRoles: ['librarian']
+    librarianRoles: ['librarian'],
+    readOnlyProfile: false
   },
   street: 'Via Croix Noire 3',
   username: 'simonetta'

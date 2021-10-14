@@ -67,6 +67,9 @@ export class User implements IUser {
   /** All patron roles */
   private _patronRoles: string[];
 
+  /** All patron roles */
+  private _readOnlyProfile: false;
+
   /**
    * Is authenticated
    * @return boolean
@@ -140,6 +143,14 @@ export class User implements IUser {
   }
 
   /**
+   * Is the user can edit profile
+   * @return boolean
+   */
+  get isReadOnlyProfile(): boolean {
+    return this._readOnlyProfile;
+  }
+
+  /**
    * Set current library
    * @param library - string
    */
@@ -184,8 +195,9 @@ export class User implements IUser {
    * @param user - object | User
    * @param adminRoles - array of roles
    */
-  constructor(user: any, adminRoles: string[]) {
-    this._adminRoles = adminRoles;
+  constructor(user: any, appSettingsService: any) {
+    this._adminRoles = appSettingsService.librarianRoles;
+    this._readOnlyProfile = appSettingsService.isReadOnlyProfile;
     // Check if the user is authenticated
     // by looking if keys exist in the object
     if (Object.keys(user).length > 0) {

@@ -83,6 +83,11 @@ describe('ApplicationSettingsService', () => {
     expect(service.librarianRoles).toEqual(settings.librarianRoles);
   });
 
+  it('should return the parameter read-only profile', () => {
+    service.settings = settings;
+    expect(service.isReadOnlyProfile).toEqual(settings.readOnlyProfile);
+  });
+
   it('should return the parameter current view code', () => {
     service.currentViewCode = 'blabla';
     expect(service.currentViewCode).toEqual('blabla');

@@ -131,6 +131,15 @@ export class AppSettingsService {
   }
 
   /**
+   * Check if the profiles read-only
+   * @return boolean
+   */
+  get isReadOnlyProfile(): boolean {
+    this._checkSettings();
+    return this._settings.readOnlyProfile;
+  }
+
+  /**
    * Check if the settings are present
    * @throw SettingsError
    */
@@ -151,6 +160,7 @@ export interface ISettings {
   language: string;
   operationLogs: any;
   librarianRoles: string[];
+  readOnlyProfile: boolean;
 }
 
 /** Settings Error */

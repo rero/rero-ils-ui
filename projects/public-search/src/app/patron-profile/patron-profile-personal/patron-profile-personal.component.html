@@ -111,7 +111,7 @@
       </ng-template>
     </dd>
   </dl>
-  <div class="col mt-3 pl-3">
+  <div class="col mt-3 pl-3" *ngIf="!user.isReadOnlyProfile">
     <a id="profile-edit" class="btn btn-sm btn-primary" href="/account/settings/profile/" translate>Edit</a>
   </div>
 </section>

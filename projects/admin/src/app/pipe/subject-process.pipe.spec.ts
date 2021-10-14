@@ -90,7 +90,8 @@ describe('SubjectProcessPipe', () => {
       globalView: 'global',
       language: 'fr',
       operationLogs: [],
-      librarianRoles: []
+      librarianRoles: [],
+      readOnlyProfile: false
     };
   });
 
