@@ -162,8 +162,8 @@ export class DocumentDescriptionComponent {
     const work = [];
     if ('work_access_point' in this.record.metadata) {
       this.record.metadata.work_access_point.forEach((workAccess: any) => {
+        let agentFormatted = '';
         if (workAccess.agent) {
-          let agentFormatted = '';
           const agent = workAccess.agent;
           if ('bf:Person' === agent.type) {
             // Person
@@ -218,36 +218,36 @@ export class DocumentDescriptionComponent {
               }
             }
           }
-          agentFormatted += workAccess.title + '. ';
-          if (workAccess.part) {
-            workAccess.part.forEach((part: any) => {
-              ['partNumber', 'partName'].forEach((key: string) => {
-                if (key in part) {
-                  agentFormatted += part[key] + '. ';
-                }
-              });
-            });
-          }
-          if (workAccess.miscellaneous_information) {
-            agentFormatted += workAccess.miscellaneous_information + '. ';
-          }
-          if (workAccess.language) {
-            agentFormatted += this.translateService.instant('lang_' + workAccess.language) + '. ';
-          }
-          if (workAccess.medium_of_performance_for_music) {
-            agentFormatted += workAccess.medium_of_performance_for_music.join('. ') + '. ';
-          }
-          if (workAccess.key_for_music) {
-            agentFormatted += workAccess.key_for_music + '. ';
-          }
-          if (workAccess.arranged_statement_for_music) {
-            agentFormatted += workAccess.arranged_statement_for_music + '. ';
-          }
-          if (workAccess.date_of_work) {
-            agentFormatted += workAccess.date_of_work + '. ';
-          }
-          work.push(agentFormatted.trim());
         }
+        agentFormatted += workAccess.title + '. ';
+        if (workAccess.part) {
+          workAccess.part.forEach((part: any) => {
+            ['partNumber', 'partName'].forEach((key: string) => {
+              if (key in part) {
+                agentFormatted += part[key] + '. ';
+              }
+            });
+          });
+        }
+        if (workAccess.miscellaneous_information) {
+          agentFormatted += workAccess.miscellaneous_information + '. ';
+        }
+        if (workAccess.language) {
+          agentFormatted += this.translateService.instant('lang_' + workAccess.language) + '. ';
+        }
+        if (workAccess.medium_of_performance_for_music) {
+          agentFormatted += workAccess.medium_of_performance_for_music.join('. ') + '. ';
+        }
+        if (workAccess.key_for_music) {
+          agentFormatted += workAccess.key_for_music + '. ';
+        }
+        if (workAccess.arranged_statement_for_music) {
+          agentFormatted += workAccess.arranged_statement_for_music + '. ';
+        }
+        if (workAccess.date_of_work) {
+          agentFormatted += workAccess.date_of_work + '. ';
+        }
+        work.push(agentFormatted.trim());
       });
     }
     return work;
