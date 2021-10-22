@@ -93,16 +93,14 @@ export class AcqOrderService {
   /**
    * Get order lines related to an order
    * @param orderPid: the order pid
+   * @param extraQuery: Add some elements on query
    * @return: an Observable of order lines
    */
-  getOrderLines(orderPid: string): Observable<AcqOrderLine[]> {
-    const query = `acq_order.pid:${orderPid}`;
-    return this._recordService
-      .getRecords('acq_order_lines', query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, 'priority')
-      .pipe(
-        map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-        map((hits: any[]) => hits.map(hit => new AcqOrderLine(hit.metadata)))
-      );
+  getOrderLines(orderPid: string, extraQuery?: string): Observable<AcqOrderLine[]> {
+    return this._acqOrderApiService.getOrderLines(orderPid, extraQuery).pipe(
+      map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+      map((hits: any[]) => hits.map(hit => new AcqOrderLine(hit.metadata)))
+    );
   }
 
   /**

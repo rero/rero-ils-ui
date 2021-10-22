@@ -1,0 +1,75 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="container" *ngIf="loaded">
+  <form [formGroup]="form" (ngSubmit)="onSubmit(model)">
+    <section class="row">
+      <div class="col-9">
+        <legend>Receipt of an order</legend>
+      </div>
+      <div class="col-3 text-right align-bottom">
+        <button
+          type="submit"
+          id="editor-delete-button"
+          class="btn btn-outline-danger btn-sm ml-1"
+          [routerLink]="['/', 'records', 'acq_orders', 'detail', orderRecord.pid]"
+          translate
+        ><i class="fa fa-times"></i> Cancel</button>
+        <button
+          type="submit"
+          id="editor-save-button"
+          class="btn btn-primary btn-sm ml-1"
+          [disabled]="!form.valid || orderSend"
+          translate
+        >
+          <i [hidden]="!orderSend" class="fa fa-spinner fa-pulse mr-2" role="status" aria-hidden="true"></i>
+          <i class="fa fa-save"></i> Save
+        </button>
+      </div>
+    </section>
+    <admin-order-summary [order]="orderRecord"></admin-order-summary>
+    <div class="card container mb-2" *ngIf="receiptRecord">
+      <div class="card-header px-0 row">
+        <h5 class="ml-2 mb-0">
+          <button type="button" class="btn-show-more"
+            [ngClass]="{'btn-expanded': !receiptCollapsed, 'btn-collapsed': receiptCollapsed}"
+            (click)="receiptCollapsed = !receiptCollapsed"
+            [attr.aria-expanded]="!receiptCollapsed"
+            aria-controls="collapse">
+          </button>
+          {{ 'Receipt information(s)' | translate }}
+        </h5>
+      </div>
+      <div class="card-body p-0" [hidden]="receiptCollapsed">
+        <dl class="row my-1">
+          <dt class="col-3 mb-0 label-title" translate>Reference</dt>
+          <dd class="col-9 mb-0">{{ orderRecord.pid }}</dd>
+          <ng-container *ngIf="receiptRecord.amount_adjustments && receiptRecord.amount_adjustments.length > 0">
+          <dt class="col-3 mb-0 label-title" translate>Total of Adjustement(s)</dt>
+          <dd class="col-9 mb-0">{{ receiptAdjustmentsTotal | currency: orderRecord.currency }}</dd>
+          </ng-container>
+          <ng-container *ngIf="receiptRecord.notes && receiptRecord.notes.length > 0">
+          <dt class="col-3 mb-0 label-title" translate>Number of note(s)</dt>
+          <dd class="col-9 mb-0">{{ receiptRecord.notes.length }}</dd>
+          </ng-container>
+        </dl>
+      </div>
+    </div>
+    <section>
+      <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
+    </section>
+  </form>
+</div>
