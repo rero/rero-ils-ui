@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2021 RERO
+ * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,11 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Record, RecordService, RecordUiService } from '@rero/ng-core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
-import { forkJoin, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqOrder, AcqOrderLine } from '../../../../classes/order';
 

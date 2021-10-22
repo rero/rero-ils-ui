@@ -86,28 +86,6 @@
     margin-top: map-get($spacers, 3) !important;
   }
 
-  /* SHOW MORE BUTTON ====================================================== */
-  .btn-shore-more {
-    border: 1px solid $border-color;
-    border-radius: 2rem;
-    height: 30px;
-    width: 30px;
-    background-color: $white;
-    margin-right: map-get($spacers, 3);
-
-    &.btn-expanded::before {
-      font-family: 'FontAwesome';
-      font-weight: 100;
-      content: " \f0d7";
-    }
-
-    &.btn-collapsed::before {
-      font-family: 'FontAwesome';
-      font-weight: 100;
-      content: " \f0da";
-    }
-  }
-
   /* AMOUNT ================================================================ */
   .amount {
     border-left: 1px solid $border-color;
@@ -126,7 +104,7 @@
   }
 
   .status {
-    width: map-get($spacers, 4);
+    min-width: map-get($spacers, 4);
     padding: map-get($spacers, 1) 0;
   }
 
