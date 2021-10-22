@@ -18,6 +18,7 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
 import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
@@ -71,7 +72,8 @@ export class AccountBriefViewComponent implements OnInit {
     private _organisationService: OrganisationService,
     private _accountService: AcqAccountService,
     private _toastrService: ToastrService,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
+    private _userService: UserService
   ) { }
 
   /** OnInit hook */
@@ -83,7 +85,8 @@ export class AccountBriefViewComponent implements OnInit {
         .subscribe((data: RecordPermissions) => this.permissions = data);
       // load children accounts
       if (this.loadChildren) {
-        this._accountService.getAccounts(this.account.pid).subscribe(accounts => {
+        const libraryPid = this._userService.user.currentLibrary;
+        this._accountService.getAccounts(libraryPid, this.account.pid).subscribe(accounts => {
           this.children = accounts;
         });
       }

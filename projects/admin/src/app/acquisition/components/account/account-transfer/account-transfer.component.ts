@@ -21,11 +21,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
-import { AcqAccountService } from '../../../services/acq-account.service';
-import { AcqBudgetService } from '../../../services/acq-budget.service';
 import { AcqAccount } from '../../../classes/account';
+import { AcqAccountService } from '../../../services/acq-account.service';
 import { orderAccountsAsTree } from '../../../utils/account';
 
 @Component({
@@ -63,7 +63,6 @@ export class AccountTransferComponent implements OnInit {
   /**
    * Constructor
    * @param _accountService: AcqAccountService
-   * @param _budgetApiService: BudgetApiService
    * @param _organisationService: OrganisationService
    * @param _formBuilder: FormBuilder,
    * @param _toastrService: ToastrService,
@@ -72,12 +71,12 @@ export class AccountTransferComponent implements OnInit {
    */
   constructor(
     private _accountService: AcqAccountService,
-    private _budgetApiService: AcqBudgetService,
     private _organisationService: OrganisationService,
     private _formBuilder: FormBuilder,
     private _toastrService: ToastrService,
     private _translateService: TranslateService,
-    private _router: Router
+    private _router: Router,
+    private _userService: UserService
   ) {
     this.form = this._formBuilder.group({
       source: [undefined, Validators.required],
@@ -148,7 +147,8 @@ export class AccountTransferComponent implements OnInit {
   // PRIVATE FUNCTIONS ========================================================
   /** Load accounts and budgets. Order accounts as a hierarchical tree */
   private _loadData(): void {
-    this._accountService.getAccounts(undefined, {sort: 'depth'}).subscribe((accounts: AcqAccount[]) => {
+    const libraryPid = this._userService.user.currentLibrary;
+    this._accountService.getAccounts(libraryPid, undefined, {sort: 'depth'}).subscribe((accounts: AcqAccount[]) => {
       this._accountsTree = orderAccountsAsTree(accounts);
 
       this.budgets = Array.from(new Set(this._accountsTree.map((account: AcqAccount) => account.budget.pid)));

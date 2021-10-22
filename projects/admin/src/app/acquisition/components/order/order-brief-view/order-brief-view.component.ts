@@ -66,7 +66,7 @@ export class OrderBriefViewComponent implements ResultItem {
    */
   getNote(noteType: AcqNoteType): AcqNote | null {
     if (this.record && this.record.metadata && this.record.metadata.notes) {
-      return this.record.metadata.notes.filter(note => note.type === AcqNoteType.STAFF_NOTE).shift();
+      return this.record.metadata.notes.filter(note => note.type === noteType).shift();
     }
   }
 
