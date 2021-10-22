@@ -19,6 +19,7 @@ import { getCurrencySymbol } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { ApiService } from '@rero/ng-core';
+import { UserService } from '@rero/shared';
 import { AcqAccount } from 'projects/admin/src/app/acquisition/classes/account';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
 import { AcqAccountService } from '../../../../services/acq-account.service';
@@ -58,14 +59,16 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
   constructor(
     private _accountService: AcqAccountService,
     private _organisationService: OrganisationService,
-    private _apiService: ApiService
+    private _apiService: ApiService,
+    private _userService: UserService
   ) {
     super();
   }
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._accountService.getAccounts().subscribe((accounts: AcqAccount[]) => {
+    const libraryPid = this._userService.user.currentLibrary;
+    this._accountService.getAccounts(libraryPid).subscribe((accounts: AcqAccount[]) => {
       accounts = orderAccountsAsTree(accounts);
       this.accountList = accounts;
 

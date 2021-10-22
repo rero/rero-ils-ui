@@ -41,15 +41,16 @@ export class AcqAccountService {
 
   /**
    * Get account visible for the current used library.
+   * @param libraryPid: the current library pid
    * @param parentPid: the parent account pid, if `null` then the root account will be return (optional)
    * @param options: the additional options to get the records (optional)
    * @return an observable of account corresponding to search criteria
    */
-  getAccounts(parentPid?: string, options?: {
+  getAccounts(libraryPid: string, parentPid?: string, options?: {
     sort?: string
   }): Observable<AcqAccount[]> {
     return this._acqAccountApiService
-      .getAccounts(parentPid, options)
+      .getAccounts(libraryPid, parentPid, options)
       .pipe(
         map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map((hit: any) => new AcqAccount(hit.metadata)))
