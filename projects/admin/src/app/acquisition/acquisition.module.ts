@@ -38,6 +38,7 @@ import {
   SelectAccountEditorWidgetComponent
 } from './components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 import { PlaceOrderFormComponent } from './components/order/place-order-form/place-order-form.component';
+import { OrderSummaryComponent } from './components/order/order-summary/order-summary.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { PlaceOrderFormComponent } from './components/order/place-order-form/pla
     OrderLineComponent,
     NegativeAmountPipe,
     SelectAccountEditorWidgetComponent,
-    PlaceOrderFormComponent
+    PlaceOrderFormComponent,
+    OrderSummaryComponent
   ],
   imports: [
     PopoverModule.forRoot(),

@@ -1,6 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2021 RERO
+  Copyright (C) 2021 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<!-- duplicate button -->
+<!-- Place order button -->
 <section *ngIf="order && order.pid" class="float-right mt-2 mr-n4 btn-additional-action">
   <a *ngIf="order.status === acqOrderStatus.PENDING"
      (click)="placeOrderDialog()"
@@ -28,44 +29,18 @@
 
 <div *ngIf="order && order.pid" class="container">
   <h1 class="mb-3">{{ order.reference }}</h1>
-  <section class="my-3 row">
-    <!-- ORDER DETAIL (:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <div class="col-8 border rounded">
-      <dl class="row my-2">
-        <!-- VENDOR -->
-        <ng-container *ngIf="order.vendor">
-          <dt class="col-4 label-title" translate>Vendor</dt>
-          <dd class="col-8">{{ order.vendor.pid | getRecord: 'vendors' : 'field' : 'name' | async }}</dd>
-        </ng-container>
-        <!-- ORDER TYPE -->
-        <dt class="col-4 label-title" translate>Order type</dt>
-        <dd class="col-8">{{ order.type | translate }}</dd>
-        <!-- ORDER STATUS -->
-        <dt class="col-4 label-title" translate>Order status</dt>
-        <dd class="col-8">{{ order.status | translate }}</dd>
-        <!-- ORDER DATE -->
-        <ng-container *ngIf="order.order_date">
-          <dt class="col-4 label-title" translate>Order date</dt>
-          <dd class="col-8">{{ order.order_date | dateTranslate :'shortDate' }}</dd>
-        </ng-container>
-        <!-- NOTES -->
-        <ng-container *ngIf="order.notes && order.notes.length > 0">
-          <dt class="col-4 label-title" translate>Notes</dt>
-          <dd class="col-8">
-            <a href (click)="scrollTo($event, 'notes'); notesCollapsed = false;" *ngFor="let note of order.notes">
-              <span class="badge {{ getBadgeColor(note.type) }} mr-2">{{ note.type | translate }}</span>
-            </a>
-          </dd>
-        </ng-container>
-      </dl>
-    </div>
-    <!-- ORDER TOTAL AMOUNT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <div class="col-4 pr-0">
-      <div class="border h-100 rounded bg-light text-center">
-        <span class="total-amount">{{ order.total_amount || 0 | currency:order.currency:'symbol' }}</span>
-      </div>
-    </div>
-  </section>
+
+  <!-- ORDER SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <admin-order-summary [order]="order">
+   <ng-container notes *ngIf="order.notes && order.notes.length > 0">
+     <dt class="col-4 label-title" translate>Notes</dt>
+     <dd class="col-8">
+       <a href (click)="scrollTo($event, 'notes'); notesCollapsed = false;" *ngFor="let note of order.notes">
+         <span class="badge {{ getBadgeColor(note.type) }} mr-2">{{ note.type | translate }}</span>
+       </a>
+     </dd>
+    </ng-container>
+  </admin-order-summary>
 
   <!-- ORDER LINES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <admin-order-lines class="row" [order]="order"></admin-order-lines>
