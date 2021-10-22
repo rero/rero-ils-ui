@@ -97,6 +97,7 @@ export enum AcqOrderLineStatus {
   APPROVED = 'approved',
   CANCELLED = 'cancelled',
   ORDERED = 'ordered',
+  PARTIALLY_RECEIVED = 'partially_received',
   RECEIVED = 'received'
 }
 
@@ -152,4 +153,29 @@ export class AcqOrderPreview {
   get content(): string{
     return this.preview.substring(this.preview.indexOf('\n')+1).trim();
   }
+}
+
+export interface IAcqOrderLine {
+  $chema: string;
+  pid: string;
+  status: string;
+  priority: string;
+  quantity: number;
+  quantity_received: number;
+  amount: number;
+  total_amount: number;
+  exchange_rate: number;
+  notes: INotes[];
+  order_date: string;
+  reception_date?: string;
+  acq_account: string;
+  acq_order: string;
+  document: string;
+  organisation: string;
+  library: string;
+}
+
+export interface INotes {
+  type: string;
+  content: string;
 }

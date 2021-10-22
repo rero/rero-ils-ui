@@ -20,7 +20,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { Error } from '@rero/ng-core/lib/error/error';
-import { UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqAccount } from '../classes/account';
@@ -37,26 +36,23 @@ export class AcqAccountApiService {
    * Constructor
    * @param _http: HttpClient
    * @param _recordService - RecordService
-   * @param _userService - UserService
    */
   constructor(
     private _http: HttpClient,
-    private _recordService: RecordService,
-    private _userService: UserService
-  ) { }
+    private _recordService: RecordService
+  ) {}
 
   /**
-   * Get account visible for the current used library.
+   * Get account visible for the current library
+   * @param libraryPid: the current library
    * @param parentPid: the parent account pid, if `null` then the root account will be return (optional)
    * @param options: the additional options to get the records (optional)
    * @return an observable of ElasticSearch response corresponding to search criteria
    */
-  getAccounts(parentPid?: string, options?: {
-    sort?: string
-  }): Observable<any> {
+   getAccounts(libraryPid: string, parentPid?: string, options?: { sort?: string }): Observable<any> {
     const defaultQueryParams = [
       'is_active:true',
-      `library.pid:${this._userService.user.currentLibrary}`
+      `library.pid:${libraryPid}`
     ];
     if (parentPid !== undefined) {
       const parentParam = (parentPid === null) ? 'depth:0' : `parent.pid:${parentPid}`;

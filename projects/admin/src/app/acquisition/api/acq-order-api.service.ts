@@ -17,6 +17,7 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Error, Record, RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { AcqAddressRecipient } from '../classes/order';
 
@@ -35,7 +36,8 @@ export class AcqOrderApiService {
    * @param _http - HttpClient
    */
   constructor(
-    private _http: HttpClient
+    private _http: HttpClient,
+    private _recordService: RecordService
   ) { }
 
   // SERVICE PUBLIC FUNCTIONS =================================================
@@ -66,5 +68,19 @@ export class AcqOrderApiService {
   createOrder(orderPid: string, emails: AcqAddressRecipient[]): Observable<any> {
     const apiUrl = `/api/acq_order/${orderPid}/send_order`;
     return this._http.post<any>(apiUrl, {emails});
+  }
+
+  /**
+   * Get order lines related to an order
+   * @param orderPid: the order pid
+   * @param extraQuery: add some elements on query
+   */
+  getOrderLines(orderPid: string, extraQuery?: string): Observable<Record | Error> {
+    let query = `acq_order.pid:${orderPid}`;
+    if (extraQuery) {
+      query += ` ${extraQuery}`;
+    }
+    return this._recordService
+      .getRecords('acq_order_lines', query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, 'priority');
   }
 }
