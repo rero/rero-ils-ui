@@ -1,0 +1,50 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+  Copyright (C) 2021 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<section class="my-3 row" *ngIf="order">
+  <div class="col-8 border rounded">
+    <dl class="row my-2">
+      <!-- VENDOR -->
+      <ng-container *ngIf="order.vendor">
+        <dt class="col-4 label-title" translate>Vendor</dt>
+        <dd class="col-8">{{ order.vendor.pid | getRecord: 'vendors' : 'field' : 'name' | async }}</dd>
+      </ng-container>
+      <!-- ORDER TYPE -->
+      <dt class="col-4 label-title" translate>Order type</dt>
+      <dd class="col-8">{{ order.type | translate }}</dd>
+      <!-- ORDER STATUS -->
+      <dt class="col-4 label-title" translate>Order status</dt>
+      <dd class="col-8">{{ order.status | translate }}</dd>
+      <!-- ORDER DATE -->
+      <ng-container *ngIf="order.order_date">
+        <dt class="col-4 label-title" translate>Order date</dt>
+        <dd class="col-8">{{ order.order_date | dateTranslate :'shortDate' }}</dd>
+      </ng-container>
+      <!-- NOTES (optional) -->
+      <ng-content select="[notes]"></ng-content>
+    </dl>
+  </div>
+  <!-- ORDER TOTAL AMOUNT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <div class="col-4 pr-0">
+    <div class="border h-100 rounded bg-light">
+      <div class="total-amount">
+        <label>{{ order.total_amount || 0 | currency:order.currency:'symbol' }}</label>
+      </div>
+    </div>
+  </div>
+</section>
+

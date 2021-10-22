@@ -20,18 +20,21 @@
 @import '~bootstrap/scss/variables';
 @import '/projects/admin/src/app/scss/variables';
 
-.btn-additional-action {
-  z-index: 2;
-  position: relative;
-}
+.total-amount {
 
-.notes {
-  .note {
-    margin-bottom: map-get($spacers, 2);
-  }
-  blockquote {
-    padding-left: map-get($spacers, 3);
-    border-left: 2px solid $border-color;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  width: 100%;
+
+  label {
+    width: 100%;
+    color: $dark;
+    line-height: 3em;
+    font-size: 2em;
+    text-shadow: 1px 1px 1px $secondary;
+    text-align: center;
   }
 }
-
