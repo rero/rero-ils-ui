@@ -53,7 +53,8 @@ export class AccountListComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._accountService.getAccounts(null).subscribe(accounts => {
+    const libraryPid = this._userService.user.currentLibrary;
+    this._accountService.getAccounts(libraryPid, null).subscribe(accounts => {
       this.rootAccounts = accounts;
     });
   }
