@@ -1,7 +1,6 @@
 /*
  * RERO ILS UI
  * Copyright (C) 2021 RERO
- * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,47 +14,43 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { UserService } from '@rero/shared';
-import { of } from 'rxjs';
-import { AcquisitionModule } from '../../../acquisition.module';
-import { AcqAccountService } from '../../../services/acq-account.service';
-import { AccountListComponent } from './account-list.component';
+import { ApiService, CoreModule } from '@rero/ng-core';
+import { ToastrModule } from 'ngx-toastr';
+import { AcqAccountApiService } from '../../../api/acq-account-api.service';
+import { AcqOrderApiService } from '../../../api/acq-order-api.service';
+import { OrderReceipt } from './order-receipt';
+import { OrderReceiptForm } from './order-receipt-form';
+import { OrderReceiptViewComponent } from './order-receipt-view.component';
 
 
-describe('AccountListComponent', () => {
-  let component: AccountListComponent;
-  let fixture: ComponentFixture<AccountListComponent>;
-
-  const accountsServiceSpy = jasmine.createSpyObj('AcqAccountService', ['getAccounts']);
-
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = { currentLibrary: 1 };
+describe('OrderReceiptViewComponent', () => {
+  let component: OrderReceiptViewComponent;
+  let fixture: ComponentFixture<OrderReceiptViewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AccountListComponent ],
+      declarations: [ OrderReceiptViewComponent ],
       imports: [
+        HttpClientTestingModule,
         RouterTestingModule,
         TranslateModule.forRoot(),
-        HttpClientTestingModule,
-        AcquisitionModule
+        ToastrModule.forRoot(),
+        CoreModule
       ],
       providers: [
-        { provide: AcqAccountService, useValue: accountsServiceSpy },
-        { provide: UserService, useValue: userServiceSpy }
+        OrderReceipt,
+        { provide: OrderReceiptForm, deps: [AcqOrderApiService, AcqAccountApiService, ApiService, OrderReceipt] }
       ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    accountsServiceSpy.getAccounts.and.returnValue(of([]));
-    fixture = TestBed.createComponent(AccountListComponent);
+    fixture = TestBed.createComponent(OrderReceiptViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
