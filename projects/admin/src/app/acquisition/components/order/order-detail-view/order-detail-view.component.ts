@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2021 RERO
+ * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +21,6 @@ import { RecordService, RecordUiService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqNoteType, AcqOrder, AcqOrderLine, AcqOrderStatus } from '../../../classes/order';
 import { PlaceOrderFormComponent } from '../place-order-form/place-order-form.component';

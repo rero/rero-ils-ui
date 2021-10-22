@@ -16,22 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import '~bootstrap/scss/functions';
-@import '~bootstrap/scss/variables';
-@import '/projects/admin/src/app/scss/variables';
+import { Component, Input } from '@angular/core';
+import { AcqOrder } from '../../../classes/order';
 
-.btn-additional-action {
-  z-index: 2;
-  position: relative;
+@Component({
+  selector: 'admin-order-summary',
+  templateUrl: './order-summary.component.html',
+  styleUrls: ['./order-summary.component.scss']
+})
+export class OrderSummaryComponent {
+
+  // COMPONENTS ATTRIBUTES ====================================================
+  @Input() order: AcqOrder;
+
 }
-
-.notes {
-  .note {
-    margin-bottom: map-get($spacers, 2);
-  }
-  blockquote {
-    padding-left: map-get($spacers, 3);
-    border-left: 2px solid $border-color;
-  }
-}
-

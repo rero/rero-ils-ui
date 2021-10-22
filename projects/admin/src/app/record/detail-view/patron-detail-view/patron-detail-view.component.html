@@ -75,7 +75,7 @@
     <!-- NOTES ================================================================= -->
     <ng-container *ngIf="patron.notes && patron.notes.length > 0">
       <div class="card-header">
-        <button type="button" class="btn-shore-more"
+        <button type="button" class="btn-show-more"
                 [ngClass]="{'btn-expanded': !sectionCollapsed.notes, 'btn-collapsed': sectionCollapsed.notes}"
                 (click)="sectionCollapsed.notes = !sectionCollapsed.notes"
                 [attr.aria-expanded]="!sectionCollapsed.notes" aria-controls="collapse">
@@ -92,7 +92,7 @@
     </ng-container>
     <!-- USER INFORMATIONS SECTION ============================================= -->
     <div class="card-header">
-      <button type="button" class="btn-shore-more"
+      <button type="button" class="btn-show-more"
               [ngClass]="{'btn-expanded': !sectionCollapsed.user, 'btn-collapsed': sectionCollapsed.user}"
               (click)="sectionCollapsed.user = !sectionCollapsed.user"
               [attr.aria-expanded]="!sectionCollapsed.user" aria-controls="collapse">
@@ -118,7 +118,7 @@
     <!-- PATRON INFORMATIONS SECTION =========================================== -->
     <ng-container *ngIf="patron.patron">
       <div class="card-header">
-        <button type="button" class="btn-shore-more"
+        <button type="button" class="btn-show-more"
                 [ngClass]="{'btn-expanded': !sectionCollapsed.patron, 'btn-collapsed': sectionCollapsed.patron}"
                 (click)="sectionCollapsed.patron = !sectionCollapsed.patron"
                 [attr.aria-expanded]="!sectionCollapsed.patron" aria-controls="collapse">
@@ -166,7 +166,7 @@
     <!-- LIBRARIAN INFORMATIONS SECTION ======================================== -->
     <ng-container *ngIf="isLibrarian">
       <div class="card-header">
-        <button type="button" class="btn-shore-more"
+        <button type="button" class="btn-show-more"
                 [ngClass]="{'btn-expanded': !sectionCollapsed.librarian, 'btn-collapsed': sectionCollapsed.librarian}"
                 (click)="sectionCollapsed.librarian = !sectionCollapsed.librarian"
                 [attr.aria-expanded]="!sectionCollapsed.librarian" aria-controls="collapse">
