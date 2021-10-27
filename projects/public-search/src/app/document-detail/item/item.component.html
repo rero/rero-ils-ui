@@ -40,7 +40,7 @@
       <dt class="mb-0 col-lg-2 col-sm-3" translate>Temporary location</dt>
       <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location-temporary'}" class="mb-0 col-lg-10 col-sm-9">
         <ng-container *ngFor="let collection of item.metadata.in_collection; let last = last">
-          <a [routerLink]="['/', collection.viewcode, 'collections', collection.pid]">{{ collection.title }}</a>
+          <a href="/{{ collection.viewcode }}/collections/{{ collection.pid }}">{{ collection.title }}</a>
           {{ last ? '' : '; ' }}
         </ng-container>
       </dd>
