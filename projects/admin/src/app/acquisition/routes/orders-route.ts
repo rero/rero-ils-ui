@@ -18,6 +18,7 @@
 import { formatDate } from '@angular/common';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { AcqOrderLineGuard } from '../../guard/acq-order-line.guard';
 import { CanUpdateGuard } from '../../guard/can-update.guard';
 import { OrderBriefViewComponent } from '../components/order/order-brief-view/order-brief-view.component';
 import { OrderDetailViewComponent } from '../components/order/order-detail-view/order-detail-view.component';
@@ -37,7 +38,7 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
       children: [
         { path: '', component: RecordSearchPageComponent },
         { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [CanUpdateGuard] },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [AcqOrderLineGuard] },
         { path: 'new', component: EditorComponent }
       ],
       data: {
@@ -50,7 +51,7 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
             searchFilters: [
               this.expertSearchFilter()
             ],
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
             preUpdateRecord: (data: any) => this._cleanRecord(data),
             aggregations: (aggregations: any) => this._routeToolService.aggregationFilter(aggregations),

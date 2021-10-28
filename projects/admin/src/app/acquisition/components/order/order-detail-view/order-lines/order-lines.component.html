@@ -19,13 +19,20 @@
   <div class="card-header px-0 row">
     <h5 class="col-8" translate>Order lines</h5>
     <div class="col-4 text-right">
-      <a *ngIf="permissions && permissions.update.can"
+      <a *ngIf="permissions && permissions.update.can; else createInfo"
          class="btn btn-sm btn-outline-primary"
          [routerLink]="['/', 'records', 'acq_order_lines', 'new']"
          [queryParams]="{ order: order.pid }"
       >
         <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
       </a>
+      <ng-template #createInfo>
+        <button type="button" class="btn btn-sm btn-outline-primary disabled"
+                [popover]="tolTemplate" triggers="mouseenter:mouseleave">
+          <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
+        </button>
+        <ng-template #tolTemplate><div [innerHtml]="createInfoMessage | nl2br"></div></ng-template>
+      </ng-template>
     </div>
   </div>
   <div class="card-body p-0">

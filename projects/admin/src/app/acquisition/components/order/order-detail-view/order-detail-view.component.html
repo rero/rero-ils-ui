@@ -17,7 +17,7 @@
 -->
 <!-- Place order button -->
 <section *ngIf="order && order.pid" class="float-right mt-2 mr-n4 btn-additional-action">
-  <a *ngIf="order.status === acqOrderStatus.PENDING"
+  <a *ngIf="permissions && permissions.update.can && order.status === acqOrderStatus.PENDING"
      (click)="placeOrderDialog()"
      class="btn btn-sm btn-primary"
      [ngClass]="{'disabled': !canPlaceOrder}"
@@ -43,7 +43,7 @@
   </admin-order-summary>
 
   <!-- ORDER LINES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <admin-order-lines class="row" [order]="order"></admin-order-lines>
+  <admin-order-lines class="row" [order]="order" [permissions]="permissions"></admin-order-lines>
 
   <!-- ORDER NOTES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <div class="row mt-3" *ngIf="order.notes && order.notes.length > 0">

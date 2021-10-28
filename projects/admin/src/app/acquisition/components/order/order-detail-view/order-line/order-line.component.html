@@ -90,11 +90,23 @@
       </div>
     </div>
     <div class="col-1 pl-0 text-right">
-      <button *ngIf="permissions.update.can" type="button" class="btn btn-outline-primary btn-sm mr-1"
+      <!-- EDIT BUTTON ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <button *ngIf="permissions.update.can; else editInfo"
+              type="button" class="btn btn-outline-primary btn-sm mr-1"
+              title="{{ 'Edit' | translate }}"
               [routerLink]="['/records', 'acq_order_lines', 'edit', orderLine.pid]">
         <i class="fa fa-pencil"></i>
       </button>
+      <ng-template #editInfo>
+        <button type="button" class="btn btn-sm btn-outline-primary mr-1 disabled"
+                title="{{ 'Edit' | translate }}"
+                [popover]="tolTemplate" triggers="mouseenter:mouseleave">
+          <i class="fa fa-trash"></i>
+        </button>
+        <ng-template #tolTemplate><div [innerHtml]="editInfoMessage | nl2br"></div></ng-template>
+      </ng-template>
 
+      <!-- DELETE BUTTON ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       <button *ngIf="this.permissions.delete.can; else deleteInfo"
               type="button" class="btn btn-outline-danger btn-sm"
               title="{{ 'Delete' | translate }}"
