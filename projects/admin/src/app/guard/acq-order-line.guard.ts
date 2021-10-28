@@ -27,7 +27,7 @@ import { LibraryGuard } from './library.guard';
 })
 export class AcqOrderLineGuard extends LibraryGuard {
 
-  /** Return the library linked to an acquisitin order number.
+  /** Return the library linked to an acquisition order number.
    *  @param route: the current URL route
    *  @return: the library pid linked to the resource from the 'order' query parameters
    */

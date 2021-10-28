@@ -21,6 +21,10 @@ import { RecordService, RecordUiService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
+import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
+import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqNoteType, AcqOrder, AcqOrderLine, AcqOrderStatus } from '../../../classes/order';
 import { PlaceOrderFormComponent } from '../place-order-form/place-order-form.component';
@@ -43,6 +47,8 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy, DetailRecord
   notesCollapsed = true;
   /** reference to AcqOrderStatus class */
   acqOrderStatus = AcqOrderStatus;
+  /** order permissions */
+  permissions: RecordPermissions;
 
   /** modal reference */
   private _modalRef: BsModalRef;
@@ -73,6 +79,8 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy, DetailRecord
    * @param _recordUiService - RecordUiService
    * @param _scroller - ViewportScroller
    * @param _modalService - BsModalService
+   * @param _recordPermissionService - RecordPermissionService
+   * @param _permissionValidator - CurrentLibraryPermissionValidator
    */
   constructor(
     private _acqOrderApiService: AcqOrderApiService,
@@ -80,14 +88,19 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy, DetailRecord
     private _recordUiService: RecordUiService,
     private _scroller: ViewportScroller,
     private _modalService: BsModalService,
+    private _recordPermissionService: RecordPermissionService,
+    private _permissionValidator: CurrentLibraryPermissionValidator
   ) { }
 
   /** OnInit hook */
   ngOnInit() {
-    // init total amount
     this.record$.subscribe(
       (record: any) => {
         this.order = new AcqOrder(record.metadata);
+
+        this._recordPermissionService.getPermission('acq_orders', this.order.pid)
+          .pipe(map((permissions) => this._permissionValidator.validate(permissions, this.order.library.pid)))
+          .subscribe((permissions) => this.permissions = permissions);
 
         /* UPDATE 'EDIT' BUTTON
          *   if the related order has the PENDING status, then a new action 'place order' button should be

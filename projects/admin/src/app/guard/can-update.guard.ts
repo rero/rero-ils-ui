@@ -18,7 +18,8 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { RecordPermission, RecordPermissionService } from '../service/record-permission.service';
+import { RecordPermissions } from '../classes/permissions';
+import { RecordPermissionService } from '../service/record-permission.service';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +44,7 @@ export class CanUpdateGuard implements CanActivate {
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot):
     Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     this._permissionService.getPermission(next.params.type, next.params.pid).subscribe(
-      (permission: RecordPermission) => {
+      (permission: RecordPermissions) => {
         if (!permission.update.can) {
           this._router.navigate(['/errors/403'], { skipLocationChange: true });
         }

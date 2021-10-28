@@ -48,7 +48,7 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
               longMode: true,
             },
             canAdd: () => this._routeToolService.canSystemLibrarian(),
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
             redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_order, '/records/acq_orders/detail'),
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
