@@ -19,8 +19,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { OrganisationService } from '../../../../service/organisation.service';
-import { RecordPermission, RecordPermissionService } from '../../../../service/record-permission.service';
+import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
+import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
+import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { AcqAccount } from '../../../classes/account';
 
@@ -79,7 +80,7 @@ export class AccountBriefViewComponent implements OnInit {
       // load account permissions
       this._recordPermissionService
         .getPermission('acq_accounts', this.account.pid)
-        .subscribe((data: RecordPermission) => this.permissions = data);
+        .subscribe((data: RecordPermissions) => this.permissions = data);
       // load children accounts
       if (this.loadChildren) {
         this._accountApiService.getAccounts(this.account.pid).subscribe(accounts => {
