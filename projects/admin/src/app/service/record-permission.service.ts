@@ -19,8 +19,8 @@ import { I18nPluralPipe, NgLocaleLocalization } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { UserService } from '@rero/shared/public-api';
 import { Observable } from 'rxjs';
+import { RecordPermissions } from '../classes/permissions';
 
 @Injectable({
   providedIn: 'root'
@@ -48,13 +48,13 @@ export class RecordPermissionService {
    * Get Permission by resource with pid
    * @param resource - string : the resource type
    * @param pid - string : the resource pid (optional)
-   * @return Return an observable of RecordPermission
+   * @return Return an observable of RecordPermissions
    */
   getPermission(resource: string, pid?: string) {
     const url = (pid == null)
       ? `/api/permissions/${resource}`
       : `/api/permissions/${resource}/${pid}`;
-    return this._httpClient.get<RecordPermission>(url, this._httpOptions);
+    return this._httpClient.get<RecordPermissions>(url, this._httpOptions);
   }
 
 
@@ -239,26 +239,4 @@ export class RecordPermissionService {
       record_not_in_current_library: this._translateService.instant('The record does not belong to the current library.')
     };
   }
-}
-
-/**
- * Permission response structure
- */
-export interface RecordPermission {
-  read: {
-    can: boolean
-  };
-  update: {
-    can: boolean
-  };
-  create: {
-    can: boolean
-  };
-  delete: {
-    can: boolean,
-    reasons?: {
-      others?: any,
-      links?: any
-    }
-  };
 }
