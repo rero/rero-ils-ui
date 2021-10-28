@@ -1,11 +1,20 @@
 # Changelog
 
+## [v0.18.1](https://github.com/rero/rero-ils-ui/tree/v0.18.1) (2021-10-28)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.18.0...v0.18.1)
+
+**Merged pull requests:**
+
+- translations: translate v0.18.1 [\#738](https://github.com/rero/rero-ils-ui/pull/738) ([iGormilhit](https://github.com/iGormilhit))
+
 ## [v0.18.0](https://github.com/rero/rero-ils-ui/tree/v0.18.0) (2021-10-27)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.17.1...v0.18.0)
 
 **Merged pull requests:**
 
+- release: v0.18.0 [\#736](https://github.com/rero/rero-ils-ui/pull/736) ([jma](https://github.com/jma))
 - items: fix collection url [\#735](https://github.com/rero/rero-ils-ui/pull/735) ([Garfield-fr](https://github.com/Garfield-fr))
 - documents: display electronic holdings [\#734](https://github.com/rero/rero-ils-ui/pull/734) ([jma](https://github.com/jma))
 - documents: improve work access point field [\#730](https://github.com/rero/rero-ils-ui/pull/730) ([Garfield-fr](https://github.com/Garfield-fr))
