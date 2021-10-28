@@ -16,8 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
+import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
+import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqOrder, AcqOrderLine } from '../../../../classes/order';
 
@@ -30,30 +33,43 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
   // COMPONENTS ATTRIBUTES ====================================================
   /** Acquisition order pid */
   @Input() order: AcqOrder;
+  /** record permissions */
+  @Input() permissions?: RecordPermissions;
   /** Acquisition order Line observable */
   orderLines: Array<AcqOrderLine> = undefined;
-  /** record permissions */
-  permissions: any;
 
   /** all component subscription */
   private _subscriptions = new Subscription();
+
+  // GETTER & SETTER ==========================================================
+  /**
+   * Get a message containing the reasons why the order line cannot be deleted
+   * @return the message to display into the tooltip box
+   */
+  get createInfoMessage(): string {
+    return this._recordPermissionService.generateTooltipMessage(this.permissions.update.reasons, 'create');
+  }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param _orderApiService - AcqOrderApiService
    * @param _recordPermissionService - RecordPermissionService
+   * @param _permissionValidator - CurrentLibraryPermissionValidator
    */
   constructor(
     private _orderApiService: AcqOrderApiService,
-    private _recordPermissionService: RecordPermissionService
+    private _recordPermissionService: RecordPermissionService,
+    private _permissionValidator: CurrentLibraryPermissionValidator
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._recordPermissionService
-      .getPermission('acq_orders', this.order.pid)
-      .subscribe((permissions) => this.permissions = permissions);
+    if (this.permissions === undefined) {
+      this._recordPermissionService.getPermission('acq_orders', this.order.pid)
+        .pipe(map(permissions => this._permissionValidator.validate(permissions, this.order.library.pid)))
+        .subscribe((permissions) => this.permissions = permissions);
+    }
     this._loadOrderLines();
     this._subscriptions.add(
       this._orderApiService.deletedOrderLineSubject$.subscribe((orderLine: AcqOrderLine) => {
