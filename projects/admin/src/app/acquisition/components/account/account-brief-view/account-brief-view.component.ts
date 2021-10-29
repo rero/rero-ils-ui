@@ -23,8 +23,8 @@ import { ToastrService } from 'ngx-toastr';
 import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
-import { AcqAccount } from '../../../classes/account';
-import { AcqAccountService } from '../../../services/acq-account.service';
+import { IAcqAccount } from '../../../classes/account';
+import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 
 @Component({
   selector: 'admin-account-brief-view',
@@ -35,7 +35,7 @@ export class AccountBriefViewComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES ========================================================
   /** the account to display */
-  @Input() account: AcqAccount = null;
+  @Input() account: IAcqAccount = null;
   /** does we need to load and display the children accounts */
   @Input() loadChildren = false;
   /** event emit when the account is deleted */
@@ -44,7 +44,7 @@ export class AccountBriefViewComponent implements OnInit {
   /** permission about the record */
   permissions: any;
   /** children accounts */
-  children: AcqAccount[] = [];
+  children: IAcqAccount[] = [];
 
 
   // GETTER & SETTER ============================================================
@@ -58,19 +58,28 @@ export class AccountBriefViewComponent implements OnInit {
     return `/records/acq_accounts/detail/${this.account.pid}`;
   }
 
+  /**
+   * Return a message containing the reasons why the item cannot be requested
+   * @return the message to display into the tooltip box
+   */
+  get deleteInfoMessage(): string {
+    return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
+  }
+
   // CONSTRUCTOR & HOOKS ========================================================
   /**
    * Constructor
-   * @param _recordPermissionService: RecordPermissionService
-   * @param _organisationService: OrganisationService
-   * @param _accountService: AcqAccountService
-   * @param _toastrService: ToastrService
-   * @param _translateService: TranslateService
+   * @param _recordPermissionService - RecordPermissionService
+   * @param _organisationService - OrganisationService
+   * @param _accountApiService - AcqAccountApiService
+   * @param _toastrService - ToastrService
+   * @param _translateService - TranslateService
+   * @param _userService - UserService
    */
   constructor(
     private _recordPermissionService: RecordPermissionService,
     private _organisationService: OrganisationService,
-    private _accountService: AcqAccountService,
+    private _accountApiService: AcqAccountApiService,
     private _toastrService: ToastrService,
     private _translateService: TranslateService,
     private _userService: UserService
@@ -86,9 +95,9 @@ export class AccountBriefViewComponent implements OnInit {
       // load children accounts
       if (this.loadChildren) {
         const libraryPid = this._userService.user.currentLibrary;
-        this._accountService.getAccounts(libraryPid, this.account.pid).subscribe(accounts => {
-          this.children = accounts;
-        });
+        this._accountApiService
+          .getAccounts(libraryPid, this.account.pid)
+          .subscribe(accounts => this.children = accounts);
       }
     }
   }
@@ -96,22 +105,16 @@ export class AccountBriefViewComponent implements OnInit {
   // COMPONENT FUNCTIONS ========================================================
   /** Delete the account */
   delete() {
-    this._accountService.delete(this.account.pid).subscribe(() => {
-      this._toastrService.success(this._translateService.instant('Account deleted'));
-      this.deleteAccount.emit(this.account);
-    });
-  }
-
-  /**
-   * Return a message containing the reasons why the item cannot be requested
-   * @return the message to display into the tooltip box
-   */
-  get deleteInfoMessage(): string {
-    return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
+    this._accountApiService
+      .delete(this.account.pid)
+      .subscribe(() => {
+        this._toastrService.success(this._translateService.instant('Account deleted'));
+        this.deleteAccount.emit(this.account);
+      });
   }
 
   /** Operations to do when an account is deleted */
-  accountDeleted(account: AcqAccount): void {
+  accountDeleted(account: IAcqAccount): void {
     this.children = this.children.filter(item => item.pid !== account.pid);
   }
 

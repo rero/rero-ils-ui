@@ -18,23 +18,29 @@
 <article class="row order-brief-view" *ngIf="order">
   <div class="col-9 pl-0">
     <h5 class="m-0"><a [routerLink]="[detailUrl.link]">{{ order.reference }}</a></h5>
-    <div class="description" *ngIf="order.getNote(noteType.STAFF_NOTE) as note" [innerHTML]="note.content | nl2br"></div>
+    <ng-container *ngVar="order.notes | notesFilter: [noteType.STAFF_NOTE] as notes">
+      <div class="description" *ngIf="notes.length > 0" [innerHTML]="notes[0].content | nl2br"></div>
+    </ng-container>
     <div class="metadata">
       {{ order.status | translate }}
       <ng-container [ngSwitch]="order.status">
         <ng-container *ngSwitchCase="orderStatus.ORDERED"> - {{ orderDate | dateTranslate: 'shortDate' }}</ng-container>
         <ng-container *ngSwitchCase="orderStatus.RECEIVED"> - {{ receptionDate | dateTranslate: 'shortDate' }}</ng-container>
+        <ng-container *ngSwitchCase="orderStatus.PARTIALLY_RECEIVED"> - {{ receptionDate | dateTranslate: 'shortDate' }}</ng-container>
       </ng-container>
       <ng-container *ngVar="order.vendor.pid | getRecord: 'vendors': 'field': 'name' | async as vendor">
         - {{ vendor | truncateText : 10 : '...'}}
       </ng-container>
     </div>
   </div>
-  <div class="col-3 ordinal-infos" *ngIf="order.total_amount > 0">
-    <div class="total-amount">{{ order.total_amount | currency : order.currency }}</div>
-    <ul class="item-quantity">
-      <li class="ordered-counter">{{ order.item_quantity.ordered }}</li>
-      <li class="received-counter" *ngIf="order.item_quantity.received > 0">{{ order.item_quantity.received }}</li>
-    </ul>
+  <div class="col-3 ordinal-infos">
+    <div class="accounting-infos" *ngIf="displayProvisionalAccountingData">
+      <label class="total-amount">{{ order.account_statement.provisional.total_amount | currency : order.currency }}</label>
+      <span class="counter ordered-counter border-left">{{ order.account_statement.provisional.quantity }}</span>
+    </div>
+    <div class="accounting-infos" *ngIf="displayExpenditureAccountingData">
+      <span class="counter received-counter border-right">{{ order.account_statement.expenditure.quantity }}</span>
+      <label class="total-amount">{{ order.account_statement.expenditure.total_amount | currency : order.currency }}</label>
+    </div>
   </div>
 </article>

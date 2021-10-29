@@ -15,37 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { Pipe, PipeTransform } from '@angular/core';
+import { AcqNoteType, IAcqNote } from '../classes/common';
 
-/* tslint:disable */
-// required as json properties is not lowerCamelCase
+@Pipe({
+  name: 'noteBadgeColor'
+})
+export class NoteBadgeColorPipe implements PipeTransform {
 
-/** Base class for Acquisition resource */
-export interface IAcqBaseResource {
-  $schema?: string;
-  pid?: string;
-  organisation: IObjectReference;
-  library?: IObjectReference;
-}
+  /**
+   * Get the color (class) to use to highlight a note.
+   * @param note: the note to analyze
+   * @return: the color/class (boostrap) to use for the note.
+   */
+  transform(note: IAcqNote): string {
+    switch (note.type) {
+      case AcqNoteType.STAFF_NOTE: return 'info';
+      case AcqNoteType.VENDOR_NOTE: return 'warning';
+      case AcqNoteType.RECEIPT_NOTE: return 'primary';
+      default: return 'secondary';
+    }
+  }
 
-export interface IAcqResourceWithNotes {
-  notes: IAcqNote[];
-}
-
-/** Interface to describe an order note */
-export interface IAcqNote {
-  type: AcqNoteType;
-  content: string;
-}
-
-/** Enumeration of possible note type */
-export enum AcqNoteType {
-  STAFF_NOTE = 'staff_note',
-  VENDOR_NOTE = 'vendor_note',
-  RECEIPT_NOTE = 'receipt_note',
-}
-
-export interface IObjectReference {
-  $ref?: string;
-  pid?: string;
-  type?: string;
 }

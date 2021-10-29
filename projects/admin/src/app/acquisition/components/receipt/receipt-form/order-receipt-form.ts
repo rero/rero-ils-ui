@@ -15,16 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { ApiService, extractIdOnRef } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { AcqAccount } from '../../../classes/account';
-import { AcqOrder, AcqOrderLine, AcqOrderLineStatus } from '../../../classes/order';
-import { AcqReceipt, IAcqReceipt } from '../../../classes/receipt';
-import { AcqAccountService } from '../../../services/acq-account.service';
-import { AcqOrderService } from '../../../services/acq-order.service';
+import { IAcqAccount } from '../../../classes/account';
+import { IAcqOrder, IAcqOrderLine, AcqOrderLineStatus } from '../../../classes/order';
+import { IAcqReceipt } from '../../../classes/receipt';
+import { AcqAccountApiService } from '../../../api/acq-account-api.service';
+import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { orderAccountsAsTree } from '../../../utils/account';
 import { IAcqReceiptModel, OrderReceipt } from './order-receipt';
 
@@ -44,14 +43,14 @@ export class OrderReceiptForm {
 
   /**
    * Constructor
-   * @param _acqOrderService - AcqOrderService
-   * @param _acqAccountService - AcqAccountService
+   * @param _acqOrderApiService - AcqOrderApiService
+   * @param _acqAccountApiService - AcqAccountApiService
    * @param _apiService - ApiService
    * @param _orderReceipt - OrderReceipt
    */
   constructor(
-    private _acqOrderService: AcqOrderService,
-    private _acqAccountService: AcqAccountService,
+    private _acqOrderApiService: AcqOrderApiService,
+    private _acqAccountApiService: AcqAccountApiService,
     private _apiService: ApiService,
     private _orderReceipt: OrderReceipt
   ) {}
@@ -97,16 +96,16 @@ export class OrderReceiptForm {
    */
   createForm(orderPid: string): Observable<boolean> {
     this._config = this._getConfig();
-    return this._acqOrderService
+    return this._acqOrderApiService
       .getOrder(orderPid)
       .pipe(
-        tap((order: AcqOrder) => this._orderRecord = order),
-        switchMap((order: AcqOrder) => {
+        tap((order: IAcqOrder) => this._orderRecord = order),
+        switchMap((order: IAcqOrder) => {
           const libraryRef = order.library.$ref;
           const libraryPid = extractIdOnRef(libraryRef);
-          this._acqAccountService
+          this._acqAccountApiService
             .getAccounts(libraryPid)
-            .subscribe((accounts: AcqAccount[]) => {
+            .subscribe((accounts: IAcqAccount[]) => {
               const to = this._config
                 .filter((field) => field.key === 'amountAdjustments')[0].fieldArray.fieldGroup
                 .filter((field) => field.key === 'acqAccount')[0].templateOptions;
@@ -119,8 +118,8 @@ export class OrderReceiptForm {
           this._model.organisationRef = order.organisation.$ref;
           order.vendor.pid = extractIdOnRef(order.vendor.$ref);
           const query = `AND (NOT status:"${AcqOrderLineStatus.CANCELLED}" OR NOT status:"${AcqOrderLineStatus.RECEIVED}")`;
-          return this._acqOrderService.getOrderLines(order.pid, query).pipe(
-            map((lines: AcqOrderLine[]) => {
+          return this._acqOrderApiService.getOrderLines(order.pid, query).pipe(
+            map((lines: IAcqOrderLine[]) => {
               lines.forEach((line: any) => {
                 const quantityReceived = line.received_quantity || 0;
                 this._model.receiveLines.push({
@@ -150,6 +149,11 @@ export class OrderReceiptForm {
       : record;
     if (!record.hasOwnProperty('amount_adjustments')) {
       record.amount_adjustments = [];
+    } else {
+      // we received the resolved `acq_account` with pid, but we need the `$ref` field to send the form.
+      record.amount_adjustments.map(
+        (adjustment: any) => adjustment.acq_account = {$ref: this._apiService.getRefEndpoint('acq_accounts', adjustment.acq_account.pid)}
+      );
     }
     if (!record.hasOwnProperty('notes')) {
       record.notes = [];
@@ -157,6 +161,9 @@ export class OrderReceiptForm {
     // Update the record with model data
     record.amount_adjustments = [...record.amount_adjustments, ...this._orderReceipt.processAdjustments(model)];
     record.notes = [...record.notes, ...model.notes || []];
+    if (model.reference && model.reference.length > 0) {
+      record.reference = model.reference;
+    }
     return this._orderReceipt.cleanData(record);
   }
 
@@ -166,6 +173,13 @@ export class OrderReceiptForm {
    */
   private _getConfig(): FormlyFieldConfig[] {
     return [
+      {
+        key: 'reference',
+        type: 'string',
+        templateOptions: {
+          label: 'Reference',
+        }
+      },
       {
         key: 'receiptDate',
         type: 'datepicker',

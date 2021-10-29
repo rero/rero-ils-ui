@@ -21,9 +21,9 @@ import { RecordPermissionService } from 'projects/admin/src/app/service/record-p
 import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
 import { of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AcqOrder } from '../../../classes/order';
-import { AcqReceipt } from '../../../classes/receipt';
-import { AcqReceiptService } from '../../../services/acq-receipt.service';
+import { IAcqOrder } from '../../../classes/order';
+import { IAcqReceipt } from '../../../classes/receipt';
+import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
 
 @Component({
@@ -34,11 +34,11 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the order for which we want to display receipts */
-  @Input() order: AcqOrder;
+  @Input() order: IAcqOrder;
   /** the permissions about the related order */
   @Input() permissions?: RecordPermissions;
   /** AcqReceipt to display */
-  receipts: AcqReceipt[] = undefined;
+  receipts: IAcqReceipt[] = undefined;
 
   /** all component subscription */
   private _subscriptions = new Subscription();
@@ -63,13 +63,13 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _acqReceiptService - AcqReceiptService
+   * @param _acqReceiptApiService - AcqReceiptApiService
    * @param _recordPermissionService - RecordPermissionService
    * @param _currentLibraryPermissionValidator - CurrentLibraryPermissionValidator
    * @param _receivedOrderPermissionValidator - ReceivedOrderPermissionValidator
    */
   constructor(
-    private _acqReceiptService: AcqReceiptService,
+    private _acqReceiptApiService: AcqReceiptApiService,
     private _recordPermissionService: RecordPermissionService,
     private _currentLibraryPermissionValidator: CurrentLibraryPermissionValidator,
     private _receivedOrderPermissionValidator: ReceivedOrderPermissionValidator
@@ -80,8 +80,8 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
     this._loadPermissions();
     this._loadReceipts();
     this._subscriptions.add(
-      this._acqReceiptService.deletedReceiptSubject$.subscribe((deletedReceipt: AcqReceipt) => {
-        this.receipts = this.receipts.filter((receipt: AcqReceipt) => receipt.pid !== deletedReceipt.pid);
+      this._acqReceiptApiService.deletedReceiptSubject$.subscribe((deletedReceipt: IAcqReceipt) => {
+        this.receipts = this.receipts.filter((receipt: IAcqReceipt) => receipt.pid !== deletedReceipt.pid);
       })
     );
   }
@@ -101,9 +101,9 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
   // PRIVATE COMPONENT METHODS ================================================
   /** load receipts related to an order */
   private _loadReceipts(): void {
-    this._acqReceiptService
+    this._acqReceiptApiService
       .getReceiptsForOrder(this.order.pid)
-      .subscribe((receipts: AcqReceipt[]) => this.receipts = receipts);
+      .subscribe((receipts: IAcqReceipt[]) => this.receipts = receipts);
   }
 
   /**

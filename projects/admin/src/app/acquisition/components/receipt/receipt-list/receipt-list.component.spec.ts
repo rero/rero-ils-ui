@@ -21,7 +21,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppModule } from '../../../../app.module';
 import { AcquisitionModule } from '../../../acquisition.module';
-import { AcqOrder } from '../../../classes/order';
+import { IAcqOrder } from '../../../classes/order';
 
 import { ReceiptListComponent } from './receipt-list.component';
 
@@ -29,9 +29,9 @@ describe('ReceiptListComponent', () => {
   let component: ReceiptListComponent;
   let fixture: ComponentFixture<ReceiptListComponent>;
 
-  const order = new AcqOrder({
+  const order = {
     pid: '1'
-  });
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -49,7 +49,7 @@ describe('ReceiptListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ReceiptListComponent);
     component = fixture.componentInstance;
-    component.order = order;
+    component.order = order as IAcqOrder;
     fixture.detectChanges();
   });
 
