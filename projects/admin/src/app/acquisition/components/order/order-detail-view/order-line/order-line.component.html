@@ -43,7 +43,7 @@
           </ng-container>
           <span class="bullet-notes" *ngIf="orderLine.notes.length > 0 && isCollapsed">
             <ng-container *ngFor="let note of orderLine.notes">
-              <i class="fa fa-circle fa-bullet bullet-{{ getNoteColor(note) }}" aria-hidden="true"></i>
+              <i class="fa fa-circle fa-bullet bullet-{{ orderLine.getNoteColor(note) }}" aria-hidden="true"></i>
             </ng-container>
           </span>
         </div>
@@ -72,7 +72,7 @@
             <ng-container *ngFor="let note of orderLine.notes; first as isFirst">
               <div *ngIf="isFirst" class="col-12 note-spacer"></div>
               <dt class="col-3">
-                <span class="badge badge-{{ getNoteColor(note) }}">{{ note.type | translate }}</span>
+                <span class="badge badge-{{ orderLine.getNoteColor(note) }}">{{ note.type | translate }}</span>
               </dt>
               <dd class="col-9 note-content" [innerHTML]="note.content | nl2br"></dd>
             </ng-container>
@@ -102,7 +102,7 @@
         <button type="button" class="btn btn-sm btn-outline-primary mr-1 disabled"
                 title="{{ 'Edit' | translate }}"
                 [popover]="tolTemplate" triggers="mouseenter:mouseleave">
-          <i class="fa fa-trash"></i>
+          <i class="fa fa-pencil"></i>
         </button>
         <ng-template #tolTemplate><div [innerHtml]="editInfoMessage | nl2br"></div></ng-template>
       </ng-template>

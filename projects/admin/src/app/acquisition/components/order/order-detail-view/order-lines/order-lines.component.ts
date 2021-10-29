@@ -35,7 +35,7 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
   @Input() order: AcqOrder;
   /** record permissions */
   @Input() permissions?: RecordPermissions;
-  /** Acquisition order Line observable */
+  /** Acquisition order lines to display */
   orderLines: AcqOrderLine[] = undefined;
 
   /** all component subscription */

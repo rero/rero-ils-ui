@@ -20,8 +20,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AccountListComponent } from './components/account/account-list/account-list.component';
 import { AccountTransferComponent } from './components/account/account-transfer/account-transfer.component';
-import { OrderReceiptViewComponent } from './components/order/order-receipt-view/order-receipt-view.component';
-import { CanOrderReceiptGuard } from './guard/can-order-receipt.guard';
+import { OrderReceiptViewComponent } from './components/receipt/receipt-form/order-receipt-view.component';
+import { CanOrderReceiptGuard } from './routes/guards/can-order-receipt.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'accounts', pathMatch: 'full'},

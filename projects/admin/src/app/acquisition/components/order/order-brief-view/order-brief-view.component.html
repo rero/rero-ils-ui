@@ -15,26 +15,26 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<article class="row order-brief-view">
+<article class="row order-brief-view" *ngIf="order">
   <div class="col-9 pl-0">
-    <h5 class="m-0"><a [routerLink]="[detailUrl.link]">{{ record.metadata.reference }}</a></h5>
-    <div class="description" *ngIf="getNote(noteType.STAFF_NOTE) as note" [innerHTML]="note.content | nl2br"></div>
+    <h5 class="m-0"><a [routerLink]="[detailUrl.link]">{{ order.reference }}</a></h5>
+    <div class="description" *ngIf="order.getNote(noteType.STAFF_NOTE) as note" [innerHTML]="note.content | nl2br"></div>
     <div class="metadata">
-      {{ record.metadata.status | translate }}
-      <ng-container [ngSwitch]="record.metadata.status">
+      {{ order.status | translate }}
+      <ng-container [ngSwitch]="order.status">
         <ng-container *ngSwitchCase="orderStatus.ORDERED"> - {{ orderDate | dateTranslate: 'shortDate' }}</ng-container>
         <ng-container *ngSwitchCase="orderStatus.RECEIVED"> - {{ receptionDate | dateTranslate: 'shortDate' }}</ng-container>
       </ng-container>
-      <ng-container *ngVar="record.metadata.vendor.pid | getRecord: 'vendors': 'field': 'name' | async as vendor">
+      <ng-container *ngVar="order.vendor.pid | getRecord: 'vendors': 'field': 'name' | async as vendor">
         - {{ vendor | truncateText : 10 : '...'}}
       </ng-container>
     </div>
   </div>
-  <div class="col-3 ordinal-infos" *ngIf="record.metadata.total_amount > 0">
-    <div class="total-amount">{{ record.metadata.total_amount | currency : record.metadata.currency }}</div>
+  <div class="col-3 ordinal-infos" *ngIf="order.total_amount > 0">
+    <div class="total-amount">{{ order.total_amount | currency : order.currency }}</div>
     <ul class="item-quantity">
-      <li class="ordered-counter">{{ record.metadata.item_quantity.ordered }}</li>
-      <li class="received-counter" *ngIf="record.metadata.item_quantity.received > 0">{{ record.metadata.item_quantity.received }}</li>
+      <li class="ordered-counter">{{ order.item_quantity.ordered }}</li>
+      <li class="received-counter" *ngIf="order.item_quantity.received > 0">{{ order.item_quantity.received }}</li>
     </ul>
   </div>
 </article>

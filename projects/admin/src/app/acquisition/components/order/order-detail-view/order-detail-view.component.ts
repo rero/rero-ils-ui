@@ -25,7 +25,8 @@ import { map } from 'rxjs/operators';
 import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
-import { AcqNoteType, AcqOrder, AcqOrderStatus } from '../../../classes/order';
+import { AcqOrder, AcqOrderStatus } from '../../../classes/order';
+import { AcqNoteType } from '../../../classes/common';
 import { PlaceOrderFormComponent } from '../place-order-form/place-order-form.component';
 
 @Component({
@@ -53,20 +54,14 @@ export class OrderDetailViewComponent implements OnInit, DetailRecord {
   private _modalRef: BsModalRef;
 
   // GETTER & SETTER ==========================================================
-  /** Get the badge color to use for a note type
-   *  @param noteType - the note type
-   */
-  getBadgeColor(noteType: AcqNoteType): string {
-    switch (noteType) {
-      case AcqNoteType.STAFF_NOTE: return 'badge-info';
-      case AcqNoteType.VENDOR_NOTE: return 'badge-warning';
-      default: return 'badge-secondary';
-    }
-  }
-
   /** Determine if the order could be "placed/ordered" */
   get canPlaceOrder(): boolean {
     return this.order.status === AcqOrderStatus.PENDING && this.order.total_amount > 0;
+  }
+
+  /** Is this order could manage reception */
+  get canViewReceipts(): boolean {
+    return this.order.status !== AcqOrderStatus.PENDING;
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
@@ -92,7 +87,6 @@ export class OrderDetailViewComponent implements OnInit, DetailRecord {
     this.record$.subscribe(
       (record: any) => {
         this.order = new AcqOrder(record.metadata);
-
         this._recordPermissionService.getPermission('acq_orders', this.order.pid)
           .pipe(map((permissions) => this._permissionValidator.validate(permissions, this.order.library.pid)))
           .subscribe((permissions) => this.permissions = permissions);
