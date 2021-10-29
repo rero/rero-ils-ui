@@ -19,13 +19,14 @@ import { Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AcqAccount } from '../classes/account';
+import { AcqAccountApiService } from './acq-account-api.service';
+import { IAcqAccount } from '../classes/account';
 import { AcqBudget } from '../classes/budget';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AcqBudgetService {
+export class AcqBudgetApiService {
 
   /** The resource name of acquisition budget */
   resourceName = 'budgets';
@@ -33,8 +34,12 @@ export class AcqBudgetService {
   /**
    * Constructor
    * @param _recordService - RecordService
+   * @param _acqAccountApiService - AcqAccountApiService
    */
-  constructor(private _recordService: RecordService) { }
+  constructor(
+    private _recordService: RecordService,
+    private _acqAccountApiService: AcqAccountApiService
+  ) { }
 
 
   /**
@@ -61,8 +66,8 @@ export class AcqBudgetService {
       .getRecords('acq_accounts', `budget.pid:${budgetPid} AND depth:0`, 1, RecordService.MAX_REST_RESULTS_SIZE)
       .pipe(
         map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-        map((hits: any[]) => hits.map((hit: any) => new AcqAccount(hit.metadata))),
-        map((accounts: AcqAccount[]) => accounts.reduce((total, acc) => total + acc.allocated_amount, 0))
+        map((hits: any[]) => hits.map((hit: any) => ({...this._acqAccountApiService.accountDefaultData, ...hit.metadata}) )),
+        map((accounts: IAcqAccount[]) => accounts.reduce((total, acc) => total + acc.allocated_amount, 0))
       );
   }
 }

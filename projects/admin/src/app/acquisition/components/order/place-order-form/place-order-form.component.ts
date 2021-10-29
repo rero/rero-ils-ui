@@ -21,9 +21,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs/operators';
-import { AcqAddressRecipient, AcqOrder, AcqOrderPreview } from 'projects/admin/src/app/acquisition/classes/order';
+import { AcqAddressRecipient, IAcqOrder, IAcqOrderPreviewResponse } from 'projects/admin/src/app/acquisition/classes/order';
 import { Notification } from 'projects/admin/src/app/classes/notification';
-import { AcqOrderService } from '../../../services/acq-order.service';
+import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 
 @Component({
   selector: 'admin-place-order-form',
@@ -36,11 +36,11 @@ export class PlaceOrderFormComponent implements OnInit {
   /** the reference to the modal */
   modalRef?: BsModalRef;
   /** the related order */
-  order: AcqOrder;
+  order: IAcqOrder;
   /** subject to emit when the order as successfully sent */
-  onOrderSentEvent = new EventEmitter<AcqOrder>();
+  onOrderSentEvent = new EventEmitter<IAcqOrder>();
   /** preview message data */
-  preview?: AcqOrderPreview;
+  preview?: IAcqOrderPreviewResponse;
   /** is the selected sentTo value is custom ? */
   customRecipientEnabled = false;
   /** The order notification recipient address */
@@ -48,8 +48,8 @@ export class PlaceOrderFormComponent implements OnInit {
   /** is the confirm is pressed an order command has sent */
   confirmInProgress = false;
 
-
-
+  // GETTER & SETTER ==========================================================
+  /** is the recipient custom address is a valid email address. */
   get isRecipientValid(): boolean {
     return (this.recipientAddress)
       ? this._validateEmail(this.recipientAddress)
@@ -61,7 +61,7 @@ export class PlaceOrderFormComponent implements OnInit {
    * Constructor
    * @param _modalService - BsModalService
    * @param _bsModalRef - BsModalRef
-   * @param _acqOrderService - AcqOrderService
+   * @param _acqOrderApiService - AcqOrderApiService
    * @param _toastrService - ToastrService
    * @param _translateService - TranslateService
    * @param _router - Router
@@ -69,7 +69,7 @@ export class PlaceOrderFormComponent implements OnInit {
   constructor(
     private _modalService: BsModalService,
     protected _bsModalRef: BsModalRef,
-    private _acqOrderService: AcqOrderService,
+    private _acqOrderApiService: AcqOrderApiService,
     private _toastrService: ToastrService,
     private _translateService: TranslateService,
     private _router: Router
@@ -79,10 +79,11 @@ export class PlaceOrderFormComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._acqOrderService.getOrderPreview(this.order.pid).subscribe((preview: AcqOrderPreview) => this.preview = preview);
+    this._acqOrderApiService.getOrderPreview(this.order.pid).subscribe((preview: IAcqOrderPreviewResponse) => this.preview = preview);
   }
 
   // COMPONENT FUNCTIONS ======================================================
+
   /**
    * Specify where the order should be sent.
    * @param type: the type of recipient (vendor, library or custom)
@@ -101,7 +102,8 @@ export class PlaceOrderFormComponent implements OnInit {
       { type: 'to', address: this.recipientAddress },
       { type: 'reply_to', address: this.preview.data.library.shipping_informations.email },
     ];
-    this._acqOrderService.sendOrder(this.order.pid, emails)
+    this._acqOrderApiService
+      .sendOrder(this.order.pid, emails)
       .pipe(finalize(() => this.confirmInProgress = false))
       .subscribe(
         (notification: Notification) => {
@@ -118,9 +120,9 @@ export class PlaceOrderFormComponent implements OnInit {
             );
           }
           this.modalRef.hide();
-          this._acqOrderService
+          this._acqOrderApiService
             .getOrder(this.order.pid)
-            .subscribe((order: AcqOrder) => this.onOrderSentEvent.next(order));
+            .subscribe((order: IAcqOrder) => this.onOrderSentEvent.next(order));
         },
         (error: any) => {
           this._toastrService.error(

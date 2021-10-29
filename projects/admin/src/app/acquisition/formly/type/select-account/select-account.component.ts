@@ -18,7 +18,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { ApiService } from '@rero/ng-core';
-import { AcqAccount } from 'projects/admin/src/app/acquisition/classes/account';
+import { IAcqAccount } from 'projects/admin/src/app/acquisition/classes/account';
 
 @Component({
   selector: 'admin-select-account',
@@ -28,9 +28,9 @@ import { AcqAccount } from 'projects/admin/src/app/acquisition/classes/account';
 export class SelectAccountComponent extends FieldType implements OnInit {
 
   /** accounts list */
-  accountList: Array<AcqAccount> = [];
+  accountList: IAcqAccount[] = [];
   /** the selected account */
-  selectedAccount: AcqAccount = null;
+  selectedAccount: IAcqAccount = null;
   /** currency */
   currency: string;
 
@@ -52,7 +52,7 @@ export class SelectAccountComponent extends FieldType implements OnInit {
 
     if (this.formControl.value) {
       const currentPid = this.formControl.value.substring(this.formControl.value.lastIndexOf('/') + 1);
-      const currentAccount = this.accountList.find((account: AcqAccount) => account.pid === currentPid);
+      const currentAccount = this.accountList.find((account: IAcqAccount) => account.pid === currentPid);
       if (currentAccount !== undefined) {
         this.selectedAccount = currentAccount;
       }
@@ -63,7 +63,7 @@ export class SelectAccountComponent extends FieldType implements OnInit {
    * Store the selected option, when an option is clicked in the list
    * @param account - The selected account.
    */
-  selectAccount(account: AcqAccount): void {
+  selectAccount(account: IAcqAccount): void {
     const accountRef = this._apiService.getRefEndpoint('acq_accounts', account.pid);
     this.selectedAccount = account;
     this.formControl.patchValue(accountRef);

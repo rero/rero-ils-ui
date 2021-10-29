@@ -16,17 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { ViewportScroller } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { TabsetComponent } from 'ngx-bootstrap/tabs';
 import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
-import { AcqOrder, AcqOrderStatus } from '../../../classes/order';
-import { AcqNoteType } from '../../../classes/common';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AcqOrderStatus, IAcqOrder } from '../../../classes/order';
 import { PlaceOrderFormComponent } from '../place-order-form/place-order-form.component';
 
 @Component({
@@ -42,7 +42,7 @@ export class OrderDetailViewComponent implements OnInit, DetailRecord {
   /** Resource type */
   type: string;
   /** the order corresponding to the record */
-  order: AcqOrder;
+  order: IAcqOrder;
   /** Is order notes are collapsed */
   notesCollapsed = true;
   /** reference to AcqOrderStatus class */
@@ -56,7 +56,7 @@ export class OrderDetailViewComponent implements OnInit, DetailRecord {
   // GETTER & SETTER ==========================================================
   /** Determine if the order could be "placed/ordered" */
   get canPlaceOrder(): boolean {
-    return this.order.status === AcqOrderStatus.PENDING && this.order.total_amount > 0;
+    return this.order.status === AcqOrderStatus.PENDING && this.order.account_statement.provisional.total_amount > 0;
   }
 
   /** Is this order could manage reception */
@@ -86,7 +86,7 @@ export class OrderDetailViewComponent implements OnInit, DetailRecord {
   ngOnInit() {
     this.record$.subscribe(
       (record: any) => {
-        this.order = new AcqOrder(record.metadata);
+        this.order = record.metadata;
         this._recordPermissionService.getPermission('acq_orders', this.order.pid)
           .pipe(map((permissions) => this._permissionValidator.validate(permissions, this.order.library.pid)))
           .subscribe((permissions) => this.permissions = permissions);
@@ -131,7 +131,7 @@ export class OrderDetailViewComponent implements OnInit, DetailRecord {
         order: this.order
       }
     });
-    this._modalRef.content.onOrderSentEvent.subscribe((order: AcqOrder) => {
+    this._modalRef.content.onOrderSentEvent.subscribe((order: IAcqOrder) => {
       if (this.order.pid === order.pid) {
         this.order = order;
       }

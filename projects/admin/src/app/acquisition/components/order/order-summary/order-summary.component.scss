@@ -20,49 +20,52 @@
 @import '~bootstrap/scss/variables';
 @import '/projects/admin/src/app/scss/variables';
 
-.total-amount {
+.accounting-infos {
 
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-  width: 100%;
+  border: $border-width solid $border-color;
+  border-radius: $border-radius;
+  background-color: $light;
+  height: 100%;
+  position: relative;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  padding: map-get($spacers, 2);
+
+  // add a spacing between siblings
+  & + & {
+    margin-top: map-get($spacers, 2);
+  }
+
+  span.amount {
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: $dark;
+    font-size: 1.5rem;
+    text-shadow: 1px 1px 1px $secondary;
+  }
 
   label {
-    width: 100%;
-    color: $dark;
-    line-height: 3em;
-    font-size: 2em;
-    text-shadow: 1px 1px 1px $secondary;
+    display: block;
+    color: $secondary;
+    font-size: 0.75rem;
     text-align: center;
+    margin: 0;
   }
-}
 
-ul.item-quantity {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  border-top: 1px solid $border-color;
-  width: 100%;
-  text-align: center;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-
-  li {
-    padding: map-get($spacers, 1) 0;
-    display: inline-block;
-    text-align: center;
-    width: 50%;
-    border-right: 1px solid $border-color;
-    font-size: $small-font-size;
+  .counter {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-left: $border-width solid $border-color;
+    border-bottom: $border-width solid $border-color;
+    border-bottom-left-radius: $border-radius-lg;
     color: $gray-600;
-    text-shadow: 1px 1px 1px $gray-400;
-
-    &:last-child {
-      border-right: none;
-    }
+    text-shadow: 1px 1px 1px $gray-300;
+    font-size: $small-font-size;
+    padding: map-get($spacers, 1) map-get($spacers, 3);
+    background-color: #F3F3F3;
 
     &.ordered-counter::before{
       font-family: 'FontAwesome';
@@ -70,7 +73,6 @@ ul.item-quantity {
       content: " \f07a";
       padding-right: map-get($spacers, 3);
     }
-
     &.received-counter::before{
       font-family: 'FontAwesome';
       font-weight: 100;

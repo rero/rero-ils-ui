@@ -17,13 +17,12 @@
  */
 import { Component, Input, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
 import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
-import { AcqReceipt } from '../../../classes/receipt';
-import { AcqOrderService } from '../../../services/acq-order.service';
-import { AcqReceiptService } from '../../../services/acq-receipt.service';
+import { IAcqReceipt } from '../../../classes/receipt';
+import { AcqOrderApiService } from '../../../api/acq-order-api.service';
+import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
 
 @Component({
@@ -44,7 +43,7 @@ export class ReceiptSummaryComponent implements OnInit {
   /** Record permissions */
   permissions: RecordPermissions;
   /** Receipt object */
-  receipt: AcqReceipt = undefined;
+  receipt: IAcqReceipt = undefined;
 
   // GETTER & SETTER ==========================================================
   /**
@@ -52,28 +51,34 @@ export class ReceiptSummaryComponent implements OnInit {
    * @return the message to display into the tooltip box
    */
   get deleteInfoMessage(): string {
-    return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
+    return (!this.permissions.delete.can)
+      ? this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons)
+      : '';
   }
   get editInfoMessage(): string {
-    return this._recordPermissionService.generateTooltipMessage(this.permissions.update.reasons, 'update');
+    return (!this.permissions.update.can)
+      ? this._recordPermissionService.generateTooltipMessage(this.permissions.update.reasons, 'update')
+      : '';
   }
   get resumeInfoMessage(): string {
-    return this._recordPermissionService.generateTooltipMessage(this.permissions.create.reasons, 'resume');
+    return (!this.permissions.create.can)
+      ? this._recordPermissionService.generateTooltipMessage(this.permissions.create.reasons, 'resume')
+      : '';
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param _recordPermissionService - RecordPermissionService
-   * @param _acqReceiptService - AcqReceiptService
-   * @param _acqOrderService - AcqOrderService
+   * @param _acqReceiptApiService - AcqReceiptApiService
+   * @param _acqOrderApiService - AcqOrderApiService
    * @param _currentLibraryPermissionValidator - CurrentLibraryPermissionValidator
    * @param _receivedOrderPermissionValidator - ReceivedOrderPermissionValidator
    */
   constructor(
     private _recordPermissionService: RecordPermissionService,
-    private _acqReceiptService: AcqReceiptService,
-    private _acqOrderService: AcqOrderService,
+    private _acqReceiptApiService: AcqReceiptApiService,
+    private _acqOrderApiService: AcqOrderApiService,
     private _currentLibraryPermissionValidator: CurrentLibraryPermissionValidator,
     private _receivedOrderPermissionValidator: ReceivedOrderPermissionValidator
   ) { }
@@ -83,13 +88,13 @@ export class ReceiptSummaryComponent implements OnInit {
     if (!this.collapsable){
       this.isCollapsed = false;
     }
-    this._acqReceiptService
+    this._acqReceiptApiService
       .getReceipt(this.receiptPid)
-      .subscribe((receipt: AcqReceipt) => {
+      .subscribe((receipt: IAcqReceipt) => {
         this.receipt = receipt;
         // Load permissions only if we need to display the action buttons
         if (this.allowActions) {
-          const order$ = this._acqOrderService.getOrder(this.receipt.acq_order.pid);
+          const order$ = this._acqOrderApiService.getOrder(this.receipt.acq_order.pid);
           const permissions$ = this._recordPermissionService.getPermission('acq_receipts', this.receipt.pid);
           forkJoin([order$, permissions$]).subscribe(
             ([order, permissions]) => {
@@ -104,6 +109,6 @@ export class ReceiptSummaryComponent implements OnInit {
   // COMPONENT FUNCTIONS ======================================================
   /** Delete a receipt */
   deleteReceipt(): void {
-    this._acqReceiptService.delete(this.receipt);
+    this._acqReceiptApiService.delete(this.receipt);
   }
 }

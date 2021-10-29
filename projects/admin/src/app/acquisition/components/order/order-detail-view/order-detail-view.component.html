@@ -36,13 +36,13 @@
      <dt class="col-6 label-title" translate>Notes</dt>
      <dd class="col-6">
        <a href (click)="scrollTo($event, 'notes'); notesCollapsed = false;" *ngFor="let note of order.notes">
-         <span class="badge badge-{{ order.getNoteColor(note) }} mr-2">{{ note.type | translate }}</span>
+         <span class="badge badge-{{ note | noteBadgeColor }} mr-2">{{ note.type | translate }}</span>
        </a>
      </dd>
     </ng-container>
   </admin-order-summary>
 
-  <tabset>
+  <tabset #orderTabs>
     <!-- ORDER DETAIL VIEW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <tab heading="{{ 'Order' | translate }}">
       <!-- ORDER LINES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -64,14 +64,13 @@
           </div>
           <div class="card-body py-2" *ngIf="!notesCollapsed">
             <div class="row note" *ngFor="let note of order.notes">
-              <div class="col-2"><span class="badge badge-{{ order.getNoteColor(note) }}">{{ note.type | translate }}</span></div>
+              <div class="col-2"><span class="badge badge-{{ note | noteBadgeColor }}">{{ note.type | translate }}</span></div>
               <blockquote class="col" [innerHTML]="note.content | nl2br"></blockquote>
             </div>
           </div>
         </div>
       </div>
     </tab>
-
     <!-- RECEIPTS DETAIL VIEW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <tab heading="{{ 'Reception' | translate }}" [disabled]="!canViewReceipts">
       <admin-receipt-list class="row" [order]="order" [permissions]="permissions" *ngIf="permissions"></admin-receipt-list>

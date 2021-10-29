@@ -43,7 +43,7 @@
           </ng-container>
           <span class="bullet-notes" *ngIf="orderLine.notes.length > 0 && isCollapsed">
             <ng-container *ngFor="let note of orderLine.notes">
-              <i class="fa fa-circle fa-bullet bullet-{{ orderLine.getNoteColor(note) }}" aria-hidden="true"></i>
+              <i class="fa fa-circle fa-bullet bullet-{{ note | noteBadgeColor }}" aria-hidden="true"></i>
             </ng-container>
           </span>
         </div>
@@ -53,7 +53,7 @@
             <dt class="col-3 label-title" translate>Account</dt>
             <dd class="col-9">
               {{ account.metadata.name }}
-              <span class="ml-4 account-number">{{ account.metadata.number }}]</span>
+              <span class="ml-4 account-number">{{ account.metadata.number }}</span>
             </dd>
             <dt class="col-3 label-title" translate>Status</dt>
             <dd class="col-9">{{ orderLine.status | translate }}</dd>
@@ -65,14 +65,14 @@
               <dt class="col-3 label-title" translate>Order date</dt>
               <dd class="col-9">{{ orderLine.order_date | dateTranslate: 'shortDate' }}</dd>
             </ng-container>
-            <ng-container *ngIf="orderLine.reception_date">
+            <ng-container *ngIf="orderLine.receipt_date">
               <dt class="col-3 label-title" translate>Reception date</dt>
-              <dd class="col-9">{{ orderLine.reception_date | dateTranslate: 'shortDate' }}</dd>
+              <dd class="col-9">{{ orderLine.receipt_date | dateTranslate: 'shortDate' }}</dd>
             </ng-container>
             <ng-container *ngFor="let note of orderLine.notes; first as isFirst">
               <div *ngIf="isFirst" class="col-12 note-spacer"></div>
               <dt class="col-3">
-                <span class="badge badge-{{ orderLine.getNoteColor(note) }}">{{ note.type | translate }}</span>
+                <span class="badge badge-{{ note | noteBadgeColor }}">{{ note.type | translate }}</span>
               </dt>
               <dd class="col-9 note-content" [innerHTML]="note.content | nl2br"></dd>
             </ng-container>
@@ -92,36 +92,24 @@
     </div>
     <div class="col-1 pl-0 text-right">
       <!-- EDIT BUTTON ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <button *ngIf="permissions.update.can; else editInfo"
-              type="button" class="btn btn-outline-primary btn-sm mr-1"
-              title="{{ 'Edit' | translate }}"
-              [routerLink]="['/records', 'acq_order_lines', 'edit', orderLine.pid]">
+      <shared-action-button
+        [title]="'Edit' | translate"
+        [class]="'btn-outline-primary mr-1'"
+        [disabled]="!permissions.update.can"
+        [url]="['/records', 'acq_order_lines', 'edit', orderLine.pid]"
+        [message]="editInfoMessage"
+      >
         <i class="fa fa-pencil"></i>
-      </button>
-      <ng-template #editInfo>
-        <button type="button" class="btn btn-sm btn-outline-primary mr-1 disabled"
-                title="{{ 'Edit' | translate }}"
-                [popover]="tolTemplate" triggers="mouseenter:mouseleave">
-          <i class="fa fa-pencil"></i>
-        </button>
-        <ng-template #tolTemplate><div [innerHtml]="editInfoMessage | nl2br"></div></ng-template>
-      </ng-template>
-
-      <!-- DELETE BUTTON ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <button *ngIf="this.permissions.delete.can; else deleteInfo"
-              type="button" class="btn btn-outline-danger btn-sm"
-              title="{{ 'Delete' | translate }}"
-              (click)="deleteOrderLine()">
-        <i class="fa fa-trash" ></i>
-      </button>
-      <ng-template #deleteInfo>
-        <button type="button" class="btn btn-sm btn-outline-danger disabled"
-                title="{{ 'Delete' | translate }}"
-                [popover]="tolTemplate" triggers="mouseenter:mouseleave">
-          <i class="fa fa-trash"></i>
-        </button>
-        <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
-      </ng-template>
+      </shared-action-button>
+      <shared-action-button
+        [title]="'Delete' | translate"
+        [class]="'btn-outline-danger'"
+        [disabled]="!permissions.delete.can"
+        [message]="deleteInfoMessage"
+        (btnClick)="deleteOrderLine()"
+      >
+        <i class="fa fa-trash"></i>
+      </shared-action-button>
     </div>
   </ng-container>
 </div>

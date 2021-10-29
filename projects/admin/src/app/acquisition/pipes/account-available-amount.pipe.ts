@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
  * Copyright (C) 2021 RERO
+ * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,26 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
-import { ItemTypeApiService } from './item-type-api.service';
+import { Pipe, PipeTransform } from '@angular/core';
+import { IAcqAccount } from '../classes/account';
 
+@Pipe({
+  name: 'accountAvailableAmount'
+})
+export class AccountAvailableAmountPipe implements PipeTransform {
 
-describe('ItemTypeService', () => {
-  let service: ItemTypeApiService;
+  /**
+   * Get the self available amount for an AcqAccount.
+   * This amount is the result of the following calculation : allocated_amount - children distribution
+   * @param account - the account to analyze.
+   * @returns the available amount
+   */
+  transform(account: IAcqAccount): number {
+    return account.allocated_amount - account.distribution;
+  }
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot()
-      ],
-    });
-    service = TestBed.inject(ItemTypeApiService);
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+}

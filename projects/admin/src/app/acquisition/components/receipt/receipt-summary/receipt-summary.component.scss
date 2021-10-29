@@ -25,13 +25,17 @@
   display: block;
 }
 .receipt {
-  border-bottom: 1px solid $border-color;
+  border-bottom: $border-width solid $border-color;
   &:hover {
     background-color: $light;
   }
   label {
-    font-weight: bold;
-    color: $secondary;
+    span.reception-dates {
+      font-style: italic;
+      font-size: $small-font-size;
+      padding-left: map-get($spacers, 3);
+    }
+
   }
   *[class^="col-"] {
     padding-top: map-get($spacers, 2);
@@ -54,7 +58,7 @@
 
   /* AMOUNT COLUMN ========================================================= */
   .amount {
-    border-left: 1px solid $border-color;
+    border-left: $border-width solid $border-color;
     background-color: $light;
     text-align: right;
     padding: map-get($spacers, 1) map-get($spacers, 2);
@@ -70,6 +74,6 @@
 
   /* ACTIONS BUTTONS ======================================================= */
   .actions-column {
-    border-left: 1px solid $border-color;
+    border-left: $border-width solid $border-color;
   }
 }

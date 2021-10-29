@@ -15,8 +15,8 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section class="my-3 row" *ngIf="order">
-  <div class="col-8 border rounded">
+<section class="my-3 row border rounded" *ngIf="order">
+  <div class="col-8">
     <dl class="row my-2">
       <!-- VENDOR -->
       <ng-container *ngIf="order.vendor">
@@ -39,15 +39,20 @@
     </dl>
   </div>
   <!-- ORDER TOTAL AMOUNT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <div class="col-4 pr-0">
-    <div class="border h-100 rounded bg-light position-relative">
-      <div class="total-amount">
-        <label>{{ order.total_amount || 0 | currency:order.currency:'symbol' }}</label>
+  <div class="col-4 py-2 d-flex flex-column">
+    <div class="accounting-infos">
+      <span class="counter ordered-counter">{{ order.account_statement.provisional.quantity }}</span>
+      <div>
+        <span class="amount">{{ order.account_statement.provisional.total_amount | currency:order.currency:'symbol' }}</span>
+        <label translate>Ordered</label>
       </div>
-      <ul class="item-quantity">
-        <li class="ordered-counter">{{ order.item_quantity.ordered }}</li>
-        <li class="received-counter" *ngIf="order.status !== acqOrderStatus.PENDING">{{ order.item_quantity.received }}</li>
-      </ul>
+    </div>
+    <div class="accounting-infos" *ngIf="order.account_statement.expenditure.quantity > 0">
+      <span class="counter received-counter">{{ order.account_statement.expenditure.quantity }}</span>
+      <div>
+        <span class="amount">{{ order.account_statement.expenditure.total_amount | currency:order.currency:'symbol' }}</span>
+        <label translate>Received</label>
+      </div>
     </div>
   </div>
 </section>

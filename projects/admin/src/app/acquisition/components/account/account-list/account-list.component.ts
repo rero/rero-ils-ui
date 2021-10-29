@@ -18,8 +18,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '@rero/shared';
 import { OrganisationService } from '../../../../service/organisation.service';
-import { AcqAccount } from '../../../classes/account';
-import { AcqAccountService } from '../../../services/acq-account.service';
+import { IAcqAccount } from '../../../classes/account';
+import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 
 @Component({
   selector: 'admin-account-list',
@@ -29,7 +29,7 @@ export class AccountListComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES =======================================================
   /** Root account to display */
-  rootAccounts: AcqAccount[] = [];
+  rootAccounts: IAcqAccount[] = [];
 
 
   // GETTER & SETTER ============================================================
@@ -42,26 +42,24 @@ export class AccountListComponent implements OnInit {
   /**
    * Constructor
    * @param _userService: UserService
-   * @param _accountService: AcqAccountService
+   * @param _acqAccountApiService: AcqAccountApiService
    * @param _organisationService: OrganisationService
    */
   constructor(
     private _userService: UserService,
-    private _accountService: AcqAccountService,
+    private _acqAccountApiService: AcqAccountApiService,
     private _organisationService: OrganisationService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
     const libraryPid = this._userService.user.currentLibrary;
-    this._accountService.getAccounts(libraryPid, null).subscribe(accounts => {
-      this.rootAccounts = accounts;
-    });
+    this._acqAccountApiService.getAccounts(libraryPid, null).subscribe(accounts => this.rootAccounts = accounts);
   }
 
   // COMPONENT FUNCTIONS ========================================================
   /** Operations to do when an account is deleted */
-  accountDeleted(account: AcqAccount): void {
+  accountDeleted(account: IAcqAccount): void {
     this.rootAccounts = this.rootAccounts.filter(item => item.pid !== account.pid);
   }
 
