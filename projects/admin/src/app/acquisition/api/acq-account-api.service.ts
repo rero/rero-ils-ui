@@ -47,7 +47,7 @@ export class AcqAccountApiService {
    * @param libraryPid: the current library
    * @param parentPid: the parent account pid, if `null` then the root account will be return (optional)
    * @param options: the additional options to get the records (optional)
-   * @return an observable of ElasticSearch response corresponding to search criteria
+   * @return: an observable of ElasticSearch response corresponding to search criteria
    */
    getAccounts(libraryPid: string, parentPid?: string, options?: { sort?: string }): Observable<any> {
     const defaultQueryParams = [

@@ -55,7 +55,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
         if (orderLine.status !== AcqOrderLineStatus.CANCELLED) {
           this.order.total_amount -= orderLine.total_amount;
           this.order.item_quantity.ordered -= orderLine.quantity;
-          this.order.item_quantity.received -= orderLine.quantity_received;
+          this.order.item_quantity.received -= orderLine.received_quantity;
         }
       })
     );

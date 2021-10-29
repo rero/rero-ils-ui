@@ -15,14 +15,16 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="card container">
+<div class="card mb-3 container">
   <div class="card-header px-0 row">
-    <h5 class="col-8" translate>Order lines</h5>
+    <h5 class="col-8 m-0">
+      {{ numberOfReceipt | i18nPlural: {'=1': 'Receipt', 'other': 'Receipts'} }}
+      <span class="badge badge-secondary ml-2">{{ numberOfReceipt }}</span>
+    </h5>
     <div class="col-4 text-right">
-      <a *ngIf="permissions && permissions.update.can; else createInfo"
+      <a *ngIf="permissions && permissions.create.can; else createInfo"
          class="btn btn-sm btn-outline-primary"
-         [routerLink]="['/', 'records', 'acq_order_lines', 'new']"
-         [queryParams]="{ order: order.pid }"
+         [routerLink]="['/', 'acquisition', 'acq_orders', order.pid, 'receive']"
       >
         <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
       </a>
@@ -36,15 +38,15 @@
     </div>
   </div>
   <div class="card-body p-0">
-    <ng-container *ngIf="orderLines; else loading">
-      <ng-container *ngIf="orderLines.length > 0; else noOrderLines">
-        <admin-order-line *ngFor="let orderLine of orderLines"
-                          [orderLine]="orderLine"
-                          [order]="order"
-        ></admin-order-line>
+    <ng-container *ngIf="receipts; else loading">
+      <ng-container *ngIf="receipts.length > 0; else noOrderLines">
+        <admin-receipt-summary *ngFor="let receipt of receipts"
+                               [receiptPid]="receipt.pid"
+                               [allowActions]="true">
+        </admin-receipt-summary>
       </ng-container>
       <ng-template #noOrderLines>
-        <div class="py-3" translate>No order lines</div>
+        <div class="py-3" translate>No receipt</div>
       </ng-template>
     </ng-container>
     <ng-template #loading><i class="fa fa-spinner fa-spin"></i></ng-template>

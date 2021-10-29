@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
  * Copyright (C) 2021 RERO
+ * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,44 +15,41 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { ApiService, CoreModule } from '@rero/ng-core';
-import { ToastrModule } from 'ngx-toastr';
-import { AcqAccountApiService } from '../../../api/acq-account-api.service';
-import { AcqOrderApiService } from '../../../api/acq-order-api.service';
-import { OrderReceipt } from './order-receipt';
-import { OrderReceiptForm } from './order-receipt-form';
-import { OrderReceiptViewComponent } from './order-receipt-view.component';
+import { AppModule } from '../../../../app.module';
+import { AcquisitionModule } from '../../../acquisition.module';
+import { AcqOrder } from '../../../classes/order';
 
+import { ReceiptListComponent } from './receipt-list.component';
 
-describe('OrderReceiptViewComponent', () => {
-  let component: OrderReceiptViewComponent;
-  let fixture: ComponentFixture<OrderReceiptViewComponent>;
+describe('ReceiptListComponent', () => {
+  let component: ReceiptListComponent;
+  let fixture: ComponentFixture<ReceiptListComponent>;
+
+  const order = new AcqOrder({
+    pid: '1'
+  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OrderReceiptViewComponent ],
       imports: [
         HttpClientTestingModule,
-        RouterTestingModule,
         TranslateModule.forRoot(),
-        ToastrModule.forRoot(),
-        CoreModule
+        AcquisitionModule,
+        AppModule
       ],
-      providers: [
-        OrderReceipt,
-        { provide: OrderReceiptForm, deps: [AcqOrderApiService, AcqAccountApiService, ApiService, OrderReceipt] }
-      ]
+      declarations: [ ReceiptListComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OrderReceiptViewComponent);
+    fixture = TestBed.createComponent(ReceiptListComponent);
     component = fixture.componentInstance;
+    component.order = order;
     fixture.detectChanges();
   });
 

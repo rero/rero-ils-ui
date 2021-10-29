@@ -22,7 +22,7 @@ import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
 import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
-import { AcqNote, AcqNoteType, AcqOrderLine, AcqOrderLineStatus } from '../../../../classes/order';
+import { AcqOrderLine, AcqOrderLineStatus } from '../../../../classes/order';
 import { AcqOrderService } from '../../../../services/acq-order.service';
 
 
@@ -93,17 +93,5 @@ export class OrderLineComponent implements OnInit {
   /** Delete the order line */
   deleteOrderLine() {
     this._acqOrderService.deleteOrderLine(this.orderLine);
-  }
-
-  /**
-   * Get the color to use for the bullet
-   * @param note - the note to analyze
-   */
-  getNoteColor(note: AcqNote): string {
-    switch (note.type) {
-      case AcqNoteType.STAFF_NOTE: return 'info';
-      case AcqNoteType.VENDOR_NOTE: return 'warning';
-      default: return 'secondary';
-    }
   }
 }

@@ -20,12 +20,26 @@
 @import '~bootstrap/scss/variables';
 @import '/projects/admin/src/app/scss/variables';
 
+$gutter:  $grid-gutter-width / 2;
+
 .btn-additional-action {
   z-index: 2;
   position: relative;
 }
 
+::ng-deep .nav-tabs {
+  margin-bottom: map-get($spacers, 3);
+  margin-left: -$gutter;
+  margin-right: -$gutter;
+}
+
 .notes {
+
+  .card-header .btn-show-more {
+    border-color: $card-border-color;
+    margin-right: .5rem;
+  }
+
   .note {
     margin-bottom: map-get($spacers, 2);
   }
