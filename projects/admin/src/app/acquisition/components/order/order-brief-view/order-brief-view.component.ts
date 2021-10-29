@@ -18,7 +18,7 @@
 
 import { Component, Input } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
-import { AcqOrderStatus } from '../../../classes/order';
+import { AcqNote, AcqNoteType, AcqOrderStatus } from '../../../classes/order';
 
 @Component({
   selector: 'admin-acquisition-order-brief-view',
@@ -27,6 +27,7 @@ import { AcqOrderStatus } from '../../../classes/order';
 })
 export class OrderBriefViewComponent implements ResultItem {
 
+  // COMPONENTS ATTRIBUTES ====================================================
   /** the record to display */
   @Input() record: any;
   /** the record type */
@@ -36,11 +37,10 @@ export class OrderBriefViewComponent implements ResultItem {
 
   /** order status reference */
   orderStatus = AcqOrderStatus;
+  /** order note type reference */
+  noteType = AcqNoteType;
 
-  /** get the numbers of items related to this order */
-  get itemsCounter(): number {
-    return this.record.metadata.order_lines.reduce((acc, line) => acc + 1, 0);
-  }
+  // GETTER & SETTER ==========================================================
 
   /** get order date (based on orderLine order date) */
   get orderDate(): string | null {
@@ -56,6 +56,18 @@ export class OrderBriefViewComponent implements ResultItem {
       .filter((line) => line.hasOwnProperty('reception_date'))
       .map((line) => line.reception_date)
       .shift();
+  }
+
+  // COMPONENTS FUNCTIONS =====================================================
+  /**
+   * Search about a type of note into the record
+   * @param noteType: the type of note to search.
+   * @return: the corresponding note if exists; otherwise `null`.
+   */
+  getNote(noteType: AcqNoteType): AcqNote | null {
+    if (this.record && this.record.metadata && this.record.metadata.notes) {
+      return this.record.metadata.notes.filter(note => note.type === AcqNoteType.STAFF_NOTE).shift();
+    }
   }
 
 }

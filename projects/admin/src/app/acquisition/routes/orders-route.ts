@@ -69,6 +69,9 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
               'type'
             ],
             aggregationsBucketSize: 10,
+            itemHeaders: {
+              Accept: 'application/rero+json, application/json'
+            },
             listHeaders: {
               Accept: 'application/rero+json'
             }
@@ -102,7 +105,7 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
    */
    private _cleanRecord(data: any): any {
       // remove dynamic fields
-      const fieldsToRemoved = ['total_amount', 'status'];
+      const fieldsToRemoved = ['total_amount', 'status', 'order_date', 'item_quantity'];
       fieldsToRemoved.forEach(key => {
         if (data.hasOwnProperty(key)) {
           delete data[key];

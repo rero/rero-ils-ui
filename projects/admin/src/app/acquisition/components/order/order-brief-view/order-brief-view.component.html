@@ -18,7 +18,7 @@
 <article class="row order-brief-view">
   <div class="col-9 pl-0">
     <h5 class="m-0"><a [routerLink]="[detailUrl.link]">{{ record.metadata.reference }}</a></h5>
-    <div class="description" *ngIf="record.metadata.description">{{ record.metadata.description }}</div>
+    <div class="description" *ngIf="getNote(noteType.STAFF_NOTE) as note" [innerHTML]="note.content | nl2br"></div>
     <div class="metadata">
       {{ record.metadata.status | translate }}
       <ng-container [ngSwitch]="record.metadata.status">
@@ -32,8 +32,9 @@
   </div>
   <div class="col-3 ordinal-infos" *ngIf="record.metadata.total_amount > 0">
     <div class="total-amount">{{ record.metadata.total_amount | currency : record.metadata.currency }}</div>
-    <div class="items-counter" *ngIf="itemsCounter > 0">
-      {{ itemsCounter }} {{ itemsCounter | i18nPlural: {'=1': 'item', 'other': 'items'} }}
-    </div>
+    <ul class="item-quantity">
+      <li class="ordered-counter">{{ record.metadata.item_quantity.ordered }}</li>
+      <li class="received-counter" *ngIf="record.metadata.item_quantity.received > 0">{{ record.metadata.item_quantity.received }}</li>
+    </ul>
   </div>
 </article>
