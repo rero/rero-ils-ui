@@ -38,3 +38,44 @@
     text-align: center;
   }
 }
+
+ul.item-quantity {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  border-top: 1px solid $border-color;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    padding: map-get($spacers, 1) 0;
+    display: inline-block;
+    text-align: center;
+    width: 50%;
+    border-right: 1px solid $border-color;
+    font-size: $small-font-size;
+    color: $gray-600;
+    text-shadow: 1px 1px 1px $gray-400;
+
+    &:last-child {
+      border-right: none;
+    }
+
+    &.ordered-counter::before{
+      font-family: 'FontAwesome';
+      font-weight: 100;
+      content: " \f07a";
+      padding-right: map-get($spacers, 3);
+    }
+
+    &.received-counter::before{
+      font-family: 'FontAwesome';
+      font-weight: 100;
+      content: " \f090";
+      padding-right: map-get($spacers, 3);
+    }
+  }
+}

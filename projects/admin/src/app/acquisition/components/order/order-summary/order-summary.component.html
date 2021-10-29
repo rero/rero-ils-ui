@@ -40,10 +40,14 @@
   </div>
   <!-- ORDER TOTAL AMOUNT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <div class="col-4 pr-0">
-    <div class="border h-100 rounded bg-light">
+    <div class="border h-100 rounded bg-light position-relative">
       <div class="total-amount">
         <label>{{ order.total_amount || 0 | currency:order.currency:'symbol' }}</label>
       </div>
+      <ul class="item-quantity">
+        <li class="ordered-counter">{{ order.item_quantity.ordered }}</li>
+        <li class="received-counter" *ngIf="order.status !== acqOrderStatus.PENDING">{{ order.item_quantity.received }}</li>
+      </ul>
     </div>
   </div>
 </section>
