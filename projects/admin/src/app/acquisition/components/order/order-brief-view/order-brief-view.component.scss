@@ -49,14 +49,54 @@
     border: 1px solid $border-color;
     border-radius: $border-radius;
     background-color: $light;
+    min-height: 3.5rem;
+    padding-top: map-get($spacers, 1);
 
     .total-amount {
       font-weight: bold;
+      text-align: center;
     }
-    .items-counter {
-      font-size: small;
-      color: $secondary;
-      font-style: italic;
+
+    ul.item-quantity {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      border-top: 1px solid $border-color;
+      width: 100%;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      line-height: 1rem;
+      font-size: $small-font-size;
+
+      li {
+        padding: 3px;
+        display: inline-block;
+        text-align: center;
+        width: 50%;
+        border-right: 1px solid $border-color;
+        color: $gray-600;
+        text-shadow: 1px 1px 1px $gray-400;
+
+        &:last-child {
+          border-right: none;
+        }
+
+        &.ordered-counter::before{
+          font-family: 'FontAwesome';
+          font-weight: 100;
+          content: " \f07a";
+          padding-right: map-get($spacers, 3);
+        }
+
+        &.received-counter::before{
+          font-family: 'FontAwesome';
+          font-weight: 100;
+          content: " \f090";
+          padding-right: map-get($spacers, 3);
+        }
+      }
     }
   }
 }
