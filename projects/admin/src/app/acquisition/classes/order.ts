@@ -20,6 +20,7 @@
 // required as json properties is not lowerCamelCase
 
 import { ObjectReference } from '@rero/shared';
+import { AcqBaseResource } from './common';
 
 // ORDER ======================================================================
 /** Interface for order recipient */
@@ -47,18 +48,6 @@ export enum AcqOrderType {
   MULTI_VOLUME = 'multi_volume'
 }
 
-/** Enumeration about note type */
-export enum AcqNoteType {
-  STAFF_NOTE = 'staff_note',
-  VENDOR_NOTE = 'vendor_note'
-}
-
-/** Interface to describe an order note */
-export class AcqNote {
-  type: AcqNoteType = null;
-  content: string = null;
-}
-
 /** Interface to describe item quantity for an order */
 export class AcqOrderItemQuantity {
   ordered: number = 0;
@@ -66,7 +55,7 @@ export class AcqOrderItemQuantity {
 }
 
 /** Wrapping class to describe an AcqAccount */
-export class AcqOrder {
+export class AcqOrder extends AcqBaseResource {
   $schema: string = null;
   pid: string = null;
   reference: string = null;
@@ -74,20 +63,31 @@ export class AcqOrder {
   type: AcqOrderType = AcqOrderType.MONOGRAPH;
   status: AcqOrderStatus = AcqOrderStatus.PENDING;
   currency: string = null;
-  notes: AcqNote[] = [];
-  vendor: ObjectReference;
-  library: ObjectReference;
-  organisation: ObjectReference;
   total_amount: number = 0;
   order_date: Date = null;
   item_quantity: AcqOrderItemQuantity;
+
+  vendor: ObjectReference;
+  library: ObjectReference;
+  organisation: ObjectReference;
+
 
   /**
    * Constructor
    * @param obj - the JSON parsed object to load.
    */
   constructor(obj?: any){
+    super();
     Object.assign(this, obj);
+    if (obj.hasOwnProperty('library')) {
+      this.library = new ObjectReference(obj.library);
+    }
+    if (obj.hasOwnProperty('organisation')) {
+      this.organisation = new ObjectReference(obj.organisation);
+    }
+    if (obj.hasOwnProperty('vendor')) {
+      this.vendor = new ObjectReference(obj.vendor);
+    }
   }
 }
 
@@ -102,33 +102,40 @@ export enum AcqOrderLineStatus {
 }
 
 /** Wrapping class to describe an OrderLine */
-export class AcqOrderLine {
+export class AcqOrderLine extends AcqBaseResource{
   $schema: string = null;
   pid: string = null;
   status: AcqOrderLineStatus = AcqOrderLineStatus.APPROVED;
   priority: number = 0;
   quantity: number = 0;
-  quantity_received: number = 0;
+  received_quantity: number = 0;
   amount: number = 0;
   discount_amount: number = 0;
   total_amount: number = 0;
   exchange_rate: number = 0;
-  notes: AcqNote[] = [];
   order_date: Date = null;
   reception_date: Date = null;
 
-  acq_account: ObjectReference = null;
-  acq_order: ObjectReference = null;
-  document: ObjectReference = null;
-  organisation: ObjectReference = null;
-  library: ObjectReference = null;
+  library: ObjectReference;
+  organisation: ObjectReference;
+  acq_account: ObjectReference;
+  acq_order: ObjectReference;
+  document: ObjectReference;
 
   /**
    * Constructor
    * @param obj - the JSON parsed object to load.
    */
   constructor(obj?: any){
+    super();
     Object.assign(this, obj);
+    this.library = new ObjectReference(obj.library);
+    this.organisation = new ObjectReference(obj.organisation);
+    this.acq_account = new ObjectReference(obj.acq_account);
+    this.acq_order = new ObjectReference(obj.acq_order);
+    if (obj.hasOwnProperty('document')) {
+      this.document = new ObjectReference(obj.document);
+    }
   }
 }
 
@@ -161,7 +168,7 @@ export interface IAcqOrderLine {
   status: string;
   priority: string;
   quantity: number;
-  quantity_received: number;
+  received_quantity: number;
   amount: number;
   total_amount: number;
   exchange_rate: number;

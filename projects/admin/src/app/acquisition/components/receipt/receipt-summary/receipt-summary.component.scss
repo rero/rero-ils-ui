@@ -21,59 +21,40 @@
 @import '~bootstrap/scss/variables';
 @import '/projects/admin/src/app/scss/variables';
 
-
-.order-line {
-
+:host {
+  display: block;
+}
+.receipt {
   border-bottom: 1px solid $border-color;
-
   &:hover {
     background-color: $light;
   }
-
+  label {
+    font-weight: bold;
+    color: $secondary;
+  }
   *[class^="col-"] {
     padding-top: map-get($spacers, 2);
     padding-bottom: map-get($spacers, 2);
   }
 
-  .account-number{
-    font-size: small;
-    color: $secondary;
-    font-weight: bold;
+  /* DETAILS ROWS ========================================================== */
+  *.detail {
+    padding-top: 0 !important;
+    padding-bottom: map-get($spacers, 1) !important;
 
-    &:before {
-      content: '[';
+    &.label{
+      padding-left: 8.333333%;  // Same as offset-1 class but without pixel mismatch
     }
-    &:after {
-      content: ']';
+
+    &.separator {
+      border-top: 1px dashed $border-color;
     }
   }
 
-  dl > * {
-    padding: 0;
-    margin: 0;
-  }
-
-  .order-cancelled a {
-    text-decoration: line-through !important;
-    color: $danger !important;
-  }
-
-  .note-content {
-    border-left: 2px solid $border-color;
-    padding-left: map-get($spacers, 2) !important;
-    margin-top: map-get($spacers, 1) !important;
-    font-style: italic;
-    font-size: 0.8rem;
-  }
-
-  .note-spacer {
-    margin-top: map-get($spacers, 3) !important;
-  }
-
-  /* AMOUNT ================================================================ */
+  /* AMOUNT COLUMN ========================================================= */
   .amount {
     border-left: 1px solid $border-color;
-    border-right: 1px solid $border-color;
     background-color: $light;
     text-align: right;
     padding: map-get($spacers, 1) map-get($spacers, 2);
@@ -87,12 +68,8 @@
     }
   }
 
-  .status {
-    min-width: map-get($spacers, 4);
-    padding: map-get($spacers, 1) 0;
-  }
-
-  .order-line-content {
-    margin-left: map-get($spacers, 4); // to be align with .status width
+  /* ACTIONS BUTTONS ======================================================= */
+  .actions-column {
+    border-left: 1px solid $border-color;
   }
 }

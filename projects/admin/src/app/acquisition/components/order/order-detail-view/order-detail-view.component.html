@@ -33,39 +33,49 @@
   <!-- ORDER SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <admin-order-summary [order]="order">
    <ng-container notes *ngIf="order.notes && order.notes.length > 0">
-     <dt class="col-4 label-title" translate>Notes</dt>
-     <dd class="col-8">
+     <dt class="col-6 label-title" translate>Notes</dt>
+     <dd class="col-6">
        <a href (click)="scrollTo($event, 'notes'); notesCollapsed = false;" *ngFor="let note of order.notes">
-         <span class="badge {{ getBadgeColor(note.type) }} mr-2">{{ note.type | translate }}</span>
+         <span class="badge badge-{{ order.getNoteColor(note) }} mr-2">{{ note.type | translate }}</span>
        </a>
      </dd>
     </ng-container>
   </admin-order-summary>
 
-  <!-- ORDER LINES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <admin-order-lines class="row" [order]="order" [permissions]="permissions"></admin-order-lines>
-
-  <!-- ORDER NOTES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <div class="row mt-3" *ngIf="order.notes && order.notes.length > 0">
-    <a id="notes"></a>
-    <div class="card container notes">
-      <div class="card-header row">
-        <h5 class="m-0">
-          <button type="button" class="btn-show-more"
-                  [ngClass]="{'btn-expanded': !notesCollapsed, 'btn-collapsed': notesCollapsed}"
-                  (click)="notesCollapsed = !notesCollapsed"
-                  [attr.aria-expanded]="!notesCollapsed" aria-controls="collapse">
-          </button>
-          {{ order.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} }}
-          <span *ngIf="notesCollapsed" class="badge badge-secondary ml-2">{{ order.notes.length }}</span>
-        </h5>
-      </div>
-      <div class="card-body py-2" *ngIf="!notesCollapsed">
-        <div class="row note" *ngFor="let note of order.notes">
-          <div class="col-2"><span class="badge {{ getBadgeColor(note.type) }}">{{ note.type | translate }}</span></div>
-          <blockquote class="col" [innerHTML]="note.content | nl2br"></blockquote>
+  <tabset>
+    <!-- ORDER DETAIL VIEW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <tab heading="{{ 'Order' | translate }}">
+      <!-- ORDER LINES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <admin-order-lines class="row" [order]="order" [permissions]="permissions"></admin-order-lines>
+      <!-- ORDER NOTES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <div class="row mt-3" *ngIf="order.notes && order.notes.length > 0">
+        <a id="notes"></a>
+        <div class="card container notes">
+          <div class="card-header row">
+            <h5 class="m-0">
+              <button type="button" class="btn-show-more"
+                      [ngClass]="{'btn-expanded': !notesCollapsed, 'btn-collapsed': notesCollapsed}"
+                      (click)="notesCollapsed = !notesCollapsed"
+                      [attr.aria-expanded]="!notesCollapsed" aria-controls="collapse">
+              </button>
+              {{ order.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} }}
+              <span *ngIf="notesCollapsed" class="badge badge-secondary ml-2">{{ order.notes.length }}</span>
+            </h5>
+          </div>
+          <div class="card-body py-2" *ngIf="!notesCollapsed">
+            <div class="row note" *ngFor="let note of order.notes">
+              <div class="col-2"><span class="badge badge-{{ order.getNoteColor(note) }}">{{ note.type | translate }}</span></div>
+              <blockquote class="col" [innerHTML]="note.content | nl2br"></blockquote>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    </tab>
+
+    <!-- RECEIPTS DETAIL VIEW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <tab heading="{{ 'Reception' | translate }}" [disabled]="!canViewReceipts">
+      <admin-receipt-list class="row" [order]="order" [permissions]="permissions" *ngIf="permissions"></admin-receipt-list>
+    </tab>
+  </tabset>
+
 </div>

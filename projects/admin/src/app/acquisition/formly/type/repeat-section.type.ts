@@ -25,12 +25,10 @@ import { FieldArrayType } from '@ngx-formly/core';
         <label
           *ngIf="field.templateOptions.label || field.templateOptions.addButton" class="col" [ngClass]="field.templateOptions.className">
           <span *ngIf="field.templateOptions.label" >{{ field.templateOptions.label }}</span>
-          <button
-          *ngIf="field.templateOptions.addButton"
-          type="button"
-          class="btn btn-link text-secondary btn-sm ng-star-inserted"
-          (click)="add()"
-          >
+          <button *ngIf="field.templateOptions.addButton"
+                  type="button"
+                  class="btn btn-link text-secondary btn-sm ng-star-inserted"
+                  (click)="add()">
             <i class="fa fa-clone"></i>
           </button>
         </label>
@@ -72,6 +70,6 @@ export class RepeatTypeComponent extends FieldArrayType {
    * @returns boolean
    */
   get showTrash() {
-    return this.field.fieldGroup.length > (this.to.minLength || 1);
+    return this.field.fieldGroup.length > (this.to.minLength || 0);
   }
 }

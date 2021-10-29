@@ -1,0 +1,141 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+  Copyright (C) 2021 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="row receipt">
+  <ng-container *ngIf="receipt else loading">
+    <!-- RECEIPT INFORMATION COLUMN ======================================= -->
+    <div class="col container">
+      <div class="row">
+        <!-- FIRST ROW :: receipt detail (always visible) -->
+        <div class="col-9 d-flex">
+          <button type="button" class="btn-show-more"
+                  *ngIf="collapsable"
+                  [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
+                  (click)="isCollapsed = !isCollapsed"
+                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
+          </button>
+          <label>{{ receipt.label }}</label>
+          <span class="bullet-notes" *ngIf="receipt.notes.length > 0 && isCollapsed">
+          <ng-container *ngFor="let note of receipt.notes">
+            <i class="fa fa-circle fa-bullet bullet-{{ receipt.getNoteColor(note) }}" aria-hidden="true"></i>
+          </ng-container>
+        </span>
+          <div class="ml-auto" *ngIf="receipt.quantity">
+            <div class="badge badge-info small">
+              <i class="fa fa-sign-in mr-1"></i>
+              {{ receipt.quantity}}
+              {{ receipt.quantity | i18nPlural: {'=1': 'item', 'other': 'items'} }}
+            </div>
+          </div>
+        </div>
+        <div class="col-3 amount">
+          <div class="total-amount">{{ receipt.total_amount | currency:receipt.currency:'symbol' }}</div>
+        </div>
+        <ng-container *ngIf="!isCollapsed">
+          <!-- RECEPTION LINES ROWS :: One line for each reception line -->
+          <ng-container *ngFor="let line of receipt.receipt_lines; let first = first;">
+            <div class="col-9 detail label d-inline-block" [class.separator]="first">
+              <strong>{{ line.quantity }}</strong><span class="mx-2">x</span>
+              <a [routerLink]="['/records', 'documents', 'detail', line.document.pid]" target="acq-detail">
+                {{ line.document.title | truncateText }}
+              </a>
+            </div>
+            <div class="col-3 detail amount d-flex" [class.separator]="first">
+              <div class="computation">
+                ({{ line.quantity}} x {{ line.amount | currency:receipt.currency:'symbol' }})
+              </div>
+              <div class="total-amount ml-auto">{{ line.total_amount | currency:receipt.currency:'symbol' }}</div>
+            </div>
+          </ng-container>
+          <!-- RECEIPT ADJUSTMENTS :: One line for each adjustment -->
+          <ng-container *ngFor="let adjustment of receipt.amount_adjustments">
+            <div class="col-9 detail label">
+              <i class="fa fa-long-arrow-right mr-3"></i>
+              {{ adjustment.label }}
+            </div>
+            <div class="col-3 detail amount">
+              <div class="total-amount">{{ adjustment.amount | currency:receipt.currency:'symbol' }}</div>
+            </div>
+          </ng-container>
+          <!-- RECEIPT NOTES -->
+          <ng-container *ngFor="let note of receipt.notes">
+            <div class="col-9 detail label">
+              <span class="mr-3 badge badge-{{ receipt.getNoteColor(note) }}">{{ note.type | translate }}</span>
+              <span [innerHTML]="note.content | nl2br"></span>
+            </div>
+            <div class="col-3 detail amount">&nbsp;</div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+    <!-- ACTION BUTTON COLUMN ============================================= -->
+    <div class="col-2 actions-column pl-0 text-right" [hidden]="!allowActions">
+      <!-- CONTINUE BUTTON ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <button *ngIf="permissions && permissions.create.can; else resumeInfo"
+              type="button" class="btn btn-outline-primary btn-sm mr-1"
+              title="{{ 'Resume' | translate }}"
+              [routerLink]="['/', 'acquisition', 'acq_orders', receipt.acq_order.pid, 'receive']"
+              [queryParams]="{ receipt: receipt.pid }">
+        <i class="fa fa-forward"></i> {{ 'Resume' | translate }}
+      </button>
+      <ng-template #resumeInfo>
+        <button type="button" class="btn btn-sm btn-outline-primary mr-1 disabled"
+                title="{{ 'Resume' | translate }}"
+                [popover]="tolTemplate" triggers="mouseenter:mouseleave">
+          <i class="fa fa-forward"></i> {{ 'Resume' | translate }}
+        </button>
+        <ng-template #tolTemplate><div [innerHtml]="resumeInfoMessage | nl2br"></div></ng-template>
+      </ng-template>
+
+      <!-- EDIT BUTTON ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <button *ngIf="permissions &&permissions.update.can; else editInfo"
+              type="button" class="btn btn-outline-primary btn-sm mr-1"
+              title="{{ 'Edit' | translate }}"
+              [routerLink]="['/records', 'acq_receipts', 'edit', receipt.pid]">
+        <i class="fa fa-pencil"></i>
+      </button>
+      <ng-template #editInfo>
+        <button type="button" class="btn btn-sm btn-outline-primary mr-1 disabled"
+                title="{{ 'Edit' | translate }}"
+                [popover]="tolTemplate" triggers="mouseenter:mouseleave">
+          <i class="fa fa-pencil"></i>
+        </button>
+        <ng-template #tolTemplate><div [innerHtml]="editInfoMessage | nl2br"></div></ng-template>
+      </ng-template>
+
+      <!-- DELETE BUTTON ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <button *ngIf="permissions && permissions.delete.can; else deleteInfo"
+              type="button" class="btn btn-outline-danger btn-sm"
+              title="{{ 'Delete' | translate }}"
+              (click)="deleteReceipt()">
+        <i class="fa fa-trash" ></i>
+      </button>
+      <ng-template #deleteInfo>
+        <button type="button" class="btn btn-sm btn-outline-danger disabled"
+                title="{{ 'Delete' | translate }}"
+                [popover]="tolTemplate" triggers="mouseenter:mouseleave">
+          <i class="fa fa-trash"></i>
+        </button>
+        <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
+      </ng-template>
+    </div>
+  </ng-container>
+</div>
+<ng-template #loading>
+  <i class="fa fa-spinner fa-pulse py-2"></i>
+</ng-template>
+

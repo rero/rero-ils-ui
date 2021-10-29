@@ -41,6 +41,7 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import {
   SelectAccountEditorWidgetComponent
 } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
+import { ReceivedOrderPermissionValidator } from './acquisition/utils/permissions';
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -353,6 +354,7 @@ export function appInitFactory(appInitService: AppInitService) {
     MefOrganisationTypeahead,
     TruncateTextPipe,
     CurrentLibraryPermissionValidator,
+    ReceivedOrderPermissionValidator,
     // TODO: needed for production build, remove this after it is fixed in the
     // @ngneat/hotkeys library
     {

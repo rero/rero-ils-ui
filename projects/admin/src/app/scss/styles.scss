@@ -134,6 +134,7 @@ json-schema-form {
   min-width: 30px;
   background-color: $white;
   margin-right: map-get($spacers, 3);
+  font-size: $font-size-base;
 
   &.btn-expanded::before {
     font-family: 'FontAwesome';

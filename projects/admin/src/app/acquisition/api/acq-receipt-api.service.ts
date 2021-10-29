@@ -17,77 +17,119 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
+import { RecordService, RecordUiService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { IReceiptOrder } from '../classes/receipt';
-import { IReceiptLine, IReceiptOrderLine, IResponseReceiptLine } from '../components/order/order-receipt-view/order-receipt';
+import { BaseApi } from '../../../../../shared/src/lib/api/base-api';
+import { IAcqReceiptLine } from '../classes/receipt';
+import { IResponseReceiptLine } from '../components/receipt/receipt-form/order-receipt';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AcqReceiptApiService {
 
-  /** Resource name */
-  private _resource = 'acq_receipts';
+  /** default options to get records */
+  private readonly _defaultRecordOptions = {
+    headers: { Accept: 'application/json'},
+    sort: 'name'
+  };
+
+  /** The resource name for an acquisition receipt */
+  resourceName = 'acq_receipts';
 
   /**
    * Constructor
    * @param _recordService - RecordService
+   * @param _recordUiService - RecordUiService
    * @param _http - HttpClient
    */
   constructor(
     private _recordService: RecordService,
+    private _recordUiService: RecordUiService,
     private _http: HttpClient
-    ) {}
+  ) {}
 
+  // READ/LIST FUNCTIONS ======================================================
   /**
-   * Get receipt record
-   * @param pid - string
-   * @returns Observable
+   * Get acquisition receipt record.
+   * @param pid - the receipt pid to search.
+   * @returns ElasticSearch response for this receipt or null if error occurred.
    */
-  getReceipt(pid: string): Observable<IReceiptOrder | null> {
-    return this._recordService.getRecord(this._resource, pid).pipe(
-      map((result: any) => result.metadata),
-      catchError(() => of(null))
-    );
+  getReceipt(pid: string): Observable<any|null> {
+    return this._recordService
+      .getRecord(this.resourceName, pid, 1, BaseApi.reroJsonheaders)
+      .pipe(
+        catchError(() => of(null))
+      );
   }
 
   /**
-   * Create receipt record
-   * @param record - data
-   * @returns Observable
+   * Search about acquisition receipts.
+   * @param query - the query used to filter the receipts.
+   * @param [options] - the additional options to get the records.
+   * @returns ElasticSearch response corresponding to search criteria.
    */
-  createReceipt(record: any): Observable<IReceiptOrder | null> {
-    return this._recordService.create(this._resource, record).pipe(
-      map((result: any) => result.metadata),
-      catchError(() => of(null))
-    );
+  searchReceipts(query: string, options?: {
+    headers?: object,
+    sort?: string
+  }): Observable<any|null> {
+    options = {...this._defaultRecordOptions, ...options};  // add some default params
+    return this._recordService
+      .getRecords(this.resourceName, query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, options.headers, options.sort);
+  }
+
+
+  // CREATE FUNCTIONS =========================================================
+  /**
+   * Create acquisition receipt record.
+   * @param record - the receipt data to create
+   * @returns created receipt data if success or null if failed
+   */
+  createReceipt(record: any): Observable<any|null> {
+    return this._recordService
+      .create(this.resourceName, record)
+      .pipe(
+        catchError(() => of(null))
+      );
   }
 
   /**
-   * Update receipt record
-   * @param pid - string
-   * @param record - data
-   * @returns Observable
+   * Create acquisition reception lines.
+   * @param receiptPid - the parent receipt pid which lines will be attached.
+   * @param lines - reception lines data to create.
+   * @returns the API response about create lines.
    */
-  updateReceipt(pid: string, record: any): Observable<IReceiptOrder | null> {
-    return this._recordService.update(this._resource, pid, record).pipe(
-      map((result: any) => result.metadata),
-      catchError(() => of(null))
-    );
-  }
-
-  /**
-   * Create receipt order lines
-   * @param lines - array of ReceiptOrderLine
-   * @returns Observable
-   */
-  createReceiptLines(receiptPid: string, lines: IReceiptOrderLine[]): Observable<IReceiptLine[] | null> {
+  createReceiptLines(receiptPid: string, lines: IAcqReceiptLine[]): Observable<IResponseReceiptLine[]|null> {
     const url = `/api/acq_receipt/${receiptPid}/lines`;
-    return this._http.post<any>(url, lines).pipe(
-      map((response: IResponseReceiptLine) => response.response),
-      catchError(() => of(null))
-    );
+    return this._http
+      .post<any>(url, lines)
+      .pipe(
+        map((response: IResponseReceiptLine) => response.response),
+        catchError(() => of(null))
+      );
   }
+
+  // UPDATE FUNCTIONS =========================================================
+  /**
+   * Update acquisition receipt record.
+   * @param receiptPid - the receipt pid.
+   * @param record - the data corresponding to the receipt
+   * @returns the API response with receipt data or null if operation failed.
+   */
+  updateReceipt(receiptPid: string, record: any): Observable<any|null> {
+    return this._recordService.update(this.resourceName, receiptPid, record);
+  }
+
+  // DELETE FUNCTIONS ========================================================
+  /**
+   * Delete acquisition receipt record.
+   * @param receiptPid - the receipt pid.
+   * @returns the response of the API call
+   */
+  delete(receiptPid: string): Observable<boolean> {
+    return this._recordUiService.deleteRecord(this.resourceName, receiptPid);
+  }
+
+
 }
