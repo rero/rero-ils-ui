@@ -26,7 +26,7 @@
     {{ 'You\'re about to send the order.' | translate }}<br/>
     {{ 'Below you can find the preview message that will be sent.' | translate }}
   </p>
-  <pre [innerHTML]="preview.content | nl2br"></pre>
+  <pre [innerHTML]="preview | previewContent | nl2br"></pre>
   <h5 translate>Who do you want to send the message to?</h5>
 
   <dl class="container row">

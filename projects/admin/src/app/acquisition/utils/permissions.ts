@@ -17,7 +17,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AcqOrder, AcqOrderStatus } from '../classes/order';
+import { IAcqOrder, AcqOrderStatus } from '../classes/order';
 import { RecordPermissions } from '../../classes/permissions';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class ReceivedOrderPermissionValidator {
    * @param permissions: the permissions related to the object.
    * @param order: the order to analyze.
    */
-  validate(permissions: RecordPermissions, order: AcqOrder){
+  validate(permissions: RecordPermissions, order: IAcqOrder){
     setTimeout(() => {}, 0);
     if (order.status === AcqOrderStatus.RECEIVED) {
       permissions.create = {

@@ -24,8 +24,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
-import { AcqAccount } from '../../../classes/account';
-import { AcqAccountService } from '../../../services/acq-account.service';
+import { IAcqAccount } from '../../../classes/account';
+import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { orderAccountsAsTree } from '../../../utils/account';
 
 @Component({
@@ -37,14 +37,14 @@ export class AccountTransferComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES =======================================================
   /** the accounts available for transfer */
-  accountsToDisplay: AcqAccount[] = [];
+  accountsToDisplay: IAcqAccount[] = [];
   /** active budgets */
   budgets: string[] = [];
   /** the transfer form group */
   form: FormGroup;
 
   /** the accounts available for transfer */
-  private _accountsTree: AcqAccount[] = [];
+  private _accountsTree: IAcqAccount[] = [];
   /** store the selected budgets */
   private _selectedBudgetPid: string = undefined;
 
@@ -62,15 +62,16 @@ export class AccountTransferComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ========================================================
   /**
    * Constructor
-   * @param _accountService: AcqAccountService
-   * @param _organisationService: OrganisationService
-   * @param _formBuilder: FormBuilder,
-   * @param _toastrService: ToastrService,
-   * @param _translateService: TranslateService
-   * @param _router: Router
+   * @param _acqAccountApiService - AcqAccountApiService
+   * @param _organisationService - OrganisationService
+   * @param _formBuilder - FormBuilder,
+   * @param _toastrService - ToastrService,
+   * @param _translateService - TranslateService
+   * @param _router - Router
+   * @param _userService - UserService
    */
   constructor(
-    private _accountService: AcqAccountService,
+    private _acqAccountApiService: AcqAccountApiService,
     private _organisationService: OrganisationService,
     private _formBuilder: FormBuilder,
     private _toastrService: ToastrService,
@@ -88,7 +89,7 @@ export class AccountTransferComponent implements OnInit {
   /** OnInit hook */
   ngOnInit(): void {
     this._loadData();
-    this.form.controls.source.valueChanges.subscribe((account: AcqAccount) => {
+    this.form.controls.source.valueChanges.subscribe((account: IAcqAccount) => {
       const maxTransferAmount = account.remaining_balance.self;
       this.form.controls.amount.setValidators([
         Validators.min(0.01),
@@ -99,7 +100,7 @@ export class AccountTransferComponent implements OnInit {
 
   // PUBLIC FUNCTIONS =========================================================
   /** get the URL to access account detail view */
-  getDetailUrl(account: AcqAccount): string[] {
+  getDetailUrl(account: IAcqAccount): string[] {
     return ['/', 'records', 'acq_accounts', 'detail', account.pid];
   }
 
@@ -111,16 +112,16 @@ export class AccountTransferComponent implements OnInit {
 
   /**
    * Handle event when use choose source/target account
-   * @param destination: the account destination (source || target)
-   * @param account: the selected.
+   * @param destination - the account destination (source || target)
+   * @param account - the selected account.
    */
-  selectAccount(destination: string, account: AcqAccount): void {
+  selectAccount(destination: string, account: IAcqAccount): void {
     this.form.controls[destination].patchValue(account);
   }
 
   /** Submit the form */
   submit(): void {
-    this._accountService
+    this._acqAccountApiService
       .transferFunds(this.form.value.source.pid, this.form.value.target.pid, this.form.value.amount)
       .subscribe(
         () => {
@@ -133,7 +134,7 @@ export class AccountTransferComponent implements OnInit {
 
   /**
    * Check an input form field to know if it's valid
-   * @param fieldName: the field name to check
+   * @param fieldName - the field name to check
    */
   checkInput(fieldName: string): boolean {
     if (this.form.get(fieldName) === undefined) {
@@ -148,18 +149,19 @@ export class AccountTransferComponent implements OnInit {
   /** Load accounts and budgets. Order accounts as a hierarchical tree */
   private _loadData(): void {
     const libraryPid = this._userService.user.currentLibrary;
-    this._accountService.getAccounts(libraryPid, undefined, {sort: 'depth'}).subscribe((accounts: AcqAccount[]) => {
-      this._accountsTree = orderAccountsAsTree(accounts);
-
-      this.budgets = Array.from(new Set(this._accountsTree.map((account: AcqAccount) => account.budget.pid)));
-      this._selectedBudgetPid = this.budgets.find(Boolean);  // get the first element
-      this._filterAccountToDisplay();
-    });
+    this._acqAccountApiService
+      .getAccounts(libraryPid, undefined, {sort: 'depth'})
+      .subscribe((accounts: IAcqAccount[]) => {
+        this._accountsTree = orderAccountsAsTree(accounts);
+        this.budgets = Array.from(new Set(this._accountsTree.map((account: IAcqAccount) => account.budget.pid)));
+        this._selectedBudgetPid = this.budgets.find(Boolean);  // get the first element
+        this._filterAccountToDisplay();
+      });
   }
 
   /** Allow to filter loaded accounts by the selected budget */
   private _filterAccountToDisplay(): void {
-    this.accountsToDisplay = this._accountsTree.filter((acc: AcqAccount) => acc.budget.pid === this._selectedBudgetPid);
+    this.accountsToDisplay = this._accountsTree.filter((acc: IAcqAccount) => acc.budget.pid === this._selectedBudgetPid);
   }
 
 }

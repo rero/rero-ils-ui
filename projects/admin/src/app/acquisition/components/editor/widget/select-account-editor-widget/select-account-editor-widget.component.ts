@@ -20,9 +20,9 @@ import { Component, OnInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { ApiService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { AcqAccount } from 'projects/admin/src/app/acquisition/classes/account';
+import { IAcqAccount } from 'projects/admin/src/app/acquisition/classes/account';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
-import { AcqAccountService } from '../../../../services/acq-account.service';
+import { AcqAccountApiService } from '../../../../api/acq-account-api.service';
 import { orderAccountsAsTree } from '../../../../utils/account';
 
 @Component({
@@ -34,9 +34,9 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
 
   // COMPONENT ATTRIBUTES =======================================================
   /** accounts list */
-  accountList: AcqAccount[] = [];
+  accountList: IAcqAccount[] = [];
   /** the selected account */
-  selectedAccount: AcqAccount = null;
+  selectedAccount: IAcqAccount = null;
 
   // GETTER & SETTER ============================================================
   /** Get the current organisation */
@@ -52,12 +52,13 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _accountService - AcqAccountService
+   * @param _acqAccountApiService - AcqAccountApiService
    * @param _organisationService - OrganisationService
    * @param _apiService - ApiService
+   * @param _userService - UserService
    */
   constructor(
-    private _accountService: AcqAccountService,
+    private _acqAccountApiService: AcqAccountApiService,
     private _organisationService: OrganisationService,
     private _apiService: ApiService,
     private _userService: UserService
@@ -68,13 +69,13 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
   /** OnInit hook */
   ngOnInit(): void {
     const libraryPid = this._userService.user.currentLibrary;
-    this._accountService.getAccounts(libraryPid).subscribe((accounts: AcqAccount[]) => {
+    this._acqAccountApiService.getAccounts(libraryPid).subscribe((accounts: IAcqAccount[]) => {
       accounts = orderAccountsAsTree(accounts);
       this.accountList = accounts;
 
       if (this.formControl.value) {
         const currentPid = this.formControl.value.substring(this.formControl.value.lastIndexOf('/') + 1);
-        const currentAccount = this.accountList.find((account: AcqAccount) => account.pid === currentPid);
+        const currentAccount = this.accountList.find((account: IAcqAccount) => account.pid === currentPid);
         if (currentAccount !== undefined) {
           this.selectedAccount = currentAccount;
         }
@@ -87,7 +88,7 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
    * Store the selected option, when an option is clicked in the list
    * @param account - The selected account.
    */
-  selectAccount(account: AcqAccount): void {
+  selectAccount(account: IAcqAccount): void {
     const accountRef = this._apiService.getRefEndpoint('acq_accounts', account.pid);
     this.selectedAccount = account;
     this.formControl.patchValue(accountRef);

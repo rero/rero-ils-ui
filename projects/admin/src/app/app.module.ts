@@ -23,7 +23,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
 import { FormlyModule } from '@ngx-formly/core';
-import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import {
@@ -289,7 +288,7 @@ export function appInitFactory(appInitService: AppInitService): () => Promise<an
     FormlyModule.forRoot({
       types: [
         { name: 'cipo-pt-it', component: CipoPatronTypeItemTypeComponent },
-        { name: 'account-select', component: SelectAccountEditorWidgetComponent}
+        { name: 'account-select', component: SelectAccountEditorWidgetComponent }
       ],
       wrappers: [
         { name: 'user-id', component: UserIdComponent },

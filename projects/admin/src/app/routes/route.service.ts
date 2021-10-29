@@ -18,6 +18,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { RouteCollectionService } from '@rero/ng-core';
+import { ReceiptLinesRoute } from '../acquisition/routes/receipt-lines-route';
 import { ReceiptsRoute } from '../acquisition/routes/receipts-route';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
 import { AccountsRoute as AcqAccountsRoute } from '../acquisition/routes/accounts-route';
@@ -93,6 +94,7 @@ export class RouteService {
       .addRoute(new AcqOrderLinesRoute(this._routeToolService))
       .addRoute(new AcqOrdersRoute(this._routeToolService))
       .addRoute(new ReceiptsRoute(this._routeToolService))
+      .addRoute(new ReceiptLinesRoute(this._routeToolService))
       // should be at the last
       .addRoute(new ImportDocumentsRoute(this._routeToolService, this._translateService))
     ;

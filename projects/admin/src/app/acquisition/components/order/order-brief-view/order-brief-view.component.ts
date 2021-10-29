@@ -18,8 +18,9 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
-import { AcqOrder, AcqOrderStatus } from '../../../classes/order';
-import { AcqNote, AcqNoteType } from '../../../classes/common';
+import { AcqOrderApiService } from '../../../api/acq-order-api.service';
+import { AcqNoteType } from '../../../classes/common';
+import { AcqOrderStatus, IAcqOrder } from '../../../classes/order';
 
 @Component({
   selector: 'admin-acquisition-order-brief-view',
@@ -37,7 +38,7 @@ export class OrderBriefViewComponent implements ResultItem, OnInit {
   @Input() detailUrl: { link: string, external: boolean };
 
   /** the record as an AcqOrder */
-  order: AcqOrder = null;
+  order: IAcqOrder = null;
   /** order status reference */
   orderStatus = AcqOrderStatus;
   /** order note type reference */
@@ -46,23 +47,55 @@ export class OrderBriefViewComponent implements ResultItem, OnInit {
   // GETTER & SETTER ==========================================================
   /** get order date (based on orderLine order date) */
   get orderDate(): string | null {
-    return this.record.metadata.order_lines
-      .filter((line) => line.hasOwnProperty('order_date'))
-      .map((line) => line.order_date)
+    return this.order.order_lines
+      .filter(line => line.hasOwnProperty('order_date'))
+      .map(line => line.order_date.toString())
       .shift();
   }
 
   /** get reception date (based on orderLine reception date) */
   get receptionDate(): string | null {
-    return this.record.metadata.order_lines
-      .filter((line) => line.hasOwnProperty('reception_date'))
-      .map((line) => line.reception_date)
+    return this.record.metadata.receipts
+      .filter(line => line.hasOwnProperty('receipt_date'))
+      .map(line => line.receipt_date.toString())
       .shift();
   }
 
-  // CONSTRUCTOR & HOOKS ======================================================
-  ngOnInit(): void {
-    this.order = new AcqOrder(this.record.metadata);
+  /**
+   * Is the provisional data should be visible or not.
+   * @returns True if the provisional accounting data could be visible.
+   */
+  get displayProvisionalAccountingData(): boolean {
+    return (this.order.account_statement.provisional.quantity > 0
+      && this.order.status !== AcqOrderStatus.RECEIVED
+      && this.order.status !== AcqOrderStatus.CANCELLED);
   }
 
+  /**
+   * Is the expenditure data should be visible or not.
+   * @returns True if the True accounting data could be visible.
+   */
+  get displayExpenditureAccountingData(): boolean {
+    return (this.order.account_statement.expenditure.quantity > 0);
+  }
+
+  // CONSTRUCTOR & HOOKS ======================================================
+  /**
+   * constructor
+   * @param _acqOrderApiService - AcqOrderApiService
+   */
+  constructor(
+    private _acqOrderApiService: AcqOrderApiService
+  ) {}
+
+  /** OnInit hook */
+  ngOnInit(): void {
+    const metadata = {...this._acqOrderApiService.orderDefaultData, ...this.record.metadata};
+    // FILTERS NOTES ::
+    //   the notes fields from AcqOrder ES index contains all notes from all related resources.
+    //   We only need to keep the notes from itself.
+    metadata.notes = metadata.notes.filter(note => note.source.type === 'acor');
+    this.order = metadata;
+
+  }
 }

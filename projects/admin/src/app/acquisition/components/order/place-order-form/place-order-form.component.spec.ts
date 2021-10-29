@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { AcquisitionModule } from '../../../acquisition.module';
-import { AcqOrder } from '../../../classes/order';
+import { IAcqOrder } from '../../../classes/order';
 
 import { PlaceOrderFormComponent } from './place-order-form.component';
 
@@ -12,9 +12,9 @@ describe('PlaceOrderFormComponent', () => {
   let component: PlaceOrderFormComponent;
   let fixture: ComponentFixture<PlaceOrderFormComponent>;
 
-  const order = new AcqOrder({
+  const order = {
     pid: '1'
-  });
+  };
 
 
   beforeEach(waitForAsync(() => {
@@ -35,7 +35,7 @@ describe('PlaceOrderFormComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PlaceOrderFormComponent);
     component = fixture.componentInstance;
-    component.order = order;
+    component.order = order as IAcqOrder;
     fixture.detectChanges();
   });
 

@@ -20,10 +20,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { finalize, map, tap } from 'rxjs/operators';
-import { AcqReceiptService } from '../../../services/acq-receipt.service';
-import { AcqReceipt, IAcqReceipt } from '../../../classes/receipt';
-import { ICreateLineMessage, IAcqReceiptModel, OrderReceipt, IResponseReceiptLine, AcqResponseReceiptLineStatus } from './order-receipt';
+import { finalize, tap } from 'rxjs/operators';
+import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
+import { IAcqReceipt } from '../../../classes/receipt';
+import { ICreateLineMessage, IAcqReceiptModel, OrderReceipt } from './order-receipt';
 import { OrderReceiptForm } from './order-receipt-form';
 
 @Component({
@@ -48,8 +48,22 @@ export class OrderReceiptViewComponent implements OnInit {
   form = new FormGroup({});
   /** Model */
   model: IAcqReceiptModel;
+
   /** Form fields */
-  fields: FormlyFieldConfig[];
+  private _fields: FormlyFieldConfig[];
+
+  // GETTER & SETTER ==========================================================
+
+  /** Get formly fields to use to render the form */
+  get fields(): FormlyFieldConfig[] {
+    // If the model contains a PID, we would set the `reference` field in readonly.
+    // The reference field should be enabled only for `AcqReceipt` creation, not for update.
+    // To update this field, user must use the classic resource editor.
+    if (this.model.pid) {
+      this._fields.find(field => field.key === 'reference').templateOptions.readonly = true;
+    }
+    return this._fields;
+  }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
@@ -57,7 +71,7 @@ export class OrderReceiptViewComponent implements OnInit {
    * @param _route - ActivatedRoute
    * @param _router - Router
    * @param _orderReceipt - OrderReceipt
-   * @param _acqReceiptService - AcqReceiptService
+   * @param _acqReceiptApiService - AcqReceiptApiService
    * @param _toastrService - ToastrService
    * @param _translateService - TranslateService
    * @param _orderReceiptForm - OrderReceiptForm
@@ -66,7 +80,7 @@ export class OrderReceiptViewComponent implements OnInit {
     private _route: ActivatedRoute,
     private _router: Router,
     private _orderReceipt: OrderReceipt,
-    private _acqReceiptService: AcqReceiptService,
+    private _acqReceiptApiService: AcqReceiptApiService,
     private _toastrService: ToastrService,
     private _translateService: TranslateService,
     private _orderReceiptForm: OrderReceiptForm
@@ -91,12 +105,12 @@ export class OrderReceiptViewComponent implements OnInit {
     record = this._orderReceiptForm.processForm(model, record);
 
     const receiptApi$ = (!this.receiptRecord)
-      ? this._acqReceiptService.createReceipt(record).pipe(tap(receipt => model.pid = receipt.pid))
-      : this._acqReceiptService.updateReceipt(record);
+      ? this._acqReceiptApiService.createReceipt(record).pipe(tap(receipt => model.pid = receipt.pid))
+      : this._acqReceiptApiService.updateReceipt(record.pid, record);
     receiptApi$
       .pipe(finalize(() => this.orderSend = false))
       .subscribe(
-        (receipt: AcqReceipt) => this._createLinesAndMessage(model, receipt),
+        (receipt: IAcqReceipt) => this._createLinesAndMessage(model, receipt),
         (err) => {
           console.error(err);
           this._toastrService.error(
@@ -117,11 +131,12 @@ export class OrderReceiptViewComponent implements OnInit {
     // Try to load the receipt depending of the url argument
     const receiptPid = this._route.snapshot.queryParams.receipt;
     if (receiptPid) {
-      this._acqReceiptService
+      this._acqReceiptApiService
         .getReceipt(receiptPid)
-        .subscribe((receipt: AcqReceipt) => {
+        .subscribe((receipt: IAcqReceipt) => {
           this.receiptRecord = receipt;
           this.model.pid = receiptPid;
+          this.model.reference = receipt.reference;
         });
     }
     this._orderReceiptForm
@@ -130,7 +145,7 @@ export class OrderReceiptViewComponent implements OnInit {
       .subscribe((loaded: boolean) => {
         this.orderRecord = this._orderReceiptForm.getOrderRecord();
         this.model = this._orderReceiptForm.getModel();
-        this.fields = this._orderReceiptForm.getConfig();
+        this._fields = this._orderReceiptForm.getConfig();
         this.loaded = loaded;
       });
   }
@@ -140,11 +155,11 @@ export class OrderReceiptViewComponent implements OnInit {
    * @param model: the model to process
    * @param receipt: the parent receipt object
    */
-  private _createLinesAndMessage(model: IAcqReceiptModel, receipt: AcqReceipt): void {
+  private _createLinesAndMessage(model: IAcqReceiptModel, receipt: IAcqReceipt): void {
     // receipt exists, we can create corresponding lines
     const lines = this._orderReceipt.processLines(model);
     if (lines.length > 0) {
-      this._acqReceiptService
+      this._acqReceiptApiService
         .createReceiptLines(model.pid, lines)
         .subscribe((result: ICreateLineMessage) => {
           if (result.success) {
@@ -154,7 +169,7 @@ export class OrderReceiptViewComponent implements OnInit {
             );
           } else {
             this._toastrService.error(
-              this._translateService.instant(result.messages.join('\n')),
+              this._translateService.instant(result.messages),
               this._translateService.instant('Receipt'),
               {disableTimeOut: true, closeButton: true}
             );
