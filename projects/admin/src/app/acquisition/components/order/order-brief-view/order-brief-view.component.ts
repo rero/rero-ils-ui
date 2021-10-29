@@ -16,16 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
-import { AcqNote, AcqNoteType, AcqOrderStatus } from '../../../classes/order';
+import { AcqOrder, AcqOrderStatus } from '../../../classes/order';
+import { AcqNote, AcqNoteType } from '../../../classes/common';
 
 @Component({
   selector: 'admin-acquisition-order-brief-view',
   templateUrl: './order-brief-view.component.html',
   styleUrls: ['./order-brief-view.component.scss']
 })
-export class OrderBriefViewComponent implements ResultItem {
+export class OrderBriefViewComponent implements ResultItem, OnInit {
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** the record to display */
@@ -35,13 +36,14 @@ export class OrderBriefViewComponent implements ResultItem {
   /** the ur to the record detail view */
   @Input() detailUrl: { link: string, external: boolean };
 
+  /** the record as an AcqOrder */
+  order: AcqOrder = null;
   /** order status reference */
   orderStatus = AcqOrderStatus;
   /** order note type reference */
   noteType = AcqNoteType;
 
   // GETTER & SETTER ==========================================================
-
   /** get order date (based on orderLine order date) */
   get orderDate(): string | null {
     return this.record.metadata.order_lines
@@ -58,16 +60,9 @@ export class OrderBriefViewComponent implements ResultItem {
       .shift();
   }
 
-  // COMPONENTS FUNCTIONS =====================================================
-  /**
-   * Search about a type of note into the record
-   * @param noteType: the type of note to search.
-   * @return: the corresponding note if exists; otherwise `null`.
-   */
-  getNote(noteType: AcqNoteType): AcqNote | null {
-    if (this.record && this.record.metadata && this.record.metadata.notes) {
-      return this.record.metadata.notes.filter(note => note.type === noteType).shift();
-    }
+  // CONSTRUCTOR & HOOKS ======================================================
+  ngOnInit(): void {
+    this.order = new AcqOrder(this.record.metadata);
   }
 
 }

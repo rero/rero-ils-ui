@@ -48,10 +48,41 @@
   }
 }
 
-// PRIORITY TRIANGLE ================================================
+// REMOVE GUTTER ==============================================================
+//   Some DOM element has gutter to to bootstrap grid system. Using the
+//   following classes we can remove this gutters.
+// ============================================================================
+$gutter:  $grid-gutter-width / 2;
+.no-gutter {
+  margin-right: -$gutter;
+  margin-left: -$gutter;
+}
+
+
+// BULLET NOTES ===============================================================
+//   Use this property to display a small bullet circle indicating that a
+//   resource has a related note. Each note type can define a color corresponding
+//   to default bootstrap color or any color defined into the `@each` css rule
+// ============================================================================
+.bullet-notes {
+  margin-left: map-get($spacers, 2);
+
+  .fa-bullet {
+    font-size: 0.75rem;
+    margin-left: map-get($spacers, 1);
+
+    @each $name,$color in (primary,$primary),(success,$success),(danger,$danger),(warning,$warning),(info,$info), (dark,$dark) {
+      &.bullet-#{$name} {
+        color: $color;
+      }
+    }
+  }
+}
+
+// PRIORITY TRIANGLE ==========================================================
 //   Use this property to display a colored triangle representing a
 //   priority level. The color is from green (priority=1) to red (priority=5)
-/* PRIORITY TRIANGLE ===================================================== */
+// ============================================================================
 .priority {
   background-repeat: no-repeat;
   background-position: center center;

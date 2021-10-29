@@ -15,19 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { deepCopy } from '@angular-devkit/core';
+import { Inject, Injectable } from '@angular/core';
+import { ApiService } from '@rero/ng-core';
 import moment from 'moment';
-import { IReceiptOrder } from '../../../classes/receipt';
+import { AcqNote } from '../../../classes/common';
+import { AcqReceipt, AcqReceiptAmountAdjustment, IAcqReceipt, IAcqReceiptLine } from '../../../classes/receipt';
 
 /** Interface for Receipt data */
-export interface IReceiptModel {
+export interface IAcqReceiptModel {
   pid?: string;
   acqOrderRef: string;
   libraryRef: string;
   organisationRef: string;
   receiptDate: string;
   exchangeRate: number;
-  amountAdjustments: IReceiptAmountAdjustment[];
-  notes: IReceiptNoteModel[];
+  amountAdjustments: Array<{
+    label: string;
+    amount: number;
+    acqAccount: string;
+  }>;
+  notes: AcqNote[];
   receiveLines: {
     acqOrderLineRef: string,
     document: string,
@@ -37,38 +45,7 @@ export interface IReceiptModel {
   }[];
 }
 
-export interface IReceiptNoteModel {
-  type: string;
-  content: string;
-}
-
-export interface IReceiptAmountAdjustment {
-  label: string;
-  amount: number;
-  acqAccount: string;
-}
-
-export interface IReceiptOrderLine {
-  acq_receipt: {
-    $ref: string;
-  };
-  acq_order_line: {
-    $ref: string;
-  };
-  quantity: number;
-  amount: number;
-  receipt_date: string;
-  organisation: {
-    $ref: string;
-  };
-}
-
-export interface IAcqRecordStatus {
-  record: boolean;
-  status: boolean;
-}
-
-export interface IReceiptLine {
+export interface IResponseReceiptLine {
   data: object;
   status: string;
   line?: object;
@@ -76,17 +53,30 @@ export interface IReceiptLine {
 }
 
 export interface IResponseReceiptLine {
-  response: IReceiptLine[];
+  response: IResponseReceiptLine[];
+}
+
+export enum AcqResponseReceiptLineStatus {
+  SUCCESS = 'success',
+  FAILURE = 'failure'
 }
 
 export interface ICreateLineMessage {
   success: boolean;
-  messages: string[];
+  messages?: string[];
 }
 
+@Injectable({
+  providedIn: 'root'
+})
 export class OrderReceipt {
+
+  constructor(
+    private _apiService: ApiService
+  ) {}
+
   /** Model */
-  get model(): IReceiptModel {
+  get model(): IAcqReceiptModel {
     return {
       pid: null,
       acqOrderRef: null,
@@ -100,7 +90,12 @@ export class OrderReceipt {
     };
   }
 
-  processBaseRecord(model: IReceiptModel): IReceiptOrder {
+  /**
+   * Create the base AcqReceipt data based on model
+   * @param model: the model where to find the data.
+   * @return: an object representing an AcqReceipt corresponding to the model.
+   */
+  processBaseRecord(model: IAcqReceiptModel): IAcqReceipt {
     return {
       acq_order: {
         $ref: model.acqOrderRef
@@ -117,31 +112,43 @@ export class OrderReceipt {
     };
   }
 
-  /**
-   * Process adjustment
-   * @param model - ReceiptModel
-   * @return array of adjustements
-   */
-   processAdjustments(model: IReceiptModel): any {
-    const adjustements = [];
-    model.amountAdjustments.forEach((adj) => {
-      adjustements.push({
-        label: adj.label,
-        amount: adj.amount,
-        acq_account: {
-          $ref: adj.acqAccount
-        }
-      });
-    });
-    return adjustements;
+  processExistingRecord(record: AcqReceipt): IAcqReceipt {
+    return {
+      pid: record.pid,
+      $schema: record.$schema,
+      acq_order: { $ref: this._apiService.getRefEndpoint('acq_orders', record.acq_order.pid) },
+      library: { $ref: this._apiService.getRefEndpoint('libraries', record.library.pid) },
+      organisation: { $ref: this._apiService.getRefEndpoint('organisation', record.organisation.pid) },
+      exchange_rate: record.exchange_rate,
+      amount_adjustments: record.amount_adjustments,
+      notes: record.notes
+    };
   }
 
   /**
-   * Process order line
-   * @param model - ReceiptModel
-   * @returns array of receipt_lines
+   * Process adjustments from the model to create corresponding AcqReceiptAdjustment
+   * @param model: the model where to found receipt adjustments
+   * @return: an array of AcqReceiptAmountAdjustment
    */
-   processlines(model: IReceiptModel): IReceiptOrderLine[] {
+   processAdjustments(model: IAcqReceiptModel): AcqReceiptAmountAdjustment[] {
+    const adjustments = [];
+    model.amountAdjustments.forEach((adj) => {
+      const data = {
+        label: adj.label,
+        amount: adj.amount,
+        acq_account: { $ref: adj.acqAccount }
+      };
+      adjustments.push(new AcqReceiptAmountAdjustment(data));
+    });
+    return adjustments;
+  }
+
+  /**
+   * Process lines from the model to create corresponding AcqReceiptLine
+   * @param model: the model where found the receipt lines to process
+   * @return: an array of AcqReceiptLine
+   */
+   processLines(model: IAcqReceiptModel): IAcqReceiptLine[] {
     const lines = [];
     model.receiveLines.forEach((line: any) => {
       lines.push({
@@ -157,11 +164,11 @@ export class OrderReceipt {
   }
 
   /**
-   * Clean Data
-   * @param record - ReceiptOrder
-   * @returns ReceiptOrder
+   * Clean an AcqReceipt to remove useless data
+   * @param record - IAcqReceipt
+   * @return: the cleaned IAcqReceipt
    */
-  cleanData(record: IReceiptOrder): IReceiptOrder {
+  cleanData(record: any): any {
     const fieldsToRemovedIfEmpty = ['amount_adjustments', 'notes'];
     fieldsToRemovedIfEmpty.forEach((key: string) => {
       if (record.hasOwnProperty(key) && record[key].length === 0) {

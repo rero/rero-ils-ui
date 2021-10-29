@@ -23,8 +23,8 @@ import { UserService } from '@rero/shared';
 @Injectable({
   providedIn: 'root'
 })
-/** This guard check if the current logged user has a specific role. The roles to check should be passed
- *  using path.data.roles (see below). You can provide multiple roles ; the guard check if the user has at
+/** This guards check if the current logged user has a specific role. The roles to check should be passed
+ *  using path.data.roles (see below). You can provide multiple roles ; the guards check if the user has at
  *  least one of this role (OR condition).
  *
  *  USAGE:

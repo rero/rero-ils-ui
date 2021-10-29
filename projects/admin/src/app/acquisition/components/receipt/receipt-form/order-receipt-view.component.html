@@ -1,0 +1,65 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<form [formGroup]="form" (ngSubmit)="onSubmit(model)" class="container-fluid" *ngIf="loaded">
+
+    <!-- FORM HEADER :: title and action buttons ========================== -->
+    <section class="d-flex mb-3" >
+      <h1 translate>Receipt of an order</h1>
+      <div class="ml-auto">
+        <button type="reset" class="btn btn-outline-danger btn-sm" [routerLink]="['/', 'records', 'acq_orders', 'detail', orderRecord.pid]">
+          <i class="fa fa-times"></i>
+          {{ 'Cancel' | translate }}
+        </button>
+        <button type="submit" class="btn btn-primary btn-sm ml-1" [disabled]="!form.valid || orderSend">
+          <i class="fa" [ngClass]="{'fa-save': !orderSend, 'fa-spinner fa-pulse': orderSend}"></i>
+          {{ 'Save' | translate }}
+        </button>
+      </div>
+    </section>
+
+
+    <section class="row">
+      <!-- KNOWN ORDER/RECEIPT DATA -->
+      <div class="col-6 known-data pr-5">
+        <admin-order-summary [order]="orderRecord"></admin-order-summary>
+        <div class="card row" *ngIf="receiptRecord">
+          <div class="card-header">
+            <h5 translate>Already in this receipt</h5>
+          </div>
+          <div class="card-body p-0">
+            <admin-receipt-summary [receiptPid]="receiptRecord.pid"
+                                   [collapsable]="false"
+                                   [allowActions]="false"
+                                   class="container">
+            </admin-receipt-summary>
+          </div>
+        </div>
+      </div>
+      <!-- FORMLY FORM -->
+      <div class="col-6 card p-0 my-3">
+        <div class="card-header">
+          <h5 translate>Receipt new data</h5>
+        </div>
+        <formly-form class="card-body" [form]="form" [fields]="fields" [model]="model"></formly-form>
+      </div>
+    </section>
+
+
+
+
+
+</form>

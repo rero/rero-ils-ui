@@ -21,27 +21,23 @@ import { ApiService, extractIdOnRef } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { AcqAccount } from '../../../classes/account';
-import { AcqOrder, AcqOrderLine } from '../../../classes/order';
-import { IReceiptOrder } from '../../../classes/receipt';
+import { AcqOrder, AcqOrderLine, AcqOrderLineStatus } from '../../../classes/order';
+import { AcqReceipt, IAcqReceipt } from '../../../classes/receipt';
 import { AcqAccountService } from '../../../services/acq-account.service';
 import { AcqOrderService } from '../../../services/acq-order.service';
 import { orderAccountsAsTree } from '../../../utils/account';
-import { IReceiptModel, OrderReceipt } from './order-receipt';
+import { IAcqReceiptModel, OrderReceipt } from './order-receipt';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderReceiptForm {
 
-  /** Fields ref */
-  private readonly ref = '$ref';
-  private readonly pid = 'pid';
-
   /** Order Record */
   private _orderRecord: any;
 
   /** Model */
-  private _model: IReceiptModel;
+  private _model: IAcqReceiptModel;
 
   /** Form fields config */
   private _config: FormlyFieldConfig[];
@@ -65,7 +61,7 @@ export class OrderReceiptForm {
    * @param model - IReceiptModel
    * @returns OrderReceiptForm
    */
-  setModel(model: IReceiptModel): OrderReceiptForm {
+  setModel(model: IAcqReceiptModel): OrderReceiptForm {
     this._model = model;
     return this;
   }
@@ -74,7 +70,7 @@ export class OrderReceiptForm {
    * Get model
    * @returns IReceiptModel
    */
-  getModel(): IReceiptModel {
+  getModel(): IAcqReceiptModel {
     return this._model;
   }
 
@@ -87,8 +83,8 @@ export class OrderReceiptForm {
   }
 
   /**
-   *
-   * @returns Get Config
+   * Get the formly configuration to build the form
+   * @return: the formly fields configuration
    */
   getConfig(): FormlyFieldConfig[] {
     return this._config;
@@ -101,69 +97,72 @@ export class OrderReceiptForm {
    */
   createForm(orderPid: string): Observable<boolean> {
     this._config = this._getConfig();
-    return this._acqOrderService.getOrder(orderPid).pipe(
-      tap((order: AcqOrder) => this._orderRecord = order),
-      switchMap((order: AcqOrder) => {
-        const libraryRef = order.library[this.ref];
-        const libraryPid = extractIdOnRef(libraryRef);
-        this._acqAccountService.getAccounts(libraryPid).subscribe((accounts: AcqAccount[]) => {
-          const to = this._config
-          .filter((field) => field.key === 'amountAdjustments')[0].fieldArray.fieldGroup
-          .filter((field) => field.key === 'acqAccount')[0].templateOptions;
-          to.currency = order.currency;
-          to.options = orderAccountsAsTree(accounts);
-        });
-        this._model.acqOrderRef =  this._apiService.getRefEndpoint('acq_orders', order.pid);
-        this._model.libraryRef = libraryRef;
-        this._model.organisationRef = order.organisation[this.ref];
-        order.vendor[this.pid] = extractIdOnRef(order.vendor[this.ref]);
-        const query = 'AND (NOT status:"cancelled" OR NOT status:"received")';
-        return this._acqOrderService.getOrderLines(order.pid, query).pipe(
-          map((lines: AcqOrderLine[]) => {
-            lines.forEach((line: any) => {
-              const quantityReceived = line.quantity_received || 0;
-              this._model.receiveLines.push({
-                acqOrderLineRef: this._apiService.getRefEndpoint('acq_order_lines', line.pid),
-                document: line.document.pid,
-                quantity: line.quantity - quantityReceived,
-                quantityMax: line.quantity - quantityReceived,
-                amount: line.amount
-              });
+    return this._acqOrderService
+      .getOrder(orderPid)
+      .pipe(
+        tap((order: AcqOrder) => this._orderRecord = order),
+        switchMap((order: AcqOrder) => {
+          const libraryRef = order.library.$ref;
+          const libraryPid = extractIdOnRef(libraryRef);
+          this._acqAccountService
+            .getAccounts(libraryPid)
+            .subscribe((accounts: AcqAccount[]) => {
+              const to = this._config
+                .filter((field) => field.key === 'amountAdjustments')[0].fieldArray.fieldGroup
+                .filter((field) => field.key === 'acqAccount')[0].templateOptions;
+              to.currency = order.currency;
+              to.options = orderAccountsAsTree(accounts);
             });
-            return true;
-        }));
-      })
+          // Build the model
+          this._model.acqOrderRef = this._apiService.getRefEndpoint('acq_orders', order.pid);
+          this._model.libraryRef = libraryRef;
+          this._model.organisationRef = order.organisation.$ref;
+          order.vendor.pid = extractIdOnRef(order.vendor.$ref);
+          const query = `AND (NOT status:"${AcqOrderLineStatus.CANCELLED}" OR NOT status:"${AcqOrderLineStatus.RECEIVED}")`;
+          return this._acqOrderService.getOrderLines(order.pid, query).pipe(
+            map((lines: AcqOrderLine[]) => {
+              lines.forEach((line: any) => {
+                const quantityReceived = line.received_quantity || 0;
+                this._model.receiveLines.push({
+                  acqOrderLineRef: this._apiService.getRefEndpoint('acq_order_lines', line.pid),
+                  document: line.document.pid,
+                  quantity: line.quantity - quantityReceived,
+                  quantityMax: line.quantity - quantityReceived,
+                  amount: line.amount
+                });
+              });
+              return true;
+          }));
+        })
     );
   }
 
   /**
-   * Process form
-   * @param model - IReceiptModel
-   * @param record - IReceiptOrder
-   * @returns IReceiptOrder
+   * Process the form to build the corresponding AcqReceipt
+   * @param model: The model containing the form data
+   * @param record: The existing receipt (if exists)
+   * @returns IAcqReceipt: the data to send to API to create a receipt
    */
-  processForm(model: IReceiptModel, record: IReceiptOrder): IReceiptOrder {
-    record = (!record) ? this._orderReceipt.processBaseRecord(model) : record;
+  processForm(model: IAcqReceiptModel, record: IAcqReceipt): IAcqReceipt {
+    // create the default record
+    record = (!record)
+      ? this._orderReceipt.processBaseRecord(model)
+      : record;
     if (!record.hasOwnProperty('amount_adjustments')) {
       record.amount_adjustments = [];
     }
     if (!record.hasOwnProperty('notes')) {
       record.notes = [];
     }
-    if (model.amountAdjustments.length > 0) {
-      console.log(this._orderReceipt.processAdjustments(model));
-      record.amount_adjustments = record.amount_adjustments.concat(
-        this._orderReceipt.processAdjustments(model));
-    }
-    if (model.notes.length > 0) {
-      record.notes = record.notes.concat(model.notes);
-    }
+    // Update the record with model data
+    record.amount_adjustments = [...record.amount_adjustments, ...this._orderReceipt.processAdjustments(model)];
+    record.notes = [...record.notes, ...model.notes || []];
     return this._orderReceipt.cleanData(record);
   }
 
   /**
-   * Create order receipt form
-   * @returns Array of FormlyFieldConfig
+   * Get the formly fields configuration used to build the AcqReceipt form
+   * @returns: array of formly fields configuration
    */
   private _getConfig(): FormlyFieldConfig[] {
     return [
@@ -172,7 +171,7 @@ export class OrderReceiptForm {
         type: 'datepicker',
         templateOptions: {
           type: 'date',
-          label: 'date',
+          label: 'Reception date',
           required: true
         }
       },
@@ -189,12 +188,7 @@ export class OrderReceiptForm {
           className: 'pl-0 my-0 font-weight-bold',
           label: 'Order line(s)',
           addButton: false,
-          minLength: 1
-        },
-        validators: {
-          minLength: {
-            expression: (c: FormControl) =>  c.value.length > 0
-          }
+          minLength: 0
         },
         fieldArray: {
           fieldGroupClassName: 'row',

@@ -97,17 +97,18 @@ export class AcqOrderService {
    * @return: an Observable of order lines
    */
   getOrderLines(orderPid: string, extraQuery?: string): Observable<AcqOrderLine[]> {
-    return this._acqOrderApiService.getOrderLines(orderPid, extraQuery).pipe(
-      map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-      map((hits: any[]) => hits.map(hit => new AcqOrderLine(hit.metadata)))
-    );
+    return this._acqOrderApiService
+      .getOrderLines(orderPid, extraQuery)
+      .pipe(
+        map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((hits: any[]) => hits.map(hit => new AcqOrderLine(hit.metadata)))
+      );
   }
 
   /**
    * Allow to delete an order line based on its pid.
-   * If the order line is correctly deleted, this function emit 2 events:
-   *   * deletedOrderLineSubject$ : to specify which order line has been deleted.
-   *   * orderTotalAmountChanged$ : to specify the new parent order total amount
+   * If the order line is correctly deleted, this function emit an event :
+   *   * deletedOrderLineSubject$ : to specify which order line has been deleted
    * @param orderLine: the order to delete
    */
   deleteOrderLine(orderLine: AcqOrderLine) {
