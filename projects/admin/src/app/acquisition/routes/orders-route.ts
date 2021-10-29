@@ -66,6 +66,7 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
               'account',
               'vendor',
               'order_date',
+              'receipt_date',
               'type'
             ],
             aggregationsBucketSize: 10,
@@ -103,14 +104,14 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
    * @param data: the data to update
    * @return: the cleaned data
    */
-   private _cleanRecord(data: any): any {
-      // remove dynamic fields
-      const fieldsToRemoved = ['total_amount', 'status', 'order_date', 'item_quantity'];
-      fieldsToRemoved.forEach(key => {
-        if (data.hasOwnProperty(key)) {
-          delete data[key];
-        }
-      });
-      return data;
-    }
+  private _cleanRecord(data: any): any {
+    // remove dynamic fields
+    const fieldsToRemoved = ['status', 'order_date', 'account_statement'];
+    fieldsToRemoved.forEach(key => {
+      if (data.hasOwnProperty(key)) {
+        delete data[key];
+      }
+    });
+    return data;
+  }
 }

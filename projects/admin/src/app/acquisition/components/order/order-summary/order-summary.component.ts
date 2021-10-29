@@ -18,8 +18,10 @@
 
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { AcqOrder, AcqOrderLine, AcqOrderLineStatus, AcqOrderStatus } from '../../../classes/order';
-import { AcqOrderService } from '../../../services/acq-order.service';
+import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
+import { IAcqOrder, IAcqOrderLine, AcqOrderLineStatus, AcqOrderStatus } from '../../../classes/order';
+import { AcqOrderApiService } from '../../../api/acq-order-api.service';
+import { IAcqReceipt } from '../../../classes/receipt';
 
 @Component({
   selector: 'admin-order-summary',
@@ -29,7 +31,7 @@ import { AcqOrderService } from '../../../services/acq-order.service';
 export class OrderSummaryComponent implements OnInit, OnDestroy {
 
   // COMPONENTS ATTRIBUTES ====================================================
-  @Input() order: AcqOrder;
+  @Input() order: IAcqOrder;
 
   /** reference to AcqOrderStatus class */
   acqOrderStatus = AcqOrderStatus;
@@ -41,23 +43,38 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
 
   /**
    * Constructor
-   * @param _acqOrderService - AcqOrderService
+   * @param _acqOrderApiService - AcqOrderApiService
+   * @param _acqReceiptApiService - AcqReceiptApiService
    */
   constructor(
-    private _acqOrderService: AcqOrderService
+    private _acqOrderApiService: AcqOrderApiService,
+    private _acqReceiptApiService: AcqReceiptApiService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
     // Subscription when an order line is deleted
     this._subscriptions.add(
-      this._acqOrderService.deletedOrderLineSubject$.subscribe((orderLine: AcqOrderLine) => {
-        if (orderLine.status !== AcqOrderLineStatus.CANCELLED) {
-          this.order.total_amount -= orderLine.total_amount;
-          this.order.item_quantity.ordered -= orderLine.quantity;
-          this.order.item_quantity.received -= orderLine.received_quantity;
-        }
-      })
+      this._acqOrderApiService
+        .deletedOrderLineSubject$
+        .subscribe(
+          (orderLine: IAcqOrderLine) => {
+            if (orderLine.status !== AcqOrderLineStatus.CANCELLED) {
+              this.order.account_statement.provisional.total_amount -= orderLine.total_amount;
+              this.order.account_statement.provisional.quantity -= orderLine.quantity;
+            }
+          }
+        )
+    );
+    this._subscriptions.add(
+      this._acqReceiptApiService
+        .deletedReceiptSubject$
+        .subscribe(
+          (receipt: IAcqReceipt) => {
+            this.order.account_statement.expenditure.quantity -= receipt.quantity;
+            // TODO :: reduce the order expenditure amount.
+          }
+        )
     );
   }
 

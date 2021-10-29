@@ -27,13 +27,15 @@
   <div class="col-1 amount">
     {{ account.allocated_amount | currency: organisation.default_currency }}
   </div>
-  <div class="col-1 amount" [class]="{
-    'text-success': account.available_amount > 0,
-    'text-muted': account.available_amount === 0,
-    'text-warning': account.available_amount < 0
-  }">
-    {{ account.available_amount | currency: organisation.default_currency }}
-  </div>
+  <ng-container *ngVar="account | accountAvailableAmount as available_amount">
+    <div class="col-1 amount" [class]="{
+      'text-success': available_amount > 0,
+      'text-muted': available_amount === 0,
+      'text-warning': available_amount < 0
+    }">
+      {{ available_amount | currency: organisation.default_currency }}
+    </div>
+  </ng-container>
   <div class="col-1 amount" [class]="{
     'text-danger': account.encumbrance_amount.self > 0,
     'text-muted': account.encumbrance_amount.self <= 0

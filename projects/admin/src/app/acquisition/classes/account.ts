@@ -19,58 +19,34 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-import { ObjectReference } from '@rero/shared';
+import { IAcqBaseResource, IObjectReference } from './common';
 
 /** Interface to describe an exceedance into an AcqAccount */
-export class Exceedance {
-  amount: number = 0;
-  value: number = 0;
+export class IExceedance {
+  amount: number;
+  value: number;
 }
 
 /** Interface to describe an encumbrance & expenditure amount */
-export class AccountingAmount {
-  children: number = 0;
-  self: number = 0;
-  total: number = 0;
+export class IAccountingAmount {
+  children: number;
+  self: number;
+  total: number;
 }
 
 /** Wrapping class to describe an AcqAccount */
-export class AcqAccount {
-  $schema: string = null;
-  pid: string = null;
-  name: string = '';
-  number: string = '';
-  depth: number = 0;
-  is_active: boolean = false;
-
-  allocated_amount: number = 0;
-  encumbrance_exceedance?: Exceedance = new Exceedance();
-  expenditure_exceedance?: Exceedance = new Exceedance();
-  encumbrance_amount: AccountingAmount = new AccountingAmount();
-  expenditure_amount: AccountingAmount = new AccountingAmount();
-  remaining_balance: AccountingAmount = new AccountingAmount();
-  distribution: number = 0;
-
-  organisation: ObjectReference;
-  library:ObjectReference;
-  budget: ObjectReference;
-  parent: ObjectReference;
-
-  /**
-   * Constructor
-   * @param obj - the JSON parsed object to load.
-   */
-  constructor(obj?: any){
-    Object.assign(this, obj);
-  }
-
-  /**
-   * Get the available amount for this account.
-   * This amount represents the initial allocated amount reduces by children distribution
-   * @return: The available amount
-   */
-  get available_amount(): number {
-    return this.allocated_amount - this.distribution;
-  }
-
+export interface IAcqAccount extends IAcqBaseResource {
+  name: string;
+  number: string;
+  depth: number;
+  is_active: boolean;
+  allocated_amount: number;
+  encumbrance_exceedance?: IExceedance;
+  expenditure_exceedance?: IExceedance;
+  encumbrance_amount: IAccountingAmount;
+  expenditure_amount: IAccountingAmount;
+  remaining_balance: IAccountingAmount;
+  distribution: number;
+  budget: IObjectReference;
+  parent: IObjectReference;
 }

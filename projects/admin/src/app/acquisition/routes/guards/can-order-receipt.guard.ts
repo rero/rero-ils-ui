@@ -20,10 +20,10 @@ import { extractIdOnRef } from '@rero/ng-core';
 import { IUserLocaleStorage, UserService } from '@rero/shared';
 import { combineLatest, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { AcqOrderService } from '../../services/acq-order.service';
-import { AcqReceiptService } from '../../services/acq-receipt.service';
-import { AcqOrder, AcqOrderStatus } from '../../classes/order';
-import { AcqReceipt } from '../../classes/receipt';
+import { AcqOrderApiService } from '../../api/acq-order-api.service';
+import { AcqReceiptApiService } from '../../api/acq-receipt-api.service';
+import { IAcqOrder, AcqOrderStatus } from '../../classes/order';
+import { IAcqReceipt } from '../../classes/receipt';
 
 @Injectable({
   providedIn: 'root'
@@ -32,14 +32,14 @@ export class CanOrderReceiptGuard implements CanActivate {
 
   /**
    * Constructor
-   * @param _acqOrderService - AcqOrderService
-   * @param _acqReceiptService - AcqReceiptService
+   * @param _acqOrderApiService - AcqOrderApiService
+   * @param _acqReceiptApiService - AcqReceiptApiService
    * @param _router - Router
    * @param _userService - UserService
    */
   constructor(
-    private _acqOrderService: AcqOrderService,
-    private _acqReceiptService: AcqReceiptService,
+    private _acqOrderApiService: AcqOrderApiService,
+    private _acqReceiptApiService: AcqReceiptApiService,
     private _router: Router,
     private _userService: UserService
   ) {}
@@ -81,10 +81,10 @@ export class CanOrderReceiptGuard implements CanActivate {
    * @returns Observable<boolean>: True if a receipt could be managed, False otherwise
    */
   private _orderQuery(orderPid: string): Observable<boolean> {
-    return this._acqOrderService
+    return this._acqOrderApiService
       .getOrder(orderPid)
       .pipe(
-        map((order: AcqOrder) => {
+        map((order: IAcqOrder) => {
           const userLocale: IUserLocaleStorage = this._userService.getOnLocaleStorage();
           if (userLocale.currentLibrary !== extractIdOnRef(order.library.$ref)) {
             return false;
@@ -103,10 +103,10 @@ export class CanOrderReceiptGuard implements CanActivate {
    * @returns Observable<boolean>: True if the receipt is well related to this order
    */
   private _receiptQuery(receiptPid: string, orderPid: string): Observable<boolean> {
-    return this._acqReceiptService
+    return this._acqReceiptApiService
       .getReceipt(receiptPid)
       .pipe(
-        map((receipt: AcqReceipt) => orderPid === receipt.acq_order.pid),
+        map((receipt: IAcqReceipt) => orderPid === receipt.acq_order.pid),
         catchError(() => of(false))
       );
   }

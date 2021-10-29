@@ -47,54 +47,54 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
 
 
 @NgModule({
-  declarations: [
-    HoldingsComponent,
-    ItemComponent,
-    ItemsComponent,
-    HoldingComponent,
-    RequestComponent,
-    PickupLocationComponent,
-    NotesFilterPipe
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    RouterModule.forRoot([]),
-    HttpClientModule,
-    FormsModule,
-    FormlyModule.forRoot(),
-    FormlyBootstrapModule,
-    CoreModule,
-    RecordModule,
-    ReactiveFormsModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: BaseTranslateLoader,
-        useClass: TranslateLoader,
-        deps: [CoreConfigService, HttpClient]
-      },
-      isolate: false
-    }),
-    TypeaheadModule.forRoot(),
-    SharedModule,
-    LoadingBarHttpClientModule,
-    LoadingBarModule
-  ],
-  providers: [
-    { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
-    {
-      provide: CoreConfigService,
-      useClass: AppConfigService
-    }
-  ],
-  entryComponents: [
-    HoldingsComponent,
-    ItemComponent,
-    ItemsComponent
-  ],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
-  ]
+    declarations: [
+        HoldingsComponent,
+        ItemComponent,
+        ItemsComponent,
+        HoldingComponent,
+        RequestComponent,
+        PickupLocationComponent,
+        NotesFilterPipe
+    ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        RouterModule.forRoot([]),
+        HttpClientModule,
+        FormsModule,
+        FormlyModule.forRoot(),
+        FormlyBootstrapModule,
+        CoreModule,
+        RecordModule,
+        ReactiveFormsModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: BaseTranslateLoader,
+                useClass: TranslateLoader,
+                deps: [CoreConfigService, HttpClient]
+            },
+            isolate: false
+        }),
+        TypeaheadModule.forRoot(),
+        SharedModule,
+        LoadingBarHttpClientModule,
+        LoadingBarModule
+    ],
+    providers: [
+        { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
+        { provide: CoreConfigService, useClass: AppConfigService }
+    ],
+    entryComponents: [
+        HoldingsComponent,
+        ItemComponent,
+        ItemsComponent
+    ],
+    exports: [
+        NotesFilterPipe
+    ],
+    schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+    ]
 })
 export class AppModule {
 

@@ -24,7 +24,7 @@
 
 .order-line {
 
-  border-bottom: 1px solid $border-color;
+  border-bottom: $border-width solid $border-color;
 
   &:hover {
     background-color: $light;
@@ -72,8 +72,8 @@
 
   /* AMOUNT ================================================================ */
   .amount {
-    border-left: 1px solid $border-color;
-    border-right: 1px solid $border-color;
+    border-left: $border-width solid $border-color;
+    border-right: $border-width solid $border-color;
     background-color: $light;
     text-align: right;
     padding: map-get($spacers, 1) map-get($spacers, 2);

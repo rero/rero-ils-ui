@@ -52,14 +52,14 @@
     .amount {
       font-family: Arial;
       text-align: right;
-      border-left: 1px solid $border-color;
+      border-left: $border-width solid $border-color;
       flex: 0 0 15%;
       max-width: 15%;
     }
 
     .result {
-      border-top: 1px solid $border-color;
-      border-bottom: 1px solid $border-color;
+      border-top: $border-width solid $border-color;
+      border-bottom: $border-width solid $border-color;
       background-color: $light;
     }
 

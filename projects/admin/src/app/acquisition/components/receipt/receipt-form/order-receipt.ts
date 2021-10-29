@@ -15,12 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { deepCopy } from '@angular-devkit/core';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ApiService } from '@rero/ng-core';
 import moment from 'moment';
-import { AcqNote } from '../../../classes/common';
-import { AcqReceipt, AcqReceiptAmountAdjustment, IAcqReceipt, IAcqReceiptLine } from '../../../classes/receipt';
+import { IAcqNote } from '../../../classes/common';
+import { AcqReceiptAmountAdjustment, IAcqReceipt, IAcqReceiptLine } from '../../../classes/receipt';
 
 /** Interface for Receipt data */
 export interface IAcqReceiptModel {
@@ -29,13 +28,14 @@ export interface IAcqReceiptModel {
   libraryRef: string;
   organisationRef: string;
   receiptDate: string;
+  reference: string;
   exchangeRate: number;
   amountAdjustments: Array<{
     label: string;
     amount: number;
     acqAccount: string;
   }>;
-  notes: AcqNote[];
+  notes: IAcqNote[];
   receiveLines: {
     acqOrderLineRef: string,
     document: string,
@@ -84,6 +84,7 @@ export class OrderReceipt {
       organisationRef: null,
       receiptDate: moment().format(moment.HTML5_FMT.DATE),
       exchangeRate: 1,
+      reference: null,
       amountAdjustments: [],
       notes: [],
       receiveLines: []
@@ -112,13 +113,14 @@ export class OrderReceipt {
     };
   }
 
-  processExistingRecord(record: AcqReceipt): IAcqReceipt {
+  processExistingRecord(record: IAcqReceipt): IAcqReceipt {
     return {
       pid: record.pid,
       $schema: record.$schema,
       acq_order: { $ref: this._apiService.getRefEndpoint('acq_orders', record.acq_order.pid) },
       library: { $ref: this._apiService.getRefEndpoint('libraries', record.library.pid) },
       organisation: { $ref: this._apiService.getRefEndpoint('organisation', record.organisation.pid) },
+      reference: record.reference,
       exchange_rate: record.exchange_rate,
       amount_adjustments: record.amount_adjustments,
       notes: record.notes
@@ -138,7 +140,7 @@ export class OrderReceipt {
         amount: adj.amount,
         acq_account: { $ref: adj.acqAccount }
       };
-      adjustments.push(new AcqReceiptAmountAdjustment(data));
+      adjustments.push(data);
     });
     return adjustments;
   }

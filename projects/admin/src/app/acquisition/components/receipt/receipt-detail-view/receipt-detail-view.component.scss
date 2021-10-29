@@ -1,0 +1,126 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2021 RERO
+ * Copyright (C) 2021 UCLouvain
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+@import '~font-awesome/scss/font-awesome';
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '/projects/admin/src/app/scss/variables';
+
+$line-shift: map-get($spacers, 5);
+
+.receipt {
+
+  // CARD =====================================================================
+  //   Special rules about `div.card` panel
+  .card-header {
+    font-weight: bold;
+    &.total-amount {
+      line-height: 2.5rem;
+      padding: 0;
+    }
+  }
+  .card-body {
+    padding: 0;
+  }
+
+  // LINES ====================================================================
+  //   Rules about style present into receipt detail line
+  .line + .line {
+    border-top: $border-width solid $border-color;
+  }
+  .line {
+    *[class^="col-"] {
+      padding-top: map-get($spacers, 2);
+      padding-bottom: map-get($spacers, 2);
+    }
+    &:hover {
+      background-color: $light;
+    }
+    label {
+      margin-bottom: 0;
+    }
+    .quantity {
+      font-weight: bold;
+      &::after {
+        content : 'x';
+        padding-left: map-get($spacers, 2);
+        padding-right: map-get($spacers, 2);
+      }
+    }
+    .fixed-width{
+      min-width: $line-shift;
+    }
+    .reception_date {
+      font-style: italic;
+      font-size: $small-font-size;
+      color: $secondary;
+    }
+    .left-offset {
+      margin-left: $line-shift;
+    }
+    .metadata {
+      font-weight: bold;
+      color: $secondary;
+      font-size: $small-font-size;
+      &::before {
+        content:'[';
+      }
+      &::after {
+        content: ']';
+      }
+    }
+    .note-content {
+      border-left: 2px solid $border-color;
+      margin-top: map-get($spacers, 1);;
+      font-style: italic;
+      font-size: $small-font-size;
+    }
+  }
+
+  // AMOUNT RULES =============================================================
+  .amount {
+    border-left: $border-width solid $border-color;
+    border-right: $border-width solid $border-color;
+    background-color: $light;
+    text-align: right;
+    font-weight: bold;
+    padding-left: map-get($spacers, 2);
+    padding-right: map-get($spacers, 2);
+
+    .detail {
+      font-size: $font-size-sm;
+      font-weight: normal;
+      color: $secondary;
+      &:before {
+        content:'(';
+      }
+      &:after {
+        content: ')';
+      }
+    }
+
+    &.discount-amount {
+      color: $success;
+    }
+  }
+  .total-amount .amount {
+    font-size: 1.5rem;
+  }
+
+
+}

@@ -22,16 +22,42 @@ import { Record, RecordService } from '@rero/ng-core';
 import { Error } from '@rero/ng-core/lib/error/error';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AcqAccount } from '../classes/account';
+import { IAcqAccount } from '../classes/account';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AcqAccountApiService {
 
+  // SERVICES ATTRIBUTES ======================================================
   /** The resource name of acquisition account */
   resourceName = 'acq_accounts';
 
+  /** Default values */
+  public readonly exceedanceDefaultData = {
+    amount: 0,
+    value: 0
+  };
+  public readonly allocatedAmountDefaultData = {
+    self: 0,
+    children: 0,
+    total: 0
+  };
+  public readonly accountDefaultData = {
+    name: '',
+    number: '',
+    depth: 0,
+    is_active: false,
+    allocated_amount: 0,
+    distribution: 0,
+    encumbrance_exceedance: this.exceedanceDefaultData,
+    expenditure_exceedance: this.exceedanceDefaultData,
+    encumbrance_amount: this.allocatedAmountDefaultData,
+    expenditure_amount: this.allocatedAmountDefaultData,
+    remaining_balance: this.allocatedAmountDefaultData
+  };
+
+  // SERVICE CONSTRUCTORS =====================================================
   /**
    * Constructor
    * @param _http: HttpClient
@@ -42,6 +68,23 @@ export class AcqAccountApiService {
     private _recordService: RecordService
   ) {}
 
+  // SERVICES FUNCTIONS =======================================================
+
+  /**
+   * Get account from ES (metadata from ES much more complete than DB stored record)
+   * @param accountPid - the account pid.
+   * @returns the corresponding account
+   */
+  getAccount(accountPid: string): Observable<IAcqAccount> {
+    return this._recordService
+      .getRecords(this.resourceName, `pid:${accountPid}`, 1, 1)
+      .pipe(
+        map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((hits: any[]) => hits.map((hit: any) => ({...this.accountDefaultData, ...hit.metadata}) )),
+        map((hits: IAcqAccount[]) => hits.find(Boolean))  // Get first element of array if exists
+      );
+  }
+
   /**
    * Get account visible for the current library
    * @param libraryPid: the current library
@@ -49,7 +92,7 @@ export class AcqAccountApiService {
    * @param options: the additional options to get the records (optional)
    * @return: an observable of ElasticSearch response corresponding to search criteria
    */
-   getAccounts(libraryPid: string, parentPid?: string, options?: { sort?: string }): Observable<any> {
+   getAccounts(libraryPid: string, parentPid?: string, options?: { sort?: string }): Observable<IAcqAccount[]> {
     const defaultQueryParams = [
       'is_active:true',
       `library.pid:${libraryPid}`
@@ -61,7 +104,11 @@ export class AcqAccountApiService {
     const query = defaultQueryParams.join(' AND ');
     options = { ...{sort: 'name'}, ...options };  // add some default params
     return this._recordService
-      .getRecords(this.resourceName, query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, options.sort);
+      .getRecords(this.resourceName, query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, options.sort)
+      .pipe(
+        map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((hits: any[]) => hits.map(hit => ({...this.accountDefaultData, ...hit.metadata}) ))
+      );
   }
 
   /**
