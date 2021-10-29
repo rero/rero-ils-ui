@@ -59,6 +59,12 @@ export class AcqNote {
   content: string = null;
 }
 
+/** Interface to describe item quantity for an order */
+export class AcqOrderItemQuantity {
+  ordered: number = 0;
+  received: number = 0;
+}
+
 /** Wrapping class to describe an AcqAccount */
 export class AcqOrder {
   $schema: string = null;
@@ -74,6 +80,7 @@ export class AcqOrder {
   organisation: ObjectReference;
   total_amount: number = 0;
   order_date: Date = null;
+  item_quantity: AcqOrderItemQuantity;
 
   /**
    * Constructor
@@ -100,6 +107,7 @@ export class AcqOrderLine {
   status: AcqOrderLineStatus = AcqOrderLineStatus.APPROVED;
   priority: number = 0;
   quantity: number = 0;
+  quantity_received: number = 0;
   amount: number = 0;
   discount_amount: number = 0;
   total_amount: number = 0;

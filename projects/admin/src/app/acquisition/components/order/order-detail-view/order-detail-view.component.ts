@@ -16,17 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { ViewportScroller } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
-import { AcqOrderApiService } from '../../../api/acq-order-api.service';
-import { AcqNoteType, AcqOrder, AcqOrderLine, AcqOrderStatus } from '../../../classes/order';
+import { AcqNoteType, AcqOrder, AcqOrderStatus } from '../../../classes/order';
 import { PlaceOrderFormComponent } from '../place-order-form/place-order-form.component';
 
 @Component({
@@ -34,7 +33,7 @@ import { PlaceOrderFormComponent } from '../place-order-form/place-order-form.co
   templateUrl: './order-detail-view.component.html',
   styleUrls: ['./order-detail-view.component.scss']
 })
-export class OrderDetailViewComponent implements OnInit, OnDestroy, DetailRecord {
+export class OrderDetailViewComponent implements OnInit, DetailRecord {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Observable resolving record data */
@@ -52,8 +51,6 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy, DetailRecord
 
   /** modal reference */
   private _modalRef: BsModalRef;
-  /** all component subscription */
-  private _subscriptions = new Subscription();
 
   // GETTER & SETTER ==========================================================
   /** Get the badge color to use for a note type
@@ -74,7 +71,6 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy, DetailRecord
 
   // CONSTRUCTOR & HOOKS ======================================================
   /** Constructor
-   * @param _acqOrderApiService - AcqOrderApiService,
    * @param _recordService - RecordService
    * @param _recordUiService - RecordUiService
    * @param _scroller - ViewportScroller
@@ -83,7 +79,6 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy, DetailRecord
    * @param _permissionValidator - CurrentLibraryPermissionValidator
    */
   constructor(
-    private _acqOrderApiService: AcqOrderApiService,
     private _recordService: RecordService,
     private _recordUiService: RecordUiService,
     private _scroller: ViewportScroller,
@@ -116,18 +111,6 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy, DetailRecord
         });
       }
     );
-
-    // Subscription when an order line is deleted
-    this._subscriptions.add(
-      this._acqOrderApiService.deletedOrderLineSubject$.subscribe((orderLine: AcqOrderLine) => {
-        this.order.total_amount -= orderLine.total_amount;
-      })
-    );
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy() {
-    this._subscriptions.unsubscribe();
   }
 
   // COMPONENT FUNCTIONS =======================================================
