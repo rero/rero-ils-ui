@@ -16,17 +16,55 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
-import { AcqOrder } from '../../../classes/order';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { AcqOrderApiService } from '../../../api/acq-order-api.service';
+import { AcqOrder, AcqOrderLine, AcqOrderLineStatus, AcqOrderStatus } from '../../../classes/order';
 
 @Component({
   selector: 'admin-order-summary',
   templateUrl: './order-summary.component.html',
   styleUrls: ['./order-summary.component.scss']
 })
-export class OrderSummaryComponent {
+export class OrderSummaryComponent implements OnInit, OnDestroy {
 
   // COMPONENTS ATTRIBUTES ====================================================
   @Input() order: AcqOrder;
+
+  /** reference to AcqOrderStatus class */
+  acqOrderStatus = AcqOrderStatus;
+
+  /** all component subscription */
+  private _subscriptions = new Subscription();
+
+  // CONSTRUCTOR & HOOKS ======================================================
+
+  /**
+   * Constructor
+   * @param _acqOrderApiService - ApiOrderApiService
+   */
+  constructor(
+    private _acqOrderApiService: AcqOrderApiService
+  ) { }
+
+  /** OnInit hook */
+  ngOnInit(): void {
+    // Subscription when an order line is deleted
+    this._subscriptions.add(
+      this._acqOrderApiService.deletedOrderLineSubject$.subscribe((orderLine: AcqOrderLine) => {
+        if (orderLine.status !== AcqOrderLineStatus.CANCELLED) {
+          this.order.total_amount -= orderLine.total_amount;
+          this.order.item_quantity.ordered -= orderLine.quantity;
+          this.order.item_quantity.received -= orderLine.quantity_received;
+        }
+      })
+    );
+  }
+
+  /** OnDestroy hook */
+  ngOnDestroy() {
+    this._subscriptions.unsubscribe();
+  }
+
 
 }

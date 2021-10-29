@@ -147,6 +147,11 @@ json-schema-form {
     content: " \f0da";
   }
 }
+.card-header .btn-show-more {
+  border-color: $card-border-color;
+  font-size: $font-size-base;
+  margin-right: map-get($spacers, 2);
+}
 
 // DEBUG PANELS ============================================================================
 pre {

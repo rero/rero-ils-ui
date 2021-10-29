@@ -51,11 +51,10 @@
     <div class="card container notes">
       <div class="card-header row">
         <h5 class="m-0">
-          <button type="button" class="btn p-0 mr-1"
+          <button type="button" class="btn-show-more"
+                  [ngClass]="{'btn-expanded': !notesCollapsed, 'btn-collapsed': notesCollapsed}"
                   (click)="notesCollapsed = !notesCollapsed"
-                  [attr.aria-expanded]="!notesCollapsed"
-                  aria-controls="collapse">
-            <i [ngClass]="{ 'fa-caret-down': !notesCollapsed, 'fa-caret-right': notesCollapsed }" class="fa" aria-hidden="true"></i>
+                  [attr.aria-expanded]="!notesCollapsed" aria-controls="collapse">
           </button>
           {{ order.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} }}
           <span *ngIf="notesCollapsed" class="badge badge-secondary ml-2">{{ order.notes.length }}</span>
