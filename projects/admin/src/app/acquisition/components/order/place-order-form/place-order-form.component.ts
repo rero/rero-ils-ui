@@ -99,7 +99,7 @@ export class PlaceOrderFormComponent implements OnInit {
     this.confirmInProgress = true;
     const emails: Array<AcqAddressRecipient> = [
       { type: 'to', address: this.recipientAddress },
-      { type: 'reply_to', address: this.preview.data.library.shipping_informations.emai },
+      { type: 'reply_to', address: this.preview.data.library.shipping_informations.email },
     ];
     this._acqOrderApiService.sendOrder(this.order.pid, emails)
       .pipe(finalize(() => this.confirmInProgress = false))
