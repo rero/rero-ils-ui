@@ -27,7 +27,7 @@ import { LocalFieldApiService } from '../api/local-field-api.service';
 })
 export class CanAddLocalFieldsGuard implements CanActivate {
   /**
-   * This guard allows to control the existence of the resource
+   * This guards allows to control the existence of the resource
    * for the current organization. If a record exists, it blocks
    * the addition of a new resource.
    */

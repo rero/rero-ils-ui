@@ -26,6 +26,7 @@ import { ApiService, CoreModule, RecordModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { PopoverModule } from 'ngx-bootstrap/popover';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 import { AcquisitionRoutingModule } from './acquisition-routing.module';
 import { AccountBriefViewComponent } from './components/account/account-brief-view/account-brief-view.component';
 import { AccountDetailViewComponent } from './components/account/account-detail-view/account-detail-view.component';
@@ -38,11 +39,12 @@ import { OrderBriefViewComponent } from './components/order/order-brief-view/ord
 import { OrderDetailViewComponent } from './components/order/order-detail-view/order-detail-view.component';
 import { OrderLineComponent } from './components/order/order-detail-view/order-line/order-line.component';
 import { OrderLinesComponent } from './components/order/order-detail-view/order-lines/order-lines.component';
-import { OrderReceipt } from './components/order/order-receipt-view/order-receipt';
-import { OrderReceiptForm } from './components/order/order-receipt-view/order-receipt-form';
-import { OrderReceiptViewComponent } from './components/order/order-receipt-view/order-receipt-view.component';
+import { OrderReceipt } from './components/receipt/receipt-form/order-receipt';
+import { OrderReceiptForm } from './components/receipt/receipt-form/order-receipt-form';
+import { OrderReceiptViewComponent } from './components/receipt/receipt-form/order-receipt-view.component';
 import { OrderSummaryComponent } from './components/order/order-summary/order-summary.component';
 import { PlaceOrderFormComponent } from './components/order/place-order-form/place-order-form.component';
+import { ReceiptListComponent } from './components/receipt/receipt-list/receipt-list.component';
 import { registerFormlyExtension } from './formly/extension';
 import { FieldRefTypeComponent } from './formly/type/field-ref.type';
 import { RepeatTypeComponent } from './formly/type/repeat-section.type';
@@ -51,6 +53,7 @@ import { InputNoLabelWrapperComponent } from './formly/wrapper/input-no-label.wr
 import { NegativeAmountPipe } from './pipes/negative-amount.pipe';
 import { AcqAccountService } from './services/acq-account.service';
 import { AcqOrderService } from './services/acq-order.service';
+import { ReceiptSummaryComponent } from './components/receipt/receipt-summary/receipt-summary.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +75,9 @@ import { AcqOrderService } from './services/acq-order.service';
     PlaceOrderFormComponent,
     RepeatTypeComponent,
     SelectAccountComponent,
-    SelectAccountEditorWidgetComponent
+    SelectAccountEditorWidgetComponent,
+    ReceiptListComponent,
+    ReceiptSummaryComponent
   ],
   imports: [
     BsDropdownModule.forRoot(),
@@ -94,6 +99,7 @@ import { AcqOrderService } from './services/acq-order.service';
     }),
     RecordModule,
     SharedModule,
+    TabsModule,
     CoreModule
   ],
   providers: [

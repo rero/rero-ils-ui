@@ -20,28 +20,26 @@ import { extractIdOnRef } from '@rero/ng-core';
 import { IUserLocaleStorage, UserService } from '@rero/shared';
 import { combineLatest, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { AcqOrderApiService } from '../api/acq-order-api.service';
-import { AcqReceiptApiService } from '../api/acq-receipt-api.service';
-import { AcqOrderStatus } from '../classes/order';
-import { IReceiptOrder } from '../classes/receipt';
+import { AcqOrderService } from '../../services/acq-order.service';
+import { AcqReceiptService } from '../../services/acq-receipt.service';
+import { AcqOrder, AcqOrderStatus } from '../../classes/order';
+import { AcqReceipt } from '../../classes/receipt';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CanOrderReceiptGuard implements CanActivate {
 
-  /** $ref column name */
-  readonly ref = '$ref';
-
   /**
    * Constructor
-   * @param _acqOrderApiService - AcqOrderApiService
-   * @param _acqReceiptApiService - AcqReceiptApiService
+   * @param _acqOrderService - AcqOrderService
+   * @param _acqReceiptService - AcqReceiptService
    * @param _router - Router
+   * @param _userService - UserService
    */
   constructor(
-    private _acqOrderApiService: AcqOrderApiService,
-    private _acqReceiptApiService: AcqReceiptApiService,
+    private _acqOrderService: AcqOrderService,
+    private _acqReceiptService: AcqReceiptService,
     private _router: Router,
     private _userService: UserService
   ) {}
@@ -66,12 +64,8 @@ export class CanOrderReceiptGuard implements CanActivate {
       } else {
         combineLatest([this._orderQuery(orderPid), this._receiptQuery(receiptPid, orderPid)])
         .subscribe(([order, receipt]) => {
-          if (!order) {
+          if (!order || !receipt) {
             this._router.navigate(['/errors/403'], { skipLocationChange: true });
-          } else {
-            if (!receipt) {
-              this._router.navigate(['/errors/403'], { skipLocationChange: true });
-            }
           }
         });
       }
@@ -79,39 +73,41 @@ export class CanOrderReceiptGuard implements CanActivate {
   }
 
   /**
-   * Order Query
-   * @param orderPid - Order pid
-   * @returns Observable
+   * Check if an order has requirement to manage a receipt anymore.
+   *
+   * To manage a receipt, the related order must be related to the current user library and
+   * the order status should be ORDERED or PARTIALLY RECEIVED
+   * @param orderPid - the order pid
+   * @returns Observable<boolean>: True if a receipt could be managed, False otherwise
    */
   private _orderQuery(orderPid: string): Observable<boolean> {
-    return this._acqOrderApiService.getOrder(orderPid).pipe(
-      map((order: any) => order.metadata),
-      map((order) => {
-        const ref = '$ref';
-        const userLocale: IUserLocaleStorage = this._userService.getOnLocaleStorage();
-        if (userLocale.currentLibrary !== extractIdOnRef(order.library[ref])) {
-          return false;
-        }
-        return [
-          AcqOrderStatus.ORDERED,
-          AcqOrderStatus.PARTIALLY_RECEIVED
-        ].some((key: string) => key === order.status);
-      }),
-      catchError(() => of(false))
-    );
+    return this._acqOrderService
+      .getOrder(orderPid)
+      .pipe(
+        map((order: AcqOrder) => {
+          const userLocale: IUserLocaleStorage = this._userService.getOnLocaleStorage();
+          if (userLocale.currentLibrary !== extractIdOnRef(order.library.$ref)) {
+            return false;
+          }
+          const validStatuses = [AcqOrderStatus.ORDERED, AcqOrderStatus.PARTIALLY_RECEIVED];
+          return validStatuses.some((key: string) => key === order.status);
+        }),
+        catchError(() => of(false))
+      );
   }
 
   /**
-   * Receipt Query
-   * @param receiptPid - Receipt pid
-   * @returns Observable
+   * Check if a specific receipt is allowed regarding an order
+   * @param receiptPid: the receipt pid
+   * @param orderPid: the order pid
+   * @returns Observable<boolean>: True if the receipt is well related to this order
    */
   private _receiptQuery(receiptPid: string, orderPid: string): Observable<boolean> {
-    return this._acqReceiptApiService.getReceipt(receiptPid).pipe(
-      map((receipt: IReceiptOrder) => {
-        return orderPid === extractIdOnRef(receipt.acq_order[this.ref]);
-      }),
-      catchError(() => of(false))
-    );
+    return this._acqReceiptService
+      .getReceipt(receiptPid)
+      .pipe(
+        map((receipt: AcqReceipt) => orderPid === receipt.acq_order.pid),
+        catchError(() => of(false))
+      );
   }
 }
