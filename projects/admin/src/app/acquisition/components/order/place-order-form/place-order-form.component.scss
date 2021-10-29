@@ -22,7 +22,7 @@
 
 pre {
   margin: map-get($spacers, 3) auto;
-  border: 1px solid $border-color;
+  border: $border-width solid $border-color;
   padding: map-get($spacers, 2);
   line-height: 1em;
   max-height: 400px;

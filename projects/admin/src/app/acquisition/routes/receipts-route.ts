@@ -18,6 +18,7 @@
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { BaseRoute } from '../../routes/base-route';
+import { ReceiptDetailViewComponent } from '../components/receipt/receipt-detail-view/receipt-detail-view.component';
 
 export class ReceiptsRoute extends BaseRoute implements RouteInterface {
 
@@ -40,10 +41,15 @@ export class ReceiptsRoute extends BaseRoute implements RouteInterface {
           {
             key: this.name,
             label: _('Receipts'),
+            detailComponent: ReceiptDetailViewComponent,
+            editorSettings: {
+              longMode: true,
+            },
             searchFilters: [
               this.expertSearchFilter()
             ],
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
+            preUpdateRecord: (data: any) => this._cleanRecord(data),
             aggregations: (aggregations: any) => this._routeToolService.aggregationFilter(aggregations),
             aggregationsBucketSize: 10,
             itemHeaders: {
@@ -56,6 +62,18 @@ export class ReceiptsRoute extends BaseRoute implements RouteInterface {
         ]
       }
     };
+  }
+
+  /**
+   * Remove some fields from model. These field are added to record during
+   * dumping but are not present into the `Order` JSON schema.
+   * @param data: the data to update
+   * @return: the cleaned data
+   */
+  private _cleanRecord(data: any): any {
+    // remove dynamic fields
+    // TODO :: remove dynamic key....
+    return data;
   }
 
 }

@@ -17,9 +17,19 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Error, Record, RecordService } from '@rero/ng-core';
-import { Observable } from 'rxjs';
-import { AcqAddressRecipient } from '../classes/order';
+import { Record, RecordService, RecordUiService } from '@rero/ng-core';
+import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Notification } from '../../classes/notification';
+import {
+  AcqAddressRecipient,
+  AcqOrderLineStatus,
+  AcqOrderStatus,
+  AcqOrderType,
+  IAcqOrder,
+  IAcqOrderLine,
+  IAcqOrderPreviewResponse
+} from '../classes/order';
 
 @Injectable({
   providedIn: 'root'
@@ -30,14 +40,43 @@ export class AcqOrderApiService {
   /** The resource name of acquisition account */
   resourceName = 'acq_orders';
 
+  /** Default values */
+  public readonly orderDefaultData = {
+    priority: 0,
+    type: AcqOrderType.MONOGRAPH,
+    status: AcqOrderStatus.PENDING,
+    notes: []
+  };
+  public readonly orderLineDefaultData = {
+    status: AcqOrderLineStatus.APPROVED,
+    priority: 0,
+    quantity: 0,
+    received_quantity: 0,
+    amount: 0,
+    total_amount: 0,
+    exchange_rate: 0,
+    notes: []
+  };
+
+  // SERVICES ATTRIBUTES ======================================================
+  /** Subject emitted when an order line is deleted. The order line pid will be emitted */
+  private _deletedOrderLineSubject$: Subject<IAcqOrderLine> = new Subject();
+
+  // GETTER AND SETTER ========================================================
+  /** expose _deletedOrderLineSubject$ in 'readonly' mode */
+  get deletedOrderLineSubject$(): Observable<IAcqOrderLine> { return this._deletedOrderLineSubject$.asObservable(); }
+
   // CONSTRUCTOR ==============================================================
   /**
    * Constructor
    * @param _http - HttpClient
+   * @param _recordService - RecordService
+   * @param _recordUiService - RecordUiService
    */
   constructor(
     private _http: HttpClient,
-    private _recordService: RecordService
+    private _recordService: RecordService,
+    private _recordUiService: RecordUiService
   ) { }
 
   // SERVICE PUBLIC FUNCTIONS =================================================
@@ -46,18 +85,20 @@ export class AcqOrderApiService {
    * @param orderPid: the order pid
    * @return: the corresponding AcqOrder
    */
-  getOrder(orderPid: string): Observable<any> {
+  getOrder(orderPid: string): Observable<IAcqOrder> {
     const apiUrl = `/api/${this.resourceName}/${orderPid}`;
-    return this._http.get<any>(apiUrl);
+    return this._http.get<any>(apiUrl).pipe(
+      map(data => ({...this.orderDefaultData, ...data.metadata}) )
+    );
   }
 
   /**
    * Get an order preview.
    * @param orderPid: the order pid
    */
-  getOrderPreview(orderPid: string): Observable<any> {
+  getOrderPreview(orderPid: string): Observable<IAcqOrderPreviewResponse> {
     const apiUrl = `/api/acq_order/${orderPid}/acquisition_order/preview`;
-    return this._http.get<any>(apiUrl);
+    return this._http.get<IAcqOrderPreviewResponse>(apiUrl);
   }
 
   /**
@@ -65,22 +106,46 @@ export class AcqOrderApiService {
    * @param orderPid: the order pid
    * @param emails: the recipients emails address
    */
-  createOrder(orderPid: string, emails: AcqAddressRecipient[]): Observable<any> {
+  sendOrder(orderPid: string, emails: AcqAddressRecipient[]): Observable<Notification> {
     const apiUrl = `/api/acq_order/${orderPid}/send_order`;
-    return this._http.post<any>(apiUrl, {emails});
+    return this._http.post<any>(apiUrl, {emails}).pipe(
+      map((data: any) => new Notification(data.data))
+    );
   }
 
+  // ORDER LINES RELATED METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   /**
    * Get order lines related to an order
    * @param orderPid: the order pid
    * @param extraQuery: add some elements on query
    */
-  getOrderLines(orderPid: string, extraQuery?: string): Observable<Record | Error> {
+  getOrderLines(orderPid: string, extraQuery?: string): Observable<IAcqOrderLine[]> {
     let query = `acq_order.pid:${orderPid}`;
     if (extraQuery) {
       query += ` ${extraQuery}`;
     }
     return this._recordService
-      .getRecords('acq_order_lines', query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, 'priority');
+      .getRecords('acq_order_lines', query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, 'priority')
+      .pipe(
+        map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((hits: any[]) => hits.map(hit => ({...this.orderDefaultData, ...hit.metadata}) ))
+      );
+  }
+
+  /**
+   * Allow to delete an order line.
+   * If the order line is correctly deleted, this function emit an event :
+   *   * deletedOrderLineSubject$ : to specify which order line has been deleted
+   * @param orderLine: the order line to delete
+   */
+  deleteOrderLine(orderLine: IAcqOrderLine): void {
+    this._recordUiService
+      .deleteRecord('acq_order_lines', orderLine.pid)
+      .subscribe((success: boolean) => {
+          if (success) {
+            this._deletedOrderLineSubject$.next(orderLine);
+          }
+        }
+      );
   }
 }

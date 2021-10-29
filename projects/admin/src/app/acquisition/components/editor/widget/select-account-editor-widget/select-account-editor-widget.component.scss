@@ -27,6 +27,6 @@
 }
 
 .is_invalid {
-  border: 1px solid $danger !important;
+  border: $border-width solid $danger !important;
   color: $danger;
 }

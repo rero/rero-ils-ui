@@ -24,6 +24,7 @@ export * from './lib/api/user-api.service';
 export * from './lib/class/core';
 export * from './lib/class/item-status';
 export * from './lib/class/user';
+export * from './lib/component/action-button/action-button.component';
 export * from './lib/paginator/paginator';
 export * from './lib/paginator/show-more-pager/show-more-pager.component';
 export * from './lib/pipe/contribution-filter.pipe';

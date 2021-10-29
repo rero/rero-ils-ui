@@ -23,7 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
 import { of } from 'rxjs';
 import { AcquisitionModule } from '../../../acquisition.module';
-import { AcqAccountService } from '../../../services/acq-account.service';
+import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { AccountListComponent } from './account-list.component';
 
 
@@ -31,7 +31,7 @@ describe('AccountListComponent', () => {
   let component: AccountListComponent;
   let fixture: ComponentFixture<AccountListComponent>;
 
-  const accountsServiceSpy = jasmine.createSpyObj('AcqAccountService', ['getAccounts']);
+  const accountsServiceSpy = jasmine.createSpyObj('AcqAccountApiService', ['getAccounts']);
 
   const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
   userServiceSpy.user = { currentLibrary: 1 };
@@ -46,7 +46,7 @@ describe('AccountListComponent', () => {
         AcquisitionModule
       ],
       providers: [
-        { provide: AcqAccountService, useValue: accountsServiceSpy },
+        { provide: AcqAccountApiService, useValue: accountsServiceSpy },
         { provide: UserService, useValue: userServiceSpy }
       ]
     })

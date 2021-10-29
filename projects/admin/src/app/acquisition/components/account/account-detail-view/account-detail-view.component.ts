@@ -17,11 +17,12 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { Record, RecordService } from '@rero/ng-core';
+import { Record } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AcqAccount } from '../../../classes/account';
+import { AcqAccountApiService } from '../../../api/acq-account-api.service';
+import { IAcqAccount } from '../../../classes/account';
 import { OrganisationService } from '../../../../service/organisation.service';
 
 @Component({
@@ -35,7 +36,7 @@ export class AccountDetailViewComponent implements OnInit, DetailRecord {
   /** Observable resolving record data */
   record$: Observable<any>;
   /** metadata from ES - much more complete than DB stored record */
-  esRecord$: Observable<AcqAccount>;
+  esRecord$: Observable<IAcqAccount>;
   /** Resource type */
   type: string;
 
@@ -48,22 +49,18 @@ export class AccountDetailViewComponent implements OnInit, DetailRecord {
   // CONSTRUCTOR & HOOKS ========================================================
   /**
    * Constructor
-   * @param _recordService: RecordService
-   * @param _organisationService: OrganisationService
+   * @param _acqAccountApiService - AcqAccountApiService
+   * @param _organisationService - OrganisationService
    */
   constructor(
-    private _recordService: RecordService,
+    private _acqAccountApiService: AcqAccountApiService,
     private _organisationService: OrganisationService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
     this.record$.subscribe((data: any) => {
-      this.esRecord$ = this._recordService.getRecords(this.type, `pid:${data.metadata.pid}`, 1, 1).pipe(
-        map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-        map((hits: any[]) => hits.map((hit: any) => new AcqAccount(hit.metadata))),
-        map((hits: AcqAccount[]) => hits.find(Boolean))  // Get first element of array if exists
-      );
+      this.esRecord$ = this._acqAccountApiService.getAccount(data.metadata.pid);
     });
   }
 

@@ -16,16 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { AcqAccount } from '../classes/account';
+import { IAcqAccount } from '../classes/account';
 
 /**
  * Allow to sort accounts to render it correctly (corresponding to hierarchical tree structure)
  * @param accounts - the accounts to sort.
  * @return Account list sorted as a hierarchical tree.
  */
-export function orderAccountsAsTree(accounts: AcqAccount[]): AcqAccount[] {
+export function orderAccountsAsTree(accounts: IAcqAccount[]): IAcqAccount[] {
   /** Append an account and children accounts into the `accounts` list */
-  const _appendAccount = (account: AcqAccount, list: AcqAccount[]) => {
+  const _appendAccount = (account: IAcqAccount, list: IAcqAccount[]) => {
     list.push(account);
     accounts.filter(acc => acc.parent !== undefined && acc.parent.pid === account.pid)
       .forEach(acc => _appendAccount(acc, list));
@@ -37,7 +37,7 @@ export function orderAccountsAsTree(accounts: AcqAccount[]): AcqAccount[] {
       : a.depth - b.depth;
   });
   // Rebuild hierarchical account tree.
-  const sortedAccounts: AcqAccount[] = [];
+  const sortedAccounts: IAcqAccount[] = [];
   accounts.filter(acc => acc.depth === 0).forEach(acc => _appendAccount(acc, sortedAccounts));
   return sortedAccounts;
 }

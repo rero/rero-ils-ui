@@ -19,6 +19,9 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CoreModule, NgVarDirective, Nl2brPipe, RecordModule, TruncateTextPipe } from '@rero/ng-core';
+import { PopoverModule } from 'ngx-bootstrap/popover';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ActionButtonComponent } from './component/action-button/action-button.component';
 import { ShowMorePagerComponent } from './paginator/show-more-pager/show-more-pager.component';
 import { ContributionFormatPipe } from './pipe/contribution-format.pipe';
 import { ContributionTypePipe } from './pipe/contribution-type.pipe';
@@ -64,7 +67,8 @@ import { ContributionFilterPipe } from '../public-api';
     ShowMorePagerComponent,
     KeyExistsPipe,
     GetTranslatedLabelPipe,
-    ContributionFilterPipe
+    ContributionFilterPipe,
+    ActionButtonComponent
   ],
   exports: [
     CommonModule,
@@ -89,13 +93,16 @@ import { ContributionFilterPipe } from '../public-api';
     ShowMorePagerComponent,
     KeyExistsPipe,
     GetTranslatedLabelPipe,
-    ContributionFilterPipe
+    ContributionFilterPipe,
+    ActionButtonComponent
   ],
   imports: [
     CommonModule,
     CoreModule,
     RecordModule,
-    RouterModule
+    RouterModule,
+    TooltipModule.forRoot(),
+    PopoverModule.forRoot(),
   ],
   providers: [
     SearchBarConfigService,

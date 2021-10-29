@@ -28,6 +28,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { AcquisitionRoutingModule } from './acquisition-routing.module';
+import { AcqAccountApiService } from './api/acq-account-api.service';
+import { AcqOrderApiService } from './api/acq-order-api.service';
 import { AccountBriefViewComponent } from './components/account/account-brief-view/account-brief-view.component';
 import { AccountDetailViewComponent } from './components/account/account-detail-view/account-detail-view.component';
 import { AccountListComponent } from './components/account/account-list/account-list.component';
@@ -51,9 +53,13 @@ import { RepeatTypeComponent } from './formly/type/repeat-section.type';
 import { SelectAccountComponent } from './formly/type/select-account/select-account.component';
 import { InputNoLabelWrapperComponent } from './formly/wrapper/input-no-label.wrapper';
 import { NegativeAmountPipe } from './pipes/negative-amount.pipe';
-import { AcqAccountService } from './services/acq-account.service';
-import { AcqOrderService } from './services/acq-order.service';
 import { ReceiptSummaryComponent } from './components/receipt/receipt-summary/receipt-summary.component';
+import { ReceiptDetailViewComponent } from './components/receipt/receipt-detail-view/receipt-detail-view.component';
+import { NoteBadgeColorPipe } from './pipes/note-badge-color.pipe';
+import { NotesFilterPipe } from './pipes/notes-filter.pipe';
+import { AccountAvailableAmountPipe } from './pipes/account-available-amount.pipe';
+import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
+import { PreviewContentPipe } from './pipes/preview-content.pipe';
 
 @NgModule({
   declarations: [
@@ -77,7 +83,13 @@ import { ReceiptSummaryComponent } from './components/receipt/receipt-summary/re
     SelectAccountComponent,
     SelectAccountEditorWidgetComponent,
     ReceiptListComponent,
-    ReceiptSummaryComponent
+    ReceiptSummaryComponent,
+    ReceiptDetailViewComponent,
+    NoteBadgeColorPipe,
+    NotesFilterPipe,
+    AccountAvailableAmountPipe,
+    ReceptionDatesPipe,
+    PreviewContentPipe
   ],
   imports: [
     BsDropdownModule.forRoot(),
@@ -105,7 +117,7 @@ import { ReceiptSummaryComponent } from './components/receipt/receipt-summary/re
   providers: [
     { provide: FORMLY_CONFIG, multi: true, useFactory: registerFormlyExtension, deps: [TranslateService] },
     OrderReceipt,
-    { provide: OrderReceiptForm, deps: [AcqOrderService, AcqAccountService, ApiService, OrderReceipt] }
+    { provide: OrderReceiptForm, deps: [AcqOrderApiService, AcqAccountApiService, ApiService, OrderReceipt] }
   ]
 })
 export class AcquisitionModule { }

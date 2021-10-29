@@ -22,8 +22,8 @@ import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
 import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
-import { AcqOrderLine, AcqOrderLineStatus } from '../../../../classes/order';
-import { AcqOrderService } from '../../../../services/acq-order.service';
+import { IAcqOrderLine, AcqOrderLineStatus } from '../../../../classes/order';
+import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 
 
 @Component({
@@ -35,7 +35,7 @@ export class OrderLineComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** order line */
-  @Input() orderLine: AcqOrderLine;
+  @Input() orderLine: IAcqOrderLine;
   /** parent order */
   @Input() order: any;
 
@@ -54,23 +54,27 @@ export class OrderLineComponent implements OnInit {
    * @return the message to display into the tooltip box
    */
   get deleteInfoMessage(): string {
-    return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
+    return (!this.permissions.delete.can)
+      ? this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons)
+      : null;
   }
   get editInfoMessage(): string {
-    return this._recordPermissionService.generateTooltipMessage(this.permissions.update.reasons, 'update');
+    return (!this.permissions.delete.can)
+      ? this._recordPermissionService.generateTooltipMessage(this.permissions.update.reasons, 'update')
+      : null;
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /** Constructor
    * @param _recordPermissionService - RecordPermissionService
    * @param _recordService - RecordService
-   * @param _acqOrderService - AcqOrderService
+   * @param _acqOrderApiService - AcqOrderApiService
    * @param _permissionValidator - CurrentLibraryPermissionValidator
    */
   constructor(
     private _recordPermissionService: RecordPermissionService,
     private _recordService: RecordService,
-    private _acqOrderService: AcqOrderService,
+    private _acqOrderApiService: AcqOrderApiService,
     private _permissionValidator: CurrentLibraryPermissionValidator
   ) { }
 
@@ -89,9 +93,8 @@ export class OrderLineComponent implements OnInit {
   }
 
   // COMPONENT FUNCTIONS ======================================================
-
   /** Delete the order line */
   deleteOrderLine() {
-    this._acqOrderService.deleteOrderLine(this.orderLine);
+    this._acqOrderApiService.deleteOrderLine(this.orderLine);
   }
 }
