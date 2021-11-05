@@ -16,56 +16,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { Error } from '@rero/ng-core/lib/error/error';
-import { UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
+import { AcqAccountApiService } from '../api/acq-account-api.service';
 import { AcqAccount } from '../classes/account';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AcqAccountApiService {
-
-  /** The resource name of acquisition account */
-  resourceName = 'acq_accounts';
+export class AcqAccountService {
 
   /**
    * Constructor
-   * @param _http: HttpClient
+   * @param _acqAccountApiService - AcqAccountApiService
    * @param _recordService - RecordService
-   * @param _userService - UserService
    */
   constructor(
-    private _http: HttpClient,
-    private _recordService: RecordService,
-    private _userService: UserService
+    private _acqAccountApiService: AcqAccountApiService,
+    private _recordService: RecordService
   ) { }
 
   /**
    * Get account visible for the current used library.
    * @param parentPid: the parent account pid, if `null` then the root account will be return (optional)
    * @param options: the additional options to get the records (optional)
-   * @return an observable of ElasticSearch response corresponding to search criteria
+   * @return an observable of account corresponding to search criteria
    */
   getAccounts(parentPid?: string, options?: {
     sort?: string
-  }): Observable<any> {
-    const defaultQueryParams = [
-      'is_active:true',
-      `library.pid:${this._userService.user.currentLibrary}`
-    ];
-    if (parentPid !== undefined) {
-      const parentParam = (parentPid === null) ? 'depth:0' : `parent.pid:${parentPid}`;
-      defaultQueryParams.push(parentParam);
-    }
-    const query = defaultQueryParams.join(' AND ');
-    options = { ...{sort: 'name'}, ...options };  // add some default params
-    return this._recordService
-      .getRecords(this.resourceName, query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, options.sort);
+  }): Observable<AcqAccount[]> {
+    return this._acqAccountApiService
+      .getAccounts(parentPid, options)
+      .pipe(
+        map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((hits: any[]) => hits.map((hit: any) => new AcqAccount(hit.metadata)))
+      );
   }
 
   /**
@@ -74,8 +62,9 @@ export class AcqAccountApiService {
    * @return The observable on delete REST call.
    */
   delete(pid: string): Observable<void | Error> {
-    return this._recordService.delete(this.resourceName, pid);
+    return this._acqAccountApiService.delete(pid);
   }
+
 
   /**
    * Transfer funds between two account
@@ -85,11 +74,6 @@ export class AcqAccountApiService {
    * @return An observable on the call API result.
    */
   transferFunds(sourcePid: string, targetPid: string, amount: number): Observable<any> {
-    const apiUrl = '/api/acq_accounts/transfer_funds';
-    const params = new HttpParams()
-      .set('source', sourcePid)
-      .set('target', targetPid)
-      .set('amount', amount.toString());
-    return this._http.get<any>(apiUrl, { params });
+    return this._acqAccountApiService.transferFunds(sourcePid, targetPid, amount);
   }
 }

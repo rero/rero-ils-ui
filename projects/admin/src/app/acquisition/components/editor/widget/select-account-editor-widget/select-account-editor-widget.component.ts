@@ -19,9 +19,10 @@ import { getCurrencySymbol } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { ApiService } from '@rero/ng-core';
-import { AcqAccountApiService } from 'projects/admin/src/app/acquisition/api/acq-account-api.service';
 import { AcqAccount } from 'projects/admin/src/app/acquisition/classes/account';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
+import { AcqAccountService } from '../../../../services/acq-account.service';
+import { orderAccountsAsTree } from '../../../../utils/account';
 
 @Component({
   selector: 'admin-select-account-editor-widget',
@@ -32,7 +33,7 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
 
   // COMPONENT ATTRIBUTES =======================================================
   /** accounts list */
-  accountList: Array<AcqAccount> = [];
+  accountList: AcqAccount[] = [];
   /** the selected account */
   selectedAccount: AcqAccount = null;
 
@@ -50,12 +51,12 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _accountApiService - AcqAccountApiService
+   * @param _accountService - AcqAccountService
    * @param _organisationService - OrganisationService
    * @param _apiService - ApiService
    */
   constructor(
-    private _accountApiService: AcqAccountApiService,
+    private _accountService: AcqAccountService,
     private _organisationService: OrganisationService,
     private _apiService: ApiService
   ) {
@@ -64,8 +65,8 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._accountApiService.getAccounts().subscribe((accounts: AcqAccount[]) => {
-      accounts = this._accountApiService.orderAccountsAsTree(accounts);
+    this._accountService.getAccounts().subscribe((accounts: AcqAccount[]) => {
+      accounts = orderAccountsAsTree(accounts);
       this.accountList = accounts;
 
       if (this.formControl.value) {

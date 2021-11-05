@@ -21,9 +21,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs/operators';
-import { AcqOrderApiService } from 'projects/admin/src/app/acquisition/api/acq-order-api.service';
 import { AcqAddressRecipient, AcqOrder, AcqOrderPreview } from 'projects/admin/src/app/acquisition/classes/order';
 import { Notification } from 'projects/admin/src/app/classes/notification';
+import { AcqOrderService } from '../../../services/acq-order.service';
 
 @Component({
   selector: 'admin-place-order-form',
@@ -61,7 +61,7 @@ export class PlaceOrderFormComponent implements OnInit {
    * Constructor
    * @param _modalService - BsModalService
    * @param _bsModalRef - BsModalRef
-   * @param _acqOrderApiService - AcqOrderApiService
+   * @param _acqOrderService - AcqOrderService
    * @param _toastrService - ToastrService
    * @param _translateService - TranslateService
    * @param _router - Router
@@ -69,7 +69,7 @@ export class PlaceOrderFormComponent implements OnInit {
   constructor(
     private _modalService: BsModalService,
     protected _bsModalRef: BsModalRef,
-    private _acqOrderApiService: AcqOrderApiService,
+    private _acqOrderService: AcqOrderService,
     private _toastrService: ToastrService,
     private _translateService: TranslateService,
     private _router: Router
@@ -79,7 +79,7 @@ export class PlaceOrderFormComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._acqOrderApiService.getOrderPreview(this.order.pid).subscribe((preview: AcqOrderPreview) => this.preview = preview);
+    this._acqOrderService.getOrderPreview(this.order.pid).subscribe((preview: AcqOrderPreview) => this.preview = preview);
   }
 
   // COMPONENT FUNCTIONS ======================================================
@@ -97,11 +97,11 @@ export class PlaceOrderFormComponent implements OnInit {
 
   confirmOrder() {
     this.confirmInProgress = true;
-    const emails: Array<AcqAddressRecipient> = [
+    const emails: AcqAddressRecipient[] = [
       { type: 'to', address: this.recipientAddress },
       { type: 'reply_to', address: this.preview.data.library.shipping_informations.email },
     ];
-    this._acqOrderApiService.sendOrder(this.order.pid, emails)
+    this._acqOrderService.sendOrder(this.order.pid, emails)
       .pipe(finalize(() => this.confirmInProgress = false))
       .subscribe(
         (notification: Notification) => {
@@ -118,7 +118,7 @@ export class PlaceOrderFormComponent implements OnInit {
             );
           }
           this.modalRef.hide();
-          this._acqOrderApiService
+          this._acqOrderService
             .getOrder(this.order.pid)
             .subscribe((order: AcqOrder) => this.onOrderSentEvent.next(order));
         },
