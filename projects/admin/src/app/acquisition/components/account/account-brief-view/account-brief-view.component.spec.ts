@@ -20,13 +20,17 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { of } from 'rxjs';
 import { AcquisitionModule } from '../../../acquisition.module';
+import { AcqAccountService } from '../../../services/acq-account.service';
 
 import { AccountBriefViewComponent } from './account-brief-view.component';
 
 describe('AccountBriefViewComponent', () => {
   let component: AccountBriefViewComponent;
   let fixture: ComponentFixture<AccountBriefViewComponent>;
+
+  const accountsServiceSpy = jasmine.createSpyObj('AcqAccountService', ['getAccounts']);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -36,12 +40,16 @@ describe('AccountBriefViewComponent', () => {
         TranslateModule.forRoot(),
         HttpClientTestingModule,
         AcquisitionModule
+      ],
+      providers: [
+        { provide: AcqAccountService, useValue: accountsServiceSpy }
       ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
+    accountsServiceSpy.getAccounts.and.returnValue(of([]));
     fixture = TestBed.createComponent(AccountBriefViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

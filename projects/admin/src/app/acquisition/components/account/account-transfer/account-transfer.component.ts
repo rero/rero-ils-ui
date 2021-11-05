@@ -23,9 +23,10 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
-import { AcqAccountApiService } from '../../../api/acq-account-api.service';
-import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';
+import { AcqAccountService } from '../../../services/acq-account.service';
+import { AcqBudgetService } from '../../../services/acq-budget.service';
 import { AcqAccount } from '../../../classes/account';
+import { orderAccountsAsTree } from '../../../utils/account';
 
 @Component({
   selector: 'admin-account-transfer',
@@ -36,14 +37,14 @@ export class AccountTransferComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES =======================================================
   /** the accounts available for transfer */
-  accountsToDisplay: Array<AcqAccount> = [];
+  accountsToDisplay: AcqAccount[] = [];
   /** active budgets */
-  budgets: Array<string> = [];
+  budgets: string[] = [];
   /** the transfer form group */
   form: FormGroup;
 
   /** the accounts available for transfer */
-  private _accountsTree: Array<AcqAccount> = [];
+  private _accountsTree: AcqAccount[] = [];
   /** store the selected budgets */
   private _selectedBudgetPid: string = undefined;
 
@@ -61,7 +62,7 @@ export class AccountTransferComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ========================================================
   /**
    * Constructor
-   * @param _accountApiService: AcqAccountApiService
+   * @param _accountService: AcqAccountService
    * @param _budgetApiService: BudgetApiService
    * @param _organisationService: OrganisationService
    * @param _formBuilder: FormBuilder,
@@ -70,8 +71,8 @@ export class AccountTransferComponent implements OnInit {
    * @param _router: Router
    */
   constructor(
-    private _accountApiService: AcqAccountApiService,
-    private _budgetApiService: AcqBudgetApiService,
+    private _accountService: AcqAccountService,
+    private _budgetApiService: AcqBudgetService,
     private _organisationService: OrganisationService,
     private _formBuilder: FormBuilder,
     private _toastrService: ToastrService,
@@ -99,7 +100,7 @@ export class AccountTransferComponent implements OnInit {
 
   // PUBLIC FUNCTIONS =========================================================
   /** get the URL to access account detail view */
-  getDetailUrl(account: AcqAccount): Array<string> {
+  getDetailUrl(account: AcqAccount): string[] {
     return ['/', 'records', 'acq_accounts', 'detail', account.pid];
   }
 
@@ -120,7 +121,7 @@ export class AccountTransferComponent implements OnInit {
 
   /** Submit the form */
   submit(): void {
-    this._accountApiService
+    this._accountService
       .transferFunds(this.form.value.source.pid, this.form.value.target.pid, this.form.value.amount)
       .subscribe(
         () => {
@@ -147,8 +148,8 @@ export class AccountTransferComponent implements OnInit {
   // PRIVATE FUNCTIONS ========================================================
   /** Load accounts and budgets. Order accounts as a hierarchical tree */
   private _loadData(): void {
-    this._accountApiService.getAccounts(undefined, 'depth').subscribe((accounts: AcqAccount[]) => {
-      this._accountsTree = this._accountApiService.orderAccountsAsTree(accounts);
+    this._accountService.getAccounts(undefined, {sort: 'depth'}).subscribe((accounts: AcqAccount[]) => {
+      this._accountsTree = orderAccountsAsTree(accounts);
 
       this.budgets = Array.from(new Set(this._accountsTree.map((account: AcqAccount) => account.budget.pid)));
       this._selectedBudgetPid = this.budgets.find(Boolean);  // get the first element

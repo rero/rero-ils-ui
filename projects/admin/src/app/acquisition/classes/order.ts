@@ -19,7 +19,7 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-import { ObjectReference } from '../../classes/core';
+import { ObjectReference } from '@rero/shared';
 
 // ORDER ======================================================================
 /** Interface for order recipient */
@@ -74,7 +74,7 @@ export class AcqOrder {
   type: AcqOrderType = AcqOrderType.MONOGRAPH;
   status: AcqOrderStatus = AcqOrderStatus.PENDING;
   currency: string = null;
-  notes: Array<AcqNote> = [];
+  notes: AcqNote[] = [];
   vendor: ObjectReference;
   library: ObjectReference;
   organisation: ObjectReference;
@@ -112,7 +112,7 @@ export class AcqOrderLine {
   discount_amount: number = 0;
   total_amount: number = 0;
   exchange_rate: number = 0;
-  notes: Array<AcqNote> = [];
+  notes: AcqNote[] = [];
   order_date: Date = null;
   reception_date: Date = null;
 

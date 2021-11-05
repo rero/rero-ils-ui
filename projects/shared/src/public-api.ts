@@ -21,6 +21,7 @@
 
 export * from './lib/api/base-api';
 export * from './lib/api/user-api.service';
+export * from './lib/class/core';
 export * from './lib/class/item-status';
 export * from './lib/class/user';
 export * from './lib/paginator/paginator';
