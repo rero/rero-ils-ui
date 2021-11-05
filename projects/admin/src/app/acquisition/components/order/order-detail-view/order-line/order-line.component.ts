@@ -22,8 +22,8 @@ import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
 import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
-import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqNote, AcqNoteType, AcqOrderLine, AcqOrderLineStatus } from '../../../../classes/order';
+import { AcqOrderService } from '../../../../services/acq-order.service';
 
 
 @Component({
@@ -64,13 +64,13 @@ export class OrderLineComponent implements OnInit {
   /** Constructor
    * @param _recordPermissionService - RecordPermissionService
    * @param _recordService - RecordService
-   * @param _acqOrderApiService - AcqOrderApiService
+   * @param _acqOrderService - AcqOrderService
    * @param _permissionValidator - CurrentLibraryPermissionValidator
    */
   constructor(
     private _recordPermissionService: RecordPermissionService,
     private _recordService: RecordService,
-    private _acqOrderApiService: AcqOrderApiService,
+    private _acqOrderService: AcqOrderService,
     private _permissionValidator: CurrentLibraryPermissionValidator
   ) { }
 
@@ -92,7 +92,7 @@ export class OrderLineComponent implements OnInit {
 
   /** Delete the order line */
   deleteOrderLine() {
-    this._acqOrderApiService.deleteOrderLine(this.orderLine);
+    this._acqOrderService.deleteOrderLine(this.orderLine);
   }
 
   /**

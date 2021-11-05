@@ -21,8 +21,8 @@ import { map } from 'rxjs/operators';
 import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
-import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqOrder, AcqOrderLine } from '../../../../classes/order';
+import { AcqOrderService } from '../../../../services/acq-order.service';
 
 @Component({
   selector: 'admin-order-lines',
@@ -36,7 +36,7 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
   /** record permissions */
   @Input() permissions?: RecordPermissions;
   /** Acquisition order Line observable */
-  orderLines: Array<AcqOrderLine> = undefined;
+  orderLines: AcqOrderLine[] = undefined;
 
   /** all component subscription */
   private _subscriptions = new Subscription();
@@ -53,12 +53,12 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _orderApiService - AcqOrderApiService
+   * @param _acqOrderService - AcqOrderService
    * @param _recordPermissionService - RecordPermissionService
    * @param _permissionValidator - CurrentLibraryPermissionValidator
    */
   constructor(
-    private _orderApiService: AcqOrderApiService,
+    private _acqOrderService: AcqOrderService,
     private _recordPermissionService: RecordPermissionService,
     private _permissionValidator: CurrentLibraryPermissionValidator
   ) { }
@@ -72,7 +72,7 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
     }
     this._loadOrderLines();
     this._subscriptions.add(
-      this._orderApiService.deletedOrderLineSubject$.subscribe((orderLine: AcqOrderLine) => {
+      this._acqOrderService.deletedOrderLineSubject$.subscribe((orderLine: AcqOrderLine) => {
         this.orderLines = this.orderLines.filter((line: AcqOrderLine) => line.pid !== orderLine.pid);
       })
     );
@@ -93,6 +93,6 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
   // PRIVATE COMPONENT METHODS ================================================
   /** load order lines related to this order */
   private _loadOrderLines(): void {
-    this._orderApiService.getOrderLines(this.order.pid).subscribe((lines: Array<AcqOrderLine>) => this.orderLines = lines);
+    this._acqOrderService.getOrderLines(this.order.pid).subscribe((lines: AcqOrderLine[]) => this.orderLines = lines);
   }
 }

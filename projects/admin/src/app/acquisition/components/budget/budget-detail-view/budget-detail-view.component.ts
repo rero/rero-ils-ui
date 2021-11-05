@@ -20,7 +20,7 @@ import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record
 import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
-import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';
+import { AcqBudgetService } from '../../../services/acq-budget.service';
 
 @Component({
   selector: 'admin-budget-detail-view',
@@ -51,12 +51,12 @@ export class BudgetDetailViewComponent implements DetailRecord, OnInit {
   /**
    * Constructor
    * @param _translateService - TranslateService
-   * @param _budgetApiService - AcqBudgetApiService
+   * @param _budgetApiService - AcqBudgetService
    * @param _organisationService - OrganisationService
    */
   constructor(
     private _translateService: TranslateService,
-    private _budgetApiService: AcqBudgetApiService,
+    private _budgetApiService: AcqBudgetService,
     private _organisationService: OrganisationService
   ) {}
 

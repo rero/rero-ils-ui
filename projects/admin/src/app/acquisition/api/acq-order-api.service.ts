@@ -17,11 +17,8 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Record, RecordService, RecordUiService } from '@rero/ng-core';
-import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AcqAddressRecipient, AcqOrder, AcqOrderLine, AcqOrderPreview } from '../classes/order';
-import { Notification } from '../../classes/notification';
+import { Observable } from 'rxjs';
+import { AcqAddressRecipient } from '../classes/order';
 
 @Injectable({
   providedIn: 'root'
@@ -32,23 +29,12 @@ export class AcqOrderApiService {
   /** The resource name of acquisition account */
   resourceName = 'acq_orders';
 
-  /** Subject emitted when an order line is deleted. The order line pid will be emitted */
-  private _deletedOrderLineSubject$: Subject<AcqOrderLine> = new Subject();
-
-  // GETTER AND SETTER ========================================================
-  /** expose _deletedOrderLineSubject$ in 'readonly' mode */
-  get deletedOrderLineSubject$(): Observable<AcqOrderLine> { return this._deletedOrderLineSubject$.asObservable(); }
-
   // CONSTRUCTOR ==============================================================
   /**
    * Constructor
-   * @param _recordService - RecordService
-   * @param _recordUiService - RecordUiService
    * @param _http - HttpClient
    */
   constructor(
-    private _recordService: RecordService,
-    private _recordUiService: RecordUiService,
     private _http: HttpClient
   ) { }
 
@@ -58,22 +44,18 @@ export class AcqOrderApiService {
    * @param orderPid: the order pid
    * @return: the corresponding AcqOrder
    */
-  getOrder(orderPid: string): Observable<AcqOrder> {
+  getOrder(orderPid: string): Observable<any> {
     const apiUrl = `/api/${this.resourceName}/${orderPid}`;
-    return this._http.get<any>(apiUrl).pipe(
-      map((data: any) => new AcqOrder(data.metadata))
-    );
+    return this._http.get<any>(apiUrl);
   }
 
   /**
    * Get an order preview.
    * @param orderPid: the order pid
    */
-  getOrderPreview(orderPid: string): Observable<AcqOrderPreview> {
+  getOrderPreview(orderPid: string): Observable<any> {
     const apiUrl = `/api/acq_order/${orderPid}/acquisition_order/preview`;
-    return this._http.get<any>(apiUrl).pipe(
-      map((data: any) => new AcqOrderPreview(data))
-    );
+    return this._http.get<any>(apiUrl);
   }
 
   /**
@@ -81,47 +63,8 @@ export class AcqOrderApiService {
    * @param orderPid: the order pid
    * @param emails: the recipients emails address
    */
-  sendOrder(orderPid: string, emails: Array<AcqAddressRecipient>): Observable<any> {
+  createOrder(orderPid: string, emails: AcqAddressRecipient[]): Observable<any> {
     const apiUrl = `/api/acq_order/${orderPid}/send_order`;
-    return this._http.post<any>(apiUrl, {emails}).pipe(
-      map((data: any) => new Notification(data.data))
-    );
-
-  }
-
-
-  // ORDER LINES RELATED METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /**
-   * Get order lines related to an order
-   * @param orderPid: the order pid
-   * @return: an Observable of order lines
-   */
-  getOrderLines(orderPid: string): Observable<Array<AcqOrderLine>> {
-    const query = `acq_order.pid:${orderPid}`;
-    return this._recordService
-      .getRecords('acq_order_lines', query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, 'priority')
-      .pipe(
-        map((result: Record) => result.hits.hits),
-        map((hits: Array<any>) => hits.map(hit => new AcqOrderLine(hit.metadata)))
-      );
-  }
-
-  /**
-   * Allow to delete an order line based on its pid.
-   * If the order line is correctly deleted, this function emit 2 events:
-   *   * deletedOrderLineSubject$ : to specify which order line has been deleted.
-   *   * orderTotalAmountChanged$ : to specify the new parent order total amount
-   * @param orderLine: the order to delete
-   */
-  deleteOrderLine(orderLine: AcqOrderLine) {
-    this._recordUiService
-      .deleteRecord('acq_order_lines', orderLine.pid)
-      .subscribe((success: boolean) => {
-        if (success) {
-          this._deletedOrderLineSubject$.next(orderLine);
-        }
-      }
-    );
+    return this._http.post<any>(apiUrl, {emails});
   }
 }
