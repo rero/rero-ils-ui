@@ -18,8 +18,8 @@
 
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqOrder, AcqOrderLine, AcqOrderLineStatus, AcqOrderStatus } from '../../../classes/order';
+import { AcqOrderService } from '../../../services/acq-order.service';
 
 @Component({
   selector: 'admin-order-summary',
@@ -41,17 +41,17 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
 
   /**
    * Constructor
-   * @param _acqOrderApiService - ApiOrderApiService
+   * @param _acqOrderService - AcqOrderService
    */
   constructor(
-    private _acqOrderApiService: AcqOrderApiService
+    private _acqOrderService: AcqOrderService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
     // Subscription when an order line is deleted
     this._subscriptions.add(
-      this._acqOrderApiService.deletedOrderLineSubject$.subscribe((orderLine: AcqOrderLine) => {
+      this._acqOrderService.deletedOrderLineSubject$.subscribe((orderLine: AcqOrderLine) => {
         if (orderLine.status !== AcqOrderLineStatus.CANCELLED) {
           this.order.total_amount -= orderLine.total_amount;
           this.order.item_quantity.ordered -= orderLine.quantity;

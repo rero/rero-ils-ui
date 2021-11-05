@@ -19,7 +19,7 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-import { ObjectReference } from '../../classes/core';
+import { ObjectReference } from '@rero/shared';
 
 /** Wrapping class to describe an AcqAccount */
 export class AcqBudget {

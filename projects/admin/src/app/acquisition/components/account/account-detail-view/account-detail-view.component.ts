@@ -61,8 +61,8 @@ export class AccountDetailViewComponent implements OnInit, DetailRecord {
     this.record$.subscribe((data: any) => {
       this.esRecord$ = this._recordService.getRecords(this.type, `pid:${data.metadata.pid}`, 1, 1).pipe(
         map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-        map((hits: Array<any>) => hits.map((hit: any) => new AcqAccount(hit.metadata))),
-        map((hits: Array<AcqAccount>) => hits.find(Boolean))  // Get first element of array if exists
+        map((hits: any[]) => hits.map((hit: any) => new AcqAccount(hit.metadata))),
+        map((hits: AcqAccount[]) => hits.find(Boolean))  // Get first element of array if exists
       );
     });
   }

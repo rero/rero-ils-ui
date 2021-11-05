@@ -22,7 +22,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { AcquisitionModule } from '../../../acquisition.module';
-import { AcqAccountApiService } from '../../../api/acq-account-api.service';
+import { AcqAccountService } from '../../../services/acq-account.service';
 
 import { AccountListComponent } from './account-list.component';
 
@@ -30,7 +30,7 @@ describe('AccountListComponent', () => {
   let component: AccountListComponent;
   let fixture: ComponentFixture<AccountListComponent>;
 
-  const accountsApiServiceSpy = jasmine.createSpyObj('AcqAccountApiService', ['getAccounts']);
+  const accountsServiceSpy = jasmine.createSpyObj('AcqAccountService', ['getAccounts']);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -42,14 +42,14 @@ describe('AccountListComponent', () => {
         AcquisitionModule
       ],
       providers: [
-        { provide: AcqAccountApiService, useValue: accountsApiServiceSpy }
+        { provide: AcqAccountService, useValue: accountsServiceSpy }
       ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    accountsApiServiceSpy.getAccounts.and.returnValue(of([]));
+    accountsServiceSpy.getAccounts.and.returnValue(of([]));
     fixture = TestBed.createComponent(AccountListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
