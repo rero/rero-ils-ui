@@ -22,8 +22,8 @@ import { ToastrService } from 'ngx-toastr';
 import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
-import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { AcqAccount } from '../../../classes/account';
+import { AcqAccountService } from '../../../services/acq-account.service';
 
 @Component({
   selector: 'admin-account-brief-view',
@@ -62,14 +62,14 @@ export class AccountBriefViewComponent implements OnInit {
    * Constructor
    * @param _recordPermissionService: RecordPermissionService
    * @param _organisationService: OrganisationService
-   * @param _accountApiService: AcqAccountApiService
+   * @param _accountService: AcqAccountService
    * @param _toastrService: ToastrService
    * @param _translateService: TranslateService
    */
   constructor(
     private _recordPermissionService: RecordPermissionService,
     private _organisationService: OrganisationService,
-    private _accountApiService: AcqAccountApiService,
+    private _accountService: AcqAccountService,
     private _toastrService: ToastrService,
     private _translateService: TranslateService
   ) { }
@@ -83,7 +83,7 @@ export class AccountBriefViewComponent implements OnInit {
         .subscribe((data: RecordPermissions) => this.permissions = data);
       // load children accounts
       if (this.loadChildren) {
-        this._accountApiService.getAccounts(this.account.pid).subscribe(accounts => {
+        this._accountService.getAccounts(this.account.pid).subscribe(accounts => {
           this.children = accounts;
         });
       }
@@ -93,7 +93,7 @@ export class AccountBriefViewComponent implements OnInit {
   // COMPONENT FUNCTIONS ========================================================
   /** Delete the account */
   delete() {
-    this._accountApiService.delete(this.account.pid).subscribe(() => {
+    this._accountService.delete(this.account.pid).subscribe(() => {
       this._toastrService.success(this._translateService.instant('Account deleted'));
       this.deleteAccount.emit(this.account);
     });

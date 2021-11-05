@@ -18,8 +18,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '@rero/shared';
 import { OrganisationService } from '../../../../service/organisation.service';
-import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { AcqAccount } from '../../../classes/account';
+import { AcqAccountService } from '../../../services/acq-account.service';
 
 @Component({
   selector: 'admin-account-list',
@@ -29,7 +29,7 @@ export class AccountListComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES =======================================================
   /** Root account to display */
-  rootAccounts: Array<AcqAccount> = [];
+  rootAccounts: AcqAccount[] = [];
 
 
   // GETTER & SETTER ============================================================
@@ -42,18 +42,18 @@ export class AccountListComponent implements OnInit {
   /**
    * Constructor
    * @param _userService: UserService
-   * @param _accountApiService: AcqAccountApiService
+   * @param _accountService: AcqAccountService
    * @param _organisationService: OrganisationService
    */
   constructor(
     private _userService: UserService,
-    private _accountApiService: AcqAccountApiService,
+    private _accountService: AcqAccountService,
     private _organisationService: OrganisationService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._accountApiService.getAccounts(null).subscribe(accounts => {
+    this._accountService.getAccounts(null).subscribe(accounts => {
       this.rootAccounts = accounts;
     });
   }

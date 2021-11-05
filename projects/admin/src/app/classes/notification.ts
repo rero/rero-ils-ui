@@ -19,7 +19,7 @@
 // required as json properties is not lowerCamelCase
 
 import { Moment } from 'moment';
-import { ObjectReference } from './core';
+import { ObjectReference } from '../../../../shared/src/lib/class/core';
 
 export enum NotificationType {
   AVAILABILITY = 'availability',

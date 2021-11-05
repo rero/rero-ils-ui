@@ -19,8 +19,23 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-/** Interface to describe a reference between two object */
-export interface ObjectReference {
-  pid: string;
+/** Class to describe a reference between two object */
+export class ObjectReference {
+  pid?: string;
   type?: string;
+  $ref?: string;
+
+  /**
+   * Constructor
+   * @param obj - the JSON parsed object to load.
+   */
+  constructor(obj?: any){
+    Object.assign(this, obj);
+    // Try to fill empty values based from `$ref`
+    if (this.$ref && (this.pid === undefined || this.type === undefined)) {
+      const parts = this.$ref.split('/');
+      this.pid = parts.pop();
+      this.type = parts.pop();
+    }
+  }
 }

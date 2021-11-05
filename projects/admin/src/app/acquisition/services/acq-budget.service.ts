@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
@@ -26,7 +25,7 @@ import { AcqBudget } from '../classes/budget';
 @Injectable({
   providedIn: 'root'
 })
-export class AcqBudgetApiService {
+export class AcqBudgetService {
 
   /** The resource name of acquisition budget */
   resourceName = 'budgets';
@@ -48,7 +47,7 @@ export class AcqBudgetApiService {
     return this._recordService.getRecords(this.resourceName, query, 1, RecordService.MAX_REST_RESULTS_SIZE)
       .pipe(
         map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-        map((hits: Array<any>) => hits.map((hit: any) => new AcqBudget(hit.metadata)))
+        map((hits: any[]) => hits.map((hit: any) => new AcqBudget(hit.metadata)))
       );
   }
 
@@ -62,8 +61,8 @@ export class AcqBudgetApiService {
       .getRecords('acq_accounts', `budget.pid:${budgetPid} AND depth:0`, 1, RecordService.MAX_REST_RESULTS_SIZE)
       .pipe(
         map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-        map((hits: Array<any>) => hits.map((hit: any) => new AcqAccount(hit.metadata))),
-        map((accounts: Array<AcqAccount>) => accounts.reduce((total, acc) => total + acc.allocated_amount, 0))
+        map((hits: any[]) => hits.map((hit: any) => new AcqAccount(hit.metadata))),
+        map((accounts: AcqAccount[]) => accounts.reduce((total, acc) => total + acc.allocated_amount, 0))
       );
   }
 }
