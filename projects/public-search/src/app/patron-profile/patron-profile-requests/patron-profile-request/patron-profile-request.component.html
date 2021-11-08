@@ -36,6 +36,9 @@
     <ng-container *ngIf="record.metadata.state === 'ITEM_AT_DESK'">
       <i class="fa fa-check"  title="{{ 'item at desk' | translate }}" aria-hidden="true"></i>
       {{ 'to pick up' | translate }}
+      <ng-container *ngIf="record.metadata.request_expire_date">
+        {{ 'until' | translate }} {{ record.metadata.request_expire_date | dateTranslate: 'shortDate'}}
+      </ng-container>
     </ng-container>
 
     <!-- PENDING OR ITEM IN TRANSIT FOR PICKUP -->

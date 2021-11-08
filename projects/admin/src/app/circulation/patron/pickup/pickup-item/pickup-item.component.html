@@ -39,5 +39,10 @@
   <div class="col-3">
     {{ loan.metadata.pickup_location_pid | getRecord: 'locations' : 'field' : 'pickup_name' | async }}
   </div>
-  <div class="col-2">-<!-- TODO :: display the computed to_pick_up_until_date --></div>
+  <div class="col-2">
+    <ng-container *ngIf="loan.metadata.request_expire_date; else noDate">
+      {{ loan.metadata.request_expire_date | dateTranslate:'shortDate' }}
+    </ng-container>
+    <ng-template #noDate>{{ 'Unknown' | translate }}</ng-template>
+  </div>
 </ng-container>
