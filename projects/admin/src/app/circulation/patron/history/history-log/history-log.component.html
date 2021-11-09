@@ -58,6 +58,18 @@
   </div>
   <!-- Transaction history checkin / checkout -->
   <div class="mt-1" *ngIf="!isCollapsed">
+    <ng-container *ngIf="log.metadata.loan.item.pid | getRecord:'items' | async as item">
+      <div class="row">
+        <div class="col-2 font-weight-bold" translate>Item</div>
+        <div class="col-10">
+          <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]">
+            <ng-container *ngIf="!item.metadata.barcode && !item.metadata.call_number">{{ item.metadata.pid }}</ng-container>
+            <ng-container *ngIf="item.metadata.barcode">{{ item.metadata.barcode }}</ng-container>
+            <ng-container *ngIf="!item.metadata.barcode && item.metadata.call_number">{{ item.metadata.call_number }}</ng-container>
+          </a>
+        </div>
+      </div>
+    </ng-container>
     <h6 class="mt-2" translate>Transaction history</h6>
     <section class="col events-timeline">
       <!-- checkin event -->
