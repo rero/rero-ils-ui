@@ -18,6 +18,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DetailComponent, JSONSchema7, Record, RecordService, RouteInterface } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CanAccessGuard } from '../guard/can-access.guard';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { HoldingEditorComponent } from '../record/custom-editor/holding-editor/holding-editor.component';
 import { HoldingDetailViewComponent } from '../record/detail-view/holding-detail-view/holding-detail-view.component';
@@ -40,8 +41,8 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: HoldingEditorComponent, canActivate: [ CanUpdateGuard ] },
+        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ] },
+        { path: 'edit/:pid', component: HoldingEditorComponent, canActivate: [ CanAccessGuard, CanUpdateGuard ] },
         { path: 'new', component: HoldingEditorComponent }
       ],
       data: {

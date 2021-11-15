@@ -17,11 +17,10 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService, RecordUiService } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
+import { RecordUiService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { HoldingsApiService } from 'projects/admin/src/app/api/holdings-api.service';
+import { forkJoin, Observable } from 'rxjs';
 import { RecordPermissionService } from '../../../../service/record-permission.service';
 
 @Component({
@@ -35,6 +34,8 @@ export class HoldingsComponent implements OnInit {
   @Input() document: any;
   /** Holding type related to the parent document. */
   @Input() holdingType: 'electronic' | 'serial' | 'standard';
+  /** Restrict the functionality of interface */
+  @Input() isCurrentOrganisation = true;
 
   /** Holdings total */
   holdingsTotal = 0;
@@ -47,9 +48,6 @@ export class HoldingsComponent implements OnInit {
   /** Can a new holding be added? */
   canAdd = false;
 
-  /** Holdings per page */
-  private holdingsPerPage = 10;
-
   // GETTER & SETTER ==========================================================
   /**
    * Is the link `show more holdings` must be displayed.
@@ -57,7 +55,7 @@ export class HoldingsComponent implements OnInit {
    */
   get isLinkShowMore(): boolean {
     return this.holdingsTotal > 0
-      && ((this.page * this.holdingsPerPage) < this.holdingsTotal);
+      && ((this.page * this._holdingsApiService.ITEMS_PER_PAGE) < this.holdingsTotal);
   }
 
   /**
@@ -65,7 +63,7 @@ export class HoldingsComponent implements OnInit {
    * @return string
    */
   get hiddenHoldings(): string {
-    let count = this.holdingsTotal - (this.page * this.holdingsPerPage);
+    let count = this.holdingsTotal - (this.page * this._holdingsApiService.ITEMS_PER_PAGE);
     if (count < 0) {
       count = 0;
     }
@@ -76,49 +74,63 @@ export class HoldingsComponent implements OnInit {
     return linkTextTranslate.replace('{{ counter }}', count);
   }
 
+  /** return the document pid */
+  get documentPid(): string {
+    return this.document.metadata.pid;
+  }
+
+  /** return the organisation pid */
+  get organisationPid(): string {
+    return this._userService.user.currentOrganisation;
+  }
+
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param _userService - UserService
-   * @param _recordService - RecordService
+   * @param _holdingsApiService - HoldingsApiService
    * @param _recordUiService - RecordUiService
    * @param _recordPermissionService - RecordPermissionService
    * @param _translateService - TranslateService
    */
   constructor(
     private _userService: UserService,
-    private _recordService: RecordService,
+    private _holdingsApiService: HoldingsApiService,
     private _recordUiService: RecordUiService,
     private _recordPermissionService: RecordPermissionService,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
   ) { }
 
   /** onInit hook */
   ngOnInit() {
-    this.canAdd = (!('harvested' in this.document.metadata));
-    const orgPid = this._userService.user.currentOrganisation;
-    this.query = `document.pid:${this.document.metadata.pid} AND organisation.pid:${orgPid}
-    AND ((holdings_type:standard AND items_count:[1 TO *])
-    OR holdings_type:serial OR holdings_type:electronic)`;
-    const holdingsRecords = this._holdingsQuery(1, this.query);
-    const holdingsCount = this._holdingsCountQuery(this.query);
-    const permissionsRef = this._recordPermissionService.getPermission('holdings');
-    forkJoin([holdingsRecords, holdingsCount, permissionsRef])
-      .subscribe((result: [any[], number, any]) => {
-        this.holdings = result[0];
-        this.holdingsTotal = result[1];
-        const permissions = result[2];
-        this.canAdd = this.canAdd && permissions.create.can;
+    this.canAdd = this.isCurrentOrganisation && (!('harvested' in this.document.metadata));
+    const holdingsRecords = this._holdingsQuery(this.documentPid, this.organisationPid, 1, this.isCurrentOrganisation);
+    const holdingsCount = this._holdingsCountQuery(this.documentPid, this.organisationPid, this.isCurrentOrganisation);
+    if (this.isCurrentOrganisation) {
+      const permissionsRef = this._recordPermissionService.getPermission('holdings');
+      forkJoin([holdingsRecords, holdingsCount, permissionsRef])
+        .subscribe((result: [any[], number, any]) => {
+          this.holdings = result[0];
+          this.holdingsTotal = result[1];
+          const permissions = result[2];
+          this.canAdd = this.canAdd && permissions.create.can;
+        });
+    } else {
+      forkJoin([holdingsRecords, holdingsCount]).subscribe(([records, count]) => {
+        this.holdings = records;
+        this.holdingsTotal = count;
       });
+    }
   }
 
   // COMPONENT FUNCTIONS ======================================================
   /** Handler when `show more` ink is clicked */
   showMore() {
     this.page++;
-    this._holdingsQuery(this.page, this.query).subscribe((holdings: any[]) => {
-      this.holdings = this.holdings.concat(holdings);
-    });
+    this._holdingsQuery(this.documentPid, this.organisationPid, this.page, this.isCurrentOrganisation)
+      .subscribe((holdings: any[]) => {
+        this.holdings = this.holdings.concat(holdings);
+      });
   }
 
   /**
@@ -146,31 +158,29 @@ export class HoldingsComponent implements OnInit {
   }
 
   /**
-   * Holdings count query
-   * @param query - string
-   * @return Observable
+   * Holdings count
+   * @param documentPid - document pid
+   * @param organisationPid - organisation pid
+   * @param isCurrentOrganisation - is current organisation
+   * @returns Observable
    */
-  private _holdingsCountQuery(query: string) {
-    return this._recordService.getRecords(
-      'holdings', query, 1, 1,
-      undefined, undefined, undefined, 'library_location'
-    ).pipe(
-      map((holdings: Record) => this._recordService.totalHits(holdings.hits.total))
-    );
+  private _holdingsCountQuery(
+    documentPid: string, organisationPid: string, isCurrentOrganisation: boolean = true): Observable<number> {
+    return this._holdingsApiService.getHoldingsCount(documentPid, organisationPid, isCurrentOrganisation);
   }
 
+
   /**
-   * Return a selected Holdings record
-   * @param page - number
-   * @param query - string
-   * @return Observable
+   * Get holdings records
+   * @param documentPid - document pid
+   * @param organisationPid - organisation pid
+   * @param page - current page
+   * @param isCurrentOrganisation - is current organisation
+   * @returns Observable
    */
-  private _holdingsQuery(page: number, query: string) {
-    return this._recordService.getRecords(
-      'holdings', query, page, this.holdingsPerPage,
-      undefined, undefined, {Accept: 'application/rero+json'}, 'library_location'
-    ).pipe(map((holdings: Record) => {
-      return holdings.hits.hits;
-    }));
+  private _holdingsQuery(
+    documentPid: string, organisationPid: string, page: number, isCurrentOrganisation: boolean = true): Observable<any> {
+    return this._holdingsApiService.getHoldings(
+      documentPid, organisationPid, isCurrentOrganisation, page, this._holdingsApiService.ITEMS_PER_PAGE);
   }
 }

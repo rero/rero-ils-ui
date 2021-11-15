@@ -31,6 +31,7 @@ import {
   TranslateLoader, TranslateService, TruncateTextPipe
 } from '@rero/ng-core';
 import { ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -170,6 +171,9 @@ import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-fac
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
+import {
+  HoldingOrganisationComponent
+} from './record/detail-view/document-detail-view/holding-organisation/holding-organisation.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService) {
@@ -281,10 +285,12 @@ export function appInitFactory(appInitService: AppInitService) {
     OtherEditionComponent,
     DescriptionZoneComponent,
     DocumentProvisionActivityPipe,
-    MainTitleRelationPipe
+    MainTitleRelationPipe,
+    HoldingOrganisationComponent
   ],
   imports: [
     AppRoutingModule,
+    AccordionModule.forRoot(),
     BrowserAnimationsModule,
     BrowserModule,
     BsDatepickerModule.forRoot(),
@@ -423,7 +429,8 @@ export function appInitFactory(appInitService: AppInitService) {
     CustomShortcutHelpComponent,
     ContributionDetailViewComponent,
     OperationLogsComponent,
-    UserIdEditorComponent
+    UserIdEditorComponent,
+    HoldingOrganisationComponent
   ],
   bootstrap: [AppComponent],
   schemas: [

@@ -20,6 +20,7 @@ import { DetailComponent, EditorComponent, JSONSchema7, Record, RecordSearchPage
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ItemType } from '../classes/items';
+import { CanAccessGuard } from '../guard/can-access.guard';
 import { CanUpdateGuard } from '../guard/can-update.guard';
 import { ItemsBriefViewComponent } from '../record/brief-view/items-brief-view/items-brief-view.component';
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
@@ -41,10 +42,9 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        // TODO: add guards
         { path: '', component: RecordSearchPageComponent },
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
+        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ] },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard, CanUpdateGuard ] },
         { path: 'new', component: EditorComponent }
       ],
       data: {

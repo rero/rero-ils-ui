@@ -39,6 +39,8 @@ export class DefaultHoldingItemComponent implements OnInit {
   @Input() item: any;
   /** Event for delete Item */
   @Output() deleteItem = new EventEmitter();
+  /** Restrict the functionality of interface */
+  @Input() isCurrentOrganisation = true;
 
   /** Item permissions */
   permissions: any;
@@ -69,7 +71,9 @@ export class DefaultHoldingItemComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._getPermissions();
+    if (this.isCurrentOrganisation) {
+      this._getPermissions();
+    }
   }
 
 

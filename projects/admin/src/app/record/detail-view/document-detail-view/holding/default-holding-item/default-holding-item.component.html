@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="container item px-0 mt-1 mb-2" *ngIf="item && permissions">
+<div class="container item px-0 mt-1 mb-2" *ngIf="item">
   <div class="row">
     <!-- METADATA COLUMN -->
     <div class="col-10">
@@ -23,9 +23,13 @@
         <div class="col-4 pl-5 font-weight-bold label-title" translate>Barcode</div>
         <div class="col-8">
           <admin-record-masked *ngIf="item.metadata._masked" [record]="item"></admin-record-masked>
-          <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
-            {{ item.metadata.barcode }}
-          </a>
+          <!-- Remove link if not current organisation -->
+          <ng-container *ngIf="permissions; else barcodeOnly">
+            <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
+              {{ item.metadata.barcode }}
+            </a>
+          </ng-container>
+          <ng-template #barcodeOnly>{{ item.metadata.barcode }}</ng-template>
         </div>
         <!-- Unit -->
         <ng-container *ngIf="item.metadata.enumerationAndChronology">
@@ -69,8 +73,8 @@
           <div class="col-4 pl-5 font-weight-bold label-title" translate>Temporary location</div>
           <div class="col-8">{{ item.metadata.temporary_location.name }}</div>
         </ng-container>
-        <!-- ITEM IN COLLECTION -->
-        <ng-container *ngIf="item.metadata.pid | itemInCollection | async as collections">
+        <!-- ITEM IN COLLECTION (hide if not current organisation) -->
+        <ng-container *ngIf="permissions && item.metadata.pid | itemInCollection | async as collections">
           <div class="col-4 pl-5 font-weight-bold label-title" translate>Exhibition/course</div>
           <div class="col-8">
             <ng-container *ngFor="let collection of collections; let last=last">
@@ -80,49 +84,55 @@
           </div>
         </ng-container>
       </div>
-      <admin-holding-item-note [note]="note" *ngFor="let note of item.metadata.notes"></admin-holding-item-note>
-      <admin-holding-item-temporary-item-type [record]="item"></admin-holding-item-temporary-item-type>
+      <!-- (hide if not current organisation) -->
+      <ng-container *ngIf="permissions">
+        <admin-holding-item-note [note]="note" *ngFor="let note of item.metadata.notes"></admin-holding-item-note>
+        <admin-holding-item-temporary-item-type [record]="item"></admin-holding-item-temporary-item-type>
+      </ng-container>
     </div>
     <!-- ACTIONS BUTTONS -->
     <div class="col-2 text-right" name="buttons">
-      <button *ngIf="permissions.canRequest && permissions.canRequest.can; else notRequest"
-              type="button" class="btn btn-sm btn-outline-primary " (click)="addRequest(item.metadata.pid)"
-              title="{{ 'Item request' | translate }}"
-              name="request">
-        <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-      </button>
-      <ng-template #notRequest>
-        <button type="button" class="btn btn-sm btn-outline-primary disabled"
+      <ng-container *ngIf="permissions; else noAction">
+        <button *ngIf="permissions.canRequest && permissions.canRequest.can; else notRequest"
+                type="button" class="btn btn-sm btn-outline-primary " (click)="addRequest(item.metadata.pid)"
                 title="{{ 'Item request' | translate }}"
-                [popover]="tolTemplate" triggers="mouseenter:mouseleave"
                 name="request">
           <i class="fa fa-shopping-basket" aria-hidden="true"></i>
         </button>
-        <ng-template #tolTemplate><div [innerHtml]="cannotRequestInfoMessage | nl2br"></div></ng-template>
-      </ng-template>
-      <button *ngIf="permissions.update && permissions.update.can"
-              type="button" class="btn btn-sm btn-outline-primary ml-1"
-              title="{{ 'Edit' | translate }}"
-              [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
-              name="edit">
-        <i class="fa fa-pencil"></i>
-      </button>
-      <button *ngIf="permissions.delete && permissions.delete.can; else deleteInfo"
-              type="button" class="btn btn-outline-danger btn-sm ml-1"
-              title="{{ 'Delete' | translate }}"
-              (click)="delete(item.metadata.pid)"
-              name="delete">
-        <i class="fa fa-trash"></i>
-      </button>
-      <ng-template #deleteInfo>
-        <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"
+        <ng-template #notRequest>
+          <button type="button" class="btn btn-sm btn-outline-primary disabled"
+                  title="{{ 'Item request' | translate }}"
+                  [popover]="tolTemplate" triggers="mouseenter:mouseleave"
+                  name="request">
+            <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+          </button>
+          <ng-template #tolTemplate><div [innerHtml]="cannotRequestInfoMessage | nl2br"></div></ng-template>
+        </ng-template>
+        <button *ngIf="permissions.update && permissions.update.can"
+                type="button" class="btn btn-sm btn-outline-primary ml-1"
+                title="{{ 'Edit' | translate }}"
+                [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
+                name="edit">
+          <i class="fa fa-pencil"></i>
+        </button>
+        <button *ngIf="permissions.delete && permissions.delete.can; else deleteInfo"
+                type="button" class="btn btn-outline-danger btn-sm ml-1"
                 title="{{ 'Delete' | translate }}"
-                [popover]="tolTemplate" triggers="mouseenter:mouseleave"
+                (click)="delete(item.metadata.pid)"
                 name="delete">
           <i class="fa fa-trash"></i>
         </button>
-        <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
-      </ng-template>
+        <ng-template #deleteInfo>
+          <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"
+                  title="{{ 'Delete' | translate }}"
+                  [popover]="tolTemplate" triggers="mouseenter:mouseleave"
+                  name="delete">
+            <i class="fa fa-trash"></i>
+          </button>
+          <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
+        </ng-template>
+      </ng-container>
+      <ng-template #noAction>&nbsp;</ng-template>
     </div>
   </div>
 </div>

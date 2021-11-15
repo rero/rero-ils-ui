@@ -54,10 +54,12 @@
 </div>
 
 <ng-container *ngIf="holdings">
-  <admin-document-holding *ngFor="let holding of holdings"
-                          [holding]="holding"
-                          [isItemsCollapsed]="holdingsTotal > 1"
-                          (deleteHolding)="deleteHolding($event)"
+  <admin-document-holding
+    *ngFor="let holding of holdings"
+    [holding]="holding"
+    [isItemsCollapsed]="holdingsTotal > 1"
+    [isCurrentOrganisation]="isCurrentOrganisation"
+    (deleteHolding)="deleteHolding($event)"
   >
   </admin-document-holding>
   <ng-container *ngIf="isLinkShowMore">
