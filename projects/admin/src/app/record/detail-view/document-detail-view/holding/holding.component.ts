@@ -38,6 +38,8 @@ export class HoldingComponent implements OnInit, OnDestroy {
   @Output() deleteHolding = new EventEmitter();
   /** Items collapsed */
   @Input() isItemsCollapsed = true;
+  /** Restrict the functionality of interface */
+  @Input() isCurrentOrganisation = true;
 
   /** shortcut for holding type */
   holdingType: 'electronic' | 'serial' | 'standard';
@@ -81,7 +83,9 @@ export class HoldingComponent implements OnInit, OnDestroy {
     if (this.holdingType !== 'electronic') {
       this._loadItems();
     }
-    this._getPermissions();
+    if (this.isCurrentOrganisation) {
+      this._getPermissions();
+    }
   }
 
   /** onDestroy hook */

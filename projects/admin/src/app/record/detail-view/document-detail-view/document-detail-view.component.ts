@@ -209,18 +209,6 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
     }
   }
 
-  /** Get the holding type used to add a new holding. */
-  get holdingType(): 'standard'|'electronic'|'serial' {
-    const data = this.record.metadata;
-    if (data.issuance.main_type === 'rdami:1003') {
-      return 'serial';
-    }
-    if (data.harvested === true && data.type === 'ebook') {
-      return 'electronic';
-    }
-    return 'standard';
-  }
-
   /**
    * Format "part of" numbering for display
    *

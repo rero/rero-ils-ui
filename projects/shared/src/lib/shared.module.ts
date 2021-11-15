@@ -40,7 +40,7 @@ import { PersonBriefComponent } from './view/brief/person-brief/person-brief.com
 import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
 import { GetTranslatedLabelPipe } from './pipe/get-translated-label.pipe';
-import { ContributionFilterPipe } from '../public-api';
+import { ContributionFilterPipe } from './pipe/contribution-filter.pipe';
 
 @NgModule({
   declarations: [
