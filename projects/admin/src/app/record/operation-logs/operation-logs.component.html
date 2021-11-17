@@ -1,6 +1,7 @@
 <!--
   RERO ILS UI
   Copyright (C) 2021 RERO
+  Copyright (C) 2021 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,62 +15,49 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div *ngIf="createRecord || records.length > 0" class="modal d-block" tabindex="-1" role="dialog">
+<div class="modal d-block" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" translate>Operation history</h5>
         <button type="button" class="close pull-right" aria-label="Close" (click)="closeDialog()">
-      <span aria-hidden="true">&times;</span>
-    </button>
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-      <div class="modal-body overflow-auto overflow-max-size">
+      <div class="modal-body container">
         <ng-container *ngIf="loadedRecord; else loaded">
-          <ng-container *ngIf="createRecord">
-            <ng-container *ngIf="createRecord">
-              <ul class="list-unstyled mx-2 mb-3">
-                <li>
-                  <div class="row col">
-                    <div class="log-date">
-                      {{ createRecord.metadata.date | dateTranslate :'shortDate' }}
-                      {{ createRecord.metadata.date | dateTranslate :'mediumTime' }}
-                    </div>
-                    <div class="log-action text-bold">
-                      {{ createRecord.metadata.operation | translate }}
-                    </div>
-                    {{ createRecord.metadata.user_name }}
-                  </div>
-                </li>
-              </ul>
+          <ng-container *ngIf="createRecord || records.length > 0; else noRecord">
+            <ng-container *ngIf="createRecord"
+                          [ngTemplateOutlet]="operationLog"
+                          [ngTemplateOutletContext]="{data: createRecord.metadata}">
+            </ng-container>
+            <ng-container *ngIf="recordTotals > 0">
+              <ng-container *ngFor="let record of records"
+                            [ngTemplateOutlet]="operationLog"
+                            [ngTemplateOutletContext]="{data: record.metadata}">
+              </ng-container>
+              <ng-container *ngIf="isLinkShowMore">
+                <button type="button" class="btn btn-link pl-1" (click)="showMore()">
+                  <i class="fa fa-arrow-circle-o-down"></i> {{ 'Show more' | translate }}
+                </button>
+                <small *ngIf="isLinkShowMore">({{ hiddenOperationLogs }})</small>
+              </ng-container>
             </ng-container>
           </ng-container>
-          <ng-container *ngIf="recordTotals > 0">
-            <ul class="list-unstyled mx-2 mb-0">
-              <li *ngFor="let record of records; let index = index" class="py-1" [ngClass]="{ 'bg-light': index % 2 }">
-                <div class="row col">
-                  <div class="log-date">
-                    {{ record.metadata.date | dateTranslate :'shortDate' }}
-                    {{ record.metadata.date | dateTranslate :'mediumTime' }}
-                  </div>
-                  <div class="log-action text-bold">
-                    {{ record.metadata.operation | translate }}
-                  </div>
-                  {{ record.metadata.user_name }}
-                </div>
-              </li>
-            </ul>
-            <ng-container *ngIf="isLinkShowMore">
-              <button type="button" id="show-more-{{ resourceType }}-{{ resourcePid }}" class="btn btn-link pl-1" (click)="showMore()">
-                <i class="fa fa-arrow-circle-o-down"></i> {{ 'Show more' | translate }}
-              </button>
-              <small *ngIf="isLinkShowMore">({{ hiddenOperationLogs }})</small>
-            </ng-container>
-          </ng-container>
+          <ng-template #noRecord>{{ 'No history for this item' | translate }}</ng-template>
         </ng-container>
-        <ng-template #loaded>
-          {{ 'loading in progress' | translate }}
-        </ng-template>
+        <ng-template #loaded><i class="fa fa-spinner fa-pulse"></i></ng-template>
       </div>
     </div>
   </div>
 </div>
+
+<ng-template #operationLog let-metadata=data>
+  <div class="row operation-log">
+    <div class="col-3 date">
+      {{ metadata.date | dateTranslate :'shortDate' }} - {{ metadata.date | dateTranslate :'mediumTime' }}
+    </div>
+    <div class="col-2 operation">{{ metadata.operation | translate }}</div>
+    <div class="col">{{ metadata.user_name }}</div>
+  </div>
+</ng-template>
