@@ -125,6 +125,7 @@
   "status": "Status",
   "subject": "Thema",
   "to pick up": "abholbereit",
+  "until": "until",
   "waiting": "ausstehend",
   "{{ counter }} hidden holding": "{{ counter }} versteckter Bestand",
   "{{ counter }} hidden holdings": "{{ counter }} versteckte Bestände",

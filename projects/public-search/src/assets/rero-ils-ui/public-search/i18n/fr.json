@@ -125,6 +125,7 @@
   "status": "statut",
   "subject": "sujet",
   "to pick up": "à retirer",
+  "until": "until",
   "waiting": "en attente",
   "{{ counter }} hidden holding": "{{ counter }} état de collection caché",
   "{{ counter }} hidden holdings": "{{ counter }} états de collection cachés",
