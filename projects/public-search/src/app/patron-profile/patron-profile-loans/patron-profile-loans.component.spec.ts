@@ -73,10 +73,10 @@ describe('PatronProfileLoanComponent', () => {
     component = fixture.componentInstance;
     loanApiService = TestBed.inject(LoanApiService);
     userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
+    userService = TestBed.inject(UserService);
+    userService.load().subscribe();
     patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
     patronProfileMenuService.init();
-    userService = TestBed.inject(UserService);
-    userService.load();
     fixture.detectChanges();
   });
 

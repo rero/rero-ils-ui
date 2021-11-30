@@ -62,10 +62,10 @@ describe('PatronProfileMessageComponent', () => {
     fixture = TestBed.createComponent(PatronProfileMessageComponent);
     component = fixture.componentInstance;
     userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
+    userService = TestBed.inject(UserService);
+    userService.load().subscribe();
     patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
     patronProfileMenuService.init();
-    userService = TestBed.inject(UserService);
-    userService.load();
     fixture.detectChanges();
   });
 

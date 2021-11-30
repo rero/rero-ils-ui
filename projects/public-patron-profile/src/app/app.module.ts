@@ -65,7 +65,7 @@ import { AppInitializerService } from './app-initializer.service';
 
 /** function to instantiate the application  */
 export function appInitFactory(appInitializerService: AppInitializerService) {
-  return () => appInitializerService.load();
+  return () => appInitializerService.load().toPromise();
 }
 
 

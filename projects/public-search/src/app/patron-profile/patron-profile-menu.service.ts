@@ -82,21 +82,20 @@ export class PatronProfileMenuService {
    * Constructor
    * @param _userService - UserService
    */
-  constructor(private _userService: UserService) {}
+  constructor(private _userService: UserService) { }
 
   /** OnInit hook */
   init(): void {
-    this._userService.loaded$.subscribe((user: User) => {
-      if (user.isAuthenticated) {
-        this._patrons = user.patrons.filter((patron) => patron.roles.includes('patron'));
-        this._currentPatron = this._patrons[0];
-        this._patrons.forEach((patron: IPatron) =>
-          this._menu.push({ value: patron.pid, name: patron.organisation.name })
-        );
-        this._currentMenu = this._menu[0];
-        this._onChange.next(this._menu[0]);
-      }
-    });
+    const user = this._userService.user;
+    if (user.isAuthenticated) {
+      this._patrons = user.patrons.filter((patron) => patron.roles.includes('patron'));
+      this._currentPatron = this._patrons[0];
+      this._patrons.forEach((patron: IPatron) =>
+        this._menu.push({ value: patron.pid, name: patron.organisation.name })
+      );
+      this._currentMenu = this._menu[0];
+      this._onChange.next(this._menu[0]);
+    }
   }
 
   /** Change */

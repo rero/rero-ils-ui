@@ -17,6 +17,7 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageService } from '@rero/ng-core';
 import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { UserApiService } from '../api/user-api.service';
 import { IUser, User } from '../class/user';
 import { AppSettingsService, ISettings } from './app-settings.service';
@@ -63,15 +64,18 @@ export class UserService {
   }
 
   /** load */
-  load(): void {
-    this._userApiService.getLoggedUser().subscribe((loggedUser: any) => {
-      const settingsKey = 'settings';
-      const settings: ISettings = loggedUser.settings;
-      this._appSettingsService.settings = settings;
-      delete loggedUser[settingsKey];
-      this._user = new User(loggedUser, this._appSettingsService.librarianRoles);
-      this._loaded.next(this._user);
-    });
+  load(): Observable<IUser> {
+    return this._userApiService.getLoggedUser().pipe(
+      map((loggedUser: any) => {
+        const settingsKey = 'settings';
+        const settings: ISettings = loggedUser.settings;
+        this._appSettingsService.settings = settings;
+        delete loggedUser[settingsKey];
+        this._user = new User(loggedUser, this._appSettingsService.librarianRoles);
+        this._loaded.next(this._user);
+        return this._user;
+      })
+    );
   }
 
   /**

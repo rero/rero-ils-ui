@@ -172,8 +172,8 @@ import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/cust
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 
 /** Init application factory */
-export function appInitFactory(appInitService: AppInitService) {
-  return () => appInitService.load();
+export function appInitFactory(appInitService: AppInitService): () => Promise<any> {
+  return () => appInitService.load().toPromise();
 }
 
 @NgModule({

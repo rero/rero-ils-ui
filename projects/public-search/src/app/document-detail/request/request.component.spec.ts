@@ -70,7 +70,7 @@ describe('RequestComponent', () => {
     component.item = itemRecord;
     userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
     userService = TestBed.inject(UserService);
-    userService.load();
+    userService.load().subscribe();
     fixture.detectChanges();
   });
 
