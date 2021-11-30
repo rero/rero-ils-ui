@@ -70,7 +70,7 @@ describe('MenuMobileComponent', () => {
     librarySwitchMenuService = TestBed.inject(LibrarySwitchMenuService);
     librarySwitchMenuService.init();
     userService = TestBed.inject(UserService);
-    userService.load();
+    userService.load().subscribe();
     const currentLibrary = testUserLibrarianWithSettings.patrons[0].libraries[0].pid;
     userService.user.currentLibrary = currentLibrary;
     userService.user.currentOrganisation = testUserLibrarianWithSettings.patrons[0].organisation.pid;

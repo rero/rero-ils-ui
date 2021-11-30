@@ -176,8 +176,8 @@ import {
 } from './record/detail-view/document-detail-view/holding-organisation/holding-organisation.component';
 
 /** Init application factory */
-export function appInitFactory(appInitService: AppInitService) {
-  return () => appInitService.load();
+export function appInitFactory(appInitService: AppInitService): () => Promise<any> {
+  return () => appInitService.load().toPromise();
 }
 
 @NgModule({

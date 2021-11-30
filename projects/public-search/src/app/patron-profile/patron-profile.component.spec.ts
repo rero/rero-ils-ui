@@ -55,7 +55,6 @@ describe('PatronProfileComponent', () => {
   };
 
   const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
-  userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
 
   const loanApiServiceSpy = jasmine.createSpyObj('LoanApiService', ['getOnLoan', 'getRequest']);
   loanApiServiceSpy.getOnLoan.and.returnValue(of(apiResponse));
@@ -97,9 +96,11 @@ describe('PatronProfileComponent', () => {
   });
 
   beforeEach(() => {
+    userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
+    userService = TestBed.inject(UserService);
+    userService.load().subscribe();
     patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
     patronProfileMenuService.init();
-    userService = TestBed.inject(UserService);
     fixture = TestBed.createComponent(PatronProfileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -127,6 +128,6 @@ describe('PatronProfileComponent', () => {
       tab = fixture.nativeElement.querySelector('.nav-tabs li:nth-child(6)');
       expect(tab.textContent).toContain('Personal details');
     });
-    userService.load();
+    userService.load().subscribe();
   });
 });

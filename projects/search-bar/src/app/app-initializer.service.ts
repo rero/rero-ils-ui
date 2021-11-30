@@ -17,6 +17,8 @@
 
 import { Injectable } from '@angular/core';
 import { UserService } from '@rero/shared';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -31,11 +33,8 @@ export class AppInitializerService {
     private _userService: UserService
   ) { }
 
-  /** Load */
-  load() {
-    return new Promise((resolve) => {
-      this._userService.load();
-      resolve(true);
-    });
-  }
+    /** load */
+    load(): Observable<any> {
+      return this._userService.load();
+    }
 }
