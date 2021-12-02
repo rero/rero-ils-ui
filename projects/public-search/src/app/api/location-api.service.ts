@@ -36,12 +36,13 @@ export class LocationApiService extends BaseApi {
 
   /**
    * Get pickup locations by viewcode
-   * @param itemPid - string
-   * @return Observable
+   * @param record pid - pid of item or holding
+   * @param recordType - 'item' or 'holding'
+   * @return Observable - locations pids and pickup_names for item or holding
    */
-  getPickupLocationsByItemId(itemPid: string) {
+  getPickupLocationsByRecordId(recordType: string, recordPid: string) {
     return this._httpClient
-      .get<any>(`/api/item/${itemPid}/pickup_locations`)
+      .get<any>(`/api/${recordType}/${recordPid}/pickup_locations`)
       .pipe(map(result => {
         const locations = [];
         if (result) {

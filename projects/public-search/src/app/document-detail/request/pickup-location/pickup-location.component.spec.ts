@@ -45,8 +45,8 @@ describe('PickupLocationComponent', () => {
     { pid: '2', name: 'location 2' }
   ];
 
-  const locationServiceSpy = jasmine.createSpyObj('LocationService', ['getPickupLocationsByItemId']);
-  locationServiceSpy.getPickupLocationsByItemId.and.returnValue(of(pickupLocations));
+  const locationServiceSpy = jasmine.createSpyObj('LocationService', ['getPickupLocationsByRecordId']);
+  locationServiceSpy.getPickupLocationsByRecordId.and.returnValue(of(pickupLocations));
 
   const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
 
@@ -80,7 +80,7 @@ describe('PickupLocationComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PickupLocationComponent);
     component = fixture.componentInstance;
-    component.item = itemRecord;
+    component.record = itemRecord;
     fixture.detectChanges();
   });
 
