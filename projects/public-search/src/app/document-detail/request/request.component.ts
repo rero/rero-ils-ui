@@ -17,6 +17,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IPatron, UserService } from '@rero/shared';
 import { ItemApiService } from '../../api/item-api.service';
+import { HoldingsApiService } from '../../api/holdings-api.service';
 
 @Component({
   selector: 'public-search-request',
@@ -24,8 +25,11 @@ import { ItemApiService } from '../../api/item-api.service';
 })
 export class RequestComponent implements OnInit {
 
-  /** Item record */
-  @Input() item: any;
+  /** Record: item or holding */
+  @Input() record: any;
+
+  /** Record type */
+  @Input() recordType: string;
 
   /** View code */
   @Input() viewcode: string;
@@ -50,25 +54,36 @@ export class RequestComponent implements OnInit {
   /**
    * Constructor
    * @param _itemApiService - ItemApiService
+   * @param _holdingsApiService: HoldingsApiService
    * @param _userService - UserService
    */
   constructor(
     private _itemApiService: ItemApiService,
-    private _userService: UserService
+    private _holdingsApiService: HoldingsApiService,
+    private _userService: UserService,
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
+    let apiRequest = null;
+    switch (this.recordType) {
+        case 'holding': { apiRequest = this._holdingsApiService; break; }
+        case 'item': { apiRequest = this._itemApiService; break; }
+        default: throw new TypeError(`${this.recordType} isn't supported`);
+    }
+
     if (this._userService.user) {
-      this._patron = this._userService.user.getPatronByOrganisationPid(
-        this.item.metadata.organisation.pid
-      );
-      if (this._patron?.patron) {
-        this._itemApiService.canRequest(
-          this.item.metadata.pid,
-          this.item.metadata.library.pid,
-          this._patron.patron.barcode[0],
-        ).subscribe((can: any) => this.canRequest = can );
+      if (this.record) {
+        this._patron = this._userService.user.getPatronByOrganisationPid(
+          this.record.metadata.organisation.pid
+        );
+        if (this._patron?.patron) {
+          apiRequest.canRequest(
+            this.record.metadata.pid,
+            this.record.metadata.library.pid,
+            this._patron.patron.barcode[0],
+          ).subscribe((can: any) => this.canRequest = can);
+        }
       }
     }
   }
