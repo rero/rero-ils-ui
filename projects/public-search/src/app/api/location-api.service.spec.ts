@@ -56,7 +56,7 @@ describe('LocationService', () => {
   });
 
   it('should a set of pickup locations', () => {
-    service.getPickupLocationsByItemId('1').subscribe(response => {
+    service.getPickupLocationsByRecordId('item', '1').subscribe(response => {
       expect(response).toEqual(locationsResponse);
     });
   });

@@ -17,11 +17,11 @@
 <ng-container *ngIf="patron">
   <ng-container *ngIf="!requestDialog; else requestPickupDialog">
     <ng-container *ngIf="canRequest">
-      <div *ngIf="canRequest.can" id="item-request-{{ item.metadata.pid }}" class="row pl-4">
+      <div *ngIf="canRequest.can" id="record-request-{{ record.metadata.pid }}" [ngClass]="recordType == 'item' ? 'row pl-4' : ''" >
         <dt class="my-2 col-lg-2 col-sm-3">&nbsp;</dt>
         <dd class="my-2 col-lg-9 col-sm-8">
           <button
-            id="item-{{ item.metadata.pid }}-request-button"
+            id="record-{{ record.metadata.pid }}-request-button"
             class="btn btn-sm btn-primary"
             (click)="showRequestDialog()"
             translate
@@ -32,7 +32,8 @@
   </ng-container>
   <ng-template #requestPickupDialog>
     <public-search-pickup-location
-      [item]="item"
+      [record]="record"
+      recordType="{{ recordType }}"
       [viewcode]="viewcode"
       (closeEvent)="closeDialog()"
       class="row pl-4"

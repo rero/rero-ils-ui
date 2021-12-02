@@ -22,9 +22,10 @@ import { testUserPatronWithSettings, UserApiService, UserService } from '@rero/s
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { ItemApiService } from '../../api/item-api.service';
+import { HoldingsApiService } from '../../api/holdings-api.service';
 import { RequestComponent } from './request.component';
 
-describe('RequestComponent', () => {
+describe('RequestComponentItem', () => {
   let component: RequestComponent;
   let fixture: ComponentFixture<RequestComponent>;
   let userService: UserService;
@@ -67,7 +68,8 @@ describe('RequestComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(RequestComponent);
     component = fixture.componentInstance;
-    component.item = itemRecord;
+    component.record = itemRecord;
+    component.recordType = 'item';
     userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
     userService = TestBed.inject(UserService);
     userService.load().subscribe();
@@ -79,7 +81,69 @@ describe('RequestComponent', () => {
   });
 
   it('should have the request button', () => {
-    const id = `#item-${itemRecord.metadata.pid}-request-button`;
+    const id = `#record-${itemRecord.metadata.pid}-request-button`;
+    const showMore = fixture.nativeElement.querySelector(id);
+    expect(showMore.textContent).toContain('Request');
+  });
+});
+
+describe('RequestComponentHolding', () => {
+  let component: RequestComponent;
+  let fixture: ComponentFixture<RequestComponent>;
+  let userService: UserService;
+
+  const holdingRecord = {
+    metadata: {
+      pid: '665',
+      organisation: {
+        pid: '2'
+      },
+      library: {
+        pid: '1'
+      }
+    }
+  };
+
+  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
+
+  const holdingApiServiceSpy = jasmine.createSpyObj('HoldingsApiService', ['canRequest']);
+  holdingApiServiceSpy.canRequest.and.returnValue(of({ can: true }));
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule,
+        TranslateModule.forRoot()
+      ],
+      declarations: [ RequestComponent ],
+      providers: [
+        { provide: UserApiService, useValue: userApiServiceSpy },
+        { provide: HoldingsApiService, useValue: holdingApiServiceSpy }
+      ],
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+      ]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(RequestComponent);
+    component = fixture.componentInstance;
+    component.record = holdingRecord;
+    component.recordType = 'holding';
+    userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
+    userService = TestBed.inject(UserService);
+    userService.load();
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should have the request button', () => {
+    const id = `#record-${holdingRecord.metadata.pid}-request-button`;
     const showMore = fixture.nativeElement.querySelector(id);
     expect(showMore.textContent).toContain('Request');
   });
