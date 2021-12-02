@@ -15,19 +15,19 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="fields.length > 0 && showForm">
-  <div id="pickup-location-{{ item.metadata.pid }}" class="row pl-4 col-12">
+  <div id="pickup-location-{{ record.metadata.pid }}" class="row pl-4 col-12">
     <dt class="mb-0 col-lg-2 col-sm-3">&nbsp;</dt>
     <dd class="mb-0 col-lg-10 col-sm-9">
       <form class="my-2" [formGroup]="form" (ngSubmit)="submit()">
         <formly-form [model]="model" [fields]="fields" [form]="form"></formly-form>
         <button
-          id="pickup-location-{{ item.metadata.pid }}-cancel-button"
+          id="pickup-location-{{ record.metadata.pid }}-cancel-button"
           *ngIf="!requestInProgress"
           class="btn btn-sm btn-outline-secondary mr-2"
           (click)="closeDialog()"
           translate
         >Cancel</button>
-        <button id="pickup-location-{{ item.metadata.pid }}-confirm-button" type="submit" class="btn btn-sm btn-primary" [disabled]="!form.valid || requestInProgress">
+        <button id="pickup-location-{{ record.metadata.pid }}-confirm-button" type="submit" class="btn btn-sm btn-primary" [disabled]="!form.valid || requestInProgress">
           <ng-container *ngIf="!requestInProgress; else inProcess">
             {{ 'Confirm your request' | translate }}
           </ng-container>

@@ -50,6 +50,10 @@
       </span>
     </div>
   </div>
+  <!-- request dialog -->
+  <div id="holding-request-{{ holding.metadata.pid }}" class="row">
+      <public-search-request [record]="holding" recordType="holding" [viewcode]="viewcode" class="w-100"></public-search-request>
+  </div>
   <!-- display data for serials holdings -->
   <div class="row ml-4" *ngIf="holding.metadata.holdings_type === 'serial'">
     <div class="row col-sm-12 mt-3">
