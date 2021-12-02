@@ -54,7 +54,11 @@
       </span>
     </div>
   </div>
-  <!-- SERIAL HOLDING INFORMATIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- request dialog -->
+  <div id="holding-request-{{ holding.metadata.pid }}" class="row">
+    <public-search-request [record]="holding" recordType="holding" [viewcode]="viewcode" class="w-100"></public-search-request>
+  </div>
+  <!-- SERIAL HOLDING INFORMATIOLNS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <dl class="row holdings-data" *ngIf="holding.metadata.holdings_type === 'serial'">
     <!-- CALL NUMBER -->
     <ng-container *ngIf="holding.metadata.call_number">

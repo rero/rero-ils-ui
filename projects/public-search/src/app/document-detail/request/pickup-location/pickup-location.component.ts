@@ -20,6 +20,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { tap } from 'rxjs/operators';
 import { ItemApiService } from '../../../api/item-api.service';
+import { HoldingsApiService } from '../../../api/holdings-api.service';
 import { LocationApiService } from '../../../api/location-api.service';
 
 @Component({
@@ -28,8 +29,11 @@ import { LocationApiService } from '../../../api/location-api.service';
 })
 export class PickupLocationComponent implements OnInit {
 
-  /** Item record */
-  @Input() item: any;
+  /** Record: item or holding */
+  @Input() record: any;
+
+  /** Record type */
+  @Input() recordType: string;
 
   /** View code */
   @Input() viewcode: string;
@@ -48,8 +52,11 @@ export class PickupLocationComponent implements OnInit {
   /** Request in progress */
   requestInProgress = false;
 
-  /** Item requested */
+  /** Record requested */
   requested = false;
+
+  /** Record API request */
+  apiRequest = null;
 
   /** User message */
   requestMessage: {
@@ -61,23 +68,39 @@ export class PickupLocationComponent implements OnInit {
    * Construtor
    * @param _locationApiService - LocationApiService
    * @param _itemApiService - ItemApiService
+   * @param _holdingsApiService - HoldingsApiService
    * @param _translateService - TranslateService
    */
   constructor(
     private _locationApiService: LocationApiService,
     private _itemApiService: ItemApiService,
+    private _holdingsApiService: HoldingsApiService,
     private _translateService: TranslateService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
     this._locationApiService
-      .getPickupLocationsByItemId(this.item.metadata.pid)
+      .getPickupLocationsByRecordId(this.recordType, this.record.metadata.pid)
       .subscribe((pickups: any) => {
         const options = [];
         pickups.forEach((pickup: any) => {
           options.push({label: pickup.name, value: pickup.pid });
         });
+        // Text area Year/Volume/Number/Pages
+        if (this.recordType === 'holding') {
+          this.fields.push({
+            key: 'description',
+            type: 'textarea',
+            templateOptions: {
+              label: this._translateService.instant('Collection or item year, volume, number, pages'),
+              placeholder: this._translateService.instant('Year / Volume / Number / Pages'),
+              maxLength: 100,
+              required: true,
+            }
+          });
+        }
+        // Menu to select pickup location
         this.fields.push({
           key: `pickup`,
           type: 'select',
@@ -98,11 +121,20 @@ export class PickupLocationComponent implements OnInit {
   /** Submit form */
   submit() {
     this.requestInProgress = true;
-    this._itemApiService.request({
-      item_pid: this.item.metadata.pid,
-      pickup_location_pid: this.model.pickup,
-    })
-    .pipe(tap(() => {
+    if (this.recordType === 'holding') {
+      this.apiRequest = this._holdingsApiService.request({
+        holding_pid: this.record.metadata.pid,
+        pickup_location_pid: this.model.pickup,
+        description: this.model.description,
+      });
+    } else if (this.recordType === 'item') {
+      this.apiRequest = this._itemApiService.request({
+        item_pid: this.record.metadata.pid,
+        pickup_location_pid: this.model.pickup,
+      });
+    }
+
+    this.apiRequest.pipe(tap(() => {
       this.showForm = false;
       this.requestInProgress = false;
       this.requested = true;
@@ -111,7 +143,7 @@ export class PickupLocationComponent implements OnInit {
       () => {
         this.requestMessage = {
           success: true,
-          message: this._translateService.instant('A request has been placed on this item.')
+          message: this._translateService.instant('A request has been placed on this {type}', { type: this.recordType })
         };
       },
       () => {
