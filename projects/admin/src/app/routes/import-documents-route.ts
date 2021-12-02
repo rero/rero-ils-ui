@@ -59,7 +59,7 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
 
   /**
    * Get Configuration
-   * @return Object
+   * @returns the configuration to use for this route
    */
   getConfiguration() {
     const config = {
@@ -85,8 +85,8 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
 
   /**
    * Get the string used to display the search result number.
-   * @param hits list of hit results.
-   * @return observable of the string representation of the number of results.
+   * @param hits - list of hit results.
+   * @returns observable of the string representation of the number of results.
    */
   getResultsText(hits: any): Observable<string> {
     const total = this._routeToolService.recordService.totalHits(hits.total);
@@ -99,8 +99,7 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
 
   /**
    * Allow to build the external source configuration
-   * @param source
-   * @private
+   * @param source - the source to analyze
    */
   private _loadConfigSource(source: ExternalSourceSetting) {
     const sourceConfig = {
