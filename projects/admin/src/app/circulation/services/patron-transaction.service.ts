@@ -50,11 +50,11 @@ export class PatronTransactionService {
 
   /**
    * Allow to build the query to send through the API to retrieve desired data
-   * @param patronPid: the patron pid
-   * @param loanPid: the loan pid
-   * @param type: the patron transaction main type
-   * @param status: the patron transaction status
-   * @return: a string representing the query to used based on function arguments
+   * @param patronPid - the patron pid
+   * @param loanPid - the loan pid
+   * @param type - the patron transaction main type
+   * @param status - the patron transaction status
+   * @returns string representing the query to used based on function arguments
    */
   private _buildQuery(patronPid?: string, loanPid?: string, type?: string, status?: string): string {
     const params: Array<string> = [];
@@ -73,9 +73,11 @@ export class PatronTransactionService {
     return params.join(' AND ');
   }
 
-  /** Load all patron-transactions corresponding to query parameter
-   *  @param query: string - The query used to retrieve patron-transactions
-   *  @param sort: string - The field used to sort the patron-transactions
+  /**
+   * Load all patron-transactions corresponding to query parameter
+   * @param query - The query used to retrieve `PatronTransaction`
+   * @param sort - The field used to sort the `PatronTransaction`
+   * @returns an observable of `PatronTransaction` corresponding to criteria
    */
   private _loadPatronTransactions(query: string, sort: string = 'creation_date'): Observable<Array<PatronTransaction>> {
     return this._recordService.getRecords(
@@ -96,9 +98,10 @@ export class PatronTransactionService {
 
   /**
    * Observable on PatronTransactions about a specific loan
-   * @param loanPid: the loan pid
-   * @param type: the patron transaction type to retrieve
-   * @param status: the patron transactions status to retrieve
+   * @param loanPid - the loan pid
+   * @param type - the patron transaction type to retrieve
+   * @param status - the patron transactions status to retrieve
+   * @returns an observable of `PatronTransaction` corresponding to criteria
    */
   patronTransactionsByLoan$(loanPid: string, type?: string, status?: string): Observable<Array<PatronTransaction>> {
     const query = this._buildQuery(undefined, loanPid, type, status);
@@ -110,10 +113,11 @@ export class PatronTransactionService {
   }
 
   /**
-   * Observable on PatronTransactions about a specific patron
-   * @param patronPid: the patron pid
-   * @param type: the patron transaction type to retrieve
-   * @param status: the patron transactions status to retrieve
+   * Search for `PatronTransactions` about a specific patron
+   * @param patronPid - the patron pid
+   * @param type - the patron transaction type to retrieve
+   * @param status - the patron transactions status to retrieve
+   * @returns an observable of `PatronTransaction` corresponding to criteria
    */
   patronTransactionsByPatron$(patronPid: string, type?: string, status?: string): Observable<Array<PatronTransaction>> {
     const query = this._buildQuery(patronPid, undefined, type, status);
@@ -122,9 +126,9 @@ export class PatronTransactionService {
 
   /**
    * Emit the patronTransactionByPatron subject for a specific patron
-   * @param patronPid: the patron pid
-   * @param type: the patron transaction type to retrieve
-   * @param status: the patron transactions status to retrieve
+   * @param patronPid - the patron pid
+   * @param type - the patron transaction type to retrieve
+   * @param status - the patron transactions status to retrieve
    */
   emitPatronTransactionByPatron(patronPid: string, type?: string, status?: string) {
     this.patronTransactionsByPatron$(patronPid, type, status).subscribe(
@@ -132,8 +136,9 @@ export class PatronTransactionService {
     );
   }
 
-  /** Load events linked to a patron transaction
-   *  @param transaction: the transaction
+  /**
+   * Load events linked to a patron transaction
+   * @param transaction - the parent transaction
    */
   loadTransactionHistory(transaction: PatronTransaction) {
     const query = `parent.pid:${transaction.pid}`;
@@ -145,10 +150,10 @@ export class PatronTransactionService {
   }
 
   /**
-   *  Compute the total due amount for a list of patron-transactions.
-   *  Only patron-transactions with a status === "open" are used to compute the total
-   *  @param transactions: Array<PatronTransaction>
-   *  @return total amount of open PatronTransaction
+   * Compute the total due amount for a list of patron-transactions.
+   * Only patron-transactions with a status === "open" are used to compute the total
+   * @param transactions - the transactions to process
+   * @returns total amount of open transactions
    */
   computeTotalTransactionsAmount(transactions: Array<any>): number {
     let total = 0;
@@ -165,8 +170,8 @@ export class PatronTransactionService {
 
   /**
    * Create PatronTransactionEvent skeleton with data from current context
-   * @param transaction: PatronTransaction - the parent patron transaction
-   * @return: An object with `parent`, `operator` and `library` fields fill with current context
+   * @param transaction - the parent patron transaction
+   * @returns An object with `parent`, `operator` and `library` fields fill with current context
    */
   private _buildTransactionEventsSkeleton(transaction: PatronTransaction): any {
     const currentUser = this._userService.user;
@@ -185,9 +190,9 @@ export class PatronTransactionService {
 
   /**
    * Allow to register a payment about a patron transaction
-   * @param transaction: PatronTransaction - the parent patron transaction
-   * @param amount: the paid amount
-   * @param paymentMethod: Method used to pay the patron transaction
+   * @param transaction - the parent patron transaction
+   * @param amount - the paid amount
+   * @param paymentMethod - Method used to pay the patron transaction
    */
   payPatronTransaction(transaction: PatronTransaction, amount: number, paymentMethod: string) {
     const record = this._buildTransactionEventsSkeleton(transaction);
@@ -212,8 +217,9 @@ export class PatronTransactionService {
 
   /**
    * Allow to register a 'cancel' about a patron transaction
-   * @param transaction: PatronTransaction - the parent patron transaction
-   * @param reason: The reason why the transaction is canceled
+   * @param transaction - the parent patron transaction
+   * @param amount - the amount to cancel
+   * @param reason - The reason why the transaction is canceled
    */
   cancelPatronTransaction(transaction: PatronTransaction, amount: number, reason: string) {
     const record = this._buildTransactionEventsSkeleton(transaction);
@@ -226,8 +232,8 @@ export class PatronTransactionService {
 
   /**
    * Call API to create the PatronTransactionEvent
-   * @param record: data to send through the API
-   * @param affectedPatron: the user pid affected by this new transaction event
+   * @param record - data to send through the API
+   * @param affectedPatron - the user pid affected by this new transaction event
    */
   private _createTransactionEvent(record: any, affectedPatron: string) {
     this._recordService.create('patron_transaction_events', record).subscribe(
@@ -237,11 +243,16 @@ export class PatronTransactionService {
         this._toastService.success(this._translateService.instant('{{ type }} registered', {type: translateType}));
       },
       (error) => {
-        const message = '[' + error.status + ' - ' + error.statusText + '] ' + error.error.message;
+        console.error(error, error.toString());
+        const errorMessage = (error.hasOwnProperty('message') && error.message().hasOwnProperty('message'))
+          ? error.message.message
+          : 'Server error :: ' + (error.title || error.toString());
+        const message = '[' + error.status + ' - ' + error.statusText + '] ' + errorMessage;
         const translateType = this._translateService.instant(record.type);
         this._toastService.error(
           message,
-          this._translateService.instant('{{ type }} creation failed!', { type: translateType })
+          this._translateService.instant('{{ type }} creation failed!', { type: translateType }),
+          {disableTimeOut: true, closeButton: true, enableHtml: true}
         );
       }
     );
