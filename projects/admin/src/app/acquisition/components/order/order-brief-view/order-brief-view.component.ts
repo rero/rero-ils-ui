@@ -55,10 +55,12 @@ export class OrderBriefViewComponent implements ResultItem, OnInit {
 
   /** get reception date (based on orderLine reception date) */
   get receptionDate(): string | null {
-    return this.record.metadata.receipts
-      .filter(line => line.hasOwnProperty('receipt_date'))
-      .map(line => line.receipt_date.toString())
-      .shift();
+    let knownDates: string[] = [];
+    this.record.metadata.receipts.forEach(receipt => {
+      knownDates = [...knownDates, ...receipt.receipt_date || []];
+    });
+    knownDates.sort();
+    return knownDates.shift();
   }
 
   /**
