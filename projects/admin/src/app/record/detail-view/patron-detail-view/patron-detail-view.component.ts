@@ -47,7 +47,7 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
   sectionCollapsed = {
     user: false,
     librarian: true,
-    patron: true,
+    patron: false,
     notes: false
   };
 
