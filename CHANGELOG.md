@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.19.0](https://github.com/rero/rero-ils-ui/tree/v0.19.0) (2021-12-09)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.18.1...v0.19.0)
+
+**Merged pull requests:**
+
+- circulation: fix patron transaction error message. [\#756](https://github.com/rero/rero-ils-ui/pull/756) ([zannkukai](https://github.com/zannkukai))
+- operation logs: Fix the window display if no record [\#750](https://github.com/rero/rero-ils-ui/pull/750) ([Garfield-fr](https://github.com/Garfield-fr))
+- circulation: add item link on the patron history tab [\#748](https://github.com/rero/rero-ils-ui/pull/748) ([Garfield-fr](https://github.com/Garfield-fr))
+- requests: display request expiration date [\#747](https://github.com/rero/rero-ils-ui/pull/747) ([zannkukai](https://github.com/zannkukai))
+- import: add new sources to import from the web [\#705](https://github.com/rero/rero-ils-ui/pull/705) ([benerken](https://github.com/benerken))
+
 ## [v0.18.1](https://github.com/rero/rero-ils-ui/tree/v0.18.1) (2021-10-28)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.18.0...v0.18.1)
