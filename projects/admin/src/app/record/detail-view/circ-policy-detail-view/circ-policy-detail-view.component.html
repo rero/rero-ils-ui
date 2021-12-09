@@ -112,7 +112,7 @@
             <th scope="col" translate>Amount</th>
           </thead>
           <tbody>
-            <tr *ngFor="let reminder of reminders; let idx = index">
+            <tr *ngFor="let reminder of data.reminders; let idx = index">
               <th scope="row">{{ idx + 1 }}</th>
               <td>{{ reminder.type | translate }}</td>
               <td>
@@ -145,7 +145,7 @@
             <th scope="col" translate>Amount/day</th>
           </thead>
           <tbody>
-            <tr *ngFor="let interval of overdues">
+            <tr *ngFor="let interval of data.overdue_fees.intervals">
               <td scope="row">
                 {{ interval.from }}
                 <i class="fa fa-long-arrow-right px-4"></i>
