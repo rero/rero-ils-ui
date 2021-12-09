@@ -19,7 +19,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CircPolicy } from '../classes/circ-policy';
 import { LoanState } from '../classes/loans';
 import { UserService } from '@rero/shared';
 
@@ -28,6 +30,7 @@ import { UserService } from '@rero/shared';
 })
 export class LoanService {
 
+  // SERVICE CONSTANTS ========================================================
   /** Statuses of a borrow loan */
   static borrowStatuses = [
     LoanState.ITEM_ON_LOAN
@@ -40,6 +43,7 @@ export class LoanService {
     LoanState.ITEM_IN_TRANSIT_FOR_PICKUP
   ];
 
+  // CONSTRUCTOR ==============================================================
   /**
    * Constructor
    * @param _recordService - RecordService
@@ -52,36 +56,39 @@ export class LoanService {
     private _userService: UserService
   ) { }
 
+  // SERVICES FUNCTIONS =======================================================
   /**
-   * Return a borrowed loan record
-   * @param itemPid Item Pid
-   * @return Observable
+   * Return a borrowed loan records
+   * @param itemPid - the item pid to search
+   * @returns Observable about borrowed loans
    */
-  borrowedBy$(itemPid: string) {
-    return this.loans$(itemPid, LoanService.borrowStatuses).pipe(
-      map((results: Record) => results.hits.hits)
-    );
+  borrowedBy$(itemPid: string): Observable<any> {
+    return this.loans$(itemPid, LoanService.borrowStatuses)
+      .pipe(
+        map((results: Record) => results.hits.hits)
+      );
   }
 
   /**
-   * Return a list of requested loan(s)
-   * @param itemPid Item Pid
-   * @return Observable
+   * Return a list of requested loan records
+   * @param itemPid - the item pid to search
+   * @returns Observable about requested loans
    */
-  requestedBy$(itemPid: string) {
-    return this.loans$(itemPid, LoanService.requestStatuses).pipe(
-      map((results: Record) => results.hits.hits)
+  requestedBy$(itemPid: string): Observable<any> {
+    return this.loans$(itemPid, LoanService.requestStatuses)
+      .pipe(
+        map((results: Record) => results.hits.hits)
     );
   }
 
   /**
    * Cancel a loan related to an item
-   * @param itemPid: item pid related to the loan to cancel
-   * @param loanPid: loan to cancel pid
-   * @param transactionLibraryPid: transaction library pid
-   * @return item data
+   * @param itemPid - item pid related to the loan to cancel
+   * @param loanPid - loan pid to cancel
+   * @param transactionLibraryPid - transaction library pid
+   * @returns Observable about item data
    */
-  cancelLoan(itemPid: string, loanPid: string, transactionLibraryPid: string) {
+  cancelLoan(itemPid: string, loanPid: string, transactionLibraryPid: string): Observable<any> {
     const url = '/api/item/cancel_item_request';
     return this._http.post<any>(url, {
       item_pid: itemPid,
@@ -90,37 +97,47 @@ export class LoanService {
       // TODO: Fix this with multiple patron
       transaction_user_pid: this._userService.user.patrons[0].pid
     }).pipe(
-    map(data => {
-      const itemData = data.metadata;
-      itemData.loan = data.action_applied.cancel;
-      return itemData;
-    }));
+      map(data => {
+        const itemData = data.metadata;
+        itemData.loan = data.action_applied.cancel;
+        return itemData;
+      })
+    );
   }
 
   /**
    * Update the pickup location of a loan
-   * @param loan: loan to update
-   * @param pickupLocationPid: pickup location pid to update
-   * @return loan data
+   * @param loanPid - loan pid to update
+   * @param pickupLocationPid - pickup location pid to update
+   * @returns Observable about the updated loan data
    */
-  updateLoanPickupLocation(loanPid: string, pickupLocationPid: string) {
+  updateLoanPickupLocation(loanPid: string, pickupLocationPid: string): Observable<any> {
     const url = '/api/item/update_loan_pickup_location';
     return this._http.post<any>(url, {
       pid: loanPid,
       pickup_location_pid: pickupLocationPid
-    }).pipe(
-      map(loanData => {
-      return loanData;
-    }));
+    });
   }
 
   /**
-   * Search about loans related to an item
-   * @param itemPid - string: the item pid
-   * @param statuses - Array: a list of loan states to filter result.
-   * @return Observable
+   * Get circulation policy related to a loan
+   * @param loanPid - the loan pid to search
+   * @returns Observable to the corresponding cipo.
    */
-  private loans$(itemPid: string, statuses?: Array<LoanState>) {
+  getCirculationPolicy(loanPid: string): Observable<CircPolicy> {
+    const apiUrl = `/api/loan/${loanPid}/circulation_policy`;
+    return this._http.get<CircPolicy>(apiUrl);
+  }
+
+
+  // PRIVATES SERVICE FUNCTIONS ===============================================
+  /**
+   * Search about loans related to an item
+   * @param itemPid - the item pid to search
+   * @param statuses - a list of loan states to filter result.
+   * @returns Observable with loans corresponding to search critieria
+   */
+  private loans$(itemPid: string, statuses?: Array<LoanState>): Observable<any> {
     let query = `item_pid.value:${itemPid}`;
     if (statuses !== undefined) {
       const states = statuses.join(' OR state:');

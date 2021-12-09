@@ -23,8 +23,8 @@
      class="row d-flex align-items-start item">
 
   <!-- ACTION BUTTONS -->
-  <ng-container *ngIf="patron">
-    <div class="actions">
+  <div class="actions">
+    <ng-container *ngIf="patron">
       <button class="btn btn-sm btn-outline-secondary"
               [disabled]="!item.actions.includes(itemAction.extend_loan)"
               [attr.id]="item.barcode | idAttribute:{prefix: 'item', suffix: 'renew-button'}"
@@ -32,17 +32,15 @@
         <i class="fa fa-refresh pr-1"></i>
         {{ 'Renew' | translate }}
       </button>
-    </div>
-  </ng-container>
+    </ng-container>
+  </div>
   <!-- BARCODE -->
   <div name="barcode" class="col-2 position-relative">
     <button *ngIf="item.loan || totalAmountOfFee || item.pending_loans || notifications$"
-            type="button"
-            class="pl-0 pt-0 btn"
+            type="button" class="btn-show-more"
+            [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
             (click)="isCollapsed = !isCollapsed"
-            [attr.aria-expanded]="!isCollapsed"
-            aria-controls="collapse">
-      <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" class="fa" aria-hidden="true"></i>
+            [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
     </button>
     <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
     <ng-container *ngIf="item.actionDone">
@@ -197,6 +195,28 @@
         <dt class="col-sm-3 col-md-2 col-lg-1 label-title" translate>{{ note.type }}</dt>
         <dd name="checkin-note" class="col-sm-8 col-md-9 col-lg-10 text-justify">{{ note.content }}</dd>
       </ng-container>
+      <ng-container *ngIf="debugMode">
+        <dd class="col-1 text-right pr-1"><i class="fa fa-bug text-danger"></i></dd>
+        <dt class="col-1 label-title text-danger" translate>Debug</dt>
+        <dd class="col-5">
+          <pre class="border p-3">{{ loan | json }}<legend>loan</legend></pre>
+        </dd>
+        <dd class="col-5" *ngIf="loan | getLoanCipo | async as cipo">
+          <pre class="border p-3">{{ cipo | json }}<legend>
+              <a [routerLink]="['/records', 'circ_policies', 'detail', cipo.pid]" target="_circulation">
+                <i class="fa fa-external-link pr-2"></i>cipo
+              </a>
+            </legend></pre>
+        </dd>
+      </ng-container>
     </dl>
+    <ng-container *ngIf="canUseDebugMode">
+      <button class="float-right btn btn-sm btn-outline-warning mr-2"
+              [class.btn-hover]="debugMode"
+              (click)="debugMode=!debugMode">
+        <i class="fa fa-bug pr-1"></i>
+        <i class="fa" [ngClass]="debugMode ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
+      </button>
+    </ng-container>
   </div>
 </div>
