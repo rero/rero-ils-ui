@@ -37,12 +37,15 @@
             {{ account.depth > 0 ? '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(account.depth) + ' ' : '' }}
             {{ account.name }}
           </div>
-          <div class="ml-auto pl-5 amount" [class]="{
-              'text-success': account.remaining_balance.self > 0,
-              'text-muted': account.remaining_balance.self === 0,
-              'text-warning': account.remaining_balance.self < 0
-          }">
-            {{ account.remaining_balance.self | currency: currency }}
+          <div class="ml-auto pl-5 d-flex">
+            <div class="number" *ngIf="account.number">{{ account.number }}</div>
+            <div class="amount" [class]="{
+                'text-success': account.remaining_balance.self > 0,
+                'text-muted': account.remaining_balance.self === 0,
+                'text-warning': account.remaining_balance.self < 0
+            }">
+              {{ account.remaining_balance.self | currency: currency }}
+            </div>
           </div>
         </a>
       </ng-container>

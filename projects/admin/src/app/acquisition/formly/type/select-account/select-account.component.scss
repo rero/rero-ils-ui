@@ -22,7 +22,20 @@
 .dropdown-toggle.btn {
   border: $input-border-width solid $input-border-color;
 }
+.number {
+  font-size: $font-size-sm;
+  font-weight: bold;
+  color: $secondary;
+  text-align: right;
+  &:before {
+    content: '[';
+  }
+  &:after {
+    content: ']';
+  }
+}
 .amount {
+  min-width: 10rem;
   font-family: Arial;
 }
 
