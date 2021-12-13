@@ -281,6 +281,14 @@
                     </div>
                   </div>
                 </div>
+                <!-- extra field -->
+                <div class="form-group form-row">
+                  <label for="shipping-extra" class="col-3 col-form-label" translate>Extra information</label>
+                  <div class="col input-group">
+                    <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-sticky-note-o"></i></span></div>
+                    <input formControlName="extra" id="shipping-extra" class="form-control">
+                  </div>
+                </div>
               </div>
             </div>
             <div class="card mt-3" formGroupName="billing_informations">
@@ -291,21 +299,21 @@
               <div class="card-body container">
                 <!-- name + email + phone -->
                 <div class="form-group form-row">
-                  <label for="shipping-name" class="col-3 col-form-label" translate>Contact name</label>
+                  <label for="billing-name" class="col-3 col-form-label" translate>Contact name</label>
                   <div class="col input-group">
                     <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-user"></i></span></div>
                     <input formControlName="name" id="billing-name" class="form-control">
                   </div>
                 </div>
                 <div class="form-group form-row">
-                  <label for="shipping-email" class="col-3 col-form-label" translate>Contact email</label>
+                  <label for="billing-email" class="col-3 col-form-label" translate>Contact email</label>
                   <div class="col input-group">
                     <div class="input-group-prepend"><span class="input-group-text">@</span></div>
                     <input formControlName="email" id="billing-email" class="form-control">
                   </div>
                 </div>
                 <div class="form-group form-row">
-                  <label for="shipping-phone" class="col-3 col-form-label" translate>Contact phone</label>
+                  <label for="billing-phone" class="col-3 col-form-label" translate>Contact phone</label>
                   <div class="col input-group">
                     <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-phone"></i></span></div>
                     <input formControlName="phone" id="billing-phone" class="form-control">
@@ -334,6 +342,14 @@
                         <option [ngValue]="code" *ngFor="let code of countries_iso_codes">{{ code | countryCodeTranslate }}</option>
                       </select>
                     </div>
+                  </div>
+                </div>
+                <!-- extra field -->
+                <div class="form-group form-row">
+                  <label for="billing-extra" class="col-3 col-form-label" translate>Extra information</label>
+                  <div class="col input-group">
+                    <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-sticky-note-o"></i></span></div>
+                    <input formControlName="extra" id="billing-extra" class="form-control">
                   </div>
                 </div>
               </div>

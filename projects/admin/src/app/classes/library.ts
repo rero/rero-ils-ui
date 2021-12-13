@@ -75,6 +75,7 @@ export interface AcquisitionInformationDetail {
   name: string;
   email?: string;
   phone?: string;
+  extra?: string;
   address: Address;
 }
 
