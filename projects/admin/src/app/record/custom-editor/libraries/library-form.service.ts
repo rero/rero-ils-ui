@@ -239,7 +239,8 @@ export class LibraryFormService {
         zip_code: ['', Validators.minLength(3)],
         city: ['', Validators.minLength(2)],
         country: ['', Validators.minLength(2)],
-      })
+      }),
+      extra: ['', Validators.minLength(3)]
     });
   }
 
@@ -268,6 +269,7 @@ export class LibraryFormService {
     formField.get('name').setValue(data.name);
     formField.get('email').setValue(data.email);
     formField.get('phone').setValue(data.phone);
+    formField.get('extra').setValue(data.extra);
     if (data.address) {
       formField.get('address').get('street').setValue(data.address.street);
       formField.get('address').get('zip_code').setValue(data.address.zip_code);
