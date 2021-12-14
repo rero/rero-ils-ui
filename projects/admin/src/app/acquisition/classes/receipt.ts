@@ -41,11 +41,12 @@ export interface IAcqReceipt extends IAcqBaseResource, IAcqResourceWithNotes {
 }
 
 // ACQ RECEIPT LINE ===========================================================
-export interface IAcqReceiptLine extends IAcqBaseResource, IAcqResourceWithNotes{
+export interface IAcqReceiptLine extends IAcqBaseResource, IAcqResourceWithNotes {
   acq_receipt: IObjectReference;
   acq_order_line: IObjectReference;
   quantity: number;
   amount: number;
+  var_rate: number;
   receipt_date: string;
   document?: {
     pid: string
