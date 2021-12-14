@@ -38,10 +38,12 @@ export interface IAcqReceiptModel {
   notes: IAcqNote[];
   receiveLines: {
     acqOrderLineRef: string,
+    selected: number,
     document: string,
     quantityMax: number,
     quantity: number,
-    amount: number
+    amount: number,
+    vatRate: number
   }[];
 }
 
@@ -152,13 +154,16 @@ export class OrderReceipt {
    */
    processLines(model: IAcqReceiptModel): IAcqReceiptLine[] {
     const lines = [];
-    model.receiveLines.forEach((line: any) => {
+    model.receiveLines
+    .filter(line => line.selected === 1)
+    .forEach((line: any) => {
       lines.push({
         acq_order_line: {
           $ref: line.acqOrderLineRef
         },
         quantity: line.quantity,
         amount: line.amount,
+        vat_rate: line.vatRate,
         receipt_date: model.receiptDate
       });
     });

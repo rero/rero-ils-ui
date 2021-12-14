@@ -35,7 +35,7 @@ import { FieldArrayType } from '@ngx-formly/core';
       </div>
       <div class="card-body" *ngIf="field.fieldGroup.length > 0">
         <div class="row">
-          <div class="col-11">
+          <div [ngClass]="field.templateOptions.trashButton ? 'col-11': 'col-12'">
             <div class="row">
               <ng-container *ngFor="let field of field.fieldGroup[0].fieldGroup">
                 <ng-container *ngIf="field.className">
@@ -48,10 +48,10 @@ import { FieldArrayType } from '@ngx-formly/core';
             </div>
           </div>
         </div>
-        <div *ngFor="let field of field.fieldGroup; let i = index;" class="row" [ngClass]="{ 'bg-light': i % 2 }">
-          <ng-container *ngIf="field.fieldGroup.length > 0">
-            <formly-field class="col" [field]="field"></formly-field>
-            <div class="col-1 d-flex align-items-center">
+        <div *ngFor="let f of field.fieldGroup; let i = index;" class="row" [ngClass]="{ 'bg-light': i % 2 }">
+          <ng-container *ngIf="f.fieldGroup.length > 0">
+            <formly-field class="col" [field]="f"></formly-field>
+            <div *ngIf="field.templateOptions.trashButton" class="col-1 d-flex align-items-center">
               <button class="btn btn-link text-secondary btn-sm" type="button" (click)="remove(i)" *ngIf="showTrash">
                 <i class="fa fa-trash"></i>
               </button>
