@@ -124,10 +124,12 @@ export class OrderReceiptForm {
                 const quantityReceived = line.received_quantity || 0;
                 this._model.receiveLines.push({
                   acqOrderLineRef: this._apiService.getRefEndpoint('acq_order_lines', line.pid),
+                  selected: 0,
                   document: line.document.pid,
                   quantity: line.quantity - quantityReceived,
                   quantityMax: line.quantity - quantityReceived,
-                  amount: line.amount
+                  amount: line.amount,
+                  vatRate: 0
                 });
               });
               return true;
@@ -202,6 +204,7 @@ export class OrderReceiptForm {
           className: 'pl-0 my-0 font-weight-bold',
           label: 'Order line(s)',
           addButton: false,
+          trashButton: false,
           minLength: 0
         },
         fieldArray: {
@@ -218,12 +221,22 @@ export class OrderReceiptForm {
               hideExpression: true
             },
             {
-              key: 'document',
-              type: 'field-ref',
-              className: 'col-8',
+              key: 'selected',
+              type: 'checkbox',
+              className: 'col-1',
               wrappers: ['input-no-label'],
               templateOptions: {
-                headerClassName: 'col-8 font-weight-bold mb-2',
+                headerClassName: 'col-1 font-weight-bold mb-2',
+                label: ''
+              }
+            },
+            {
+              key: 'document',
+              type: 'field-ref',
+              className: 'col-5',
+              wrappers: ['input-no-label'],
+              templateOptions: {
+                headerClassName: 'col-5 font-weight-bold mb-2',
                 label: 'Document',
                 resource: 'documents',
                 recourceKey: 'document',
@@ -260,6 +273,22 @@ export class OrderReceiptForm {
                 required: true,
                 min: 0
               }
+            },
+            {
+              key: 'vatRate',
+              type: 'input',
+              className: 'col-2',
+              wrappers: ['input-no-label'],
+              templateOptions: {
+                headerClassName: 'col-2 font-weight-bold mb-2',
+                type: 'number',
+                label: 'Vat Rate',
+                min: 0,
+                max: 100,
+                addonRight: {
+                  text: '%'
+                }
+              }
             }
           ]
         }
@@ -270,7 +299,8 @@ export class OrderReceiptForm {
         templateOptions: {
           className: 'pl-0 my-0 font-weight-bold',
           label: 'Amount Adjustements',
-          addButton: true
+          addButton: true,
+          trashButton: true
         },
         fieldArray: {
           fieldGroup: [
@@ -313,7 +343,8 @@ export class OrderReceiptForm {
         templateOptions: {
           className: 'pl-0 my-0 font-weight-bold',
           label: 'Notes',
-          addButton: true
+          addButton: true,
+          trashButton: true
         },
         fieldArray: {
           fieldGroup: [
