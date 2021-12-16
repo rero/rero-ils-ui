@@ -128,9 +128,15 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
               'library',
               'location',
               'item_type',
+              'temporary_location',
+              'temporary_item_type',
               'status',
             ],
-            aggregationsExpand: ['document_type', 'library', 'location', 'item_type', 'status'],
+            aggregationsExpand: [
+              'document_type',
+              'location',
+              'item_type',
+            ],
             listHeaders: {
               Accept: 'application/rero+json, application/json'
             },
