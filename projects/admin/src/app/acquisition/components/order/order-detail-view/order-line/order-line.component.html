@@ -31,8 +31,9 @@
             'fa-envelope-open-o': orderLine.status === orderLineStatus.APPROVED,
             'fa-envelope-o': orderLine.status === orderLineStatus.ORDERED,
             'text-muted': orderLine.status === orderLineStatus.APPROVED || orderLine.status === orderLineStatus.ORDERED,
-            'fa-check-square text-success': orderLine.status === orderLineStatus.RECEIVED,
-            'fa-check-square-o text-warning': orderLine.status === orderLineStatus.PARTIALLY_RECEIVED,
+            'fa-sign-in': orderLine.status === orderLineStatus.RECEIVED || orderLine.status === orderLineStatus.PARTIALLY_RECEIVED,
+            'text-success': orderLine.status === orderLineStatus.RECEIVED,
+            'text-warning': orderLine.status === orderLineStatus.PARTIALLY_RECEIVED,
             'fa-window-close-o text-danger': orderLine.status === orderLineStatus.CANCELLED
           }"></i>
           <ng-container *ngIf="orderLine.document.pid | getRecord: 'documents' | async as document">

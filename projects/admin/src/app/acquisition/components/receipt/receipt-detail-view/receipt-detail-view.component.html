@@ -46,8 +46,9 @@
             </div>
           </div>
           <div class="col-2 amount">
-            <span>{{ line.quantity * line.amount | currency: receipt.currency: 'symbol' }}</span><br/>
-            <span class="detail">{{ line.quantity }} x {{ line.amount | currency: receipt.currency: 'symbol' }}</span>
+            <span>{{ line | receiptLineTotalAmount | currency: receipt.currency: 'symbol' }}</span><br/>
+            <span class="detail">{{ line.quantity }} x {{ line.amount | currency: receipt.currency: 'symbol' }}
+              <ng-container *ngIf="line.vat_rate"> + {{ line.vat_rate }} %</ng-container></span>
           </div>
           <div class="col-1 actions text-right">
             <ng-container *ngIf="permissions">
