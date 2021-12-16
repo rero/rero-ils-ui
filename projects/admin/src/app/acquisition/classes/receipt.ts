@@ -46,7 +46,7 @@ export interface IAcqReceiptLine extends IAcqBaseResource, IAcqResourceWithNotes
   acq_order_line: IObjectReference;
   quantity: number;
   amount: number;
-  var_rate: number;
+  vat_rate: number;
   receipt_date: string;
   document?: {
     pid: string

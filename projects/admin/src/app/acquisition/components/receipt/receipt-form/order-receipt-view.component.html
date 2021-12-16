@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<form [formGroup]="form" (ngSubmit)="onSubmit(model)" class="container-fluid" *ngIf="loaded">
+<form [formGroup]="form" (ngSubmit)="onSubmit(model)" class="container" *ngIf="loaded">
 
     <!-- FORM HEADER :: title and action buttons ========================== -->
     <section class="d-flex mb-3" >
@@ -31,35 +31,33 @@
       </div>
     </section>
 
-
-    <section class="row">
-      <!-- KNOWN ORDER/RECEIPT DATA -->
-      <div class="col-6 known-data pr-5">
+    <!-- KNOWN ORDER/RECEIPT DATA -->
+    <div class="row card known-data">
+      <div class="card-header">
+        <button type="button" class="btn-show-more"
+                [ngClass]="{'btn-expanded': !knownDataCollapsed, 'btn-collapsed': knownDataCollapsed}"
+                (click)="knownDataCollapsed = !knownDataCollapsed"
+                [attr.aria-expanded]="!knownDataCollapsed" aria-controls="collapse">
+        </button>
+        <h5 class="d-inline-block" translate>Order overview</h5>
+      </div>
+      <div class="card-body callout callout-info callout-bg-info pt-0" [hidden]="knownDataCollapsed">
         <admin-order-summary [order]="orderRecord"></admin-order-summary>
-        <div class="card row" *ngIf="receiptRecord">
-          <div class="card-header">
-            <h5 translate>Already in this receipt</h5>
-          </div>
+        <div class="card w-100 pt-0" *ngIf="receiptRecord">
+          <div class="card-header"><h5 translate>Already in this receipt</h5></div>
           <div class="card-body p-0">
-            <admin-receipt-summary [receiptPid]="receiptRecord.pid"
-                                   [collapsable]="false"
-                                   [allowActions]="false"
-                                   class="container">
+            <admin-receipt-summary [receiptPid]="receiptRecord.pid" [collapsable]="false" [allowActions]="false" class="container">
             </admin-receipt-summary>
           </div>
         </div>
       </div>
-      <!-- FORMLY FORM -->
-      <div class="col-6 card p-0 my-3">
-        <div class="card-header">
-          <h5 translate>Receipt new data</h5>
-        </div>
-        <formly-form class="card-body" [form]="form" [fields]="fields" [model]="model"></formly-form>
+    </div>
+
+    <!-- FORMLY FORM -->
+    <div class="row card p-0 my-3">
+      <div class="card-header">
+        <h5 translate>Receipt new data</h5>
       </div>
-    </section>
-
-
-
-
-
+      <formly-form class="card-body" [form]="form" [fields]="fields" [model]="model"></formly-form>
+    </div>
 </form>

@@ -49,6 +49,9 @@ export class OrderReceiptViewComponent implements OnInit {
   /** Model */
   model: IAcqReceiptModel;
 
+  /** Is the reception already known data should be displayed or not ? */
+  knownDataCollapsed = true;
+
   /** Form fields */
   private _fields: FormlyFieldConfig[];
 

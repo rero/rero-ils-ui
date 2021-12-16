@@ -60,6 +60,7 @@ import { NotesFilterPipe } from './pipes/notes-filter.pipe';
 import { AccountAvailableAmountPipe } from './pipes/account-available-amount.pipe';
 import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
 import { PreviewContentPipe } from './pipes/preview-content.pipe';
+import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pipe';
 
 @NgModule({
   declarations: [
@@ -89,7 +90,8 @@ import { PreviewContentPipe } from './pipes/preview-content.pipe';
     NotesFilterPipe,
     AccountAvailableAmountPipe,
     ReceptionDatesPipe,
-    PreviewContentPipe
+    PreviewContentPipe,
+    ReceiptLineTotalAmountPipe
   ],
   imports: [
     BsDropdownModule.forRoot(),

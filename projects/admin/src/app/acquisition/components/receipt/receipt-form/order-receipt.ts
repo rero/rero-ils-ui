@@ -38,7 +38,7 @@ export interface IAcqReceiptModel {
   notes: IAcqNote[];
   receiveLines: {
     acqOrderLineRef: string,
-    selected: number,
+    selected: boolean,
     document: string,
     quantityMax: number,
     quantity: number,
@@ -155,7 +155,7 @@ export class OrderReceipt {
    processLines(model: IAcqReceiptModel): IAcqReceiptLine[] {
     const lines = [];
     model.receiveLines
-    .filter(line => line.selected === 1)
+    .filter(line => line.selected === true)
     .forEach((line: any) => {
       lines.push({
         acq_order_line: {
