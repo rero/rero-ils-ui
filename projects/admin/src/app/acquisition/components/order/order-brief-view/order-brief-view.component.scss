@@ -81,6 +81,7 @@
         padding-right: map-get($spacers, 2);
         font-size: $small-font-size;
         background-color: #F3F3F3;
+        min-width: 3.5rem;
         &.ordered-counter::before{
           font-family: 'FontAwesome';
           font-weight: 100;

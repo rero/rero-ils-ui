@@ -61,9 +61,10 @@
             </div>
             <div class="col-3 detail amount d-flex" [class.separator]="first">
               <div class="computation">
-                ({{ line.quantity }} x {{ line.amount | currency:receipt.currency:'symbol' }})
+                ({{ line.quantity }} x {{ line.amount | currency:receipt.currency:'symbol' }}<ng-container *ngIf="line.vat_rate">
+                + {{ line.vat_rate }}%</ng-container>)
               </div>
-              <div class="total-amount ml-auto">{{ line.quantity * line.amount | currency:receipt.currency:'symbol' }}</div>
+              <div class="total-amount ml-auto">{{ line | receiptLineTotalAmount | currency:receipt.currency:'symbol' }}</div>
             </div>
           </ng-container>
           <!-- RECEIPT ADJUSTMENTS :: One line for each adjustment -->

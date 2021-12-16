@@ -124,7 +124,7 @@ export class OrderReceiptForm {
                 const quantityReceived = line.received_quantity || 0;
                 this._model.receiveLines.push({
                   acqOrderLineRef: this._apiService.getRefEndpoint('acq_order_lines', line.pid),
-                  selected: 0,
+                  selected: false,
                   document: line.document.pid,
                   quantity: line.quantity - quantityReceived,
                   quantityMax: line.quantity - quantityReceived,
@@ -298,7 +298,7 @@ export class OrderReceiptForm {
         type: 'repeat',
         templateOptions: {
           className: 'pl-0 my-0 font-weight-bold',
-          label: 'Amount Adjustements',
+          label: 'Fees, discounts and other adjustments',
           addButton: true,
           trashButton: true
         },
@@ -320,6 +320,7 @@ export class OrderReceiptForm {
               templateOptions: {
                 label: 'Amount',
                 type: 'number',
+                description: 'To specify a discount, enter a negative amount',
                 required: true
               }
             },

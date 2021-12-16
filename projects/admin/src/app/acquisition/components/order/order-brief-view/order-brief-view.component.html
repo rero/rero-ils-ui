@@ -39,8 +39,8 @@
       <span class="counter ordered-counter border-left">{{ order.account_statement.provisional.quantity }}</span>
     </div>
     <div class="accounting-infos" *ngIf="displayExpenditureAccountingData">
-      <span class="counter received-counter border-right">{{ order.account_statement.expenditure.quantity }}</span>
       <label class="total-amount">{{ order.account_statement.expenditure.total_amount | currency : order.currency }}</label>
+      <span class="counter received-counter border-left">{{ order.account_statement.expenditure.quantity }}</span>
     </div>
   </div>
 </article>
