@@ -86,7 +86,7 @@
     <!-- ACTIONS BUTTONS -->
     <div class="col-2 text-right" name="buttons">
       <button *ngIf="permissions.canRequest && permissions.canRequest.can; else notRequest"
-              type="button" class="btn btn-sm btn-outline-primary " (click)="addRequest(item.metadata.pid)"
+              type="button" class="btn btn-sm btn-outline-primary " (click)="addRequest(item.metadata.pid, 'item')"
               title="{{ 'Item request' | translate }}"
               name="request">
         <i class="fa fa-shopping-basket" aria-hidden="true"></i>

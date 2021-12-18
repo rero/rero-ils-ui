@@ -26,6 +26,7 @@ import { ToastrService } from 'ngx-toastr';
 import { User, UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, tap } from 'rxjs/operators';
+import { HoldingsService } from '../../../../service/holdings.service';
 import { ItemsService } from '../../../../service/items.service';
 import { LoanService } from '../../../../service/loan.service';
 
@@ -36,8 +37,14 @@ import { LoanService } from '../../../../service/loan.service';
 export class ItemRequestComponent implements OnInit {
 
   // COMPONENTS ATTRIBUTES ====================================================
-  /** Item pid */
-  itemPid: string;
+  /** Record pid */
+  recordPid: string;
+  /** Record description */
+  description: string;
+  /** Record type */
+  recordType: string;
+  /** Service */
+  service: any;
   /** form */
   form: FormGroup = new FormGroup({});
   /** form fields */
@@ -72,6 +79,7 @@ export class ItemRequestComponent implements OnInit {
    * @param _translateService - TranslateService
    * @param _loanService: LoanService
    * @param _itemService: ItemService
+   * @param _holdingService: HoldingsService
    */
   constructor(
     private _modalService: BsModalService,
@@ -82,18 +90,21 @@ export class ItemRequestComponent implements OnInit {
     private _toastr: ToastrService,
     private _loanService: LoanService,
     private _translateService: TranslateService,
-    private _itemService: ItemsService
+    private _itemService: ItemsService,
+    private _holdingService: HoldingsService,
   ) { }
 
   /** OnInit hook */
   ngOnInit() {
     this.currentUser = this._userService.user;
     const initialState: any = this._modalService.config.initialState;
-    if (initialState.hasOwnProperty('itemPid')) {
+    if (initialState.hasOwnProperty('recordPid')) {
       this.closeModal();
     }
-    this.itemPid = initialState.itemPid;
-    this.requestedBy$ = this._loanService.requestedBy$(this.itemPid);
+    this.recordPid = initialState.recordPid;
+    this.recordType = initialState.recordType;
+    this.service = (this.recordType === 'item') ? this._itemService : this._holdingService;
+    this.requestedBy$ = (this.recordType === 'item') ?  this._loanService.requestedBy$(this.recordPid) : null;
     this.initForm();
   }
 
@@ -104,14 +115,24 @@ export class ItemRequestComponent implements OnInit {
    */
   submit(model: FormModel) {
     this.requestInProgress = true;
-    const body = {
-      item_pid: this.itemPid,
+    let body = {};
+    let key;
+    body = {
       pickup_location_pid: model.pickupPid,
       patron_pid: this.patron.pid,
       transaction_library_pid: this.currentUser.currentLibrary,
       transaction_user_pid: this.currentUser.patronLibrarian.pid
     };
-    this._http.post('/api/item/request', body)
+    if (this.recordType === 'item') {
+      key = 'item_pid';
+      body[key] = this.recordPid;
+    } else if (this.recordType === 'holding') {
+      key = 'holding_pid';
+      body[key] = this.recordPid;
+      key = 'description';
+      body[key] = model.description;
+    }
+    this._http.post(`/api/${this.recordType}/request`, body)
       .pipe(tap(() => this.requestInProgress = false))
       .subscribe(
         (_: unknown) => {
@@ -182,8 +203,8 @@ export class ItemRequestComponent implements OnInit {
                   return new Promise((resolve) => {
                     const value = fc.value;
                     if (value.length > 2) {
-                      this._itemService.canRequest(
-                        this.itemPid,
+                      this.service.canRequest(
+                        this.recordPid,
                         this.currentUser.currentLibrary,
                         value
                       ).subscribe((result: any) => {
@@ -215,9 +236,22 @@ export class ItemRequestComponent implements OnInit {
             }
           }
         ];
+        if (this.recordType === 'holding') {
+          this.formFields.push({
+            key: 'description',
+            type: 'textarea',
+            templateOptions: {
+              label: this._translateService.instant('Collection or item year, volume, number, pages'),
+              placeholder: this._translateService.instant('Year / Volume / Number / Pages'),
+              maxLength: 100,
+              required: true,
+            }
+          });
+        }
         this.model = {
           patronBarcode: null,
-          pickupPid: this.pickupDefaultValue
+          pickupPid: this.pickupDefaultValue,
+          description: null,
         };
       });
     }
@@ -227,10 +261,11 @@ export class ItemRequestComponent implements OnInit {
   /** Get pickup location available for the item
    *  @return observable with pickup locations informations (name and pid)
    */
+
   private getPickupLocations(): Observable<Array<any>> {
     const currentLibrary = this.currentUser.currentLibrary;
-    return this._itemService.getPickupLocations(this.itemPid).pipe(
-      map(locations => locations.map((loc: any) => {
+    return this.service.getPickupLocations(this.recordPid).pipe(
+      map((locations: any) => locations.map((loc: any) => {
         if (this.pickupDefaultValue === undefined && loc.library.pid === currentLibrary) {
           this.pickupDefaultValue = loc.pid;
         }
@@ -263,4 +298,5 @@ export class ItemRequestComponent implements OnInit {
 interface FormModel {
   patronBarcode: string;
   pickupPid: string;
+  description?: string;
 }

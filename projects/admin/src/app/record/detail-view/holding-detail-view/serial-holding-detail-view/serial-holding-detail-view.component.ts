@@ -110,7 +110,7 @@ export class SerialHoldingDetailViewComponent implements OnInit {
     this._recordService
       .getRecords(
         'items',
-        `holding.pid:${this.holding.id}`,
+        `holding.pid:${this.holding.id} AND NOT type:provisional`,
         1,
         this._receivedIssueCounter,
         [], {}, null,
