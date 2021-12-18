@@ -93,7 +93,7 @@ export class ItemTransactionsComponent implements OnInit {
    */
   addRequest() {
     const modalRef = this._modalService.show(ItemRequestComponent, {
-      initialState: { itemPid: this.item.metadata.pid }
+      initialState: { recordPid: this.item.metadata.pid }
     });
     modalRef.content.onSubmit.pipe(first()).subscribe(value => {
       this._loanService.requestedBy$(this.item.metadata.pid).subscribe(data => this.requestedBy = data);
