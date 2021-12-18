@@ -20,10 +20,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { UserService } from '@rero/shared';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { HoldingsService } from 'projects/admin/src/app/service/holdings.service';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
-import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
-import { map } from 'rxjs/operators';
-
+import { forkJoin } from 'rxjs';
+import { first } from 'rxjs/operators';
+import { ItemRequestComponent } from '../item-request/item-request.component';
 
 @Component({
   selector: 'admin-document-holding',
@@ -49,7 +51,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
   /** Items observable reference */
   itemsRef: any;
   /** Holding permissions */
-  permissions: RecordPermissions;
+  permissions: any;
   /** total number of items for this holding */
   totalItemsCounter = 0;
   /** number of item to load/display */
@@ -69,13 +71,17 @@ export class HoldingComponent implements OnInit, OnDestroy {
    * @param _recordPermissionService - RecordPermissionService
    * @param _translateService - TranslateService
    * @param _userService - UserService
+   * @param _holdingService: HoldingsService
+   * @param _modalService - BsModalService
    */
   constructor(
     private _recordUiService: RecordUiService,
     private _recordService: RecordService,
     private _recordPermissionService: RecordPermissionService,
     private _translateService: TranslateService,
-    protected _userService: UserService
+    protected _userService: UserService,
+    protected _holdingService: HoldingsService,
+    protected _modalService: BsModalService,
   ) { }
 
   /** onInit hook */
@@ -98,16 +104,39 @@ export class HoldingComponent implements OnInit, OnDestroy {
 
   /** Get permissions */
   private _getPermissions(): void {
-    this._recordPermissionService
-      .getPermission('holdings', this.holding.metadata.pid)
-      .pipe(map((permissions: RecordPermissions) => {
-        return this._recordPermissionService.membership(
-          this._userService.user,
-          this.holding.metadata.library.pid,
-          permissions
-        );
-      }))
-      .subscribe(permissions => this.permissions = permissions);
+    const permissionObs = this._recordPermissionService.getPermission('holdings', this.holding.metadata.pid);
+    const canRequestObs = this._holdingService.canRequest(this.holding.metadata.pid);
+    forkJoin([permissionObs, canRequestObs]).subscribe(
+      ([permissions, canRequest]) => {
+        this.permissions = this._recordPermissionService
+          .membership(
+            this._userService.user,
+            this.holding.metadata.library.pid,
+            permissions
+          );
+        this.permissions.canRequest = canRequest;
+    });
+  }
+
+  /**
+   * Add request on holding and refresh permissions
+   * @param recordPid - string
+   */
+  addRequest(recordPid: string, recordType: string): void {
+    const modalRef = this._modalService.show(ItemRequestComponent, {
+      initialState: { recordPid, recordType }
+    });
+    modalRef.content.onSubmit.pipe(first()).subscribe(_ => {
+      this._getPermissions();
+      this._loadItems();
+    });
+  }
+
+  /**
+   * Return a message containing the reasons wht the holding cannot be requested
+   */
+  get cannotRequestInfoMessage(): string {
+    return this._recordPermissionService.generateTooltipMessage(this.permissions.canRequest.reasons, 'request');
   }
 
   /** Load the items corresponding to a given holding PID. */

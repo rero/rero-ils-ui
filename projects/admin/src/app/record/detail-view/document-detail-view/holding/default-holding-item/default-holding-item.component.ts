@@ -109,9 +109,9 @@ export class DefaultHoldingItemComponent implements OnInit {
    * Add request on item and refresh permissions
    * @param itemPid - string
    */
-  addRequest(itemPid: string): void {
+  addRequest(recordPid: string, recordType: string): void {
     const modalRef = this._modalService.show(ItemRequestComponent, {
-      initialState: { itemPid }
+      initialState: { recordPid, recordType }
     });
     modalRef.content.onSubmit.pipe(first()).subscribe(_ => this._getPermissions());
   }
