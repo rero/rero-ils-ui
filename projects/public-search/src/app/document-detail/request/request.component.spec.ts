@@ -134,7 +134,7 @@ describe('RequestComponentHolding', () => {
     component.recordType = 'holding';
     userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
     userService = TestBed.inject(UserService);
-    userService.load();
+    userService.load().subscribe();
     fixture.detectChanges();
   });
 

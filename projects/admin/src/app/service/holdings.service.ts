@@ -18,8 +18,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IssueItemStatus } from '@rero/shared';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 /**
  * Prediction issue structure
@@ -92,4 +92,38 @@ export class HoldingsService {
     }
   }
 
+  /**
+   * Check if an holding can be requested.
+   * @param holdingPid: the holding pid to check
+   * @param libraryPid: the library_pid to check
+   * @param patronBarcode: the patron barcode to check
+   * @return an observable on the API call response
+   */
+   canRequest(holdingPid: string, libraryPid?: string, patronBarcode?: string): Observable<any> {
+    let params = new HttpParams();
+    if (libraryPid != null) {
+      params = params.set('library_pid', libraryPid);
+    }
+    if (patronBarcode != null) {
+      params = params.set('patron_barcode', patronBarcode);
+    }
+    return this._http.get(`/api/holding/${holdingPid}/can_request`, { params });
+  }
+
+  /**
+   * Get the available pickup locations for an item.
+   * @param itemPid: the item pid to be requested
+   * @return an observable on the API call response
+   */
+   getPickupLocations(holdingPid): Observable<any> {
+    const url = `/api/holding/${holdingPid}/pickup_locations`;
+    return this._http.get<any>(url).pipe(
+      map(data => data.locations),
+      catchError(e => {
+        if (e.status === 404) {
+          return of(null);
+        }
+      })
+    );
+  }
 }

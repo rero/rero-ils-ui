@@ -33,25 +33,41 @@
         {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}
       </div>
       <div *ngIf="holdingType === 'serial'" class="col-sm-4 text-right">
-        <ng-container *ngIf="permissions; else noAction">
-          <!-- HOLDING VIEW -->
-          <button [routerLink]="['/', 'records', 'holdings', 'detail', holding.metadata.pid]"
-                  class="btn btn-outline-primary btn-sm ml-1">
-            <i class="fa fa-file-text-o"></i>
+      <ng-container *ngIf="permissions; else noAction">
+        <!-- HOLDING VIEW -->
+        <button [routerLink]="['/', 'records', 'holdings', 'detail', holding.metadata.pid]"
+                class="btn btn-outline-primary btn-sm ml-1">
+          <i class="fa fa-file-text-o"></i>
+        </button>
+        <!-- REQUEST BUTTON -->
+        <button *ngIf="permissions && permissions.canRequest && permissions.canRequest.can; else notRequest"
+              type="button" class="btn btn-outline-primary btn-sm ml-1" (click)="addRequest(holding.metadata.pid, 'holding')"
+              title="{{ 'Holding request' | translate }}"
+              name="request">
+          <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+        </button>
+        <ng-template #notRequest>
+          <button type="button" class="btn btn-outline-primary btn-sm ml-1 disabled"
+            title="{{ 'Holding request' | translate }}"
+            [popover]="tolTemplate" triggers="mouseenter:mouseleave"
+            name="request">
+          <i class="fa fa-shopping-basket" aria-hidden="true"></i>
           </button>
-          <!-- EDIT BUTTON -->
-          <button *ngIf="permissions.update && permissions.update.can"
-                  [routerLink]="['/', 'records', 'holdings', 'edit', holding.metadata.pid]"
-                  class="btn btn-outline-primary btn-sm ml-1">
-            <i class="fa fa-pencil"></i>
-          </button>
-          <!-- DELETE BUTTON -->
-          <button *ngIf="permissions.delete && permissions.delete.can; else deleteInfo" type="button"
-            class="btn btn-outline-danger btn-sm ml-1" (click)="delete()">
-            <i class="fa fa-trash"></i>
-          </button>
-        </ng-container>
-        <ng-template #noAction></ng-template>
+          <ng-template #tolTemplate><div [innerHtml]="cannotRequestInfoMessage | nl2br"></div></ng-template>
+        </ng-template>
+        <!-- EDIT BUTTON -->
+        <button *ngIf="permissions && permissions.update && permissions.update.can"
+                [routerLink]="['/', 'records', 'holdings', 'edit', holding.metadata.pid]"
+                class="btn btn-outline-primary btn-sm ml-1">
+          <i class="fa fa-pencil"></i>
+        </button>
+        <!-- DELETE BUTTON -->
+        <button *ngIf="permissions && permissions.delete && permissions.delete.can; else deleteInfo" type="button"
+          class="btn btn-outline-danger btn-sm ml-1" (click)="delete()">
+          <i class="fa fa-trash"></i>
+        </button>
+      </ng-container>
+      <ng-template #noAction></ng-template>
       </div>
       <admin-holding-detail *ngIf="holdingType === 'serial'" context="document" [holding]="holding" class="col-sm-12"></admin-holding-detail>
     </div>
