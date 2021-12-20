@@ -14,8 +14,25 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<!-- header -->
+<!-- Due date dropdown menu -->
+<section class="container pt-1" *ngIf="paginator.getRecordsCount() > 0">
+  <div class="row">
+    <div class="col-xs-12 col-md-7 col-lg-9"></div>
+    <ng-core-sort-list
+      class="col-xs-12 col-md-5 col-lg-3 pr-0"
+      [options]="[
+      {value:'duedate', label:'Due date (earliest)' | translate, icon:'fa-sort-numeric-asc'},
+      {value:'-duedate', label:'Due date (latest)' | translate, icon:'fa-sort-numeric-desc'}
+      ]"
+      [useIcon]="true"
+      (selectChange)="selectingSortCriteria($event)">
+    </ng-core-sort-list>
+  </div>
+</section>
+
+<!-- table -->
 <section id="loans-section" class="container my-2">
+  <!-- table header -->
   <div class="d-none d-lg-block">
     <div class="row bg-dark rounded text-light p-2">
       <div class="col-4 pl-0" translate>Title</div>
@@ -24,32 +41,33 @@
       <div class="col-2">&nbsp;</div>
     </div>
   </div>
+  <!-- table content -->
+  <div>
+    <ng-container *ngIf="!loaded; else display">
+      <div class="row">
+        <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
+      </div>
+    </ng-container>
 
-
-  <ng-container *ngIf="!loaded; else display">
-    <div class="row">
-      <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
-    </div>
-  </ng-container>
-
-  <ng-template #display>
-    <ng-container *ngIf="paginator.getRecordsCount() > 0; else noRecord">
-      <div id="loans-data">
-        <public-search-patron-profile-loan
+    <ng-template #display>
+      <ng-container *ngIf="paginator.getRecordsCount() > 0; else noRecord">
+        <div id="loans-data">
+          <public-search-patron-profile-loan
           *ngFor="let loan of records; let index = index"
           [ngClass]="{ 'bg-light': !(index % 2) }"
           id="request-{{ loan.metadata.pid }}"
           class="row my-1 p-2"
           [record]="loan">
-        </public-search-patron-profile-loan>
-        <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator"></shared-search-show-more-pager>
-      </div>
-    </ng-container>
+          </public-search-patron-profile-loan>
+          <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator"></shared-search-show-more-pager>
+        </div>
+      </ng-container>
 
-    <ng-template #noRecord>
-      <div class="row">
-        <div class="col mt-2 font-weight-bold" translate>No loan</div>
-      </div>
+      <ng-template #noRecord>
+        <div class="row">
+          <div class="col mt-2 font-weight-bold" translate>No loan</div>
+        </div>
+      </ng-template>
     </ng-template>
-  </ng-template>
+  </div>
 </section>

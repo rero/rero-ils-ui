@@ -48,12 +48,13 @@ export class LoanApiService extends BaseApi {
    */
   getOnLoan(
     patronPid: string, page: number,
-    itemsPerPage: number = 10, headers = BaseApi.reroJsonheaders
+    itemsPerPage: number = 20, headers = BaseApi.reroJsonheaders,
+    sort?: string
   ): Observable<Record | Error> {
     const loanStates = ['ITEM_ON_LOAN'];
     return this._recordService.getRecords(
       'loans', this._patronStateQuery(patronPid, loanStates), page, itemsPerPage,
-      undefined, undefined, headers
+      undefined, undefined, headers, sort
     );
   }
 
