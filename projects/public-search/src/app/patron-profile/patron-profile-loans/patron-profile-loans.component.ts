@@ -37,6 +37,15 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
   /** loans records */
   records = [];
 
+  /** sort criteria */
+  sortCriteria = 'duedate';
+
+  /** paginator page */
+  page = 1;
+
+  /** number of records per paginator page */
+  nRecords = 20;
+
   /** Records paginator */
   private _paginator: Paginator;
 
@@ -57,33 +66,39 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._paginator = new Paginator();
-    this._paginator
-      .setRecordsPerPage(20)
-      .setHiddenInfo(
-        _('({{ count }} hidden loan)'),
-        _('({{ count }} hidden loans)')
-      );
-    this._subscription.add(
-      this._paginator.more$.subscribe((page: number) => {
-        this._loanQuery(page).subscribe((response: Record) => {
-          this.records = this.records.concat(response.hits.hits);
-        });
-      })
-    );
-    this._subscription.add(
-      this._patronProfileMenuService.onChange$.subscribe(() => {
-        this._initialLoad();
-      })
-    );
-    this._loanQuery(1).subscribe((response: Record) => {
-      this._initialLoad();
-    });
+    this._initialisePaginatorAndSubscription();
+    this._initialLoad();
   }
 
   /** OnDestroy hook */
   ngOnDestroy(): void {
     this._subscription.unsubscribe();
+  }
+
+  /** Initialise paginator and subscription */
+  private _initialisePaginatorAndSubscription(): void {
+    this._paginator = new Paginator();
+    this._paginator
+      .setRecordsPerPage(this.nRecords)
+      .setHiddenInfo(
+        _('({{ count }} hidden loan)'),
+        _('({{ count }} hidden loans)')
+      );
+
+    this._subscription = new Subscription();
+    this._subscription.add(
+      this._paginator.more$.subscribe((page: number) => {
+        this._loanQuery(page).subscribe((response: Record) => {
+          this.records = this.records.concat(response.hits.hits);
+          this.page = page;
+        });
+      })
+    );
+    this._subscription.add(
+      this._patronProfileMenuService.onChange$.subscribe(() => {
+        this._resetPaginator();
+      })
+    );
   }
 
   /** Initial records load */
@@ -103,6 +118,35 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
   private _loanQuery(page: number): Observable<Record | Error> {
     const patronPid = this._patronProfileMenuService.currentPatron.pid;
     return this._loanApiService
-      .getOnLoan(patronPid, page, this._paginator.getRecordsPerPage());
+      .getOnLoan(patronPid, page, this._paginator.getRecordsPerPage(), undefined, this.sortCriteria);
   }
+
+  /** Reset paginator when patron profile menu has changed */
+  private _resetPaginator(){
+    this._loanQuery(1).subscribe((response: Record) => {
+      this._paginator
+        .setPage(1)
+        .setRecordsCount(response.hits.total.value);
+
+      this.records = response.hits.hits;
+      this.page = 1;
+      this.loaded = true;
+    });
+  }
+
+   /**
+    * Allow to sort loans list using a sort criteria
+    * @param sortCriteria: the sort criteria to use for sorting the list
+    */
+  selectingSortCriteria(sortCriteria: string) {
+    this.sortCriteria = sortCriteria;
+    this._paginator.setRecordsPerPage(this.page * this.nRecords);
+
+    this._loanQuery(1).subscribe((response: Record) => {
+      this.records = response.hits.hits;
+      this._paginator.setRecordsPerPage(this.nRecords);
+      this.loaded = true;
+    });
+  }
+
 }
