@@ -1,0 +1,41 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="modal show d-block" role="dialog" (window:keypress)="checkinItemOnEnterKey($event)">
+  <div class="modal-dialog modal-dialog-centered" role="checkin">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" translate>Circulation action</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" data-dismiss="modal" (click)="closeModal()">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="font-weight-bold" translate>
+         One item and one patron were found.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="action-patron" type="button" class="btn btn-outline-primary" (click)="setAction('patron')">
+          <i class="fa fa-user mr-1"></i> {{ 'Patron account' | translate }}
+        </button>
+        <button id="action-item" type="button" class="btn btn-primary" (click)="setAction('item')">
+          <i class="fa fa-file-o mr-1"></i> {{ 'Checkin the item' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
