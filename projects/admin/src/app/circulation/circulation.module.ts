@@ -59,6 +59,7 @@ import { PickupItemComponent } from './patron/pickup/pickup-item/pickup-item.com
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
 import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
+import { CheckinActionComponent } from './checkin/checkin-action/checkin-action.component';
 
 
 @NgModule({
@@ -91,7 +92,8 @@ import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
     OverdueTransactionComponent,
     HistoryLogComponent,
     HistoryLogLibraryComponent,
-    GetLoanCipoPipe
+    GetLoanCipoPipe,
+    CheckinActionComponent
   ],
   imports: [
     BsDropdownModule.forRoot(),

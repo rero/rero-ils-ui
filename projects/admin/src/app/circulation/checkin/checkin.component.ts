@@ -18,13 +18,16 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
+import { Record, RecordService } from '@rero/ng-core';
 import { ItemStatus, User, UserService } from '@rero/shared';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
+import { forkJoin } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 import { Item, ItemAction, ItemNoteType } from '../../classes/items';
 import { ItemsService } from '../../service/items.service';
 import { PatronService } from '../../service/patron.service';
+import { CheckinActionComponent } from './checkin-action/checkin-action.component';
 
 @Component({
   selector: 'admin-circulation-checkout',
@@ -38,6 +41,7 @@ export class CheckinComponent implements OnInit {
   currentLibraryPid: string;
 
   private _loggedUser: User;
+
   items = [];
 
   /** Focus attribute of the search input */
@@ -54,6 +58,7 @@ export class CheckinComponent implements OnInit {
    * @param _translate: TranslateService
    * @param _toastService: ToastrService
    * @param _patronService: PatronService
+   * @param _modalService: BsModalService
    */
   constructor(
     private _userService: UserService,
@@ -62,7 +67,8 @@ export class CheckinComponent implements OnInit {
     private _router: Router,
     private _translate: TranslateService,
     private _toastService: ToastrService,
-    private _patronService: PatronService
+    private _patronService: PatronService,
+    private _modalService: BsModalService
   ) {}
 
   ngOnInit() {
@@ -172,60 +178,71 @@ export class CheckinComponent implements OnInit {
    * @param barcode: item or patron barcode
    */
   getPatronOrItem(barcode: string) {
-    if (barcode) {
-      this._recordService
-        .getRecords('patrons', `${barcode}`, 1, 2, [], {simple: 1, roles: 'patron'})
-        .pipe(
-          map((response: any) => {
-            const total = this._recordService.totalHits(response.hits.total);
-            if (total === 0) {
-             return null;
-            }
-            if (total > 1) {
-              this._toastService.warning(
-                this._translate.instant('Found more than one patron.'),
-                this._translate.instant('Checkin')
-              );
-            }
-            return response.hits.hits[0].metadata;
-          })
-        ).subscribe(
-          patron => {
-            if (
-              patron !== null &&
-              patron.organisation.pid !==
-                this._loggedUser.currentOrganisation
-            ) {
-              this._toastService.warning(
-                this._translate.instant('Patron not found!'),
-                this._translate.instant('Checkin')
-              );
-              return;
-            }
-            if (patron === null) {
-              const newItem = this.items.find(item => item.barcode === barcode);
-              if (newItem) {
-                this._toastService.warning(
-                  this._translate.instant('The item is already in the list.'),
-                  this._translate.instant('Checkin')
-                );
-              } else {
-                this.checkin(barcode);
-              }
-            } else {
-              // TODO: which barcode we will take
-              this._router.navigate(
-                ['/circulation', 'patron', patron.patron.barcode[0], 'loan']
-              );
-            }
-            this._resetSearchInput();
-          },
-          error =>
-            this._toastService.error(
-              error.message,
+    if (this.patronInfo === null) {
+      const loggerOrg = this._loggedUser.currentOrganisation;
+      const query = `patron.barcode:${barcode} AND organisation.pid:${loggerOrg}`;
+      const patronQuery = this._recordService
+        .getRecords('patrons', query, 1, 1, [])
+        .pipe(map((result: Record) => result.hits));
+      const itemQuery = this._recordService
+        .getRecords('items', `barcode:${barcode}`, 1, 1, [])
+        .pipe(map((result: Record) => result.hits));
+      forkJoin([patronQuery, itemQuery])
+        .subscribe(([patron, item]: any[]) => {
+          if (patron.total.value === 0 && item.total.value === 0) {
+            this._toastService.warning(
+              this._translate.instant('Patron not found!'),
               this._translate.instant('Checkin')
-            )
+            );
+          }
+          if (patron.total.value > 1 && item.total.value === 0) {
+            this._toastService.warning(
+              this._translate.instant('Found more than one patron.'),
+              this._translate.instant('Checkin')
+            );
+          }
+          if (patron.total.value === 1 && item.total.value === 1) {
+            const modalRef: BsModalRef = this._modalService.show(CheckinActionComponent, {
+              ignoreBackdropClick: true,
+              keyboard: true
+            });
+            modalRef.onHidden.subscribe(() => {
+              switch (modalRef.content.action) {
+                case 'patron':
+                  this._router.navigate(
+                    ['/circulation', 'patron', barcode, 'loan']
+                  );
+                  break;
+                case 'item':
+                  this.checkin(barcode);
+                  break;
+                default:
+                  this._resetSearchInput();
+                  break;
+              }
+            });
+          } else {
+            if (item.total.value === 1) {
+              this.checkin(barcode);
+            }
+          }
+        },
+        error => this._toastService.error(
+            error.message,
+            this._translate.instant('Checkin')
+          )
         );
+    } else {
+      const newItem = this.items.find(item => item.barcode === barcode);
+      if (newItem) {
+        this._toastService.warning(
+          this._translate.instant('The item is already in the list.'),
+          this._translate.instant('Checkin')
+        );
+        this._resetSearchInput();
+      } else {
+        this.checkin(barcode);
+      }
     }
   }
 
@@ -269,6 +286,7 @@ export class CheckinComponent implements OnInit {
           this._translate.instant('Checkin'),
           { enableHtml: true }
         );
+        this._resetSearchInput();
       })
     ).subscribe(
       item => {
