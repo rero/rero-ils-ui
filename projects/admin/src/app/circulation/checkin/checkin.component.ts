@@ -225,6 +225,11 @@ export class CheckinComponent implements OnInit {
             if (item.total.value === 1) {
               this.checkin(barcode);
             }
+            if (patron.total.value === 1) {
+              this._router.navigate(
+                ['/circulation', 'patron', barcode, 'loan']
+              );
+            }
           }
         },
         error => this._toastService.error(

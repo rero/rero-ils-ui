@@ -35,10 +35,12 @@
       <div class="col-10">
         <h1>
           {{ patron.last_name }} {{ patron.first_name }}
-          <a [routerLink]="['/circulation', 'patron', patron.patron.barcode[0]]" class="btn-link btn btn-sm btn-outline-primary">
-            <i class="fa fa-exchange mr-2"></i>
-            {{ 'Circulation' | translate }}
-          </a>
+          <ng-container *ngIf="patron.patron">
+            <a [routerLink]="['/circulation', 'patron', patron.patron.barcode[0]]" class="btn-link btn btn-sm btn-outline-primary">
+              <i class="fa fa-exchange mr-2"></i>
+              {{ 'Circulation' | translate }}
+            </a>
+          </ng-container>
         </h1>
         <dl class="row">
           <dt class="col-1 text-right"><i class="fa fa-calendar-o"></i></dt>
