@@ -105,6 +105,14 @@
             <dd class="col">{{ record.metadata.limits.overdue_items_limits.default_value }}</dd>
           </dl>
         </div>
+        <!-- unpaid subscription restriction -->
+        <div class="card-header">
+          <i class="fa" [ngClass]="{
+            'fa-circle text-success': record.metadata.limits.unpaid_subscription,
+            'fa-circle-thin': !record.metadata.limits.unpaid_subscription
+          }"></i>
+          <span class="pl-3" translate>Limit to unpaid subscription</span>
+        </div>
       </div>
     </section>
   </dl>
