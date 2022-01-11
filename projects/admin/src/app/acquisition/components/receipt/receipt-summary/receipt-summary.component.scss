@@ -1,0 +1,79 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2021 RERO
+ * Copyright (C) 2021 UCLouvain
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+@import '~font-awesome/scss/font-awesome';
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '/projects/admin/src/app/scss/variables';
+
+:host {
+  display: block;
+}
+.receipt {
+  border-bottom: $border-width solid $border-color;
+  &:hover {
+    background-color: $light;
+  }
+  label {
+    span.reception-dates {
+      font-style: italic;
+      font-size: $small-font-size;
+      padding-left: map-get($spacers, 3);
+    }
+
+  }
+  *[class^="col-"] {
+    padding-top: map-get($spacers, 2);
+    padding-bottom: map-get($spacers, 2);
+  }
+
+  /* DETAILS ROWS ========================================================== */
+  *.detail {
+    padding-top: 0 !important;
+    padding-bottom: map-get($spacers, 1) !important;
+
+    &.label{
+      padding-left: 8.333333%;  // Same as offset-1 class but without pixel mismatch
+    }
+
+    &.separator {
+      border-top: 1px dashed $border-color;
+    }
+  }
+
+  /* AMOUNT COLUMN ========================================================= */
+  .amount {
+    border-left: $border-width solid $border-color;
+    background-color: $light;
+    text-align: right;
+    padding: map-get($spacers, 1) map-get($spacers, 2);
+
+    .total-amount {
+      font-weight: bold;
+    }
+    .computation {
+      font-size: small;
+      color: $secondary;
+    }
+  }
+
+  /* ACTIONS BUTTONS ======================================================= */
+  .actions-column {
+    border-left: $border-width solid $border-color;
+  }
+}

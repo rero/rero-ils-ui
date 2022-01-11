@@ -42,8 +42,8 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
 
 
 /** function to instantiate the application  */
-export function appInitFactory(appInitializerService: AppInitializerService) {
-  return () => appInitializerService.load();
+export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
+  return () => appInitializerService.load().toPromise();
 }
 
 

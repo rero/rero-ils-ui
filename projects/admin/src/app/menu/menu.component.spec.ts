@@ -59,7 +59,7 @@ describe('MenuComponent', () => {
   beforeEach(() => {
     translate = TestBed.inject(TranslateService);
     userService = TestBed.inject(UserService);
-    userService.load();
+    userService.load().subscribe();
     userService.user.currentOrganisation = testUserPatronWithSettings.patrons[1].organisation.pid;
     translate.use('en');
     fixture = TestBed.createComponent(MenuComponent);

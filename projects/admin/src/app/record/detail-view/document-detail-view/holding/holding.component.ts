@@ -20,7 +20,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { UserService } from '@rero/shared';
-import { RecordPermission, RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
+import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
+import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
 import { map } from 'rxjs/operators';
 
 
@@ -38,6 +39,8 @@ export class HoldingComponent implements OnInit, OnDestroy {
   @Output() deleteHolding = new EventEmitter();
   /** Items collapsed */
   @Input() isItemsCollapsed = true;
+  /** Restrict the functionality of interface */
+  @Input() isCurrentOrganisation = true;
 
   /** shortcut for holding type */
   holdingType: 'electronic' | 'serial' | 'standard';
@@ -46,7 +49,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
   /** Items observable reference */
   itemsRef: any;
   /** Holding permissions */
-  permissions: RecordPermission;
+  permissions: RecordPermissions;
   /** total number of items for this holding */
   totalItemsCounter = 0;
   /** number of item to load/display */
@@ -81,7 +84,9 @@ export class HoldingComponent implements OnInit, OnDestroy {
     if (this.holdingType !== 'electronic') {
       this._loadItems();
     }
-    this._getPermissions();
+    if (this.isCurrentOrganisation) {
+      this._getPermissions();
+    }
   }
 
   /** onDestroy hook */
@@ -95,7 +100,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
   private _getPermissions(): void {
     this._recordPermissionService
       .getPermission('holdings', this.holding.metadata.pid)
-      .pipe(map((permissions: RecordPermission) => {
+      .pipe(map((permissions: RecordPermissions) => {
         return this._recordPermissionService.membership(
           this._userService.user,
           this.holding.metadata.library.pid,

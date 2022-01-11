@@ -1,0 +1,100 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2021 RERO
+ * Copyright (C) 2021 UCLouvain
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+@import '/node_modules/bootstrap/scss/functions';
+@import '/node_modules/bootstrap/scss/variables';
+@import '/projects/admin/src/app/scss/variables';
+
+.order-brief-view {
+
+  .description {
+    font-style: italic;
+    margin-left: map-get($spacers, 4);  // related to .metadata margin
+  }
+
+  .metadata {
+    font-size: small;
+    color: $secondary;
+    font-weight: bold;
+    margin-left: map-get($spacers, 4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:before {
+      content: '[';
+    }
+    &:after {
+      content: ']';
+    }
+  }
+
+  .ordinal-infos {
+    background-color: $light;
+    border: $border-width solid $border-color;
+    border-radius: $border-radius;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    .accounting-infos + .accounting-infos {
+      border-top: $border-width solid $border-color;
+    }
+    .accounting-infos {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+
+      * {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      label {
+        margin: 0;
+        font-weight: bold;
+        width: 100%;
+        padding-left: map-get($spacers, 2);
+      }
+      .counter {
+        color: $secondary;
+        padding-left: map-get($spacers, 2);
+        padding-right: map-get($spacers, 2);
+        font-size: $small-font-size;
+        background-color: #F3F3F3;
+        min-width: 3.5rem;
+        &.ordered-counter::before{
+          font-family: 'FontAwesome';
+          font-weight: 100;
+          content: " \f07a";
+          padding-right: map-get($spacers, 1);
+        }
+        &.received-counter::before{
+          font-family: 'FontAwesome';
+          font-weight: 100;
+          content: " \f090";
+          padding-right: map-get($spacers, 1);
+        }
+      }
+    }
+  }
+}

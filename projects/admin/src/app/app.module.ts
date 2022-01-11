@@ -23,7 +23,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
 import { FormlyModule } from '@ngx-formly/core';
-import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import {
@@ -31,6 +30,7 @@ import {
   TranslateLoader, TranslateService, TruncateTextPipe
 } from '@rero/ng-core';
 import { ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -38,6 +38,11 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import {
+  SelectAccountEditorWidgetComponent
+} from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
+import { ReceivedOrderPermissionValidator } from './acquisition/utils/permissions';
+import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DocumentsTypeahead } from './classes/typeahead/documents-typeahead';
@@ -64,8 +69,6 @@ import { MainTitleRelationPipe } from './pipe/main-title-relation.pipe';
 import { MarcPipe } from './pipe/marc.pipe';
 import { NotesFormatPipe } from './pipe/notes-format.pipe';
 import { SubjectProcessPipe } from './pipe/subject-process.pipe';
-import { AcquisitionOrderBriefViewComponent } from './record/brief-view/acquisition-order-brief-view.component';
-import { BudgetsBriefViewComponent } from './record/brief-view/budgets-brief-view.component';
 import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policies-brief-view.component';
 import { CollectionBriefViewComponent } from './record/brief-view/collection-brief-view.component';
 import { DocumentsBriefViewComponent } from './record/brief-view/documents-brief-view/documents-brief-view.component';
@@ -88,20 +91,7 @@ import { ExceptionDatesListComponent } from './record/custom-editor/libraries/ex
 import { LibraryComponent } from './record/custom-editor/libraries/library.component';
 import { NotificationTypePipe } from './record/custom-editor/libraries/pipe/notificationType.pipe';
 import { UserIdEditorComponent } from './record/custom-editor/user-id-editor/user-id-editor.component';
-import {
-  AcquisitionOrderDetailViewComponent
-} from './record/detail-view/acquisition-order-detail-view/acquisition-order-detail-view.component';
-import {
-  AcquisitionOrderLinesComponent
-} from './record/detail-view/acquisition-order-detail-view/order-lines/acquisition-order-lines.component';
-import { OrderLineComponent } from './record/detail-view/acquisition-order-detail-view/order-lines/order-line/order-line.component';
-import {
-  AcquisitionOrderLineDetailViewComponent
-} from './record/detail-view/acquisition-order-line-detail-view/acquisition-order-line-detail-view.component';
 import { AddressTypeComponent } from './record/detail-view/address-type/address-type.component';
-import { AcquisitionAccountComponent } from './record/detail-view/budget-detail-view/acquisition-account/acquisition-account.component';
-import { AcquisitionAccountsComponent } from './record/detail-view/budget-detail-view/acquisition-accounts/acquisition-accounts.component';
-import { BudgetDetailViewComponent } from './record/detail-view/budget-detail-view/budget-detail-view.component';
 import { CircPolicyDetailViewComponent } from './record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
 import { CollectionDetailViewComponent } from './record/detail-view/collection-detail-view/collection-detail-view.component';
 import { CollectionItemsComponent } from './record/detail-view/collection-detail-view/collection-items/collection-items.component';
@@ -170,10 +160,14 @@ import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-fac
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
+import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
+import {
+  HoldingOrganisationComponent
+} from './record/detail-view/document-detail-view/holding-organisation/holding-organisation.component';
 
 /** Init application factory */
-export function appInitFactory(appInitService: AppInitService) {
-  return () => appInitService.load();
+export function appInitFactory(appInitService: AppInitService): () => Promise<any> {
+  return () => appInitService.load().toPromise();
 }
 
 @NgModule({
@@ -217,21 +211,12 @@ export function appInitFactory(appInitService: AppInitService) {
     VendorDetailViewComponent,
     VendorBriefViewComponent,
     AddressTypeComponent,
-    AcquisitionOrderDetailViewComponent,
-    AcquisitionOrderBriefViewComponent,
-    AcquisitionOrderLineDetailViewComponent,
-    AcquisitionOrderLinesComponent,
-    BudgetsBriefViewComponent,
-    BudgetDetailViewComponent,
-    AcquisitionAccountsComponent,
-    AcquisitionAccountComponent,
     OrganisationDetailViewComponent,
     BudgetSelectComponent,
     BudgetSelectLineComponent,
     RelatedResourceComponent,
     ItemRequestComponent,
     ErrorPageComponent,
-    OrderLineComponent,
     SerialHoldingItemComponent,
     SerialHoldingDetailViewComponent,
     HoldingDetailViewComponent,
@@ -277,14 +262,17 @@ export function appInitFactory(appInitService: AppInitService) {
     CirculationLogsDialogComponent,
     CirculationLogComponent,
     ItemInCollectionPipe,
+    CountryCodeTranslatePipe,
     DocumentDescriptionComponent,
     OtherEditionComponent,
     DescriptionZoneComponent,
     DocumentProvisionActivityPipe,
-    MainTitleRelationPipe
+    MainTitleRelationPipe,
+    HoldingOrganisationComponent
   ],
   imports: [
     AppRoutingModule,
+    AccordionModule.forRoot(),
     BrowserAnimationsModule,
     BrowserModule,
     BsDatepickerModule.forRoot(),
@@ -299,7 +287,8 @@ export function appInitFactory(appInitService: AppInitService) {
     PopoverModule.forRoot(),
     FormlyModule.forRoot({
       types: [
-        { name: 'cipo-pt-it', component: CipoPatronTypeItemTypeComponent }
+        { name: 'cipo-pt-it', component: CipoPatronTypeItemTypeComponent },
+        { name: 'account-select', component: SelectAccountEditorWidgetComponent }
       ],
       wrappers: [
         { name: 'user-id', component: UserIdComponent },
@@ -316,8 +305,7 @@ export function appInitFactory(appInitService: AppInitService) {
     TypeaheadModule,
     HotkeysModule,
     SharedModule,
-    LoadingBarHttpClientModule,
-    LoadingBarModule
+    LoadingBarHttpClientModule
   ],
   providers: [
     {
@@ -370,6 +358,8 @@ export function appInitFactory(appInitService: AppInitService) {
     MefPersonTypeahead,
     MefOrganisationTypeahead,
     TruncateTextPipe,
+    CurrentLibraryPermissionValidator,
+    ReceivedOrderPermissionValidator,
     // TODO: needed for production build, remove this after it is fixed in the
     // @ngneat/hotkeys library
     {
@@ -406,11 +396,6 @@ export function appInitFactory(appInitService: AppInitService) {
     PatronDetailViewComponent,
     VendorDetailViewComponent,
     VendorBriefViewComponent,
-    AcquisitionOrderDetailViewComponent,
-    AcquisitionOrderBriefViewComponent,
-    AcquisitionOrderLineDetailViewComponent,
-    BudgetsBriefViewComponent,
-    BudgetDetailViewComponent,
     OrganisationDetailViewComponent,
     ItemRequestComponent,
     ErrorPageComponent,
@@ -423,7 +408,8 @@ export function appInitFactory(appInitService: AppInitService) {
     CustomShortcutHelpComponent,
     ContributionDetailViewComponent,
     OperationLogsComponent,
-    UserIdEditorComponent
+    UserIdEditorComponent,
+    HoldingOrganisationComponent
   ],
   bootstrap: [AppComponent],
   schemas: [

@@ -17,13 +17,14 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { ItemStatus } from '@rero/shared';
+import { ItemStatus, UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Item, ItemAction, ItemNote, ItemNoteType} from 'projects/admin/src/app/classes/items';
 import { Loan, LoanState } from 'projects/admin/src/app/classes/loans';
 import { ItemsService } from 'projects/admin/src/app/service/items.service';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
+import { Organisation } from '../../classes/core';
 import { PatronTransactionService } from '../services/patron-transaction.service';
 
 @Component({
@@ -57,14 +58,24 @@ export class ItemComponent implements OnInit {
   document = undefined;
   /** ItemStatus class reference */
   ItemStatus = ItemStatus;
+  /** debug mode is enabled ? */
+  debugMode = false;
 
   // GETTER & SETTER =========================================================
   /**
    * Get current organisation
-   * @return: current organisation
+   * @returns current organisation
    */
-  get organisation() {
+  get organisation(): Organisation {
     return this._organisationService.organisation;
+  }
+
+  /**
+   * Is the debug mode could be activated ?
+   * @returns True if the debug mode can be enabled and switched
+   */
+  get canUseDebugMode(): boolean {
+    return this._userService.user.isSystemLibrarian;
   }
 
 
@@ -75,12 +86,14 @@ export class ItemComponent implements OnInit {
    * @param _organisationService - Organisation Service
    * @param _patronTransactionService - Patron transaction Service
    * @param _itemService - Item Service
+   * @param _userService - UserService
    */
   constructor(
     private _recordService: RecordService,
     private _organisationService: OrganisationService,
     private _patronTransactionService: PatronTransactionService,
-    private _itemService: ItemsService
+    private _itemService: ItemsService,
+    private _userService: UserService
   ) {  }
 
   /** OnInit hook */

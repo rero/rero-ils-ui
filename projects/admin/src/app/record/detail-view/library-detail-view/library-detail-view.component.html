@@ -97,18 +97,34 @@
         </ng-container>
       </dl>
     </tab>
+    <tab>
+      <ng-template tabHeading>
+        <i class="fa fa-university mr-2"></i>{{ 'Acquisition settings' | translate }}
+      </ng-template>
+      <!-- ACQUISITION SETTINGS -->
+      <dl class="row" *ngIf="record.metadata.acquisition_settings as acquisitionSettings">
+        <ng-container *ngIf="acquisitionSettings.shipping_informations as acqInfos"
+                      [ngTemplateOutlet]="address_block"
+                      [ngTemplateOutletContext]="{ label: 'Shipping informations' | translate, data: acqInfos}"
+        ></ng-container>
+        <ng-container *ngIf="acquisitionSettings.billing_informations as acqInfos"
+                      [ngTemplateOutlet]="address_block"
+                      [ngTemplateOutletContext]="{ label: 'Billing informations' | translate, data: acqInfos}"
+        ></ng-container>
+      </dl>
+    </tab>
   </tabset>
 
   <!-- LOCATIONS -->
-  <article class="card mt-4">
-    <header class="card-header">
+  <div class="card mt-4">
+    <div class="card-header">
       <b translate>Locations</b>
       <a class="ml-2 btn btn-sm btn-outline-primary float-right" *ngIf="isUserCanAddLocation"
         [routerLink]="['/', 'records', 'locations', 'new']" [queryParams]="{ library: record.metadata.pid }">
-        <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} ...
+        <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
       </a>
-    </header>
-    <article class="card-body collapsed show">
+    </div>
+    <div class="card-body collapsed show">
       <ul class="list-group list-group-flush" *ngIf="locations; else no_locations">
         <li *ngFor="let location of locations" class="list-group-item p-1">
           <admin-location [location]="location" [library]="record" class="row"
@@ -118,10 +134,35 @@
       <ng-template #no_locations>
         <p translate>no location</p>
       </ng-template>
-    </article>
-  </article>
+    </div>
+  </div>
 </ng-container>
 
-<ng-template #no_locations>
-  <p translate>no location</p>
+
+<ng-template #address_block let-label="label" let-data="data">
+  <dt class="col-3 label-title">{{ label }}</dt>
+  <div class="col-9 card container py-2 mb-2">
+    <div class="row">
+      <div class="col-6 d-flex">
+        <i class="fa fa-address-card-o pr-2 pt-1"></i>
+        <div>
+          {{ data.name }}<br/>
+          <ng-container *ngIf="data.address">
+            <ng-container *ngIf="data.address.street">{{ data.address.street }}<br/></ng-container>
+            <ng-container *ngIf="data.address.zip_code || data.address.city">
+              <span *ngIf="data.address.zip_code">{{ data.address.zip_code }}</span>
+              <span *ngIf="data.address.zip_code && data.address.city"> - </span>
+              <span *ngIf="data.address.city">{{ data.address.city }}</span><br/>
+            </ng-container>
+            <ng-container *ngIf="data.address.country">{{ data.address.country | countryCodeTranslate }}</ng-container>
+          </ng-container>
+        </div>
+      </div>
+      <div class="col-6">
+        <dd *ngIf="data.email"><i class="fa fa-at pr-2"></i>{{ data.email }}</dd>
+        <dd *ngIf="data.phone"><i class="fa fa-phone-square pr-2"></i>{{ data.phone }}</dd>
+        <dd *ngIf="data.extra"><i class="fa fa-sticky-note-o pr-2"></i>{{ data.extra }}</dd>
+      </div>
+    </div>
+  </div>
 </ng-template>

@@ -59,15 +59,13 @@
       </div>
       <div class="form-group row">
         <label for="email" class="col-2 col-form-label required">
-          {{ 'Code' | translate }} <strong class="text-danger">*</strong>
+          {{ 'Code' | translate }}
+          <strong class="text-danger">*</strong>
         </label>
         <div class="col-10">
-          <input id="code" class="form-control" formControlName="code"
-            placeholder="{{ 'Please insert a code' | translate }}" required>
+          <input id="code" class="form-control" formControlName="code" placeholder="{{ 'Please insert a code' | translate }}" required>
           <div *ngIf="code.invalid && (code.dirty || code.touched)" class="text-danger pt-1">
-            <div *ngIf="code.errors.alreadyTakenMessage" translate>
-              Code is already taken.
-            </div>
+            <div *ngIf="code.errors.alreadyTakenMessage" translate>Code is already taken.</div>
             <div *ngIf="code.pending" translate>Validating…</div>
           </div>
         </div>
@@ -93,41 +91,49 @@
 
       <tabset #staticTabs>
         <tab>
-          <ng-template tabHeading>
-            <i class="fa fa-clock-o mr-2"></i>{{ 'Opening Hours' | translate }}
-          </ng-template>
+          <ng-template tabHeading><i class="fa fa-clock-o mr-2"></i>{{ 'Opening Hours' | translate }}</ng-template>
           <div class="mt-3" formArrayName="opening_hours" *ngFor="let day of openingHours.controls; let i=index">
             <div [formGroupName]="i">
-              <div class="form-group row">
+              <div class="form-group row" [ngClass]="{'pt-3': i>0}">
                 <div class="col-2">
                   <div class="custom-control custom-switch">
-                    <input formControlName="is_open" class="custom-control-input" type="checkbox" [id]="day.value.day"
-                      [checked]="day.value.is_open">
+                    <input formControlName="is_open"
+                           class="custom-control-input"
+                           type="checkbox"
+                           [id]="day.value.day"
+                           [checked]="day.value.is_open"
+                    >
                     <label class="custom-control-label" [for]="day.value.day">
                       {{ day.value.day | translate | titlecase }}
                     </label>
                   </div>
                 </div>
-                <div class="col-8">
+                <div class="col-10">
                   <ul class="list-unstyled mb-0">
-                    <li formArrayName="times" *ngFor="let time of day.controls.times.controls; let t=index">
+                    <li formArrayName="times" *ngFor="let time of day.controls.times.controls; let t=index; let last=last">
                       <div [formGroupName]="t" class="mb-1">
+                        <!-- inputs row. One row for each period -->
                         <div class="form-row">
-                          <div class="col-5">
+                          <div class="col-4">
                             <input class="form-control mr-2" formControlName="start_time"
-                              [value]="day.value.is_open ? time.value.start_time : ''" [readonly]="!day.value.is_open">
+                                   [value]="day.value.is_open ? time.value.start_time : ''"
+                                   [readonly]="!day.value.is_open">
                           </div>
-                          <div class="col-5">
+                          <div class="col-4">
                             <input class="form-control" formControlName="end_time"
-                              [value]="day.value.is_open ? time.value.end_time : ''" [readonly]="!day.value.is_open">
+                                   [value]="day.value.is_open ? time.value.end_time : ''"
+                                   [readonly]="!day.value.is_open">
                           </div>
-                          <div class="col-2 text-right">
-                            <button *ngIf="day.value.is_open && day.controls.times.controls.length > 1" type="button"
-                              class="btn btn-outline-secondary btn-sm" (click)="deleteTime(i, t)">
+                          <div class="col-1 text-right">
+                            <button *ngIf="day.value.is_open && day.controls.times.controls.length > 1"
+                                    type="button" class="btn btn-outline-danger btn-sm"
+                                    (click)="deleteTime(i, t)">
                               <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </button>
-                            <button *ngIf="day.value.is_open && day.controls.times.controls.length == 1" type="button"
-                              class="btn btn-outline-secondary btn-sm" (click)="addTime(i)">
+                          </div>
+                          <div class="col-3">
+                            <button *ngIf="day.value.is_open && last" type="button"
+                                    class="btn btn-outline-primary btn-sm" (click)="addTime(i)">
                               <i class="fa fa-plus-square-o" aria-hidden="true"></i> {{ 'period' | translate }}
                             </button>
                           </div>
@@ -182,7 +188,7 @@
             <i class="fa fa-envelope-o mr-2"></i>{{ 'Notification settings' | translate }}
           </ng-template>
           <div class="mt-3" formArrayName="notification_settings"
-            *ngFor="let setting of notificationSettings.controls; let i=index">
+               *ngFor="let setting of notificationSettings.controls; let i=index">
             <div [formGroupName]="i" class="card my-2">
               <div class="card-header">
                 {{ setting.controls.type.value | translate | ucfirst }}
@@ -215,6 +221,137 @@
                     </div>
                   </div>
                 </ng-container>
+              </div>
+            </div>
+          </div>
+        </tab>
+        <tab>
+          <ng-template tabHeading><i class="fa fa-university mr-2"></i>{{ 'Acquisition settings' | translate }}</ng-template>
+          <div class="mt-3" formGroupName="acquisition_settings">
+            <div class="card" formGroupName="shipping_informations">
+              <div class="card-header">
+                <i class="fa fa-truck"></i>
+                {{ 'Shipping informations' | translate }}
+              </div>
+              <div class="card-body container">
+                <!-- name + email + phone -->
+                <div class="form-group form-row">
+                  <label for="shipping-name" class="col-3 col-form-label" translate>Contact name</label>
+                  <div class="col input-group">
+                    <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-user"></i></span></div>
+                    <input formControlName="name" id="shipping-name" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group form-row">
+                  <label for="shipping-email" class="col-3 col-form-label" translate>Contact email</label>
+                  <div class="col input-group">
+                    <div class="input-group-prepend"><span class="input-group-text">@</span></div>
+                    <input formControlName="email" id="shipping-email" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group form-row">
+                  <label for="shipping-phone" class="col-3 col-form-label" translate>Contact phone</label>
+                  <div class="col input-group">
+                    <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-phone"></i></span></div>
+                    <input formControlName="phone" id="shipping-phone" class="form-control">
+                  </div>
+                </div>
+                <!-- Address -->
+                <div formGroupName="address">
+                  <div class="form-group form-row">
+                    <label for="shipping-street" class="col-3 col-form-label" translate>Address</label>
+                    <div class="col-9">
+                      <input formControlName="street" class="form-control" id="shipping-street" placeholder="{{ 'Street' | translate }}">
+                    </div>
+                  </div>
+                  <div class="form-group form-row">
+                    <div class="col-3 offset-3">
+                      <input formControlName="zip_code" class="form-control" id="shipping-zip-code" placeholder="{{ 'Zip code' | translate }}">
+                    </div>
+                    <div class="col">
+                      <input formControlName="city" class="form-control" id="shipping-city" placeholder="{{ 'City' | translate }}">
+                    </div>
+                  </div>
+                  <div class="form-group form-row">
+                    <div class="col-9 offset-3">
+                      <select formControlName="country" class="form-control" id="shipping-country">
+                        <option value="" disabled translate>Select a country</option>
+                        <option [ngValue]="code" *ngFor="let code of countries_iso_codes">{{ code | countryCodeTranslate }}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <!-- extra field -->
+                <div class="form-group form-row">
+                  <label for="shipping-extra" class="col-3 col-form-label" translate>Extra information</label>
+                  <div class="col input-group">
+                    <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-sticky-note-o"></i></span></div>
+                    <input formControlName="extra" id="shipping-extra" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card mt-3" formGroupName="billing_informations">
+              <div class="card-header">
+                <i class="fa fa-money"></i>
+                {{ 'Billing informations' | translate }}
+              </div>
+              <div class="card-body container">
+                <!-- name + email + phone -->
+                <div class="form-group form-row">
+                  <label for="billing-name" class="col-3 col-form-label" translate>Contact name</label>
+                  <div class="col input-group">
+                    <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-user"></i></span></div>
+                    <input formControlName="name" id="billing-name" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group form-row">
+                  <label for="billing-email" class="col-3 col-form-label" translate>Contact email</label>
+                  <div class="col input-group">
+                    <div class="input-group-prepend"><span class="input-group-text">@</span></div>
+                    <input formControlName="email" id="billing-email" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group form-row">
+                  <label for="billing-phone" class="col-3 col-form-label" translate>Contact phone</label>
+                  <div class="col input-group">
+                    <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-phone"></i></span></div>
+                    <input formControlName="phone" id="billing-phone" class="form-control">
+                  </div>
+                </div>
+                <!-- Address -->
+                <div formGroupName="address">
+                  <div class="form-group form-row">
+                    <label for="shipping-street" class="col-3 col-form-label" translate>Address</label>
+                    <div class="col-9">
+                      <input formControlName="street" class="form-control" id="billing-street" placeholder="{{ 'Street' | translate }}">
+                    </div>
+                  </div>
+                  <div class="form-group form-row">
+                    <div class="col-3 offset-3">
+                      <input formControlName="zip_code" class="form-control" id="billing-zip-code" placeholder="{{ 'Zip code' | translate }}">
+                    </div>
+                    <div class="col">
+                      <input formControlName="city" class="form-control" id="billing-city" placeholder="{{ 'City' | translate }}">
+                    </div>
+                  </div>
+                  <div class="form-group form-row">
+                    <div class="col-9 offset-3">
+                      <select formControlName="country" class="form-control" id="billing-country">
+                        <option value="" disabled translate>Select a country</option>
+                        <option [ngValue]="code" *ngFor="let code of countries_iso_codes">{{ code | countryCodeTranslate }}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <!-- extra field -->
+                <div class="form-group form-row">
+                  <label for="billing-extra" class="col-3 col-form-label" translate>Extra information</label>
+                  <div class="col input-group">
+                    <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-sticky-note-o"></i></span></div>
+                    <input formControlName="extra" id="billing-extra" class="form-control">
+                  </div>
+                </div>
               </div>
             </div>
           </div>

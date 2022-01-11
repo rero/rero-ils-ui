@@ -1,0 +1,108 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+  Copyright (C) 2021 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div *ngIf="receipt && receipt.pid && permissions" class="container">
+  <h1 class="mb-3">{{ receipt.reference }}</h1>
+  <blockquote class="receipt-note row" *ngFor="let note of receipt.notes">
+    <div class="offset-1 col-2">
+      <span class="badge badge-{{ note | noteBadgeColor }}">{{ note.type | translate }}</span>
+    </div>
+    <p class="col" [innerHTML]="note.content"></p>
+  </blockquote>
+  <div class="card receipt container">
+    <!-- RECEIPT LINES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <div class="card-header row" translate>Receipt lines</div>
+    <div class="card-body row">
+      <div class="container row line no-gutters" *ngFor="let line of receiptLines">
+        <ng-container *ngIf="line && permissions; else loading">
+          <div class="col-9">
+            <div class="d-flex">
+              <span class="quantity fixed-width">{{ line.quantity }}</span>
+              <a [routerLink]="['/records', 'documents', 'detail', line.document.pid]" target="acq-detail">
+                {{ line.document.title_text }}
+              </a>
+              <span class="ml-auto mr-2 reception_date">{{ line.receipt_date | dateTranslate: 'shortDate' }}</span>
+            </div>
+            <div class="metadata left-offset" *ngIf="line.document.identifiers">
+              ISBN: {{ line.document.identifiers.join(', ') }}
+            </div>
+            <div class="left-offset row" *ngFor="let note of line.notes">
+              <span class="col-3 p-0"><span class="badge badge-{{ note | noteBadgeColor }}">{{ note.type | translate }}</span></span>
+              <span class="note-content col p-0 pl-2" [innerHTML]="note.content | nl2br"></span>
+            </div>
+          </div>
+          <div class="col-2 amount">
+            <span>{{ line | receiptLineTotalAmount | currency: receipt.currency: 'symbol' }}</span><br/>
+            <span class="detail">{{ line.quantity }} x {{ line.amount | currency: receipt.currency: 'symbol' }}
+              <ng-container *ngIf="line.vat_rate"> + {{ line.vat_rate }} %</ng-container></span>
+          </div>
+          <div class="col-1 actions text-right">
+            <ng-container *ngIf="permissions">
+              <shared-action-button
+                [title]="'Edit' | translate"
+                [class]="'btn-outline-primary mr-1'"
+                [disabled]="!permissions.update.can"
+                [url]="['/records', 'acq_receipt_lines', 'edit', line.pid]"
+                [message]="editInfoMessage"
+              >
+                <i class="fa fa-pencil"></i>
+              </shared-action-button>
+              <shared-action-button
+                [title]="'Delete' | translate"
+                [class]="'btn-outline-danger'"
+                [disabled]="!permissions.delete.can"
+                [message]="deleteInfoMessage"
+                (btnClick)="deleteReceiptLine(line)"
+              >
+                <i class="fa fa-trash"></i>
+              </shared-action-button>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <!-- AMOUNT ADJUSTMENTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <ng-container *ngIf="receipt.amount_adjustments.length > 0">
+      <div class="card-header row" translate>Amount adjustments</div>
+      <div class="card-body row">
+        <div class="container row line no-gutters" *ngFor="let adjustment of receipt.amount_adjustments">
+          <div class="col-9 d-flex">
+            <i class="fa fa-long-arrow-right fixed-width"></i>
+            <label>{{ adjustment.label }}</label>
+            <span class="ml-auto metadata pr-2">
+              {{ adjustment.acq_account.pid | getRecord: 'acq_accounts': 'field': 'number' | async }}
+            </span>
+          </div>
+          <div class="col-2 amount" [class.discount-amount]="adjustment.amount < 0">
+            {{ adjustment.amount | currency: receipt.currency: 'symbol' }}
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <!-- TOTAL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <div class="card-header total-amount row">
+      <div class="container row line no-gutters">
+        <div class="col-9" translate>Total amount</div>
+        <div class="col-2 amount">{{ receipt.total_amount | currency: receipt.currency: 'symbol' }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <i class="fa fa-spin fa-spinner py-2"></i>
+</ng-template>

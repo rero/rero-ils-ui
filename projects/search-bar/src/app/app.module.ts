@@ -29,9 +29,10 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { SearchBarComponent } from 'projects/public-search/src/app/search-bar/search-bar.component';
 import { AppInitializerService } from './app-initializer.service';
 
+
 /** function to instantiate the application  */
-export function appInitFactory(appInitializerService: AppInitializerService) {
-  return () => appInitializerService.load();
+export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
+  return () => appInitializerService.load().toPromise();
 }
 
 
@@ -59,6 +60,8 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
     SharedModule
   ],
   providers: [
+    // TODO: remove this to avoid api call. It still neded because
+    //       `_getContributionName` need API config.
     { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true }
   ],
   entryComponents: [

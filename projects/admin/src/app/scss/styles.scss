@@ -127,13 +127,14 @@ json-schema-form {
 
 
 /* SHOW MORE BUTTON ====================================================== */
-.btn-shore-more {
+.btn-show-more {
   border: $border-width solid $border-color;
   border-radius: 2rem;
   height: 30px;
-  width: 30px;
+  min-width: 30px;
   background-color: $white;
   margin-right: map-get($spacers, 3);
+  font-size: $font-size-base;
 
   &.btn-expanded::before {
     font-family: 'FontAwesome';
@@ -145,6 +146,30 @@ json-schema-form {
     font-family: 'FontAwesome';
     font-weight: 100;
     content: " \f0da";
+  }
+}
+.card-header .btn-show-more {
+  border-color: $card-border-color;
+  font-size: $font-size-base;
+  margin-right: map-get($spacers, 2);
+}
+
+// DEBUG PANELS ============================================================================
+pre {
+  border: $border-width solid $border-color;
+  padding: map-get($spacers, 2);
+  position: relative;
+
+
+  legend {
+    position: absolute;
+    top:0;
+    right: 0;
+    padding: map-get($spacers, 1) map-get($spacers, 2);
+    background-color: $border-color;
+    border-bottom-left-radius: $border-radius-lg;
+    font-size: $font-size-sm;
+    width: inherit;
   }
 }
 

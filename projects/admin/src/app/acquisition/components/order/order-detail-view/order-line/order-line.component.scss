@@ -1,0 +1,98 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2021 RERO
+ * Copyright (C) 2021 UCLouvain
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+@import '~font-awesome/scss/font-awesome';
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '/projects/admin/src/app/scss/variables';
+
+
+.order-line {
+
+  border-bottom: $border-width solid $border-color;
+
+  &:hover {
+    background-color: $light;
+  }
+
+  *[class^="col-"] {
+    padding-top: map-get($spacers, 2);
+    padding-bottom: map-get($spacers, 2);
+  }
+
+  .account-number{
+    font-size: small;
+    color: $secondary;
+    font-weight: bold;
+
+    &:before {
+      content: '[';
+    }
+    &:after {
+      content: ']';
+    }
+  }
+
+  dl > * {
+    padding: 0;
+    margin: 0;
+  }
+
+  .order-cancelled a {
+    text-decoration: line-through !important;
+    color: $danger !important;
+  }
+
+  .note-content {
+    border-left: 2px solid $border-color;
+    padding-left: map-get($spacers, 2) !important;
+    margin-top: map-get($spacers, 1) !important;
+    font-style: italic;
+    font-size: 0.8rem;
+  }
+
+  .note-spacer {
+    margin-top: map-get($spacers, 3) !important;
+  }
+
+  /* AMOUNT ================================================================ */
+  .amount {
+    border-left: $border-width solid $border-color;
+    border-right: $border-width solid $border-color;
+    background-color: $light;
+    text-align: right;
+    padding: map-get($spacers, 1) map-get($spacers, 2);
+
+    .total-amount {
+      font-weight: bold;
+    }
+    .computation {
+      font-size: small;
+      color: $secondary;
+    }
+  }
+
+  .status {
+    min-width: map-get($spacers, 4);
+    padding: map-get($spacers, 1) 0;
+  }
+
+  .order-line-content {
+    margin-left: map-get($spacers, 4); // to be align with .status width
+  }
+}

@@ -58,6 +58,8 @@ import { PendingComponent } from './patron/pending/pending.component';
 import { PickupItemComponent } from './patron/pickup/pickup-item/pickup-item.component';
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
+import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
+import { CheckinActionComponent } from './checkin/checkin-action/checkin-action.component';
 
 
 @NgModule({
@@ -89,7 +91,9 @@ import { ProfileComponent } from './patron/profile/profile.component';
     FixedDateFormComponent,
     OverdueTransactionComponent,
     HistoryLogComponent,
-    HistoryLogLibraryComponent
+    HistoryLogLibraryComponent,
+    GetLoanCipoPipe,
+    CheckinActionComponent
   ],
   imports: [
     BsDropdownModule.forRoot(),

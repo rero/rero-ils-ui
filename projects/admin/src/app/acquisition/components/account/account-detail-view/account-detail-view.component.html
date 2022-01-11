@@ -1,0 +1,120 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+  Copyright (C) 2021 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="organisation && esRecord$ | async as account">
+  <h1 class="mb-3">{{ account.name }}</h1>
+  <!-- Account general informations -->
+  <div class="card my-2">
+    <h6 class="card-header" translate>Details</h6>
+    <div class="card-body">
+      <dl class="row">
+        <dt class="col-3 label-title" translate>Account number</dt>
+        <dd class="col-9">{{ account.number }}</dd>
+        <dt class="col-3 label-title" translate>Is active</dt>
+        <dd class="col-9">
+          <i class="fa fa-circle" [class]="{'text-danger': !account.is_active, 'text-success': account.is_active}"></i>
+        </dd>
+        <dt class="col-3 label-title" translate>Budget</dt>
+        <dd class="col-9">{{ account.budget.pid | getRecord: 'budgets': 'field': 'name' | async }}</dd>
+        <dt class="col-3 label-title" translate>Library</dt>
+        <dd class="col-9">{{ account.library.pid | getRecord: 'libraries': 'field': 'name' | async }}</dd>
+        <ng-container *ngIf="account.parent">
+          <dt class="col-3 label-title" translate>Parent account</dt>
+          <dd class="col-9">
+            <a [routerLink]="['/', 'records', 'acq_accounts', 'detail', account.parent.pid]">
+              {{ account.parent.pid | getRecord: 'acq_accounts': 'field': 'name' | async }}
+            </a>
+          </dd>
+        </ng-container>
+      </dl>
+    </div>
+  </div>
+
+  <!-- Account accounting informations -->
+  <div class="card my-2 accounting-infos">
+    <h6 class="card-header" translate>Accounting informations</h6>
+    <div class="card-body">
+      <table class="table table-sm">
+        <tbody>
+        <tr>
+          <th colspan="2" class="main-level" translate>Allocated amount</th>
+          <td colspan="2" class="amount text-success">
+            {{ account.allocated_amount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr>
+          <th colspan="2" class="main-level" translate>Distribution</th>
+          <td colspan="2" class="amount" [ngClass]="{'text-danger': account.distribution > 0}">
+            {{ account.distribution | negativeAmount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr>
+          <th class="main-level" translate>Current encumbrance</th>
+          <th class="sub-level" translate>Self</th>
+          <td colspan="2" class="amount" [ngClass]="{'text-danger': account.encumbrance_amount.self > 0}">
+            {{ account.encumbrance_amount.self | negativeAmount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr>
+          <th></th>
+          <th class="sub-level">Children</th>
+          <td colspan="2" class="amount" [ngClass]="{'text-danger': account.encumbrance_amount.children > 0}">
+            {{ account.encumbrance_amount.children | negativeAmount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr>
+          <th class="main-level" translate>Current expenditure</th>
+          <th class="sub-level" translate>Self</th>
+          <td colspan="2" class="amount" [ngClass]="{'text-danger': account.expenditure_amount.self > 0}">
+            {{ account.expenditure_amount.self | negativeAmount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr>
+          <th></th>
+          <th class="sub-level">Children</th>
+          <td colspan="2" class="amount" [ngClass]="{'text-danger': account.expenditure_amount.children > 0}">
+            {{ account.expenditure_amount.children | negativeAmount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr class="result">
+          <th colspan="2" class="main-level" translate>Balance</th>
+          <td colspan="2" class="amount" [ngClass]="{
+              'text-success': account.remaining_balance.self > 0,
+              'text-danger': account.remaining_balance.self < 0
+            }">
+            {{ account.remaining_balance.self | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr>
+          <th colspan="2" class="main-level" translate>Allowed encumbrance exceedance</th>
+          <td class="amount percentage">{{ account.encumbrance_exceedance.value }}%</td>
+          <td class="amount">
+            {{ account.encumbrance_exceedance.amount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        <tr>
+          <th colspan="2" class="main-level" translate>Allowed encumbrance exceedance</th>
+          <td class="percentage amount">{{ account.expenditure_exceedance.value }}%</td>
+          <td class="amount">
+            {{ account.expenditure_exceedance.amount | currency: organisation.default_currency }}
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-container>

@@ -1,0 +1,68 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2021 RERO
+ * Copyright (C) 2021 UCLouvain
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+@import '/node_modules/bootstrap/scss/functions';
+@import '/node_modules/bootstrap/scss/variables';
+@import '/projects/admin/src/app/scss/variables';
+
+.accounting-infos {
+
+  .card-body {
+    padding: 0;
+  }
+
+  .table {
+    margin-bottom: 0;
+
+    th, td {
+      border-top: none;
+    }
+    tr *:first-child {
+      padding-left: map-get($spacers, 5);
+    }
+    tr *:last-child {
+      padding-right: map-get($spacers, 3);
+    }
+    tr:first-child * {
+      padding-top: map-get($spacers, 4);
+    }
+    tr:last-child * {
+      padding-bottom: map-get($spacers, 4);
+    }
+
+    .percentage {
+      text-align: center !important;
+    }
+
+    .amount {
+      font-family: Arial;
+      text-align: right;
+      border-left: $border-width solid $border-color;
+      flex: 0 0 15%;
+      max-width: 15%;
+    }
+
+    .result {
+      border-top: $border-width solid $border-color;
+      border-bottom: $border-width solid $border-color;
+      background-color: $light;
+    }
+
+  }
+
+}

@@ -27,12 +27,16 @@ import { LibraryGuard } from './library.guard';
 })
 export class AcqOrderLineGuard extends LibraryGuard {
 
-  /** Return the library linked to an acquisitin order number.
+  /** Return the library linked to an acquisition order number.
    *  @param route: the current URL route
    *  @return: the library pid linked to the resource from the 'order' query parameters
    */
   getOwningLibrary$(route: ActivatedRouteSnapshot): Observable<string> {
-    return this._recordService.getRecord('acq_orders', route.queryParams.order).pipe(
+    let orderPid = route.queryParams.order;
+    if (orderPid === undefined) {
+       orderPid = route.params.pid;
+    }
+    return this._recordService.getRecord('acq_orders', orderPid).pipe(
       map( data => data.metadata || {} ),
       map( metadata => metadata.library || {} ),
       map( library => extractIdOnRef(library.$ref) )

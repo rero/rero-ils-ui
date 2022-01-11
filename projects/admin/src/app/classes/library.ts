@@ -66,6 +66,26 @@ export interface NotificationSettings {
   delay?: number;
 }
 
+export interface AcquisitionInformations {
+  shipping_informations: AcquisitionInformationDetail;
+  billing_informations?: AcquisitionInformationDetail;
+}
+
+export interface AcquisitionInformationDetail {
+  name: string;
+  email?: string;
+  phone?: string;
+  extra?: string;
+  address: Address;
+}
+
+export interface Address {
+  street: string;
+  zip_code: string;
+  city: string;
+  country: string;
+}
+
 export class Library {
 
   // CLASS ATTRIBUTES ================================================
@@ -79,6 +99,7 @@ export class Library {
   opening_hours: Array<OpeningHours> = [];
   exception_dates?: Array<ExceptionDates>;
   notification_settings?: Array<NotificationSettings>;
+  acquisition_settings?: AcquisitionInformations;
   organisation: Organisation;
 
   // GETTER & SETTER ================================================
@@ -136,6 +157,7 @@ export class Library {
     Object.assign(this, obj);
     this._cleanOpeningHours();
     this._reorderOpeningHours();
+    this._cleanAcquisitionSettings();
   }
 
   // PRIVATE METHODS ================================================
@@ -173,6 +195,28 @@ export class Library {
           moment(a.start_time, 'HH:mm').diff(moment(b.start_time, 'HH:mm')));
       }
     });
+  }
+
+  /**
+   * Clean acquisition setting.
+   *
+   * For each acquisition information, we need to have a special process to clean the address field because
+   * `country` field are used with a select into the related ReactForm. As we use a select, we can't clear
+   * the value ; so if address.country is the only field present for an address, we can remove this field
+   * from record.
+   */
+  private _cleanAcquisitionSettings() {
+    if (this.acquisition_settings) {
+      Object.keys(this.acquisition_settings).forEach((key) => {
+        const data = this.acquisition_settings[key];
+        if (Object.keys(data).length == 1 && data.address && Object.keys(data.address).length == 1 && data.address.country) {
+          delete this.acquisition_settings[key];
+        }
+      });
+      if (Object.keys(this.acquisition_settings).length === 0) {
+        delete this.acquisition_settings;
+      }
+    }
   }
 
   /**

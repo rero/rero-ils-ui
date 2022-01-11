@@ -51,7 +51,7 @@ describe('MenuUserComponent', () => {
 
   beforeEach(() => {
     userService = TestBed.inject(UserService);
-    userService.load();
+    userService.load().subscribe();
     userService.user.currentLibrary = testUserLibrarianWithSettings.patrons[0].libraries[0].pid;
     fixture = TestBed.createComponent(MenuUserComponent);
     component = fixture.componentInstance;

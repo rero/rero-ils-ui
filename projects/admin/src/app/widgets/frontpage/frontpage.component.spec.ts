@@ -20,7 +20,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 import { AppModule } from '../../app.module';
 import { AppInitService } from '../../service/app-init.service';
 import { FrontpageComponent } from './frontpage.component';
@@ -50,6 +50,9 @@ describe('FrontpageComponent', () => {
       current: '1'
     }
   };
+  appInitService.load.and.returnValue(
+    of(userService.user)
+  );
   userService.loaded$ = new BehaviorSubject(userService.user);
 
   beforeEach(waitForAsync(() => {

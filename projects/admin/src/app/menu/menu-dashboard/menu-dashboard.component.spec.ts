@@ -53,7 +53,7 @@ describe('MenuDashboardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MenuDashboardComponent);
     component = fixture.componentInstance;
-    userService.load();
+    userService.load().subscribe();
     userService.user.currentLibrary = testUserPatronWithSettings.patrons[1].libraries[0].pid;
     fixture.detectChanges();
   });

@@ -51,10 +51,10 @@ describe('Service: PatronProfileMenu', () => {
     });
     service = TestBed.inject(PatronProfileMenuService);
     userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronMultipleOrganisationsWithSettings)));
+    userService = TestBed.inject(UserService);
+    userService.load().subscribe();
     patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
     patronProfileMenuService.init();
-    userService = TestBed.inject(UserService);
-    userService.load();
   });
 
   it('should be created', () => {

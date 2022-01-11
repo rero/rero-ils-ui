@@ -17,6 +17,8 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@rero/ng-core';
 import { AppSettingsService, User, UserService } from '@rero/shared';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { LibrarySwitchMenuService } from '../menu/service/library-switch-menu.service';
 import { LibrarySwitchService } from '../menu/service/library-switch.service';
 import { AppConfigService } from './app-config.service';
@@ -53,11 +55,11 @@ export class AppInitService {
   /**
    * Function called when launching the application
    */
-  load() {
-    return new Promise((resolve) => {
-      this._typeaheadFactoryService.init();
-      this._userService.loaded$.subscribe((user: User) => {
+  load(): Observable<any> {
+    return this._userService.load().pipe(
+      tap((user: User) => {
         this.initTranslateService();
+        this._typeaheadFactoryService.init();
         if (user.isAuthorizedAdminAccess) {
           this._librarySwitchMenuService.init();
           // Set current library and organisation
@@ -72,10 +74,8 @@ export class AppInitService {
           const userLocale = this._userService.getOnLocaleStorage();
           this._librarySwitchService.switch(userLocale.currentLibrary);
         }
-      });
-      this._userService.load();
-      resolve(true);
-    });
+      })
+    );
   }
 
   /** Initialize Translate Service */
@@ -87,7 +87,7 @@ export class AppInitService {
       const browserLang = this._translateService.getBrowserLang();
       this._translateService.setLanguage(
         browserLang.match(this._appConfigService.languages.join('|')) ?
-        browserLang : this._appConfigService.defaultLanguage
+          browserLang : this._appConfigService.defaultLanguage
       );
     }
   }

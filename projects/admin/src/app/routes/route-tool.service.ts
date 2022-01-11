@@ -23,7 +23,8 @@ import { ActionStatus, ApiService, RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { Observable, of, Subscriber } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { RecordPermission, RecordPermissionService } from '../service/record-permission.service';
+import { RecordPermissions } from '../classes/permissions';
+import { RecordPermissionService } from '../service/record-permission.service';
 
 @Injectable({
   providedIn: 'root'
@@ -173,7 +174,7 @@ export class RouteToolService {
     return new Observable((observer: Subscriber<any>): void => {
       this.recordPermissionService
           .getPermission(recordType, record.metadata.pid)
-          .subscribe((permission: RecordPermission) => {
+          .subscribe((permission: RecordPermissions) => {
             observer.next({ can: permission.update.can, message: '' });
           });
     });
@@ -191,7 +192,7 @@ export class RouteToolService {
     return new Observable((observer: Subscriber<any>): void => {
       this.recordPermissionService
           .getPermission(recordType, record.metadata.pid)
-          .subscribe((permission: RecordPermission) => {
+          .subscribe((permission: RecordPermissions) => {
             observer.next({
               can: permission.delete.can,
               message: (permission.delete.can)
@@ -215,7 +216,7 @@ export class RouteToolService {
     return new Observable((observer: Subscriber<any>): void => {
       this.recordPermissionService
         .getPermission(recordType, record.metadata.pid)
-        .subscribe((permission: RecordPermission) => {
+        .subscribe((permission: RecordPermissions) => {
           observer.next({ can: permission.read.can, message: '' });
         });
     });
@@ -235,7 +236,7 @@ export class RouteToolService {
     return new Observable((observer: Subscriber<any>): void => {
       const permissionService = this.recordPermissionService;
       permissionService.getPermission(recordType, record.metadata.pid)
-        .pipe(map((permission: RecordPermission) => {
+        .pipe(map((permission: RecordPermissions) => {
           const user = this.userService.user;
           if (membership && ('library' in record.metadata)) {
             // Extract library pid

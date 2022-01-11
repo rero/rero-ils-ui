@@ -1,0 +1,56 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021 RERO
+  Copyright (C) 2021 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="organisation">
+  <header class="row d-flex align-items-baseline">
+    <h1 class="col">{{ 'Acquisition accounts' | translate }}</h1>
+    <div class="col-3 text-right">
+      <a [routerLink]="['/', 'acquisition', 'accounts', 'transfer']"
+         class="btn btn-sm btn-outline-primary mr-2"
+      >
+        <i class="fa fa-exchange"></i> {{ 'Transfer funds' | translate }} &hellip;
+      </a>
+      <a [routerLink]="['/', 'records', 'acq_accounts', 'new']"
+         [queryParams]="{ budget: organisation.current_budget_pid }"
+         class="btn btn-sm btn-outline-primary"
+      >
+        <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
+      </a>
+    </div>
+  </header>
+
+  <section class="mt-3">
+    <div class="row p-1 mb-2 bg-dark rounded text-light">
+      <div class="col-6"></div>
+      <div class="col-1 text-right" translate>Amount</div>
+      <div class="col-1 text-right" translate>Available</div>
+      <div class="col-1 text-right" translate>Engagement</div>
+      <div class="col-1 text-right" translate>Expenditure</div>
+      <div class="col-1 text-right" translate>Balance</div>
+    </div>
+    <div *ngIf="rootAccounts.length > 0; else noAccount">
+      <admin-account-brief-view
+        *ngFor="let account of rootAccounts"
+        [account]="account"
+        [loadChildren]="true"
+        (deleteAccount)="accountDeleted($event)"
+      >
+      </admin-account-brief-view>
+    </div>
+    <ng-template #noAccount>{{ 'No account available' | translate }}</ng-template>
+  </section>
+</ng-container>

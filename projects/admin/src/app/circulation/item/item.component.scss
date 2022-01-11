@@ -18,6 +18,12 @@
 @import '~bootstrap/scss/_functions';
 @import '~bootstrap/scss/_variables';
 
+.btn-hover {
+  color: $black;
+  background-color: $warning;
+  // could be better to use ``@extend .btn:hover`` but it doesn't work for hover property
+}
+
 .item {
   margin-bottom: 0.25rem !important;
   padding: 0.25rem !important;
@@ -35,3 +41,5 @@
     right: 15px;
   }
 }
+
+

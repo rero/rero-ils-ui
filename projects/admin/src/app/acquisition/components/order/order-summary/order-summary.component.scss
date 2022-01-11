@@ -1,0 +1,83 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2021 RERO
+ * Copyright (C) 2021 UCLouvain
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '/projects/admin/src/app/scss/variables';
+
+.accounting-infos {
+
+  border: $border-width solid $border-color;
+  border-radius: $border-radius;
+  background-color: $light;
+  height: 100%;
+  position: relative;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  padding: map-get($spacers, 2);
+
+  // add a spacing between siblings
+  & + & {
+    margin-top: map-get($spacers, 2);
+  }
+
+  span.amount {
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: $dark;
+    font-size: 1.5rem;
+    text-shadow: 1px 1px 1px $secondary;
+  }
+
+  label {
+    display: block;
+    color: $secondary;
+    font-size: 0.75rem;
+    text-align: center;
+    margin: 0;
+  }
+
+  .counter {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-left: $border-width solid $border-color;
+    border-bottom: $border-width solid $border-color;
+    border-bottom-left-radius: $border-radius-lg;
+    color: $gray-600;
+    text-shadow: 1px 1px 1px $gray-300;
+    font-size: $small-font-size;
+    padding: map-get($spacers, 1) map-get($spacers, 3);
+    background-color: #F3F3F3;
+
+    &.ordered-counter::before{
+      font-family: 'FontAwesome';
+      font-weight: 100;
+      content: " \f07a";
+      padding-right: map-get($spacers, 3);
+    }
+    &.received-counter::before{
+      font-family: 'FontAwesome';
+      font-weight: 100;
+      content: " \f090";
+      padding-right: map-get($spacers, 3);
+    }
+  }
+}

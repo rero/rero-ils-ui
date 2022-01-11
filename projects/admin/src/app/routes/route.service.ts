@@ -18,11 +18,13 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { RouteCollectionService } from '@rero/ng-core';
+import { ReceiptLinesRoute } from '../acquisition/routes/receipt-lines-route';
+import { ReceiptsRoute } from '../acquisition/routes/receipts-route';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
-import { AcquisitionAccountsRoute } from './acquisition-accounts-route';
-import { AcquisitionOrderLinesRoute } from './acquisition-order-lines-route';
-import { AcquisitionOrdersRoute } from './acquisition-orders-route';
-import { BudgetsRoute } from './budgets-route';
+import { AccountsRoute as AcqAccountsRoute } from '../acquisition/routes/accounts-route';
+import { OrderLinesRoute as AcqOrderLinesRoute } from '../acquisition/routes/order-lines-route';
+import { OrdersRoute as AcqOrdersRoute } from '../acquisition/routes/orders-route';
+import { BudgetsRoute as AcqBudgetsRoute } from '../acquisition/routes/budgets-route';
 import { CirculationPoliciesRoute } from './circulation-policies-route';
 import { CollectionsRoute } from './collections-route';
 import { CorporateBodiesRoute } from './corporate-bodies-route';
@@ -68,10 +70,6 @@ export class RouteService {
    */
   initializeRoutes() {
     this._routeCollectionService
-      .addRoute(new AcquisitionAccountsRoute(this._routeToolService))
-      .addRoute(new AcquisitionOrderLinesRoute(this._routeToolService))
-      .addRoute(new AcquisitionOrdersRoute(this._routeToolService))
-      .addRoute(new BudgetsRoute(this._routeToolService))
       .addRoute(new CirculationPoliciesRoute(this._routeToolService))
       .addRoute(new DocumentsRoute(this._routeToolService))
       .addRoute(new HoldingsRoute(this._routeToolService))
@@ -90,6 +88,13 @@ export class RouteService {
       .addRoute(new CorporateBodiesRoute(this._routeToolService))
       .addRoute(new IllRequestsRoute(this._routeToolService))
       .addRoute(new LocalFieldsRoute(this._routeToolService))
+      // Route from acquisition modules
+      .addRoute(new AcqBudgetsRoute(this._routeToolService))
+      .addRoute(new AcqAccountsRoute(this._routeToolService))
+      .addRoute(new AcqOrderLinesRoute(this._routeToolService))
+      .addRoute(new AcqOrdersRoute(this._routeToolService))
+      .addRoute(new ReceiptsRoute(this._routeToolService))
+      .addRoute(new ReceiptLinesRoute(this._routeToolService))
       // should be at the last
       .addRoute(new ImportDocumentsRoute(this._routeToolService, this._translateService))
     ;

@@ -15,8 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { MenuItem, MenuItemInterface, TranslateService } from '@rero/ng-core';
+import { ApiService, MenuItem, MenuItemInterface, TranslateService } from '@rero/ng-core';
 import { MenuLanguageService } from '../service/menu-language.service';
 
 @Component({
@@ -43,7 +44,8 @@ export class MenuLanguageComponent implements OnInit {
    */
   constructor(
     private _menuLanguageService: MenuLanguageService,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
+    private _http: HttpClient
   ) { }
 
   /** Init */
@@ -59,6 +61,9 @@ export class MenuLanguageComponent implements OnInit {
    * @param event: MenuItem
    */
   changeLang(event: MenuItem) {
-    this._translateService.setLanguage(event.getExtra('language'));
+    const lang = event.getExtra('language');
+    this._http.post('/language', {lang}).subscribe(() =>
+      this._translateService.setLanguage(lang)
+    );
   }
 }
