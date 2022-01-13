@@ -45,6 +45,7 @@ import {
   SelectAccountEditorWidgetComponent
 } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 import { ReceivedOrderPermissionValidator } from './acquisition/utils/permissions';
+import { StatisticsChartsModule } from './widgets/statistics-charts/statistics-charts.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DocumentsTypeahead } from './classes/typeahead/documents-typeahead';
@@ -182,6 +183,7 @@ import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service'
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
+import { UsageStatisticsComponent } from './components/usage-statistics/usage-statistics.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -303,7 +305,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         CirculationLogNotificationComponent,
         CirculationStatsComponent,
         ItemSwitchLocationStandaloneComponent,
-        ItemSwitchLocationComponent
+        ItemSwitchLocationComponent,
+        UsageStatisticsComponent
     ],
   imports: [
     AppRoutingModule,
@@ -342,7 +345,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     HotkeysModule,
     SharedModule,
     LoadingBarHttpClientModule,
-    DropdownModule
+    DropdownModule,
+    StatisticsChartsModule
   ],
     providers: [
         {

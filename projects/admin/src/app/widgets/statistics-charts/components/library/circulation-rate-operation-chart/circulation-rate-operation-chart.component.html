@@ -1,0 +1,42 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<admin-stat-chart
+  [title]="'Circulation rate operations' | translate"
+  [administration]="administration"
+  [autoRefresh]="settings.autoRefreshDelay > 0"
+  [autoRefreshDelay]="settings.autoRefreshDelay"
+  [error]="error"
+  [(isRefreshing)]="isRefreshing"
+  (administrationActivate)="openAdministrationModal()"
+>
+  <ngx-charts-area-chart-stacked
+    [results]="series"
+    [gradient]="false"
+    [xAxis]="staticSettings.xAxis"
+    [yAxis]="staticSettings.yAxis"
+    [legend]="staticSettings.legendText"
+    [showXAxisLabel]="staticSettings.showXAxisLabel"
+    [showYAxisLabel]="staticSettings.showYAxisLabel"
+    [xAxisLabel]="staticSettings.xAxisLabel"
+    [yAxisLabel]="staticSettings.yAxisLabel"
+    [animations]="staticSettings.animations"
+    [scheme]="staticSettings.colorScheme"
+    [legendTitle]="staticSettings.legendTitle"
+  >
+  </ngx-charts-area-chart-stacked>
+</admin-stat-chart>
