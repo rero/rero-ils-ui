@@ -16,7 +16,7 @@
  */
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
+import { ApiService, RecordService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { ItemStatus, UserService } from '@rero/shared';
@@ -32,11 +32,13 @@ export class ItemsService {
    * @param _http - HttpClient
    * @param _userService - UserService
    * @param _recordService - RecordService
+   * @param _apiService - ApiService
    */
   constructor(
     private _http: HttpClient,
     private _userService: UserService,
-    private _recordService: RecordService
+    private _recordService: RecordService,
+    private _apiService: ApiService
   ) { }
 
   /**
@@ -45,7 +47,8 @@ export class ItemsService {
    * @return Observable<any>
    */
   getRequestedLoans(libraryPid): Observable<any> {
-    const url = `/api/item/requested_loans/${libraryPid}`;
+    const itemApiUrl = this._apiService.getEndpointByType('item');
+    const url = `${itemApiUrl}/requested_loans/${libraryPid}`;
     return this._http.get<any>(url).pipe(
       map(data => data.hits),
       map(hits => this._recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
@@ -68,18 +71,19 @@ export class ItemsService {
    * @return Observable<any>
    */
   doValidateRequest(item, transactionLibraryPid): Observable<any> {
-    const url = '/api/item/validate_request';
+    const itemApiUrl = this._apiService.getEndpointByType('item');
+    const url = `${itemApiUrl}/validate_request`;
     return this._http.post<any>(url, {
       item_pid: item.pid,
       pid: item.loan.pid,
       transaction_library_pid: transactionLibraryPid,
       transaction_user_pid: this._userService.user.patronLibrarian.pid
     }).pipe(
-    map(data => {
-      const itemData = data.metadata;
-      itemData.loan = data.action_applied.validate;
-      return itemData;
-    })
+      map(data => {
+        const itemData = data.metadata;
+        itemData.loan = data.action_applied.validate;
+        return itemData;
+      })
     );
   }
 
@@ -90,7 +94,8 @@ export class ItemsService {
    * @return Observable<any>
    */
   getItem(barcode: string, patronPid?: string): Observable<any> {
-    let url = `/api/item/barcode/${barcode}`;
+    const itemApiUrl = this._apiService.getEndpointByType('item');
+    let url = `${itemApiUrl}/barcode/${barcode}`;
     if (patronPid) {
       url = url + `?patron.patron_pid=${patronPid}`;
     }
@@ -114,12 +119,29 @@ export class ItemsService {
   }
 
   /**
+   * Get item availability flag
+   * @param itemPid - the item pid
+   * @returns An Observable representing the item availability
+   */
+  getAvailability(itemPid: string): Observable<boolean> {
+    const itemApiUrl = this._apiService.getEndpointByType('item');
+    const url = `${itemApiUrl}/${itemPid}/availability`;
+    return this._http
+      .get(url)
+      .pipe(
+        map((apiResponse: any) => apiResponse.availability),
+        catchError(() => of(false))
+      );
+  }
+
+  /**
    * Do checkin and get applied actions
    * @param barcode: item barcode
    * @param transactionLibraryPid: transaction library
    */
   checkin(barcode: string, transactionLibraryPid: string) {
-    return this._http.post<any>('/api/item/checkin', {
+    const itemApiUrl = this._apiService.getEndpointByType('item');
+    return this._http.post<any>(`${itemApiUrl}/checkin`, {
       item_barcode: barcode,
       transaction_library_pid: transactionLibraryPid,
       transaction_user_pid: this._userService.user.patronLibrarian.pid
@@ -165,8 +187,9 @@ export class ItemsService {
    * @param additionalParams: additional parameters to send as query string arguments
    */
   doAction(item, transactionLibraryPid: string, userPid: string, patronPid?: string, additionalParams?: any) {
+    const itemApiUrl = this._apiService.getEndpointByType('item');
     const action = item.currentAction;
-    const url = `/api/item/${action}`;
+    const url = `${itemApiUrl}/${action}`;
 
     // Build the body data to send to the API
     const data: any = {
@@ -210,7 +233,8 @@ export class ItemsService {
    * @return an observable on the API call response
    */
   getPickupLocations(itemPid): Observable<any> {
-    const url = `/api/item/${itemPid}/pickup_locations`;
+    const itemApiUrl = this._apiService.getEndpointByType('item');
+    const url = `${itemApiUrl}/${itemPid}/pickup_locations`;
     return this._http.get<any>(url).pipe(
       map(data => data.locations),
       catchError(e => {
@@ -236,7 +260,8 @@ export class ItemsService {
     if (patronBarcode != null) {
       params = params.set('patron_barcode', patronBarcode);
     }
-    return this._http.get(`/api/item/${itemPid}/can_request`, { params });
+    const itemApiUrl = this._apiService.getEndpointByType('item');
+    return this._http.get(`${itemApiUrl}/${itemPid}/can_request`, { params });
   }
 
   /** Is a callout wrapper is required for this item.

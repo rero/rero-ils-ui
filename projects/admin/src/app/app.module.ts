@@ -164,6 +164,7 @@ import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
 import {
   HoldingOrganisationComponent
 } from './record/detail-view/document-detail-view/holding-organisation/holding-organisation.component';
+import { ItemAvailabilityPipe } from './pipe/item-availability.pipe';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService): () => Promise<any> {
@@ -268,7 +269,8 @@ export function appInitFactory(appInitService: AppInitService): () => Promise<an
     DescriptionZoneComponent,
     DocumentProvisionActivityPipe,
     MainTitleRelationPipe,
-    HoldingOrganisationComponent
+    HoldingOrganisationComponent,
+    ItemAvailabilityPipe
   ],
   imports: [
     AppRoutingModule,

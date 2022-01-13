@@ -25,7 +25,18 @@
       </ng-container>
       <ng-template #barcodeOnly>{{ item.metadata.barcode }}</ng-template>
     </div>
-    <div class="col-sm-2" name="status">{{ item.metadata.status | translate }}</div>
+    <div class="col-sm-2" name="status">
+     <i class="fa fa-circle pr-1" [ngClass]="{
+        'text-success': item.metadata.available,
+        'text-danger': !item.metadata.available
+      }"></i>
+      {{ item.metadata.status | translate }}
+      <ng-container *ngVar="itemRequestCounter as pendingRequest">
+        <div class="pl-3" *ngIf="pendingRequest > 0">
+          ({{ pendingRequest }} {{ pendingRequest | i18nPlural: {'=1': 'request', 'other': 'requests'} }})
+        </div>
+      </ng-container>
+    </div>
     <div class="col-sm-3" name="issue">{{ item.metadata.enumerationAndChronology }}</div>
     <div class="col-sm-2" name="call-number">
       <shared-inherited-call-number [item]="item"></shared-inherited-call-number>

@@ -32,7 +32,7 @@ import { ItemRequestComponent } from '../../item-request/item-request.component'
 })
 export class DefaultHoldingItemComponent implements OnInit {
 
-  // COMPONENT ATTRIBUTES ============================================================
+  // COMPONENT ATTRIBUTES =====================================================
   /** Holding record */
   @Input() holding: any;
   /** Item Record */
@@ -45,9 +45,20 @@ export class DefaultHoldingItemComponent implements OnInit {
   /** Item permissions */
   permissions: any;
 
+  // GETTER & SETTER ==========================================================
   /** Current interface language */
   get language() {
     return this._translateService.currentLang;
+  }
+
+  /**
+   * Get the number of pending request on this item
+   * @returns number of request related to this item.
+   */
+  get itemRequestCounter(): number {
+    return (this.item.metadata.availability && this.item.metadata.availability.request)
+      ? this.item.metadata.availability.request
+      : 0;
   }
 
   // CONSTRUCTOR & HOOKS ==============================================================
@@ -77,7 +88,7 @@ export class DefaultHoldingItemComponent implements OnInit {
   }
 
 
-  // COMPONENT FUNCTIONS ================================================================
+  // COMPONENT FUNCTIONS ======================================================
   /** Get permissions */
   private _getPermissions(): void {
     const permissionObs = this._recordPermissionService.getPermission('items', this.item.metadata.pid);
