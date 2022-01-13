@@ -16,17 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export const environment = {
-  production: true,
-  apiBaseUrl: '',
-  $refPrefix: 'https://bib.rero.ch',
-  languages: ['fr', 'de', 'it', 'en'],
-  defaultLanguage: 'en',
-  adminRoles: ['system_librarian', 'librarian'],
-  translationsURLs: [
-    'static/node_modules/@rero/rero-ils-ui/dist/admin/assets/rero-ils-ui/admin/i18n/${lang}.json',
-    '/api/translations/${lang}.json'
-  ],
-  librarySwitchCheckParamsUrl: ['new', 'edit'],
-  ngxChartsColorScheme: 'nightLights'  //https://github.com/swimlane/ngx-charts/blob/master/projects/swimlane/ngx-charts/src/lib/utils/color-sets.ts
+import { FormModel } from './form-configuration';
+import { currentYearDates, lastMonthDates, lastYearDates } from '../../../../utils';
+
+export const predefinedSettings: {[key: string]: FormModel} = {
+  'last_30days': { from: 'now-30d', to: 'now'},
+  'last_month': lastMonthDates(),
+  'last_365days': { from: 'now-1y', to: 'now'},
+  'last_year': lastYearDates(),
+  'this_year': currentYearDates()
 };

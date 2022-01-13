@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,7 +31,8 @@ export const environment = {
     '/assets/rero-ils-ui/admin/i18n/${lang}.json',
     '/api/translations/${lang}.json'
   ],
-  librarySwitchCheckParamsUrl: ['new', 'edit']
+  librarySwitchCheckParamsUrl: ['new', 'edit'],
+  ngxChartsColorScheme: 'nightLights'  //https://github.com/swimlane/ngx-charts/blob/master/projects/swimlane/ngx-charts/src/lib/utils/color-sets.ts
 };
 
 /*
