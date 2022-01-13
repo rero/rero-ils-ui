@@ -20,7 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'public-search-holding',
   templateUrl: './holding.component.html',
-  styles: ['a.collapse-link i { min-width: 16px}']
+  styleUrls: ['./holding.component.scss']
 })
 export class HoldingComponent {
 
@@ -30,7 +30,9 @@ export class HoldingComponent {
   /** View code */
   @Input() viewcode: string;
   /** Is collapsed holdings */
-  @Input() isCollapsed = true;
+  @Input() collapsed = true;
+  /** Is collapsable holdings */
+  @Input() collapsable = true;
 
   /** Authorized types of note */
   noteAuthorizedTypes: string[] = ['general_note'];

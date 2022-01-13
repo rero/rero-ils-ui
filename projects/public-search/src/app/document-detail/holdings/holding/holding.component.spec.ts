@@ -88,7 +88,7 @@ describe('HoldingComponent', () => {
     data = fixture.nativeElement.querySelector('#holding-category-name-1');
     expect(data.textContent).toContain('default');
 
-    component.isCollapsed = true;
+    component.collapsed = true;
     data = fixture.nativeElement.querySelector('#holding-available-1');
     expect(data.textContent).toContain('see collections and items');
 
