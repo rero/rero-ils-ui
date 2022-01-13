@@ -108,7 +108,7 @@
                 *ngFor="let item of this.receivedItems"
                 [ngClass]="{'deleted-status': item.metadata.issue.status == 'deleted'}">
               <div class="col-sm-4 text">
-                <admin-record-masked *ngIf="item.metadata._masked" [record]="holding"></admin-record-masked>
+                <admin-record-masked *ngIf="item.metadata._masked" [record]="item"></admin-record-masked>
                 {{ item.metadata.enumerationAndChronology }}
                 <span class="badge badge-pill badge-info pl-2" *ngIf="item.new_issue" translate>New</span>
               </div>

@@ -1,6 +1,5 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
  * Copyright (C) 2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,22 +14,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ItemsService } from '../service/items.service';
 
-@Component({
-  selector: 'admin-item-availability',
-  template: `
-    <ng-container *ngIf="item">
-      <span class="pr-1" *ngVar="item.metadata.pid | itemAvailability | async as available">
-        <i class="fa fa-circle" [ngClass]="{
-        'text-success': available,
-        'text-danger': !available
-      }"></i>
-      </span> ({{ item.metadata.status | translate }})
-    </ng-container>
-  `
+@Pipe({
+  name: 'itemAvailability'
 })
-export class ItemAvailabilityComponent {
-  /** Item record */
-  @Input() item: any;
+export class ItemAvailabilityPipe implements PipeTransform {
+
+  /**
+   * Constructor
+   * @param _itemService - ItemService
+   */
+  constructor(
+    private _itemService: ItemsService
+  ) { }
+
+  /**
+   * Get the availability about an item
+   * @param itemPid - The item pid
+   * @returns An observable representing the item availability
+   */
+  transform(itemPid: string): Observable<boolean> {
+    return this._itemService.getAvailability(itemPid);
+  }
+
 }
