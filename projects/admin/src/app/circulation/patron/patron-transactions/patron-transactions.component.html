@@ -22,7 +22,7 @@
       <ul>
         <li [class.open-tab]="tabs.engagedFees.isOpen">
           <button class="btn btn-link btn-block clearfix" (click)="openTab(tabs.engagedFees)">
-            <ng-container translate>Engaged fees</ng-container>
+            <span translate>Engaged fees</span>
             <span class="badge badge-warning float-right" *ngIf="tabs.engagedFees.totalAmount > 0">
               {{ tabs.engagedFees.totalAmount | currency: organisation.default_currency }}
             </span>
@@ -30,7 +30,7 @@
         </li>
         <li [class.open-tab]="tabs.overduePreviewFees.isOpen">
           <button class="btn btn-link btn-block clearfix" (click)="openTab(tabs.overduePreviewFees); loadFeesHistory()">
-            <ng-container translate>Overdue preview fees</ng-container>
+            <span translate>Overdue preview fees</span>
             <span class="badge badge-secondary badge-opacity-30 float-right" *ngIf="tabs.overduePreviewFees.totalAmount > 0">
               {{ tabs.overduePreviewFees.totalAmount | currency: organisation.default_currency }}
             </span>
@@ -38,7 +38,7 @@
         </li>
         <li [class.open-tab]="tabs.historyFees.isOpen">
           <button class="btn btn-link btn-block clearfix" (click)="openTab(tabs.historyFees); loadFeesHistory()">
-            <ng-container translate>History</ng-container>
+            <span translate>History</span>
           </button>
         </li>
       </ul>
