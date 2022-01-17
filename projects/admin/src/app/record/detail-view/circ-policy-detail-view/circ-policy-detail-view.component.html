@@ -100,7 +100,7 @@
     </section>
 
     <!-- REMINDERS -->
-    <section class="card mt-2" *ngIf="data.reminders">
+    <section class="card mt-2" *ngIf="reminders">
       <div class="card-header"><h5 class="mb-0" translate>Reminders</h5></div>
       <div class="card-body">
         <table class="table table-hover table-sm">
@@ -136,7 +136,7 @@
     </section>
 
     <!-- OVERDUE FEES -->
-    <section class="card mt-2" *ngIf="data.overdue_fees">
+    <section class="card mt-2" *ngIf="overdues">
       <div class="card-header"><h5 class="mb-0" translate>Overdue fees</h5></div>
       <div class="card-body">
         <table class="table table-hover table-sm">
@@ -150,7 +150,7 @@
                 {{ interval.from }}
                 <i class="fa fa-long-arrow-right px-4"></i>
                 <ng-container *ngIf="interval.to; else noLimit">{{ interval.to }}</ng-container>
-                <ng-template #noLimit><span class="text-muted" translate>No limit</span></ng-template>
+                <ng-template #noLimit><span class="text-muted">&infin;</span></ng-template>
               </td>
               <td>
                 {{ interval.fee_amount | currency: org_currency:true }} / {{ 'day' | translate }}
