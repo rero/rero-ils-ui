@@ -23,15 +23,8 @@
   </shared-thumbnail>
   <div class="card-body w-100 py-0">
     <h5 class="mb-0 card-title">
-      <a
-        name="document-title"
-        [routerLink]="['/records', type.startsWith('import_') ? type: 'documents', 'detail', record.metadata.pid]">
-        <ng-container *ngIf="record.metadata.ui_title_text else mainTitle">
-          {{ record.metadata.ui_title_text }}
-        </ng-container>
-        <ng-template #mainTitle>
-          {{ record.metadata.title | mainTitle }}
-        </ng-template>
+      <a [routerLink]="['/records', type.startsWith('import_') ? type: 'documents', 'detail', record.metadata.pid]">
+        {{ record.metadata.title | mainTitle }}
       </a>
     </h5>
     <ng-container class="card-text">
