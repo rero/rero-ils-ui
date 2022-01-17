@@ -85,21 +85,21 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
             this.itemTypes.add(setting.item_type.pid);
           }
         });
+      }
 
-        // sort reminders to ensure a better display
-        this.reminders = record.metadata.reminders
-          .sort((a: any, b: any) => {
-            return (a.type > b.type)
-              ? 1
-              : a.days_delay - b.days_delay;
-            }
-          );
+      // sort reminders to ensure a better display
+      this.reminders = record.metadata.reminders
+        .sort((a: any, b: any) => {
+          return (a.type > b.type)
+            ? 1
+            : a.days_delay - b.days_delay;
+          }
+        );
 
-        // sort incremental overdue intervals
-        if (record.metadata.hasOwnProperty('overdue_fees') && record.metadata.overdue_fees.hasOwnProperty('intervals')) {
-          this.overdues = record.metadata.overdue_fees.intervals
-            .sort((a: any, b: any) => a.from - b.from);
-        }
+      // sort incremental overdue intervals
+      if (record.metadata.hasOwnProperty('overdue_fees') && record.metadata.overdue_fees.hasOwnProperty('intervals')) {
+        this.overdues = record.metadata.overdue_fees.intervals
+          .sort((a: any, b: any) => a.from - b.from);
       }
     });
   }
