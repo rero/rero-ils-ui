@@ -20,7 +20,7 @@
   <div class="col-sm-12 col-md-8 col-lg-10">
     <!-- document title -->
     <h4 class="mb-1">
-      <a name="document-title" target="_self" [href]="detailUrl.link">{{ record.metadata.ui_title_text }}</a>
+      <a target="_self" [href]="detailUrl.link">{{ record.metadata.title | mainTitle }}</a>
     </h4>
     <!-- contributions -->
     <ul class="list-inline mb-0" *ngIf="record.metadata.contribution && record.metadata.contribution.length > 0">
