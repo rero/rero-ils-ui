@@ -1,14 +1,48 @@
 @import '~bootstrap/scss/_functions';
 @import '~bootstrap/scss/_variables';
 
-div.deleted-status {
-  div.text {
-    text-decoration:line-through;
-    color:$danger;
-  }
+.tab-content {
+  margin: map-get($spacers, 2);
 }
-div.expected-issue {
-  div.text {
-    color:$text-muted;
+
+.issues {
+  border: $border-width solid $border-color;
+  border-radius: $border-radius;
+  margin: map-get($spacers, 2) 0;
+
+  ::ng-deep .issue{
+    border-bottom: $border-width solid $border-color;;
+    padding: map-get($spacers, 2);
+    min-height: 3rem;
+    &:hover {
+      background-color: $light;
+    }
+
+    &.expected-issue {
+      background-color: $light;
+      div, span, label {
+        color: $text-muted;
+      }
+    }
+
+    &.deleted-status {
+      div, span, label, a {
+        color: $danger;
+      }
+      .issue-title {
+        text-decoration: line-through;
+      }
+    }
+
+    .call-numbers {
+      color: $secondary;
+      font-size: $small-font-size;
+      &:not(:empty):before {
+        content: '[';
+      }
+      &:not(:empty):after {
+        content: ']';
+      }
+    }
   }
 }

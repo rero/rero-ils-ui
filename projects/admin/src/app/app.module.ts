@@ -165,6 +165,8 @@ import {
   HoldingOrganisationComponent
 } from './record/detail-view/document-detail-view/holding-organisation/holding-organisation.component';
 import { ItemAvailabilityPipe } from './pipe/item-availability.pipe';
+import { ExpectedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/expected-issue/expected-issue.component';
+import { ReceivedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/received-issue/received-issue.component';
 
 /** Init application factory */
 export function appInitFactory(appInitService: AppInitService): () => Promise<any> {
@@ -270,7 +272,9 @@ export function appInitFactory(appInitService: AppInitService): () => Promise<an
     DocumentProvisionActivityPipe,
     MainTitleRelationPipe,
     HoldingOrganisationComponent,
-    ItemAvailabilityPipe
+    ItemAvailabilityPipe,
+    ExpectedIssueComponent,
+    ReceivedIssueComponent
   ],
   imports: [
     AppRoutingModule,

@@ -1,0 +1,88 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2022 RERO
+  Copyright (C) 2022 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="issue container" [ngClass]="{'deleted-status': issue.metadata.issue.status == 'deleted'}">
+  <div class="row">
+    <div class="col">
+      <div class="row">
+        <div class="col-1 pr-0">
+          <button type="button" class="btn-show-more mr-0"
+                  [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
+                  (click)="isCollapsed = !isCollapsed"
+                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
+          </button>
+          <div class="pull-right">
+            <i class="fa" [ngClass]="getIcon()" [title]="iconTitle" *ngIf="isCollapsed"></i>
+          </div>
+        </div>
+        <div class="col-8">
+          <a [routerLink]="['/records', 'items', 'detail', issue.metadata.pid]" class="issue-title">
+            {{ issue.metadata.enumerationAndChronology }}
+          </a>
+          <span class="badge badge-pill badge-info mx-2" *ngIf="issue.new_issue" translate>New</span>
+          <i class="fa fa-sticky-note-o mx-2 text-warning" *ngIf="issue.metadata.notes"></i>
+          <shared-inherited-call-number class="call-numbers px-2" [item]="issue"></shared-inherited-call-number>
+        </div>
+        <span class="col-3 text-right" *ngIf="isCollapsed">
+          {{ issue.metadata.issue.status_date | dateTranslate : 'shortDate' }}
+        </span>
+        <dl class="col-12 row" *ngIf="!isCollapsed">
+          <dd class="offset-1 col-11 text-danger" *ngIf="issue.metadata._masked">
+            <i class="fa fa-eye-slash pr-1"></i>
+            {{ 'This issue has been marked as masked' | translate }}
+          </dd>
+          <dt class="offset-1 col-3 label-title" translate>Status</dt>
+          <dd class="col-8">
+            <i class="fa pr-2" [class]="getIcon(true)"></i>
+            {{ issue.metadata.issue.status | translate }}
+          </dd>
+          <dt class="offset-1 col-3 label-title" translate>Excepted date</dt>
+          <dd class="col-8">{{ issue.metadata.issue.expected_date | dateTranslate }}</dd>
+          <dt class="offset-1 col-3 label-title" translate>Received date</dt>
+          <dd class="col-8">{{ issue.metadata.issue.received_date | dateTranslate }}</dd>
+          <dt class="offset-1 col-3 label-title" translate>Last action</dt>
+          <dd class="col-8">{{ issue.metadata.issue.status_date | dateTranslate }}</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="col-2 text-right">
+      <!-- EDIT BUTTON -->
+      <button *ngIf="issue.permissions && issue.permissions.update && issue.permissions.update.can"
+              type="button" class="btn btn-sm btn-outline-primary ml-1"
+              title="{{ 'Edit' | translate }}"
+              [routerLink]="['/records', 'items', 'edit', issue.metadata.pid]"
+              [queryParams]="{'redirectTo': 'records/holdings/detail/' + holding.id }">
+        <i class="fa fa-pencil"></i>
+      </button>
+      <!-- DELETE BUTTON -->
+      <button *ngIf="issue.permissions && issue.permissions.delete && issue.permissions.delete.can; else deleteInfo"
+              type="button" class="btn btn-outline-danger btn-sm ml-1"
+              title="{{ 'Delete' | translate }}"
+              (click)="deleteIssue(issue)">
+        <i class="fa fa-trash" ></i>
+      </button>
+      <ng-template #deleteInfo>
+        <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"
+                title="{{ 'Delete' | translate }}"
+                [popover]="tolTemplate" triggers="mouseenter:mouseleave">
+          <i class="fa fa-trash"></i>
+        </button>
+        <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage(issue) | nl2br"></div></ng-template>
+      </ng-template>
+    </div>
+  </div>
+</div>
