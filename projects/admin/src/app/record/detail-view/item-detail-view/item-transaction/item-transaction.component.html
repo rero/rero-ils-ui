@@ -54,7 +54,7 @@
           </div>
         </ng-template>
         <div class="col-3">
-          {{ transaction.metadata.transaction_date | dateTranslate:'longDate' }}
+          {{ transaction.created | dateTranslate:'medium' }}
         </div>
         <div class="col-1 text-right">
           <ng-container *ngIf="canCancelRequest(); else noCancel">

@@ -62,7 +62,7 @@
   <div name="call-number" class="col-2">
     <shared-inherited-call-number [item]="item"></shared-inherited-call-number>
   </div>
-  <div name="transaction-date" class="col-2">{{ item.loan.transaction_date | dateTranslate :'medium' }}</div>
+  <div name="transaction-date" class="col-2">{{ item.loan.creation_date | dateTranslate :'medium' }}</div>
   <!-- NEXT-ROWS :: request detail -->
   <div class="col-12 mt-2" *ngIf="!isCollapsed">
     <dl class="row">
