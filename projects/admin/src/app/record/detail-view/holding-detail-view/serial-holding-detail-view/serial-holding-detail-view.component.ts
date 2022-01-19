@@ -66,7 +66,6 @@ export class SerialHoldingDetailViewComponent implements OnInit {
    *
    * @param _holdingService: HoldingService
    * @param _recordService: RecordService
-   * @param _recordUiService: RecordUiService
    * @param _recordPermissionService: RecordPermissionService
    * @param _translateService: TranslateService,
    * @param _toastrService: ToastrService
@@ -76,7 +75,6 @@ export class SerialHoldingDetailViewComponent implements OnInit {
   constructor(
     private _holdingService: HoldingsService,
     private _recordService: RecordService,
-    private _recordUiService: RecordUiService,
     private _recordPermissionService: RecordPermissionService,
     private _translateService: TranslateService,
     private _toastrService: ToastrService,
@@ -166,27 +164,12 @@ export class SerialHoldingDetailViewComponent implements OnInit {
   }
 
   /**
-   * Display message if the record cannot be deleted
-   * @param item: The corresponding item (with permissions properties)
-   * @return the delete info message use hover the delete button
-   */
-  deleteInfoMessage(item: any): string {
-    return (item && item.permissions && item.permissions.delete && item.permissions.delete.reasons)
-      ? this._recordPermissionService.generateDeleteMessage(item.permissions.delete.reasons)
-      : '';
-  }
-
-  /**
    * Delete an holding issue.
    * @param item: The issue item to delete
    */
   deleteIssue(item) {
-    this._recordUiService.deleteRecord('items', item.metadata.pid).subscribe(
-      () => {
-        this.receivedItems = this.receivedItems.filter(el => el.metadata.pid !== item.metadata.pid);
-      }
-    );
-   }
+    this.receivedItems = this.receivedItems.filter(el => el.metadata.pid !== item.metadata.pid);
+  }
 
   /**
    * Quick received issue
@@ -211,15 +194,6 @@ export class SerialHoldingDetailViewComponent implements OnInit {
         this._toastrService.error(message, this._translateService.instant('Issue creation failed!'));
       }
     );
-  }
-
-  /**
-   * Make the method getIcon from holdingService available
-   * @param status: the item status
-   *  @return: the font-awsome icon to use
-   */
-  getIcon(status: IssueItemStatus): string {
-    return this._holdingService.getIcon(status);
   }
 }
 
