@@ -116,6 +116,8 @@
           {{ role | translate }}
         </small>
       </dd>
+      <dt class="col-3 offset-1" translate>Creation date</dt>
+      <dd class="col-8">{{ record.created | dateTranslate: 'mediumDate' }}</dd>
     </dl>
     <!-- PATRON INFORMATIONS SECTION =========================================== -->
     <ng-container *ngIf="patron.patron">
