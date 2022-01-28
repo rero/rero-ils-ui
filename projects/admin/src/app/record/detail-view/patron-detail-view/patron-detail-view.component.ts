@@ -37,6 +37,8 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
   // COMPONENT ATTRIBUTES =====================================================
   /** Data from patron we received */
   record$: Observable<any>;
+  /** the api response record */
+  record: any;
   /** Current displayed/used patron */
   patron: any;
   /** record type */
@@ -101,7 +103,10 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
 
   /** OnInit hook */
   ngOnInit() {
-    this._subscription$ = this.record$.subscribe(record => this.patron = record.metadata);
+    this._subscription$ = this.record$.subscribe((record) => {
+      this.record = record;
+      this.patron = record.metadata;
+    });
   }
 
   /** OnDestroy hook */
