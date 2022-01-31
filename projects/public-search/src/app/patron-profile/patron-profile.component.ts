@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Record, RecordService, TranslateService } from '@rero/ng-core';
-import { IPatron, IUser, UserService } from '@rero/shared';
+import { Record, RecordService } from '@rero/ng-core';
+import { IPatron, UserService } from '@rero/shared';
 import { TabsetComponent } from 'ngx-bootstrap/tabs';
 import { forkJoin, Subscription } from 'rxjs';
 import { IllRequestApiService } from '../api/ill-request-api.service';
@@ -37,6 +37,9 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
 
   /** Interface language */
   @Input() language: string;
+
+  /** View code */
+  @Input() viewcode: string;
 
   /** Observable subscription */
   private _subscription = new Subscription();
@@ -85,7 +88,6 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
 
   /**
    * Constructor
-   * @param _translateService - TranslateService
    * @param _patronTransactionApiService - PatronTransactionApiService
    * @param _recordService - RecordService
    * @param _loanApiService - LoanApiService
@@ -96,7 +98,6 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
    * @param _operationLogsService - OperationLogsService
    */
   constructor(
-    private _translateService: TranslateService,
     private _patronTransactionApiService: PatronTransactionApiService,
     private _recordService: RecordService,
     private _loanApiService: LoanApiService,
@@ -153,7 +154,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
           });
         })
       );
-      this._patronProfileMenuService.change(this.user.patrons[0].pid);
+      this._patronProfileMenuService.change(this._currentPatronPid(this.viewcode));
     }
   }
 
@@ -184,5 +185,16 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
       this.tabs[key][l] = false;
       this.tabs[key][c] = 0;
     });
+  }
+
+  /**
+   * Find patron Pid with current view code
+   * @param viewcode - current view code
+   * @returns string, patron pid
+   */
+  private _currentPatronPid(viewcode: string) {
+    const currentPatron = this.user.patrons
+      .find((patron: any) => patron.organisation.code === viewcode);
+    return currentPatron ? currentPatron.pid : this.user.patrons[0].pid;
   }
 }

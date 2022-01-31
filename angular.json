@@ -570,6 +570,194 @@
           }
         }
       }
+    },
+    "public-user-profile-edit": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/public-user-profile-edit",
+      "sourceRoot": "projects/public-user-profile-edit/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "ngx-build-plus:build",
+          "options": {
+            "outputPath": "build/dist/public-user-profile-edit",
+            "index": "projects/public-user-profile-edit/src/index.html",
+            "main": "projects/public-user-profile-edit/src/main.ts",
+            "polyfills": "projects/public-user-profile-edit/src/polyfills.ts",
+            "tsConfig": "projects/public-user-profile-edit/tsconfig.app.json",
+            "aot": true,
+            "assets": [],
+            "styles": [],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/public-user-profile-edit/src/environments/environment.ts",
+                  "with": "projects/public-user-profile-edit/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "public-user-profile-edit:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "public-user-profile-edit:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "public-user-profile-edit:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/public-user-profile-edit/tsconfig.app.json",
+              "projects/public-user-profile-edit/tsconfig.spec.json",
+              "projects/public-user-profile-edit/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/public-user-profile-edit/e2e/protractor.conf.js",
+            "devServerTarget": "public-user-profile-edit:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "public-user-profile-edit:serve:production"
+            }
+          }
+        }
+      }
+    },
+    "public-user-password-change": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/public-user-password-change",
+      "sourceRoot": "projects/public-user-password-change/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "ngx-build-plus:build",
+          "options": {
+            "outputPath": "build/dist/public-user-password-change",
+            "index": "projects/public-user-password-change/src/index.html",
+            "main": "projects/public-user-password-change/src/main.ts",
+            "polyfills": "projects/public-user-password-change/src/polyfills.ts",
+            "tsConfig": "projects/public-user-password-change/tsconfig.app.json",
+            "aot": true,
+            "assets": [],
+            "styles": [],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/public-user-password-change/src/environments/environment.ts",
+                  "with": "projects/public-user-password-change/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "public-user-password-change:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "public-user-password-change:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "public-user-password-change:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/public-user-password-change/tsconfig.app.json",
+              "projects/public-user-password-change/tsconfig.spec.json",
+              "projects/public-user-password-change/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/public-user-password-change/e2e/protractor.conf.js",
+            "devServerTarget": "public-user-password-change:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "public-user-password-change:serve:production"
+            }
+          }
+        }
+      }
     }
   },
   "defaultProject": "admin"

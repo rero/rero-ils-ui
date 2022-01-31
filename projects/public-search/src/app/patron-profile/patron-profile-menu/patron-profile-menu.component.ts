@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IMenu, PatronProfileMenuService } from '../patron-profile-menu.service';
 
 @Component({
@@ -22,6 +22,8 @@ import { IMenu, PatronProfileMenuService } from '../patron-profile-menu.service'
   templateUrl: './patron-profile-menu.component.html'
 })
 export class PatronProfileMenuComponent {
+
+  @Input() patronPid: string;
 
   /**
    * Is menu visible
@@ -36,6 +38,11 @@ export class PatronProfileMenuComponent {
    * @return array
    */
   get menuOptions(): IMenu[] {
+    const menuSelected = this._patronProfileMenuService.menu
+      .find((menu: any) => menu.value === this.patronPid);
+    if (menuSelected) {
+      menuSelected.selected = true;
+    }
     return this._patronProfileMenuService.menu;
   }
 

@@ -16,7 +16,7 @@
 -->
 <form *ngIf="isVisible">
     <select class="form-control form-select form-select-sm ml-1 col-6" (change)="onChange($event.target.value)">
-      <option class="form-control" *ngFor="let option of menuOptions" [value]="option.value">
+      <option class="form-control" *ngFor="let option of menuOptions" [value]="option.value" [selected]="option.selected">
         {{ option.name }}
       </option>
     </select>

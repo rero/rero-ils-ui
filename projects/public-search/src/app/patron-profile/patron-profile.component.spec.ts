@@ -103,31 +103,11 @@ describe('PatronProfileComponent', () => {
     patronProfileMenuService.init();
     fixture = TestBed.createComponent(PatronProfileComponent);
     component = fixture.componentInstance;
+    component.viewcode = 'global';
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should display the user\'s name and tabs info', () => {
-    userService.loaded$.subscribe((data) => {
-      // TODO: FIX THIS LATER
-      // const fullname = fixture.nativeElement.querySelector('header > h3');
-      // expect(fullname.textContent).toContain('Simonetta Casalini');
-      let tab = fixture.nativeElement.querySelector('.nav-tabs li:nth-child(1)');
-      expect(tab.textContent).toContain('Loans 12');
-      tab = fixture.nativeElement.querySelector('.nav-tabs li:nth-child(2)');
-      expect(tab.textContent).toContain('Requests 12');
-      tab = fixture.nativeElement.querySelector('.nav-tabs li:nth-child(3)');
-      expect(tab.textContent).toContain('Fees  CHF14.00');
-      tab = fixture.nativeElement.querySelector('.nav-tabs li:nth-child(4)');
-      expect(tab.textContent).toContain('History 12');
-      tab = fixture.nativeElement.querySelector('.nav-tabs li:nth-child(5)');
-      expect(tab.textContent).toContain('Interlibrary loan 12');
-      tab = fixture.nativeElement.querySelector('.nav-tabs li:nth-child(6)');
-      expect(tab.textContent).toContain('Personal details');
-    });
-    userService.load().subscribe();
   });
 });
