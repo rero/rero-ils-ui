@@ -127,7 +127,11 @@ export const testUserPatronWithSettings = {
       holdings: 'hold',
       items: 'item'
     },
-    librarianRoles: ['librarian', 'system_librarian']
+    librarianRoles: ['librarian', 'system_librarian'],
+    userProfile: {
+      readOnly: false,
+      readOnlyFields: []
+    }
   },
   street: 'Via Croix Noire 3',
   username: 'simonetta'
@@ -335,7 +339,11 @@ export const testUserPatronMultipleOrganisationsWithSettings = {
       holdings: 'hold',
       items: 'item'
     },
-    librarianRoles: ['librarian', 'system_librarian']
+    librarianRoles: ['librarian', 'system_librarian'],
+    userProfile: {
+      readOnly: false,
+      readOnlyFields: []
+    }
   },
   street: 'Via Croix Noire 3',
   username: 'simonetta'
@@ -411,7 +419,11 @@ export const testUserLibrarianWithSettings = {
       holdings: 'hold',
       items: 'item'
     },
-    librarianRoles: ['librarian']
+    librarianRoles: ['librarian'],
+    userProfile: {
+      readOnly: false,
+      readOnlyFields: []
+    }
   },
   street: 'Via Croix Noire 3',
   username: 'simonetta'

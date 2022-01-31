@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { IPatron, User, UserService } from '@rero/shared';
+import { IPatron, UserService } from '@rero/shared';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable({
@@ -109,4 +109,5 @@ export class PatronProfileMenuService {
 export interface IMenu {
   value: string;
   name: string;
+  selected?: boolean;
 }

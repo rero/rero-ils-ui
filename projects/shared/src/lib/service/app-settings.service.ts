@@ -151,6 +151,10 @@ export interface ISettings {
   language: string;
   operationLogs: any;
   librarianRoles: string[];
+  userProfile: {
+    readOnly: boolean;
+    readOnlyFields: string[]
+  };
 }
 
 /** Settings Error */

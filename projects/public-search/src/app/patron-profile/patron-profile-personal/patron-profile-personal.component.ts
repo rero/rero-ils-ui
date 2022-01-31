@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
-import { IPatron } from '@rero/shared';
+import { AppSettingsService, IPatron } from '@rero/shared';
 
 @Component({
   selector: 'public-search-patron-profile-personal',
@@ -29,4 +29,23 @@ export class PatronProfilePersonalComponent {
 
   /** patron record */
   @Input() patron: IPatron;
+
+  /** Current viewcode */
+  @Input() viewcode: string;
+
+  /**
+   * Check if the user profile is on read only
+   *
+   * @returns true if the user settings is read only.
+   */
+  get diabledButtonOnReadyOnly(): boolean {
+    return !this._appSettingsService.settings.userProfile.readOnly;
+  }
+
+  /**
+   * Constructor
+   *
+   * @param _appSettingsService - AppSettingsService
+   */
+  constructor(private _appSettingsService: AppSettingsService) {}
 }

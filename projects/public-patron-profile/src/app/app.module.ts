@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -63,6 +63,7 @@ import { StatusBadgePipe } from 'projects/public-search/src/app/pipe/status-badg
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
 
+
 /** function to instantiate the application  */
 export function appInitFactory(appInitializerService: AppInitializerService) {
   return () => appInitializerService.load().toPromise();
@@ -97,6 +98,7 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
     BrowserAnimationsModule,
     RouterModule.forRoot([]),
     HttpClientModule,
+    HttpClientXsrfModule,
     FormsModule,
     FormlyModule.forRoot(),
     FormlyBootstrapModule,

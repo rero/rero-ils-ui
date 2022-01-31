@@ -18,7 +18,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreModule, DateTranslatePipe } from '@rero/ng-core';
-import { testUserPatronWithSettings } from '@rero/shared';
+import { AppSettingsService, testUserPatronWithSettings } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { SharedModule } from '@rero/shared';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
@@ -34,6 +34,13 @@ describe('PatronProfilePersonalComponent', () => {
     country_sw: 'switzerland'
   };
 
+  const appSettingsServiceSpy = jasmine.createSpyObj('AppSettingsService', ['']);
+  appSettingsServiceSpy.settings = {
+    userProfile: {
+      readOnly: false
+    }
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -47,7 +54,8 @@ describe('PatronProfilePersonalComponent', () => {
         HttpClientTestingModule
       ],
       providers: [
-        BsLocaleService
+        BsLocaleService,
+        { provide: AppSettingsService, useValue: appSettingsServiceSpy }
       ]
     })
     .compileComponents();

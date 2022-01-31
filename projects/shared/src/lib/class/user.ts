@@ -253,9 +253,15 @@ export class User implements IUser {
    */
    private _generateSymbolName(): string {
     let result = [];
-    result = this.first_name
+    // Only a user connected
+    if (!this.first_name && !this.last_name) {
+      result.push('an');
+    } else {
+      // User with infos
+      result = this.first_name
       ? [this.first_name[0], this.last_name[0]]
       : [this.last_name[0], this.last_name[1]];
+    }
     return result.join('').toUpperCase();
   }
 
