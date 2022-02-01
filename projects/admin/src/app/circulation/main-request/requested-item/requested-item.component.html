@@ -66,6 +66,13 @@
   <!-- NEXT-ROWS :: request detail -->
   <div class="col-12 mt-2" *ngIf="!isCollapsed">
     <dl class="row">
+      <!-- Unit -->
+      <dt *ngIf="item.enumerationAndChronology" class="col-2 label-title text-right" translate>Unit</dt>
+      <dd *ngIf="item.enumerationAndChronology" class="col-10">
+        <a name="unit">
+          {{ item.enumerationAndChronology }}
+        </a>
+      </dd>
       <!-- Patron information -->
       <dt class="col-2 label-title text-right" translate>Requested by</dt>
       <dd class="col-10">
