@@ -111,7 +111,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
                 {
                   label: _('Relevance'),
                   value: 'bestmatch',
-                  defaultNoQuery: true
+                  defaultQuery: true
                 },
                 {
                   label: _('Date (newest)'),
@@ -123,7 +123,8 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
                 },
                 {
                   label: _('Title'),
-                  value: 'title'
+                  value: 'title',
+                  defaultNoQuery: true
                 }
               ]
             },

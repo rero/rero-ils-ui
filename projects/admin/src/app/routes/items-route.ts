@@ -152,8 +152,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
               {
                 label: _('Relevance'),
                 value: 'bestmatch',
-                defaultQuery: true,
-                defaultNoQuery: true
+                defaultQuery: true
               },
               {
                 label: _('Barcode'),

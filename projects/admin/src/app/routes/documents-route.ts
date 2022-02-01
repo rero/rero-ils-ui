@@ -97,7 +97,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
               {
                 label: _('Relevance'),
                 value: 'bestmatch',
-                defaultNoQuery: true
+                defaultQuery: true
               },
               {
                 label: _('Date (newest)'),
