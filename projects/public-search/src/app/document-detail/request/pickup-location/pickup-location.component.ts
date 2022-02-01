@@ -143,7 +143,7 @@ export class PickupLocationComponent implements OnInit {
       () => {
         this.requestMessage = {
           success: true,
-          message: this._translateService.instant('A request has been placed on this {type}', { type: this.recordType })
+          message: this._translateService.instant(`A request has been placed on this ${ this.recordType }`)
         };
       },
       () => {
