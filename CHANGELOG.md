@@ -1,5 +1,26 @@
 # Changelog
 
+## [v0.21.0](https://github.com/rero/rero-ils-ui/tree/v0.11.0) (2022-02-14)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.20.0...v0.11.0)
+
+**Merged pull requests:**
+
+- search: fix default sort parameters [\#802](https://github.com/rero/rero-ils-ui/pull/802) ([jma](https://github.com/jma))
+- patrons: display patron `creation_date` field [\#800](https://github.com/rero/rero-ils-ui/pull/800) ([zannkukai](https://github.com/zannkukai))
+- library: improve library detail view and exception dates management [\#799](https://github.com/rero/rero-ils-ui/pull/799) ([zannkukai](https://github.com/zannkukai))
+- V1.7.0 [\#798](https://github.com/rero/rero-ils-ui/pull/798) ([zannkukai](https://github.com/zannkukai))
+- holding: display issue brief view as block [\#796](https://github.com/rero/rero-ils-ui/pull/796) ([zannkukai](https://github.com/zannkukai))
+- patron\_type: display of unpaid subscription limit [\#794](https://github.com/rero/rero-ils-ui/pull/794) ([zannkukai](https://github.com/zannkukai))
+- request: display the request time [\#793](https://github.com/rero/rero-ils-ui/pull/793) ([zannkukai](https://github.com/zannkukai))
+- document: fix title display on brief view [\#792](https://github.com/rero/rero-ils-ui/pull/792) ([zannkukai](https://github.com/zannkukai))
+- circulation policies: fix detail view [\#791](https://github.com/rero/rero-ils-ui/pull/791) ([zannkukai](https://github.com/zannkukai))
+- patron: fix some translations [\#787](https://github.com/rero/rero-ils-ui/pull/787) ([zannkukai](https://github.com/zannkukai))
+- holdings: fix item collapsing. [\#786](https://github.com/rero/rero-ils-ui/pull/786) ([zannkukai](https://github.com/zannkukai))
+- item: fix item availability status. [\#785](https://github.com/rero/rero-ils-ui/pull/785) ([zannkukai](https://github.com/zannkukai))
+- items: configure new facets for inventory list [\#773](https://github.com/rero/rero-ils-ui/pull/773) ([lauren-d](https://github.com/lauren-d))
+- circ\_policies: fix detail view [\#762](https://github.com/rero/rero-ils-ui/pull/762) ([zannkukai](https://github.com/zannkukai))
+
 ## [v0.20.0](https://github.com/rero/rero-ils-ui/tree/v0.20.0) (2022-01-12)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.19.0...v0.20.0)
@@ -20,8 +41,6 @@
 - users: fix user editor title [\#758](https://github.com/rero/rero-ils-ui/pull/758) ([zannkukai](https://github.com/zannkukai))
 - ui: fix language selection  [\#753](https://github.com/rero/rero-ils-ui/pull/753) ([jma](https://github.com/jma))
 - documents: allow to show other organisations holdings/items [\#749](https://github.com/rero/rero-ils-ui/pull/749) ([Garfield-fr](https://github.com/Garfield-fr))
-
-# Changelog
 
 ## [v0.19.0](https://github.com/rero/rero-ils-ui/tree/v0.19.0) (2021-12-09)
 
