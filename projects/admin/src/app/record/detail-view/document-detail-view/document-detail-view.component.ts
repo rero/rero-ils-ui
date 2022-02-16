@@ -115,12 +115,14 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
     if (rec.identifiedBy) {
       const queryParams = [];
       rec.identifiedBy.forEach((identifier: any) => {
-        queryParams.push(this._extractAndFormatQueryParams(identifier));
-        if (keysTypes.indexOf(identifier.type) > -1) {
-          const cidentifier = cloneDeep(identifier);
-          cidentifier.type = this.mappingtypes[cidentifier.type];
-          queryParams.push(this._extractAndFormatQueryParams(cidentifier));
-        }
+        if (['bf:Isbn', 'bf:Issn', 'bf:Doi', 'bf:Lccn', 'bf:IssnL', 'bf:Ean'].includes(identifier.type)) {
+          queryParams.push(this._extractAndFormatQueryParams(identifier));
+          if (keysTypes.indexOf(identifier.type) > -1) {
+            const cidentifier = cloneDeep(identifier);
+            cidentifier.type = this.mappingtypes[cidentifier.type];
+            queryParams.push(this._extractAndFormatQueryParams(cidentifier));
+          }
+      }
       });
       const query = queryParams.join(' OR ');
       this._recordService.getRecords(
