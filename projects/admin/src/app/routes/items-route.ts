@@ -39,7 +39,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
    * @return Object
    */
   getConfiguration() {
-    return {
+    const config = {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
         { path: '', component: RecordSearchPageComponent },
@@ -65,6 +65,9 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             searchFilters: [
               this.expertSearchFilter()
             ],
+            preFilters: {
+              organisation: null
+            },
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
             preprocessRecordEditor: (record: any) => {
               // If we found an `holding` parameter into the query string then we need to pre-populated
@@ -171,6 +174,13 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
         ],
       }
     };
+    // TODO: Refactor this after the change of AppInitializer service with user.
+    this._routeToolService.userService.loaded$.subscribe(() => {
+      config.data.types[0].preFilters.organisation =
+        this._routeToolService.userService.user.patronLibrarian.organisation.pid;
+    });
+
+    return config;
   }
 
   /**
