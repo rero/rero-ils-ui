@@ -20,7 +20,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule, UserService } from '@rero/shared';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { AppInitService } from './app-init.service';
+import { AppInitializerService } from './app-initializer.service';
 
 describe('Service: AppInit', () => {
   beforeEach(() => {
@@ -31,14 +31,14 @@ describe('Service: AppInit', () => {
         SharedModule
       ],
       providers: [
-        AppInitService,
+        AppInitializerService,
         BsLocaleService,
         UserService
       ]
     });
   });
 
-  it('should initialize app', inject([AppInitService], (service: AppInitService) => {
+  it('should initialize app', inject([AppInitializerService], (service: AppInitializerService) => {
     expect(service).toBeTruthy();
   }));
 });

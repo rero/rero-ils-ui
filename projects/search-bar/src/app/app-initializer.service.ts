@@ -18,7 +18,6 @@
 import { Injectable } from '@angular/core';
 import { UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
