@@ -22,7 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 import { AppModule } from '../../app.module';
-import { AppInitService } from '../../service/app-init.service';
+import { AppInitializerService } from '../../service/app-initializer.service';
 import { FrontpageComponent } from './frontpage.component';
 
 
@@ -30,11 +30,11 @@ describe('FrontpageComponent', () => {
   let component: FrontpageComponent;
   let fixture: ComponentFixture<FrontpageComponent>;
 
-  const appInitService = jasmine.createSpyObj(
-    'AppInitService', ['initTranslateService', 'load']
+  const appInitializerService = jasmine.createSpyObj(
+    'AppInitializerService', ['initTranslateService', 'load']
   );
 
-  appInitService.initTranslateService.and.returnValue(null);
+  appInitializerService.initTranslateService.and.returnValue(null);
   const userService = jasmine.createSpyObj(
     'UserService', ['init', 'load']
   );
@@ -50,7 +50,7 @@ describe('FrontpageComponent', () => {
       current: '1'
     }
   };
-  appInitService.load.and.returnValue(
+  appInitializerService.load.and.returnValue(
     of(userService.user)
   );
   userService.loaded$ = new BehaviorSubject(userService.user);
@@ -64,7 +64,7 @@ describe('FrontpageComponent', () => {
         AppModule
       ],
       providers: [
-        { provide: AppInitService, useValue: appInitService },
+        { provide: AppInitializerService, useValue: appInitializerService },
         { provide: UserService, useValue: userService }
       ]
     })

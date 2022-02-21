@@ -154,7 +154,6 @@ import { ItemAvailabilityComponent } from './record/item-availability/item-avail
 import { OperationLogsDialogComponent } from './record/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
 import { OperationLogsComponent } from './record/operation-logs/operation-logs.component';
 import { AppConfigService } from './service/app-config.service';
-import { AppInitService } from './service/app-init.service';
 import { OrganisationService } from './service/organisation.service';
 import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-factory.service';
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
@@ -167,10 +166,11 @@ import {
 import { ItemAvailabilityPipe } from './pipe/item-availability.pipe';
 import { ExpectedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/expected-issue/expected-issue.component';
 import { ReceivedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/received-issue/received-issue.component';
+import { AppInitializerService } from './service/app-initializer.service';
 
 /** Init application factory */
-export function appInitFactory(appInitService: AppInitService): () => Promise<any> {
-  return () => appInitService.load().toPromise();
+export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
+  return () => appInitializerService.load().toPromise();
 }
 
 @NgModule({
@@ -323,7 +323,7 @@ export function appInitFactory(appInitService: AppInitService): () => Promise<an
       provide: APP_INITIALIZER,
       useFactory: appInitFactory,
       deps: [
-        AppInitService,
+        AppInitializerService,
         UserService,
         AppConfigService,
         TranslateService,

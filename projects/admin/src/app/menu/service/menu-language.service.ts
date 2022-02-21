@@ -66,10 +66,14 @@ export class MenuLanguageService extends MenuBase {
    * @param menu - MenuItemInterface
    */
   private _languagesMenu(menu: MenuItemInterface): void {
-    this._languageMenu = menu.addChild(this._translateService.currentLang)
+    const currentLang = this._translateService.currentLang;
+    this._languageMenu = menu.addChild(`ui_language_${currentLang}`)
     .setAttribute('class', 'dropdown-menu dropdown-menu-right')
     .setAttribute('id', 'language-menu')
     .setExtra('iconClass', 'fa fa-language');
+    this._languageMenu.setName(
+      this._translateService.instant(`ui_language_${currentLang}`)
+    );
 
     this._configService.languages.sort().some(lang => {
       const languageMenu = this._languageMenu.addChild(`ui_language_${lang}`)

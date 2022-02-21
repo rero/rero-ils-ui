@@ -18,7 +18,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@rero/ng-core';
 import { AppSettingsService, User, UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { LibrarySwitchMenuService } from '../menu/service/library-switch-menu.service';
 import { LibrarySwitchService } from '../menu/service/library-switch.service';
 import { AppConfigService } from './app-config.service';
@@ -28,7 +28,7 @@ import { TypeaheadFactoryService } from './typeahead-factory.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AppInitService {
+export class AppInitializerService {
 
   /**
    * Constructor
@@ -58,7 +58,6 @@ export class AppInitService {
   load(): Observable<any> {
     return this._userService.load().pipe(
       tap((user: User) => {
-        this.initTranslateService();
         this._typeaheadFactoryService.init();
         if (user.isAuthorizedAdminAccess) {
           this._librarySwitchMenuService.init();
@@ -74,22 +73,20 @@ export class AppInitService {
           const userLocale = this._userService.getOnLocaleStorage();
           this._librarySwitchService.switch(userLocale.currentLibrary);
         }
-      })
+      }),
+      switchMap(() => this.initTranslateService())
     );
   }
 
   /** Initialize Translate Service */
-  private initTranslateService(): void {
-    const language = this._appSettingsService.settings.language;
-    if (language) {
-      this._translateService.setLanguage(language);
-    } else {
+  private initTranslateService(): Observable<any> {
+    let language = this._appSettingsService.settings.language;
+    if (language == null) {
       const browserLang = this._translateService.getBrowserLang();
-      this._translateService.setLanguage(
-        browserLang.match(this._appConfigService.languages.join('|')) ?
-          browserLang : this._appConfigService.defaultLanguage
-      );
+      language = browserLang.match(this._appConfigService.languages.join('|')) ?
+        browserLang : this._appConfigService.defaultLanguage;
     }
+    return this._translateService.setLanguage(language);
   }
 
   /**

@@ -19,7 +19,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@rero/ng-core';
 import { AppSettingsService, UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { AppConfigService } from './app-config-service.service';
 
 @Injectable({
@@ -44,23 +44,18 @@ export class AppInitializerService {
   /** load */
   load(): Observable<any> {
     return this._userService.load().pipe(
-      tap(() => {
-        this.initTranslateService();
-      })
+      switchMap(() => this.initTranslateService())
     );
   }
 
   /** Initialize Translate Service */
-  private initTranslateService(): void {
-    const language = this._appSettingsService.settings.language;
-    if (language) {
-      this._translateService.setLanguage(language);
-    } else {
+  private initTranslateService(): Observable<any> {
+    let language = this._appSettingsService.settings.language;
+    if (language == null) {
       const browserLang = this._translateService.getBrowserLang();
-      this._translateService.setLanguage(
-        browserLang.match(this._appConfigService.languages.join('|')) ?
-          browserLang : this._appConfigService.defaultLanguage
-      );
+      language = browserLang.match(this._appConfigService.languages.join('|')) ?
+        browserLang : this._appConfigService.defaultLanguage;
     }
+    return this._translateService.setLanguage(language);
   }
 }

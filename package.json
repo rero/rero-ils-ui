@@ -80,7 +80,7 @@
     "@ngx-loading-bar/http-client": "^5.1.1",
     "@ngx-loading-bar/router": "^5.1.1",
     "@ngx-translate/core": "^13.0.0",
-    "@rero/ng-core": "^1.14.4",
+    "@rero/ng-core": "^1.14.6",
     "bootstrap": "^4.6.0",
     "browserslist": ">=4.16.5",
     "crypto-js": "^3.3.0",
