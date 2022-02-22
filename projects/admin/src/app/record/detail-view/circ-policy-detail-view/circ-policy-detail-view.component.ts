@@ -97,7 +97,7 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
         );
 
       // sort incremental overdue intervals
-      if (record.metadata.hasOwnProperty('overdue_fees') && record.metadata.overdue_fees.hasOwnProperty('intervals')) {
+      if (record.metadata.overdue_fees && record.metadata.overdue_fees.intervals) {
         this.overdues = record.metadata.overdue_fees.intervals
           .sort((a: any, b: any) => a.from - b.from);
       }
