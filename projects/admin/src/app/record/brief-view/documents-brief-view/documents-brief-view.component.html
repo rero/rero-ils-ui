@@ -43,18 +43,16 @@
           {{ last && record.metadata.contribution.length > 3 ? '; …' : '' }}
         </li>
       </ul>
-      <!-- edition statement -->
-      <ng-container *ngIf="record.metadata.editionStatement">
-        <ul class="list-unstyled mb-0">
-          <li *ngFor="let edition of record.metadata.editionStatement">{{ edition._text[0].value }}</li>
-        </ul>
-      </ng-container>
       <!-- provision activity publications -->
       <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
         <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>
       </ul>
       <!-- shared part -->
       <shared-part-of [record]="record"></shared-part-of>
+      <!-- edition statement -->
+      <ul class="list-unstyled mb-0" *ngIf="record.metadata.editionStatement">
+        <li *ngFor="let edition of record.metadata.editionStatement">{{ edition._text[0].value }}</li>
+      </ul>
       <!-- availability -->
       <div *ngIf="!type.startsWith('import_') && record.metadata.type !== 'ebook'">
         <i class="fa fa-circle text-{{ record.metadata.available ? 'success' : 'danger' }}" aria-hidden="true"></i>&nbsp;
