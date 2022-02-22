@@ -49,13 +49,16 @@
           <dd class="col-8">
             <i class="fa pr-2" [class]="getIcon(true)"></i>
             {{ issue.metadata.issue.status | translate }}
+            <span class="small pl-2 text-secondary">
+              ({{ 'Assigned on' | translate }} {{ issue.metadata.issue.status_date | dateTranslate }})
+            </span>
           </dd>
-          <dt class="offset-1 col-3 label-title" translate>Excepted date</dt>
+          <dt class="offset-1 col-3 label-title" translate>Expected date</dt>
           <dd class="col-8">{{ issue.metadata.issue.expected_date | dateTranslate }}</dd>
-          <dt class="offset-1 col-3 label-title" translate>Received date</dt>
-          <dd class="col-8">{{ issue.metadata.issue.received_date | dateTranslate }}</dd>
-          <dt class="offset-1 col-3 label-title" translate>Last action</dt>
-          <dd class="col-8">{{ issue.metadata.issue.status_date | dateTranslate }}</dd>
+          <ng-container *ngIf="issue.metadata.issue.status === issueItemStatusRef.RECEIVED">
+            <dt class="offset-1 col-3 label-title" translate>Received date</dt>
+            <dd class="col-8">{{ issue.metadata.issue.received_date | dateTranslate }}</dd>
+          </ng-container>
         </dl>
       </div>
     </div>

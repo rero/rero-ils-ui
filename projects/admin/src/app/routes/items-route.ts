@@ -17,6 +17,7 @@
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DetailComponent, EditorComponent, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
+import { IssueItemStatus } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ItemType } from '../classes/items';
@@ -101,10 +102,15 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
               return data;
             },
             postprocessRecordEditor: (record: any) => {
-              // As 'issue' is part of the JSON propertiesOrder. The record should always contain this property ;
-              // But this property is only necessary for 'issue' item type.
-              if (record.type !== 'issue' && record.hasOwnProperty('issue')) {
-                delete record.issue;
+              // * As 'issue' is part of the JSON propertiesOrder. The record should always contain this property ;
+              //   But this property is only necessary for 'issue' item type.
+              // * Keep 'received_date' information only if the issue has the correct status.
+              if (record.issue) {
+                if (record.type !== 'issue') {
+                  delete record.issue;
+                } else if (record.issue.status !== IssueItemStatus.RECEIVED && record.issue.received_date) {
+                  delete record.issue.received_date;
+                }
               }
               // If we try to save an item with without any notes, then remove the empty array notes array from record
               if (record.notes && record.notes.length === 0) {
