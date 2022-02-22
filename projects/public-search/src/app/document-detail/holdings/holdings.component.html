@@ -19,7 +19,6 @@
   <public-search-holding *ngFor="let holding of holdings"
                          [holding]="holding"
                          [viewcode]="viewcode"
-                         [collapsable]="holding.metadata.holdings_type !== 'serial'"
                          [collapsed]="holdingsTotal > 1"
                          [attr.id]="holding.metadata.pid | idAttribute : {prefix: 'holding'}"
                          class="card mt-2 w-100">
