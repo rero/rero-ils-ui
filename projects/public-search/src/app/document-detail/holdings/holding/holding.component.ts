@@ -37,6 +37,9 @@ export class HoldingComponent {
   /** Authorized types of note */
   noteAuthorizedTypes: string[] = ['general_note'];
 
+  /** Request dialog */
+  requestDialog = false;
+
   // GETTER & SETTER ==========================================================
   /** Current interface language */
   get language() {
@@ -49,5 +52,9 @@ export class HoldingComponent {
    * @param _translateService - TranslateService
    */
   constructor(private _translateService: TranslateService) {}
+
+  getRequestDialogValue($event) {
+    this.requestDialog = $event;
+  }
 
 }

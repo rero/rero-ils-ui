@@ -18,7 +18,7 @@
   <ng-container *ngIf="!requestDialog; else requestPickupDialog">
     <ng-container *ngIf="canRequest">
       <div *ngIf="canRequest.can" id="record-request-{{ record.metadata.pid }}" [ngClass]="recordType == 'item' ? 'row pl-4' : ''" >
-        <dt class="my-2 col-lg-2 col-sm-3">&nbsp;</dt>
+        <dt *ngIf="recordType !== 'holding'" class="my-2 col-lg-2 col-sm-3">&nbsp;</dt>
         <dd class="my-2 col-lg-9 col-sm-8">
           <button
             id="record-{{ record.metadata.pid }}-request-button"
