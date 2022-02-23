@@ -17,29 +17,29 @@
 <div class="card-header p-2">
   <!-- MAIN ROW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <div class="row">
-    <div id="holding-location-{{ holding.metadata.pid }}" class="col-4">
+    <div id="holding-location-{{ holding.metadata.pid }}" class="col-sm-12 col-md-3">
       <a href="#"
-         class="collapse-link float-left h-100"
-         data-toggle="collapse" aria-expanded="false"
-         *ngIf="collapsable"
-         (click)="$event.preventDefault(); collapsed = !collapsed">
+        class="collapse-link float-left"
+        data-toggle="collapse" aria-expanded="false"
+        *ngIf="collapsable"
+        (click)="$event.preventDefault(); collapsed = !collapsed">
         <i [ngClass]="{ 'fa-caret-down': !collapsed, 'fa-caret-right': collapsed }"
-           [hidden]="holding.metadata.items_count === 0"
-           class="fa fa-lg" aria-hidden="true">
+          [hidden]="holding.metadata.items_count === 0"
+          class="fa fa-lg" aria-hidden="true">
         </i>
       </a>
       {{ holding.metadata.library.name }}: {{ holding.metadata.location.name }}
     </div>
-    <div id="holding-category-name-{{ holding.metadata.pid }}" class="col-3">
+    <div id="holding-category-name-{{ holding.metadata.pid }}" class="col-sm-12 col-md-2">
       {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}
     </div>
-    <div class="col-2">
+    <div class="col-sm-12 col-md-2">
       <span [hidden]="holding.metadata.items_count === 0">
         {{ holding.metadata.items_count }}
         {{ holding.metadata.items_count | i18nPlural: { '=0': 'item', '=1': 'item', 'other': 'items' } | translate }}
       </span>
     </div>
-    <div id="holding-available-{{ holding.metadata.pid }}" class="col-3">
+    <div id="holding-available-{{ holding.metadata.pid }}" class="col-sm-12 col-md-3">
       <span [hidden]="!collapsed && collapsable">
         <ng-container *ngIf="holding.metadata.holdings_type === 'serial'; else available">
           <i class="fa fa-circle text-warning"></i>
@@ -47,19 +47,23 @@
         </ng-container>
         <ng-template #available>
           <i class="fa fa-circle"
-             [ngClass]="{'text-success': holding.metadata.available, 'text-danger': !holding.metadata.available }">
+            [ngClass]="{'text-success': holding.metadata.available, 'text-danger': !holding.metadata.available }">
           </i>
           {{ (holding.metadata.available ? 'available' : 'not available') | translate }}
         </ng-template>
       </span>
     </div>
-  </div>
-  <!-- request dialog -->
-  <div id="holding-request-{{ holding.metadata.pid }}" class="row">
-    <public-search-request [record]="holding" recordType="holding" [viewcode]="viewcode" class="w-100"></public-search-request>
+    <!-- request dialog -->
+    <div id="holding-request-{{ holding.metadata.pid }}"
+        [ngClass]="requestDialog ? 'row col-12' : 'col-sm-12 col-md-2'">
+        <public-search-request
+        [record]="holding" recordType="holding"
+        (requestDialogEvent)="getRequestDialogValue($event)"
+        [viewcode]="viewcode" class="w-100"></public-search-request>
+    </div>
   </div>
   <!-- SERIAL HOLDING INFORMATIOLNS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <dl class="row holdings-data" *ngIf="holding.metadata.holdings_type === 'serial'">
+  <dl class="row holdings-data pt-4" *ngIf="holding.metadata.holdings_type === 'serial'">
     <!-- CALL NUMBER -->
     <ng-container *ngIf="holding.metadata.call_number">
       <dt class="col-2 col-sm-4 label-title" translate>Call number</dt>

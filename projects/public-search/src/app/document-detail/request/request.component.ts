@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IPatron, UserService } from '@rero/shared';
 import { ItemApiService } from '../../api/item-api.service';
 import { HoldingsApiService } from '../../api/holdings-api.service';
@@ -42,6 +42,9 @@ export class RequestComponent implements OnInit {
 
   /** Request dialog */
   requestDialog = false;
+
+  /** Request dialog event */
+  @Output() requestDialogEvent = new EventEmitter<any>();
 
   /** current patron */
   private _patron: IPatron;
@@ -91,10 +94,12 @@ export class RequestComponent implements OnInit {
   /** Close request dialog */
   closeDialog(): void {
     this.requestDialog = false;
+    this.requestDialogEvent.emit(this.requestDialog);
   }
 
   /** show Request Dialog */
   showRequestDialog() {
     this.requestDialog = true;
+    this.requestDialogEvent.emit(this.requestDialog);
   }
 }
