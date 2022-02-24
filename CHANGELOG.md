@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.21.1](https://github.com/rero/rero-ils-ui/tree/v0.21.1) (2022-02-24)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.21.0...v0.21.1)
+
+**Merged pull requests:**
+
+- holdings: fix detailed view for issue items. [\#815](https://github.com/rero/rero-ils-ui/pull/815) ([zannkukai](https://github.com/zannkukai))
+- holdings: fix item collapsing [\#814](https://github.com/rero/rero-ils-ui/pull/814) ([zannkukai](https://github.com/zannkukai))
+- document: move edition statement into brief view [\#813](https://github.com/rero/rero-ils-ui/pull/813) ([zannkukai](https://github.com/zannkukai))
+- cir policy: fix detailed view [\#812](https://github.com/rero/rero-ils-ui/pull/812) ([jma](https://github.com/jma))
+- item: add organisation filter [\#810](https://github.com/rero/rero-ils-ui/pull/810) ([Garfield-fr](https://github.com/Garfield-fr))
+
 ## [v0.21.0](https://github.com/rero/rero-ils-ui/tree/v0.11.0) (2022-02-14)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.20.0...v0.11.0)
