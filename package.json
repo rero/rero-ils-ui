@@ -102,7 +102,7 @@
     "simple-isbn": "^1.1.5",
     "simplemde": "^1.11.2",
     "tslib": "^2.1.0",
-    "url-parse": "^1.5.3",
+    "url-parse": "^1.5.8",
     "xmlhttprequest-ssl": ">=1.6.2",
     "zone.js": "~0.10.2"
   },
