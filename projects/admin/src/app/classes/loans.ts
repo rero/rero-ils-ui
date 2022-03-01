@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* tslint:disable */
+/* eslint-disable */
 // required as json properties is not lowerCamelCase
 
 import moment, { Moment } from 'moment';

@@ -17,7 +17,7 @@
  */
 
 // Credit :: https://github.com/valor-software/ngx-bootstrap/issues/823#issuecomment-514976712
-/* tslint:disable */
+/* eslint-disable */
 // The selector should be prefixed by "admin"
 
 import { Directive, Input, OnChanges } from '@angular/core';

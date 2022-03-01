@@ -16,7 +16,7 @@
  */
 
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, Injector, NgModule } from '@angular/core';
+import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, DoBootstrap, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -84,11 +84,6 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
         { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
         { provide: CoreConfigService, useClass: AppConfigService }
     ],
-    entryComponents: [
-        HoldingsComponent,
-        ItemComponent,
-        ItemsComponent
-    ],
     exports: [
         NotesFilterPipe
     ],
@@ -96,7 +91,7 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
         CUSTOM_ELEMENTS_SCHEMA
     ]
 })
-export class AppModule {
+export class AppModule implements DoBootstrap {
 
   constructor(private injector: Injector) {
   }

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* tslint:disable */
+/* eslint-disable */
 // required as json properties is not lowerCamelCase
 
 export enum ILLRequestStatus {

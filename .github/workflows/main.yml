@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [12.x, 14.x]
 
     steps:
     - uses: actions/checkout@v1
@@ -19,12 +19,10 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: install package
       run: |
-        npm install -g @angular/cli@11
+        npm install -g @angular/cli@13
         npm ci
     - name: run tests
       run: |
         ./run-tests.sh
-        npm run pack
-
       env:
         CI: true

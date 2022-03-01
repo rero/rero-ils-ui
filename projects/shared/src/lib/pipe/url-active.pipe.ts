@@ -26,7 +26,7 @@ export class UrlActivePipe implements PipeTransform {
     let output = '';
     const re = new RegExp(/(https?:\/\/[\w|.|\-|\/]+)/, 'gm');
     let match: RegExpExecArray;
-    // tslint:disable-next-line: no-conditional-assignment
+    // eslint-disable-next-line no-cond-assign
     while ((match = re.exec(text)) !== null) {
       const url = match[0];
       output += text.replace(url, `<a href="${url}" target="${target}">${url}</a>`);

@@ -16,7 +16,7 @@
  */
 
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
+import { APP_INITIALIZER, DoBootstrap, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -37,38 +37,35 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
 
 
 @NgModule({
-  declarations: [
-    SearchBarComponent
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    RouterModule.forRoot([]),
-    HttpClientModule,
-    FormsModule,
-    RecordModule,
-    ReactiveFormsModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: BaseTranslateLoader,
-        useClass: TranslateLoader,
-        deps: [CoreConfigService, HttpClient]
-      },
-      isolate: false
-    }),
-    TypeaheadModule.forRoot(),
-    SharedModule
-  ],
-  providers: [
-    // TODO: remove this to avoid api call. It still neded because
-    //       `_getContributionName` need API config.
-    { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true }
-  ],
-  entryComponents: [
-    SearchBarComponent
-  ]
+    declarations: [
+        SearchBarComponent
+    ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        RouterModule.forRoot([]),
+        HttpClientModule,
+        FormsModule,
+        RecordModule,
+        ReactiveFormsModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: BaseTranslateLoader,
+                useClass: TranslateLoader,
+                deps: [CoreConfigService, HttpClient]
+            },
+            isolate: false
+        }),
+        TypeaheadModule.forRoot(),
+        SharedModule
+    ],
+    providers: [
+        // TODO: remove this to avoid api call. It still neded because
+        //       `_getContributionName` need API config.
+        { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true }
+    ]
 })
-export class AppModule {
+export class AppModule implements DoBootstrap {
 
   constructor(private injector: Injector) {
   }

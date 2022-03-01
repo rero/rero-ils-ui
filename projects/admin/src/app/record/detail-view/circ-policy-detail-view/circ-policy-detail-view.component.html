@@ -117,8 +117,8 @@
               <td>{{ reminder.type | translate }}</td>
               <td>
                 <i class="fa" [ngClass]="{
-                  'fa-calendar-minus-o': reminder.type == 'due_soon',
-                  'fa-calendar-plus-o': reminder.type == 'overdue'
+                  'fa-calendar-minus-o': reminder.type === 'due_soon',
+                  'fa-calendar-plus-o': reminder.type === 'overdue'
                 }"></i>
                 {{ reminder.days_delay }}
               </td>
@@ -191,7 +191,7 @@
               </th>
               <td *ngFor="let itemType of itemTypes" class="text-center">
                 <span *ngFor="let currentItemType of setting.value">
-                  <span *ngIf="itemType == currentItemType">
+                  <span *ngIf="itemType === currentItemType">
                     <i id="ptty-{{setting.key}}-itty-{{currentItemType}}" class="fa fa-check  text-success" aria-hidden="true"></i>
                   </span>
                 </span>

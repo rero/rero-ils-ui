@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import '/node_modules/bootstrap/scss/functions';
-@import '/node_modules/bootstrap/scss/variables';
-@import '/projects/admin/src/app/scss/variables';
+@import '~node_modules/bootstrap/scss/functions';
+@import '~node_modules/bootstrap/scss/variables';
+@import '../../../../scss/variables';
 
 .accounting-infos {
 

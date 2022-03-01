@@ -19,7 +19,7 @@
 @import '~font-awesome/scss/font-awesome';
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
-@import '/projects/admin/src/app/scss/variables';
+@import '../../../../scss/variables';
 
 $line-shift: map-get($spacers, 5);
 

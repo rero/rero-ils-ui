@@ -153,11 +153,11 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
 }
 
 export class Setting {
-  // tslint:disable-next-line: variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
   item_type: {
     $ref: string;
   };
-  // tslint:disable-next-line: variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   patron_type: {
     $ref: string;
   };

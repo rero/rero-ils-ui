@@ -16,7 +16,7 @@
 -->
 
 <div class="row p-2 mb-1 align-middle item"
-     *ngIf="document != null"
+     *ngIf="document !== undefined"
      [ngClass]="getCallout()"
      id="request-{{item.barcode}}"
   >

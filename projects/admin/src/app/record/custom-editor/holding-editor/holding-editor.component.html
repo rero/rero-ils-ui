@@ -16,10 +16,10 @@
 -->
 
 <div class="row">
-  <div [ngClass]="{'col-md-9 col-xl-8': serialPatternsTemplate != null, 'col-12': serialPatternsTemplate == null}" role="main">
+  <div [ngClass]="{'col-md-9 col-xl-8': serialPatternsTemplate !== undefined, 'col-12': serialPatternsTemplate === undefined}" role="main">
     <ng-core-editor [model]="model" (modelChange)="modelChanged($event)"></ng-core-editor>
   </div>
-  <div *ngIf="serialPatternsTemplate != null" class="col-md-3 col-xl-4 bd-sidebar">
+  <div *ngIf="serialPatternsTemplate !== undefined" class="col-md-3 col-xl-4 bd-sidebar">
     <div class="card">
       <div class="card-header">
         <h5 translate>Examples (preview)</h5>
