@@ -1,13 +1,12 @@
-"professional ui":
+"f: professional ui":
   - projects/admin/src/app/**/*
 
-"public ui":
+"f: public ui":
   - projects/public-search/src/app/**/*
   - projects/public-holdings-items/src/app/**/*
   - projects/public-patron-profile/src/app/**/*
 
-# Add label circulation to
-circulation:
+"f: circulation":
   - projects/admin/src/app/circulation/**/*
   - projects/admin/src/app/circulation/patron/history/**/*
   - projects/admin/src/app/circulation/patron/loan/**/*
@@ -26,7 +25,7 @@ circulation:
   - projects/admin/src/app/record/formly/type/cipo-patron-type-item-type/**/*
   - projects/admin/src/app/record/circulation-logs/**/*
 
-"user management":
+"f: user management":
   - projects/admin/src/app/circulation/patron/**/*
   - projects/public-search/src/app/patron-profile/**/*
 
@@ -35,7 +34,7 @@ translations:
   - projects/admin/src/assets/**/*
   - projects/**/*/manual_translations.ts
 
-search:
+"f: search":
   - projects/public-search/src/app/collection-brief/**/*
   - projects/public-search/src/app/document-brief/**/*
   - projects/public-search/src/app/document-record-search/**/*
@@ -45,23 +44,23 @@ search:
   - projects/admin/src/app/record/document-record-search/**/*
   - projects/shared/src/lib/view/brief/**/*
 
-documentation:
+"dev: documentation":
   - .github/**/*
   - CHANGELOG.json
   - README.md
   - LICENSE
 
-activity-logs:
+"f: activity-logs":
   - projects/admin/src/app/record/operation-logs/**/*
   - projects/admin/src/app/api/operation*
   - projects/admin/src/app/record/circulation-logs/**/*
 
-editor:
+"f: editor":
   - projects/admin/src/app/record/custom-editor/**/*
   - projects/admin/src/app/record/editor/**/*
   - projects/admin/src/app/record/formly/**/*
 
-acquisitions:
+"f: acquisitions":
   - projects/admin/src/app/acquisition/**/*
 
 developers:
