@@ -24,7 +24,7 @@
         *ngIf="collapsable"
         (click)="$event.preventDefault(); collapsed = !collapsed">
         <i [ngClass]="{ 'fa-caret-down': !collapsed, 'fa-caret-right': collapsed }"
-          [hidden]="holding.metadata.items_count === 0"
+          [hidden]="holding.metadata.public_items_count === 0"
           class="fa fa-lg" aria-hidden="true">
         </i>
       </a>
@@ -34,9 +34,9 @@
       {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}
     </div>
     <div class="col-sm-12 col-md-2">
-      <span [hidden]="holding.metadata.items_count === 0">
-        {{ holding.metadata.items_count }}
-        {{ holding.metadata.items_count | i18nPlural: { '=0': 'item', '=1': 'item', 'other': 'items' } | translate }}
+      <span [hidden]="holding.metadata.public_items_count === 0">
+        {{ holding.metadata.public_items_count }}
+        {{ holding.metadata.public_items_count | i18nPlural: { '=0': 'item', '=1': 'item', 'other': 'items' } | translate }}
       </span>
     </div>
     <div id="holding-available-{{ holding.metadata.pid }}" class="col-sm-12 col-md-3">
