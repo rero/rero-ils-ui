@@ -44,7 +44,9 @@ export class HoldingsApiService extends BaseApi {
     const query = `document.pid:${documentPid}
     AND ((holdings_type:standard AND public_items_count:[1 TO *]) OR holdings_type:serial)`;
     return this._recordService
-    .getRecords('holdings', query, page, itemsPerPage, undefined, { view: viewcode }, BaseApi.reroJsonheaders)
-    .pipe(map((response: Record) => response.hits));
+    .getRecords(
+      'holdings', query, page, itemsPerPage, undefined, { view: viewcode },
+      BaseApi.reroJsonheaders, 'organisation_library_location'
+    ).pipe(map((response: Record) => response.hits));
   }
 }
