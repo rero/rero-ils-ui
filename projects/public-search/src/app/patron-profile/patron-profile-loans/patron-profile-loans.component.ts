@@ -59,6 +59,7 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._paginator = new Paginator();
     this._paginator
+      .setRecordsPerPage(20)
       .setHiddenInfo(
         _('({{ count }} hidden loan)'),
         _('({{ count }} hidden loans)')
