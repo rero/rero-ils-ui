@@ -220,7 +220,7 @@ export class LoanComponent implements OnInit, OnDestroy {
           } else {
             if (newItem.status === ItemStatus.ON_LOAN) {
               this._toastService.error(
-                this._translateService.instant('The item is already on loan'),
+                this._translateService.instant('Checkout impossible: the item is already on loan for another patron'),
                 this._translateService.instant('Checkout')
               );
               this._resetSearchInput();
