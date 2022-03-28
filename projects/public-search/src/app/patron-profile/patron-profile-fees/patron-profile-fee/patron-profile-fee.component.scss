@@ -17,10 +17,19 @@
 @import '~bootstrap/scss/_functions';
 @import '~bootstrap/scss/_variables';
 
+:host:nth-child(even){
+  background-color: $light;
+}
+
 dl > dt,
 dl > dd {
   padding-left: 0;
   margin-bottom: 0;
+}
+
+h5 {
+  border-bottom: $border-width solid $border-color;
+  margin-bottom: map-get($spacers, 3);
 }
 
 @media (min-width: map_get($grid-breakpoints, lg)) {

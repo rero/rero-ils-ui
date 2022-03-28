@@ -18,8 +18,8 @@
 <section id="fees-section" class="container my-2">
   <div class="d-none d-lg-block">
     <div class="row bg-dark rounded text-light p-2">
-      <div class="col-2 pl-0" translate>Date</div>
-      <div class="col-7" translate>Category</div>
+      <div class="col-3 pl-5" translate>Date</div>
+      <div class="col-6" translate>Category</div>
       <div class="col-3 text-right">
         {{ 'Total amount' | translate }}:
         {{ feesTotal | currency:currency:'symbol' }}
@@ -34,18 +34,19 @@
   </ng-container>
 
   <ng-template #display>
-    <ng-container *ngIf="paginator.getRecordsCount() > 0; else noRecord">
-      <div id="fees-data">
-        <public-search-patron-profile-fee
-          *ngFor="let record of records; let index = index"
-          [ngClass]="{ 'bg-light': !(index % 2) }"
-          id="fee-{{ record.metadata.pid }}"
-          class="row my-1 p-2"
-          [record]="record">
-        </public-search-patron-profile-fee>
-        <shared-search-show-more-pager id="show-more-fees" [paginator]="paginator"></shared-search-show-more-pager>
+    <div class="row border" *ngIf="paginator.getRecordsCount() > 0; else noRecord">
+      <div class="container-fluid">
+        <div id="fees-data">
+          <public-search-patron-profile-fee
+            *ngFor="let record of records"
+            [record]="record"
+            id="fee-{{ record.metadata.pid }}"
+            class="row border-bottom">
+          </public-search-patron-profile-fee>
+          <shared-search-show-more-pager id="show-more-fees" [paginator]="paginator"></shared-search-show-more-pager>
+        </div>
       </div>
-    </ng-container>
+    </div>
 
     <ng-template #noRecord>
       <div class="row">

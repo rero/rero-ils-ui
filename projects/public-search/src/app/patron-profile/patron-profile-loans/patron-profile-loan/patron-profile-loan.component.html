@@ -14,79 +14,63 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="col-lg-4 col-md-6 col-sm-12 pl-0">
-  <button
-    id="loan-{{ record.metadata.pid }}"
-    type="button"
-    class="pl-0 pr-2 pt-0 btn btn-toogle"
-    (click)="isCollapsed = !isCollapsed"
-    [attr.aria-expanded]="!isCollapsed"
-    aria-controls="collapseEvent"
-  >
-    <i class="fa pr-0" [ngClass]="{ 'fa-caret-right': isCollapsed, 'fa-caret-down': !isCollapsed }"></i>
-  </button>
-  <a href="/{{ viewcode }}/documents/{{ record.metadata.document.pid }}">{{ record.metadata.document.title | mainTitle }}</a>
-</div>
-<div class="col-lg-4 col-md-6 col-sm-12 ">
-  {{ record.metadata.library.name }}
-</div>
-<div class="col-lg-2 col-md-6 col-sm-6">
-  <span class="d-block" [ngClass]="{ 'font-weight-bold text-success': actionSuccess, '': !actionSuccess }">
-    {{ record.metadata.end_date | dateTranslate :'shortDate' }}
-  </span>
-  <!-- start badge renew -->
-  <ng-container *ngIf="record.metadata.extension_count && record.metadata.extension_count > 0">
-  <div>
-    <span class="badge badge-secondary font-weight-normal">
-      {{ record.metadata.extension_count }}
-      <ng-container *ngIf="record.metadata.extension_count > 1; else countSingular">
-        {{ 'renewals' | translate }}
-      </ng-container>
-      <ng-template #countSingular>
-        {{ 'renewal' | translate }}
-      </ng-template>
-    </span>
-  </div>
-  </ng-container>
-  <!-- end badge renew -->
-  <!-- start badge overdue -->
-  <ng-container *ngIf="record.metadata.is_late">
-  <div>
-    <span class="badge badge-warning font-weight-normal" translate>
-      overdue
-    </span>
-  </div>
-  </ng-container>
-  <!-- end badge overdue -->
-</div>
-<div class="col-lg-2 col-md-6 col-sm-6 text-right pr-0">
-  <ng-container *ngIf="canExtend.can; else expendDisabled">
-    <button
-      type="button"
-      class="btn btn-sm btn-primary"
-      (click)="renew()"
-      [disabled]="renewInProgress"
-    >
-      <ng-container *ngIf="!renewInProgress || actionDone; else inProcess">
-        {{ 'Renew' | translate }}
-      </ng-container>
-      <ng-template #inProcess>
-        <span class="spinner-border spinner-border-sm mr-1" role="status"></span>
-        {{ 'Renew' | translate }}
-      </ng-template>
-    </button>
-  </ng-container>
-  <ng-template #expendDisabled>
-    <button
-      type="button"
-      class="btn btn-sm btn-primary disabled"
-      tooltip="{{ canExtend.reasons | arrayTranslate | join:'<br>'}}"
-      translate
-    >Renew</button>
-  </ng-template>
-</div>
 
-<!-- Document detail -->
-<div [collapse]="isCollapsed" [isAnimated]="true" class="col-12 mt-1">
-  <public-search-patron-profile-document [record]="record"></public-search-patron-profile-document>
+<div class="d-flex container p-2" [ngClass]="{'callout callout-warning ':record.metadata.is_late}">
+  <button type="button" class="btn-show-more"
+          [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
+          (click)="isCollapsed = !isCollapsed"
+          [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
+  </button>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- DOCUMENT & ADDITIONAL DATA ===================================== -->
+      <public-search-patron-profile-document
+          [record]="record"
+          [showAdditionalInformation]="!isCollapsed"
+          [isAnimated]="true"
+          class="col-lg-8 col-12 pl-0"
+        >
+        <dl class="row" additional-metadata>
+          <dt class="col-sm-6 col-md-4 col-lg-3 label-title">Library</dt>
+          <dd class="col-sm-6 col-md-8 col-lg-9">{{ record.metadata.library.name }}</dd>
+        </dl>
+      </public-search-patron-profile-document>
+      <!-- DUE DATE & BADGES ============================================== -->
+      <div class="col-lg-2 col-md-6 col-sm-6 pl-0">
+        <div>
+          <span class="d-inline d-lg-none label-title font-weight-bold" translate>Due date</span>
+          <span [ngClass]="{ 'font-weight-bold text-success': actionSuccess}">
+            {{ record.metadata.end_date | dateTranslate :'shortDate' }}
+          </span>
+        </div>
+        <div *ngIf="record.metadata.extension_count && record.metadata.extension_count > 0" class="badge badge-secondary font-weight-normal">
+          {{ record.metadata.extension_count }}
+          {{ record.metadata.extension_count | i18nPlural: {'=1': 'renewal', 'other': 'renewals'} | translate }}
+        </div>
+        <div *ngIf="record.metadata.is_late" class="badge badge-warning font-weight-normal" translate>overdue</div>
+        <div *ngIf="isDueSoon" class="badge badge-secondary font-weight-normal" translate>approching due date</div>
+      </div>
+      <!-- ACTION BUTTONS COLUMN ========================================== -->
+      <div class="col-lg-2 col-md-6 col-sm-6 text-right pr-0">
+        <button
+          *ngIf="canExtend.can; else expendDisabled"
+          type="button"
+          class="btn btn-sm btn-primary"
+          (click)="renew()"
+          [disabled]="renewInProgress || actionDone"
+        >
+          <span *ngIf="renewInProgress" class="spinner-border spinner-border-sm mr-1" role="status"></span>
+          {{ 'Renew' | translate }}
+        </button>
+        <ng-template #expendDisabled>
+          <button
+            type="button"
+            class="btn btn-sm btn-primary disabled"
+            tooltip="{{ canExtend.reasons | arrayTranslate | join:'<br>'}}"
+            translate
+          >Renew</button>
+        </ng-template>
+      </div>
+    </div>
+  </div>
 </div>

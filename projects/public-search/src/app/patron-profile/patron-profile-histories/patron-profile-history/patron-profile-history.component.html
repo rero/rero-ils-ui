@@ -14,36 +14,34 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="row mt-1 p-2" *ngVar="record.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document">
-  <div class="col-6 col-sm-6">
-    <a *ngIf="document; else nodocument" href="/{{ viewcode }}/documents/{{ record.metadata.loan.item.document.pid }}">
-      {{ record.metadata.loan.item.document.title }}
-    </a>
-    <ng-template #nodocument>
-      {{ record.metadata.loan.item.document.title }}
-    </ng-template>
-  </div>
-  <div class="col-4 col-sm-4">
-    <ng-container *ngIf="document; else norecord">
-    <ul class="list-inline">
-      <li *ngFor="let contribution of document.metadata.contribution | contributionFilter:language; let last = last">
-        <ng-container *ngIf="contribution.pid && contribution.target !== undefined; else agentNoLink">
-          <a href="/{{ viewcode }}/{{ contribution.target }}/{{ contribution.pid }}">
+
+<div class="container p-2">
+  <div class="row">
+    <!-- DOCUMENT & ADDITIONAL DATA ===================================== -->
+    <div *ngVar="record.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document"
+         class="col-sm-12 col-lg-10">
+      <a *ngIf="document; else nodocument" href="/{{ viewcode }}/documents/{{ record.metadata.loan.item.document.pid }}">
+        {{ record.metadata.loan.item.document.title }}
+      </a>
+      <ng-template #nodocument>{{ record.metadata.loan.item.document.title }}</ng-template>
+      <ul class="list-inline mb-0 small" *ngIf="document">
+        <li *ngFor="let contribution of document.metadata.contribution | contributionFilter:language; let last = last">
+          <ng-container *ngIf="contribution.pid && contribution.target !== undefined; else agentNoLink">
+            <a href="/{{ viewcode }}/{{ contribution.target }}/{{ contribution.pid }}">
+              {{ contribution.authorizedAccessPoint }}
+            </a>
+          </ng-container>
+          <ng-template #agentNoLink>
             {{ contribution.authorizedAccessPoint }}
-          </a>
-        </ng-container>
-        <ng-template #agentNoLink>
-          {{ contribution.authorizedAccessPoint }}
-        </ng-template>
-        <ng-container *ngIf="!last">; </ng-container>
-      </li>
-    </ul>
-    </ng-container>
-    <ng-template #norecord>
-      &nbsp;
-    </ng-template>
-  </div>
-  <div class="col-2 col-sm-2">
-    {{ record.metadata.date | dateTranslate: 'shortDate' }}
+          </ng-template>
+          <ng-container *ngIf="!last">; </ng-container>
+        </li>
+      </ul>
+    </div>
+    <!-- DUE DATE  ====================================================== -->
+    <div class="col-sm-12 col-lg-2">
+      <span class="d-inline d-lg-none label-title font-weight-bold" translate>Return date</span>
+      {{ record.metadata.date | dateTranslate: 'shortDate' }}
+    </div>
   </div>
 </div>

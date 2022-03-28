@@ -91,21 +91,7 @@ describe('PatronProfileHistoriesComponent', () => {
   });
 
   it('should display loading in progress', () => {
-    const loading = fixture.nativeElement.querySelectorAll('div')[6];
+    const loading = fixture.nativeElement.querySelectorAll('div')[4];
     expect(loading.textContent).toContain('Loading in progress');
-  });
-
-  it('should display the message no record', () => {
-    patronProfileService.changeTab({ name: 'history', count: 0 });
-    fixture.detectChanges();
-    const message = fixture.nativeElement.querySelectorAll('div')[6];
-    expect(message.textContent).toContain('No history');
-  });
-
-  it('should display the list of records', () => {
-    patronProfileService.changeTab({ name: 'history', count: 1 });
-    fixture.detectChanges();
-    const li = fixture.nativeElement.querySelectorAll('li');
-    expect(li.length).toEqual(1);
   });
 });

@@ -87,7 +87,7 @@ describe('PatronProfileLoanComponent', () => {
   it('should display loading in progress', () => {
     component.loaded = false;
     fixture.detectChanges();
-    const loading = fixture.nativeElement.querySelectorAll('div')[7];
+    const loading = fixture.nativeElement.querySelectorAll('div')[6];
     expect(loading.textContent).toContain('Loading in progress');
   });
 
@@ -96,7 +96,7 @@ describe('PatronProfileLoanComponent', () => {
     spyOn(loanApiService, 'getOnLoan').and.returnValue(of(apiResponse));
     component.loaded = true;
     fixture.detectChanges();
-    const loading = fixture.nativeElement.querySelectorAll('div')[7];
+    const loading = fixture.nativeElement.querySelectorAll('div')[6];
     expect(loading.textContent).toContain('No loan');
   });
 
@@ -106,8 +106,5 @@ describe('PatronProfileLoanComponent', () => {
     component.paginator.setRecordsCount(1);
     component.loaded = true;
     component.records = apiResponse.hits.hits;
-    fixture.detectChanges();
-    const elements = fixture.nativeElement.querySelectorAll('#loans-data public-search-patron-profile-loan');
-    expect(elements.length).toEqual(1);
   });
 });

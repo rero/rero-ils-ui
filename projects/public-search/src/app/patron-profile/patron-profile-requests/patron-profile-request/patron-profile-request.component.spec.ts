@@ -81,12 +81,8 @@ describe('PatronProfileRequestComponent', () => {
   it('should display the document information button and link', () => {
     component.record = record;
     fixture.detectChanges();
-    const button = fixture.nativeElement.querySelector('button');
-    expect(button.attributes.id.textContent).toContain('request-1');
-
-    const documentLink = fixture.nativeElement.querySelector('a');
-    expect(documentLink.attributes.href.textContent).toContain('/org1/documents/1');
-    expect(documentLink.textContent).toContain('Document title');
+    const documentLink = fixture.nativeElement.querySelector('public-search-patron-profile-document');
+    expect(documentLink.length === 1);
 
     const pickupName = fixture.nativeElement.querySelectorAll('div')[1];
     expect(pickupName.textContent).toContain('Pickup name');

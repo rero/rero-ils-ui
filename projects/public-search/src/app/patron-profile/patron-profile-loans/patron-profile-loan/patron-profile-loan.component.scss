@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-@import '~bootstrap/scss/_functions';
-@import '~bootstrap/scss/_variables';
+
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
 
 :host:nth-child(even){
   background-color: $light;
 }
+

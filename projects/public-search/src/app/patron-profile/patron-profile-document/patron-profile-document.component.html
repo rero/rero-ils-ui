@@ -14,46 +14,34 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="row mt-2" *ngIf="record.metadata && record.metadata.document as document">
-  <dl class="container row">
-    <!-- CONTRIBUTION -->
-    <ng-container *ngIf="document.contribution">
-      <dt class="col-2 label-title" translate>
-        Contribution
-      </dt>
-      <dd class="col-10">
-        <ul class="list-inline mb-0">
-          <li class="list-inline-item" *ngFor="let contribution of document.contribution | contributionFilter:language; let last = last">
-            <ng-container *ngIf="contribution.pid && contribution.target !== undefined; else agentNoLink">
-              <a href="/{{ viewcode }}/{{ contribution.target }}/{{ contribution.pid }}">
-                {{ contribution.authorizedAccessPoint }}
-              </a>
-            </ng-container>
-            <ng-template #agentNoLink>
-              {{ contribution.authorizedAccessPoint }}
-            </ng-template>
-            <ng-container *ngIf="!last">; </ng-container>
-          </li>
-        </ul>
-      </dd>
-    </ng-container>
+
+<a href="/{{ viewcode }}/documents/{{ record.metadata.document.pid }}" class="d-block">
+  {{ record.metadata.document.title | mainTitle }}
+</a>
+<ng-container *ngIf="document && document.contribution && document.contribution.length > 0">
+  <ul class="list-inline mb-0 small">
+    <li *ngFor="let contribution of document.contribution; let last = last; let i = index" class="list-inline-item">
+      <span *ngIf="!contribution.agent.pid" [innerHTML]="contribution | contributionFormat: true"></span>
+      <a *ngIf="contribution.agent.pid"
+         [innerHTML]="contribution | contributionFormat"
+         [routerLink]="['/records', 'persons', 'detail', contribution.agent.pid]">
+      </a>
+      <ng-container *ngIf="!last">; </ng-container>
+    </li>
+  </ul>
+</ng-container>
+<div class="container mt-2 pl-0" *ngIf="record.metadata" [collapse]="!showAdditionalInformation" [isAnimated]="isAnimated">
+  <dl class="row">
     <!-- CALL NUMBER -->
-    <ng-container *ngIf="record.metadata.item.call_number">
-      <dt class="col-2 label-title" translate>
-        Call number
-      </dt>
-      <dd class="col-10">
-        {{ record.metadata.item.call_number }}
-      </dd>
+    <ng-container *ngIf="callNumbers as formattedCallNumbers">
+      <dt class="col-sm-6 col-md-4 col-lg-3 label-title" translate>Call number</dt>
+      <dd class="col-sm-6 col-md-8 col-lg-9">{{ formattedCallNumbers }}</dd>
     </ng-container>
     <!-- ENUMERATION AND CHRONOLOGY -->
     <ng-container *ngIf="record.metadata.item.enumerationAndChronology">
-      <dt class="col-2 label-title" translate>
-        Unit
-      </dt>
-      <dd class="col-10">
-        {{ record.metadata.item.enumerationAndChronology }}
-      </dd>
+      <dt class="col-sm-6 col-md-4 col-lg-3 label-title" translate>Unit</dt>
+      <dd class="col-sm-6 col-md-8 col-lg-9">{{ record.metadata.item.enumerationAndChronology }}</dd>
     </ng-container>
   </dl>
+  <ng-content select="[additional-metadata]"></ng-content>
 </div>
