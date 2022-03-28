@@ -88,9 +88,4 @@ describe('PatronProfileHistoryComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should display the document information button and link', () => {
-    const link = fixture.nativeElement.querySelector('div.col-6');
-    expect(link.textContent).toContain('Remembrance');
-  });
 });

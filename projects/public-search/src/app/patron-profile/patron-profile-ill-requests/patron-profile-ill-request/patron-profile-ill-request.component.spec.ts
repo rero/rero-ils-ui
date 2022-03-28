@@ -94,28 +94,4 @@ describe('PatronProfileIllRequestComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should display the document information button and link', () => {
-    const button = fixture.nativeElement.querySelector('button');
-    expect(button.attributes.id.textContent).toContain('ill-request-1');
-    const divs = fixture.nativeElement.querySelectorAll('div > div');
-    expect(divs[0].textContent).toContain('ill document title');
-    expect(divs[1].textContent).toContain('author1, author2');
-    const badges = divs[2].querySelectorAll('span');
-    expect(badges[0].attributes.class.textContent).toContain('badge-info');
-    expect(badges[0].textContent).toContain('ITEM_ON_LOAN');
-
-    const dd = fixture.nativeElement.querySelectorAll('#ill-detail-1 > dl > dd');
-    expect(dd[0].textContent).toContain('Document publisher');
-    expect(dd[1].textContent).toContain('2021');
-    expect(dd[2].textContent).toContain('Document:identifier');
-    expect(dd[3].textContent).toContain('Vol. {{ volume }} &mdash; n°. {{ number }}');
-    expect(dd[4].textContent).toContain('Pickup location');
-    expect(dd[5].textContent).toContain('Copy');
-    expect(dd[6].textContent).toContain('10-21');
-    const foundInLink = dd[7].querySelector('a');
-    expect(foundInLink.attributes.href.textContent).toContain('http://myurl.com');
-    expect(foundInLink.textContent).toContain('http://myurl.com');
-    expect(dd[8].textContent).toContain('note content');
-  });
 });

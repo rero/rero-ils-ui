@@ -18,8 +18,7 @@
 <section id="ill-request-section" class="container my-2">
   <div class="d-none d-lg-block">
     <div class="row bg-dark rounded text-light p-2">
-      <div class="col-5 pl-0" translate>Title</div>
-      <div class="col-5" translate>Authors</div>
+      <div class="col-10 pl-5" translate>Document</div>
       <div class="col-2 text-lg-right" translate>Status</div>
     </div>
   </div>
@@ -33,15 +32,16 @@
 
   <ng-template #display>
     <ng-container *ngIf="paginator.getRecordsCount() > 0; else noRecord">
-      <div id="loans-data">
-        <public-search-patron-profile-ill-request
-          *ngFor="let record of records; let index = index"
-          [ngClass]="{ 'bg-light': !(index % 2) }"
-          id="ill-request-{{ record.metadata.pid }}"
-          class="row my-1 p-2"
-          [record]="record">
-        </public-search-patron-profile-ill-request>
-        <shared-search-show-more-pager id="show-more-ill-requests" [paginator]="paginator"></shared-search-show-more-pager>
+      <div class="row border">
+        <div class="container-fluid">
+          <public-search-patron-profile-ill-request
+            *ngFor="let record of records"
+            [record]="record"
+            id="ill-request-{{ record.metadata.pid }}"
+            class="row border-bottom">
+          </public-search-patron-profile-ill-request>
+          <shared-search-show-more-pager id="show-more-ill-requests" [paginator]="paginator"></shared-search-show-more-pager>
+        </div>
       </div>
     </ng-container>
 

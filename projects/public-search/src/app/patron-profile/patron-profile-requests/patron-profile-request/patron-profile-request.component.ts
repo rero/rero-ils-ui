@@ -23,7 +23,8 @@ import { PatronProfileService } from '../../patron-profile.service';
 
 @Component({
   selector: 'public-search-patron-profile-request',
-  templateUrl: './patron-profile-request.component.html'
+  templateUrl: './patron-profile-request.component.html',
+  styleUrls: ['./patron-profile-request.component.scss']
 })
 export class PatronProfileRequestComponent {
 

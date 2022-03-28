@@ -21,8 +21,8 @@
     <ng-core-sort-list
       class="col-xs-12 col-md-5 col-lg-3 pr-0"
       [options]="[
-      {value:'duedate', label:'Due date (earliest)' | translate, icon:'fa-sort-numeric-asc'},
-      {value:'-duedate', label:'Due date (latest)' | translate, icon:'fa-sort-numeric-desc'}
+        {value:'duedate', label:'Due date (earliest)' | translate, icon:'fa-sort-numeric-asc'},
+        {value:'-duedate', label:'Due date (latest)' | translate, icon:'fa-sort-numeric-desc'}
       ]"
       [useIcon]="true"
       (selectChange)="selectingSortCriteria($event)">
@@ -30,44 +30,39 @@
   </div>
 </section>
 
-<!-- table -->
+<!-- header -->
 <section id="loans-section" class="container my-2">
-  <!-- table header -->
   <div class="d-none d-lg-block">
     <div class="row bg-dark rounded text-light p-2">
-      <div class="col-4 pl-0" translate>Title</div>
-      <div class="col-4" translate>Library</div>
+      <div class="col-8 pl-5" translate>Document</div>
       <div class="col-2" translate>Due date</div>
       <div class="col-2">&nbsp;</div>
     </div>
   </div>
-  <!-- table content -->
-  <div>
-    <ng-container *ngIf="!loaded; else display">
-      <div class="row">
-        <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
-      </div>
-    </ng-container>
 
-    <ng-template #display>
-      <ng-container *ngIf="paginator.getRecordsCount() > 0; else noRecord">
-        <div id="loans-data">
+  <ng-container *ngIf="!loaded; else display">
+    <div class="row">
+      <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
+    </div>
+  </ng-container>
+  <ng-template #display>
+    <ng-container *ngIf="paginator.getRecordsCount() > 0; else noRecord">
+      <div class="row border">
+        <div class="container-fluid">
           <public-search-patron-profile-loan
-          *ngFor="let loan of records; let index = index"
-          [ngClass]="{ 'bg-light': !(index % 2) }"
-          id="request-{{ loan.metadata.pid }}"
-          class="row my-1 p-2"
-          [record]="loan">
+            *ngFor="let loan of records"
+            [record]="loan"
+            id="loan-{{ loan.metadata.pid }}"
+            class="row border-bottom">
           </public-search-patron-profile-loan>
-          <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator"></shared-search-show-more-pager>
         </div>
-      </ng-container>
-
-      <ng-template #noRecord>
-        <div class="row">
-          <div class="col mt-2 font-weight-bold" translate>No loan</div>
-        </div>
-      </ng-template>
+      </div>
+      <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator" class="row"></shared-search-show-more-pager>
+    </ng-container>
+    <ng-template #noRecord>
+      <div class="row">
+        <div class="col mt-2 font-weight-bold" translate>No loan</div>
+      </div>
     </ng-template>
-  </div>
+  </ng-template>
 </section>

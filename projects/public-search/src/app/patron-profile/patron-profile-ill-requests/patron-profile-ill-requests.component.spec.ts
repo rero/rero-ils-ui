@@ -90,21 +90,14 @@ describe('PatronProfileIllRequestComponent', () => {
   });
 
   it('should display loading in progress', () => {
-    const loading = fixture.nativeElement.querySelectorAll('div')[6];
+    const loading = fixture.nativeElement.querySelectorAll('div')[5];
     expect(loading.textContent).toContain('Loading in progress');
   });
 
   it('should display the message no record', () => {
     patronProfileService.changeTab({ name: 'illRequest', count: 0 });
     fixture.detectChanges();
-    const message = fixture.nativeElement.querySelectorAll('div')[6];
+    const message = fixture.nativeElement.querySelectorAll('div')[5];
     expect(message.textContent).toContain('No ill request');
-  });
-
-  it('should display the list of records', () => {
-    patronProfileService.changeTab({ name: 'illRequest', count: 1 });
-    fixture.detectChanges();
-    const elements = fixture.nativeElement.querySelectorAll('#loans-data public-search-patron-profile-ill-request');
-    expect(elements.length).toEqual(1);
   });
 });

@@ -16,42 +16,51 @@
  */
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { RecordService } from '@rero/ng-core';
+import moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
+import { finalize } from 'rxjs/operators';
 import { CanExtend, LoanApiService } from '../../../api/loan-api.service';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 
 @Component({
   selector: 'public-search-patron-profile-loan',
-  templateUrl: './patron-profile-loan.component.html'
+  templateUrl: './patron-profile-loan.component.html',
+  styleUrls: ['./patron-profile-loan.component.scss']
 })
 export class PatronProfileLoanComponent implements OnInit {
 
+  // COMPONENT ATTRIBUTES =====================================================
   /** Loan record */
   @Input() record: any;
 
   /** Document section is collapsed */
   isCollapsed = true;
-
   /** Renew action done */
   actionDone = false;
-
   /** Renew action success */
   actionSuccess = false;
-
   /** Request in progress */
   renewInProgress = false;
-
   /** Loan can extend */
   canExtend = {
     can: false,
     reasons: []
   };
 
+  // GETTER & SETTER ==========================================================
   /** Get current viewcode */
   get viewcode(): string {
     return this._patronProfileMenuService.currentPatron.organisation.code;
   }
+  /** Check if the loan should be returned in very few days */
+  get isDueSoon(): boolean {
+    return (this.record.metadata.is_late)
+      ? false
+      : new moment(this.record.metadata.due_soon_date) <= moment();
+  }
 
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param _loanApiService - LoanApiService
@@ -73,6 +82,7 @@ export class PatronProfileLoanComponent implements OnInit {
       .subscribe((response: CanExtend) => this.canExtend = response);
   }
 
+  // COMPONENTS FUNCTIONS =====================================================
   /** Renew the current loan */
   renew(): void {
     const patronPid = this._patronProfileMenuService.currentPatron.pid;
@@ -82,7 +92,9 @@ export class PatronProfileLoanComponent implements OnInit {
       item_pid: this.record.metadata.item.pid,
       transaction_location_pid: this.record.metadata.item.location.pid,
       transaction_user_pid: patronPid
-    }).subscribe((extendLoan: any) => {
+    })
+      .pipe(finalize(() => this.renewInProgress = false))
+      .subscribe((extendLoan: any) => {
       this.actionDone = true;
       if (extendLoan !== undefined) {
         this.actionSuccess = true;

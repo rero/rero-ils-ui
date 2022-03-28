@@ -121,42 +121,4 @@ describe('PatronProfileFeeComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should display the document information button and link', () => {
-    const button = fixture.nativeElement.querySelector('button');
-    expect(button.attributes.id.textContent).toContain('fee-1');
-
-    const date = fixture.nativeElement.querySelector('div > div');
-    expect(date.textContent).toContain('2/2/21, 12:00 PM');
-
-    const divs = fixture.nativeElement.querySelectorAll('div > div');
-    expect(divs[1].textContent).toContain('fee-type');
-    expect(divs[2].textContent).toContain('CHF2.50');
-
-    const note = fixture.nativeElement.querySelector('#fee-note-1');
-    expect(note.textContent).toContain('Note record note');
-    expect(note.querySelector('h5').textContent).toContain('Note');
-
-    const dd = fixture.nativeElement.querySelectorAll('#fee-1-document > dl > dd');
-    const docWithLink = dd[0].querySelector('a');
-    expect(docWithLink.attributes.href.textContent).toContain('/org1/documents/1');
-    expect(docWithLink.textContent).toContain('Document title');
-    expect(dd[1].textContent).toContain('A123456');
-    expect(dd[2].textContent).toContain('3/2/21, 12:00 PM');
-
-    let event = fixture.nativeElement.querySelector('#fee-1-transaction .event-timestamp');
-    expect(event.textContent).toContain('2/2/21  12:00');
-
-    event = fixture.nativeElement.querySelectorAll('#fee-1-transaction .event-content > div > div');
-    expect(event[0].textContent).toContain('subscription  [sub]');
-    expect(event[1].textContent).toContain('CHF10.00');
-
-    event = fixture.nativeElement
-      .querySelector('#fee-1-transaction .event-content > div > div:nth-child(3) > div:nth-child(2)');
-    expect(event.textContent).toContain('event note');
-
-    event = fixture.nativeElement
-      .querySelector('#fee-1-transaction .event-content > div > div:nth-child(4) > div:nth-child(2)');
-    expect(event.textContent).toContain('library name');
-  });
 });

@@ -93,31 +93,21 @@ describe('PatronProfileRequestComponent', () => {
   it('should display the header and the loading in progress', () => {
     let headercolumn = fixture.nativeElement.querySelector(
       '#requests-section div:nth-child(1) div:nth-child(1) div:nth-child(1)');
-    expect(headercolumn.textContent).toContain('Title');
+    expect(headercolumn.textContent).toContain('Document');
     headercolumn = fixture.nativeElement.querySelector(
       '#requests-section div:nth-child(1) div:nth-child(1) div:nth-child(2)');
-    expect(headercolumn.textContent).toContain('Pickup location');
-    headercolumn = fixture.nativeElement.querySelector(
-      '#requests-section div:nth-child(1) div:nth-child(1) div:nth-child(3)');
     expect(headercolumn.textContent).toContain('Status');
   });
 
   it('should display loading in progress', () => {
-    const loading = fixture.nativeElement.querySelectorAll('div')[7];
+    const loading = fixture.nativeElement.querySelectorAll('div')[6];
     expect(loading.textContent).toContain('Loading in progress');
   });
 
   it('should display the message no record', () => {
     patronProfileService.changeTab({ name: 'request', count: 0 });
     fixture.detectChanges();
-    const loading = fixture.nativeElement.querySelectorAll('div')[7];
+    const loading = fixture.nativeElement.querySelectorAll('div')[6];
     expect(loading.textContent).toContain('No request');
-  });
-
-  it('should display the list of records', () => {
-    patronProfileService.changeTab({ name: 'request', count: 1 });
-    fixture.detectChanges();
-    const elements = fixture.nativeElement.querySelectorAll('#requests-data public-search-patron-profile-request');
-    expect(elements.length).toEqual(1);
   });
 });

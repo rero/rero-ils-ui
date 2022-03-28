@@ -24,3 +24,53 @@
 .toast-container .ngx-toastr {
   width: 450px !important; // override width for all toastr message
 }
+
+.label-title:after {
+  content: ":"
+}
+
+/* CALLOUT PANEL */
+// source: https://codepen.io/superjaberwocky/pen/AXdEWj
+.callout {
+  border-left: 5px solid $border-color;
+}
+@each $name,$color in (primary,$primary),(success,$success),(danger,$danger),(warning,$warning),(info,$info), (dark,$dark) {
+  .callout-#{$name} {
+    border-color: $color !important;
+  }
+  .callout-bg-#{$name} {
+    background-color: theme-color-level(#{$name}, -10) !important;
+    *[class*='btn-outline-']:not(:hover) {
+      background-color: white;
+    }
+  }
+}
+
+/* SHOW MORE BUTTON ====================================================== */
+.btn-show-more {
+  border: $border-width solid $border-color;
+  border-radius: 2rem;
+  height: 30px;
+  min-width: 30px;
+  background-color: $white;
+  margin-right: map-get($spacers, 3);
+  font-size: $font-size-base;
+  outline: none !important;
+
+  &.btn-expanded::before {
+    font-family: 'FontAwesome';
+    font-weight: 100;
+    content: " \f0d7";
+  }
+
+  &.btn-collapsed::before {
+    font-family: 'FontAwesome';
+    font-weight: 100;
+    content: " \f0da";
+  }
+}
+.card-header .btn-show-more {
+  border-color: $card-border-color;
+  font-size: $font-size-base;
+  margin-right: map-get($spacers, 2);
+}
