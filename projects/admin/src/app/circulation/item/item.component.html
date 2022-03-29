@@ -149,6 +149,12 @@
           </span>
         </dd>
       </ng-container>
+      <ng-container *ngIf="item.loan.last_end_date && item.actionDone=='checkin'">
+        <dt class="offset-1 col-sm-3 col-md-2 col-lg-1 label-title" translate>Due date</dt>
+        <dd name="due_date" class="col-sm-8 col-md-9 col-lg-10">
+          {{ item.loan.last_end_date | dateTranslate :'shortDate' }}
+        </dd>
+      </ng-container>
       <ng-container *ngIf="totalAmountOfFee > 0">
         <dt class="offset-1 col-sm-3 col-md-getTransitLocationPid2 col-lg-1 label-title" translate>Fees</dt>
         <dd name="fees" class="col-sm-8 col-md-9 col-lg-10">
