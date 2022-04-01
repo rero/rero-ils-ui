@@ -196,14 +196,12 @@
       </ng-container>
 
       <!-- SUBJECTS -->
-      <div class="row" *ngIf="record.metadata.subjects">
+      <div class="row" *ngIf="record.metadata.subjects as subjects">
         <div class="col">
-          <span
-            *ngFor="let subject of record.metadata.subjects | subjectProcess:currentLanguage; let i = index"
+          <span *ngFor="let subject of subjects"
             class="badge badge-secondary mr-1"
-            title="{{ subject.type | translate }}"
-            [attr.id]="i | idAttribute:{prefix: 'doc-subject'}">
-            <i class="fa fa-tag"></i> {{ subject.text }}
+            title="{{ subject.type | translate }}">
+            <i class="fa fa-tag"></i> {{ subject._text }}
           </span>
         </div>
       </div>
