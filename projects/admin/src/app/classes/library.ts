@@ -20,6 +20,7 @@
 
 import { WeekDay } from '@angular/common';
 import * as moment from 'moment';
+import { NotificationType } from './notification';
 import { WeekDays } from './week-days';
 
 
@@ -51,13 +52,6 @@ export interface ExceptionDates {
   end_date?: string;
   times?: Array<Hours>;
   repeat?: Repeat;
-}
-
-export enum NotificationType {
-  DUE_SOON = 'due_soon',
-  RECALL = 'recall',
-  OVERDUE = 'overdue',
-  AVAILABILITY = 'availability'
 }
 
 export interface NotificationSettings {

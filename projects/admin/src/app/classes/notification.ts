@@ -22,6 +22,7 @@ import { Moment } from 'moment';
 import { ObjectReference } from '../../../../shared/src/lib/class/core';
 
 export enum NotificationType {
+  AT_DESK = 'at_desk',
   AVAILABILITY = 'availability',
   BOOKING = 'booking',
   DUE_SOON = 'due_soon',
@@ -41,6 +42,7 @@ export class Notification {
       NotificationType.RECALL
     ],
     library: [
+      NotificationType.AT_DESK,
       NotificationType.BOOKING,
       NotificationType.REQUEST,
       NotificationType.TRANSIT_NOTICE
