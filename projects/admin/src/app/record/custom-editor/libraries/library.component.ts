@@ -21,11 +21,12 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, cleanDictKeys, RecordService, removeEmptyValues, UniqueValidator } from '@rero/ng-core';
-import { ToastrService } from 'ngx-toastr';
 import { UserService } from '@rero/shared';
-import { Library } from '../../../classes/library';
-import { LibraryFormService } from './library-form.service';
+import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
+import { Library } from '../../../classes/library';
+import { NotificationType } from '../../../classes/notification';
+import { LibraryFormService } from './library-form.service';
 
 @Component({
   selector: 'admin-libraries-library',
@@ -41,6 +42,9 @@ export class LibraryComponent implements OnInit, OnDestroy {
   public libForm: FormGroup;
   /** The current organisation pid. */
   public organisationPid: string;
+  /** possible delayed notification types. */
+  public delayedNotificationTypes = [NotificationType.AVAILABILITY];
+
 
   /** Form build event subscription to release the memory. */
   private eventForm: Subscription;

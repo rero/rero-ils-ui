@@ -16,10 +16,11 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AbstractControl, AbstractControlOptions, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RecordService, TimeValidator } from '@rero/ng-core';
 import { forkJoin, Subject } from 'rxjs';
-import { AcquisitionInformations, Library, NotificationSettings, NotificationType } from '../../../classes/library';
+import { AcquisitionInformations, Library, NotificationSettings } from '../../../classes/library';
+import { NotificationType } from '../../../classes/notification';
 import { WeekDays } from '../../../classes/week-days';
 
 @Injectable({
@@ -297,7 +298,7 @@ export class LibraryFormService {
       type: settingType,
       email: ''
     };
-    if (settingType === NotificationType.AVAILABILITY) {
+    if ([NotificationType.AVAILABILITY].includes(settingType)) {
       model.delay = 0;
     }
     return this._fb.group(model);
