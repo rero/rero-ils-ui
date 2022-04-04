@@ -1,6 +1,6 @@
 {
   "name": "@rero/rero-ils-ui",
-  "version": "0.21.1",
+  "version": "0.22.0",
   "license": "AGPL-3.0-only",
   "author": {
     "name": "RERO",
@@ -22,7 +22,8 @@
     "Olivier Dossmann <git@dossmann.net>",
     "Peter Weber <peter.weber@rero.ch>",
     "Renaud Michotte <renaud.michotte@gmail.com>",
-    "Sébastien Délèze <sebastien.deleze@rero.ch>"
+    "Sébastien Délèze <sebastien.deleze@rero.ch>",
+    "Pascal Repond <pascal.repond@rero.ch>"
   ],
   "private": true,
   "publishConfig": {
