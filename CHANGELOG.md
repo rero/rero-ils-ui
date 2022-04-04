@@ -1,5 +1,25 @@
 # Changelog
 
+## [v0.22.0](https://github.com/rero/rero-ils-ui/tree/v0.22.0) (2022-04-04)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.21.1...v0.22.0)
+
+**Fixed bugs:**
+
+- import: fix check of duplicates during import from the web [\#807](https://github.com/rero/rero-ils-ui/pull/807) [[f: professional ui](https://github.com/rero/rero-ils-ui/labels/f:%20professional%20ui)] ([benerken](https://github.com/benerken))
+
+**Merged pull requests:**
+
+- items: fix request of item in detail view [\#838](https://github.com/rero/rero-ils-ui/pull/838) ([vgranata](https://github.com/vgranata))
+- documents: fix display of serial items for other organisations [\#836](https://github.com/rero/rero-ils-ui/pull/836) ([vgranata](https://github.com/vgranata))
+- circulation: disambiguate checkout error message [\#825](https://github.com/rero/rero-ils-ui/pull/825) [[f: professional ui](https://github.com/rero/rero-ils-ui/labels/f:%20professional%20ui)] [[f: circulation](https://github.com/rero/rero-ils-ui/labels/f:%20circulation)] [[f: user management](https://github.com/rero/rero-ils-ui/labels/f:%20user%20management)] ([PascalRepond](https://github.com/PascalRepond))
+- patron profile: change the number of loans to 20 [\#824](https://github.com/rero/rero-ils-ui/pull/824) [[f: circulation](https://github.com/rero/rero-ils-ui/labels/f:%20circulation)] [[f: public ui](https://github.com/rero/rero-ils-ui/labels/f:%20public%20ui)] [[f: user management](https://github.com/rero/rero-ils-ui/labels/f:%20user%20management)] ([Garfield-fr](https://github.com/Garfield-fr))
+- documents: add order on holdings/items [\#823](https://github.com/rero/rero-ils-ui/pull/823) [[f: public ui](https://github.com/rero/rero-ils-ui/labels/f:%20public%20ui)] ([Garfield-fr](https://github.com/Garfield-fr))
+- documentation: improve changelog generation and labeler [\#821](https://github.com/rero/rero-ils-ui/pull/821) ([PascalRepond](https://github.com/PascalRepond))
+- patron: select the current profile view [\#801](https://github.com/rero/rero-ils-ui/pull/801) [[f: professional ui](https://github.com/rero/rero-ils-ui/labels/f:%20professional%20ui)] [[f: public ui](https://github.com/rero/rero-ils-ui/labels/f:%20public%20ui)] [[f: user management](https://github.com/rero/rero-ils-ui/labels/f:%20user%20management)] ([Garfield-fr](https://github.com/Garfield-fr))
+- Merge US holding request to staging [\#777](https://github.com/rero/rero-ils-ui/pull/777) [[f: professional ui](https://github.com/rero/rero-ils-ui/labels/f:%20professional%20ui)] [[f: circulation](https://github.com/rero/rero-ils-ui/labels/f:%20circulation)] [[f: public ui](https://github.com/rero/rero-ils-ui/labels/f:%20public%20ui)] ([vgranata](https://github.com/vgranata))
+- patron profile: add sort by due date [\#774](https://github.com/rero/rero-ils-ui/pull/774) [[f: circulation](https://github.com/rero/rero-ils-ui/labels/f:%20circulation)] [[f: public ui](https://github.com/rero/rero-ils-ui/labels/f:%20public%20ui)] [[f: user management](https://github.com/rero/rero-ils-ui/labels/f:%20user%20management)] ([vgranata](https://github.com/vgranata))
+
 ## [v0.21.1](https://github.com/rero/rero-ils-ui/tree/v0.21.1) (2022-02-24)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.21.0...v0.21.1)
