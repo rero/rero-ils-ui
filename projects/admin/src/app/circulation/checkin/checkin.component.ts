@@ -178,77 +178,73 @@ export class CheckinComponent implements OnInit {
    * @param barcode: item or patron barcode
    */
   getPatronOrItem(barcode: string) {
-    if (this.patronInfo === null) {
-      const loggerOrg = this._loggedUser.currentOrganisation;
-      const query = `patron.barcode:${barcode} AND organisation.pid:${loggerOrg}`;
-      const patronQuery = this._recordService
-        .getRecords('patrons', query, 1, 1, [])
-        .pipe(map((result: Record) => result.hits));
-      const itemQuery = this._recordService
-        .getRecords('items', `barcode:${barcode}`, 1, 1, [])
-        .pipe(map((result: Record) => result.hits));
-      forkJoin([patronQuery, itemQuery])
-        .subscribe(([patron, item]: any[]) => {
-          if (patron.total.value === 0 && item.total.value === 0) {
-            this._toastService.warning(
-              this._translate.instant('Patron not found!'),
-              this._translate.instant('Checkin')
-            );
-          }
-          if (patron.total.value > 1 && item.total.value === 0) {
-            this._toastService.warning(
-              this._translate.instant('Found more than one patron.'),
-              this._translate.instant('Checkin')
-            );
-          }
-          if (patron.total.value === 1 && item.total.value === 1) {
-            const modalRef: BsModalRef = this._modalService.show(CheckinActionComponent, {
-              ignoreBackdropClick: true,
-              keyboard: true
-            });
-            modalRef.onHidden.subscribe(() => {
-              switch (modalRef.content.action) {
-                case 'patron':
-                  this._router.navigate(
-                    ['/circulation', 'patron', barcode, 'loan']
-                  );
-                  break;
-                case 'item':
-                  this.checkin(barcode);
-                  break;
-                default:
-                  this._resetSearchInput();
-                  break;
-              }
-            });
-          } else {
-            if (item.total.value === 1) {
-              this.checkin(barcode);
-            }
-            if (patron.total.value === 1) {
+    const loggerOrg = this._loggedUser.currentOrganisation;
+    const query = `patron.barcode:${barcode} AND organisation.pid:${loggerOrg}`;
+    const patronQuery = this._recordService
+      .getRecords('patrons', query, 1, 1, [])
+      .pipe(map((result: Record) => result.hits));
+    const itemQuery = this._recordService
+      .getRecords('items', `barcode:${barcode}`, 1, 1, [])
+      .pipe(map((result: Record) => result.hits));
+    forkJoin([patronQuery, itemQuery])
+    .subscribe(([patron, item]: any[]) => {
+      if (patron.total.value === 0 && item.total.value === 0) {
+        this._toastService.warning(
+          this._translate.instant('Patron not found!'),
+          this._translate.instant('Checkin')
+        );
+      }
+      if (patron.total.value > 1 && item.total.value === 0) {
+        this._toastService.warning(
+          this._translate.instant('Found more than one patron.'),
+          this._translate.instant('Checkin')
+        );
+      }
+      if (patron.total.value === 1 && item.total.value === 1) {
+        const modalRef: BsModalRef = this._modalService.show(CheckinActionComponent, {
+          ignoreBackdropClick: true,
+          keyboard: true
+        });
+        modalRef.onHidden.subscribe(() => {
+          switch (modalRef.content.action) {
+            case 'patron':
               this._router.navigate(
                 ['/circulation', 'patron', barcode, 'loan']
               );
-            }
+              break;
+            case 'item':
+              this.checkin(barcode);
+              break;
+            default:
+              this._resetSearchInput();
+              break;
           }
-        },
-        error => this._toastService.error(
-            error.message,
-            this._translate.instant('Checkin')
-          )
-        );
-    } else {
-      const newItem = this.items.find(item => item.barcode === barcode);
-      if (newItem) {
-        this._toastService.warning(
-          this._translate.instant('The item is already in the list.'),
-          this._translate.instant('Checkin')
-        );
-        this._resetSearchInput();
+        });
       } else {
-        this.checkin(barcode);
+        if (item.total.value === 1) {
+          const newItem = this.items.find(it => it.barcode === barcode);
+          if (newItem) {
+            this._toastService.warning(
+              this._translate.instant('The item is already in the list.'),
+              this._translate.instant('Checkin')
+            );
+            this._resetSearchInput();
+          } else {
+            this.checkin(barcode);
+          }
+        }
+        if (patron.total.value === 1) {
+          this._router.navigate(
+            ['/circulation', 'patron', barcode, 'loan']
+          );
+        }
       }
-    }
+    },
+    error => this._toastService.error(
+        error.message,
+        this._translate.instant('Checkin')
+      )
+    );
   }
 
   /** display a circulation note about an item as a permanent toastr message
