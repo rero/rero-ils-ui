@@ -150,8 +150,8 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
    * @return FormlyFieldConfig
    */
   private _limitUserFormField(field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig {
-    const formOptions = jsonSchema.form;
-    if (formOptions && formOptions.fieldMap === 'visibility') {
+    const formWidget = jsonSchema.widget;
+    if (formWidget?.formlyConfig?.templateOptions?.fieldMap === 'visibility') {
       if (!this._routeToolService.userService.user.isSystemLibrarian) {
         field.hooks = {
           ...field.hooks,

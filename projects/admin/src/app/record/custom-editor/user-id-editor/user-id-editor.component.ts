@@ -20,7 +20,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { TranslateService } from '@ngx-translate/core';
-import { JSONSchema7, orderedJsonSchema, RecordService, removeEmptyValues } from '@rero/ng-core';
+import { formToWidget, JSONSchema7, LoggerService, orderedJsonSchema, RecordService, removeEmptyValues } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
@@ -63,6 +63,7 @@ export class UserIdEditorComponent implements OnInit {
    * @param _toastService - ngx-toastr ToastrService
    * @param _translateService - ngx-translate TranslateService
    * @param _userService - rero/shared UserService
+   * @param _loggerService - ng-core LoggerService
    */
   constructor(
     private _recordService: RecordService,
@@ -70,7 +71,9 @@ export class UserIdEditorComponent implements OnInit {
     private _formlyJsonschema: FormlyJsonschema,
     private _toastService: ToastrService,
     private _translateService: TranslateService,
-    private _userService: UserService) {
+    private _userService: UserService,
+    private _loggerService: LoggerService
+  ) {
     this.form = new FormGroup({});
   }
 
@@ -82,8 +85,9 @@ export class UserIdEditorComponent implements OnInit {
       tap(
         schema => {
           if (schema != null) {
+            schema = formToWidget(schema.schema, this._loggerService);
             this.fields = [
-              this._formlyJsonschema.toFieldConfig(orderedJsonSchema(schema.schema), {
+              this._formlyJsonschema.toFieldConfig(orderedJsonSchema(schema), {
 
                 // post process JSONSchema7 to FormlyFieldConfig conversion
                 map: (field: FormlyFieldConfig, jsonSchema: JSONSchema7) => {
@@ -95,10 +99,6 @@ export class UserIdEditorComponent implements OnInit {
                       field.asyncValidators = {};
                     }
                     field.asyncValidators.uniqueEmail = this.getUniqueValidator('email');
-                  }
-                  // selection option i.e. countries
-                  if (jsonSchema.form && jsonSchema.form.options) {
-                    field.templateOptions.options = jsonSchema.form.options;
                   }
                   if (field.templateOptions.label === 'Username') {
                     if (field.asyncValidators == null) {

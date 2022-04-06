@@ -87,7 +87,6 @@ export class ReceiptDetailViewComponent implements OnInit, OnDestroy, DetailReco
       forkJoin([receiptLines$, permissions$])
         .subscribe(([receiptLines, permissions]) => {
           this.receiptLines = receiptLines;
-          console.log(this.receiptLines);
           this.permissions = this._currentLibraryPermissionValidator.validate(permissions, this.receipt.library.pid);
         });
     });

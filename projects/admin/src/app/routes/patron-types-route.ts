@@ -67,7 +67,6 @@ export class PatronTypesRoute extends BaseRoute implements RouteInterface {
               return data;
             },
             postprocessRecordEditor: (record: any) => {
-              console.log(record);
               // Remove the possible unpaid limit if subscription amount isn't present or if subscription amount <= 0
               if (record.subscription_amount && record.subscription_amount <= 0 && record.limits && record.limits.unpaid_subscription) {
                 delete record.limits.unpaid_subscription;

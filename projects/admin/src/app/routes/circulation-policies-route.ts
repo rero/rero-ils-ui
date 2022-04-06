@@ -80,18 +80,18 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
               return data;
             },
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
-              const formOptions = jsonSchema.form;
-              if (formOptions && formOptions.fieldMap === 'library') {
-                return this._populateLibraryByCurrentUser(field);
-              }
-              if (formOptions && formOptions.fieldMap === 'notification_template') {
-                return this._populateTemplate(field);
-              }
-              if (formOptions && formOptions.fieldMap === 'amount') {
-                return this._amountSymbol(field);
-              }
-              if (formOptions && formOptions.fieldMap === 'fee_amount') {
-                return this._feeAmountSymbol(field);
+              const formWidget = jsonSchema.widget;
+              if (formWidget?.formlyConfig?.templateOptions?.fieldMap) {
+                switch (formWidget.formlyConfig.templateOptions.fieldMap) {
+                  case 'library':
+                    return this._populateLibraryByCurrentUser(field);
+                  case 'notification_template':
+                    return this._populateTemplate(field);
+                  case 'amount':
+                    return this._amountSymbol(field);
+                  case 'fee_amount':
+                    return this._feeAmountSymbol(field);
+                }
               }
               return field;
             },

@@ -167,13 +167,13 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
    * @return FormlyFieldConfig
    */
   private _limitUserFormField(field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig {
-    const formOptions = jsonSchema.form;
     // ROLES FIELD MANAGEMENT ---------------------------------
     //   Depending of current user, the roles user can managed could be restricted.
     //   Call the 'role_management' API filter allowed roles. If user cannot manage a role, then this role
     //   will be disabled.  We can't hide the restricted role because if the edited user has already this role
     //   this information will be lost on save !
-    if (formOptions && formOptions.fieldMap === 'roles') {
+    const formWidget = jsonSchema.widget;
+    if (formWidget?.formlyConfig?.templateOptions?.fieldMap === 'roles') {
       const values = Object.assign([], field.templateOptions.options);  // create a clone of original values
       field.templateOptions.options = this._routeToolService.recordPermissionService.getRolesManagementPermissions().pipe(
         map(results => {
@@ -187,7 +187,7 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
     //   If current logged user doesn't have the 'system_librarian' role, then the only library available
     //   should be the current_user.current_library. Set default value for library select the current_library URI
     //   and disable the field (so the user can't change/manage other libraries)
-    if (formOptions && formOptions.fieldMap === 'libraries') {
+    if (formWidget?.formlyConfig?.templateOptions?.fieldMap === 'libraries') {
       field.type = 'select';
       field.hooks = {
         ...field.hooks,

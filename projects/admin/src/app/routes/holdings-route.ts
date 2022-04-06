@@ -103,8 +103,9 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
   private populateLocationsByCurrentUserLibrary(
     field: FormlyFieldConfig,
     jsonSchema: JSONSchema7): FormlyFieldConfig {
-    const formOptions = jsonSchema.form;
-    if (formOptions && formOptions.fieldMap === 'location') {
+
+    const formWidget = jsonSchema.widget;
+    if (formWidget?.formlyConfig?.templateOptions?.fieldMap === 'location') {
       field.type = 'select';
       field.hooks = {
         ...field.hooks,
