@@ -49,10 +49,11 @@ export class ReceiptLinesRoute extends BaseRoute implements RouteInterface {
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
             redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_receipt, '/records/acq_receipts/detail'),
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
-              const formOptions = jsonSchema.form;
-              return (formOptions && formOptions.fieldMap === 'amount')
-                ? this._amountSymbol(field)
-                : field;
+              const formWidget = jsonSchema.widget;
+              if (formWidget?.formlyConfig?.templateOptions?.fieldMap === 'amount') {
+                return this._amountSymbol(field);
+              }
+              return field;
             }
           }
         ]

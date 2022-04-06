@@ -85,9 +85,9 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
               return data;
             },
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
-              const formOptions = jsonSchema.form;
-              if (formOptions && formOptions.hasOwnProperty('fieldMap')) {
-                switch (formOptions.fieldMap) {
+              const formWidget = jsonSchema.widget;
+              if (formWidget?.formlyConfig?.templateOptions?.fieldMap) {
+                switch (formWidget.formlyConfig.templateOptions.fieldMap) {
                   case 'library':
                     return this.populateLibrariesByCurrentUser(field);
                 }

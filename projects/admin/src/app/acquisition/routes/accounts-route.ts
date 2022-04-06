@@ -51,8 +51,8 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
             redirectUrl: () => of('/acquisition/accounts'),
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
-              const formOptions = jsonSchema.form;
-              if (formOptions && formOptions.fieldMap === 'amount') {
+              const formWidget = jsonSchema.widget;
+              if (formWidget?.formlyConfig?.templateOptions?.fieldMap === 'amount') {
                 return this._amountSymbol(field);
               }
               return field;
