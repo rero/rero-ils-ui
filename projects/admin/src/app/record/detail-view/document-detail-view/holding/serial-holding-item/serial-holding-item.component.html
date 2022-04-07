@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="container px-0 mt-1 mb-2" *ngIf="item && permissions && ((item.metadata.issue && item.metadata.issue.status !== itemIssueStatus.DELETED) || item.metadata.type === 'provisional')">
+<div class="container px-0 mt-1 mb-2" *ngIf="item && ((item.metadata.issue && item.metadata.issue.status !== itemIssueStatus.DELETED) || item.metadata.type === 'provisional')">
   <div class="row">  <!-- First row :: item detail -->
     <div class="col-sm-3">
       <admin-record-masked *ngIf="item.metadata._masked" [record]="item"></admin-record-masked>
