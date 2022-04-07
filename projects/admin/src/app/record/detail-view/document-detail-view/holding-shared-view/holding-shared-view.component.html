@@ -38,8 +38,9 @@
     <div class="col-sm-3 font-weight-bold" translate>
       Available collection
     </div>
-    <div  id="holding-enum-chrono-{{ holding.metadata.pid }}" class="col-sm-9 pl-4">
-      {{ holding.metadata.enumerationAndChronology }}
+    <div id="holding-enum-chrono-{{ holding.metadata.pid }}"
+         class="col-sm-9 pl-4"
+         [innerHTML]="holding.metadata.enumerationAndChronology | nl2br">
     </div>
   </ng-container>
 
