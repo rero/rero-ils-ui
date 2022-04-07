@@ -77,7 +77,10 @@
     <!-- ENUMERATION AND CHRONOLOGY -->
     <ng-container *ngIf="holding.metadata.enumerationAndChronology">
       <dt class="col-2 col-sm-4 label-title" translate>Available collection</dt>
-      <dd id="holding-enum-chro-{{ holding.metadata.pid }}" class="col-10 col-sm-8">{{ holding.metadata.enumerationAndChronology }}</dd>
+      <dd id="holding-enum-chro-{{ holding.metadata.pid }}"
+          class="col-10 col-sm-8"
+          [innerHTML]="holding.metadata.enumerationAndChronology | nl2br">
+      </dd>
     </ng-container>
     <!-- SUPPLEMENTARY CONTENT -->
     <ng-container *ngIf="holding.metadata.supplementaryContent">
