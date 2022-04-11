@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.22.1](https://github.com/rero/rero-ils-ui/tree/v0.22.1) (2022-04-11)
+
+**Changes:**
+
+- Fixed an an error in node package publication
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.22.0...v0.22.1)
+
 ## [v0.22.0](https://github.com/rero/rero-ils-ui/tree/v0.22.0) (2022-04-04)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.21.1...v0.22.0)
