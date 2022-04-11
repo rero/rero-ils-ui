@@ -39,6 +39,8 @@ export class ItemComponent implements OnInit {
   @Input() item: any;
   /** Current patron */
   @Input() patron: any;
+  /** Is the component is collapsed or not */
+  @Input() isCollapsed = true;
   /** Item has fees */
   @Output() hasFeesEmitter = new EventEmitter<boolean>();
   /** Extend loan event emitter */
@@ -46,8 +48,6 @@ export class ItemComponent implements OnInit {
 
   /** loan corresponding to the item */
   loan: Loan;
-  /** Is collapsed */
-  isCollapsed = true;
   /** Fees related to the item/loan */
   totalAmountOfFee = 0;
   /** Notifications related to the current loan */

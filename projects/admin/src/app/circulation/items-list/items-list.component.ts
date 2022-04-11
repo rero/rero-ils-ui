@@ -21,33 +21,36 @@ import { ItemAction } from '../../classes/items';
 
 @Component({
   selector: 'admin-circulation-items-list',
+  styleUrls: ['./items-list.component.scss'],
   templateUrl: './items-list.component.html'
 })
 export class ItemsListComponent implements OnInit{
 
+  // COMPONENT ATTRIBUTES =====================================================
   /** Items of the checked out list */
   @Input() checkedOutItems: any[];
-
   /** Items of the checked in list */
   @Input() checkedInItems: any[];
-
   /** Current patron */
   @Input() patron: User;
 
   /** Extend (renew) all event emitter */
   @Output() extendAllLoansClicked = new EventEmitter<any[]>();
-
   /** Extend loan event emitter */
   @Output() extendLoanClicked = new EventEmitter<any[]>();
-
   /** Item has fees */
   @Output() hasFeesEmitter = new EventEmitter<boolean>();
 
+  /** is all items should be collapsed or not */
+  allCollapsed = true;
+
+  // CONSTRUCTOR & HOOKS ======================================================
   /** Constructor */
   ngOnInit() {
     this.checkedOutItems = null;
   }
 
+  // COMPONENT FUNCTIONS ======================================================
   /** Extend loan
    * @param event: event
    * @param item: current item
@@ -70,7 +73,8 @@ export class ItemsListComponent implements OnInit{
     return this.checkedOutItems.filter(item => item.actions.includes(ItemAction.extend_loan));
   }
 
-  /** Check if current loan has fees
+  /**
+   * Check if current loan has fees
    * @param event: value received from child component
    */
    hasFees(event: boolean) {
