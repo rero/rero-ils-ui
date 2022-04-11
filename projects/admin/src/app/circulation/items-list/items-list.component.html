@@ -19,8 +19,15 @@
 </div>
 <div *ngIf="(checkedOutItems && checkedOutItems.length > 0) || (checkedInItems && checkedInItems.length > 0)">
   <!-- HEADER -->
-  <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
-    <div class="col-2" translate>Item</div>
+  <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded p-1">
+    <div class="col-2" >
+      <button type="button" class="btn-show-more"
+              [ngClass]="{'btn-expanded': !allCollapsed, 'btn-collapsed': allCollapsed}"
+              (click)="allCollapsed = !allCollapsed"
+              [attr.aria-expanded]="!allCollapsed" aria-controls="collapse">
+      </button>
+      {{ 'Items' | translate }}
+    </div>
     <div class="col-6" translate>Document</div>
     <div class="col-3" translate>Circulation info</div>
     <div class="col-1">
@@ -40,6 +47,7 @@
               [patron]="patron"
               [item]="item"
               [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
+              [isCollapsed]="allCollapsed"
               (extendLoanClicked)="extendLoanClick($event, item)">
   </admin-item>
 
