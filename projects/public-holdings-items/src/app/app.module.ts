@@ -36,7 +36,6 @@ import { ItemsComponent } from 'projects/public-search/src/app/document-detail/h
 import { ItemComponent } from 'projects/public-search/src/app/document-detail/item/item.component';
 import { PickupLocationComponent } from 'projects/public-search/src/app/document-detail/request/pickup-location/pickup-location.component';
 import { RequestComponent } from 'projects/public-search/src/app/document-detail/request/request.component';
-import { NotesFilterPipe } from 'projects/public-search/src/app/pipe/notes-filter.pipe';
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
 
@@ -53,8 +52,7 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
         ItemsComponent,
         HoldingComponent,
         RequestComponent,
-        PickupLocationComponent,
-        NotesFilterPipe
+        PickupLocationComponent
     ],
     imports: [
         BrowserModule,
@@ -88,9 +86,6 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
         HoldingsComponent,
         ItemComponent,
         ItemsComponent
-    ],
-    exports: [
-        NotesFilterPipe
     ],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA
