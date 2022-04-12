@@ -16,6 +16,7 @@
  */
 import { Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { HoldingsNoteType } from '@rero/shared';
 
 @Component({
   selector: 'public-search-holding',
@@ -35,7 +36,7 @@ export class HoldingComponent {
   @Input() collapsable = true;
 
   /** Authorized types of note */
-  noteAuthorizedTypes: string[] = ['general_note'];
+  noteAuthorizedTypes: string[] = [HoldingsNoteType.GENERAL, HoldingsNoteType.ACCESS];
 
   /** Request dialog */
   requestDialog = false;

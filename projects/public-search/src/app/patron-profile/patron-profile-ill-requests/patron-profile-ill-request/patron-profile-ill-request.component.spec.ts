@@ -21,7 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Nl2brPipe } from '@rero/ng-core';
 import { JournalVolumePipe } from '../../../pipe/journal-volume.pipe';
 import { LoanStatusBadgePipe } from '../../../pipe/loan-status-badge.pipe';
-import { NotesFilterPipe } from '../../../pipe/notes-filter.pipe';
+import { NotesFilterPipe } from '@rero/shared';
 import { StatusBadgePipe } from '../../../pipe/status-badge.pipe';
 import { PatronProfileIllRequestComponent } from './patron-profile-ill-request.component';
 

@@ -18,8 +18,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
-import { GetTranslatedLabelPipe } from '@rero/shared';
-import { NotesFilterPipe } from '../../../pipe/notes-filter.pipe';
+import { GetTranslatedLabelPipe, NotesFilterPipe } from '@rero/shared';
 import { HoldingComponent } from './holding.component';
 
 
@@ -107,8 +106,5 @@ describe('HoldingComponent', () => {
 
     data = fixture.nativeElement.querySelector('#holding-missing-issues-1');
     expect(data.textContent).toContain('missing');
-
-    data = fixture.nativeElement.querySelector('#holding-note-1');
-    expect(data.textContent).toContain('public note');
   });
 });

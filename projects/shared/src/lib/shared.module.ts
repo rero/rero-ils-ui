@@ -31,6 +31,7 @@ import { ItemHoldingsCallNumberPipe } from './pipe/item-holdings-call-number.pip
 import { JoinPipe } from './pipe/join.pipe';
 import { KeyExistsPipe } from './pipe/key-exists.pipe';
 import { MainTitlePipe } from './pipe/main-title.pipe';
+import { NotesFilterPipe } from './pipe/notes-filter.pipe';
 import { PatronBlockedMessagePipe } from './pipe/patron-blocked-message.pipe';
 import { ProvisionActivityPipe } from './pipe/provision-activity.pipe';
 import { UrlActivePipe } from './pipe/url-active.pipe';
@@ -68,7 +69,8 @@ import { ContributionFilterPipe } from './pipe/contribution-filter.pipe';
     KeyExistsPipe,
     GetTranslatedLabelPipe,
     ContributionFilterPipe,
-    ActionButtonComponent
+    ActionButtonComponent,
+    NotesFilterPipe
   ],
   exports: [
     CommonModule,
@@ -94,7 +96,8 @@ import { ContributionFilterPipe } from './pipe/contribution-filter.pipe';
     KeyExistsPipe,
     GetTranslatedLabelPipe,
     ContributionFilterPipe,
-    ActionButtonComponent
+    ActionButtonComponent,
+    NotesFilterPipe
   ],
   imports: [
     CommonModule,
@@ -114,7 +117,8 @@ import { ContributionFilterPipe } from './pipe/contribution-filter.pipe';
     TruncateTextPipe,
     Nl2brPipe,
     NgVarDirective,
-    KeyExistsPipe
+    KeyExistsPipe,
+    NotesFilterPipe
   ],
   entryComponents: [
     ContributionBriefComponent

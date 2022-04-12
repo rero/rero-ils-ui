@@ -20,8 +20,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { IdAttributePipe, SharedModule} from '@rero/shared';
-import { NotesFilterPipe } from '../../pipe/notes-filter.pipe';
+import { IdAttributePipe, NotesFilterPipe, SharedModule} from '@rero/shared';
 import { ItemComponent } from './item.component';
 
 describe('ItemComponent', () => {

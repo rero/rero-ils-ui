@@ -96,11 +96,12 @@
     </ng-container>
     <!-- NOTE -->
     <ng-container *ngIf="holding.metadata.notes">
-      <ng-container *ngVar="holding.metadata.notes | notesFilter : noteAuthorizedTypes as notes">
-        <ng-container *ngIf="notes && notes.length > 0">
-          <dt class="col-2 col-sm-4 label-title" translate>Note</dt>
-          <dd id="holding-note-{{ holding.metadata.pid }}" class="col-10 col-sm-8" [innerHTML]="notes[0].content | nl2br"></dd>
-        </ng-container>
+      <ng-container *ngFor="let note of holding.metadata.notes | notesFilter : noteAuthorizedTypes">
+        <dt class="col-sm-4 col-2 label-title">
+          <i class="fa fa-sticky-note-o pr-2"></i>
+          {{ note.type | translate }}
+        </dt>
+        <dd class="col-sm-8 col-10" [innerHTML]="note.content | nl2br"></dd>
       </ng-container>
     </ng-container>
   </dl>

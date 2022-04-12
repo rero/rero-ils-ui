@@ -56,7 +56,6 @@ import { NegativeAmountPipe } from './pipes/negative-amount.pipe';
 import { ReceiptSummaryComponent } from './components/receipt/receipt-summary/receipt-summary.component';
 import { ReceiptDetailViewComponent } from './components/receipt/receipt-detail-view/receipt-detail-view.component';
 import { NoteBadgeColorPipe } from './pipes/note-badge-color.pipe';
-import { NotesFilterPipe } from './pipes/notes-filter.pipe';
 import { AccountAvailableAmountPipe } from './pipes/account-available-amount.pipe';
 import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
 import { PreviewContentPipe } from './pipes/preview-content.pipe';
@@ -87,7 +86,6 @@ import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pi
     ReceiptSummaryComponent,
     ReceiptDetailViewComponent,
     NoteBadgeColorPipe,
-    NotesFilterPipe,
     AccountAvailableAmountPipe,
     ReceptionDatesPipe,
     PreviewContentPipe,

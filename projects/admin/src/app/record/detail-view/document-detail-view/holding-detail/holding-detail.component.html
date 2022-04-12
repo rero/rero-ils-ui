@@ -21,102 +21,66 @@
 
   <!-- MISSING ISSUES -->
   <ng-container *ngIf="holding.metadata.missing_issues">
-    <div class="col-sm-3 font-weight-bold" translate>
-      Missing issues
-    </div>
-    <div class="col-sm-9">
-      {{ holding.metadata.missing_issues }}
-    </div>
+    <div class="col-3 font-weight-bold" translate>Missing issues</div>
+    <div class="col-9">{{ holding.metadata.missing_issues }}</div>
   </ng-container>
 
   <!-- NOTES -->
-  <ng-container *ngIf="context === 'holdings' && holding.metadata.notes">
-    <ng-container *ngFor="let note of holding.metadata.notes">
-      <div class="col-sm-3 font-weight-bold" translate>
-        {{ note.type }}
-      </div>
-      <div class="col-sm-9" [innerHtml]="note.content | nl2br">
-      </div>
-    </ng-container>
+  <ng-container *ngFor="let note of holding.metadata.notes | notesFilter: noteAuthorizedTypes">
+    <div class="col-3 font-weight-bold" translate>{{ note.type }}</div>
+    <div class="col-9" [innerHtml]="note.content | nl2br">
+    </div>
   </ng-container>
 
   <!-- VENDOR -->
   <ng-container *ngIf="context === 'holdings' && holding.metadata.vendor">
-    <div class="col-sm-3 font-weight-bold" translate>
-      Vendor
-    </div>
-    <div class="col-sm-9">
+    <div class="col-3 font-weight-bold" translate>Vendor</div>
+    <div class="col-9">
       {{ holding.metadata.vendor.pid | getRecord: 'vendors' : 'field' : 'name' | async }}
     </div>
   </ng-container>
 
   <!-- ISSUE BINDING -->
   <ng-container *ngIf="context === 'holdings' && holding.metadata.issue_binding">
-    <div class="col-sm-3 font-weight-bold" translate>
-      Issue binding
-    </div>
-    <div class="col-sm-9">
-      {{ holding.metadata.issue_binding }}
-    </div>
+    <div class="col-3 font-weight-bold" translate>Issue binding</div>
+    <div class="col-9">{{ holding.metadata.issue_binding }}</div>
   </ng-container>
 
   <!-- ACQUISITION STATUS -->
   <ng-container *ngIf="context === 'holdings' && holding.metadata.acquisition_status">
-    <div class="col-sm-3 font-weight-bold" translate>
-      Acquisition status
-    </div>
-    <div class="col-sm-9">
-      {{ holding.metadata.acquisition_status }}
-    </div>
+    <div class="col-3 font-weight-bold" translate>Acquisition status</div>
+    <div class="col-9">{{ holding.metadata.acquisition_status }}</div>
   </ng-container>
 
   <!-- ACQUISITION METHOD -->
   <ng-container *ngIf="context === 'holdings' && holding.metadata.acquisition_method">
-    <div class="col-sm-3 font-weight-bold" translate>
-      Acquisition method
-    </div>
-    <div class="col-sm-9">
-      {{ holding.metadata.acquisition_method }}
-    </div>
+    <div class="col-3 font-weight-bold" translate>Acquisition method</div>
+    <div class="col-9">{{ holding.metadata.acquisition_method }}</div>
   </ng-container>
 
   <!-- ACQUISITION EXPECTED END DATE -->
   <ng-container *ngIf="context === 'holdings' && holding.metadata.acquisition_expected_end_date">
-    <div class="col-sm-3 font-weight-bold" translate>
-      Acquisition expected end date
-    </div>
-    <div class="col-sm-9">
+    <div class="col-3 font-weight-bold" translate>Acquisition expected end date</div>
+    <div class="col-9">
       {{ holding.metadata.acquisition_expected_end_date | dateTranslate :'shortDate' }}
     </div>
   </ng-container>
 
   <!-- GENERAL RETENTION POLICY -->
   <ng-container *ngIf="context === 'holdings' && holding.metadata.general_retention_policy">
-    <div class="col-sm-3 font-weight-bold" translate>
-      General retention policy
-    </div>
-    <div class="col-sm-9">
-      {{ holding.metadata.general_retention_policy }}
-    </div>
+    <div class="col-3 font-weight-bold" translate>General retention policy</div>
+    <div class="col-9">{{ holding.metadata.general_retention_policy }}</div>
   </ng-container>
 
   <!-- COMPLETNESS -->
   <ng-container *ngIf="context === 'holdings' && holding.metadata.completeness">
-    <div class="col-sm-3 font-weight-bold" translate>
-      Completness
-    </div>
-    <div class="col-sm-9">
-      {{ holding.metadata.completeness }}
-    </div>
+    <div class="col-3 font-weight-bold" translate>Completness</div>
+    <div class="col-9">{{ holding.metadata.completeness }}</div>
   </ng-container>
 
   <!-- COMPOSITE COPY REPORT -->
   <ng-container *ngIf="context === 'holdings' && holding.metadata.composite_copy_report">
-    <div class="col-sm-3 font-weight-bold" translate>
-      Composite copy report
-    </div>
-    <div class="col-sm-9">
-      {{ holding.metadata.composite_copy_report }}
-    </div>
+    <div class="col-3 font-weight-bold" translate>Composite copy report</div>
+    <div class="col-9">{{ holding.metadata.composite_copy_report }}</div>
   </ng-container>
 </div>

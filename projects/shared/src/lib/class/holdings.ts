@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2022 UCLouvain
+ * Copyright (C) 2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,26 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
-import { HoldingsNoteType } from '@rero/shared';
-
-@Component({
-  selector: 'admin-holding-detail',
-  templateUrl: './holding-detail.component.html'
-})
-export class HoldingDetailComponent {
-
-  /** Holding record */
-  @Input() holding: any;
-
-  /** Context */
-  @Input() context: 'document'|'holdings' = 'document';
-
-
-  /** Get authorized types of note to be displayed */
-  get noteAuthorizedTypes(): HoldingsNoteType[] {
-    return (this.context === 'document')
-      ? [HoldingsNoteType.GENERAL, HoldingsNoteType.ACCESS]
-      : Object.values(HoldingsNoteType);
-  }
+export enum HoldingsNoteType {
+  GENERAL = 'general_note',
+  STAFF = 'staff_note',
+  CONSERVATION = 'conservation_note',
+  RECEPTION = 'reception_note',
+  CLAIM = 'claim_note',
+  ROUTING = 'routing_note',
+  BINDING = 'binding_note',
+  ACQUISITION = 'acquisition_note',
+  ACCESS = 'access_note'
 }

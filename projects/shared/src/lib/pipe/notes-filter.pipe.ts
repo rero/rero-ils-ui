@@ -16,14 +16,15 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-  name: 'notesFilter'
-})
 /**
  * This pipe allows to filter the notes by type by passing
  * a array of allowed types
  * Example: notes | notesFilter : ['general_note', etc]
  */
+
+@Pipe({
+  name: 'notesFilter'
+})
 export class NotesFilterPipe implements PipeTransform {
 
   /**
@@ -31,8 +32,10 @@ export class NotesFilterPipe implements PipeTransform {
    * @param notes - array of notes
    * @param authorizedType - array of authorized types
    */
-  transform(notes: { type: string, content: string}[], authorizedType: any[]): { type: string, content: string}[] {
-    return notes.filter(note => authorizedType.includes(note.type));
+  transform(notes: { type: string, content: string}[], authorizedType: string[]): { type: string, content: string}[] {
+    return (notes && notes.length > 0)
+      ? notes.filter(note => authorizedType.includes(note.type))
+      : [];
   }
 
 }
