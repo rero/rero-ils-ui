@@ -14,50 +14,70 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="row col">
-  <div class="log-date">
-    <button
-      id="circulation-history-{{ record.metadata.pid }}"
-      type="button"
-      class="pl-0 pr-2 pt-0 btn btn-toogle"
-      (click)="isCollapsed = !isCollapsed"
-      [attr.aria-expanded]="!isCollapsed"
-      aria-controls="collapseEvent"
-    >
-      <i class="fa pr-0" [ngClass]="{ 'fa-caret-right': isCollapsed, 'fa-caret-down': !isCollapsed }"></i>
-    </button>
-    {{ record.metadata.date | dateTranslate :'shortDate' }}
-    {{ record.metadata.date | dateTranslate :'mediumTime' }}
-  </div>
-  <div class="log-action text-bold">
-    {{ record.metadata.loan.trigger | translate }}
-  </div>
-  <div class="log-library">
-    <ng-container *ngIf="record.metadata.loan.transaction_location; else noLibrary">
-      <ng-container *ngIf="record.metadata.loan.transaction_location.pid | getRecord : 'locations' | async as location">
-        {{ location.metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
+<div class="transaction-log pt-2 pb-1 position-relative" [class.highlight]="isHighlight" [class.border-top]="separator">
+  <button type="button" class="btn-show-more"
+          [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
+          (click)="isCollapsed = !isCollapsed"
+          [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
+  </button>
+  <div class="container-fluid pl-0">
+    <dl class="row my-0 text-muted">
+    <dd class="col-2 small">
+      <div class="transaction-date">{{ record.metadata.date | dateTranslate :'shortDate' }}</div>
+      <div class="transaction-time">{{ record.metadata.date | dateTranslate :'mediumTime' }}</div>
+    </dd>
+    <dd class="col-2 transaction-trigger">
+      <span class="badge badge-pill badge-primary">{{ record.metadata.loan.trigger | translate }}</span>
+    </dd>
+    <!-- transaction library -->
+    <dt class="col-2 label-title font-weight-bold transaction-library" [collapse]="isCollapsed" translate>Library</dt>
+    <dd [ngClass]="{
+      'col-6': !isCollapsed,
+      'col-5 transaction-library': isCollapsed
+    }">
+      <ng-container *ngIf="record.metadata.loan.transaction_location; else noLibrary">
+        <ng-container *ngIf="record.metadata.loan.transaction_location.pid | getRecord : 'locations' | async as location">
+          {{ location.metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
+        </ng-container>
       </ng-container>
-    </ng-container>
-    <ng-template #noLibrary>---</ng-template>
-  </div>
-  <div class="log-patron">
-    <ng-container *ngIf="record.metadata.loan.patron.pid; else anonymous">
-      <ng-container *ngIf="record.metadata.loan.patron.pid | getRecord : 'patrons' | async as patron">
-        <a [routerLink]="['/circulation', 'patron', patron.metadata.patron.barcode[0]]" (click)="closeDialog()">
-          {{ patron.metadata.last_name }}, {{ patron.metadata.first_name }}
-        </a>
+      <ng-template #noLibrary>
+        <span class="no-data">---</span>
+      </ng-template>
+    </dd>
+    <!-- pickup location -->
+    <dt class="offset-4 col-2 label-title font-weight-bold transaction-location" [collapse]="isCollapsed" translate>Location</dt>
+    <dd class="col-6" [collapse]="isCollapsed">{{ record.metadata.loan.pickup_location.name }}</dd>
+    <!-- related patron -->
+    <dt class="offset-4 col-2 label-title font-weight-bold transaction-patron" [collapse]="isCollapsed" translate>Patron</dt>
+    <dd [ngClass]="{
+      'col-6': !isCollapsed,
+      'col-3 transaction-patron': isCollapsed
+    }">
+      <ng-container *ngIf="record.metadata.loan.patron.pid; else anonymous">
+        <ng-container *ngIf="record.metadata.loan.patron.pid | getRecord : 'patrons' | async as patron">
+          <a [routerLink]="['/circulation', 'patron', patron.metadata.patron.barcode[0]]" (click)="closeDialog()">
+            {{ patron.metadata.last_name }}, {{ patron.metadata.first_name }}
+          </a>
+        </ng-container>
       </ng-container>
-    </ng-container>
-    <ng-template #anonymous>
-      {{ 'Patron type' | translate }}: {{ record.metadata.loan.patron.type }}
-    </ng-template>
+      <ng-template #anonymous>
+        {{ 'Patron type' | translate }}: {{ record.metadata.loan.patron.type }}
+      </ng-template>
+    </dd>
+    <!-- operator -->
+    <dt class="offset-4 col-2 label-title font-weight-bold transaction-operator" [collapse]="isCollapsed" translate>Operator</dt>
+    <dd class="col-6" [collapse]="isCollapsed">{{ record.metadata.user_name }}</dd>
+    <!-- debug information -->
+    <pre class="offset-4 col-8" [hidden]="!debugMode">{{ record | json }}</pre>
+    </dl>
   </div>
+  <!-- debug mode button -->
+  <button class="btn btn-sm btn-outline-warning d-flex p-2 debug-button"
+          *ngIf="canUseDebugMode && !isCollapsed"
+          [class.btn-hover]="debugMode"
+          (click)="debugMode=!debugMode">
+    <i class="fa fa-bug pr-1"></i>
+    <i class="fa" [ngClass]="debugMode ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
+  </button>
 </div>
-<div id="circulation-history-{{ record.metadata.pid }}" [collapse]="isCollapsed" [isAnimated]="true" class="col-lg-12 pl-3">
-  <dl class="row pl-1">
-    <dt class="col-2 mb-0" translate>Pickup location</dt>
-    <dd class="col-10 mb-0 pl-1">{{ record.metadata.loan.pickup_location.name }}</dd>
-    <dt class="col-2 mb-0" translate>Operator</dt>
-    <dd class="col-10 mb-0 pl-1">{{ record.metadata.user_name }}</dd>
-  </dl>
-</div>
+

@@ -20,6 +20,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DateTranslatePipe, RecordModule } from '@rero/ng-core';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { UserService } from '@rero/shared';
+import { userTestingService } from 'projects/admin/tests/utils';
 import { CirculationLogComponent } from './circulation-log.component';
 
 
@@ -79,7 +81,11 @@ describe('CirculationLogComponent', () => {
         TranslateModule.forRoot(),
         RecordModule
       ],
-      providers: [ BsModalService, BsLocaleService ]
+      providers: [
+          { provide: UserService, useValue: userTestingService },
+          BsModalService,
+          BsLocaleService
+      ]
     })
     .compileComponents();
   });
