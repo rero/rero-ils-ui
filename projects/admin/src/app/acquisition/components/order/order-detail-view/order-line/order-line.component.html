@@ -23,18 +23,20 @@
               (click)="isCollapsed = !isCollapsed"
               [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
       </button>
+      <!-- orderLineStatus.ORDERED, orderLineStatus.CANCELLED].includes(orderLine.status), -->
       <div class="d-flex align-items-start flex-column">
         <div class="d-flex">
-          <i class="fa status"
+          <i class="status"
              title="{{ orderLine.status | translate }}"
              [ngClass]="{
-            'fa-envelope-open-o': orderLine.status === orderLineStatus.APPROVED,
-            'fa-envelope-o': orderLine.status === orderLineStatus.ORDERED,
-            'text-muted': orderLine.status === orderLineStatus.APPROVED || orderLine.status === orderLineStatus.ORDERED,
-            'fa-sign-in': orderLine.status === orderLineStatus.RECEIVED || orderLine.status === orderLineStatus.PARTIALLY_RECEIVED,
-            'text-success': orderLine.status === orderLineStatus.RECEIVED,
-            'text-warning': orderLine.status === orderLineStatus.PARTIALLY_RECEIVED,
-            'fa-window-close-o text-danger': orderLine.status === orderLineStatus.CANCELLED
+              'far': farStatus.includes(orderLine.status),
+              'fa-envelope-open': orderLine.status === orderLineStatus.APPROVED,
+              'fa-envelope': orderLine.status === orderLineStatus.ORDERED,
+              'text-muted': orderLine.status === orderLineStatus.APPROVED || orderLine.status === orderLineStatus.ORDERED,
+              'fas fa-right-to-bracket': orderLine.status === orderLineStatus.RECEIVED || orderLine.status === orderLineStatus.PARTIALLY_RECEIVED,
+              'text-success': orderLine.status === orderLineStatus.RECEIVED,
+              'text-warning': orderLine.status === orderLineStatus.PARTIALLY_RECEIVED,
+              'fa-rectangle-xmark text-danger': orderLine.status === orderLineStatus.CANCELLED
           }"></i>
           <ng-container *ngIf="orderLine.document.pid | getRecord: 'documents' | async as document">
             <a *ngIf="document.metadata.title | mainTitle as title"

@@ -17,7 +17,7 @@
 <ng-container *ngIf="paginator && paginator.getRecordsCount() > 0">
   <ng-container *ngIf="paginator.isShowMore()">
     <button type="button" [id]="id" class="btn btn-link pr-1 py-0" (click)="paginator.next()">
-      <i class="fa fa-plus-square-o"></i> {{ 'Show more' | translate }}
+      <i class="far fa-square-plus"></i> {{ 'Show more' | translate }}
     </button>
     <small
       *ngIf="paginator.getHiddenInfo()"

@@ -46,7 +46,7 @@
   <tabset>
     <tab><!-- OPENING HOURS TABS -->
       <ng-template tabHeading>
-        <i class="fa fa-clock-o mr-2"></i>{{ 'Opening Hours' | translate }}
+        <i class="far fa-clock mr-2"></i>{{ 'Opening Hours' | translate }}
       </ng-template>
       <admin-day-opening-hours [day]="day" *ngFor="let day of record.opening_hours"></admin-day-opening-hours>
     </tab>
@@ -60,7 +60,7 @@
     </tab>
     <tab><!-- NOTIFICATIONS SETTINGS -->
       <ng-template tabHeading>
-        <i class="fa fa-envelope-o mr-2"></i>{{ 'Notification settings' | translate }}
+        <i class="far fa-envelope mr-2"></i>{{ 'Notification settings' | translate }}
       </ng-template>
       <dl class="row" *ngIf="record.notification_settings as notificationSettings">
         <ng-container *ngFor="let setting of notificationSettings">
@@ -98,7 +98,7 @@
       <b translate>Locations</b>
       <a class="ml-2 btn btn-sm btn-outline-primary float-right" *ngIf="isUserCanAddLocation"
         [routerLink]="['/', 'records', 'locations', 'new']" [queryParams]="{ library: record.pid }">
-        <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
+        <i class="far fa-square-plus"></i> {{ 'Add' | translate }} &hellip;
       </a>
     </div>
     <div class="card-body collapsed show">
@@ -124,7 +124,7 @@
   <div class="col-9 card container py-2 mb-2">
     <div class="row">
       <div class="col-6 d-flex">
-        <i class="fa fa-address-card-o pr-2 pt-1"></i>
+        <i class="far fa-address-card pr-2 pt-1"></i>
         <div>
           {{ data.name }}<br/>
           <ng-container *ngIf="data.address">
@@ -141,7 +141,7 @@
       <div class="col-6">
         <dd *ngIf="data.email"><i class="fa fa-at pr-2"></i>{{ data.email }}</dd>
         <dd *ngIf="data.phone"><i class="fa fa-phone-square pr-2"></i>{{ data.phone }}</dd>
-        <dd *ngIf="data.extra"><i class="fa fa-sticky-note-o pr-2"></i>{{ data.extra }}</dd>
+        <dd *ngIf="data.extra"><i class="far fa-note-sticky pr-2"></i>{{ data.extra }}</dd>
       </div>
     </div>
   </div>

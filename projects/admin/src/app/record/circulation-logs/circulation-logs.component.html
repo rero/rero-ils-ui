@@ -19,7 +19,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" translate>Circulation history</h5>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="closeDialog()">
+        <button type="button" class="close float-right" aria-label="Close" (click)="closeDialog()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -45,7 +45,7 @@
       <div class="modal-footer py-1 justify-content-start">
         <ng-container *ngIf="loadedRecord && isLinkShowMore">
           <button type="button" id="show-more-items-{{ resourcePid }}" class="btn btn-link pl-1" (click)="showMore()">
-            <i class="fa fa-arrow-circle-o-down"></i> {{ 'Show more' | translate }}
+            <i class="far fa-circle-down"></i> {{ 'Show more' | translate }}
           </button>
           <small *ngIf="isLinkShowMore">({{ hiddenTransactionLabel }})</small>
         </ng-container>

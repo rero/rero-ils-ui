@@ -68,7 +68,7 @@
             [bsConfig]="{ containerClass: 'theme-default' }">
             <div class="input-group-append">
               <span class="input-group-text" (click)="dp.toggle()">
-                <i class="fa fa-calendar"></i>
+                <i class="far fa-calendar"></i>
               </span>
             </div>
         </div>
@@ -97,7 +97,7 @@
             [bsConfig]="{ containerClass: 'theme-default' }">
             <div class="input-group-append">
               <span class="input-group-text" (click)="dp.toggle()">
-                <i class="fa fa-calendar"></i>
+                <i class="far fa-calendar"></i>
               </span>
             </div>
         </div>
@@ -134,7 +134,7 @@
         <div class="col-sm-12 pl-0">
           <button *ngIf="times.length == 0" (click)="addTime()"
                   type="button" class="btn btn-outline-secondary btn-sm">
-            <i class="fa fa-plus-square-o" aria-hidden="true"></i> {{ 'period' | translate }}
+            <i class="far fa-square-plus" aria-hidden="true"></i> {{ 'period' | translate }}
           </button>
           <ul class="list-unstyled mb-0">
             <li formArrayName="times" *ngFor="let time of times.controls; let t=index">
@@ -156,7 +156,7 @@
                       type="button"
                       *ngIf="times.length == 1"
                       class="btn btn-outline-secondary btn-sm"(click)="addTime()"
-                    ><i class="fa fa-plus-square-o" aria-hidden="true"></i> {{ 'period' | translate }}</button>
+                    ><i class="far fa-square-plus" aria-hidden="true"></i> {{ 'period' | translate }}</button>
                   </div>
                 </div>
                 <div

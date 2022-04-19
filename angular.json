@@ -27,7 +27,8 @@
               "projects/admin/src/assets"
             ],
             "styles": [
-              "projects/admin/src/app/scss/styles.scss"
+              "projects/admin/src/app/scss/styles.scss",
+              "node_modules/@fortawesome/fontawesome-free/css/all.css"
             ],
             "scripts": []
           },

@@ -38,7 +38,7 @@
         <button [routerLink]="['/', 'records', 'holdings', 'detail', holding.metadata.pid]"
                 class="btn btn-outline-primary btn-sm ml-1"
                 title="{{ 'Holdings detail' | translate }}">
-          <i class="fa fa-file-text-o"></i>
+          <i class="far fa-file-lines"></i>
         </button>
         <!-- REQUEST BUTTON -->
         <button *ngIf="permissions && permissions.canRequest && permissions.canRequest.can; else notRequest"
@@ -103,7 +103,7 @@
             ></admin-serial-holding-item>
             <div class="row pl-3" *ngIf="displayItemsCounter < totalItemsCounter">
               <a [routerLink]="" (click)="showMore(5)" [attr.id]="holding.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
-                <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
+                <i class="far fa-circle-down" aria-hidden="true"></i>
                 {{ 'Show more' | translate }} ...
               </a>
               <span class="pl-2 pt-1 small text-secondary">({{ showMoreItemsCounter('issue') }})</span>
@@ -133,7 +133,7 @@
             </ng-container>
             <div class="row pl-3" *ngIf="displayItemsCounter < totalItemsCounter">
               <a [routerLink]="" (click)="showMore(5)" [attr.id]="holding.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
-                <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
+                <i class="far fa-circle-down" aria-hidden="true"></i>
                 {{ 'Show more' | translate }} ...
               </a>
               <span class="pl-2 pt-1 small text-secondary">({{ showMoreItemsCounter('item') }})</span>

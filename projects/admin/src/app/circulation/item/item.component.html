@@ -115,11 +115,11 @@
   <div name="action-done" class="col-2">
     <ng-container *ngIf="item.actionDone" [ngSwitch]="item.actionDone">
       <ng-container *ngSwitchCase="itemAction.checkin">
-        <i class="fa fa-arrow-circle-o-down text-success align-baseline" aria-hidden="true"></i>
+        <i class="far fa-circle-down text-success align-baseline" aria-hidden="true"></i>
         <span class="align-baseline ml-1" translate>checked in</span>
       </ng-container>
       <ng-container *ngSwitchCase="itemAction.checkout">
-        <i class="fa fa-arrow-circle-o-right text-success align-baseline" aria-hidden="true"></i>
+        <i class="far fa-circle-right text-success align-baseline" aria-hidden="true"></i>
         <span class="align-baseline ml-1" translate>checked out</span>
       </ng-container>
       <ng-container *ngSwitchCase="itemAction.extend_loan">
@@ -197,7 +197,7 @@
         </dd>
       </ng-container>
       <ng-container *ngIf="getCirculationNoteForAction() as note">
-        <dd class="col-1 text-right pr-1"><i class="fa fa-sticky-note-o text-warning"></i></dd>
+        <dd class="col-1 text-right pr-1"><i class="far fa-note-sticky text-warning"></i></dd>
         <dt class="col-sm-3 col-md-2 col-lg-1 label-title" translate>{{ note.type }}</dt>
         <dd name="checkin-note" class="col-sm-8 col-md-9 col-lg-10 text-justify">{{ note.content }}</dd>
       </ng-container>

@@ -85,9 +85,9 @@ export class HoldingsService {
   getIcon(status: IssueItemStatus): string {
     switch (status) {
       case IssueItemStatus.DELETED: return 'fa-circle text-danger';
-      case IssueItemStatus.CLAIMED: return 'fa-envelope text-warning';
+      case IssueItemStatus.CLAIMED: return 'far fa-envelope text-warning';
       case IssueItemStatus.RECEIVED: return 'fa-circle text-success';
-      case IssueItemStatus.LATE: return 'fa-envelope-open-o text-warning';
+      case IssueItemStatus.LATE: return 'far fa-envelope-open text-warning';
       default: return 'fa-circle text-dark';
     }
   }

@@ -61,9 +61,9 @@
             <div *ngFor="let event of events" class="col-12 events-timeline">
               <div class="row pl-2 pr-2 align-items-start timeline-event">
                 <div class="col-3 pr-4 event-timestamp">
-                  <i class="fa fa-calendar-o"></i>
+                  <i class="far fa-calendar"></i>
                   {{ event.metadata.creation_date | dateTranslate: 'shortDate' }}
-                  <i class="fa fa-clock-o pl-1"></i>
+                  <i class="far fa-clock pl-1"></i>
                   {{ event.metadata.creation_date | dateTranslate: 'HH:mm' }}
                 </div>
                 <div class="col-9 event-content">
@@ -84,14 +84,14 @@
                     </div>
                     <ng-container *ngIf="event.metadata.note">
                       <div class="col-3 label-title mt-2">
-                        <i class="fa fa-comment-o pr-1" title="{{ 'Note' | translate }}"></i>
+                        <i class="far fa-comment pr-1" title="{{ 'Note' | translate }}"></i>
                         {{ 'Note' | translate }}
                       </div>
                       <blockquote class="col-9 mt-2">{{ event.metadata.note }}</blockquote>
                     </ng-container>
                     <ng-container *ngIf="event.metadata.library">
                       <div class="col-3 label-title mt-2">
-                        <i class="fa fa-map-marker pr-1" title="{{ 'Library' | translate }}"></i>
+                        <i class="fas fa-location-dot pr-1" title="{{ 'Library' | translate }}"></i>
                         {{ 'Library' | translate }}
                       </div>
                       <div class="col-9 mt-2">{{ event.metadata.library.name }}</div>

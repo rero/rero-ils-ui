@@ -17,7 +17,7 @@
 
 <ng-container *ngIf="record">
   <h5 class="card-title mb-0">
-    <i class="fa fa-building-o mr-2" title="{{ 'organisation' | translate }}"></i>
+    <i class="far fa-building mr-2" title="{{ 'organisation' | translate }}"></i>
     <a *ngIf="detailUrl.external; else routerLink" [href]="contributionType(detailUrl.link)">
       {{ record.metadata | extractSourceField : 'authorized_access_point' }}
     </a>

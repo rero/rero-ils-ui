@@ -29,7 +29,7 @@
     <div class="card-body row">
       <div class="col-2">
         <div class="profile-image">
-          <i class="fa fa-user-o fa-4x text-white"></i>
+          <i class="fas fa-user-large fa-4x text-white"></i>
         </div>
       </div>
       <div class="col-10">
@@ -43,7 +43,7 @@
           </ng-container>
         </h1>
         <dl class="row">
-          <dt class="col-1 text-right"><i class="fa fa-calendar-o"></i></dt>
+          <dt class="col-1 text-right"><i class="far fa-calendar"></i></dt>
           <dt class="col-3" translate>Date of birth</dt>
           <dd class="col-8">{{ patron.birth_date | dateTranslate:'mediumDate' }}</dd>
           <ng-container *ngIf="patron.email">

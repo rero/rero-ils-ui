@@ -1,7 +1,7 @@
 <ng-container *ngIf="event !== undefined">
   <div class="col-lg-3 pr-4 text-right event-timestamp">
-    <i class="fa fa-calendar-o"></i> {{ event.creation_date | dateTranslate: 'shortDate' }}
-    <i class="fa fa-clock-o pl-1"></i> {{ event.creation_date | dateTranslate: 'HH:mm:ss' }}
+    <i class="far fa-calendar"></i> {{ event.creation_date | dateTranslate: 'shortDate' }}
+    <i class="far fa-clock pl-1"></i> {{ event.creation_date | dateTranslate: 'HH:mm:ss' }}
   </div>
   <div class="col-lg-9 event-content">
     <div class="row mb-1" [ngClass]="{'event-highlight': event.type === patronTransactionEventType.DISPUTE}">
@@ -26,7 +26,7 @@
     <ng-container *ngIf="!isCollapsed">
       <div class="row" *ngIf="event.note">
         <div class="col-2 offset-1 label-title">
-          <i class="fa fa-comment-o pr-1"></i>
+          <i class="far fa-comment pr-1"></i>
           <ng-container translate>Note</ng-container>
         </div>
         <div class="col-9">{{ event.note }}</div>
@@ -47,7 +47,7 @@
       <ng-container *ngIf="event.library">
         <div class="row" *ngIf="event.library.pid | getRecord:'libraries' | async as library">
           <div class="col-2 offset-1 label-title">
-            <i class="fa fa-map-marker pr-1"></i>
+            <i class="fas fa-location-dot pr-1"></i>
             <ng-container translate>Library</ng-container>
           </div>
           <div class="col-9">{{ library.metadata.name }}</div>

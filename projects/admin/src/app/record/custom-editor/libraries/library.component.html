@@ -91,7 +91,7 @@
 
       <tabset #staticTabs>
         <tab>
-          <ng-template tabHeading><i class="fa fa-clock-o mr-2"></i>{{ 'Opening Hours' | translate }}</ng-template>
+          <ng-template tabHeading><i class="far fa-clock mr-2"></i>{{ 'Opening Hours' | translate }}</ng-template>
           <div class="mt-3" formArrayName="opening_hours" *ngFor="let day of openingHours.controls; let i=index">
             <div [formGroupName]="i">
               <div class="form-group row" [ngClass]="{'pt-3': i>0}">
@@ -134,7 +134,7 @@
                           <div class="col-3">
                             <button *ngIf="day.value.is_open && last" type="button"
                                     class="btn btn-outline-primary btn-sm" (click)="addTime(i)">
-                              <i class="fa fa-plus-square-o" aria-hidden="true"></i> {{ 'period' | translate }}
+                              <i class="far fa-square-plus" aria-hidden="true"></i> {{ 'period' | translate }}
                             </button>
                           </div>
                         </div>
@@ -185,7 +185,7 @@
         </tab>
         <tab>
           <ng-template tabHeading>
-            <i class="fa fa-envelope-o mr-2"></i>{{ 'Notification settings' | translate }}
+            <i class="far fa-envelope mr-2"></i>{{ 'Notification settings' | translate }}
           </ng-template>
 
           <div class="container" formArrayName="notification_settings">
@@ -292,7 +292,7 @@
             </div>
             <div class="card mt-3" formGroupName="billing_informations">
               <div class="card-header">
-                <i class="fa fa-money"></i>
+                <i class="far fa-money-bill-1"></i>
                 {{ 'Billing informations' | translate }}
               </div>
               <div class="card-body container">

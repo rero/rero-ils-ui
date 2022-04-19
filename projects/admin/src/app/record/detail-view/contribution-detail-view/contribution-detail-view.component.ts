@@ -69,7 +69,7 @@ export class ContributionDetailViewComponent implements DetailRecord, OnInit {
   icon(type: string): { class: string, title: string } {
     switch (type) {
       case 'bf:Person':
-        return { class: 'fa-user-o', title: this._translateService.instant('Person') };
+        return { class: 'far fa-user', title: this._translateService.instant('Person') };
       case 'bf:Organisation':
         return { class: 'fa-building-o', title: this._translateService.instant('Organisation') };
       default:

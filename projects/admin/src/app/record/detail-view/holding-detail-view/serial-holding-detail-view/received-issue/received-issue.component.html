@@ -25,7 +25,7 @@
                   (click)="isCollapsed = !isCollapsed"
                   [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
           </button>
-          <div class="pull-right">
+          <div class="float-right">
             <i class="fa" [ngClass]="getIcon()" [title]="iconTitle" *ngIf="isCollapsed"></i>
           </div>
         </div>
@@ -34,7 +34,7 @@
             {{ issue.metadata.enumerationAndChronology }}
           </a>
           <span class="badge badge-pill badge-info mx-2" *ngIf="issue.new_issue" translate>New</span>
-          <i class="fa fa-sticky-note-o mx-2 text-warning" *ngIf="issue.metadata.notes"></i>
+          <i class="far fa-note-sticky mx-2 text-warning" *ngIf="issue.metadata.notes"></i>
           <shared-inherited-call-number class="call-numbers px-2" [item]="issue"></shared-inherited-call-number>
         </div>
         <span class="col-3 text-right" *ngIf="isCollapsed">

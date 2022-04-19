@@ -49,9 +49,9 @@
       <div class="card">
         <!-- Checkout limits -->
         <div class="card-header">
-          <i class="fa" [ngClass]="{
-            'fa-circle text-success': record.metadata.limits.checkout_limits,
-            'fa-circle-thin': !record.metadata.limits.checkout_limits
+          <i class="fa-circle" [ngClass]="{
+            'fas text-success': record.metadata.limits.checkout_limits,
+            'far': !record.metadata.limits.checkout_limits
           }"></i>
           <span class="pl-3" translate>Limit by checkouts</span>
         </div>
@@ -79,9 +79,9 @@
         </div>
         <!-- Fee amount limits -->
         <div class="card-header">
-          <i class="fa" [ngClass]="{
-            'fa-circle text-success': record.metadata.limits.fee_amount_limits,
-            'fa-circle-thin': !record.metadata.limits.fee_amount_limits
+          <i class="fa-circle" [ngClass]="{
+            'fas text-success': record.metadata.limits.fee_amount_limits,
+            'far': !record.metadata.limits.fee_amount_limits
           }"></i>
           <span class="pl-3" translate>Limit by fee amount</span>
         </div>
@@ -93,9 +93,9 @@
         </div>
         <!-- overdue items restrictions -->
         <div class="card-header">
-          <i class="fa" [ngClass]="{
-            'fa-circle text-success': record.metadata.limits.overdue_items_limits,
-            'fa-circle-thin': !record.metadata.limits.overdue_items_limits
+          <i class="fa-circle" [ngClass]="{
+            'fas text-success': record.metadata.limits.overdue_items_limits,
+            'far': !record.metadata.limits.overdue_items_limits
           }"></i>
           <span class="pl-3" translate>Limit by overdue items</span>
         </div>
@@ -107,9 +107,9 @@
         </div>
         <!-- unpaid subscription restriction -->
         <div class="card-header">
-          <i class="fa" [ngClass]="{
-            'fa-circle text-success': record.metadata.limits.unpaid_subscription,
-            'fa-circle-thin': !record.metadata.limits.unpaid_subscription
+          <i class="fa-circle" [ngClass]="{
+            'fas text-success': record.metadata.limits.unpaid_subscription,
+            'far': !record.metadata.limits.unpaid_subscription
           }"></i>
           <span class="pl-3" translate>Limit to unpaid subscription</span>
         </div>

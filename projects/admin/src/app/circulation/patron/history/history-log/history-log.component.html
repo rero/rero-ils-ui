@@ -75,7 +75,7 @@
       <!-- checkin event -->
       <div class="row pl-2 pr-2 align-items-start timeline-event">
         <div class="col-lg-2 pr-4 text-right event-timestamp">
-          <i class="fa fa-calendar-o"></i> {{ log.metadata.date | dateTranslate: 'short' }}
+          <i class="far fa-calendar"></i> {{ log.metadata.date | dateTranslate: 'short' }}
         </div>
         <div class="col-lg-10 event-content">
           <div class="row">
@@ -92,7 +92,7 @@
       <!-- checkout event -->
       <div *ngIf="checkout" class="row pl-2 pr-2 align-items-start timeline-event">
         <div class="col-lg-2 pr-4 text-right event-timestamp">
-          <i class="fa fa-calendar-o"></i> {{ checkout.metadata.date | dateTranslate: 'short' }}
+          <i class="far fa-calendar"></i> {{ checkout.metadata.date | dateTranslate: 'short' }}
         </div>
         <div class="col-lg-10 event-content">
           <div class="row">

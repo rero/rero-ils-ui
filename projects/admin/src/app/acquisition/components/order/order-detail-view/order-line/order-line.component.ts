@@ -17,13 +17,13 @@
  */
 import { Component, Input, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
+import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
+import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
-import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
-import { IAcqOrderLine, AcqOrderLineStatus } from '../../../../classes/order';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
+import { AcqOrderLineStatus, IAcqOrderLine } from '../../../../classes/order';
 
 
 @Component({
@@ -47,6 +47,8 @@ export class OrderLineComponent implements OnInit {
   isCollapsed = true;
   /** reference to AcqOrderLineStatus */
   orderLineStatus = AcqOrderLineStatus;
+  /** orderLine status requiring font-awesome `regular` style */
+  farStatus = [AcqOrderLineStatus.ORDERED, AcqOrderLineStatus.APPROVED, AcqOrderLineStatus.CANCELLED];
 
   // GETTER & SETTER ==========================================================
   /**

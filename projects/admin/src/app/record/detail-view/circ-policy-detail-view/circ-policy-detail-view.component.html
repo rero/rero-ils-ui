@@ -116,9 +116,9 @@
               <th scope="row">{{ idx + 1 }}</th>
               <td>{{ reminder.type | translate }}</td>
               <td>
-                <i class="fa" [ngClass]="{
-                  'fa-calendar-minus-o': reminder.type == 'due_soon',
-                  'fa-calendar-plus-o': reminder.type == 'overdue'
+                <i class="far" [ngClass]="{
+                  'fa-calendar-minus': reminder.type == 'due_soon',
+                  'fa-calendar-plus': reminder.type == 'overdue'
                 }"></i>
                 {{ reminder.days_delay }}
               </td>

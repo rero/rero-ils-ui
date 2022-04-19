@@ -22,13 +22,13 @@
       <a [routerLink]="['/', 'acquisition', 'accounts', 'transfer']"
          class="btn btn-sm btn-outline-primary mr-2"
       >
-        <i class="fa fa-exchange"></i> {{ 'Transfer funds' | translate }} &hellip;
+        <i class="fas fa-money-bill-transfer"></i> {{ 'Transfer funds' | translate }} &hellip;
       </a>
       <a [routerLink]="['/', 'records', 'acq_accounts', 'new']"
          [queryParams]="{ budget: organisation.current_budget_pid }"
          class="btn btn-sm btn-outline-primary"
       >
-        <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
+        <i class="far fa-square-plus"></i> {{ 'Add' | translate }} &hellip;
       </a>
     </div>
   </header>

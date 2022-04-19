@@ -17,7 +17,7 @@
 
 <div class="row" *ngIf="canAdd">
   <div class="col">
-    <div class="btn-group pull-right" dropdown>
+    <div class="btn-group float-right" dropdown>
       <button
         id="document-add-actions"
         dropdownToggle
@@ -64,7 +64,7 @@
   </admin-document-holding>
   <ng-container *ngIf="isLinkShowMore">
     <button class="btn btn-link" (click)="showMore()">
-      <i class="fa fa-arrow-circle-o-down"></i>
+      <i class="far fa-circle-down"></i>
         {{ 'Show more' | translate }}
     </button>
     <small *ngIf="isLinkShowMore">({{ hiddenHoldings }})</small>

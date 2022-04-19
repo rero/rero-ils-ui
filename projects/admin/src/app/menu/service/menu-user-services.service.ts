@@ -145,7 +145,7 @@ export class MenuUserServicesService extends MenuBase {
   private _catalogMenu(menu: MenuItemInterface): void {
     const catalogMenu = menu.addChild('Catalog')
     .setAttribute('id', 'catalog-menu')
-    .setExtra('iconClass', 'fa fa-file-o');
+    .setExtra('iconClass', 'fa-regular fa-file');
     this._translatedName(catalogMenu, 'Catalog');
 
     // ----- DOCUMENTS
@@ -153,7 +153,7 @@ export class MenuUserServicesService extends MenuBase {
     .setRouterLink(['/', 'records', 'documents'])
     .setQueryParam('organisation', this._userService.user.currentOrganisation)
     .setAttribute('id', 'documents-menu')
-    .setExtra('iconClass', 'fa fa-file-o');
+    .setExtra('iconClass', 'fa-regular fa-file');
     this._translatedName(this._documentsMenu, 'Documents');
 
     // ----- CREATE BIBLIOGRAPHIC RECORD
@@ -162,14 +162,14 @@ export class MenuUserServicesService extends MenuBase {
     )
     .setRouterLink(['/', 'records', 'documents', 'new'])
     .setAttribute('id', 'create-bibliographic-record-menu')
-    .setExtra('iconClass', 'fa fa-file-o');
+    .setExtra('iconClass', 'fa-regular fa-file');
     this._translatedName(createBibRecordMenu, 'Create a bibliographic record');
 
     // ----- IMPORT FROM WEB
     const importFromWebMenu = catalogMenu.addChild('Import from the web')
     .setRouterLink(['/', 'records', 'import_bnf'])
     .setAttribute('id', 'import-menu')
-    .setExtra('iconClass', 'fa fa-file-o');
+    .setExtra('iconClass', 'fa-regular fa-file');
     this._translatedName(importFromWebMenu, 'Import from the web');
 
     // ----- PERSONS
@@ -218,14 +218,14 @@ export class MenuUserServicesService extends MenuBase {
     const budgetsMenu = acquisitionMenu.addChild('Budgets')
     .setRouterLink(['/', 'records', 'budgets'])
     .setAttribute('id', 'budgets-menu')
-    .setExtra('iconClass', 'fa fa-money');
+    .setExtra('iconClass', 'far fa-money-bill-1');
     this._translatedName(budgetsMenu, 'Budgets');
 
     // ----- ACCOUNTS
     const accountsMenu = acquisitionMenu.addChild('Accounts')
       .setRouterLink(['/', 'acquisition', 'accounts'])
       .setAttribute('id', 'accounts-menu')
-      .setExtra('iconClass', 'fa fa-folder-open-o');
+      .setExtra('iconClass', 'far fa-folder-open');
     this._translatedName(accountsMenu, 'Accounts');
 
     // ----- LATE ISSUES
@@ -233,7 +233,7 @@ export class MenuUserServicesService extends MenuBase {
       .setRouterLink(['/', 'records', 'issues'])
       .setQueryParam('library', this._userService.user.currentLibrary)
       .setAttribute('id', 'late-issues-menu')
-      .setExtra('iconClass', 'fa fa-envelope-open-o');
+      .setExtra('iconClass', 'far fa-envelope-open');
     this._translatedName(this._lateIssuesMenu, 'Late issues');
   }
 
@@ -277,7 +277,7 @@ export class MenuUserServicesService extends MenuBase {
     const itemTypesMenu = adminMenu.addChild('Item types')
     .setRouterLink(['/', 'records', 'item_types'])
     .setAttribute('id', 'item-types-menu')
-    .setExtra('iconClass', 'fa fa-file-o');
+    .setExtra('iconClass', 'fa-regular fa-file');
     this._translatedName(itemTypesMenu, 'Item types');
 
     // ----- PATRON TYPES
@@ -318,7 +318,7 @@ export class MenuUserServicesService extends MenuBase {
     const templatesMenu = adminMenu.addChild('Templates')
     .setRouterLink(['/', 'records', 'templates'])
     .setAttribute('id', 'templates-menu')
-    .setExtra('iconClass', 'fa fa-file-code-o');
+    .setExtra('iconClass', 'far fa-file-code');
     this._translatedName(templatesMenu, 'Templates');
   }
 
