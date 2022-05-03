@@ -47,6 +47,9 @@ export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
   /** Record observable */
   asyncRecord$: Observable<any>;
 
+  /** Record pid */
+  recordPid: string | null;
+
   /**
    * Constructor
    * @param _recordService - RecordService
@@ -59,6 +62,7 @@ export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
   ngOnInit(): void {
     const control = this.formControl;
     const type = control.parent.get('type');
+    this.recordPid = this.field.templateOptions.pid;
 
     const obs = combineLatest([control.valueChanges, type.valueChanges]);
     this._initializeObservableMessage(obs);
@@ -162,7 +166,10 @@ export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
   private _queryCheck(query: string): Observable<any> {
     return this._recordService.getRecords('documents', query, 1, 1).pipe(
       map((result: Record) => {
-        return (this._recordService.totalHits(result.hits.total) > 0)
+        return (
+          this._recordService.totalHits(result.hits.total) > 0
+          && result.hits.hits[0].metadata.pid !== this.recordPid
+        )
           ? result.hits.hits[0].metadata
           : null;
       }));
