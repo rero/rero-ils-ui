@@ -544,7 +544,7 @@
   "The item is in transit to [{{ destination }}]": "The item is in transit to [{{ destination }}]",
   "The item is {{ status }}": "The item is {{ status }}",
   "The item status does not allow requests.": "حالة النسخة لا تسمح بطلبات جديدة",
-  "The notifications for patrons without e-mail are sent to this address. No notification is sent if the field is empty.": "The notifications for patrons without e-mail are sent to this address. No notification is sent if the field is empty.",
+  "The notifications for patrons without e-mail are sent to this address.": "The notifications for patrons without e-mail are sent to this address.",
   "The organisation's active budget is now on {{ budgetName }}": "الميزانية الفاعلة للشبكة  {{ budgetName }}",
   "The patron password has been changed.": "The patron password has been changed.",
   "The personal data has been successfully linked to this patron.": "The personal data has been successfully linked to this patron.",
