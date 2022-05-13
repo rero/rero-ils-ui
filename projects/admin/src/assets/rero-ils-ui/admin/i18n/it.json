@@ -544,7 +544,7 @@
   "The item is in transit to [{{ destination }}]": "L'esemplare è in transito verso [{{ destinazione }}]",
   "The item is {{ status }}": "The item is {{ status }}",
   "The item status does not allow requests.": "Lo stato dell'esemplare non consente le richieste.",
-  "The notifications for patrons without e-mail are sent to this address. No notification is sent if the field is empty.": "Le notifiche per i lettori senza e-mail vengono inviate a questo indirizzo. Nessuna notifica viene inviata se il campo è vuoto.",
+  "The notifications for patrons without e-mail are sent to this address.": "The notifications for patrons without e-mail are sent to this address.",
   "The organisation's active budget is now on {{ budgetName }}": "Il bilancio attivo dell'organizzazione è ora {{ budgetName }}",
   "The patron password has been changed.": "La parole d'ordine del utente è stata modificata.",
   "The personal data has been successfully linked to this patron.": "I dati personali sono stati collegati con successo a questo lettore.",
