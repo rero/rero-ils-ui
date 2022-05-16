@@ -34,6 +34,7 @@ import { MainTitlePipe } from './pipe/main-title.pipe';
 import { NotesFilterPipe } from './pipe/notes-filter.pipe';
 import { PatronBlockedMessagePipe } from './pipe/patron-blocked-message.pipe';
 import { ProvisionActivityPipe } from './pipe/provision-activity.pipe';
+import { SafeUrlPipe } from './pipe/safe-url.pipe';
 import { UrlActivePipe } from './pipe/url-active.pipe';
 import { SearchBarConfigService } from './service/search-bar-config.service';
 import { ContributionBriefComponent } from './view/brief/contribution-brief/contribution-brief.component';
@@ -70,7 +71,8 @@ import { ContributionFilterPipe } from './pipe/contribution-filter.pipe';
     GetTranslatedLabelPipe,
     ContributionFilterPipe,
     ActionButtonComponent,
-    NotesFilterPipe
+    NotesFilterPipe,
+    SafeUrlPipe
   ],
   exports: [
     CommonModule,
@@ -97,7 +99,8 @@ import { ContributionFilterPipe } from './pipe/contribution-filter.pipe';
     GetTranslatedLabelPipe,
     ContributionFilterPipe,
     ActionButtonComponent,
-    NotesFilterPipe
+    NotesFilterPipe,
+    SafeUrlPipe
   ],
   imports: [
     CommonModule,

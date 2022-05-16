@@ -90,9 +90,7 @@
     </dt>
     <dd class="col-sm-7 col-md-8 mb-0">
       <ng-container *ngIf="disabledLink(source); else noLink">
-      <a href="{{ record.identifier }}">
-        {{ record.pid }}
-      </a>
+      <a [href]="record.identifier | safeUrl">{{ record.pid }}</a>
       </ng-container>
       <ng-template #noLink>
         {{ record.pid }}

@@ -400,7 +400,7 @@
           <li *ngFor="let identifier of identifiedBy; let i = index"
           [attr.id]="i | idAttribute:{prefix: 'doc-identifier'}">
             <ng-container *ngIf="identifier.type === 'uri'; else stringBlock">
-              <a class="rero-ils-external-link" href="{{ identifier.value }}">{{ identifier.value }}</a>
+              <a class="rero-ils-external-link" [href]="identifier.value | safeUrl">{{ identifier.value }}</a>
             </ng-container>
             <ng-template #stringBlock>
               {{ identifier.value }}

@@ -42,6 +42,7 @@ export * from './lib/pipe/patron-blocked-message.pipe';
 export * from './lib/pipe/provision-activity.pipe';
 export * from './lib/pipe/url-active.pipe';
 export * from './lib/pipe/notes-filter.pipe';
+export * from './lib/pipe/safe-url.pipe';
 export * from './lib/service/app-settings.service';
 export * from './lib/service/search-bar-config.service';
 export * from './lib/service/user.service';

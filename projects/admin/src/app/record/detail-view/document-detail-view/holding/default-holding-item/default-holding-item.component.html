@@ -68,7 +68,7 @@
         <!-- URL -->
         <ng-container *ngIf="item.metadata.url">
           <div class="col-4 pl-5 font-weight-bold label-title" translate>Online access</div>
-          <div class="col-8"><a target="_blank" href="{{ item.metadata.url }}">{{ item.metadata.url }}</a></div>
+          <div class="col-8"><a target="_blank" [href]="item.metadata.url | safeUrl">{{ item.metadata.url }}</a></div>
         </ng-container>
         <!-- TEMPORARY LOCATION -->
         <ng-container *ngIf="item.metadata.temporary_location">
