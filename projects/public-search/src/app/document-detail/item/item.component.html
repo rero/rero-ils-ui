@@ -75,7 +75,7 @@
     <ng-container *ngIf="item.metadata.url">
       <dt class="mb-0 col-lg-2 col-sm-3 label-title" translate>URL</dt>
       <dd class="mb-0 col-lg-10 col-sm-9">
-        <a href="{{ item.metadata.url }}">{{ item.metadata.url }}</a>
+        <a [href]="item.metadata.url | safeUrl">{{ item.metadata.url }}</a>
       </dd>
     </ng-container>
     <!-- STATUS -->

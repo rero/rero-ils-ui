@@ -16,7 +16,7 @@
 -->
 
 <ng-container *ngIf="electronicLocator">
-  <a href="{{ electronicLocator.url }}">
+  <a [href]="electronicLocator.url | safeUrl">
     <i class="fa fa-link"></i> {{ electronicLocator.type | translate }}
     <ng-container *ngIf="electronicLocator.content">
       : {{ electronicLocator.content | translate }}

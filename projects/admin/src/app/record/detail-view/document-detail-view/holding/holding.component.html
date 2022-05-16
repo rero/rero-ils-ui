@@ -77,7 +77,7 @@
         <!-- ELECTRONIC HOLDING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         <div class="row" *ngSwitchCase="'electronic'">
             <div class="col" *ngFor="let elocation of holding.metadata.electronic_location">
-              <a class="rero-ils-external-link" [href]="elocation.uri">{{ elocation.source }}</a>
+              <a class="rero-ils-external-link" [href]="elocation.uri | safeUrl">{{ elocation.source }}</a>
             </div>
         </div>
 

@@ -122,7 +122,7 @@
       <!-- URL -->
       <ng-container *ngIf="record.metadata | keyExists:'url'">
         <dt class="col-3 label-title" translate>Online access</dt>
-        <dd class="col-9"><a href="{{ record.metadata.url }}">{{ record.metadata.url }}</a></dd>
+        <dd class="col-9"><a [href]="record.metadata.url | safeUrl ">{{ record.metadata.url }}</a></dd>
       </ng-container>
     </dl>
   </section>
