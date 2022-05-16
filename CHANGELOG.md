@@ -1,5 +1,22 @@
 # Changelog
 
+## [v0.23.0](https://github.com/rero/rero-ils-ui/tree/v0.23.0) (2022-05-16)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.22.1...v0.23.0)
+
+**Other changes:**
+* patron view: fix missing translations [\#851](https://github.com/rero/rero-ils-ui/pull/851) (by @PascalRepond)
+* translations: fix missing translations [\#845](https://github.com/rero/rero-ils-ui/pull/845) (by @PascalRepond)
+* library: 'at_desk' notification [\#831](https://github.com/rero/rero-ils-ui/pull/831) (by @zannkukai)
+* document: subject subdivisions display [\#828](https://github.com/rero/rero-ils-ui/pull/828) (by @zannkukai)
+* patron: improve patron profile [\#833](https://github.com/rero/rero-ils-ui/pull/833) (by @zannkukai)
+* document: improve isbn and issn check [\#847](https://github.com/rero/rero-ils-ui/pull/847) (by @Garfield-fr)
+* holdings: new 'access note' note type. [\#841](https://github.com/rero/rero-ils-ui/pull/841) (by @zannkukai)
+* Circulation: allow extend all items button [\#844](https://github.com/rero/rero-ils-ui/pull/844) (by @zannkukai)
+* circulation: enter patron barcode when checkin form contains items [\#834](https://github.com/rero/rero-ils-ui/pull/834) (by @vgranata)
+* transactions: better transactions history display. [\#842](https://github.com/rero/rero-ils-ui/pull/842) (by @zannkukai)
+* holdings: allow new line for `enumerationAndChronology` field [\#837](https://github.com/rero/rero-ils-ui/pull/837) (by @zannkukai)
+
 ## [v0.22.1](https://github.com/rero/rero-ils-ui/tree/v0.22.1) (2022-04-11)
 
 **Changes:**
