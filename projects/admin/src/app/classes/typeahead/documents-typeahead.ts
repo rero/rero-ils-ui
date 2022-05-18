@@ -142,9 +142,9 @@ export class DocumentsTypeahead implements ITypeahead {
   }
 
   /**
-   * Extract identifers of identifiedBy field
-   * @param identifiers - identifiedBy field
-   * @returns Object
+   * Extract specific identifiers from identifiedBy field
+   * @param identifiers - the identifiedBy field from document metadata
+   * @returns The list of identifier types and values for each of them.
    */
   private _extractIdentifier(identifiers: any) {
     const availableIdentifiers = {
@@ -154,21 +154,23 @@ export class DocumentsTypeahead implements ITypeahead {
       'bf:IssnL': 'ISSN'
     };
     const keys = Object.keys(availableIdentifiers);
-    const result = {};
-    identifiers.filter(
-      (identifier: any) => keys.includes(identifier.type)
-    ).forEach((element: any) => {
-      let data = element.value;
-      const key = availableIdentifiers[element.type];
-      if (!(key in result)) {
-        result[key] = [];
-      }
-      if ('qualifier' in element) {
-        data += ` (${element.qualifier})`;
-      }
-      result[key].push(data);
-    });
-
+    const result: Record<string, any> = {};
+    identifiers
+      .filter((identifier: any) => keys.includes(identifier.type))
+      .forEach((element: any) => {
+        let data = element.value;
+        const key = availableIdentifiers[element.type];
+        if (!(key in result)) {
+          result[key] = new Set();
+        }
+        if ('qualifier' in element) {
+          data += ` (${element.qualifier})`;
+        }
+        result[key].add(data);
+      });
+    for (const [key, value] of Object.entries(result)) {
+      result[key] = Array.from(value);  // convert set to list
+    }
     return result;
   }
 }

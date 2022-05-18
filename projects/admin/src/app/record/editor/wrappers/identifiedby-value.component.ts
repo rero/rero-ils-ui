@@ -22,6 +22,7 @@ import issn from 'issn';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { isbn } from 'simple-isbn';
+import { IdentifierTypes } from '../../../classes/identifiers';
 
 @Component({
   selector: 'admin-identifiedby-value',
@@ -111,86 +112,51 @@ export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
   }
 
   /**
-   * Initialize async record observable
-   * @param obs - Observable
+   * Initialize async record observable. This observable will check if a document
+   * with the same identifier exists. Alternative identifiers will also be checked.
+   * @param obs - The observable to listen to detect change on identifiers
    */
   private _initializeObservableAsyncRecord(obs: Observable<any>): void {
     this.asyncRecord$ = obs.pipe(switchMap(([vValue, vType]) => {
-      const queryParams = {
-        'bf:Ean': [],
-        'bf:Isbn': [],
-        'bf:Issn': [],
-        'bf:IssnL': []
-      };
+      vValue = vValue.trim();
+      if (!vValue) {
+        return of(null);
+      }
+      const identifiersTypesToCheck = [];
       switch (vType) {
         case 'bf:Ean':
-          if (vValue) {
-            vValue = vValue.replace(/\-/g, '');
-            queryParams['bf:Ean'].push(vValue);
-            queryParams['bf:Isbn'].push(vValue);
-            const query = this._queryParamsGenerate(queryParams);
-            return this._queryCheck(query);
-          }
-          break;
         case 'bf:Isbn':
-          if (vValue) {
-            queryParams['bf:Ean'].push(vValue.replace(/\-/g, ''));
-            queryParams['bf:Isbn'].push(vValue.replace(/\-/g, ''));
-            // ISBN value with dash
-            if (vValue.indexOf('-') > -1) {
-              queryParams['bf:Isbn'].push(vValue);
-            }
-            const query = this._queryParamsGenerate(queryParams);
-            return this._queryCheck(query);
-          }
+          identifiersTypesToCheck.push(...[IdentifierTypes.EAN, IdentifierTypes.ISBN]);
           break;
         case 'bf:Issn':
         case 'bf:IssnL':
-          if (vValue) {
-            queryParams['bf:Issn'].push(vValue);
-            queryParams['bf:IssnL'].push(vValue);
-            const query = this._queryParamsGenerate(queryParams);
-            return this._queryCheck(query);
-          }
+          identifiersTypesToCheck.push(...[IdentifierTypes.ISSN, IdentifierTypes.L_ISSN]);
           break;
       }
-      return of(null);
+      return (identifiersTypesToCheck.length > 0)
+        ? this._queryCheck(identifiersTypesToCheck.map(type => `(${type})${vValue}`))
+        : of(null);
     }));
   }
 
   /**
    * Query check
-   * @param query - formatted query string
-   * @return Observable
+   * @param identifierValues - list of formatted identifiers to search
+   * @return Observable with document metadata if any identifiers matching a known document, null otherwise.
    */
-  private _queryCheck(query: string): Observable<any> {
-    return this._recordService.getRecords('documents', query, 1, 1).pipe(
-      map((result: Record) => {
-        return (
-          this._recordService.totalHits(result.hits.total) > 0
-          && result.hits.hits[0].metadata.pid !== this.recordPid
-        )
-          ? result.hits.hits[0].metadata
-          : null;
-      }));
+  private _queryCheck(identifierValues: Array<string>): Observable<any> {
+    return this._recordService
+      .getRecords('documents', undefined, 1, 1, undefined, {identifiers: identifierValues})
+      .pipe(
+        map((result: Record) => {
+          return (
+            this._recordService.totalHits(result.hits.total) > 0
+            && result.hits.hits[0].metadata.pid !== this.recordPid
+          )
+            ? result.hits.hits[0].metadata
+            : null;
+        })
+      );
   }
 
-  /**
-   * Query params generate
-   * @param queryParams - Object
-   * @return string
-   */
-  private _queryParamsGenerate(queryParams: any): string {
-    const query = [];
-    const keys = Object.keys(queryParams);
-    keys.forEach((key: string) => {
-      const keyValues = queryParams[key];
-      if (keyValues.length > 0) {
-        keyValues.forEach((value: string) => {
-          query.push(`(identifiedBy.type:${key.replace(/:/g, '\\:')} AND identifiedBy.value:${value})`);
-        });
-      }
-    });
-    return query.join(' OR ');
-  }
 }
