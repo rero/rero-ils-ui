@@ -123,6 +123,11 @@ _('due_soon');
 _('recall');
 _('overdue');
 _('availability');
+_('transit_notice');
+_('acquisition_order');
+_('at_desk');
+_('booking');
+_('request');
 //  - loan state
 _('CREATED');
 _('PENDING');
