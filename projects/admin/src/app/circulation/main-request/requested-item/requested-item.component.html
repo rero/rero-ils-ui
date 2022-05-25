@@ -33,13 +33,12 @@
   </div>
   <!-- FIRST ROW :: item-barcode, document-title, requester-name, request-date -->
   <div class="col-2">
-    <button type="button" class="pl-0 pt-0 btn"
+    <button type="button" class="btn-show-more"
+            [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
             (click)="isCollapsed = !isCollapsed"
-            [attr.aria-expanded]="!isCollapsed"
-            aria-controls="collapse">
-      <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" class="fa" aria-hidden="true"></i>
+            [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
     </button>
-    <a name="barcode" [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+    <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
   </div>
   <div name="title" class="col-lg-5">
     <a [routerLink]="['/records','documents','detail', document.pid]" *ngIf="document.title | mainTitle as title ">
@@ -85,7 +84,7 @@
       <dd  name="location" class="col-10">
         {{ item.library.name }} {{ item.location.name }}
       </dd>
-      <dt class="col-2 label-title text-right" translate>Pick-up Location</dt>
+      <dt class="col-2 label-title text-right" translate>Pick-up location</dt>
       <dd name="pickup-location" class="col-10">
         <i class="fa fa-truck fa-flip-horizontal"></i>
         <i class="fa fa-long-arrow-right mx-1"></i>

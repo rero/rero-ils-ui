@@ -45,7 +45,11 @@ export class MainRequestComponent implements OnInit, OnDestroy {
     {value: 'requestdate', label: this._translateService.instant('Request date'), icon: 'fa-sort-numeric-asc'},
     {value: '-requestdate', label: this._translateService.instant('Request date (desc)'), icon: 'fa-sort-numeric-desc'},
     {value: 'callnumber', label: this._translateService.instant('Call number'), icon: 'fa-sort-alpha-asc'},
-    {value: '-callnumber', label: this._translateService.instant('Call number (desc)'), icon: 'fa-sort-alpha-desc'}
+    {value: '-callnumber', label: this._translateService.instant('Call number (desc)'), icon: 'fa-sort-alpha-desc'},
+    {value: 'location', label: this._translateService.instant('Location'), icon: 'fa-sort-alpha-asc'},
+    {value: '-location', label: this._translateService.instant('Location (desc)'), icon: 'fa-sort-alpha-desc'},
+    {value: 'pickuplocation', label: this._translateService.instant('Pick-up location'), icon: 'fa-sort-alpha-asc'},
+    {value: '-pickuplocation', label: this._translateService.instant('Pick-up location (desc)'), icon: 'fa-sort-alpha-desc'},
   ];
 
   /** the placeholder string used on the */
@@ -126,15 +130,31 @@ export class MainRequestComponent implements OnInit, OnDestroy {
       switch (this._sortCriteria) {
         case '-requestdate': return bTime.diff(aTime);
         case 'callnumber':
-          if (('call_number' in a) && ('call_number' in b)) {
-            return a.call_number.localeCompare(b.call_number);
-          }
-          return 1;
+          return (('call_number' in a) && ('call_number' in b))
+            ? a.call_number.localeCompare(b.call_number)
+            : 1;
         case '-callnumber':
-          if (('call_number' in a) && ('call_number' in b)) {
-            return b.call_number.localeCompare(a.call_number);
-          }
-          return 1;
+          return (('call_number' in a) && ('call_number' in b))
+            ? b.call_number.localeCompare(a.call_number)
+            : 1;
+        case 'location':
+        case '-location':
+          const locA = a.library.name + ' ' + a.location.name;
+          const locB = b.library.name + ' ' + b.location.name;
+          return (this._sortCriteria === 'location')
+            ? locA.localeCompare(locB)
+            : locB.localeCompare(locA);
+        case 'pickuplocation':
+        case '-pickuplocation':
+          const pickA = (a.loan.pickup_location.pickup_name)
+            ? a.loan.pickup_location.pickup_name
+            : a.loan.pickup_location.library_name + ' ' + a.loan.pickup_location.name;
+          const pickB = (a.loan.pickup_location.pickup_name)
+            ? b.loan.pickup_location.pickup_name
+            : b.loan.pickup_location.library_name + ' ' + b.loan.pickup_location.name;
+          return (this._sortCriteria === 'pickuplocation')
+            ? pickA.localeCompare(pickB)
+            : pickB.localeCompare(pickA);
         default: return aTime.diff(bTime);
       }
     });
