@@ -36,19 +36,20 @@
       <ng-container *ngIf="permissions; else noAction">
         <!-- HOLDING VIEW -->
         <button [routerLink]="['/', 'records', 'holdings', 'detail', holding.metadata.pid]"
-                class="btn btn-outline-primary btn-sm ml-1">
+                class="btn btn-outline-primary btn-sm ml-1"
+                title="{{ 'Holdings detail' | translate }}">
           <i class="fa fa-file-text-o"></i>
         </button>
         <!-- REQUEST BUTTON -->
         <button *ngIf="permissions && permissions.canRequest && permissions.canRequest.can; else notRequest"
               type="button" class="btn btn-outline-primary btn-sm ml-1" (click)="addRequest(holding.metadata.pid, 'holding')"
-              title="{{ 'Holding request' | translate }}"
+              title="{{ 'Holdings request' | translate }}"
               name="request">
           <i class="fa fa-shopping-basket" aria-hidden="true"></i>
         </button>
         <ng-template #notRequest>
           <button type="button" class="btn btn-outline-primary btn-sm ml-1 disabled"
-            title="{{ 'Holding request' | translate }}"
+            title="{{ 'Holdings request' | translate }}"
             [popover]="tolTemplate" triggers="mouseenter:mouseleave"
             name="request">
           <i class="fa fa-shopping-basket" aria-hidden="true"></i>
@@ -57,12 +58,14 @@
         </ng-template>
         <!-- EDIT BUTTON -->
         <button *ngIf="permissions && permissions.update && permissions.update.can"
+                title="{{ 'Edit holdings' | translate }}"
                 [routerLink]="['/', 'records', 'holdings', 'edit', holding.metadata.pid]"
                 class="btn btn-outline-primary btn-sm ml-1">
           <i class="fa fa-pencil"></i>
         </button>
         <!-- DELETE BUTTON -->
         <button *ngIf="permissions && permissions.delete && permissions.delete.can; else deleteInfo" type="button"
+        title="{{ 'Delete holdings' | translate }}"
           class="btn btn-outline-danger btn-sm ml-1" (click)="delete()">
           <i class="fa fa-trash"></i>
         </button>
