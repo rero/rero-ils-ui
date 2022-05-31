@@ -624,7 +624,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "public-user-profile-edit:build"
+            "browserTarget": "public-user-profile-edit:build",
+            "port": 4206
           },
           "configurations": {
             "production": {
@@ -718,7 +719,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "public-user-password-change:build"
+            "browserTarget": "public-user-password-change:build",
+            "port": 4205
           },
           "configurations": {
             "production": {
