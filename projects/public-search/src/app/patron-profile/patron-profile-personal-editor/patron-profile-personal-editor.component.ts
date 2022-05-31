@@ -33,33 +33,33 @@ import { debounceTime, map, tap } from 'rxjs/operators';
 })
 export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
 
+  // COMPONENT ATTRIBUTES =====================================================
   /** Request referer */
   @Input() referer: string | null;
 
-  /** all component subscription */
-  private _subscriptions = new Subscription();
-
+  /** Form submission error */
+  formError: string | null = null;
   /** Formly fields configuration populate by the JSONSchema */
   fields: FormlyFieldConfig[];
-
   /** form initial values */
   model: any = {};
-
   /** angular form group for ngx-formly */
   form: FormGroup = new FormGroup({});
 
+  /** all component subscription */
+  private _subscriptions = new Subscription();
   /** Additional style for a field */
   private _cssConfig = {
     keep_history: 'col-12 pl-0',
     default: 'col-6 pl-0'
   };
-
   /** Description for some fields defined as key */
   private _fieldDescription = {
     username: _('Username must start with a letter or a number, be at least three characters long and only contain alphanumeric characters, dashes and underscores.'),
     keep_history: _('If enabled the loan history is saved for a maximum of six months. It is visible to you and the library staff.')
   };
 
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    *
@@ -92,6 +92,11 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
 
               // post process JSONSchema7 to FormlyFieldConfig conversion
               map: (field: FormlyFieldConfig, jsonSchema: any) => {
+                // If 'format' is defined into the jsonSchema, use it as templateOptions to try a validation on this field.
+                // See: `email.validator.ts` file
+                if (jsonSchema.format) {
+                  field.templateOptions.type = jsonSchema.format;
+                }
                 // Add the "row" class to the main object
                 if (field.key == null) {
                   field.templateOptions.containerCssClass = 'row';
@@ -176,6 +181,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
     this._subscriptions.unsubscribe();
   }
 
+  // COMPONENT FUNCTIONS ======================================================
   /** Submit form */
   submit() {
     this.form.updateValueAndValidity();
@@ -185,18 +191,20 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
       );
       return;
     }
-
     const data = removeEmptyValues(this.form.value);
-
     // Update user record and reload logged user
-    this._recordService.update('users', this._userService.user.id.toString(), data).subscribe(() => {
-      this._toastrService.success(
-        this._translateService.instant('Your personal data has been updated.')
+    this._recordService
+      .update('users', this._userService.user.id.toString(), data)
+      .subscribe(
+        () => {
+          this._toastrService.success(this._translateService.instant('Your personal data has been updated.'));
+          this._redirect();
+        },
+        (error) => this.formError = error.title
       );
-      this._redirect();
-    });
   }
 
+  // PRIVATE COMPONENT FUNCTIONS ==============================================
   /** Cancel edition */
   cancel(): void {
     this._redirect();
@@ -220,16 +228,15 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
     return {
       expression: (control: FormControl) => {
         const value = control.value;
-
         return (value == null || value.length === 0)
-        ? of(true)
-        : this._recordService.getRecords('users', `${fieldName}:${value}`).pipe(
-            debounceTime(1000),
-            map((res: any) => {
-              return (res.hits.hits.length === 0) ||
-                (res.hits.hits.length === 1 && res.hits.hits[0].id === this._userService.user.id);
-            })
-          );
+          ? of(true)
+          : this._recordService.getRecords('users', `${fieldName}:${value}`).pipe(
+              debounceTime(1000),
+              map((res: any) => {
+                return (res.hits.hits.length === 0) ||
+                  (res.hits.hits.length === 1 && res.hits.hits[0].id === this._userService.user.id);
+              })
+            );
       },
       message: this._translateService.instant(message)
     };

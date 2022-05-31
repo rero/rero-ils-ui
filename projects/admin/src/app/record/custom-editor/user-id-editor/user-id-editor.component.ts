@@ -87,15 +87,18 @@ export class UserIdEditorComponent implements OnInit {
 
                 // post process JSONSchema7 to FormlyFieldConfig conversion
                 map: (field: FormlyFieldConfig, jsonSchema: JSONSchema7) => {
-                  // selection option i.e. countries
-                  if (jsonSchema.form && jsonSchema.form.options) {
-                    field.templateOptions.options = jsonSchema.form.options;
-                  }
-                  if (field.templateOptions.label === 'Email') {
+                  // If 'format' is defined into the jsonSchema, use it as templateOptions to try a validation on this field.
+                  // See: `email.validator.ts` file
+                  if (jsonSchema.format) {
+                    field.templateOptions.type = jsonSchema.format;
                     if (field.asyncValidators == null) {
                       field.asyncValidators = {};
                     }
                     field.asyncValidators.uniqueEmail = this.getUniqueValidator('email');
+                  }
+                  // selection option i.e. countries
+                  if (jsonSchema.form && jsonSchema.form.options) {
+                    field.templateOptions.options = jsonSchema.form.options;
                   }
                   if (field.templateOptions.label === 'Username') {
                     if (field.asyncValidators == null) {
