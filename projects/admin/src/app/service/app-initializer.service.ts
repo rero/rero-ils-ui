@@ -69,9 +69,7 @@ export class AppInitializerService {
           this._organisationService.loadOrganisationByPid(
             user.patronLibrarian.libraries[0].organisation.pid
           );
-          this.initializeLocaleStorage(user);
-          const userLocale = this._userService.getOnLocaleStorage();
-          this._librarySwitchService.switch(userLocale.currentLibrary);
+          this._librarySwitchService.switch(user.currentLibrary);
         }
       }),
       switchMap(() => this.initTranslateService())
@@ -87,23 +85,5 @@ export class AppInitializerService {
         browserLang : this._appConfigService.defaultLanguage;
     }
     return this._translateService.setLanguage(language);
-  }
-
-  /**
-   * Initialize locale storage
-   * @param user - User
-   */
-  private initializeLocaleStorage(user: User): void {
-    if (!this._userService.hasOnLocaleStorage()) {
-      this._userService.setOnLocaleStorage(user);
-    } else {
-      let userLocale = this._userService.getOnLocaleStorage();
-      if (userLocale.id !== user.id) {
-        userLocale = this._userService.setOnLocaleStorage(user);
-      }
-      // Store current values for library switch
-      user.currentLibrary = userLocale.currentLibrary;
-      user.currentOrganisation = userLocale.currentOrganisation;
-    }
   }
 }

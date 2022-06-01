@@ -26,8 +26,6 @@ export class AppConfigService extends CoreConfigService {
 
   public adminRoles: Array<string>;
 
-  public sessionExpiredSeconds: number;
-
   public librarySwitchCheckParamsUrl: string[];
 
   constructor() {
@@ -39,7 +37,6 @@ export class AppConfigService extends CoreConfigService {
     this.languages = environment.languages;
     this.defaultLanguage = environment.defaultLanguage;
     this.adminRoles = environment.adminRoles;
-    this.sessionExpiredSeconds = environment.sessionExpiredSeconds;
     this.translationsURLs = environment.translationsURLs;
     this.librarySwitchCheckParamsUrl = environment.librarySwitchCheckParamsUrl;
   }

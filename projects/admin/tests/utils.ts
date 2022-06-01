@@ -46,6 +46,8 @@ userTestingService.user =  {
     },
     current: '1',
   },
+  currentLibrary: '1',
+  currentOrganisation: '1',
   getCurrentLibrary: () => '1'
 };
 

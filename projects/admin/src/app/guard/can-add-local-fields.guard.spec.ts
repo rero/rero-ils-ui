@@ -16,61 +16,91 @@
  */
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { LocalStorageService } from '@rero/ng-core';
+import { TranslateModule } from '@ngx-translate/core';
+import { CoreModule } from '@rero/ng-core';
+import { UserService } from '@rero/shared';
+import { cloneDeep } from 'lodash-es';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { userTestingService } from 'projects/admin/tests/utils';
 import { of } from 'rxjs';
 import { LocalFieldApiService } from '../api/local-field-api.service';
+import { ErrorPageComponent } from '../error/error-page/error-page.component';
 import { CanAddLocalFieldsGuard } from './can-add-local-fields.guard';
-
 
 describe('CanAddLocalFieldsGuard', () => {
 
-  let canAddLocalFieldsGuard: CanAddLocalFieldsGuard;
+  let guard: CanAddLocalFieldsGuard;
+  let localFieldApiService: LocalFieldApiService;
+  let router: Router;
 
-  const localFieldsApiServiceSpy = jasmine.createSpyObj(
-    'LocalFieldApiService', [
-      'getByResourceTypeAndResourcePidAndOrganisationId'
-    ]
-  );
-  localFieldsApiServiceSpy
-    .getByResourceTypeAndResourcePidAndOrganisationId
-    .and.returnValue(of({}));
-
-  const localStorageServiceSpy = jasmine.createSpyObj('LocalStorageService', ['get', 'has']);
-  localStorageServiceSpy.get.and.returnValue({
-    currentLibrary: 1,
-    currentOrganisation: 1
-  });
-  localStorageServiceSpy.has.and.returnValue(true);
+  const routes = [
+    {
+      path: 'errors/400',
+      component: ErrorPageComponent
+    }
+  ];
 
   const activatedRouteSnapshotSpy = jasmine.createSpyObj('ActivatedRouteSnapshot', ['']);
-  activatedRouteSnapshotSpy.queryParams = {type: 'documents', ref: '240'};
+  activatedRouteSnapshotSpy.queryParams = { type: 'documents', ref: '240' };
 
-  const routerStateSnapshotSpy = jasmine.createSpyObj('RouterStateSnapshot', ['']);
+  let record = {};
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
+        RouterTestingModule.withRoutes(routes),
         HttpClientTestingModule,
-        RouterTestingModule
+        TranslateModule.forRoot(),
+        CoreModule
       ],
       providers: [
-        CanAddLocalFieldsGuard,
-        { provide: LocalFieldApiService, useValue: localFieldsApiServiceSpy },
-        { provide: LocalStorageService, useValue: localStorageServiceSpy },
+        BsModalService,
+        { provide: UserService, useValue: userTestingService }
       ]
     });
-    canAddLocalFieldsGuard = TestBed.inject(CanAddLocalFieldsGuard);
+    guard = TestBed.inject(CanAddLocalFieldsGuard);
+    localFieldApiService = TestBed.inject(LocalFieldApiService);
+    router = TestBed.inject(Router);
   });
 
   it('should create a service', () => {
-    expect(canAddLocalFieldsGuard).toBeTruthy();
+    expect(guard).toBeTruthy();
   });
 
-  it('should return true if the url parameters are right', () => {
-    expect(canAddLocalFieldsGuard.canActivate(
-      activatedRouteSnapshotSpy, routerStateSnapshotSpy
-    )).toBeTruthy();
+  it('should return a 400 error if any parameters are missing', fakeAsync(() => {
+    const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
+    activatedRoute.queryParams = {};
+    spyOn(localFieldApiService, 'getByResourceTypeAndResourcePidAndOrganisationId').and.returnValue(of(record));
+    guard.canActivate(
+      activatedRoute
+    ).subscribe(() => {
+      tick();
+      expect(router.url).toBe('/errors/400');
+    });
+  }));
+
+  it('should return false if the current document has a local fields', () => {
+    record = { metadata: { } };
+    spyOn(localFieldApiService, 'getByResourceTypeAndResourcePidAndOrganisationId').and.returnValue(of(record));
+    guard.canActivate(
+      activatedRouteSnapshotSpy
+    ).subscribe((access: boolean) => {
+      expect(access).toBeFalsy();
+    });
   });
+
+  it('should return a 400 error if the type is not correct', fakeAsync(() => {
+    const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
+    activatedRoute.queryParams = { type: 'foo', ref: '240' };
+    spyOn(localFieldApiService, 'getByResourceTypeAndResourcePidAndOrganisationId').and.returnValue(of(record));
+    guard.canActivate(
+      activatedRoute
+    ).subscribe(() => {
+      tick();
+      expect(router.url).toBe('/errors/400');
+    });
+  }));
 });

@@ -66,8 +66,6 @@ export class LibrarySwitchService {
     }
     // Update current library on user
     user.currentLibrary = libraryPid;
-    // Storage user to the current session
-    this._userService.setOnLocaleStorage(user);
     // Emit a new event with user
     this.onLibrarySwitch.next(user);
   }

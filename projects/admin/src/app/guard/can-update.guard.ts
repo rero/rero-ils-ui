@@ -16,8 +16,9 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { RecordPermissions } from '../classes/permissions';
 import { RecordPermissionService } from '../service/record-permission.service';
 
@@ -33,23 +34,23 @@ export class CanUpdateGuard implements CanActivate {
    */
   constructor(
     private _permissionService: RecordPermissionService,
-    private _router: Router) {
-  }
+    private _router: Router
+  ) { }
 
   /**
    * Check if the current logged user can update a resource
    * @param next - ActivatedRouteSnapshot
-   * @param state - RouterStateSnapshot
+   * @throws redirect to error 403
    */
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot):
-    Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    this._permissionService.getPermission(next.params.type, next.params.pid).subscribe(
-      (permission: RecordPermissions) => {
+  canActivate(next: ActivatedRouteSnapshot): Observable<boolean> {
+    return this._permissionService.getPermission(next.params.type, next.params.pid).pipe(
+      map((permission: RecordPermissions) => {
         if (!permission.update.can) {
           this._router.navigate(['/errors/403'], { skipLocationChange: true });
+          return false;
         }
-      }
+        return true;
+      })
     );
-    return true;
   }
 }
