@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { ActivatedRoute } from '@angular/router';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, RouteInterface } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
@@ -24,6 +25,7 @@ import { DocumentEditorComponent } from '../record/custom-editor/document-editor
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
 import { DocumentRecordSearchComponent } from '../record/document-record-search/document-record-search.component';
 import { BaseRoute } from './base-route';
+import { RouteToolService } from './route-tool.service';
 
 export class DocumentsRoute extends BaseRoute implements RouteInterface {
 
@@ -32,6 +34,17 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
 
   /** Record type */
   readonly recordType = 'documents';
+
+  /**
+   * Constructor
+   * @param routeToolService - RouteToolService
+   */
+   constructor(
+    protected _routeToolService: RouteToolService,
+    protected _route: ActivatedRoute
+  ) {
+    super(_routeToolService);
+   }
 
   /**
    * Get Configuration
@@ -85,7 +98,14 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
               'subject',
               'status'
             ],
-            aggregationsExpand: ['document_type'],
+            aggregationsExpand: () => {
+              const expand = ['document_type'];
+              const queryParams = this._route.snapshot.queryParams;
+              if (queryParams.location || queryParams.library) {
+                expand.push('organisation');
+              }
+              return expand;
+            },
             aggregationsBucketSize: 10,
             itemHeaders: {
               Accept: 'application/rero+json, application/json'

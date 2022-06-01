@@ -16,6 +16,7 @@
  */
 
 import { TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { DocumentsRouteService } from './documents-route.service';
 
@@ -25,7 +26,8 @@ describe('DocumentRouteService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot()
+        TranslateModule.forRoot(),
+        RouterTestingModule
       ]
     });
     service = TestBed.inject(DocumentsRouteService);
