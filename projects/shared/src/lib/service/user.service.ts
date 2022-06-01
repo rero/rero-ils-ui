@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { LocalStorageService } from '@rero/ng-core';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserApiService } from '../api/user-api.service';
@@ -53,12 +52,10 @@ export class UserService {
    * Constructor
    * @param _userApiService - UserApiService
    * @param _appSettingsService - AppSettingsService
-   * @param _localeStorageService - LocalStorageService
    */
   constructor(
     private _userApiService: UserApiService,
-    private _appSettingsService: AppSettingsService,
-    private _localeStorageService: LocalStorageService
+    private _appSettingsService: AppSettingsService
   ) {
      this._loaded = new Subject();
   }
@@ -77,49 +74,4 @@ export class UserService {
       })
     );
   }
-
-  /**
-   * Has user on locale storage
-   * @return boolean
-   */
-  hasOnLocaleStorage(): boolean {
-    return this._localeStorageService.has(User.STORAGE_KEY);
-  }
-
-  /**
-   * Get user on locale storage
-   * @return User or undefined
-   */
-  getOnLocaleStorage(): IUserLocaleStorage | undefined {
-    if (this.hasOnLocaleStorage()) {
-      return this._localeStorageService.get(User.STORAGE_KEY);
-    }
-    return undefined;
-  }
-
-  /**
-   * Set user on locale storage
-   * @param user - User
-   */
-  setOnLocaleStorage(user: User): IUserLocaleStorage {
-    const data: IUserLocaleStorage = {
-      id: user.id,
-      currentLibrary: user.currentLibrary,
-      currentOrganisation: user.currentOrganisation
-    };
-    this._localeStorageService.set(User.STORAGE_KEY, data);
-    return data;
-  }
-
-  /** Clear user on locale storage */
-  clearOnLocaleStorage(): void {
-    this._localeStorageService.remove(User.STORAGE_KEY);
-  }
-}
-
-/** Interface user data for locale storage */
-export interface IUserLocaleStorage {
-  id: number;
-  currentLibrary: string;
-  currentOrganisation: string;
 }

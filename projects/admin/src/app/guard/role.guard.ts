@@ -16,9 +16,9 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
+import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { UserService } from '@rero/shared';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -45,13 +45,12 @@ export class RoleGuard implements CanActivate {
   ) { }
 
   /** Check if the current logged user as at least a specific role */
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {
-    this._userService.loaded$.subscribe(() => {
-      if (!this._userService.user.hasRoles(next.data.roles as Array<string>, next.data.operator || 'and')) {
-        this._router.navigate(['/errors/403'], { skipLocationChange: true });
-      }
-    });
-    return true;
+  canActivate(next: ActivatedRouteSnapshot): Observable<boolean> {
+    if (!this._userService.user.hasRoles(next.data.roles as Array<string>, next.data.operator || 'and')) {
+      this._router.navigate(['/errors/403'], { skipLocationChange: true });
+      return of(false);
+    }
+    return of(true);
   }
 
 }

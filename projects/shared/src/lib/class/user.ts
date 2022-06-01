@@ -18,9 +18,6 @@
 // tslint:disable: variable-name
 export class User implements IUser {
 
-  /** Locale storage name key */
-  static readonly STORAGE_KEY = 'user';
-
   /** Logged user API url */
   static readonly LOGGED_URL = '/patrons/logged_user?resolve';
 

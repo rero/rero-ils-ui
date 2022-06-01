@@ -19,11 +19,10 @@ import { TestBed } from '@angular/core/testing';
 import { testPatronLibrarianRoles, testUserLibrarianWithSettings, testUserPatronLibrarian } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
-import { testUserPatronWithSettings } from '../../tests/user';
 import { UserApiService } from '../api/user-api.service';
 import { User } from '../class/user';
 import { AppSettingsService } from './app-settings.service';
-import { IUserLocaleStorage, UserService } from './user.service';
+import { UserService } from './user.service';
 
 describe('UserService', () => {
   let service: UserService;
@@ -32,12 +31,6 @@ describe('UserService', () => {
   const dataStorage = new User(testUserPatronLibrarian, testPatronLibrarianRoles);
   dataStorage.currentLibrary = '1';
   dataStorage.currentOrganisation = 'org1';
-
-  const dataResultStorage: IUserLocaleStorage = {
-    id: dataStorage.id,
-    currentLibrary: dataStorage.currentLibrary,
-    currentOrganisation: dataStorage.currentOrganisation
-  };
 
   const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
   userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep((testUserLibrarianWithSettings))));
@@ -69,18 +62,5 @@ describe('UserService', () => {
       expect(user.currentOrganisation === testUserLibrarianWithSettings.patrons[0].libraries[0].organisation.pid);
     });
     service.load();
-  });
-
-  it('should return a boolean on the hasOnLocaleStorage function', () => {
-    service.clearOnLocaleStorage();
-    expect(service.hasOnLocaleStorage()).toBeFalsy();
-    service.setOnLocaleStorage(dataStorage);
-    expect(service.hasOnLocaleStorage()).toBeTruthy();
-  });
-
-  it('should return an object of the stored parameters', () => {
-    service.clearOnLocaleStorage();
-    service.setOnLocaleStorage(dataStorage);
-    expect(service.getOnLocaleStorage()).toEqual(dataResultStorage);
   });
 });

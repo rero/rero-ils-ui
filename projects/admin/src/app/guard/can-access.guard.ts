@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { extractIdOnRef, RecordService } from '@rero/ng-core';
-import { IUserLocaleStorage, UserService } from '@rero/shared';
-import { Observable } from 'rxjs';
+import { UserService } from '@rero/shared';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -26,34 +26,40 @@ import { map } from 'rxjs/operators';
 })
 export class CanAccessGuard implements CanActivate {
 
+  /**
+   * Constructor
+   * @param _recordService - RecordService
+   * @param _userService - UserService
+   * @param _router - Router
+   */
   constructor(
     private _recordService: RecordService,
     private _userService: UserService,
     private _router: Router
   ) {}
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+  /**
+   * Can activate
+   * @param route - ActivatedRouteSnapshot
+   * @returns True if authorized access order redirect to error page 400 or 403
+   */
+  canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
     const params = route.params;
-    if (params && params.hasOwnProperty('type') && params.hasOwnProperty('pid')) {
-      const userLocale: IUserLocaleStorage = this._userService.getOnLocaleStorage();
-      if (userLocale) {
-        this._recordService.getRecord(params.type, params.pid)
-          .pipe(map((record: any) => record.metadata))
-          .subscribe((record: any) => {
-            /** The record does not belong to the user's organization. */
-            if (userLocale.currentOrganisation !== extractIdOnRef(record.organisation.$ref)) {
-              /** Access forbidden */
-              this._router.navigate(['/errors/403'], { skipLocationChange: true });
-            }
-          });
-      } else {
-        this._router.navigate(['/errors/400'], { skipLocationChange: true });
-      }
+    if (params && params.type && params.pid) {
+      return this._recordService.getRecord(params.type, params.pid)
+        .pipe(map((record: any) => {
+          const user = this._userService.user;
+          if (user.currentOrganisation !== extractIdOnRef(record.metadata.organisation.$ref)) {
+            /** Access forbidden */
+            this._router.navigate(['/errors/403'], { skipLocationChange: true });
+            return false;
+          }
+          return true;
+        }));
     } else {
+      /** Missing parameter */
       this._router.navigate(['/errors/400'], { skipLocationChange: true });
+      return of(false);
     }
-    return true;
   }
 }

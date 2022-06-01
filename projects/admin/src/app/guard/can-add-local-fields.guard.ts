@@ -16,9 +16,9 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { IUserLocaleStorage, UserService } from '@rero/shared';
-import { Observable } from 'rxjs';
+import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
+import { UserService } from '@rero/shared';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LocalFieldApiService } from '../api/local-field-api.service';
 
@@ -54,35 +54,25 @@ export class CanAddLocalFieldsGuard implements CanActivate {
   /**
    * Can activate
    * @param next - ActivatedRouteSnapshot
-   * @param state - RouterStateSnapshot
+   * @returns True if authorized access
+   * @throws redirect to error 400
    */
-  canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-
+  canActivate(next: ActivatedRouteSnapshot): Observable<boolean> {
     const params = next.queryParams;
     if (params.type && params.ref) {
-      /*
-       * Use of User local storage, because the loading of the routing
-       * is done before the load of the application.
-       */
-      const userLocale: IUserLocaleStorage = this._userService.getOnLocaleStorage();
-      if (userLocale) {
-        const organisationPid = userLocale.currentOrganisation;
-        return this._localFieldsApiService.getByResourceTypeAndResourcePidAndOrganisationId(
-          this._translateType(params.type),
-          params.ref,
-          organisationPid
-        ).pipe(map(record => {
-          return record.metadata ? false : true;
-        }));
-      }
-      this._router.navigate(['/errors/401'], { skipLocationChange: true });
+      const type = this._translateType(params.type);
+      return this._localFieldsApiService.getByResourceTypeAndResourcePidAndOrganisationId(
+        type,
+        params.ref,
+        this._userService.user.currentOrganisation
+      ).pipe(map(record => {
+        // False if the record metadata exists.
+        return !!!(record.metadata);
+      }));
     } else {
       this._router.navigate(['/errors/400'], { skipLocationChange: true });
+      return of(false);
     }
-
-    return true;
   }
 
   /**

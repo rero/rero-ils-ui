@@ -20,7 +20,6 @@ import { HotkeysService } from '@ngneat/hotkeys';
 import { User, UserService } from '@rero/shared';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { AppRouterEventService } from './service/app-router-event.service';
 import { KeyboardShortcutsService } from './service/keyboard-shortcuts.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 
@@ -39,7 +38,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   /**
    * Constructor
    * @param _userService - UserService
-   * @param _appRouterEventService - AppRouterEventService
    * @param _spinner - NgxSpinnerService
    * @param _keyboardShortcutsService - KeyboardShortcutsService
    * @param _hotKeysService - HotkeysService,
@@ -47,7 +45,6 @@ export class AppComponent implements OnInit, AfterViewInit {
    */
   constructor(
     private _userService: UserService,
-    private _appRouterEventService: AppRouterEventService,
     private _spinner: NgxSpinnerService,
     private _keyboardShortcutsService: KeyboardShortcutsService,
     private _hotKeysService: HotkeysService,
@@ -57,7 +54,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   /** Init hook */
   ngOnInit() {
     this._spinner.show();
-    this._appRouterEventService.initializeEvents();
     this._keyboardShortcutsService.initializeShortcuts();
     this._spinner.hide();
   }
