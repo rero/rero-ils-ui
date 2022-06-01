@@ -16,6 +16,7 @@
  */
 
 import { Injectable } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { ContributionBriefComponent } from '@rero/shared';
@@ -52,10 +53,12 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
    * Constructor
    * @param translateService - TranslateService
    * @param appConfigService - AppConfigService
+   * @param route - ActivatedRoute
    */
   constructor(
     translateService: TranslateService,
-    private appConfigService: AppConfigService
+    private appConfigService: AppConfigService,
+    private route: ActivatedRoute
   ) {
     super(translateService);
   }
@@ -98,7 +101,14 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
                 organisation: _('Library')
               },
               aggregationsOrder: this.aggregations(viewcode),
-              aggregationsExpand: ['document_type'],
+              aggregationsExpand: () => {
+                const expand = ['document_type'];
+                const queryParams = this.route.snapshot.queryParams;
+                if (queryParams.location || queryParams.library) {
+                  expand.push('organisation');
+                }
+                return expand;
+              },
               aggregationsBucketSize: 10,
               preFilters: {
                 view: `${viewcode}`,
