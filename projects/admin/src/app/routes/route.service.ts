@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { RouteCollectionService } from '@rero/ng-core';
 import { ReceiptLinesRoute } from '../acquisition/routes/receipt-lines-route';
@@ -61,7 +61,6 @@ export class RouteService {
   constructor(
     private _routeCollectionService: RouteCollectionService,
     private _router: Router,
-    private _route: ActivatedRoute,
     private _routeToolService: RouteToolService,
     private _translateService: TranslateService
   ) { }
@@ -72,7 +71,7 @@ export class RouteService {
   initializeRoutes() {
     this._routeCollectionService
       .addRoute(new CirculationPoliciesRoute(this._routeToolService))
-      .addRoute(new DocumentsRoute(this._routeToolService, this._route))
+      .addRoute(new DocumentsRoute(this._routeToolService))
       .addRoute(new HoldingsRoute(this._routeToolService))
       .addRoute(new ItemsRoute(this._routeToolService))
       .addRoute(new IssuesRoute(this._routeToolService))

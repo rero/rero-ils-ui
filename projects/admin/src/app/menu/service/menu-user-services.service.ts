@@ -151,7 +151,6 @@ export class MenuUserServicesService extends MenuBase {
     // ----- DOCUMENTS
     this._documentsMenu = catalogMenu.addChild('Documents')
     .setRouterLink(['/', 'records', 'documents'])
-    .setQueryParam('organisation', this._userService.user.currentOrganisation)
     .setAttribute('id', 'documents-menu')
     .setExtra('iconClass', 'fa fa-file-o');
     this._translatedName(this._documentsMenu, 'Documents');
@@ -329,8 +328,6 @@ export class MenuUserServicesService extends MenuBase {
       // USER SERVICES: COLLECTIONS, ILL REQUESTS
       this._illRequestsMenu.setQueryParam('library', user.currentLibrary);
       this._collectionsMenu.setQueryParam('library', user.currentLibrary);
-      // CATALOG: DOCUMENTS
-      this._documentsMenu.setQueryParam('organisation', user.currentOrganisation);
       // ACQUISITION:
       this._ordersMenu.setQueryParam('library', user.currentLibrary);
       this._lateIssuesMenu.setQueryParam('library', user.currentLibrary);

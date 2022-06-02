@@ -53,6 +53,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
    * Constructor
    * @param translateService - TranslateService
    * @param appConfigService - AppConfigService
+   * @param _route - ActivatedRoute
    */
   constructor(
     translateService: TranslateService,
@@ -97,18 +98,44 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
               label: _('Documents'),
               aggregations: (aggregations: any) => this.aggFilter(aggregations),
               aggregationsName: {
-                organisation: _('Library')
+                online: _('Online resources'),
+                not_online: _('Physical resources'),
+                organisation: _('Library'),
+                genreForm: _('Genre, form'),
+                intendedAudience: _('Intended audience'),
+                year: _('Publication year'),
+                subject_fiction: _('Subject (fiction)'),
+                subject_no_fiction: _('Subject (non-fiction)'),
               },
+              showFacetsIfNoResults: true,
               aggregationsOrder: this.aggregations(viewcode),
               aggregationsExpand: () => {
                 const expand = ['document_type'];
                 const queryParams = this._route.snapshot.queryParams;
-                if (queryParams.location || queryParams.library) {
-                  expand.push('organisation');
+                if (this.appConfigService.globalViewName === viewcode) {
+                  if (queryParams.location || queryParams.library) {
+                    expand.push('organisation');
+                  }
+                } else {
+                  if (queryParams.location) {
+                    expand.push('library');
+                  }
                 }
                 return expand;
               },
               aggregationsBucketSize: 10,
+              searchFilters: [
+                {
+                  label: _('Online resources'),
+                  filter: 'online',
+                  value: 'true'
+                },
+                {
+                  label: _('Physical resources'),
+                  filter: 'not_online',
+                  value: 'true'
+                }
+              ],
               preFilters: {
                 view: `${viewcode}`,
                 simple: 1
@@ -196,19 +223,27 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
     if (this.appConfigService.globalViewName === viewcode) {
       return [
         _('document_type'),
-        _('author'),
         _('organisation'),
         _('language'),
-        _('subject'),
+        _('year'),
+        _('author'),
+        _('subject_no_fiction'),
+        _('subject_fiction'),
+        _('genreForm'),
+        _('intendedAudience'),
         _('status')
       ];
     } else {
       return [
         _('document_type'),
-        _('author'),
         _('library'),
         _('language'),
-        _('subject'),
+        _('year'),
+        _('author'),
+        _('subject_no_fiction'),
+        _('subject_fiction'),
+        _('genreForm'),
+        _('intendedAudience'),
         _('status')
       ];
     }
