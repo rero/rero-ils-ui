@@ -73,7 +73,13 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
             },
             listHeaders: {
               Accept: 'application/rero+json'
-            }
+            },
+            exportFormats: [
+              {
+                label: 'CSV',
+                format: 'csv'
+              },
+            ],
           }
         ]
       }
