@@ -16,8 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-figure, .thumb-detail img {
+figure.thumb-detail img {
   width: 100%;
   height: auto;
   max-height: 100%;
+}
+
+figure.thumb-brief img {
+  min-width: 120px;
 }
