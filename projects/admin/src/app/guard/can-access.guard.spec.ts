@@ -87,17 +87,19 @@ describe('CanAccessGuard', () => {
     });
   }));
 
-  it('should return true if the item is part of the same organization', () => {
+  it('should return true if the item is part of the same organization', fakeAsync(() => {
     spyOn(recordService, 'getRecord').and.returnValue(of(record));
     guard.canActivate(activatedRouteSnapshotSpy)
       .subscribe((access: boolean) => {
+        tick();
         expect(access).toBeTruthy();
       });
-  });
+  }));
 
   it('should redirect to error 403 if the item does not belong to the same organization', fakeAsync(() => {
-    record.metadata.organisation.$ref = 'https://localhost/api/organisations/2';
-    spyOn(recordService, 'getRecord').and.returnValue(of(record));
+    const recordClone = cloneDeep(record);
+    recordClone.metadata.organisation.$ref = 'https://localhost/api/organisations/2';
+    spyOn(recordService, 'getRecord').and.returnValue(of(recordClone));
     guard.canActivate(activatedRouteSnapshotSpy).subscribe(() => {
       tick();
       expect(router.url).toBe('/errors/403');
