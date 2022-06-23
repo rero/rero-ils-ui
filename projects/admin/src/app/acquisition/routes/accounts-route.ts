@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
- * Copyright (C) 2021 UCLouvain
+ * Copyright (C) 2022 RERO
+ * Copyright (C) 2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,6 +25,12 @@ import { of } from 'rxjs';
 import { OrganisationService } from '../../service/organisation.service';
 import { AccountDetailViewComponent } from '../components/account/account-detail-view/account-detail-view.component';
 import { CanAddAccountGuard } from './guards/can-add-account.guard';
+
+/** Export formats configuration. */
+export const exportFormats = [{
+   label: 'CSV',
+   format: 'csv',
+}];
 
 export class AccountsRoute extends BaseRoute implements RouteInterface {
 
@@ -57,7 +63,8 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
                 return this._amountSymbol(field);
               }
               return field;
-            }
+            },
+            exportFormats
           }
         ]
       }
