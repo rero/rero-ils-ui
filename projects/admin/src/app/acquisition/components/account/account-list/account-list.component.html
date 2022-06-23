@@ -18,18 +18,28 @@
 <ng-container *ngIf="organisation">
   <header class="row d-flex align-items-baseline">
     <h1 class="col">{{ 'Acquisition accounts' | translate }}</h1>
-    <div class="col-3 text-right">
+    <div class="col text-right">
+      <!-- ADD BUTTON -->
+      <a [routerLink]="['/', 'records', 'acq_accounts', 'new']"
+         [queryParams]="{ budget: organisation.current_budget_pid }"
+         class="btn btn-sm btn-primary"
+      >
+        <i class="fa fa-plus"></i> {{ 'Add' | translate }}
+      </a>
+      <!-- END ADD BUTTON -->
+      <!-- EXPORT BUTTON -->
+      <ng-core-export-button
+        [exportOptions]="exportOptions"
+        [cssClass]="'btn btn-sm btn-outline-primary mr-2 ml-2'">
+      </ng-core-export-button>
+      <!-- END EXPORT BUTTON -->
+      <!-- TRANSFER BUTTON -->
       <a [routerLink]="['/', 'acquisition', 'accounts', 'transfer']"
-         class="btn btn-sm btn-outline-primary mr-2"
+         class="btn btn-sm btn-outline-primary"
       >
         <i class="fa fa-exchange"></i> {{ 'Transfer funds' | translate }} &hellip;
       </a>
-      <a [routerLink]="['/', 'records', 'acq_accounts', 'new']"
-         [queryParams]="{ budget: organisation.current_budget_pid }"
-         class="btn btn-sm btn-outline-primary"
-      >
-        <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
-      </a>
+      <!-- END TRANSFER BUTTON -->
     </div>
   </header>
 

@@ -77,7 +77,9 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
             exportFormats: [
               {
                 label: 'CSV',
-                format: 'csv'
+                format: 'csv',
+                endpoint: this._routeToolService.apiService.getExportEndpointByType(this.recordType),
+                disableMaxRestResultsSize: true,
               },
             ],
           }
