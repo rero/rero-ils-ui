@@ -170,9 +170,17 @@ export class RecordPermissionService {
         '=1': this._translateService.instant('has 1 acquisition order attached'),
         other: this._translateService.instant('has # acquisition orders attached')
       },
+      acq_receipt_lines: {
+        '=1': this._translateService.instant('has 1 acquisition receipt line attached'),
+        other: this._translateService.instant('has # acquisition receipts lines attached')
+      },
+      acq_receipt: {
+        '=1': this._translateService.instant('has 1 acquisition receipt attached'),
+        other: this._translateService.instant('has # acquisition receipts attached')
+      },
       acq_accounts: {
         '=1': this._translateService.instant('has 1 acquisition account attached'),
-        other: this._translateService.instant('has # acquisition account attached')
+        other: this._translateService.instant('has # acquisition accounts attached')
       },
       budgets: {
         '=1': this._translateService.instant('has 1 budget attached'),

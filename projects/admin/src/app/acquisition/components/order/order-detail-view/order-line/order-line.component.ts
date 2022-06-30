@@ -62,7 +62,7 @@ export class OrderLineComponent implements OnInit, OnDestroy {
       : null;
   }
   get editInfoMessage(): string {
-    return (!this.permissions.delete.can)
+    return (!this.permissions.update.can)
       ? this._recordPermissionService.generateTooltipMessage(this.permissions.update.reasons, 'update')
       : null;
   }
