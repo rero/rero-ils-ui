@@ -1,5 +1,27 @@
 # Changelog
 
+## [v0.24.0](https://github.com/rero/rero-ils-ui/tree/v0.24.0) (2022-07-08)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.23.0...v0.24.0)
+
+**Changes:**
+* holdings: small ui fix [\#858](https://github.com/rero/rero-ils-ui/pull/858) (by @PascalRepond)
+* documents: fix the thumbnail size on different devices [\#877](https://github.com/rero/rero-ils-ui/pull/877) (by @Garfield-fr)
+* library switch menu: fix storage current library [\#876](https://github.com/rero/rero-ils-ui/pull/876) (by @Garfield-fr)
+* documents: export records [\#848](https://github.com/rero/rero-ils-ui/pull/848) (by @lauren-d)
+* fix: extract missing translation [\#871](https://github.com/rero/rero-ils-ui/pull/871) (by @PascalRepond)
+* guard: fix tests on CanAccessGuard [\#869](https://github.com/rero/rero-ils-ui/pull/869) (by @Garfield-fr)
+* document: fix size of the thumbnail on mobile brief view [\#868](https://github.com/rero/rero-ils-ui/pull/868) (by @Garfield-fr)
+* editor: adapt code to new widget structure on jsonschema [\#835](https://github.com/rero/rero-ils-ui/pull/835) (by @Garfield-fr)
+* translations: fix missing request translation [\#865](https://github.com/rero/rero-ils-ui/pull/865) (by @PascalRepond)
+* forms: add email validation behavior [\#861](https://github.com/rero/rero-ils-ui/pull/861) (by @zannkukai)
+* requests: add location/pickup-location sort criteria. [\#859](https://github.com/rero/rero-ils-ui/pull/859) (by @zannkukai)
+* document: `identifiedBy` duplicate check. [\#855](https://github.com/rero/rero-ils-ui/pull/855) (by @zannkukai)
+* general: fix error 400 bad request [\#864](https://github.com/rero/rero-ils-ui/pull/864) (by @Garfield-fr)
+* general: Safe URL pipe [\#857](https://github.com/rero/rero-ils-ui/pull/857) (by @zannkukai)
+* notification_types: mark missing translation [\#856](https://github.com/rero/rero-ils-ui/pull/856) (by @PascalRepond)
+* circulation: display due date at checkin [\#827](https://github.com/rero/rero-ils-ui/pull/827) (by @vgranata)
+
 ## [v0.23.0](https://github.com/rero/rero-ils-ui/tree/v0.23.0) (2022-05-16)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.22.1...v0.23.0)
