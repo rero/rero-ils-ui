@@ -16,8 +16,8 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { MenuItemInterface, TranslateService } from '@rero/ng-core';
-import { MenuItem } from '@rero/ng-core';
+import { MenuItem, MenuItemInterface } from '@rero/ng-core';
+import { LibrarySwitchMenuStorageService } from '../service/library-switch-menu-storage.service';
 import { MenuUserService } from '../service/menu-user.service';
 
 @Component({
@@ -37,11 +37,11 @@ export class MenuUserComponent implements OnInit {
   /**
    * Constructor
    * @param _menuUserService - MenuUserService
-   * @param _translateService - TranslateService
+   * @param _librarySwitchMenuStorageService - LibrarySwitchMenuStorageService
    */
   constructor(
     private _menuUserService: MenuUserService,
-    private _translateService: TranslateService
+    private _librarySwitchMenuStorageService: LibrarySwitchMenuStorageService
   ) { }
 
   /** Init */
@@ -52,11 +52,10 @@ export class MenuUserComponent implements OnInit {
     this._menu = this._menuUserService.menu;
   }
 
-  /**
-   * Change language
-   * @param event: MenuItem
-   */
-  changeLang(event: MenuItem): void {
-    this._translateService.setLanguage(event.getExtra('language'));
+  eventMenuClick(event: MenuItem) {
+    // If the user logout, we delete the local storage
+    if (event.getAttribute('id') === 'logout-menu') {
+      this._librarySwitchMenuStorageService.removeStorage();
+    }
   }
 }
