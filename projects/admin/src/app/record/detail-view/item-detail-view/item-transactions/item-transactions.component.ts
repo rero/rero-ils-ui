@@ -30,25 +30,20 @@ import { ItemRequestComponent } from '../../document-detail-view/item-request/it
 })
 export class ItemTransactionsComponent implements OnInit {
 
+  // COMPONENTS ATTRIBUTES ====================================================
   /** Item record */
-  @Input() item: any;
+  @Input() itemPid: string;
 
-  /**
-   * Informs parent component that a request has been cancelled
-   */
+  /** Informs parent component that a request has been cancelled */
   @Output() cancelRequestEvent = new EventEmitter<any>();
 
   /** Borrowed loan */
   borrowedBy: Array<any> = [];
-
   /** Requested loan(s) */
   requestedBy: Array<any> = [];
 
-  /**
-   * Current user
-   */
-  private _currentUser: any;
 
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param _loanService - LoanService
@@ -65,52 +60,37 @@ export class ItemTransactionsComponent implements OnInit {
     private _userService: UserService
   ) { }
 
-  /**
-   * On init hook
-   */
+  /** OnInit hook */
   ngOnInit() {
-    this._currentUser = this._userService.user;
-    const borrowedBy$ = this._loanService.borrowedBy$(this.item.metadata.pid);
-    const requestedBy$ = this._loanService.requestedBy$(this.item.metadata.pid);
-    forkJoin([borrowedBy$, requestedBy$]).subscribe(
-      ([borrowedLoan, requestedLoans]) => {
+    const borrowedBy$ = this._loanService.borrowedBy$(this.itemPid);
+    const requestedBy$ = this._loanService.requestedBy$(this.itemPid);
+    forkJoin([borrowedBy$, requestedBy$])
+      .subscribe(([borrowedLoan, requestedLoans]) => {
         this.borrowedBy = borrowedLoan;
         this.requestedBy = requestedLoans;
-      }
-    );
+      });
   }
 
-  /**
-   * Delete a request from the request list
-   * @param deletedRequest: The deletedRequest
-   */
-  deleteRequest(deletedRequest: any) {
-    this.requestedBy = this.requestedBy.filter(request => request.id !== deletedRequest.id);
-  }
-
+  // COMPONENTS FUNCTIONS =====================================================
   /**
    * Add request on this item
    */
-  addRequest() {
+  addRequest(): void {
     const modalRef = this._modalService.show(ItemRequestComponent, {
-      initialState: { recordPid: this.item.metadata.pid, recordType: 'item' }
+      initialState: { recordPid: this.itemPid, recordType: 'item' }
     });
-    modalRef.content.onSubmit.pipe(first()).subscribe(value => {
-      this._loanService.requestedBy$(this.item.metadata.pid).subscribe(data => this.requestedBy = data);
-    });
+    modalRef.content.onSubmit
+      .pipe(first())
+      .subscribe(_ => this._refreshRequestList());
   }
 
   /**
    * Cancel request
    * @param transaction - request to cancel
    */
-  cancelRequest(transaction: any) {
+  cancelRequest(transaction: any): void {
     this._loanService
-      .cancelLoan(
-        this.item.pid,
-        transaction.metadata.pid,
-        this._currentUser.currentLibrary
-      )
+      .cancelLoan(this.itemPid, transaction.metadata.pid, this._userService.user.currentLibrary)
       .subscribe((itemData: any) => {
         const status = this._translateService.instant(itemData.status);
         this._toastrService.warning(
@@ -118,35 +98,35 @@ export class ItemTransactionsComponent implements OnInit {
           this._translateService.instant('Request')
         );
         this.cancelRequestEvent.emit();
-        this.updateRequestList();
+        this._refreshRequestList();
       });
   }
 
   /**
    * Update request pickup location
-   * @param pickupLocationPid - pickup location pid to change
+   * @param data - pickup location pid to change
    */
-  updateRequestPickupLocation(data: any) {
+  updateRequestPickupLocation(data: any): void {
     this._loanService
-      .updateLoanPickupLocation(
-        data.transaction.metadata.pid,
-        data.pickupLocationPid
-      )
-      .subscribe((response: any) => {
+      .updateLoanPickupLocation(data.transaction.metadata.pid, data.pickupLocationPid)
+      .subscribe(_ => {
         this._toastrService.success(
           this._translateService.instant('The pickup location has been changed.'),
           this._translateService.instant('Request')
         );
-        this.updateRequestList();
+        this._refreshRequestList();
       });
   }
 
+  // PRIVATE COMPONENT FUNCTIONS ==============================================
   /**
-   * Update request list
+   * Refresh the request list
    */
-  updateRequestList() {
-    this._loanService.requestedBy$(this.item.metadata.pid).subscribe(requestedLoans =>
-      this.requestedBy = requestedLoans
-    );
+  private _refreshRequestList(): void {
+    this._loanService
+      .requestedBy$(this.itemPid)
+      .subscribe(requestedLoans =>
+        this.requestedBy = requestedLoans
+      );
   }
 }

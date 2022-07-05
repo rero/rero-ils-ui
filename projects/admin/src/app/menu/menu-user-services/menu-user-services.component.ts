@@ -37,7 +37,7 @@ export class MenuUserServicesComponent implements OnInit {
 
   /**
    * Constructor
-   * @param _menuUserService - MenuUserService
+   * @param _menuUserServicesService - MenuUserService
    */
   constructor(private _menuUserServicesService: MenuUserServicesService) { }
 

@@ -1,0 +1,75 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2022 RERO
+  Copyright (C) 2022 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<section class="container-fluid">
+  <!-- LOAN METADATA -->
+  <div class="row">
+    <div class="col">
+      <h5 class="mb-0">{{ record.metadata.document.title | mainTitle }}</h5>
+      <div class="container">
+        <dl class="row m-0">
+          <dt class="label-title col-3" translate>Item</dt>
+          <dd class="col-9">
+            <shared-inherited-call-number [item]="record.metadata.item"></shared-inherited-call-number>
+            (<a [routerLink]="['/records', 'items', 'detail', record.metadata.item.pid]">{{ record.metadata.item.barcode }}</a>)
+          </dd>
+          <dt class="label-title col-3" translate>Patron</dt>
+          <dd class="col-9">
+            <a [routerLink]="['/records', 'patrons', 'detail', this.record.metadata.patron.pid]">
+              {{ record.metadata.patron.formatted_name }}
+            </a>
+          </dd>
+          <dt class="label-title col-3" translate>Status</dt>
+          <dd class="col-9">
+            <span class="badge" [class]="stateClass">{{ record.metadata.state | translate }}</span>
+            <ng-container [ngSwitch]="record.metadata.state">
+              <!-- ITEM_ON_LOAN additional information -->
+              <span *ngSwitchCase="loanState.ITEM_ON_LOAN">
+                <span *ngIf="record.metadata?.is_late" class="badge badge-danger ml-1" translate>overdue</span>
+                ({{ 'due date' | translate }}
+                <span [ngClass]="{'text-danger font-weight-bold': record.metadata?.is_late}">
+                  {{record.metadata.end_date | date: 'shortDate' }}</span>)
+              </span>
+              <!-- REQUEST additional information -->
+              <span *ngSwitchCase="loanState.ITEM_AT_DESK">
+                ({{ 'request expire at' | translate }}
+                 <span [ngClass]="{'text-danger': isRequestExpired}">{{ record.metadata.request_expire_date | date: 'shortDate' }}</span>)
+              </span>
+            </ng-container>
+          </dd>
+        </dl>
+      </div>
+    </div>
+    <!-- ACTIONS BUTTON -->
+    <div class="col-2 text-right">
+      <button class="btn btn-sm btn-outline-secondary"
+              (click)="openTransactionHistoryDialog(record.metadata.pid)"
+      >
+        <i class="fa fa-history"></i>
+      </button>
+      <button class="debug-button btn btn-sm btn-outline-warning ml-1"
+              *ngIf="canUseDebugMode"
+              [class.btn-hover]="debugMode"
+              (click)="debugMode=!debugMode">
+        <i class="fa fa-bug pr-1"></i>
+        <i class="fa" [ngClass]="debugMode ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
+      </button>
+    </div>
+    <!-- DEBUG PANEL -->
+    <pre class="col-12 mt-2" *ngIf="debugMode">{{ record.metadata | json }}</pre>
+  </div>
+</section>

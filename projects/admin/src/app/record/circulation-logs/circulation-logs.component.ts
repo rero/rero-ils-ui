@@ -33,6 +33,8 @@ export class CirculationLogsComponent implements OnInit {
   // COMPONENT ATTRIBUTES =====================================================
   /** Resource pid */
   @Input() resourcePid: string;
+  /** Resource type */
+  @Input() resourceType = 'item';
 
   /** Current page */
   page = 1;
@@ -145,7 +147,7 @@ export class CirculationLogsComponent implements OnInit {
    */
   private _circulationLogsQuery(page: number): Observable<any> {
     return this._operationLogsApiService
-      .getCirculationLogs(this.resourcePid, page, this.itemsPerPage)
+      .getCirculationLogs(this.resourceType, this.resourcePid, page, this.itemsPerPage)
       .pipe(map((response: Record) =>  response.hits));
   }
 }

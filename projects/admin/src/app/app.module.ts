@@ -82,7 +82,7 @@ import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-vie
 import { TemplatesBriefViewComponent } from './record/brief-view/templates-brief-view.component';
 import { VendorBriefViewComponent } from './record/brief-view/vendor-brief-view.component';
 import { CirculationLogComponent } from './record/circulation-logs/circulation-log/circulation-log.component';
-import { CirculationLogsDialogComponent } from './record/circulation-logs/circulation-logs-dialog/circulation-logs-dialog.component';
+import { CirculationLogsDialogComponent } from './record/circulation-logs/circulation-logs-dialog.component';
 import { CirculationLogsComponent } from './record/circulation-logs/circulation-logs.component';
 import { DocumentEditorComponent } from './record/custom-editor/document-editor/document-editor.component';
 import { HoldingEditorComponent } from './record/custom-editor/holding-editor/holding-editor.component';
@@ -165,6 +165,7 @@ import { ItemAvailabilityPipe } from './pipe/item-availability.pipe';
 import { ExpectedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/expected-issue/expected-issue.component';
 import { ReceivedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/received-issue/received-issue.component';
 import { AppInitializerService } from './service/app-initializer.service';
+import { LoansBriefViewComponent } from './record/brief-view/loans-brief-view/loans-brief-view.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -270,7 +271,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     HoldingOrganisationComponent,
     ItemAvailabilityPipe,
     ExpectedIssueComponent,
-    ReceivedIssueComponent
+    ReceivedIssueComponent,
+    LoansBriefViewComponent
   ],
   imports: [
     AppRoutingModule,

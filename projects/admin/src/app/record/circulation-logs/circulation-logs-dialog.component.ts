@@ -16,33 +16,43 @@
  */
 import { Component, Input } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { CirculationLogsComponent } from '../circulation-logs.component';
+import { CirculationLogsComponent } from './circulation-logs.component';
 
 @Component({
   selector: 'admin-circulation-logs-dialog',
-  templateUrl: './circulation-logs-dialog.component.html'
+  template: `
+    <button id="item-circulation-history" class="btn btn-sm btn-light my-2 ml-2" (click)="openDialog()" translate>
+      Circulation history
+    </button>
+  `
 })
 export class CirculationLogsDialogComponent {
 
+  // COMPONENT ATTRIBUTES =====================================================
   /** Resource pid */
   @Input() resourcePid: string;
+  /** Resource type */
+  @Input() resourceType: 'item'|'loan' = 'item';
 
   /** Modal ref */
   bsModalRef: BsModalRef;
 
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param _modalService - BsModalService
    */
   constructor(private _modalService: BsModalService) {}
 
+  // COMPONENT FUNCTIONS ======================================================
   /** Open operation logs dialog */
   openDialog(): void {
     const config = {
       ignoreBackdropClick: false,
       keyboard: true,
       initialState: {
-        resourcePid: this.resourcePid
+        resourcePid: this.resourcePid,
+        resourceType: this.resourceType
       }
     };
     this.bsModalRef = this._modalService.show(CirculationLogsComponent, config);

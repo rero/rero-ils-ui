@@ -283,17 +283,20 @@
 
   <!-- TRANSACTIONS -->
   <admin-item-transactions
-    [item]="record"
+    [itemPid]="record.metadata.pid"
     (cancelRequestEvent)="updateItemStatus()"
   ></admin-item-transactions>
 
   <!-- OPERATION LOGS-->
   <admin-operation-logs-dialog
     *ngIf="isEnabledOperationLog"
-    resourceType="items"
+    [resourceType]="'items'"
     [resourcePid]="record.metadata.pid"
   ></admin-operation-logs-dialog>
 
-    <!-- CIRCULATION LOGS -->
-  <admin-circulation-logs-dialog [resourcePid]="record.metadata.pid"></admin-circulation-logs-dialog>
+  <!-- CIRCULATION LOGS -->
+  <admin-circulation-logs-dialog
+    [resourcePid]="record.metadata.pid"
+    [resourceType]="'item'"
+  ></admin-circulation-logs-dialog>
 </ng-container>
