@@ -17,7 +17,7 @@
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DetailComponent, EditorComponent, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
-import { IssueItemStatus } from '@rero/shared';
+import { IssueItemStatus, User } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ItemType } from '../classes/items';
@@ -182,8 +182,10 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
     };
     // TODO: Refactor this after the change of AppInitializer service with user.
     this._routeToolService.userService.loaded$.subscribe(() => {
-      config.data.types[0].preFilters.organisation =
-        this._routeToolService.userService.user.patronLibrarian.organisation.pid;
+      const patronLibrarian = this._routeToolService.userService.user.patronLibrarian;
+      if (patronLibrarian) {
+        config.data.types[0].preFilters.organisation = patronLibrarian.organisation.pid;
+      }
     });
 
     return config;

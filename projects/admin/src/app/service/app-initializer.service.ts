@@ -19,6 +19,7 @@ import { TranslateService } from '@rero/ng-core';
 import { AppSettingsService, User, UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
+import { LibrarySwitchMenuStorageService } from '../menu/service/library-switch-menu-storage.service';
 import { LibrarySwitchMenuService } from '../menu/service/library-switch-menu.service';
 import { LibrarySwitchService } from '../menu/service/library-switch.service';
 import { AppConfigService } from './app-config.service';
@@ -40,6 +41,7 @@ export class AppInitializerService {
    * @param _librarySwitchMenuService - LibrarySwitchMenuService
    * @param _typeaheadFactoryService - TypeaheadFactoryService
    * @param _appSettingsService - AppSettingsService
+   * @param _librarySwitchMenuStorageService - LibrarySwitchMenuStorageService
    */
   constructor(
     private _userService: UserService,
@@ -49,7 +51,8 @@ export class AppInitializerService {
     private _librarySwitchService: LibrarySwitchService,
     private _librarySwitchMenuService: LibrarySwitchMenuService,
     private _typeaheadFactoryService: TypeaheadFactoryService,
-    private _appSettingsService: AppSettingsService
+    private _appSettingsService: AppSettingsService,
+    private _librarySwitchMenuStorageService: LibrarySwitchMenuStorageService
   ) { }
 
   /**
@@ -69,7 +72,9 @@ export class AppInitializerService {
           this._organisationService.loadOrganisationByPid(
             user.patronLibrarian.libraries[0].organisation.pid
           );
-          this._librarySwitchService.switch(user.currentLibrary);
+          this._librarySwitchService.switch(
+            this._librarySwitchMenuStorageService.getCurrentLibrary()
+          );
         }
       }),
       switchMap(() => this.initTranslateService())
