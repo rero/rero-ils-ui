@@ -49,26 +49,25 @@ export class OperationLogsApiService extends BaseApi {
     resourceType: string, resourcePid: string, action: 'create'|'update',
     page: number, itemPerPage = 5, sort = 'mostrecent'): Observable<Record | Error> {
     const query = `record.type:${resourceType} AND record.value:${resourcePid} AND operation:${action}`;
-    return this._recordService.getRecords(
-      'operation_logs', query, page, itemPerPage,
-      undefined, undefined, undefined, sort
-    );
+    return this._recordService.getRecords('operation_logs', query, page, itemPerPage, undefined, undefined, undefined, sort);
   }
 
   /**
-   * Get Circulation logs by item
-   * @param resourcePid - string
+   * Get Circulation logs
+   * @param resourceType - the type of resource to search for.
+   * @param resourcePid - the resource pid.
    * @param page - number
    * @param itemPerPage - number
    * @param sort - string
    * @returns Observable
    */
-  getCirculationLogs(resourcePid: string, page: number, itemPerPage = 5, sort = 'mostrecent'): Observable<Record | Error> {
-    const query = `_exists_:loan AND loan.item.pid:${resourcePid}`;
-    return this._recordService.getRecords(
-      'operation_logs', query, page, itemPerPage,
-      undefined, undefined, undefined, sort
-    );
+  getCirculationLogs(
+    resourceType: string, resourcePid: string, page: number, itemPerPage = 5, sort = 'mostrecent'): Observable<Record | Error> {
+    const queryField = (resourceType === 'loan')
+      ? 'loan.pid'
+      : 'loan.item.pid';
+    const query = `_exists_:loan AND ${queryField}:${resourcePid}`;
+    return this._recordService.getRecords('operation_logs', query, page, itemPerPage, undefined, undefined, undefined, sort);
   }
 
   /**
@@ -82,9 +81,7 @@ export class OperationLogsApiService extends BaseApi {
     const date = moment().subtract(6, 'months').utc().format('YYYY-MM-DDTHH:mm:ss');
     const query = `_exists_:loan AND loan.patron.pid:${patronPid} AND loan.trigger:checkin AND date:[${date} TO *]`;
     return this._recordService.getRecords(
-      'operation_logs', query, page, itemsPerPage,
-      undefined, undefined, BaseApi.reroJsonheaders, 'mostrecent'
-    );
+      'operation_logs', query, page, itemsPerPage, undefined, undefined, BaseApi.reroJsonheaders, 'mostrecent');
   }
 
   /**
@@ -95,13 +92,11 @@ export class OperationLogsApiService extends BaseApi {
    */
   getHistoryByLoanPid(loanPid: string, type: string = 'checkin'): Observable<Record | Error> {
     const query = `_exists_:loan AND loan.pid:${loanPid} AND loan.trigger:${type}`;
-    return this._recordService.getRecords(
-      'operation_logs', query, 1, 1,
-      undefined, undefined, BaseApi.reroJsonheaders
-    ).pipe(map((result: any) => {
-      return this._recordService.totalHits(result.hits.total) === 1
-      ? result.hits.hits[0]
-      : {};
-    }));
+    return this._recordService.getRecords('operation_logs', query, 1, 1, undefined, undefined, BaseApi.reroJsonheaders)
+      .pipe(map((result: any) => {
+        return this._recordService.totalHits(result.hits.total) === 1
+          ? result.hits.hits[0]
+          : {};
+      }));
   }
 }

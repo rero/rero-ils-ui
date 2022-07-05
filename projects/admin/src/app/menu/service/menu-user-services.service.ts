@@ -51,6 +51,9 @@ export class MenuUserServicesService extends MenuBase {
   /** Inventory menu */
   private _inventoryMenu: MenuItemInterface;
 
+  /** Current loans */
+  private _currentLoansMenu: MenuItemInterface;
+
   /** late issue menu */
   private _lateIssuesMenu: MenuItemInterface;
 
@@ -136,6 +139,14 @@ export class MenuUserServicesService extends MenuBase {
     .setAttribute('id', 'collections-menu')
     .setExtra('iconClass', 'fa fa-graduation-cap');
     this._translatedName(this._collectionsMenu, 'Exhibition/course');
+
+    // ----- CURRENT LOANS
+    this._currentLoansMenu = servicesMenu.addChild('Current loans')
+    .setRouterLink(['/', 'records', 'loans'])
+    .setQueryParam('owner_library', this._userService.user.currentLibrary)
+    .setAttribute('id', 'current-loans-menu')
+    .setExtra('iconClass', 'fa fa-list-ul');
+    this._translatedName(this._currentLoansMenu, 'Current loans');
   }
 
   /**
@@ -328,6 +339,7 @@ export class MenuUserServicesService extends MenuBase {
       // USER SERVICES: COLLECTIONS, ILL REQUESTS
       this._illRequestsMenu.setQueryParam('library', user.currentLibrary);
       this._collectionsMenu.setQueryParam('library', user.currentLibrary);
+      this._currentLoansMenu.setQueryParam('owner_library', user.currentLibrary);
       // ACQUISITION:
       this._ordersMenu.setQueryParam('library', user.currentLibrary);
       this._lateIssuesMenu.setQueryParam('library', user.currentLibrary);

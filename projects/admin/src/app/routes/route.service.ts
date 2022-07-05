@@ -17,7 +17,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { RouteCollectionService } from '@rero/ng-core';
+import { ActionStatus, RouteCollectionService } from '@rero/ng-core';
+import { Observable, of } from 'rxjs';
 import { ReceiptLinesRoute } from '../acquisition/routes/receipt-lines-route';
 import { ReceiptsRoute } from '../acquisition/routes/receipts-route';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
@@ -36,6 +37,7 @@ import { IssuesRoute } from './issues-route';
 import { ItemTypesRoute } from './item-types-route';
 import { ItemsRoute } from './items-route';
 import { LibrariesRoute } from './libraries-route';
+import { LoansRoute } from './loans-route';
 import { LocalFieldsRoute } from './local-fields-route';
 import { LocationsRoute } from './locations-route';
 import { OrganisationsRoute } from './organisations-route';
@@ -88,6 +90,7 @@ export class RouteService {
       .addRoute(new CorporateBodiesRoute(this._routeToolService))
       .addRoute(new IllRequestsRoute(this._routeToolService))
       .addRoute(new LocalFieldsRoute(this._routeToolService))
+      .addRoute(new LoansRoute(this._routeToolService))
       // Route from acquisition modules
       .addRoute(new AcqBudgetsRoute(this._routeToolService))
       .addRoute(new AcqAccountsRoute(this._routeToolService))

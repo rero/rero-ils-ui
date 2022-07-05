@@ -48,7 +48,7 @@
       *ngFor="let request of requestedBy"
       type="loan_request"
       [transaction]="request"
-      [itemPid]="item.metadata.pid"
+      [itemPid]="itemPid"
       (cancelRequestEvent)="cancelRequest($event)"
       (updatePickupLocationEvent)="updateRequestPickupLocation($event)"
     ></admin-item-transaction>
