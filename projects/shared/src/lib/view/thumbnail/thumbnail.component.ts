@@ -40,6 +40,9 @@ export class ThumbnailComponent implements OnInit {
   /** Style for image container */
   figureStyle = 'thumb-detail';
 
+  /** is a svg image */
+  svgImage = true;
+
   /** Record to display */
   @Input() record: any;
 
@@ -68,6 +71,7 @@ export class ThumbnailComponent implements OnInit {
     ).subscribe(result => {
       if (result !== null && result.success) {
         this.coverUrl = result.image;
+        this.svgImage = false;
       }
     });
   }
@@ -83,6 +87,7 @@ export class ThumbnailComponent implements OnInit {
         for (const electronicLocator of this.record.metadata.electronicLocator) {
           if (electronicLocator.content === 'coverImage' && electronicLocator.type === 'relatedResource') {
             this.coverUrl = electronicLocator.url;
+            this.svgImage = false;
             break;
           }
         }
