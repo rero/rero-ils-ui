@@ -78,25 +78,28 @@ export class RecordPermissionService {
       this._translateService.currentLang
     ));
     const messages = [];
-    // Links
-    if ('links' in reasons) {
-      const pluralDict = this.plurialLinksMessages();
-      Object.keys(reasons.links).forEach(link => {
-        const message = (link in pluralDict)
-          ? translatePlural.transform(reasons.links[link], pluralDict[link], this._translateService.currentLang)
-          : reasons.links[link][link] + ' ' + link;
-        messages.push('- ' + message);
-      });
-    }
-    // Others
-    if ('others' in reasons) {
-      const pluralDict = this.othersMessages();
-      Object.keys(reasons.others).forEach(other => {
-        const message = (other in pluralDict)
-          ? pluralDict[other]
-          : other;
-        messages.push('- ' + message);
-      });
+
+    if (reasons) {
+      // Links
+      if ('links' in reasons) {
+        const pluralDict = this.plurialLinksMessages();
+        Object.keys(reasons.links).forEach(link => {
+          const message = (link in pluralDict)
+            ? translatePlural.transform(reasons.links[link], pluralDict[link], this._translateService.currentLang)
+            : `${reasons.links[link][link]} ${link}`;
+          messages.push('- ' + message);
+        });
+      }
+      // Others
+      if ('others' in reasons) {
+        const pluralDict = this.othersMessages();
+        Object.keys(reasons.others).forEach(other => {
+          const message = (other in pluralDict)
+            ? pluralDict[other]
+            : other;
+          messages.push('- ' + message);
+        });
+      }
     }
 
     if (messages.length > 0) {
@@ -222,6 +225,9 @@ export class RecordPermissionService {
       patrons: {
         '=1': this._translateService.instant('has 1 patron attached'),
         other: this._translateService.instant('has # patrons attached')
+      },
+      rolled_over: {
+        other: this._translateService.instant('Fiscal year closed')
       }
     };
   }

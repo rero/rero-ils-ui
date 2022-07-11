@@ -138,8 +138,6 @@ import { LibraryDetailViewComponent } from './record/detail-view/library-detail-
 import { LocationComponent } from './record/detail-view/library-detail-view/location/location.component';
 import { LocalFieldComponent } from './record/detail-view/local-field/local-field.component';
 import { LocationDetailViewComponent } from './record/detail-view/location-detail-view/location-detail-view.component';
-import { BudgetSelectLineComponent } from './record/detail-view/organisation-detail-view/budget-select-line/budget-select-line.component';
-import { BudgetSelectComponent } from './record/detail-view/organisation-detail-view/budget-select/budget-select.component';
 import { OrganisationDetailViewComponent } from './record/detail-view/organisation-detail-view/organisation-detail-view.component';
 import { PatronDetailViewComponent } from './record/detail-view/patron-detail-view/patron-detail-view.component';
 import { PatronTypesDetailViewComponent } from './record/detail-view/patron-types-detail-view/patron-types-detail-view.component';
@@ -215,8 +213,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     VendorBriefViewComponent,
     AddressTypeComponent,
     OrganisationDetailViewComponent,
-    BudgetSelectComponent,
-    BudgetSelectLineComponent,
     RelatedResourceComponent,
     ItemRequestComponent,
     ErrorPageComponent,

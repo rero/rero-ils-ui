@@ -17,8 +17,11 @@
  */
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { CanAccessGuard } from '../../guard/can-access.guard';
+import { CanUpdateGuard } from '../../guard/can-update.guard';
 import { BaseRoute } from '../../routes/base-route';
 import { ReceiptDetailViewComponent } from '../components/receipt/receipt-detail-view/receipt-detail-view.component';
+import { IsBudgetActiveGuard } from './guards/is-budget-active.guard';
 
 export class ReceiptsRoute extends BaseRoute implements RouteInterface {
 
@@ -33,8 +36,8 @@ export class ReceiptsRoute extends BaseRoute implements RouteInterface {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
         { path: '', component: RecordSearchPageComponent },
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent},
+        { path: 'detail/:pid', component: DetailComponent, canActivate: [IsBudgetActiveGuard, CanAccessGuard] },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [IsBudgetActiveGuard, CanUpdateGuard] },
       ],
       data: {
         types: [
@@ -48,8 +51,8 @@ export class ReceiptsRoute extends BaseRoute implements RouteInterface {
             searchFilters: [
               this.expertSearchFilter()
             ],
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
             preUpdateRecord: (data: any) => this._cleanRecord(data),
+            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
             aggregations: (aggregations: any) => this._routeToolService.aggregationFilter(aggregations),
             aggregationsBucketSize: 10,
             itemHeaders: {
@@ -64,16 +67,8 @@ export class ReceiptsRoute extends BaseRoute implements RouteInterface {
     };
   }
 
-  /**
-   * Remove some fields from model. These field are added to record during
-   * dumping but are not present into the `Order` JSON schema.
-   * @param data: the data to update
-   * @return: the cleaned data
-   */
   private _cleanRecord(data: any): any {
-    // remove dynamic fields
-    // TODO :: remove dynamic key....
-    return data;
+    const fieldsToRemoved = ['total_amount', 'currency', 'quantity', 'receipt_lines', 'is_current_budget'];
+    return this.fieldsToRemoved(data, fieldsToRemoved);
   }
-
 }

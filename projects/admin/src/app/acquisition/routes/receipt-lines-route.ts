@@ -22,6 +22,7 @@ import { EditorComponent, JSONSchema7, RouteInterface } from '@rero/ng-core';
 import { CanUpdateGuard } from '../../guard/can-update.guard';
 import { BaseRoute } from '../../routes/base-route';
 import { OrganisationService } from '../../service/organisation.service';
+import { IsBudgetActiveGuard } from './guards/is-budget-active.guard';
 
 export class ReceiptLinesRoute extends BaseRoute implements RouteInterface {
 
@@ -35,7 +36,7 @@ export class ReceiptLinesRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] }
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ IsBudgetActiveGuard, CanUpdateGuard ] }
       ],
       data: {
         types: [
@@ -46,6 +47,7 @@ export class ReceiptLinesRoute extends BaseRoute implements RouteInterface {
               longMode: true,
             },
             canAdd: () => this._routeToolService.canSystemLibrarian(),
+            preUpdateRecord: (data: any) => this.fieldsToRemoved(data, ['is_current_budget']),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
             redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_receipt, '/records/acq_receipts/detail'),
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {

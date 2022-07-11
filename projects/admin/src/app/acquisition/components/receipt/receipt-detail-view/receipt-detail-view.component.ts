@@ -18,13 +18,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { forkJoin, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { RecordPermissions } from '../../../../classes/permissions';
 import { RecordPermissionService } from '../../../../service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '../../../../utils/permissions';
+import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { IAcqNote } from '../../../classes/common';
 import { IAcqReceipt, IAcqReceiptLine } from '../../../classes/receipt';
-import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 
 @Component({
   selector: 'admin-receipt-detail-view',
@@ -120,6 +119,4 @@ export class ReceiptDetailViewComponent implements OnInit, OnDestroy, DetailReco
       ? receiptLineRawData.metadata.notes
       : [];
   }
-
-
 }

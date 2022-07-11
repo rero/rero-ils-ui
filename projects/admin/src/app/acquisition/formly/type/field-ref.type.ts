@@ -46,8 +46,17 @@ export class FieldRefTypeComponent extends FieldType implements OnInit {
         if (this._recordService.totalHits(result.hits.total) === 1) {
           let data = result.hits.hits[0].metadata;
           const keys = this.to.resourceField.split('.');
+          if (this.to.resourceSelect) {
+            const field = this.to.resourceSelect.field;
+            const value = this.to.resourceSelect.value;
+            data[keys[0]] = data[keys[0]].filter((element: any) => element[field] === value);
+          }
           keys.forEach((key: string) => {
-            data = data[key];
+            if (data && key in data) {
+              data = data[key];
+            } else {
+              data = undefined;
+            }
           });
           this.value = data;
         } else {

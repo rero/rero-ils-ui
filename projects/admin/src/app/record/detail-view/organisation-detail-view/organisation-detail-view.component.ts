@@ -17,7 +17,6 @@
 import { Component } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
-import { UserService } from '@rero/shared';
 import { OperationLogsService } from '../../../service/operation-logs.service';
 
 @Component({
@@ -43,19 +42,10 @@ export class OrganisationDetailViewComponent implements DetailRecord {
     return this._operationLogsService.isLogVisible('organisations');
   }
 
-  /** Check if the current logged user is a system librarian
-   * @return True | False depending of the current logged user role
-   */
-  get isSystemLibrarian(): boolean {
-    return this._userService.user.isSystemLibrarian;
-  }
-
   /** Constructor
-   * @param _userService - UserService
    * @param _operationLogsService - OperationLogsService
    */
   constructor(
-    private _userService: UserService,
     private _operationLogsService: OperationLogsService
   ) {}
 }

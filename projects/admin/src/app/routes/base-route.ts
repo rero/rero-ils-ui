@@ -16,11 +16,17 @@
  */
 import { UrlSegment } from '@angular/router';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { extractIdOnRef } from '@rero/ng-core';
-import { of } from 'rxjs';
+import { ActionStatus, extractIdOnRef } from '@rero/ng-core';
+import { Observable, of } from 'rxjs';
 import { RouteToolService } from './route-tool.service';
 
 export class BaseRoute {
+
+  /** Disabled action */
+  readonly DISABLED = (): Observable<ActionStatus> => of({
+    can: false,
+    message: ''
+  })
 
   /**
    * Constructor
@@ -40,6 +46,21 @@ export class BaseRoute {
       return this.matchedUrl(url);
     }
     return null;
+  }
+
+  /**
+   *
+   * @param data object data
+   * @param fields array of fields to remove
+   * @returns object data
+   */
+  protected fieldsToRemoved(data: any, fields: string[]): any {
+    fields.forEach((key: string) => {
+      if (key in data) {
+        delete data[key];
+      }
+    });
+    return data;
   }
 
   /**

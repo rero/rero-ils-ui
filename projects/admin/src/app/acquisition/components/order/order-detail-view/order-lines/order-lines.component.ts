@@ -16,13 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
-import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
-import { IAcqOrder, IAcqOrderLine } from '../../../../classes/order';
+import { Subscription } from 'rxjs';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
+import { IAcqOrder, IAcqOrderLine } from '../../../../classes/order';
 
 @Component({
   selector: 'admin-order-lines',
@@ -55,21 +53,14 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
    * Constructor
    * @param _acqOrderApiService - AcqOrderApiService
    * @param _recordPermissionService - RecordPermissionService
-   * @param _permissionValidator - CurrentLibraryPermissionValidator
    */
   constructor(
     private _acqOrderApiService: AcqOrderApiService,
-    private _recordPermissionService: RecordPermissionService,
-    private _permissionValidator: CurrentLibraryPermissionValidator
+    private _recordPermissionService: RecordPermissionService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
-    if (this.permissions === undefined) {
-      this._recordPermissionService.getPermission('acq_orders', this.order.pid)
-        .pipe(map(permissions => this._permissionValidator.validate(permissions, this.order.library.pid)))
-        .subscribe((permissions) => this.permissions = permissions);
-    }
     this._loadOrderLines();
     this._subscriptions.add(
       this._acqOrderApiService

@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div class="row order-line">
-  <ng-container *ngIf="orderLine && permissions else loading">
+  <ng-container *ngIf="orderLine && account else loading">
     <div class="col-9 d-flex" [ngClass]="{'order-cancelled': orderLine.status === orderLineStatus.CANCELLED}">
       <button type="button" class="btn-show-more"
               [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
@@ -44,7 +44,7 @@
           </ng-container>
           <span class="bullet-notes" *ngIf="orderLine.notes.length > 0 && isCollapsed">
             <ng-container *ngFor="let note of orderLine.notes">
-              <i class="fa fa-circle fa-bullet bullet-{{ note | noteBadgeColor }}" aria-hidden="true"></i>
+              <i class="fa fa-circle fa-bullet bullet-{{ note | noteBadgeColor }}" aria-hidden="true" title="{{ note.type | translate }}"></i>
             </ng-container>
           </span>
         </div>
@@ -81,7 +81,7 @@
         </div>
       </div>
       <ng-container *ngIf="orderLine.priority > 0">
-        <div class="ml-auto priority priority-{{ orderLine.priority }}"></div>
+        <div class="ml-auto priority priority-{{ orderLine.priority }}" title="{{ 'priority' | translate }}"></div>
       </ng-container>
     </div>
     <div class="col-2 amount">
@@ -92,25 +92,27 @@
       </div>
     </div>
     <div class="col-1 pl-0 text-right">
-      <!-- EDIT BUTTON ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <shared-action-button
-        [title]="'Edit' | translate"
-        [class]="'btn-outline-primary mr-1'"
-        [disabled]="!permissions.update.can"
-        [url]="['/records', 'acq_order_lines', 'edit', orderLine.pid]"
-        [message]="editInfoMessage"
-      >
-        <i class="fa fa-pencil"></i>
-      </shared-action-button>
-      <shared-action-button
-        [title]="'Delete' | translate"
-        [class]="'btn-outline-danger'"
-        [disabled]="!permissions.delete.can"
-        [message]="deleteInfoMessage"
-        (btnClick)="deleteOrderLine()"
-      >
-        <i class="fa fa-trash"></i>
-      </shared-action-button>
+      <ng-container *ngIf="permissions; else space">
+        <shared-action-button
+          [title]="'Edit' | translate"
+          [class]="'btn-outline-primary mr-1'"
+          [disabled]="!permissions.update.can"
+          [url]="['/records', 'acq_order_lines', 'edit', orderLine.pid]"
+          [message]="editInfoMessage"
+        >
+          <i class="fa fa-pencil"></i>
+        </shared-action-button>
+        <shared-action-button
+          [title]="'Delete' | translate"
+          [class]="'btn-outline-danger'"
+          [disabled]="!permissions.delete.can"
+          [message]="deleteInfoMessage"
+          (btnClick)="deleteOrderLine()"
+        >
+          <i class="fa fa-trash"></i>
+        </shared-action-button>
+      </ng-container>
+      <ng-template #space>&nbsp;</ng-template>
     </div>
   </ng-container>
 </div>
@@ -118,4 +120,3 @@
 <ng-template class="" #loading>
   <i class="fa fa-spin fa-spinner py-2"></i>
 </ng-template>
-

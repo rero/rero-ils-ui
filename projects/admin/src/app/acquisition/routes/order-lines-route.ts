@@ -23,6 +23,8 @@ import { AcqOrderLineGuard } from '../../guard/acq-order-line.guard';
 import { CanUpdateGuard } from '../../guard/can-update.guard';
 import { BaseRoute } from '../../routes/base-route';
 import { OrganisationService } from '../../service/organisation.service';
+import { CanAddOrderLineGuard } from './guards/can-add-order-line.guard';
+import { IsBudgetActiveGuard } from './guards/is-budget-active.guard';
 
 export class OrderLinesRoute extends BaseRoute implements RouteInterface {
 
@@ -36,8 +38,8 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
-        { path: 'new', component: EditorComponent, canActivate: [ AcqOrderLineGuard ] }
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ IsBudgetActiveGuard, CanUpdateGuard ] },
+        { path: 'new', component: EditorComponent, canActivate: [ CanAddOrderLineGuard, AcqOrderLineGuard ] }
       ],
       data: {
         types: [
@@ -50,6 +52,7 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
             canAdd: () => this._routeToolService.canSystemLibrarian(),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
+            preUpdateRecord: (data: any) => this.fieldsToRemoved(data, ['is_current_budget']),
             redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_order, '/records/acq_orders/detail'),
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
               const formWidget = jsonSchema.widget;

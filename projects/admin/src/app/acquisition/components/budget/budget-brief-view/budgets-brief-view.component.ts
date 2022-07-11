@@ -17,20 +17,20 @@
  */
 
 import { Component, Input } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { ResultItem } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-budgets-brief-view',
   template: `
   <h5 class="card-title mb-0 rero-ils-person">
+    <i
+      class="fa fa-circle mr-2"
+      [title]="title"
+      [ngClass]="{'text-success': record.metadata.is_active, 'text-danger': !record.metadata.is_active}"
+    ></i>
     <a [routerLink]="[detailUrl.link]" class="pr-1">{{ record.metadata.name }}</a>
   </h5>
-  <ng-container *ngIf="record.metadata.is_active; else inactive">
-    <i class="fa fa-circle text-success"></i> {{ 'Active' | translate }}
-  </ng-container>
-  <ng-template #inactive>
-    <i class="fa fa-circle text-danger"></i> {{ 'Inactive' | translate }}
-  </ng-template>
   `,
   styles: []
 })
@@ -42,4 +42,20 @@ export class BudgetsBriefViewComponent implements ResultItem {
   @Input() type: string;
   /** The URL to the detail view of the record */
   @Input() detailUrl: { link: string, external: boolean };
+
+  /**
+   * Constructor
+   * @param _translateService - TranslateService
+   */
+  public constructor(private _translateService: TranslateService) {}
+
+  /**
+   * Status of the bugdet on bullet title
+   * @returns string - status
+   */
+  get title() {
+    return this.record.metadata.is_active
+      ? this._translateService.instant('Active')
+      : this._translateService.instant('Inactive');
+  }
 }

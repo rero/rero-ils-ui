@@ -29,14 +29,17 @@
                   [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
           </button>
           <label>
-            <a [routerLink]="['/records', 'acq_receipts', 'detail', receipt.pid]">{{ receipt.reference }}</a>
+            <ng-container *ngIf="permissions; else noLink">
+              <a [routerLink]="['/records', 'acq_receipts', 'detail', receipt.pid]">{{ receipt.reference }}</a>
+            </ng-container>
+            <ng-template #noLink>{{ receipt.reference }}</ng-template>
             <span class="reception-dates" *ngIf="receipt | receptionDates as reception_dates">
               ({{ reception_dates.join(', ') }})
             </span>
           </label>
           <span class="bullet-notes" *ngIf="receipt.notes.length > 0 && isCollapsed">
           <ng-container *ngFor="let note of receipt.notes">
-            <i class="fa fa-circle fa-bullet bullet-{{ note | noteBadgeColor }}" aria-hidden="true"></i>
+            <i class="fa fa-circle fa-bullet bullet-{{ note | noteBadgeColor }}" aria-hidden="true" title="{{ note.type | translate }}"></i>
           </ng-container>
         </span>
           <div class="ml-auto" *ngIf="receipt.quantity">
@@ -125,4 +128,3 @@
 <ng-template #loading>
   <i class="fa fa-spinner fa-pulse py-2"></i>
 </ng-template>
-

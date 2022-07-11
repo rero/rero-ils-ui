@@ -15,14 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { formatDate } from '@angular/common';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { AcqOrderLineGuard } from '../../guard/acq-order-line.guard';
-import { CanUpdateGuard } from '../../guard/can-update.guard';
+import { BaseRoute } from '../../routes/base-route';
 import { OrderBriefViewComponent } from '../components/order/order-brief-view/order-brief-view.component';
 import { OrderDetailViewComponent } from '../components/order/order-detail-view/order-detail-view.component';
-import { BaseRoute } from '../../routes/base-route';
 
 export class OrdersRoute extends BaseRoute implements RouteInterface {
 
@@ -106,12 +104,7 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
    */
   private _cleanRecord(data: any): any {
     // remove dynamic fields
-    const fieldsToRemoved = ['status', 'order_date', 'account_statement'];
-    fieldsToRemoved.forEach(key => {
-      if (data.hasOwnProperty(key)) {
-        delete data[key];
-      }
-    });
-    return data;
+    const fieldsToRemoved = ['is_current_budget', 'status', 'order_date', 'account_statement'];
+    return this.fieldsToRemoved(data, fieldsToRemoved);
   }
 }

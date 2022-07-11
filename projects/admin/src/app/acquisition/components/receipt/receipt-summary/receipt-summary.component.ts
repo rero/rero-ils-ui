@@ -41,7 +41,7 @@ export class ReceiptSummaryComponent implements OnInit {
   @Input() collapsable = true;
   @Input() isCollapsed = true;
   /** Record permissions */
-  permissions: RecordPermissions;
+  @Input() permissions?: RecordPermissions;
   /** Receipt object */
   receipt: IAcqReceipt = undefined;
 
@@ -87,6 +87,10 @@ export class ReceiptSummaryComponent implements OnInit {
   ngOnInit(): void {
     if (!this.collapsable){
       this.isCollapsed = false;
+    }
+    // Disable actions if we don't have permissions.
+    if (!this.permissions) {
+      this.allowActions = false;
     }
     this._acqReceiptApiService
       .getReceipt(this.receiptPid)

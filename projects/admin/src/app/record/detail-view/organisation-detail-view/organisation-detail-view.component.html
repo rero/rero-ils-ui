@@ -38,14 +38,6 @@
         {{ record.metadata.default_currency }}
       </dd>
     </ng-container>
-    <!-- ACTIVE BUDGET -->
-    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Active budget</dt>
-    <dd class="col-sm-7 col-md-8 mb-0">
-      <admin-budget-select *ngIf="isSystemLibrarian; else librarian" [organisation]="record"></admin-budget-select>
-      <ng-template #librarian>
-        {{ record.metadata.current_budget_pid | getRecord: 'budgets' : 'field' : 'name' | async }}
-      </ng-template>
-    </dd>
   </dl>
 
   <!-- OPERATION LOGS-->

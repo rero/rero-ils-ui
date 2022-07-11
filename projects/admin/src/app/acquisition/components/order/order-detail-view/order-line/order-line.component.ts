@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
-import { forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
+import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
-import { IAcqOrderLine, AcqOrderLineStatus } from '../../../../classes/order';
+import { forkJoin, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
+import { AcqOrderLineStatus, IAcqOrderLine } from '../../../../classes/order';
 
 
 @Component({
@@ -31,22 +31,25 @@ import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
   templateUrl: './order-line.component.html',
   styleUrls: ['../../../../acquisition.scss', './order-line.component.scss']
 })
-export class OrderLineComponent implements OnInit {
+export class OrderLineComponent implements OnInit, OnDestroy {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** order line */
   @Input() orderLine: IAcqOrderLine;
   /** parent order */
   @Input() order: any;
-
   /** order line permission */
-  permissions: RecordPermissions;
+  @Input() permissions?: RecordPermissions;
+
   /** order line relate account */
   account: any;
   /** Is the line is collapsed */
   isCollapsed = true;
   /** reference to AcqOrderLineStatus */
   orderLineStatus = AcqOrderLineStatus;
+
+  /** all component subscription */
+  private _subscriptions = new Subscription();
 
   // GETTER & SETTER ==========================================================
   /**
@@ -80,16 +83,25 @@ export class OrderLineComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit() {
-    const permissions$ = this._recordPermissionService.getPermission('acq_order_lines', this.orderLine.pid).pipe(
-      map((permissions) => this._permissionValidator.validate(permissions, this.order.library.pid))
-    );
     const account$ = this._recordService.getRecord('acq_accounts', this.orderLine.acq_account.pid);
-    forkJoin([permissions$, account$]).subscribe(
-      ([permissions, account]) => {
-        this.permissions = permissions;
-        this.account = account;
-      }
-    );
+    if (this.permissions) {
+      const permissions$ = this._recordPermissionService.getPermission('acq_order_lines', this.orderLine.pid).pipe(
+        map((permissions) => this._permissionValidator.validate(permissions, this.order.library.pid))
+      );
+      forkJoin([permissions$, account$]).subscribe(
+        ([permissions, account]) => {
+          this.permissions = permissions;
+          this.account = account;
+        }
+      );
+    } else {
+      this._subscriptions.add(account$.subscribe(account => this.account = account));
+    }
+  }
+
+  /** onDestroy hook */
+  ngOnDestroy(): void {
+    this._subscriptions.unsubscribe();
   }
 
   // COMPONENT FUNCTIONS ======================================================

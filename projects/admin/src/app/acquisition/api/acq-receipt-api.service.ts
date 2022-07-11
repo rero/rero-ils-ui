@@ -22,7 +22,6 @@ import { Record, RecordService, RecordUiService } from '@rero/ng-core';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { BaseApi } from '../../../../../shared/src/lib/api/base-api';
-import { IAcqOrder } from '../classes/order';
 import { IAcqReceipt, IAcqReceiptLine } from '../classes/receipt';
 import { AcqResponseReceiptLineStatus, ICreateLineMessage, IResponseReceiptLine } from '../components/receipt/receipt-form/order-receipt';
 
@@ -225,6 +224,4 @@ export class AcqReceiptApiService {
         }
       });
   }
-
-
 }

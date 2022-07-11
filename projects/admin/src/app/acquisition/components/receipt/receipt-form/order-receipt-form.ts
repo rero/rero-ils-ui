@@ -240,7 +240,11 @@ export class OrderReceiptForm {
                 label: 'Document',
                 resource: 'documents',
                 recourceKey: 'document',
-                resourceField: 'title.0._text'
+                resourceField: 'title.0._text',
+                resourceSelect: {
+                  field: 'type',
+                  value: 'bf:Title'
+                }
               }
             },
             {
