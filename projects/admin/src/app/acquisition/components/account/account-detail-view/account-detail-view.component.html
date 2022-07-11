@@ -16,6 +16,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="organisation && esRecord$ | async as account">
+  <!-- ROLLOVER INFO -->
+  <div *ngIf="!account.is_active" class="fiscal-year-closed" translate>Fiscal year closed</div>
   <h1 class="mb-3">{{ account.name }}</h1>
   <!-- Account general informations -->
   <div class="card my-2">
@@ -24,10 +26,6 @@
       <dl class="row">
         <dt class="col-3 label-title" translate>Account number</dt>
         <dd class="col-9">{{ account.number }}</dd>
-        <dt class="col-3 label-title" translate>Is active</dt>
-        <dd class="col-9">
-          <i class="fa fa-circle" [class]="{'text-danger': !account.is_active, 'text-success': account.is_active}"></i>
-        </dd>
         <dt class="col-3 label-title" translate>Budget</dt>
         <dd class="col-9">{{ account.budget.pid | getRecord: 'budgets': 'field': 'name' | async }}</dd>
         <dt class="col-3 label-title" translate>Library</dt>

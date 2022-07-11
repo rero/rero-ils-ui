@@ -70,6 +70,7 @@ export interface IAcqOrder extends IAcqBaseResource, IAcqResourceWithNotes {
     receipt_date: Date,
   }[];
   vendor: IObjectReference;
+  is_current_budget: boolean;
 }
 
 // ORDER LINES ================================================================

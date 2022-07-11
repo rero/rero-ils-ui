@@ -96,6 +96,5 @@ export class OrderBriefViewComponent implements ResultItem, OnInit {
     //   We only need to keep the notes from itself.
     metadata.notes = metadata.notes.filter(note => note.source.type === 'acor');
     this.order = metadata;
-
   }
 }

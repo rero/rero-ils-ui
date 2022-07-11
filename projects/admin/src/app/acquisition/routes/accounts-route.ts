@@ -19,11 +19,12 @@ import { getCurrencySymbol } from '@angular/common';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DetailComponent, EditorComponent, JSONSchema7, RouteInterface } from '@rero/ng-core';
-import { of } from 'rxjs';
 import { CanUpdateGuard } from 'projects/admin/src/app/guard/can-update.guard';
+import { BaseRoute } from 'projects/admin/src/app/routes/base-route';
+import { of } from 'rxjs';
 import { OrganisationService } from '../../service/organisation.service';
 import { AccountDetailViewComponent } from '../components/account/account-detail-view/account-detail-view.component';
-import { BaseRoute } from 'projects/admin/src/app/routes/base-route';
+import { CanAddAccountGuard } from './guards/can-add-account.guard';
 
 export class AccountsRoute extends BaseRoute implements RouteInterface {
 
@@ -39,7 +40,7 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
       children: [
         { path: 'detail/:pid', component: DetailComponent },
         { path: 'edit/:pid', component: EditorComponent, canActivate: [CanUpdateGuard] },
-        { path: 'new', component: EditorComponent }
+        { path: 'new', component: EditorComponent, canActivate: [ CanAddAccountGuard ] }
       ],
       data: {
         types: [

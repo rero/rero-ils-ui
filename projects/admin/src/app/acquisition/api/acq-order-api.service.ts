@@ -18,6 +18,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Record, RecordService, RecordUiService } from '@rero/ng-core';
+import { BaseApi } from '@rero/shared';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Notification } from '../../classes/notification';
@@ -34,11 +35,9 @@ import {
 @Injectable({
   providedIn: 'root'
 })
-export class AcqOrderApiService {
+export class AcqOrderApiService extends BaseApi {
 
   // SERVICES ATTRIBUTES ======================================================
-  /** The resource name of acquisition account */
-  resourceName = 'acq_orders';
 
   /** Default values */
   public readonly orderDefaultData = {
@@ -77,7 +76,9 @@ export class AcqOrderApiService {
     private _http: HttpClient,
     private _recordService: RecordService,
     private _recordUiService: RecordUiService
-  ) { }
+  ) {
+    super();
+  }
 
   // SERVICE PUBLIC FUNCTIONS =================================================
   /**
@@ -86,10 +87,9 @@ export class AcqOrderApiService {
    * @return: the corresponding AcqOrder
    */
   getOrder(orderPid: string): Observable<IAcqOrder> {
-    const apiUrl = `/api/${this.resourceName}/${orderPid}`;
-    return this._http.get<any>(apiUrl).pipe(
-      map(data => ({...this.orderDefaultData, ...data.metadata}) )
-    );
+    return this._recordService.getRecord('acq_orders', orderPid, 0, BaseApi.reroJsonheaders).pipe(
+        map(data => ({...this.orderDefaultData, ...data.metadata}) )
+      );
   }
 
   /**

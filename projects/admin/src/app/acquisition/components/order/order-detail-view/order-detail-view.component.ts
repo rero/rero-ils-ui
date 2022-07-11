@@ -16,15 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { ViewportScroller } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { RecordService, RecordUiService } from '@rero/ng-core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { TabsetComponent } from 'ngx-bootstrap/tabs';
 import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
 import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqOrderStatus, IAcqOrder } from '../../../classes/order';
 import { PlaceOrderFormComponent } from '../place-order-form/place-order-form.component';
@@ -34,7 +32,7 @@ import { PlaceOrderFormComponent } from '../place-order-form/place-order-form.co
   templateUrl: './order-detail-view.component.html',
   styleUrls: ['./order-detail-view.component.scss']
 })
-export class OrderDetailViewComponent implements OnInit, DetailRecord {
+export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Observable resolving record data */
@@ -48,10 +46,16 @@ export class OrderDetailViewComponent implements OnInit, DetailRecord {
   /** reference to AcqOrderStatus class */
   acqOrderStatus = AcqOrderStatus;
   /** order permissions */
-  permissions: RecordPermissions;
+  permissions?: RecordPermissions;
+
+  /** Is permissions loaded */
+  isPermissionsLoaded = false;
 
   /** modal reference */
   private _modalRef: BsModalRef;
+
+  /** all component subscription */
+  private _subscriptions = new Subscription();
 
   // GETTER & SETTER ==========================================================
   /** Determine if the order could be "placed/ordered" */
@@ -66,16 +70,12 @@ export class OrderDetailViewComponent implements OnInit, DetailRecord {
 
   // CONSTRUCTOR & HOOKS ======================================================
   /** Constructor
-   * @param _recordService - RecordService
-   * @param _recordUiService - RecordUiService
    * @param _scroller - ViewportScroller
    * @param _modalService - BsModalService
    * @param _recordPermissionService - RecordPermissionService
    * @param _permissionValidator - CurrentLibraryPermissionValidator
    */
   constructor(
-    private _recordService: RecordService,
-    private _recordUiService: RecordUiService,
     private _scroller: ViewportScroller,
     private _modalService: BsModalService,
     private _recordPermissionService: RecordPermissionService,
@@ -84,12 +84,19 @@ export class OrderDetailViewComponent implements OnInit, DetailRecord {
 
   /** OnInit hook */
   ngOnInit() {
-    this.record$.subscribe(
+    this._subscriptions.add(this.record$.subscribe(
       (record: any) => {
         this.order = record.metadata;
-        this._recordPermissionService.getPermission('acq_orders', this.order.pid)
+        if (this.order.is_current_budget) {
+          this._subscriptions.add(this._recordPermissionService.getPermission('acq_orders', this.order.pid)
           .pipe(map((permissions) => this._permissionValidator.validate(permissions, this.order.library.pid)))
-          .subscribe((permissions) => this.permissions = permissions);
+          .subscribe((permissions) => {
+            this.permissions = permissions;
+            this.isPermissionsLoaded = true;
+          }));
+        } else {
+          this.isPermissionsLoaded = true;
+        }
 
         /* UPDATE 'EDIT' BUTTON
          *   if the related order has the PENDING status, then a new action 'place order' button should be
@@ -104,7 +111,12 @@ export class OrderDetailViewComponent implements OnInit, DetailRecord {
           }
         });
       }
-    );
+    ));
+  }
+
+  /** OnDestroy hook */
+  ngOnDestroy(): void {
+      this._subscriptions.unsubscribe();
   }
 
   // COMPONENT FUNCTIONS =======================================================

@@ -21,9 +21,9 @@ import { RecordPermissionService } from 'projects/admin/src/app/service/record-p
 import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
 import { of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { IAcqOrder } from '../../../classes/order';
 import { IAcqReceipt } from '../../../classes/receipt';
-import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
 
 @Component({
@@ -36,7 +36,7 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
   /** the order for which we want to display receipts */
   @Input() order: IAcqOrder;
   /** the permissions about the related order */
-  @Input() permissions?: RecordPermissions;
+  @Input() permissions?: RecordPermissions = null;
   /** AcqReceipt to display */
   receipts: IAcqReceipt[] = undefined;
 
@@ -111,14 +111,17 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
    * Permissions about receipt must be completed regarding the current user library and the order status.
    */
   private _loadPermissions(): void {
-    const permissions$ = this.permissions
-      ? of(this.permissions)
-      : this._recordPermissionService.getPermission('acq_orders', this.order.pid);
-    permissions$
-      .pipe(
-        map(permissions => this._currentLibraryPermissionValidator.validate(permissions, this.order.library.pid)),
-        map(permissions => this._receivedOrderPermissionValidator.validate(permissions, this.order))
-      )
-      .subscribe((permissions) => this.permissions = permissions);
-  }
+    if (this.permissions) {
+      const permissions$ = this.permissions
+        ? of(this.permissions)
+        : this._recordPermissionService.getPermission('acq_orders', this.order.pid);
+      const obsPermissions = permissions$
+        .pipe(
+          map(permissions => this._currentLibraryPermissionValidator.validate(permissions, this.order.library.pid)),
+          map(permissions => this._receivedOrderPermissionValidator.validate(permissions, this.order))
+        )
+        .subscribe((permissions) => this.permissions = permissions);
+      this._subscriptions.add(obsPermissions);
+      }
+    }
 }

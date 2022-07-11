@@ -16,8 +16,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="record$ | async as record">
-  <header class="row">
-    <h1 class="mb-1">{{ record.metadata.name }}</h1>
+  <!-- ROLLOVER INFO -->
+  <div *ngIf="!record.metadata.is_active" class="fiscal-year-closed" translate>Fiscal year closed</div>
+  <header>
+    <h1>{{ record.metadata.name }}</h1>
   </header>
   <section>
     <dl class="row">

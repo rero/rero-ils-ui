@@ -97,6 +97,9 @@ export class CanOrderReceiptGuard implements CanActivate {
           if (this._userService.user.currentLibrary !== extractIdOnRef(order.library.$ref)) {
             return false;
           }
+          if (!order.is_current_budget) {
+            return false;
+          }
           const validStatuses = [AcqOrderStatus.ORDERED, AcqOrderStatus.PARTIALLY_RECEIVED];
           return validStatuses.some((key: string) => key === order.status);
         }),

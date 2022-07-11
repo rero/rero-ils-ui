@@ -74,7 +74,8 @@ describe('CanOrderReceiptGuard', () => {
       $ref: 'https://localhost/api/libraries/1'
     },
     status: AcqOrderStatus.ORDERED,
-    notes: []
+    notes: [],
+    is_current_budget: true
   };
 
   const receipt = {
@@ -92,7 +93,8 @@ describe('CanOrderReceiptGuard', () => {
     organisation: {
       $ref: 'https://localhost/api/organisations/1'
     },
-    notes: []
+    notes: [],
+    is_current_budget: true
   };
 
 
@@ -141,6 +143,16 @@ describe('CanOrderReceiptGuard', () => {
   it('should return a 403 error if the order in status received (new receipt)', fakeAsync(() => {
     const orderReceived = cloneDeep(order);
     orderReceived.status = AcqOrderStatus.RECEIVED;
+    spyOn(acqOrderApiService, 'getOrder').and.returnValue(of(orderReceived));
+    guard.canActivate(activatedRouteSnapshotSpy).subscribe(() => {
+      tick();
+      expect(router.url).toBe('/errors/403');
+    });
+  }));
+
+  it('Should return a 403 error if the order is not on an active budget', fakeAsync(() => {
+    const orderReceived = cloneDeep(order);
+    orderReceived.is_current_budget = false;
     spyOn(acqOrderApiService, 'getOrder').and.returnValue(of(orderReceived));
     guard.canActivate(activatedRouteSnapshotSpy).subscribe(() => {
       tick();
