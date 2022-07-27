@@ -28,12 +28,12 @@ export class HoldingComponent {
   // COMPONENT ATTRIBUTES =====================================================
   /** Holdings record */
   @Input() holding: any;
+
   /** View code */
   @Input() viewcode: string;
+
   /** Is collapsed holdings */
   @Input() collapsed = true;
-  /** Is collapsable holdings */
-  @Input() collapsable = true;
 
   /** Authorized types of note */
   noteAuthorizedTypes: string[] = [HoldingsNoteType.GENERAL, HoldingsNoteType.ACCESS];
@@ -53,9 +53,4 @@ export class HoldingComponent {
    * @param _translateService - TranslateService
    */
   constructor(private _translateService: TranslateService) {}
-
-  getRequestDialogValue($event) {
-    this.requestDialog = $event;
-  }
-
 }

@@ -38,6 +38,9 @@ export class PickupLocationComponent implements OnInit {
   /** View code */
   @Input() viewcode: string;
 
+  /** Item count */
+  @Input() itemCount = 0;
+
   /** Close request dialog event */
   @Output() closeEvent = new EventEmitter<boolean>();
 

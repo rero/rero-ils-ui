@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { ItemApiService } from '../../../api/item-api.service';
@@ -24,7 +24,7 @@ import { QueryResponse } from '../../../record';
   selector: 'public-search-items',
   templateUrl: './items.component.html'
 })
-export class ItemsComponent {
+export class ItemsComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Holding */
@@ -41,22 +41,8 @@ export class ItemsComponent {
 
   /** Items per page */
   private itemsPerPage = 10;
-  /** Is items are hidden */
-  private _hidden = true;
-
 
   // GETTER & SETTER ========================================================
-
-  /** Handler to detect change on input `hidden` property */
-  @Input() set hidden(value: boolean) {
-    this._hidden = value;
-    if (!this._hidden && this.items.length === 0) {
-      this._loadItems();
-    }
-  }
-  get hidden(): boolean {
-    return this._hidden;
-  }
 
   /**
    * Is the link `show more items` must be displayed
@@ -91,6 +77,10 @@ export class ItemsComponent {
     private _itemApiService: ItemApiService,
     private _translateService: TranslateService
   ) { }
+
+  ngOnInit(): void {
+    this._loadItems();
+  }
 
   // COMPONENT FUNCTIONS ==================================================
   /** Handler when 'show more items' link is clicked. */
