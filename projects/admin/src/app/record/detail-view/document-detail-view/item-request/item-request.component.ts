@@ -239,7 +239,7 @@ export class ItemRequestComponent implements OnInit {
         if (this.recordType === 'holding') {
           this.formFields.push({
             key: 'description',
-            type: 'textarea',
+            type: 'input',
             templateOptions: {
               label: this._translateService.instant('Collection or item year, volume, number, pages'),
               placeholder: this._translateService.instant('Year / Volume / Number / Pages'),

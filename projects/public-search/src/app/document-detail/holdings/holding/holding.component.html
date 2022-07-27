@@ -21,10 +21,8 @@
       <a href="#"
         class="collapse-link float-left"
         data-toggle="collapse" aria-expanded="false"
-        *ngIf="collapsable"
         (click)="$event.preventDefault(); collapsed = !collapsed">
         <i [ngClass]="{ 'fa-caret-down': !collapsed, 'fa-caret-right': collapsed }"
-          [hidden]="holding.metadata.public_items_count === 0"
           class="fa fa-lg" aria-hidden="true">
         </i>
       </a>
@@ -40,7 +38,7 @@
       </span>
     </div>
     <div id="holding-available-{{ holding.metadata.pid }}" class="col-sm-12 col-md-3">
-      <span [hidden]="!collapsed && collapsable">
+      <span [hidden]="!collapsed">
         <ng-container *ngIf="holding.metadata.holdings_type === 'serial'; else available">
           <i class="fa fa-circle text-warning"></i>
           {{ 'see collections and items' | translate }}
@@ -52,14 +50,6 @@
           {{ (holding.metadata.available ? 'available' : 'not available') | translate }}
         </ng-template>
       </span>
-    </div>
-    <!-- request dialog -->
-    <div id="holding-request-{{ holding.metadata.pid }}"
-        [ngClass]="requestDialog ? 'row col-12' : 'col-sm-12 col-md-2'">
-        <public-search-request
-        [record]="holding" recordType="holding"
-        (requestDialogEvent)="getRequestDialogValue($event)"
-        [viewcode]="viewcode" class="w-100"></public-search-request>
     </div>
   </div>
   <!-- SERIAL HOLDING INFORMATIOLNS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -109,7 +99,14 @@
     </ng-container>
   </dl>
 </div>
-<public-search-items [holding]="holding"
-                     [viewcode]="viewcode"
-                     [hidden]="collapsed || !collapsable"
-></public-search-items>
+<ng-container *ngIf="!collapsed">
+  <public-search-items *ngIf="holding.metadata.public_items_count > 0" [holding]="holding" [viewcode]="viewcode"></public-search-items>
+  <public-search-request
+    [record]="holding"
+    recordType="holding"
+    [viewcode]="viewcode"
+    [holdingsItemsCount]="holding.metadata.public_items_count"
+    class="w-100"
+    [ngClass]="{'mt-2': holding.metadata.public_items_count === 0}"
+  ></public-search-request>
+</ng-container>

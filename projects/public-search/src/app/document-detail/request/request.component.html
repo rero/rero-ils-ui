@@ -17,26 +17,44 @@
 <ng-container *ngIf="patron">
   <ng-container *ngIf="!requestDialog; else requestPickupDialog">
     <ng-container *ngIf="canRequest">
-      <div *ngIf="canRequest.can" id="record-request-{{ record.metadata.pid }}" [ngClass]="recordType == 'item' ? 'row pl-4' : ''" >
-        <dt *ngIf="recordType !== 'holding'" class="my-2 col-lg-2 col-sm-3">&nbsp;</dt>
-        <dd class="my-2 col-lg-9 col-sm-8">
+      <dl *ngIf="canRequest.can" id="record-request-{{ record.metadata.pid }}" class="row" [ngClass]="{'row pl-4': recordType === 'item', 'mb-3': recordType === 'holding'}">
+        <dt *ngIf="recordType !== 'holding'" class="mt-2 mb-3 col-lg-2 col-sm-3">&nbsp;</dt>
+        <dd class="mt-2 mb-3 col-lg-9 col-sm-8">
           <button
             id="record-{{ record.metadata.pid }}-request-button"
-            class="btn btn-sm btn-primary"
+            class="btn btn-sm"
+            [ngClass]="{'btn-primary': recordType === 'item', 'btn-outline-primary': recordType === 'holding'}"
             (click)="showRequestDialog()"
-            translate
-          >Request</button>
+          >
+            <ng-container *ngIf="recordType === 'item'; else holdingsButton">
+              {{ 'Request' | translate }}
+            </ng-container>
+            <ng-template #holdingsButton>
+              <ng-container *ngIf="holdingsItemsCount > 0; else holdingsNoItems">
+                {{ 'Request another issue' | translate }}
+              </ng-container>
+              <ng-template #holdingsNoItems>
+                {{ 'Request an issue' | translate }}
+              </ng-template>
+            </ng-template>
+          </button>
         </dd>
-      </div>
+      </dl>
     </ng-container>
   </ng-container>
   <ng-template #requestPickupDialog>
-    <public-search-pickup-location
-      [record]="record"
-      recordType="{{ recordType }}"
-      [viewcode]="viewcode"
-      (closeEvent)="closeDialog()"
-      class="row pl-4"
-    ></public-search-pickup-location>
+    <dl class="m-0 ml-4 py-2 row">
+      <dt *ngIf="recordType !== 'holding'" class="my-2 col-lg-2 col-sm-3">&nbsp;</dt>
+      <dd class="pl-0 mt-0 mb-3" [ngClass]="{'col-lg-10 col-sm-9': recordType !== 'holding', 'col-lg-12': recordType === 'holding' }">
+        <public-search-pickup-location
+          [record]="record"
+          [itemCount]="holdingsItemsCount"
+          recordType="{{ recordType }}"
+          [viewcode]="viewcode"
+          (closeEvent)="closeDialog()"
+          class="w-100"
+        ></public-search-pickup-location>
+      </dd>
+    </dl>
   </ng-template>
 </ng-container>

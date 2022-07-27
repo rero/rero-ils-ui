@@ -34,6 +34,9 @@ export class RequestComponent implements OnInit {
   /** View code */
   @Input() viewcode: string;
 
+  /** Holdings item count */
+  @Input() holdingsItemsCount: number;
+
   /** Item Can request with reason(s) */
   canRequest: {
     can: false,
