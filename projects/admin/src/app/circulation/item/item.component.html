@@ -35,18 +35,21 @@
     </ng-container>
   </div>
   <!-- BARCODE -->
-  <div name="barcode" class="col-2 position-relative">
+  <div name="barcode" class="col-2 d-flex">
     <button *ngIf="item.loan || totalAmountOfFee || item.pending_loans || notifications$"
             type="button" class="btn-show-more"
             [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
             (click)="isCollapsed = !isCollapsed"
             [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
     </button>
-    <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+    <div>
+      <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+      <shared-inherited-call-number class="d-block small" *ngIf="isCollapsed" [item]="item"></shared-inherited-call-number>
+    </div>
     <ng-container *ngIf="item.actionDone">
       <ng-container *ngIf="(item.actionDone === itemAction.checkin && item.getNote('checkin_note')) ||
                            (item.actionDone === itemAction.checkout && item.getNote('checkout_note'))">
-        <i class="fa fa-exclamation-triangle text-warning mt-1 float-right"></i>
+        <i class="fa fa-exclamation-triangle text-warning mt-1 ml-auto"></i>
       </ng-container>
     </ng-container>
   </div>
@@ -134,6 +137,10 @@
   <!-- COLLAPSED DETAILS -->
   <div name="collapsed-details" class="col-12 mt-2" *ngIf="!isCollapsed">
     <dl class="row">
+      <dt class="offset-1 col-sm-3 col-md-2 col-lg-1 label-title" translate>Call number</dt>
+      <dd class="col-sm-8 col-md-9 col-lg-10">
+        <shared-inherited-call-number [item]="item"></shared-inherited-call-number>
+      </dd>
       <ng-container *ngIf="item.location.pid | getRecord: 'locations' | async as location">
         <dt class="offset-1 col-sm-3 col-md-2 col-lg-1 label-title" translate>Location</dt>
         <dd class="col-sm-8 col-md-9 col-lg-10">
