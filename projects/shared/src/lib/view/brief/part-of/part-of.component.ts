@@ -63,22 +63,6 @@ export class PartOfComponent {
   }
 
   /**
-   * Get short main title
-   * @param titles - document titles
-   * @return - main title to display
-   */
-  getShortMainTitle(titles: any) {
-    const bfTitles: Array<any> = titles.filter((title: any) => title.type === 'bf:Title');
-    for (const bfTitle of bfTitles) {
-      for (const mainTitle of bfTitle.mainTitle) {
-        if (!mainTitle.language) {
-          return mainTitle.value;
-        }
-      }
-    }
-  }
-
-  /**
    * Format "part of" numbering for display
    *
    * @param num: numbering to format

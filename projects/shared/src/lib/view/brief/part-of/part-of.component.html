@@ -24,12 +24,12 @@
             <b>{{ getPartOfLabel(hostDocument) }}</b>:
             <ng-container *ngIf="isPublicView; else adminLink">
               <a id="{{ 'doc-part-of-' + i }}" href="/{{ viewcode }}/documents/{{ partOf.document.pid }}">
-                {{ getShortMainTitle(hostDocument.metadata.title) }}
+                {{ hostDocument.metadata.title | mainTitle }}
               </a>
             </ng-container>
             <ng-template #adminLink>
               <a id="{{ 'doc-part-of-' + i }}" [routerLink]="['/records', 'documents', 'detail', partOf.document.pid]">
-                {{ getShortMainTitle(hostDocument.metadata.title) }}
+                {{ hostDocument.metadata.title | mainTitle }}
               </a>
             </ng-template>
             <ng-container *ngIf="partOf.numbering">
@@ -58,12 +58,12 @@
             <div class="row">
               <ng-container *ngIf="isPublicView; else adminLink">
                 <a id="{{ 'doc-part-of-' + i }}" href="/{{ viewcode }}/documents/{{ document.document.pid }}">
-                  {{ getShortMainTitle(hostDocument.metadata.title) }}
+                  {{ hostDocument.metadata.title | mainTitle }}
                 </a>
               </ng-container>
               <ng-template #adminLink>
                 <a id="{{ 'doc-part-of-' + i }}" [routerLink]="['/records', 'documents', 'detail', document.document.pid]">
-                  {{ getShortMainTitle(hostDocument.metadata.title) }}
+                  {{ hostDocument.metadata.title | mainTitle }}
                 </a>
               </ng-template>
               <ng-container *ngIf="document.numbering">
