@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,7 +19,7 @@ import { Injectable } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { RecordService, TimeValidator } from '@rero/ng-core';
 import { forkJoin, Subject } from 'rxjs';
-import { AcquisitionInformations, Library, NotificationSettings } from '../../../classes/library';
+import { AcquisitionInformations, Library, NotificationSettings, RolloverSettings } from '../../../classes/library';
 import { NotificationType } from '../../../classes/notification';
 import { WeekDays } from '../../../classes/week-days';
 
@@ -40,6 +40,10 @@ export class LibraryFormService {
   private countryList = [];
   /** Observable for build event */
   private buildEvent = new Subject();
+  /** Rollover account transfer */
+  private rolloverAccountTransferOptions = [];
+  /** Default account transfer */
+  private accountDefaultTransfertOption = 'rollover_no_transfer';
 
   // GETTER & SETTER ==========================================================
   get name(): AbstractControl { return this.form.get('name'); }
@@ -51,6 +55,8 @@ export class LibraryFormService {
   get communication_language(): AbstractControl { return this.form.get('communication_language'); }
   get available_communication_languages() { return this.availableCommunicationLanguages; }
   get countries_iso_codes() { return this.countryList; }
+  get rollover_settings(): AbstractControl { return this.form.get('rollover_settings'); }
+  get account_transfer_options() { return this.rolloverAccountTransferOptions; }
 
   // SERVICE CONSTRUCTOR & HOOKS ==============================================
   /** Constructor
@@ -77,6 +83,9 @@ export class LibraryFormService {
       acquisition_settings: this._fb.group({
         shipping_informations: this._buildAcqInformation(),
         billing_informations: this._buildAcqInformation()
+      }),
+      rollover_settings: this._fb.group({
+        account_transfer: [this.accountDefaultTransfertOption, [Validators.required]]
       })
     });
     this._initializeOpeningHours();
@@ -97,6 +106,8 @@ export class LibraryFormService {
       this.notificationTypes = notifSchema.schema.properties.notification_type.enum;
       this.countryList = libSchema.schema.properties.acquisition_settings.properties.shipping_informations.
         properties.address.properties.country.enum;
+      this.rolloverAccountTransferOptions = libSchema.schema.properties.rollover_settings.properties.
+        account_transfer.enum;
       this.build();
       this.buildEvent.next(true);
     });
@@ -117,6 +128,7 @@ export class LibraryFormService {
     this._setOpeningHours(library.opening_hours);
     this._setNotificationSettings(library.notification_settings);
     this._setAcquisitionSettings(library.acquisition_settings);
+    this._setRolloverSettings(library.rollover_settings);
   }
 
   /** Get the values stored in the form */
@@ -322,5 +334,14 @@ export class LibraryFormService {
         }
       }
     }
+  }
+
+  /**
+   * Set values from rollover
+   * @param settings - rollover settings
+   */
+  private _setRolloverSettings(settings: RolloverSettings): void {
+    const rolloverSettings = this.form.get('rollover_settings');
+    rolloverSettings.get('account_transfer').setValue(settings.account_transfer);
   }
 }
