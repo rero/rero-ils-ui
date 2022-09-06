@@ -80,6 +80,10 @@ export interface Address {
   country: string;
 }
 
+export interface RolloverSettings {
+  account_transfer: string
+}
+
 export class Library {
 
   // CLASS ATTRIBUTES ================================================
@@ -95,6 +99,7 @@ export class Library {
   notification_settings?: Array<NotificationSettings>;
   acquisition_settings?: AcquisitionInformations;
   organisation: Organisation;
+  rollover_settings: RolloverSettings;
 
   // GETTER & SETTER ================================================
   /** Allow to get all opening days for the library */

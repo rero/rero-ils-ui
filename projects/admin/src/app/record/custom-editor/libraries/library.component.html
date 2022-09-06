@@ -1,18 +1,18 @@
 <!--
   RERO ILS UI
-   Copyright (C) 2019 RERO
+  Copyright (C) 2019-2022 RERO
 
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU Affero General Public License as published by
-   the Free Software Foundation, version 3 of the License.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-   GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-   You should have received a copy of the GNU Affero General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div class="container">
   <ng-container *ngIf="libForm">
@@ -349,6 +349,25 @@
                   <div class="col input-group">
                     <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-sticky-note-o"></i></span></div>
                     <input formControlName="extra" id="billing-extra" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3">
+            <div class="card" formGroupName="rollover_settings">
+              <div class="card-header">
+                <i class="fa fa-wrench"></i>
+                {{ 'Rollover settings' | translate }}
+              </div>
+              <div class="card-body container">
+                <!-- account transfer -->
+                <div class="form-group form-row">
+                  <label for="shipping-street" class="col-3 col-form-label" translate>Account transfer</label>
+                  <div class="col-9">
+                    <select formControlName="account_transfer" class="form-control" id="account-transfer">
+                      <option [ngValue]="option" *ngFor="let option of rollover_account_transfer_options">{{ option | translate }}</option>
+                    </select>
                   </div>
                 </div>
               </div>
