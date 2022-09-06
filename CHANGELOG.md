@@ -1,5 +1,22 @@
 # Changelog
 
+## [v0.25.0](https://github.com/rero/rero-ils-ui/tree/v0.25.0) (2022-09-06)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.24.0...v0.25.0)
+
+**Changes:**
+* documents: formatting of the title variant [\#895](https://github.com/rero/rero-ils-ui/pull/895) (by @Garfield-fr)
+* menu: translation for current loans [\#891](https://github.com/rero/rero-ils-ui/pull/891) (by @Garfield-fr)
+* Loans: loans brief view [\#879](https://github.com/rero/rero-ils-ui/pull/879) (by @zannkukai)
+* merge US-Acquisition-export [\#886](https://github.com/rero/rero-ils-ui/pull/886) (by @lauren-d)
+* acquisitions: fix message info on order line edit button [\#875](https://github.com/rero/rero-ils-ui/pull/875) (by @lauren-d)
+* document: fix collection display [\#885](https://github.com/rero/rero-ils-ui/pull/885) (by @jma)
+* documents: open aggregation with filters and add more facets for documents search [\#867](https://github.com/rero/rero-ils-ui/pull/867) (by @vgranata)
+* documents: Improved display of the request button on the holdings [\#883](https://github.com/rero/rero-ils-ui/pull/883) (by @Garfield-fr)
+* circulation: add call-numbers on loan circulation information. [\#884](https://github.com/rero/rero-ils-ui/pull/884) (by @zannkukai)
+* acquisition: rollover [\#880](https://github.com/rero/rero-ils-ui/pull/880) (by @Garfield-fr)
+* templates: update footer info [\#882](https://github.com/rero/rero-ils-ui/pull/882) (by @PascalRepond)
+
 ## [v0.24.0](https://github.com/rero/rero-ils-ui/tree/v0.24.0) (2022-07-08)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.23.0...v0.24.0)
