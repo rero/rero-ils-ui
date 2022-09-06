@@ -44,13 +44,15 @@
   </section>
 
   <tabset>
-    <tab><!-- OPENING HOURS TABS -->
+    <tab>
+      <!-- OPENING HOURS TABS -->
       <ng-template tabHeading>
         <i class="fa fa-clock-o mr-2"></i>{{ 'Opening Hours' | translate }}
       </ng-template>
       <admin-day-opening-hours [day]="day" *ngFor="let day of record.opening_hours"></admin-day-opening-hours>
     </tab>
-    <tab><!-- EXCEPTIONS DATES -->
+    <tab>
+      <!-- EXCEPTIONS DATES -->
       <ng-template tabHeading>
         <i class="fa fa-exclamation-triangle mr-2"></i>{{ 'Exceptions (holidays, etc.)' | translate }}
       </ng-template>
@@ -58,7 +60,8 @@
         <admin-exception-date [exception]="exception" *ngFor="let exception of record.exception_dates"></admin-exception-date>
       </ng-container>
     </tab>
-    <tab><!-- NOTIFICATIONS SETTINGS -->
+    <tab>
+      <!-- NOTIFICATIONS SETTINGS -->
       <ng-template tabHeading>
         <i class="fa fa-envelope-o mr-2"></i>{{ 'Notification settings' | translate }}
       </ng-template>
@@ -75,7 +78,8 @@
         </ng-container>
       </dl>
     </tab>
-    <tab> <!-- ACQUISITION SETTINGS -->
+    <tab>
+      <!-- ACQUISITION SETTINGS -->
       <ng-template tabHeading>
         <i class="fa fa-university mr-2"></i>{{ 'Acquisition settings' | translate }}
       </ng-template>
@@ -88,6 +92,17 @@
                       [ngTemplateOutlet]="address_block"
                       [ngTemplateOutletContext]="{ label: 'Billing informations' | translate, data: acqInfos}"
         ></ng-container>
+      </dl>
+
+      <!-- ROLLOVER SETTINGS -->
+      <dl class="row">
+        <dt class="col-3 label-title" translate>Rollover settings</dt>
+        <div class="col-9 card container py-2 mb-2">
+          <dl class="row">
+            <dt class="col-3 label-title" translate>Account transfer</dt>
+            <dd class="col-7">{{ record.rollover_settings.account_transfer | translate }}</dd>
+          </dl>
+        </div>
       </dl>
     </tab>
   </tabset>

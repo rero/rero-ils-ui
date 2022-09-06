@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -69,6 +69,10 @@ export class LibraryComponent implements OnInit, OnDestroy {
   get notificationSettings() { return this.libraryForm.notification_settings as FormArray; }
   /** Available communication languages */
   get availableCommunicationLanguages() { return this.libraryForm.available_communication_languages; }
+  /** Rollover settings */
+  get rolloverSettings() { return this.libraryForm.rollover_settings; }
+  /** Rollover account transfer options */
+  get rollover_account_transfer_options() { return this.libraryForm.account_transfer_options; }
 
 
   // CONSTRUCTOR & HOOKS ======================================================
