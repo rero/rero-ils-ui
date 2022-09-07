@@ -17,7 +17,7 @@
 <div [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-detail'}"
      class="mx-1"
      [class]="{'bg-light': index % 2 === 0}">
-  <dl class="m-0 ml-4 py-2 row">
+  <dl class="m-0 py-2 row">
     <!-- LIBRARY AND LOCATION -->
     <ng-container *ngIf="context === 'book'">
       <dt class="mb-0 col-lg-2 col-sm-3" translate>Location</dt>
