@@ -22,7 +22,9 @@ import { Record, RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { cloneDeep } from 'lodash-es';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { Observable, of, Subscription } from 'rxjs';
+import { forkJoin, Observable, of, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { DocumentApiService } from '../../../api/document-api.service';
 import { OperationLogsService } from '../../../service/operation-logs.service';
 import { DialogImportComponent } from './dialog-import/dialog-import.component';
 
@@ -47,6 +49,9 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
 
   /** Document record */
   record: any;
+
+  /** Linked documents count */
+  linkedDocumentsCount = 0;
 
   /** Css classes for dd in template */
   ddCssClass = 'col-sm-6 col-md-8 mb-0';
@@ -75,6 +80,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
    * @param _operationLogsService - OperationLogsService
    * @param _router - Router
    * @param _bsModalService - BsModalService
+   * @param _documentApiService - DocumentApiService
    */
   constructor(
     private _translateService: TranslateService,
@@ -82,22 +88,29 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
     private _recordService: RecordService,
     private _operationLogsService: OperationLogsService,
     private _router: Router,
-    private _bsModalService: BsModalService
+    private _bsModalService: BsModalService,
+    private _documentApiService: DocumentApiService
   ) { }
 
   /** On init hook */
   ngOnInit() {
-    this._recordObs = this.record$.subscribe((record: any) => {
-      this.record = record;
-      // only for imported record
-      if (record != null && record.metadata != null && this.record.metadata.pid == null) {
-        this.marc$ = this._recordService.getRecord(
-          this._activatedRouter.snapshot.params.type, this.pid, 0, {
-          Accept: 'application/marc+json, application/json'
-        });
-      } else {
-        this.marc$ = of(null);
-      }
+    this._recordObs = this.record$.pipe(
+      switchMap((record: any) => {
+        this.record = record;
+        if (record != null && record.metadata != null && this.record.metadata.pid == null) {
+          this.marc$ = this._recordService.getRecord(
+            this._activatedRouter.snapshot.params.type, this.pid, 0, {
+            Accept: 'application/marc+json, application/json'
+          });
+        } else {
+          this.marc$ = of(null);
+        }
+        return this.pid
+          ? this._documentApiService.getLinkedDocumentsCount(this.pid)
+          : of(0);
+      })
+    ).subscribe((count: number) => {
+      this.linkedDocumentsCount = count;
     });
   }
 
