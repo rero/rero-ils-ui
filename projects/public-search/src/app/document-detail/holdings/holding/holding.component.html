@@ -53,11 +53,11 @@
     </div>
   </div>
   <!-- SERIAL HOLDING INFORMATIOLNS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <dl class="row holdings-data pt-4" *ngIf="holding.metadata.holdings_type === 'serial'">
+  <dl class="row ml-1 pt-3" *ngIf="holding.metadata.holdings_type === 'serial'">
     <!-- CALL NUMBER -->
     <ng-container *ngIf="holding.metadata.call_number">
-      <dt class="col-2 col-sm-4 label-title" translate>Call number</dt>
-      <dd id="holding-call-number-{{ holding.metadata.pid }}" class="col-10 col-sm-8">
+      <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Call number</dt>
+      <dd id="holding-call-number-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">
         {{ holding.metadata.call_number }}
         <ng-container *ngIf="holding.metadata.second_call_number">
         | {{ holding.metadata.second_call_number }}
@@ -66,35 +66,35 @@
     </ng-container>
     <!-- ENUMERATION AND CHRONOLOGY -->
     <ng-container *ngIf="holding.metadata.enumerationAndChronology">
-      <dt class="col-2 col-sm-4 label-title" translate>Available collection</dt>
+      <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Available collection</dt>
       <dd id="holding-enum-chro-{{ holding.metadata.pid }}"
-          class="col-10 col-sm-8"
+          class="col-lg-9 col-sm-8 mb-0"
           [innerHTML]="holding.metadata.enumerationAndChronology | nl2br">
       </dd>
     </ng-container>
     <!-- SUPPLEMENTARY CONTENT -->
     <ng-container *ngIf="holding.metadata.supplementaryContent">
-      <dt class="col-2 col-sm-4 label-title" translate>Supplementary content</dt>
-      <dd id="holding-sup-content-{{ holding.metadata.pid }}" class="col-10 col-sm-8">{{ holding.metadata.supplementaryContent }}</dd>
+      <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Supplementary content</dt>
+      <dd id="holding-sup-content-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">{{ holding.metadata.supplementaryContent }}</dd>
     </ng-container>
     <!-- INDEX -->
     <ng-container *ngIf="holding.metadata.index">
-      <dt class="col-2 col-sm-4 label-title" translate>Indexes</dt>
-      <dd id="holding-index-{{ holding.metadata.pid }}" class="col-10 col-sm-8">{{ holding.metadata.index }}</dd>
+      <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Indexes</dt>
+      <dd id="holding-index-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">{{ holding.metadata.index }}</dd>
     </ng-container>
     <!-- MISSING ISSUES -->
     <ng-container *ngIf="holding.metadata.missing_issues">
-      <dt class="col-2 col-sm-4 label-title" translate>Missing issues</dt>
-      <dd id="holding-missing-issues-{{ holding.metadata.pid }}" class="col-10 col-sm-8">{{ holding.metadata.missing_issues }}</dd>
+      <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Missing issues</dt>
+      <dd id="holding-missing-issues-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">{{ holding.metadata.missing_issues }}</dd>
     </ng-container>
     <!-- NOTE -->
     <ng-container *ngIf="holding.metadata.notes">
       <ng-container *ngFor="let note of holding.metadata.notes | notesFilter : noteAuthorizedTypes">
-        <dt class="col-sm-4 col-2 label-title">
+        <dt class="col-sm-4 col-lg-3 label-title mb-0">
           <i class="fa fa-sticky-note-o pr-2"></i>
           {{ note.type | translate }}
         </dt>
-        <dd class="col-sm-8 col-10" [innerHTML]="note.content | nl2br"></dd>
+        <dd class="col-sm-8 col-lg-9 mb-0" [innerHTML]="note.content | nl2br"></dd>
       </ng-container>
     </ng-container>
   </dl>
