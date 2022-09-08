@@ -151,7 +151,24 @@ export class DocumentDescriptionComponent {
         if ('subtitle' in title) {
           result.push(title.subtitle[0].value);
         }
-        variants[title.type].push(result.join(': '));
+        let variantTitle = result.join(': ');
+        const variantData = [];
+        if ('part' in title) {
+          title.part.forEach((part: any) => {
+            const variantNumberData = [];
+            if ('partNumber' in part) {
+              variantNumberData.push(part.partNumber[0].value);
+            }
+            if ('partName' in part) {
+              variantNumberData.push(part.partName[0].value);
+            }
+            variantData.push(variantNumberData.join(', '));
+          });
+        }
+        if (variantData.length > 0) {
+          variantTitle += `. ${variantData.join('. ')}`;
+        }
+        variants[title.type].push(variantTitle);
       });
     }
     return variants;
