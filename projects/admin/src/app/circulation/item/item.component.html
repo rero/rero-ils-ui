@@ -109,7 +109,9 @@
               title="{{ 'Requests' | translate }}"
               class="badge badge-secondary font-weight-normal mr-1">
           <i class="fa fa-shopping-basket pr-1"></i>
-          {{ item.pending_loans[0].patron.name }}
+          <a class="text-white" [routerLink]="['/circulation', 'patron', item.pending_loans[0].patron.barcode[0], 'loan']">
+            {{ item.pending_loans[0].patron.name }}
+          </a>
         </span>
       </li>
     </ul>
@@ -199,7 +201,7 @@
           </ng-container>
           <span class="badge badge-secondary font-weight-normal mr-2" *ngFor="let request of item.pending_loans">
             <i class="fa fa-shopping-basket pr-1"></i>
-            {{ request.patron.name }}
+            <a class="text-white" [routerLink]="['/circulation', 'patron', request.patron.barcode[0], 'loan']">{{ request.patron.name }}</a>
           </span>
         </dd>
       </ng-container>
