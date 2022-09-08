@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,14 +18,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { RecordService } from '@rero/ng-core';
 import { LoanState } from 'projects/admin/src/app/classes/loans';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
 import { PatronService } from 'projects/admin/src/app/service/patron.service';
-import { PatronTransactionService } from '../../services/patron-transaction.service';
-import { CirculationService } from '../../services/circulation.service';
-import { RecordService } from '@rero/ng-core';
+import { Subscription } from 'rxjs';
 import { OperationLogsApiService } from '../../../api/operation-logs-api.service';
+import { CirculationService } from '../../services/circulation.service';
+import { PatronTransactionService } from '../../services/patron-transaction.service';
 
 @Component({
   selector: 'admin-main',
@@ -143,10 +143,35 @@ export class MainComponent implements OnInit, OnDestroy {
   ) { }
 
   /** OnInit hook */
-  ngOnInit() {
-    this._circulationService.clear();
-    this._patronBarcode = this._route.snapshot.paramMap.get('barcode');
-    this._patronSubscription$ = this._patronService.getPatron(this._patronBarcode).subscribe((patron: any) => {
+  ngOnInit(): void {
+    /** load patron if the barcode changes */
+    this._route.params.subscribe((data: any) => {
+      if (data.hasOwnProperty('barcode')) {
+        this.load(data.barcode);
+      }
+    });
+  }
+
+  /** OnDestroy hook */
+  ngOnDestroy(): void {
+    this._unregisterShortcuts();
+    if (this._patronFeesOperationSubscription$) {
+      this._patronFeesOperationSubscription$.unsubscribe();
+    }
+    if (this._patronSubscription$) {
+      this._patronSubscription$.unsubscribe();
+    }
+    this._patronService.clearPatron();
+  }
+
+  // COMPONENT FUNCTIONS ====================================================
+  /**
+   * Load data
+   * @param barcode: string, patron barcode
+   */
+  load(barcode: string): void {
+    this._patronBarcode = barcode;
+    this._patronSubscription$ = this._patronService.getPatron(barcode).subscribe((patron: any) => {
       if (patron) {
         this.patron = patron;
         // We need to unregister/register the shortcuts after the patron was loaded. Otherwise, the patron could be considered has
@@ -157,6 +182,7 @@ export class MainComponent implements OnInit, OnDestroy {
           this.historyCount = this._recordService.totalHits(result.hits.total);
         });
         this._patronService.getCirculationInformations(patron.pid).subscribe((data) => {
+          this._circulationService.clear();
           this.feesTotalAmount = data.fees.engaged + data.fees.preview;
           this._parseStatistics(data.statistics || {});
           for (const message of (data.messages || [])) {
@@ -174,27 +200,14 @@ export class MainComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** OnDestroy hook */
-  ngOnDestroy() {
-    this._unregisterShortcuts();
-    if (this._patronFeesOperationSubscription$) {
-      this._patronFeesOperationSubscription$.unsubscribe();
-    }
-    if (this._patronSubscription$) {
-      this._patronSubscription$.unsubscribe();
-    }
-    this._patronService.clearPatron();
-  }
-
-  // COMPONENT FUNCTIONS ====================================================
   /** reset the patron currently viewed */
-  clearPatron() {
+  clearPatron(): void {
     this._patronService.clearPatron();
     this._router.navigate(['/circulation']);
   }
 
   /** Register all component shortcuts on the hotkeysService */
-  private _registerShortcuts() {
+  private _registerShortcuts(): void {
     for (const shortcut of this._shortcuts) {
       const callback = shortcut.callback;
       delete shortcut.callback;
@@ -203,7 +216,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   /** Unregister all component shortcuts from the hotkeysService (if they are registered) */
-  private _unregisterShortcuts() {
+  private _unregisterShortcuts(): void {
     const registeredHotKeys = this._hotKeysService.getHotkeys().map(shortcut => shortcut.keys);
     const componentShortcuts = this._shortcuts.map(shortcut => shortcut.keys);
     const intersectionShortcuts = registeredHotKeys.filter(value => componentShortcuts.includes(value));
@@ -217,11 +230,9 @@ export class MainComponent implements OnInit, OnDestroy {
    * @param type: the type of circulation statistics to find.
    */
   getCirculationStatistics(type: string): number {
-    return (
-      'circulationInformations' in this._circulationService
-      && 'statistics' in this._circulationService.circulationInformations
-      && type in this._circulationService.circulationInformations.statistics
-    ) ? this._circulationService.circulationInformations.statistics[type]
+    const stats = this._circulationService?.circulationInformations?.statistics;
+    return stats && type in stats
+      ? this._circulationService.circulationInformations.statistics[type]
       : 0;
   }
 
@@ -229,7 +240,7 @@ export class MainComponent implements OnInit, OnDestroy {
    * Parse statistics from API into corresponding tab statistic.
    * @param data: a dictionary of loan state/value
    */
-  private _parseStatistics(data: any) {
+  private _parseStatistics(data: any): void {
     for (const key of Object.keys(data)) {
       switch (key) {
         case LoanState[LoanState.PENDING]:
