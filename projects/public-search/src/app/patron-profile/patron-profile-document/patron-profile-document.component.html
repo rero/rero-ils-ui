@@ -23,8 +23,8 @@
     <li *ngFor="let contribution of document.contribution; let last = last; let i = index" class="list-inline-item">
       <span *ngIf="!contribution.agent.pid" [innerHTML]="contribution | contributionFormat: true"></span>
       <a *ngIf="contribution.agent.pid"
-         [innerHTML]="contribution | contributionFormat"
-         [routerLink]="['/records', 'persons', 'detail', contribution.agent.pid]">
+        href="/{{ viewcode }}/{{ getContributorLinkType(contribution.agent.type) }}/{{ contribution.agent.pid }}"
+        [innerHTML]="contribution | contributionFormat">
       </a>
       <ng-container *ngIf="!last">; </ng-container>
     </li>
