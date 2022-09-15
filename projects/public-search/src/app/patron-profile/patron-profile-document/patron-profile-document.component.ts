@@ -53,6 +53,19 @@ export class PatronProfileDocumentComponent implements OnInit {
     ).filter(Boolean).join(' | ');
   }
 
+  /**
+   * Translate contribution type to parameter
+   * @param type - contribution type
+   * @returns string, contribution parameter
+   */
+  getContributorLinkType(type: string): string {
+    switch (type) {
+      case 'bf:Person': return 'persons';
+      case 'bf:Organisation': return 'corporate-bodies';
+      default: return type;
+    }
+  }
+
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
