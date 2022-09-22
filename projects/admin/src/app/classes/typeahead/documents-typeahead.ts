@@ -80,10 +80,15 @@ export class DocumentsTypeahead implements ITypeahead {
     if (!query) {
       return of([]);
     }
+
+    let queryString = `((autocomplete_title:${query})^2 OR ${query})`;
+    if (options.filter) {
+      queryString += ` AND ${options.filter}`;
+    }
     return this._recordService
       .getRecords(
         'documents',
-        `(autocomplete_title:${query})^2 OR ${query}`,
+        queryString,
         1,
         numberOfSuggestions
       ).pipe(
