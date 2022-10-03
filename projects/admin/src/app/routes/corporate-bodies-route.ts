@@ -71,7 +71,8 @@ export class CorporateBodiesRoute extends BaseRoute implements RouteInterface {
             preFilters: {
               type: 'bf:Organisation',
             },
-            sortOptions: this._sortOptions()
+            sortOptions: this._sortOptions(),
+            showFacetsIfNoResults: true
           }
         ]
       }

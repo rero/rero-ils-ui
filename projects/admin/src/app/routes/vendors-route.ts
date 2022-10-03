@@ -73,7 +73,8 @@ export class VendorsRoute extends BaseRoute implements RouteInterface {
                 value: 'name',
                 defaultNoQuery: true
               }
-            ]
+            ],
+            showFacetsIfNoResults: true
           }
         ]
       }

@@ -80,7 +80,8 @@ export class LoansRoute extends BaseRoute implements RouteInterface {
               format: 'csv',
               endpoint: this._routeToolService.apiService.getExportEndpointByType(this.recordType),
               disableMaxRestResultsSize: true,
-            }]
+            }],
+            showFacetsIfNoResults: true
           }
         ]
       }

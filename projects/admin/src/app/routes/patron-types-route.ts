@@ -88,7 +88,8 @@ export class PatronTypesRoute extends BaseRoute implements RouteInterface {
                 label: _('Code'),
                 value: 'code'
               }
-            ]
+            ],
+            showFacetsIfNoResults: true
           }
         ]
       }

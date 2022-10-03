@@ -106,7 +106,8 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
                 value: 'name',
                 defaultNoQuery: true
               }
-            ]
+            ],
+            showFacetsIfNoResults: true
           }
         ]
       }

@@ -108,7 +108,8 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
                 value: 'title',
                 defaultNoQuery: true
               }
-            ]
+            ],
+            showFacetsIfNoResults: true
           }
         ]
       }
