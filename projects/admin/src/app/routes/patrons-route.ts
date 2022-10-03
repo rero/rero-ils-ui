@@ -116,7 +116,8 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
                 label: _('Name'),
                 value: 'full_name'
               }
-            ]
+            ],
+            showFacetsIfNoResults: true
           }
         ]
       }

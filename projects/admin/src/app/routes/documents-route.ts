@@ -93,6 +93,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
               subject_fiction: _('Subject (fiction)'),
               subject_no_fiction: _('Subject (non-fiction)'),
             },
+            showFacetsIfNoResults: true,
             allowEmptySearch: false,
             aggregationsOrder: [
               'document_type',

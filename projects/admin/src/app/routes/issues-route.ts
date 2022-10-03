@@ -77,6 +77,7 @@ export class IssuesRoute extends BaseRoute implements RouteInterface {
                 disableMaxRestResultsSize: true,
               }
             ],
+            showFacetsIfNoResults: true
           }
         ],
       }

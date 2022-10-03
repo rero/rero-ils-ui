@@ -42,7 +42,8 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
     aggregationsExpand: ['document_type', 'author', 'language', 'year'],
     itemHeaders: { Accept: 'application/rero+json, application/json'},
     listHeaders: { Accept: 'application/rero+json, application/json'},
-    allowEmptySearch: false
+    allowEmptySearch: false,
+    showFacetsIfNoResults: true
   };
 
   /**

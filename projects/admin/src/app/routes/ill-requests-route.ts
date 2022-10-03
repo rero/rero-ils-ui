@@ -60,7 +60,8 @@ export class IllRequestsRoute extends BaseRoute implements RouteInterface {
             aggregationsOrder: ['status', 'loan_status', 'requester', 'library'],
             listHeaders: {
               Accept: 'application/rero+json, application/json'
-            }
+            },
+            showFacetsIfNoResults: true
           }
         ]
       }

@@ -71,7 +71,8 @@ export class PersonsRoute extends BaseRoute implements RouteInterface {
             preFilters: {
               type: 'bf:Person'
             },
-            sortOptions: this._sortOptions()
+            sortOptions: this._sortOptions(),
+            showFacetsIfNoResults: true
           }
         ]
       }

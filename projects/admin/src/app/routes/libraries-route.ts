@@ -81,7 +81,8 @@ export class LibrariesRoute extends BaseRoute implements RouteInterface {
                 label: _('Code'),
                 value: 'code'
               }
-            ]
+            ],
+            showFacetsIfNoResults: true
           }
         ]
       }
