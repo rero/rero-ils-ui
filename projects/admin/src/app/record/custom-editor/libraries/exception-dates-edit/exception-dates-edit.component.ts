@@ -18,7 +18,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { FormArray, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 
 import { LibraryExceptionFormService } from '../library-exception-form.service';
@@ -33,7 +33,7 @@ export class ExceptionDatesEditComponent implements OnInit {
 
   @Input() exceptionDate: any;
   value = new Subject();
-  public exceptionForm: FormGroup;
+  public exceptionForm: UntypedFormGroup;
 
   constructor(
     public localeService: BsLocaleService,
@@ -108,9 +108,9 @@ export class ExceptionDatesEditComponent implements OnInit {
   get is_open() { return this.form.is_open; }
   get date() { return this.form.date; }
   get dates() { return this.form.dates; }
-  get times() { return this.form.times as FormArray; }
+  get times() { return this.form.times as UntypedFormArray; }
   get repeat() { return this.form.repeat; }
   get interval() { return this.form.interval; }
   get period() { return this.form.period; }
-  get data() { return this.data as FormArray; }
+  get data() { return this.data as UntypedFormArray; }
 }

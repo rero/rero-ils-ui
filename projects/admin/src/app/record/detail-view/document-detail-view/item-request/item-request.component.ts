@@ -16,7 +16,7 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
@@ -46,7 +46,7 @@ export class ItemRequestComponent implements OnInit {
   /** Service */
   service: any;
   /** form */
-  form: FormGroup = new FormGroup({});
+  form: UntypedFormGroup = new UntypedFormGroup({});
   /** form fields */
   formFields: FormlyFieldConfig[];
   /** model */
@@ -183,7 +183,7 @@ export class ItemRequestComponent implements OnInit {
             },
             asyncValidators: {
               userExist: {
-                expression: (fc: FormControl) =>  {
+                expression: (fc: UntypedFormControl) =>  {
                   return new Promise((resolve) => {
                     const value = fc.value;
                     if (value.length > 2) {
@@ -199,7 +199,7 @@ export class ItemRequestComponent implements OnInit {
                 message: this._translateService.instant('Patron not found.')
               },
               can_request: {
-                expression: (fc: FormControl) => {
+                expression: (fc: UntypedFormControl) => {
                   return new Promise((resolve) => {
                     const value = fc.value;
                     if (value.length > 2) {

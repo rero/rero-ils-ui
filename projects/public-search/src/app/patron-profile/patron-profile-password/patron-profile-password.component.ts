@@ -16,7 +16,7 @@
  */
 import { DOCUMENT } from '@angular/common';
 import { Component, ElementRef, Inject, Input } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -51,7 +51,7 @@ export class PatronProfilePasswordComponent {
   @Input() referer: string | null;
 
   /** angular form group for ngx-formly */
-  form: FormGroup = new FormGroup({});
+  form: UntypedFormGroup = new UntypedFormGroup({});
 
   /** Model */
   model: any = {};

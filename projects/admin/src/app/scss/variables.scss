@@ -36,4 +36,4 @@ $form_valid: green;
 
 $resource-logo-width:     140px;
 $resource-logo-height:    $resource-logo-width;
-$resource-logo-radius:    ($resource-logo-width / 2);
+$resource-logo-radius:    calc($resource-logo-width / 2);

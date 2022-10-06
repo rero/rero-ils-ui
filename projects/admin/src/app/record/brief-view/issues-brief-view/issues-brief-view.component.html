@@ -67,8 +67,8 @@
     <dt class="col-3 label-title" translate>Issue status</dt>
     <dd class="col-9">
       <i class="fa text-warning" [ngClass]="{
-        'fa-envelope': status == issueItemStatus.CLAIMED,
-        'fa-envelope-open-o': status == issueItemStatus.LATE
+        'fa-envelope': status === issueItemStatus.CLAIMED,
+        'fa-envelope-open-o': status === issueItemStatus.LATE
       }"
       ></i>
     {{ status | translate }} [{{ record.metadata.issue.status_date | dateTranslate }}]

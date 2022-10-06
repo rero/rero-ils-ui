@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import '~ngx-bootstrap/datepicker/bs-datepicker';
-@import '~font-awesome/scss/font-awesome';
+@import 'node_modules/font-awesome/scss/font-awesome';
 @import 'variables';
-@import '~bootstrap/scss/bootstrap';
-@import '~ngx-toastr/toastr-bs4-alert';
+@import 'node_modules/bootstrap/scss/bootstrap';
+@import 'node_modules/ngx-toastr/toastr-bs4-alert';
 
 
 html [type=button] {

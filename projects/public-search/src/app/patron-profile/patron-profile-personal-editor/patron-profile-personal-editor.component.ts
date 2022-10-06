@@ -16,7 +16,7 @@
  */
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
@@ -44,7 +44,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   /** form initial values */
   model: any = {};
   /** angular form group for ngx-formly */
-  form: FormGroup = new FormGroup({});
+  form: UntypedFormGroup = new UntypedFormGroup({});
 
   /** all component subscription */
   private _subscriptions = new Subscription();
@@ -226,7 +226,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
    */
   private _getUniqueValidator(fieldName: string, message: string) {
     return {
-      expression: (control: FormControl) => {
+      expression: (control: UntypedFormControl) => {
         const value = control.value;
         return (value == null || value.length === 0)
           ? of(true)

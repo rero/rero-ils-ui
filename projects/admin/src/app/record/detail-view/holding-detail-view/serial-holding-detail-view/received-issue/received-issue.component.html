@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="issue container" [ngClass]="{'deleted-status': issue.metadata.issue.status == 'deleted'}">
+<div class="issue container" [ngClass]="{'deleted-status': issue.metadata.issue.status === 'deleted'}">
   <div class="row">
     <div class="col">
       <div class="row">

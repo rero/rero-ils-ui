@@ -17,7 +17,7 @@
 
 import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, cleanDictKeys, RecordService, removeEmptyValues, UniqueValidator } from '@rero/ng-core';
@@ -39,7 +39,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
   /** The current library. */
   public library: Library;
   /** The angular form to edit the library. */
-  public libForm: FormGroup;
+  public libForm: UntypedFormGroup;
   /** The current organisation pid. */
   public organisationPid: string;
   /** possible delayed notification types. */
@@ -64,9 +64,9 @@ export class LibraryComponent implements OnInit, OnDestroy {
   /** Country list */
   get countries_iso_codes() { return this.libraryForm.countries_iso_codes; }
   /** Hours when the library is open. */
-  get openingHours() { return this.libraryForm.opening_hours as FormArray; }
+  get openingHours() { return this.libraryForm.opening_hours as UntypedFormArray; }
   /** Notification settings. */
-  get notificationSettings() { return this.libraryForm.notification_settings as FormArray; }
+  get notificationSettings() { return this.libraryForm.notification_settings as UntypedFormArray; }
   /** Available communication languages */
   get availableCommunicationLanguages() { return this.libraryForm.available_communication_languages; }
 

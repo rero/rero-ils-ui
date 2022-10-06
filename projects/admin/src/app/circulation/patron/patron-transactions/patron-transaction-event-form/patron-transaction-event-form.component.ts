@@ -1,6 +1,6 @@
 import { getCurrencySymbol } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -25,7 +25,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
   private _mode: string;
 
   /** form group */
-  form: FormGroup = new FormGroup({});
+  form: UntypedFormGroup = new UntypedFormGroup({});
 
   /** fields config of the form */
   formFields: FormlyFieldConfig[] = [];

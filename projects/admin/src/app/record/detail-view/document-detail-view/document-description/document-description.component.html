@@ -236,7 +236,7 @@
   </div>
 
   <!-- TITLE (KEY TITLE, ABBREVIATED TITLE, VARIANT TITLE)-->
-  <ng-container *ngIf="titleVariants != {}">
+  <ng-container *ngIf="titleVariants !== {}">
     <div class="striped" *ngFor="let title of titleVariants | keyvalue">
       <admin-description-zone>
         <ng-container label>{{ title.key | translate | ucfirst }}</ng-container>

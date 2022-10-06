@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { tap } from 'rxjs/operators';
@@ -45,7 +45,7 @@ export class PickupLocationComponent implements OnInit {
   @Output() closeEvent = new EventEmitter<boolean>();
 
   /** Form */
-  form = new FormGroup({});
+  form = new UntypedFormGroup({});
   fields: FormlyFieldConfig[] = [];
   model: any = {};
 
