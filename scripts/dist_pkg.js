@@ -6,7 +6,7 @@ const path = require('path');
 const glob = require('glob');
 
 
-var argv = require('yargs')(process.argv.slice(2))
+var argv = require('yargs/yargs')(process.argv.slice(2))
   .usage('Usage: $0 <command> [options]')
   .example('$0 -o build', 'create a package.json for npmjs')
   .alias('o', 'outputDir')

@@ -18,7 +18,7 @@
 
 import { formatDate } from '@angular/common';
 import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
@@ -42,8 +42,8 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
 
   // COMPONENT ATTRIBUTES ====================================
   /** form group */
-  formGroup: FormGroup = new FormGroup({
-    endDate: new FormControl('', [
+  formGroup: UntypedFormGroup = new UntypedFormGroup({
+    endDate: new UntypedFormControl('', [
       Validators.required,
       DateValidators.minimumDateValidator(
         new Date(),

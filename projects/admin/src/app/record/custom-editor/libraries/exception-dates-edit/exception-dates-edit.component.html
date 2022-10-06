@@ -132,7 +132,7 @@
           </em>
         </div>
         <div class="col-sm-12 pl-0">
-          <button *ngIf="times.length == 0" (click)="addTime()"
+          <button *ngIf="times.length === 0" (click)="addTime()"
                   type="button" class="btn btn-outline-secondary btn-sm">
             <i class="fa fa-plus-square-o" aria-hidden="true"></i> {{ 'period' | translate }}
           </button>
@@ -154,7 +154,7 @@
                     ><i class="fa fa-trash" aria-hidden="true"></i></button>
                     <button
                       type="button"
-                      *ngIf="times.length == 1"
+                      *ngIf="times.length === 1"
                       class="btn btn-outline-secondary btn-sm"(click)="addTime()"
                     ><i class="fa fa-plus-square-o" aria-hidden="true"></i> {{ 'period' | translate }}</button>
                   </div>

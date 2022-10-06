@@ -18,7 +18,7 @@
 
 import { getCurrencySymbol } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
@@ -41,7 +41,7 @@ export class AccountTransferComponent implements OnInit {
   /** active budgets */
   budgets: string[] = [];
   /** the transfer form group */
-  form: FormGroup;
+  form: UntypedFormGroup;
 
   /** the accounts available for transfer */
   private _accountsTree: IAcqAccount[] = [];
@@ -73,7 +73,7 @@ export class AccountTransferComponent implements OnInit {
   constructor(
     private _acqAccountApiService: AcqAccountApiService,
     private _organisationService: OrganisationService,
-    private _formBuilder: FormBuilder,
+    private _formBuilder: UntypedFormBuilder,
     private _toastrService: ToastrService,
     private _translateService: TranslateService,
     private _router: Router,

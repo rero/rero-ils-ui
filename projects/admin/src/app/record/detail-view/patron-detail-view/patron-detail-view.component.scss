@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import '~bootstrap/scss/_functions';
-@import '~bootstrap/scss/_variables';
-@import '/projects/admin/src/app/scss/variables';
+@import 'node_modules/bootstrap/scss/_functions';
+@import 'node_modules/bootstrap/scss/_variables';
+@import 'projects/admin/src/app/scss/variables';
 
 #contact-profile {
   .profile-image {

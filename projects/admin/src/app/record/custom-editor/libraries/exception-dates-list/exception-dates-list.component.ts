@@ -16,7 +16,7 @@
  */
 
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ExceptionDatesEditComponent } from '../exception-dates-edit/exception-dates-edit.component';
 import { ChangeDetectorRef } from '@angular/core';
@@ -26,7 +26,7 @@ import { ChangeDetectorRef } from '@angular/core';
   templateUrl: './exception-dates-list.component.html',
   styles: []
 })
-export class ExceptionDatesListComponent implements OnInit {
+export class ExceptionDatesListComponent {
 
   bsModalRef: BsModalRef;
 
@@ -36,9 +36,6 @@ export class ExceptionDatesListComponent implements OnInit {
     private modalService: BsModalService,
     private ref: ChangeDetectorRef
     ) { }
-
-  ngOnInit() {
-  }
 
   addException() {
     this.bsModalRef = this.modalService.show(ExceptionDatesEditComponent, {

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import '~bootstrap/scss/_functions';
-@import '~bootstrap/scss/_variables';
+@import 'node_modules/bootstrap/scss/_functions';
+@import 'node_modules/bootstrap/scss/_variables';
 
 .modal-body .row:first-child{
   border-top: $border-width solid $border-color;

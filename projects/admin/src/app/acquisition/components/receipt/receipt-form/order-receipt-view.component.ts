@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -45,7 +45,7 @@ export class OrderReceiptViewComponent implements OnInit {
   /** All elements loaded */
   loaded = false;
   /** Formly configuration */
-  form = new FormGroup({});
+  form = new UntypedFormGroup({});
   /** Model */
   model: IAcqReceiptModel;
 

@@ -46,7 +46,7 @@
     <div class="tab-content">
       <!-- top actions bar ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       <div class="d-flex">
-        <button [routerLink]="" (click)="showMore('prediction', 3)" class="btn btn-sm btn-outline-primary">
+        <button [routerLink]="[]" (click)="showMore('prediction', 3)" class="btn btn-sm btn-outline-primary">
           <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i>
           {{ 'Show more' | translate }} &hellip;
         </button>
@@ -98,7 +98,7 @@
       <!-- SHOW MORE RECEIVED ISSUE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       <div class="row mt-1" *ngIf="receivedItems.length < totalReceivedItems">
         <div class="col">
-          <button [routerLink]="" (click)="showMore('received', 5)" class="btn btn-sm btn-outline-primary">
+          <button [routerLink]="[]" (click)="showMore('received', 5)" class="btn btn-sm btn-outline-primary">
             <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
             {{ 'Show more' | translate }} ...
           </button>

@@ -16,7 +16,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { TranslateService } from '@ngx-translate/core';
@@ -49,7 +49,7 @@ export class UserIdEditorComponent implements OnInit {
   model: any = {};
 
   /** angular form group for ngx-formly */
-  form: FormGroup;
+  form: UntypedFormGroup;
 
   /** Formly fields configuration populate by the JSONSchema */
   fields: FormlyFieldConfig[];
@@ -74,7 +74,7 @@ export class UserIdEditorComponent implements OnInit {
     private _userService: UserService,
     private _loggerService: LoggerService
   ) {
-    this.form = new FormGroup({});
+    this.form = new UntypedFormGroup({});
   }
 
   /**
@@ -224,7 +224,7 @@ export class UserIdEditorComponent implements OnInit {
    */
   getUniqueValidator(fieldName: string) {
     return {
-      expression: (control: FormControl) => {
+      expression: (control: UntypedFormControl) => {
         const value = control.value;
         if (value == null || value.length === 0) {
           return of(true);

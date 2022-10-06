@@ -17,13 +17,12 @@
  */
 
 // Credit :: https://github.com/valor-software/ngx-bootstrap/issues/823#issuecomment-514976712
-/* tslint:disable */
-// The selector should be prefixed by "admin"
 
 import { Directive, Input, OnChanges } from '@angular/core';
 import { TabDirective } from 'ngx-bootstrap/tabs';
 
 @Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[tabOrder]'
 })
 export class TabOrderDirective implements OnChanges {

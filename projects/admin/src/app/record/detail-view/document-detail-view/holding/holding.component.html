@@ -102,7 +102,7 @@
                 [attr.id]="item.metadata.barcode | idAttribute:{prefix: 'item'}">
             ></admin-serial-holding-item>
             <div class="row pl-3" *ngIf="displayItemsCounter < totalItemsCounter">
-              <a [routerLink]="" (click)="showMore(5)" [attr.id]="holding.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
+              <a [routerLink]="[]" (click)="showMore(5)" [attr.id]="holding.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
                 <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
                 {{ 'Show more' | translate }} ...
               </a>
@@ -132,7 +132,7 @@
               </ng-container>
             </ng-container>
             <div class="row pl-3" *ngIf="displayItemsCounter < totalItemsCounter">
-              <a [routerLink]="" (click)="showMore(5)" [attr.id]="holding.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
+              <a [routerLink]="[]" (click)="showMore(5)" [attr.id]="holding.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
                 <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
                 {{ 'Show more' | translate }} ...
               </a>

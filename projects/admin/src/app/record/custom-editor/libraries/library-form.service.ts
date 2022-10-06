@@ -16,7 +16,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { RecordService, TimeValidator } from '@rero/ng-core';
 import { forkJoin, Subject } from 'rxjs';
 import { AcquisitionInformations, Library, NotificationSettings } from '../../../classes/library';
@@ -46,8 +46,8 @@ export class LibraryFormService {
   get address(): AbstractControl { return this.form.get('address'); }
   get email(): AbstractControl { return this.form.get('email'); }
   get code(): AbstractControl { return this.form.get('code'); }
-  get opening_hours(): FormArray { return this.form.get('opening_hours') as FormArray; }
-  get notification_settings(): FormArray { return this.form.get('notification_settings') as FormArray; }
+  get opening_hours(): UntypedFormArray { return this.form.get('opening_hours') as UntypedFormArray; }
+  get notification_settings(): UntypedFormArray { return this.form.get('notification_settings') as UntypedFormArray; }
   get communication_language(): AbstractControl { return this.form.get('communication_language'); }
   get available_communication_languages() { return this.availableCommunicationLanguages; }
   get countries_iso_codes() { return this.countryList; }
@@ -58,7 +58,7 @@ export class LibraryFormService {
    * @param _recordService - RecordService
    */
   constructor(
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
     private _recordService: RecordService
   ) { }
 
@@ -183,7 +183,7 @@ export class LibraryFormService {
    * @param day - day
    * @param times - times array
    */
-  private _buildOpeningHours(isOpen: boolean, day, times): FormGroup {
+  private _buildOpeningHours(isOpen: boolean, day, times): UntypedFormGroup {
     return this._fb.group({
       is_open: [isOpen],
       day: [day],
@@ -198,7 +198,7 @@ export class LibraryFormService {
    * @param startTime - start time
    * @param endTime - end time
    */
-  private _buildTimes(startTime = '00:01', endTime = '23:59'): FormGroup {
+  private _buildTimes(startTime = '00:01', endTime = '23:59'): UntypedFormGroup {
     const regex = '^(?!(0:00)|(00:00)$)([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$';
     return this._fb.group({
       start_time: [startTime, {
@@ -223,14 +223,14 @@ export class LibraryFormService {
    * @param dayIndex - the day index
    * @return: The corresponding FormArray (at least an empty array)
    */
-  private _getTimesByDayIndex(dayIndex): FormArray {
+  private _getTimesByDayIndex(dayIndex): UntypedFormArray {
     return this.form.get('opening_hours')
       .get(String(dayIndex))
-      .get('times') as FormArray;
+      .get('times') as UntypedFormArray;
   }
 
   /** Build structure to store acquisition information into the form */
-  private _buildAcqInformation(): FormGroup {
+  private _buildAcqInformation(): UntypedFormGroup {
     return this._fb.group({
       name: ['', Validators.minLength(3)],
       email: ['', Validators.email],
@@ -293,7 +293,7 @@ export class LibraryFormService {
    * Build the notification setting for a specific type
    * @param settingType - the notification type
    */
-  private _buildSettingsByType(settingType: NotificationType): FormGroup {
+  private _buildSettingsByType(settingType: NotificationType): UntypedFormGroup {
     const model: NotificationSettings = {
       type: settingType,
       email: ''

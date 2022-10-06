@@ -2,11 +2,6 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/shared",
   "lib": {
-    "entryFile": "src/public-api.ts",
-    "umdModuleIds": {
-      "@biesbjerg/ngx-translate-extract-marker": "@biesbjerg/ngx-translate-extract-marker",
-      "@ngx-translate/core": "@ngx-translate/core",
-      "@rero/ng-core": "@rero/ng-core"
-    }
+    "entryFile": "src/public-api.ts"
   }
 }

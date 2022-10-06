@@ -48,51 +48,44 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
 
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    DocumentBriefComponent,
-    MainComponent,
-    CollectionBriefComponent,
-    ErrorPageComponent,
-    DocumentRecordSearchComponent,
-    SearchBarComponent
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    HttpClientModule,
-    RecordModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: BaseTranslateLoader,
-        useClass: TranslateLoader,
-        deps: [CoreConfigService, HttpClient]
-      },
-      isolate: false
-    }),
-    TypeaheadModule.forRoot(),
-    SharedModule,
-    LoadingBarHttpClientModule,
-    LoadingBarRouterModule,
-    LoadingBarModule
-  ],
-  providers: [
-    { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
-    { provide: CoreConfigService, useClass: AppConfigService },
-    { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.currentLanguage, deps: [TranslateService] },
-    { provide: HTTP_INTERCEPTORS, useClass: CustomRequestInterceptor, multi: true },
-    BsLocaleService
-  ],
-  entryComponents: [
-    DocumentBriefComponent,
-    CollectionBriefComponent,
-    ErrorPageComponent,
-    DocumentRecordSearchComponent,
-    SearchBarComponent
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        DocumentBriefComponent,
+        MainComponent,
+        CollectionBriefComponent,
+        ErrorPageComponent,
+        DocumentRecordSearchComponent,
+        SearchBarComponent
+    ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        HttpClientModule,
+        RecordModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: BaseTranslateLoader,
+                useClass: TranslateLoader,
+                deps: [CoreConfigService, HttpClient]
+            },
+            isolate: false
+        }),
+        TypeaheadModule.forRoot(),
+        SharedModule,
+        LoadingBarHttpClientModule,
+        LoadingBarRouterModule,
+        LoadingBarModule
+    ],
+    providers: [
+        { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
+        { provide: CoreConfigService, useClass: AppConfigService },
+        { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.currentLanguage, deps: [TranslateService] },
+        { provide: HTTP_INTERCEPTORS, useClass: CustomRequestInterceptor, multi: true },
+        BsLocaleService
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    bootstrap: [AppComponent]
 })
 export class AppModule {
 

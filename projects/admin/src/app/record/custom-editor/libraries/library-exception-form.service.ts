@@ -17,7 +17,7 @@
 
 
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import { TimeValidator } from '@rero/ng-core';
 import * as moment from 'moment';
 
@@ -29,7 +29,7 @@ export class LibraryExceptionFormService {
 
   public form;
 
-  constructor( private fb: FormBuilder ) {
+  constructor( private fb: UntypedFormBuilder ) {
     this.build();
   }
 
@@ -53,7 +53,7 @@ export class LibraryExceptionFormService {
     });
   }
 
-  buildTimes(startTime = '00:00', endTime = '00:00'): FormGroup {
+  buildTimes(startTime = '00:00', endTime = '00:00'): UntypedFormGroup {
     return this.fb.group({
       start_time: [startTime, {
         validators: [
@@ -74,7 +74,7 @@ export class LibraryExceptionFormService {
     });
   }
 
-  buildRepeat(): FormGroup {
+  buildRepeat(): UntypedFormGroup {
     return this.fb.group({
       interval: ['', [ Validators.required ]],
       period: ['', [ Validators.required ]],

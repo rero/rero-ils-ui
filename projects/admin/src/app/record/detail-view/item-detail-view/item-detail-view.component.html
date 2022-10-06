@@ -30,7 +30,7 @@
     <dl class="row mb-0">
       <!-- INHERITED CALL NUMBER -->
       <ng-container *ngIf="record | itemHoldingsCallNumber | async as callNumber">
-        <ng-container *ngIf="(callNumber | json) != ({ first: {}, second: {} } | json)">
+        <ng-container *ngIf="(callNumber | json) !== ({ first: {}, second: {} } | json)">
           <dt class="col-3 label-title" translate>Call number </dt>
           <dd class="col-9">
             <shared-inherited-call-number [item]="record" context="first"></shared-inherited-call-number>
