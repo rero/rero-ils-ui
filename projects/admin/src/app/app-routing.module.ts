@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,6 +19,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 import { RouteService } from './routes/route.service';
+import { PermissionDetailViewComponent } from './record/detail-view/permission-detail-view/permission-detail-view.component';
+import { PERMISSIONS } from '@rero/shared';
+import { PermissionGuard } from './guard/permission.guard';
 
 const routes: Routes = [
   {
@@ -30,6 +33,11 @@ const routes: Routes = [
   }, {
     path: 'acquisition',
     loadChildren: () => import('./acquisition/acquisition.module').then(m => m.AcquisitionModule)
+  },
+  {
+    path: 'permissions/matrix',
+    component: PermissionDetailViewComponent,
+    canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.PERM_MANAGEMENT ] }
   }
 ];
 

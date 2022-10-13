@@ -15,13 +15,13 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <!-- import button for external source importation such as BNF -->
-<div *ngIf="record && record.metadata && !record.metadata.pid && pid && source" class="float-right ml-4 mt-2 mb-4">
+<div *ngIf="record && record.metadata && !record.metadata.pid && pid && source" class="float-right ml-4 mt-2 mb-4" [permissions]="permissions.DOC_CREATE">
   <a (click)="importDocument($event, record, { source: source, pid: pid })"
     class="btn btn-sm btn-outline-primary"
     translate>Import</a>
 </div>
 <!-- duplicate button -->
-<div *ngIf="record && record.metadata && record.metadata.pid" class="float-right mt-2 mb-4 mr-n4 btn-duplicate">
+<div *ngIf="record && record.metadata && record.metadata.pid" class="float-right mt-2 mb-4 mr-n4 btn-duplicate" [permissions]="permissions.DOC_CREATE">
   <a [routerLink]="['/records', 'documents', 'duplicate']"
     [queryParams]="{type: 'documents', pid: record.metadata.pid}"
     class="btn btn-sm btn-outline-primary"
@@ -250,7 +250,7 @@
       <!-- END OF DESCRIPTION TAB -->
       <!-- LOCAL FIELDS TAB -->
       <tab
-        *ngIf="!record.metadata.harvested && record.metadata.pid"
+        *ngIf="!record.metadata.harvested && record.metadata.pid && showhideLocalFieldsTab"
         id="documents-local-field-tab"
         tabOrder="4"
       >

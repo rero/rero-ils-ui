@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,10 +16,11 @@
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DetailComponent, JSONSchema7, Record, RecordService, RouteInterface } from '@rero/ng-core';
+import { PERMISSIONS } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CanAccessGuard } from '../guard/can-access.guard';
-import { CanUpdateGuard } from '../guard/can-update.guard';
+import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../guard/can-access.guard';
+import { PermissionGuard } from '../guard/permission.guard';
 import { HoldingEditorComponent } from '../record/custom-editor/holding-editor/holding-editor.component';
 import { HoldingDetailViewComponent } from '../record/detail-view/holding-detail-view/holding-detail-view.component';
 import { BaseRoute } from './base-route';
@@ -41,9 +42,9 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ] },
-        { path: 'edit/:pid', component: HoldingEditorComponent, canActivate: [ CanAccessGuard, CanUpdateGuard ] },
-        { path: 'new', component: HoldingEditorComponent }
+        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
+        { path: 'edit/:pid', component: HoldingEditorComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
+        { path: 'new', component: HoldingEditorComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.HOLD_CREATE ] } }
       ],
       data: {
         types: [
@@ -59,6 +60,7 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
               }
             },
             detailComponent: HoldingDetailViewComponent,
+            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.HOLD_CREATE) }),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
             preCreateRecord: (data: any) => {
               data.document = {

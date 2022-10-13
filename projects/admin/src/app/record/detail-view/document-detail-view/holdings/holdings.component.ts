@@ -18,7 +18,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
 import { HoldingsApiService } from 'projects/admin/src/app/api/holdings-api.service';
 import { forkJoin, Observable } from 'rxjs';
 import { RecordPermissionService } from '../../../../service/record-permission.service';
@@ -84,6 +84,9 @@ export class HoldingsComponent implements OnInit {
     return this._userService.user.currentOrganisation;
   }
 
+  /** return all available permissions for current user */
+  permissions: IPermissions = PERMISSIONS;
+
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
@@ -98,7 +101,7 @@ export class HoldingsComponent implements OnInit {
     private _holdingsApiService: HoldingsApiService,
     private _recordUiService: RecordUiService,
     private _recordPermissionService: RecordPermissionService,
-    private _translateService: TranslateService,
+    private _translateService: TranslateService
   ) { }
 
   /** onInit hook */

@@ -20,6 +20,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { IPermissions, PERMISSIONS, PermissionsService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { Observable, of, Subscription } from 'rxjs';
@@ -131,6 +132,17 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
     return this._translateService.currentLang;
   }
 
+  /** return all available permissions for current user */
+  permissions: IPermissions = PERMISSIONS;
+
+  /**
+   * Show or hide local fields tab
+   * @return boolean - if False, hide the local fields tab
+   */
+  get showhideLocalFieldsTab(): boolean {
+    return this._permissionsService.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE]);
+  }
+
   /**
    * Constructor
    * @param _translateService - TranslateService to translate some strings.
@@ -140,6 +152,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
    * @param _router - Router
    * @param _bsModalService - BsModalService
    * @param _documentApiService - DocumentApiService
+   * @param _permissionsService - PermissionsService
    */
   constructor(
     private _translateService: TranslateService,
@@ -148,7 +161,8 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
     private _operationLogsService: OperationLogsService,
     private _router: Router,
     private _bsModalService: BsModalService,
-    private _documentApiService: DocumentApiService
+    private _documentApiService: DocumentApiService,
+    private _permissionsService: PermissionsService
   ) { }
 
   /** On init hook */

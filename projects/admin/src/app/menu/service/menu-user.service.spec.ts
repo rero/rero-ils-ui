@@ -17,17 +17,27 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { MenuItemInterface } from '@rero/ng-core';
+import { testUserLibrarianWithSettings, User, UserService } from '@rero/shared';
 
 import { MenuUserService } from './menu-user.service';
 
 describe('MenuUserService', () => {
   let service: MenuUserService;
 
+  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
+  const user = new User(testUserLibrarianWithSettings);
+  user.currentLibrary = '2';
+  userServiceSpy.user = user;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
         TranslateModule.forRoot()
+      ],
+      providers: [
+        { provide: UserService, useValue: userServiceSpy }
       ]
     });
     service = TestBed.inject(MenuUserService);
@@ -35,5 +45,16 @@ describe('MenuUserService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should return the user menu', () => {
+    service.generate();
+    const menu = service.menu.getChildren();
+    const menuIds = [
+      'public-interface-menu',
+      'logout-menu'
+    ];
+    menu[0].getChildren().map((menu: MenuItemInterface) =>
+      expect(menuIds.includes(menu.getAttribute('id'))).toBeTrue());
   });
 });
