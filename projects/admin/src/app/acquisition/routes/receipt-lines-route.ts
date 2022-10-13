@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
- * Copyright (C) 2021 UCLouvain
+ * Copyright (C) 2021-2022 RERO
+ * Copyright (C) 2021-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,7 +19,9 @@ import { getCurrencySymbol } from '@angular/common';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { EditorComponent, JSONSchema7, RouteInterface } from '@rero/ng-core';
-import { CanUpdateGuard } from '../../guard/can-update.guard';
+import { PERMISSIONS } from '@rero/shared';
+import { of } from 'rxjs';
+import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../../guard/can-access.guard';
 import { BaseRoute } from '../../routes/base-route';
 import { OrganisationService } from '../../service/organisation.service';
 import { IsBudgetActiveGuard } from './guards/is-budget-active.guard';
@@ -36,7 +38,7 @@ export class ReceiptLinesRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ IsBudgetActiveGuard, CanUpdateGuard ] }
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard, IsBudgetActiveGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } }
       ],
       data: {
         types: [
@@ -46,7 +48,7 @@ export class ReceiptLinesRoute extends BaseRoute implements RouteInterface {
             editorSettings: {
               longMode: true,
             },
-            canAdd: () => this._routeToolService.canSystemLibrarian(),
+            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.ACRL_CREATE) }),
             preUpdateRecord: (data: any) => this.fieldsToRemoved(data, ['is_current_budget']),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
             redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_receipt, '/records/acq_receipts/detail'),

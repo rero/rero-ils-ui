@@ -45,7 +45,6 @@ import {
 } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 import { ReceivedOrderPermissionValidator } from './acquisition/utils/permissions';
 import { PaymentsDataComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/payments-data.component';
-import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DocumentsTypeahead } from './classes/typeahead/documents-typeahead';
@@ -66,7 +65,9 @@ import { MenuUserServicesComponent } from './menu/menu-user-services/menu-user-s
 import { MenuUserComponent } from './menu/menu-user/menu-user.component';
 import { MenuComponent } from './menu/menu.component';
 import { LibrarySwitchService } from './menu/service/library-switch.service';
+import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
 import { DocumentProvisionActivityPipe } from './pipe/document-provision-activity.pipe';
+import { ItemAvailabilityPipe } from './pipe/item-availability.pipe';
 import { ItemInCollectionPipe } from './pipe/item-in-collection.pipe';
 import { MainTitleRelationPipe } from './pipe/main-title-relation.pipe';
 import { MarcPipe } from './pipe/marc.pipe';
@@ -80,6 +81,7 @@ import { IssuesBriefViewComponent } from './record/brief-view/issues-brief-view/
 import { ItemTypesBriefViewComponent } from './record/brief-view/item-types-brief-view.component';
 import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/items-brief-view.component';
 import { LibrariesBriefViewComponent } from './record/brief-view/libraries-brief-view.component';
+import { LoansBriefViewComponent } from './record/brief-view/loans-brief-view/loans-brief-view.component';
 import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-brief-view.component';
 import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view/patrons-brief-view.component';
 import { TemplatesBriefViewComponent } from './record/brief-view/templates-brief-view.component';
@@ -113,6 +115,9 @@ import {
 } from './record/detail-view/document-detail-view/document-description/other-edition/other-edition.component';
 import { DocumentDetailViewComponent } from './record/detail-view/document-detail-view/document-detail-view.component';
 import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
+import {
+  HoldingOrganisationComponent
+} from './record/detail-view/document-detail-view/holding-organisation/holding-organisation.component';
 import { HoldingSharedViewComponent } from './record/detail-view/document-detail-view/holding-shared-view/holding-shared-view.component';
 import {
   DefaultHoldingItemComponent
@@ -127,6 +132,8 @@ import { HoldingsComponent } from './record/detail-view/document-detail-view/hol
 import { ItemRequestComponent } from './record/detail-view/document-detail-view/item-request/item-request.component';
 import { RelatedResourceComponent } from './record/detail-view/document-detail-view/related-resource/related-resource.component';
 import { HoldingDetailViewComponent } from './record/detail-view/holding-detail-view/holding-detail-view.component';
+import { ExpectedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/expected-issue/expected-issue.component';
+import { ReceivedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/received-issue/received-issue.component';
 import {
   SerialHoldingDetailViewComponent
 } from './record/detail-view/holding-detail-view/serial-holding-detail-view/serial-holding-detail-view.component';
@@ -144,6 +151,7 @@ import { LocationDetailViewComponent } from './record/detail-view/location-detai
 import { OrganisationDetailViewComponent } from './record/detail-view/organisation-detail-view/organisation-detail-view.component';
 import { PatronDetailViewComponent } from './record/detail-view/patron-detail-view/patron-detail-view.component';
 import { PatronTypesDetailViewComponent } from './record/detail-view/patron-types-detail-view/patron-types-detail-view.component';
+import { PermissionDetailViewComponent } from './record/detail-view/permission-detail-view/permission-detail-view.component';
 import { RecordMaskedComponent } from './record/detail-view/record-masked/record-masked.component';
 import { TemplateDetailViewComponent } from './record/detail-view/template-detail-view/template-detail-view.component';
 import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
@@ -155,20 +163,13 @@ import { ItemAvailabilityComponent } from './record/item-availability/item-avail
 import { OperationLogsDialogComponent } from './record/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
 import { OperationLogsComponent } from './record/operation-logs/operation-logs.component';
 import { AppConfigService } from './service/app-config.service';
+import { AppInitializerService } from './service/app-initializer.service';
 import { OrganisationService } from './service/organisation.service';
 import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-factory.service';
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
+import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
-import {
-  HoldingOrganisationComponent
-} from './record/detail-view/document-detail-view/holding-organisation/holding-organisation.component';
-import { ItemAvailabilityPipe } from './pipe/item-availability.pipe';
-import { ExpectedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/expected-issue/expected-issue.component';
-import { ReceivedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/received-issue/received-issue.component';
-import { AppInitializerService } from './service/app-initializer.service';
-import { LoansBriefViewComponent } from './record/brief-view/loans-brief-view/loans-brief-view.component';
 import { PatronTransactionEventsBriefViewComponent } from './record/brief-view/patron-transaction-events-brief-view/patron-transaction-events-brief-view.component';
 import { PatronNamePipe } from './pipe/patron-name.pipe';
 import { PatronTransactionEventOverdueComponent } from './record/brief-view/patron-transaction-events-brief-view/patron-transaction-event-overdue.component';
@@ -283,6 +284,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         ExpectedIssueComponent,
         ReceivedIssueComponent,
         LoansBriefViewComponent,
+        PermissionDetailViewComponent,
         PatronTransactionEventsBriefViewComponent,
         PatronNamePipe,
         PatronTransactionEventOverdueComponent,

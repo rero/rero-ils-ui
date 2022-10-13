@@ -15,7 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// tslint:disable: variable-name
+import { PERMISSIONS } from "../util/permissions";
+
 export class User implements IUser {
 
   /** Logged user API url */
@@ -39,15 +40,13 @@ export class User implements IUser {
   email?: string;
   roles: string[] = [];
   patrons?: IPatron[] = [];
+  permissions: string[];
 
   /** private _isLogged */
   private _isAuthenticated = false;
 
   /** Display Patron Mode */
   private _displayPatronMode = true;
-
-  /** Admin roles */
-  private _adminRoles: string[];
 
   /** Current library */
   private _currentLibrary?: string;
@@ -92,11 +91,11 @@ export class User implements IUser {
   }
 
   /**
-   * Is authorized admin access
+   * Is granted to access to admin UI
    * @return boolean
    */
-  get isAuthorizedAdminAccess(): boolean {
-    return this._patronLibrarian !== undefined;
+  get hasAdminUiAccess(): boolean {
+    return this.permissions.includes(PERMISSIONS.UI_ACCESS);
   }
 
   /**
@@ -120,23 +119,7 @@ export class User implements IUser {
    * @return boolean
    */
   get isPatron(): boolean {
-    return this._patronRoles.includes('patron');
-  }
-
-  /**
-   * Is the user a librarian
-   * @return boolean
-   */
-  get isLibrarian(): boolean {
-    return this._patronRoles.includes('librarian');
-  }
-
-  /**
-   * Is the user a system_librarian
-   * @return boolean
-   */
-  get isSystemLibrarian(): boolean {
-    return this._patronRoles.includes('system_librarian');
+    return this.patrons?.some((patron: IPatron) => 'patron' in patron);
   }
 
   /**
@@ -182,10 +165,8 @@ export class User implements IUser {
   /**
    * Constructor
    * @param user - object | User
-   * @param adminRoles - array of roles
    */
-  constructor(user: any, adminRoles: string[]) {
-    this._adminRoles = adminRoles;
+  constructor(user: any) {
     // Check if the user is authenticated
     // by looking if keys exist in the object
     if (Object.keys(user).length > 0) {
@@ -240,7 +221,7 @@ export class User implements IUser {
    */
   private _extractLibrarian(): IPatron | undefined {
     const patrons = this.patrons.filter((patron: IPatron) => {
-      if (patron.roles.some((role: string) => this._adminRoles.includes(role))) {
+      if (patron.libraries?.length > 0) {
         return patron;
       }
     });
@@ -295,6 +276,7 @@ export interface IUser {
   email?: string;
   roles: string[];
   patrons?: IPatron[];
+  permissions: string[]
 }
 
 /** Interface for patron */

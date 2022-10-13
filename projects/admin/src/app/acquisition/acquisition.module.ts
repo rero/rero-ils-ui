@@ -23,7 +23,6 @@ import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { FormlyModule, FORMLY_CONFIG } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, CoreModule, RecordModule } from '@rero/ng-core';
-import { SharedModule } from '@rero/shared';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TabsModule } from 'ngx-bootstrap/tabs';
@@ -60,6 +59,7 @@ import { AccountAvailableAmountPipe } from './pipes/account-available-amount.pip
 import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
 import { PreviewContentPipe } from './pipes/preview-content.pipe';
 import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pipe';
+import { PermissionsService, SharedModule } from '@rero/shared';
 
 @NgModule({
   declarations: [
@@ -110,7 +110,6 @@ import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pi
       ]
     }),
     RecordModule,
-    SharedModule,
     TabsModule,
     CoreModule,
     SharedModule
@@ -118,7 +117,8 @@ import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pi
   providers: [
     { provide: FORMLY_CONFIG, multi: true, useFactory: registerFormlyExtension, deps: [TranslateService] },
     OrderReceipt,
-    { provide: OrderReceiptForm, deps: [AcqOrderApiService, AcqAccountApiService, ApiService, OrderReceipt] }
+    { provide: OrderReceiptForm, deps: [AcqOrderApiService, AcqAccountApiService, ApiService, OrderReceipt] },
+    PermissionsService
   ]
 })
 export class AcquisitionModule { }

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '@rero/shared';
+import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 import { AcqAccountApiService } from '@app/admin/acquisition/api/acq-account-api.service';
@@ -42,6 +42,9 @@ export class AccountListComponent implements OnInit {
     disabled?: boolean,
     disabled_message?: string
   }[];
+
+  /** All user permissions */
+  permissions: IPermissions = PERMISSIONS;
 
   /** Store library pid */
   private _libraryPid: string;

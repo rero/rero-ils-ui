@@ -20,7 +20,7 @@ import { AbstractType, Injectable, InjectionToken, Injector, Type } from '@angul
 import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionStatus, ApiService, RecordService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { PermissionsService, UserService } from '@rero/shared';
 import { Observable, of, Subscriber } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RecordPermissions } from '../classes/permissions';
@@ -30,6 +30,14 @@ import { RecordPermissionService } from '../service/record-permission.service';
   providedIn: 'root'
 })
 export class RouteToolService {
+
+  /**
+   * Proxy for permissions service
+   * @return PermissionsService
+   */
+  get permissionsService(): PermissionsService {
+    return this.injector.get(PermissionsService);
+  }
 
   /**
    * Proxy for translate service
@@ -149,17 +157,6 @@ export class RouteToolService {
    */
   canNot(message: string = ''): Observable<ActionStatus> {
     return of({ can: false, message });
-  }
-
-  /**
-   * Access only for system librarian
-   * @param message - string
-   * @return Observable
-   */
-  canSystemLibrarian(message: string = ''): Observable<ActionStatus> {
-    return of(
-      { can: this.userService.user.isSystemLibrarian, message }
-    );
   }
 
   /**

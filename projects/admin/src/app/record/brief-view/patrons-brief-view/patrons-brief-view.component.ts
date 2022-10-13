@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,6 +17,7 @@
 
 import { Component, Input } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
+import { PERMISSIONS, PermissionsService } from '@rero/shared';
 
 @Component({
   selector: 'admin-patrons-brief-view',
@@ -34,9 +35,29 @@ export class PatronsBriefViewComponent implements ResultItem {
 
   /** mapping to define role badge color */
   private _rolesBadgeMappings = {
-    system_librarian: 'badge-danger',
-    librarian: 'badge-warning'
+    patron: 'badge-primary',
+    pro_full_permissions: 'badge-success',
+    pro_read_only: 'badge-secondary',
+    pro_catalog_manager: 'badge-danger',
+    pro_circulation_manager: 'badge-warning',
+    pro_user_manager: 'badge-info',
+    pro_acquisition_manager: 'badge-light',
+    pro_library_administrator: 'badge-dark',
   };
+
+  /**
+   * Circulation access check
+   * @return true if the circulation permission is allowed
+   */
+   get circulationAccess(): boolean {
+    return this._permissionsService.canAccess(PERMISSIONS.CIRC_ADMIN);
+  }
+
+  /**
+   * Constructor
+   * @param _permissionsService - PermissionsService
+   */
+  constructor(private _permissionsService: PermissionsService) {}
 
   /**
    * Get the color badge to apply for a specific role

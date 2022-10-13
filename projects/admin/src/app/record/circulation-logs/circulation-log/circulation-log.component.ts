@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { UserService } from '@rero/shared';
+import { PermissionsService } from '@rero/shared';
 
 @Component({
   selector: 'admin-circulation-log',
@@ -46,7 +46,7 @@ export class CirculationLogComponent {
    * @returns True if the debug mode can be enabled and switched
    */
   get canUseDebugMode(): boolean {
-    return this._userService.user.isSystemLibrarian;
+    return this._permissionsService.canAccessDebugMode();
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
@@ -55,7 +55,7 @@ export class CirculationLogComponent {
    * @param _userService - UserService
    */
   constructor(
-    private _userService: UserService
+    private _permissionsService: PermissionsService
   ) {  }
 
   // COMPONENT FUNCTIONS ======================================================

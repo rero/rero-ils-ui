@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
+import { IPermissions, PERMISSIONS } from '@rero/shared';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { OperationLogsComponent } from '../operation-logs.component';
 
@@ -32,6 +33,9 @@ export class OperationLogsDialogComponent {
 
   /** Modal ref */
   bsModalRef: BsModalRef;
+
+  /** return all permissions */
+  permissions: IPermissions = PERMISSIONS;
 
   /**
    * Constructor

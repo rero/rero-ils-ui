@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,50 +16,63 @@
  */
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
-import { extractIdOnRef, RecordService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { RecordPermissions } from '../classes/permissions';
+import { RecordPermissionService } from '../service/record-permission.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CanAccessGuard implements CanActivate {
 
+  private _mandatoryParams = [
+    'type',
+    'pid'
+  ];
+
   /**
    * Constructor
-   * @param _recordService - RecordService
-   * @param _userService - UserService
+   * @param _permissionService - RecordPermissionService
    * @param _router - Router
    */
   constructor(
-    private _recordService: RecordService,
-    private _userService: UserService,
+    private _permissionService: RecordPermissionService,
     private _router: Router
-  ) {}
+  ) { }
 
   /**
    * Can activate
    * @param route - ActivatedRouteSnapshot
-   * @returns True if authorized access order redirect to error page 400 or 403
+   * @returns True if granted or redirect to error page 400/403
    */
   canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-    const params = route.params;
-    if (params && params.type && params.pid) {
-      return this._recordService.getRecord(params.type, params.pid)
-        .pipe(map((record: any) => {
-          const user = this._userService.user;
-          if (user.currentOrganisation !== extractIdOnRef(record.metadata.organisation.$ref)) {
-            /** Access forbidden */
-            this._router.navigate(['/errors/403'], { skipLocationChange: true });
-            return false;
-          }
-          return true;
-        }));
-    } else {
-      /** Missing parameter */
+    // Check if the action entry is in route data
+    if (
+      !('action' in route.data)
+      || !(Object.values(CAN_ACCESS_ACTIONS).includes(route.data.action))
+      || !(this._mandatoryParams.every((param: string) => param in route.params))
+    ) {
       this._router.navigate(['/errors/400'], { skipLocationChange: true });
       return of(false);
     }
+
+    return this._permissionService.getPermission(route.params.type, route.params.pid).pipe(
+      map((permission: RecordPermissions) => {
+        if (!permission[route.data.action].can) {
+          this._router.navigate(['/errors/403'], { skipLocationChange: true });
+          return false;
+        }
+        return true;
+      })
+    );
   }
+}
+
+export const CAN_ACCESS_ACTIONS = {
+  CREATE: 'create',
+  DELETE: 'delete',
+  LIST: 'list',
+  READ: 'read',
+  UPDATE: 'update'
 }

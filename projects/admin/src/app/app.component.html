@@ -18,9 +18,9 @@
 <ngx-spinner type="ball-spin-clockwise" size="medium"></ngx-spinner>
 <ng-container *ngIf="user">
   <header>
-    <admin-menu *ngIf="user.isAuthorizedAdminAccess"></admin-menu>
+    <admin-menu *ngIf="user.hasAdminUiAccess"></admin-menu>
   </header>
-  <div class="container-fluid px-5" *ngIf="user.isAuthorizedAdminAccess; else noaccess">
+  <div class="container-fluid px-5" *ngIf="user.hasAdminUiAccess; else noaccess">
     <router-outlet></router-outlet>
   </div>
   <footer class="rero-ils-footer container-fluid px-5 d-flex justify-content-center align-items-center border-top mt-4 py-4">
