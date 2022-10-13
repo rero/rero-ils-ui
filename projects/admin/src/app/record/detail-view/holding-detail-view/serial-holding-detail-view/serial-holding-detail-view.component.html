@@ -52,6 +52,7 @@
         </button>
         <button class="ml-auto btn btn-sm btn-outline-primary"
                 [routerLink]="['/records', 'items', 'new']"
+                [permissions]="permissions.ITEM_CREATE"
                 [queryParams]="{
                   'holding': holding.id,
                   'irregular': true,
@@ -71,11 +72,13 @@
           <ng-container actions *ngIf="last">
             <button type="button" class="btn btn-sm btn-outline-primary ml-1"
                     title="{{ 'Quick receive' | translate }}"
+                    [permissions]="permissions.ITEM_CREATE"
                     (click)="quickIssueReceive()">
-              <i class="fa fa-file-text-o"></i>
+              <i class="fa fa-file-text"></i>
             </button>
             <button type="button" class="btn btn-sm btn-outline-primary ml-1"
                     title="{{ 'Receive and edit this issue' | translate }}"
+                    [permissions]="permissions.ITEM_CREATE"
                     [routerLink]="['/records', 'items', 'new']"
                     [queryParams]="{
                               'holding': holding.id,
@@ -83,7 +86,7 @@
                               'enumerationAndChronology': prediction.issue,
                               'expected_date': prediction.expected_date
                           }">
-              <i class="fa fa-pencil"></i>
+              <i class="fa fa-plus"></i>
             </button>
           </ng-container>
         </admin-expected-issue>
@@ -122,7 +125,7 @@
   <!-- END OF DETAILS TAB ---------------------------------------------------->
 
   <!-- LOCAL FIELDS TAB ------------------------------------------------------------>
-  <tab id="holding-local-field-tab" tabOrder="3">
+  <tab *ngIf="showhideLocalFieldsTab" id="holding-local-field-tab" tabOrder="3">
     <ng-template tabHeading>
       <i class="fa fa-list-ul mr-1"></i><span translate>Local fields</span>
     </ng-template>

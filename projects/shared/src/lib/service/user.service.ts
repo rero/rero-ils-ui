@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,6 +20,7 @@ import { map } from 'rxjs/operators';
 import { UserApiService } from '../api/user-api.service';
 import { IUser, User } from '../class/user';
 import { AppSettingsService, ISettings } from './app-settings.service';
+import { PermissionsService } from './permissions.service';
 
 @Injectable({
   providedIn: 'root'
@@ -52,10 +53,12 @@ export class UserService {
    * Constructor
    * @param _userApiService - UserApiService
    * @param _appSettingsService - AppSettingsService
+   * @param _permissionsService - PermissionsService
    */
   constructor(
     private _userApiService: UserApiService,
-    private _appSettingsService: AppSettingsService
+    private _appSettingsService: AppSettingsService,
+    private _permissionsService: PermissionsService
   ) {
      this._loaded = new Subject();
   }
@@ -68,7 +71,10 @@ export class UserService {
         const settings: ISettings = loggedUser.settings;
         this._appSettingsService.settings = settings;
         delete loggedUser[settingsKey];
-        this._user = new User(loggedUser, this._appSettingsService.librarianRoles);
+        if (loggedUser.permissions) {
+          this._permissionsService.setPermissions(loggedUser.permissions);
+        }
+        this._user = new User(loggedUser);
         this._loaded.next(this._user);
         return this._user;
       })

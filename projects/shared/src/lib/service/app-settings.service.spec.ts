@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -76,11 +76,6 @@ describe('ApplicationSettingsService', () => {
   it('should return the parameter language', () => {
     service.settings = settings;
     expect(service.operationLogs).toEqual(settings.operationLogs);
-  });
-
-  it('should return the parameter librarian roles', () => {
-    service.settings = settings;
-    expect(service.librarianRoles).toEqual(settings.librarianRoles);
   });
 
   it('should return the parameter current view code', () => {

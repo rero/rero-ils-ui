@@ -46,6 +46,8 @@ import { InheritedCallNumberComponent } from './view/inherited-call-number/inher
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
 import { GetTranslatedLabelPipe } from './pipe/get-translated-label.pipe';
 import { ContributionFilterPipe } from './pipe/contribution-filter.pipe';
+import { PermissionsDirective } from './directive/permissions.directive';
+import { LinkPermissionsDirective } from './directive/link-permissions.directive';
 
 @NgModule({
     declarations: [
@@ -72,7 +74,9 @@ import { ContributionFilterPipe } from './pipe/contribution-filter.pipe';
         ContributionFilterPipe,
         ActionButtonComponent,
         NotesFilterPipe,
-        SafeUrlPipe
+        SafeUrlPipe,
+        PermissionsDirective,
+        LinkPermissionsDirective
     ],
     exports: [
         CommonModule,
@@ -100,7 +104,9 @@ import { ContributionFilterPipe } from './pipe/contribution-filter.pipe';
         ContributionFilterPipe,
         ActionButtonComponent,
         NotesFilterPipe,
-        SafeUrlPipe
+        SafeUrlPipe,
+        PermissionsDirective,
+        LinkPermissionsDirective
     ],
     imports: [
         CommonModule,

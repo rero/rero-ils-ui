@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,10 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { EditorComponent, RouteInterface } from '@rero/ng-core';
-import { User } from '@rero/shared';
+import { PERMISSIONS, User } from '@rero/shared';
 import { of } from 'rxjs';
+import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../guard/can-access.guard';
 import { CanAddLocalFieldsGuard } from '../guard/can-add-local-fields.guard';
-import { CanUpdateGuard } from '../guard/can-update.guard';
+import { PermissionGuard } from '../guard/permission.guard';
 import { BaseRoute } from './base-route';
 
 export class LocalFieldsRoute extends BaseRoute implements RouteInterface {
@@ -37,8 +38,8 @@ export class LocalFieldsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
-        { path: 'new', component: EditorComponent, canActivate: [ CanAddLocalFieldsGuard ] }
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
+        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard, CanAddLocalFieldsGuard ], data: { permissions: [ PERMISSIONS.LOFI_CREATE ] } }
       ],
       data: {
         adminMode: () => of({

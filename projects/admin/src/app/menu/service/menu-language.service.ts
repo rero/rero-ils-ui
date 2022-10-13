@@ -17,7 +17,7 @@
 
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { CoreConfigService, MenuFactory, MenuItem, MenuItemInterface } from '@rero/ng-core';
+import { CoreConfigService, MenuFactory, MenuItemInterface } from '@rero/ng-core';
 import { MenuBase } from './menu-base';
 
 @Injectable({
@@ -88,9 +88,11 @@ export class MenuLanguageService extends MenuBase {
   private _initObservable(): void {
     this._translateService.onLangChange
     .subscribe((translate: { lang: string, translations: object }) => {
-      this._languageMenu.setName(
-        this._translateService.instant(`ui_language_${translate.lang}`)
-      );
+      if (this._languageMenu) {
+        this._languageMenu.setName(
+          this._translateService.instant(`ui_language_${translate.lang}`)
+        );
+      }
     });
   }
 }

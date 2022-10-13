@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,8 +16,62 @@
  */
 import { IUser } from '../lib/class/user';
 
-/** admin Roles for a patron */
-export const testPatronLibrarianRoles = ['librarian', 'system_librarian'];
+export const testPermissions = [
+  "acac-create",
+  "acac-search",
+  "acin-create",
+  "acin-search",
+  "acol-create",
+  "acol-search",
+  "acor-create",
+  "acor-search",
+  "acre-create",
+  "acre-search",
+  "acrl-create",
+  "acrl-search",
+  "access-circulation",
+  "admin-ui-access",
+  "budg-search",
+  "can-use-debug-mode",
+  "cipo-create",
+  "cipo-search",
+  "coll-create",
+  "coll-search",
+  "doc-create",
+  "doc-search",
+  "hold-create",
+  "hold-search",
+  "illr-create",
+  "illr-search",
+  "item-create",
+  "item-search",
+  "itty-create",
+  "itty-search",
+  "late-issue-management",
+  "lib-create",
+  "lib-search",
+  "loan-search",
+  "loc-create",
+  "loc-search",
+  "lofi-create",
+  "lofi-search",
+  "notif-create",
+  "notif-search",
+  "oplg-search",
+  "org-search",
+  "ptre-create",
+  "ptre-search",
+  "ptrn-create",
+  "ptrn-search",
+  "pttr-create",
+  "pttr-search",
+  "ptty-create",
+  "ptty-search",
+  "tmpl-create",
+  "tmpl-search",
+  "vndr-create",
+  "vndr-search"
+];
 
 /** User with 2 patrons record */
 export const testUserPatronWithSettings = {
@@ -127,14 +181,14 @@ export const testUserPatronWithSettings = {
       holdings: 'hold',
       items: 'item'
     },
-    librarianRoles: ['librarian', 'system_librarian'],
     userProfile: {
       readOnly: false,
       readOnlyFields: []
     }
   },
   street: 'Via Croix Noire 3',
-  username: 'simonetta'
+  username: 'simonetta',
+  permissions: testPermissions
 };
 
 /** User with 2 patron records (patron and librarian, system_librarian) */
@@ -211,7 +265,8 @@ export const testUserPatronLibrarian: IUser = {
         'librarian'
       ]
     }
-  ]
+  ],
+  permissions: testPermissions
 };
 
 
@@ -339,14 +394,14 @@ export const testUserPatronMultipleOrganisationsWithSettings = {
       holdings: 'hold',
       items: 'item'
     },
-    librarianRoles: ['librarian', 'system_librarian'],
     userProfile: {
       readOnly: false,
       readOnlyFields: []
     }
   },
   street: 'Via Croix Noire 3',
-  username: 'simonetta'
+  username: 'simonetta',
+  permissions: []
 };
 
 
@@ -366,6 +421,18 @@ export const testUserLibrarianWithSettings = {
     {
       pid: '2',
       libraries: [
+        {
+          organisation: {
+            pid: '1'
+          },
+          pid: '2'
+        },
+        {
+          organisation: {
+            pid: '1'
+          },
+          pid: '3'
+        },
         {
           organisation: {
             pid: '1'
@@ -419,12 +486,12 @@ export const testUserLibrarianWithSettings = {
       holdings: 'hold',
       items: 'item'
     },
-    librarianRoles: ['librarian'],
     userProfile: {
       readOnly: false,
       readOnlyFields: []
     }
   },
   street: 'Via Croix Noire 3',
-  username: 'simonetta'
+  username: 'simonetta',
+  permissions: testPermissions
 };

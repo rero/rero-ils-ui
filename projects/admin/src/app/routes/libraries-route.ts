@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,8 +16,10 @@
  */
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
-import { CanUpdateGuard } from '../guard/can-update.guard';
-import { RoleGuard } from '../guard/role.guard';
+import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { of } from 'rxjs';
+import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../guard/can-access.guard';
+import { PermissionGuard } from '../guard/permission.guard';
 import { LibrariesBriefViewComponent } from '../record/brief-view/libraries-brief-view.component';
 import { LibraryComponent } from '../record/custom-editor/libraries/library.component';
 import { LibraryDetailViewComponent } from '../record/detail-view/library-detail-view/library-detail-view.component';
@@ -39,10 +41,10 @@ export class LibrariesRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchPageComponent },
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: LibraryComponent, canActivate: [CanUpdateGuard] },
-        { path: 'new', component: LibraryComponent, canActivate: [RoleGuard], data: { roles: ['system_librarian'] } }
+        { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.LIB_ACCESS, PERMISSIONS.LIB_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
+        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
+        { path: 'edit/:pid', component: LibraryComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
+        { path: 'new', component: LibraryComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.LIB_CREATE ] } }
       ],
       data: {
         types: [
@@ -54,7 +56,7 @@ export class LibrariesRoute extends BaseRoute implements RouteInterface {
             searchFilters: [
               this.expertSearchFilter()
             ],
-            canAdd: () => this._routeToolService.canSystemLibrarian(),
+            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.LIB_CREATE) }),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => {
               const user = this._routeToolService.userService.user;

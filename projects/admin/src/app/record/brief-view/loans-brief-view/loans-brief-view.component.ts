@@ -17,7 +17,7 @@
  */
 import { Component, Input, OnInit } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { PermissionsService } from '@rero/shared';
 import moment from 'moment/moment';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { LoanState } from '../../../classes/loans';
@@ -52,18 +52,18 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
    * @returns True if the debug mode can be enabled and switched
    */
   get canUseDebugMode(): boolean {
-    return this._userService.user.isSystemLibrarian;
+    return this._permissionsService.canAccessDebugMode();
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _userService - UserService
    * @param _modalService - BsModalService
+   * @param _permissionsService - PermissionsService
    */
   constructor(
-    private _userService: UserService,
-    private _modalService: BsModalService
+    private _modalService: BsModalService,
+    private _permissionsService: PermissionsService
   ){ }
 
   /** OnInit hook */

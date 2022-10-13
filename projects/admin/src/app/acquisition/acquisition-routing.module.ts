@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
- * Copyright (C) 2021 UCLouvain
+ * Copyright (C) 2021-2022 RERO
+ * Copyright (C) 2021-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,20 +18,25 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PERMISSIONS, PermissionsService, PERMISSION_OPERATOR } from '@rero/shared';
+import { PermissionGuard } from '../guard/permission.guard';
 import { AccountListComponent } from './components/account/account-list/account-list.component';
 import { AccountTransferComponent } from './components/account/account-transfer/account-transfer.component';
 import { OrderReceiptViewComponent } from './components/receipt/receipt-form/order-receipt-view.component';
 import { CanOrderReceiptGuard } from './routes/guards/can-order-receipt.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'accounts', pathMatch: 'full'},
-  { path: 'accounts/transfer', component: AccountTransferComponent },
-  { path: 'accounts', component: AccountListComponent },
-  { path: 'acq_orders/:pid/receive', component: OrderReceiptViewComponent, canActivate: [CanOrderReceiptGuard] }
+  { path: '', redirectTo: 'accounts', pathMatch: 'full' },
+  { path: 'accounts/transfer', component: AccountTransferComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.ACAC_TRANSFER ] } },
+  { path: 'accounts', component: AccountListComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.ACAC_ACCESS, PERMISSIONS.ACAC_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
+  { path: 'acq_orders/:pid/receive', component: OrderReceiptViewComponent, canActivate: [ CanOrderReceiptGuard ] }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [
+    PermissionsService
+  ]
 })
 export class AcquisitionRoutingModule { }

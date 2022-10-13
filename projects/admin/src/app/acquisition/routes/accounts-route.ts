@@ -19,9 +19,11 @@ import { getCurrencySymbol } from '@angular/common';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DetailComponent, EditorComponent, JSONSchema7, RouteInterface } from '@rero/ng-core';
-import { CanUpdateGuard } from 'projects/admin/src/app/guard/can-update.guard';
+import { PERMISSIONS } from '@rero/shared';
 import { BaseRoute } from 'projects/admin/src/app/routes/base-route';
 import { of } from 'rxjs';
+import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../../guard/can-access.guard';
+import { PermissionGuard } from '../../guard/permission.guard';
 import { OrganisationService } from '../../service/organisation.service';
 import { AccountDetailViewComponent } from '../components/account/account-detail-view/account-detail-view.component';
 import { CanAddAccountGuard } from './guards/can-add-account.guard';
@@ -45,9 +47,9 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [CanUpdateGuard] },
-        { path: 'new', component: EditorComponent, canActivate: [ CanAddAccountGuard ] }
+        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
+        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard, CanAddAccountGuard ], data: { permissions: [ PERMISSIONS.ACAC_CREATE ] } }
       ],
       data: {
         types: [
@@ -55,6 +57,7 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             label: _('Acquisition account'),
             detailComponent: AccountDetailViewComponent,
+            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.ACAC_CREATE) }),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
             redirectUrl: () => of('/acquisition/accounts'),

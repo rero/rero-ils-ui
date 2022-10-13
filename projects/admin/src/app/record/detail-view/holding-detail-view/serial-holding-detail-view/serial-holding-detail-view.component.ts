@@ -18,7 +18,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
-import { IssueItemStatus, UserService } from '@rero/shared';
+import { IPermissions, IssueItemStatus, PERMISSIONS, PermissionsService, UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
 import { HoldingsService, PredictionIssue } from 'projects/admin/src/app/service/holdings.service';
 import { OperationLogsService } from 'projects/admin/src/app/service/operation-logs.service';
@@ -62,6 +62,17 @@ export class SerialHoldingDetailViewComponent implements OnInit {
   }
 
   /**
+   * Show or hide local fields tab
+   * @return boolean - if False, hide the local fields tab
+   */
+  get showhideLocalFieldsTab(): boolean {
+    return this._permissionsService.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE]);
+  }
+
+  /** return all permissions */
+  permissions: IPermissions = PERMISSIONS;
+
+  /**
    * Constructor
    *
    * @param _holdingService: HoldingService
@@ -71,6 +82,7 @@ export class SerialHoldingDetailViewComponent implements OnInit {
    * @param _toastrService: ToastrService
    * @param _operationLogsService: OperationLogsService
    * @param _userService: UserService
+   * @param _permissionsService: PermissionsService
    */
   constructor(
     private _holdingService: HoldingsService,
@@ -79,7 +91,8 @@ export class SerialHoldingDetailViewComponent implements OnInit {
     private _translateService: TranslateService,
     private _toastrService: ToastrService,
     private _operationLogsService: OperationLogsService,
-    private _userService: UserService
+    private _userService: UserService,
+    private _permissionsService: PermissionsService
   ) {}
 
   /**

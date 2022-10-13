@@ -46,6 +46,11 @@ export class TemplateDetailViewComponent implements OnInit, OnDestroy {
   /** Record subscription */
   private _recordSubscription: Subscription;
 
+  /** External identifier for imported record. */
+  get pid() {
+    return this._router.snapshot.params.pid;
+  }
+
   /** constructor
    * @param _router - ActivatedRoute to get url parameters.
    * @param _recordService - RecordService to the MARC version for the record.
@@ -56,7 +61,7 @@ export class TemplateDetailViewComponent implements OnInit, OnDestroy {
   ) { }
 
   /** On init hook */
-  ngOnInit() {
+  ngOnInit(): void {
     this._recordSubscription = this.record$.subscribe((record: any) => {
       this.record = record;
       // only for imported record
@@ -71,14 +76,8 @@ export class TemplateDetailViewComponent implements OnInit, OnDestroy {
     });
   }
 
-    /** External identifier for imported record. */
-    get pid() {
-      return this._router.snapshot.params.pid;
-    }
-
-    /** On destroy hook */
-    ngOnDestroy(): void {
-      this._recordSubscription.unsubscribe();
-    }
-
+  /** On destroy hook */
+  ngOnDestroy(): void {
+    this._recordSubscription.unsubscribe();
+  }
 }
