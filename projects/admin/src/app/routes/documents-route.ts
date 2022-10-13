@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +17,10 @@
 
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, RouteInterface } from '@rero/ng-core';
+import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, of } from 'rxjs';
-import { CanUpdateGuard } from '../guard/can-update.guard';
+import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../guard/can-access.guard';
+import { PermissionGuard } from '../guard/permission.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentEditorComponent } from '../record/custom-editor/document-editor/document-editor.component';
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
@@ -41,11 +43,11 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: DocumentRecordSearchComponent },
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: DocumentEditorComponent, canActivate: [ CanUpdateGuard ] },
-        { path: 'new', component: DocumentEditorComponent },
-        { path: 'duplicate', component: DocumentEditorComponent }
+        { path: '', component: DocumentRecordSearchComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
+        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
+        { path: 'edit/:pid', component: DocumentEditorComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
+        { path: 'new', component: DocumentEditorComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.DOC_CREATE ] } },
+        { path: 'duplicate', component: DocumentEditorComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.DOC_CREATE ] } }
       ],
       data: {
         types: [
@@ -75,6 +77,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
                 value: 'true'
               }
             ],
+            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.DOC_CREATE) }),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preprocessRecordEditor: (record: any) => {
               record = this.removeKey(record, '_text');

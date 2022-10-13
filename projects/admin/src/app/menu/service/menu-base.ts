@@ -22,9 +22,9 @@ export class MenuBase {
 
   /**
    * Constructor
-   * @param _translateService - TranslateService
+   * @param translateService - TranslateService
    */
-  constructor(protected translateService: TranslateService) {}
+  constructor(protected translateService: TranslateService) { }
 
   /**
    * Translate menu with a name

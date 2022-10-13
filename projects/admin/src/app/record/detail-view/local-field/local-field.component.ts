@@ -16,7 +16,7 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { JoinPipe, UserService } from '@rero/shared';
+import { IPermissions, JoinPipe, PERMISSIONS, UserService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { LocalFieldApiService } from '../../../api/local-field-api.service';
 
@@ -42,6 +42,9 @@ export class LocalFieldComponent implements OnInit {
     holdings: 'hold',
     items: 'item'
   };
+
+    /** return all available permissions for current user */
+    permissions: IPermissions = PERMISSIONS;
 
   /**
    * Constructor

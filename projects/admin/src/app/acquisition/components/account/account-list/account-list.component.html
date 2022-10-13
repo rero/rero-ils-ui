@@ -16,12 +16,13 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="organisation">
-  <header class="row d-flex align-items-baseline">
-    <h1 class="col">{{ 'Acquisition accounts' | translate }}</h1>
-    <div class="col text-right">
+  <header class="d-flex align-items-baseline">
+    <h1 translate>Acquisition accounts</h1>
+    <div class="ml-auto">
       <!-- ADD BUTTON -->
       <a [routerLink]="['/', 'records', 'acq_accounts', 'new']"
          [queryParams]="{ budget: organisation.current_budget_pid }"
+         [permissions]="permissions.ACAC_CREATE"
          class="btn btn-sm btn-primary"
       >
         <i class="fa fa-plus"></i> {{ 'Add' | translate }}
@@ -35,6 +36,7 @@
       <!-- END EXPORT BUTTON -->
       <!-- TRANSFER BUTTON -->
       <a [routerLink]="['/', 'acquisition', 'accounts', 'transfer']"
+         [permissions]="permissions.ACAC_TRANSFER"
          class="btn btn-sm btn-outline-primary"
       >
         <i class="fa fa-exchange"></i> {{ 'Transfer funds' | translate }} &hellip;

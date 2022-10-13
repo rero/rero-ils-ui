@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -43,26 +43,21 @@ export class LibrarySwitchService {
    * Constructor
    * @param _userService - UserService
    */
-  constructor(private _userService: UserService) {}
+  constructor(private _userService: UserService) { }
 
   /**
    * Switch library
    * @param libraryPid: the library pid that user would used
+   * @error if the library is not present in list of libraries
    */
   switch(libraryPid: string): void {
     const user = this._userService.user;
-    // If the person is a librarian, we check the existence
-    // of the library in her libraries
-    if (!user.isSystemLibrarian) {
-      const libraries = user.patronLibrarian.libraries;
-      // const libraries = user.patrons.libraries.map(library => {
-      //   return String(library.pid);
-      // });
-      if (libraries.find((lib: ILibrary) => lib.pid === libraryPid) === undefined) {
-        throw new LibrarySwitchError(
-          `This library with pid ${libraryPid} is not available.`
-        );
-      }
+    // we check the existence of the library in her libraries
+    const libraries = user.patronLibrarian.libraries;
+    if (!libraries.some((lib: ILibrary) => lib.pid === libraryPid)) {
+      throw new LibrarySwitchError(
+        `This library with pid ${libraryPid} is not available.`
+      );
     }
     // Update current library on user
     user.currentLibrary = libraryPid;

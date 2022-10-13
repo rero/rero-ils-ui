@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
- * Copyright (C) 2021 UCLouvain
+ * Copyright (C) 2021-2022 RERO
+ * Copyright (C) 2021-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,8 +19,11 @@ import { getCurrencySymbol } from '@angular/common';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { EditorComponent, JSONSchema7, RouteInterface } from '@rero/ng-core';
+import { PERMISSIONS } from '@rero/shared';
+import { of } from 'rxjs';
 import { AcqOrderLineGuard } from '../../guard/acq-order-line.guard';
-import { CanUpdateGuard } from '../../guard/can-update.guard';
+import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../../guard/can-access.guard';
+import { PermissionGuard } from '../../guard/permission.guard';
 import { BaseRoute } from '../../routes/base-route';
 import { OrganisationService } from '../../service/organisation.service';
 import { CanAddOrderLineGuard } from './guards/can-add-order-line.guard';
@@ -38,8 +41,8 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ IsBudgetActiveGuard, CanUpdateGuard ] },
-        { path: 'new', component: EditorComponent, canActivate: [ CanAddOrderLineGuard, AcqOrderLineGuard ] }
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard, IsBudgetActiveGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
+        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard, CanAddOrderLineGuard, AcqOrderLineGuard ], data: { permissions: [ PERMISSIONS.ACOL_CREATE ] } }
       ],
       data: {
         types: [
@@ -49,7 +52,7 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
             editorSettings: {
               longMode: true,
             },
-            canAdd: () => this._routeToolService.canSystemLibrarian(),
+            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.ACOL_CREATE) }),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
             preUpdateRecord: (data: any) => this.fieldsToRemoved(data, ['is_current_budget']),

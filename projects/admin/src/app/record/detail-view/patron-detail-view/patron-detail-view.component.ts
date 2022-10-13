@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,8 +16,8 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { IPermissions, PERMISSIONS } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { OperationLogsService } from '../../../service/operation-logs.service';
 
@@ -30,7 +30,7 @@ interface PatronPhone {
 @Component({
   selector: 'admin-patron-detail-view',
   templateUrl: './patron-detail-view.component.html',
-  styleUrls: ['./patron-detail-view.component.scss']
+  styleUrls: ['./patron-detail-view.component.scss'],
 })
 export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestroy {
 
@@ -85,19 +85,14 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
     return data.sort((a, b) => b.weight - a.weight);
   }
 
-  /** Check if the patron has the librarian role */
-  get isLibrarian(): boolean {
-    return this.patron && this.patron.roles && this.patron.roles.includes('librarian');
-  }
+  permissions: IPermissions = PERMISSIONS;
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor.
-   * @param _sanitizer - DomSanitizer, to render html.
    * @param _operationLogsService - OperationLogsService
    */
   constructor(
-    private _sanitizer: DomSanitizer,
     private _operationLogsService: OperationLogsService
   ) {}
 
@@ -137,6 +132,4 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
       default: return 'badge-secondary';
     }
   }
-
-
 }

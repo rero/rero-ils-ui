@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
- * Copyright (C) 2020 UCLouvain
+ * Copyright (C) 2020-2022 RERO
+ * Copyright (C) 2020-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,8 +18,10 @@
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { ActionStatus, DetailComponent, EditorComponent, JSONSchema7, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, Subscriber } from 'rxjs';
-import { CanUpdateGuard } from '../guard/can-update.guard';
+import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../guard/can-access.guard';
+import { PermissionGuard } from '../guard/permission.guard';
 import { TemplatesBriefViewComponent } from '../record/brief-view/templates-brief-view.component';
 import { TemplateDetailViewComponent } from '../record/detail-view/template-detail-view/template-detail-view.component';
 import { BaseRoute } from './base-route';
@@ -40,9 +42,9 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchPageComponent },
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [CanUpdateGuard] }
+        { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.TMPL_ACCESS, PERMISSIONS.TMPL_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
+        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } }
       ],
       data: {
         types: [
@@ -58,9 +60,6 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             canUse: (record: any) => this._canUse(record),
             preCreateRecord: (data: any) => this._addDefaultValuesForTemplate(data),
-            formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
-              return this._limitUserFormField(field, jsonSchema);
-            },
             redirectUrl: (record: any) => {
               return this.redirectUrl(
                 record.metadata,
@@ -142,26 +141,5 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
       $ref: this._routeToolService.apiService.getRefEndpoint('patrons', user.patronLibrarian.pid)
     };
     return data;
-  }
-
-  /**
-   * As a librarian, I cannot update the visibility of a template
-   * @param field - FormlyFieldConfig
-   * @param jsonSchema - JSONSchema7
-   * @return FormlyFieldConfig
-   */
-  private _limitUserFormField(field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig {
-    const formWidget = jsonSchema.widget;
-    if (formWidget?.formlyConfig?.templateOptions?.fieldMap === 'visibility') {
-      if (!this._routeToolService.userService.user.isSystemLibrarian) {
-        field.hooks = {
-          ...field.hooks,
-          afterContentInit: (f: FormlyFieldConfig) => {
-            f.templateOptions.disabled = true;
-          }
-        };
-      }
-    }
-    return field;
   }
 }

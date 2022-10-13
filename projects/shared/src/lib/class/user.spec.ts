@@ -16,13 +16,13 @@
  */
 
 import { cloneDeep } from 'lodash-es';
-import { testPatronLibrarianRoles, testUserPatronLibrarian } from '../../tests/user';
+import { testUserPatronLibrarian } from '../../tests/user';
 import { User } from './user';
 
 describe('User', () => {
   let user: User;
   beforeEach(() => {
-    user = new User(testUserPatronLibrarian, testPatronLibrarianRoles);
+    user = new User(testUserPatronLibrarian);
   });
 
   it('should create an instance', () => {
@@ -30,7 +30,7 @@ describe('User', () => {
   });
 
   it('should return false if the user is not present', () => {
-    user = new User({}, testPatronLibrarianRoles);
+    user = new User({});
     expect(user.isAuthenticated).toBeFalsy();
   });
 
@@ -44,8 +44,8 @@ describe('User', () => {
     expect(user.displayPatronMode).toBeFalsy();
   });
 
-  it('Should return the parameter isAuthorizedAdminAccess', () => {
-    expect(user.isAuthorizedAdminAccess).toBeTruthy();
+  it('Should return the parameter hasAdminUIAccess', () => {
+    expect(user.hasAdminUiAccess).toBeTruthy();
   });
 
   it('Should return the parameter patronLibrarian', () => {
@@ -56,23 +56,11 @@ describe('User', () => {
     const user1 = cloneDeep(testUserPatronLibrarian);
     const user2 = cloneDeep(testUserPatronLibrarian);
     user1.patrons = user1.patrons.splice(0, 1);
-    user = new User(user1, testPatronLibrarianRoles);
+    user = new User(user1);
     expect(user.isPatron).toBeTruthy();
     user2.patrons = user2.patrons.splice(1, 1);
-    user = new User(user2, testPatronLibrarianRoles);
+    user = new User(user2);
     expect(user.isPatron).toBeFalsy();
-  });
-
-  it('Should return the parameter isLibrarian', () => {
-    expect(user.isLibrarian).toBeTruthy();
-  });
-
-  it('Should return the parameter isSystemLibrarian', () => {
-    expect(user.isSystemLibrarian).toBeTruthy();
-  });
-
-  it('Should return the parameter isSystemLibrarian', () => {
-    expect(user.isSystemLibrarian).toBeTruthy();
   });
 
   it('Should return the current library', () => {

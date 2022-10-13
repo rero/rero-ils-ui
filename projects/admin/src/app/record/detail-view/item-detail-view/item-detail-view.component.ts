@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { IssueItemStatus } from '@rero/shared';
+import { IPermissions, IssueItemStatus, PERMISSIONS } from '@rero/shared';
 import moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { Item, ItemNote } from '../../../classes/items';
@@ -80,6 +80,12 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
   get organisationCurrency(): string {
     return this._organisationService.organisation.default_currency;
   }
+
+  /**
+   * Permissions
+   * @return Object with all permissions
+   */
+  permissions: IPermissions = PERMISSIONS;
 
   /**
    * Constructor

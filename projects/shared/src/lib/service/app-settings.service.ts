@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -122,15 +122,6 @@ export class AppSettingsService {
   }
 
   /**
-   * Get librarian roles
-   * @return array of roles
-   */
-  get librarianRoles(): string[] {
-    this._checkSettings();
-    return this._settings.librarianRoles;
-  }
-
-  /**
    * Check if the settings are present
    * @throw SettingsError
    */
@@ -150,7 +141,6 @@ export interface ISettings {
   globalView: string;
   language: string;
   operationLogs: any;
-  librarianRoles: string[];
   userProfile: {
     readOnly: boolean;
     readOnlyFields: string[]

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MenuFactory, MenuItemInterface } from '@rero/ng-core';
-import { User, UserService } from '@rero/shared';
+import { UserService } from '@rero/shared';
 import { MenuBase } from './menu-base';
 
 @Injectable({
@@ -28,9 +28,6 @@ export class MenuUserService extends MenuBase {
 
   /** Menu */
   private _menu: MenuItemInterface = null;
-
-  /** User */
-  private _user: User;
 
   /**
    * User service menu
@@ -54,7 +51,6 @@ export class MenuUserService extends MenuBase {
 
   /** Generate */
   generate() {
-    this._user = this._userService.user;
     const factory = new MenuFactory();
     const menu = factory.createItem('UI User menu');
 
@@ -67,7 +63,7 @@ export class MenuUserService extends MenuBase {
    * @param menu - MenuItemInterface
    */
   private _userMenu(menu: MenuItemInterface): void {
-    const userMenu = menu.addChild(this._user.symbolName)
+    const userMenu = menu.addChild(this._userService.user.symbolName)
     .setAttribute('class', 'dropdown-menu dropdown-menu-right')
     .setAttribute('id', 'my-account-menu')
     .setExtra('iconClass', 'fa fa-user');
