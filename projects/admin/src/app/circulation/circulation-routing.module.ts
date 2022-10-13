@@ -26,6 +26,8 @@ import { PatronTransactionsComponent } from './patron/patron-transactions/patron
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
 import { PendingComponent } from './patron/pending/pending.component';
+import { PERMISSIONS, PermissionsService } from '@rero/shared';
+import { PermissionGuard } from '../guard/permission.guard';
 
 const routes: Routes = [
   {
@@ -44,40 +46,51 @@ const routes: Routes = [
       },
       {
         path: 'loan',
-        component: LoanComponent
+        component: LoanComponent,
+        canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
       },
       {
         path: 'pickup',
-        component: PickupComponent
+        component: PickupComponent,
+        canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
       },
       {
         path: 'pending',
-        component: PendingComponent
+        component: PendingComponent,
+        canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
       },
       {
         path: 'profile',
-        component: ProfileComponent
+        component: ProfileComponent,
+        canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
       },
       {
         path: 'fees',
-        component: PatronTransactionsComponent
+        component: PatronTransactionsComponent,
+        canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
       },
       {
         path: 'history',
-        component: HistoryComponent
+        component: HistoryComponent,
+        canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
       }
     ]
   }, {
       path: 'checkout',
-      component: CheckinComponent
+      component: CheckinComponent,
+      canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
     }, {
     path: 'requests',
-    component: MainRequestComponent
+    component: MainRequestComponent,
+    canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
   }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [
+    PermissionsService
+  ]
 })
 export class CirculationRoutingModule { }

@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { CoreModule, LocalStorageService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
-import { cloneDeep } from 'lodash-es';
+import { testUserLibrarianWithSettings, User, UserService } from '@rero/shared';
 
 import { LibrarySwitchMenuStorageService } from './library-switch-menu-storage.service';
 import { LibrarySwitchService } from './library-switch.service';
@@ -27,26 +27,18 @@ describe('LibrarySwitchMenuStorageService', () => {
   let localStorageService: LocalStorageService;
   let librarySwitchService: LibrarySwitchService;
 
-  const userData = {
-    id: 1,
-    currentLibrary: '5',
-    patronLibrarian: {
-      libraries: [
-        { pid: '4', organisation: '1' },
-        { pid: '5', organisation: '1' }
-      ]
-    }
-  };
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = userData;
-
   beforeEach(() => {
+    const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
+    const user = new User(testUserLibrarianWithSettings);
+    user.currentLibrary = '2';
+    userServiceSpy.user = user;
+
     TestBed.configureTestingModule({
       imports: [
+        HttpClientTestingModule,
         CoreModule
       ],
       providers: [
-        LocalStorageService,
         LibrarySwitchService,
         { provide: UserService, useValue: userServiceSpy }
       ]
@@ -54,6 +46,7 @@ describe('LibrarySwitchMenuStorageService', () => {
     service = TestBed.inject(LibrarySwitchMenuStorageService);
     localStorageService = TestBed.inject(LocalStorageService);
     librarySwitchService = TestBed.inject(LibrarySwitchService);
+    localStorageService.clear();
   });
 
   it('should be created', () => {
@@ -61,15 +54,10 @@ describe('LibrarySwitchMenuStorageService', () => {
   });
 
   it('Should return the user\'s current library', () => {
-    spyOn(userServiceSpy, 'user').and.returnValue(cloneDeep(userData));
-    localStorageService.clear();
-    expect(service.getCurrentLibrary()).toEqual('5');
+    expect(service.getCurrentLibrary()).toEqual('2');
   });
 
   it('Should return the user\'s new current library after a switch', () => {
-    spyOn(userServiceSpy, 'user').and.returnValue(cloneDeep(userData));
-    localStorageService.clear();
-    expect(service.getCurrentLibrary()).toEqual('5');
     librarySwitchService.librarySwitch$.subscribe(() => {
       expect(service.getCurrentLibrary()).toEqual('4');
     });

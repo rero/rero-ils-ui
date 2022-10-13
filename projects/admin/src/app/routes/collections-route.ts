@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,8 +19,11 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import {
   DetailComponent, EditorComponent, extractIdOnRef, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface
 } from '@rero/ng-core';
+import { ILibrary, IPatron, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CanUpdateGuard } from '../guard/can-update.guard';
+import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../guard/can-access.guard';
+import { PermissionGuard } from '../guard/permission.guard';
 import { CollectionBriefViewComponent } from '../record/brief-view/collection-brief-view.component';
 import { CollectionDetailViewComponent } from '../record/detail-view/collection-detail-view/collection-detail-view.component';
 import { BaseRoute } from './base-route';
@@ -41,10 +44,10 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchPageComponent },
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [CanUpdateGuard] },
-        { path: 'new', component: EditorComponent }
+        { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.COLL_ACCESS, PERMISSIONS.COLL_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
+        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
+        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.COLL_CREATE ] } }
       ],
       data: {
         types: [
@@ -56,7 +59,7 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
             searchFilters: [
               this.expertSearchFilter()
             ],
-            canAdd: () => this._routeToolService.can(),
+            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.COLL_CREATE) }),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             aggregationsOrder: ['type', 'library', 'teacher', 'subject'],
             aggregationsExpand: ['type'],
@@ -126,27 +129,21 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
     field.hooks = {
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
+        const user = this._routeToolService.userService.user;
         const recordService = this._routeToolService.recordService;
         const apiService = this._routeToolService.apiService;
-        const libraryPid = this._routeToolService.userService.user.currentLibrary;
-        let query = '';
-        if (!this._routeToolService.userService.user.isSystemLibrarian) {
-          // On edit record
-          if (f.formControl.value) {
-            const selectLibraryPid = extractIdOnRef(f.formControl.value);
-            query = `pid:${selectLibraryPid}`;
-            // If the current value is not the current librarian library
-            // Deactivating the select menu
-            if (selectLibraryPid !== libraryPid) {
-              f.templateOptions.disabled = true;
-            }
-          } else {
-            query = `pid:${libraryPid}`;
-          }
-        }
+
+        // Extract libraries from patron > libraries
+        const libraries = [];
+        user.patrons.map((patron: IPatron) => {
+          patron.libraries.map((library: ILibrary) => {
+            libraries.push(library.pid);
+          });
+        });
+
         f.templateOptions.options = recordService.getRecords(
           'libraries',
-          query, 1,
+          `pid:${libraries.join(' OR pid:')}`, 1,
           RecordService.MAX_REST_RESULTS_SIZE,
           undefined,
           undefined,

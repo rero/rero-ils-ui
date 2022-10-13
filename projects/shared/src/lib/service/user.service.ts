@@ -20,7 +20,8 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserApiService } from '../api/user-api.service';
 import { IUser, User } from '../class/user';
-import { AppSettingsService, ISettings } from './app-settings.service';
+import { AppSettingsService } from './app-settings.service';
+import { PermissionsService } from './permissions.service';
 
 @Injectable({
   providedIn: 'root'
@@ -52,10 +53,12 @@ export class UserService {
    * Constructor
    * @param _userApiService - UserApiService
    * @param _appSettingsService - AppSettingsService
+   * @param _permissionsService - PermissionsService
    */
   constructor(
     private _userApiService: UserApiService,
-    private _appSettingsService: AppSettingsService
+    private _appSettingsService: AppSettingsService,
+    private _permissionsService: PermissionsService
   ) { }
 
   /** load */
@@ -66,7 +69,10 @@ export class UserService {
         map((loggedUser: any) => {
           this._appSettingsService.settings = loggedUser.settings;
           delete loggedUser['settings'];
-          this._user = new User(loggedUser, this._appSettingsService.librarianRoles);
+          if (loggedUser.permissions) {
+          this._permissionsService.setPermissions(loggedUser.permissions);
+        }
+        this._user = new User(loggedUser);
           this._loaded.next(this._user);
           return this._user;
         })

@@ -54,6 +54,7 @@
       [routerLink]="['/records', 'local_fields', 'new']"
       [queryParams]="{ type: resourceType, ref: resourcePid }"
       class="btn btn-sm btn-outline-primary"
+      [permissions]="permissions.LOFI_CREATE"
     >
       <i class="fa fa-plus-square-o"></i> {{ 'Add local fields' | translate }}
     </a>

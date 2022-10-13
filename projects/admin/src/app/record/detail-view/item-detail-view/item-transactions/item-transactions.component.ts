@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { UserService } from '@rero/shared';
+import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { LoanService } from '@app/admin/service/loan.service';
@@ -42,6 +42,8 @@ export class ItemTransactionsComponent implements OnInit {
   /** Requested loan(s) */
   requestedBy: Array<any> = [];
 
+  /** return all permissions */
+  permissions: IPermissions = PERMISSIONS;
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**

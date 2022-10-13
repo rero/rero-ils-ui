@@ -62,7 +62,7 @@ export class AppInitializerService {
     return this._userService.load().pipe(
       tap((user: User) => {
         this._typeaheadFactoryService.init();
-        if (user.isAuthorizedAdminAccess) {
+        if (user.hasAdminUiAccess) {
           this._librarySwitchMenuService.init();
           // Set current library and organisation for librarian or system_librarian roles
           const library = user.patronLibrarian.libraries[0];

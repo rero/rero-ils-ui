@@ -17,15 +17,15 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { ItemStatus, UserService } from '@rero/shared';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Item, ItemAction, ItemNote, ItemNoteType} from '@app/admin/classes/items';
+import { ItemStatus, PermissionsService } from '@rero/shared';
+import { Item, ItemAction, ItemNote, ItemNoteType } from '@app/admin/classes/items';
 import { Loan, LoanState } from '@app/admin/classes/loans';
 import { ItemsService } from '@app/admin/service/items.service';
 import { OrganisationService } from '@app/admin/service/organisation.service';
-import { Organisation } from '../../classes/core';
-import { PatronTransactionService } from '../services/patron-transaction.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Organisation } from '@app/admin/classes/core';
+import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 
 @Component({
   selector: 'admin-item',
@@ -75,7 +75,7 @@ export class ItemComponent implements OnInit {
    * @returns True if the debug mode can be enabled and switched
    */
   get canUseDebugMode(): boolean {
-    return this._userService.user.isSystemLibrarian;
+    return this._permissionsService.canAccessDebugMode();
   }
 
 
@@ -86,14 +86,14 @@ export class ItemComponent implements OnInit {
    * @param _organisationService - Organisation Service
    * @param _patronTransactionService - Patron transaction Service
    * @param _itemService - Item Service
-   * @param _userService - UserService
+   * @param _permissionsService - PermissionsService
    */
   constructor(
     private _recordService: RecordService,
     private _organisationService: OrganisationService,
     private _patronTransactionService: PatronTransactionService,
     private _itemService: ItemsService,
-    private _userService: UserService
+    private _permissionsService: PermissionsService
   ) {  }
 
   /** OnInit hook */

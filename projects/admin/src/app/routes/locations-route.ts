@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,8 +16,11 @@
  */
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, EditorComponent, RouteInterface } from '@rero/ng-core';
-import { CanUpdateGuard } from '../guard/can-update.guard';
+import { PERMISSIONS } from '@rero/shared';
+import { of } from 'rxjs';
+import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../guard/can-access.guard';
 import { LibraryGuard } from '../guard/library.guard';
+import { PermissionGuard } from '../guard/permission.guard';
 import { LocationDetailViewComponent } from '../record/detail-view/location-detail-view/location-detail-view.component';
 import { BaseRoute } from './base-route';
 
@@ -37,9 +40,9 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'detail/:pid', component: DetailComponent },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanUpdateGuard ] },
-        { path: 'new', component: EditorComponent, canActivate: [ LibraryGuard ] }
+        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
+        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard, LibraryGuard ], data: { permissions: [ PERMISSIONS.LOC_CREATE ] } }
       ],
       data: {
         types: [
@@ -47,7 +50,7 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             label: _('Locations'),
             detailComponent: LocationDetailViewComponent,
-            canAdd: () => this._routeToolService.canSystemLibrarian(),
+            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.LOC_CREATE) }),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preprocessRecordEditor: (record: any) => {
               // Location resource use a asynchronous validator ('valueAlreadyExists').

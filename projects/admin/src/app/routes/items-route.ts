@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2019-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,12 +17,12 @@
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { DetailComponent, EditorComponent, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
-import { IssueItemStatus } from '@rero/shared';
+import { IssueItemStatus, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ItemType } from '../classes/items';
-import { CanAccessGuard } from '../guard/can-access.guard';
-import { CanUpdateGuard } from '../guard/can-update.guard';
+import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../guard/can-access.guard';
+import { PermissionGuard } from '../guard/permission.guard';
 import { ItemsBriefViewComponent } from '../record/brief-view/items-brief-view/items-brief-view.component';
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
 import { BaseRoute } from './base-route';
@@ -43,10 +43,10 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
     const config = {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchPageComponent },
-        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ] },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard, CanUpdateGuard ] },
-        { path: 'new', component: EditorComponent }
+        { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.ITEM_ACCESS, PERMISSIONS.ITEM_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
+        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
+        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.HOLD_CREATE, PERMISSIONS.ITEM_CREATE ], permissionsOperator: PERMISSION_OPERATOR.AND } }
       ],
       data: {
         types: [
@@ -69,6 +69,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             preFilters: {
               organisation: null
             },
+            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.ITEM_CREATE) }),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
             preprocessRecordEditor: (record: any) => {
               // If we found an `holding` parameter into the query string then we need to pre-populated
