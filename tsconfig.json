@@ -28,6 +28,9 @@
       "@rero/shared/*": [
         "dist/shared/*"
       ],
+      "@app/admin/*": [
+        "projects/admin/src/app/*"
+      ],
       "moment": [
         "node_modules/moment/min/moment.min.js"
       ]
@@ -38,8 +41,8 @@
     "strictInjectionParameters": true
   },
   "paths": {
-    "@app/*": [
-      "src/app/*"
+    "@app/admin/*": [
+      "projects/admin/src/app/*"
     ]
   }
 }

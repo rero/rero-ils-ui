@@ -41,6 +41,7 @@ import { LoansRoute } from './loans-route';
 import { LocalFieldsRoute } from './local-fields-route';
 import { LocationsRoute } from './locations-route';
 import { OrganisationsRoute } from './organisations-route';
+import { PatronTransactionEventsRoute } from './patron-transaction-events-route';
 import { PatronTypesRoute } from './patron-types-route';
 import { PatronsRoute } from './patrons-route';
 import { PersonsRoute } from './persons-route';
@@ -91,6 +92,7 @@ export class RouteService {
       .addRoute(new IllRequestsRoute(this._routeToolService))
       .addRoute(new LocalFieldsRoute(this._routeToolService))
       .addRoute(new LoansRoute(this._routeToolService))
+      .addRoute(new PatronTransactionEventsRoute(this._routeToolService))
       // Route from acquisition modules
       .addRoute(new AcqBudgetsRoute(this._routeToolService))
       .addRoute(new AcqAccountsRoute(this._routeToolService))

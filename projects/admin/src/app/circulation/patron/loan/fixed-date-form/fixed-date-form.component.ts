@@ -25,8 +25,8 @@ import { UserService } from '@rero/shared';
 import moment from 'moment';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { Library } from 'projects/admin/src/app/classes/library';
-import { DateValidators } from 'projects/admin/src/app/utils/validators';
+import { Library } from '@app/admin/classes/library';
+import { DateValidators } from '@app/admin/utils/validators';
 import { Subscription } from 'rxjs';
 import { CirculationService } from '../../../services/circulation.service';
 

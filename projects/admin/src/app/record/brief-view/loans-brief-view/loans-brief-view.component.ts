@@ -31,8 +31,11 @@ import { CirculationLogsComponent } from '../../circulation-logs/circulation-log
 export class LoansBriefViewComponent implements ResultItem, OnInit {
 
   // COMPONENT ATTRIBUTES =====================================================
+  /** Information to build the URL on the record detail view. */
   @Input() detailUrl: { link: string; external: boolean };
+  /** The record to perform. */
   @Input() record: any;
+  /** The type of the record. */
   @Input() type: string;
 
   /** debug mode toggle */

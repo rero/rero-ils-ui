@@ -19,7 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { LoanService } from 'projects/admin/src/app/service/loan.service';
+import { LoanService } from '@app/admin/service/loan.service';
 import { forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ItemRequestComponent } from '../../document-detail-view/item-request/item-request.component';

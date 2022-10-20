@@ -20,9 +20,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
-import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
-import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
-import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
+import { RecordPermissions } from '@app/admin/classes/permissions';
+import { OrganisationService } from '@app/admin/service/organisation.service';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { IAcqAccount } from '../../../classes/account';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 

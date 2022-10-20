@@ -19,8 +19,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
 import { IssueItemStatus } from '@rero/shared';
-import { HoldingsService } from 'projects/admin/src/app/service/holdings.service';
-import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
+import { HoldingsService } from '@app/admin/service/holdings.service';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 
 @Component({
   selector: 'admin-received-issue',

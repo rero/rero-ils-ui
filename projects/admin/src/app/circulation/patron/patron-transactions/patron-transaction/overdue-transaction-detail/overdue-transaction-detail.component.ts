@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { map, mergeMap } from 'rxjs/operators';
-import { Item } from 'projects/admin/src/app/classes/items';
-import { PatronTransaction } from 'projects/admin/src/app/circulation/classes/patron-transaction';
+import { Item } from '@app/admin/classes/items';
+import { PatronTransaction } from '@app/admin/classes/patron-transaction';
 
 @Component({
   selector: 'admin-overdue-transaction-detail',

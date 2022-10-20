@@ -20,8 +20,8 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { AcqAddressRecipient, IAcqOrder, IAcqOrderPreviewResponse } from 'projects/admin/src/app/acquisition/classes/order';
-import { Notification } from 'projects/admin/src/app/classes/notification';
+import { AcqAddressRecipient, IAcqOrder, IAcqOrderPreviewResponse } from '@app/admin/acquisition/classes/order';
+import { Notification } from '@app/admin/classes/notification';
 import { finalize } from 'rxjs/operators';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 

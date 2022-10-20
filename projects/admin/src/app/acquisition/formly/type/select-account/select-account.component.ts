@@ -18,7 +18,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { ApiService } from '@rero/ng-core';
-import { IAcqAccount } from 'projects/admin/src/app/acquisition/classes/account';
+import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 
 @Component({
   selector: 'admin-select-account',

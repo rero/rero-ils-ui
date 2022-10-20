@@ -17,11 +17,11 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { Loan, LoanOverduePreview } from 'projects/admin/src/app/classes/loans';
-import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
+import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
+import { OrganisationService } from '@app/admin/service/organisation.service';
 import { forkJoin } from 'rxjs';
-import { Item } from 'projects/admin/src/app/classes/items';
-import { PatronTransactionEvent, PatronTransactionEventType } from 'projects/admin/src/app/circulation/classes/patron-transaction';
+import { Item } from '@app/admin/classes/items';
+import { PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
 
 @Component({
   selector: 'admin-overdue-transaction',

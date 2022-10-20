@@ -17,12 +17,12 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '@rero/shared';
-import { OrganisationService } from '../../../../service/organisation.service';
-import { IAcqAccount } from '../../../classes/account';
-import { AcqAccountApiService } from '../../../api/acq-account-api.service';
+import { OrganisationService } from '@app/admin/service/organisation.service';
+import { IAcqAccount } from '@app/admin/acquisition/classes/account';
+import { AcqAccountApiService } from '@app/admin/acquisition/api/acq-account-api.service';
 import { ApiService, RecordService } from '@rero/ng-core';
 import { TranslateService } from '@ngx-translate/core';
-import { exportFormats } from '../../../routes/accounts-route';
+import { exportFormats } from '@app/admin/acquisition/routes/accounts-route';
 import { HttpParams } from '@angular/common/http';
 
 @Component({

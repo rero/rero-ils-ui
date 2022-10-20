@@ -16,7 +16,7 @@
  */
 import { Component, Input, OnInit } from '@angular/core';
 import { UserService } from '@rero/shared';
-import { HoldingsApiService } from 'projects/admin/src/app/api/holdings-api.service';
+import { HoldingsApiService } from '@app/admin/api/holdings-api.service';
 import { forkJoin } from 'rxjs';
 
 @Component({

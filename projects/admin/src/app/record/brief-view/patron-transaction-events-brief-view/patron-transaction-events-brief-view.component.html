@@ -1,0 +1,64 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019-2022 RERO
+  Copyright (C) 2019-2022 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<section *ngIf="loaded else skeleton">
+  <div class="content">
+    <ng-container [ngSwitch]="parent.type">
+      <admin-patron-transaction-event-overdue
+        *ngSwitchCase="'overdue'"
+        [parent]="parent" [event]="event">
+      </admin-patron-transaction-event-overdue>
+      <admin-patron-transaction-event-default
+        *ngSwitchDefault
+        [parent]="parent" [event]="event">
+      </admin-patron-transaction-event-default>
+    </ng-container>
+    <span class="badge badge-{{ event.type }}">
+      <ng-container *ngIf="event.type !== eventTypes.DISPUTE else dispute">
+        {{ event.amount | currency : organisation.default_currency }}
+      </ng-container>
+      <ng-template #dispute>{{ 'dispute' | translate }}</ng-template>
+    </span>
+  </div>
+  <div class="meta">
+    <span class="operator" *ngIf="event.operator">{{ event.operator.name }}</span>
+    <span class="library ml-2" *ngIf="event.library">{{ event.library.name }}</span>
+    <span class="transaction-type ml-2">{{ parent.type | translate }}</span>
+    <span class="creation-date">{{ event.creation_date | date : 'short' }}</span>
+  </div>
+</section>
+
+
+<ng-template #skeleton>
+  <div class="d-flex">
+    <div class="w-100 container p-0">
+      <p-skeleton styleClass="mb-1"></p-skeleton>
+      <div class="row ml-3">
+        <p-skeleton class="col-3" styleClass="mb-1"></p-skeleton>
+        <p-skeleton class="col-9" styleClass="mb-1"></p-skeleton>
+        <p-skeleton class="col-3" styleClass="mb-1"></p-skeleton>
+        <p-skeleton class="col-9" styleClass="mb-1"></p-skeleton>
+      </div>
+    </div>
+    <p-skeleton width="50px" styleClass="ml-2"></p-skeleton>
+  </div>
+  <div class="d-flex mt-3">
+    <p-skeleton width="100px" height="1.5rem"></p-skeleton>
+    <p-skeleton width="200px" height="1.5rem" styleClass="ml-1"></p-skeleton>
+    <p-skeleton width="100px" height="1.5rem" class="ml-auto"></p-skeleton>
+  </div>
+</ng-template>

@@ -17,9 +17,9 @@
  */
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
-import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
-import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
+import { RecordPermissions } from '@app/admin/classes/permissions';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
+import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
 import { forkJoin, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';

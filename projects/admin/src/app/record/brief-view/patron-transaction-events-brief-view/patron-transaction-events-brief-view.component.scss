@@ -1,0 +1,86 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2022 UCLouvain
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+@import 'node_modules/bootstrap/scss/_functions';
+@import 'node_modules/bootstrap/scss/_variables';
+@import 'node_modules/bootstrap/scss/bootstrap';
+@import '../../../scss/variables';
+
+:host{
+  margin: 0;
+  display: block;
+
+  .content{
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+
+    *:nth-child(1){
+      flex-grow: 2;
+    }
+
+    @each $type, $badge in (fee, danger), (payment, success), (dispute, warning), (cancel, dark) {
+      .badge-#{$type}{
+        @extend .badge-#{$badge};
+        font-variant: small-caps;
+      }
+    }
+  }
+
+  dt, dd{
+    margin:0;
+  }
+
+  .meta{
+    display: flex;
+    margin-top: 0.5rem;
+
+    *{
+      font-size: 0.75rem;
+      background-color: $gray-300;
+      color: $gray-600;
+      border-radius: 0.75rem;
+      padding: 2px 10px;
+    }
+
+    .operator:before{
+      font-family: 'FontAwesome';
+      content: " \f2be";
+      padding-right: 0.5rem;
+    }
+    .library:before{
+      font-family: 'FontAwesome';
+      content: " \f19c";
+      padding-right: 0.5rem;
+    }
+    .transaction-type:before{
+      font-family: 'FontAwesome';
+      content: " \f0ec";
+      padding-right: 0.5rem;
+    }
+    .creation-date {
+      margin-left: auto;
+      &:before{
+        font-family: 'FontAwesome';
+        content: " \f017";
+        padding-right: 0.5rem;
+      }
+    }
+  }
+
+}

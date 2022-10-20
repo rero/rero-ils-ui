@@ -18,9 +18,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { OrganisationService } from '../../../../service/organisation.service';
-import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '../../../classes/patron-transaction';
-import { PatronTransactionService } from '../../../services/patron-transaction.service';
+import { OrganisationService } from '@app/admin/service/organisation.service';
+import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
+import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import {
   PatronTransactionEventFormComponent
 } from '../patron-transaction-event-form/patron-transaction-event-form.component';

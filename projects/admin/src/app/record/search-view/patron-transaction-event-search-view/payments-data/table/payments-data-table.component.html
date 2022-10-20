@@ -1,0 +1,32 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019-2022 RERO
+  Copyright (C) 2019-2022 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<ul class="list-unstyled m-0">
+  <li *ngFor="let subtype of data.subtypes">
+    <div class="d-flex justify-content-between">
+      <span>{{ subtype.name | translate }}</span>
+      <span class="ml-auto amount">{{ subtype.total | currency: org_currency: 'symbol' }}</span>
+    </div>
+  </li>
+  <li class="d-flex justify-content-between total">
+    <span translate>Total</span>
+    <span class="ml-auto amount">{{ data.total | currency: org_currency: 'symbol' }}</span>
+  </li>
+</ul>
+
+

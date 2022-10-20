@@ -18,7 +18,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
-import { HoldingsApiService } from 'projects/admin/src/app/api/holdings-api.service';
+import { HoldingsApiService } from '@app/admin/api/holdings-api.service';
 import { of } from 'rxjs';
 import { HoldingOrganisationComponent } from './holding-organisation.component';
 

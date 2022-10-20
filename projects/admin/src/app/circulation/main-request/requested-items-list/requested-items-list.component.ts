@@ -16,8 +16,8 @@
  */
 
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { Item } from 'projects/admin/src/app/classes/items';
-import { LoanState } from 'projects/admin/src/app/classes/loans';
+import { Item } from '@app/admin/classes/items';
+import { LoanState } from '@app/admin/classes/loans';
 
 @Component({
   selector: 'admin-circulation-requested-items-list',

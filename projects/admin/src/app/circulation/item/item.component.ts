@@ -20,10 +20,10 @@ import { RecordService } from '@rero/ng-core';
 import { ItemStatus, UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Item, ItemAction, ItemNote, ItemNoteType} from 'projects/admin/src/app/classes/items';
-import { Loan, LoanState } from 'projects/admin/src/app/classes/loans';
-import { ItemsService } from 'projects/admin/src/app/service/items.service';
-import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
+import { Item, ItemAction, ItemNote, ItemNoteType} from '@app/admin/classes/items';
+import { Loan, LoanState } from '@app/admin/classes/loans';
+import { ItemsService } from '@app/admin/service/items.service';
+import { OrganisationService } from '@app/admin/service/organisation.service';
 import { Organisation } from '../../classes/core';
 import { PatronTransactionService } from '../services/patron-transaction.service';
 

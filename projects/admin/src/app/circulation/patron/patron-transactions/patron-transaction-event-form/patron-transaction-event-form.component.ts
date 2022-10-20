@@ -4,9 +4,9 @@ import { UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { OrganisationService } from '../../../../service/organisation.service';
-import { PatronTransaction } from '../../../classes/patron-transaction';
-import { PatronTransactionService } from '../../../services/patron-transaction.service';
+import { OrganisationService } from '@app/admin/service/organisation.service';
+import { PatronTransaction } from '@app/admin/classes/patron-transaction';
+import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 
 
 @Component({

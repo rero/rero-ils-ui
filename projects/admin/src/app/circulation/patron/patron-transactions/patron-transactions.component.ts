@@ -19,10 +19,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserService } from '@rero/shared';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { Subscription } from 'rxjs';
-import { Loan, LoanOverduePreview } from '../../../classes/loans';
-import { OrganisationService } from '../../../service/organisation.service';
-import { PatronService } from '../../../service/patron.service';
-import { PatronTransaction, PatronTransactionStatus } from '../../classes/patron-transaction';
+import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
+import { OrganisationService } from '@app/admin/service/organisation.service';
+import { PatronService } from '@app/admin/service/patron.service';
+import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
 import { PatronTransactionService } from '../../services/patron-transaction.service';
 import { PatronTransactionEventFormComponent } from './patron-transaction-event-form/patron-transaction-event-form.component';
 

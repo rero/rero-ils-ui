@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
-import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
+import { RecordPermissions } from '@app/admin/classes/permissions';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { Subscription } from 'rxjs';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { IAcqOrder, IAcqOrderLine } from '../../../../classes/order';

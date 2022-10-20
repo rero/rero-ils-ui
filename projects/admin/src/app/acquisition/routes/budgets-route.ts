@@ -17,7 +17,7 @@
  */
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
-import { BaseRoute } from 'projects/admin/src/app/routes/base-route';
+import { BaseRoute } from '@app/admin/routes/base-route';
 import { BudgetsBriefViewComponent } from '../components/budget/budget-brief-view/budgets-brief-view.component';
 import { BudgetDetailViewComponent } from '../components/budget/budget-detail-view/budget-detail-view.component';
 
