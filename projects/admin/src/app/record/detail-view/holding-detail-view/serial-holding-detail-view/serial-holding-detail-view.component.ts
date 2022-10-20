@@ -20,9 +20,9 @@ import { RecordService, RecordUiService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { IssueItemStatus, UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
-import { HoldingsService, PredictionIssue } from 'projects/admin/src/app/service/holdings.service';
-import { OperationLogsService } from 'projects/admin/src/app/service/operation-logs.service';
-import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
+import { HoldingsService, PredictionIssue } from '@app/admin/service/holdings.service';
+import { OperationLogsService } from '@app/admin/service/operation-logs.service';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 
 
 @Component({

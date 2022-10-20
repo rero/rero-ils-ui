@@ -20,7 +20,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { GetRecordPipe, RecordModule } from '@rero/ng-core';
-import { AppRoutingModule } from 'projects/admin/src/app/app-routing.module';
+import { AppRoutingModule } from '@app/admin/app-routing.module';
 import { SharedModule } from '@rero/shared';
 import { FrontpageComponent } from '../../../../widgets/frontpage/frontpage.component';
 import { CollectionItemsComponent } from './collection-items.component';

@@ -20,8 +20,8 @@ import { Component, OnInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { ApiService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { IAcqAccount } from 'projects/admin/src/app/acquisition/classes/account';
-import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
+import { IAcqAccount } from '@app/admin/acquisition/classes/account';
+import { OrganisationService } from '@app/admin/service/organisation.service';
 import { AcqAccountApiService } from '../../../../api/acq-account-api.service';
 import { orderAccountsAsTree } from '../../../../utils/account';
 

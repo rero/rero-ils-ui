@@ -18,9 +18,9 @@ import { Component, OnInit } from '@angular/core';
 import { FieldArrayType } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService } from '@rero/ng-core';
-import { CirculationPolicyApiService } from 'projects/admin/src/app/api/circulation-policy-api.service';
-import { ItemTypeApiService } from 'projects/admin/src/app/api/item-type-api.service';
-import { PatronTypeApiService } from 'projects/admin/src/app/api/patron-type-api.service';
+import { CirculationPolicyApiService } from '@app/admin/api/circulation-policy-api.service';
+import { ItemTypeApiService } from '@app/admin/api/item-type-api.service';
+import { PatronTypeApiService } from '@app/admin/api/patron-type-api.service';
 import { forkJoin } from 'rxjs';
 import { Settings } from './class/settings';
 

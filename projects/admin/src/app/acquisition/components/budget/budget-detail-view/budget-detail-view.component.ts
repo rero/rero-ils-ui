@@ -17,7 +17,7 @@
  */
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
+import { OrganisationService } from '@app/admin/service/organisation.service';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';

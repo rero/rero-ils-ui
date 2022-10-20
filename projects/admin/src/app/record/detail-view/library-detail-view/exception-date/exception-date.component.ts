@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
-import { ExceptionDates } from 'projects/admin/src/app/classes/library';
+import { ExceptionDates } from '@app/admin/classes/library';
 
 @Component({
   selector: 'admin-exception-date',

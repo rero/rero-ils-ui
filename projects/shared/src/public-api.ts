@@ -26,6 +26,7 @@ export * from './lib/class/item-status';
 export * from './lib/class/user';
 export * from './lib/class/holdings';
 export * from './lib/component/action-button/action-button.component';
+export * from './lib/modules/prime-ng-import/prime-ng-import.module';
 export * from './lib/paginator/paginator';
 export * from './lib/paginator/show-more-pager/show-more-pager.component';
 export * from './lib/pipe/contribution-filter.pipe';

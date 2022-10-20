@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
-import { PredictionIssue } from 'projects/admin/src/app/service/holdings.service';
+import { PredictionIssue } from '@app/admin/service/holdings.service';
 
 @Component({
   selector: 'admin-expected-issue',

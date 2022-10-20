@@ -17,7 +17,7 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { LoanState } from 'projects/admin/src/app/classes/loans';
+import { LoanState } from '@app/admin/classes/loans';
 
 @Component({
   selector: 'admin-requested-item',

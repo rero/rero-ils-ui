@@ -16,7 +16,7 @@
  */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordUiService } from '@rero/ng-core';
-import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 
 @Component({
   selector: 'admin-location',

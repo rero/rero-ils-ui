@@ -22,7 +22,7 @@ import { CanUpdateGuard } from '../guard/can-update.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentEditorComponent } from '../record/custom-editor/document-editor/document-editor.component';
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
-import { DocumentRecordSearchComponent } from '../record/document-record-search/document-record-search.component';
+import { DocumentRecordSearchComponent } from '../record/search-view/document-record-search/document-record-search.component';
 import { BaseRoute } from './base-route';
 
 export class DocumentsRoute extends BaseRoute implements RouteInterface {

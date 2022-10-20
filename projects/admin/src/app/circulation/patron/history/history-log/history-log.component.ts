@@ -18,7 +18,7 @@
 import { Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ProvisionActivityType } from '@rero/shared';
-import { OperationLogsApiService } from 'projects/admin/src/app/api/operation-logs-api.service';
+import { OperationLogsApiService } from '@app/admin/api/operation-logs-api.service';
 
 @Component({
   selector: 'admin-history-log',

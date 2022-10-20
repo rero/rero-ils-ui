@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
-import { ItemNote } from 'projects/admin/src/app/classes/items';
+import { ItemNote } from '@app/admin/classes/items';
 
 @Component({
   selector: 'admin-holding-item-note',

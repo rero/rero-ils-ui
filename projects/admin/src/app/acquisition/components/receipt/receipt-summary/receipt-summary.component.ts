@@ -17,9 +17,9 @@
  */
 import { Component, Input, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
-import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
-import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
+import { RecordPermissions } from '@app/admin/classes/permissions';
+import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
 import { IAcqReceipt } from '../../../classes/receipt';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';

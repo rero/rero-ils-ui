@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,6 +31,7 @@ import {
   TranslateLoader, TranslateService, TruncateTextPipe
 } from '@rero/ng-core';
 import { ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
@@ -42,6 +44,7 @@ import {
   SelectAccountEditorWidgetComponent
 } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 import { ReceivedOrderPermissionValidator } from './acquisition/utils/permissions';
+import { PaymentsDataComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/payments-data.component';
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -144,7 +147,7 @@ import { PatronTypesDetailViewComponent } from './record/detail-view/patron-type
 import { RecordMaskedComponent } from './record/detail-view/record-masked/record-masked.component';
 import { TemplateDetailViewComponent } from './record/detail-view/template-detail-view/template-detail-view.component';
 import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
-import { DocumentRecordSearchComponent } from './record/document-record-search/document-record-search.component';
+import { DocumentRecordSearchComponent } from './record/search-view/document-record-search/document-record-search.component';
 import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
 import { UserIdComponent } from './record/editor/wrappers/user-id/user-id.component';
 import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patron-type-item-type/cipo-patron-type-item-type.component';
@@ -166,6 +169,13 @@ import { ExpectedIssueComponent } from './record/detail-view/holding-detail-view
 import { ReceivedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/received-issue/received-issue.component';
 import { AppInitializerService } from './service/app-initializer.service';
 import { LoansBriefViewComponent } from './record/brief-view/loans-brief-view/loans-brief-view.component';
+import { PatronTransactionEventsBriefViewComponent } from './record/brief-view/patron-transaction-events-brief-view/patron-transaction-events-brief-view.component';
+import { PatronNamePipe } from './pipe/patron-name.pipe';
+import { PatronTransactionEventOverdueComponent } from './record/brief-view/patron-transaction-events-brief-view/patron-transaction-event-overdue.component';
+import { PatronTransactionEventDefaultComponent } from './record/brief-view/patron-transaction-events-brief-view/patron-transaction-event-default.component';
+import { PatronTransactionEventSearchViewComponent } from './record/search-view/patron-transaction-event-search-view/patron-transaction-event-search-view.component';
+import { PaymentsDataTableComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/table/payments-data-table.component';
+import { PaymentDataPieComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/pie/payment-data-pie.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -272,7 +282,15 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         ItemAvailabilityPipe,
         ExpectedIssueComponent,
         ReceivedIssueComponent,
-        LoansBriefViewComponent
+        LoansBriefViewComponent,
+        PatronTransactionEventsBriefViewComponent,
+        PatronNamePipe,
+        PatronTransactionEventOverdueComponent,
+        PatronTransactionEventDefaultComponent,
+        PatronTransactionEventSearchViewComponent,
+        PaymentsDataComponent,
+        PaymentsDataTableComponent,
+        PaymentDataPieComponent
     ],
     imports: [
         AppRoutingModule,
@@ -281,6 +299,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         BrowserModule,
         BsDatepickerModule.forRoot(),
         BsDropdownModule.forRoot(),
+        NgxChartsModule,
         CollapseModule.forRoot(),
         FormsModule,
         HttpClientModule,

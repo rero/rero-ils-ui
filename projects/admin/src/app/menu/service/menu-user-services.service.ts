@@ -51,6 +51,9 @@ export class MenuUserServicesService extends MenuBase {
   /** Inventory menu */
   private _inventoryMenu: MenuItemInterface;
 
+  /** Fees menu */
+  private _feeMenu: MenuItemInterface;
+
   /** Current loans */
   private _currentLoansMenu: MenuItemInterface;
 
@@ -264,6 +267,19 @@ export class MenuUserServicesService extends MenuBase {
     .setAttribute('id', 'inventory-list-menu')
     .setExtra('iconClass', 'fa fa-list');
     this._translatedName(this._inventoryMenu, 'Inventory list');
+
+    // ----- FEES LIST
+    const tstamp = Date.now();
+    const millis_in_day = tstamp % 86400000;  // 86400000 millis in a day
+    const current_day = tstamp - millis_in_day;
+
+    this._feeMenu = reportMenu.addChild('Fees')
+      .setRouterLink(['/', 'records', 'patron_transaction_events'])
+      .setQueryParam('transaction_library', this._userService.user.currentLibrary)
+      .setQueryParam('transaction_date', `${current_day}--${tstamp}`)
+      .setAttribute('id', 'fees-list-menu')
+      .setExtra('iconClass', 'fa fa-money');
+    this._translatedName(this._feeMenu, 'Fees');
   }
 
   /**
@@ -343,19 +359,12 @@ export class MenuUserServicesService extends MenuBase {
       // ACQUISITION:
       this._ordersMenu.setQueryParam('library', user.currentLibrary);
       this._lateIssuesMenu.setQueryParam('library', user.currentLibrary);
-      // REPORT: INVENTORY LIST
+      // REPORT:
       this._inventoryMenu.setQueryParam('library', user.currentLibrary);
-      // ADMIN: MY ORGANISATION
-      this._myOrganisationMenu
-      .setRouterLink([
-        '/', 'records', 'organisations',
-        'detail', user.currentOrganisation
-      ]);
-      // ADMIN: MY LIBRARY
-      this._myLibraryMenu.setRouterLink([
-        '/', 'records', 'libraries',
-        'detail', user.currentLibrary
-      ]);
+      this._feeMenu.setQueryParam('transaction_library', user.currentLibrary);
+      // ADMIN:
+      this._myOrganisationMenu.setRouterLink(['/', 'records', 'organisations', 'detail', user.currentOrganisation]);
+      this._myLibraryMenu.setRouterLink(['/', 'records', 'libraries', 'detail', user.currentLibrary]);
     });
   }
 }

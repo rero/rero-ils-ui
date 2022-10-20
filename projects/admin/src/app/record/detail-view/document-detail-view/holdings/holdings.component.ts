@@ -19,7 +19,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { HoldingsApiService } from 'projects/admin/src/app/api/holdings-api.service';
+import { HoldingsApiService } from '@app/admin/api/holdings-api.service';
 import { forkJoin, Observable } from 'rxjs';
 import { RecordPermissionService } from '../../../../service/record-permission.service';
 

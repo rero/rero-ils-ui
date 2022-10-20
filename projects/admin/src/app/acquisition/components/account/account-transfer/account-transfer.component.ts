@@ -23,7 +23,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
-import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
+import { OrganisationService } from '@app/admin/service/organisation.service';
 import { IAcqAccount } from '../../../classes/account';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { orderAccountsAsTree } from '../../../utils/account';

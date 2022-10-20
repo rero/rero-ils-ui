@@ -89,6 +89,17 @@ export class PatronService {
   }
 
   /**
+   * Get patron by pid
+   * @param pid - string : the patron pid
+   * @return Observable on patron metadata.
+   */
+  getPatronByPid(pid: string): Observable<any> {
+    return this._recordService
+      .getRecord('patrons', pid)
+      .pipe(map((data: any) => data.metadata))
+  }
+
+  /**
    * Get Items on loan for a patron
    * @param patronPid - string: the patron pid
    * @param sort - string: the sort criteria to use (-transaction_date by default)

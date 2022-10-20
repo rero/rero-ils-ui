@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { RecordPermissions } from 'projects/admin/src/app/classes/permissions';
-import { RecordPermissionService } from 'projects/admin/src/app/service/record-permission.service';
-import { CurrentLibraryPermissionValidator } from 'projects/admin/src/app/utils/permissions';
+import { RecordPermissions } from '@app/admin/classes/permissions';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
+import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
 import { of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
