@@ -18,6 +18,7 @@
 import { Component, Input } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 import { PERMISSIONS, PermissionsService } from '@rero/shared';
+import { roleBadgeColor } from '../../../utils/roles';
 
 @Component({
   selector: 'admin-patrons-brief-view',
@@ -32,18 +33,6 @@ export class PatronsBriefViewComponent implements ResultItem {
   @Input() type: string;
   /** the url to access detail view */
   @Input() detailUrl: { link: string, external: boolean };
-
-  /** mapping to define role badge color */
-  private _rolesBadgeMappings = {
-    patron: 'badge-primary',
-    pro_full_permissions: 'badge-success',
-    pro_read_only: 'badge-secondary',
-    pro_catalog_manager: 'badge-danger',
-    pro_circulation_manager: 'badge-warning',
-    pro_user_manager: 'badge-info',
-    pro_acquisition_manager: 'badge-light',
-    pro_library_administrator: 'badge-dark',
-  };
 
   /**
    * Circulation access check
@@ -65,8 +54,6 @@ export class PatronsBriefViewComponent implements ResultItem {
    * @return the bootstrap badge class to use for this role.
    */
   getRoleBadgeColor(role: string): string {
-    return (role in this._rolesBadgeMappings)
-      ? this._rolesBadgeMappings[role]
-      : 'badge-light';
+    return roleBadgeColor(role);
   }
 }

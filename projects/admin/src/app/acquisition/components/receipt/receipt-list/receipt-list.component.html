@@ -22,8 +22,8 @@
       <span class="badge badge-secondary ml-2">{{ numberOfReceipt }}</span>
     </h5>
     <div class="col-4 text-right">
-      <ng-container *ngIf="permissions; else space">
-        <a *ngIf="permissions.create.can; else createInfo"
+      <ng-container *ngIf="recordPermissions; else space">
+        <a *ngIf="recordPermissions.create.can; else createInfo"
          class="btn btn-sm btn-outline-primary"
          [routerLink]="['/', 'acquisition', 'acq_orders', order.pid, 'receive']"
         >
@@ -46,7 +46,7 @@
         <admin-receipt-summary *ngFor="let receipt of receipts"
                                [receiptPid]="receipt.pid"
                                [allowActions]="true"
-                               [permissions]="permissions"
+                               [recordPermissions]="recordPermissions"
                                >
         </admin-receipt-summary>
       </ng-container>

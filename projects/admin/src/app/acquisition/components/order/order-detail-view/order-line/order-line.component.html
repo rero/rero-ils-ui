@@ -92,11 +92,11 @@
       </div>
     </div>
     <div class="col-1 pl-0 text-right">
-      <ng-container *ngIf="permissions; else space">
+      <ng-container *ngIf="recordPermissions; else space">
         <shared-action-button
           [title]="'Edit' | translate"
           [class]="'btn-outline-primary mr-1'"
-          [disabled]="!permissions.update.can"
+          [disabled]="!recordPermissions.update.can"
           [url]="['/records', 'acq_order_lines', 'edit', orderLine.pid]"
           [message]="editInfoMessage"
         >
@@ -105,7 +105,7 @@
         <shared-action-button
           [title]="'Delete' | translate"
           [class]="'btn-outline-danger'"
-          [disabled]="!permissions.delete.can"
+          [disabled]="!recordPermissions.delete.can"
           [message]="deleteInfoMessage"
           (btnClick)="deleteOrderLine()"
         >

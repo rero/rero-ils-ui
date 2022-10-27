@@ -17,9 +17,10 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { IPermissions, PERMISSIONS } from '@rero/shared';
+import { IPermissions, PERMISSIONS, PermissionsService } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { OperationLogsService } from '../../../service/operation-logs.service';
+import { roleBadgeColor } from '../../../utils/roles';
 
 interface PatronPhone {
   value: string;
@@ -50,16 +51,12 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
     user: false,
     librarian: true,
     patron: false,
+    permissions: true,
     notes: false
   };
 
   /** Subscription to (un)follow the record$ Observable */
   private _subscription$ = new Subscription();
-  /** mapping to define role badge color */
-  private _rolesBadgeMappings = {
-    system_librarian: 'badge-danger',
-    librarian: 'badge-warning'
-  };
 
   // GETTER AND SETTER ========================================================
   /** Is operation log enabled */
@@ -87,13 +84,19 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
 
   permissions: IPermissions = PERMISSIONS;
 
+  get canAccessDisplayPermissions(): boolean {
+    return this._permissionsService.canAccess(PERMISSIONS.PERM_MANAGEMENT);
+  }
+
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor.
    * @param _operationLogsService - OperationLogsService
+   * @param _permissionsService - PermissionsService
    */
   constructor(
-    private _operationLogsService: OperationLogsService
+    private _operationLogsService: OperationLogsService,
+    private _permissionsService: PermissionsService
   ) {}
 
   /** OnInit hook */
@@ -117,9 +120,7 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
    * @return the bootstrap badge class to use for this role.
    */
   getRoleBadgeColor(role: string): string {
-    return (role in this._rolesBadgeMappings)
-      ? this._rolesBadgeMappings[role]
-      : 'badge-light';
+    return roleBadgeColor(role);
   }
 
   /** Get the badge color to use for a note type

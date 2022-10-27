@@ -117,8 +117,7 @@ import { PermissionsService, SharedModule } from '@rero/shared';
   providers: [
     { provide: FORMLY_CONFIG, multi: true, useFactory: registerFormlyExtension, deps: [TranslateService] },
     OrderReceipt,
-    { provide: OrderReceiptForm, deps: [AcqOrderApiService, AcqAccountApiService, ApiService, OrderReceipt] },
-    PermissionsService
+    { provide: OrderReceiptForm, deps: [AcqOrderApiService, AcqAccountApiService, ApiService, OrderReceipt] }
   ]
 })
 export class AcquisitionModule { }
