@@ -35,6 +35,15 @@ export class PermissionApiService {
    getAllPermissionsByRole(): Observable<IRolePermission> {
     return this._http.get<IRolePermission>('/api/permissions/by_role');
   }
+
+  /**
+   *
+   * @param pid - Partron pid
+   * @returns Observable, array of permissions
+   */
+  getUserPermissions(pid: string): Observable<IPatronPermission[]> {
+    return this._http.get<any>(`/api/permissions/by_patron/${pid}`);
+  }
 }
 
 export interface IRolePermission {
@@ -43,4 +52,12 @@ export interface IRolePermission {
 
 export interface IPermission {
   [key: string]: boolean | null
+}
+
+export interface IPatronPermission {
+  name: string,
+  can: boolean,
+  reasons: {
+    [key: string]: boolean | null
+  }
 }

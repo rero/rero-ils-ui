@@ -39,7 +39,7 @@ export class OrderLineComponent implements OnInit, OnDestroy {
   /** parent order */
   @Input() order: any;
   /** order line permission */
-  @Input() permissions?: RecordPermissions;
+  @Input() recordPermissions?: RecordPermissions;
 
   /** order line relate account */
   account: any;
@@ -57,13 +57,13 @@ export class OrderLineComponent implements OnInit, OnDestroy {
    * @return the message to display into the tooltip box
    */
   get deleteInfoMessage(): string {
-    return (!this.permissions.delete.can)
-      ? this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons)
+    return (!this.recordPermissions.delete.can)
+      ? this._recordPermissionService.generateDeleteMessage(this.recordPermissions.delete.reasons)
       : null;
   }
   get editInfoMessage(): string {
-    return (!this.permissions.update.can)
-      ? this._recordPermissionService.generateTooltipMessage(this.permissions.update.reasons, 'update')
+    return (!this.recordPermissions.update.can)
+      ? this._recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'update')
       : null;
   }
 
@@ -84,13 +84,13 @@ export class OrderLineComponent implements OnInit, OnDestroy {
   /** OnInit hook */
   ngOnInit() {
     const account$ = this._recordService.getRecord('acq_accounts', this.orderLine.acq_account.pid);
-    if (this.permissions) {
+    if (this.recordPermissions) {
       const permissions$ = this._recordPermissionService.getPermission('acq_order_lines', this.orderLine.pid).pipe(
         map((permissions) => this._permissionValidator.validate(permissions, this.order.library.pid))
       );
       forkJoin([permissions$, account$]).subscribe(
         ([permissions, account]) => {
-          this.permissions = permissions;
+          this.recordPermissions = permissions;
           this.account = account;
         }
       );

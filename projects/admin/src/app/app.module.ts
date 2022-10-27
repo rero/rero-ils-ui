@@ -177,6 +177,8 @@ import { PatronTransactionEventDefaultComponent } from './record/brief-view/patr
 import { PatronTransactionEventSearchViewComponent } from './record/search-view/patron-transaction-event-search-view/patron-transaction-event-search-view.component';
 import { PaymentsDataTableComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/table/payments-data-table.component';
 import { PaymentDataPieComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/pie/payment-data-pie.component';
+import { PatronPermissionsComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permissions.component';
+import { PatronPermissionComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permission/patron-permission.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -292,7 +294,9 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         PatronTransactionEventSearchViewComponent,
         PaymentsDataComponent,
         PaymentsDataTableComponent,
-        PaymentDataPieComponent
+        PaymentDataPieComponent,
+        PatronPermissionsComponent,
+        PatronPermissionComponent
     ],
     imports: [
         AppRoutingModule,
