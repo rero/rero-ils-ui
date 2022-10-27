@@ -32,7 +32,7 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
   /** Acquisition order pid */
   @Input() order: IAcqOrder;
   /** record permissions */
-  @Input() permissions?: RecordPermissions;
+  @Input() recordPermissions?: RecordPermissions;
   /** Acquisition order lines to display */
   orderLines: IAcqOrderLine[] = undefined;
 
@@ -45,7 +45,7 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
    * @return the message to display into the tooltip box
    */
   get createInfoMessage(): string {
-    return this._recordPermissionService.generateTooltipMessage(this.permissions.update.reasons, 'create');
+    return this._recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'create');
   }
 
   // CONSTRUCTOR & HOOKS ======================================================

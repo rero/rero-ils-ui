@@ -29,7 +29,7 @@
                   [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
           </button>
           <label>
-            <ng-container *ngIf="permissions; else noLink">
+            <ng-container *ngIf="recordPermissions; else noLink">
               <a [routerLink]="['/records', 'acq_receipts', 'detail', receipt.pid]">{{ receipt.reference }}</a>
             </ng-container>
             <ng-template #noLink>{{ receipt.reference }}</ng-template>
@@ -92,12 +92,12 @@
       </div>
     </div>
     <!-- ACTION BUTTON COLUMN ============================================= -->
-    <div class="col-2 actions-column pl-0 text-right" *ngIf="permissions && allowActions">
+    <div class="col-2 actions-column pl-0 text-right" *ngIf="recordPermissions && allowActions">
       <!-- CONTINUE BUTTON ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       <shared-action-button
         [title]="'Resume' | translate"
         [class]="'btn-outline-primary mr-1'"
-        [disabled]="!permissions.create.can"
+        [disabled]="!recordPermissions.create.can"
         [url]="['/', 'acquisition', 'acq_orders', receipt.acq_order.pid, 'receive']"
         [queryParams]="{ receipt: receipt.pid }"
         [message]="resumeInfoMessage"
@@ -107,7 +107,7 @@
       <shared-action-button
         [title]="'Edit' | translate"
         [class]="'btn-outline-primary mr-1'"
-        [disabled]="!permissions.update.can"
+        [disabled]="!recordPermissions.update.can"
         [url]="['/records', 'acq_receipts', 'edit', receipt.pid]"
         [message]="editInfoMessage"
       >
@@ -116,7 +116,7 @@
       <shared-action-button
         [title]="'Delete' | translate"
         [class]="'btn-outline-danger'"
-        [disabled]="!permissions.delete.can"
+        [disabled]="!recordPermissions.delete.can"
         [message]="deleteInfoMessage"
         (btnClick)="deleteReceipt()"
       >

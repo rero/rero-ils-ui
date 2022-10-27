@@ -190,6 +190,21 @@
         </ul>
       </dl>
     </ng-container>
+
+    <!-- PERMISSIONS ======================================== -->
+    <ng-container *ngIf="canAccessDisplayPermissions">
+      <div class="card-header">
+        <button type="button" class="btn-show-more"
+                [ngClass]="{'btn-expanded': !sectionCollapsed.permissions, 'btn-collapsed': sectionCollapsed.permissions}"
+                (click)="sectionCollapsed.permissions = !sectionCollapsed.permissions"
+                [attr.aria-expanded]="!sectionCollapsed.permissions" aria-controls="collapse">
+        </button>
+        {{ 'Permissions' | translate }}
+      </div>
+      <div class="card-body" [hidden]="sectionCollapsed.permissions">
+        <admin-patron-permissions [hidden]="sectionCollapsed.permissions" [pid]="patron.pid"></admin-patron-permissions>
+      </div>
+    </ng-container>
   </section>
 
   <!-- OPERATION LOGS-->
