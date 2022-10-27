@@ -24,7 +24,7 @@ import { RecordPermissionService } from '@app/admin/service/record-permission.se
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AcqOrderApiService } from '../../../api/acq-order-api.service';
+import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
 import { AcqOrderHistoryVersion, AcqOrderStatus, IAcqOrder, AcqOrderHistoryVersionResponseInterface } from '../../../classes/order';
 import { PlaceOrderFormComponent } from '../place-order-form/place-order-form.component';
 
@@ -47,7 +47,7 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
   /** reference to AcqOrderStatus class */
   acqOrderStatus = AcqOrderStatus;
   /** order permissions */
-  permissions?: RecordPermissions;
+  recordPermissions?: RecordPermissions;
   /** Is permissions loaded */
   isPermissionsLoaded = false;
   /** history versions of this order */
@@ -94,7 +94,7 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
           this._subscriptions.add(this._recordPermissionService.getPermission('acq_orders', this.order.pid)
           .pipe(map((permissions) => this._permissionValidator.validate(permissions, this.order.library.pid)))
           .subscribe((permissions) => {
-            this.permissions = permissions;
+            this.recordPermissions = permissions;
             this.isPermissionsLoaded = true;
           }));
         } else {

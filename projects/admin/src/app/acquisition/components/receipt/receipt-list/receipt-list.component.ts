@@ -36,7 +36,7 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
   /** the order for which we want to display receipts */
   @Input() order: IAcqOrder;
   /** the permissions about the related order */
-  @Input() permissions?: RecordPermissions = null;
+  @Input() recordPermissions?: RecordPermissions = null;
   /** AcqReceipt to display */
   receipts: IAcqReceipt[] = undefined;
 
@@ -49,7 +49,7 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
    * @return the message to display into the tooltip box
    */
   get createInfoMessage(): string {
-    return this._recordPermissionService.generateTooltipMessage(this.permissions.create.reasons, 'create');
+    return this._recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons, 'create');
   }
 
   /**
@@ -111,16 +111,16 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
    * Permissions about receipt must be completed regarding the current user library and the order status.
    */
   private _loadPermissions(): void {
-    if (this.permissions) {
-      const permissions$ = this.permissions
-        ? of(this.permissions)
+    if (this.recordPermissions) {
+      const permissions$ = this.recordPermissions
+        ? of(this.recordPermissions)
         : this._recordPermissionService.getPermission('acq_orders', this.order.pid);
       const obsPermissions = permissions$
         .pipe(
           map(permissions => this._currentLibraryPermissionValidator.validate(permissions, this.order.library.pid)),
           map(permissions => this._receivedOrderPermissionValidator.validate(permissions, this.order))
         )
-        .subscribe((permissions) => this.permissions = permissions);
+        .subscribe((permissions) => this.recordPermissions = permissions);
       this._subscriptions.add(obsPermissions);
       }
     }

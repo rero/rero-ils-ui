@@ -57,7 +57,6 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             label: _('Acquisition account'),
             detailComponent: AccountDetailViewComponent,
-            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.ACAC_CREATE) }),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
             redirectUrl: () => of('/acquisition/accounts'),
