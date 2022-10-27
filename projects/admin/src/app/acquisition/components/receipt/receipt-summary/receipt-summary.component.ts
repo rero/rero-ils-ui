@@ -41,7 +41,7 @@ export class ReceiptSummaryComponent implements OnInit {
   @Input() collapsable = true;
   @Input() isCollapsed = true;
   /** Record permissions */
-  @Input() permissions?: RecordPermissions;
+  @Input() recordPermissions?: RecordPermissions;
   /** Receipt object */
   receipt: IAcqReceipt = undefined;
 
@@ -51,18 +51,18 @@ export class ReceiptSummaryComponent implements OnInit {
    * @return the message to display into the tooltip box
    */
   get deleteInfoMessage(): string {
-    return (!this.permissions.delete.can)
-      ? this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons)
+    return (!this.recordPermissions.delete.can)
+      ? this._recordPermissionService.generateDeleteMessage(this.recordPermissions.delete.reasons)
       : '';
   }
   get editInfoMessage(): string {
-    return (!this.permissions.update.can)
-      ? this._recordPermissionService.generateTooltipMessage(this.permissions.update.reasons, 'update')
+    return (!this.recordPermissions.update.can)
+      ? this._recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'update')
       : '';
   }
   get resumeInfoMessage(): string {
-    return (!this.permissions.create.can)
-      ? this._recordPermissionService.generateTooltipMessage(this.permissions.create.reasons, 'resume')
+    return (!this.recordPermissions.create.can)
+      ? this._recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons, 'resume')
       : '';
   }
 
@@ -89,7 +89,7 @@ export class ReceiptSummaryComponent implements OnInit {
       this.isCollapsed = false;
     }
     // Disable actions if we don't have permissions.
-    if (!this.permissions) {
+    if (!this.recordPermissions) {
       this.allowActions = false;
     }
     this._acqReceiptApiService
@@ -102,8 +102,8 @@ export class ReceiptSummaryComponent implements OnInit {
           const permissions$ = this._recordPermissionService.getPermission('acq_receipts', this.receipt.pid);
           forkJoin([order$, permissions$]).subscribe(
             ([order, permissions]) => {
-              this.permissions = this._currentLibraryPermissionValidator.validate(permissions, this.receipt.library.pid);
-              this.permissions = this._receivedOrderPermissionValidator.validate(permissions, order);
+              this.recordPermissions = this._currentLibraryPermissionValidator.validate(permissions, this.receipt.library.pid);
+              this.recordPermissions = this._receivedOrderPermissionValidator.validate(permissions, order);
             }
           );
         }

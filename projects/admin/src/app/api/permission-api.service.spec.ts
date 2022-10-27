@@ -23,26 +23,24 @@ import { IRolePermission, PermissionApiService } from './permission-api.service'
 
 describe('PermissionService', () => {
   let service: PermissionApiService;
+  let client: HttpClient;
 
-  const response: IRolePermission = {
+  const responseRolesPermissions: IRolePermission = {
     patron: {
       ptrn_read: true
     }
   };
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
-  httpClientSpy.get.and.returnValue(of(response));
+  const responseUserPermissions: any = {}
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule
-      ],
-      providers: [
-        { provide: HttpClient, useValue: httpClientSpy }
       ]
     });
     service = TestBed.inject(PermissionApiService);
+    client = TestBed.inject(HttpClient);
   });
 
   it('should be created', () => {
@@ -50,8 +48,16 @@ describe('PermissionService', () => {
   });
 
   it('should return a list of all available permissions', () => {
+    spyOn(client, 'get').and.returnValue(of(responseRolesPermissions))
     service.getAllPermissionsByRole().subscribe((result: IRolePermission) => {
-      expect(result).toEqual(response);
+      expect(result).toEqual(responseRolesPermissions);
+    });
+  });
+
+  it('should return the list of user permissions', () => {
+    spyOn(client, 'get').and.returnValue(of(responseUserPermissions))
+    service.getUserPermissions('1').subscribe((result: any) => {
+      expect(result).toEqual(responseUserPermissions);
     });
   });
 });

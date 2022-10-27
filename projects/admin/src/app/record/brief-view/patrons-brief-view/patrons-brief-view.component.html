@@ -22,10 +22,10 @@
     <a [routerLink]="[detailUrl.link]">
       {{ record.metadata.last_name }}<ng-container *ngIf="record.metadata.first_name">, {{ record.metadata.first_name }}</ng-container>
     </a>
-    <small class="badge ml-2" [class]="getRoleBadgeColor(role)" *ngFor="let role of record.metadata.roles">
+    <small class="badge badge-pill" [class]="getRoleBadgeColor(role)" *ngFor="let role of record.metadata.roles">
       {{ role | translate }}
     </small>
-    <div *ngIf="circulationAccess && record.metadata.patron" class="float-right mb-2 mr-n5">
+    <div *ngIf="circulationAccess && record.metadata.patron" class="action-buttons">
       <a [routerLink]="['/circulation', 'patron', record.metadata.patron.barcode[0]]" class="btn-link btn btn-sm btn-outline-primary">
         <i class="fa fa-exchange mr-2"></i>
         {{ 'Circulation' | translate }}

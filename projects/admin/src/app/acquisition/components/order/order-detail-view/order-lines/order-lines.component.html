@@ -19,8 +19,8 @@
   <div class="card-header px-0 row">
     <h5 class="col-8" translate>Order lines</h5>
     <div class="col-4 text-right">
-      <ng-container *ngIf="permissions; else space">
-        <a *ngIf="permissions.update.can; else createInfo"
+      <ng-container *ngIf="recordPermissions; else space">
+        <a *ngIf="recordPermissions.update.can; else createInfo"
         class="btn btn-sm btn-outline-primary"
         [routerLink]="['/', 'records', 'acq_order_lines', 'new']"
         [queryParams]="{ order: order.pid }"
@@ -44,7 +44,7 @@
         <admin-order-line *ngFor="let orderLine of orderLines"
                           [orderLine]="orderLine"
                           [order]="order"
-                          [permissions]="permissions"
+                          [recordPermissions]="recordPermissions"
         ></admin-order-line>
       </ng-container>
       <ng-template #noOrderLines>

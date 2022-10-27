@@ -17,18 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@import 'node_modules/bootstrap/scss/bootstrap';
 @import 'node_modules/bootstrap/scss/_functions';
 @import 'node_modules/bootstrap/scss/_variables';
 @import '../../../scss/variables';
 
-.patron-brief {
+$badge-size: 10px;
 
-  small.badge {
-    font-weight: normal;
-  }
+.patron-brief {
 
   .card-title, p {
     margin-bottom: 0;
+  }
+  .card-title {
+    display: flex;
+    align-items: center;
+
+    small.badge {
+      margin-left: map-get($spacers, 2);
+      font-size: $badge-size;
+    }
+
+    .action-buttons{
+      margin-left: auto;
+      @extend .mr-n5;
+      @extend .mb-2;
+    }
   }
 
   .card-text {

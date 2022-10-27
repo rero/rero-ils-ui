@@ -167,6 +167,8 @@ import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service'
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
+import { PatronPermissionsComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permissions.component';
+import { PatronPermissionComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permission/patron-permission.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -274,7 +276,9 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         ExpectedIssueComponent,
         ReceivedIssueComponent,
         LoansBriefViewComponent,
-        PermissionDetailViewComponent
+        PermissionDetailViewComponent,
+        PatronPermissionsComponent,
+        PatronPermissionComponent
     ],
     imports: [
         AppRoutingModule,

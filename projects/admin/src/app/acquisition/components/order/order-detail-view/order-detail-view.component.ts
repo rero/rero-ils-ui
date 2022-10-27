@@ -46,7 +46,7 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
   /** reference to AcqOrderStatus class */
   acqOrderStatus = AcqOrderStatus;
   /** order permissions */
-  permissions?: RecordPermissions;
+  recordPermissions?: RecordPermissions;
 
   /** Is permissions loaded */
   isPermissionsLoaded = false;
@@ -91,7 +91,7 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
           this._subscriptions.add(this._recordPermissionService.getPermission('acq_orders', this.order.pid)
           .pipe(map((permissions) => this._permissionValidator.validate(permissions, this.order.library.pid)))
           .subscribe((permissions) => {
-            this.permissions = permissions;
+            this.recordPermissions = permissions;
             this.isPermissionsLoaded = true;
           }));
         } else {

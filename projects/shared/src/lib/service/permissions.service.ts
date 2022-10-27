@@ -19,7 +19,7 @@ import { Injectable } from '@angular/core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '../util/permissions';
 
 @Injectable({
-  providedIn: 'any'
+  providedIn: 'root'
 })
 export class PermissionsService {
 
