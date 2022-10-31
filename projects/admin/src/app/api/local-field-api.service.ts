@@ -16,7 +16,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { RecordService, RecordUiService } from '@rero/ng-core';
+import { Record, RecordService, RecordUiService } from '@rero/ng-core';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -40,24 +41,18 @@ export class LocalFieldApiService {
    * @param organisationPid - string, pid of organisation
    * @return Observable
    */
-  getByResourceTypeAndResourcePidAndOrganisationId(
-    resourceType: string,
-    resourcePid: string,
-    organisationPid: string
-  ) {
-    const query = [
-      `parent.type:${resourceType}`,
-      `parent.pid:${resourcePid}`,
-      `organisation.pid:${organisationPid}`,
-    ].join(' AND ');
+  getByResourceTypeAndResourcePidAndOrganisationId(resourceType: string, resourcePid: string, organisationPid: string): Observable<any> {
+    const query = `parent.type:${resourceType} AND parent.pid:${resourcePid} AND organisation.pid:${organisationPid}`;
 
-    return this._recordService.getRecords('local_fields', query, 1, 1).pipe(
-      map((result: any) => {
-        return this._recordService.totalHits(result.hits.total) === 0
-          ? {}
-          : result.hits.hits[0];
-      })
-    );
+    return this._recordService
+      .getRecords('local_fields', query, 1, 1)
+      .pipe(
+        map((result: Record) => {
+          return this._recordService.totalHits(result.hits.total) === 0
+            ? {}
+            : result.hits.hits[0];
+        })
+      );
   }
 
   /**
