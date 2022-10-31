@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,10 +18,9 @@
 
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { IPermissions, JoinPipe, PERMISSIONS, UserService } from '@rero/shared';
-import { Observable, of, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { LocalFieldApiService } from '../../../api/local-field-api.service';
-import { RecordPermissionService } from '../../../service/record-permission.service';
+import { Subscription } from 'rxjs';
+import { LocalFieldApiService } from '@app/admin/api/local-field-api.service';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 
 @Component({
   selector: 'admin-local-field',
@@ -34,19 +34,24 @@ export class LocalFieldComponent implements OnInit, OnDestroy {
   @Input() resourceType: string;
   /** Resource pid */
   @Input() resourcePid: string;
-  /** Observable on record */
-  record$: Observable<any>;
+
+  /** Pid of the LocalField record */
+  localFieldRecordPid: string;
+  /** local fields */
+  localFields: Array<{name: string, value: Array<string>}> = [];
+  /** isLoading */
+  isLoading = true;
+  /** return all available permissions for current user */
+  permissions: IPermissions = PERMISSIONS;
+  /** recordPermissions */
+  recordPermissions: any;
+
   /** Available resources type for local fields */
-  resourceTypes = {
+  private _resourceTypes = {
     documents: 'doc',
     holdings: 'hold',
     items: 'item'
   };
-  /** recordPermissions */
-  recordPermissions: any;
-  /** return all available permissions for current user */
-  permissions: IPermissions = PERMISSIONS;
-
   /** all component subscription */
   private _subscriptions = new Subscription();
 
@@ -65,17 +70,31 @@ export class LocalFieldComponent implements OnInit, OnDestroy {
 
   /** OnInit hook */
   ngOnInit() {
-    this.record$ = this._localFieldApiService.getByResourceTypeAndResourcePidAndOrganisationId(
-      this._translateType(this.resourceType),
-      this.resourcePid,
-      this._userService.user.currentOrganisation
-    );
-    this.record$.subscribe((record) => {
-      this._subscriptions.add(this._recordPermissionService
-        .getPermission('local_fields', record.metadata.pid)
-        .subscribe((permissions) => this.recordPermissions = permissions)
-      );
-    });
+    this._localFieldApiService
+      .getByResourceTypeAndResourcePidAndOrganisationId(
+        this._translateType(this.resourceType),
+        this.resourcePid,
+        this._userService.user.currentOrganisation
+      )
+      .subscribe((record: any) => {
+        if (record?.metadata) {
+          this.localFieldRecordPid = record.metadata.pid;
+          if (record.metadata?.fields) {
+            const fields = record.metadata.fields;
+            // Sort local fields using numeric part of the field name.
+            const sortKeys = Object.keys(fields).sort((k1, k2) => parseInt(k1.replace(/\D/g, '')) - parseInt(k2.replace(/\D/g, '')));
+            for (const key of sortKeys) {
+              this.localFields.push({name: key, value: fields[key]});
+            }
+          }
+          // Permission loading
+          this._subscriptions.add(this._recordPermissionService
+            .getPermission('local_fields', record.metadata.pid)
+            .subscribe((permissions) => this.recordPermissions = permissions)
+          );
+        }
+        this.isLoading = false;
+      });
   }
 
   /** OnDestroy hook */
@@ -83,26 +102,28 @@ export class LocalFieldComponent implements OnInit, OnDestroy {
     this._subscriptions.unsubscribe()
   }
 
-  /**
-   * Delete
-   */
-  delete(resourcePid: string) {
-    this._localFieldApiService.delete(resourcePid).subscribe((success: any) => {
-      if (success) {
-        this.record$ = of({});
-      }
-    });
+  // PUBLIC FUNCTIONS =========================================================
+  /** Delete the complete LocalField resource. */
+  delete(): void {
+    this._localFieldApiService
+      .delete(this.localFieldRecordPid)
+      .subscribe((success: any) => {
+        if (success) {
+          this.localFields = [];
+        }
+      });
   }
 
+  // PRIVATE FUNCTIONS ========================================================
   /**
    * Translate resource type to symbol
-   * @param typeOfResource - string: type of resource
-   * @return string: resource symbol
+   * @param resourceType - string, name of resource
+   * @return string, resource symbol
    */
-  private _translateType(typeOfResource: string) {
-    if (typeOfResource in this.resourceTypes) {
-      return this.resourceTypes[typeOfResource];
+  private _translateType(resourceType: string): string {
+    if (resourceType in this._resourceTypes) {
+      return this._resourceTypes[resourceType];
     }
-    throw new Error(`Local fields: missing resource type ${typeOfResource}.`);
+    throw new Error(`Local fields: missing resource type ${resourceType}.`);
   }
 }

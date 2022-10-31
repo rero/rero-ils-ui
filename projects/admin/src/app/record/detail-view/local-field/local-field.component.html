@@ -1,6 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020 RERO
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,22 +15,19 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="record$ | async as record">
-  <ng-container *ngIf="record.metadata; else addLocalField">
-    <ng-container *ngFor="let field of record.metadata.fields | keyvalue">
-      <div class="row mb-0 ml-1">
-        <span class="col-2 m-0 font-weight-bold label-title" translate>
-            {{ 'local_' + field.key }}
-        </span>
-        <span class="col-10 m-0">
-          {{ field.value | join:'; ' }}
-        </span>
-      </div>
-    </ng-container>
-    <div class="ml-3 mt-2">
+<ng-container *ngIf="!isLoading">
+  <div class="container-fluid" *ngIf="localFields.length > 0 else addLocalField">
+    <dl class="row">
+      <ng-container *ngFor="let field of localFields">
+        <dt class="col-2 label-title" translate>{{ 'local_' + field.name }}</dt>
+        <dd class="col-10">{{ field.value | join:'; ' }}</dd>
+      </ng-container>
+    </dl>
+
+    <div class="mt-2">
       <button
         *ngIf="recordPermissions && recordPermissions.update.can"
-        [routerLink]="['/records', 'local_fields', 'edit', record.metadata.pid]"
+        [routerLink]="['/records', 'local_fields', 'edit', localFieldRecordPid]"
         [queryParams]="{ type: resourceType, ref: resourcePid }"
         class="btn btn-sm btn-outline-primary ml-1"
         name="edit"
@@ -42,16 +40,16 @@
         *ngIf="recordPermissions && recordPermissions.delete.can"
         class="btn btn-sm btn-outline-danger ml-1"
         title="{{ 'Delete' | translate }}"
-        (click)="delete(record.metadata.pid)"
+        (click)="delete()"
       >
         <i class="fa fa-trash"></i> {{ 'Delete' | translate }}
       </button>
     </div>
-  </ng-container>
+  </div>
 </ng-container>
 
 <ng-template #addLocalField>
-  <div class="d-flex flex-row-reverse">
+  <div class="text-right">
     <a
       [routerLink]="['/records', 'local_fields', 'new']"
       [queryParams]="{ type: resourceType, ref: resourcePid }"
