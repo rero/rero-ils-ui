@@ -15,8 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { PermissionGuard } from '@app/admin/guard/permission.guard';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { RouteInterface } from '@rero/ng-core';
+import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
 import {
   PatronTransactionEventsBriefViewComponent
@@ -41,9 +43,15 @@ export class PatronTransactionEventsRoute extends BaseRoute implements RouteInte
   getConfiguration() {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [
-        { path: '', component: PatronTransactionEventSearchViewComponent },
-      ],
+      children: [{
+        path: '',
+        component: PatronTransactionEventSearchViewComponent,
+        canActivate: [ PermissionGuard ],
+        data: {
+          permissions: [ PERMISSIONS.PTTR_ACCESS, PERMISSIONS.PTTR_SEARCH ],
+          operator: PERMISSION_OPERATOR.AND
+        }
+      }],
       data: {
         adminMode: this.DISABLED,
         types: [
@@ -53,8 +61,8 @@ export class PatronTransactionEventsRoute extends BaseRoute implements RouteInte
             component: PatronTransactionEventsBriefViewComponent,
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             canAdd: (record: any) => of({can: false}),
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            canUpdate: (record: any) => of({can: false}),
+            canDelete: (record: any) => of({can: false}),
             aggregationsBucketSize: 10,
             aggregationsExpand: [
               'owning_library',

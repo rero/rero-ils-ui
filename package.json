@@ -52,7 +52,7 @@
     "start-public-user-profile-edit-proxy": "ng serve public-user-profile-edit --proxy-config proxy.conf.json",
     "start-search-bar-proxy": "ng serve search-bar --proxy-config proxy.conf.json",
     "build-shared": "ng build --configuration production shared",
-    "build": "npm run build-shared && ng build admin --configuration production && ng build public-patron-profile --configuration production && ng build public-user-password-change --configuration production && ng build public-user-profile-edit --configuration production && ng build public-search --configuration production && ng build public-holdings-items --configuration production && ng build search-bar --single-bundle --configuration production",
+    "build": "npm run build-shared && ng build admin --configuration production && ng build public-patron-profile --configuration production && ng build public-user-password-change --configuration production && ng build public-user-profile-edit --configuration production && ng build public-search --configuration production && ng build public-holdings-items --configuration production && ng build search-bar --configuration production",
     "pack": "npm run build && ./scripts/dist_pkg.js -o build && cd build && npm pack",
     "test": "ng test",
     "lint": "ng lint --cache",
