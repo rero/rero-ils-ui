@@ -13,7 +13,13 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": ["crypto-js"],
+            "allowedCommonJsDependencies": [
+              "crypto-js",
+              "easymde",
+              "issn",
+              "moment",
+              "simple-isbn"
+            ],
             "preserveSymlinks": true,
             "outputPath": "build/dist/admin",
             "index": "projects/admin/src/index.html",
@@ -129,7 +135,11 @@
         "build": {
           "builder": "ngx-build-plus:build",
           "options": {
-            "allowedCommonJsDependencies": ["crypto-js"],
+            "allowedCommonJsDependencies": [
+              "crypto-js",
+              "easymde",
+              "moment"
+            ],
             "outputPath": "build/dist/public-holdings-items",
             "index": "projects/public-holdings-items/src/index.html",
             "main": "projects/public-holdings-items/src/main.ts",
@@ -217,7 +227,12 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": ["crypto-js", "zone.js"],
+            "allowedCommonJsDependencies": [
+              "crypto-js",
+              "easymde",
+              "moment",
+              "zone.js"
+            ],
             "preserveSymlinks": true,
             "outputPath": "build/dist/public-search",
             "index": "projects/public-search/src/index.html",
@@ -330,17 +345,19 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "ngx-build-plus:build",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
-              "crypto-js"
+              "crypto-js",
+              "easymde",
+              "moment"
             ],
             "outputPath": "build/dist/search-bar",
             "index": "projects/search-bar/src/index.html",
             "main": "projects/search-bar/src/main.ts",
             "polyfills": "projects/search-bar/src/polyfills.ts",
             "tsConfig": "projects/search-bar/tsconfig.app.json",
-            "aot": false,
+            "aot": true,
             "assets": [],
             "styles": [],
             "scripts": []
@@ -459,7 +476,12 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": ["crypto-js", "zone.js"],
+            "allowedCommonJsDependencies": [
+              "crypto-js",
+              "easymde",
+              "moment",
+              "zone.js"
+            ],
             "preserveSymlinks": true,
             "outputPath": "build/dist/public-patron-profile",
             "index": "projects/public-patron-profile/src/index.html",
@@ -559,6 +581,11 @@
         "build": {
           "builder": "ngx-build-plus:build",
           "options": {
+            "allowedCommonJsDependencies": [
+              "crypto-js",
+              "easymde",
+              "moment"
+            ],
             "outputPath": "build/dist/public-user-profile-edit",
             "index": "projects/public-user-profile-edit/src/index.html",
             "main": "projects/public-user-profile-edit/src/main.ts",
@@ -650,6 +677,11 @@
         "build": {
           "builder": "ngx-build-plus:build",
           "options": {
+            "allowedCommonJsDependencies": [
+              "crypto-js",
+              "easymde",
+              "moment"
+            ],
             "outputPath": "build/dist/public-user-password-change",
             "index": "projects/public-user-password-change/src/index.html",
             "main": "projects/public-user-password-change/src/main.ts",
