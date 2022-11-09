@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { MenuItemInterface } from '@rero/ng-core';
-import { MenuUserServicesService } from '../service/menu-user-services.service';
+import { MenuService } from '../service/menu.service';
 
 @Component({
   selector: 'admin-menu-dashboard',
@@ -25,28 +25,20 @@ import { MenuUserServicesService } from '../service/menu-user-services.service';
 })
 export class MenuDashboardComponent implements OnInit {
 
-  /** User menu */
-  private _menu: MenuItemInterface;
-
-  /**
-   * User services menu
-   * @return MenuItemInterface
-   */
-  get menu(): MenuItemInterface {
-    return this._menu;
-  }
+  /** Application menu */
+  menu: MenuItemInterface;
 
   /**
    * Constructor
-   * @param _menuUserService - MenuUserService
+   * @param _menuService - MenuService
    */
-  constructor(private _menuUserServicesService: MenuUserServicesService) { }
+  constructor(private _menuService: MenuService) { }
 
   /** Init */
   ngOnInit() {
-    if (!(this._menuUserServicesService.menu)) {
-      this._menuUserServicesService.generate();
+    this._menuService.appMenu$.subscribe((menu: MenuItemInterface) => this.menu = menu);
+    if (!this.menu) {
+      this._menuService.generateMenus();
     }
-    this._menu = this._menuUserServicesService.menu;
   }
 }
