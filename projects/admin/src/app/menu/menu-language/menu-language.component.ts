@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,11 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ApiService, MenuItem, MenuItemInterface, TranslateService } from '@rero/ng-core';
-import { MenuLanguageService } from '../service/menu-language.service';
+import { MenuItem, MenuItemInterface, TranslateService } from '@rero/ng-core';
+import { MenuService } from '../service/menu.service';
 
 @Component({
   selector: 'admin-menu-language',
@@ -26,34 +25,27 @@ import { MenuLanguageService } from '../service/menu-language.service';
 })
 export class MenuLanguageComponent implements OnInit {
 
-  /** User menu */
-  private _menu: MenuItemInterface;
-
-  /**
-   * Language menu
-   * @return MenuItemInterface
-   */
-  get menu(): MenuItemInterface {
-    return this._menu;
-  }
+  /** Language menu */
+  menu: MenuItemInterface;
 
   /**
    * Constructor
-   * @param _menuLanguageService - MenuLanguageService
+   * @param _menuService - MenuService
    * @param _translateService - TranslateService
+   * @param _httpClient - HttpClient
    */
   constructor(
-    private _menuLanguageService: MenuLanguageService,
+    private _menuService: MenuService,
     private _translateService: TranslateService,
-    private _http: HttpClient
+    private _httpClient: HttpClient
   ) { }
 
   /** Init */
   ngOnInit(): void {
-    if (!(this._menuLanguageService.menu)) {
-      this._menuLanguageService.generate();
+    this._menuService.languageMenu$.subscribe((menu: MenuItemInterface) => this.menu = menu);
+    if (!this.menu) {
+      this._menuService.generateLanguageMenu();
     }
-    this._menu = this._menuLanguageService.menu;
   }
 
   /**
@@ -62,7 +54,7 @@ export class MenuLanguageComponent implements OnInit {
    */
   changeLang(event: MenuItem) {
     const lang = event.getExtra('language');
-    this._http.post('/language', {lang}).subscribe(() =>
+    this._httpClient.post('/language', {lang}).subscribe(() =>
       this._translateService.setLanguage(lang)
     );
   }

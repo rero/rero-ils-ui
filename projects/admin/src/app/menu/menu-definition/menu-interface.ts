@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,25 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { TranslateService } from '@ngx-translate/core';
-import { MenuItemInterface } from '@rero/ng-core';
+export interface IMenuParent extends IMenu {
+  children: IMenu[]
+}
 
-export class MenuBase {
+export interface IMenu {
+  name: string;
+  uri?: string,
+  router_link?: string[],
+  query_params?: IMenuKeyValue,
+  attributes?: IMenuKeyValue,
+  extras?: IMenuKeyValue,
+  children?: IMenu[],
+  access?: {
+    permissions: string[],
+    operator?: string;
+  },
+  translate?: boolean
+}
 
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   */
-  constructor(protected translateService: TranslateService) { }
-
-  /**
-   * Translate menu with a name
-   * @param menu - MenuItemInterface
-   * @param name - name of menu
-   */
-  protected _translatedName(menu: MenuItemInterface, name: string) {
-    this.translateService.stream(name).subscribe((translated: string) => {
-      menu.setName(translated);
-    });
-  }
+export interface IMenuKeyValue {
+  [key: string]: string;
 }

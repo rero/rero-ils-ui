@@ -97,6 +97,10 @@ export const PERMISSIONS = {
   'PTRN_ACCESS': 'ptrn-access',
   'PTRN_CREATE': 'ptrn-create',
   'PTRN_SEARCH': 'ptrn-search',
+  // PatronTransaction
+  'PTTR_ACCESS': 'pttr-access',
+  'PTTR_CREATE': 'pttr-create',
+  'PTTR_SEARCH': 'pttr-search',
   // Patron types
   'PTTY_ACCESS': 'ptty-access',
   'PTTY_CREATE': 'ptty-create',
