@@ -1,7 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
-  Copyright (C) 2021 UCLouvain
+  Copyright (C) 2019-2022 RERO
+  Copyright (C) 2019-2022 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -27,12 +27,11 @@
   </a>
 </section>
 
-<div *ngIf="order && order.pid" class="container">
+<div *ngIf="order && order.pid" class="container-fluid mt-2" [class.rollovered]="!order.is_current_budget">
   <!-- ROLLOVER INFO -->
   <div *ngIf="!order.is_current_budget" class="fiscal-year-closed" translate>Fiscal year closed</div>
 
   <h1 class="mb-3">{{ order.reference }}</h1>
-
   <!-- ORDER SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <admin-order-summary [order]="order">
    <ng-container notes *ngIf="order.notes && order.notes.length > 0">
@@ -74,9 +73,21 @@
         </div>
       </div>
     </tab>
-    <!-- RECEIPTS DETAIL VIEW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- RECEIPTS DETAIL VIEW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <tab heading="{{ 'Reception' | translate }}" [disabled]="!canViewReceipts">
       <admin-receipt-list class="row" [order]="order" [permissions]="permissions" *ngIf="isPermissionsLoaded"></admin-receipt-list>
+    </tab>
+    <!-- HISTORY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <tab heading="{{ 'History' | translate }}" *ngIf="historyVersions && historyVersions.length > 1">
+      <p-timeline [value]="historyVersions">
+        <ng-template pTemplate="marker" let-event>
+          <div [class.p-timeline-event-marker-current]="event.active" class="p-timeline-event-marker"></div>
+        </ng-template>
+        <ng-template pTemplate="content" let-event>
+          <a [routerLink]="['/records', 'acq_orders', 'detail', event.pid]">{{ event.label }}</a>
+          <small>{{ event.description }}</small>
+        </ng-template>
+      </p-timeline>
     </tab>
   </tabset>
 </div>

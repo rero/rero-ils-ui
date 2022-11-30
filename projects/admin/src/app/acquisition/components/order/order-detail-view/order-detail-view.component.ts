@@ -24,13 +24,14 @@ import { RecordPermissionService } from '@app/admin/service/record-permission.se
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AcqOrderStatus, IAcqOrder } from '../../../classes/order';
+import { AcqOrderApiService } from '../../../api/acq-order-api.service';
+import { AcqOrderHistoryVersion, AcqOrderStatus, IAcqOrder, AcqOrderHistoryVersionResponseInterface } from '../../../classes/order';
 import { PlaceOrderFormComponent } from '../place-order-form/place-order-form.component';
 
 @Component({
   selector: 'admin-acquisition-order-detail-view',
   templateUrl: './order-detail-view.component.html',
-  styleUrls: ['./order-detail-view.component.scss']
+  styleUrls: ['../../../acquisition.scss', './order-detail-view.component.scss']
 })
 export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
 
@@ -47,13 +48,13 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
   acqOrderStatus = AcqOrderStatus;
   /** order permissions */
   permissions?: RecordPermissions;
-
   /** Is permissions loaded */
   isPermissionsLoaded = false;
+  /** history versions of this order */
+  historyVersions: AcqOrderHistoryVersion[] = [];
 
   /** modal reference */
   private _modalRef: BsModalRef;
-
   /** all component subscription */
   private _subscriptions = new Subscription();
 
@@ -74,11 +75,13 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
    * @param _modalService - BsModalService
    * @param _recordPermissionService - RecordPermissionService
    * @param _permissionValidator - CurrentLibraryPermissionValidator
+   * @param _acqOrderService - AcqOrderApiService
    */
   constructor(
     private _scroller: ViewportScroller,
     private _modalService: BsModalService,
     private _recordPermissionService: RecordPermissionService,
+    private _acqOrderService: AcqOrderApiService,
     private _permissionValidator: CurrentLibraryPermissionValidator
   ) { }
 
@@ -110,8 +113,15 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
             button.classList.add('btn-outline-primary');
           }
         });
+
+        // Ask for order history
+        this._acqOrderService.getOrderHistory(this.order.pid);
       }
     ));
+    this._subscriptions.add(this._acqOrderService.acqOrderHistorySubject.subscribe(
+      (versions: AcqOrderHistoryVersionResponseInterface[]) => {
+        this.historyVersions = versions.map(version => new AcqOrderHistoryVersion(version));
+      }));
   }
 
   /** OnDestroy hook */

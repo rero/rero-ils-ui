@@ -106,3 +106,13 @@ $gutter:  calc($grid-gutter-width / 2);
   }
 }
 
+
+// ROLLOVER ===================================================================
+//    Use these classes to manage rollovered resources
+// ============================================================================
+.rollovered {
+  & > *:not(.fiscal-year-closed) {
+    opacity: 0.5;
+  }
+}
+

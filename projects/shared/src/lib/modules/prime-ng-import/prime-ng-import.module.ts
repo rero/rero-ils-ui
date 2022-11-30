@@ -18,10 +18,12 @@
 
 import { NgModule } from '@angular/core';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TimelineModule } from 'primeng/timeline';
 
 @NgModule({
   exports: [
-    SkeletonModule
+    SkeletonModule,
+    TimelineModule
   ]
 })
 export class PrimeNgImportModule { }

@@ -112,7 +112,8 @@ import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pi
     RecordModule,
     SharedModule,
     TabsModule,
-    CoreModule
+    CoreModule,
+    SharedModule
   ],
   providers: [
     { provide: FORMLY_CONFIG, multi: true, useFactory: registerFormlyExtension, deps: [TranslateService] },
