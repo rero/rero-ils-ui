@@ -49,3 +49,36 @@ $gutter:  calc($grid-gutter-width / 2);
   }
 }
 
+:host ::ng-deep .p-timeline {
+
+  .p-timeline-event-opposite {
+    display: none;
+  }
+  .p-timeline-event {
+    min-height: 2rem;
+  }
+  .p-timeline-event-marker {
+    border-color: $secondary;
+    width: .75rem;
+    height: .75rem;
+  }
+  .p-timeline-event-marker-current {
+    border-color: $primary;
+    background-color: theme-color-level('primary', -10);
+  }
+  .p-timeline-event-content {
+    line-height: 1rem;
+    margin-bottom: map-get($spacers, 3);
+    a {
+      display: block;
+      margin: 0;
+    }
+    small {
+      margin-left: map-get($spacers, 2);
+      color: $secondary;
+      font-style: italic;
+      font-size: .75rem;
+    }
+  }
+}
+

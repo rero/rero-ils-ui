@@ -106,3 +106,18 @@ $gutter:  calc($grid-gutter-width / 2);
   }
 }
 
+
+// ROLLOVER ===================================================================
+//    Use these classes to manage rollovered resources
+// ============================================================================
+.rollovered {
+  & > *:not(.fiscal-year-closed) {
+    opacity: 0.5;
+  }
+
+  & > admin-order-summary section {
+    background: linear-gradient(-45deg, #fdf3cd 12.5%, #fdf3cd70 12.5%, #fdf3cd70 37.5%, #fdf3cd 37.5%, #fdf3cd 62.5%, #fdf3cd70 62.5%, #fdf3cd70 87.5%, #fdf3cd 87.5%);
+    background-size: 10px 10px;
+  }
+}
+

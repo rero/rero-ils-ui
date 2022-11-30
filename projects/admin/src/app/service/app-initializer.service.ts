@@ -64,14 +64,12 @@ export class AppInitializerService {
         this._typeaheadFactoryService.init();
         if (user.isAuthorizedAdminAccess) {
           this._librarySwitchMenuService.init();
-          // Set current library and organisation
-          // for librarian or system_librarian roles
+          // Set current library and organisation for librarian or system_librarian roles
           const library = user.patronLibrarian.libraries[0];
           user.currentLibrary = library.pid;
-          user.currentOrganisation = library.organisation.pid;
-          this._organisationService.loadOrganisationByPid(
-            user.patronLibrarian.libraries[0].organisation.pid
-          );
+          user.currentOrganisation = user.patronLibrarian.organisation.pid;
+          user.currentBudget = user.patronLibrarian.organisation.budget.pid;
+          this._organisationService.loadOrganisationByPid(user.currentOrganisation);
           this._librarySwitchService.switch(
             this._librarySwitchMenuStorageService.getCurrentLibrary()
           );

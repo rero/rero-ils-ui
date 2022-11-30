@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,12 +27,13 @@ import { AppSettingsService, ISettings } from './app-settings.service';
 })
 export class UserService {
 
+  // SERVICES ATTRIBUTES ======================================================
   /** Loaded observable */
-  private _loaded: Subject<IUser>;
-
+  private _loaded: Subject<IUser> = new Subject<IUser>();
   /** user */
   private _user: User;
 
+  // GETTER & SETTER ==========================================================
   /**
    * Get loaded observable
    * @return Observable<IUser>
@@ -40,14 +42,12 @@ export class UserService {
     return this._loaded.asObservable();
   }
 
-  /**
-   * Get user
-   * @return User
-   */
+  /** Get user */
   get user(): User {
     return this._user;
   }
 
+  // CONSTRUCTOR ==============================================================
   /**
    * Constructor
    * @param _userApiService - UserApiService
@@ -56,22 +56,20 @@ export class UserService {
   constructor(
     private _userApiService: UserApiService,
     private _appSettingsService: AppSettingsService
-  ) {
-     this._loaded = new Subject();
-  }
+  ) { }
 
   /** load */
   load(): Observable<IUser> {
-    return this._userApiService.getLoggedUser().pipe(
-      map((loggedUser: any) => {
-        const settingsKey = 'settings';
-        const settings: ISettings = loggedUser.settings;
-        this._appSettingsService.settings = settings;
-        delete loggedUser[settingsKey];
-        this._user = new User(loggedUser, this._appSettingsService.librarianRoles);
-        this._loaded.next(this._user);
-        return this._user;
-      })
+    return this._userApiService
+      .getLoggedUser()
+      .pipe(
+        map((loggedUser: any) => {
+          this._appSettingsService.settings = loggedUser.settings;
+          delete loggedUser['settings'];
+          this._user = new User(loggedUser, this._appSettingsService.librarianRoles);
+          this._loaded.next(this._user);
+          return this._user;
+        })
     );
   }
 }

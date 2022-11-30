@@ -55,6 +55,9 @@ export class User implements IUser {
   /** Current organisation */
   private _currentOrganisation?: string;
 
+  /** Current budget for the organisation */
+  currentBudget?: string;
+
   /** Librarian (patron record) */
   private _patronLibrarian?: IPatron;
 
@@ -246,20 +249,16 @@ export class User implements IUser {
 
   /**
    * Generate Symbol name
-   * @returns string with 2 positions
+   * @returns initials of the connected user
    */
    private _generateSymbolName(): string {
-    let result = [];
-    // Only a user connected
+    // If user isn't connected return 'AN' for 'Anonymous user'
     if (!this.first_name && !this.last_name) {
-      result.push('an');
-    } else {
-      // User with infos
-      result = this.first_name
-      ? [this.first_name[0], this.last_name[0]]
-      : [this.last_name[0], this.last_name[1]];
+      return 'AN';
     }
-    return result.join('').toUpperCase();
+    return (this.first_name)
+      ? (this.first_name[0]+this.last_name[0]).toUpperCase()
+      : this.last_name.slice(0, 2).toUpperCase();
   }
 
   /**
@@ -342,6 +341,7 @@ export interface IOrganisation {
   code?: string;
   name?: string;
   currency?: string;
+  budget?: {pid: string};
 }
 
 /** Interface for library */

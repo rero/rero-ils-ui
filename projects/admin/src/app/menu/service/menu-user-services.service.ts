@@ -19,6 +19,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MenuFactory, MenuItemInterface } from '@rero/ng-core';
 import { User, UserService } from '@rero/shared';
+import { OrganisationService } from '../../service/organisation.service';
 import { LibrarySwitchService } from './library-switch.service';
 import { MenuBase } from './menu-base';
 
@@ -70,11 +71,13 @@ export class MenuUserServicesService extends MenuBase {
    * @param _librarySwitchService - LibrarySwitchService
    * @param _translateService - TranslateService
    * @param _userService - UserService
+   * @param _organisationService - OrganisationService
    */
   constructor(
     private _librarySwitchService: LibrarySwitchService,
     private _translateService: TranslateService,
-    private _userService: UserService
+    private _userService: UserService,
+    private _organisationService: OrganisationService
   ) {
     super(_translateService);
     this._initObservable();
@@ -220,6 +223,7 @@ export class MenuUserServicesService extends MenuBase {
     this._ordersMenu = acquisitionMenu.addChild('Orders')
     .setRouterLink(['/', 'records', 'acq_orders'])
     .setQueryParam('library', this._userService.user.currentLibrary)
+    .setQueryParam('budget', this._userService.user.currentBudget)
     .setAttribute('id', 'orders-menu')
     .setExtra('iconClass', 'fa fa-shopping-cart');
     this._translatedName(this._ordersMenu, 'Orders');
@@ -342,6 +346,7 @@ export class MenuUserServicesService extends MenuBase {
       this._currentLoansMenu.setQueryParam('owner_library', user.currentLibrary);
       // ACQUISITION:
       this._ordersMenu.setQueryParam('library', user.currentLibrary);
+      this._ordersMenu.setQueryParam('budget', user.currentBudget);
       this._lateIssuesMenu.setQueryParam('library', user.currentLibrary);
       // REPORT: INVENTORY LIST
       this._inventoryMenu.setQueryParam('library', user.currentLibrary);

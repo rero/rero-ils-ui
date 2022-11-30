@@ -22,6 +22,7 @@ import { CoreModule, NgVarDirective, Nl2brPipe, RecordModule, TruncateTextPipe }
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ActionButtonComponent } from './component/action-button/action-button.component';
+import { PrimeNgImportModule } from './modules/prime-ng-import/prime-ng-import.module';
 import { ShowMorePagerComponent } from './paginator/show-more-pager/show-more-pager.component';
 import { ContributionFormatPipe } from './pipe/contribution-format.pipe';
 import { ContributionTypePipe } from './pipe/contribution-type.pipe';
@@ -76,6 +77,7 @@ import { ContributionFilterPipe } from './pipe/contribution-filter.pipe';
     ],
     exports: [
         CommonModule,
+        PrimeNgImportModule,
         ContributionBriefComponent,
         ContributionSourcesComponent,
         OrganisationBriefComponent,

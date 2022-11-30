@@ -59,6 +59,7 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
               'status'
             ],
             aggregationsOrder: [
+              'budget',
               'library',
               'status',
               'account',

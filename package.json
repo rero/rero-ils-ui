@@ -97,6 +97,7 @@
     "ngx-build-plus": "^14.0.0",
     "ngx-spinner": "^14.0.0",
     "ngx-toastr": "^15.2.0",
+    "primeng": "^14.2.2",
     "rxjs": "~6.6.7",
     "simple-isbn": "^1.1.5",
     "tslib": "^2.4.0",
