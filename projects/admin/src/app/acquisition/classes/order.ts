@@ -19,6 +19,7 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
+import { extractIdOnRef } from '@rero/ng-core';
 import { IAcqBaseResource, IAcqResourceWithNotes, IObjectReference } from './common';
 
 // ORDER ======================================================================
@@ -113,4 +114,32 @@ export interface IAcqOrderPreviewResponse {
     type: string,
     content: string
   }[];
+}
+
+// ORDER HISTORY ==============================================================
+export interface AcqOrderHistoryVersionResponseInterface {
+  $ref: string;
+  label: string;
+  description: string;
+  created: Date;
+  updated: Date;
+  current: boolean;
+}
+export class AcqOrderHistoryVersion {
+  label: string = null;
+  description: string = null;
+  pid: string = null;
+  active: boolean = false;
+  created: Date = null;
+  updated: Date = null;
+
+  /**
+   * Constructor
+   * @param obj - the JSON parsed object to load.
+   */
+  constructor(obj?: any){
+    Object.assign(this, obj);
+    this.active = obj.current;
+    this.pid = extractIdOnRef(obj.$ref);
+  }
 }
