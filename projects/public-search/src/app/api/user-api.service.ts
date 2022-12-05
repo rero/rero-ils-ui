@@ -16,6 +16,7 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ApiService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -27,7 +28,10 @@ export class UserApiService {
    * Constructor
    * @param _httpClient - HttpClient
    */
-  constructor(private _httpClient: HttpClient) { }
+  constructor(
+    private _httpClient: HttpClient,
+    private _apiService: ApiService
+  ) { }
 
   /**
    * Update password
@@ -36,6 +40,13 @@ export class UserApiService {
    */
   updatePassword(data: IPassword): Observable<any> {
     return this._httpClient.post('/api/change-password', data);
+  }
+
+  validatePassword(password: string): Observable<any> {
+    return this._httpClient.post(
+      this._apiService.getEndpointByType('user/password/validate'),
+      { 'password': password }
+    );
   }
 }
 
