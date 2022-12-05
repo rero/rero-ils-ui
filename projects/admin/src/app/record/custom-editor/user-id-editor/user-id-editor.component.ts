@@ -16,7 +16,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { TranslateService } from '@ngx-translate/core';
@@ -53,6 +53,9 @@ export class UserIdEditorComponent implements OnInit {
 
   /** Formly fields configuration populate by the JSONSchema */
   fields: FormlyFieldConfig[];
+
+  /** Password field */
+  passwordField: FormlyFieldConfig;
 
   /**
    * Constructor
@@ -106,6 +109,12 @@ export class UserIdEditorComponent implements OnInit {
                     }
                     field.asyncValidators.uniqueUsername = this.getUniqueValidator('username');
                   }
+                  if (field.key === 'password') {
+                    if (!this.userID) {
+                      field.templateOptions.required = true;
+                    }
+                    this.passwordField = field;
+                  }
                   // remove Message suffix to the message validation key
                   // (required for backend  translations)
                   if (field.validation) {
@@ -142,6 +151,7 @@ export class UserIdEditorComponent implements OnInit {
   searchValueUpdated(query: (string | null)): void {
     if (!query) {
       this.loadedUserID = null;
+      this.passwordField.templateOptions.required = true;
       this.form.reset();
       this.model = {};
       return;
@@ -179,6 +189,7 @@ export class UserIdEditorComponent implements OnInit {
           this._translateService.instant('The personal data has been successfully linked to this patron.')
         );
         this.loadedUserID = model.id;
+        this.passwordField.templateOptions.required = false;
         this.form.reset();
         return this.model = model.metadata ? model.metadata : null;
       }),

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,14 +16,14 @@
  */
 import { DOCUMENT } from '@angular/common';
 import { Component, ElementRef, Inject, Input } from '@angular/core';
-import { AbstractControl, UntypedFormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AppSettingsService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, debounceTime, map } from 'rxjs/operators';
 import { UserApiService } from '../../api/user-api.service';
 
 export function fieldPasswordMatchValidator(control: AbstractControl) {
@@ -81,9 +81,12 @@ export class PatronProfilePasswordComponent {
           type: 'password',
           label: 'New password',
           required: true,
-          minLength: 6,
+          minLength: 8,
           maxLength: 128
         },
+        asyncValidators: {
+          'validatePassword': this.validatePassword()
+        }
       },
       {
         key: 'confirmPassword',
@@ -92,7 +95,7 @@ export class PatronProfilePasswordComponent {
           type: 'password',
           label: 'Confirm new password',
           required: true,
-          minLength: 6,
+          minLength: 8,
           maxLength: 128,
         }
       }
@@ -105,6 +108,9 @@ export class PatronProfilePasswordComponent {
     new_password: 'newPassword',
     new_password_confirm: 'confirmPassword'
   };
+
+  /** Error message for password validator */
+  private _validatePasswordMessage: string = '';
 
   /**
    * Constructor
@@ -157,6 +163,27 @@ export class PatronProfilePasswordComponent {
         this._el.nativeElement.querySelector(`#${formField}`).focus();
       }
     });
+  }
+
+  /** Async validator for the password validator */
+  validatePassword(): any {
+    return {
+      expression: (control: UntypedFormControl) => {
+        const value = control.value;
+        if (value == null || value.length === 0) {
+          return of(true);
+        }
+        return this._userApiService.validatePassword(value).pipe(
+          debounceTime(500),
+          map(() => of(true)),
+          catchError((response) => {
+            this._validatePasswordMessage = response.error.message;
+            return of(false);
+          })
+        );
+      },
+      message: () => this._translateService.instant(this._validatePasswordMessage)
+    };
   }
 
   /** Cancel action on form */
