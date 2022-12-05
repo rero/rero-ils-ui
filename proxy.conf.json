@@ -6,6 +6,9 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/patrons": "https://localhost:5000/patrons"
+    },
+    "headers": {
+      "Connection": "keep-alive"
     }
   },
   "/schemas": {
@@ -15,6 +18,9 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/schemas": "https://localhost:5000/schemas"
+    },
+    "headers": {
+      "Connection": "keep-alive"
     }
   },
   "/api/*": {
@@ -24,6 +30,9 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/api": "https://localhost:5000/api"
+    },
+    "headers": {
+      "Connection": "keep-alive"
     }
   },
   "/notifications/*": {
@@ -33,6 +42,9 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/notifications": "https://localhost:5000/notifications"
+    },
+    "headers": {
+      "Connection": "keep-alive"
     }
   },
   "/lang/*": {
@@ -42,6 +54,9 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/api": "https://localhost:5000/lang"
+    },
+    "headers": {
+      "Connection": "keep-alive"
     }
   },
   "/static/*": {
@@ -51,6 +66,9 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/static": "https://localhost:5000/static"
+    },
+    "headers": {
+      "Connection": "keep-alive"
     }
   },
   "/global/documents/*": {
@@ -60,6 +78,9 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/global/documents": "https://localhost:5000/global/documents"
+    },
+    "headers": {
+      "Connection": "keep-alive"
     }
   },
   "/aoste/documents/*": {
@@ -69,6 +90,9 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/aoste/documents": "https://localhost:5000/aoste/documents"
+    },
+    "headers": {
+      "Connection": "keep-alive"
     }
   },
   "/highlands/documents/*": {
@@ -78,6 +102,9 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/highlands/documents": "https://localhost:5000/highlands/documents"
+    },
+    "headers": {
+      "Connection": "keep-alive"
     }
   },
   "/fictive/documents/*": {
@@ -87,6 +114,9 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/fictive/documents": "https://localhost:5000/fictive/documents"
+    },
+    "headers": {
+      "Connection": "keep-alive"
     }
   },
   "/global/persons/*": {
@@ -96,6 +126,9 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/global/persons": "https://localhost:5000/global/persons"
+    },
+    "headers": {
+      "Connection": "keep-alive"
     }
   },
   "/aoste/persons/*": {
@@ -105,6 +138,9 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/aoste/persons": "https://localhost:5000/aoste/persons"
+    },
+    "headers": {
+      "Connection": "keep-alive"
     }
   },
   "/highlands/persons/*": {
@@ -114,6 +150,9 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/highlands/persons": "https://localhost:5000/highlands/persons"
+    },
+    "headers": {
+      "Connection": "keep-alive"
     }
   },
   "/fictive/persons/*": {
@@ -123,6 +162,9 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/fictive/persons": "https://localhost:5000/fictive/persons"
+    },
+    "headers": {
+      "Connection": "keep-alive"
     }
   }
 }
