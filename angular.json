@@ -147,7 +147,7 @@
             "tsConfig": "projects/public-holdings-items/tsconfig.app.json",
             "aot": true,
             "assets": [],
-            "styles": [],
+            "styles": ["projects/public-search/src/app/scss/styles.scss"],
             "scripts": []
           },
           "configurations": {

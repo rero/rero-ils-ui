@@ -70,7 +70,7 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
       path: 'records/:type',
       children: [
         { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
-        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } }
+        { path: 'detail/:pid', component: DetailComponent }
       ],
       data: {
         types: []

@@ -298,7 +298,7 @@ export const MENU_APP: IMenuParent[] = [
         attributes: { id: 'permissions-menu' },
         extras: { iconClass: 'fa fa-check-square-o' },
         access: {
-          permissions: [PERMISSIONS.TMPL_ACCESS]
+          permissions: [PERMISSIONS.PERM_MANAGEMENT]
         }
       },
     ]

@@ -17,16 +17,13 @@
 <div class="card-header p-2">
   <!-- MAIN ROW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <div class="row">
-    <div id="holding-location-{{ holding.metadata.pid }}" class="col-sm-12 col-md-3">
-      <a href="#"
-        class="collapse-link float-left"
-        data-toggle="collapse" aria-expanded="false"
-        (click)="$event.preventDefault(); collapsed = !collapsed">
-        <i [ngClass]="{ 'fa-caret-down': !collapsed, 'fa-caret-right': collapsed }"
-          class="fa fa-lg" aria-hidden="true">
-        </i>
-      </a>
-      {{ holding.metadata.library.name }}: {{ holding.metadata.location.name }}
+    <div id="holding-location-{{ holding.metadata.pid }}" class="col-sm-12 col-md-3 d-flex">
+      <button type="button" class="btn-show-more"
+              [ngClass]="{'btn-expanded': !collapsed, 'btn-collapsed': collapsed}"
+              (click)="collapsed = !collapsed"
+              [attr.aria-expanded]="!collapsed" aria-controls="collapse">
+      </button>
+      <span>{{ holding.metadata.library.name }}: {{ holding.metadata.location.name }}</span>
     </div>
     <div id="holding-category-name-{{ holding.metadata.pid }}" class="col-sm-12 col-md-2">
       {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}
