@@ -15,8 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnInit } from '@angular/core';
+import { RecordPermissions } from '@app/admin/classes/permissions';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService, RecordUiService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { IPermissions, IssueItemStatus, PERMISSIONS, PermissionsService, UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
@@ -32,31 +33,31 @@ import { RecordPermissionService } from '@app/admin/service/record-permission.se
 })
 export class SerialHoldingDetailViewComponent implements OnInit {
 
+  // COMPONENT ATTRIBUTES =====================================================
   /** the holding record */
   @Input() holding: any;
 
   /** array of receive items for this holding */
   receivedItems = [];
-
   /** array of prediction for this holding */
   predictionsItems: Array<PredictionIssue> = [];
+  /** total number of received item for this holding */
+  totalReceivedItems = 0;
+  /** reference to IssueItemStatus */
+  issueItemStatus = IssueItemStatus;
+  /** return all permissions */
+  permissions: IPermissions = PERMISSIONS;
+  /** record permissions */
+  recordPermissions: RecordPermissions;
 
   /** received issue counter : number of received issue to load/display */
   private _receivedIssueCounter = 5;
-
-  /** total number of received item for this holding */
-  totalReceivedItems = 0;
-
   /** prediction issue counter : number of prediction issue to load/display */
   private _predictionIssueCounter = 3;
 
-  /** reference to IssueItemStatus */
-  issueItemStatus = IssueItemStatus;
 
-  /**
-   * Is operation log enabled
-   * @return boolean
-   */
+  // GETTER & SETTER ==========================================================
+  /** Is operation log enabled */
   get isEnabledOperationLog(): boolean {
     return this._operationLogsService.isLogVisible('holdings');
   }
@@ -69,9 +70,8 @@ export class SerialHoldingDetailViewComponent implements OnInit {
     return this._permissionsService.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE]);
   }
 
-  /** return all permissions */
-  permissions: IPermissions = PERMISSIONS;
 
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    *

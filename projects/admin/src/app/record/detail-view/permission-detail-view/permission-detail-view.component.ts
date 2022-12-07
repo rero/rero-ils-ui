@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
- * Copyright (C) 2022 UCLouvain
+ * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,40 +25,52 @@ import { IRolePermission, PermissionApiService } from '../../../api/permission-a
 })
 export class PermissionDetailViewComponent implements OnInit {
 
+  // COMPONENT ATTRIBUTES =====================================================
   /** All available roles */
-  roles: string[];
-
+  roles: {name: string, type:string}[] = [];
   /** All available permissions */
-  permissions: string[];
-
+  permissionNames: string[];
   /** Filtered permissions */
-  filteredPermissions: string[];
-
+  filteredPermissionNames: string[];
   /** All permissions regrouped by roles */
-  permissionsByRoles: { [key: string]: any };
+  globalPermissions: { [key: string]: any };
 
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param _permissionApiService - PermissionApiService
    */
-  constructor(private _permissionApiService: PermissionApiService) { }
+  constructor(
+    private _permissionApiService: PermissionApiService
+  ) { }
 
-  /** On init hook */
+  /** OnInit hook */
   ngOnInit(): void {
-    this._permissionApiService.getAllPermissionsByRole().subscribe((permissionsByRoles: IRolePermission) => {
-      this.roles = Object.keys(permissionsByRoles);
-      this.permissions = Object.keys(permissionsByRoles[this.roles[0]]);
-      this.permissionsByRoles = permissionsByRoles;
-      this.filteredPermissions = [ ...this.permissions ];
-    });
+    this._permissionApiService
+      .getAllPermissionsByRole()
+      .subscribe((permissions: IRolePermission) => {
+        this.roles = [];  // reset the roles;
+        Object.keys(permissions).map(roleName => this.roles.push({name: roleName, type: permissions[roleName].type}));
+        this.roles.sort((role1, role2) => {
+          return (role1.type == role2.type)
+            ? role1.name.localeCompare(role2.name)
+            : (role1.type == 'system_role') ? -1 : 1;
+        });
+
+        this.permissionNames = Object.keys(permissions[this.roles[0].name].actions);
+        this.globalPermissions = permissions;
+        this.filteredPermissionNames = [ ...this.permissionNames ];
+      });
   }
 
+  // COMPONENT FUNCTIONS ======================================================
   /**
-   * Filtering of the list according to the user's input in the input field.
-   *
-   * @param value - value text
+   * Filter the permission list based on permission name.
+   * @param value - string: a regular expression used to filter the permission list.
    */
   filterPermissions(value: string): void {
-    this.filteredPermissions = this.permissions.filter((permission: string) => permission.includes(value));
+    const regexp = RegExp(value, 'g');
+    this.filteredPermissionNames = this.permissionNames.filter((name: string) => name.match(regexp));
   }
+
 }

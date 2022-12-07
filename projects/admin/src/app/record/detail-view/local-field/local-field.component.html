@@ -28,6 +28,7 @@
     </ng-container>
     <div class="ml-3 mt-2">
       <button
+        *ngIf="recordPermissions && recordPermissions.update.can"
         [routerLink]="['/records', 'local_fields', 'edit', record.metadata.pid]"
         [queryParams]="{ type: resourceType, ref: resourcePid }"
         class="btn btn-sm btn-outline-primary ml-1"
@@ -38,6 +39,7 @@
         <i class="fa fa-pencil"></i> {{ 'Edit' | translate }}
       </button>
       <button
+        *ngIf="recordPermissions && recordPermissions.delete.can"
         class="btn btn-sm btn-outline-danger ml-1"
         title="{{ 'Delete' | translate }}"
         (click)="delete(record.metadata.pid)"

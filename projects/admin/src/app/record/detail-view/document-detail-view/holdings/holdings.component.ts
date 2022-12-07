@@ -18,7 +18,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
-import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
+import { IPermissions, PERMISSION_OPERATOR, PERMISSIONS, UserService } from '@rero/shared';
 import { HoldingsApiService } from '@app/admin/api/holdings-api.service';
 import { forkJoin, Observable } from 'rxjs';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -47,6 +47,9 @@ export class HoldingsComponent implements OnInit {
   holdings: any[];
   /** Can a new holding be added? */
   canAdd = false;
+  /** return all available permissions for current user */
+  permissions: IPermissions = PERMISSIONS;
+  permissionOperator = PERMISSION_OPERATOR;
 
   // GETTER & SETTER ==========================================================
   /**
@@ -84,9 +87,6 @@ export class HoldingsComponent implements OnInit {
     return this._userService.user.currentOrganisation;
   }
 
-  /** return all available permissions for current user */
-  permissions: IPermissions = PERMISSIONS;
-
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
@@ -110,13 +110,13 @@ export class HoldingsComponent implements OnInit {
     const holdingsRecords = this._holdingsQuery(this.documentPid, this.organisationPid, 1, this.isCurrentOrganisation);
     const holdingsCount = this._holdingsCountQuery(this.documentPid, this.organisationPid, this.isCurrentOrganisation);
     if (this.isCurrentOrganisation) {
-      const permissionsRef = this._recordPermissionService.getPermission('holdings');
-      forkJoin([holdingsRecords, holdingsCount, permissionsRef])
-        .subscribe((result: [any[], number, any]) => {
-          this.holdings = result[0];
-          this.holdingsTotal = result[1];
-          const permissions = result[2];
-          this.canAdd = this.canAdd && permissions.create.can;
+      const holdPermissionsRef = this._recordPermissionService.getPermission('holdings');
+      const itemPermissionsRef = this._recordPermissionService.getPermission('items');
+      forkJoin([holdingsRecords, holdingsCount, holdPermissionsRef, itemPermissionsRef])
+        .subscribe(([holdings, counter, holdPerm, itemPerm]) => {
+          this.holdings = holdings;
+          this.holdingsTotal = counter;
+          this.canAdd = this.canAdd && (holdPerm.create.can || itemPerm.create.can);
         });
     } else {
       forkJoin([holdingsRecords, holdingsCount]).subscribe(([records, count]) => {
