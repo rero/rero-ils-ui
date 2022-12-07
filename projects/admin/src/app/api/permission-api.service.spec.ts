@@ -27,7 +27,11 @@ describe('PermissionService', () => {
 
   const responseRolesPermissions: IRolePermission = {
     patron: {
-      ptrn_read: true
+      actions: {
+        'ptrn-read': true,
+        'ptrn-create': false
+      },
+      type: 'role'
     }
   };
 

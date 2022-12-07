@@ -44,7 +44,7 @@ export class MenuSwitchLibraryComponent {
   /**
    * Constructor
    * @param _appConfigService - AppConfigService
-   * @param _menuSwitchMenuService - LibrarySwitchMenuService
+   * @param _librarySwitchMenuService - LibrarySwitchMenuService
    * @param _librarySwitchService - LibrarySwitchService
    * @param _dialogService - DialogService
    * @param _translateService - TranslateService

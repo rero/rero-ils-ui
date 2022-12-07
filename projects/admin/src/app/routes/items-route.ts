@@ -69,7 +69,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             preFilters: {
               organisation: null
             },
-            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.ITEM_CREATE) }),
+            canAdd: () => of({can: false}),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
             preprocessRecordEditor: (record: any) => {
               // If we found an `holding` parameter into the query string then we need to pre-populated

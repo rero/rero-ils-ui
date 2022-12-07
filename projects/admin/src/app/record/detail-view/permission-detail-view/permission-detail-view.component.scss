@@ -22,6 +22,14 @@
 table {
   position: relative;
 
+  tr td:nth-child(2),
+  td.type-system-role + td.type-role {
+    border-left: $border-width*2 solid $border-color;
+  }
+  th.type-system-role {
+    background-color: #f4f4f4;
+  }
+
   th {
     position: sticky;
     top: 0;

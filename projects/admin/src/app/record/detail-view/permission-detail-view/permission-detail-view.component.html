@@ -15,34 +15,38 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="container" *ngIf="permissionsByRoles">
+<div class="container" *ngIf="globalPermissions">
   <h1 translate>Permissions matrix</h1>
     <div class="my-3">
       <label for="filter" translate>Filter permission list</label>
       <input id="filter" class="form-control" #search (keyup)="filterPermissions(search.value)" />
       <small class="form-text text-muted">Enter a part of the permission name to filter the list.</small>
     </div>
-    <ng-container *ngIf="filteredPermissions.length >0; else noResult">
+    <ng-container *ngIf="filteredPermissionNames.length >0; else noResult">
       <table class="table table-header-rotated table-striped">
         <thead>
           <tr>
             <th class="vertical-header">&nbsp;</th>
-            <th class="vertical-header" *ngFor="let role of roles">
-              <span>{{ role | translate }}</span>
+            <th *ngFor="let role of roles"
+                class="vertical-header"
+                [ngClass]="'type-'+role.type.replace('_', '-')" >
+              <span>{{ role.name| translate }}</span>
             </th>
           </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let permission of filteredPermissions">
-              <td class="permission">{{ permission }}</td>
-              <td *ngFor="let role of roles" class="access text-center">
-                <span title="{{ role | translate }}">
+            <tr *ngFor="let permissionName of filteredPermissionNames">
+              <td class="permission">{{ permissionName }}</td>
+              <td *ngFor="let role of roles"
+                  class="access text-center"
+                  [ngClass]="'type-'+role.type.replace('_', '-')">
+                <span title="{{ role.name | translate }}">
                   <i
                     class="fa fa-square"
                     [ngClass]="{
-                      'text-success': true === permissionsByRoles[role][permission],
-                      'text-danger': false === permissionsByRoles[role][permission],
-                      'text-secondary': null === permissionsByRoles[role][permission]
+                      'text-success': true === globalPermissions[role.name].actions[permissionName],
+                      'text-danger': false === globalPermissions[role.name].actions[permissionName],
+                      'text-secondary': null === globalPermissions[role.name].actions[permissionName]
                     }">
                   </i>
                 </span>

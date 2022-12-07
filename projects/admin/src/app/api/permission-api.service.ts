@@ -51,7 +51,10 @@ export interface IRolePermission {
 }
 
 export interface IPermission {
-  [key: string]: boolean | null
+  type: string,
+  actions: {
+    [key: string]: boolean | null
+  }
 }
 
 export interface IPatronPermission {
