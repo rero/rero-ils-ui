@@ -92,15 +92,6 @@ export class PatronTransactionComponent implements OnInit {
 
 
   // COMPONENT FUNCTIONS ========================================================
-  /**
-   * Get the label of the transaction depending of transaction.type
-   * @return label/title of the transaction as string
-   */
-  get label(): string {
-    return (this.transaction.type === 'other')
-    ? this.transaction.note
-    : this._translateService.instant(this.transaction.type);
-  }
 
   /** Check if the transaction contains a 'dispute' linked event
    *  @return: True if transaction is still open and contains a 'dispute' event; False otherwise
