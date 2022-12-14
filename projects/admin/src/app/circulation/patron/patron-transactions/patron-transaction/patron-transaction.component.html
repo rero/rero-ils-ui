@@ -27,7 +27,7 @@
         </button>
         {{ transaction.creation_date | dateTranslate :'shortDate' }}
       </div>
-      <div class="col-lg-4 d-inline-block text-truncate">{{ label }}</div>
+      <div class="col-lg-4 d-inline-block text-truncate">{{ transaction.type | translate }}</div>
       <div class="col-lg-3 d-inline-block text-truncate"><span *ngIf="transaction.library">{{ transaction.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</span></div>
       <div class="col-lg-2 text-lg-right">{{ transactionAmount | currency: organisation.default_currency }}</div>
       <div class="col-md-1 text-left pl-0 mb-2" dropdown>

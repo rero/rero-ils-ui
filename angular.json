@@ -24,6 +24,7 @@
             "styles": [
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css",
               "projects/admin/src/app/scss/styles.scss",
               "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css"
             ],

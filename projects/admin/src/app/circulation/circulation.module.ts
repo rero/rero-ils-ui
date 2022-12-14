@@ -60,6 +60,7 @@ import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
 import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
 import { CheckinActionComponent } from './checkin/checkin-action/checkin-action.component';
+import { PatronFeeComponent } from './patron/patron-transactions/patron-fee/patron-fee.component';
 
 
 @NgModule({
@@ -93,7 +94,8 @@ import { CheckinActionComponent } from './checkin/checkin-action/checkin-action.
         HistoryLogComponent,
         HistoryLogLibraryComponent,
         GetLoanCipoPipe,
-        CheckinActionComponent
+        CheckinActionComponent,
+        PatronFeeComponent
     ],
     imports: [
         BsDropdownModule.forRoot(),

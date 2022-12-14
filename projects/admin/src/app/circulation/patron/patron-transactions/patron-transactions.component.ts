@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2022 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,14 +16,16 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UserService } from '@rero/shared';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { Subscription } from 'rxjs';
 import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
+import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { PatronService } from '@app/admin/service/patron.service';
-import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
+import { UserService } from '@rero/shared';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { PatronTransactionService } from '../../services/patron-transaction.service';
+import { PatronFeeComponent } from './patron-fee/patron-fee.component';
 import { PatronTransactionEventFormComponent } from './patron-transaction-event-form/patron-transaction-event-form.component';
 
 @Component({
@@ -56,6 +58,8 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
 
   /** Current patron */
   private _patron: any = undefined;
+
+  private _modalRef: BsModalRef;
 
 
   // GETTER & SETTER ======================================================================
@@ -96,7 +100,6 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
             this.tabs.engagedFees.totalAmount = this._patronTransactionService.computeTotalTransactionsAmount(transactions);
           }
         );
-        this._patronTransactionService.emitPatronTransactionByPatron(patron.pid, undefined, 'open');
         // overdue fees
         this._patronService.getOverduesPreview(this._patron.pid).subscribe(
           (overdues) => {
@@ -104,6 +107,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
             this.tabs.overduePreviewFees.totalAmount = overdues.reduce((acc, overdue) => acc + overdue.fees.total, 0);
           }
         );
+        this.loadEngagedFees();
       }
     });
   }
@@ -113,6 +117,26 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
     if (this.patronTransactionSubscription$) {
       this.patronTransactionSubscription$.unsubscribe();
     }
+    this._modalRef.content.onSubmit.unsubscribe();
+  }
+
+  loadEngagedFees(): void {
+    this._patronTransactionService.emitPatronTransactionByPatron(this._patron.pid, undefined, 'open');
+  }
+
+  /** Opening a modal to add fees */
+  addFee(): void {
+    this._modalRef = this._modalService.show(PatronFeeComponent, {
+        ignoreBackdropClick: true,
+        initialState: {
+          patronPid: this._patron.pid,
+          organisationPid: this._patron.organisation.pid
+        }
+      }
+    );
+    this._modalRef.content.onSubmit.pipe(first()).subscribe(() => {
+      this.loadEngagedFees();
+    });
   }
 
   // COMPONENT FUNCTIONS ==================================================================

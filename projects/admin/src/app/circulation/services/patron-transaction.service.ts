@@ -79,7 +79,7 @@ export class PatronTransactionService {
    * @param sort - The field used to sort the `PatronTransaction`
    * @returns an observable of `PatronTransaction` corresponding to criteria
    */
-  private _loadPatronTransactions(query: string, sort: string = 'creation_date'): Observable<Array<PatronTransaction>> {
+  private _loadPatronTransactions(query: string, sort: string = '-creation_date'): Observable<Array<PatronTransaction>> {
     return this._recordService.getRecords(
       'patron_transactions',
       query,
