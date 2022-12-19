@@ -1,5 +1,33 @@
 # Changelog
 
+## [v14.0.0](https://github.com/rero/rero-ils-ui/tree/v14.0.0) (2022-12-19)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.25.0...v14.0.0)
+
+**New features:**
+
+* Fees: Fee brief view [\#912](https://github.com/rero/rero-ils-ui/pull/912) (by @zannkukai)
+* Add rollover settings [\#918](https://github.com/rero/rero-ils-ui/pull/918) (by @zannkukai & @Garfield-fr)
+
+**Enhancements:**
+
+* documents: add linked documents button [\#893](https://github.com/rero/rero-ils-ui/pull/893) (by @Garfield-fr)
+* document: improve import control [\#899](https://github.com/rero/rero-ils-ui/pull/899) (by @Garfield-fr)
+* circulation: add link to patron name [\#894](https://github.com/rero/rero-ils-ui/pull/894) (by @Garfield-fr)
+
+**Fixes:**
+
+* document: open electronicLocator in new tab [\#909](https://github.com/rero/rero-ils-ui/pull/909) (by @PascalRepond)
+* search result: show facets on no result found [\#901](https://github.com/rero/rero-ils-ui/pull/901) (by @Garfield-fr)
+* holdings: fix display in small screens [\#892](https://github.com/rero/rero-ils-ui/pull/892) (by @Garfield-fr)
+* patron profile: fix wrong url on the contributor [\#897](https://github.com/rero/rero-ils-ui/pull/897) (by @Garfield-fr)
+* document: filter on the remote typeahead [\#898](https://github.com/rero/rero-ils-ui/pull/898) (by @Garfield-fr)
+
+**Changes:**
+
+* devel: add keep alive header for proxy [\#916](https://github.com/rero/rero-ils-ui/pull/916) (by @jma)
+* dependencies: upgrade to angular 14 [\#903](https://github.com/rero/rero-ils-ui/pull/903) (by @jma)
+
 ## [v0.25.0](https://github.com/rero/rero-ils-ui/tree/v0.25.0) (2022-09-06)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.24.0...v0.25.0)
