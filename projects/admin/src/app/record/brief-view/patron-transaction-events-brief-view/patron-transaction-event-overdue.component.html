@@ -20,8 +20,10 @@
   <dl class="row ml-3 mb-0">
     <dt class="label-title col-3" translate>Call number</dt>
     <dd class="col-9">
-      <shared-inherited-call-number [item]="parent.loan.item"></shared-inherited-call-number>
-      (<a [routerLink]="['/records', 'items', 'detail', parent.loan.item.pid]">{{ parent.loan.item.barcode }}</a>)
+      <ng-container *ngIf="parent.loan.item else no_item">
+        <shared-inherited-call-number [item]="parent.loan?.item"></shared-inherited-call-number>
+        (<a [routerLink]="['/records', 'items', 'detail', parent.loan.item.pid]">{{ parent.loan.item.barcode }}</a>)
+      </ng-container>
     </dd>
     <dt class="label-title col-3" translate>Patron</dt>
     <dd class="col-9">
@@ -29,3 +31,7 @@
     </dd>
   </dl>
 </div>
+
+<ng-template #no_item>
+  <span class="no-data raw-data">item_pid:{{ parent.loan.item_pid.value }}</span>
+</ng-template>

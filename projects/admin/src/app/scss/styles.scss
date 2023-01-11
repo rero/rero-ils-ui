@@ -50,8 +50,20 @@ button.disabled {
 
 .no-data {
   font-style: italic;
-  font-color: $light;
+  color: $gray-500;
 }
+
+.raw-data {
+  font-size: .75rem;
+  font-family: "Courier New";
+  &:before {
+    content: '[';
+  }
+  &:after {
+    content: ']';
+  }
+}
+
 
 .rero-ils-logo {
   max-height: $navbar-brand-height;
