@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,9 +33,11 @@ export class ContributionFilterPipe implements PipeTransform {
     if (contributions) {
       contributions.forEach(contribution => {
         const agent = contribution.agent;
-        const accessPoint = (key in agent)
-        ? agent[key]
-        : agent.authorized_access_point_en;
+        const accessPoint = !('pid' in agent)
+          ? agent.preferred_name
+          : (key in agent)
+            ? agent[key]
+            : agent.authorized_access_point_en;
         output.push({
           authorizedAccessPoint: accessPoint,
           pid: ('pid' in agent) ? agent.pid : undefined,

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,31 +19,58 @@ import { ContributionFilterPipe } from './contribution-filter.pipe';
 describe('ContributionFilterPipe', () => {
   const pipe = new ContributionFilterPipe();
 
-  const contributions = [{
-    agent: {
+  const contributions = [
+    {
+      agent: {
+        pid: 1,
+        type: 'bf:Person',
+        authorized_access_point_en: 'contribution EN',
+        authorized_access_point_fr: 'contribution FR'
+      },
+      role: 'author'
+    },
+    {
+      agent: {
+        preferred_name: 'Müller, Hans',
+        type: 'bf:Person'
+      },
+      role: 'author'
+    }
+  ];
+
+  const contributionsResultsEn = [
+    {
+      authorizedAccessPoint: 'contribution EN',
       pid: 1,
       type: 'bf:Person',
-      authorized_access_point_en: 'contribution EN',
-      authorized_access_point_fr: 'contribution FR'
+      role: 'author',
+      target: 'persons'
     },
-    role: 'author'
-  }];
+    {
+      authorizedAccessPoint: 'Müller, Hans',
+      pid: undefined,
+      type: 'bf:Person',
+      role: 'author',
+      target: 'persons'
+    }
+  ];
 
-  const contributionsResultsEn = [{
-    authorizedAccessPoint: 'contribution EN',
-    pid: 1,
-    type: 'bf:Person',
-    role: 'author',
-    target: 'persons'
-  }];
-
-  const contributionsResultsFr = [{
-    authorizedAccessPoint: 'contribution FR',
-    pid: 1,
-    type: 'bf:Person',
-    role: 'author',
-    target: 'persons'
-  }];
+  const contributionsResultsFr = [
+    {
+      authorizedAccessPoint: 'contribution FR',
+      pid: 1,
+      type: 'bf:Person',
+      role: 'author',
+      target: 'persons'
+    },
+    {
+      authorizedAccessPoint: 'Müller, Hans',
+      pid: undefined,
+      type: 'bf:Person',
+      role: 'author',
+      target: 'persons'
+    }
+  ];
 
   it('create an instance', () => {
     expect(pipe).toBeTruthy();

@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2021 RERO
+ Copyright (C) 2021-2023 RERO
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published by
@@ -34,7 +34,7 @@
     <div class="col-sm-4">
       <ng-container *ngIf="document && document.metadata.contribution; else noContributionRecord">
         <ul class="list-inline mb-0">
-          <li class="list-inline-item" *ngFor="let contribution of document.metadata.contribution.slice(0,3) | contributionFilter:language; let last = last; let i = index">
+          <li class="list-inline-item mr-1" *ngFor="let contribution of document.metadata.contribution.slice(0,3) | contributionFilter:language; let last = last; let i = index">
             <ng-container *ngIf="contribution.pid && contribution.target !== undefined; else agentNoLink">
               <a [routerLink]="['/', 'records', contribution.type | contributionType, 'detail', contribution.pid]">
                 {{ contribution.authorizedAccessPoint }}
