@@ -37,6 +37,9 @@
 
   // HACK ngx-charts css classes to display legend as we want.
   .chart-legend {
+
+    display: block;
+
     .legend-labels {
       background: transparent;
     }
