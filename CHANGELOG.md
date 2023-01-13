@@ -1,5 +1,15 @@
 # Changelog
 
+## [v14.0.1](https://github.com/rero/rero-ils-ui/tree/v14.0.1) (2023-01-13)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.0.0...v14.0.1)
+
+**Fixes:**
+
+* Fees: fix labels for missing data [\#925](https://github.com/rero/rero-ils-ui/pull/925) (by @zannkukai)
+* items: url opens in a new tab [\#923](https://github.com/rero/rero-ils-ui/pull/923) (by @PascalRepond)
+* patron history: fix contributions display [\#924](https://github.com/rero/rero-ils-ui/pull/924) (by @Garfield-fr)
+
 ## [v14.0.0](https://github.com/rero/rero-ils-ui/tree/v14.0.0) (2022-12-19)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v0.25.0...v14.0.0)
