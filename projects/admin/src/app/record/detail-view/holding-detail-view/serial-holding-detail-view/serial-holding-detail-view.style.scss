@@ -1,5 +1,5 @@
-@import 'node_modules/bootstrap/scss/_functions';
-@import 'node_modules/bootstrap/scss/_variables';
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
 
 .tab-content {
   margin: map-get($spacers, 2);

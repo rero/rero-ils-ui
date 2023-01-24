@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import 'node_modules/font-awesome/scss/font-awesome';
-@import 'node_modules/bootstrap/scss/functions';
-@import 'node_modules/bootstrap/scss/variables';
+@import 'font-awesome/scss/font-awesome';
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
 @import 'projects/admin/src/app/scss/variables';
 
 $line-shift: map-get($spacers, 5);
