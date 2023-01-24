@@ -17,6 +17,7 @@
     "strictMetadataEmit": true,
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
+    "preserveSymlinks": true,
     "enableResourceInlining": true
   },
   "exclude": [

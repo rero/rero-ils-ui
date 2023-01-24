@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import 'node_modules/bootstrap/scss/_functions';
-@import 'node_modules/bootstrap/scss/_variables';
-@import 'node_modules/bootstrap/scss/bootstrap';
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/bootstrap';
 @import '../../../scss/variables';
 
 :host{
