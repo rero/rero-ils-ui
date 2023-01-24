@@ -40,7 +40,7 @@ export class ExceptionDatesEditComponent implements OnInit {
     public bsModalRef: BsModalRef,
     public form: LibraryExceptionFormService,
     private translate: TranslateService
-    ) {
+  ) {
     this.form.build();
     this.exceptionForm = this.form.form;
     this.localeService.use(this.translate.currentLang);

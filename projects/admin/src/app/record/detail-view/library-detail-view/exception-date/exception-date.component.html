@@ -14,11 +14,13 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div *ngIf="exception" class="row my-2">
-  <i class="fa col-1" aria-hidden="true" [ngClass]="{
-    'fa-circle text-success': exception.is_open,
-    'fa-ban text-danger': !exception.is_open
-  }"></i>
+<div *ngIf="exception" class="row exception-date py-2" [ngClass]="{'over-exception': isOver(exception)}">
+  <div class="status col-1">
+    <i class="fa" aria-hidden="true" [ngClass]="{
+      'fa-circle text-success': exception.is_open,
+      'fa-ban text-danger': !exception.is_open
+    }"></i>
+  </div>
   <span class="col-3">
     {{ exception.start_date }}
     <ng-container *ngIf="exception.end_date">

@@ -103,11 +103,22 @@ export class LibraryFormService {
     const librarySchema$ = this._recordService.getSchemaForm('libraries');
     forkJoin([librarySchema$, notificationSchema$]).subscribe(([libSchema, notifSchema]) => {
       this.availableCommunicationLanguages = libSchema.schema.properties.communication_language.enum;
-      this.notificationTypes = notifSchema.schema.properties.notification_type.enum;
       this.countryList = libSchema.schema.properties.acquisition_settings.properties.shipping_informations.
         properties.address.properties.country.enum;
       this.rolloverAccountTransferOptions = libSchema.schema.properties.rollover_settings.properties.
         account_transfer.enum;
+
+      // DEV NOTES :: Why remove `acquisition_order`
+      //   `this.notificationTypes` is used to build the notification setting form ;
+      //   but we need to remove `acquisition_order` from this list because the email
+      //   used to send this kind of notification is selected by manager when it confirms
+      //   and order. Then the email used is either :
+      //      - related vendor email
+      //      - library acquisition setting email
+      //      - custom email
+      this.notificationTypes = notifSchema.schema.properties.notification_type.enum
+        .filter(type => type != NotificationType.ACQUISITION_ORDER);
+
       this.build();
       this.buildEvent.next(true);
     });

@@ -30,8 +30,7 @@ import { LibraryFormService } from './library-form.service';
 
 @Component({
   selector: 'admin-libraries-library',
-  templateUrl: './library.component.html',
-  styleUrls: ['./library.component.scss']
+  templateUrl: './library.component.html'
 })
 export class LibraryComponent implements OnInit, OnDestroy {
 
@@ -148,22 +147,26 @@ export class LibraryComponent implements OnInit, OnDestroy {
     this._cleanFormValues(this.libraryForm.getValues());
     this.library.update(this.libraryForm.getValues());
     if (this.library.pid) {
-      this.recordService.update('libraries', this.library.pid, cleanDictKeys(this.library)).subscribe(record => {
-        this.toastService.success(
-          this.translateService.instant('Record Updated!'),
-          this.translateService.instant('libraries')
-        );
-        this.router.navigate(['../../detail', this.library.pid], {relativeTo: this.route, replaceUrl: true});
-      });
+      this.recordService
+        .update('libraries', this.library.pid, cleanDictKeys(this.library))
+        .subscribe(record => {
+          this.toastService.success(
+            this.translateService.instant('Record Updated!'),
+            this.translateService.instant('libraries')
+          );
+          this.router.navigate(['../../detail', this.library.pid], {relativeTo: this.route, replaceUrl: true});
+        });
     } else {
       this.library.organisation = { $ref: this.apiService.getRefEndpoint('organisations', this.organisationPid) };
-      this.recordService.create('libraries', cleanDictKeys(this.library)).subscribe(record => {
-        this.toastService.success(
-          this.translateService.instant('Record created!'),
-          this.translateService.instant('libraries')
-        );
-        this.router.navigate(['../detail', record.metadata.pid], {relativeTo: this.route, replaceUrl: true});
-      });
+      this.recordService
+        .create('libraries', cleanDictKeys(this.library))
+        .subscribe(record => {
+          this.toastService.success(
+            this.translateService.instant('Record created!'),
+            this.translateService.instant('libraries')
+          );
+          this.router.navigate(['../detail', record.metadata.pid], {relativeTo: this.route, replaceUrl: true});
+        });
     }
     this.libraryForm.build();
   }
