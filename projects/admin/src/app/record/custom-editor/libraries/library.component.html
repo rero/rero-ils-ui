@@ -198,8 +198,7 @@
                 <label class="font-weight-bold ml-2">{{ setting.controls.type.value | translate | ucfirst }}</label>
               </div>
               <div class="col">
-                <input formControlName="email" class="form-control"
-                       [id]="setting.controls.type.value + '-email'">
+                <input formControlName="email" class="form-control" [id]="setting.controls.type.value + '-email'">
               </div>
               <div class="col-3" *ngIf="delayedNotificationTypes.includes(setting.controls.type.value)">
                 <div class="input-group">

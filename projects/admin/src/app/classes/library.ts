@@ -102,35 +102,12 @@ export class Library {
   rollover_settings: RolloverSettings;
 
   // GETTER & SETTER ================================================
-  /** Allow to get all opening days for the library */
-  get openingDays(): Array<WeekDay> {
-    return this.opening_hours
-      .filter(day => day.is_open)
-      .map(day => Library.convertDayToWeekDay(day.day))
-      .filter(day => day !== null);
-  }
-
   /** Allow to get all closed days for the library */
   get closedDays(): Array<WeekDay> {
     return this.opening_hours
       .filter(day => !day.is_open)
       .map(day => Library.convertDayToWeekDay(day.day))
       .filter(day => day !== null);
-  }
-
-  /** Get all closed days from exception dates */
-  get exceptionClosedDates(): Array<Date> {
-    let exceptionDates = [];
-    this.exception_dates
-      .filter(exception => !exception.is_open)  // Keep only closed exceptions
-      .forEach(exception => {
-        const dates = (exception.end_date)
-          ? Library._getIntervalDates(moment(exception.start_date).toDate(), moment(exception.end_date).toDate())
-          : [moment(exception.start_date).toDate()];
-        exceptionDates = exceptionDates.concat(dates);
-        // TODO :: manage the "repeatability" behavior
-      });
-    return exceptionDates;
   }
 
   // CONSTRUCTOR ===================================================
@@ -146,16 +123,13 @@ export class Library {
     if (!this.exception_dates) {
       this.exception_dates = [];
     }
-    // Keep only valid exception dates
-    //   The received data could contains some obsolete exception dates. We will filter the exception dates
-    //   list to remove exception is event is over.
-    //   For repeatable exception dates (these exceptions are never over), we will compute the next valid date/period.
-    //   At the end, for user best comprehension, the exception dates list will be sorted on event start date for more
-    //   readability for users.
-    this.exception_dates = this.exception_dates.filter((exception) => !Library._isExceptionDateOver(exception));
+    // exception dates
+    //   * For repeatable exception dates (these exceptions are never over), we will compute the next valid date/period.
+    //   * At the end, for user best comprehension, the exception dates list will be sorted on event start date for more
+    //     readability for users.
     this.exception_dates = this.exception_dates.map((exception) => {
       if (exception.repeat){
-        while(Library._isExceptionDateOver(exception, false)) {
+        while(Library.isExceptionDateOver(exception, false)) {
           exception = Library._incrementExceptionDate(exception);
         }
       }
@@ -173,6 +147,25 @@ export class Library {
     this._cleanOpeningHours();
     this._reorderOpeningHours();
     this._cleanAcquisitionSettings();
+  }
+
+  /**
+   * Check if an exception is obsolete or not.
+   *
+   * An exception date is over when it is not repeatable (repeatable exceptions
+   * are never over) and when end_date/start_date is passed depending of
+   * availability of `end_date` field for this exception.
+   * @param exception - The exception date/period to check.
+   * @param checkRepeat - is the repeat field is checked or not ?
+   *                      If not then, only check about exception dates
+   * @returns boolean is the exception is over or not.
+   */
+  static isExceptionDateOver(exception: ExceptionDates, checkRepeat: boolean = true): boolean {
+    if (exception.repeat && checkRepeat) {
+      return false;
+    }
+    const checked_date = (exception.end_date) ? moment(exception.end_date) : moment(exception.start_date);
+    return checked_date < moment();
   }
 
   // PRIVATE METHODS ================================================
@@ -210,25 +203,6 @@ export class Library {
           moment(a.start_time, 'HH:mm').diff(moment(b.start_time, 'HH:mm')));
       }
     });
-  }
-
-  /**
-   * Check if an exception is obsolete or not.
-   *
-   * An exception date is over when it is not repeatable (repeatable exceptions
-   * are never over) and when end_date/start_date is passed depending of
-   * availability of `end_date` field for this exception.
-   * @param exception - The exception date/period to check.
-   * @param checkRepeat - is the repeat field is checked or not ?
-   *                      If not then, only check about exception dates
-   * @returns boolean is the exception is over or not.
-   */
-  private static _isExceptionDateOver(exception: ExceptionDates, checkRepeat: boolean = true): boolean {
-    if (exception.repeat && checkRepeat) {
-      return false;
-    }
-    const checked_date = (exception.end_date) ? moment(exception.end_date) : moment(exception.start_date);
-    return checked_date < moment();
   }
 
   /**

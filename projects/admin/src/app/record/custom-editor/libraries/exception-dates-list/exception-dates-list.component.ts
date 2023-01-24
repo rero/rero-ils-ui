@@ -17,14 +17,14 @@
 
 
 import { Component, Input } from '@angular/core';
+import { ExceptionDates, Library } from '@app/admin/classes/library';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ExceptionDatesEditComponent } from '../exception-dates-edit/exception-dates-edit.component';
 import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'admin-libraries-exception-dates-list',
-  templateUrl: './exception-dates-list.component.html',
-  styles: []
+  templateUrl: './exception-dates-list.component.html'
 })
 export class ExceptionDatesListComponent {
 
@@ -61,9 +61,14 @@ export class ExceptionDatesListComponent {
       this.exceptionDates[index] = value;
       // force ui update
       this.ref.markForCheck();
-    });  }
+    });
+  }
 
   deleteException(index) {
     this.exceptionDates.splice(index, 1);
+  }
+
+  isOver(exception: ExceptionDates): boolean {
+    return Library.isExceptionDateOver(exception);
   }
 }

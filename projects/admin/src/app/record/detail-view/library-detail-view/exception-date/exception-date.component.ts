@@ -15,13 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
-import { ExceptionDates } from '@app/admin/classes/library';
+import { ExceptionDates, Library } from '@app/admin/classes/library';
 
 @Component({
   selector: 'admin-exception-date',
-  templateUrl: './exception-date.component.html',
-  styles: []
+  templateUrl: './exception-date.component.html'
 })
 export class ExceptionDateComponent {
   @Input() exception: ExceptionDates;
+
+  isOver(exception: ExceptionDates): boolean {
+    return Library.isExceptionDateOver(exception);
+  }
 }

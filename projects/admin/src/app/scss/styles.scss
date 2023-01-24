@@ -354,7 +354,7 @@ pre {
   padding-left: map-get($spacers, 4);
 }
 
-// ACQUISITIONS =======================================================
+// ACQUISITIONS ===============================================================
 .fiscal-year-closed {
   @extend .alert;
   @extend .alert-warning;
@@ -370,5 +370,29 @@ pre {
     content: " \f071";
     @extend .ml-2;
     @extend .mr-3;
+  }
+}
+
+// LIBRARY ====================================================================
+.exception-date {
+
+  &.over-exception {
+    background-color: $gray-100;
+
+    & > * {
+      color: $gray-500;
+      font-style: italic;
+      text-decoration: line-through;
+    }
+    .status i {
+      color: $gray-500 !important;
+    }
+  }
+
+  &:hover{
+    background-color: $gray-200;
+  }
+  & .btn:not(:hover) {
+    background-color: white;
   }
 }

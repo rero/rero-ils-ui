@@ -24,7 +24,10 @@
 </div>
 
 <div *ngIf="exceptionDates" class="mb-3">
-  <div *ngFor="let exception of exceptionDates; let i=index" class="row mt-2 pb-2 border-bottom">
+  <div *ngFor="let exception of exceptionDates; let i=index"
+       [ngClass]="{'over-exception': isOver(exception)}"
+       class="row exception-date pt-1 pb-1 border-bottom"
+  >
     <!-- date -->
     <div class="col-md-4 col-lg-4 col-sm-8">
       {{ exception.start_date | dateTranslate:'longDate' }}
@@ -44,7 +47,7 @@
       </div>
     </div>
     <!-- open/close icon -->
-    <div class="col-md-1 col-lg-1 col-sm-2 text-center">
+    <div class="col-md-1 col-lg-1 col-sm-2 status text-center">
       <ng-container *ngIf="exception.is_open; else elseOpen">
         <i class="fa fa-check text-success" title="{{ 'Open' | translate }}"></i>
       </ng-container>
@@ -57,7 +60,7 @@
       {{ exception.title }}
     </div>
     <!-- Actions -->
-    <div class="col-md-2 col-lg-2 col-sm-4 text-right">
+    <div class="col-md-2 col-lg-2 col-sm-4 actions text-right">
       <button type="button" class="btn btn-outline-primary btn-sm ml-1" (click)="editException(i)" title="{{ 'Edit' | translate }}">
         <i class="fa fa-pencil"></i>
       </button>
