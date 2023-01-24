@@ -36,8 +36,6 @@ import { PatronTransactionEventFormComponent } from './patron-transaction-event-
 export class PatronTransactionsComponent implements OnInit, OnDestroy {
 
   // COMPONENTS ATTRIBUTES ===============================================================
-  /** Subscription to PatronTransaction.service.ts --> patronTransactionByPatronSubject */
-  patronTransactionSubscription$: Subscription;
   /** all tab reference array */
   tabs = {
     engagedFees: {
@@ -58,8 +56,10 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
 
   /** Current patron */
   private _patron: any = undefined;
-
+  /** Modal used for manual fee */
   private _modalRef: BsModalRef;
+  /** Component subscriptions */
+  private _subscriptions = new Subscription();
 
 
   // GETTER & SETTER ======================================================================
@@ -71,6 +71,15 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
     return this._organisationService.organisation;
   }
 
+  /**
+   * Get engaged fees related to the current user library
+   * @return the list of corresponding transactions.
+   */
+  get myLibraryEngagedFees(): Array<PatronTransaction> {
+    const libraryPID = this._userService.user.currentLibrary;
+    return this.tabs.engagedFees.transactions.filter(t => t.library != null && t.library.pid === libraryPID);
+  }
+
 
   // CONSTRUCTOR & HOOKS ==================================================================
   /**
@@ -79,6 +88,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
    * @param _organisationService - OrganisationService
    * @param _patronTransactionService - PatronTransactionService
    * @param _modalService - BsModalService
+   * @param _userService - UserService
    */
   constructor(
     private _patronService: PatronService,
@@ -94,49 +104,30 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
       if (patron) {
         this._patron = patron;
         // engaged fees
-        this.patronTransactionSubscription$ = this._patronTransactionService.patronTransactionsSubject$.subscribe(
-          (transactions) => {
-            this.tabs.engagedFees.transactions = transactions;
-            this.tabs.engagedFees.totalAmount = this._patronTransactionService.computeTotalTransactionsAmount(transactions);
-          }
+        this._subscriptions.add(
+          this._patronTransactionService
+            .patronTransactionsSubject$
+            .subscribe((transactions) => {
+              this.tabs.engagedFees.transactions = transactions;
+              this.tabs.engagedFees.totalAmount = this._patronTransactionService.computeTotalTransactionsAmount(transactions);
+            }
+          )
         );
         // overdue fees
-        this._patronService.getOverduesPreview(this._patron.pid).subscribe(
-          (overdues) => {
+        this._patronService
+          .getOverduesPreview(this._patron.pid)
+          .subscribe((overdues) => {
             this.tabs.overduePreviewFees.transactions = overdues;
             this.tabs.overduePreviewFees.totalAmount = overdues.reduce((acc, overdue) => acc + overdue.fees.total, 0);
-          }
-        );
-        this.loadEngagedFees();
+          });
+        this._reloadEngagedFees();
       }
     });
   }
 
   /** OnDestroy hook */
   ngOnDestroy() {
-    if (this.patronTransactionSubscription$) {
-      this.patronTransactionSubscription$.unsubscribe();
-    }
-    this._modalRef.content.onSubmit.unsubscribe();
-  }
-
-  loadEngagedFees(): void {
-    this._patronTransactionService.emitPatronTransactionByPatron(this._patron.pid, undefined, 'open');
-  }
-
-  /** Opening a modal to add fees */
-  addFee(): void {
-    this._modalRef = this._modalService.show(PatronFeeComponent, {
-        ignoreBackdropClick: true,
-        initialState: {
-          patronPid: this._patron.pid,
-          organisationPid: this._patron.organisation.pid
-        }
-      }
-    );
-    this._modalRef.content.onSubmit.pipe(first()).subscribe(() => {
-      this.loadEngagedFees();
-    });
+    this._subscriptions.unsubscribe();
   }
 
   // COMPONENT FUNCTIONS ==================================================================
@@ -152,7 +143,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   }
 
   /** Allow to pay the total of each pending patron transactions */
-  public payAllTransactions() {
+  payAllTransactions() {
     const initialState = {
       action: 'pay',
       mode: 'full',
@@ -160,23 +151,19 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
     };
     this._modalService.show(PatronTransactionEventFormComponent, {initialState});
   }
-    get myLibraryEngagedFees() {
-      const libraryPID = this._userService.user.currentLibrary;
-      return this.tabs.engagedFees.transactions.filter(t => t.library != null && t.library.pid === libraryPID);
-    }
 
-    /** Allow to pay the total of each pending patron transactions */
-    public payAllTransactionsInMyLibrary() {
-      const initialState = {
-        action: 'pay',
-        mode: 'full',
-        transactions: this.myLibraryEngagedFees
-      };
-      this._modalService.show(PatronTransactionEventFormComponent, {initialState});
-    }
+  /** Allow to pay the total of each pending patron transactions */
+  payAllTransactionsInMyLibrary() {
+    const initialState = {
+      action: 'pay',
+      mode: 'full',
+      transactions: this.myLibraryEngagedFees
+    };
+    this._modalService.show(PatronTransactionEventFormComponent, {initialState});
+  }
 
   /**
-   * Behavior to perform when user asked to open a 'vertical tab'.
+   * Event handler when user click on a 'vertical tab'.
    * All other tabs will be hidden.
    * @param tabToOpen: the tab to open
    */
@@ -184,5 +171,28 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
     for (const entry of Object.values(this.tabs)) {
       entry.isOpen = tabToOpen === entry;
     }
+  }
+
+  /** Opening a modal to manually add a fee. */
+  addFee(): void {
+    this._modalRef = this._modalService.show(PatronFeeComponent, {
+        ignoreBackdropClick: true,
+        initialState: {
+          patronPid: this._patron.pid,
+          organisationPid: this._patron.organisation.pid
+        }
+      }
+    );
+    this._subscriptions.add(
+      this._modalRef.content.onSubmit
+        .pipe(first())
+        .subscribe(() => this._reloadEngagedFees())
+    );
+  }
+
+  // PRIVATE COMPONENTS FUNCTIONS =============================================
+  /** Notify than engaged fees for the current patron should be reloaded. */
+  private _reloadEngagedFees(): void {
+    this._patronTransactionService.emitPatronTransactionByPatron(this._patron.pid, undefined, 'open');
   }
 }

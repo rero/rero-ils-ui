@@ -35,24 +35,22 @@ import { DateTime } from 'luxon';
 })
 export class PatronFeeComponent implements OnInit {
 
+  // COMPONENT ATTRIBUTES =====================================================
   /** Patron pid */
   @Input() patronPid: string;
-
   /** Organisation pid */
   @Input() organisationPid: string;
 
   /** form */
   form: FormGroup = new FormGroup({});
-
   /** form fields */
   formFields: FormlyFieldConfig[];
-
   /** model */
   model: FeeFormModel;
-
   /** On submit event */
   onSubmit: EventEmitter<any> = new EventEmitter();
 
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param _recordService - RecordService
@@ -86,6 +84,7 @@ export class PatronFeeComponent implements OnInit {
     });
   }
 
+  // COMPONENT FUNCTIONS ======================================================
   /**
    * Submit the form
    * @param model - Fee model
@@ -119,48 +118,42 @@ export class PatronFeeComponent implements OnInit {
   }
 
   /** Init form model */
-  private _initForm(properties: any): void
-  {
-    this.formFields = [
-      {
-        key: 'type',
-        type: 'selectWithSort',
-        templateOptions: {
-          label: 'Type',
-          required: true,
-          options: properties.type.form.options
-        }
-      },
-      {
-        key: 'total_amount',
-        type: 'input',
-        templateOptions: {
-          type: 'number',
-          label: 'Amount',
-          required: true,
-          addonLeft: {
-            text: getCurrencySymbol(this._organisationService.organisation.default_currency, 'wide')
-          }
-        }
-      },
-      {
-        key: 'note',
-        type: 'input',
-        templateOptions: {
-          label: 'Note'
-        }
-      },
-      {
-        key: 'creation_date',
-        type: 'dateTimePicker',
-        wrappers: ['form-field'],
-        templateOptions: {
-          label: 'Date',
-          required: true,
-          dateFormat: 'yy-mm-dd',
+  private _initForm(properties: any): void {
+    this.formFields = [{
+      key: 'type',
+      type: 'selectWithSort',
+      templateOptions: {
+        label: 'Type',
+        required: true,
+        options: properties.type.form.options
+      }
+    }, {
+      key: 'total_amount',
+      type: 'input',
+      templateOptions: {
+        type: 'number',
+        label: 'Amount',
+        required: true,
+        addonLeft: {
+          text: getCurrencySymbol(this._organisationService.organisation.default_currency, 'wide')
         }
       }
-    ];
+    }, {
+      key: 'note',
+      type: 'input',
+      templateOptions: {
+        label: 'Note'
+      }
+    }, {
+      key: 'creation_date',
+      type: 'dateTimePicker',
+      wrappers: ['form-field'],
+      templateOptions: {
+        label: 'Date',
+        required: true,
+        dateFormat: 'yy-mm-dd',
+      }
+    }];
 
     // Default model value
     this.model = {
