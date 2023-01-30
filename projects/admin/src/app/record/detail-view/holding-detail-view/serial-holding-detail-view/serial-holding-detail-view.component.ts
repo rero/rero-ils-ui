@@ -112,7 +112,7 @@ export class SerialHoldingDetailViewComponent implements OnInit {
         1,
         this._receivedIssueCounter,
         [], {}, null,
-        '-issue_expected_date'
+        '-issue_sort_date'
       ).subscribe((result: Record) => {
         this.totalReceivedItems = this._recordService.totalHits(result.hits.total);
         this.receivedItems = [];
