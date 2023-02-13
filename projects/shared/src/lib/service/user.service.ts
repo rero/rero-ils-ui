@@ -73,9 +73,9 @@ export class UserService {
           this._permissionsService.setPermissions(loggedUser.permissions);
         }
         this._user = new User(loggedUser);
-          this._loaded.next(this._user);
-          return this._user;
-        })
+        this._loaded.next(this._user);
+        return this._user;
+      })
     );
   }
 }

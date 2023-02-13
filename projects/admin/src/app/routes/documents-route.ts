@@ -40,7 +40,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
    * @return Object
    */
   getConfiguration() {
-    return {
+    const config = {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
         { path: '', component: DocumentRecordSearchComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
@@ -159,5 +159,12 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
         ]
       }
     };
+
+    this._routeToolService.organisationService.onOrganisationLoaded$.subscribe((org) => {
+      config.data.types[0]['defaultSearchInputFilters'] = [{
+        'key': 'organisation', 'values': [org.pid]
+      }];
+    });
+    return config;
   }
 }

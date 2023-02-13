@@ -15,9 +15,18 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<ng-core-record-search [adminMode]="adminMode" [currentType]="currentType" [types]="types" [detailUrl]="detailUrl"
-  [showSearchInput]="showSearchInput" [q]="q" [page]="page" [size]="size" [sort]="sort"
-  (parametersChanged)="updateUrl($event)" (recordsSearched)="recordsSearched($event)"
+<ng-core-record-search
+  [adminMode]="adminMode"
+  [currentType]="currentType"
+  [types]="types"
+  [detailUrl]="detailUrl"
+  [showSearchInput]="showSearchInput"
+  [q]="q"
+  [page]="page"
+  [size]="size"
+  [sort]="sort"
+  (parametersChanged)="updateUrl($event)"
+  (recordsSearched)="recordsSearched($event)"
 >
   <div class="my-4" *ngIf="currentType === 'documents' && showLink">
     <a href="#" (click)="linkToGlobalDocuments($event)" translate>
