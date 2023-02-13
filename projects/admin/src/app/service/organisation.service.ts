@@ -25,47 +25,42 @@ import { map } from 'rxjs/operators';
 })
 export class OrganisationService {
 
-  /**
-   * Observable on Record Organisation
-   */
-  private _onOrganisationLoaded: Subject<any> = new Subject();
+  // SERVICE ATTRIBUTES =======================================================
 
-  /**
-   * Organisation record
-   */
+  /** Observable on Record Organisation */
+  private _onOrganisationLoaded: Subject<any> = new Subject();
+  /** Organisation record */
   private _record: any;
 
-  /**
-   * return observable of organisation
-   */
-  get onOrganisationLoaded() {
+  // GETTER & SETTER ==========================================================
+  /** Return observable of organisation */
+  get onOrganisationLoaded$() {
     return this._onOrganisationLoaded.asObservable();
   }
-
-  /**
-   * get current organisation
-   */
+  /** Get current organisation*/
   get organisation() {
     return this._record;
   }
 
+  // CONSTRUCTOR ==============================================================
   /**
    * Constructor
-   * @param recordService - RecordService
+   * @param _recordService - RecordService
    */
-  constructor(private _recordService: RecordService) { }
+  constructor(
+    private _recordService: RecordService
+  ) { }
 
   /**
    * Load organisation record
    * @param pid - string
    */
   loadOrganisationByPid(pid: string) {
-    this._recordService.getRecord('organisations', pid)
-    .pipe(
-      map((record: any) => this._record = record.metadata)
-    )
-    .subscribe((organisation: any) => {
-      this._onOrganisationLoaded.next(organisation);
-    });
+    this._recordService
+      .getRecord('organisations', pid)
+      .subscribe((orgRecord: any) => {
+        this._record  = orgRecord.metadata;
+        this._onOrganisationLoaded.next(this._record);
+      });
   }
 }

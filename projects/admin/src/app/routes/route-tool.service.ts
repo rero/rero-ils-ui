@@ -18,6 +18,7 @@ import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AbstractType, Injectable, InjectionToken, Injector, Type } from '@angular/core';
 import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
+import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionStatus, ApiService, RecordService } from '@rero/ng-core';
 import { PermissionsService, UserService } from '@rero/shared';
@@ -45,6 +46,14 @@ export class RouteToolService {
    */
   get translateService() {
     return this._injector.get(TranslateService);
+  }
+
+
+  /** Proxy for organisation service
+   *  @return OrganisationService
+   */
+  get organisationService() {
+    return this._injector.get(OrganisationService);
   }
 
   /**
