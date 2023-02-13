@@ -17,6 +17,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, MenuFactory, MenuItemInterface } from '@rero/ng-core';
+import { cloneDeep } from 'lodash-es';
 import { Observable, Subject } from 'rxjs';
 import { MENU_APP } from '../menu-definition/menu-app';
 import { MENU_USER } from '../menu-definition/menu-user';
@@ -81,12 +82,12 @@ export class MenuService {
   // SERVICE FUNCTIONS ========================================================
   /** Generate application menu */
   generateAppMenu(): void {
-    this._appMenu.next(this._menuFactoryService.create('UI Main menu', MENU_APP));
+    this._appMenu.next(this._menuFactoryService.create('UI Main menu', cloneDeep(MENU_APP)));
   }
 
   /** Generate User menu */
   generateUserMenu(): void {
-    this._userMenu.next(this._menuFactoryService.create('UI User menu', MENU_USER))
+    this._userMenu.next(this._menuFactoryService.create('UI User menu', cloneDeep(MENU_USER)))
   }
 
   generateLanguageMenu(): void {
