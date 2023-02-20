@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
- * Copyright (C) 2020 UCLouvain
+ * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ApiService, RecordService, SuggestionMetadata } from '@rero/ng-core';
-import { of, Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { PatronService } from '../../service/patron.service';
 import { ITypeahead } from './ITypeahead-interface';
@@ -76,7 +76,7 @@ export class PatronsTypeahead implements ITypeahead {
    * @param numberOfSuggestions - the max number of suggestion to return
    * @returns - an observable of the list of suggestions.
    */
-  getSuggestions(options: any, query: string, numberOfSuggestions: number): Observable<Array<SuggestionMetadata>> {
+  getSuggestions(options: any, query: string, numberOfSuggestions: number): Observable<Array<SuggestionMetadata | string>> {
     if (!query) {
       return of([]);
     }

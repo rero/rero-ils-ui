@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,5 +42,5 @@ export interface ITypeahead {
    * @returns - an observable of the list of suggestions.
    */
   getSuggestions(options: any, query: string, numberOfSuggestions: number):
-    Observable<Array<SuggestionMetadata>>;
+  Observable<Array<SuggestionMetadata | string>>;
 }

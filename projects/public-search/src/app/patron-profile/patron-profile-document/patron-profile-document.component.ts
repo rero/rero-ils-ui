@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,10 +40,6 @@ export class PatronProfileDocumentComponent implements OnInit {
   get viewcode(): string {
     return this._patronProfileMenuService.currentPatron.organisation.code;
   }
-  /** Get current language */
-  get language(): string {
-    return this._translateService.currentLang;
-  }
 
   /** Get the formatted call numbers for the related item */
   get callNumbers(): string {
@@ -51,19 +47,6 @@ export class PatronProfileDocumentComponent implements OnInit {
       this.record.metadata.item.call_number,
       this.record.metadata.item.second_call_number
     ).filter(Boolean).join(' | ');
-  }
-
-  /**
-   * Translate contribution type to parameter
-   * @param type - contribution type
-   * @returns string, contribution parameter
-   */
-  getContributorLinkType(type: string): string {
-    switch (type) {
-      case 'bf:Person': return 'persons';
-      case 'bf:Organisation': return 'corporate-bodies';
-      default: return type;
-    }
   }
 
   // CONSTRUCTOR & HOOKS ======================================================

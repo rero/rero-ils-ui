@@ -37,10 +37,7 @@
         <ul class="list-unstyled">
           <li class="figure-caption" *ngFor="let genre of record.metadata.genreForm">
             <i class="fa fa-tag mr-1"></i>
-            <ng-container *ngIf="genre.term; else genreFormLink">{{ genre.term }}</ng-container>
-            <ng-template #genreFormLink>
-              <!-- TODO: GENRE FORM LINK (not implemend with typeahead) -->
-            </ng-template>
+            {{ genre.entity.authorized_access_point }}
           </li>
         </ul>
       </ng-container>
@@ -75,22 +72,7 @@
       </ng-container>
 
       <!-- CONTRIBUTION -->
-      <ng-container *ngIf="record.metadata.contribution && record.metadata.contribution.length > 0">
-        <ul class="list-inline mb-0">
-          <li
-            class="list-inline-item"
-            *ngFor="let contribution of record.metadata.contribution; last as isLast; let i = index"
-            [attr.id]="i | idAttribute:{prefix: 'doc-contribution'}"
-          >
-            <span *ngIf="!contribution.agent.pid" [innerHTML]="contribution | contributionFormat: true"></span>
-            <a
-            *ngIf="contribution.agent.pid"
-            [innerHTML]="contribution | contributionFormat: true"
-            [routerLink]="['/records', contributionTypeParam(contribution.agent), 'detail', contribution.agent.pid]">
-            </a><ng-container *ngIf="!isLast">; </ng-container>
-          </li>
-        </ul>
-      </ng-container>
+      <shared-contribution [contributions]="record.metadata?.contribution" [withRoles]="true"></shared-contribution>
 
       <!-- PUBLICATION ACTIVITY: PUBLICATION -->
       <ng-container *ngVar="record.metadata.provisionActivity | documentProvisionActivity | keyvalue | callbackArrayFilter: filterPublicationProvisionActivity as provisionActivity">
@@ -200,8 +182,8 @@
         <div class="col">
           <span *ngFor="let subject of subjects"
             class="badge badge-secondary mr-1"
-            title="{{ subject.type | translate }}">
-            <i class="fa fa-tag"></i> {{ subject._text }}
+            title="{{ subject.entity.type | translate }}">
+            <i class="fa fa-tag"></i> {{ subject.entity.authorized_access_point }}
           </span>
         </div>
       </div>

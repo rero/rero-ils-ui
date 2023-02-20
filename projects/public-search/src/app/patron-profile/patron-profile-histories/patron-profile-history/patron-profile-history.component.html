@@ -15,7 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="container p-2">
+<div class="container p-2" *ngIf="record">
   <div class="row">
     <!-- DOCUMENT & ADDITIONAL DATA ===================================== -->
     <div *ngVar="record.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document"
@@ -24,19 +24,7 @@
         {{ record.metadata.loan.item.document.title }}
       </a>
       <ng-template #nodocument>{{ record.metadata.loan.item.document.title }}</ng-template>
-      <ul class="list-inline mb-0 small" *ngIf="document">
-        <li class="list-inline-item mr-1" *ngFor="let contribution of document.metadata.contribution | contributionFilter:language; let last = last">
-          <ng-container *ngIf="contribution.pid && contribution.target !== undefined; else agentNoLink">
-            <a href="/{{ viewcode }}/{{ contribution.target }}/{{ contribution.pid }}">
-              {{ contribution.authorizedAccessPoint }}
-            </a>
-          </ng-container>
-          <ng-template #agentNoLink>
-            {{ contribution.authorizedAccessPoint }}
-          </ng-template>
-          <ng-container *ngIf="!last">; </ng-container>
-        </li>
-      </ul>
+      <shared-contribution *ngIf="document" [contributions]="document.metadata?.contribution" [view]="viewcode"></shared-contribution>
     </div>
     <!-- DUE DATE  ====================================================== -->
     <div class="col-sm-12 col-lg-2">

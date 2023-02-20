@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 
 @Component({
@@ -36,18 +35,11 @@ export class PatronProfileHistoryComponent {
     return this._patronProfileMenuService.currentPatron.organisation.code;
   }
 
-  /** Get current language */
-  get language(): string {
-    return this._translateService.currentLang;
-  }
-
   /**
    * Constructor
-   * @param _translateService - TranslateService
    * @param _patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
-    private _translateService: TranslateService,
     private _patronProfileMenuService: PatronProfileMenuService
   ) {}
 }

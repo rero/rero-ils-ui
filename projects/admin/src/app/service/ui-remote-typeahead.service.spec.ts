@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,8 +22,7 @@ import { RecordModule, TruncateTextPipe } from '@rero/ng-core';
 import { MainTitlePipe, SharedModule } from '@rero/shared';
 import { DocumentsTypeahead } from '../classes/typeahead/documents-typeahead';
 import { ItemsTypeahead } from '../classes/typeahead/items-typeahead';
-import { MefOrganisationTypeahead } from '../classes/typeahead/mef-organisation-typeahead';
-import { MefPersonTypeahead } from '../classes/typeahead/mef-person-typeahead';
+import { MefTypeahead } from '../classes/typeahead/mef-typeahead';
 import { PatronsTypeahead } from '../classes/typeahead/patrons-typeahead';
 import { UiRemoteTypeaheadService } from './ui-remote-typeahead.service';
 
@@ -40,8 +39,7 @@ describe('UiRemoteTypeaheadService', () => {
     providers: [
       DocumentsTypeahead,
       ItemsTypeahead,
-      MefPersonTypeahead,
-      MefOrganisationTypeahead,
+      MefTypeahead,
       PatronsTypeahead,
       TruncateTextPipe,
       MainTitlePipe
