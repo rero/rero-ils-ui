@@ -47,7 +47,7 @@ export class PersonBriefComponent implements ResultItem {
    */
   contributionType(detailUrlLink: string) {
     return detailUrlLink.replace(
-      'contributions',
+      'entities',
       this._contributionTypePipe.transform(this.record.metadata.type)
     );
   }

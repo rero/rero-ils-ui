@@ -76,7 +76,7 @@ export class SearchBarConfigService {
     this._maxLengthSuggestion = maxLengthSuggestion;
 
     // If you add a new type, please specify it in the "shared-config.service.ts"
-    // file on contributionAgentTypes attribute
+    // file on agentAgentTypes attribute
     return [
       {
         type: 'documents',
@@ -87,7 +87,7 @@ export class SearchBarConfigService {
       },
       {
         type: 'persons',
-        index: 'contributions',
+        index: 'entities',
         field: 'autocomplete_name',
         maxNumberOfSuggestions: 5,
         getSuggestions: (query: any, persons: any) => this._getPersonsSuggestions(query, persons),
@@ -96,7 +96,7 @@ export class SearchBarConfigService {
       },
       {
         type: 'organisations',
-        index: 'contributions',
+        index: 'entities',
         field: 'autocomplete_name',
         maxNumberOfSuggestions: 5,
         getSuggestions: (query: any, organisations: any) => this._getOrganisationsSuggestions(query, organisations),
@@ -187,7 +187,7 @@ export class SearchBarConfigService {
       values.push({
         text: this._highlightSearch(text, query),
         query: '',
-        index: 'contributions',
+        index: 'entities',
         category,
         href: this._generateContributionLink(urlIndex, hit.metadata.pid),
         iconCssClass: `fa fa-${icon}`
@@ -239,13 +239,13 @@ export class SearchBarConfigService {
    */
   private _getContributionName(metadata: any): string {
     const language = this._translateService.currentLang;
-    const order: any = this._appSettingsService.contributionsLabelOrder;
+    const order: any = this._appSettingsService.agentLabelOrder;
     const key = (language in order) ? language : 'fallback';
-    const contributionSources = (key === 'fallback')
+    const agentSources = (key === 'fallback')
       ? order[order[key]]
       : order[key];
 
-    for (const source of contributionSources) {
+    for (const source of agentSources) {
       if (metadata[source] && metadata[source].authorized_access_point) {
         return metadata[source].authorized_access_point;
       }

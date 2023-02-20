@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,11 +22,14 @@ import { CoreModule, NgVarDirective, Nl2brPipe, RecordModule, TruncateTextPipe }
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ActionButtonComponent } from './component/action-button/action-button.component';
+import { LinkPermissionsDirective } from './directive/link-permissions.directive';
+import { PermissionsDirective } from './directive/permissions.directive';
 import { PrimeNgImportModule } from './modules/prime-ng-import/prime-ng-import.module';
 import { ShowMorePagerComponent } from './paginator/show-more-pager/show-more-pager.component';
-import { ContributionFormatPipe } from './pipe/contribution-format.pipe';
+import { ContributionEntityPipe } from './pipe/contribution-entity.pipe';
 import { ContributionTypePipe } from './pipe/contribution-type.pipe';
 import { ExtractSourceFieldPipe } from './pipe/extract-source-field.pipe';
+import { GetTranslatedLabelPipe } from './pipe/get-translated-label.pipe';
 import { IdAttributePipe } from './pipe/id-attribute.pipe';
 import { ItemHoldingsCallNumberPipe } from './pipe/item-holdings-call-number.pipe';
 import { JoinPipe } from './pipe/join.pipe';
@@ -43,12 +46,9 @@ import { ContributionSourcesComponent } from './view/brief/contribution-sources/
 import { OrganisationBriefComponent } from './view/brief/organisation-brief/organisation-brief.component';
 import { PartOfComponent } from './view/brief/part-of/part-of.component';
 import { PersonBriefComponent } from './view/brief/person-brief/person-brief.component';
+import { ContributionComponent } from './view/contribution/contribution.component';
 import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
-import { GetTranslatedLabelPipe } from './pipe/get-translated-label.pipe';
-import { ContributionFilterPipe } from './pipe/contribution-filter.pipe';
-import { PermissionsDirective } from './directive/permissions.directive';
-import { LinkPermissionsDirective } from './directive/link-permissions.directive';
 
 @NgModule({
     declarations: [
@@ -56,7 +56,6 @@ import { LinkPermissionsDirective } from './directive/link-permissions.directive
         ContributionSourcesComponent,
         OrganisationBriefComponent,
         PersonBriefComponent,
-        ContributionFormatPipe,
         ExtractSourceFieldPipe,
         IdAttributePipe,
         JoinPipe,
@@ -72,12 +71,13 @@ import { LinkPermissionsDirective } from './directive/link-permissions.directive
         ShowMorePagerComponent,
         KeyExistsPipe,
         GetTranslatedLabelPipe,
-        ContributionFilterPipe,
         ActionButtonComponent,
         NotesFilterPipe,
         SafeUrlPipe,
         PermissionsDirective,
-        LinkPermissionsDirective
+        LinkPermissionsDirective,
+        ContributionEntityPipe,
+        ContributionComponent,
     ],
     exports: [
         CommonModule,
@@ -86,7 +86,6 @@ import { LinkPermissionsDirective } from './directive/link-permissions.directive
         ContributionSourcesComponent,
         OrganisationBriefComponent,
         PersonBriefComponent,
-        ContributionFormatPipe,
         ExtractSourceFieldPipe,
         IdAttributePipe,
         JoinPipe,
@@ -103,12 +102,13 @@ import { LinkPermissionsDirective } from './directive/link-permissions.directive
         ShowMorePagerComponent,
         KeyExistsPipe,
         GetTranslatedLabelPipe,
-        ContributionFilterPipe,
         ActionButtonComponent,
         NotesFilterPipe,
         SafeUrlPipe,
         PermissionsDirective,
-        LinkPermissionsDirective
+        LinkPermissionsDirective,
+        ContributionEntityPipe,
+        ContributionComponent
     ],
     imports: [
         CommonModule,
@@ -129,7 +129,8 @@ import { LinkPermissionsDirective } from './directive/link-permissions.directive
         Nl2brPipe,
         NgVarDirective,
         KeyExistsPipe,
-        NotesFilterPipe
+        NotesFilterPipe,
+        ContributionEntityPipe
     ],
     schemas: [
         NO_ERRORS_SCHEMA

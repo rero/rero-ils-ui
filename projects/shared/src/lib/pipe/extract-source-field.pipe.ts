@@ -42,12 +42,12 @@ export class ExtractSourceFieldPipe implements PipeTransform {
    * @return string or null
    */
   transform(metadata: any, field: string): string | null {
-    const contributionsLabel: any = this._appSettingsService.contributionsLabelOrder;
+    const contributionsLabel: any = this._appSettingsService.agentLabelOrder;
     const language = this._translateService.currentLang;
-    const contributionsLabelOrder = (language in contributionsLabel)
+    const agentLabelOrder = (language in contributionsLabel)
       ? contributionsLabel[language]
       : contributionsLabel[contributionsLabel.fallback];
-    for (const source of contributionsLabelOrder) {
+    for (const source of agentLabelOrder) {
       if (
         metadata.hasOwnProperty(source)
         && metadata[source].hasOwnProperty(field)

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,6 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { ProvisionActivityType } from '@rero/shared';
 import { OperationLogsApiService } from '@app/admin/api/operation-logs-api.service';
 
@@ -38,18 +37,11 @@ export class HistoryLogComponent {
   /** Checkout record operation logs */
   checkout: any = null;
 
-  /** Get current language */
-  get language(): string {
-    return this._translateService.currentLang;
-  }
-
   /**
    * Constructor
-   * @param _translateService - TranslateService
    * @param _operationLogsApiService - OperationLogsApiService
    */
   constructor(
-    private _translateService: TranslateService,
     private _operationLogsApiService: OperationLogsApiService
   ) {}
 

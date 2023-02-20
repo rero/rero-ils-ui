@@ -23,13 +23,13 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class UrlActivePipe implements PipeTransform {
 
   transform(text: string, target: string = '_self'): any {
-    let output = '';
+    let output = text;
     const re = new RegExp(/(https?:\/\/[\w|.|\-|\/]+)/, 'gm');
     let match: RegExpExecArray;
     // tslint:disable-next-line: no-conditional-assignment
     while ((match = re.exec(text)) !== null) {
       const url = match[0];
-      output += text.replace(url, `<a href="${url}" target="${target}">${url}</a>`);
+      output = output.replace(url, `<a href="${url}" target="${target}">${url}</a>`);
     }
     return output;
   }
