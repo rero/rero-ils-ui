@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2019-2023 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -23,22 +23,7 @@
       <a target="_self" [href]="detailUrl.link | safeUrl">{{ record.metadata.title | mainTitle }}</a>
     </h4>
     <!-- contributions -->
-    <ul class="list-inline mb-0" *ngIf="record.metadata.contribution && record.metadata.contribution.length > 0">
-      <li *ngFor="let contribution of record.metadata.contribution.slice(0,3); let last = last; let i = index"
-          class="list-inline-item">
-        <ng-container *ngIf="!contribution.agent.pid; else contribLink">
-          {{ contribution | contributionFormat }}
-        </ng-container>
-        <ng-template #contribLink>
-          <a *ngIf="contribution.agent.pid"
-             href="/{{ viewcode }}/{{ contribution.agent.type | contributionType }}/{{ contribution.agent.pid }}">
-            {{ contribution | contributionFormat }}
-          </a>
-        </ng-template>
-        {{ last ? '' : '; ' }}
-        {{ last && record.metadata.contribution.length > 3 ? '; …' : '' }}
-      </li>
-    </ul>
+    <shared-contribution [contributions]="record.metadata?.contribution" [view]="viewcode"></shared-contribution>
     <!-- provision activity publications -->
     <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
       <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>

@@ -59,7 +59,7 @@ export class CorporateBodiesRoute extends BaseRoute implements RouteInterface {
         types: [
           {
             key: 'corporate-bodies',
-            index: 'contributions',
+            index: 'entities',
             label: _('Organisation'),
             component: ContributionBriefComponent,
             detailComponent: ContributionDetailViewComponent,

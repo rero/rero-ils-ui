@@ -180,8 +180,8 @@ export class DocumentDescriptionComponent {
     if ('work_access_point' in this.record.metadata) {
       this.record.metadata.work_access_point.forEach((workAccess: any) => {
         let agentFormatted = '';
-        if (workAccess.agent) {
-          const agent = workAccess.agent;
+        if (workAccess.creator) {
+          const agent = workAccess.creator;
           if ('bf:Person' === agent.type) {
             // Person
             const name = [];

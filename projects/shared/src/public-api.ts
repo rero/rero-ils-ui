@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2022 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,19 +21,17 @@
 
 export * from './lib/api/base-api';
 export * from './lib/api/user-api.service';
-export * from './lib/modules/prime-ng-import/prime-ng-import.module';
 export * from './lib/class/core';
 export * from './lib/class/holdings';
 export * from './lib/class/item-status';
 export * from './lib/class/user';
 export * from './lib/component/action-button/action-button.component';
-export * from './lib/modules/prime-ng-import/prime-ng-import.module';
 export * from './lib/directive/link-permissions.directive';
 export * from './lib/directive/permissions.directive';
+export * from './lib/modules/prime-ng-import/prime-ng-import.module';
 export * from './lib/paginator/paginator';
 export * from './lib/paginator/show-more-pager/show-more-pager.component';
-export * from './lib/pipe/contribution-filter.pipe';
-export * from './lib/pipe/contribution-format.pipe';
+export * from './lib/pipe/contribution-entity.pipe';
 export * from './lib/pipe/contribution-type.pipe';
 export * from './lib/pipe/extract-source-field.pipe';
 export * from './lib/pipe/get-translated-label.pipe';
@@ -58,7 +56,7 @@ export * from './lib/view/brief/contribution-sources/contribution-sources.compon
 export * from './lib/view/brief/organisation-brief/organisation-brief.component';
 export * from './lib/view/brief/part-of/part-of.component';
 export * from './lib/view/brief/person-brief/person-brief.component';
+export * from './lib/view/contribution/contribution.component';
 export * from './lib/view/inherited-call-number/inherited-call-number.component';
 export * from './lib/view/thumbnail/thumbnail.component';
 export * from './tests/user';
-

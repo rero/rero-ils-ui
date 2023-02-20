@@ -1,0 +1,44 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2023 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="contributions">
+  <ul class="list-inline mb-0" *ngVar="contributions|contributionEntity:filters:limitRecord as data">
+    <li
+      class="list-inline-item"
+      *ngFor="let entity of data.entries; last as isLast"
+    >
+      <ng-container *ngIf="entity.pid && entity.target; else entityNoLink">
+        <!-- public view-->
+        <a *ngIf="view; else professional" href="{{ view }}/{{ entity.target }}/{{ entity.pid }}">
+          {{ entity.authorizedAccessPoint }}
+        </a>
+        <ng-template #professional>
+          <a class="mr-1" [routerLink]="['/records', entity.target, 'detail', entity.pid]">
+            {{ entity.authorizedAccessPoint }}
+          </a>
+        </ng-template>
+      </ng-container>
+      <ng-template #entityNoLink>
+        {{ entity.authorizedAccessPoint }}
+      </ng-template>
+      <ng-container *ngIf="withRoles && entity.roles.length > 0">
+        <span class="text-secondary">({{ entity.roles | join:', ' }})</span>
+      </ng-container>
+      <ng-container *ngIf="!isLast">;</ng-container>
+      <ng-container *ngIf="isLast && limitRecord && data.count > limitRecord">; …</ng-container>
+    </li>
+  </ul>
+</ng-container>

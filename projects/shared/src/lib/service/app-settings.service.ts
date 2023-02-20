@@ -71,27 +71,27 @@ export class AppSettingsService {
    * Get contribution sources
    * @return array of string
    */
-  get contributionSources(): string[] {
+  get agentSources(): string[] {
     this._checkSettings();
-    return this._settings.contributionSources;
+    return this._settings.agentSources;
   }
 
   /**
    * Get contribution agent types
    * @return any
    */
-  get contributionAgentTypes(): any {
+  get agentAgentTypes(): any {
     this._checkSettings();
-    return this._settings.contributionAgentTypes;
+    return this._settings.agentAgentTypes;
   }
 
   /**
    * Get contribution order
    * @return array of order with fallback
    */
-  get contributionsLabelOrder(): any {
+  get agentLabelOrder(): any {
     this._checkSettings();
-    return this._settings.contributionsLabelOrder;
+    return this._settings.agentLabelOrder;
   }
 
   /**
@@ -135,9 +135,9 @@ export class AppSettingsService {
 /** Interface for settings */
 export interface ISettings {
   baseUrl: string;
-  contributionSources: string[];
-  contributionAgentTypes: any;
-  contributionsLabelOrder: any;
+  agentSources: string[];
+  agentAgentTypes: any;
+  agentLabelOrder: any;
   globalView: string;
   language: string;
   operationLogs: any;
