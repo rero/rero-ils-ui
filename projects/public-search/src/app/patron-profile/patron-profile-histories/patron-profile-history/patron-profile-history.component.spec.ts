@@ -19,7 +19,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreModule, RecordModule } from '@rero/ng-core';
-import { ContributionFilterPipe, SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
+import { SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
@@ -53,7 +53,6 @@ describe('PatronProfileHistoryComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         PatronProfileHistoryComponent,
-        ContributionFilterPipe
       ],
       imports: [
         HttpClientTestingModule,

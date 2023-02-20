@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,12 +27,6 @@ import { ITypeahead } from './ITypeahead-interface';
 })
 export class MefTypeahead implements ITypeahead {
 
-  /** Name of typeahead */
-  name = 'mef-persons';
-
-  /** Type of contribution */
-  type = 'Person';
-
   /** Entry point for MEF Api */
   apiMefEntryPoint = 'mef';
 
@@ -50,7 +44,7 @@ export class MefTypeahead implements ITypeahead {
 
   /** Get name of typeahead */
   getName() {
-    return this.name;
+    return 'mef';
   }
 
   /**
@@ -92,9 +86,13 @@ export class MefTypeahead implements ITypeahead {
    * @param numberOfSuggestions - the max number of suggestion to return
    * @returns - an observable of the list of suggestions.
    */
-  getSuggestions(options: any, query: string, numberOfSuggestions: number): Observable<Array<SuggestionMetadata>> {
+  getSuggestions(options: any, query: string, numberOfSuggestions: number): Observable<Array<SuggestionMetadata | string>> {
     if (!query) {
       return of([]);
+    }
+
+    if (null == options?.filters?.selected) {
+      throw Error('Missing filters definition');
     }
 
     const sources = this._appSettingsService.contributionSources
@@ -103,11 +101,10 @@ export class MefTypeahead implements ITypeahead {
     const contributionQuery = [
       `((autocomplete_name:${query})^2 OR ${query})`,
       `AND sources:(${sources.join(' OR ')})`,
-      `AND type:bf\\:${this.type}`
+      `AND type:${options.filters.selected.replace(':', '\\:')}`
     ].join(' ');
 
-    return this._recordService
-      .getRecords(
+    return this._recordService.getRecords(
         this.apiMefEntryPoint,
         contributionQuery,
         1,

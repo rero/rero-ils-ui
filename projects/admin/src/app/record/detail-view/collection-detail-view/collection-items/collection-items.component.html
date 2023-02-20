@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020 RERO
+  Copyright (C) 2020-2023 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -28,22 +28,10 @@
             </a>
           </h5>
           <div class="my-2">
-            <div *ngIf="document.metadata.contribution && document.metadata.contribution.length > 0">
-              <span class="font-weight-bold" translate>Contribution</span>:
-              <ng-container
-                class="list-inline-item"
-                *ngFor="let contribution of document.metadata.contribution; let last = last; let i = index"
-              >
-                <span *ngIf="!contribution.agent.pid" [innerHTML]="contribution | contributionFormat: true"></span>
-                <a
-                  *ngIf="contribution.agent.pid"
-                  [innerHTML]="contribution | contributionFormat: true"
-                  [routerLink]="['/records', contribution.agent.type | contributionType, 'detail', contribution.agent.pid]"
-                >
-                </a>
-                {{ last ? '' : '; ' }}
-              </ng-container>
-            </div>
+            <shared-contribution
+              *ngIf="document?.metadata?.contribution && document.metadata.contribution.length > 0"
+              [contributions]="document.metadata.contribution"
+            ></shared-contribution>
             <div>
               <span class="font-weight-bold" translate>Publication</span>:
               {{ document.metadata.provisionActivity[0]._text[0].value }}

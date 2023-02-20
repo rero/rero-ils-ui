@@ -32,25 +32,12 @@
       </ng-template>
     </div>
     <div class="col-sm-4">
-      <ng-container *ngIf="document && document.metadata.contribution; else noContributionRecord">
-        <ul class="list-inline mb-0">
-          <li class="list-inline-item mr-1" *ngFor="let contribution of document.metadata.contribution.slice(0,3) | contributionFilter:language; let last = last; let i = index">
-            <ng-container *ngIf="contribution.pid && contribution.target !== undefined; else agentNoLink">
-              <a [routerLink]="['/', 'records', contribution.type | contributionType, 'detail', contribution.pid]">
-                {{ contribution.authorizedAccessPoint }}
-              </a>
-            </ng-container>
-            <ng-template #agentNoLink>
-              {{ contribution.authorizedAccessPoint }}
-            </ng-template>
-            {{ last ? '' : '; ' }}
-            {{ last && i === 2 ? '; …' : '' }}
-          </li>
-        </ul>
-      </ng-container>
-      <ng-template #noContributionRecord>
-        &nbsp;
-      </ng-template>
+      <shared-contribution
+        *ngIf="document?.metadata?.contribution && document.metadata.contribution.length > 0; else noContributionRecord"
+        [contributions]="document.metadata.contribution"
+        [limitRecord]="3"
+      ></shared-contribution>
+      <ng-template #noContributionRecord>&nbsp;</ng-template>
     </div>
     <div class="col-sm-2">
       {{ log.metadata.date | dateTranslate: 'short' }}

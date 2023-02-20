@@ -75,22 +75,11 @@
       </ng-container>
 
       <!-- CONTRIBUTION -->
-      <ng-container *ngIf="record.metadata.contribution && record.metadata.contribution.length > 0">
-        <ul class="list-inline mb-0">
-          <li
-            class="list-inline-item"
-            *ngFor="let contribution of record.metadata.contribution; last as isLast; let i = index"
-            [attr.id]="i | idAttribute:{prefix: 'doc-contribution'}"
-          >
-            <span *ngIf="!contribution.agent.pid" [innerHTML]="contribution | contributionFormat: true"></span>
-            <a
-            *ngIf="contribution.agent.pid"
-            [innerHTML]="contribution | contributionFormat: true"
-            [routerLink]="['/records', contributionTypeParam(contribution.agent), 'detail', contribution.agent.pid]">
-            </a><ng-container *ngIf="!isLast">; </ng-container>
-          </li>
-        </ul>
-      </ng-container>
+      <shared-contribution
+        *ngIf="record?.metadata?.contribution && record.metadata.contribution.length > 0"
+        [contributions]="record.metadata.contribution"
+        [withRoles]="true"
+      ></shared-contribution>
 
       <!-- PUBLICATION ACTIVITY: PUBLICATION -->
       <ng-container *ngVar="record.metadata.provisionActivity | documentProvisionActivity | keyvalue | callbackArrayFilter: filterPublicationProvisionActivity as provisionActivity">

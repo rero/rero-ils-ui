@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
- * Copyright (C) 2019-2022 UCLouvain
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -44,13 +44,10 @@ import {
   SelectAccountEditorWidgetComponent
 } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 import { ReceivedOrderPermissionValidator } from './acquisition/utils/permissions';
-import { PaymentsDataComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/payments-data.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DocumentsTypeahead } from './classes/typeahead/documents-typeahead';
 import { ItemsTypeahead } from './classes/typeahead/items-typeahead';
-import { MefOrganisationTypeahead } from './classes/typeahead/mef-organisation-typeahead';
-import { MefPersonTypeahead } from './classes/typeahead/mef-person-typeahead';
 import { MefTypeahead } from './classes/typeahead/mef-typeahead';
 import { PatronsTypeahead } from './classes/typeahead/patrons-typeahead';
 import { TabOrderDirective } from './directives/tab-order.directive';
@@ -72,6 +69,7 @@ import { ItemInCollectionPipe } from './pipe/item-in-collection.pipe';
 import { MainTitleRelationPipe } from './pipe/main-title-relation.pipe';
 import { MarcPipe } from './pipe/marc.pipe';
 import { NotesFormatPipe } from './pipe/notes-format.pipe';
+import { PatronNamePipe } from './pipe/patron-name.pipe';
 import { SubjectProcessPipe } from './pipe/subject-process.pipe';
 import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policies-brief-view.component';
 import { CollectionBriefViewComponent } from './record/brief-view/collection-brief-view.component';
@@ -82,6 +80,9 @@ import { ItemTypesBriefViewComponent } from './record/brief-view/item-types-brie
 import { ItemsBriefViewComponent } from './record/brief-view/items-brief-view/items-brief-view.component';
 import { LibrariesBriefViewComponent } from './record/brief-view/libraries-brief-view.component';
 import { LoansBriefViewComponent } from './record/brief-view/loans-brief-view/loans-brief-view.component';
+import { PatronTransactionEventDefaultComponent } from './record/brief-view/patron-transaction-events-brief-view/patron-transaction-event-default.component';
+import { PatronTransactionEventOverdueComponent } from './record/brief-view/patron-transaction-events-brief-view/patron-transaction-event-overdue.component';
+import { PatronTransactionEventsBriefViewComponent } from './record/brief-view/patron-transaction-events-brief-view/patron-transaction-events-brief-view.component';
 import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-brief-view.component';
 import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view/patrons-brief-view.component';
 import { TemplatesBriefViewComponent } from './record/brief-view/templates-brief-view.component';
@@ -150,18 +151,24 @@ import { LocalFieldComponent } from './record/detail-view/local-field/local-fiel
 import { LocationDetailViewComponent } from './record/detail-view/location-detail-view/location-detail-view.component';
 import { OrganisationDetailViewComponent } from './record/detail-view/organisation-detail-view/organisation-detail-view.component';
 import { PatronDetailViewComponent } from './record/detail-view/patron-detail-view/patron-detail-view.component';
+import { PatronPermissionComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permission/patron-permission.component';
+import { PatronPermissionsComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permissions.component';
 import { PatronTypesDetailViewComponent } from './record/detail-view/patron-types-detail-view/patron-types-detail-view.component';
 import { PermissionDetailViewComponent } from './record/detail-view/permission-detail-view/permission-detail-view.component';
 import { RecordMaskedComponent } from './record/detail-view/record-masked/record-masked.component';
 import { TemplateDetailViewComponent } from './record/detail-view/template-detail-view/template-detail-view.component';
 import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
-import { DocumentRecordSearchComponent } from './record/search-view/document-record-search/document-record-search.component';
 import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
 import { UserIdComponent } from './record/editor/wrappers/user-id/user-id.component';
 import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patron-type-item-type/cipo-patron-type-item-type.component';
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { OperationLogsDialogComponent } from './record/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
 import { OperationLogsComponent } from './record/operation-logs/operation-logs.component';
+import { DocumentRecordSearchComponent } from './record/search-view/document-record-search/document-record-search.component';
+import { PatronTransactionEventSearchViewComponent } from './record/search-view/patron-transaction-event-search-view/patron-transaction-event-search-view.component';
+import { PaymentsDataComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/payments-data.component';
+import { PaymentDataPieComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/pie/payment-data-pie.component';
+import { PaymentsDataTableComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/table/payments-data-table.component';
 import { AppConfigService } from './service/app-config.service';
 import { AppInitializerService } from './service/app-initializer.service';
 import { OrganisationService } from './service/organisation.service';
@@ -170,15 +177,6 @@ import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service'
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { PatronTransactionEventsBriefViewComponent } from './record/brief-view/patron-transaction-events-brief-view/patron-transaction-events-brief-view.component';
-import { PatronNamePipe } from './pipe/patron-name.pipe';
-import { PatronTransactionEventOverdueComponent } from './record/brief-view/patron-transaction-events-brief-view/patron-transaction-event-overdue.component';
-import { PatronTransactionEventDefaultComponent } from './record/brief-view/patron-transaction-events-brief-view/patron-transaction-event-default.component';
-import { PatronTransactionEventSearchViewComponent } from './record/search-view/patron-transaction-event-search-view/patron-transaction-event-search-view.component';
-import { PaymentsDataTableComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/table/payments-data-table.component';
-import { PaymentDataPieComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/pie/payment-data-pie.component';
-import { PatronPermissionsComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permissions.component';
-import { PatronPermissionComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permission/patron-permission.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -366,8 +364,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         // Use the "multi" parameter to allow the recovery of several services in the injector.
         { provide: typeaheadToken, useExisting: DocumentsTypeahead, multi: true },
         { provide: typeaheadToken, useExisting: ItemsTypeahead, multi: true },
-        { provide: typeaheadToken, useExisting: MefOrganisationTypeahead, multi: true },
-        { provide: typeaheadToken, useExisting: MefPersonTypeahead, multi: true },
+        { provide: typeaheadToken, useExisting: MefTypeahead, multi: true },
         { provide: typeaheadToken, useExisting: PatronsTypeahead, multi: true },
         {
             provide: CoreConfigService,
@@ -384,8 +381,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         ItemsTypeahead,
         PatronsTypeahead,
         MainTitlePipe,
-        MefPersonTypeahead,
-        MefOrganisationTypeahead,
+        MefTypeahead,
         TruncateTextPipe,
         CurrentLibraryPermissionValidator,
         ReceivedOrderPermissionValidator,
