@@ -152,16 +152,16 @@ export const testUserPatronWithSettings = {
   ],
   settings: {
     baseUrl: 'https://bib.rero.ch',
-    contributionSources: [
+    agentSources: [
       'idref',
       'gnd',
       'rero'
     ],
-    contributionAgentTypes: {
+    agentAgentTypes: {
       'bf:Person': 'persons',
       'bf:Organisation': 'corporate-bodies'
     },
-    contributionsLabelOrder: {
+    agentLabelOrder: {
       de: [
         'gnd',
         'idref',
@@ -365,16 +365,16 @@ export const testUserPatronMultipleOrganisationsWithSettings = {
   ],
   settings: {
     baseUrl: 'https://bib.rero.ch',
-    contributionSources: [
+    agentSources: [
       'idref',
       'gnd',
       'rero'
     ],
-    contributionAgentTypes: {
+    agentAgentTypes: {
       'bf:Person': 'persons',
       'bf:Organisation': 'corporate-bodies'
     },
-    contributionsLabelOrder: {
+    agentLabelOrder: {
       de: [
         'gnd',
         'idref',
@@ -457,16 +457,16 @@ export const testUserLibrarianWithSettings = {
   ],
   settings: {
     baseUrl: 'https://bib.rero.ch',
-    contributionSources: [
+    agentSources: [
       'idref',
       'gnd',
       'rero'
     ],
-    contributionAgentTypes: {
+    agentAgentTypes: {
       'bf:Person': 'persons',
       'bf:Organisation': 'corporate-bodies'
     },
-    contributionsLabelOrder: {
+    agentLabelOrder: {
       de: [
         'gnd',
         'idref',

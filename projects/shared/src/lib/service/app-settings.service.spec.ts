@@ -50,17 +50,17 @@ describe('ApplicationSettingsService', () => {
 
   it('should return the parameter contribution sources', () => {
     service.settings = settings;
-    expect(service.contributionSources).toEqual(settings.contributionSources);
+    expect(service.agentSources).toEqual(settings.agentSources);
   });
 
   it('should return the parameter contributions agent types', () => {
     service.settings = settings;
-    expect(service.contributionAgentTypes).toEqual(settings.contributionAgentTypes);
+    expect(service.agentAgentTypes).toEqual(settings.agentAgentTypes);
   });
 
   it('should return the parameter contributions label order', () => {
     service.settings = settings;
-    expect(service.contributionsLabelOrder).toEqual(settings.contributionsLabelOrder);
+    expect(service.agentLabelOrder).toEqual(settings.agentLabelOrder);
   });
 
   it('should return the parameter global view', () => {

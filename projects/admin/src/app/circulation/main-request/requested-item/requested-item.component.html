@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2019-2023 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -44,19 +44,7 @@
     <a [routerLink]="['/records','documents','detail', document.pid]" *ngIf="document.title | mainTitle as title ">
       {{ title }}
     </a><br/>
-    <ng-container *ngIf="document.contribution && document.contribution.length > 0">
-      <ul class="list-inline mb-0 small" *ngIf="document && document.contribution">
-        <li *ngFor="let contribution of document.contribution; let last = last; let i = index" class="list-inline-item">
-          <span *ngIf="!contribution.agent.pid" [innerHTML]="contribution | contributionFormat: true"></span>
-          <a
-            *ngIf="contribution.agent.pid"
-            [innerHTML]="contribution | contributionFormat: true"
-            [routerLink]="['/records', 'persons', 'detail', contribution.agent.pid]">
-          </a>
-          {{ last ? '' : '; ' }}
-        </li>
-      </ul>
-    </ng-container>
+    <shared-contribution [contributions]="document?.contribution"></shared-contribution>
   </div>
   <div name="call-number" class="col-2">
     <shared-inherited-call-number [item]="item"></shared-inherited-call-number>

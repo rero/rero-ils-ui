@@ -53,7 +53,7 @@ export class ContributionDetailViewComponent implements DetailRecord, OnInit {
     this.documents$ = this.record$.pipe(
       switchMap((record: any) => {
         const contributionPid = record.metadata.pid;
-        const query = `contribution.agent.pid:${contributionPid}`;
+        const query = `contribution.entity.pid:${contributionPid}`;
         return this._recordService.getRecords(
         'documents', query, 1, RecordService.MAX_REST_RESULTS_SIZE
       ); }),

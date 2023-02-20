@@ -176,7 +176,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
             },
             {
               key: 'persons',
-              index: 'contributions',
+              index: 'entities',
               component: ContributionBriefComponent,
               label: _('Persons'),
               aggregationsOrder: ['sources'],
@@ -193,7 +193,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
             },
             {
               key: 'corporate-bodies',
-              index: 'contributions',
+              index: 'entities',
               component: ContributionBriefComponent,
               label: _('Corporate bodies'),
               aggregationsOrder: ['sources'],

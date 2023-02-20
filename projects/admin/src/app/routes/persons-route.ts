@@ -59,7 +59,7 @@ export class PersonsRoute extends BaseRoute implements RouteInterface {
         types: [
           {
             key: 'persons',
-            index: 'contributions',
+            index: 'entities',
             label: _('Persons'),
             component: ContributionBriefComponent,
             detailComponent: ContributionDetailViewComponent,
