@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,17 +19,18 @@ import { Router } from '@angular/router';
 import { EntitiesRoute } from '@app/admin/routes/entities-route';
 import { TranslateService } from '@ngx-translate/core';
 import { RouteCollectionService } from '@rero/ng-core';
+import { AccountsRoute as AcqAccountsRoute } from '../acquisition/routes/accounts-route';
+import { BudgetsRoute as AcqBudgetsRoute } from '../acquisition/routes/budgets-route';
+import { OrderLinesRoute as AcqOrderLinesRoute } from '../acquisition/routes/order-lines-route';
+import { OrdersRoute as AcqOrdersRoute } from '../acquisition/routes/orders-route';
 import { ReceiptLinesRoute } from '../acquisition/routes/receipt-lines-route';
 import { ReceiptsRoute } from '../acquisition/routes/receipts-route';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
-import { AccountsRoute as AcqAccountsRoute } from '../acquisition/routes/accounts-route';
-import { OrderLinesRoute as AcqOrderLinesRoute } from '../acquisition/routes/order-lines-route';
-import { OrdersRoute as AcqOrdersRoute } from '../acquisition/routes/orders-route';
-import { BudgetsRoute as AcqBudgetsRoute } from '../acquisition/routes/budgets-route';
 import { CirculationPoliciesRoute } from './circulation-policies-route';
 import { CollectionsRoute } from './collections-route';
-import { EntitiesRemoteRoute } from './entities-remote-route';
 import { DocumentsRoute } from './documents-route';
+import { EntitiesLocalRoute } from './entities-local-route';
+import { EntitiesRemoteRoute } from './entities-remote-route';
 import { HoldingsRoute } from './holdings-route';
 import { IllRequestsRoute } from './ill-requests-route';
 import { ImportDocumentsRoute } from './import-documents-route';
@@ -44,8 +45,8 @@ import { OrganisationsRoute } from './organisations-route';
 import { PatronTransactionEventsRoute } from './patron-transaction-events-route';
 import { PatronTypesRoute } from './patron-types-route';
 import { PatronsRoute } from './patrons-route';
-import { EntitiesLocalRoute } from './entities-local-route';
 import { RouteToolService } from './route-tool.service';
+import { StatisticsCfgRoute } from './statistics-cfg-route';
 import { TemplatesRoute } from './templates-route';
 import { VendorsRoute } from './vendors-route';
 
@@ -94,6 +95,7 @@ export class RouteService {
       .addRoute(new EntitiesRoute(this._routeToolService))
       .addRoute(new EntitiesRemoteRoute(this._routeToolService))
       .addRoute(new EntitiesLocalRoute(this._routeToolService))
+      .addRoute(new StatisticsCfgRoute(this._routeToolService))
       // Route from acquisition modules
       .addRoute(new AcqBudgetsRoute(this._routeToolService))
       .addRoute(new AcqAccountsRoute(this._routeToolService))
