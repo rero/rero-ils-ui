@@ -1,0 +1,62 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2023 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<ng-container *ngIf="record$ | async as record">
+  <header class="mb-2">
+    <h1>{{ record.metadata.name }}</h1>
+    <span [innerHTML]="record.metadata.description | nl2br"></span>
+  </header>
+  <section class="my-4">
+    <dl class="row mb-0">
+      <dt class="col-3 label-title" translate>Is active</dt>
+      <dd class="col-9">
+        <i
+          class="fa fa-circle"
+          [ngClass]="{'text-success': record.metadata.is_active, 'text-danger': !record.metadata.is_active}"
+        ></i>
+      </dd>
+
+      <dt class="col-3 label-title" translate>Category</dt>
+      <dd class="col-9">{{ record.metadata.category.type | translate }}</dd>
+
+      <dt class="col-3 label-title" translate>Indicator</dt>
+      <dd class="col-9">{{ record.metadata.category.indicator.type | translate }}</dd>
+
+      <dt class="col-3 label-title" translate>Frequency</dt>
+      <dd class="col-9">{{ record.metadata.frequency | translate }}</dd>
+
+      <ng-container *ngIf="record.metadata.category.period">
+        <dt class="col-3 label-title" translate>Period</dt>
+        <dd class="col-9">{{ record.metadata.category.period | translate }}</dd>
+      </ng-container>
+
+      <ng-container *ngIf="record.metadata.category.indicator.distributions">
+        <dt class="col-3 label-title" translate>Distributions</dt>
+        <dd class="col-9">
+          <ul class="list-inline">
+            <li *ngFor="let dist of record.metadata.category.indicator.distributions">{{ dist | translate }}</li>
+          </ul>
+        </dd>
+      </ng-container>
+
+      <ng-container *ngIf="record.metadata.category.filter">
+        <dt class="col-3 label-title" translate>Filter</dt>
+        <dd class="col-9">{{ record.metadata.category.filter }}</dd>
+      </ng-container>
+    </dl>
+  </section>
+</ng-container>

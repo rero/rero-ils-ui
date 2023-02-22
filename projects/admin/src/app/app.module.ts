@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
- * Copyright (C) 2019-2022 UCLouvain
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -179,6 +179,8 @@ import { PaymentsDataTableComponent } from './record/search-view/patron-transact
 import { PaymentDataPieComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/pie/payment-data-pie.component';
 import { PatronPermissionsComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permissions.component';
 import { PatronPermissionComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permission/patron-permission.component';
+import { StatisticsCfgDetailViewComponent } from './record/detail-view/statistics-cfg-detail-view/statistics-cfg-detail-view.component';
+import { StatisticsCfgBriefViewComponent } from './record/brief-view/statistics-cfg-brief-view-component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -296,7 +298,9 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         PaymentsDataTableComponent,
         PaymentDataPieComponent,
         PatronPermissionsComponent,
-        PatronPermissionComponent
+        PatronPermissionComponent,
+        StatisticsCfgBriefViewComponent,
+        StatisticsCfgDetailViewComponent,
     ],
     imports: [
         AppRoutingModule,
