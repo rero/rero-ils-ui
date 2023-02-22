@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -220,7 +220,7 @@ export const MENU_APP: IMenuParent[] = [
         access: {
           permissions: [PERMISSIONS.PTTR_ACCESS]
         }
-      },
+      }
     ]
   },
   /** ADMIN MENU */
@@ -290,6 +290,15 @@ export const MENU_APP: IMenuParent[] = [
         extras: { iconClass: 'fa fa-file-code-o' },
         access: {
           permissions: [PERMISSIONS.TMPL_ACCESS]
+        }
+      },
+      {
+        name: 'Statistics configuration',
+        router_link: ['/', 'records', 'stats_cfg'],
+        attributes: { id: 'stats-cfg-menu' },
+        extras: { iconClass: 'fa fa-cog' },
+        access: {
+          permissions: [PERMISSIONS.STAT_CFG_ACCESS]
         }
       },
       {
