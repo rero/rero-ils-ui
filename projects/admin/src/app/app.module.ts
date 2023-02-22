@@ -87,6 +87,7 @@ import { PatronTransactionEventOverdueComponent } from './record/brief-view/patr
 import { PatronTransactionEventsBriefViewComponent } from './record/brief-view/patron-transaction-events-brief-view/patron-transaction-events-brief-view.component';
 import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-brief-view.component';
 import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view/patrons-brief-view.component';
+import { StatisticsCfgBriefViewComponent } from './record/brief-view/statistics-cfg-brief-view-component';
 import { TemplatesBriefViewComponent } from './record/brief-view/templates-brief-view.component';
 import { VendorBriefViewComponent } from './record/brief-view/vendor-brief-view.component';
 import { CirculationLogLoanComponent } from './record/circulation-logs/circulation-log/circulation-log-loan/circulation-log-loan.component';
@@ -167,6 +168,7 @@ import { PatronPermissionsComponent } from './record/detail-view/patron-detail-v
 import { PatronTypesDetailViewComponent } from './record/detail-view/patron-types-detail-view/patron-types-detail-view.component';
 import { PermissionDetailViewComponent } from './record/detail-view/permission-detail-view/permission-detail-view.component';
 import { RecordMaskedComponent } from './record/detail-view/record-masked/record-masked.component';
+import { StatisticsCfgDetailViewComponent } from './record/detail-view/statistics-cfg-detail-view/statistics-cfg-detail-view.component';
 import { TemplateDetailViewComponent } from './record/detail-view/template-detail-view/template-detail-view.component';
 import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
 import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
@@ -322,7 +324,9 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         LocalWorkDetailViewComponent,
         RemoteTopicDetailViewComponent,
         AddEntityLocalComponent,
-        AddEntityLocalFormComponent
+        AddEntityLocalFormComponent,
+        StatisticsCfgBriefViewComponent,
+        StatisticsCfgDetailViewComponent,
     ],
     imports: [
       AppRoutingModule,
