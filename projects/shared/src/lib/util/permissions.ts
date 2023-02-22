@@ -114,6 +114,10 @@ export const PERMISSIONS = {
   'TMPL_ACCESS': 'tmpl-access',
   'TMPL_CREATE': 'tmpl-create',
   'TMPL_SEARCH': 'tmpl-search',
+  // Statistics Configuration
+  'STAT_CFG_ACCESS': 'stat_cfg-access',
+  'STAT_CFG_CREATE': 'stat_cfg-create',
+  'STAT_CFG_SEARCH': 'stat_cfg-search',
   // Admin User interface access
   'UI_ACCESS': 'admin-ui-access',
   // Vendors
