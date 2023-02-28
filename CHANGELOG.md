@@ -1,5 +1,25 @@
 # Changelog
 
+## [v14.1.0](https://github.com/rero/rero-ils-ui/tree/v14.1.0) (2023-02-28)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.0.1...v14.1.0)
+
+**New features:**
+* Add permissions [\#937](https://github.com/rero/rero-ils-ui/pull/937) (by @zannkukai)
+* inventory: current pending requests [\#930](https://github.com/rero/rero-ils-ui/pull/930) (by @Garfield-fr)
+* user: password validator [\#915](https://github.com/rero/rero-ils-ui/pull/915) (by @Garfield-fr)
+* circulation: add manuel fee [\#917](https://github.com/rero/rero-ils-ui/pull/917) (by @Garfield-fr)
+
+**Fixes:**
+* circulation: fix manual fee modal dialog [\#940](https://github.com/rero/rero-ils-ui/pull/940) (by @zannkukai)
+* library: fix editor [\#935](https://github.com/rero/rero-ils-ui/pull/935) (by @zannkukai)
+* menu: fix generate menu with variables [\#939](https://github.com/rero/rero-ils-ui/pull/939) (by @Garfield-fr)
+* local_fields: fix local fields orders [\#905](https://github.com/rero/rero-ils-ui/pull/905) (by @zannkukai)
+* issues: fix issue sorting [\#932](https://github.com/rero/rero-ils-ui/pull/932) (by @zannkukai)
+
+**Other changes:**
+* dev: add better support of `npm link` [\#929](https://github.com/rero/rero-ils-ui/pull/929) (by @jma)
+
 ## [v14.0.1](https://github.com/rero/rero-ils-ui/tree/v14.0.1) (2023-01-13)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.0.0...v14.0.1)
