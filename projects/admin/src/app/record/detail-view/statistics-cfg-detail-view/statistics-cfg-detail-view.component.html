@@ -29,34 +29,43 @@
           [ngClass]="{'text-success': record.metadata.is_active, 'text-danger': !record.metadata.is_active}"
         ></i>
       </dd>
-
-      <dt class="col-3 label-title" translate>Category</dt>
-      <dd class="col-9">{{ record.metadata.category.type | translate }}</dd>
-
-      <dt class="col-3 label-title" translate>Indicator</dt>
-      <dd class="col-9">{{ record.metadata.category.indicator.type | translate }}</dd>
-
       <dt class="col-3 label-title" translate>Frequency</dt>
       <dd class="col-9">{{ record.metadata.frequency | translate }}</dd>
-
-      <ng-container *ngIf="record.metadata.category.period">
-        <dt class="col-3 label-title" translate>Period</dt>
-        <dd class="col-9">{{ record.metadata.category.period | translate }}</dd>
-      </ng-container>
-
-      <ng-container *ngIf="record.metadata.category.indicator.distributions">
-        <dt class="col-3 label-title" translate>Distributions</dt>
-        <dd class="col-9">
-          <ul class="list-inline">
-            <li *ngFor="let dist of record.metadata.category.indicator.distributions">{{ dist | translate }}</li>
-          </ul>
-        </dd>
-      </ng-container>
-
-      <ng-container *ngIf="record.metadata.category.filter">
-        <dt class="col-3 label-title" translate>Filter</dt>
-        <dd class="col-9">{{ record.metadata.category.filter }}</dd>
-      </ng-container>
     </dl>
+
+    <div class="card mt-3">
+      <h5 class="card-header" translate>Configuration</h5>
+      <div class="card-body container">
+        <dl class="row mb-0">
+          <dt class="col-3 label-title" translate>Category</dt>
+          <dd class="col-9">{{ record.metadata.category.type | translate }}</dd>
+
+          <dt class="col-3 label-title" translate>Indicator</dt>
+          <dd class="col-9">{{ record.metadata.category.indicator.type | translate }}</dd>
+
+          <ng-container *ngIf="record.metadata.category.indicator.period">
+            <dt class="col-3 label-title" translate>Period</dt>
+            <dd class="col-9">{{ record.metadata.category.indicator.period | translate }}</dd>
+          </ng-container>
+
+          <ng-container *ngIf="record.metadata.category.indicator.distributions">
+            <dt class="col-3 label-title" translate>Distributions</dt>
+            <dd class="col-9">
+              <ul class="list-inline mb-0">
+                <li
+                  *ngFor="let dist of record.metadata.category.indicator.distributions; let last = last"
+                  class="list-inline-item"
+                >{{ dist | translate }}{{ last ? '' : ' / ' }}</li>
+              </ul>
+            </dd>
+          </ng-container>
+
+          <ng-container *ngIf="record.metadata.category.indicator.filter">
+            <dt class="col-3 label-title" translate>Filter</dt>
+            <dd class="col-9">{{ record.metadata.category.indicator.filter }}</dd>
+          </ng-container>
+        </dl>
+      </div>
+    </div>
   </section>
 </ng-container>
