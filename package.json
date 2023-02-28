@@ -1,6 +1,6 @@
 {
   "name": "@rero/rero-ils-ui",
-  "version": "14.0.1",
+  "version": "14.1.0",
   "license": "AGPL-3.0-only",
   "author": {
     "name": "RERO",
@@ -85,7 +85,7 @@
     "@ngx-loading-bar/http-client": "^6.0.0",
     "@ngx-loading-bar/router": "^6.0.0",
     "@ngx-translate/core": "^14.0.0",
-    "@rero/ng-core": "^14.1.0",
+    "@rero/ng-core": "^14.2.0",
     "@swimlane/ngx-charts": "^20.1.2",
     "bootstrap": "^4.6.2",
     "crypto-js": "^4.1.1",
