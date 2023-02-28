@@ -29,8 +29,7 @@ import { ResultItem } from '@rero/ng-core';
     ></i>
   <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a></h5>
   <div class="card-text">
-    <div *ngIf="record.metadata.description">
-      {{ record.metadata.description }}
+    <div *ngIf="record.metadata.description" [innerHTML]="record.metadata.description | truncateText: 30">
     </div>
     <div>
       <b translate>Category</b>: {{ record.metadata.category.type | translate }}

@@ -16,7 +16,7 @@
  */
 
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { DetailComponent, RecordSearchPageComponent, RouteInterface } from "@rero/ng-core";
+import { DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from "@rero/ng-core";
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
 import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../guard/can-access.guard';
@@ -30,15 +30,19 @@ export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
   /** Route name */
   readonly name = 'stats_cfg';
 
+  /** Record type */
+  readonly recordType = 'stats_cfg';
+
   getConfiguration() {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
         { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.STAT_CFG_ACCESS, PERMISSIONS.STAT_CFG_SEARCH ], operator: PERMISSION_OPERATOR.AND }},
-        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } }
+        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
+        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.STAT_CFG_CREATE ] } }
       ],
       data: {
-        adminMode: () => of({ can: false, message: '' }),
         types: [
           {
             key: this.name,
@@ -54,7 +58,19 @@ export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
             ],
             aggregationsOrder: [
               'category'
-            ]
+            ],
+            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.STAT_CFG_CREATE) }),
+            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            preCreateRecord: (data: any) => {
+              const user = this._routeToolService.userService.user;
+              data.organisation = {
+                $ref: this._routeToolService.apiService.getRefEndpoint(
+                  'organisations',
+                  user.currentOrganisation
+                )
+              };
+              return data;
+            },
           }
         ]
       }
