@@ -181,6 +181,7 @@ import { PatronPermissionsComponent } from './record/detail-view/patron-detail-v
 import { PatronPermissionComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permission/patron-permission.component';
 import { StatisticsCfgDetailViewComponent } from './record/detail-view/statistics-cfg-detail-view/statistics-cfg-detail-view.component';
 import { StatisticsCfgBriefViewComponent } from './record/brief-view/statistics-cfg-brief-view-component';
+import { StatisticsBriefViewComponent } from './record/brief-view/statistics-brief-view-component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -301,6 +302,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         PatronPermissionComponent,
         StatisticsCfgBriefViewComponent,
         StatisticsCfgDetailViewComponent,
+        StatisticsBriefViewComponent
     ],
     imports: [
         AppRoutingModule,

@@ -46,6 +46,7 @@ import { PatronsRoute } from './patrons-route';
 import { PersonsRoute } from './persons-route';
 import { RouteToolService } from './route-tool.service';
 import { StatisticsCfgRoute } from './statistics-cfg-route';
+import { StatisticsRoute } from './statistics-route';
 import { TemplatesRoute } from './templates-route';
 import { VendorsRoute } from './vendors-route';
 
@@ -94,6 +95,7 @@ export class RouteService {
       .addRoute(new LoansRoute(this._routeToolService))
       .addRoute(new PatronTransactionEventsRoute(this._routeToolService))
       .addRoute(new StatisticsCfgRoute(this._routeToolService))
+      .addRoute(new StatisticsRoute(this._routeToolService))
       // Route from acquisition modules
       .addRoute(new AcqBudgetsRoute(this._routeToolService))
       .addRoute(new AcqAccountsRoute(this._routeToolService))

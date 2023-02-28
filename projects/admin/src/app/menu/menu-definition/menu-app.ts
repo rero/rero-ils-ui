@@ -220,6 +220,15 @@ export const MENU_APP: IMenuParent[] = [
         access: {
           permissions: [PERMISSIONS.PTTR_ACCESS]
         }
+      },
+      {
+        name: 'Statistics',
+        router_link: ['/', 'records', 'stats'],
+        attributes: { id: 'stats-menu' },
+        extras: { iconClass: 'fa fa-list' },
+        access: {
+          permissions: [PERMISSIONS.STAT_CFG_ACCESS]
+        }
       }
     ]
   },
