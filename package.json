@@ -94,7 +94,7 @@
     "issn": "^1.0.6",
     "js-generate-password": "^0.1.7",
     "lodash-es": "^4.17.21",
-    "luxon": "^3.1.1",
+    "luxon": "^3.2.1",
     "marked": "^4.1.1",
     "moment": "^2.29.1",
     "ngx-bootstrap": "^9.0.0",
