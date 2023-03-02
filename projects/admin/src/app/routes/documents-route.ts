@@ -125,6 +125,16 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             listHeaders: {
               Accept: 'application/rero+json, application/json'
             },
+            exportFormats: [
+              {
+                label: 'JSON',
+                format: 'raw',
+              },
+              {
+                label: 'RIS (Endnote, Zotero, ...)',
+                format: 'ris',
+              },
+            ],
             sortOptions: [
               {
                 label: _('Relevance'),
