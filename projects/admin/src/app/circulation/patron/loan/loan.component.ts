@@ -141,8 +141,6 @@ export class LoanComponent implements OnInit, OnDestroy {
     this._subscription.add(this._patronService.currentPatron$.subscribe((patron: any) => {
       this.patron = patron;
       if (patron) {
-        this.patron.displayPatronMode = true;
-
         const loanedItems$ = this._patronService.getItems(patron.pid, this._sortCriteria);
         const pickupItems$ = this._patronService.getItemsPickup(patron.pid);
         forkJoin([loanedItems$, pickupItems$]).subscribe(
