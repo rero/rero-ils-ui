@@ -153,20 +153,16 @@ export class CheckinComponent implements OnInit {
   getPatronInfo(barcode: string) {
     if (barcode) {
       this.barcode = barcode;
-      this._patronService.getPatron(barcode).pipe(
-        map(patron => {
-          if (patron) {
-            patron.displayPatronMode = false;
-          }
-        })
-      ).subscribe(
-        () => {},
-        (error) => {
+      this._patronService
+        .getPatron(barcode)
+        .subscribe(
+          () => {},
+          (error) => {
             this._toastService.error(
               error.message,
               this._translate.instant('Checkin')
             );
-        }
+          }
         );
     } else {
       this.patronInfo = null;

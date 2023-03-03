@@ -34,6 +34,8 @@ export class CardComponent {
   @Input() barcode: string;
   /** is the circulation messages should be displayed */
   @Input() displayCirculationMessages = false;
+  /** is the clear patron button should be displayed or not */
+  @Input() clearPatronButton = true;
   /** which link should be use on the main patron name */
   @Input() linkMode: 'circulation'|'detail' = 'detail';
   /** event emitter when the close button are fired */
