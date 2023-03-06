@@ -37,8 +37,11 @@ export class RequestComponent implements OnInit {
   /** Holdings item count */
   @Input() holdingsItemsCount: number;
 
+  /** All elements are loaded. */
+  loaded = false;
+
   /** Item Can request with reason(s) */
-  canRequest: {
+  canRequest = {
     can: false,
     reasons: []
   };
@@ -88,7 +91,19 @@ export class RequestComponent implements OnInit {
             this.record.metadata.pid,
             this.record.metadata.library.pid,
             this._patron.patron.barcode[0],
-          ).subscribe((can: any) => this.canRequest = can);
+          ).subscribe((canRequest: any) => {
+            if (canRequest) {
+              this.canRequest.can = canRequest.can;
+              const keys = Object.keys(canRequest.reasons);
+              if (keys.length > 0) {
+                keys.map((key: string) => {
+                  const messages: string[] = Object.keys(canRequest.reasons[key]);
+                  this.canRequest.reasons = this.canRequest.reasons.concat(messages);
+                });
+              }
+            }
+            this.loaded = true;
+          });
         }
       }
     }

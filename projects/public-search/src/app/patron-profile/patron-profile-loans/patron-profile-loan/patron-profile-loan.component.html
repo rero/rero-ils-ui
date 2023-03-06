@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2023 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -66,7 +66,7 @@
           <button
             type="button"
             class="btn btn-sm btn-primary disabled"
-            tooltip="{{ canExtend.reasons | arrayTranslate | join:'<br>'}}"
+            tooltip="{{ canExtend.reasons | arrayTranslate | join: ' ' }}"
             translate
           >Renew</button>
         </ng-template>

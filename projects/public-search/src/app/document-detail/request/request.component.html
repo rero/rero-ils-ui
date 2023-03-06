@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2023 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,17 +14,37 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="patron">
+<ng-container *ngIf="loaded">
   <ng-container *ngIf="!requestDialog; else requestPickupDialog">
-    <ng-container *ngIf="canRequest">
-      <dl *ngIf="canRequest.can" id="record-request-{{ record.metadata.pid }}" class="row" [ngClass]="{'row pl-4': recordType === 'item', 'mb-3': recordType === 'holding'}">
-        <dt *ngIf="recordType !== 'holding'" class="mt-2 mb-3 col-lg-2 col-sm-3">&nbsp;</dt>
-        <dd class="mt-2 mb-3 col-lg-9 col-sm-8">
+    <dl id="record-request-{{ record.metadata.pid }}" class="row" [ngClass]="{'row pl-4': recordType === 'item', 'mb-3': recordType === 'holding'}">
+      <dt *ngIf="recordType !== 'holding'" class="mt-2 mb-3 col-lg-2 col-sm-3">&nbsp;</dt>
+      <dd class="mt-2 mb-3 col-lg-9 col-sm-8">
+        <button
+          *ngIf="canRequest?.can; else requestDisabled"
+          id="record-{{ record.metadata.pid }}-request-button"
+          class="btn btn-sm"
+          [ngClass]="{'btn-primary': recordType === 'item', 'btn-outline-primary': recordType === 'holding'}"
+          (click)="showRequestDialog()"
+        >
+          <ng-container *ngIf="recordType === 'item'; else holdingsButton">
+            {{ 'Request' | translate }}
+          </ng-container>
+          <ng-template #holdingsButton>
+            <ng-container *ngIf="holdingsItemsCount > 0; else holdingsNoItems">
+              {{ 'Request another issue' | translate }}
+            </ng-container>
+            <ng-template #holdingsNoItems>
+              {{ 'Request an issue' | translate }}
+            </ng-template>
+          </ng-template>
+        </button>
+        <ng-template #requestDisabled>
           <button
-            id="record-{{ record.metadata.pid }}-request-button"
-            class="btn btn-sm"
+            type="button"
+            class="btn btn-sm disabled"
             [ngClass]="{'btn-primary': recordType === 'item', 'btn-outline-primary': recordType === 'holding'}"
-            (click)="showRequestDialog()"
+            tooltip="{{ canRequest?.reasons | arrayTranslate | join: ' ' }}"
+            translate
           >
             <ng-container *ngIf="recordType === 'item'; else holdingsButton">
               {{ 'Request' | translate }}
@@ -38,9 +58,9 @@
               </ng-template>
             </ng-template>
           </button>
-        </dd>
-      </dl>
-    </ng-container>
+        </ng-template>
+      </dd>
+    </dl>
   </ng-container>
   <ng-template #requestPickupDialog>
     <dl class="m-0 ml-4 py-2 row">

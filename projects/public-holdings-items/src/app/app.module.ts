@@ -29,6 +29,7 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CoreConfigService, CoreModule, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { HoldingComponent } from 'projects/public-search/src/app/document-detail/holdings/holding/holding.component';
 import { HoldingsComponent } from 'projects/public-search/src/app/document-detail/holdings/holdings.component';
@@ -36,6 +37,7 @@ import { ItemsComponent } from 'projects/public-search/src/app/document-detail/h
 import { ItemComponent } from 'projects/public-search/src/app/document-detail/item/item.component';
 import { PickupLocationComponent } from 'projects/public-search/src/app/document-detail/request/pickup-location/pickup-location.component';
 import { RequestComponent } from 'projects/public-search/src/app/document-detail/request/request.component';
+import { ArrayTranslatePipe } from 'projects/public-search/src/app/pipe/array-translate.pipe';
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
 
@@ -52,7 +54,8 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
         ItemsComponent,
         HoldingComponent,
         RequestComponent,
-        PickupLocationComponent
+        PickupLocationComponent,
+        ArrayTranslatePipe
     ],
     imports: [
         BrowserModule,
@@ -76,7 +79,8 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
         TypeaheadModule.forRoot(),
         SharedModule,
         LoadingBarHttpClientModule,
-        LoadingBarModule
+        LoadingBarModule,
+        TooltipModule.forRoot()
     ],
     providers: [
         { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
