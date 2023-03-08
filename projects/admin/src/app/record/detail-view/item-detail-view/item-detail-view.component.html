@@ -15,8 +15,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="record">
-  <div *ngIf="isIssue">
-    <a [routerLink]="parentHoldingUrl">
+  <div *ngIf="record.metadata.type === 'issue'">
+    <a [routerLink]="['/', 'record', 'holdings', 'detail', record.metadata.holding.pid]">
       <i class="fa fa-arrow-left mr-1"></i>
       {{ 'Back to parent holding' | translate }}
     </a>
@@ -128,7 +128,7 @@
 
 
   <!-- ISSUE DATA -->
-  <section *ngIf="isIssue">
+  <section *ngIf="record.metadata.type === 'issue'">
     <header>
       <h3 translate>Issue data</h3>
     </header>
@@ -189,80 +189,80 @@
   </section>
 
   <!-- LEGACY -->
-  <ng-container *ngIf="(record.metadata | keyExists:'legacy_checkout_count') || (record.metadata | keyExists:'legacy_circulation_rules')">
-    <section class="mb-4 mt-4">
-      <header class="row">
-        <h4 translate>Legacy circulation rules</h4>
-      </header>
-      <dl class="row mb-0">
-        <!-- LEGACY CHECKOUT COUNT -->
-        <ng-container *ngIf="record.metadata | keyExists:'legacy_checkout_count'">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Checkout count
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ record.metadata.legacy_checkout_count }}
-          </dd>
-        </ng-container>
-        <!-- LEGACY LOAN DURATION -->
-        <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'loan_duration'">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Loan duration
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ record.metadata.legacy_circulation_rules.loan_duration }}
-          </dd>
-        </ng-container>
-        <!-- LEGACY USE ITEM SPECIFIC RULES -->
-        <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'use_item_specific_rules'">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Use item specific rules
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            <i
-              class="fa fa-circle"
-              [ngClass]="{
-                'text-danger': !record.metadata.legacy_circulation_rules.use_item_specific_rules,
-                'text-success': !record.metadata.legacy_circulation_rules.use_item_specific_rules
-              }"
-              aria-hidden="true"
-            ></i>
-          </dd>
-        </ng-container>
-        <!-- LEGACY ALLOW REQUEST -->
-        <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'allow_request'">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Allow request
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            <i
-              class="fa fa-circle"
-              [ngClass]="{
-                'text-danger': !record.metadata.legacy_circulation_rules.allow_request,
-                'text-success': record.metadata.legacy_circulation_rules.allow_request }"
-              aria-hidden="true"
-            ></i>
-          </dd>
-        </ng-container>
-        <!-- LEGACY ALLOW REQUEST -->
-        <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'floats'">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Floats
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            <i
-              class="fa fa-circle"
-              [ngClass]="{
-                'text-danger': !record.metadata.legacy_circulation_rules.floats,
-                'text-success': record.metadata.legacy_circulation_rules.floats
-              }"
-              aria-hidden="true"
-            ></i>
-          </dd>
-        </ng-container>
-      </dl>
-    </section>
-  </ng-container>
+  <section class="mt-4 mb-4" *ngIf="(record.metadata | keyExists:'legacy_checkout_count') || (record.metadata | keyExists:'legacy_circulation_rules')">
+    <div class="card item-legacy-data">
+      <div class="card-header" translate>Legacy circulation rules</div>
+      <div class="card-body">
+        <dl class="row mb-0">
+          <!-- LEGACY CHECKOUT COUNT -->
+          <ng-container *ngIf="record.metadata | keyExists:'legacy_checkout_count'">
+            <dt class="col-sm-4 offset-sm-2 offset-md-0 label-title" translate>
+              Checkout count
+            </dt>
+            <dd class="col-sm-6 col-md-8 mb-0">
+              {{ record.metadata.legacy_checkout_count }}
+            </dd>
+          </ng-container>
+          <!-- LEGACY LOAN DURATION -->
+          <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'loan_duration'">
+            <dt class="col-sm-4 offset-sm-2 offset-md-0 label-title" translate>
+              Loan duration
+            </dt>
+            <dd class="col-sm-6 col-md-8 mb-0">
+              {{ record.metadata.legacy_circulation_rules.loan_duration }}
+            </dd>
+          </ng-container>
+          <!-- LEGACY USE ITEM SPECIFIC RULES -->
+          <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'use_item_specific_rules'">
+            <dt class="col-sm-4 offset-sm-2 offset-md-0 label-title" translate>
+              Use item specific rules
+            </dt>
+            <dd class="col-sm-6 col-md-8 mb-0">
+              <i
+                class="fa fa-circle"
+                [ngClass]="{
+                  'text-danger': !record.metadata.legacy_circulation_rules.use_item_specific_rules,
+                  'text-success': !record.metadata.legacy_circulation_rules.use_item_specific_rules
+                }"
+                aria-hidden="true"
+              ></i>
+            </dd>
+          </ng-container>
+          <!-- LEGACY ALLOW REQUEST -->
+          <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'allow_request'">
+            <dt class="col-sm-4 offset-sm-2 offset-md-0 label-title" translate>
+              Allow request
+            </dt>
+            <dd class="col-sm-6 col-md-8 mb-0">
+              <i
+                class="fa fa-circle"
+                [ngClass]="{
+                  'text-danger': !record.metadata.legacy_circulation_rules.allow_request,
+                  'text-success': record.metadata.legacy_circulation_rules.allow_request }"
+                aria-hidden="true"
+              ></i>
+            </dd>
+          </ng-container>
+          <!-- LEGACY ALLOW REQUEST -->
+          <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'floats'">
+            <dt class="col-sm-4 offset-sm-2 offset-md-0 label-title" translate>
+              Floats
+            </dt>
+            <dd class="col-sm-6 col-md-8 mb-0">
+              <i
+                class="fa fa-circle"
+                [ngClass]="{
+                  'text-danger': !record.metadata.legacy_circulation_rules.floats,
+                  'text-success': record.metadata.legacy_circulation_rules.floats
+                }"
+                aria-hidden="true"
+              ></i>
+            </dd>
+          </ng-container>
+        </dl>
+      </div>
+    </div>
+  </section>
 
   <!-- TABS -->
   <section class="mt-3 mb-4" [permissions]="permissions.LOFI_SEARCH">

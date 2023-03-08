@@ -58,22 +58,6 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
   }
 
   /**
-   * Is this record is an issue
-   * @return True if the record is an issue ; false otherwise
-   */
-  get isIssue(): boolean {
-    return this.record.metadata.type === 'issue';
-  }
-
-  /**
-   * Get the URL for the parent holding.
-   * @return the url to parent holding.
-   */
-  get parentHoldingUrl(): string {
-    return `/records/holdings/detail/${this.record.metadata.holding.pid}`;
-  }
-
-  /**
    * Get organisation currency
    * @return string
    */

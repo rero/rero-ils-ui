@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,16 +14,40 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-document-description',
   templateUrl: './document-description.component.html'
 })
-export class DocumentDescriptionComponent {
+export class DocumentDescriptionComponent implements OnInit {
 
   @Input() record: any;
+
+  /** Identifiers */
+  identifiedBy: any[] = [];
+
+  /** Cartographic attributes */
+  cartographicAttributes: any[] = [];
+
+  /** Edition statement */
+  editionStatement: any[] = [];
+
+  /** notes except general type */
+  notesExceptGeneral: any;
+
+  /** notes general only */
+  notesGeneral: any;
+
+  /** Provision activity with available original_date field */
+  provisionActivityOriginalDate: any[] = [];
+
+  /** Title variants by type */
+  titleVariants: object = {};
+
+  /** Work access point */
+  workAccessPoint: string[] = [];
 
   /**
    * Get Current language interface
@@ -33,47 +57,34 @@ export class DocumentDescriptionComponent {
     return this.translateService.currentLang;
   }
 
-  // ---- FIELDS
+  /**
+   * Constructor
+   * @param translateService - TranslateService
+   */
+  constructor(public translateService: TranslateService) {}
 
-  /** Get cartographic attributes */
-  get cartographicAttributes(): any[] {
-    const cartographic = [];
-    if ('cartographicAttributes' in this.record.metadata) {
-      this.record.metadata.cartographicAttributes.forEach((attribute: any) => {
-        if ('projection' in attribute || ('coordinates' in attribute && 'label' in attribute.coordinates)) {
-          cartographic.push(attribute);
-        }
-      });
-    }
-    return cartographic;
+  ngOnInit(): void {
+    this._processIdentifiedBy();
+    this._processCartographicAttributes();
+    this._processEditionStatement();
+    this._processNotesExceptGeneral();
+    this._processNotesGeneral();
+    this._processProvisionActivityOriginalDate();
+    this._processTitleVariants();
+    this._processWorkAccessPoint();
   }
 
-  /** Get list of document edition statement */
-  get editionStatement(): any[] {
-    const results = [];
-    if ('seriesStatement' in this.record.metadata) {
-      this.record.metadata.seriesStatement.forEach((element: any) => {
-        if ('_text' in element) {
-          const elementText = element._text;
-          const keys = Object.keys(elementText);
-          const indexDefault = keys.indexOf('default');
-          if (indexDefault > -1) {
-            results.push(elementText.default);
-            keys.splice(indexDefault, 1);
-          }
-
-          keys.forEach(key => {
-            results.push(elementText[key]);
-          });
-        }
-      });
-    }
-    return results;
+  /**
+   * Allow to filter provisionActivity keeping only activities that aren't 'Publication'
+   * @param element: the element to check
+   * @return True if element isn't a 'Publication', False otherwise
+   */
+  filterNotPublicationProvisionActivity(element: any): boolean {
+    return ('key' in element && element.key !== 'bf:Publication');
   }
 
-  /** Get list of document identifiers */
-  get identifiedBy(): any[] {
-    const identifiers = [];
+  /** Process Identified by */
+  private _processIdentifiedBy(): void {
     if ('identifiedBy' in this.record.metadata) {
       this.record.metadata.identifiedBy.forEach((id: any) => {
         const details = [];
@@ -89,62 +100,82 @@ export class DocumentDescriptionComponent {
         if (id.note) {
           details.push(id.note);
         }
-        identifiers.push({
+        this.identifiedBy.push({
           type: idType,
           value: id.value,
           details: details.join(', ')
         });
       });
     }
-    return identifiers;
   }
 
-  /** Get notes except general type */
-  get notesExceptGeneral(): any {
+  /** Process Cartographic attributes */
+  private _processCartographicAttributes(): void {
+    if ('cartographicAttributes' in this.record.metadata) {
+      this.record.metadata.cartographicAttributes.forEach((attribute: any) => {
+        if ('projection' in attribute || ('coordinates' in attribute && 'label' in attribute.coordinates)) {
+          this.cartographicAttributes.push(attribute);
+        }
+      });
+    }
+
+  }
+
+  /** Process edition statement */
+  private _processEditionStatement(): void {
+    if ('seriesStatement' in this.record.metadata) {
+      this.record.metadata.seriesStatement.forEach((element: any) => {
+        if ('_text' in element) {
+          const elementText = element._text;
+          const keys = Object.keys(elementText);
+          const indexDefault = keys.indexOf('default');
+          if (indexDefault > -1) {
+            this.editionStatement.push(elementText.default);
+            keys.splice(indexDefault, 1);
+          }
+
+          keys.forEach(key => {
+            this.editionStatement.push(elementText[key]);
+          });
+        }
+      });
+    }
+  }
+
+  /** Process Notes except general */
+  private _processNotesExceptGeneral(): void {
     if ('note' in this.record.metadata) {
-      return this._sortedNotesByType(
+      this.notesExceptGeneral = this._sortedNotesByType(
         this.record.metadata.note.filter((el: any) => el.noteType !== 'general')
       );
     }
-    return;
   }
 
-  /** Get notes general only */
-  get notesGeneral(): any {
+  /** Process Notes general */
+  private _processNotesGeneral(): void {
     if ('note' in this.record.metadata) {
-      return this._sortedNotesByType(
+      this.notesGeneral = this._sortedNotesByType(
         this.record.metadata.note.filter((el: any) => el.noteType === 'general')
       );
     }
-    return;
   }
 
-  /**
-   * Allow to filter provisionActivity keeping only activities that aren't 'Publication'
-   * @param element: the element to check
-   * @return True if element isn't a 'Publication', False otherwise
-   */
-   filterNotPublicationProvisionActivity(element: any): boolean {
-    return ('key' in element && element.key !== 'bf:Publication');
-  }
-
-  /** Get provision activity with available original_date field */
-  get provisionActivityOriginalDate() {
-    return ('provisionActivity' in this.record.metadata)
-    ? this.record.metadata.provisionActivity
+  /** Process provision activity original date */
+  private _processProvisionActivityOriginalDate(): void {
+    if ('provisionActivity' in this.record.metadata) {
+      this.provisionActivityOriginalDate = this.record.metadata.provisionActivity
       .filter((element: any) => element.key !== 'bf:Publication')
-      .filter((provision: any) => 'original_date' in provision)
-    : [];
+      .filter((provision: any) => 'original_date' in provision);
+    }
   }
 
-  /** Get title variants by type */
-  get titleVariants(): any {
-    const variants = {};
+  /** Process title variants */
+  private _processTitleVariants(): void {
     if ('title' in this.record.metadata) {
       const titles = this.record.metadata.title.filter((title: any) => title.type !== 'bf:Title');
       titles.forEach((title: any) => {
-        if (!(title.type in variants)) {
-          variants[title.type] = [];
+        if (!(title.type in this.titleVariants)) {
+          this.titleVariants[title.type] = [];
         }
         const result = [];
         result.push(title.mainTitle[0].value);
@@ -168,15 +199,13 @@ export class DocumentDescriptionComponent {
         if (variantData.length > 0) {
           variantTitle += `. ${variantData.join('. ')}`;
         }
-        variants[title.type].push(variantTitle);
+        this.titleVariants[title.type].push(variantTitle);
       });
     }
-    return variants;
   }
 
-  /** Get work access point */
-  get workAccessPoint(): string[] {
-    const work = [];
+  /** Process work access point */
+  private _processWorkAccessPoint(): void {
     if ('work_access_point' in this.record.metadata) {
       this.record.metadata.work_access_point.forEach((workAccess: any) => {
         let agentFormatted = '';
@@ -264,17 +293,10 @@ export class DocumentDescriptionComponent {
         if (workAccess.date_of_work) {
           agentFormatted += workAccess.date_of_work + '. ';
         }
-        work.push(agentFormatted.trim());
+        this.workAccessPoint.push(agentFormatted.trim());
       });
     }
-    return work;
   }
-
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   */
-  constructor(public translateService: TranslateService) {}
 
   /**
    * Sorted notes by type

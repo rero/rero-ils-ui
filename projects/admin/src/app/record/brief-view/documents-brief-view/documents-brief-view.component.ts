@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,28 +25,27 @@ import { ResultItem } from '@rero/ng-core';
 })
 export class DocumentsBriefViewComponent implements ResultItem {
 
-  @Input()
-  record: any;
+  /** Document provision activity after processing */
+  provisionActivityPublications: any[];
 
-  @Input()
-  type: string;
+  /** Document record */
+  private _record: any;
 
-  @Input()
-  detailUrl: { link: string, external: boolean };
+  /** Set current document */
+  @Input() set record(record) {
+    this._record = record;
+    this.provisionActivityPublications = this._provisionActivityPublications(record);
+  }
 
-  /** process provision activity publications */
-  get provisionActivityPublications() {
-    const provisionActivity = this.record.metadata.provisionActivity;
-    const publications = [];
-    if (undefined === provisionActivity) {
-      return publications;
-    }
-    provisionActivity.map((provision: any) => {
-      if (provision.type === 'bf:Publication' && '_text' in provision) {
-        provision._text.map((text: any) => publications.push(text));
-      }
-    });
-    return publications;
+  /** Document type */
+  @Input() type: string;
+
+  /** Detail url */
+  @Input() detailUrl: { link: string, external: boolean };
+
+  /** return record */
+  get record(): any {
+    return this._record;
   }
 
   /**
@@ -63,5 +62,20 @@ export class DocumentsBriefViewComponent implements ResultItem {
       default:
         return 'missing-contribution-type';
     }
+  }
+
+  /** process provision activity publications */
+  private _provisionActivityPublications(record: any): any[] {
+    const provisionActivity = record.metadata.provisionActivity;
+    const publications = [];
+    if (undefined === provisionActivity) {
+      return publications;
+    }
+    provisionActivity.map((provision: any) => {
+      if (provision.type === 'bf:Publication' && '_text' in provision) {
+        provision._text.map((text: any) => publications.push(text));
+      }
+    });
+    return publications;
   }
 }

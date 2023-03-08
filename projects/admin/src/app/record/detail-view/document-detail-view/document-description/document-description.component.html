@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2023 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -31,9 +31,11 @@
     <admin-description-zone>
       <ng-container label>{{ 'General note' | translate }}</ng-container>
       <ng-container content>
-        <ul class="list-unstyled mb-0">
-          <li *ngFor="let note of notesGeneral.general">{{ note }}</li>
-        </ul>
+        <ng-container *ngFor="let noteType of notesGeneral | keyvalue">
+          <ul class="list-unstyled mb-0">
+            <li *ngFor="let note of noteType.value">{{ note }}</li>
+          </ul>
+        </ng-container>
       </ng-container>
     </admin-description-zone>
   </div>
@@ -262,7 +264,7 @@
   </div>
 
   <!-- SERIES STATEMENT -->
-  <div class="striped" *ngIf="record.metadata.seriesStatement">
+  <div class="striped" *ngIf="editionStatement.length > 0">
     <admin-description-zone>
       <ng-container label>{{ 'Series statement' | translate }}</ng-container>
       <ng-container content>
@@ -392,7 +394,7 @@
   </div>
 
   <!-- IDENTIFIED BY -->
-  <div class="striped" *ngIf="identifiedBy && identifiedBy.length > 0">
+  <div class="striped" *ngIf="identifiedBy.length > 0">
     <admin-description-zone>
       <ng-container label>{{ 'Identifier' | translate }}</ng-container>
       <ng-container content>
