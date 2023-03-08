@@ -23,3 +23,7 @@ _('not available');
 _('request');
 _('requests');
 _('see collections and items');
+
+// Loans
+_('renewal');
+_('renewals');

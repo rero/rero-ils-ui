@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2022 RERO
+  Copyright (C) 2019-2023 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -57,11 +57,11 @@
           <ng-container *ngVar="phones as patronPhones">
             <ng-container *ngIf="patronPhones.length > 0">
               <dt class="col-1 text-right"><i class="fa fa-phone"></i></dt>
-              <dt class="col-3">{{ patronPhones.length | i18nPlural: {'=1': 'Phone', 'other': 'Phones'} }}</dt>
+              <dt class="col-3" translate>{{ patronPhones.length | i18nPlural: {'=1': 'Phone', 'other': 'Phones'} }}</dt>
               <dd class="col-8">
                 <ul class="list-unstyled m-0">
                   <li *ngFor="let phone of patronPhones">
-                    <span class="metadata">{{ phone.type }}</span> {{ phone.value }}
+                    <span class="metadata" translate>{{ phone.type }}</span> {{ phone.value }}
                   </li>
                 </ul>
               </dd>
@@ -85,7 +85,7 @@
                 (click)="sectionCollapsed.notes = !sectionCollapsed.notes"
                 [attr.aria-expanded]="!sectionCollapsed.notes" aria-controls="collapse">
         </button>
-        {{ patron.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} }}
+        {{ patron.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} | translate }}
         <span *ngIf="sectionCollapsed.notes" class="badge badge-secondary ml-2">{{ patron.notes.length }}</span>
       </div>
       <div class="card-body py-2" [hidden]="sectionCollapsed.notes">
@@ -163,9 +163,11 @@
           <dt class="col-1 text-right"><i class="fa fa-home"></i> </dt>
           <dt class="col-3" translate>Second address</dt>
           <dd class="col-8">
-            {{ patron.second_address.street }}<br/>
-            {{ patron.second_address.postal_code }} {{ patron.second_address.city }}<br/>
-            {{ 'country_' + patron.second_address.country | translate }}
+            <ng-container *ngIf="patron.second_address.street">{{ patron.second_address.street }}<br/></ng-container>
+            <ng-container *ngIf="patron.second_address.postal_code or patron.second_address.city">
+              {{ patron.second_address.postal_code }} {{ patron.second_address.city }}<br/>
+            </ng-container>
+            <ng-container *ngIf="patron.second_address.country">{{ 'country_' + patron.second_address.country | translate }}</ng-container>
           </dd>
         </ng-container>
       </dl>
