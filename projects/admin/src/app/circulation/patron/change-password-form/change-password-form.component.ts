@@ -104,15 +104,12 @@ export class ChangePasswordFormComponent implements OnInit {
       this.formFields = [
         {
           key: 'password',
-          type: 'input',
+          type: 'passwordGenerator',
           focus: true,
           templateOptions: {
-            type: 'password',
+            api: "/api/user/password/generate",
             label: this._translateService.instant('New password'),
             required: true,
-            // same as Invenio
-            minLength: 6,
-            maxLength: 128,
             keydown: (field, event) => {
               if (event.key === 'Enter') {
                 event.preventDefault();

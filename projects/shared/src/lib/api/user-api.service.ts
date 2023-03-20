@@ -58,7 +58,8 @@ export class UserApiService {
   public changePassword(username: string, password: string) {
     const data = {
       username,
-      new_password: password
+      new_password: password,
+      new_password_confirm: password
     };
     const url = `${this._apiPrefix}/change-password`;
     return this._httpClient.post<any>(url, data);
