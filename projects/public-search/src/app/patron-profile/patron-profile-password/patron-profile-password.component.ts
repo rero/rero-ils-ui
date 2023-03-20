@@ -70,7 +70,7 @@ export class PatronProfilePasswordComponent {
         focus: true,
         templateOptions: {
           type: 'password',
-          label: 'Current password',
+          label: _('Current password'),
           required: true,
         },
       },
@@ -79,7 +79,7 @@ export class PatronProfilePasswordComponent {
         type: 'input',
         templateOptions: {
           type: 'password',
-          label: 'New password',
+          label: _('New password'),
           required: true,
           minLength: 8,
           maxLength: 128
@@ -93,7 +93,7 @@ export class PatronProfilePasswordComponent {
         type: 'input',
         templateOptions: {
           type: 'password',
-          label: 'Confirm new password',
+          label: _('Confirm new password'),
           required: true,
           minLength: 8,
           maxLength: 128,
