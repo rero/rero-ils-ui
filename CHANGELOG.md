@@ -1,5 +1,15 @@
 # Changelog
 
+## [v14.1.1](https://github.com/rero/rero-ils-ui/tree/v14.1.1) (2023-03-20)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.1.0...v14.1.1)
+
+**Fixes:**
+* patron: fix the display of the badges on brief view [\#955](https://github.com/rero/rero-ils-ui/pull/955) (by @Garfield-fr)
+* circulation: fix password change on patron profile [\#953](https://github.com/rero/rero-ils-ui/pull/953) (by @Garfield-fr)
+* profile: fix translations on change password form [\#954](https://github.com/rero/rero-ils-ui/pull/954) (by @Garfield-fr)
+* translations: fix string translation i18n pipe [\#951](https://github.com/rero/rero-ils-ui/pull/951) (by @Garfield-fr)
+
 ## [v14.1.0](https://github.com/rero/rero-ils-ui/tree/v14.1.0) (2023-02-28)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.0.1...v14.1.0)
