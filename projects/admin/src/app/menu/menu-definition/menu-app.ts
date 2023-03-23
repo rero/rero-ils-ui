@@ -43,7 +43,7 @@ export const MENU_APP: IMenuParent[] = [
         }
       },
       {
-        name: 'ILL Requests',
+        name: 'ILL requests',
         router_link: ['/', 'records', 'ill_requests'],
         query_params: { library: '$currentLibrary' },
         attributes: { id: 'ill-requests-menu' },
@@ -127,7 +127,7 @@ export const MENU_APP: IMenuParent[] = [
         extras: { iconClass: 'fa fa-user' }
       },
       {
-        name: 'corporate-bodies',
+        name: 'Corporate bodies',
         router_link: ['/', 'records', 'corporate-bodies'],
         attributes: { id: 'corporate-bodies-menu' },
         extras: { iconClass: 'fa fa-building' }

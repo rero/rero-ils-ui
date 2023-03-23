@@ -20,7 +20,7 @@
     <div class="my-3">
       <label for="filter" translate>Filter permission list</label>
       <input id="filter" class="form-control" #search (keyup)="filterPermissions(search.value)" />
-      <small class="form-text text-muted">Enter a part of the permission name to filter the list.</small>
+      <small class="form-text text-muted" translate>Enter a part of the permission name to filter the list.</small>
     </div>
     <ng-container *ngIf="filteredPermissionNames.length >0; else noResult">
       <table class="table table-header-rotated table-striped">
