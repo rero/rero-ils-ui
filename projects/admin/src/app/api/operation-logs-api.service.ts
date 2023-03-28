@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -58,16 +59,32 @@ export class OperationLogsApiService extends BaseApi {
    * @param resourcePid - the resource pid.
    * @param page - number
    * @param itemPerPage - number
+   * @param filter - List of filters with a boolean value. Ex: { loan: true; notif: true; }
    * @param sort - string
    * @returns Observable
    */
   getCirculationLogs(
-    resourceType: string, resourcePid: string, page: number, itemPerPage = 5, sort = 'mostrecent'): Observable<Record | Error> {
+    resourceType: string, resourcePid: string, page: number, itemPerPage = 5, filters: object = {}, sort = 'mostrecent'): Observable<Record | Error> {
+    const query = [];
     const queryField = (resourceType === 'loan')
       ? 'loan.pid'
       : 'loan.item.pid';
-    const query = `_exists_:loan AND ${queryField}:${resourcePid}`;
-    return this._recordService.getRecords('operation_logs', query, page, itemPerPage, undefined, undefined, undefined, sort);
+    query.push(`${queryField}:${resourcePid}`);
+    // Extraction of filter keys
+    const filterKeys = Object.keys(filters);
+    // If one of the filters is false, we add the filter to the query
+    if (!filterKeys.every((key: string) => filters[key] === true)) {
+      const typeFilters = [];
+      // We browse the keys of the filters object to extract the false value
+      filterKeys.forEach((key: string) => {
+        // If the filter is false, we add it
+        if (!filters[key]) {
+          typeFilters.push(`NOT record.type:${key}`);
+        }
+      });
+      query.push(`(${typeFilters.join(' OR ')})`);
+    }
+    return this._recordService.getRecords('operation_logs', query.join(' AND '), page, itemPerPage, undefined, undefined, undefined, sort);
   }
 
   /**

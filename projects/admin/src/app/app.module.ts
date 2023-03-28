@@ -179,6 +179,8 @@ import { PaymentsDataTableComponent } from './record/search-view/patron-transact
 import { PaymentDataPieComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/pie/payment-data-pie.component';
 import { PatronPermissionsComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permissions.component';
 import { PatronPermissionComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permission/patron-permission.component';
+import { CirculationLogLoanComponent } from './record/circulation-logs/circulation-log/circulation-log-loan/circulation-log-loan.component';
+import { CirculationLogNotificationComponent } from './record/circulation-logs/circulation-log/circulation-log-notification/circulation-log-notification.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -296,7 +298,9 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         PaymentsDataTableComponent,
         PaymentDataPieComponent,
         PatronPermissionsComponent,
-        PatronPermissionComponent
+        PatronPermissionComponent,
+        CirculationLogLoanComponent,
+        CirculationLogNotificationComponent
     ],
     imports: [
         AppRoutingModule,

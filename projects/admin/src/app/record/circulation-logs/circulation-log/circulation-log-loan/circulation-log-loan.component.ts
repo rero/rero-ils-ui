@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
- * Copyright (C) 2021-2023 UCLouvain
+ * Copyright (C) 2023 RERO
+ * Copyright (C) 2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,14 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { PermissionsService } from '@rero/shared';
 
 @Component({
-  selector: 'admin-circulation-log',
-  templateUrl: './circulation-log.component.html',
-  styleUrls: ['./circulation-log.component.scss']
+  selector: 'admin-circulation-log-loan',
+  templateUrl: './circulation-log-loan.component.html',
+  styleUrls: ['./circulation-log-loan.component.scss']
 })
-export class CirculationLogComponent {
+export class CirculationLogLoanComponent {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Operation log record */
@@ -34,43 +33,11 @@ export class CirculationLogComponent {
   @Input() separator = false;
 
   /** Event for close dialog */
-  @Output() closeDialogEvent = new EventEmitter();
-
-  /** Event for is collapsed */
-  @Output() isCollapsedEvent = new EventEmitter();
-
-  /** Circulation information's is collapsed */
-  isCollapsed = true;
-
-  /** debugMode */
-  debugMode = false;
-
-  // GETTER & SETTER ==========================================================
-  /**
-   * Is the debug mode could be activated ?
-   * @returns True if the debug mode can be enabled and switched
-   */
-  get canUseDebugMode(): boolean {
-    return this._permissionsService.canAccessDebugMode();
-  }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param _userService - UserService
-   */
-  constructor(
-    private _permissionsService: PermissionsService
-  ) {  }
+  @Output() closeDialogEvent  = new EventEmitter();
 
   // COMPONENT FUNCTIONS ======================================================
   /** Close dialog */
   closeDialog(): void {
     this.closeDialogEvent.emit(null);
-  }
-
-  /** Toggle collapsed */
-  toggleCollapsed(): void {
-    this.isCollapsedEvent.emit(this.isCollapsed);
   }
 }
