@@ -1,6 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2023 RERO
+  Copyright (C) 2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -24,22 +25,42 @@
         </button>
       </div>
       <div class="modal-body overflow-auto overflow-max-size">
+        <div class="mb-3">
+          <span class="float-left label-title mr-2 font-weight-bold" translate>Filter</span>
+          <ul class="list-inline mb-0">
+            <li class="list-inline-item mr-2" *ngFor="let filter of filterTypes | keyvalue">
+              <div class="custom-control custom-switch mb-0">
+                <input type="checkbox" class="custom-control-input mt-1" [id]="filter.key" [checked]="filter.value" (click)="filterCheck(filter.key)">
+                <label class="custom-control-label" [for]="filter.key">{{ ('op_filter_' + filter.key) | translate }}</label>
+              </div>
+            </li>
+          </ul>
+        </div>
         <ng-container *ngIf="loadedRecord; else loaded">
-          <ul *ngIf="recordTotals > 0; else noRecord" class="list-unstyled mx-2 mb-0">
+          <ng-container *ngIf="recordTotals > 0; else noRecord">
             <ng-container *ngFor="let record of records; first as isFirst; let idx = index">
               <div class="transactionDate" *ngIf="isFirst || !isSamePeriod(record, records[idx-1])">
                 {{ record.metadata.date | dateTranslate :'MMMM Y' | titlecase }}
               </div>
-              <admin-circulation-log
-                [record]="record"
-                [isHighlight]="record.metadata.loan.pid === highligthedLoanPid"
-                [separator]="!isSamePeriod(record, records[idx-1], 'day')"
-                (closeDialogEvent)="closeDialog()"
-                (mouseenter)="mouseEventTransaction(record, $event)"
-                (mouseleave)="highligthedLoanPid=null"
-              ></admin-circulation-log>
+              <ng-container [ngSwitch]="getRecordType(record)">
+                <admin-circulation-log-notification *ngSwitchCase="'notification'"
+                  [record]="record"
+                  [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
+                  [separator]="!isSamePeriod(record, records[idx-1], 'day')"
+                  (mouseenter)="mouseEventTransaction(record, $event)"
+                  (mouseleave)="highlightedLoanPid=null"
+                ></admin-circulation-log-notification>
+                <admin-circulation-log-loan *ngSwitchCase="'circulation'"
+                  [record]="record"
+                  [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
+                  [separator]="!isSamePeriod(record, records[idx-1], 'day')"
+                  (closeDialogEvent)="closeDialog()"
+                  (mouseenter)="mouseEventTransaction(record, $event)"
+                  (mouseleave)="highlightedLoanPid=null"
+                ></admin-circulation-log-loan>
+              </ng-container>
             </ng-container>
-          </ul>
+          </ng-container>
         </ng-container>
       </div>
       <div class="modal-footer py-1 justify-content-start">

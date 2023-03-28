@@ -217,3 +217,7 @@ _('Logout');
 
 _('Masked');
 _('No masked');
+
+// Operation log filter (circulation)
+_('op_filter_loan');
+_('op_filter_notif');

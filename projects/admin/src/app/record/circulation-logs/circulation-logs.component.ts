@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,14 +43,19 @@ export class CirculationLogsComponent implements OnInit {
   itemsPerPage = 10;
   /** Total of records */
   recordTotals = 0;
-  /** Current highligthed loan */
-  highligthedLoanPid: string = null;
+  /** Current highlighted loan */
+  highlightedLoanPid: string = null;
   /** Array of records */
   records = [];
   /** first loaded record */
   loadedRecord = false;
   /** Event on dialog close */
   dialogClose$ = new BehaviorSubject(false);
+  /** Types of operation history (field: record.type) */
+  filterTypes = {
+    'loan': true,
+    'notif': true
+  }
 
   // GETTER & SETTER ==========================================================
   /**
@@ -134,9 +140,37 @@ export class CirculationLogsComponent implements OnInit {
     if (record.metadata
         && record.metadata.loan
         && record.metadata.loan.pid
-        && record.metadata.loan.pid !== this.highligthedLoanPid) {
-      this.highligthedLoanPid = record.metadata.loan.pid;
+        && record.metadata.loan.pid !== this.highlightedLoanPid) {
+      this.highlightedLoanPid = record.metadata.loan.pid;
     }
+  }
+
+  /**
+   * Get Record Type
+   * @param record - the record to determine the type
+   * @returns string, the record type
+   */
+  getRecordType(record: any): string {
+    switch(record.metadata.record.type) {
+      case 'notif':
+        return 'notification';
+      default:
+        return 'circulation';
+    }
+  }
+
+  /**
+   * Filter check
+   * Allows you to add filters for a selection of records.
+   * @param type - string (Filter key)
+   */
+  filterCheck(type: string): void {
+    this.filterTypes[type] = !this.filterTypes[type];
+    this._circulationLogsQuery(1).subscribe((response: any) => {
+      this.recordTotals = response.total.value;
+      this.records = response.hits;
+      this.loadedRecord = true;
+    });
   }
 
   // PRIVATE FUNCTIONS ========================================================
@@ -147,7 +181,7 @@ export class CirculationLogsComponent implements OnInit {
    */
   private _circulationLogsQuery(page: number): Observable<any> {
     return this._operationLogsApiService
-      .getCirculationLogs(this.resourceType, this.resourcePid, page, this.itemsPerPage)
+      .getCirculationLogs(this.resourceType, this.resourcePid, page, this.itemsPerPage, this.filterTypes)
       .pipe(map((response: Record) =>  response.hits));
   }
 }

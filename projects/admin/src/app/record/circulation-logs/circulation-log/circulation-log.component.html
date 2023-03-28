@@ -1,6 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2023 RERO
+  Copyright (C) 2021-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -17,58 +18,27 @@
 <div class="transaction-log pt-2 pb-1 position-relative" [class.highlight]="isHighlight" [class.border-top]="separator">
   <button type="button" class="btn-show-more"
           [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
-          (click)="isCollapsed = !isCollapsed"
+          (click)="isCollapsed = !isCollapsed; toggleCollapsed();"
           [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
   </button>
   <div class="container-fluid pl-0">
     <dl class="row my-0 text-muted">
-    <dd class="col-2 small">
-      <div class="transaction-date">{{ record.metadata.date | dateTranslate :'shortDate' }}</div>
-      <div class="transaction-time">{{ record.metadata.date | dateTranslate :'mediumTime' }}</div>
-    </dd>
-    <dd class="col-2 transaction-trigger">
-      <span class="badge badge-pill badge-primary">{{ record.metadata.loan.trigger | translate }}</span>
-    </dd>
-    <!-- transaction library -->
-    <dt class="col-2 label-title font-weight-bold transaction-library" [collapse]="isCollapsed" translate>Library</dt>
-    <dd [ngClass]="{
-      'col-6': !isCollapsed,
-      'col-5 transaction-library': isCollapsed
-    }">
-      <ng-container *ngIf="record.metadata.loan.transaction_location; else noLibrary">
-        <ng-container *ngIf="record.metadata.loan.transaction_location.pid | getRecord : 'locations' | async as location">
-          {{ location.metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
-        </ng-container>
-      </ng-container>
-      <ng-template #noLibrary>
-        <span class="no-data">---</span>
-      </ng-template>
-    </dd>
-    <!-- pickup location -->
-    <dt class="offset-4 col-2 label-title font-weight-bold transaction-location" [collapse]="isCollapsed" translate>Location</dt>
-    <dd class="col-6" [collapse]="isCollapsed">{{ record.metadata.loan.pickup_location.name }}</dd>
-    <!-- related patron -->
-    <dt class="offset-4 col-2 label-title font-weight-bold transaction-patron" [collapse]="isCollapsed" translate>Patron</dt>
-    <dd [ngClass]="{
-      'col-6': !isCollapsed,
-      'col-3 transaction-patron': isCollapsed
-    }">
-      <ng-container *ngIf="record.metadata.loan.patron.pid; else anonymous">
-        <ng-container *ngIf="record.metadata.loan.patron.pid | getRecord : 'patrons' | async as patron">
-          <a [routerLink]="['/circulation', 'patron', patron.metadata.patron.barcode[0]]" (click)="closeDialog()">
-            {{ patron.metadata.last_name }}, {{ patron.metadata.first_name }}
-          </a>
-        </ng-container>
-      </ng-container>
-      <ng-template #anonymous>
-        {{ 'Patron type' | translate }}: {{ record.metadata.loan.patron.type }}
-      </ng-template>
-    </dd>
-    <!-- operator -->
-    <dt class="offset-4 col-2 label-title font-weight-bold transaction-operator" [collapse]="isCollapsed" translate>Operator</dt>
-    <dd class="col-6" [collapse]="isCollapsed">{{ record.metadata.user_name }}</dd>
-    <!-- debug information -->
-    <pre class="offset-4 col-8" [hidden]="!debugMode">{{ record | json }}</pre>
+      <!-- transaction date -->
+      <dd class="col-2 small">
+        <div class="transaction-date">{{ record.metadata.date | dateTranslate :'shortDate' }}</div>
+        <div class="transaction-time">{{ record.metadata.date | dateTranslate :'mediumTime' }}</div>
+      </dd>
+      <!-- transaction badge -->
+      <dd class="col-2 transaction-trigger">
+        <ng-content select="[badge]"></ng-content>
+      </dd>
+      <!-- content -->
+      <dd class="col-8">
+        <ng-content select="[collapsedContent]" *ngIf="isCollapsed"></ng-content>
+        <ng-content select="[expandedContent]" *ngIf="!isCollapsed"></ng-content>
+      </dd>
+      <!-- debug information -->
+      <pre class="offset-4 col-8" [hidden]="!debugMode">{{ record | json }}</pre>
     </dl>
   </div>
   <!-- debug mode button -->
