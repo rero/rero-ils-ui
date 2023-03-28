@@ -143,11 +143,11 @@ export class PatronTransactionEventFormComponent implements OnInit {
   }
 
   /**
-   * compute the total amount of the current event
-   * @return totalAmount as number
+   * Compute the total amount of the current event
+   * @return totalAmount as number with maximum 2 decimals.
    */
   private _computeTotalAmount() {
-    return this.transactions.reduce((acc, t) => acc + t.total_amount, 0);
+    return this.transactions.reduce((acc, t) => parseFloat((acc + t.total_amount).toFixed(2)), 0);
   }
 
   /**
@@ -176,7 +176,11 @@ export class PatronTransactionEventFormComponent implements OnInit {
           ? transaction.total_amount
           : residualAmount;
         this._patronTransactionService.payPatronTransaction(transaction, transactionAmount, formValues.method);
-        residualAmount -= transactionAmount;
+        // DEV NOTES : We use the below syntax to avoid floating-number precision drift.
+        //   on each iteration we 'round' the residual amount to a float with 2 decimals precision.
+        //   --> with this syntax : (7.8 - 2 - 2 - 2) = 1.8
+        //   --> without this syntax : (7.8 - 2 - 2 - 2) = 1.7999999999999998
+        residualAmount = parseFloat((residualAmount - transactionAmount).toFixed(2));
         if (residualAmount <= 0) {
           break;
         }

@@ -156,13 +156,12 @@ export class PatronTransactionService {
    * @returns total amount of open transactions
    */
   computeTotalTransactionsAmount(transactions: Array<any>): number {
-    let total = 0;
-    for (const transaction of transactions) {
-      if (transaction.status === PatronTransactionStatus.OPEN) {
-        total += transaction.total_amount;
-      }
-    }
-    return total;
+    return transactions.reduce((accumulator, transaction) => {
+      return (transaction.status === PatronTransactionStatus.OPEN)
+        ? parseFloat((accumulator + transaction.total_amount).toFixed(2))
+        : accumulator;
+    }, 0);
+
   }
 
 
@@ -243,7 +242,6 @@ export class PatronTransactionService {
         this._toastService.success(this._translateService.instant('{{ type }} registered', {type: translateType}));
       },
       (error) => {
-        console.error(error, error.toString());
         const errorMessage = (error.hasOwnProperty('message') && error.message().hasOwnProperty('message'))
           ? error.message.message
           : 'Server error :: ' + (error.title || error.toString());
