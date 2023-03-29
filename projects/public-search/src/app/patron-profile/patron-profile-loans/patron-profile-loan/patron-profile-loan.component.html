@@ -66,7 +66,7 @@
           <button
             type="button"
             class="btn btn-sm btn-primary disabled"
-            tooltip="{{ canExtend.reasons | arrayTranslate | join:'<br>'}}"
+            tooltip="{{ canExtend.reasons | arrayTranslate | join:' / '}}"
             translate
           >Renew</button>
         </ng-template>
