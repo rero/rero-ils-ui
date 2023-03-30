@@ -36,7 +36,7 @@ export class ContributionTypePipe implements PipeTransform {
    * @throws Error on missing type
    */
   transform(type: string): any {
-    const configType = this._appSettingsService.contributionAgentTypes[type];
+    const configType = this._appSettingsService.agentAgentTypes[type];
     if (configType) {
       return configType;
     }

@@ -95,7 +95,7 @@ export class MefTypeahead implements ITypeahead {
       throw Error('Missing filters definition');
     }
 
-    const sources = this._appSettingsService.contributionSources
+    const sources = this._appSettingsService.agentSources
       .filter((source: string) => source !== 'rero');
 
     const contributionQuery = [
@@ -162,12 +162,12 @@ export class MefTypeahead implements ITypeahead {
    */
   private _sources(): string[] {
     const language = this._translateService.currentLang;
-    const order: any = this._appSettingsService.contributionsLabelOrder;
+    const order: any = this._appSettingsService.agentLabelOrder;
     const key = language in order ? language : 'fallback';
-    const contributionSources = (key === 'fallback')
+    const agentSources = (key === 'fallback')
       ? order[order[key]]
       : order[key];
-    const sources = contributionSources.filter((source: string) => source !== 'rero');
+    const sources = agentSources.filter((source: string) => source !== 'rero');
     return sources;
   }
 }

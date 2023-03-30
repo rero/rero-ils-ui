@@ -35,7 +35,7 @@ export class SubjectProcessPipe implements PipeTransform {
    * @return array of type and text
    */
   transform(subjects: any, language: string = 'en'): { type: string, text: string}[] {
-    const orders = this._appSettingsService.contributionsLabelOrder;
+    const orders = this._appSettingsService.agentLabelOrder;
     const output = [];
     subjects.forEach((subject: any) => {
       const data = {

@@ -27,7 +27,7 @@ describe('ContributionEntityPipe', () => {
 
   const appSettingsServiceSpy = jasmine.createSpyObj('AppSettingsService', ['']);
   appSettingsServiceSpy.settings = {
-    'contributionAgentTypes': {
+    'agentAgentTypes': {
       'bf:Person': 'persons',
       'bf:Organisation': 'corporate-bodies'
     }

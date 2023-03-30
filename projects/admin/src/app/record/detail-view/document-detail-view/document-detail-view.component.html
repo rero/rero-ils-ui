@@ -37,10 +37,7 @@
         <ul class="list-unstyled">
           <li class="figure-caption" *ngFor="let genre of record.metadata.genreForm">
             <i class="fa fa-tag mr-1"></i>
-            <ng-container *ngIf="genre.term; else genreFormLink">{{ genre.term }}</ng-container>
-            <ng-template #genreFormLink>
-              <!-- TODO: GENRE FORM LINK (not implemend with typeahead) -->
-            </ng-template>
+            {{ genre.entity.authorized_access_point }}
           </li>
         </ul>
       </ng-container>
@@ -189,8 +186,8 @@
         <div class="col">
           <span *ngFor="let subject of subjects"
             class="badge badge-secondary mr-1"
-            title="{{ subject.type | translate }}">
-            <i class="fa fa-tag"></i> {{ subject._text }}
+            title="{{ subject.entity.type | translate }}">
+            <i class="fa fa-tag"></i> {{ subject.entity.authorized_access_point }}
           </span>
         </div>
       </div>

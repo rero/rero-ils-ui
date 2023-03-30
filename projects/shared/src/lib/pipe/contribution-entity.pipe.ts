@@ -40,13 +40,20 @@ export class ContributionEntityPipe implements PipeTransform {
     limit?: number
   ): EntityInterface {
     const result = { count: contributions.length, entries: []};
-    contributions.filter(c => filters.includes(c.entity.type)).map(contrib => result.entries.push({
-      authorizedAccessPoint: this._authorizedAccessPoint(contrib.entity),
-      pid: contrib.entity?.pid,
-      type: contrib.entity.type,
-      roles: contrib.role.map((r: string) => this._translateService.instant(r)),
-      target: this._traget(contrib.entity.type)
-    }));
+    contributions.filter(c => filters.includes(c.entity.type)).map(contrib => {
+      const newContrib = {
+        authorizedAccessPoint: this._authorizedAccessPoint(contrib.entity),
+        pid: contrib.entity?.pid,
+        type: contrib.entity.type,
+        roles: [],
+        target: this._target(contrib.entity.type),
+      };
+      if (contrib.role != null) {
+        newContrib.roles = contrib.role.map(
+          (r: string) => this._translateService.instant(r));
+      }
+      result.entries.push(newContrib);
+    });
     if (limit) {
       result.entries = result.entries.slice(0, limit);
     }
@@ -66,8 +73,8 @@ export class ContributionEntityPipe implements PipeTransform {
     }
   }
 
-  private _traget(type: string): string | undefined {
-    const entityTypes = this._appSettingsService.settings.contributionAgentTypes || {};
+  private _target(type: string): string | undefined {
+    const entityTypes = this._appSettingsService.settings.agentAgentTypes || {};
 
     return (type in entityTypes) ? entityTypes[type] : undefined;
   }

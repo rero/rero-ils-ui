@@ -80,9 +80,9 @@ describe('SubjectProcessPipe', () => {
     appSettings = TestBed.inject(AppSettingsService);
     appSettings.settings = {
       baseUrl: 'https://bib.rero.ch',
-      contributionSources: [],
-      contributionAgentTypes: '',
-      contributionsLabelOrder: {
+      agentSources: [],
+      agentAgentTypes: '',
+      agentLabelOrder: {
         fallback: 'fr',
         fr: ['idref', 'rero', 'gnd'],
         de: ['gnd', 'idref', 'rero']

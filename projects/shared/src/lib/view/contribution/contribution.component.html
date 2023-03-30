@@ -20,8 +20,15 @@
     *ngFor="let entity of data.entries; last as isLast"
   >
     <ng-container *ngIf="entity.pid && entity.target; else entityNoLink">
-      <a *ngIf="view" href="{{ view }}/{{ entity.target }}/{{ entity.pid }}">{{ entity.authorizedAccessPoint }}</a>
-      <a *ngIf="!view" class="mr-1" [routerLink]="['/records', entity.target, 'detail', entity.pid]">{{ entity.authorizedAccessPoint }}</a>
+      <!-- public view-->
+      <a *ngIf="view; else professional" href="{{ view }}/{{ entity.target }}/{{ entity.pid }}">
+        {{ entity.authorizedAccessPoint }}
+      </a>
+      <ng-template #professional>
+        <a class="mr-1" [routerLink]="['/records', entity.target, 'detail', entity.pid]">
+          {{ entity.authorizedAccessPoint }}
+        </a>
+      </ng-template>
     </ng-container>
     <ng-template #entityNoLink>
       {{ entity.authorizedAccessPoint }}

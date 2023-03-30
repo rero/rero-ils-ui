@@ -24,6 +24,7 @@
     </h4>
     <!-- contributions -->
     <shared-contribution
+      [view]="viewcode"
       *ngIf="record?.metadata?.contribution && record.metadata.contribution.length > 0"
       [contributions]="record.metadata.contribution"
     ></shared-contribution>
