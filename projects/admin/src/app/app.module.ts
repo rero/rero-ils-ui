@@ -40,6 +40,7 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { DropdownModule } from 'primeng/dropdown';
 import {
   SelectAccountEditorWidgetComponent
 } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
@@ -182,6 +183,8 @@ import { PatronPermissionComponent } from './record/detail-view/patron-detail-vi
 import { CirculationLogLoanComponent } from './record/circulation-logs/circulation-log/circulation-log-loan/circulation-log-loan.component';
 import { CirculationLogNotificationComponent } from './record/circulation-logs/circulation-log/circulation-log-notification/circulation-log-notification.component';
 import { CirculationStatsComponent } from './record/circulation-logs/circulation-stats/circulation-stats.component';
+import { ItemSwitchLocationStandaloneComponent } from './components/items/switch-location/item-switch-location-standalone/item-switch-location-standalone.component';
+import { ItemSwitchLocationComponent } from './components/items/switch-location/item-switch-location/item-switch-location.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -302,46 +305,49 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         PatronPermissionComponent,
         CirculationLogLoanComponent,
         CirculationLogNotificationComponent,
-        CirculationStatsComponent
+        CirculationStatsComponent,
+        ItemSwitchLocationStandaloneComponent,
+        ItemSwitchLocationComponent
     ],
-    imports: [
-        AppRoutingModule,
-        AccordionModule.forRoot(),
-        BrowserAnimationsModule,
-        BrowserModule,
-        BsDatepickerModule.forRoot(),
-        BsDropdownModule.forRoot(),
-        NgxChartsModule,
-        CollapseModule.forRoot(),
-        FormsModule,
-        HttpClientModule,
-        ReactiveFormsModule,
-        RecordModule,
-        TabsModule.forRoot(),
-        TooltipModule.forRoot(),
-        PopoverModule.forRoot(),
-        FormlyModule.forRoot({
-            types: [
-                { name: 'cipo-pt-it', component: CipoPatronTypeItemTypeComponent },
-                { name: 'account-select', component: SelectAccountEditorWidgetComponent }
-            ],
-            wrappers: [
-                { name: 'user-id', component: UserIdComponent },
-                { name: 'identifiedby-value', component: IdentifiedbyValueComponent }
-            ]
-        }),
-        TranslateModule.forRoot({
-            loader: {
-                provide: BaseTranslateLoader,
-                useClass: TranslateLoader,
-                deps: [CoreConfigService, HttpClient]
-            }
-        }),
-        TypeaheadModule,
-        HotkeysModule,
-        SharedModule,
-        LoadingBarHttpClientModule
-    ],
+  imports: [
+    AppRoutingModule,
+    AccordionModule.forRoot(),
+    BrowserAnimationsModule,
+    BrowserModule,
+    BsDatepickerModule.forRoot(),
+    BsDropdownModule.forRoot(),
+    NgxChartsModule,
+    CollapseModule.forRoot(),
+    FormsModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    RecordModule,
+    TabsModule.forRoot(),
+    TooltipModule.forRoot(),
+    PopoverModule.forRoot(),
+    FormlyModule.forRoot({
+      types: [
+        {name: 'cipo-pt-it', component: CipoPatronTypeItemTypeComponent},
+        {name: 'account-select', component: SelectAccountEditorWidgetComponent}
+      ],
+      wrappers: [
+        {name: 'user-id', component: UserIdComponent},
+        {name: 'identifiedby-value', component: IdentifiedbyValueComponent}
+      ]
+    }),
+    TranslateModule.forRoot({
+      loader: {
+        provide: BaseTranslateLoader,
+        useClass: TranslateLoader,
+        deps: [CoreConfigService, HttpClient]
+      }
+    }),
+    TypeaheadModule,
+    HotkeysModule,
+    SharedModule,
+    LoadingBarHttpClientModule,
+    DropdownModule
+  ],
     providers: [
         {
             provide: APP_BASE_HREF,

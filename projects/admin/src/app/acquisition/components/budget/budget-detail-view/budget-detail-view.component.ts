@@ -58,9 +58,10 @@ export class BudgetDetailViewComponent implements DetailRecord, OnInit, OnDestro
 
   /** OnInit hook */
   ngOnInit() {
-    this._subscriptions.add(this.record$.pipe(
-      switchMap((record: any) => this._budgetApiService.getBudgetTotalAmount(record.metadata.pid))
-    ).subscribe(total => this.totalAmount = total));
+    this._subscriptions.add(
+      this.record$
+        .pipe(switchMap((record: any) => this._budgetApiService.getBudgetTotalAmount(record.metadata.pid)))
+        .subscribe(total => this.totalAmount = total));
   }
 
   ngOnDestroy(): void {
