@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +17,7 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
+import { ApiService, Error, RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -25,28 +26,46 @@ import { map } from 'rxjs/operators';
 })
 export class ItemApiService {
 
-  /** Ressource name */
-  readonly RESOURCE_NAME = 'items';
+  // SERVICE ATTRIBUTES =======================================================
+  /** resource name */
+  static readonly RESOURCE_NAME = 'items';
 
+  // CONSTRUCTOR ==============================================================
   /**
    * Constructor
+   * @param _apiService - ApiService
    * @param _recordService - RecordService
    * @param _http - HttpClient
    */
   constructor(
+    private _apiService: ApiService,
     private _recordService: RecordService,
     private _http: HttpClient
-  ) {}
+  ){ }
+
+  // SERVICE FUNCTIONS ========================================================
+  /**
+   * Get an Item through the REST-API
+   * @param pid: the item pid
+   * @param resolve: if $ref should be resolved.
+   * @returns: an `Observable` on REST-API item metadata result
+   */
+  getItem(pid: string, resolve: boolean = false): Observable<any> {
+    return this._recordService
+      .getRecord(ItemApiService.RESOURCE_NAME, pid, resolve ? 1 : 0)
+      .pipe(
+        map((result: any) => result.metadata)
+      );
+  }
 
   /**
-   * Get item
-   * @param pid - the item pid
-   * @returns Observable of the item data
+   * Allow to update the owning location of an item.
+   * @param item: the item object to update
+   * @param newLocationPid: the new owning location pid
    */
-  getItem(pid: string): Observable<any> {
-    return this._recordService.getRecord(this.RESOURCE_NAME, pid).pipe(
-      map((result: any) => result.metadata)
-    );
+  updateLocation(item: any, newLocationPid: string): Observable<Object | Error> {
+    item.location.$ref = this._apiService.getRefEndpoint('locations', newLocationPid);
+    return this._recordService.update(ItemApiService.RESOURCE_NAME, item.pid, item);
   }
 
   /**

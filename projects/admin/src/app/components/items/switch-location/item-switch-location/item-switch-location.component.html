@@ -1,0 +1,53 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="card container mt-3">
+    <dl class="card-text row my-2">
+      <dt class="col-2 label-title my-auto">Source</dt>
+      <dd class="col-10">
+        <p-dropdown
+          [options]="initialLocation"
+          [styleClass]="'w-100'"
+          [disabled]="true"
+        ></p-dropdown>
+      </dd>
+      <dd class="offset-2 col-10 text-center my-2">
+        <i class="fa fa-exchange fa-rotate-90 fa-lg"></i>
+      </dd>
+      <dt class="col-2 label-title my-auto">Target</dt>
+      <dd class="col-10">
+      <p-dropdown
+        formControlName="target"
+        [options]="options"
+        [group]="true"
+        [placeholder]="'Select a new location' | translate"
+        [styleClass]="'w-100'"
+        [scrollHeight]="'40vh'"
+        [filter]="isFilterActive()"
+      ></p-dropdown>
+      </dd>
+    </dl>
+    <div class="card-footer row form-group mb-0">
+      <div class="col text-right">
+        <button type="reset" class="btn btn-outline-danger mr-2" (click)="cancel()" translate>Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid" translate>Save</button>
+      </div>
+    </div>
+  </div>
+</form>

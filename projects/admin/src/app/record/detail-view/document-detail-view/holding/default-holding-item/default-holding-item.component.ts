@@ -61,6 +61,16 @@ export class DefaultHoldingItemComponent implements OnInit {
       : 0;
   }
 
+  /** Message containing the reasons why the item cannot be deleted. */
+  get deleteInfoMessage(): string {
+    return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
+  }
+
+  /** Message containing the reasons wht the item cannot be requested. */
+  get cannotRequestInfoMessage(): string {
+    return this._recordPermissionService.generateTooltipMessage(this.permissions.canRequest.reasons, 'request');
+  }
+
   // CONSTRUCTOR & HOOKS ==============================================================
   /**
    * Constructor
@@ -89,25 +99,11 @@ export class DefaultHoldingItemComponent implements OnInit {
 
 
   // COMPONENT FUNCTIONS ======================================================
-  /** Get permissions */
-  private _getPermissions(): void {
-    const permissionObs = this._recordPermissionService.getPermission('items', this.item.metadata.pid);
-    const canRequestObs = this._itemService.canRequest(this.item.metadata.pid);
-    forkJoin([permissionObs, canRequestObs]).subscribe(
-      ([permissions, canRequest]) => {
-        this.permissions = this._recordPermissionService
-          .membership(
-            this._userService.user,
-            this.item.metadata.library.pid,
-            permissions
-          );
-        this.permissions.canRequest = canRequest;
-    });
-  }
 
   /**
    * Add request on item and refresh permissions
-   * @param itemPid - string
+   * @param recordPid - The record pid (should be item pid)
+   * @param recordType - the record type (should be `item`)
    */
   addRequest(recordPid: string, recordType: string): void {
     const modalRef = this._modalService.show(ItemRequestComponent, {
@@ -124,18 +120,22 @@ export class DefaultHoldingItemComponent implements OnInit {
     this.deleteItem.emit(itemPid);
   }
 
-  /**
-   * Return a message containing the reasons why the item cannot be deleted
-   */
-  get deleteInfoMessage(): string {
-    return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
-  }
-
-  /**
-   * Return a message containing the reasons wht the item cannot be requested
-   */
-  get cannotRequestInfoMessage(): string {
-    return this._recordPermissionService.generateTooltipMessage(this.permissions.canRequest.reasons, 'request');
+  // PRIVATE COMPONENT FUNCTIONS ==============================================
+  /** Get permissions */
+  private _getPermissions(): void {
+    const permissionObs = this._recordPermissionService.getPermission('items', this.item.metadata.pid);
+    const canRequestObs = this._itemService.canRequest(this.item.metadata.pid);
+    forkJoin([permissionObs, canRequestObs]).subscribe(
+      ([permissions, canRequest]) => {
+        // DEV NOTES :: Why using switch location.
+        //   The item permissions returned by server could be limited by the `membership` method. This method check if the item owning
+        //   library is the same as current UI used library. So the switch library button should be displayed if the user may edit the item
+        //   but are not using the same library as item owning library.
+        const switchLocation = {can: permissions.update.can };
+        this.permissions = this._recordPermissionService.membership(this._userService.user, this.item.metadata.library.pid, permissions);
+        this.permissions.switchLocation = switchLocation;
+        this.permissions.canRequest = canRequest;
+      });
   }
 
 }
