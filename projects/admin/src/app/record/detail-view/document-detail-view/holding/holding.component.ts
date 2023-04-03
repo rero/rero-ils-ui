@@ -145,7 +145,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
     let sort = '';
     if (this.holding.metadata.holdings_type === 'serial') {
       query += ' AND -issue.status:(claimed OR deleted OR late)';
-      sort = '-issue_expected_date';
+      sort = '-issue_sort_date';
     }
     this.itemsRef = this._recordService
       .getRecords('items', query, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, {Accept: 'application/rero+json'}, sort)

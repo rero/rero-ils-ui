@@ -50,7 +50,7 @@ export class ItemApiService extends BaseApi {
   getItemsByHoldingsAndViewcode(
     holdings: any, viewcode: string, page: number, itemsPerPage: number = 5): Observable<QueryResponse> {
     const sort = (holdings.metadata.holdings_type === 'serial')
-      ? '-issue_expected_date'
+      ? '-issue_sort_date'
       : 'enumeration_chronology';
     const query = (holdings.metadata.holdings_type === 'serial')
       ? `holding.pid:${holdings.metadata.pid} AND issue.status:${IssueItemStatus.RECEIVED}`
