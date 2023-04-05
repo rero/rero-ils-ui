@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2019-2023 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -18,8 +18,9 @@
   <div class="col">
     <a [routerLink]="['/records/locations/detail', location.metadata.pid]">{{ location.metadata.name }}</a>
   </div>
-  <div class="col-1">
+  <div class="col-2 text-right">
     <i class="fa fa-truck ml-2" *ngIf="location.metadata.is_pickup" title="{{ 'Pickup location' | translate }}"></i>
+    <i class="fa fa-truck ml-2 text-primary" *ngIf="location.metadata.is_ill_pickup" title="{{ 'ILL pickup location' | translate }}"></i>
     <i class="fa fa-globe ml-1" *ngIf="location.metadata.is_online" title="{{ 'Online location' | translate }}"></i>
   </div>
   <div class="col-lg-2 col-sm-3 col-2">
@@ -35,13 +36,13 @@
       <!-- Delete button -->
       <button *ngIf="this.permissions.delete.can; else deleteInfo"
               type="button" class="btn btn-outline-danger btn-sm ml-1"
-              title="{{ 'Delete' | translate}}"
+              title="{{ 'Delete' | translate }}"
               (click)="delete(location.metadata.pid)">
         <i class="fa fa-trash" ></i>
       </button>
       <ng-template #deleteInfo>
         <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"
-                title="{{ 'Delete' | translate}}"
+                title="{{ 'Delete' | translate }}"
                 [popover]="tolTemplate" triggers="mouseenter:mouseleave">
           <i class="fa fa-trash"></i>
         </button>
