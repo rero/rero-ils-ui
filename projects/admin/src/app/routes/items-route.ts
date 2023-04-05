@@ -170,12 +170,24 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
                 value: 'barcode'
               },
               {
+                label: _('Barcode (desc)'),
+                value: '-barcode'
+              },
+              {
                 label: _('Call number'),
                 value: 'call_number'
               },
               {
+                label: _('Call number (desc)'),
+                value: '-call_number'
+              },
+              {
                 label: _('Second call number'),
                 value: 'second_call_number'
+              },
+              {
+                label: _('Second call number (desc)'),
+                value: '-second_call_number'
               },
               {
                 label: _('Current requests'),
