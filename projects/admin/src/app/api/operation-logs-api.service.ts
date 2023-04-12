@@ -50,7 +50,7 @@ export class OperationLogsApiService extends BaseApi {
     resourceType: string, resourcePid: string, action: 'create'|'update',
     page: number, itemPerPage = 5, sort = 'mostrecent'): Observable<Record | Error> {
     const query = `record.type:${resourceType} AND record.value:${resourcePid} AND operation:${action}`;
-    return this._recordService.getRecords('operation_logs', query, page, itemPerPage, undefined, undefined, undefined, sort);
+    return this._recordService.getRecords('operation_logs', query, page, itemPerPage, undefined, undefined, BaseApi.reroJsonheaders, sort);
   }
 
   /**
