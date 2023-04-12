@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -263,24 +263,8 @@ export class Library {
       'friday': WeekDay.Friday,
       'saturday': WeekDay.Saturday,
     };
-    return daysOfWeek[dayName.toLowerCase()] || null;
+    return dayName.toLowerCase() in daysOfWeek
+      ? daysOfWeek[dayName.toLowerCase()]
+      : null;
   }
-
-
-  /**
-   * Get all "day" dates contains into a range of two dates
-   * @param startDate - the lower interval value
-   * @param endDate - the upper interval value
-   * @returns An array of date (one per day)
-   */
-  private static _getIntervalDates(startDate: Date, endDate: Date): Array<Date> {
-    let dateArray = [];
-    let currentDate = startDate;
-    while (currentDate <= endDate){
-      dateArray.push(new Date(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-    return dateArray;
-  }
-
 }
