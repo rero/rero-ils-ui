@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2022 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -77,11 +77,19 @@ export class LibrarySwitchMenuService {
         .totalHits(results.hits.total) > 0 ? results.hits.hits : []
       ),
       map((result: any) => {
-        const libraries = {};
+        const libraries: ILibraryMenu[] = [];
         result.map((library: any) => {
-          libraries[library.metadata.pid] = library.metadata;
+          libraries.push({
+            id: library.metadata.pid,
+            code: library.metadata.code,
+            name: library.metadata.name,
+            metadata: library.metadata
+          });
         });
-        return libraries;
+        // Sort libraries by name asc.
+        return libraries.sort((a: ILibraryMenu, b: ILibraryMenu) => {
+          return a.code.localeCompare(b.code);
+        });
       })).subscribe((libraries: any) => this._generateMenu(libraries));
   }
 
@@ -89,27 +97,26 @@ export class LibrarySwitchMenuService {
    * Generate Menu
    * @param libraries - array of library record
    */
-  private _generateMenu(libraries: any) {
+  private _generateMenu(libraries: ILibraryMenu[]) {
     this._librariesMenu = {};
     const factory = new MenuFactory();
     this._menu = factory.createItem('Switch Libraries');
-    const currentLibrary = libraries[this._userService.user.currentLibrary];
-    const libMenu = this._menu.addChild(currentLibrary.code)
+    const currentLibrary = libraries.find((library: ILibraryMenu) => library.id == this._userService.user.currentLibrary);
+    const libMenu = this._menu.addChild(currentLibrary.metadata.code)
       .setAttribute('class', 'dropdown-menu dropdown-menu-right')
       .setExtra('iconClass', 'fa fa-random');
     this._currentLibrary = libMenu;
-    Object.keys(libraries).map((key: string) => {
-      const library = libraries[key];
+    libraries.forEach((library: ILibraryMenu) => {
       const libraryLine = libMenu.addChild(library.name)
-        .setAttribute('id', `library-${library.pid}`)
-        .setPrefix(`[${library.code}]`, 'pr-2 text-dark small font-weight-bold')
-        .setExtra('id', library.pid)
-        .setExtra('code', library.code);
-      if (key === this._userService.user.currentLibrary) {
+        .setAttribute('id', `library-${library.metadata.pid}`)
+        .setPrefix(`[${library.metadata.code}]`, 'pr-2 text-dark small font-weight-bold')
+        .setExtra('id', library.metadata.pid)
+        .setExtra('code', library.metadata.code);
+      if (library.id === this._userService.user.currentLibrary) {
         this._setActive(libraryLine);
       }
       // Proxy library menu item
-      this._librariesMenu[key] = libraryLine;
+      this._librariesMenu[library.id] = libraryLine;
     });
   }
 
@@ -175,4 +182,12 @@ export class LibrarySwitchMenuService {
       }
     });
   }
+}
+
+// Interface for library menu line
+export interface ILibraryMenu {
+  id: string;
+  code: string;
+  name: string;
+  metadata: any
 }
