@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2020 RERO
+ Copyright (C) 2020-2023 RERO
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,7 @@
   <div class="col-2">
     <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
   </div>
-  <div class="col-5">
+  <div class="col-4">
     <a [routerLink]="['/records', 'documents', 'detail', document.pid]" *ngIf="document.title | mainTitle as title">
       {{ title }}
     </a><br/>
@@ -44,5 +44,8 @@
       {{ loan.metadata.request_expire_date | dateTranslate:'shortDate' }}
     </ng-container>
     <ng-template #noDate>{{ 'Unknown' | translate }}</ng-template>
+  </div>
+  <div class="col-1 text-right">
+    <admin-cancel-request-button [loan]="loan" (cancelRequestEvent)="cancelRequest($event)"></admin-cancel-request-button>
   </div>
 </ng-container>

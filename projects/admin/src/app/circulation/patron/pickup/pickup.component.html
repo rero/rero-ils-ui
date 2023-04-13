@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2020 RERO
+ Copyright (C) 2020-2023 RERO
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published by
@@ -19,11 +19,17 @@
     <!-- HEADER -->
     <div class="row p-2 mb-1 bg-dark rounded text-light row">
       <div class="col-2" translate>Item</div>
-      <div class="col-5" translate>Title</div>
+      <div class="col-4" translate>Title</div>
       <div class="col-3" translate>Pickup location</div>
       <div class="col-2" translate>To pick-up until</div>
+      <div class="col-1">&nbsp;</div>
     </div>
-    <admin-pickup-item *ngFor="let loan of loans" [loan]="loan" class="row p-2 mb-1 border rounded align-middle"></admin-pickup-item>
+    <admin-pickup-item
+      *ngFor="let loan of loans"
+      [loan]="loan"
+      class="row p-2 mb-1 border rounded align-middle"
+      (cancelRequestEvent)="cancelRequest($event)"
+    ></admin-pickup-item>
   </div>
 </section>
 

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,13 +17,14 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
+import { DialogService, RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CircPolicy } from '../classes/circ-policy';
 import { LoanState } from '../classes/loans';
 import { UserService } from '@rero/shared';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -49,11 +50,14 @@ export class LoanService {
    * @param _recordService - RecordService
    * @param _http - HttpClient
    * @param _userService - UserService
+   * @param _translateService - TranslateService
    */
   constructor(
     private _recordService: RecordService,
     private _http: HttpClient,
-    private _userService: UserService
+    private _userService: UserService,
+    private _translateService: TranslateService,
+    private _dialogService: DialogService
   ) { }
 
   // SERVICES FUNCTIONS =======================================================
@@ -82,6 +86,17 @@ export class LoanService {
   }
 
   /**
+   * Can cancel a request
+   * @param loan - Loan record
+   * @returns true if it is possible to cancel a loan
+   */
+  canCancelRequest(loan: any): boolean {
+    // TODO: To increase the complexity, it is better to implement a backend api
+    return [LoanState.PENDING, LoanState.ITEM_IN_TRANSIT_FOR_PICKUP, LoanState.ITEM_AT_DESK]
+      .some((element) => element === loan.metadata.state)
+  }
+
+  /**
    * Cancel a loan related to an item
    * @param itemPid - item pid related to the loan to cancel
    * @param loanPid - loan pid to cancel
@@ -103,6 +118,16 @@ export class LoanService {
         return itemData;
       })
     );
+  }
+
+  /**
+   * Check if request pickup location can be changed.
+   * @returns true if it is possible to update pickup location.
+   */
+  canUpdateRequestPickupLocation(transaction: any): boolean {
+    // TODO: To increase the complexity, it is better to implement a backend api
+    return [LoanState.PENDING, LoanState.ITEM_IN_TRANSIT_FOR_PICKUP]
+      .some((element) => element === transaction.metadata.state)
   }
 
   /**
@@ -129,13 +154,30 @@ export class LoanService {
     return this._http.get<CircPolicy>(apiUrl);
   }
 
+  /**
+   * Cancel request dialog.
+   * @returns Observable (true if the user confirms the cancellation)
+   */
+  cancelRequestDialog(): Observable<boolean> {
+    const config = {
+      ignoreBackdropClick: true,
+      initialState: {
+        title: this._translateService.instant('Cancel request'),
+        body: this._translateService.instant('Do you really want to cancel the request?'),
+        confirmButton: true,
+        cancelTitleButton: this._translateService.instant('No'),
+        confirmTitleButton: this._translateService.instant('Yes')
+      }
+    };
+    return this._dialogService.show(config);
+  }
 
   // PRIVATES SERVICE FUNCTIONS ===============================================
   /**
    * Search about loans related to an item
    * @param itemPid - the item pid to search
    * @param statuses - a list of loan states to filter result.
-   * @returns Observable with loans corresponding to search critieria
+   * @returns Observable with loans corresponding to search criteria
    */
   private loans$(itemPid: string, statuses?: Array<LoanState>): Observable<any> {
     let query = `item_pid.value:${itemPid}`;

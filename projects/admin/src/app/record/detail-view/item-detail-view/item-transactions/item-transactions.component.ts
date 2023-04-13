@@ -96,7 +96,7 @@ export class ItemTransactionsComponent implements OnInit {
       .subscribe((itemData: any) => {
         const status = this._translateService.instant(itemData.status);
         this._toastrService.warning(
-          this._translateService.instant('The item is {{ status }}', { status }),
+          this._translateService.instant('The pending request has been cancelled.'),
           this._translateService.instant('Request')
         );
         this.cancelRequestEvent.emit();

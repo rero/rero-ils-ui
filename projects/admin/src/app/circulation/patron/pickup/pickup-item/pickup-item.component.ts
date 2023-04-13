@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
 import { ItemsService } from '../../../../service/items.service';
@@ -28,6 +28,8 @@ export class PickupItemComponent implements OnInit {
   // COMPONENT ATTRIBUTES =====================================================
   /** Loan */
   @Input() loan = undefined;
+  /** Informs parent component to remove request when it is cancelled */
+  @Output() cancelRequestEvent = new EventEmitter<any>();
   /** Item, document */
   item = undefined;
   document = undefined;
@@ -55,5 +57,13 @@ export class PickupItemComponent implements OnInit {
         }
       );
     }
+  }
+
+  /**
+   * Emit a new cancel request
+   * @param loanPid - The current loan pid
+   */
+  cancelRequest(loanPid: string): void {
+    this.cancelRequestEvent.emit(loanPid);
   }
 }
