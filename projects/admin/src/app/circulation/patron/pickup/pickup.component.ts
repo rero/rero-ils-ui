@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,6 +17,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { PatronService } from '../../../service/patron.service';
+import { CirculationService } from '../../services/circulation.service';
 
 @Component({
   selector: 'admin-pickup',
@@ -30,8 +31,12 @@ export class PickupComponent implements OnInit {
   /**
    * Constructor
    * @param _patronService - PatronService
+   * @param _circulationService - CirculationService
    */
-  constructor(private _patronService: PatronService) { }
+  constructor(
+    private _patronService: PatronService,
+    private _circulationService: CirculationService
+  ) { }
 
   /** OnInit hook */
   ngOnInit() {
@@ -43,5 +48,17 @@ export class PickupComponent implements OnInit {
         });
       }
     });
+  }
+
+  /**
+   * Remove the canceled request on the loans list.
+   * @param loanId, the canceled loan id
+   */
+  cancelRequest(loanId: any): void {
+    // Remove loan in list
+    const index = this.loans.findIndex((element: any) => element.id == loanId);
+    this.loans.splice(index, 1);
+    // Update count on tab
+    this._circulationService.circulationInformations.statistics['pickup'] -= 1;
   }
 }

@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2020 RERO
+ Copyright (C) 2020-2023 RERO
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published by
@@ -19,12 +19,17 @@
     <!-- HEADER -->
     <div class="row p-2 mb-1 bg-dark rounded text-light">
       <div class="col-2" translate>Item</div>
-      <div class="col-6" translate>Title</div>
+      <div class="col-5" translate>Title</div>
       <div class="col-2" translate>Request date</div>
       <div class="col-2" translate>Expected availability</div>
+      <div class="col-1" translate>&nbsp;</div>
     </div>
     <div *ngFor="let loan of loans">
-      <admin-pending-item [loan]="loan" class="row p-2 mb-1 border rounded align-middle"></admin-pending-item>
+      <admin-pending-item
+        class="row p-2 mb-1 border rounded align-middle"
+        [loan]="loan"
+        (cancelRequestEvent)="cancelRequest($event)"
+      ></admin-pending-item>
     </div>
   </div>
 </section>

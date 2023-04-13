@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,6 +25,7 @@ import { SharedModule } from '@rero/shared';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { CheckinActionComponent } from './checkin/checkin-action/checkin-action.component';
 import { CheckinComponent } from './checkin/checkin.component';
 import { CirculationRoutingModule } from './circulation-routing.module';
 import { ItemComponent } from './item/item.component';
@@ -32,6 +33,7 @@ import { ItemsListComponent } from './items-list/items-list.component';
 import { MainRequestComponent } from './main-request/main-request.component';
 import { RequestedItemComponent } from './main-request/requested-item/requested-item.component';
 import { RequestedItemsListComponent } from './main-request/requested-items-list/requested-items-list.component';
+import { CancelRequestButtonComponent } from './patron/cancel-request-button.component';
 import { CardComponent } from './patron/card/card.component';
 import { ChangePasswordFormComponent } from './patron/change-password-form/change-password-form.component';
 import { HistoryLogLibraryComponent } from './patron/history/history-log-library/history-log-library.component';
@@ -41,6 +43,7 @@ import { FixedDateFormComponent } from './patron/loan/fixed-date-form/fixed-date
 import { LoanComponent } from './patron/loan/loan.component';
 import { MainComponent } from './patron/main/main.component';
 import { OverdueTransactionComponent } from './patron/patron-transactions/overdue-transaction/overdue-transaction.component';
+import { PatronFeeComponent } from './patron/patron-transactions/patron-fee/patron-fee.component';
 import {
   PatronTransactionEventFormComponent
 } from './patron/patron-transactions/patron-transaction-event-form/patron-transaction-event-form.component';
@@ -59,8 +62,6 @@ import { PickupItemComponent } from './patron/pickup/pickup-item/pickup-item.com
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
 import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
-import { CheckinActionComponent } from './checkin/checkin-action/checkin-action.component';
-import { PatronFeeComponent } from './patron/patron-transactions/patron-fee/patron-fee.component';
 
 
 @NgModule({
@@ -95,7 +96,8 @@ import { PatronFeeComponent } from './patron/patron-transactions/patron-fee/patr
         HistoryLogLibraryComponent,
         GetLoanCipoPipe,
         CheckinActionComponent,
-        PatronFeeComponent
+        PatronFeeComponent,
+        CancelRequestButtonComponent
     ],
     imports: [
         BsDropdownModule.forRoot(),

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,11 +16,10 @@
  */
 
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { DialogService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
-import { LoanState } from '@app/admin/classes/loans';
 import { ItemsService } from '@app/admin/service/items.service';
+import { LoanService } from '@app/admin/service/loan.service';
+import { TranslateService } from '@ngx-translate/core';
+import { UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -33,7 +32,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   // COMPONENTS ATTRIBUTES ===============================================================
   /** Loan Record */
   @Input() transaction: any;
-  /** Ressource type */
+  /** Resource type */
   @Input() type: string;
   /** Flag for cell background */
   @Input() background: boolean;
@@ -54,7 +53,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   /** Pickup locations observable reference */
   private _pickupLocations$: any;
   /** Authorized Transaction Type to load pickup locations */
-  private _autorizedTypeToLoadPickupLocations = [
+  private _authorizedTypeToLoadPickupLocations = [
     'loan_request'
   ];
 
@@ -77,20 +76,20 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
    * constructor
    * @param _userService - User service
    * @param _translateService - TranslateService
-   * @param _dialogService: DialogService
-   * @param _itemService: ItemsService
+   * @param _itemService - ItemsService
+   * @param _loanService - LoanService
    */
   constructor(
     private _userService: UserService,
     private _translateService: TranslateService,
-    private _dialogService: DialogService,
-    private _itemService: ItemsService
+    private _itemService: ItemsService,
+    private _loanService: LoanService
   ) {}
 
   /** OnInit hook */
   ngOnInit() {
     this._currentUser = this._userService.user;
-    if (this._autorizedTypeToLoadPickupLocations.includes(this.type)) {
+    if (this._authorizedTypeToLoadPickupLocations.includes(this.type)) {
       this._pickupLocations$ = this.getPickupLocations().subscribe((pickups) => {
         this.pickupLocations = pickups;
       });
@@ -99,43 +98,32 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
 
   /** OnDestroy hook */
   ngOnDestroy() {
-    if (this._autorizedTypeToLoadPickupLocations.includes(this.type)) {
+    if (this._authorizedTypeToLoadPickupLocations.includes(this.type)) {
       this._pickupLocations$.unsubscribe();
     }
   }
 
 
   // COMPONENT FUNCTIONS ==================================================================
-  /** Check if request can be cancelled. */
+  /**
+   * Check if request can be cancelled.
+   * @returns true if it is possible to cancel a loan
+   */
   canCancelRequest(): boolean {
-    // No permission API in backend
-    // Allowed when loan state is PENDING or ITEM_IN_TRANSIT_FOR_PICKUP according to actions.md
-    const itemStatus = [LoanState.PENDING, LoanState.ITEM_IN_TRANSIT_FOR_PICKUP, LoanState.ITEM_AT_DESK];
-    return itemStatus.some((element) => element === this.transaction.metadata.state);
-
+    return this._loanService.canCancelRequest(this.transaction);
   }
 
-  /** Check if request pickup location can be changed. */
+  /**
+   * Check if request pickup location can be changed.
+   * @returns true if it is possible to update pickup location.
+   */
   canUpdateRequestPickupLocation(): boolean {
-    // No permission API in backend
-    // Allowed when loan state is PENDING or ITEM_IN_TRANSIT_FOR_PICKUP according to actions.md
-    const itemStatus = [LoanState.PENDING, LoanState.ITEM_IN_TRANSIT_FOR_PICKUP];
-    return itemStatus.some((element) => element === this.transaction.metadata.state);
+    return this._loanService.canUpdateRequestPickupLocation(this.transaction);
   }
 
   /** Show a confirmation dialog box for cancel request. */
   showCancelRequestDialog(): void {
-    const config = {
-      ignoreBackdropClick: true,
-      initialState: {
-        title: this._translateService.instant('Cancel request'),
-        body: this._translateService.instant('Do you really want to delete this request?'),
-        confirmButton: true,
-        cancelTitleButton: this._translateService.instant('No'),
-        confirmTitleButton: this._translateService.instant('Yes')
-      }
-    };
-    this._dialogService.show(config).subscribe((confirm: boolean) => {
+    this._loanService.cancelRequestDialog().subscribe((confirm: boolean) => {
       if (confirm) {
         this.emitCancelRequest();
       }

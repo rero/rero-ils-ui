@@ -19,13 +19,15 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { LoanService } from './loan.service';
+import { RecordModule } from '@rero/ng-core';
 
 
 describe('LoanService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       HttpClientTestingModule,
-      TranslateModule.forRoot()
+      TranslateModule.forRoot(),
+      RecordModule
     ]
   }));
 
