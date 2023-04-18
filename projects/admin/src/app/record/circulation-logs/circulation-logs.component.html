@@ -25,6 +25,7 @@
         </button>
       </div>
       <div class="modal-body overflow-auto overflow-max-size">
+        <admin-circulation-stats *ngIf="resourceType === 'item'" [itemPid]="this.resourcePid"></admin-circulation-stats>
         <div class="mb-3">
           <span class="float-left label-title mr-2 font-weight-bold" translate>Filter</span>
           <ul class="list-inline mb-0">
