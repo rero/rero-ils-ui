@@ -31,7 +31,7 @@ export * from './lib/directive/permissions.directive';
 export * from './lib/modules/prime-ng-import/prime-ng-import.module';
 export * from './lib/paginator/paginator';
 export * from './lib/paginator/show-more-pager/show-more-pager.component';
-export * from './lib/pipe/contribution-entity.pipe';
+export * from './lib/pipe/entity-label.pipe';
 export * from './lib/pipe/contribution-type.pipe';
 export * from './lib/pipe/extract-source-field.pipe';
 export * from './lib/pipe/get-translated-label.pipe';

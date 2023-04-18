@@ -26,7 +26,7 @@ import { LinkPermissionsDirective } from './directive/link-permissions.directive
 import { PermissionsDirective } from './directive/permissions.directive';
 import { PrimeNgImportModule } from './modules/prime-ng-import/prime-ng-import.module';
 import { ShowMorePagerComponent } from './paginator/show-more-pager/show-more-pager.component';
-import { ContributionEntityPipe } from './pipe/contribution-entity.pipe';
+import { EntityLabelPipe } from './pipe/entity-label.pipe';
 import { ContributionTypePipe } from './pipe/contribution-type.pipe';
 import { ExtractSourceFieldPipe } from './pipe/extract-source-field.pipe';
 import { GetTranslatedLabelPipe } from './pipe/get-translated-label.pipe';
@@ -76,7 +76,7 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
         SafeUrlPipe,
         PermissionsDirective,
         LinkPermissionsDirective,
-        ContributionEntityPipe,
+        EntityLabelPipe,
         ContributionComponent,
     ],
     exports: [
@@ -107,7 +107,7 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
         SafeUrlPipe,
         PermissionsDirective,
         LinkPermissionsDirective,
-        ContributionEntityPipe,
+        EntityLabelPipe,
         ContributionComponent
     ],
     imports: [
@@ -130,7 +130,7 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
         NgVarDirective,
         KeyExistsPipe,
         NotesFilterPipe,
-        ContributionEntityPipe
+        EntityLabelPipe
     ],
     schemas: [
         NO_ERRORS_SCHEMA

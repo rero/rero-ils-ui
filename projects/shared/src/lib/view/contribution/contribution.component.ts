@@ -15,17 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { AppSettingsService } from '../../service/app-settings.service';
 
 @Component({
   selector: 'shared-contribution',
+  styleUrls: ['./contribution.component.scss'],
   templateUrl: './contribution.component.html'
 })
-export class ContributionComponent {
+export class ContributionComponent implements OnInit {
 
-  // COMPONENT ATTRIBUTES =====================================================
+  // COMPONENTS ATTRIBUTES ====================================================
   /** List of contributor */
-  @Input() contributions: Array<{entity: any, role: Array<string>}> = [];
+  @Input() contributions: Array<{entity: any, role: Array<string>}>;
   /** List of contributor types to display */
   @Input() filters: string[] = ['bf:Person', 'bf:Organisation']
   /** The number of contributors to display */
@@ -33,5 +35,30 @@ export class ContributionComponent {
   /** Is the role of contributor should be displayed */
   @Input() withRoles: boolean = false;
   /** The view where component is displayed (viewcode | 'professional') */
-  @Input() view: string | undefined;
+  @Input() view: string = 'professional';
+
+  private _entityTypes = this._appSettingsService.settings.agentAgentTypes || {};
+
+  // CONSTRUCTORS & HOOKS =====================================================
+  /**
+   * Constructor
+   * @param _appSettingsService - AppSettingsService
+   */
+  constructor(
+    private _appSettingsService: AppSettingsService
+  ) { }
+
+  /** OnInit hook */
+  ngOnInit() {
+    this.contributions = this.contributions || [];
+    this.limitRecord = (this.limitRecord === undefined) ? this.contributions.length : this.limitRecord;
+    this.contributions = this.contributions
+      .filter(contributor => this.filters.includes(contributor.entity.type))
+      .map(contributor => {
+        contributor.entity.target = (contributor.entity?.type in this._entityTypes)
+          ? this._entityTypes[contributor.entity?.type]
+          : undefined;
+        return contributor;
+      });
+  }
 }
