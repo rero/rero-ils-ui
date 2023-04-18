@@ -58,7 +58,7 @@
     <a [routerLink]="['/records','documents','detail', item.document.pid]" *ngIf="item.document.title | mainTitle as title ">
       {{ isCollapsed ? (title | truncateText: 12) : title }}
     </a>
-    <shared-contribution [contributions]="document?.contribution"></shared-contribution>
+    <shared-contribution *ngIf="document" [contributions]="document?.contribution"></shared-contribution>
   </div>
   <!-- CIRCULATION INFO -->
   <div name="circ-info" class="col-2">
