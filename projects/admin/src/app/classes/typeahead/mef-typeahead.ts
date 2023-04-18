@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
  * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService, SuggestionMetadata } from '@rero/ng-core';
+import { SuggestionMetadata } from '@rero/ng-core';
 import { AppSettingsService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -28,16 +30,17 @@ import { ITypeahead } from './ITypeahead-interface';
 export class MefTypeahead implements ITypeahead {
 
   /** Entry point for MEF Api */
-  apiMefEntryPoint = 'mef';
+  private _apiSearchEntryPoint = 'api/entities/remote/search';
+  private _apiProxyEntryPoint = 'api/proxy';
 
   /**
    * Constructor
-   * @param _recordService - RecordService
+   * @param _http - HttpClient
    * @param _translateService - TranslateService
    * @param _appSettingsService - AppSettingsService
    */
   constructor(
-    protected _recordService: RecordService,
+    protected _http: HttpClient,
     protected _translateService: TranslateService,
     protected _appSettingsService: AppSettingsService
   ) { }
@@ -54,106 +57,118 @@ export class MefTypeahead implements ITypeahead {
    * @returns Observable of string - html template representation of the value.
    */
   getValueAsHTML(options: any, value: string): Observable<string> {
-    const url = value.split('/');
-    const pid = url.pop();
-    const source = url.pop();
-    return this._recordService
-      .getRecords(this.apiMefEntryPoint, `${source}.pid:${pid}`, 1, 1)
+    // We need to call the url to get remote metadata. But we can't do that directly because this url could be external.
+    // So we need to call a proxy passing the URL as query string argument.
+    const source = value.split('/').slice(-2)[0];
+    const params = new HttpParams().set('url', value);
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this._http
+      .get(this._apiProxyEntryPoint, {params, headers})
       .pipe(
+        // TODO :: remove this `map` pipe when MEF api return correct properties
+        //   For MEF agents, the source URL is serialized into `identifier` properties ; for MEF concepts, this URL is found into an array
+        //   of identifiers. This `map` pipe harmonize MEF server response to allow a single (and simpler) URL extraction in next `map` pipe
+        //   Additionally, all identifier sources are transform to lowercase (MEF concepts response return "IdRef" instead of "idref")
         map((data: any) => {
-          if (
-            data.hits.hits.length > 0 &&
-            data.hits.hits[0].metadata[source].authorized_access_point
-          ) {
-            return {
-              source: source.toUpperCase(),
-              name: data.hits.hits[0].metadata[source].authorized_access_point,
-              url: data.hits.hits[0].metadata[source].identifier
-            };
+          if (data?.metadata && data.metadata?.identifier) {
+            data.metadata['identifiedBy'] = [{source, 'type': 'uri', 'value': data.metadata.identifier}];
+            delete data.metadata.identifier;
           }
+          if (data?.metadata && data?.metadata.identifiedBy) {
+            data.metadata.identifiedBy.map(identifier => identifier.source = identifier.source.toLowerCase());
+          }
+          return data;
         }),
-        map((v: { name: string, source: string, url: string }) => `
-          <a href="${v.url}" target="_blank">${v.name} <i class="fa fa-external-link"></i></a>
-          <small class="badge badge-secondary ml-1">${v.source}</small>
-        `)
-      );
+        map((data: any) => {
+          const link = this._get_source_uri(data?.metadata?.identifiedBy, source) || value;
+          const label = data?.metadata?.authorized_access_point;
+          return `
+            <a href="${link}" target="_blank">${label} <i class="fa fa-external-link"></i></a>
+            <small class="badge badge-secondary ml-1">${source.toUpperCase()}</small>
+          `
+        }),
+        catchError(e => {
+          console.error(`getValueAsHTML :: Unable to resolve ${value}`, e);
+          return of(`<span class="text-warning"><i class="fa fa-exclamation-triangle mr-1"></i>${value}</span>`);
+        })
+    );
   }
 
   /**
    * Get the suggestions list given a search query.
    * @param options - remote typeahead options
-   * @param query - search query to retrieve the suggestions list
+   * @param searchTerm - search query to retrieve the suggestions list
    * @param numberOfSuggestions - the max number of suggestion to return
    * @returns - an observable of the list of suggestions.
    */
-  getSuggestions(options: any, query: string, numberOfSuggestions: number): Observable<Array<SuggestionMetadata | string>> {
-    if (!query) {
+  getSuggestions(options: any, searchTerm: string, numberOfSuggestions: number): Observable<Array<SuggestionMetadata | string>> {
+    // If no search term is specified, no need to do a search, just return an empty suggestion array
+    if (!searchTerm) {
       return of([]);
     }
-
+    // If no search category is selected [bf:Person, bf:Organisation, bf:Topic, ...] (from option list), then throw an error
     if (null == options?.filters?.selected) {
       throw Error('Missing filters definition');
     }
 
-    const sources = this._appSettingsService.agentSources
-      .filter((source: string) => source !== 'rero');
+    const searchCategory = options.filters.selected;
+    // TODO :: Why do I need to add an ending slash to use proxy-config and don't be redirected (308) receiving a CORS errors
+    const url = `${this._apiSearchEntryPoint}/${searchCategory}/${searchTerm}/`;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    const contributionQuery = [
-      `((autocomplete_name:${query})^2 OR ${query})`,
-      `AND sources:(${sources.join(' OR ')})`,
-      `AND type:${options.filters.selected.replace(':', '\\:')}`
-    ].join(' ');
-
-    return this._recordService.getRecords(
-        this.apiMefEntryPoint,
-        contributionQuery,
-        1,
-        numberOfSuggestions
-      ).pipe(
-        map((results: any) => {
-          const names = [];
-          if (!results) {
-            return [];
-          }
-          results.hits.hits.map((hit: any) => {
-            for (const source of this._sources()) {
-              if (hit.metadata[source]) {
-                names.push(this._getNameRef(hit.metadata, source));
-              }
+    return this._http.get(url, {headers}).pipe(
+      map((results: any) => results?.hits?.total >= 0 ? results.hits.hits : []),
+      map((hits: Array<any>) => {
+        const suggestions = [];
+        hits.map((hit: any) => {
+          for (const source of this._sources()) {
+            if (hit.metadata[source]) {
+              suggestions.push(this._getNameRef(hit.metadata, source));
             }
-          });
-          return names;
-        }),
-        catchError(e => {
-          switch (e.status) {
-            case 400:
-              return of([]);
-            default:
-              throw e;
           }
-        })
-      );
+        });
+        return suggestions;
+      }),
+      catchError(e => {
+        switch (e.status) {
+          case 400:
+            return of([]);
+          default:
+            throw e;
+        }
+      })
+    );
   }
 
   /**
-   * Returns label, $ref and group.
+   * Returns a suggestion to display for the user.
    *
-   * @param metadata the meta data.
-   * @param sourceName The name of the source.
-   * @return Metadata the label, $ref and group.
+   * @param metadata the metadata.
+   * @param sourceName The name of the source (idref, gnd, ...)
+   * @return The suggestion to display.
    */
   private _getNameRef(metadata: any, sourceName: string): SuggestionMetadata {
-    const label = metadata[sourceName].authorized_access_point;
-    const url = metadata[sourceName].identifier;
+    metadata = metadata[sourceName];
     return {
-      label: `${label}`,
-      externalLink: url,
-      value: `https://mef.rero.ch/api/${sourceName}/${metadata[sourceName].pid}`,
-      group: this._translateService.instant(
-        'link to authority {{ sourceName }}',
-        { sourceName }
-      )
+      label: metadata.authorized_access_point,
+      externalLink: this._get_source_uri(metadata?.identifiedBy, sourceName),
+      value: this._get_source_uri(metadata?.identifiedBy, 'mef'),
+      group: this._translateService.instant('link to authority {{ sourceName }}', { sourceName })
     };
+  }
+
+  /** Get the URI corresponding to a source into an identifiedBy array
+   *
+   * @param identifiers: the `identifiedBy` array field.
+   * @param sourceName: the name of the source (idref, gnd, ...)
+   * @return the corresponding URI or null if not found
+   */
+  private _get_source_uri(identifiers: Array<{source:string, type:string, value:string}>, sourceName: string): string|undefined {
+    const identifier = identifiers.find(id => id.source.toLowerCase() == sourceName.toLowerCase() && id.type == 'uri');
+    return (identifier != undefined)
+      ? identifier.value
+      : undefined;
   }
 
   /**

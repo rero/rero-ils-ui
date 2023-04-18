@@ -14,31 +14,30 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="contributions">
-  <ul class="list-inline mb-0" *ngVar="contributions|contributionEntity:filters:limitRecord as data">
-    <li
-      class="list-inline-item"
-      *ngFor="let entity of data.entries; last as isLast"
-    >
-      <ng-container *ngIf="entity.pid && entity.target; else entityNoLink">
-        <!-- public view-->
-        <a *ngIf="view; else professional" href="{{ view }}/{{ entity.target }}/{{ entity.pid }}">
-          {{ entity.authorizedAccessPoint }}
-        </a>
-        <ng-template #professional>
-          <a class="mr-1" [routerLink]="['/records', entity.target, 'detail', entity.pid]">
-            {{ entity.authorizedAccessPoint }}
-          </a>
-        </ng-template>
-      </ng-container>
-      <ng-template #entityNoLink>
-        {{ entity.authorizedAccessPoint }}
-      </ng-template>
-      <ng-container *ngIf="withRoles && entity.roles.length > 0">
-        <span class="text-secondary">({{ entity.roles | join:', ' }})</span>
-      </ng-container>
-      <ng-container *ngIf="!isLast">;</ng-container>
-      <ng-container *ngIf="isLast && limitRecord && data.count > limitRecord">; …</ng-container>
-    </li>
-  </ul>
-</ng-container>
+
+<ul class="contributor-list-inline" *ngIf="contributions">
+  <li *ngFor="let contributor of contributions | slice:0:limitRecord; last as isLast">
+    <ng-container [ngTemplateOutlet]="contributorTpl" [ngTemplateOutletContext]="{contributor}"></ng-container>
+  </li>
+  <li *ngIf="contributions.length > limitRecord">…</li>
+</ul>
+
+<ng-template #contributorTpl let-contributor='contributor'>
+  <ng-container [ngTemplateOutlet]="entityTpl" [ngTemplateOutletContext]="{entity: contributor.entity}"></ng-container>
+  <ng-container *ngIf="withRoles && contributor.role && contributor.role.length > 0">
+    <ul class="contributor-roles">
+      <li class="contributor-role" *ngFor="let role of contributor.role">{{ role | translate }}</li>
+    </ul>
+  </ng-container>
+</ng-template>
+
+<ng-template #entityTpl let-entity=entity>
+  <ng-container *ngIf="entity?.pid && entity?.target else entityNoLink">
+    <a *ngIf="view !== 'professional'; else professional" href="{{ view }}/{{ entity.target }}/{{ entity.pid }}">{{ entity | entityLabel }}</a>
+    <ng-template #professional>
+      <a class="mr-1" [routerLink]="['/records', entity.target, 'detail', entity.pid]">{{ entity | entityLabel }}</a>
+    </ng-template>
+  </ng-container>
+  <ng-template #entityNoLink>{{ entity | entityLabel }}</ng-template>
+</ng-template>
+

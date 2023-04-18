@@ -1,6 +1,7 @@
 <!--
   RERO ILS UI
   Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -37,7 +38,7 @@
         <ul class="list-unstyled">
           <li class="figure-caption" *ngFor="let genre of record.metadata.genreForm">
             <i class="fa fa-tag mr-1"></i>
-            {{ genre.entity.authorized_access_point }}
+            {{ genre.entity | entityLabel }}
           </li>
         </ul>
       </ng-container>
@@ -183,7 +184,7 @@
           <span *ngFor="let subject of subjects"
             class="badge badge-secondary mr-1"
             title="{{ subject.entity.type | translate }}">
-            <i class="fa fa-tag"></i> {{ subject.entity.authorized_access_point }}
+            <i class="fa fa-tag"></i> {{ subject.entity | entityLabel }}
           </span>
         </div>
       </div>

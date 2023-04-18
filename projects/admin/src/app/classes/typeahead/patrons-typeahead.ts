@@ -23,13 +23,6 @@ import { catchError, map } from 'rxjs/operators';
 import { PatronService } from '../../service/patron.service';
 import { ITypeahead } from './ITypeahead-interface';
 
-/**
- * Escape string using regular expression.
- */
-function escapeRegExp(data) {
-  return data.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-}
-
 @Injectable()
 export class PatronsTypeahead implements ITypeahead {
 

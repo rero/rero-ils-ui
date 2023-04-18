@@ -41,6 +41,5 @@ export interface ITypeahead {
    * @param numberOfSuggestions - the max number of suggestion to return
    * @returns - an observable of the list of suggestions.
    */
-  getSuggestions(options: any, query: string, numberOfSuggestions: number):
-  Observable<Array<SuggestionMetadata | string>>;
+  getSuggestions(options: any, query: string, numberOfSuggestions: number): Observable<Array<SuggestionMetadata | string>>;
 }
