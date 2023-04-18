@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
- * Copyright (C) 2019-2022 UCLouvain
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -181,6 +181,7 @@ import { PatronPermissionsComponent } from './record/detail-view/patron-detail-v
 import { PatronPermissionComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permission/patron-permission.component';
 import { CirculationLogLoanComponent } from './record/circulation-logs/circulation-log/circulation-log-loan/circulation-log-loan.component';
 import { CirculationLogNotificationComponent } from './record/circulation-logs/circulation-log/circulation-log-notification/circulation-log-notification.component';
+import { CirculationStatsComponent } from './record/circulation-logs/circulation-stats/circulation-stats.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -300,7 +301,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         PatronPermissionsComponent,
         PatronPermissionComponent,
         CirculationLogLoanComponent,
-        CirculationLogNotificationComponent
+        CirculationLogNotificationComponent,
+        CirculationStatsComponent
     ],
     imports: [
         AppRoutingModule,
