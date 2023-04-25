@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,7 +24,22 @@ import { TranslateService } from '@ngx-translate/core';
 export class ItemComponent {
 
   /** Item record */
-  @Input() item: any;
+  private _item: any;
+
+  /** Temporary item type circulation */
+  circulationInformation: string | undefined = undefined;
+
+  /** Set item record */
+  @Input() set item(item: any) {
+    this._item = item;
+    const { circulation_information } = item.metadata.item_type;
+    if (circulation_information) {
+      const information = circulation_information.find((obj: any) => obj.language === this._translateService.currentLang);
+      if (information) {
+        this.circulationInformation = information.label;
+      }
+    }
+  }
 
   /** View code */
   @Input() viewcode: string;
@@ -47,6 +62,11 @@ export class ItemComponent {
   /** Current interface language */
   get language() {
     return this._translateService.currentLang;
+  }
+
+  /** Get item record */
+  get item() {
+    return this._item;
   }
 
   /**

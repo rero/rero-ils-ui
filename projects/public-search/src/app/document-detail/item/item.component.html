@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2023 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -20,15 +20,15 @@
   <dl class="m-0 py-2 row">
     <!-- LIBRARY AND LOCATION -->
     <ng-container *ngIf="context === 'book'">
-      <dt class="mb-0 col-lg-2 col-sm-3" translate>Location</dt>
-      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location'}" class="mb-0 col-lg-10 col-sm-9">
+      <dt class="mb-0 col-3 label-title" translate>Location</dt>
+      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location'}" class="mb-0 col-9">
         {{ item.metadata.library.name }}: {{ item.metadata.location.name }}
       </dd>
     </ng-container>
     <!-- CALL NUMBER -->
     <ng-container *ngIf="item.metadata.call_number">
-      <dt class="mb-0 col-lg-2 col-sm-3" translate>Call number</dt>
-      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-call-number'}" class="mb-0 col-lg-10 col-sm-9">
+      <dt class="mb-0 col-3 label-title" translate>Call number</dt>
+      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-call-number'}" class="mb-0 col-9">
         {{ item.metadata.call_number }}
         <ng-container *ngIf="item.metadata.second_call_number">
           | {{ item.metadata.second_call_number }}
@@ -37,8 +37,8 @@
     </ng-container>
     <!-- ITEM IN COLLECTION -->
     <ng-container *ngIf="item.metadata.in_collection; else temporaryLocation">
-      <dt class="mb-0 col-lg-2 col-sm-3" translate>Temporary location</dt>
-      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location-temporary'}" class="mb-0 col-lg-10 col-sm-9">
+      <dt class="mb-0 col-3 label-title" translate>Temporary location</dt>
+      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location-temporary'}" class="mb-0 col-9">
         <ng-container *ngFor="let collection of item.metadata.in_collection; let last = last">
           <a href="/{{ collection.viewcode }}/collections/{{ collection.pid }}">{{ collection.title }}</a>
           {{ last ? '' : '; ' }}
@@ -48,39 +48,51 @@
     <!-- ITEM TEMPORARY LOCATION -->
     <ng-template #temporaryLocation>
       <ng-container *ngIf="item.metadata.temporary_location">
-        <dt class="mb-0 col-lg-2 col-sm-3 label-title" translate>Temporary location</dt>
-        <dd class="mb-0 col-lg-10 col-sm-9">{{ item.metadata.temporary_location.name }}</dd>
+        <dt class="mb-0 col-3 label-title" translate>Temporary location</dt>
+        <dd class="mb-0 col-9">
+          <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
+          {{ item.metadata.temporary_location.name }}
+        </dd>
       </ng-container>
     </ng-template>
+    <!-- ITEM CIRCULATION INFORMATION -->
+    <ng-container *ngIf="circulationInformation">
+      <dt class="mb-0 col-3 label-title" translate>Circulation information</dt>
+      <dd class="mb-0 col-9">
+        <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
+        {{ circulationInformation }}
+      </dd>
+    </ng-container>
+
     <!-- ENUMERATION AND CHRONOLOGY -->
     <ng-container *ngIf="item.metadata.enumerationAndChronology">
-      <dt class="mb-0 col-lg-2 col-sm-3 label-title" translate>Unit</dt>
-      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-enum-chrono'}" class="mb-0 col-lg-10 col-sm-9">
+      <dt class="mb-0 col-3 label-title" translate>Unit</dt>
+      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-enum-chrono'}" class="mb-0 col-9">
         {{ item.metadata.enumerationAndChronology }}
       </dd>
     </ng-container>
     <!-- BARCODE -->
-    <dt class="mb-0 col-lg-2 col-sm-3" translate>Barcode</dt>
-    <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-barcode'}" class="mb-0 col-lg-10 col-sm-9">
+    <dt class="mb-0 col-3 label-title" translate>Barcode</dt>
+    <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-barcode'}" class="mb-0 col-9">
       {{ item.metadata.barcode }}
     </dd>
     <!-- NOTES -->
     <ng-container *ngIf="item.metadata.notes && item.metadata.notes.length > 0">
       <ng-container *ngFor="let note of item.metadata.notes | notesFilter : noteAuthorizedTypes">
-        <dt class="mb-0 col-lg-2 col-sm-3">{{ note.type | translate }}</dt>
-        <dd class="mb-0 col-lg-10 col-sm-9" [innerHTML]="note.content | nl2br"></dd>
+        <dt class="mb-0 col-3 label-title">{{ note.type | translate }}</dt>
+        <dd class="mb-0 col-9" [innerHTML]="note.content | nl2br"></dd>
       </ng-container>
     </ng-container>
     <!-- URL -->
     <ng-container *ngIf="item.metadata.url">
-      <dt class="mb-0 col-lg-2 col-sm-3 label-title" translate>URL</dt>
-      <dd class="mb-0 col-lg-10 col-sm-9">
+      <dt class="mb-0 col-3 label-title" translate>URL</dt>
+      <dd class="mb-0 col-9">
         <a target="_blank" [href]="item.metadata.url | safeUrl">{{ item.metadata.url }}</a>
       </dd>
     </ng-container>
     <!-- STATUS -->
-    <dt class="mb-0 col-lg-2 col-sm-3" translate>Status</dt>
-    <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-status'}" class="mb-0 col-lg-10 col-sm-9">
+    <dt class="mb-0 col-3 label-title" translate>Status</dt>
+    <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-status'}" class="mb-0 col-9">
       <i class="mr-1 fa fa-circle"
          [ngClass]="{
             'text-success': item.metadata.availability.available,
