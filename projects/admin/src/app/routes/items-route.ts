@@ -83,12 +83,6 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
               if (holdingPid !== null) {
                 this._populateItemFieldFromHolding(record, holdingPid);
               }
-              // for new item creation, fill the acquisition date field with the current timestamp
-              // issue should don't have the new acquisition date by default.
-              const recordType = ('type' in record) ? record.type : ItemType.STANDARD;
-              if (!record.hasOwnProperty('pid') && recordType !== ItemType.ISSUE) {
-                record.acquisition_date = this._routeToolService.datePipe.transform(Date.now(), 'yyyy-MM-dd');
-              }
               return record;
             },
             preCreateRecord: (data: any) => {
