@@ -30,7 +30,7 @@ import { PatronTransactionService } from '@app/admin/circulation/services/patron
 @Component({
   selector: 'admin-item',
   templateUrl: './item.component.html',
-  styleUrls: ['./item.component.scss']
+  styleUrls: ['../circulation.scss']
 })
 export class ItemComponent implements OnInit {
 

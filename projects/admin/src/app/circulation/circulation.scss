@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,18 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+ @import 'bootstrap/scss/functions';
+ @import 'bootstrap/scss/variables';
 
-_('available');
-_('no items received');
-_('not available');
-_('request');
-_('requests');
-_('see collections and items');
+ .btn-hover {
+   color: $black;
+   background-color: $warning;
+   // could be better to use ``@extend .btn:hover`` but it doesn't work for hover property
+ }
 
-// Loans
-_('renewal');
-_('renewals');
+ .item {
+   margin-bottom: map-get($spacers, 1) !important;
+   padding: map-get($spacers, 1) !important;
+   border: $border-width solid $border-color;
+   border-radius: $border-radius;
+   position: relative;
 
-_('Vol. {{ volume }}');
-_('n°. {{ number }}');
+   &:hover{
+     background-color: $light;
+   }
+
+   div.actions {
+     position: absolute;
+     top: map-get($spacers, 1);
+     right: 15px;
+   }
+ }

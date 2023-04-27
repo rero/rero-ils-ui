@@ -1,0 +1,107 @@
+<!--
+ RERO ILS UI
+ Copyright (C) 2023 RERO
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published by
+ the Free Software Foundation, version 3 of the License.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="row item">
+  <div class="col-6">
+    <button type="button" class="btn-show-more"
+            [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
+            (click)="isCollapsed = !isCollapsed"
+            [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
+    </button>
+    {{ record.metadata.document.title }}
+  </div>
+  <div class="col-5">{{ record.metadata.document.authors }}</div>
+  <div class="col-1 text-right">
+    <a
+      class="btn btn-sm btn-link btn-outline-primary"
+      title="{{ 'Details' | translate }}"
+      [routerLink]="['/', 'records', 'ill_requests', 'detail', record.metadata.pid]"
+    >
+      <i class="fa fa-eye" aria-hidden="true"></i>
+    </a>
+  </div>
+  <div name="collapsed-details" class="col-12 mt-2" *ngIf="!isCollapsed">
+    <dl class="row">
+      <!-- PUBLISHER -->
+      <ng-container *ngIf="record.metadata.document.publisher">
+        <dt class="offset-1 col-1 label-title" translate>Publisher</dt>
+        <dd class="col-10 mb-0">{{ record.metadata.document.publisher }}</dd>
+      </ng-container>
+
+      <!-- YEAR -->
+      <ng-container *ngIf="record.metadata.document.year">
+        <dt class="offset-1 col-1 label-title" translate>Year</dt>
+        <dd class="col-10 mb-0">{{ record.metadata.document.year }}</dd>
+      </ng-container>
+
+      <!-- IDENTIFIER -->
+      <ng-container *ngIf="record.metadata.document.identifier">
+        <dt class="offset-1 col-1 label-title" translate>Identifier</dt>
+        <dd class="col-10 mb-0">{{ record.metadata.document.identifier }}</dd>
+      </ng-container>
+
+      <!-- SOURCE -->
+      <ng-container *ngIf="record.metadata.document.source">
+        <dt class="offset-1 col-1 label-title" translate>Source</dt>
+        <dd class="col-10 mb-0">
+          <ng-container *ngIf="record.metadata.document.source.volume || record.metadata.document.source.number">
+            {{ record.metadata.document.source | journalVolume }}
+          </ng-container>
+        </dd>
+      </ng-container>
+
+      <!-- PICKUP LOCATION -->
+      <dt class="offset-1 col-1 label-title" translate>Pickup location</dt>
+      <dd class="col-10 mb-0">{{ record.metadata.pickup_location.name }}</dd>
+
+      <!-- SCOPE -->
+      <dt class="offset-1 col-1 label-title" translate>Scope</dt>
+      <dd class="col-10 mb-0">
+        <ng-container *ngIf="record.metadata.copy; else scopeLoan">{{ 'Copy' | translate }}</ng-container>
+        <ng-template #scopeLoan>{{ 'Loan' | translate }}</ng-template>
+      </dd>
+
+      <!-- PAGES -->
+      <ng-container *ngIf="record.metadata.copy && record.metadata.pages">
+        <dt class="offset-1 col-1 label-title" translate>Pages</dt>
+        <dd class="col-10 mb-0">{{ record.metadata.pages }}</dd>
+      </ng-container>
+
+      <!-- FOUND IN -->
+      <ng-container *ngIf="record.metadata.found_in">
+        <dt class="offset-1 col-1 label-title" translate>Found in</dt>
+        <dd class="col-10 mb-0">
+          <a href="{{ record.metadata.found_in.url }}">{{ record.metadata.found_in.url }}</a>
+          <span class="badge badge-light px-2 py-1 ml-2">{{ record.metadata.found_in.source }}</span>
+        </dd>
+      </ng-container>
+
+      <!-- NOTES -->
+      <ng-container *ngIf="record.metadata.notes && record.metadata.notes.length > 0">
+        <dt class="offset-1 col-1 label-title" translate>Note</dt>
+        <dd class="col-10 mb-0">
+          <blockquote>
+            <ul class="list-unstyled">
+              <li *ngFor="let note of record.metadata.notes"
+                  [innerHTML]="note.content | nl2br">
+              </li>
+            </ul>
+          </blockquote>
+        </dd>
+      </ng-container>
+    </dl>
+  </div>
+</div>

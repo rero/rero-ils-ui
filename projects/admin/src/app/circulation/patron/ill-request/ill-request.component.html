@@ -1,0 +1,29 @@
+<!--
+ RERO ILS UI
+ Copyright (C) 2023 RERO
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published by
+ the Free Software Foundation, version 3 of the License.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<section *ngIf="illRequests$ | async as illRequests" class="content">
+  <ng-container *ngIf="illRequests.length > 0; else noResult">
+    <!-- HEADER -->
+    <div class="row p-2 mb-1 bg-dark rounded text-light">
+      <div class="col-6" translate>Title</div>
+      <div class="col-4" translate>Authors</div>
+    </div>
+    <admin-ill-request-item [record]="record" *ngFor="let record of illRequests"></admin-ill-request-item>
+  </ng-container>
+  <ng-template #noResult>
+    {{ 'No ill request.' | translate }}
+  </ng-template>
+</section>

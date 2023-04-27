@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,32 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { Component, Input } from '@angular/core';
 
-@import 'bootstrap/scss/functions';
-@import 'bootstrap/scss/variables';
+@Component({
+  selector: 'admin-ill-request-item',
+  templateUrl: './ill-request-item.component.html',
+  styleUrls: ['../../../circulation.scss']
+})
+export class IllRequestItemComponent {
 
-.btn-hover {
-  color: $black;
-  background-color: $warning;
-  // could be better to use ``@extend .btn:hover`` but it doesn't work for hover property
+  /** Ill record */
+  @Input() record: any;
+
+  /** Detail is collapsed */
+  isCollapsed: boolean = true;
 }
-
-.item {
-  margin-bottom: 0.25rem !important;
-  padding: 0.25rem !important;
-  border: $border-width solid $border-color;
-  border-radius: $border-radius;
-  position: relative;
-
-  &:hover{
-    background-color: $light;
-  }
-
-  div.actions {
-    position: absolute;
-    top: 0.25rem;
-    right: 15px;
-  }
-}
-
-

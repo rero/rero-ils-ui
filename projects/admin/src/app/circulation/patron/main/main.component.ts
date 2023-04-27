@@ -232,7 +232,7 @@ export class MainComponent implements OnInit, OnDestroy {
   getCirculationStatistics(type: string): number {
     const stats = this._circulationService?.circulationInformations?.statistics;
     return stats && type in stats
-      ? this._circulationService.circulationInformations.statistics[type]
+      ? stats[type]
       : 0;
   }
 
@@ -257,6 +257,9 @@ export class MainComponent implements OnInit, OnDestroy {
         case LoanState[LoanState.ITEM_IN_TRANSIT_TO_HOUSE]:
         case LoanState[LoanState.ITEM_RETURNED]:
           this._circulationService.incrementCirculationStatistic('history',  Number(data[key]));
+          break;
+        case 'ill_requests':
+          this._circulationService.incrementCirculationStatistic('ill', Number(data[key]));
           break;
       }
     }
