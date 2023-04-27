@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2019 RERO
+ Copyright (C) 2019-2023 RERO
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published by
@@ -27,7 +27,7 @@
 
   <div class="col">
     <ul class="nav nav-tabs">
-      <li class="nav-item">
+      <li class="nav-item" *ngVar="getCirculationStatistics('loans') as statLoan">
         <a
           id="checkin-checkout-tab"
           class="nav-link"
@@ -35,12 +35,12 @@
           [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', barcode, 'loan']">
           {{ 'On loan' | translate }}
-          <span *ngIf="getCirculationStatistics('loans') > 0" class="badge badge-info font-weight-normal">
-            {{ getCirculationStatistics('loans') }}
+          <span *ngIf="statLoan > 0" class="badge badge-info font-weight-normal">
+            {{ statLoan }}
           </span>
         </a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngVar="getCirculationStatistics('pickup') as statPickup">
         <a
           id="pick-up-tab"
           class="nav-link"
@@ -48,12 +48,12 @@
           [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', barcode, 'pickup']">
           {{ 'To pick up' | translate }}
-          <span *ngIf="getCirculationStatistics('pickup') > 0" class="badge badge-info font-weight-normal">
-            {{ getCirculationStatistics('pickup') }}
+          <span *ngIf="statPickup > 0" class="badge badge-info font-weight-normal">
+            {{ statPickup }}
           </span>
         </a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngVar="getCirculationStatistics('pending') as statPending">
         <a
           id="pending-tab"
           class="nav-link"
@@ -61,8 +61,21 @@
           [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', barcode, 'pending']">
           {{ 'Pending' | translate }}
-          <span *ngIf="getCirculationStatistics('pending') > 0 as stat" class="badge badge-info font-weight-normal">
-            {{ getCirculationStatistics('pending') }}
+          <span *ngIf="statPending > 0" class="badge badge-info font-weight-normal">
+            {{ statPending }}
+          </span>
+        </a>
+      </li>
+      <li class="nav-item" *ngVar="getCirculationStatistics('ill') as statIll">
+        <a
+          id="ill-tab"
+          class="nav-link"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}"
+          [routerLink]="['/circulation', 'patron', barcode, 'ill']">
+          {{ 'Interlibrary loan' | translate }}
+          <span *ngIf="statIll > 0" class="badge badge-info font-weight-normal">
+            {{ statIll }}
           </span>
         </a>
       </li>

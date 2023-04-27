@@ -25,6 +25,7 @@ import { SharedModule } from '@rero/shared';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { JournalVolumePipe } from 'projects/public-search/src/app/pipe/journal-volume.pipe';
 import { CheckinActionComponent } from './checkin/checkin-action/checkin-action.component';
 import { CheckinComponent } from './checkin/checkin.component';
 import { CirculationRoutingModule } from './circulation-routing.module';
@@ -39,6 +40,8 @@ import { ChangePasswordFormComponent } from './patron/change-password-form/chang
 import { HistoryLogLibraryComponent } from './patron/history/history-log-library/history-log-library.component';
 import { HistoryLogComponent } from './patron/history/history-log/history-log.component';
 import { HistoryComponent } from './patron/history/history.component';
+import { IllRequestItemComponent } from './patron/ill-request/ill-request-item/ill-request-item.component';
+import { IllRequestComponent } from './patron/ill-request/ill-request.component';
 import { FixedDateFormComponent } from './patron/loan/fixed-date-form/fixed-date-form.component';
 import { LoanComponent } from './patron/loan/loan.component';
 import { MainComponent } from './patron/main/main.component';
@@ -62,7 +65,6 @@ import { PickupItemComponent } from './patron/pickup/pickup-item/pickup-item.com
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
 import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
-
 
 @NgModule({
     declarations: [
@@ -97,7 +99,10 @@ import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
         GetLoanCipoPipe,
         CheckinActionComponent,
         PatronFeeComponent,
-        CancelRequestButtonComponent
+        CancelRequestButtonComponent,
+        IllRequestComponent,
+        IllRequestItemComponent,
+        JournalVolumePipe
     ],
     imports: [
         BsDropdownModule.forRoot(),

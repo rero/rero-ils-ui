@@ -34,7 +34,7 @@ export class JournalVolumePipe implements PipeTransform {
    * @param separator - string
    * @return string
    */
-  transform(journal: { volume?: string, number?: string }, separator: string = ' &mdash; '): string {
+  transform(journal: { journal_title?: string, volume?: string, number?: string }, separator: string = ' — '): string {
     const data = [];
     if ('volume' in journal) {
       data.push(this._translateService.instant(

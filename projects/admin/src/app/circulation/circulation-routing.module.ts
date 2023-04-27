@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,17 +17,18 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PERMISSIONS } from '@rero/shared';
+import { PermissionGuard } from '../guard/permission.guard';
 import { CheckinComponent } from './checkin/checkin.component';
 import { MainRequestComponent } from './main-request/main-request.component';
 import { HistoryComponent } from './patron/history/history.component';
+import { IllRequestComponent } from './patron/ill-request/ill-request.component';
 import { LoanComponent } from './patron/loan/loan.component';
 import { MainComponent } from './patron/main/main.component';
 import { PatronTransactionsComponent } from './patron/patron-transactions/patron-transactions.component';
+import { PendingComponent } from './patron/pending/pending.component';
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
-import { PendingComponent } from './patron/pending/pending.component';
-import { PERMISSIONS, PermissionsService } from '@rero/shared';
-import { PermissionGuard } from '../guard/permission.guard';
 
 const routes: Routes = [
   {
@@ -57,6 +58,11 @@ const routes: Routes = [
       {
         path: 'pending',
         component: PendingComponent,
+        canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
+      },
+      {
+        path: 'ill',
+        component: IllRequestComponent,
         canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
       },
       {

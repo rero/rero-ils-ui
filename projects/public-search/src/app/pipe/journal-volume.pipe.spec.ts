@@ -55,7 +55,7 @@ describe('JournalVolumePipe', () => {
   });
 
   it('should return the volume and the number', () => {
-    expect(pipe.transform({ volume: '12', number: '20' })).toContain('Volume 12 &mdash; n°. 20');
+    expect(pipe.transform({ volume: '12', number: '20' })).toContain('Volume 12 — n°. 20');
   });
 
   it('should return the volume and the number with custom separator', () => {
