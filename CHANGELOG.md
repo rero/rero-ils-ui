@@ -1,5 +1,38 @@
 # Changelog
 
+## [v14.2.0](https://github.com/rero/rero-ils-ui/tree/v14.2.0) (2023-05-10)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.1.1...v14.2.0)
+
+**New features:**
+
+* item operation history: add statistics [\#974](https://github.com/rero/rero-ils-ui/pull/974) (by @Garfield-fr)
+* operation log: add library name after operator [\#972](https://github.com/rero/rero-ils-ui/pull/972) (by @Garfield-fr)
+* ill request: ill pickup name [\#968](https://github.com/rero/rero-ils-ui/pull/968) (by @Garfield-fr)
+* patron profile: fix tooltip message on extend [\#963](https://github.com/rero/rero-ils-ui/pull/963) (by @Garfield-fr)
+* item circulation history: add notification [\#962](https://github.com/rero/rero-ils-ui/pull/962) (by @Garfield-fr)
+
+**Enhancements:**
+
+* inventory list: add descending sorting [\#969](https://github.com/rero/rero-ils-ui/pull/969) (by @Garfield-fr)
+* circulation: add cancel request on pending tag [\#973](https://github.com/rero/rero-ils-ui/pull/973) (by @Garfield-fr)
+* library switch menu: fix sort by name [\#970](https://github.com/rero/rero-ils-ui/pull/970) (by @Garfield-fr)
+
+**Fixes:**
+
+* items: increase permission scope [\#966](https://github.com/rero/rero-ils-ui/pull/966) (by @zannkukai)
+* items: update default sort for serial holding to `issue_sort_date` [\#965](https://github.com/rero/rero-ils-ui/pull/965) (by @zannkukai)
+* Transactions: fix transactions total amount calculation [\#961](https://github.com/rero/rero-ils-ui/pull/961) (by @zannkukai)
+* circulation: fix fixed date sunday not disabled [\#971](https://github.com/rero/rero-ils-ui/pull/971) (by @Garfield-fr)
+* menus: add missing translation [\#964](https://github.com/rero/rero-ils-ui/pull/964) (by @PascalRepond)
+* translations: add missing translate attribute [\#959](https://github.com/rero/rero-ils-ui/pull/959) (by @PascalRepond)
+* circulation: fix clear patron button display [\#949](https://github.com/rero/rero-ils-ui/pull/949) (by @zannkukai)
+* documents: default search filters on resource search input [\#938](https://github.com/rero/rero-ils-ui/pull/938) (by @zannkukai)
+
+**Other changes:**
+
+* dependencies: update [\#960](https://github.com/rero/rero-ils-ui/pull/960) (by @rerowep)
+
 ## [v14.1.1](https://github.com/rero/rero-ils-ui/tree/v14.1.1) (2023-03-20)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.1.0...v14.1.1)
