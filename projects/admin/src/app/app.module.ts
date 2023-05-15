@@ -17,7 +17,7 @@
  */
 
 import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -50,6 +50,7 @@ import { DocumentsTypeahead } from './classes/typeahead/documents-typeahead';
 import { ItemsTypeahead } from './classes/typeahead/items-typeahead';
 import { MefTypeahead } from './classes/typeahead/mef-typeahead';
 import { PatronsTypeahead } from './classes/typeahead/patrons-typeahead';
+import { IssueEmailComponent } from './components/issues/issue-email/issue-email.component';
 import { ItemSwitchLocationStandaloneComponent } from './components/items/switch-location/item-switch-location-standalone/item-switch-location-standalone.component';
 import { ItemSwitchLocationComponent } from './components/items/switch-location/item-switch-location/item-switch-location.component';
 import { TabOrderDirective } from './directives/tab-order.directive';
@@ -178,6 +179,7 @@ import { AppInitializerService } from './service/app-initializer.service';
 import { OrganisationService } from './service/organisation.service';
 import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-factory.service';
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
+import { PreviewEmailModule } from './shared/preview-email/preview-email.module';
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
@@ -303,6 +305,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         CirculationStatsComponent,
         ItemSwitchLocationStandaloneComponent,
         ItemSwitchLocationComponent,
+        IssueEmailComponent
     ],
     imports: [
       AppRoutingModule,
@@ -340,7 +343,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
       HotkeysModule,
       SharedModule,
       LoadingBarHttpClientModule,
-      PrimengImportModule
+      PrimengImportModule,
+      PreviewEmailModule
     ],
     providers: [
         {

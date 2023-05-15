@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,11 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { IssueService } from '@app/admin/service/issue.service';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { IPermissions, IssueItemStatus, PERMISSIONS } from '@rero/shared';
+import { IPermissions, IssueItemStatus, PERMISSIONS, UserService } from '@rero/shared';
 import moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { Item, ItemNote } from '../../../classes/items';
 import { HoldingsService } from '../../../service/holdings.service';
 import { OperationLogsService } from '../../../service/operation-logs.service';
@@ -28,6 +32,7 @@ import { OrganisationService } from '../../../service/organisation.service';
 @Component({
   selector: 'admin-item-detail-view',
   templateUrl: './item-detail-view.component.html',
+  providers: [IssueService],
   styles: ['dl * { margin-bottom: 0; }']
 })
 export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
@@ -44,10 +49,11 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
   showOperationLogs = false;
   /** reference to ItemIssueStatus */
   issueItemStatus = IssueItemStatus;
+  /** Record permissions */
+  recordPermissions: any;
 
   /** Record subscription */
   private _recordObs: Subscription;
-
 
   /**
    * Is operation log enabled
@@ -81,6 +87,17 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
     return this._organisationService.organisation.default_currency;
   }
 
+  /** Allow claim (show button) */
+  get isClaimAllowed(): boolean {
+    return this._issueService.isClaimAllowed(this.record.metadata.issue.status);
+  }
+
+  /** returns an array of claim dates in DESC order */
+  get claimsDates(): string[] {
+    return this.record.metadata.issue.claims.dates
+      .sort((a: string, b: string) => new Date(b).getTime() - new Date(a).getTime());
+  }
+
   /**
    * Permissions
    * @return Object with all permissions
@@ -93,17 +110,33 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
    * @param _holdingService - HoldingsService
    * @param _operationLogsService - OperationLogsService
    * @param _organisationService - OrganisationService
+   * @param _issueService - IssueService
+   * @param _recordPermissionService - RecordPermissionService
+   * @param _userService - UserService
    */
   constructor(
     private _recordService: RecordService,
     private _holdingService: HoldingsService,
     private _operationLogsService: OperationLogsService,
-    private _organisationService: OrganisationService
+    private _organisationService: OrganisationService,
+    private _issueService: IssueService,
+    private _recordPermissionService: RecordPermissionService,
+    private _userService: UserService
   ) {}
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._recordObs = this.record$.subscribe(record => {
+    this._recordObs = this.record$.pipe(
+      switchMap((record: any) => {
+        return this._recordPermissionService.getPermission('items', record.metadata.pid).pipe(
+          map(permission => {
+            this.recordPermissions = this._recordPermissionService
+              .membership(this._userService.user, record.metadata.library.pid, permission);
+            return record;
+          })
+        )
+      })
+    ).subscribe((record: any) => {
       this.record = record;
       this._recordService.getRecord('locations', record.metadata.location.pid, 1).subscribe(data => this.location = data);
     });
@@ -151,4 +184,10 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
     return this._holdingService.getIcon(status);
   }
 
+  /** Open claim dialog */
+  openClaimEmailDialog(): void {
+    const bsModalRef = this._issueService.openClaimEmailDialog(this.record);
+    bsModalRef.content.recordChange.subscribe(() => this.record$
+      .subscribe((record: any) => this.record = record));
+  }
 }

@@ -26,7 +26,7 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
 import { AcqOrderHistoryVersion, AcqOrderStatus, IAcqOrder, AcqOrderHistoryVersionResponseInterface } from '../../../classes/order';
-import { PlaceOrderFormComponent } from '../place-order-form/place-order-form.component';
+import { OrderEmailFormComponent } from '../order-email-form/order-email-form.component';
 
 @Component({
   selector: 'admin-acquisition-order-detail-view',
@@ -145,15 +145,17 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
    * If the user submit the form (and submitting is success), then update the order to get the updated data.
    */
   placeOrderDialog() {
-    this._modalRef = this._modalService.show(PlaceOrderFormComponent, {
+    const modalRef = this._modalService.show(OrderEmailFormComponent, {
       ignoreBackdropClick: true,
       keyboard: true,
-      class: 'modal-lg',
+      class: 'modal-xl',
       initialState: {
         order: this.order
       }
     });
-    this._modalRef.content.onOrderSentEvent.subscribe((order: IAcqOrder) => {
+    // Event to allow the closing of the dialog
+    modalRef.content.closeDialog.subscribe((close: boolean) => modalRef.hide());
+    modalRef.content.recordChange.subscribe((order: IAcqOrder) => {
       if (this.order.pid === order.pid) {
         this.order = order;
       }

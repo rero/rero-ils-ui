@@ -18,25 +18,31 @@
 
 import { NgModule } from '@angular/core';
 import { AccordionModule } from 'primeng/accordion';
+import { ChipsModule } from 'primeng/chips';
 import { DividerModule } from 'primeng/divider';
+import { DragDropModule } from 'primeng/dragdrop';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { PanelModule } from 'primeng/panel';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   exports: [
     AccordionModule,
+    ChipsModule,
     DividerModule,
+    DragDropModule,
     DropdownModule,
     InputNumberModule,
     InputSwitchModule,
     InputTextModule,
     PanelModule,
     SkeletonModule,
+    TagModule,
     TooltipModule
   ]
 })

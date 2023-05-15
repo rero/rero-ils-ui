@@ -64,7 +64,7 @@ export class ItemSwitchLocationStandaloneComponent implements OnInit {
   // COMPONENT PRIVATE FUNCTIONS ==============================================
   /** redirect the application to the document detailed page related to the item */
   private _redirect(): void {
-    this._router.navigate(['/', 'records', 'documents', 'detail', extractIdOnRef(this.item.metadata.document.$ref)]);
+    this._router.navigate(['/', 'records', 'documents', 'detail', extractIdOnRef(this.item.document.$ref)]);
   }
 
 }

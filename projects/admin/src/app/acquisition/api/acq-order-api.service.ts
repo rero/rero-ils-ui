@@ -24,13 +24,14 @@ import { map } from 'rxjs/operators';
 import { Notification } from '../../classes/notification';
 import {
   AcqAddressRecipient,
+  AcqOrderHistoryVersionResponseInterface,
   AcqOrderLineStatus,
   AcqOrderStatus,
   AcqOrderType,
-  IAcqOrder, AcqOrderHistoryVersionResponseInterface,
-  IAcqOrderLine,
-  IAcqOrderPreviewResponse
+  IAcqOrder,
+  IAcqOrderLine
 } from '../classes/order';
+import { IPreview } from '@app/admin/shared/preview-email/IPreviewInterface';
 
 @Injectable({
   providedIn: 'root'
@@ -100,9 +101,9 @@ export class AcqOrderApiService extends BaseApi {
    * Get an order preview.
    * @param orderPid: the order pid
    */
-  getOrderPreview(orderPid: string): Observable<IAcqOrderPreviewResponse> {
+  getOrderPreview(orderPid: string): Observable<IPreview> {
     const apiUrl = `/api/acq_order/${orderPid}/acquisition_order/preview`;
-    return this._http.get<IAcqOrderPreviewResponse>(apiUrl);
+    return this._http.get<any>(apiUrl);
   }
 
   /**

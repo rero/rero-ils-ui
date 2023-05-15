@@ -115,7 +115,7 @@ export class ItemSwitchLocationComponent implements OnInit {
         finalize(() => this.itemChange.emit(this.item))
       )
       .subscribe(
-        (item: any) => this.item = item,
+        (item: any) => this.item = item.metadata,
         (err: Error) => {
           this._toastrService.error(
             err.title, this._translateService.instant('Locations'),
