@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -143,10 +143,11 @@ export class RecordPermissionService {
    * @param user - any
    * @param libraryPid - string
    * @param permission - any
+   * @param membership - Check record ownership
    * @returns permissions of current record
    */
-  membership(user: any, libraryPid: string, permission: any): any {
-    if (user.currentLibrary !== libraryPid) {
+  membership(user: any, libraryPid: string, permission: any, membership: boolean = true): any {
+    if (membership && user.currentLibrary !== libraryPid) {
       const membershipExcludePermission = {
         update: { can: false },
         delete: { can: false, reasons: { others: { record_not_in_current_library : '' }}}

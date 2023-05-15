@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -87,6 +87,7 @@ export class HoldingsService {
       case IssueItemStatus.DELETED: return 'fa-circle text-danger';
       case IssueItemStatus.RECEIVED: return 'fa-circle text-success';
       case IssueItemStatus.LATE: return 'fa-envelope-open-o text-warning';
+      case IssueItemStatus.EXPECTED: return 'fa-circle text-secondary';
       default: return 'fa-circle text-dark';
     }
   }

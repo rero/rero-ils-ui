@@ -15,11 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiService, Error, RecordService } from '@rero/ng-core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { AppConfigService } from '../service/app-config.service';
+import { ITypeEmail } from '../shared/preview-email/IPreviewInterface';
 
 @Injectable({
   providedIn: 'root'
@@ -30,14 +32,23 @@ export class ItemApiService {
   /** resource name */
   static readonly RESOURCE_NAME = 'items';
 
+  /** http client options */
+  private _httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type':  'application/json'
+    })
+  };
+
   // CONSTRUCTOR ==============================================================
   /**
    * Constructor
+   * @param _appConfigService: AppConfigService
    * @param _apiService - ApiService
    * @param _recordService - RecordService
    * @param _http - HttpClient
    */
   constructor(
+    private _appConfigService: AppConfigService,
     private _apiService: ApiService,
     private _recordService: RecordService,
     private _http: HttpClient
@@ -73,7 +84,33 @@ export class ItemApiService {
    * @param itemPid - The item pid
    * @returns Observable of the stats of item
    */
-  getStatsByItemPid(itemPid: string) {
-    return this._http.get<any>(`/api/item/${itemPid}/stats`);
+  getStatsByItemPid(itemPid: string): Observable<any> {
+    return this._http.get<any>(`${this._appConfigService.apiEndpointPrefix}/item/${itemPid}/stats`);
+  }
+
+  /**
+   * Get Preview by item pid
+   * @param itemPid - The pid of the current item
+   * @returns Observable of the Preview of a claim and suggested email addresses.
+   */
+  getPreviewByItemPid(itemPid: string): Observable<any> {
+    return this._http.get<any>(
+      `${this._appConfigService.apiEndpointPrefix}/item/${itemPid}/issue/claims/preview`,
+      this._httpOptions
+    ).pipe(catchError((err: any) => of({ error: err.error.message })));
+  }
+
+  /**
+   * Add a new claim issue
+   * @param itemPid - The pid of the current item
+   * @param recipients - array of email addresses
+   * @returns Observable with boolean
+   */
+  addClaimIssue(itemPid: string, recipients: ITypeEmail[]): Observable<boolean> {
+    const apiUrl = `${this._appConfigService.apiEndpointPrefix}/item/${itemPid}/issue/claims`;
+    return this._http.post(apiUrl, {recipients}).pipe(
+      map((_: unknown) => true),
+      catchError(() => of(false))
+    );
   }
 }

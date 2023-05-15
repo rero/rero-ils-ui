@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Pipe, PipeTransform } from '@angular/core';
-import { IAcqOrderPreviewResponse } from '../classes/order';
+import { IPreview } from '@app/admin/shared/preview-email/IPreviewInterface';
 
 @Pipe({
   name: 'previewContent'
@@ -28,7 +28,7 @@ export class PreviewContentPipe implements PipeTransform {
    * @param preview: the API response containing the preview to display.
    * @return the content to of the preview message.
    */
-  transform(preview: IAcqOrderPreviewResponse): string {
+  transform(preview: IPreview): string {
     return preview.preview.substring(preview.preview.indexOf('\n') + 1).trim();
   }
 

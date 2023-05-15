@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,10 +32,16 @@ export class IssuesBriefViewComponent implements ResultItem, OnInit {
   /** Detail Url */
   @Input() detailUrl: { link: string, external: boolean };
 
-  /** prent holding url */
+  /** parent holding url */
   parentUrl: { link: string, external: boolean };
   /** reference to IssueItemStatus */
   issueItemStatus = IssueItemStatus;
+
+  /** @return last claim date */
+  get claimLastDate(): string {
+    return this.record.metadata.issue.claims.dates
+      .sort((a: string, b: string) => new Date(b).getTime() - new Date(a).getTime())[0];
+  }
 
   /** OnInit hook */
   ngOnInit() {

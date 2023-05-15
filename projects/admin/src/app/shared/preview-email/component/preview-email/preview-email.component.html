@@ -1,0 +1,81 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2023 RERO
+  Copyright (C) 2023 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="modal-header">
+  <h4 class="modal-title pull-left" [noContent]="noTitle"><ng-content select="[title]"></ng-content></h4>
+  <ng-template #noTitle><h4 class="modal-title pull-left" translate>Preview email</h4></ng-template>
+  <button type="button" class="btn-close close pull-right" (click)="close()" aria-label="Close">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <!-- PREVIEW TOP -->
+  <ng-content select="[headerMessage]"></ng-content>
+  <ng-container *ngIf="previewPosition === 'top'">
+    <h5 translate>Message</h5>
+    <ng-content select="[previewMessage]"></ng-content>
+    <pre [innerHTML]="preview.trim() | nl2br"></pre>
+  </ng-container>
+
+  <h5 translate>Who do you want to send the message to?</h5>
+
+  <!-- SUGGESTED EMAILS -->
+  <div *ngIf="emails.length > 0" class="card">
+    <div class="card-header">
+      <ng-container *ngIf="emails.length < 2; else multipleEmails" translate>Suggested email address</ng-container>
+      <ng-template #multipleEmails translate>Suggested email addresses</ng-template>
+      <small class="ml-1">(<span class="font-italic" translate>Drag and drop</span>)</small>
+    </div>
+    <div class="card-body py-2">
+      <ul class="list-inline mb-1">
+        <li *ngFor="let email of emails" class="list-inline-item mt-2">
+          <p-tag pDraggable="emails" (onDragStart)="dragStart(email)" (onDragEnd)="dragEnd()" icon="pi pi-user" [value]="email"></p-tag>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- RECIPIENTS -->
+  <div class="card mt-2">
+    <div class="card-header">
+      {{ 'Recipients' | translate }}
+    </div>
+    <div class="card-body py-2 container">
+      <div class="row">
+        <ng-container *ngFor="let type of emailTypes">
+          <div class="col-2 pt-3 label-title mb-2" [class.field-required]="mandatoryEmailTypes.includes(type)">
+            {{ ('email_' + type) | translate }}
+          </div>
+          <div class="col-10 mb-2">
+            <p-chips class="p-fluid" [inputId]="type" pDroppable="emails" (onDrop)="drop($event)" [(ngModel)]="recipients[type]" [addOnBlur]="true"></p-chips>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREVIEW BOTTOM -->
+  <ng-container *ngIf="previewPosition === 'bottom'">
+    <h5 translate>Message</h5>
+    <ng-content select="[previewBottomMessage]"></ng-content>
+    <pre [innerHTML]="preview.trim() | nl2br"></pre>
+  </ng-container>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-outline-danger btn-sm" (click)="close()" aria-label="Close" translate>Cancel</button>
+  <button [disabled]="!formValid()" class="btn btn-primary btn-sm" aria-label="Confirm" (click)="confirm()" translate>Confirm</button>
+</div>

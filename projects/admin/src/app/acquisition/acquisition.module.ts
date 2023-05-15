@@ -44,7 +44,6 @@ import { OrderReceipt } from './components/receipt/receipt-form/order-receipt';
 import { OrderReceiptForm } from './components/receipt/receipt-form/order-receipt-form';
 import { OrderReceiptViewComponent } from './components/receipt/receipt-form/order-receipt-view.component';
 import { OrderSummaryComponent } from './components/order/order-summary/order-summary.component';
-import { PlaceOrderFormComponent } from './components/order/place-order-form/place-order-form.component';
 import { ReceiptListComponent } from './components/receipt/receipt-list/receipt-list.component';
 import { registerFormlyExtension } from './formly/extension';
 import { FieldRefTypeComponent } from './formly/type/field-ref.type';
@@ -60,6 +59,8 @@ import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
 import { PreviewContentPipe } from './pipes/preview-content.pipe';
 import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pipe';
 import { PermissionsService, SharedModule } from '@rero/shared';
+import { OrderEmailFormComponent } from './components/order/order-email-form/order-email-form.component';
+import { PreviewEmailModule } from '../shared/preview-email/preview-email.module';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,6 @@ import { PermissionsService, SharedModule } from '@rero/shared';
     OrderLineComponent,
     OrderReceiptViewComponent,
     OrderSummaryComponent,
-    PlaceOrderFormComponent,
     RepeatTypeComponent,
     SelectAccountComponent,
     SelectAccountEditorWidgetComponent,
@@ -89,7 +89,8 @@ import { PermissionsService, SharedModule } from '@rero/shared';
     AccountAvailableAmountPipe,
     ReceptionDatesPipe,
     PreviewContentPipe,
-    ReceiptLineTotalAmountPipe
+    ReceiptLineTotalAmountPipe,
+    OrderEmailFormComponent
   ],
   imports: [
     BsDropdownModule.forRoot(),
@@ -112,7 +113,8 @@ import { PermissionsService, SharedModule } from '@rero/shared';
     RecordModule,
     TabsModule,
     CoreModule,
-    SharedModule
+    SharedModule,
+    PreviewEmailModule
   ],
   providers: [
     { provide: FORMLY_CONFIG, multi: true, useFactory: registerFormlyExtension, deps: [TranslateService] },

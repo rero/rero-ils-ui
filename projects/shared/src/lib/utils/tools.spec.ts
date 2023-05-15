@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2023 RERO
+ * Copyright (C) 2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,24 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { Tools } from './tools';
 
-export function _(str: any) {
-  return marker(str);
-}
+describe('Tools', () => {
+  it('should create an instance', () => {
+    expect(new Tools()).toBeTruthy();
+  });
 
-export enum ItemStatus {
-  ON_SHELF = _('on_shelf'),
-  AT_DESK = _('at_desk'),
-  ON_LOAN = _('on_loan'),
-  IN_TRANSIT = _('in_transit'),
-  EXCLUDED = _('excluded'),
-  MISSING = _('missing')
-}
+  it('should validate an email address', () => {
+    expect(Tools.validateEmail('foo')).toBeFalse();
+    expect(Tools.validateEmail('foo@bar')).toBeFalse();
+    expect(Tools.validateEmail('foo@bar.com')).toBeTrue();
+  });
+});
 
-export enum IssueItemStatus {
-  DELETED = _('deleted'),
-  EXPECTED = _('expected'),
-  LATE = _('late'),
-  RECEIVED = _('received')
-}

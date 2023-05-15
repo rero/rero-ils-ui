@@ -222,3 +222,9 @@ _('No masked');
 // Operation log filter (circulation)
 _('op_filter_loan');
 _('op_filter_notif');
+
+// Preview email
+_('email_to');
+_('email_cc');
+_('email_bcc');
+_('email_reply_to');
