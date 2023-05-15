@@ -1,7 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
-  Copyright (C) 2020 UCLouvain
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2020-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -55,10 +55,19 @@
       {{ record.metadata.issue.expected_date | dateTranslate }}
     </dd>
   </ng-container>
-  <!-- NUMBER OF CLAIMS SENT -->
-  <ng-container *ngIf="record.metadata.issue.claims_count">
-    <dt class="col-3 label-title" translate>Claims sent</dt>
+  <!-- CLAIMS -->
+  <ng-container *ngIf="record.metadata?.issue?.claims?.counter > 0">
+    <dt class="col-3 label-title" translate>
+      <span [ngPlural]="record.metadata.issue.claims.counter">
+        <ng-template ngPluralCase="=1">{{ 'Claim' | translate }}</ng-template>
+        <ng-template ngPluralCase="other">{{ 'Claims' | translate }}</ng-template>
+      </span>
+    </dt>
     <dd class="col-9">
+      {{ record.metadata.issue.claims.counter }}
+      <span class="small pl-2 text-secondary">
+        ({{ 'last claim' | translate }}: {{ claimLastDate | dateTranslate: 'short' }})
+      </span>
       {{ record.metadata.issue.claims_count }}
     </dd>
   </ng-container>
@@ -67,6 +76,7 @@
     <dt class="col-3 label-title" translate>Issue status</dt>
     <dd class="col-9">
       <i class="fa text-warning" [ngClass]="{
+        'fa-envelope': status === issueItemStatus.EXPECTED,
         'fa-envelope-open-o': status === issueItemStatus.LATE
       }"
       ></i>

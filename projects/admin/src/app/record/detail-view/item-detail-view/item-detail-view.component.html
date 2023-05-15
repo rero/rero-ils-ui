@@ -1,6 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2022 RERO
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,6 +16,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-container *ngIf="record">
+  <div *ngIf="recordPermissions?.update?.can && isIssue && isClaimAllowed" class="float-right mt-2 mr-n4 btn-additional-action">
+    <a class="btn btn-sm btn-outline-primary" (click)="openClaimEmailDialog()" translate>Add a claim</a>
+  </div>
   <div *ngIf="isIssue">
     <a [routerLink]="parentHoldingUrl">
       <i class="fa fa-arrow-left mr-1"></i>
@@ -92,7 +96,7 @@
           </ng-container>
         </dd>
       </ng-container>
-      <!-- AVAILIBILITY -->
+      <!-- AVAILABILITY -->
       <dt class="col-3 label-title" translate>Availability</dt>
       <dd class="col-9">
         <admin-item-availability [item]="record"></admin-item-availability>
@@ -126,7 +130,6 @@
     </dl>
   </section>
 
-
   <!-- ISSUE DATA -->
   <section *ngIf="isIssue">
     <header>
@@ -151,7 +154,7 @@
           {{ record.metadata.issue.received_date | dateTranslate }}
         </ng-container>
         <ng-template #notYetReceived>
-          <span class="no-data">{{ 'Not yet recieved' | translate }}</span>
+          <span class="no-data" translate>Not yet received</span>
         </ng-template>
       </dd>
       <!-- issue status -->
@@ -265,10 +268,10 @@
   </ng-container>
 
   <!-- TABS -->
-  <section class="mt-3 mb-4" [permissions]="permissions.LOFI_SEARCH">
+  <section class="mt-3 mb-4">
     <tabset>
       <!-- LOCAL FIELDS TAB ------------------------------------------------------------>
-      <tab id="documents-local-field-tab" tabOrder="1">
+      <tab id="documents-local-field-tab" tabOrder="1" [permissions]="permissions.LOFI_SEARCH">
         <ng-template tabHeading>
           <i class="fa fa-list-ul mr-1"></i><span translate>Local fields</span>
         </ng-template>
@@ -277,6 +280,25 @@
         </div>
       </tab>
       <!-- END OF LOCAL FIELDS TAB ---------------------------------------------------->
+      <!-- CLAIMS TAB ------------------------------------------------------------>
+      <tab *ngIf="record.metadata?.issue?.claims" id="documents-claims-tab" tabOrder="2">
+        <ng-template tabHeading>
+          <i class="fa fa-gavel mr-1"></i>
+            <span [ngPlural]="record.metadata.issue.claims.counter">
+              <ng-template ngPluralCase="=0">{{ 'Claim' | translate }}</ng-template>
+              <ng-template ngPluralCase="=1">{{ 'Claim' | translate }}</ng-template>
+              <ng-template ngPluralCase="other">{{ 'Claims' | translate }}</ng-template>
+            </span>
+            <span class="ml-2 badge badge-info font-weight-normal">{{ record.metadata.issue.claims.counter }}</span>
+        </ng-template>
+        <div class="mt-2">
+          <ul>
+            <li *ngFor="let date of claimsDates">
+              {{ date | dateTranslate: 'shortDate' }} - {{ date | dateTranslate: 'shortTime' }}
+            </li>
+          </ul>
+        </div>
+      </tab>
     </tabset>
   </section>
 

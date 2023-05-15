@@ -16,14 +16,13 @@
  */
 import { Component, Input, OnInit } from '@angular/core';
 import { RecordPermissions } from '@app/admin/classes/permissions';
+import { HoldingsService, PredictionIssue } from '@app/admin/service/holdings.service';
+import { OperationLogsService } from '@app/admin/service/operation-logs.service';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
-import { IPermissions, IssueItemStatus, PERMISSIONS, PermissionsService, UserService } from '@rero/shared';
+import { IPermissions, IssueItemStatus, PERMISSIONS, PermissionsService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
-import { HoldingsService, PredictionIssue } from '@app/admin/service/holdings.service';
-import { OperationLogsService } from '@app/admin/service/operation-logs.service';
-import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 
 
 @Component({
@@ -74,24 +73,19 @@ export class SerialHoldingDetailViewComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   *
    * @param _holdingService: HoldingService
    * @param _recordService: RecordService
-   * @param _recordPermissionService: RecordPermissionService
    * @param _translateService: TranslateService,
    * @param _toastrService: ToastrService
    * @param _operationLogsService: OperationLogsService
-   * @param _userService: UserService
    * @param _permissionsService: PermissionsService
    */
   constructor(
     private _holdingService: HoldingsService,
     private _recordService: RecordService,
-    private _recordPermissionService: RecordPermissionService,
     private _translateService: TranslateService,
     private _toastrService: ToastrService,
     private _operationLogsService: OperationLogsService,
-    private _userService: UserService,
     private _permissionsService: PermissionsService
   ) {}
 
@@ -128,24 +122,8 @@ export class SerialHoldingDetailViewComponent implements OnInit {
         '-issue_sort_date'
       ).subscribe((result: Record) => {
         this.totalReceivedItems = this._recordService.totalHits(result.hits.total);
-        this.receivedItems = [];
-        result.hits.hits.forEach(item => this.receivedItems.push(this._loadItem(item)), this);
+        this.receivedItems = result.hits.hits;
       });
-  }
-
-  /**
-   * Load a received item ; also load item permissions
-   * @param item: the item to load
-   * @return Return the item with linked permissions
-   */
-  private _loadItem(item: any) {
-    const recordPermission = this._recordPermissionService;
-    recordPermission.getPermission('items', item.id)
-    .subscribe((permission) => {
-      item.permissions = recordPermission
-        .membership(this._userService.user, item.metadata.library.pid, permission);
-    });
-    return item;
   }
 
   /**
@@ -196,10 +174,9 @@ export class SerialHoldingDetailViewComponent implements OnInit {
         const item = {
           id: result.issue.pid,
           metadata: result.issue,
-          permissions: {},
           new_issue: true  // Used to flag this issue as new received issue ; allowing to display a visual badge for user
         };
-        this.receivedItems.unshift(this._loadItem(item));
+        this.receivedItems.unshift(item);
         this._loadPrediction(); // as we received a predicted issue, we need to reload predictions
       },
       (error) => {

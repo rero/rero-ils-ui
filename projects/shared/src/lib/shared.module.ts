@@ -16,18 +16,19 @@
  */
 
 import { CommonModule, DatePipe } from '@angular/common';
-import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CoreModule, NgVarDirective, Nl2brPipe, RecordModule, TruncateTextPipe } from '@rero/ng-core';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ActionButtonComponent } from './component/action-button/action-button.component';
 import { LinkPermissionsDirective } from './directive/link-permissions.directive';
+import { NoContentDirective } from './directive/no-content.directive';
 import { PermissionsDirective } from './directive/permissions.directive';
 import { PrimeNgImportModule } from './modules/prime-ng-import/prime-ng-import.module';
 import { ShowMorePagerComponent } from './paginator/show-more-pager/show-more-pager.component';
-import { EntityLabelPipe } from './pipe/entity-label.pipe';
 import { ContributionTypePipe } from './pipe/contribution-type.pipe';
+import { EntityLabelPipe } from './pipe/entity-label.pipe';
 import { ExtractSourceFieldPipe } from './pipe/extract-source-field.pipe';
 import { GetTranslatedLabelPipe } from './pipe/get-translated-label.pipe';
 import { IdAttributePipe } from './pipe/id-attribute.pipe';
@@ -78,6 +79,7 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
         LinkPermissionsDirective,
         EntityLabelPipe,
         ContributionComponent,
+        NoContentDirective
     ],
     exports: [
         CommonModule,
@@ -108,7 +110,8 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
         PermissionsDirective,
         LinkPermissionsDirective,
         EntityLabelPipe,
-        ContributionComponent
+        ContributionComponent,
+        NoContentDirective
     ],
     imports: [
         CommonModule,

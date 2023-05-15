@@ -32,6 +32,13 @@ header {
   position: relative;
 }
 
+.field-required:before {
+  @extend .mr-1;
+  @extend .font-weight-bold;
+  @extend .text-danger;
+  content: "*";
+}
+
 // BUTTONS & BUTTON-LINKS -----------------------
 button:disabled:hover {
   cursor: not-allowed;
@@ -395,4 +402,9 @@ pre {
   & .btn:not(:hover) {
     background-color: white;
   }
+}
+
+.modal-xl {
+  @extend .modal-lg;
+  width: 80%;
 }
