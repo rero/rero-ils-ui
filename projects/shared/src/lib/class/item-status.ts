@@ -31,7 +31,6 @@ export enum ItemStatus {
 
 export enum IssueItemStatus {
   RECEIVED = _('received'),
-  CLAIMED = _('claimed'),
   DELETED = _('deleted'),
   LATE = _('late')
 }
