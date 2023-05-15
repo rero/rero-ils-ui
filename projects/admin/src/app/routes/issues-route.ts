@@ -56,7 +56,7 @@ export class IssuesRoute extends BaseRoute implements RouteInterface {
             ],
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preFilters: {
-                or_issue_status: [IssueItemStatus.LATE, IssueItemStatus.CLAIMED]
+                or_issue_status: [IssueItemStatus.LATE]
               },
             aggregationsBucketSize: 10,
             aggregationsOrder: [
@@ -64,9 +64,10 @@ export class IssuesRoute extends BaseRoute implements RouteInterface {
               'location',
               'item_type',
               'vendor',
-              'issue_status'
+              'claims_count',
+              'claims_date'
             ],
-            aggregationsExpand: ['library', 'issue_status'],
+            aggregationsExpand: ['library'],
             listHeaders: {
               Accept: 'application/rero+json, application/json'
             },
