@@ -150,6 +150,9 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
               'location',
               'item_type',
             ],
+            itemHeaders: {
+              Accept: 'application/rero+json, application/json'
+            },
             listHeaders: {
               Accept: 'application/rero+json, application/json'
             },
