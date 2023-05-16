@@ -1,5 +1,13 @@
 # Changelog
 
+## [v14.3.0](https://github.com/rero/rero-ils-ui/tree/v14.3.0) (2023-05-16)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.2.0...v14.3.0)
+
+**New features:**
+* entity: use entity instead of contribution [\#941](https://github.com/rero/rero-ils-ui/pull/941) (by @Garfield-fr)
+* entities: improves entities management [\#975](https://github.com/rero/rero-ils-ui/pull/975) (by @zannkukai)
+
 ## [v14.2.0](https://github.com/rero/rero-ils-ui/tree/v14.2.0) (2023-05-10)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.1.1...v14.2.0)
