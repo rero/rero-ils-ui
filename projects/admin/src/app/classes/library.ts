@@ -98,6 +98,7 @@ export class Library {
   exception_dates?: Array<ExceptionDates>;
   notification_settings?: Array<NotificationSettings>;
   acquisition_settings?: AcquisitionInformations;
+  serial_acquisition_settings?: AcquisitionInformations;
   organisation: Organisation;
   rollover_settings: RolloverSettings;
 
@@ -244,6 +245,17 @@ export class Library {
       });
       if (Object.keys(this.acquisition_settings).length === 0) {
         delete this.acquisition_settings;
+      }
+    }
+    if (this.serial_acquisition_settings) {
+      Object.keys(this.serial_acquisition_settings).forEach((key) => {
+        const data = this.serial_acquisition_settings[key];
+        if (Object.keys(data).length == 1 && data.address && Object.keys(data.address).length == 1 && data.address.country) {
+          delete this.serial_acquisition_settings[key];
+        }
+      });
+      if (Object.keys(this.serial_acquisition_settings).length === 0) {
+        delete this.serial_acquisition_settings;
       }
     }
   }

@@ -18,362 +18,300 @@
   <ng-container *ngIf="libForm">
     <h1 translate>Library</h1>
     <form [formGroup]="libForm" (ngSubmit)="onSubmit()">
-      <div class="form-group row">
-        <label for="name" class="col-2 col-form-label required">
-          {{ 'Name' | translate }} <strong class="text-danger">*</strong>
-        </label>
-        <div class="col-10">
-          <input class="form-control" id="name" formControlName="name"
-            placeholder="{{ 'Please insert a name' | translate }}" required>
-          <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger pt-1">
-            <div *ngIf="name.errors.required" translate>
-              Name is required.
-            </div>
-            <div *ngIf="name.errors.minlength" translate>
-              Name must be at least 4 characters long.
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="address" class="col-2 col-form-label" translate>Address</label>
-        <div class="col-10">
-          <input id="address" class="form-control" formControlName="address">
-          <div *ngIf="address.invalid && (address.dirty || address.touched)" class="text-danger pt-1">
-            <div *ngIf="address.errors.minlength" translate>
-              Address must be at least 4 characters long.
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="email" class="col-2 col-form-label" translate>Email</label>
-        <div class="col-10">
-          <input id="email" class="form-control" formControlName="email">
-          <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger pt-1">
-            <div *ngIf="email.errors.email" translate>
-              Email format is not correct.
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="email" class="col-2 col-form-label required">
-          {{ 'Code' | translate }}
-          <strong class="text-danger">*</strong>
-        </label>
-        <div class="col-10">
-          <input id="code" class="form-control" formControlName="code" placeholder="{{ 'Please insert a code' | translate }}" required>
-          <div *ngIf="code.invalid && (code.dirty || code.touched)" class="text-danger pt-1">
-            <div *ngIf="code.errors.alreadyTakenMessage" translate>Code is already taken.</div>
-            <div *ngIf="code.pending" translate>Validating…</div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="communication_language" class="col-2 col-form-label">
-          {{ 'Communication language' | translate }} <strong class="text-danger">*</strong>
-        </label>
-        <div class="col-10">
-          <select id="communication_language" class="form-control" formControlName="communication_language" required>
-            <option value="" disabled translate>Choose a language</option>
-            <option [ngValue]="language" *ngFor="let language of availableCommunicationLanguages">
-              {{ ('lang_' + language) | translate }}
-            </option>
-          </select>
-          <div *ngIf="communicationLanguage.invalid && (communicationLanguage.dirty || communicationLanguage.touched)" class="text-danger pt-1">
-            <div *ngIf="communicationLanguage.errors.required" translate>
-              Communication language is required.
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <tabset #staticTabs>
-        <tab>
-          <ng-template tabHeading><i class="fa fa-clock-o mr-2"></i>{{ 'Opening Hours' | translate }}</ng-template>
-          <div class="mt-3" formArrayName="opening_hours" *ngFor="let day of openingHours.controls; let i=index">
-            <div [formGroupName]="i">
-              <div class="form-group row" [ngClass]="{'pt-3': i>0}">
-                <div class="col-2">
-                  <div class="custom-control custom-switch">
-                    <input formControlName="is_open"
-                           class="custom-control-input"
-                           type="checkbox"
-                           [id]="day.value.day"
-                           [checked]="day.value.is_open"
-                    >
-                    <label class="custom-control-label" [for]="day.value.day">
-                      {{ day.value.day | translate | titlecase }}
-                    </label>
-                  </div>
-                </div>
-                <div class="col-10">
-                  <ul class="list-unstyled mb-0">
-                    <li formArrayName="times" *ngFor="let time of day.controls.times.controls; let t=index; let last=last">
-                      <div [formGroupName]="t" class="mb-1">
-                        <!-- inputs row. One row for each period -->
-                        <div class="form-row">
-                          <div class="col-4">
-                            <input class="form-control mr-2" formControlName="start_time"
-                                   [value]="day.value.is_open ? time.value.start_time : ''"
-                                   [readonly]="!day.value.is_open">
-                          </div>
-                          <div class="col-4">
-                            <input class="form-control" formControlName="end_time"
-                                   [value]="day.value.is_open ? time.value.end_time : ''"
-                                   [readonly]="!day.value.is_open">
-                          </div>
-                          <div class="col-1 text-right">
-                            <button *ngIf="day.value.is_open && day.controls.times.controls.length > 1"
-                                    type="button" class="btn btn-outline-danger btn-sm"
-                                    (click)="deleteTime(i, t)">
-                              <i class="fa fa-trash-o" aria-hidden="true"></i>
-                            </button>
-                          </div>
-                          <div class="col-3">
-                            <button *ngIf="day.value.is_open && last" type="button"
-                                    class="btn btn-outline-primary btn-sm" (click)="addTime(i)">
-                              <i class="fa fa-plus-square-o" aria-hidden="true"></i> {{ 'period' | translate }}
-                            </button>
-                          </div>
-                        </div>
-                        <div
-                          *ngIf="time.controls.start_time.invalid && (time.controls.start_time.dirty || time.controls.start_time.touched)"
-                          class="text-danger pt-1">
-                          <div *ngIf="time.controls.start_time.errors.required" translate>
-                            Start time is required.
-                          </div>
-                          <div *ngIf="time.controls.start_time.errors.pattern" translate>
-                            Start time format is not correct.
-                          </div>
-                        </div>
-                        <div
-                          *ngIf="time.controls.end_time.invalid && (time.controls.end_time.dirty || time.controls.end_time.touched)"
-                          class="text-danger pt-1">
-                          <div *ngIf="time.controls.end_time.errors.required" translate>
-                            End time is required.
-                          </div>
-                          <div *ngIf="time.controls.end_time.errors.pattern" translate>
-                            End time format is not correct.
-                          </div>
-                        </div>
-                        <div *ngIf="time.invalid && (time.dirty || time.touched)" class="text-danger pt-1">
-                          <div *ngIf="time.errors && time.errors.lessThan" translate>
-                            End time is less than start time.
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                  <div *ngIf="day.invalid  && (day.dirty || day.touched)" class="text-danger pt-1">
-                    <div *ngIf="day.errors && day.errors.rangeLessThan" translate>
-                      The two periods are overlapping.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </tab>
-        <tab>
-          <ng-template tabHeading>
-            <i class="fa fa-exclamation-triangle mr-2"></i>{{ 'Exceptions (holidays, etc.)' | translate }}
+      <p-accordion [activeIndex]="0">
+        <!-- DESCRIPTIVE METADATA TAB ===================================== -->
+        <p-accordionTab>
+          <ng-template pTemplate="header">
+            <i class="fa fa-bars"></i>{{ 'Descriptive data' | translate }}
           </ng-template>
-          <admin-libraries-exception-dates-list *ngIf="library" [exceptionDates]="library.exception_dates">
-          </admin-libraries-exception-dates-list>
-        </tab>
-        <tab>
-          <ng-template tabHeading>
-            <i class="fa fa-envelope-o mr-2"></i>{{ 'Notification settings' | translate }}
-          </ng-template>
-
-          <div class="container" formArrayName="notification_settings">
-            <div class="row mt-2" *ngFor="let setting of notificationSettings.controls; let i=index" [formGroupName]="i">
-              <div class="col-3">
-                <span style="min-width: 25px" class="d-inline-block">&nbsp;
-                  <i *ngIf="setting.controls.type.value | notificationType:'patron'"
-                    class="text-info fa fa-info-circle"></i>
-                </span>
-                <label class="font-weight-bold ml-2">{{ setting.controls.type.value | translate | ucfirst }}</label>
-              </div>
+          <ng-template pTemplate="content">
+            <div class="form-group row">
+              <label for="code" class="col-3 col-form-label required" translate>Code</label>
               <div class="col">
-                <input formControlName="email" class="form-control" [id]="setting.controls.type.value + '-email'">
-              </div>
-              <div class="col-3" *ngIf="delayedNotificationTypes.includes(setting.controls.type.value)">
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
-                  </div>
-                  <input type="number" formControlName="delay" class="form-control" [id]="setting.controls.type.value + '-delay'">
+                <input pInputText id="code" formControlName="code"
+                       class="w-100" [class.ng-invalid]="code.invalid"
+                       placeholder="{{ 'Please insert a code' | translate }}"
+                       required
+                >
+                <div *ngIf="code.invalid && (code.dirty || code.touched)" class="error-messages">
+                  <span *ngIf="code.errors.alreadyTaken" translate>Code is already taken.</span>
+                  <span *ngIf="code.errors.required" translate>Code is required.</span>
+                  <span *ngIf="code.pending" translate>Validating…</span>
                 </div>
               </div>
             </div>
-            <div class="row mt-3 border-top pt-2">
-              <small class="col-1 text-warning font-weight-bold" translate>Note</small>
-              <small class="col-11 text-secondary" translate>No notification is sent if the field is empty.</small>
-              <i class="fa fa-info-circle text-info col-1"></i>
-              <small class="col-11 text-secondary" translate>
-                The notifications for patrons without e-mail are sent to this address.
-              </small>
-              <i class="fa fa-clock-o col-1"></i>
-              <small class="col-11 text-secondary" translate>
-                Sending how many minutes after the item is available
-              </small>
-            </div>
-          </div>
-        </tab>
-        <tab>
-          <ng-template tabHeading><i class="fa fa-university mr-2"></i>{{ 'Acquisition settings' | translate }}</ng-template>
-          <div class="mt-3" formGroupName="acquisition_settings">
-            <div class="card" formGroupName="shipping_informations">
-              <div class="card-header">
-                <i class="fa fa-truck"></i>
-                {{ 'Shipping informations' | translate }}
-              </div>
-              <div class="card-body container">
-                <!-- name + email + phone -->
-                <div class="form-group form-row">
-                  <label for="shipping-name" class="col-3 col-form-label" translate>Contact name</label>
-                  <div class="col input-group">
-                    <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-user"></i></span></div>
-                    <input formControlName="name" id="shipping-name" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group form-row">
-                  <label for="shipping-email" class="col-3 col-form-label" translate>Contact email</label>
-                  <div class="col input-group">
-                    <div class="input-group-prepend"><span class="input-group-text">@</span></div>
-                    <input formControlName="email" id="shipping-email" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group form-row">
-                  <label for="shipping-phone" class="col-3 col-form-label" translate>Contact phone</label>
-                  <div class="col input-group">
-                    <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-phone"></i></span></div>
-                    <input formControlName="phone" id="shipping-phone" class="form-control">
-                  </div>
-                </div>
-                <!-- Address -->
-                <div formGroupName="address">
-                  <div class="form-group form-row">
-                    <label for="shipping-street" class="col-3 col-form-label" translate>Address</label>
-                    <div class="col-9">
-                      <input formControlName="street" class="form-control" id="shipping-street" placeholder="{{ 'Street' | translate }}">
-                    </div>
-                  </div>
-                  <div class="form-group form-row">
-                    <div class="col-3 offset-3">
-                      <input formControlName="zip_code" class="form-control" id="shipping-zip-code" placeholder="{{ 'Zip code' | translate }}">
-                    </div>
-                    <div class="col">
-                      <input formControlName="city" class="form-control" id="shipping-city" placeholder="{{ 'City' | translate }}">
-                    </div>
-                  </div>
-                  <div class="form-group form-row">
-                    <div class="col-9 offset-3">
-                      <select formControlName="country" class="form-control" id="shipping-country">
-                        <option value="" disabled translate>Select a country</option>
-                        <option [ngValue]="code" *ngFor="let code of countries_iso_codes">{{ code | countryCodeTranslate }}</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <!-- extra field -->
-                <div class="form-group form-row">
-                  <label for="shipping-extra" class="col-3 col-form-label" translate>Extra information</label>
-                  <div class="col input-group">
-                    <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-sticky-note-o"></i></span></div>
-                    <input formControlName="extra" id="shipping-extra" class="form-control">
-                  </div>
+            <div class="form-group row">
+              <label for="name" class="col-3 col-form-label required" translate>Name</label>
+              <div class="col">
+                <input pInputText id="name" formControlName="name"
+                       class="w-100" [class.ng-invalid]="name.invalid"
+                       placeholder="{{ 'Please insert a name' | translate }}"
+                       required
+                >
+                <div *ngIf="name.invalid && (name.dirty || name.touched)" class="error-messages">
+                  <span *ngIf="name.errors.required" translate>Name is required.</span>
+                  <span *ngIf="name.errors.minlength" translate>Name must be at least 4 characters long.</span>
                 </div>
               </div>
             </div>
-            <div class="card mt-3" formGroupName="billing_informations">
-              <div class="card-header">
-                <i class="fa fa-money"></i>
-                {{ 'Billing informations' | translate }}
+            <div class="form-group row">
+              <label for="address" class="col-3 col-form-label" translate>Address</label>
+              <div class="col p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="fa fa-home"></i></span>
+                <input pInputText id="address" formControlName="address"
+                       class="w-100" [class.ng-invalid]="address.invalid"/>
+                <div *ngIf="address.invalid && (address.dirty || address.touched)" class="error-messages">
+                  <span *ngIf="address.errors.minlength" translate>Address must be at least 4 characters long.</span>
+                </div>
               </div>
-              <div class="card-body container">
-                <!-- name + email + phone -->
-                <div class="form-group form-row">
-                  <label for="billing-name" class="col-3 col-form-label" translate>Contact name</label>
-                  <div class="col input-group">
-                    <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-user"></i></span></div>
-                    <input formControlName="name" id="billing-name" class="form-control">
-                  </div>
+            </div>
+            <div class="form-group row">
+              <label for="email" class="col-3 col-form-label" translate>Email</label>
+              <div class="col p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="fa fa-at"></i></span>
+                <input pInputText id="email" formControlName="email"
+                       class="w-100" [class.ng-invalid]="email.invalid"/>
+                <div *ngIf="email.invalid && (email.dirty || email.touched)" class="error-messages">
+                  <span *ngIf="email.errors.email" translate>Email format is not correct.</span>
                 </div>
-                <div class="form-group form-row">
-                  <label for="billing-email" class="col-3 col-form-label" translate>Contact email</label>
-                  <div class="col input-group">
-                    <div class="input-group-prepend"><span class="input-group-text">@</span></div>
-                    <input formControlName="email" id="billing-email" class="form-control">
-                  </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="communication_language" class="col-3 col-form-label required" translate>Communication language</label>
+              <div class="col">
+                <p-dropdown [options]="availableCommunicationLanguagesOptions"
+                            id="communication_language"
+                            formControlName="communication_language"
+                            styleClass="w-100" scrollHeight="250px"
+                >
+                </p-dropdown>
+                <div *ngIf="communicationLanguage.invalid && (communicationLanguage.dirty || communicationLanguage.touched)" class="error-messages">
+                  <span *ngIf="communicationLanguage.errors.required" translate>Communication language is required.</span>
                 </div>
-                <div class="form-group form-row">
-                  <label for="billing-phone" class="col-3 col-form-label" translate>Contact phone</label>
-                  <div class="col input-group">
-                    <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-phone"></i></span></div>
-                    <input formControlName="phone" id="billing-phone" class="form-control">
-                  </div>
-                </div>
-                <!-- Address -->
-                <div formGroupName="address">
-                  <div class="form-group form-row">
-                    <label for="shipping-street" class="col-3 col-form-label" translate>Address</label>
-                    <div class="col-9">
-                      <input formControlName="street" class="form-control" id="billing-street" placeholder="{{ 'Street' | translate }}">
+              </div>
+            </div>
+          </ng-template>
+        </p-accordionTab>
+        <!-- OPENING HOURS TAB ============================================ -->
+        <p-accordionTab>
+          <ng-template pTemplate="header">
+            <div class="d-flex align-items-center w-100">
+              <i class="fa fa-clock-o"></i>{{ 'Opening Hours' | translate }}
+              <div class="ml-auto opening-days-summary">
+                <i class="fa" *ngFor="let day of openingHours.controls"
+                   [ngClass]="{
+                      'fa-times-circle-o text-danger': !day.value.is_open,
+                      'fa-circle text-success': day.value.is_open
+                   }"
+                ></i>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="content">
+            <div class="mt-3" formArrayName="opening_hours" *ngFor="let day of openingHours.controls; let i=index">
+              <div [formGroupName]="i">
+                <div class="form-group row">
+                  <div class="col-2">
+                    <div class="d-flex align-items-center">
+                      <p-inputSwitch formControlName="is_open"
+                                     class="mr-2"
+                                     [id]="day.value.day"
+                                     [(ngModel)]="day.value.is_open"
+                      >
+                      </p-inputSwitch>
+                      <label [for]="day.value.day">{{ day.value.day | translate | titlecase }}</label>
                     </div>
                   </div>
-                  <div class="form-group form-row">
-                    <div class="col-3 offset-3">
-                      <input formControlName="zip_code" class="form-control" id="billing-zip-code" placeholder="{{ 'Zip code' | translate }}">
+                  <div class="col-10">
+                    <ul class="list-unstyled mb-0" *ngIf="day.value.is_open">
+                      <li formArrayName="times" *ngFor="let time of day.controls.times.controls; let t=index; let last=last; let count=count">
+                        <div [formGroupName]="t" class="mb-1">
+                          <!-- inputs row. One row for each period -->
+                          <div class="form-row">
+                            <div class="col p-inputgroup">
+                              <span class="p-inputgroup-addon"><i class="fa fa-clock-o"></i></span>
+                              <input pInputText formControlName="start_time"
+                                     [(ngModel)]="time.value.start_time"/>
+                              <span class="p-inputgroup-addon"><i class="fa fa-long-arrow-right"></i></span>
+                              <input pInputText formControlName="end_time"
+                                     [(ngModel)]="time.value.end_time"/>
+                            </div>
+                            <div class="col-1 text-right">
+                              <button *ngIf="count > 1" (click)="deleteTime(i, t)" class="btn btn-sm btn-outline-danger">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                              </button>
+                            </div>
+                            <div class="col-2">
+                              <button *ngIf="last" (click)="addTime(i)" class="btn btn-sm btn-outline-primary">
+                                <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                                {{ 'period' | translate }}
+                              </button>
+                            </div>
+                          </div>
+                          <div class="error-messages">
+                            <ng-container *ngIf="time.controls.start_time.invalid && (time.controls.start_time.dirty || time.controls.start_time.touched)">
+                              <div *ngIf="time.controls.start_time.errors.required" translate>Start time is required.</div>
+                              <div *ngIf="time.controls.start_time.errors.pattern" translate>Start time format is not correct.</div>
+                            </ng-container>
+                            <ng-container *ngIf="time.controls.end_time.invalid && (time.controls.end_time.dirty || time.controls.end_time.touched)">
+                              <div *ngIf="time.controls.end_time.errors.required" translate>End time is required.</div>
+                              <div *ngIf="time.controls.end_time.errors.pattern" translate>End time format is not correct.</div>
+                            </ng-container>
+                            <ng-container *ngIf="time.invalid && (time.dirty || time.touched)">
+                              <div *ngIf="time.errors && time.errors.lessThan" translate>End time is less than start time.</div>
+                            </ng-container>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                    <div *ngIf="day.invalid  && (day.dirty || day.touched)" class="text-danger pt-1">
+                      <div *ngIf="day.errors && day.errors.rangeLessThan" translate>
+                        The two periods are overlapping.
+                      </div>
                     </div>
-                    <div class="col">
-                      <input formControlName="city" class="form-control" id="billing-city" placeholder="{{ 'City' | translate }}">
-                    </div>
-                  </div>
-                  <div class="form-group form-row">
-                    <div class="col-9 offset-3">
-                      <select formControlName="country" class="form-control" id="billing-country">
-                        <option value="" disabled translate>Select a country</option>
-                        <option [ngValue]="code" *ngFor="let code of countries_iso_codes">{{ code | countryCodeTranslate }}</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <!-- extra field -->
-                <div class="form-group form-row">
-                  <label for="billing-extra" class="col-3 col-form-label" translate>Extra information</label>
-                  <div class="col input-group">
-                    <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-sticky-note-o"></i></span></div>
-                    <input formControlName="extra" id="billing-extra" class="form-control">
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="mt-3">
-            <div class="card" formGroupName="rollover_settings">
-              <div class="card-header">
-                <i class="fa fa-wrench"></i>
-                {{ 'Rollover settings' | translate }}
+          </ng-template>
+        </p-accordionTab>
+        <!-- EXCEPTIONS DATES TAB ========================================= -->
+        <p-accordionTab>
+          <ng-template pTemplate="header">
+            <div class="d-flex align-items-center w-100">
+              <i class="fa fa-exclamation-triangle"></i>
+              {{ 'Exception dates' | translate }}
+              <span class="badge badge-primary ml-auto">{{ library.exception_dates.length }}</span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="content">
+            <admin-libraries-exception-dates-list *ngIf="library" [exceptionDates]="library.exception_dates">
+            </admin-libraries-exception-dates-list>
+          </ng-template>
+        </p-accordionTab>
+        <!-- NOTIFICATIONS SETTING TAB ==================================== -->
+        <p-accordionTab>
+          <ng-template pTemplate="header">
+            <div class="flex align-items-center">
+              <i class="fa fa-envelope-o"></i>{{ 'Notification settings' | translate }}
+            </div>
+          </ng-template>
+          <ng-template pTemplate="content">
+            <div class="container" formArrayName="notification_settings">
+              <div class="row mb-1" *ngFor="let setting of notificationSettings.controls; let i=index" [formGroupName]="i">
+                <div class="col-3">
+                  <span style="min-width: 25px" class="d-inline-block">&nbsp;
+                    <i *ngIf="setting.controls.type.value | notificationType:'patron'" class="text-info fa fa-info"></i>
+                  </span>
+                  <label class="font-weight-bold ml-2">{{ setting.controls.type.value | translate | ucfirst }}</label>
+                </div>
+                <div class="col p-inputgroup">
+                  <span class="p-inputgroup-addon"><i class="fa fa-at"></i></span>
+                  <input pInputText formControlName="email" [id]="setting.controls.type.value + '-email'">
+                </div>
+                <div class="col-3 p-inputgroup" *ngIf="delayedNotificationTypes.includes(setting.controls.type.value)">
+                  <span class="p-inputgroup-addon"><i class="fa fa-clock-o"></i></span>
+                  <p-inputNumber
+                    formControlName="delay"
+                    [inputId]="setting.controls.type.value + '-delay'"
+                    [min]="0"
+                    pTooltip="{{ 'Sending how many minutes after the item is available' | translate }}" showDelay="1000"
+                  ></p-inputNumber>
+                </div>
               </div>
-              <div class="card-body container">
-                <!-- account transfer -->
-                <div class="form-group form-row">
-                  <label for="shipping-street" class="col-3 col-form-label" translate>Account transfer</label>
-                  <div class="col-9">
-                    <select formControlName="account_transfer" class="form-control" id="account-transfer">
-                      <option [ngValue]="option" *ngFor="let option of rollover_account_transfer_options">{{ option | translate }}</option>
-                    </select>
-                  </div>
+              <p-divider align="left">
+                <small translate>Legend</small>
+              </p-divider>
+              <div class="row">
+                <small class="col-1 text-warning font-weight-bold" translate>Note</small>
+                <small class="col-11 text-secondary font-italic" translate>No notification is sent if the field is empty.</small>
+                <i class="fa fa-info text-info col-1"></i>
+                <small class="col-11 text-secondary font-italic" translate>
+                  The notifications for patrons without e-mail are sent to this address.
+                </small>
+              </div>
+            </div>
+          </ng-template>
+        </p-accordionTab>
+        <!-- ACQUISITION SETTINGS TAB ===================================== -->
+        <p-accordionTab>
+          <ng-template pTemplate="header">
+            <div class="flex align-items-center">
+              <i class="fa fa-university"></i>{{ 'Acquisition settings' | translate }}
+            </div>
+          </ng-template>
+          <ng-template pTemplate="content">
+            <p-panel formGroupName="acquisition_settings" toggleable="true" collapsed="true">
+              <ng-template pTemplate="header">
+                <i class="fa fa-book mr-2"></i>
+                <span translate>Default acquisition settings</span>
+              </ng-template>
+              <ng-container [ngTemplateOutlet]="contact_block" [ngTemplateOutletContext]="{
+                'formGroup': this.libForm.get('acquisition_settings').get('shipping_informations'),
+                'icon': 'fa-truck',
+                'name': 'Shipping informations' | translate,
+                'fieldPrefix': 'shipping'
+              }"></ng-container>
+              <ng-container [ngTemplateOutlet]="contact_block" [ngTemplateOutletContext]="{
+                'formGroup': this.libForm.get('acquisition_settings').get('billing_informations'),
+                'icon': 'fa-money',
+                'name': 'Billing informations' | translate,
+                'fieldPrefix': 'billing'
+              }"></ng-container>
+            </p-panel>
+            <p-panel formGroupName="serial_acquisition_settings" toggleable="true" collapsed="true">
+              <ng-template pTemplate="header">
+                <i class="fa fa-internet-explorer mr-2"></i>
+                <span translate>Serial acquisition settings</span>
+              </ng-template>
+              <ng-container [ngTemplateOutlet]="contact_block" [ngTemplateOutletContext]="{
+                'formGroup': this.libForm.get('serial_acquisition_settings').get('shipping_informations'),
+                'icon': 'fa-truck',
+                'name': 'Shipping informations' | translate,
+                'fieldPrefix': 'shipping'
+              }"></ng-container>
+              <ng-container [ngTemplateOutlet]="contact_block" [ngTemplateOutletContext]="{
+                'formGroup': this.libForm.get('serial_acquisition_settings').get('billing_informations'),
+                'icon': 'fa-money',
+                'name': 'Billing informations' | translate,
+                'fieldPrefix': 'billing'
+              }"></ng-container>
+            </p-panel>
+          </ng-template>
+        </p-accordionTab>
+        <!-- ROLLOVER SETTINGS TAB ======================================== -->
+        <p-accordionTab>
+          <ng-template pTemplate="header">
+            <div class="d-flex align-items-center w-100">
+              <i class="fa fa-wrench"></i>
+              {{ 'Rollover settings' | translate }}
+              <div class="ml-auto rollover-settings">
+                <i class="fa"
+                   [ngClass]="{
+                        'fa-times text-danger': rolloverSettings.value.account_transfer === 'rollover_no_transfer',
+                        'fa-check text-success': rolloverSettings.value.account_transfer === 'rollover_allocated_amount'
+                   }"
+                ></i>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="content">
+            <div class="container" formGroupName="rollover_settings">
+              <div class="form-group form-row">
+                <label for="account-transfer" class="col-3 col-form-label" translate>Account transfer</label>
+                <div class="col">
+                  <p-dropdown [options]="rolloverAccountTransferOptions"
+                              id="account-transfer" formControlName="account_transfer"
+                              styleClass="w-100"
+                  ></p-dropdown>
                 </div>
               </div>
             </div>
-          </div>
-        </tab>
-      </tabset>
+          </ng-template>
+        </p-accordionTab>
+      </p-accordion>
+
       <div class="clearfix">
         <div class="float-right mt-4">
           <button class="btn btn-sm btn-outline-danger mr-1" (click)="onCancel($event)">
@@ -387,3 +325,77 @@
     </form>
   </ng-container>
 </div>
+
+<ng-template #contact_block
+             let-formGroup="formGroup"
+             let-name="name"
+             let-icon="icon"
+             let-fieldPrefix="fieldPrefix"
+>
+  <p-panel [formGroup]="formGroup">
+
+    <!-- header -->
+    <ng-template pTemplate="header">
+      <ng-container *ngIf="icon"><i class="fa {{ icon }} mr-2"></i></ng-container>
+      <span>{{ name }}</span>
+    </ng-template>
+
+    <!-- body -->
+    <div class="form-group form-row">
+      <label [for]="fieldPrefix+'_name'" class="col-3 col-form-label" translate>Contact name</label>
+      <div class="col p-inputgroup">
+        <span class="p-inputgroup-addon"><i class="fa fa-user"></i></span>
+        <input pInputText formControlName="name" [id]="fieldPrefix+'_name'" class="w-100">
+      </div>
+    </div>
+    <div class="form-group form-row">
+      <label [for]="fieldPrefix+'_email'" class="col-3 col-form-label" translate>Contact email</label>
+      <div class="col p-inputgroup">
+        <span class="p-inputgroup-addon"><i class="fa fa-at"></i></span>
+        <input pInputText formControlName="email" [id]="fieldPrefix+'_email'" class="w-100">
+      </div>
+    </div>
+    <div class="form-group form-row">
+      <label [for]="fieldPrefix+'_phone'" class="col-3 col-form-label" translate>Contact phone</label>
+      <div class="col p-inputgroup">
+        <span class="p-inputgroup-addon"><i class="fa fa-phone"></i></span>
+        <input pInputText formControlName="phone" [id]="fieldPrefix+'_phone'" class="w-100">
+      </div>
+    </div>
+    <div formGroupName="address">
+      <div class="form-group form-row">
+        <label [for]="fieldPrefix+'_street'" class="col-3 col-form-label" translate>Address</label>
+        <div class="col">
+          <input pInputText class="w-100" formControlName="street" [id]="fieldPrefix+'_street'" placeholder="{{ 'Street' | translate }}">
+        </div>
+      </div>
+      <div class="form-group form-row">
+        <div class="col-3 offset-3">
+          <input pInputText formControlName="zip_code" class="w-100" [id]="fieldPrefix+'_zip-code'" placeholder="{{ 'Zip code' | translate }}">
+        </div>
+        <div class="col">
+          <input pInputText formControlName="city" class="w-100" [id]="fieldPrefix+'_city'" placeholder="{{ 'City' | translate }}">
+        </div>
+      </div>
+      <div class="form-group form-row">
+        <div class="col offset-3">
+          <p-dropdown formControlName="country" [id]="fieldPrefix+'_country'"
+                      [options]="countryIsoCodesOptions"
+                      styleClass="w-100"
+                      [filter]="true"
+                      [showClear]="true" [placeholder]="'Select a country' | translate"
+          ></p-dropdown>
+        </div>
+      </div>
+    </div>
+    <!-- extra field -->
+    <div class="form-group form-row">
+      <label [for]="fieldPrefix+'_extra'" class="col-3 col-form-label" translate>Extra information</label>
+      <div class="col p-inputgroup">
+        <span class="p-inputgroup-addon"><i class="fa fa-sticky-note-o"></i></span>
+        <input pInputText formControlName="extra" [id]="fieldPrefix+'_extra'" class="w-100">
+      </div>
+    </div>
+
+  </p-panel>
+</ng-template>

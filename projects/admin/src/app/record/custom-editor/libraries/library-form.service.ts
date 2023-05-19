@@ -84,6 +84,10 @@ export class LibraryFormService {
         shipping_informations: this._buildAcqInformation(),
         billing_informations: this._buildAcqInformation()
       }),
+      serial_acquisition_settings: this._fb.group({
+        shipping_informations: this._buildAcqInformation(),
+        billing_informations: this._buildAcqInformation()
+      }),
       rollover_settings: this._fb.group({
         account_transfer: [this.accountDefaultTransfertOption, [Validators.required]]
       })
@@ -138,7 +142,8 @@ export class LibraryFormService {
     });
     this._setOpeningHours(library.opening_hours);
     this._setNotificationSettings(library.notification_settings);
-    this._setAcquisitionSettings(library.acquisition_settings);
+    this._setAcquisitionSettings('acquisition_settings', library.acquisition_settings);
+    this._setAcquisitionSettings('serial_acquisition_settings', library.serial_acquisition_settings);
     this._setRolloverSettings(library.rollover_settings);
   }
 
@@ -269,27 +274,29 @@ export class LibraryFormService {
   }
 
   /**
-   * Set acquisition informations from record
+   * Set acquisition information from record
+   * @param blockName: the block of acquisition setting (default, serial, ...)
    * @param acquisitionSettings: the acquisition settings from record.
    */
-  private _setAcquisitionSettings(acquisitionSettings: AcquisitionInformations | null): void {
+  private _setAcquisitionSettings(blockName: string, acquisitionSettings: AcquisitionInformations | null): void {
     if (acquisitionSettings != null) {
       const fieldNames = ['shipping_informations', 'billing_informations'];
       fieldNames.forEach((fieldName) => {
         if (acquisitionSettings.hasOwnProperty(fieldName)) {
-          this._setAcquisitionInformation(fieldName, acquisitionSettings[fieldName]);
+          this._setAcquisitionInformation(blockName, fieldName, acquisitionSettings[fieldName]);
         }
       });
     }
   }
 
   /**
-   * Populate form with acquisition informations from record.
+   * Populate form with acquisition information from record.
+   * @param blockName: the block section of acquisition setting to set.
    * @param key: the section of acquisition to fill in.
-   * @param data: the acquisition informations values from record related to the key.
+   * @param data: the acquisition information values from record related to the key.
    */
-  private _setAcquisitionInformation(key, data): void {
-    const formField = this.form.get('acquisition_settings').get(key);
+  private _setAcquisitionInformation(blockName, key, data): void {
+    const formField = this.form.get(blockName).get(key);
     formField.get('name').setValue(data.name);
     formField.get('email').setValue(data.email);
     formField.get('phone').setValue(data.phone);
