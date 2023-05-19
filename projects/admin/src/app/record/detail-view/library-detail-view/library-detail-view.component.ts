@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
- * Copyright (C) 2022 UCLouvain
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,6 +41,8 @@ export class LibraryDetailViewComponent implements DetailRecord, OnInit, OnDestr
   locations = [];
   /** Is the current logged user can add locations */
   isUserCanAddLocation = false;
+  /** active accordion index */
+  activeIndex = 0;
 
   /** Record subscription */
   private _recordObs: Subscription;
@@ -58,28 +60,15 @@ export class LibraryDetailViewComponent implements DetailRecord, OnInit, OnDestr
 
   /** OnInit hook */
   ngOnInit() {
-   this._recordObs = this.record$.subscribe(
-      (data) => {
-        const libraryPid = data.metadata.pid;
-        this.record = new Library(data.metadata);
-        this.isUserCanAddLocation = this._userService.user.currentLibrary === libraryPid;
-        // Load linked locations
-        this._recordService
-          .getRecords(
-            'locations',
-            `library.pid:${libraryPid}`,
-            1,
-            RecordService.MAX_REST_RESULTS_SIZE,
-            [],  // aggFilters
-            {},  // preFilters
-            null,  // headers
-            'name'
-          )
-          .subscribe((record: Record) => {
-            this.locations = record.hits.hits || [];
-          });
-      }
-    );
+   this._recordObs = this.record$.subscribe((data: any) => {
+      const libraryPid = data.metadata.pid;
+      this.record = new Library(data.metadata);
+      this.isUserCanAddLocation = this._userService.user.currentLibrary === libraryPid;
+      // Load linked locations
+      this._recordService
+        .getRecords('locations', `library.pid:${libraryPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, null, 'name')
+        .subscribe((record: Record) => this.locations = record.hits.hits || []);
+   });
   }
 
   /** OnDestroy hook */
