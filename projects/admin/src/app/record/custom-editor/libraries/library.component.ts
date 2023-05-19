@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -154,26 +155,31 @@ export class LibraryComponent implements OnInit, OnDestroy {
     if (this.library.pid) {
       this.recordService
         .update('libraries', this.library.pid, cleanDictKeys(this.library))
-        .subscribe(record => {
-          this.toastService.success(
-            this.translateService.instant('Record Updated!'),
-            this.translateService.instant('libraries')
-          );
-          this.router.navigate(['../../detail', this.library.pid], {relativeTo: this.route, replaceUrl: true});
-        });
+        .subscribe(
+          () => {
+            this.toastService.success(
+              this.translateService.instant('Record Updated!'),
+              this.translateService.instant('libraries')
+            );
+            this.router.navigate(['records', 'libraries', 'detail', this.library.pid]);
+          },
+          error => this.toastService.error(error.title, this.translateService.instant('libraries'))
+        );
     } else {
       this.library.organisation = { $ref: this.apiService.getRefEndpoint('organisations', this.organisationPid) };
       this.recordService
         .create('libraries', cleanDictKeys(this.library))
-        .subscribe(record => {
-          this.toastService.success(
-            this.translateService.instant('Record created!'),
-            this.translateService.instant('libraries')
-          );
-          this.router.navigate(['../detail', record.metadata.pid], {relativeTo: this.route, replaceUrl: true});
-        });
+        .subscribe(
+          record => {
+            this.toastService.success(
+              this.translateService.instant('Record created!'),
+              this.translateService.instant('libraries')
+            );
+            this.router.navigate(['records', 'libraries', 'detail', record.metadata.pid]);
+          },
+          error => this.toastService.error(error.title, this.translateService.instant('libraries'))
+        );
     }
-    this.libraryForm.build();
   }
 
 
@@ -218,6 +224,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
     formValues.notification_settings = formValues.notification_settings.filter(element => element.email !== '');
     // ACQUISITION SETTINGS
     formValues.acquisition_settings = removeEmptyValues(formValues.acquisition_settings);
+    formValues.serial_acquisition_settings = removeEmptyValues(formValues.serial_acquisition_settings);
   }
 
   // TODO :: docstring
