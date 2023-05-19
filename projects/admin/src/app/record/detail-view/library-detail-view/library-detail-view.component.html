@@ -1,6 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -43,27 +44,57 @@
     </div>
   </section>
 
-  <tabset>
-    <tab>
-      <!-- OPENING HOURS TABS -->
-      <ng-template tabHeading>
-        <i class="fa fa-clock-o mr-2"></i>{{ 'Opening Hours' | translate }}
+  <p-accordion [activeIndex]="activeIndex" (onClose)="activeIndex = undefined" (onOpen)="activeIndex = $event.index">
+    <!-- locations ======================================================== -->
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <div class="w-100 d-flex align-items-center">
+          <i class="fa fa-map-marker mr-2"></i>
+          <span translate>Locations</span>
+          <a *ngIf="isUserCanAddLocation && activeIndex === 0"
+             [routerLink]="['/', 'records', 'locations', 'new']" [queryParams]="{ library: record.pid }"
+             class="ml-2 btn btn-sm btn-outline-primary ml-auto">
+            <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
+          </a>
+        </div>
+      </ng-template>
+      <ul class="list-group list-group-flush" *ngIf="locations; else no_locations">
+        <li *ngFor="let location of locations" class="list-group-item p-1">
+          <admin-location [location]="location" [library]="record" class="row" (deleteLocation)="deleteLocation($event)"></admin-location>
+        </li>
+      </ul>
+      <ng-template #no_locations><p translate>no location</p></ng-template>
+    </p-accordionTab>
+    <!-- opening hours ==================================================== -->
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <i class="fa fa-clock-o mr-2"></i>
+        <span translate>Opening Hours</span>
+        <div class="ml-auto opening-days-summary">
+          <i class="fa" *ngFor="let day of record.opening_hours"
+             [ngClass]="{
+                      'fa-times-circle-o text-danger': !day.is_open,
+                      'fa-circle text-success': day.is_open
+                   }"
+          ></i>
+        </div>
       </ng-template>
       <admin-day-opening-hours [day]="day" *ngFor="let day of record.opening_hours"></admin-day-opening-hours>
-    </tab>
-    <tab>
-      <!-- EXCEPTIONS DATES -->
-      <ng-template tabHeading>
-        <i class="fa fa-exclamation-triangle mr-2"></i>{{ 'Exceptions (holidays, etc.)' | translate }}
+    </p-accordionTab>
+    <!-- exception dates ================================================== -->
+    <p-accordionTab *ngIf="record.exception_dates">
+      <ng-template pTemplate="header">
+        <i class="fa fa-exclamation-triangle mr-2"></i>
+        <span translate>Exceptions (holidays, etc.)</span>
+        <span class="badge badge-primary ml-auto">{{ record.exception_dates.length }}</span>
       </ng-template>
-      <ng-container *ngIf="record.exception_dates">
-        <admin-exception-date [exception]="exception" *ngFor="let exception of record.exception_dates"></admin-exception-date>
-      </ng-container>
-    </tab>
-    <tab>
-      <!-- NOTIFICATIONS SETTINGS -->
-      <ng-template tabHeading>
-        <i class="fa fa-envelope-o mr-2"></i>{{ 'Notification settings' | translate }}
+      <admin-exception-date [exception]="exception" *ngFor="let exception of record.exception_dates"></admin-exception-date>
+    </p-accordionTab>
+    <!-- notification settings ============================================ -->
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <i class="fa fa-envelope-o mr-2"></i>
+        <span translate>Notification settings</span>
       </ng-template>
       <dl class="row" *ngIf="record.notification_settings as notificationSettings">
         <ng-container *ngFor="let setting of notificationSettings">
@@ -77,70 +108,83 @@
           </dd>
         </ng-container>
       </dl>
-    </tab>
-    <tab>
-      <!-- ACQUISITION SETTINGS -->
-      <ng-template tabHeading>
-        <i class="fa fa-university mr-2"></i>{{ 'Acquisition settings' | translate }}
+    </p-accordionTab>
+    <!-- acquisition settings ============================================= -->
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <i class="fa fa-university mr-2"></i>
+        <span translate>Acquisition settings</span>
       </ng-template>
-      <dl class="row" *ngIf="record.acquisition_settings as acquisitionSettings">
-        <ng-container *ngIf="acquisitionSettings.shipping_informations as acqInfos"
-                      [ngTemplateOutlet]="address_block"
-                      [ngTemplateOutletContext]="{ label: 'Shipping informations' | translate, data: acqInfos}"
-        ></ng-container>
-        <ng-container *ngIf="acquisitionSettings.billing_informations as acqInfos"
-                      [ngTemplateOutlet]="address_block"
-                      [ngTemplateOutletContext]="{ label: 'Billing informations' | translate, data: acqInfos}"
-        ></ng-container>
-      </dl>
-
-      <!-- ROLLOVER SETTINGS -->
-      <dl class="row">
-        <dt class="col-3 label-title" translate>Rollover settings</dt>
-        <div class="col-9 card container py-2 mb-2">
-          <dl class="row">
-            <dt class="col-3 label-title" translate>Account transfer</dt>
-            <dd class="col-7">{{ record.rollover_settings.account_transfer | translate }}</dd>
-          </dl>
+      <ng-container *ngIf="record.acquisition_settings as acquisitionSettings">
+        <p-divider align="left" class="col-12 my-1">
+          <div class="d-inline-flex align-items-center">
+            <i class="fa fa-book mr-2"></i>
+            <span translate>Default acquisition settings</span>
+          </div>
+        </p-divider>
+        <dl class="row justify-content-start">
+          <ng-container *ngIf="acquisitionSettings.shipping_informations as acqInfos"
+                        [ngTemplateOutlet]="address_block"
+                        [ngTemplateOutletContext]="{ label: 'Shipping informations' | translate, data: acqInfos}"
+          ></ng-container>
+          <ng-container *ngIf="acquisitionSettings.billing_informations as acqInfos"
+                        [ngTemplateOutlet]="address_block"
+                        [ngTemplateOutletContext]="{ label: 'Billing informations' | translate, data: acqInfos}"
+          ></ng-container>
+        </dl>
+      </ng-container>
+      <ng-container *ngIf="record.serial_acquisition_settings as acquisitionSettings">
+        <p-divider align="left" class="col-12 my-1">
+          <div class="d-inline-flex align-items-center">
+            <i class="fa fa-internet-explorer mr-2"></i>
+            <span translate>Serial acquisition settings</span>
+          </div>
+        </p-divider>
+        <dl class="row justify-content-start">
+          <ng-container *ngIf="acquisitionSettings.shipping_informations as acqInfos"
+                        [ngTemplateOutlet]="address_block"
+                        [ngTemplateOutletContext]="{ label: 'Shipping informations' | translate, data: acqInfos}"
+          ></ng-container>
+          <ng-container *ngIf="acquisitionSettings.billing_informations as acqInfos"
+                        [ngTemplateOutlet]="address_block"
+                        [ngTemplateOutletContext]="{ label: 'Billing informations' | translate, data: acqInfos}"
+          ></ng-container>
+        </dl>
+      </ng-container>
+    </p-accordionTab>
+    <!-- rollover settings ================================================ -->
+    <p-accordionTab *ngIf="record.rollover_settings">
+      <ng-template pTemplate="header">
+        <i class="fa fa-wrench mr-2"></i>
+        <span translate>Rollover settings</span>
+        <div class="ml-auto rollover-settings">
+          <i class="fa"
+             [ngClass]="{
+                'fa-times text-danger': record.rollover_settings.account_transfer === 'rollover_no_transfer',
+                'fa-check text-success': record.rollover_settings.account_transfer === 'rollover_allocated_amount'
+             }"
+          ></i>
         </div>
-      </dl>
-    </tab>
-  </tabset>
-
-  <!-- LOCATIONS -->
-  <div class="card mt-4">
-    <div class="card-header">
-      <b translate>Locations</b>
-      <a class="ml-2 btn btn-sm btn-outline-primary float-right" *ngIf="isUserCanAddLocation"
-        [routerLink]="['/', 'records', 'locations', 'new']" [queryParams]="{ library: record.pid }">
-        <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
-      </a>
-    </div>
-    <div class="card-body collapsed show">
-      <ul class="list-group list-group-flush" *ngIf="locations; else no_locations">
-        <li *ngFor="let location of locations" class="list-group-item p-1">
-          <admin-location
-            [location]="location"
-            [library]="record" class="row"
-            (deleteLocation)="deleteLocation($event)"
-          ></admin-location>
-        </li>
-      </ul>
-      <ng-template #no_locations>
-        <p translate>no location</p>
       </ng-template>
-    </div>
-  </div>
+      <dl class="row">
+        <dt class="col-3 label-title" translate>Account transfer</dt>
+        <dd class="col">{{ record.rollover_settings.account_transfer | translate }}</dd>
+      </dl>
+    </p-accordionTab>
+  </p-accordion>
 </ng-container>
 
 
 <ng-template #address_block let-label="label" let-data="data">
-  <dt class="col-3 label-title">{{ label }}</dt>
-  <div class="col-9 card container py-2 mb-2">
-    <div class="row">
-      <div class="col-6 d-flex">
-        <i class="fa fa-address-card-o pr-2 pt-1"></i>
-        <div>
+  <div class="address-card col-6 px-1">
+    <div class="address-card-content container">
+      <span class="address-card-type">
+        <i class="fa fa-address-card mr-1"></i>
+        {{ label }}
+      </span>
+      <div class="row">
+        <i class="fa fa-home col-1 pt-1"></i>
+        <div class="col">
           {{ data.name }}<br/>
           <ng-container *ngIf="data.address">
             <ng-container *ngIf="data.address.street">{{ data.address.street }}<br/></ng-container>
@@ -153,10 +197,17 @@
           </ng-container>
         </div>
       </div>
-      <div class="col-6">
-        <dd *ngIf="data.email"><i class="fa fa-at pr-2"></i>{{ data.email }}</dd>
-        <dd *ngIf="data.phone"><i class="fa fa-phone-square pr-2"></i>{{ data.phone }}</dd>
-        <dd *ngIf="data.extra"><i class="fa fa-sticky-note-o pr-2"></i>{{ data.extra }}</dd>
+      <div class="row mt-2" *ngIf="data.email">
+        <i class="fa fa-at col-1 pt-1"></i>
+        <span class="col">{{ data.email }}</span>
+      </div>
+      <div class="row mt-2" *ngIf="data.phone">
+        <i class="fa fa-phone-square col-1 pt-1"></i>
+        <span class="col">{{ data.phone }}</span>
+      </div>
+      <div class="row mt-2" *ngIf="data.extra">
+        <i class="fa fa-sticky-note-o col-1 pt-1"></i>
+        <span class="col">{{ data.extra }}</span>
       </div>
     </div>
   </div>

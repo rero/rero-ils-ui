@@ -22,6 +22,12 @@ import { Component, Input } from '@angular/core';
   template: `
     <dl class="row my-0">
       <dt class="col-2">{{ day.day | translate }}</dt>
+      <dd class="col-1 text-center">
+        <i class="fa" [ngClass]="{
+          'fa-times-circle-o text-danger': !day.is_open,
+          'fa-circle text-success': day.is_open
+        }"></i>
+      </dd>
       <dd class="col">
         <ng-container *ngIf="day.is_open; else closed">
           <span class="period" *ngFor="let time of day.times">{{ time.start_time }} - {{ time.end_time }}</span>
