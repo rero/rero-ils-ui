@@ -1,0 +1,64 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+@import 'bootstrap/scss/bootstrap';
+
+:host ::ng-deep .p-accordion-header-link {
+  @extend .p-3;
+  @extend .d-flex;
+  @extend .align-items-center;
+
+  .opening-days-summary .fa {
+    @extend .mr-0;
+    @extend .ml-2;
+  }
+
+  .rollover-settings .fa {
+    @extend .mr-0;
+  }
+
+  .fa {
+    @extend .mr-3;
+  }
+
+  &:hover {
+    text-decoration: none !important;
+  }
+}
+
+:host ::ng-deep .p-dropdown-panel {
+  @extend .border;
+}
+
+
+.form-group {
+  @extend .mb-1;
+
+  label.required:after {
+    @extend .ml-2;
+    @extend .text-danger;
+    @extend .font-weight-bold;
+    content: "*";
+  }
+
+  .error-messages {
+    @extend .small;
+    @extend .text-danger;
+    @extend .ml-3;
+  }
+}

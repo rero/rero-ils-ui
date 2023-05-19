@@ -22,6 +22,7 @@ import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@a
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PrimengImportModule } from '@app/admin/shared/primeng-import/primeng-import.module';
 import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
 import { FormlyModule } from '@ngx-formly/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
@@ -32,7 +33,6 @@ import {
 } from '@rero/ng-core';
 import { ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -40,7 +40,6 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-import { DropdownModule } from 'primeng/dropdown';
 import {
   SelectAccountEditorWidgetComponent
 } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
@@ -303,47 +302,46 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         CirculationLogNotificationComponent,
         CirculationStatsComponent,
         ItemSwitchLocationStandaloneComponent,
-        ItemSwitchLocationComponent
+        ItemSwitchLocationComponent,
     ],
-  imports: [
-    AppRoutingModule,
-    AccordionModule.forRoot(),
-    BrowserAnimationsModule,
-    BrowserModule,
-    BsDatepickerModule.forRoot(),
-    BsDropdownModule.forRoot(),
-    NgxChartsModule,
-    CollapseModule.forRoot(),
-    FormsModule,
-    HttpClientModule,
-    ReactiveFormsModule,
-    RecordModule,
-    TabsModule.forRoot(),
-    TooltipModule.forRoot(),
-    PopoverModule.forRoot(),
-    FormlyModule.forRoot({
-      types: [
-        {name: 'cipo-pt-it', component: CipoPatronTypeItemTypeComponent},
-        {name: 'account-select', component: SelectAccountEditorWidgetComponent}
-      ],
-      wrappers: [
-        {name: 'user-id', component: UserIdComponent},
-        {name: 'identifiedby-value', component: IdentifiedbyValueComponent}
-      ]
-    }),
-    TranslateModule.forRoot({
-      loader: {
-        provide: BaseTranslateLoader,
-        useClass: TranslateLoader,
-        deps: [CoreConfigService, HttpClient]
-      }
-    }),
-    TypeaheadModule,
-    HotkeysModule,
-    SharedModule,
-    LoadingBarHttpClientModule,
-    DropdownModule
-  ],
+    imports: [
+      AppRoutingModule,
+      BrowserAnimationsModule,
+      BrowserModule,
+      BsDatepickerModule.forRoot(),
+      BsDropdownModule.forRoot(),
+      NgxChartsModule,
+      CollapseModule.forRoot(),
+      FormsModule,
+      HttpClientModule,
+      ReactiveFormsModule,
+      RecordModule,
+      TabsModule.forRoot(),
+      TooltipModule.forRoot(),
+      PopoverModule.forRoot(),
+      FormlyModule.forRoot({
+        types: [
+          {name: 'cipo-pt-it', component: CipoPatronTypeItemTypeComponent},
+          {name: 'account-select', component: SelectAccountEditorWidgetComponent}
+        ],
+        wrappers: [
+          {name: 'user-id', component: UserIdComponent},
+          {name: 'identifiedby-value', component: IdentifiedbyValueComponent}
+        ]
+      }),
+      TranslateModule.forRoot({
+        loader: {
+          provide: BaseTranslateLoader,
+          useClass: TranslateLoader,
+          deps: [CoreConfigService, HttpClient]
+        }
+      }),
+      TypeaheadModule,
+      HotkeysModule,
+      SharedModule,
+      LoadingBarHttpClientModule,
+      PrimengImportModule
+    ],
     providers: [
         {
             provide: APP_BASE_HREF,
@@ -402,7 +400,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
             useClass: HotkeysService
         },
         MainTitlePipe,
-        ItemHoldingsCallNumberPipe
+        ItemHoldingsCallNumberPipe,
+        CountryCodeTranslatePipe
     ],
     bootstrap: [AppComponent],
     schemas: [

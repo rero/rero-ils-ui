@@ -17,13 +17,27 @@
  */
 
 import { NgModule } from '@angular/core';
+import { AccordionModule } from 'primeng/accordion';
+import { DividerModule } from 'primeng/divider';
 import { DropdownModule } from 'primeng/dropdown';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { InputTextModule } from 'primeng/inputtext';
+import { PanelModule } from 'primeng/panel';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   exports: [
+    AccordionModule,
+    DividerModule,
     DropdownModule,
-    SkeletonModule
+    InputNumberModule,
+    InputSwitchModule,
+    InputTextModule,
+    PanelModule,
+    SkeletonModule,
+    TooltipModule
   ]
 })
 export class PrimengImportModule { }

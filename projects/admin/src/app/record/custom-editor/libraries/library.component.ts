@@ -19,6 +19,7 @@ import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CountryCodeTranslatePipe } from '@app/admin/pipe/country-code-translate.pipe';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, cleanDictKeys, RecordService, removeEmptyValues, UniqueValidator } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
@@ -30,7 +31,8 @@ import { LibraryFormService } from './library-form.service';
 
 @Component({
   selector: 'admin-libraries-library',
-  templateUrl: './library.component.html'
+  templateUrl: './library.component.html',
+  styleUrls: ['./library.component.scss']
 })
 export class LibraryComponent implements OnInit, OnDestroy {
 
@@ -44,6 +46,10 @@ export class LibraryComponent implements OnInit, OnDestroy {
   /** possible delayed notification types. */
   public delayedNotificationTypes = [NotificationType.AVAILABILITY];
 
+  /** options to use for dropdown list box of the editor */
+  rolloverAccountTransferOptions = [];
+  availableCommunicationLanguagesOptions = [];
+  countryIsoCodesOptions = [];
 
   /** Form build event subscription to release the memory. */
   private eventForm: Subscription;
@@ -66,12 +72,8 @@ export class LibraryComponent implements OnInit, OnDestroy {
   get openingHours() { return this.libraryForm.opening_hours as UntypedFormArray; }
   /** Notification settings. */
   get notificationSettings() { return this.libraryForm.notification_settings as UntypedFormArray; }
-  /** Available communication languages */
-  get availableCommunicationLanguages() { return this.libraryForm.available_communication_languages; }
   /** Rollover settings */
-  get rolloverSettings() { return this.libraryForm.rollover_settings; }
-  /** Rollover account transfer options */
-  get rollover_account_transfer_options() { return this.libraryForm.account_transfer_options; }
+  get rolloverSettings() { return this.libraryForm.rollover_settings as UntypedFormGroup; }
 
 
   // CONSTRUCTOR & HOOKS ======================================================
@@ -86,6 +88,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
    * @param toastService - ToastrService
    * @param translateService - ngx-translate TranslateService
    * @param location - angular Location
+   * @param countryCodeTranslatePipe - CountryCodeTranslatePipe
    */
   constructor(
     private recordService: RecordService,
@@ -96,7 +99,8 @@ export class LibraryComponent implements OnInit, OnDestroy {
     private apiService: ApiService,
     private toastService: ToastrService,
     private translateService: TranslateService,
-    private location: Location
+    private location: Location,
+    private countryCodeTranslatePipe: CountryCodeTranslatePipe
   ) { }
 
   /** NgOnInit hook. */
@@ -113,6 +117,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
             this.library = new Library(record.metadata);
             this.libraryForm.populate(record.metadata);
             this.libForm = this.libraryForm.form;
+            this._buildOptions();
             this.setAsyncValidator();
           });
         } else {
@@ -171,22 +176,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
     this.libraryForm.build();
   }
 
-  /**
-   * Clean form values before saving the library
-   * @param formValues: the form values to clean
-   */
-  private _cleanFormValues(formValues: any): void {
-    // CLEAN OPENING HOURS : When day is defined as closed, remove all periods/times
-    formValues.opening_hours.forEach(day => {
-      if (!day.is_open) {
-        day.times = [];
-      }
-    });
-    // NOTIFICATIONS
-    formValues.notification_settings = formValues.notification_settings.filter(element => element.email !== '');
-    // ACQUISITION SETTINGS
-    formValues.acquisition_settings = removeEmptyValues(formValues.acquisition_settings);
-  }
+
 
   /** Cancel the edition. */
   onCancel(event) {
@@ -210,5 +200,55 @@ export class LibraryComponent implements OnInit, OnDestroy {
    */
   deleteTime(dayIndex, timeIndex): void {
     this.libraryForm.deleteTime(dayIndex, timeIndex);
+  }
+
+
+  /**
+   * Clean form values before saving the library
+   * @param formValues: the form values to clean
+   */
+  private _cleanFormValues(formValues: any): void {
+    // CLEAN OPENING HOURS : When day is defined as closed, remove all periods/times
+    formValues.opening_hours.forEach(day => {
+      if (!day.is_open) {
+        day.times = [];
+      }
+    });
+    // NOTIFICATIONS
+    formValues.notification_settings = formValues.notification_settings.filter(element => element.email !== '');
+    // ACQUISITION SETTINGS
+    formValues.acquisition_settings = removeEmptyValues(formValues.acquisition_settings);
+  }
+
+  // TODO :: docstring
+  private _buildOptions(): void {
+    // Build the options for rollover settings
+    this.rolloverAccountTransferOptions = this.libraryForm.account_transfer_options.map(option => {
+      return {
+        'value': option,
+        'label': this.translateService.instant(option)
+      }
+    });
+    // Build available communication languages
+    this.availableCommunicationLanguagesOptions = [{
+      'value': '',
+      'label': this.translateService.instant('Choose a language'),
+      'disabled': true
+    }].concat(
+      this.libraryForm.available_communication_languages.map(lang => {
+        return {
+          'value': lang,
+          'label': this.translateService.instant(`lang_${lang}`),
+          'disabled': false
+        }
+      })
+    );
+    // Country codes options
+    this.countryIsoCodesOptions = this.libraryForm.countries_iso_codes.map(code => {
+      return {
+        'value': code,
+        'label': this.countryCodeTranslatePipe.transform(code)
+      }
+    })
   }
 }
