@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
- * Copyright (C) 2020 UCLouvain
+ * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,15 +18,15 @@
 
 import { formatDate } from '@angular/common';
 import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Library } from '@app/admin/classes/library';
+import { DateValidators } from '@app/admin/utils/validators';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import moment from 'moment';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { Library } from '@app/admin/classes/library';
-import { DateValidators } from '@app/admin/utils/validators';
 import { Subscription } from 'rxjs';
 import { CirculationService } from '../../../services/circulation.service';
 
@@ -42,14 +42,15 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
 
   // COMPONENT ATTRIBUTES ====================================
   /** form group */
-  formGroup: UntypedFormGroup = new UntypedFormGroup({
-    endDate: new UntypedFormControl('', [
+  formGroup: FormGroup = new FormGroup({
+    endDate: new FormControl('', [
       Validators.required,
       DateValidators.minimumDateValidator(
         new Date(),
         FixedDateFormComponent.DATE_FORMAT
       )
-    ])
+    ]),
+    remember: new FormControl(false)
   });
   /** main datepicker configuration */
   bsConfig = {
