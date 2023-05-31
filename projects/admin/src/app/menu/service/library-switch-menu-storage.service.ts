@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,6 +18,7 @@ import { Injectable } from '@angular/core';
 import { LocalStorageService } from '@rero/ng-core';
 import { User, UserService } from '@rero/shared';
 import { LibrarySwitchService } from './library-switch.service';
+import { MenuService } from './menu.service';
 
 @Injectable({
   providedIn: 'root'
@@ -32,11 +33,13 @@ export class LibrarySwitchMenuStorageService {
    * @param _librarySwitchService - LibrarySwitchService
    * @param _localeStorageService - LocalStorageService
    * @param _userService - UserService
+   * @param _menuService - MenuService
    */
   constructor(
     private _librarySwitchService: LibrarySwitchService,
     private _localeStorageService: LocalStorageService,
-    private _userService: UserService
+    private _userService: UserService,
+    private _menuService: MenuService
   ) {
     this._initObservable();
    }
@@ -87,5 +90,7 @@ export class LibrarySwitchMenuStorageService {
     this._librarySwitchService.librarySwitch$.subscribe((user: User) => {
       this._localeStorageService.set(this.STORAGE_KEY, this._dataStorage(user));
     });
+    // Delete locale storage on logout
+    this._menuService.logout$.subscribe(() => this.removeStorage())
   }
 }

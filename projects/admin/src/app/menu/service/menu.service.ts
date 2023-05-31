@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,12 +30,15 @@ import { MenuFactoryService } from './menu-factory.service';
 export class MenuService {
 
   // SERVICE ATTRIBUTES =======================================================
+
   /** Application menu */
   private _appMenu: Subject<MenuItemInterface> = new Subject();
   /** User menu */
   private _userMenu: Subject<MenuItemInterface> = new Subject();
   /** Language menu */
   private _languageMenu: Subject<MenuItemInterface> = new Subject();
+  /** Logout event */
+  private _logout: Subject<Boolean> = new Subject();
 
   // GETTER & SETTER ==========================================================
   /**
@@ -60,6 +63,14 @@ export class MenuService {
    */
   get languageMenu$(): Observable<MenuItemInterface> {
     return this._languageMenu;
+  }
+
+  /**
+   * Get the logout event
+   * @return Observable on logout
+   */
+  get logout$(): Observable<Boolean> {
+    return this._logout;
   }
 
   // CONSTRUCTOR ==============================================================
@@ -99,6 +110,11 @@ export class MenuService {
     this.generateAppMenu();
     this.generateUserMenu();
     this.generateLanguageMenu();
+  }
+
+  /** logout */
+  logout(): void {
+    this._logout.next(true);
   }
 
   // SERVICE PRIVATE FUNCTIONS ================================================

@@ -16,11 +16,12 @@
  */
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule, LocalStorageService } from '@rero/ng-core';
-import { testUserLibrarianWithSettings, User, UserService } from '@rero/shared';
-
+import { User, UserService, testUserLibrarianWithSettings } from '@rero/shared';
 import { LibrarySwitchMenuStorageService } from './library-switch-menu-storage.service';
 import { LibrarySwitchService } from './library-switch.service';
+import { MenuService } from './menu.service';
 
 describe('LibrarySwitchMenuStorageService', () => {
   let service: LibrarySwitchMenuStorageService;
@@ -36,10 +37,12 @@ describe('LibrarySwitchMenuStorageService', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
+        TranslateModule.forRoot(),
         CoreModule
       ],
       providers: [
         LibrarySwitchService,
+        MenuService,
         { provide: UserService, useValue: userServiceSpy }
       ]
     });

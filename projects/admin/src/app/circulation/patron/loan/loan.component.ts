@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,17 +16,18 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Item, ItemAction, ItemNoteType } from '@app/admin/classes/items';
+import { ItemsService } from '@app/admin/service/items.service';
+import { PatronService } from '@app/admin/service/patron.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DateTranslatePipe } from '@rero/ng-core';
 import { ItemStatus, UserService } from '@rero/shared';
 import moment from 'moment';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { Item, ItemAction, ItemNoteType } from '@app/admin/classes/items';
-import { ItemsService } from '@app/admin/service/items.service';
-import { PatronService } from '@app/admin/service/patron.service';
-import { forkJoin, Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { CirculationService } from '../../services/circulation.service';
+import { LoanFixedDateService } from '../../services/loan-fixed-date.service';
 import { FixedDateFormComponent } from './fixed-date-form/fixed-date-form.component';
 
 /** Interface to declare a special circulation settings */
@@ -34,13 +35,14 @@ export interface CirculationSetting {
   key: string;    /** the setting internal key */
   label: string;  /** the setting label to display to user */
   value: any;     /** the setting value */
+  extra?: any;     /** extra element for customization */
 }
 
 
 @Component({
   selector: 'admin-loan',
   templateUrl: './loan.component.html',
-  providers: [ DateTranslatePipe ]
+  providers: [ DateTranslatePipe, LoanFixedDateService ]
 })
 export class LoanComponent implements OnInit, OnDestroy {
 
@@ -73,11 +75,8 @@ export class LoanComponent implements OnInit, OnDestroy {
 
   // GETTER & SETTER ================================================
   /** Return the circulation special settings */
-  get checkoutSettings(): Array<{key: string, label: string}> | null {
-    return this._checkoutCirculationSettings.map(setting => { return {
-      key: setting.key,
-      label: setting.label
-    }; });
+  get checkoutSettings(): CirculationSetting[] | null {
+    return this._checkoutCirculationSettings;
   }
 
   /**
@@ -108,9 +107,12 @@ export class LoanComponent implements OnInit, OnDestroy {
    */
   removeCheckoutSettings(key: string): CirculationSetting | CirculationSetting[] | null {
     const idx = this._checkoutCirculationSettings.findIndex(setting => setting.key === key);
-    return (idx >= 0)
-      ? this._checkoutCirculationSettings.splice(idx, 1)
-      : null;
+    if (idx >= 0) {
+      if (key === 'endDate' && this._checkoutCirculationSettings[idx].extra.remember) {
+        this._loanFixedDateService.remove();
+      }
+      return this._checkoutCirculationSettings.splice(idx, 1);
+    }
   }
 
   // CONSTRUCTOR & HOOKS ============================================
@@ -124,6 +126,7 @@ export class LoanComponent implements OnInit, OnDestroy {
    * @param _modalService - BsModalService
    * @param _dateTranslatePipe - DateTranslatePipe
    * @param _circulationService - CirculationService
+   * @param _loanFixedDateService - LoanFixedDateService
    */
   constructor(
     private _itemsService: ItemsService,
@@ -133,11 +136,12 @@ export class LoanComponent implements OnInit, OnDestroy {
     private _userService: UserService,
     private _modalService: BsModalService,
     private _dateTranslatePipe: DateTranslatePipe,
-    private _circulationService: CirculationService
+    private _circulationService: CirculationService,
+    private _loanFixedDateService: LoanFixedDateService
   ) {}
 
   /** OnInit hook */
-  ngOnInit() {
+  ngOnInit(): void {
     this._subscription.add(this._patronService.currentPatron$.subscribe((patron: any) => {
       this.patron = patron;
       if (patron) {
@@ -163,10 +167,15 @@ export class LoanComponent implements OnInit, OnDestroy {
     }));
     this.currentLibraryPid = this._userService.user.currentLibrary;
     this.searchInputFocus = true;
+    // Assignment of end date if present in locale storage
+    const fixedDateValue = this._loanFixedDateService.get();
+    if (fixedDateValue) {
+      this.setCheckoutDateSetting(fixedDateValue, true);
+    }
   }
 
   /** OnDestroy hook */
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this._subscription.unsubscribe();
   }
 
@@ -187,7 +196,7 @@ export class LoanComponent implements OnInit, OnDestroy {
    * Check item availability and set current action
    * @param barcode: barcode of the item to get
    */
-  getItem(barcode: string) {
+  getItem(barcode: string): void {
     this.searchInputFocus = false;
     this.searchInputDisabled = true;
     const item = this.checkedOutItems.find(currItem => currItem.barcode === barcode);
@@ -251,7 +260,7 @@ export class LoanComponent implements OnInit, OnDestroy {
    * Dispatch items between checked in and checked out items
    * @param items: checked in and checked out items
    */
-  applyItems(items: Item[]) {
+  applyItems(items: Item[]): void {
     const observables = [];
     for (const item of items) {
       if (item.currentAction !== ItemAction.no) {
@@ -393,7 +402,7 @@ export class LoanComponent implements OnInit, OnDestroy {
    * method called if transaction has linked open fess when a checkin operation is done
    * @param event: True if transaction has fees, False otherwise
    */
-  hasFees(event: boolean) {
+  hasFees(event: boolean): void {
     if (event) {
       this._toastService.error(
         this._translateService.instant('The item has fees'),
@@ -407,7 +416,7 @@ export class LoanComponent implements OnInit, OnDestroy {
    * @param sortCriteria: the srt criteria to use for sorting the list
    */
 
-  selectingSortCriteria(sortCriteria: string) {
+  selectingSortCriteria(sortCriteria: string): void {
     switch (sortCriteria) {
       case 'duedate':
         this.checkedOutItems.sort((a, b) => a.loan.end_date.diff(b.loan.end_date));
@@ -427,29 +436,49 @@ export class LoanComponent implements OnInit, OnDestroy {
    * Open a modal dialog form allowing to user to choose a fixed end-date.
    * Subscribe to modal onHide event to get data entered by user and perform job if needed.
    */
-  openFixedEndDateDialog() {
+  openFixedEndDateDialog(): void {
     this._modalRef = this._modalService.show(FixedDateFormComponent, {
         ignoreBackdropClick: true,
         keyboard: true
     });
     this._modalRef.content.onSubmit.subscribe(result => {
       if ('action' in result && result.action === 'submit') {
-        const checkoutEndDate = moment(result.content.endDate, FixedDateFormComponent.DATE_FORMAT).toDate().setHours(23, 59);
-        const formattedDate = this._dateTranslatePipe.transform(checkoutEndDate, 'shortDate');
-        this._setCheckoutSetting({
-          key: 'endDate',
-          label: this._translateService.instant('End date: {{ endDate }}', {endDate: formattedDate}),
-          value: new Date(checkoutEndDate).toISOString()
-        });
+        const date = this.setCheckoutDateSetting(result.content.endDate, result.content.remember);
+        if (result.content.remember) {
+          this._loanFixedDateService.set(date);
+        }
       }
     });
+  }
+
+  /**
+   * Save setting for end date
+   * @param endDate - Date in string format
+   * @param remember - Hold value (Boolean format)
+   * @returns End date in string format
+   */
+  setCheckoutDateSetting(endDate: string, remember: boolean): string {
+    const checkoutEndDate = moment(endDate, FixedDateFormComponent.DATE_FORMAT).toDate().setHours(23, 59);
+    const formattedDate = this._dateTranslatePipe.transform(checkoutEndDate, 'shortDate');
+    const setting = {
+      key: 'endDate',
+      label: this._translateService.instant('Active chosen due date: {{ endDate }}', {endDate: formattedDate}),
+      value: new Date(checkoutEndDate).toISOString(),
+      extra: {
+        remember,
+        class: 'badge-' + (remember ? 'success' : 'warning')
+      }
+    };
+    this._setCheckoutSetting(setting);
+
+    return setting.value;
   }
 
   /**
    * Allow to specify that all checkout circulation should be operate without taking
    * care of any possible blocking restrictions (Cipo, PatronTypes restriction, patron blocking, ...)
    */
-  overrideBlocking() {
+  overrideBlocking(): void {
     this._setCheckoutSetting({
       key: 'overrideBlocking',
       label: this._translateService.instant('Override blockings'),

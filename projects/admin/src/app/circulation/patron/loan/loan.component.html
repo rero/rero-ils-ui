@@ -47,7 +47,8 @@
         </div>
       </div>
       <div class="row col mt-1" *ngIf="checkoutSettings">
-        <span *ngFor="let setting of checkoutSettings" class="badge badge-warning px-2 py-0 mr-2">
+        <span *ngFor="let setting of checkoutSettings" class="badge px-2 py-0 mr-2"
+        [ngClass]="setting.extra?.class || 'badge-warning'">
           {{ setting.label }}
           <button class="btn btn-small p-0 ml-1" (click)="removeCheckoutSettings(setting.key)">
             <i class="fa fa-times-circle"></i>

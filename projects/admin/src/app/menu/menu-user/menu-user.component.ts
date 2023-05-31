@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2022 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,6 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { MenuItem, MenuItemInterface } from '@rero/ng-core';
-import { LibrarySwitchMenuStorageService } from '../service/library-switch-menu-storage.service';
 import { MenuService } from '../service/menu.service';
 
 @Component({
@@ -32,8 +31,7 @@ export class MenuUserComponent implements OnInit {
    * @param _menuService - MenuService
    */
   constructor(
-    private _menuService: MenuService,
-    private _librarySwitchMenuStorageService: LibrarySwitchMenuStorageService
+    private _menuService: MenuService
   ) { }
 
   /** Init */
@@ -44,7 +42,7 @@ export class MenuUserComponent implements OnInit {
   eventMenuClick(event: MenuItem) {
     // If the user logout, we delete the local storage
     if (event.getAttribute('id') === 'logout-menu') {
-      this._librarySwitchMenuStorageService.removeStorage();
+      this._menuService.logout();
     }
   }
 }
