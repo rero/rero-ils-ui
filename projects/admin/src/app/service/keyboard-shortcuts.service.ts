@@ -93,5 +93,13 @@ export class KeyboardShortcutsService {
       _ => this._router.navigate(['/circulation', 'requests'])
     );
 
+    this._hotKeys.addShortcut({
+      keys: 'i',
+      group: this._translateService.instant('Global shortcuts'),
+      description: this._translateService.instant('Open the inventory list')
+    }).subscribe(
+      _ => this._router.navigate(['/', 'records', 'items'])
+    );
+
   }
 }
