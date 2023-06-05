@@ -52,3 +52,6 @@ Thumbs.db
 
 # eslint
 .eslintcache
+
+# test proxy
+dev.proxy.conf.json
