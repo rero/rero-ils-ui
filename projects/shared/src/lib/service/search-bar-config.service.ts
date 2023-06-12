@@ -87,7 +87,7 @@ export class SearchBarConfigService {
       },
       {
         type: 'persons',
-        index: 'entities',
+        index: 'remote_entities',
         field: 'autocomplete_name',
         maxNumberOfSuggestions: 5,
         getSuggestions: (query: any, persons: any) => this._getPersonsSuggestions(query, persons),
@@ -96,7 +96,7 @@ export class SearchBarConfigService {
       },
       {
         type: 'organisations',
-        index: 'entities',
+        index: 'remote_entities',
         field: 'autocomplete_name',
         maxNumberOfSuggestions: 5,
         getSuggestions: (query: any, organisations: any) => this._getOrganisationsSuggestions(query, organisations),
@@ -187,7 +187,7 @@ export class SearchBarConfigService {
       values.push({
         text: this._highlightSearch(text, query),
         query: '',
-        index: 'entities',
+        index: 'remote_entities',
         category,
         href: this._generateContributionLink(urlIndex, hit.metadata.pid),
         iconCssClass: `fa fa-${icon}`

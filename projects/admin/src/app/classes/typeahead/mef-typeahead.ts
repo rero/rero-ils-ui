@@ -30,7 +30,7 @@ import { ITypeahead } from './ITypeahead-interface';
 export class MefTypeahead implements ITypeahead {
 
   /** Entry point for MEF Api */
-  private _apiSearchEntryPoint = 'api/entities/remote/search';
+  private _apiSearchEntryPoint = 'api/remote_entities/search';
   private _apiProxyEntryPoint = 'api/proxy';
 
   /**
