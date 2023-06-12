@@ -183,6 +183,7 @@ import { PreviewEmailModule } from './shared/preview-email/preview-email.module'
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
+import { UserCurrentLibraryInterceptor } from './interceptor/user-current-library.interceptor';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -371,6 +372,11 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
             provide: HTTP_INTERCEPTORS,
             useClass: NoCacheHeaderInterceptor,
             multi: true
+        },
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: UserCurrentLibraryInterceptor,
+          multi: true
         },
         { provide: RemoteTypeaheadService, useExisting: UiRemoteTypeaheadService },
         // Use the "multi" parameter to allow the recovery of several services in the injector.
