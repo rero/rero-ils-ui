@@ -125,7 +125,7 @@ export class MenuFactoryService {
       this._processAttributes(menuItem, menu.attributes);
     }
     if (menu.extras) {
-      this._processExtas(menuItem, menu.extras);
+      this._processExtras(menuItem, menu.extras);
     }
     if (menu.router_link) {
       this._processRouterLink(menuItem, menu.router_link);
@@ -157,7 +157,7 @@ export class MenuFactoryService {
    * @param menuRef MenuItemInterface
    * @param extras Object extras (key: value)
    */
-  private _processExtas(menuRef: MenuItemInterface, extras: IMenuKeyValue): void {
+  private _processExtras(menuRef: MenuItemInterface, extras: IMenuKeyValue): void {
     const keys = Object.keys(extras);
     keys.map((key: string) => menuRef.setExtra(key, extras[key]));
   }

@@ -54,7 +54,7 @@ export class MenuService {
    * @return Observable on parent menuItem interface.
    */
   get userMenu$(): Observable<MenuItemInterface> {
-    return this._userMenu;
+    return this._userMenu.asObservable();
   }
 
   /**
@@ -62,7 +62,7 @@ export class MenuService {
    * @return Observable on parent menuItem interface.
    */
   get languageMenu$(): Observable<MenuItemInterface> {
-    return this._languageMenu;
+    return this._languageMenu.asObservable();
   }
 
   /**
@@ -70,7 +70,7 @@ export class MenuService {
    * @return Observable on logout
    */
   get logout$(): Observable<Boolean> {
-    return this._logout;
+    return this._logout.asObservable();
   }
 
   // CONSTRUCTOR ==============================================================
