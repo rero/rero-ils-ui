@@ -119,6 +119,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
         placeholder: this._translateService.instant('Select…'),
         options: [
           {value: 'cash', label: this._translateService.instant('Cash')},
+          {value: 'invoice', label: this._translateService.instant('Invoice')},
           {value: 'debit_card', label: this._translateService.instant('Debit card')},
           {value: 'credit_card', label: this._translateService.instant('Credit card')},
           {value: 'paypal', label: 'Paypal'}
