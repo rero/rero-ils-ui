@@ -1,0 +1,38 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2022 RERO
+  Copyright (C) 2022 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="d-flex justify-content-center">
+  <div class="chart-wrapper">
+    <div class="administration" *ngIf="administration">
+      <button class="btn btn-sm btn-outline-secondary" (click)="administrationActivate.emit($event)"><i class="fa fa-cog"></i></button>
+    </div>
+    <div class="refresh" [ngClass]="{'text-primary': isRefreshing, 'text-muted': !isRefreshing}" *ngIf="autoRefreshEnabled">
+      <i class="fa fa-refresh" [ngClass]="{'fa-spin': isRefreshing}"></i>
+      <span *ngIf="isRefreshing" class="pl-1" translate>Refreshing...</span>
+    </div>
+    <h5 class="text-center">{{ title }}</h5>
+    <div [ngStyle]="{'min-height.px': minHeight}" *ngIf="!error; else errorBlock">
+      <ng-content></ng-content>
+    </div>
+    <ng-template #errorBlock>
+      <div class="text-danger m-3 small">
+        <h6><i class="fa fa-exclamation-triangle pr-1"></i>{{ error.name }}</h6>
+        <div>{{ error.message }}</div>
+      </div>
+    </ng-template>
+  </div>
+</div>

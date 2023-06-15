@@ -17,6 +17,7 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { UsageStatisticsComponent } from '@app/admin/components/usage-statistics/usage-statistics.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 import { RouteService } from './routes/route.service';
 import { PermissionDetailViewComponent } from './record/detail-view/permission-detail-view/permission-detail-view.component';
@@ -33,12 +34,14 @@ const routes: Routes = [
   }, {
     path: 'acquisition',
     loadChildren: () => import('./acquisition/acquisition.module').then(m => m.AcquisitionModule)
-  },
-  {
+  }, {
     path: 'permissions/matrix',
     component: PermissionDetailViewComponent,
     canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.PERM_MANAGEMENT ] }
-  }
+  }, {
+    path: 'usage_statistics',
+    component: UsageStatisticsComponent
+  },
 ];
 
 @NgModule({

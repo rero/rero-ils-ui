@@ -209,6 +209,12 @@ export const MENU_APP: IMenuParent[] = [
         }
       },
       {
+        name: 'Usage statistics',
+        router_link: ['/', 'usage_statistics'],
+        attributes: { id: 'usage-stat-list-menu' },
+        extras: { iconClass: 'fa fa-area-chart' }
+      },
+      {
         name: 'Fees',
         router_link: ['/', 'records', 'patron_transaction_events'],
         query_params: {
