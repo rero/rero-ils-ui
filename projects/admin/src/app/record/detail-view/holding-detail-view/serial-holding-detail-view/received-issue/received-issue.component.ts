@@ -75,6 +75,7 @@ export class ReceivedIssueComponent implements OnInit {
    * @param _recordPermissionService - RecordPermissionService
    * @param _recordUiService: RecordUiService
    * @param _issueService: IssueService
+   * @param _userService: UserService
    */
   constructor(
     private _holdingService: HoldingsService,
@@ -116,8 +117,8 @@ export class ReceivedIssueComponent implements OnInit {
    * @return the delete info message use hover the delete button
    */
   deleteInfoMessage(issue: any): string {
-    return (issue && issue.permissions && issue.permissions.delete && issue.permissions.delete.reasons)
-      ? this._recordPermissionService.generateDeleteMessage(issue.permissions.delete.reasons)
+    return (this.recordPermissions?.delete?.reasons)
+      ? this._recordPermissionService.generateDeleteMessage(this.recordPermissions.delete.reasons)
       : '';
   }
 
