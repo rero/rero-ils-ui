@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,9 +20,8 @@ import { RecordPermissions } from '@app/admin/classes/permissions';
 import { HoldingsService, PredictionIssue } from '@app/admin/service/holdings.service';
 import { OperationLogsService } from '@app/admin/service/operation-logs.service';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
-import { IPermissions, IssueItemStatus, PERMISSIONS, PermissionsService } from '@rero/shared';
+import { Record, RecordService } from '@rero/ng-core';
+import { IPermissions, IssueItemStatus, PERMISSIONS, PermissionsService, UserService} from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
 
 
@@ -48,6 +48,8 @@ export class SerialHoldingDetailViewComponent implements OnInit {
   permissions: IPermissions = PERMISSIONS;
   /** record permissions */
   recordPermissions: RecordPermissions;
+  /** flag to know if the creation issue buttons should be displayed. */
+  allowIssueCreation: boolean = false;
 
   /** received issue counter : number of received issue to load/display */
   private _receivedIssueCounter = 5;
@@ -56,90 +58,23 @@ export class SerialHoldingDetailViewComponent implements OnInit {
 
 
   // GETTER & SETTER ==========================================================
-  /** Is operation log enabled */
+  /** Is operation log enabled. */
   get isEnabledOperationLog(): boolean {
     return this._operationLogsService.isLogVisible('holdings');
   }
 
-  /**
-   * Show or hide local fields tab
-   * @return boolean - if False, hide the local fields tab
-   */
-  get showhideLocalFieldsTab(): boolean {
-    return this._permissionsService.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE]);
-  }
-
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param _holdingService: HoldingService
-   * @param _recordService: RecordService
-   * @param _translateService: TranslateService,
-   * @param _toastrService: ToastrService
-   * @param _operationLogsService: OperationLogsService
-   * @param _permissionsService: PermissionsService
-   */
-  constructor(
-    private _holdingService: HoldingsService,
-    private _recordService: RecordService,
-    private _translateService: TranslateService,
-    private _toastrService: ToastrService,
-    private _operationLogsService: OperationLogsService,
-    private _permissionsService: PermissionsService
-  ) {}
-
-  /**
-   * Init hook
-   */
-  ngOnInit(): void {
-    this._loadPrediction();
-    this._loadReceivedItems();
-  }
-
-  /**
-   * Load prediction issues corresponding to the holding.
-   */
-  private _loadPrediction() {
-    this._holdingService.getHoldingPatternPreview(this.holding.id, this._predictionIssueCounter).subscribe(
-      (predictions) => {
-        this.predictionsItems = predictions;
-      }
-    );
-  }
-
-  /**
-   * Load received items corresponding to the holding.
-   */
-  private _loadReceivedItems() {
-    this._recordService
-      .getRecords(
-        'items',
-        `holding.pid:${this.holding.id} AND NOT type:provisional`,
-        1,
-        this._receivedIssueCounter,
-        [], {}, null,
-        '-issue_sort_date'
-      ).subscribe((result: Record) => {
-        this.totalReceivedItems = this._recordService.totalHits(result.hits.total);
-        this.receivedItems = result.hits.hits;
-      });
-  }
-
-  /**
-   * Action to perform when user click on a showMore link
-   * @param type - string: the type of item to load more
-   * @param increment - number: the number to data to load
-   */
-  showMore(type: string, increment= 10) {
-    if (type === 'received') {
-      this._receivedIssueCounter += increment;
-      this._loadReceivedItems();
-    }
-    if (type === 'prediction') {
-      this._predictionIssueCounter += increment;
-      this._loadPrediction();
-    }
+  /** Determine if the `Local fields` tab should be displayed or not. */
+  get displayLocalFieldsTab(): boolean {
+    /* DEV NOTES :: Why not using the `[permissions]` directive:
+         As the permissions directive is set on a <tab> element and this <tab> is
+         also a directive ; the tab content if correctly removed but not the
+         related tabset entry that is not DOM related. Using `*ngIf` the <tab>
+         directive code isn't called and not tabset entry is created.
+     */
+    return this._permissionsService.canAccess([
+      PERMISSIONS.LOFI_SEARCH,
+      PERMISSIONS.LOFI_CREATE
+    ]);
   }
 
   /**
@@ -154,8 +89,55 @@ export class SerialHoldingDetailViewComponent implements OnInit {
         {counter: additionalIssueCounter});
   }
 
+
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
-   * Delete an holding issue.
+   * Constructor
+   * @param _holdingService: HoldingService
+   * @param _recordService: RecordService
+   * @param _translateService: TranslateService,
+   * @param _toastrService: ToastrService
+   * @param _operationLogsService: OperationLogsService
+   * @param _permissionsService: PermissionsService
+   * @param _userService: UserService
+   */
+  constructor(
+    private _holdingService: HoldingsService,
+    private _recordService: RecordService,
+    private _translateService: TranslateService,
+    private _toastrService: ToastrService,
+    private _operationLogsService: OperationLogsService,
+    private _permissionsService: PermissionsService,
+    private _userService: UserService
+  ) {}
+
+  /** OnInit hook */
+  ngOnInit(): void {
+    this._loadPrediction();
+    this._loadReceivedItems();
+    this._computePermissions();
+  }
+
+
+  // COMPONENT FUNCTIONS ======================================================
+  /**
+   * Action to perform when user click on a showMore link
+   * @param type - string: the type of item to load more
+   * @param increment - number: the number to data to load
+   */
+  showMore(type: string, increment: number = 10) {
+    if (type === 'received') {
+      this._receivedIssueCounter += increment;
+      this._loadReceivedItems();
+    }
+    if (type === 'prediction') {
+      this._predictionIssueCounter += increment;
+      this._loadPrediction();
+    }
+  }
+
+  /**
+   * Delete an issue.
    * @param item: The issue item to delete
    */
   deleteIssue(item) {
@@ -164,7 +146,7 @@ export class SerialHoldingDetailViewComponent implements OnInit {
 
   /**
    * Quick received issue
-   * This function allow to received the next predicted issue for a serial holding
+   * This function allow to receive the next predicted issue for a serial holding
    */
   quickIssueReceive() {
     this._holdingService.quickReceivedIssue(this.holding).subscribe(
@@ -184,6 +166,42 @@ export class SerialHoldingDetailViewComponent implements OnInit {
         this._toastrService.error(message, this._translateService.instant('Issue creation failed!'));
       }
     );
+  }
+
+  // COMPONENT PRIVATE FUNCTIONS ==============================================
+  /**
+   * Check permissions to know if current user could manage issue creation.
+   *   To be able to create an issue, the current logged user must have
+   *   ITEM_CREATE permission and should be logged on the same library than
+   *   the holding library owner
+   */
+  private _computePermissions(): void {
+    if (this._permissionsService.canAccess(PERMISSIONS.ITEM_CREATE)) {
+      this.allowIssueCreation = this._userService.user.currentLibrary === this.holding.metadata.library.pid;
+    }
+  }
+
+  /** Load prediction issues corresponding to the holding. */
+  private _loadPrediction() {
+    this._holdingService
+      .getHoldingPatternPreview(this.holding.id, this._predictionIssueCounter)
+      .subscribe(predictions => this.predictionsItems = predictions);
+  }
+
+  /** Load received items corresponding to the holding. */
+  private _loadReceivedItems() {
+    this._recordService
+      .getRecords(
+        'items',
+        `holding.pid:${this.holding.id} AND NOT type:provisional`,
+        1,
+        this._receivedIssueCounter,
+        [], {}, null,
+        '-issue_sort_date'
+      ).subscribe((result: Record) => {
+        this.totalReceivedItems = this._recordService.totalHits(result.hits.total);
+        this.receivedItems = result.hits.hits;
+      });
   }
 }
 
