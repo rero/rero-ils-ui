@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
+import { AbstractCanDeactivateComponent, RecordService } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
 import { combineLatest } from 'rxjs';
 import { EditorService } from '../../../service/editor.service';
@@ -31,7 +31,10 @@ import { EditorService } from '../../../service/editor.service';
 /**
  * Show Document Editor with a specific input: EAN import.
  */
-export class DocumentEditorComponent {
+export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
+
+  /** Can deactivate from editor component */
+  canDeactivate: boolean = false;
 
   // initial editor values
   model = {};
@@ -50,7 +53,7 @@ export class DocumentEditorComponent {
     private _translateService: TranslateService,
     private _route: ActivatedRoute,
     private _recordService: RecordService
-  ) { }
+  ) { super() }
 
   /**
    * Retrieve information about an item regarding its EAN code using EditorService

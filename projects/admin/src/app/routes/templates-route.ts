@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2022 RERO
- * Copyright (C) 2020-2022 UCLouvain
+ * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { ActionStatus, DetailComponent, EditorComponent, JSONSchema7, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { ActionStatus, ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, Subscriber } from 'rxjs';
-import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../guard/can-access.guard';
+import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
 import { PermissionGuard } from '../guard/permission.guard';
 import { TemplatesBriefViewComponent } from '../record/brief-view/templates-brief-view.component';
 import { TemplateDetailViewComponent } from '../record/detail-view/template-detail-view/template-detail-view.component';
@@ -44,7 +43,7 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
       children: [
         { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.TMPL_ACCESS, PERMISSIONS.TMPL_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
         { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } }
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } }
       ],
       data: {
         types: [

@@ -22,7 +22,7 @@ import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CountryCodeTranslatePipe } from '@app/admin/pipe/country-code-translate.pipe';
 import { TranslateService } from '@ngx-translate/core';
-import { ApiService, cleanDictKeys, RecordService, removeEmptyValues, UniqueValidator } from '@rero/ng-core';
+import { AbstractCanDeactivateComponent, ApiService, RecordService, UniqueValidator, cleanDictKeys, removeEmptyValues } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
@@ -35,7 +35,7 @@ import { LibraryFormService } from './library-form.service';
   templateUrl: './library.component.html',
   styleUrls: ['./library.component.scss']
 })
-export class LibraryComponent implements OnInit, OnDestroy {
+export class LibraryComponent extends AbstractCanDeactivateComponent implements OnInit, OnDestroy {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** The current library. */
@@ -51,6 +51,9 @@ export class LibraryComponent implements OnInit, OnDestroy {
   rolloverAccountTransferOptions = [];
   availableCommunicationLanguagesOptions = [];
   countryIsoCodesOptions = [];
+
+  /** Can deactivate guard */
+  public canDeactivate: boolean = false;
 
   /** Form build event subscription to release the memory. */
   private eventForm: Subscription;
@@ -102,7 +105,9 @@ export class LibraryComponent implements OnInit, OnDestroy {
     private translateService: TranslateService,
     private location: Location,
     private countryCodeTranslatePipe: CountryCodeTranslatePipe
-  ) { }
+  ) {
+    super();
+  }
 
   /** NgOnInit hook. */
   ngOnInit() {
@@ -150,6 +155,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
 
   /** Form submission. */
   onSubmit() {
+    this.canDeactivate = true;
     this._cleanFormValues(this.libraryForm.getValues());
     this.library.update(this.libraryForm.getValues());
     if (this.library.pid) {
@@ -186,6 +192,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
 
   /** Cancel the edition. */
   onCancel(event) {
+    this.canDeactivate = true;
     event.preventDefault();
     this.location.back();
     this.libraryForm.build();

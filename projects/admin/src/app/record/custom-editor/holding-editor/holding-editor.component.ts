@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { removeEmptyValues } from '@rero/ng-core';
+import { AbstractCanDeactivateComponent, removeEmptyValues } from '@rero/ng-core';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { EditorService } from '../../../service/editor.service';
@@ -31,7 +31,10 @@ import { PredictionIssue } from '../../../service/holdings.service';
   templateUrl: './holding-editor.component.html',
   styleUrls: ['./holding-editor.component.scss']
 })
-export class HoldingEditorComponent implements OnInit, OnDestroy {
+export class HoldingEditorComponent extends AbstractCanDeactivateComponent implements OnInit, OnDestroy {
+
+  /** Can deactivate from editor component */
+  canDeactivate: boolean = false;
 
   /** Initial editor values */
   model = {};
@@ -59,7 +62,9 @@ export class HoldingEditorComponent implements OnInit, OnDestroy {
    * Constructor.
    * @param _editorService - the local editor service
    */
-  constructor(private _editorService: EditorService) { }
+  constructor(private _editorService: EditorService) {
+    super();
+  }
 
   /** Component initialization. */
   ngOnInit() {
@@ -110,5 +115,13 @@ export class HoldingEditorComponent implements OnInit, OnDestroy {
     } else {
       this.serialPatternsTemplate = null;
     }
+  }
+
+  /**
+   * Can deactivate changed on editor
+   * @param activate - boolean
+   */
+  canDeactivateChanged(activate: boolean): void {
+    this.canDeactivate = activate;
   }
 }

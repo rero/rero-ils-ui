@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020 RERO
+  Copyright (C) 2020-2023 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
 
 <div class="row">
   <div [ngClass]="{'col-md-9 col-xl-8': serialPatternsTemplate != null, 'col-12': serialPatternsTemplate == null}" role="main">
-    <ng-core-editor [model]="model" (modelChange)="modelChanged($event)"></ng-core-editor>
+    <ng-core-editor [model]="model" (modelChange)="modelChanged($event)" (canDeactivateChange)="canDeactivateChanged($event)"></ng-core-editor>
   </div>
   <div *ngIf="serialPatternsTemplate != null" class="col-md-3 col-xl-4 bd-sidebar">
     <div class="card">

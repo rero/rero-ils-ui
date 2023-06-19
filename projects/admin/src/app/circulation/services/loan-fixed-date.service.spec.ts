@@ -64,14 +64,14 @@ describe('LoanFixedDateService', () => {
   it('should return undefined, if the stored date is less than the current date', () => {
     const date = new Date();
     date.setTime(date.getTime() - 600000000);
-    const dateString = date.toLocaleDateString();
+    const dateString = date.toLocaleDateString('en');
     service.set(dateString);
     expect(service.get()).toBeUndefined();
   });
 
   it('should delete the stored value', () => {
     const date = new Date();
-    service.set(date.toLocaleDateString());
+    service.set(date.toLocaleDateString('en'));
     expect(service.hasValue()).toBeTrue();
     service.remove();
     expect(service.hasValue()).toBeFalse();
@@ -84,8 +84,10 @@ describe('LoanFixedDateService', () => {
     // Set a new date with offset
     const date = new Date();
     date.setTime(date.getTime() + 600000000);
-    const dateString = date.toLocaleDateString();
+    const dateString = date.toLocaleDateString('en');
+    console.log(dateString, service.hasValue());
     service.set(dateString);
+    console.log(service.hasValue(), service.get());
     expect(service.get()).toEqual(dateString);
     librarySwitchService.switch('1');
     expect(service.get()).toBeUndefined();

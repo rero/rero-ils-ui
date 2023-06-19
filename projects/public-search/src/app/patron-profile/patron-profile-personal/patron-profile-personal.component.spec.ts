@@ -89,7 +89,7 @@ describe('PatronProfilePersonalComponent', () => {
     expect(dd[5].textContent).toContain('+39324993588');
     expect(dd[6].textContent).toContain('reroilstest+simonetta@gmail.com');
     expect(dd[7].textContent).toContain('2010023488');
-    expect(dd[8].textContent).toContain('1/1/24');
+    expect(dd[8].textContent).toContain('01/01/2024');
     expect(dd[9].textContent).toContain(
       'The loan history is saved for a maximum of six months. It is visible to you and the library staff.'
     );
