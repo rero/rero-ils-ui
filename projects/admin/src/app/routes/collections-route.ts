@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2022 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,12 +17,14 @@
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import {
-  DetailComponent, EditorComponent, extractIdOnRef, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface
+  ComponentCanDeactivateGuard,
+  DetailComponent, EditorComponent,
+  JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface
 } from '@rero/ng-core';
-import { ILibrary, IPatron, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { ILibrary, IPatron, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../guard/can-access.guard';
+import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
 import { PermissionGuard } from '../guard/permission.guard';
 import { CollectionBriefViewComponent } from '../record/brief-view/collection-brief-view.component';
 import { CollectionDetailViewComponent } from '../record/detail-view/collection-detail-view/collection-detail-view.component';
@@ -46,8 +48,8 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
       children: [
         { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.COLL_ACCESS, PERMISSIONS.COLL_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
         { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
-        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.COLL_CREATE ] } }
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
+        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { permissions: [ PERMISSIONS.COLL_CREATE ] } }
       ],
       data: {
         types: [

@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2022 RERO
- * Copyright (C) 2021-2022 UCLouvain
+ * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,10 +18,10 @@
 import { getCurrencySymbol } from '@angular/common';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { EditorComponent, JSONSchema7, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, EditorComponent, JSONSchema7, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
-import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../../guard/can-access.guard';
+import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
 import { BaseRoute } from '../../routes/base-route';
 import { OrganisationService } from '../../service/organisation.service';
 import { IsBudgetActiveGuard } from './guards/is-budget-active.guard';
@@ -38,7 +38,7 @@ export class ReceiptLinesRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard, IsBudgetActiveGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } }
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard, IsBudgetActiveGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } }
       ],
       data: {
         types: [

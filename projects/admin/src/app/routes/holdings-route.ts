@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2022 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { DetailComponent, JSONSchema7, Record, RecordService, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, DetailComponent, JSONSchema7, Record, RecordService, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../guard/can-access.guard';
+import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
 import { PermissionGuard } from '../guard/permission.guard';
 import { HoldingEditorComponent } from '../record/custom-editor/holding-editor/holding-editor.component';
 import { HoldingDetailViewComponent } from '../record/detail-view/holding-detail-view/holding-detail-view.component';
@@ -43,8 +43,8 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
         { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
-        { path: 'edit/:pid', component: HoldingEditorComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
-        { path: 'new', component: HoldingEditorComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.HOLD_CREATE ] } }
+        { path: 'edit/:pid', component: HoldingEditorComponent, canActivate: [ CanAccessGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
+        { path: 'new', component: HoldingEditorComponent, canActivate: [ PermissionGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { permissions: [ PERMISSIONS.HOLD_CREATE ] } }
       ],
       data: {
         types: [
