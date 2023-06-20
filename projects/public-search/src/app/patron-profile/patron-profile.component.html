@@ -32,6 +32,9 @@
           <ng-template tabHeading>
             {{ 'Loans' | translate }}
             <span class="badge badge-info">{{ tabs.loan.count }}</span>
+            <span class="badge badge-warning font-weight-normal ml-1" *ngIf="loansFeesTotal > 0" title="{{ 'Fees to date' | translate }}">
+              {{ loansFeesTotal | currency:patron.organisation.currency:'symbol' }}
+            </span>
           </ng-template>
           <public-search-patron-profile-loans [count]="tabs.loan.count"></public-search-patron-profile-loans>
         </tab>

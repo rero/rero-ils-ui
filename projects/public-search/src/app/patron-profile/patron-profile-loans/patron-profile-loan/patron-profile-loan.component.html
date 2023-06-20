@@ -47,7 +47,12 @@
           {{ record.metadata.extension_count }}
           {{ record.metadata.extension_count | i18nPlural: {'=1': 'renewal', 'other': 'renewals'} | translate }}
         </div>
-        <div *ngIf="record.metadata.is_late" class="badge badge-warning font-weight-normal" translate>overdue</div>
+        <div *ngIf="record.metadata.overdue">
+          <span class="badge badge-warning font-weight-normal" translate>overdue</span>
+          <span *ngIf="fees > 0" title="{{ 'Fess to date' | translate }}">
+            {{ fees | currency:organisation.currency:'symbol' }}
+          </span>
+        </div>
         <div *ngIf="isDueSoon" class="badge badge-secondary font-weight-normal" translate>approching due date</div>
       </div>
       <!-- ACTION BUTTONS COLUMN ========================================== -->
