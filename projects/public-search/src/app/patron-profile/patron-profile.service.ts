@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,6 +28,9 @@ export class PatronProfileService {
   /** Cancel event */
   private _cancelRequestEvent = new Subject<string>();
 
+  /** Fees event */
+  private _loanFeesEvent = new Subject<number>();
+
   /** Get tab event observable */
   get tabsEvent$(): Observable<ITabEvent> {
     return this._tabsEvent.asObservable();
@@ -43,9 +46,19 @@ export class PatronProfileService {
     return this._cancelRequestEvent;
   }
 
+  /** @returns Observable of the loan fees event */
+  get loanFeesEvent$(): Observable<number> {
+    return this._loanFeesEvent.asObservable();
+  }
+
   /** Cancel request */
   cancelRequest(loanPid: string): void {
     this._cancelRequestEvent.next(loanPid);
+  }
+
+  /** Emit the loan fees */
+  loanFees(fees: number): void {
+    this._loanFeesEvent.next(fees);
   }
 }
 

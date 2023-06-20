@@ -16,7 +16,8 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Error, Record, RecordService } from '@rero/ng-core';
+import { LoanOverduePreview } from '@app/admin/classes/loans';
+import { ApiService, Error, Record, RecordService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -30,10 +31,12 @@ export class LoanApiService extends BaseApi {
    * Constructor
    * @param _recordService - RecordService
    * @param _httpClient - HttpClient
+   * @param _apiService - ApiService
    */
   constructor(
     private _recordService: RecordService,
-    private _httpClient: HttpClient
+    private _httpClient: HttpClient,
+    private _apiService: ApiService
   ) {
     super();
   }
@@ -122,6 +125,17 @@ export class LoanApiService extends BaseApi {
             : response;
         })
       );
+  }
+
+  /**
+   * Get the preview overdue fees related to a specific loan
+   * @param loanPid - string: the Loan pid
+   * @return Observable of LoanOverduePreview
+   */
+  getPreviewOverdue(loanPid: string): Observable<LoanOverduePreview> {
+    const loanApiUrl = this._apiService.getEndpointByType('loan');
+    const url = `${loanApiUrl}/${loanPid}/overdue/preview`;
+    return this._httpClient.get<LoanOverduePreview>(url);
   }
 
   /**

@@ -44,6 +44,9 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   /** Observable subscription */
   private _subscription = new Subscription();
 
+  /** Fees on loans */
+  loansFeesTotal = 0;
+
   /** Fee amount total */
   feeTotal = 0;
 
@@ -110,6 +113,12 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
 
   /** OnInit hook */
   ngOnInit(): void {
+    this.feeTotal = 0;
+    this._subscription.add(
+      this._patronProfileService.loanFeesEvent$.subscribe((fees: number) =>
+        this.loansFeesTotal = +((this.loansFeesTotal + fees).toFixed(2))
+      )
+    );
     this.user = this._userService.user;
     if (this.user.isAuthenticated && this.user.isPatron) {
       this._subscription.add(

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,13 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnInit } from '@angular/core';
+import { LoanOverduePreview } from '@app/admin/classes/loans';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
+import { IOrganisation } from '@rero/shared';
 import moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs/operators';
 import { CanExtend, LoanApiService } from '../../../api/loan-api.service';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
+import { PatronProfileService } from '../../patron-profile.service';
 
 @Component({
   selector: 'public-search-patron-profile-loan',
@@ -47,8 +49,15 @@ export class PatronProfileLoanComponent implements OnInit {
     can: false,
     reasons: []
   };
+  /** Fees */
+  fees: number = 0;
 
   // GETTER & SETTER ==========================================================
+  /** Get organisation for current patron */
+  get organisation(): IOrganisation {
+    return this._patronProfileMenuService.currentPatron.organisation;
+  }
+
   /** Get current viewcode */
   get viewcode(): string {
     return this._patronProfileMenuService.currentPatron.organisation.code;
@@ -67,12 +76,14 @@ export class PatronProfileLoanComponent implements OnInit {
    * @param _translateService - TranslateService
    * @param _toastService - ToastrService
    * @param _patronProfileMenuService - PatronProfileMenuService
+   * @param _patronProfileService - PatronProfileService
    */
   constructor(
     private _loanApiService: LoanApiService,
     private _translateService: TranslateService,
     private _toastService: ToastrService,
-    private _patronProfileMenuService: PatronProfileMenuService
+    private _patronProfileMenuService: PatronProfileMenuService,
+    private _patronProfileService: PatronProfileService
   ) {}
 
   /** OnInit hook */
@@ -80,6 +91,14 @@ export class PatronProfileLoanComponent implements OnInit {
     this._loanApiService
       .canExtend(this.record.metadata.pid)
       .subscribe((response: CanExtend) => this.canExtend = response);
+    if (this.record.metadata.overdue) {
+      this._loanApiService
+        .getPreviewOverdue(this.record.metadata.pid)
+        .subscribe((response: LoanOverduePreview) => {
+          this.fees = +response.total.toFixed(2);
+          this._patronProfileService.loanFees(this.fees);
+        });
+    }
   }
 
   // COMPONENTS FUNCTIONS =====================================================
