@@ -15,9 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
-import { CanExtend } from '../../api/loan-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
 
 @Component({
@@ -53,12 +51,10 @@ export class PatronProfileDocumentComponent implements OnInit {
   /**
    * Constructor
    * @param _patronProfileMenuService - PatronProfileMenuService
-   * @param _translateService - TranslateService
    * @param _recordService - RecordService
    */
   constructor(
     private _patronProfileMenuService: PatronProfileMenuService,
-    private _translateService: TranslateService,
     private _recordService: RecordService
   ) {}
 

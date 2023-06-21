@@ -15,22 +15,24 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<a href="/{{ viewcode }}/documents/{{ record.metadata.document.pid }}" class="d-block">
-  {{ record.metadata.document.title | mainTitle }}
-</a>
-<shared-contribution [contributions]="document?.contribution" [view]="viewcode"></shared-contribution>
-<div class="container mt-2 pl-0" *ngIf="record.metadata" [collapse]="!showAdditionalInformation" [isAnimated]="isAnimated">
-  <dl class="row">
-    <!-- CALL NUMBER -->
-    <ng-container *ngIf="callNumbers as formattedCallNumbers">
-      <dt class="col-sm-6 col-md-4 col-lg-3 label-title" translate>Call number</dt>
-      <dd class="col-sm-6 col-md-8 col-lg-9">{{ formattedCallNumbers }}</dd>
-    </ng-container>
-    <!-- ENUMERATION AND CHRONOLOGY -->
-    <ng-container *ngIf="record.metadata.item.enumerationAndChronology">
-      <dt class="col-sm-6 col-md-4 col-lg-3 label-title" translate>Unit</dt>
-      <dd class="col-sm-6 col-md-8 col-lg-9">{{ record.metadata.item.enumerationAndChronology }}</dd>
-    </ng-container>
-  </dl>
-  <ng-content select="[additional-metadata]"></ng-content>
-</div>
+<ng-container *ngIf="document">
+  <a href="/{{ viewcode }}/documents/{{ record.metadata.document.pid }}" class="d-block">
+    {{ record.metadata.document.title | mainTitle }}
+  </a>
+  <shared-contribution [contributions]="document?.contribution" [view]="viewcode" [limitRecord]="3"></shared-contribution>
+  <div class="container mt-2 pl-0" *ngIf="record.metadata" [collapse]="!showAdditionalInformation" [isAnimated]="isAnimated">
+    <dl class="row">
+      <!-- CALL NUMBER -->
+      <ng-container *ngIf="callNumbers as formattedCallNumbers">
+        <dt class="col-sm-6 col-md-4 col-lg-3 label-title" translate>Call number</dt>
+        <dd class="col-sm-6 col-md-8 col-lg-9">{{ formattedCallNumbers }}</dd>
+      </ng-container>
+      <!-- ENUMERATION AND CHRONOLOGY -->
+      <ng-container *ngIf="record.metadata.item.enumerationAndChronology">
+        <dt class="col-sm-6 col-md-4 col-lg-3 label-title" translate>Unit</dt>
+        <dd class="col-sm-6 col-md-8 col-lg-9">{{ record.metadata.item.enumerationAndChronology }}</dd>
+      </ng-container>
+    </dl>
+    <ng-content select="[additional-metadata]"></ng-content>
+  </div>
+</ng-container>
