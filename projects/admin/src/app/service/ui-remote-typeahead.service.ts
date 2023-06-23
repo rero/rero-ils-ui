@@ -32,8 +32,6 @@ export class UiRemoteTypeaheadService extends RemoteTypeaheadService {
    * Constructor
    * @param _recordService - RecordService
    * @param _apiService - APIService
-   * @param _injector - Injector, use of the injector to enable retrieval
-   *                    of class by name in Dependency injection
    */
   constructor(
     protected _recordService: RecordService,
@@ -75,7 +73,7 @@ export class UiRemoteTypeaheadService extends RemoteTypeaheadService {
    */
   getSuggestions(options: any, query: string, numberOfSuggestions: number, currentPid: string): Observable<Array<SuggestionMetadata>> {
     return (options.hasOwnProperty('type') && options.type in this._typeaheadTypes)
-    ? this._typeaheadTypes[options.type].getSuggestions(options, query, numberOfSuggestions)
-    : super.getSuggestions(options, query, numberOfSuggestions, currentPid);
+      ? this._typeaheadTypes[options.type].getSuggestions(options, query, numberOfSuggestions)
+      : super.getSuggestions(options, query, numberOfSuggestions, currentPid);
   }
 }
