@@ -184,6 +184,7 @@ import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 import { UserCurrentLibraryInterceptor } from './interceptor/user-current-library.interceptor';
+import { EntityTypeaheadComponent } from './record/formly/type/entity-typeahead/entity-typeahead.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -306,7 +307,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         CirculationStatsComponent,
         ItemSwitchLocationStandaloneComponent,
         ItemSwitchLocationComponent,
-        IssueEmailComponent
+        IssueEmailComponent,
+        EntityTypeaheadComponent
     ],
     imports: [
       AppRoutingModule,
@@ -326,7 +328,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
       FormlyModule.forRoot({
         types: [
           {name: 'cipo-pt-it', component: CipoPatronTypeItemTypeComponent},
-          {name: 'account-select', component: SelectAccountEditorWidgetComponent}
+          {name: 'account-select', component: SelectAccountEditorWidgetComponent},
+          {name: 'entityTypeahead', component: EntityTypeaheadComponent}
         ],
         wrappers: [
           {name: 'user-id', component: UserIdComponent},
