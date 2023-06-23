@@ -1,0 +1,81 @@
+<!--
+  RERO angular core
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div *ngIf="!formControl.value; else metadataTemplate" class="input-group w-100">
+  <!-- Entity type filter selection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <div *ngIf="entityTypeFilters" class="input-group-prepend">
+    <select class="form-control input-group-text" (change)="selectEntityType($event.target.value)">
+      <option *ngFor="let option of entityTypeFilters"
+              [value]="option.value"
+              [selected]="option.selected"
+      >{{ option.label | translate }}</option>
+    </select>
+  </div>
+  <!-- autocomplete/typeahead ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <input [(ngModel)]="searchTerm"
+         [typeahead]="suggestion$"
+         [typeaheadAsync]="true"
+         [typeaheadMinLength]="2"
+         [typeaheadWaitMs]="250"
+         [typeaheadLatinize]="true"
+         [optionsListTemplate]="customListTemplate"
+         (typeaheadLoading)="isSuggestionsLoading = $event"
+         (typeaheadOnSelect)="typeaheadOnSelect($event)"
+         class="form-control"/>
+  <!-- Icon ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <div class="input-group-append">
+    <span class="input-group-text">
+      <i class="fa fa-search" class="fa" [ngClass]="{
+        'fa-search': !isSuggestionsLoading,
+        'fa-spinner fa-spin': isSuggestionsLoading
+      }"></i>
+    </span>
+  </div>
+</div>
+
+
+<ng-template #customListTemplate let-matches="matches" let-query="query" let-typeaheadTemplateMethods>
+  <div class="d-flex">
+    <div *ngFor="let section of suggestionSections; let idx=index" class="dropdown-column" [style]="{order: idx}">
+      <div *ngFor="let suggestion of section"
+           class="dropdown-item d-flex flex-row"
+           [class.suggestionGroupHeader]="suggestion.isHeader()"
+      >
+        <div (click)="typeaheadTemplateMethods.selectMatch(suggestion, $event)" class="dropdown-item-content">
+          <label>{{ suggestion.value }}</label>
+          <span class="dropdown-item-content-description" *ngIf="suggestion.item.description">{{ suggestion.item.description }}</span>
+        </div>
+        <span class="dropdown-item-actions">
+          <a *ngIf="suggestion.item.externalLink" target="_blank" [href]="suggestion.item.externalLink">
+            <i class="fa fa-external-link"></i>
+          </a>
+        </span>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #metadataTemplate>
+  <div class="py-1" *ngIf="valueAsHTML$ | async as valueAsHTML">
+    <span [innerHTML]="valueAsHTML"></span>
+    <button class="btn btn-link text-secondary btn-sm" type="button" (click)="clear()">
+      <i class="fa fa-trash"></i>
+    </button>
+  </div>
+</ng-template>
+
