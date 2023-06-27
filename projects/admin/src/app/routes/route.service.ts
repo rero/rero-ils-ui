@@ -16,9 +16,9 @@
  */
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { EntitiesRoute } from '@app/admin/routes/entities-route';
 import { TranslateService } from '@ngx-translate/core';
-import { ActionStatus, RouteCollectionService } from '@rero/ng-core';
-import { Observable, of } from 'rxjs';
+import { RouteCollectionService } from '@rero/ng-core';
 import { ReceiptLinesRoute } from '../acquisition/routes/receipt-lines-route';
 import { ReceiptsRoute } from '../acquisition/routes/receipts-route';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
@@ -28,7 +28,7 @@ import { OrdersRoute as AcqOrdersRoute } from '../acquisition/routes/orders-rout
 import { BudgetsRoute as AcqBudgetsRoute } from '../acquisition/routes/budgets-route';
 import { CirculationPoliciesRoute } from './circulation-policies-route';
 import { CollectionsRoute } from './collections-route';
-import { CorporateBodiesRoute } from './corporate-bodies-route';
+import { EntitiesRemoteRoute } from './entities-remote-route';
 import { DocumentsRoute } from './documents-route';
 import { HoldingsRoute } from './holdings-route';
 import { IllRequestsRoute } from './ill-requests-route';
@@ -44,7 +44,7 @@ import { OrganisationsRoute } from './organisations-route';
 import { PatronTransactionEventsRoute } from './patron-transaction-events-route';
 import { PatronTypesRoute } from './patron-types-route';
 import { PatronsRoute } from './patrons-route';
-import { PersonsRoute } from './persons-route';
+import { EntitiesLocalRoute } from './entities-local-route';
 import { RouteToolService } from './route-tool.service';
 import { TemplatesRoute } from './templates-route';
 import { VendorsRoute } from './vendors-route';
@@ -84,15 +84,16 @@ export class RouteService {
       .addRoute(new OrganisationsRoute(this._routeToolService))
       .addRoute(new PatronsRoute(this._routeToolService))
       .addRoute(new PatronTypesRoute(this._routeToolService))
-      .addRoute(new PersonsRoute(this._routeToolService))
       .addRoute(new VendorsRoute(this._routeToolService))
       .addRoute(new TemplatesRoute(this._routeToolService))
       .addRoute(new CollectionsRoute(this._routeToolService))
-      .addRoute(new CorporateBodiesRoute(this._routeToolService))
       .addRoute(new IllRequestsRoute(this._routeToolService))
       .addRoute(new LocalFieldsRoute(this._routeToolService))
       .addRoute(new LoansRoute(this._routeToolService))
       .addRoute(new PatronTransactionEventsRoute(this._routeToolService))
+      .addRoute(new EntitiesRoute(this._routeToolService))
+      .addRoute(new EntitiesRemoteRoute(this._routeToolService))
+      .addRoute(new EntitiesLocalRoute(this._routeToolService))
       // Route from acquisition modules
       .addRoute(new AcqBudgetsRoute(this._routeToolService))
       .addRoute(new AcqAccountsRoute(this._routeToolService))

@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -121,17 +122,11 @@ export const MENU_APP: IMenuParent[] = [
         }
       },
       {
-        name: 'Persons',
-        router_link: ['/', 'records', 'persons'],
-        attributes: { id: 'persons-menu' },
-        extras: { iconClass: 'fa fa-user' }
-      },
-      {
-        name: 'Corporate bodies',
-        router_link: ['/', 'records', 'corporate-bodies'],
-        attributes: { id: 'corporate-bodies-menu' },
-        extras: { iconClass: 'fa fa-building' }
-      },
+        name: 'Entities',
+        router_link: ['/', 'records', 'entities'],
+        attributes: { id: 'entities-menu' },
+        extras: { iconClass: 'fa fa-cubes' }
+      }
     ]
   },
   /** ACQUISITION MENU */

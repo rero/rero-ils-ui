@@ -22,6 +22,7 @@ import { CoreModule, NgVarDirective, Nl2brPipe, RecordModule, TruncateTextPipe }
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ActionButtonComponent } from './component/action-button/action-button.component';
+import { EntityBriefViewRemotePersonComponent } from './component/entities/entity-brief-view/entity-brief-view.person';
 import { LinkPermissionsDirective } from './directive/link-permissions.directive';
 import { NoContentDirective } from './directive/no-content.directive';
 import { PermissionsDirective } from './directive/permissions.directive';
@@ -50,6 +51,11 @@ import { PersonBriefComponent } from './view/brief/person-brief/person-brief.com
 import { ContributionComponent } from './view/contribution/contribution.component';
 import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
+import { EntityBriefViewComponent } from './component/entities/entity-brief-view/entity-brief-view.component';
+import { BriefViewComponent } from './component/core/brief-view/brief-view.component';
+import { ReroTemplateDirective } from './directive/rero-template.directive';
+import { IsArrayPipe } from './pipe/is-array.pipe';
+import { EntityBriefViewRemoteOrganisationComponent } from './component/entities/entity-brief-view/entity-brief-view.organisation';
 
 @NgModule({
     declarations: [
@@ -79,7 +85,13 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
         LinkPermissionsDirective,
         EntityLabelPipe,
         ContributionComponent,
-        NoContentDirective
+        NoContentDirective,
+        EntityBriefViewComponent,
+        BriefViewComponent,
+        ReroTemplateDirective,
+        IsArrayPipe,
+        EntityBriefViewRemoteOrganisationComponent,
+        EntityBriefViewRemotePersonComponent
     ],
     exports: [
         CommonModule,
