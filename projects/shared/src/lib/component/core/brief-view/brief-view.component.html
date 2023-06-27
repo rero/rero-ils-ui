@@ -1,0 +1,58 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<div class="brief-view">
+  <div class="brief-view-icon" *ngIf="iconTemplate">
+    <ng-container *ngTemplateOutlet="iconTemplate"></ng-container>
+  </div>
+  <div class="brief-view-body">
+    <div class="brief-view-title">
+      <ng-container *ngIf="titleTemplate; else defaultTitle">
+        <ng-container *ngTemplateOutlet="titleTemplate; context: { title:title, link:link }"></ng-container>
+      </ng-container>
+    </div>
+    <div class="brief-view-content" *ngIf="contentTemplate">
+      <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+    </div>
+    <div class="brief-view-tags">
+      <ng-container *ngIf="tagsTemplate; else defaultTags">
+        <ng-container *ngTemplateOutlet="tagsTemplate; context: { $implicit: tags }"></ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #defaultTitle>
+  <h5>
+    <ng-container *ngIf="link; else noLink">
+      <a *ngIf="link | isArray; else externalLink" [routerLink]="link">{{ title }}</a>
+      <ng-template #externalLink>
+        <a [href]="link">{{ title }}</a>
+      </ng-template>
+    </ng-container>
+    <ng-template #noLink>{{ title }}</ng-template>
+  </h5>
+</ng-template>
+
+
+<ng-template #defaultTags>
+  <ul *ngIf="tags">
+    <li *ngFor="let tag of tags">{{ tag.label }}</li>
+  </ul>
+</ng-template>
