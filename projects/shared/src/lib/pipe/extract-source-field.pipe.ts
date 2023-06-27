@@ -33,15 +33,15 @@ export class ExtractSourceFieldPipe implements PipeTransform {
   constructor(
     private _appSettingsService: AppSettingsService,
     private _translateService: TranslateService
-    ) {}
+  ) {}
 
   /**
    * Transform
    * @param metadata - metadata of record
    * @param field - string, field name
-   * @return string or null
+   * @return the requested field from metadata for the best possible source.
    */
-  transform(metadata: any, field: string): string | null {
+  transform(metadata: any, field: string): any {
     const contributionsLabel: any = this._appSettingsService.agentLabelOrder;
     const language = this._translateService.currentLang;
     const agentLabelOrder = (language in contributionsLabel)

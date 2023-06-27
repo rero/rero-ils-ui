@@ -14,10 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { Component, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PermissionsService } from '../service/permissions.service';
-import { PermissionsTestingComponent } from './permissions-testing.component';
 import { PermissionsDirective } from './permissions.directive';
+
+@Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'permissions-testing-component',
+  template: `
+  <div id="perm" [permissions]="permissions">Permissions testing</div>`
+})
+class PermissionsTestingComponent {
+  @Input() permissions: string[] | string = [];
+}
+
 
 describe('PermissionDirective', () => {
   let fixture: ComponentFixture<PermissionsTestingComponent>;

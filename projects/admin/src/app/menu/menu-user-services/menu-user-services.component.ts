@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2022 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +21,9 @@ import { MenuService } from '../service/menu.service';
 
 @Component({
   selector: 'admin-menu-user-services',
-  templateUrl: './menu-user-services.component.html'
+  template: `
+    <ng-core-menu-widget [menu]="menu"></ng-core-menu-widget>
+  `
 })
 export class MenuUserServicesComponent implements OnInit {
 

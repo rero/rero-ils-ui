@@ -15,25 +15,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { DetailComponent, RouteInterface } from '@rero/ng-core';
+import { BaseRoute } from './base-route';
 
-import { Pipe, PipeTransform } from '@angular/core';
+export class EntitiesLocalRoute extends BaseRoute implements RouteInterface {
 
-@Pipe({
-  name: 'join',
-  pure: false
-})
-export class JoinPipe implements PipeTransform {
+  /** Route name */
+  readonly name = 'local_entities';
 
   /**
-   * Join all parts of an array as a string.
-   * @param parts: string or string array
-   * @param glue: string to use to join parts.
-   * @return: the joined string
+   * Get Configuration
+   * @return Object
    */
-  transform(parts: string | Array<string>, glue: string = ' '): string {
-    if (!Array.isArray(parts)) {
-      parts = [parts];
-    }
-    return parts.map(part => part.toString()).join(glue);
+  getConfiguration() {
+    return {
+      matcher: (url: any) => this.routeMatcher(url, this.name),
+      children: [
+        { path: 'detail/:pid', component: DetailComponent }
+      ],
+      data: {
+        types: [
+          {
+            key: this.name,
+            index: this.name,
+            label: _('Local entities'),
+          }
+        ]
+      }
+    };
   }
 }
