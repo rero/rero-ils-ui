@@ -16,24 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Pipe, PipeTransform } from '@angular/core';
+@import 'bootstrap/scss/bootstrap';
 
-@Pipe({
-  name: 'join',
-  pure: false
-})
-export class JoinPipe implements PipeTransform {
+::ng-deep .brief-view-tags {
+  ul {
+    display: inline;
+    padding: 0;
 
-  /**
-   * Join all parts of an array as a string.
-   * @param parts: string or string array
-   * @param glue: string to use to join parts.
-   * @return: the joined string
-   */
-  transform(parts: string | Array<string>, glue: string = ' '): string {
-    if (!Array.isArray(parts)) {
-      parts = [parts];
+    li {
+      @extend .badge;
+      @extend .badge-secondary;
     }
-    return parts.map(part => part.toString()).join(glue);
+    li + li {
+      @extend .ml-1;
+    }
+    li.tag-remote {
+      @extend .badge-warning;
+      @extend .mr-1;
+    }
+    li.tag-local {
+      @extend .badge-info;
+      @extend .mr-1;
+    }
+  }
+}
+
+::ng-deep .brief-view-content {
+  @extend .ml-3;
+  font-style: italic;
+
+  p {
+    @extend .mb-2;
   }
 }

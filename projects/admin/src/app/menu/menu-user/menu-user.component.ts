@@ -20,7 +20,9 @@ import { MenuService } from '../service/menu.service';
 
 @Component({
   selector: 'admin-menu-user',
-  templateUrl: './menu-user.component.html'
+  template: `
+    <ng-core-menu-widget [menu]="menu" (clickItem)="eventMenuClick($event)"></ng-core-menu-widget>
+  `
 })
 export class MenuUserComponent implements OnInit {
 
