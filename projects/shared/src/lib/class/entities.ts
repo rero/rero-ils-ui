@@ -16,24 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Pipe, PipeTransform } from '@angular/core';
-
-@Pipe({
-  name: 'join',
-  pure: false
-})
-export class JoinPipe implements PipeTransform {
-
-  /**
-   * Join all parts of an array as a string.
-   * @param parts: string or string array
-   * @param glue: string to use to join parts.
-   * @return: the joined string
-   */
-  transform(parts: string | Array<string>, glue: string = ' '): string {
-    if (!Array.isArray(parts)) {
-      parts = [parts];
-    }
-    return parts.map(part => part.toString()).join(glue);
-  }
+export enum EntityType {
+  ORGANISATION = 'bf:Organisation',
+  PERSON = 'bf:Person',
+  PLACE = 'bf:Place',
+  TEMPORAL = 'bf:Temporal',
+  TOPIC = 'bf:Topic',
+  WORK = 'bf:Work',
 }
