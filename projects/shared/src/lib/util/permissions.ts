@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -56,6 +57,10 @@ export const PERMISSIONS = {
   'DOC_ACCESS': 'doc-access',
   'DOC_CREATE': 'doc-create',
   'DOC_SEARCH': 'doc-search',
+  // Entities
+  'LOCENT_ACCESS': 'locent-access',
+  'LOCENT_CREATE': 'locent-create',
+  'LOCENT_SEARCH': 'locent-search',
   // Holdings
   'HOLD_ACCESS': 'hold-access',
   'HOLD_CREATE': 'hold-create',

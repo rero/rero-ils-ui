@@ -25,13 +25,21 @@ export * from './lib/class/core';
 export * from './lib/class/holdings';
 export * from './lib/class/item-status';
 export * from './lib/class/user';
+
+export * from './lib/component/entities/entity-brief-view/entity-brief-view.component';
 export * from './lib/component/action-button/action-button.component';
+export * from './lib/component/core/brief-view/brief-view.component';
+
 export * from './lib/directive/link-permissions.directive';
 export * from './lib/directive/no-content.directive';
 export * from './lib/directive/permissions.directive';
+export * from './lib/directive/rero-template.directive';
+
 export * from './lib/modules/prime-ng-import/prime-ng-import.module';
+
 export * from './lib/paginator/paginator';
 export * from './lib/paginator/show-more-pager/show-more-pager.component';
+
 export * from './lib/pipe/contribution-type.pipe';
 export * from './lib/pipe/entity-label.pipe';
 export * from './lib/pipe/extract-source-field.pipe';
@@ -46,10 +54,13 @@ export * from './lib/pipe/patron-blocked-message.pipe';
 export * from './lib/pipe/provision-activity.pipe';
 export * from './lib/pipe/safe-url.pipe';
 export * from './lib/pipe/url-active.pipe';
+export * from './lib/pipe/is-array.pipe';
+
 export * from './lib/service/app-settings.service';
 export * from './lib/service/permissions.service';
 export * from './lib/service/search-bar-config.service';
 export * from './lib/service/user.service';
+
 export * from './lib/shared.module';
 export * from './lib/util/permissions';
 export * from './lib/utils/tools';

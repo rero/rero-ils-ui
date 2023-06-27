@@ -16,24 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Pipe, PipeTransform } from '@angular/core';
+import { Directive, Input, TemplateRef } from '@angular/core';
 
-@Pipe({
-  name: 'join',
-  pure: false
+/** See: https://github.com/primefaces/primeng/blob/master/src/app/components/api/shared.ts */
+
+@Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: '[rTemplate]',
 })
-export class JoinPipe implements PipeTransform {
+export class ReroTemplateDirective {
+
+  /** the template type. */
+  @Input() type: string | undefined;
+  /** the template name. */
+  @Input('rTemplate') name: string | undefined;
 
   /**
-   * Join all parts of an array as a string.
-   * @param parts: string or array
-   * @param glue: string to use to join parts.
-   * @return: the joined string
+   * constructor
+   * @param template: TemplateRef
    */
-  transform(parts: Array<any>, glue: string = ' '): string {
-    if (!Array.isArray(parts)) {
-      parts = [parts];
-    }
-    return parts.map(part => part.toString()).join(glue);
+  constructor(public template: TemplateRef<any>) {}
+
+  /** get the type of template. */
+  getType(): string {
+    return this.name!;
   }
+
 }
