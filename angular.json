@@ -17,7 +17,9 @@
               "crypto-js",
               "easymde",
               "issn",
+              "js-generate-password",
               "moment",
+              "rfdc",
               "simple-isbn"
             ],
             "preserveSymlinks": true,
@@ -62,7 +64,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2.5mb",
-                  "maximumError": "6mb"
+                  "maximumError": "7mb"
                 },
                 {
                   "type": "anyComponentStyle",

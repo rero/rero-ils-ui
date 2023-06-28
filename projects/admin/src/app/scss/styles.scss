@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -406,4 +407,25 @@ pre {
 .modal-xl {
   @extend .modal-lg;
   width: 80%;
+}
+
+// ENTITIES ====================================================================
+.entity-fields {
+  @extend .row;
+  @extend .mb-0;
+
+  dt {
+    @extend .col-3;
+    @extend .label-title;
+  }
+
+  dd {
+    @extend .col-9;
+    @extend .mb-0;
+
+    ul {
+      @extend .list-unstyled;
+      @extend .mb-0
+    }
+  }
 }

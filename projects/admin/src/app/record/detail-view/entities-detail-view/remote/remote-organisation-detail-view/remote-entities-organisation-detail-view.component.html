@@ -1,0 +1,71 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<dl class="entity-fields">
+  <!-- DATE OF ESTABLISHMENT -->
+  <ng-container *ngIf="record.date_of_establishment">
+    <dt translate>Date of establishment</dt>
+    <dd>{{ record.date_of_establishment }}</dd>
+  </ng-container>
+  <!-- DATE OF TERMINATION -->
+  <ng-container *ngIf="record.date_of_termination">
+    <dt translate>Date of termination</dt>
+    <dd>{{ record.date_of_termination }}</dd>
+  </ng-container>
+    <!-- LANGUAGE -->
+  <ng-container *ngIf="record.language">
+    <dt translate>Language</dt>
+    <dd>
+      <ul>
+        <li *ngFor="let language of record.language">
+          {{ ('lang_' + language) | translate }}
+        </li>
+      </ul>
+    </dd>
+  </ng-container>
+  <!-- COUNTRY ASSOCIATED -->
+  <ng-container *ngIf="record.country_associated">
+    <dt translate>Country associated</dt>
+    <dd>{{ 'country_' + record.country_associated | translate }}</dd>
+  </ng-container>
+  <!-- AUTHORIZED ACCESS POINT -->
+  <ng-container *ngIf="record.authorized_access_point">
+    <dt translate>Authorized access point</dt>
+    <dd>{{ record.authorized_access_point }}</dd>
+  </ng-container>
+  <!-- VARIANT NAME -->
+  <ng-container *ngIf="record.variant_access_point">
+    <dt translate>Variant name</dt>
+    <dd>
+      <ul>
+        <li *ngFor="let variant_name of record.variant_access_point">
+          {{ variant_name }}
+        </li>
+      </ul>
+    </dd>
+  </ng-container>
+  <!-- ID -->
+  <ng-container *ngIf="record.identifier">
+    <dt translate>Id</dt>
+    <dd>
+      <ng-container *ngIf="disabledLink(source); else noLink">
+      <a [href]="record.identifier | safeUrl">{{ record.pid }}</a>
+      </ng-container>
+      <ng-template #noLink>{{ record.pid }}</ng-template>
+    </dd>
+  </ng-container>
+</dl>
