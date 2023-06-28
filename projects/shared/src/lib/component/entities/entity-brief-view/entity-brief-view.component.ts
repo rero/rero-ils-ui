@@ -18,7 +18,7 @@
 
 import { AfterViewInit, Component, ComponentFactoryResolver, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
-import { EntityType } from '../../../class/entities';
+import { EntityType, EntityTypeIcon } from '../../../class/entities';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
 import { BriefViewTag } from '../../core/brief-view/brief-view.component';
 import { EntityBriefViewRemoteOrganisationComponent } from './entity-brief-view.organisation';
@@ -136,12 +136,12 @@ export class EntityBriefViewComponent implements ResultItem, OnInit, AfterViewIn
    */
   private _getEntityIcon(resourceType: EntityType): string {
     switch (resourceType) {
-      case EntityType.ORGANISATION: return 'fa-building-o';
-      case EntityType.PERSON: return 'fa-user-o';
-      case EntityType.TEMPORAL: return 'fa-calendar';
-      case EntityType.PLACE: return 'fa-map-marker';
-      case EntityType.WORK: return 'fa-book';
-      case EntityType.TOPIC: return 'fa-tag';
+      case EntityType.ORGANISATION: return EntityTypeIcon.ORGANISATION;
+      case EntityType.PERSON: return EntityTypeIcon.PERSON;
+      case EntityType.TEMPORAL: return EntityTypeIcon.TEMPORAL;
+      case EntityType.PLACE: return EntityTypeIcon.PLACE;
+      case EntityType.TOPIC: return EntityTypeIcon.TOPIC;
+      case EntityType.WORK: return EntityTypeIcon.WORK;
       default: return 'fa-question-circle';
     }
   }

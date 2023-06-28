@@ -16,20 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export enum EntityType {
-  ORGANISATION = 'bf:Organisation',
-  PERSON = 'bf:Person',
-  PLACE = 'bf:Place',
-  TEMPORAL = 'bf:Temporal',
-  TOPIC = 'bf:Topic',
-  WORK = 'bf:Work',
-}
+export class Tools {
+  /**
+   * Generate entity search query
+   * @param catalogKey - Catalog key (Ex: idref, gnd, rero)
+   * @param catalogPid - Entity catalog pid
+   * @returns The string representing the query
+   */
+  static generateEntitySearchQuery(catalogKey: string, catalogPid: string): string {
+    const queries = [];
+    ['contribution', 'subjects', 'genreForm'].every(
+      (field: string) => queries.push(`${field}.entity.pids.${catalogKey}:${catalogPid}`)
+    );
 
-export enum EntityTypeIcon {
-  ORGANISATION = 'fa-building-o',
-  PERSON = 'fa-user-o',
-  PLACE = 'fa-map-marker',
-  TEMPORAL = 'fa-calendar',
-  TOPIC = 'fa-tag',
-  WORK = 'fa-book',
+    return queries.join(' OR ');
+  }
 }

@@ -19,20 +19,28 @@ import { ComponentLoaderFactory } from 'ngx-bootstrap/component-loader';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { PositioningService } from 'ngx-bootstrap/positioning';
 import { OperationLogsDialogComponent } from './operation-logs-dialog.component';
+import { PermissionsDirective, PermissionsService } from '@rero/shared';
 
 
 describe('OperationLogsDialogComponent', () => {
   let component: OperationLogsDialogComponent;
   let fixture: ComponentFixture<OperationLogsDialogComponent>;
 
+  const permissionServiceSpy = jasmine.createSpyObj('PermissionsService', ['canAccess']);
+  permissionServiceSpy.canAccess.and.returnValue(true);
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OperationLogsDialogComponent ],
+      declarations: [
+        OperationLogsDialogComponent,
+        PermissionsDirective
+      ],
       providers: [
         BsModalRef,
         BsModalService,
         ComponentLoaderFactory,
-        PositioningService
+        PositioningService,
+        { provide: PermissionsService, useValue: permissionServiceSpy }
       ]
     })
     .compileComponents();
