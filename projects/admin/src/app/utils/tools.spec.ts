@@ -15,21 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { Tools } from "./tools";
 
-export enum EntityType {
-  ORGANISATION = 'bf:Organisation',
-  PERSON = 'bf:Person',
-  PLACE = 'bf:Place',
-  TEMPORAL = 'bf:Temporal',
-  TOPIC = 'bf:Topic',
-  WORK = 'bf:Work',
-}
+describe('Tools', () => {
 
-export enum EntityTypeIcon {
-  ORGANISATION = 'fa-building-o',
-  PERSON = 'fa-user-o',
-  PLACE = 'fa-map-marker',
-  TEMPORAL = 'fa-calendar',
-  TOPIC = 'fa-tag',
-  WORK = 'fa-book',
-}
+  it('should return a query', () => {
+    const query = [
+      'contribution.entity.pids.foo:x11',
+      'subjects.entity.pids.foo:x11',
+      'genreForm.entity.pids.foo:x11'
+    ].join(' OR ');
+    expect(Tools.generateEntitySearchQuery('foo', 'x11')).toEqual(query);
+  });
+
+});

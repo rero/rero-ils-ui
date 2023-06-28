@@ -18,6 +18,7 @@
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, RouteInterface } from '@rero/ng-core';
 import { of } from 'rxjs';
+import { RemoteEntitiesDetailViewComponent } from '../record/detail-view/entities-detail-view/remote/entities-remote-detail-view.component';
 import { BaseRoute } from './base-route';
 
 export class EntitiesRemoteRoute extends BaseRoute implements RouteInterface {
@@ -45,6 +46,7 @@ export class EntitiesRemoteRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             index: this.name,
             label: _('Remote entities'),
+            detailComponent: RemoteEntitiesDetailViewComponent
           }
         ]
       }

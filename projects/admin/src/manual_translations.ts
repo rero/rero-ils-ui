@@ -228,3 +228,6 @@ _('email_to');
 _('email_cc');
 _('email_bcc');
 _('email_reply_to');
+
+// Entity type
+_('bf:ClassificationDdc');
