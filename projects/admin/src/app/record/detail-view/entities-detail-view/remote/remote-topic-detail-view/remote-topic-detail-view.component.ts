@@ -16,20 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export enum EntityType {
-  ORGANISATION = 'bf:Organisation',
-  PERSON = 'bf:Person',
-  PLACE = 'bf:Place',
-  TEMPORAL = 'bf:Temporal',
-  TOPIC = 'bf:Topic',
-  WORK = 'bf:Work',
-}
+import { Component, Input } from '@angular/core';
 
-export enum EntityTypeIcon {
-  ORGANISATION = 'fa-building-o',
-  PERSON = 'fa-user-o',
-  PLACE = 'fa-map-marker',
-  TEMPORAL = 'fa-calendar',
-  TOPIC = 'fa-tag',
-  WORK = 'fa-book',
+@Component({
+  selector: 'admin-remote-topic-detail-view',
+  templateUrl: './remote-topic-detail-view.component.html'
+})
+export class RemoteTopicDetailViewComponent {
+
+  /** Record metadata */
+  @Input() record: any;
+
+  /** Record source */
+  @Input() source: string;
 }

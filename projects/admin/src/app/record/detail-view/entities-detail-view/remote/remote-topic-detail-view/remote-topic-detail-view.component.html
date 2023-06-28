@@ -1,0 +1,85 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<dl class="entity-fields">
+  <!-- BNF TYPE -->
+  <ng-container *ngIf="record.bnf_type">
+    <dt translate>Type</dt>
+    <dd>{{ record.bnf_type }}</dd>
+  </ng-container>
+  <!-- VARIANT ACCESS POINT(S) -->
+  <ng-container *ngIf="record.variant_access_point">
+    <dt translate>Variant access point(s)</dt>
+    <dd>
+      <ul>
+        <li *ngFor="let variant_access_point of record.variant_access_point">
+          {{ variant_access_point }}
+        </li>
+      </ul>
+    </dd>
+  </ng-container>
+  <!-- BROADER -->
+  <ng-container *ngIf="record.broader">
+    <dt translate>Broader</dt>
+    <dd>
+      <ul>
+        <li *ngFor="let broader of record.broader">
+          {{ broader.authorized_access_point }}
+        </li>
+      </ul>
+    </dd>
+  </ng-container>
+  <!-- RELATED -->
+  <ng-container *ngIf="record.related">
+    <dt translate>Related</dt>
+    <dd>
+      <ul>
+        <li *ngFor="let related of record.related">
+          {{ related.authorized_access_point }}
+        </li>
+      </ul>
+    </dd>
+  </ng-container>
+  <!-- CLASSIFICATION(S) -->
+  <ng-container *ngIf="record.classification">
+    <dt translate>Classification(s)</dt>
+    <dd>
+      <ul>
+        <li *ngFor="let classification of record.classification">
+          <span class="mr-1" *ngIf="classification.classificationPortion">{{ classification.classificationPortion }}</span>
+          <span class="mr-1" *ngIf="classification.name">{{ classification.name }}</span>
+          <span class="badge badge-secondary" *ngIf="classification.type">{{ classification.type | translate }}</span>
+        </li>
+      </ul>
+    </dd>
+  </ng-container>
+  <!-- IDENTIFIED BY -->
+  <ng-container *ngIf="record.identifiedBy">
+    <dt translate>Identified by</dt>
+    <dd>
+      <ul>
+        <ng-container *ngFor="let identifiedBy of record.identifiedBy">
+          <li *ngIf="identifiedBy.type === 'uri'">
+            <a href="{{ identifiedBy.value }}">{{ identifiedBy.source }}</a>
+          </li>
+        </ng-container>
+      </ul>
+    </dd>
+  </ng-container>
+  <dt translate>Id</dt>
+  <dd>{{ record.pid }}</dd>
+</dl>

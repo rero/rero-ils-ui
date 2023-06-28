@@ -15,21 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { Component, Input } from '@angular/core';
 
-export enum EntityType {
-  ORGANISATION = 'bf:Organisation',
-  PERSON = 'bf:Person',
-  PLACE = 'bf:Place',
-  TEMPORAL = 'bf:Temporal',
-  TOPIC = 'bf:Topic',
-  WORK = 'bf:Work',
-}
-
-export enum EntityTypeIcon {
-  ORGANISATION = 'fa-building-o',
-  PERSON = 'fa-user-o',
-  PLACE = 'fa-map-marker',
-  TEMPORAL = 'fa-calendar',
-  TOPIC = 'fa-tag',
-  WORK = 'fa-book',
+@Component({
+  selector: 'admin-local-work-detail-view',
+  templateUrl: './local-work-detail-view.component.html',
+})
+export class LocalWorkDetailViewComponent {
+  /** the current record */
+  @Input() record: any;
 }

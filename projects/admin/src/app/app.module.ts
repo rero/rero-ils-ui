@@ -56,6 +56,7 @@ import { ItemSwitchLocationComponent } from './components/items/switch-location/
 import { TabOrderDirective } from './directives/tab-order.directive';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
+import { UserCurrentLibraryInterceptor } from './interceptor/user-current-library.interceptor';
 import { MenuDashboardComponent } from './menu/menu-dashboard/menu-dashboard.component';
 import { MenuLanguageComponent } from './menu/menu-language/menu-language.component';
 import { MenuMobileComponent } from './menu/menu-mobile/menu-mobile.component';
@@ -106,11 +107,6 @@ import { AddressTypeComponent } from './record/detail-view/address-type/address-
 import { CircPolicyDetailViewComponent } from './record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
 import { CollectionDetailViewComponent } from './record/detail-view/collection-detail-view/collection-detail-view.component';
 import { CollectionItemsComponent } from './record/detail-view/collection-detail-view/collection-items/collection-items.component';
-import { ContributionDetailViewComponent } from './record/detail-view/contribution-detail-view/contribution-detail-view.component';
-import {
-  CorporateBodiesDetailViewComponent
-} from './record/detail-view/contribution-detail-view/corporate-bodies-detail-view/corporate-bodies-detail-view.component';
-import { PersonDetailViewComponent } from './record/detail-view/contribution-detail-view/person-detail-view/person-detail-view.component';
 import { DialogImportComponent } from './record/detail-view/document-detail-view/dialog-import/dialog-import.component';
 import { DescriptionZoneComponent } from './record/detail-view/document-detail-view/document-description/description-zone/description-zone.component';
 import {
@@ -137,6 +133,16 @@ import {
 import { HoldingsComponent } from './record/detail-view/document-detail-view/holdings/holdings.component';
 import { ItemRequestComponent } from './record/detail-view/document-detail-view/item-request/item-request.component';
 import { RelatedResourceComponent } from './record/detail-view/document-detail-view/related-resource/related-resource.component';
+import { EntitiesLocalDetailViewComponent } from './record/detail-view/entities-detail-view/local/entities-local-detail-view.component';
+import { EntitiesLocalGlobalComponent } from './record/detail-view/entities-detail-view/local/entities-local-global.component';
+import { LocalOrganisationDetailViewComponent } from './record/detail-view/entities-detail-view/local/local-organisation-detail-view/local-organisation-detail-view.component';
+import { LocalPersonDetailViewComponent } from './record/detail-view/entities-detail-view/local/local-person-detail-view/local-person-detail-view.component';
+import { LocalPlaceDetailViewComponent } from './record/detail-view/entities-detail-view/local/local-place-detail-view/local-place-detail-view.component';
+import { LocalTopicDetailViewComponent } from './record/detail-view/entities-detail-view/local/local-topic-detail-view/local-topic-detail-view.component';
+import { LocalWorkDetailViewComponent } from './record/detail-view/entities-detail-view/local/local-work-detail-view/local-work-detail-view.component';
+import { RemoteEntitiesDetailViewComponent } from './record/detail-view/entities-detail-view/remote/entities-remote-detail-view.component';
+import { RemoteEntitiesOrganisationDetailViewComponent } from './record/detail-view/entities-detail-view/remote/remote-organisation-detail-view/remote-entities-organisation-detail-view.component';
+import { RemoteEntitiesPersonDetailViewComponent } from './record/detail-view/entities-detail-view/remote/remote-person-detail-view/remote-entities-person-detail-view.component';
 import { HoldingDetailViewComponent } from './record/detail-view/holding-detail-view/holding-detail-view.component';
 import { ExpectedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/expected-issue/expected-issue.component';
 import { ReceivedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/received-issue/received-issue.component';
@@ -166,6 +172,7 @@ import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-vi
 import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
 import { UserIdComponent } from './record/editor/wrappers/user-id/user-id.component';
 import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patron-type-item-type/cipo-patron-type-item-type.component';
+import { EntityTypeaheadComponent } from './record/formly/type/entity-typeahead/entity-typeahead.component';
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { OperationLogsDialogComponent } from './record/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
 import { OperationLogsComponent } from './record/operation-logs/operation-logs.component';
@@ -183,8 +190,7 @@ import { PreviewEmailModule } from './shared/preview-email/preview-email.module'
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { UserCurrentLibraryInterceptor } from './interceptor/user-current-library.interceptor';
-import { EntityTypeaheadComponent } from './record/formly/type/entity-typeahead/entity-typeahead.component';
+import { RemoteTopicDetailViewComponent } from './record/detail-view/entities-detail-view/remote/remote-topic-detail-view/remote-topic-detail-view.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -250,9 +256,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         CollectionItemsComponent,
         DocumentRecordSearchComponent,
         HoldingDetailComponent,
-        ContributionDetailViewComponent,
-        PersonDetailViewComponent,
-        CorporateBodiesDetailViewComponent,
+        RemoteEntitiesPersonDetailViewComponent,
         IllRequestsBriefViewComponent,
         IllRequestDetailViewComponent,
         CustomShortcutHelpComponent,
@@ -308,7 +312,17 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         ItemSwitchLocationStandaloneComponent,
         ItemSwitchLocationComponent,
         IssueEmailComponent,
-        EntityTypeaheadComponent
+        EntityTypeaheadComponent,
+        RemoteEntitiesDetailViewComponent,
+        RemoteEntitiesOrganisationDetailViewComponent,
+        EntitiesLocalDetailViewComponent,
+        LocalPersonDetailViewComponent,
+        EntitiesLocalGlobalComponent,
+        LocalTopicDetailViewComponent,
+        LocalOrganisationDetailViewComponent,
+        LocalPlaceDetailViewComponent,
+        LocalWorkDetailViewComponent,
+        RemoteTopicDetailViewComponent,
     ],
     imports: [
       AppRoutingModule,
