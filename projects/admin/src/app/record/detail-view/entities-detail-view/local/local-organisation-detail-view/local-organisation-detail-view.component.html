@@ -1,0 +1,118 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<dl class="row mb-0">
+  <!-- NAME -->
+  <ng-container *ngIf="record.name">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Name
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.name }}
+    </dd>
+  </ng-container>
+
+  <!-- SUBORDINATE UNIT -->
+  <ng-container *ngIf="record.subordinate_unit">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Subordinate unit
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      <ul class="list-unstyled mb-0">
+        <li *ngFor="let name of record.subordinate_unit">{{ name }}</li>
+      </ul>
+    </dd>
+  </ng-container>
+
+  <!-- CONFERENCE PLACE -->
+  <ng-container *ngIf="record.conference_place">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Conference place
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.conference_place }}
+    </dd>
+  </ng-container>
+
+  <!-- CONFERENCE NUMBERING -->
+  <ng-container *ngIf="record.conference_numbering">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Conference numbering
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.conference_numbering }}
+    </dd>
+  </ng-container>
+
+  <!-- CONFERENCE DATE -->
+  <ng-container *ngIf="record.conference_date">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Conference date
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.conference_date }}
+    </dd>
+  </ng-container>
+
+  <!-- CONFERENCE -->
+  <ng-container *ngIf="record.conference">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Conference
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      <i
+      class="fa fa-circle mr-2"
+      [ngClass]="{'text-success': record.conference, 'text-danger': !record.conference}"
+    ></i>
+    </dd>
+  </ng-container>
+
+  <!-- START DATE -->
+  <ng-container *ngIf="record.start_date">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Start date
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.start_date }}
+    </dd>
+  </ng-container>
+
+  <!-- END DATE -->
+  <ng-container *ngIf="record.end_date">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      End date
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.end_date }}
+    </dd>
+  </ng-container>
+
+  <!-- ALTERNATIVE NAMES -->
+  <ng-container *ngIf="record.alternative_names">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Alternative names
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      <ul class="list-unstyled mb-0">
+        <li *ngFor="let name of record.alternative_names">{{ name }}</li>
+      </ul>
+    </dd>
+  </ng-container>
+</dl>
+
+<!-- GLOBAL FIELDS -->
+<admin-entities-local-global [record]="record"></admin-entities-local-global>

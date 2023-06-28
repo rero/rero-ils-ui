@@ -1,0 +1,47 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="record$ | async as record">
+  <div class="float-right mt-2 mb-4">
+    <a (click)="search(record.metadata.authorized_access_point)"
+      class="btn btn-sm btn-primary mr-n4"
+    >
+      <i class="fa fa-search" aria-hidden="true"></i>
+      {{ 'Search documents' | translate }}
+    </a>
+  </div>
+  <h1 class="mb-0">{{ record.metadata.authorized_access_point }}</h1>
+  <small *ngVar="icon(record.metadata.type) as icon">
+    <i class="fa {{ icon.class }}" title="{{ icon.title }}" aria-hidden="true"></i>
+    {{ 'MEF ID' | translate }}: {{ record.metadata.pid }}
+  </small>
+
+  <article class="card my-2">
+    <header class="card-header">
+      <b class="card-title mb-0">{{ 'local' | translate | uppercase }}</b>
+    </header>
+    <article class="card-body collapse show" [ngSwitch]="record.metadata.type">
+      <admin-local-organisation-detail-view *ngSwitchCase="'bf:Organisation'" [record]="record.metadata"></admin-local-organisation-detail-view>
+      <admin-local-person-detail-view *ngSwitchCase="'bf:Person'" [record]="record.metadata"></admin-local-person-detail-view>
+      <admin-local-place-detail-view *ngSwitchCase="'bf:Place'" [record]="record.metadata"></admin-local-place-detail-view>
+      <admin-local-place-detail-view *ngSwitchCase="'bf:Temporal'" [record]="record.metadata"></admin-local-place-detail-view>
+      <admin-local-topic-detail-view *ngSwitchCase="'bf:Topic'" [record]="record.metadata"></admin-local-topic-detail-view>
+      <admin-local-work-detail-view *ngSwitchCase="'bf:Work'" [record]="record.metadata"></admin-local-work-detail-view>
+    </article>
+  </article>
+</ng-container>
+

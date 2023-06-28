@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,10 +19,10 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'admin-person-detail-view',
-  templateUrl: './person-detail-view.component.html'
+  selector: 'admin-remote-entities-person-detail-view',
+  templateUrl: './remote-entities-person-detail-view.component.html'
 })
-export class PersonDetailViewComponent {
+export class RemoteEntitiesPersonDetailViewComponent {
 
   /** record metadata */
   @Input() record: any;

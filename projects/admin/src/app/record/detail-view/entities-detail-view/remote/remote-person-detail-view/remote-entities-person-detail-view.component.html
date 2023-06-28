@@ -1,6 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020 RERO
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -16,27 +17,25 @@
 -->
 
 <ng-container *ngIf="record">
-  <!-- DATE OF ESTABLISHMENT -->
-  <dl class="row mb-0" *ngIf="record.date_of_establishment">
+  <!-- DATE OF BIRTH -->
+  <dl class="row mb-0" *ngIf="record.date_of_birth">
     <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-      Date of establishment
+      Birth date
     </dt>
     <dd class="col-sm-7 col-md-8 mb-0">
-      {{ record.date_of_establishment }}
+      {{ record.date_of_birth }}
     </dd>
   </dl>
-
-  <!-- DATE OF TERMINATION -->
-  <dl class="row mb-0" *ngIf="record.date_of_termination">
+  <!-- DATE OF DEATH -->
+  <dl class="row mb-0" *ngIf="record.date_of_death">
     <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-      Date of termination
+      Death date
     </dt>
     <dd class="col-sm-7 col-md-8 mb-0">
-      {{ record.date_of_termination }}
+      {{ record.date_of_death }}
     </dd>
   </dl>
-
-    <!-- LANGUAGE -->
+  <!-- LANGUAGE -->
   <dl class="row mb-0" *ngIf="record.language">
     <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
       Language
@@ -49,28 +48,35 @@
       </ul>
     </dd>
   </dl>
-
-  <!-- COUNTRY ASSOCIATED -->
-  <dl class="row mb-0" *ngIf="record.country_associated">
+  <!-- GENDER -->
+  <dl class="row mb-0" *ngIf="record.Gender">
     <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-      Country associated
+      Gender
     </dt>
     <dd class="col-sm-7 col-md-8 mb-0">
-      {{ 'country_' + record.country_associated | translate }}
+      {{ record.Gender }}
     </dd>
   </dl>
-
-  <!-- AUTHORIZED ACCESS POINT -->
-  <dl class="row mb-0" *ngIf="record.authorized_access_point">
+  <!-- BIBLIOGRAPHICAL INFORMATION -->
+  <dl class="row mb-0" *ngIf="record.biographical_information">
     <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-      Authorized access point
+      Biographical information
+    </dt>
+    <dd
+      class="col-sm-7 col-md-8 mb-0"
+      [innerHtml]="record.biographical_information.join('\n') | urlActive | nl2br"
+    ></dd>
+  </dl>
+  <!-- NAME -->
+  <dl class="row mb-0" *ngIf="record.name">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Name
     </dt>
     <dd class="col-sm-7 col-md-8 mb-0">
-      {{ record.authorized_access_point }}
+      {{ record.name }}
     </dd>
   </dl>
-
-  <!-- VARIANTE NAME -->
+  <!-- VARIANTE ACCESS POINT -->
   <dl class="row mb-0" *ngIf="record.variant_access_point">
     <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
       Variant name
@@ -83,6 +89,15 @@
     </ul>
     </dd>
   </dl>
+  <!-- AUTHORIZED ACCESS POINT -->
+  <dl class="row mb-0" *ngIf="record.authorized_access_point">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Authorized access point
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.authorized_access_point }}
+    </dd>
+  </dl>
   <!-- ID -->
   <dl class="row mb-0" *ngIf="record.identifier">
     <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
@@ -90,7 +105,9 @@
     </dt>
     <dd class="col-sm-7 col-md-8 mb-0">
       <ng-container *ngIf="disabledLink(source); else noLink">
-      <a [href]="record.identifier | safeUrl">{{ record.pid }}</a>
+      <a href="{{ record.identifier }}">
+        {{ record.pid }}
+      </a>
       </ng-container>
       <ng-template #noLink>
         {{ record.pid }}

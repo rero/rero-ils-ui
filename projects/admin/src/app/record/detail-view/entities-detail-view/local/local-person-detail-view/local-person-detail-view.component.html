@@ -1,0 +1,94 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<dl class="row mb-0">
+  <!-- NAME -->
+  <ng-container *ngIf="record.name">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Name
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.name }}
+    </dd>
+  </ng-container>
+
+  <!-- DATE OF BIRTH -->
+  <ng-container *ngIf="record.date_of_birth">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Birth date
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.date_of_birth }}
+    </dd>
+  </ng-container>
+
+  <!-- DATE OF DEATH -->
+  <ng-container *ngIf="record.date_of_death">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Death date
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.date_of_death }}
+    </dd>
+  </ng-container>
+
+  <!-- NUMERATION -->
+  <ng-container *ngIf="record.numeration">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Numeration
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.numeration }}
+    </dd>
+  </ng-container>
+
+  <!-- QUALIFIER -->
+  <ng-container *ngIf="record.qualifier">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Qualifier
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.qualifier }}
+    </dd>
+  </ng-container>
+
+  <!-- FULLER FORM OF NAME -->
+  <ng-container *ngIf="record.fuller_form_of_name">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Fuller form of name
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      {{ record.fuller_form_of_name }}
+    </dd>
+  </ng-container>
+
+  <!-- ALTERNATIVE NAMES -->
+  <ng-container *ngIf="record.alternative_names">
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+      Alternative names
+    </dt>
+    <dd class="col-sm-7 col-md-8 mb-0">
+      <ul class="list-unstyled mb-0">
+        <li *ngFor="let name of record.alternative_names">{{ name }}</li>
+      </ul>
+    </dd>
+  </ng-container>
+</dl>
+
+
+<!-- GLOBAL FIELDS -->
+<admin-entities-local-global [record]="record"></admin-entities-local-global>

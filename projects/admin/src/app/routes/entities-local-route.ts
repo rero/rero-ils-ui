@@ -16,7 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { DetailComponent, RouteInterface } from '@rero/ng-core';
+import { DetailComponent, EditorComponent, RouteInterface } from '@rero/ng-core';
+import { PERMISSIONS } from '@rero/shared';
+import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
+import { PermissionGuard } from '../guard/permission.guard';
+import { EntitiesLocalDetailViewComponent } from '../record/detail-view/entities-detail-view/local/entities-local-detail-view.component';
 import { BaseRoute } from './base-route';
 
 export class EntitiesLocalRoute extends BaseRoute implements RouteInterface {
@@ -32,7 +36,9 @@ export class EntitiesLocalRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'detail/:pid', component: DetailComponent }
+        { path: 'detail/:pid', component: DetailComponent },
+        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
+        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.LOCENT_CREATE ] } }
       ],
       data: {
         types: [
@@ -40,6 +46,7 @@ export class EntitiesLocalRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             index: this.name,
             label: _('Local entities'),
+            detailComponent: EntitiesLocalDetailViewComponent
           }
         ]
       }
