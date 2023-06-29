@@ -31,7 +31,7 @@ import { EntityBriefViewRemotePersonComponent } from './entity-brief-view.person
   template: `
     <shared-brief-view [title]="entityTitle" [link]="routerLink" [tags]="tags">
       <ng-template rTemplate="icon">
-        <i class="fa fa-2x" [class]="entityIcon" [title]="record.metadata.resource_type"></i>
+        <i class="fa fa-2x" [class]="entityIcon" [title]="record.metadata.type | translate"></i>
       </ng-template>
       <ng-template rTemplate="content">
         <ng-container #contentTemplate></ng-container>

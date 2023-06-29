@@ -35,12 +35,12 @@
       <b class="card-title mb-0">{{ 'local' | translate | uppercase }}</b>
     </header>
     <article class="card-body collapse show" [ngSwitch]="record.metadata.type">
-      <admin-local-organisation-detail-view *ngSwitchCase="'bf:Organisation'" [record]="record.metadata"></admin-local-organisation-detail-view>
-      <admin-local-person-detail-view *ngSwitchCase="'bf:Person'" [record]="record.metadata"></admin-local-person-detail-view>
-      <admin-local-place-detail-view *ngSwitchCase="'bf:Place'" [record]="record.metadata"></admin-local-place-detail-view>
-      <admin-local-place-detail-view *ngSwitchCase="'bf:Temporal'" [record]="record.metadata"></admin-local-place-detail-view>
-      <admin-local-topic-detail-view *ngSwitchCase="'bf:Topic'" [record]="record.metadata"></admin-local-topic-detail-view>
-      <admin-local-work-detail-view *ngSwitchCase="'bf:Work'" [record]="record.metadata"></admin-local-work-detail-view>
+      <admin-local-organisation-detail-view *ngSwitchCase="entityType.ORGANISATION" [record]="record.metadata"></admin-local-organisation-detail-view>
+      <admin-local-person-detail-view *ngSwitchCase="entityType.PERSON" [record]="record.metadata"></admin-local-person-detail-view>
+      <admin-local-place-detail-view *ngSwitchCase="entityType.PLACE" [record]="record.metadata"></admin-local-place-detail-view>
+      <admin-local-place-detail-view *ngSwitchCase="entityType.TEMPORAL" [record]="record.metadata"></admin-local-place-detail-view>
+      <admin-local-topic-detail-view *ngSwitchCase="entityType.TOPIC" [record]="record.metadata"></admin-local-topic-detail-view>
+      <admin-local-work-detail-view *ngSwitchCase="entityType.WORK" [record]="record.metadata"></admin-local-work-detail-view>
     </article>
   </article>
 </ng-container>

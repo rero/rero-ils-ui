@@ -67,7 +67,7 @@ export class RemoteEntitiesDetailViewComponent implements DetailRecord {
   search(authorized_access_point: string): void {
     this._router.navigate(
       ['/records', 'documents'],
-      { queryParams: { q: `contribution.entity:${authorized_access_point}`, simple: '0'}}
+      { queryParams: { q: `contribution.entity.\\*:"${authorized_access_point}"`, simple: '0'}}
     );
   }
 }

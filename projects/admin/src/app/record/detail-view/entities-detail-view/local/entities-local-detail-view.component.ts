@@ -33,6 +33,9 @@ export class EntitiesLocalDetailViewComponent implements DetailRecord {
   /** Resource type */
   type: string;
 
+  /** Entity type */
+  entityType = EntityType;
+
   /**
    * Constructor
    * @param _translateService - TranslateService
@@ -74,7 +77,7 @@ export class EntitiesLocalDetailViewComponent implements DetailRecord {
   search(authorized_access_point: string): void {
     this._router.navigate(
       ['/records', 'documents'],
-      { queryParams: { q: `contribution.entity:${authorized_access_point}`, simple: '0'}}
+      { queryParams: { q: `contribution.entity.\\*:"${authorized_access_point}"`, simple: '0'}}
     );
   }
 }
