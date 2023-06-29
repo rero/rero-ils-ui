@@ -21,18 +21,23 @@ import { RouterModule } from '@angular/router';
 import { CoreModule, NgVarDirective, Nl2brPipe, RecordModule, TruncateTextPipe } from '@rero/ng-core';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ContributionComponent } from '../public-api';
 import { ActionButtonComponent } from './component/action-button/action-button.component';
+import { BriefViewComponent } from './component/core/brief-view/brief-view.component';
+import { EntityBriefViewComponent } from './component/entities/entity-brief-view/entity-brief-view.component';
+import { EntityBriefViewRemoteOrganisationComponent } from './component/entities/entity-brief-view/entity-brief-view.organisation';
 import { EntityBriefViewRemotePersonComponent } from './component/entities/entity-brief-view/entity-brief-view.person';
 import { LinkPermissionsDirective } from './directive/link-permissions.directive';
 import { NoContentDirective } from './directive/no-content.directive';
 import { PermissionsDirective } from './directive/permissions.directive';
+import { ReroTemplateDirective } from './directive/rero-template.directive';
 import { PrimeNgImportModule } from './modules/prime-ng-import/prime-ng-import.module';
 import { ShowMorePagerComponent } from './paginator/show-more-pager/show-more-pager.component';
-import { ContributionTypePipe } from './pipe/contribution-type.pipe';
 import { EntityLabelPipe } from './pipe/entity-label.pipe';
 import { ExtractSourceFieldPipe } from './pipe/extract-source-field.pipe';
 import { GetTranslatedLabelPipe } from './pipe/get-translated-label.pipe';
 import { IdAttributePipe } from './pipe/id-attribute.pipe';
+import { IsArrayPipe } from './pipe/is-array.pipe';
 import { ItemHoldingsCallNumberPipe } from './pipe/item-holdings-call-number.pipe';
 import { JoinPipe } from './pipe/join.pipe';
 import { KeyExistsPipe } from './pipe/key-exists.pipe';
@@ -43,33 +48,18 @@ import { ProvisionActivityPipe } from './pipe/provision-activity.pipe';
 import { SafeUrlPipe } from './pipe/safe-url.pipe';
 import { UrlActivePipe } from './pipe/url-active.pipe';
 import { SearchBarConfigService } from './service/search-bar-config.service';
-import { ContributionBriefComponent } from './view/brief/contribution-brief/contribution-brief.component';
-import { ContributionSourcesComponent } from './view/brief/contribution-sources/contribution-sources.component';
-import { OrganisationBriefComponent } from './view/brief/organisation-brief/organisation-brief.component';
 import { PartOfComponent } from './view/brief/part-of/part-of.component';
-import { PersonBriefComponent } from './view/brief/person-brief/person-brief.component';
-import { ContributionComponent } from './view/contribution/contribution.component';
 import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
-import { EntityBriefViewComponent } from './component/entities/entity-brief-view/entity-brief-view.component';
-import { BriefViewComponent } from './component/core/brief-view/brief-view.component';
-import { ReroTemplateDirective } from './directive/rero-template.directive';
-import { IsArrayPipe } from './pipe/is-array.pipe';
-import { EntityBriefViewRemoteOrganisationComponent } from './component/entities/entity-brief-view/entity-brief-view.organisation';
 
 @NgModule({
     declarations: [
-        ContributionBriefComponent,
-        ContributionSourcesComponent,
-        OrganisationBriefComponent,
-        PersonBriefComponent,
         ExtractSourceFieldPipe,
         IdAttributePipe,
         JoinPipe,
         MainTitlePipe,
         PatronBlockedMessagePipe,
         ProvisionActivityPipe,
-        ContributionTypePipe,
         UrlActivePipe,
         ItemHoldingsCallNumberPipe,
         InheritedCallNumberComponent,
@@ -84,29 +74,24 @@ import { EntityBriefViewRemoteOrganisationComponent } from './component/entities
         PermissionsDirective,
         LinkPermissionsDirective,
         EntityLabelPipe,
-        ContributionComponent,
         NoContentDirective,
         EntityBriefViewComponent,
         BriefViewComponent,
         ReroTemplateDirective,
         IsArrayPipe,
         EntityBriefViewRemoteOrganisationComponent,
-        EntityBriefViewRemotePersonComponent
+        EntityBriefViewRemotePersonComponent,
+        ContributionComponent
     ],
     exports: [
         CommonModule,
         PrimeNgImportModule,
-        ContributionBriefComponent,
-        ContributionSourcesComponent,
-        OrganisationBriefComponent,
-        PersonBriefComponent,
         ExtractSourceFieldPipe,
         IdAttributePipe,
         JoinPipe,
         MainTitlePipe,
         PatronBlockedMessagePipe,
         ProvisionActivityPipe,
-        ContributionTypePipe,
         UrlActivePipe,
         Nl2brPipe,
         ItemHoldingsCallNumberPipe,
@@ -122,8 +107,8 @@ import { EntityBriefViewRemoteOrganisationComponent } from './component/entities
         PermissionsDirective,
         LinkPermissionsDirective,
         EntityLabelPipe,
-        ContributionComponent,
-        NoContentDirective
+        NoContentDirective,
+        ContributionComponent
     ],
     imports: [
         CommonModule,
@@ -137,7 +122,6 @@ import { EntityBriefViewRemoteOrganisationComponent } from './component/entities
         SearchBarConfigService,
         DatePipe,
         MainTitlePipe,
-        ContributionTypePipe,
         JoinPipe,
         UrlActivePipe,
         TruncateTextPipe,
