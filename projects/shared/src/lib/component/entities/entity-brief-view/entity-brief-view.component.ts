@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { AfterViewInit, Component, ComponentFactoryResolver, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 import { EntityType, EntityTypeIcon } from '../../../class/entities';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
@@ -31,7 +31,7 @@ import { EntityBriefViewRemotePersonComponent } from './entity-brief-view.person
   template: `
     <shared-brief-view [title]="entityTitle" [link]="routerLink" [tags]="tags">
       <ng-template rTemplate="icon">
-        <i class="fa fa-2x" [class]="entityIcon" [title]="record.metadata.resource_type"></i>
+        <i class="fa fa-2x" [class]="entityIcon" [title]="record.metadata.type | translate"></i>
       </ng-template>
       <ng-template rTemplate="content">
         <ng-container #contentTemplate></ng-container>
@@ -73,11 +73,9 @@ export class EntityBriefViewComponent implements ResultItem, OnInit, AfterViewIn
   /**
    * Constructor
    * @param extractedSourceFieldPipe: ExtractSourceFieldPipe
-   * @param resolver: ComponentFactoryResolver
    */
   constructor(
-    private extractedSourceFieldPipe: ExtractSourceFieldPipe,
-    private resolver: ComponentFactoryResolver
+    private extractedSourceFieldPipe: ExtractSourceFieldPipe
   ) { }
 
   /** OnInit hook */
@@ -93,9 +91,8 @@ export class EntityBriefViewComponent implements ResultItem, OnInit, AfterViewIn
   /** AfterViewInit hook */
   ngAfterViewInit() {
     if (this.contentComponent) {
-      setTimeout(() => {  // To be run at next macrotask and avoid `NG100` error into console.
-        const factory = this.resolver.resolveComponentFactory(this.contentComponent);
-        const componentRef: any = this.entityContent.createComponent(factory);
+      setTimeout(() => {  // To be run at next macro task and avoid `NG100` error into console.
+        const componentRef: any = this.entityContent.createComponent(this.contentComponent);
         componentRef.instance.record = this.record;
       });
     }
@@ -104,12 +101,14 @@ export class EntityBriefViewComponent implements ResultItem, OnInit, AfterViewIn
   // PRIVATE COMPONENT METHODS ================================================
   /** Set data used to display a remote entity. */
   private _buildRemoteEntityData(): void {
-    this.routerLink = (this.detailUrl.external)
-      ? this.detailUrl.link
-      : ['/records', 'remote_entities', 'detail', this.record.metadata.pid];
+    if (this.detailUrl.external) {
+      this.routerLink = this.detailUrl.link.replace('entities', 'entities/remote');
+    } else {
+      this.routerLink = ['/records', 'remote_entities', 'detail', this.record.metadata.pid];
+      this.tags = [{label: this.record.metadata.resource_type, type: 'remote'}];
+      this.record.metadata.sources.forEach((source: string) => this.tags.push({label: source.toUpperCase()}));
+    }
     this.entityTitle = this.extractedSourceFieldPipe.transform(this.record.metadata, 'authorized_access_point');
-    this.tags = [{label: this.record.metadata.resource_type, type: 'remote'}];
-    this.record.metadata.sources.forEach(source => this.tags.push({label: source.toUpperCase()}));
 
     switch (this.record.metadata.type) {
       case EntityType.ORGANISATION: this.contentComponent = EntityBriefViewRemoteOrganisationComponent; break;
@@ -119,18 +118,20 @@ export class EntityBriefViewComponent implements ResultItem, OnInit, AfterViewIn
 
   /** Set data used to display a local entity. */
   private _buildLocalEntityData(): void {
-    this.routerLink = (this.detailUrl.external)
-      ? this.detailUrl.link
-      : ['/records', 'local_entities', 'detail', this.record.metadata.pid];
+    if (this.detailUrl.external) {
+      this.routerLink = this.detailUrl.link.replace('entities', 'entities/local');
+    } else {
+      this.routerLink = ['/records', 'local_entities', 'detail', this.record.metadata.pid];
+      this.tags = [
+        {label: this.record.metadata.resource_type, type: 'local'},
+        {label: this.record.metadata?.source_catalog}
+      ];
+    }
     this.entityTitle = this.record.metadata.authorized_access_point;
-    this.tags = [
-      {label: this.record.metadata.resource_type, type: 'local'},
-      {label: this.record.metadata?.source_catalog}
-    ].filter(elem => elem.label);
   }
 
   /**
-   * Get the best possible fontawesome icon for an entity type
+   * Get the best possible font awesome icon for an entity type
    * @param resourceType: the entity resource type
    * @return the icon to use.
    */

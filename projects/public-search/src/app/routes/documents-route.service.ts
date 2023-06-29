@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,7 +20,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
-import { ContributionBriefComponent } from '@rero/shared';
+import { EntityBriefViewComponent } from '@rero/shared';
 import { of } from 'rxjs';
 import { AppConfigService } from '../app-config.service';
 import { DocumentBriefComponent } from '../document-brief/document-brief.component';
@@ -67,7 +68,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
    * Resource name of routes
    */
   getResources(): string[] {
-    return ['documents', 'persons', 'corporate-bodies'];
+    return ['documents', 'entities'];
   }
 
   /**
@@ -175,35 +176,17 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
               ]
             },
             {
-              key: 'persons',
+              key: 'entities',
               index: 'entities',
-              component: ContributionBriefComponent,
-              label: _('Persons'),
-              aggregationsOrder: ['sources'],
-              aggregationsExpand: ['sources'],
+              component: EntityBriefViewComponent,
+              label: _('Authors/Subjects'),
+              aggregationsOrder: ['type'],
+              aggregationsExpand: ['type'],
               listHeaders: {
                 Accept: 'application/rero+json, application/json'
               },
               preFilters: {
                 view: `${viewcode}`,
-                type: 'bf:Person',
-                simple: 1
-              },
-              sortOptions: this._sortOptions()
-            },
-            {
-              key: 'corporate-bodies',
-              index: 'entities',
-              component: ContributionBriefComponent,
-              label: _('Corporate bodies'),
-              aggregationsOrder: ['sources'],
-              aggregationsExpand: ['sources'],
-              listHeaders: {
-                Accept: 'application/rero+json, application/json'
-              },
-              preFilters: {
-                view: `${viewcode}`,
-                type: 'bf:Organisation',
                 simple: 1
               },
               sortOptions: this._sortOptions()
@@ -261,6 +244,12 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
       switch (translate.lang) {
         case 'de':
           options[key].value = 'de_name';
+          break;
+        case 'en':
+          options[key].value = 'en_name';
+          break;
+        case 'it':
+          options[key].value = 'it_name';
           break;
         default:
           options[key].value = 'fr_name';

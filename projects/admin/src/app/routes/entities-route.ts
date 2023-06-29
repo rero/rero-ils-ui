@@ -16,17 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { ActionStatus, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { EntityBriefViewComponent, PERMISSIONS } from '@rero/shared';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { BaseRoute } from './base-route';
 
 export class EntitiesRoute extends BaseRoute implements RouteInterface {
 
   /** Route name */
   readonly name = 'entities';
+
   /** Record type */
   readonly recordType = 'local_entities';
+
+  private _options = [
+    {
+      label: _('Relevance'),
+      value: 'bestmatch',
+      defaultQuery: true
+    },
+    {
+      label: _('Date (newest)'),
+      value: '-created'
+    },
+    {
+      label: _('Date (oldest)'),
+      value: 'created',
+    },
+    {
+      label: _('Name'),
+      value: 'fr_name'
+    }
+  ];
 
   /**
    * Get Configuration
@@ -47,11 +69,10 @@ export class EntitiesRoute extends BaseRoute implements RouteInterface {
             component: EntityBriefViewComponent,
             canAdd: () => of({
               can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.LOCENT_CREATE),
-              url: ['/records', this.recordType, 'new']
+              routerLink: ['/records', this.recordType, 'new']
             }),
-            permissions: (record: any) => (record.metadata.resource_type === 'remote')
-              ? of({})  // No actions are available on remote managed entities
-              : this._routeToolService.permissions(record, this.recordType),
+            canUpdate: (record: any) => this._buildUpdatePermission(record),
+            canDelete: (record: any) => this._buildDeletePermission(record),
             aggregations: (aggregations: any) => this._routeToolService.aggregationFilter(aggregations),
             aggregationsName: {
               resource_type: _('Source'),
@@ -77,9 +98,72 @@ export class EntitiesRoute extends BaseRoute implements RouteInterface {
             listHeaders: {
               Accept: 'application/rero+json, application/json'
             },
+            sortOptions: this._sortOptions()
           }
         ]
       }
     };
+  }
+
+  /**
+   * Generating update route permissions and parameters
+   * @param record - the current record
+   * @returns Observable
+   */
+  private _buildUpdatePermission(record: any): Observable<ActionStatus> {
+    if (record.metadata.resource_type !== 'local') {
+      return of({can: false, message: ''});
+    }
+    return this._routeToolService.permissions(record, this.recordType).pipe(
+      map((permissions: any) => { return {
+        can: permissions?.canUpdate?.can || false,
+        message: permissions?.canUpdate?.message || '',
+        routerLink: ['/records', this.recordType, 'edit', record.metadata.pid]
+      }})
+    );
+  }
+
+  /**
+   * Generating delete route permissions and parameters
+   * @param record - the current record
+   * @returns Observable
+   */
+  private _buildDeletePermission(record: any): Observable<ActionStatus> {
+    if (record.metadata.resource_type !== 'local') {
+      return of({can: false, message: ''});
+    }
+    return this._routeToolService.permissions(record, this.recordType).pipe(
+      map((permissions: any) => { return {
+        can: permissions?.canDelete?.can || false,
+        message: permissions?.canDelete?.message || '',
+        type: this.recordType
+      }})
+    );
+  }
+
+  /**
+   * Sort configuration
+   *
+   * @returns array with sort configuration
+   */
+  private _sortOptions() {
+    const options = this._options;
+    this._routeToolService.translateService.onLangChange.subscribe((translate: any) => {
+      const key = options.findIndex((option: any) => option.label === 'Name');
+      switch (translate.lang) {
+        case 'de':
+          options[key].value = 'de_name';
+          break;
+        case 'en':
+          options[key].value = 'en_name';
+          break;
+        case 'it':
+          options[key].value = 'it_name';
+          break;
+        default:
+          options[key].value = 'fr_name';
+      }
+    });
+    return options;
   }
 }
