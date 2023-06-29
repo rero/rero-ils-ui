@@ -18,6 +18,7 @@
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { DetailComponent, EditorComponent, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS } from '@rero/shared';
+import { of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
 import { PermissionGuard } from '../guard/permission.guard';
 import { EntitiesLocalDetailViewComponent } from '../record/detail-view/entities-detail-view/local/entities-local-detail-view.component';
@@ -27,6 +28,9 @@ export class EntitiesLocalRoute extends BaseRoute implements RouteInterface {
 
   /** Route name */
   readonly name = 'local_entities';
+
+  /** Record type */
+  recordType = 'local_entities';
 
   /**
    * Get Configuration
@@ -46,7 +50,11 @@ export class EntitiesLocalRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             index: this.name,
             label: _('Local entities'),
-            detailComponent: EntitiesLocalDetailViewComponent
+            detailComponent: EntitiesLocalDetailViewComponent,
+            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            redirectUrl: (record: any, action: string) => action === 'delete'
+              ? of('/records/entities')
+              : of(`/records/${this.recordType}/detail/${record.metadata.pid}`)
           }
         ]
       }
