@@ -28,6 +28,7 @@
     <i class="fa {{ icon.class }}" title="{{ icon.title }}" aria-hidden="true"></i>
     {{ 'MEF ID' | translate }}: {{ record.metadata.pid }}
   </small>
+  <span class="badge badge-warning" translate>Remote</span>
 
   <!-- SOURCES -->
   <article class="card my-2" *ngFor="let source of record.metadata.sources.sort()">
