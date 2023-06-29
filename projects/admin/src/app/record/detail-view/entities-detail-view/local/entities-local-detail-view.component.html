@@ -22,11 +22,13 @@
       {{ 'Search documents' | translate }}
     </a>
   </div>
-  <h1 class="mb-0">{{ record.metadata.authorized_access_point }}</h1>
-  <small *ngVar="icon(record.metadata.type) as icon">
+  <h1 class="mb-0" *ngVar="icon(record.metadata.type) as icon">
     <i class="fa {{ icon.class }}" title="{{ icon.title }}" aria-hidden="true"></i>
-    {{ 'MEF ID' | translate }}: {{ record.metadata.pid }}
+    {{ record.metadata.authorized_access_point }}</h1>
+  <small>
+    {{ 'LOCAL ID' | translate }}: {{ record.metadata.pid }}
   </small>
+  <span class="badge badge-info" translate>Local</span>
 
   <article class="card my-2">
     <header class="card-header">
