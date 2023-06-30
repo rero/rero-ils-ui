@@ -20,7 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 
 /** This pipe allows to find the best possible label to used from an array of labels.
- *  Each labels should have 2 keys : `language` and `label` ::
+ *  Each label must define 2 keys : `language` and `label` ::
  *
  *  [
  *    {'language': 'fr', 'label': 'mon label'},
@@ -28,7 +28,7 @@ import { TranslateService } from '@ngx-translate/core';
  *     ...
  *  ]
  *
- *  The label to find depending of the language. If the requested language label doesn't find
+ *  The label to find depending on the language. If the requested language label doesn't find
  *  into the array entries, the first label entry will be returned.
  */
 
