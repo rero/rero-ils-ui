@@ -49,7 +49,7 @@
         </div>
         <div *ngIf="record.metadata.overdue">
           <span class="badge badge-warning font-weight-normal" translate>overdue</span>
-          <span *ngIf="fees > 0" title="{{ 'Fess to date' | translate }}">
+          <span *ngIf="fees > 0" title="{{ 'Fees to date' | translate }}">
             {{ fees | currency:organisation.currency:'symbol' }}
           </span>
         </div>
