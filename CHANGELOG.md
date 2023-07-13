@@ -1,5 +1,28 @@
 # Changelog
 
+## [v14.4.0](https://github.com/rero/rero-ils-ui/tree/v14.4.0) (2023-07-13)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.3.0...v14.4.0)
+
+**New features:**
+* editor: add can deactivate guard [\#1000](https://github.com/rero/rero-ils-ui/pull/1000) (by @Garfield-fr)
+* patron profile: show overdue preview fees [\#1001](https://github.com/rero/rero-ils-ui/pull/1001) (by @Garfield-fr)
+* user: default active library [\#995](https://github.com/rero/rero-ils-ui/pull/995) (by @Garfield-fr)
+* http: add current_library parameter on api call [\#996](https://github.com/rero/rero-ils-ui/pull/996) (by @Garfield-fr)
+* Add claim mechanism for periodical issues [\#998](https://github.com/rero/rero-ils-ui/pull/998) (by @zannkukai)
+* circulation: remember fixed date checkout [\#991](https://github.com/rero/rero-ils-ui/pull/991) (by @Garfield-fr)
+* circulation: add ill requests tab [\#978](https://github.com/rero/rero-ils-ui/pull/978) (by @Garfield-fr)
+
+**Enhancements:**
+* fees: add invoice payment method [\#997](https://github.com/rero/rero-ils-ui/pull/997) (by @PascalRepond)
+* item: delete the default value [\#977](https://github.com/rero/rero-ils-ui/pull/977) (by @Garfield-fr)
+* keyboard shortcuts: add inventory list hotkey [\#992](https://github.com/rero/rero-ils-ui/pull/992) (by @PascalRepond)
+
+**Fixes:**
+* holdings: issue creation permission management [\#999](https://github.com/rero/rero-ils-ui/pull/999) (by @zannkukai)
+* patron profile: fix bug on contributions [\#1002](https://github.com/rero/rero-ils-ui/pull/1002) (by @Garfield-fr)
+* item: add circulation information [\#976](https://github.com/rero/rero-ils-ui/pull/976) (by @Garfield-fr)
+
 ## [v14.3.0](https://github.com/rero/rero-ils-ui/tree/v14.3.0) (2023-05-16)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.2.0...v14.3.0)
