@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,24 +33,31 @@ export class SearchBarComponent implements OnInit {
   @Input() maxLengthSuggestion = 100;
 
 
-  get action() {
+  get action(): string {
     return `/${this.viewcode}/search/documents`;
   }
 
-  get typeaheadOptionsLimit() {
+  get typeaheadOptionsLimit(): number {
     return this._searchBarConfigService.typeaheadOptionsLimit;
   }
 
+  /** Array types config */
   recordTypes = [];
 
+  /**
+   * Constructor
+   * @param _translateService - TranslateService
+   * @param _searchBarConfigService - SearchBarConfigService
+   */
   constructor(
     private _translateService: TranslateService,
     private _searchBarConfigService: SearchBarConfigService
   ) {
-      this.placeholder = this._translateService.instant('Search');
-   }
+    this.placeholder = this._translateService.instant('Search');
+  }
 
-  ngOnInit() {
+  /** OnInit hook */
+  ngOnInit(): void {
     if (this.language) {
       this._translateService.use(this.language);
     }
