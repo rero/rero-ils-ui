@@ -1,5 +1,5 @@
 <!--
-  RERO angular core
+  RERO ILS UI
   Copyright (C) 2019-2023 RERO
   Copyright (C) 2019-2023 UCLouvain
 
@@ -65,6 +65,14 @@
           </a>
         </span>
       </div>
+      <!-- idx 1: local entity -->
+      <admin-add-entity-local
+        *ngIf="idx === 1"
+        class="ml-2 w-100"
+        [entityTypeFilters]="entityTypeFilters"
+        [searchTerm]="searchTerm"
+        (recordCreate)="typeaheadTemplateMethods.selectMatch($event)"
+      ></admin-add-entity-local>
     </div>
   </div>
 </ng-template>
