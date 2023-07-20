@@ -19,9 +19,10 @@ import { Component, OnInit } from '@angular/core';
 import { MefTypeahead } from '@app/admin/classes/typeahead/mef-typeahead';
 import { EntityTypeFilter } from '@app/admin/record/formly/type/entity-typeahead/entity-typeahead.interface';
 import { FieldType } from '@ngx-formly/core';
+import { TranslateService } from '@ngx-translate/core';
+import { SuggestionMetadata } from '@rero/ng-core';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { Observable, Observer } from 'rxjs';
-import { SuggestionMetadata } from '@rero/ng-core';
 import { map, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -53,10 +54,12 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _remoteTypeahead: MefTypeahead
+   * @param _remoteTypeahead - MefTypeahead
+   * @param _translateService - TranslateService
    */
   constructor(
-    private _remoteTypeahead: MefTypeahead
+    private _remoteTypeahead: MefTypeahead,
+    private _translateService: TranslateService
   ) {
     super();
   }
@@ -72,6 +75,21 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
        return this._remoteTypeahead
          .getSuggestions(options, query, this._numberOfSuggestions)
          .pipe(
+           map((suggestions: any) => {
+            // Section header will be created only if suggestion defines a valid value.
+            // If the suggestion doesn't define any value, this is because this is a fake suggestion;
+            // added manually (see above).
+            // In such case, don't create any TypeaheadMatch.
+            if (suggestions.find((suggestion: SuggestionMetadata) => suggestion.column === 1) === undefined) {
+              suggestions.push({
+                label: undefined,
+                value: undefined,
+                group: this._translateService.instant('link to local authority'),
+                column: 1,
+              });
+            }
+            return suggestions;
+           }),
            map((suggestions: any) => {
              let tmpSuggestions = this._splitSuggestionsByColumn(suggestions);
              tmpSuggestions = this._orderSuggestions(tmpSuggestions);
@@ -136,17 +154,16 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
   private _splitSuggestionsByColumn(suggestions: SuggestionMetadata[]): SuggestionMetadata[][] {
     const sections = [];
     suggestions.forEach(suggestion => {
-      if (typeof(suggestion) === 'string'){
+      if (typeof(suggestion) === 'string') {
         return;
       }
       const columnIdx = suggestion?.column || 0;
       if (!sections[columnIdx]) {
         sections[columnIdx] = [];
       }
-      delete suggestion?.column;
       sections[columnIdx].push(suggestion);
     });
-    return sections.filter(section => section);  // remove empty slot/column from array
+    return sections;
   }
 
   /** Order each suggestion for each section. */
@@ -165,11 +182,16 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
       const newSectionSuggestions = [];
       let lastGroup = '';
       section.forEach(suggestion => {
-        if (suggestion?.group && suggestion.group !== lastGroup){
+        if (suggestion?.group && suggestion.group !== lastGroup) {
           lastGroup = suggestion.group;
           newSectionSuggestions.push(new TypeaheadMatch(suggestion.group, suggestion.group, true));
         }
-        newSectionSuggestions.push(new TypeaheadMatch(suggestion, suggestion.label, false));
+        // We create a section header only if the value is present.
+        // If we have a suggestion with no value, it's because it's been added manually (see above),
+        // no need to create a new suggestion.
+        if (suggestion.value) {
+          newSectionSuggestions.push(new TypeaheadMatch(suggestion, suggestion.label, false));
+        }
       });
       return newSectionSuggestions;
     })
