@@ -143,6 +143,7 @@ import { LocalWorkDetailViewComponent } from './record/detail-view/entities-deta
 import { RemoteEntitiesDetailViewComponent } from './record/detail-view/entities-detail-view/remote/entities-remote-detail-view.component';
 import { RemoteEntitiesOrganisationDetailViewComponent } from './record/detail-view/entities-detail-view/remote/remote-organisation-detail-view/remote-entities-organisation-detail-view.component';
 import { RemoteEntitiesPersonDetailViewComponent } from './record/detail-view/entities-detail-view/remote/remote-person-detail-view/remote-entities-person-detail-view.component';
+import { RemoteTopicDetailViewComponent } from './record/detail-view/entities-detail-view/remote/remote-topic-detail-view/remote-topic-detail-view.component';
 import { HoldingDetailViewComponent } from './record/detail-view/holding-detail-view/holding-detail-view.component';
 import { ExpectedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/expected-issue/expected-issue.component';
 import { ReceivedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/received-issue/received-issue.component';
@@ -172,6 +173,8 @@ import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-vi
 import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
 import { UserIdComponent } from './record/editor/wrappers/user-id/user-id.component';
 import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patron-type-item-type/cipo-patron-type-item-type.component';
+import { AddEntityLocalFormComponent } from './record/formly/type/entity-typeahead/add-entity-local-form/add-entity-local-form.component';
+import { AddEntityLocalComponent } from './record/formly/type/entity-typeahead/add-entity-local.component';
 import { EntityTypeaheadComponent } from './record/formly/type/entity-typeahead/entity-typeahead.component';
 import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { OperationLogsDialogComponent } from './record/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
@@ -190,7 +193,6 @@ import { PreviewEmailModule } from './shared/preview-email/preview-email.module'
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { RemoteTopicDetailViewComponent } from './record/detail-view/entities-detail-view/remote/remote-topic-detail-view/remote-topic-detail-view.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -323,6 +325,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         LocalPlaceDetailViewComponent,
         LocalWorkDetailViewComponent,
         RemoteTopicDetailViewComponent,
+        AddEntityLocalComponent,
+        AddEntityLocalFormComponent
     ],
     imports: [
       AppRoutingModule,
