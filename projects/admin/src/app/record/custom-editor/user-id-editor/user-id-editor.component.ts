@@ -42,7 +42,7 @@ export class UserIdEditorComponent implements OnInit {
   /** remotely loaded User id in the invenio db */
   loadedUserID: string = null;
 
-  /** JOSONSchema */
+  /** JSONSchema */
   schema = null;
 
   /** form initial values */
