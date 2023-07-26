@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnInit } from '@angular/core';
-import { AppSettingsService } from '../../service/app-settings.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'shared-contribution',
@@ -37,28 +37,40 @@ export class ContributionComponent implements OnInit {
   /** The view where component is displayed (viewcode | 'professional') */
   @Input() view: string = 'professional';
 
-  private _entityTypes = this._appSettingsService.settings.agentAgentTypes || {};
+  /** If the limit is activated, we add 3 dots at the end of the contribution line. */
+  limit: boolean = false;
 
   // CONSTRUCTORS & HOOKS =====================================================
   /**
    * Constructor
-   * @param _appSettingsService - AppSettingsService
+   * @param _translateService - TranslateService
    */
   constructor(
-    private _appSettingsService: AppSettingsService
+    private _translateService: TranslateService
   ) { }
 
   /** OnInit hook */
   ngOnInit() {
     this.contributions = this.contributions || [];
     this.limitRecord = (this.limitRecord === undefined) ? this.contributions.length : this.limitRecord;
-    this.contributions = this.contributions
-      .filter(contributor => this.filters.includes(contributor.entity.type))
-      .map(contributor => {
-        contributor.entity.target = (contributor.entity?.type in this._entityTypes)
-          ? this._entityTypes[contributor.entity?.type]
-          : undefined;
-        return contributor;
-      });
+    this.contributions = this.contributions.filter(contributor => this.filters.includes(contributor.entity.type));
+
+    if (this.contributions.length > this.limitRecord) {
+      this.contributions = this.contributions.slice(0, this.limitRecord);
+      this.limit = true;
+    }
+
+    this.contributions.forEach(contributor => {
+      if (contributor.entity?.pid) {
+        // Linked entity
+        const type = contributor.entity.resource_type;
+        contributor.entity.target = `contribution.entity.pids.${type}:${contributor.entity.pids[type]}`;
+      } else {
+        // Textual entity
+        const field = `authorized_access_point_${this._translateService.currentLang}`;
+        const fieldData = (field in contributor.entity) ? field : 'authorized_access_point';
+        contributor.entity.target = `contribution.entity.${field}:"${contributor.entity[fieldData]}"`;
+      }
+    });
   }
 }
