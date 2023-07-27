@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -140,7 +141,7 @@ export class CheckinComponent implements OnInit {
       },
       error => {
         // If no action could be done by the '/item/checkin' api, an error will be raised.
-        // catch this error to display it as an toastr message.
+        // catch this error to display it as a toastr message.
         this._checkinErrorManagement(error, itemBarcode);
       }
     );
@@ -216,10 +217,10 @@ export class CheckinComponent implements OnInit {
               break;
           }
         });
-      } else {
-        if (item.total.value === 1) {
-          const newItem = this.items.find(it => it.barcode === barcode);
-          if (newItem) {
+      } else if (item.total.value === 1) {
+          // Check if the item is already into the item list. If it happens,
+          // just notify the user and clear the form.
+          if (this.items.find(it => it.barcode === barcode)) {
             this._toastService.warning(
               this._translate.instant('The item is already in the list.'),
               this._translate.instant('Checkin')
@@ -228,12 +229,10 @@ export class CheckinComponent implements OnInit {
           } else {
             this.checkin(barcode);
           }
-        }
-        if (patron.total.value === 1) {
+      } else if (patron.total.value === 1) {
           this._router.navigate(
             ['/circulation', 'patron', barcode, 'loan']
           );
-        }
       }
     },
     error => this._toastService.error(
