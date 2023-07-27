@@ -1,6 +1,7 @@
 <!--
   RERO ILS UI
   Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -146,7 +147,7 @@
           </span>
         </dd>
       </ng-container>
-      <ng-container *ngIf="item.loan.last_end_date && item.actionDone === 'checkin'">
+      <ng-container *ngIf="item.actionDone === 'checkin' && item?.loan?.last_end_date">
         <dt class="offset-1 col-sm-3 col-md-2 col-lg-1 label-title" translate>Due date</dt>
         <dd name="due_date" class="col-sm-8 col-md-9 col-lg-10">
           {{ item.loan.last_end_date | dateTranslate :'shortDate' }}
