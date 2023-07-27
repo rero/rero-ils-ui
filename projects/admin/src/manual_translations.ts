@@ -228,3 +228,7 @@ _('email_to');
 _('email_cc');
 _('email_bcc');
 _('email_reply_to');
+
+// Non-extracted string (TODO :: search why ?)
+_('Vol. {{ volume }}')
+_('n°. {{ number }}')

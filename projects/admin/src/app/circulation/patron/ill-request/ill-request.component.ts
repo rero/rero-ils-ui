@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,9 +27,11 @@ import { switchMap } from 'rxjs/operators';
 })
 export class IllRequestComponent implements OnInit {
 
+  // COMPONENT ATTRIBUTES =====================================================
   /** Ill records observable */
   illRequests$: Observable<any>;
 
+  // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
    * @param _illRequestApiService - IllRequestApiService
@@ -39,7 +42,7 @@ export class IllRequestComponent implements OnInit {
     private _patronService: PatronService
   ) { }
 
-  /** onInit hook */
+  /** OnInit hook */
   ngOnInit(): void {
     this.illRequests$ = this._patronService.currentPatron$.pipe(
       switchMap((patron: any) => {
