@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,14 +41,14 @@ export class IllRequestApiService extends BaseApi {
   /**
    * Get ills requests with pending status by patron pid
    * @param patronPid - The patron pid
+   * @param filters - criteria to apply on the query to filter the result.
    * @returns Array of ill request record
    */
-  getByPatronPid(patronPid: string): Observable<Record | Error> {
-    const query = `patron.pid:${patronPid} AND status:${ILLRequestStatus.PENDING}`;
+  getByPatronPid(patronPid: string, filters?: {[key: string]: string}): Observable<Record | Error> {
+    const query = `patron.pid:${patronPid}`;
     return this._recordService
-      .getRecords(
-        this.RESOURCE_NAME, query , 1, RecordService.MAX_REST_RESULTS_SIZE,
-        undefined, undefined, BaseApi.reroJsonheaders, 'created'
-      ).pipe(map((result: Record) => result.hits.hits));
+      .getRecords(this.RESOURCE_NAME, query , 1, RecordService.MAX_REST_RESULTS_SIZE,
+                  undefined, filters, BaseApi.reroJsonheaders, 'created')
+      .pipe(map((result: Record) => result.hits.hits));
   }
 }
