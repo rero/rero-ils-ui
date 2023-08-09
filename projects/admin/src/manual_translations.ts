@@ -202,6 +202,8 @@ _('{{ counter }} hidden holdings');
 // Menu entries
 _('User services');
 _('Catalog');
+_('Acquisitions');
+_('Accounts');
 _('Create a bibliographic record');
 _('Current loans');
 _('ILL requests');
