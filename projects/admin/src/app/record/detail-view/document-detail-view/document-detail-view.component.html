@@ -37,8 +37,7 @@
       <ng-container *ngIf="record.metadata.genreForm">
         <ul class="list-unstyled">
           <li class="figure-caption" *ngFor="let genre of record.metadata.genreForm">
-            <i class="fa fa-tag mr-1"></i>
-            {{ genre.entity | entityLabel }}
+            <ng-container [ngTemplateOutlet]="entityLink" [ngTemplateOutletContext]="{ entity: genre, class: 'text-secondary' }"></ng-container>
           </li>
         </ul>
       </ng-container>
@@ -184,7 +183,7 @@
           <span *ngFor="let subject of subjects"
             class="badge badge-secondary mr-1"
             title="{{ subject.entity.type | translate }}">
-            <i class="fa fa-tag"></i> {{ subject.entity | entityLabel }}
+            <ng-container [ngTemplateOutlet]="entityLink" [ngTemplateOutletContext]="{ entity: subject, class: 'text-light' }"></ng-container>
           </span>
         </div>
       </div>
@@ -276,3 +275,17 @@
     [resourcePid]="record.metadata.pid"
   ></admin-operation-logs-dialog>
 </ng-container>
+
+<ng-template #entityLink let-entity="entity" let-class="class">
+  <i class="fa fa-tag mr-1"></i>
+  <a
+    *ngIf="entity.entity.resource_type; else subjectNoLink"
+    [class]="class"
+    [routerLink]="['/records', entity.entity.resource_type + '_entities', 'detail', entity.entity.pid]"
+  >
+    {{ entity.entity | entityLabel }}
+  </a>
+  <ng-template #subjectNoLink>
+    {{ entity.entity | entityLabel }}
+  </ng-template>
+</ng-template>
