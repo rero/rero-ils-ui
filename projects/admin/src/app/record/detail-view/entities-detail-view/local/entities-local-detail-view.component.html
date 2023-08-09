@@ -44,5 +44,13 @@
       <span *ngSwitchDefault>{{ 'Missing template for this entity type:' | translate }} {{ record.metadata.type }}</span>
     </article>
   </article>
+
+  <!-- OPERATION LOGS-->
+  <admin-operation-logs-dialog
+    *ngIf="isEnabledOperationLog"
+    [resourceType]="'local_entities'"
+    [resourcePid]="record.metadata.pid"
+  ></admin-operation-logs-dialog>
+
 </ng-container>
 
