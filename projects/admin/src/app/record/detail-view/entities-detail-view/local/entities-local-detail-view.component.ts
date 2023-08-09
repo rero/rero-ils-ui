@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { OperationLogsService } from '@app/admin/service/operation-logs.service';
 import { Tools } from '@app/admin/utils/tools';
 import { TranslateService } from '@ngx-translate/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
@@ -26,7 +27,7 @@ import { EntityType, EntityTypeIcon } from '@rero/shared';
   selector: 'admin-entities-local-detail-view',
   templateUrl: './entities-local-detail-view.component.html'
 })
-export class EntitiesLocalDetailViewComponent implements DetailRecord {
+export class EntitiesLocalDetailViewComponent implements OnInit, DetailRecord {
 
   /** Observable resolving record data */
   record$: any;
@@ -37,15 +38,25 @@ export class EntitiesLocalDetailViewComponent implements DetailRecord {
   /** Enum of type of Entity */
   entityType = EntityType;
 
+  /** Is operation log enabled */
+  isEnabledOperationLog: boolean = false;
+
   /**
    * Constructor
    * @param _translateService - TranslateService
    * @param _router - Router
+   * @param _operationLogsService - OperationLogsService
    */
   constructor(
     private _translateService: TranslateService,
-    private _router: Router
+    private _router: Router,
+    private _operationLogsService: OperationLogsService
   ) {}
+
+  /** OnInit hook */
+  ngOnInit(): void {
+    this.isEnabledOperationLog = this._operationLogsService.isLogVisible('local_entities');
+  }
 
   /**
    * Icon
