@@ -21,6 +21,7 @@ import { EntityTypeFilter } from '@app/admin/record/formly/type/entity-typeahead
 import { FieldType } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SuggestionMetadata } from '@rero/ng-core';
+import { PERMISSIONS, PermissionsService } from '@rero/shared';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { Observable, Observer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -56,10 +57,12 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
    * Constructor
    * @param _remoteTypeahead - MefTypeahead
    * @param _translateService - TranslateService
+   * @param _permissionService - PermissionsService
    */
   constructor(
     private _remoteTypeahead: MefTypeahead,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
+    private _permissionService: PermissionsService
   ) {
     super();
   }
@@ -80,7 +83,10 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
             // If the suggestion doesn't define any value, this is because this is a fake suggestion;
             // added manually (see above).
             // In such case, don't create any TypeaheadMatch.
-            if (suggestions.find((suggestion: SuggestionMetadata) => suggestion.column === 1) === undefined) {
+            if (
+              this._permissionService.canAccess(PERMISSIONS.LOCENT_CREATE)
+              && suggestions.find((suggestion: SuggestionMetadata) => suggestion.column === 1) === undefined
+            ) {
               suggestions.push({
                 label: undefined,
                 value: undefined,
