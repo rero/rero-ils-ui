@@ -31,15 +31,15 @@
   <ng-container *ngIf="record.genreForm">
     <dt translate>Genre form</dt>
     <dd>
-      <i
-        class="fa fa-circle mr-2"
-        [ngClass]="{'text-success': record.genreForm, 'text-danger': !record.genreForm}"
-      ></i>
+      <i class="fa mr-2" [ngClass]="{
+        'fa-check text-success': record.conference,
+        'fa-times text-danger': !record.conference
+      }"></i>
     </dd>
   </ng-container>
 
   <!-- ALTERNATIVE NAMES -->
-  <ng-container *ngIf="record.alternative_names">
+  <ng-container *ngIf="record.alternative_names && record.alternative_names.length > 0">
     <dt translate>Alternative names</dt>
     <dd>
       <ul>

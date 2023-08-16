@@ -36,6 +36,10 @@ export class ContributionComponent implements OnInit {
   @Input() withRoles: boolean = false;
   /** The view where component is displayed (viewcode | 'professional') */
   @Input() view: string = 'professional';
+  /** Enables or disables links */
+  @Input() activateLink: boolean = true;
+  /** Is the link to entity detail view should be activated */
+  @Input() withEntityLink: boolean = false;
 
   /** If the limit is activated, we add 3 dots at the end of the contribution line. */
   limit: boolean = false;
@@ -45,9 +49,7 @@ export class ContributionComponent implements OnInit {
    * Constructor
    * @param _translateService - TranslateService
    */
-  constructor(
-    private _translateService: TranslateService
-  ) { }
+  constructor(private _translateService: TranslateService) {}
 
   /** OnInit hook */
   ngOnInit() {

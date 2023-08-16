@@ -55,10 +55,10 @@
   <ng-container *ngIf="record.conference">
     <dt translate>Conference</dt>
     <dd>
-      <i
-        class="fa fa-circle mr-2"
-        [ngClass]="{'text-success': record.conference, 'text-danger': !record.conference}"
-      ></i>
+      <i class="fa mr-2" [ngClass]="{
+        'fa-check text-success': record.conference,
+        'fa-times text-danger': !record.conference
+      }"></i>
     </dd>
   </ng-container>
 
@@ -75,7 +75,7 @@
   </ng-container>
 
   <!-- ALTERNATIVE NAMES -->
-  <ng-container *ngIf="record.alternative_names">
+  <ng-container *ngIf="record.alternative_names && record.alternative_names.length > 0">
     <dt translate>Alternative names</dt>
     <dd>
       <ul>

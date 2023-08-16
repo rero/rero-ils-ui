@@ -65,7 +65,11 @@
       </ng-container>
 
       <!-- CONTRIBUTION -->
-      <shared-contribution [contributions]="record.metadata?.contribution" [withRoles]="true"></shared-contribution>
+      <shared-contribution [contributions]="record.metadata?.contribution"
+                           [withRoles]="true"
+                           [activateLink]="activateLink"
+                           [withEntityLink]="true">
+      </shared-contribution>
 
       <!-- PUBLICATION ACTIVITY: PUBLICATION -->
       <ng-container *ngVar="record.metadata.provisionActivity | documentProvisionActivity | keyvalue | callbackArrayFilter: filterPublicationProvisionActivity as provisionActivity">
@@ -279,7 +283,7 @@
 <ng-template #entityLink let-entity="entity" let-class="class">
   <i class="fa fa-tag mr-1"></i>
   <a
-    *ngIf="entity.entity.resource_type; else subjectNoLink"
+    *ngIf="activateLink && entity.entity.resource_type; else subjectNoLink"
     [class]="class"
     [routerLink]="['/records', entity.entity.resource_type + '_entities', 'detail', entity.entity.pid]"
   >
