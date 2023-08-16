@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2023 RERO
+  Copyright (C) 2019-2023 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -33,13 +33,24 @@
 </ng-template>
 
 <ng-template #entityTpl let-entity=entity>
-  <ng-container *ngIf="entity?.target else entityNoLink">
-    <ng-container *ngIf="view !== 'professional'; else professional">
-      <a href="/{{ view }}/search/documents?q={{ entity.target }}&simple=0">{{ entity | entityLabel }}</a>
+  <ng-container *ngIf="(activateLink || withEntityLink) && entity?.target else entityNoLink">
+
+    <!-- ENTITY LINK -->
+    <ng-container *ngIf="withEntityLink && entity?.pid else searchLink">
+      <a [routerLink]="['/records/', entity.resource_type+'_entities', 'detail', entity.pid]">{{ entity | entityLabel }}</a>
     </ng-container>
-    <ng-template #professional>
-      <a class="mr-1" [routerLink]="['/records', 'documents']" [queryParams]="{'q': entity.target, 'simple': 0}">{{ entity | entityLabel }}</a>
+
+    <!-- SEARCH LINK -->
+    <ng-template #searchLink>
+      <ng-container *ngIf="view !== 'professional'; else professional">
+        <a href="/{{ view }}/search/documents?q={{ entity.target }}&simple=0">{{ entity | entityLabel }}</a>
+      </ng-container>
+      <ng-template #professional>
+        <a [routerLink]="['/records', 'documents']" [queryParams]="{q: entity.target, simple: 0}">{{ entity | entityLabel }}</a>
+      </ng-template>
     </ng-template>
   </ng-container>
+
+  <!-- NO LINK -->
   <ng-template #entityNoLink>{{ entity | entityLabel }}</ng-template>
 </ng-template>

@@ -87,7 +87,6 @@ export class EntitiesLocalDetailViewComponent implements OnInit, DetailRecord {
    * @param metadata - the record metadata
    */
   search(metadata: any): void {
-    console.log(metadata);
     this._router.navigate(
       ['/records', 'documents'],
       {

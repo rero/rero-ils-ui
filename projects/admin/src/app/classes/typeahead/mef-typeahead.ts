@@ -39,18 +39,18 @@ export class MefTypeahead implements ITypeahead {
 
   /**
    * Constructor
-   * @param _http - HttpClient
-   * @param _translateService - TranslateService
-   * @param _appSettingsService - AppSettingsService
-   * @param _recordService - RecordService
-   * @param _apiService - ApiService
+   * @param http - HttpClient
+   * @param translateService - TranslateService
+   * @param appSettingsService - AppSettingsService
+   * @param recordService - RecordService
+   * @param apiService - ApiService
    */
   constructor(
-    protected _http: HttpClient,
-    protected _translateService: TranslateService,
-    protected _appSettingsService: AppSettingsService,
-    private _recordService: RecordService,
-    private _apiService: ApiService
+    protected http: HttpClient,
+    protected translateService: TranslateService,
+    protected appSettingsService: AppSettingsService,
+    private recordService: RecordService,
+    private apiService: ApiService
   ) {  }
 
   /** Get name of typeahead */
@@ -93,7 +93,7 @@ export class MefTypeahead implements ITypeahead {
     const params = new HttpParams().set('url', value);
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    return this._http
+    return this.http
       .get(this._apiProxyEntryPoint, {params, headers})
       .pipe(
         // TODO :: remove this `map` pipe when MEF api return correct properties
@@ -131,13 +131,13 @@ export class MefTypeahead implements ITypeahead {
    */
   private _getLocalValueAsHTML(options: any, value: string): Observable<string> {
     const pid = value.split('/').slice(-1)[0];
-    return this._recordService
+    return this.recordService
       .getRecord('local_entities', pid)
       .pipe(
          map((data: any) => {
            const entity = {
              label: data.metadata.authorized_access_point,
-             uri:  this._buildLocalEntityDetailViewURI(data.metadata.pid)
+             uri: this._buildLocalEntityDetailViewURI(data.metadata.pid)
            };
            const badges = [];
            if (data.metadata?.source_catalog) {
@@ -202,7 +202,7 @@ export class MefTypeahead implements ITypeahead {
     const params = new HttpParams().set('size', numberOfSuggestions);
     // Build API call to get remote suggestions.
     const remoteUrl = `${this._remoteSearchEntrypoint}/${searchCategory}/${searchTerm}/`;
-    const remoteSuggestions$ = this._http.get(remoteUrl, {headers, params}).pipe(
+    const remoteSuggestions$ = this.http.get(remoteUrl, {headers, params}).pipe(
       map((results: any) => results?.hits?.total >= 0 ? results.hits.hits : []),
       map((hits: Array<any>) => this._buildRemoteSuggestions(hits)),
       catchError(e => {
@@ -214,7 +214,7 @@ export class MefTypeahead implements ITypeahead {
     );
     // Build API call to get local entity suggestions.
     const localUrl = `${this._localSearchEntrypoint}/${searchCategory}/${searchTerm}/`;
-    const localSuggestions$ = this._http.get(localUrl, {headers, params}).pipe(
+    const localSuggestions$ = this.http.get(localUrl, {headers, params}).pipe(
       map((hits: Array<any>) => this._buildLocalSuggestions(hits)),
       catchError(e => {
         switch (e.status) {
@@ -259,7 +259,7 @@ export class MefTypeahead implements ITypeahead {
       label: metadata.authorized_access_point,
       externalLink: this._get_source_uri(metadata?.identifiedBy, sourceName),
       value: this._get_source_uri(metadata?.identifiedBy, 'mef'),
-      group: this._translateService.instant('link to authority {{ sourceName }}', {sourceName}),
+      group: this.translateService.instant('link to authority {{ sourceName }}', {sourceName}),
       column: 0
     };
   }
@@ -282,8 +282,8 @@ export class MefTypeahead implements ITypeahead {
    * @return array of sources
    */
   private _sources(): string[] {
-    const language = this._translateService.currentLang;
-    const order: any = this._appSettingsService.agentLabelOrder;
+    const language = this.translateService.currentLang;
+    const order: any = this.appSettingsService.agentLabelOrder;
     const key = language in order ? language : 'fallback';
     const agentSources = (key === 'fallback')
       ? order[order[key]]
@@ -302,9 +302,9 @@ export class MefTypeahead implements ITypeahead {
       return {
         label: hit.authorized_access_point,
         description: hit?.source_catalog,
-        value: this._apiService.getRefEndpoint('local_entities', hit.pid),
+        value: this.apiService.getRefEndpoint('local_entities', hit.pid),
         externalLink: this._buildLocalEntityDetailViewURI(hit.pid),
-        group: this._translateService.instant('link to local authority'),
+        group: this.translateService.instant('link to local authority'),
         column: 1,
       };
     });
@@ -317,6 +317,14 @@ export class MefTypeahead implements ITypeahead {
    * @returns the entity detail view URI
    */
   private _buildLocalEntityDetailViewURI(pid: string): string {
-    return `/records/local_entities/detail/${pid}`;
+    let url = `/records/local_entities/detail/${pid}`;
+    // TODO :: Very ugly hack.... I'm dying... but not found better alternative :(
+    //   The problem is that professional interface is included as a webComponent into the public RERO-ILS app.
+    //   So nor `router.snapshot`, nor `Location` haven't the context that "/professional" prefix url exists,
+    //   The only way I found to deal with this problem is to check the complete "window.location"
+    if (window.location.pathname.startsWith('/professional/')) {
+      url = `/professional${url}`;
+    }
+    return url;
   }
 }
