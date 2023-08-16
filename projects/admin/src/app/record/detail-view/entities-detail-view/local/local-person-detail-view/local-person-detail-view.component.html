@@ -54,7 +54,7 @@
   </ng-container>
 
   <!-- ALTERNATIVE NAMES -->
-  <ng-container *ngIf="record.alternative_names">
+  <ng-container *ngIf="record.alternative_names && record.alternative_names.length > 0">
     <dt translate>Alternative names</dt>
     <dd>
       <ul>

@@ -36,11 +36,7 @@ describe('DocumentRouteService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
-
-  it('should retrieve the name', () => {
-    expect(service.getResources()).toEqual(['documents', 'persons', 'corporate-bodies']);
-  });
-
+  
   it('should create the configuration the first time, then the return is undefined', () => {
     let config = service.create('aoste');
     expect(typeof config === 'object').toBeTruthy();

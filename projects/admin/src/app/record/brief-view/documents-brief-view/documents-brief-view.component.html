@@ -30,7 +30,11 @@
     </h5>
     <ng-container class="card-text">
       <!-- contribution -->
-      <shared-contribution [contributions]="record.metadata?.contribution" [limitRecord]="3"></shared-contribution>
+      <shared-contribution
+        [contributions]="record.metadata?.contribution"
+        [limitRecord]="3"
+        [activateLink]="!type.startsWith('import_')"
+      ></shared-contribution>
       <!-- provision activity publications -->
       <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
         <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>

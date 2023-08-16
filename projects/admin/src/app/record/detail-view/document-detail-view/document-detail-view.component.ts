@@ -62,6 +62,9 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   /** Css classes for dd in template */
   ddCssClass = 'col-sm-6 col-md-8 mb-0';
 
+  /** Enables or disables links */
+  activateLink: boolean = true;
+
   /** Mapping types for import */
   private _mappingtypes = {
     'bf:Ean': 'bf:Isbn',
@@ -147,6 +150,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
 
   /** On init hook */
   ngOnInit(): void {
+    this.activateLink = !this._activatedRouter.snapshot.params.type.startsWith('import_');
     this._recordObs = this.record$.pipe(
       switchMap((record: any) => {
         this.record = record;
