@@ -1,6 +1,6 @@
  <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2019-2023 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,70 +14,29 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<ng-container *ngIf="isBrief; else detailedView">
-  <ng-container *ngIf="record && record.metadata.partOf">
-    <!-- part of -->
-    <ng-container *ngFor="let partOf of record.metadata.partOf; let i = index">
-      <ng-container *ngIf="partOf.document.pid | getRecord: 'documents' : 'object' : '': { 'Content-Type': 'application/rero+json' } | async as hostDocument">
-        <div class="mb-0">
-            <b>{{ getPartOfLabel(hostDocument) }}</b>:
-            <ng-container *ngIf="isPublicView; else adminLink">
-              <a id="{{ 'doc-part-of-' + i }}" href="/{{ viewcode }}/documents/{{ partOf.document.pid }}">
-                {{ hostDocument.metadata.title | mainTitle }}
-              </a>
-            </ng-container>
-            <ng-template #adminLink>
-              <a id="{{ 'doc-part-of-' + i }}" [routerLink]="['/records', 'documents', 'detail', partOf.document.pid]">
-                {{ hostDocument.metadata.title | mainTitle }}
-              </a>
-            </ng-template>
-            <ng-container *ngIf="partOf.numbering">
-              <span>; </span>
-              <ng-container *ngFor="let numbering of partOf.numbering; let isLast = last">
-                <span class="list-inline-item" id="{{ 'doc-part-of-numbering-' + i }}" *ngIf="formatNumbering(numbering) as num">
-                  {{ num }}<ng-container *ngIf="!isLast">, </ng-container>
-                </span>
-              </ng-container>
-            </ng-container>
-        </div>
+<ng-container *ngIf="record && record.metadata.partOf">
+  <!-- part of -->
+  <ng-container *ngFor="let partOf of record.metadata.partOf; let i = index">
+    <div class="mb-0">
+      <b>{{ getPartOfLabel(record) }}</b>:
+      <ng-container *ngIf="isPublicView; else adminLink">
+        <a id="{{ 'doc-part-of-' + i }}" href="/{{ viewcode }}/documents/{{ partOf.document.pid }}">
+          {{ partOf.document.title || partOf.document.pid | getRecord: 'document': 'field': 'title' | async }}
+        </a>
       </ng-container>
-    </ng-container>
+      <ng-template #adminLink>
+        <a id="{{ 'doc-part-of-' + i }}" [routerLink]="['/records', 'documents', 'detail', partOf.document.pid]">
+          {{ partOf.document.title || partOf.document.pid | getRecord: 'document': 'field': 'title' | async }}
+        </a>
+      </ng-template>
+      <ng-container *ngIf="partOf.numbering">
+        <span>; </span>
+        <ng-container *ngFor="let numbering of partOf.numbering; let isLast = last">
+          <span class="list-inline-item" id="{{ 'doc-part-of-numbering-' + i }}" *ngIf="formatNumbering(numbering) as num">
+            {{ num }}<ng-container *ngIf="!isLast">, </ng-container>
+          </span>
+        </ng-container>
+      </ng-container>
+    </div>
   </ng-container>
 </ng-container>
-<ng-template #detailedView>
-  <ng-container *ngIf="record && record.metadata.partOf">
-    <!-- part of -->
-    <ng-container *ngFor="let document of record.metadata.partOf; let i = index">
-      <ng-container *ngIf="document.document.pid | getRecord: 'documents' : 'object' : '': { 'Content-Type': 'application/rero+json' } | async as hostDocument">
-        <dl class="row mb-0">
-          <dt id="{{ 'doc-part-of-label-' + i }}" class="col-auto">
-            {{ getPartOfLabel(hostDocument) }}
-          </dt>
-          <dd class="col mb-0">
-            <div class="row">
-              <ng-container *ngIf="isPublicView; else adminLink">
-                <a id="{{ 'doc-part-of-' + i }}" href="/{{ viewcode }}/documents/{{ document.document.pid }}">
-                  {{ hostDocument.metadata.title | mainTitle }}
-                </a>
-              </ng-container>
-              <ng-template #adminLink>
-                <a id="{{ 'doc-part-of-' + i }}" [routerLink]="['/records', 'documents', 'detail', document.document.pid]">
-                  {{ hostDocument.metadata.title | mainTitle }}
-                </a>
-              </ng-template>
-              <ng-container *ngIf="document.numbering">
-                <span>;</span>
-                <ul class="list-unstyled mb-0 ml-1">
-                  <li *ngFor="let numbering of document.numbering">
-                    <span id="{{ 'doc-part-of-numbering-' + i }}" *ngIf="formatNumbering(numbering) as num">{{ num }}</span>
-                  </li>
-                </ul>
-              </ng-container>
-            </div>
-          </dd>
-        </dl>
-      </ng-container>
-    </ng-container>
-  </ng-container>
-</ng-template>
