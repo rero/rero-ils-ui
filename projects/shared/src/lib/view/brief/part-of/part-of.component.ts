@@ -42,9 +42,7 @@ export class PartOfComponent {
   /** constructor
    * @param _translateService - TranslateService to translate some strings.
    */
-  constructor(
-    private _translateService: TranslateService
-  ) { }
+  constructor(private _translateService: TranslateService) { }
 
   /**
    * Get "part of" label from host document type
@@ -86,32 +84,5 @@ export class PartOfComponent {
       numbering.push(pages.join('. '));
     }
     return numbering.join(', ');
-  }
-
-  /**
-   * Get list of document edition statement
-   * @return array - edition statement
-   */
-  getStatement(statements: any) {
-    if (null === statements) {
-      return [];
-    }
-    const results = [];
-    statements.forEach((element: any) => {
-      if ('_text' in element) {
-        const elementText = element._text;
-        const keys = Object.keys(elementText);
-        const indexDefault = keys.indexOf('default');
-        if (indexDefault > -1) {
-          results.push(elementText.default);
-          keys.splice(indexDefault, 1);
-        }
-
-        keys.forEach(key => {
-          results.push(elementText[key]);
-        });
-      }
-    });
-    return results;
   }
 }
