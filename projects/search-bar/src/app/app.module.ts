@@ -23,11 +23,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { CoreConfigService, RecordModule, TranslateLoader } from '@rero/ng-core';
+import { CoreConfigService, RecordModule, TranslateCacheService, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { SearchBarComponent } from 'projects/public-search/src/app/search-bar/search-bar.component';
 import { AppInitializerService } from './app-initializer.service';
+import { AppConfigServiceService } from './app-config-service.service';
 
 
 /** function to instantiate the application  */
@@ -52,7 +53,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
             loader: {
                 provide: BaseTranslateLoader,
                 useClass: TranslateLoader,
-                deps: [CoreConfigService, HttpClient]
+                deps: [CoreConfigService, HttpClient, TranslateCacheService]
             },
             isolate: false
         }),
@@ -60,9 +61,10 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         SharedModule
     ],
     providers: [
-        // TODO: remove this to avoid api call. It still neded because
+        // TODO: remove this to avoid api call. It still needed because
         //       `_getContributionName` need API config.
-        { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true }
+        { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
+        { provide: CoreConfigService, useClass: AppConfigServiceService },
     ]
 })
 export class AppModule implements DoBootstrap {

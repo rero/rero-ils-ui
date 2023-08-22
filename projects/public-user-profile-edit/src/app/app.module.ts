@@ -24,7 +24,7 @@ import { RouterModule } from '@angular/router';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { CoreConfigService, CoreModule, RecordModule, TranslateLoader } from '@rero/ng-core';
+import { CoreConfigService, CoreModule, RecordModule, TranslateCacheService, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { PatronProfilePersonalEditorComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-personal-editor/patron-profile-personal-editor.component';
@@ -54,7 +54,7 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
       loader: {
         provide: BaseTranslateLoader,
         useClass: TranslateLoader,
-        deps: [CoreConfigService, HttpClient]
+        deps: [CoreConfigService, HttpClient, TranslateCacheService]
       },
       isolate: false
     }),

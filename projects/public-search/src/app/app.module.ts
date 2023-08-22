@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, Injector, LOCALE_ID, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
@@ -24,7 +24,7 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { CoreConfigService, RecordModule, TranslateLoader, TranslateService } from '@rero/ng-core';
+import { CoreConfigService, RecordModule, TranslateCacheService, TranslateLoader, TranslateService } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
@@ -67,7 +67,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
             loader: {
                 provide: BaseTranslateLoader,
                 useClass: TranslateLoader,
-                deps: [CoreConfigService, HttpClient]
+                deps: [CoreConfigService, HttpClient, TranslateCacheService]
             },
             isolate: false
         }),

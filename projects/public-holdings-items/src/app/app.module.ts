@@ -27,7 +27,7 @@ import { FormlyModule } from '@ngx-formly/core';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { CoreConfigService, CoreModule, RecordModule, TranslateLoader } from '@rero/ng-core';
+import { CoreConfigService, CoreModule, RecordModule, TranslateCacheService, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { HoldingComponent } from 'projects/public-search/src/app/document-detail/holdings/holding/holding.component';
@@ -69,7 +69,7 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
             loader: {
                 provide: BaseTranslateLoader,
                 useClass: TranslateLoader,
-                deps: [CoreConfigService, HttpClient]
+                deps: [CoreConfigService, HttpClient, TranslateCacheService]
             },
             isolate: false
         }),

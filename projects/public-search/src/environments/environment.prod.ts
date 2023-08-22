@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 export const environment = {
+  appVersion: require('../../../../package.json').version,
   production: true,
   apiBaseUrl: '',
   $refPrefix: 'https://bib.rero.ch',

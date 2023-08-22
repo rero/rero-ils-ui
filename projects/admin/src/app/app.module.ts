@@ -29,6 +29,7 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import {
   CoreConfigService, LocalStorageService, RecordModule, RemoteTypeaheadService,
+  TranslateCacheService,
   TranslateLoader, TranslateService, TruncateTextPipe
 } from '@rero/ng-core';
 import { ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
@@ -337,7 +338,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         loader: {
           provide: BaseTranslateLoader,
           useClass: TranslateLoader,
-          deps: [CoreConfigService, HttpClient]
+          deps: [CoreConfigService, HttpClient, TranslateCacheService]
         }
       }),
       TypeaheadModule,
@@ -384,10 +385,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         { provide: typeaheadToken, useExisting: ItemsTypeahead, multi: true },
         { provide: typeaheadToken, useExisting: MefTypeahead, multi: true },
         { provide: typeaheadToken, useExisting: PatronsTypeahead, multi: true },
-        {
-            provide: CoreConfigService,
-            useClass: AppConfigService
-        },
+        { provide: CoreConfigService, useClass: AppConfigService },
         {
             provide: LOCALE_ID,
             useFactory: (translate: TranslateService) => translate.currentLanguage,
