@@ -288,9 +288,8 @@ export class CheckinComponent implements OnInit {
       item => {
         message += `<br/>${this._translate.instant('Status')}: ${this._translate.instant(item.status.toString())}`;
         if (item.status === ItemStatus.IN_TRANSIT && item.loan && item.loan.item_destination) {
-          const library_code = item.loan.item_destination.library_code;
-          const location_name = item.loan.item_destination.location_name;
-          message += ` (${this._translate.instant('to')} ${library_code}:${location_name})`;
+          const library_name = item.loan.item_destination.library_name;
+          message += ` (${this._translate.instant('to')} ${library_name})`;
           this.items.unshift(item); // Display item info
         }
       },
