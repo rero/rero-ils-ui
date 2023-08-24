@@ -62,7 +62,7 @@
     </dd>
 
     <!-- Location -->
-    <dt class="col-4 label-title font-weight-bold transaction-location" translate>Location</dt>
+    <dt class="col-4 label-title font-weight-bold pickup-location" translate>Pickup location</dt>
     <dd class="col-8">{{ record.metadata.loan.pickup_location.name }}</dd>
 
     <!-- Patron -->
@@ -70,7 +70,7 @@
     <dd class="col-8">
       <ng-container *ngIf="record.metadata.loan.patron.pid; else anonymous">
         <ng-container *ngIf="record.metadata.loan.patron.pid | getRecord : 'patrons' | async as patron">
-          <a [routerLink]="['/circulation', 'patron', patron.metadata.patron.barcode[0]]"  (click)="closeDialog()">
+          <a [routerLink]="['/circulation', 'patron', patron.metadata.patron.barcode[0]]" (click)="closeDialog()">
             {{ patron.metadata.last_name }}, {{ patron.metadata.first_name }}
           </a>
         </ng-container>
