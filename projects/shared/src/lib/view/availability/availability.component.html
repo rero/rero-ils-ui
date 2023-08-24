@@ -1,0 +1,50 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ng-container *ngIf="availability; else loading">
+  <i
+    class="mr-1 fa fa-circle"
+    [ngClass]="{'text-success': availability.available,'text-danger': !availability.available}"
+  ></i>
+  <ng-container [ngSwitch]="resource">
+    <ng-container *ngSwitchCase="'item'" [ngTemplateOutlet]="item" [ngTemplateOutletContext]="{availability}"></ng-container>
+    <ng-container *ngSwitchDefault [ngTemplateOutlet]="default" [ngTemplateOutletContext]="{availability}"></ng-container>
+  </ng-container>
+</ng-container>
+
+<ng-template #default let-availability=availability>
+  {{ (availability.available ? 'available' : 'not available') | translate }}
+</ng-template>
+
+<ng-template #item let-availability=availability>
+  <ng-container [ngSwitch]="availability.status">
+    <span *ngSwitchCase="'on_loan'">
+      {{ 'due until' | translate }}
+      {{ availability.due_date | dateTranslate :'shortDate' }}
+    </span>
+    <span *ngSwitchDefault>
+      {{ availability.circulation_message | getTranslatedLabel : language }}
+    </span>
+  </ng-container>
+  <ng-container *ngIf="availability.number_of_requests > 0">
+    ({{ availability.number_of_requests }} {{ (availability.number_of_requests > 1 ? 'requests' : 'request') | translate }})
+  </ng-container>
+</ng-template>
+
+<ng-template #loading>
+  <i class="fa fa-spinner"></i>
+</ng-template>

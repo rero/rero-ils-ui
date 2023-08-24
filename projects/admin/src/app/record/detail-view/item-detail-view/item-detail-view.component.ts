@@ -28,6 +28,7 @@ import { Item, ItemNote } from '../../../classes/items';
 import { HoldingsService } from '../../../service/holdings.service';
 import { OperationLogsService } from '../../../service/operation-logs.service';
 import { OrganisationService } from '../../../service/organisation.service';
+import { ItemApiService } from '@app/admin/api/item-api.service';
 
 @Component({
   selector: 'admin-item-detail-view',
@@ -106,6 +107,7 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
 
   /**
    * Constructor
+   * @param itemApiService - ItemApiService
    * @param _recordService - RecordService
    * @param _holdingService - HoldingsService
    * @param _operationLogsService - OperationLogsService
@@ -115,6 +117,7 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
    * @param _userService - UserService
    */
   constructor(
+    public itemApiService: ItemApiService,
     private _recordService: RecordService,
     private _holdingService: HoldingsService,
     private _operationLogsService: OperationLogsService,

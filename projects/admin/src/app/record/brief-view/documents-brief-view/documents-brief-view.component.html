@@ -1,4 +1,4 @@
- <!--
+<!--
   RERO ILS UI
   Copyright (C) 2019-2023 RERO
   Copyright (C) 2019-2023 UCLouvain
@@ -15,7 +15,6 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <article *ngIf="record" class="card flex-row border-0">
   <shared-thumbnail
     class="col-sm-2"
@@ -46,11 +45,13 @@
         <li *ngFor="let edition of record.metadata.editionStatement">{{ edition._text[0].value }}</li>
       </ul>
       <!-- availability -->
-      <div *ngIf="!type.startsWith('import_') && record.metadata.type !== 'ebook'">
-        <i class="fa fa-circle text-{{ record.metadata.available ? 'success' : 'danger' }}" aria-hidden="true"></i>&nbsp;
-        <span translate *ngIf="record.metadata.available">available</span>
-        <span translate *ngIf="!record.metadata.available">not available</span>
-      </div>
+      <ng-container *ngIf="!type.startsWith('import_') && record.metadata.type !== 'ebook'">
+        <shared-availability
+          resource="document"
+          [resourcePid]="record.metadata.pid"
+          [apiService]="documentApiService"
+        ></shared-availability>
+      </ng-container>
     </ng-container>
   </div>
 </article>

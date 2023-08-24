@@ -18,6 +18,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiService, Error, RecordService } from '@rero/ng-core';
+import { IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AppConfigService } from '../service/app-config.service';
@@ -26,7 +27,7 @@ import { ITypeEmail } from '../shared/preview-email/IPreviewInterface';
 @Injectable({
   providedIn: 'root'
 })
-export class ItemApiService {
+export class ItemApiService implements IAvailabilityService {
 
   // SERVICE ATTRIBUTES =======================================================
   /** resource name */
@@ -112,5 +113,15 @@ export class ItemApiService {
       map((_: unknown) => true),
       catchError(() => of(false))
     );
+  }
+
+  /**
+   * Get availability by item pid
+   * @param pid - item pid
+   * @returns Observable of availability data
+   */
+  getAvailability(pid: string): Observable<IAvailability> {
+    const url = `${this._appConfigService.apiEndpointPrefix}/item/${pid}/availability?more_info=1`;
+    return this._http.get<IAvailability>(url);
   }
 }

@@ -37,6 +37,7 @@ export * from './lib/directive/no-content.directive';
 export * from './lib/directive/permissions.directive';
 export * from './lib/directive/rero-template.directive';
 
+export * from './lib/interface/i-availability';
 export * from './lib/modules/prime-ng-import/prime-ng-import.module';
 
 export * from './lib/paginator/paginator';
@@ -58,6 +59,7 @@ export * from './lib/pipe/safe-url.pipe';
 export * from './lib/pipe/url-active.pipe';
 
 export * from './lib/service/app-settings.service';
+export * from './lib/service/i-availability.service';
 export * from './lib/service/permissions.service';
 export * from './lib/service/search-bar-config.service';
 export * from './lib/service/user.service';
@@ -65,6 +67,7 @@ export * from './lib/service/user.service';
 export * from './lib/shared.module';
 export * from './lib/util/permissions';
 export * from './lib/utils/tools';
+export * from './lib/view/availability/availability.component';
 export * from './lib/view/brief/part-of/part-of.component';
 export * from './lib/view/inherited-call-number/inherited-call-number.component';
 export * from './lib/view/thumbnail/thumbnail.component';

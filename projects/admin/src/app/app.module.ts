@@ -68,7 +68,6 @@ import { MenuComponent } from './menu/menu.component';
 import { LibrarySwitchService } from './menu/service/library-switch.service';
 import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
 import { DocumentProvisionActivityPipe } from './pipe/document-provision-activity.pipe';
-import { ItemAvailabilityPipe } from './pipe/item-availability.pipe';
 import { ItemInCollectionPipe } from './pipe/item-in-collection.pipe';
 import { MainTitleRelationPipe } from './pipe/main-title-relation.pipe';
 import { MarcPipe } from './pipe/marc.pipe';
@@ -176,7 +175,6 @@ import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patro
 import { AddEntityLocalFormComponent } from './record/formly/type/entity-typeahead/add-entity-local-form/add-entity-local-form.component';
 import { AddEntityLocalComponent } from './record/formly/type/entity-typeahead/add-entity-local.component';
 import { EntityTypeaheadComponent } from './record/formly/type/entity-typeahead/entity-typeahead.component';
-import { ItemAvailabilityComponent } from './record/item-availability/item-availability.component';
 import { OperationLogsDialogComponent } from './record/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
 import { OperationLogsComponent } from './record/operation-logs/operation-logs.component';
 import { DocumentRecordSearchComponent } from './record/search-view/document-record-search/document-record-search.component';
@@ -231,7 +229,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         LocationDetailViewComponent,
         LocationComponent,
         ItemDetailViewComponent,
-        ItemAvailabilityComponent,
         ItemTransactionComponent,
         ItemTransactionsComponent,
         ItemsBriefViewComponent,
@@ -293,7 +290,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         DocumentProvisionActivityPipe,
         MainTitleRelationPipe,
         HoldingOrganisationComponent,
-        ItemAvailabilityPipe,
         ExpectedIssueComponent,
         ReceivedIssueComponent,
         LoansBriefViewComponent,

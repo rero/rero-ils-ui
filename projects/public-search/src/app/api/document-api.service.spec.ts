@@ -15,50 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClient } from '@angular/common/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { RecordService } from '@rero/ng-core';
+import { DocumentApiService } from './document-api.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
-import { QueryResponse } from '../record';
-import { HoldingsApiService } from './holdings-api.service';
+import { HttpClient } from '@angular/common/http';
 
+describe('DocumentApiService', () => {
+  let service: DocumentApiService;
 
-describe('HoldingsService', () => {
-
-  let service: HoldingsApiService;
-
-  const record = {
-    medatadata: {
-      pid: '1',
-      name: 'holding name'
-    }
-  };
-
-  const apiResponse = {
-    aggregations: {},
-    hits: {
-      total: {
-        relation: 'eq',
-        value: 1
-      },
-      hits: [
-        record
-      ]
-    },
-    links: {}
-  };
+  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
 
   const availability: IAvailability = {
     available: true
   }
-
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
-
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
-  recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
-  recordServiceSpy.totalHits.and.returnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -66,24 +37,17 @@ describe('HoldingsService', () => {
         HttpClientTestingModule
       ],
       providers: [
-        { provide: RecordService, useValue: recordServiceSpy },
         { provide: HttpClient, useValue: httpClientSpy }
       ]
     });
-    service = TestBed.inject(HoldingsApiService);
+    service = TestBed.inject(DocumentApiService);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return a set of Holdings', () => {
-    service.getHoldingsByDocumentPidAndViewcode('1', 'global', 1).subscribe((result: QueryResponse) => {
-      expect(result.hits[0]).toEqual(record);
-    });
-  });
-
-  it('should return the availability of the holdings', () => {
+  it('should return the availability of the document', () => {
     httpClientSpy.get.and.returnValue(of(availability));
     service.getAvailability('1')
       .subscribe((response: IAvailability) => expect(response).toEqual(availability));

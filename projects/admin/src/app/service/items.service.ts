@@ -119,22 +119,6 @@ export class ItemsService {
   }
 
   /**
-   * Get item availability flag
-   * @param itemPid - the item pid
-   * @returns An Observable representing the item availability
-   */
-  getAvailability(itemPid: string): Observable<boolean> {
-    const itemApiUrl = this._apiService.getEndpointByType('item');
-    const url = `${itemApiUrl}/${itemPid}/availability`;
-    return this._http
-      .get(url)
-      .pipe(
-        map((apiResponse: any) => apiResponse.availability),
-        catchError(() => of(false))
-      );
-  }
-
-  /**
    * Do checkin and get applied actions
    * @param barcode: item barcode
    * @param transactionLibraryPid: transaction library
