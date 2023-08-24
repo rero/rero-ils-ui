@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
- * Copyright (C) 2022 UCLouvain
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,22 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Observable } from "rxjs";
+import { IAvailability } from "../interface/i-availability";
 
-@Component({
-  selector: 'admin-item-availability',
-  template: `
-    <ng-container *ngIf="item">
-      <span class="pr-1" *ngVar="item.metadata.pid | itemAvailability | async as available">
-        <i class="fa fa-circle" [ngClass]="{
-        'text-success': available,
-        'text-danger': !available
-      }"></i>
-      </span> ({{ item.metadata.status | translate }})
-    </ng-container>
-  `
-})
-export class ItemAvailabilityComponent {
-  /** Item record */
-  @Input() item: any;
+export abstract class IAvailabilityService {
+  /**
+   * Get Availability of resource
+   * @param pid - Resource pid
+   * @returns an Observable of Availability data
+   */
+  abstract getAvailability(pid: string):  Observable<IAvailability>;
 }

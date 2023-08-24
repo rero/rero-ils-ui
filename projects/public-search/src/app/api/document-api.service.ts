@@ -17,41 +17,25 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Record, RecordService } from '@rero/ng-core';
-import { IAvailability, IAvailabilityService } from '@rero/shared';
+import { BaseApi, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AppConfigService } from '../service/app-config.service';
+import { AppConfigService } from '../app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DocumentApiService implements IAvailabilityService {
-
-  /** Resource name */
-  readonly RESOURCE_NAME = 'documents';
+export class DocumentApiService extends BaseApi implements IAvailabilityService {
 
   /**
    * Constructor
-   * @param _recordService - RecordService
    * @param _httpClient - HttpClient
    * @param _appConfigService - AppConfigService
    */
   constructor(
-    private _recordService: RecordService,
     private _httpClient: HttpClient,
     private _appConfigService: AppConfigService
-  ) { }
-
-  /**
-   * Get count of linked document(s) from current document (partOf)
-   * @param documentPid - document pid
-   * @returns Observable<int>
-   */
-  getLinkedDocumentsCount(documentPid: string): Observable<number> {
-    return this._recordService.getRecords(
-      this.RESOURCE_NAME, `partOf.document.pid:${documentPid}`, 1, 1
-    ).pipe(map((result: Record) => result.hits.total.value));
+  ) {
+    super();
   }
 
   /**

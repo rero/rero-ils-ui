@@ -99,7 +99,11 @@
       <!-- AVAILABILITY -->
       <dt class="col-3 label-title" translate>Availability</dt>
       <dd class="col-9">
-        <admin-item-availability [item]="record"></admin-item-availability>
+        <shared-availability
+          resource="item"
+          [resourcePid]="record.metadata.pid"
+          [apiService]="itemApiService"
+        ></shared-availability>
       </dd>
       <!-- ACQUISITION -->
       <dt class="col-3 label-title" translate>New acquisition</dt>

@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,25 +18,28 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
-import { BaseApi } from '@rero/shared';
+import { BaseApi, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { QueryResponse } from '../record';
 import { HoldingCanRequest, HoldingPatronRequest } from '../classes/holdings';
+import { QueryResponse } from '../record';
+import { AppConfigService } from '../app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class HoldingsApiService extends BaseApi {
+export class HoldingsApiService extends BaseApi implements IAvailabilityService {
 
   /**
    * Constructor
    * @param _recordService - RecordService
    * @param _httpClient - HttpClient
+   * @param _appConfigService - AppConfigService
    */
   constructor(
     private _recordService: RecordService,
-    private _httpClient: HttpClient
+    private _httpClient: HttpClient,
+    private _appConfigService: AppConfigService
   ) {
     super();
   }
@@ -65,7 +69,7 @@ export class HoldingsApiService extends BaseApi {
    * @return Observable - Check holding can be requested
    */
   canRequest(holdingPid: string, libraryPid: string, patronBarcode: string): Observable<HoldingCanRequest> {
-    const url = `/api/holding/${holdingPid}/can_request`;
+    const url = `${this._appConfigService.apiEndpointPrefix}/holding/${holdingPid}/can_request`;
     const params = new HttpParams()
       .set('library_pid', libraryPid)
       .set('patron_barcode', patronBarcode);
@@ -78,8 +82,17 @@ export class HoldingsApiService extends BaseApi {
    * @return Observable - Create provisional item
    */
   request(data: { holding_pid: string, pickup_location_pid: string, description: string }): Observable<HoldingPatronRequest> {
-    const url = '/api/holding/patron_request';
+    const url = `${this._appConfigService.apiEndpointPrefix}/holding/patron_request`;
     return this._httpClient.post<HoldingPatronRequest>(url, data);
   }
 
+  /**
+   * Get availability by holding pid
+   * @param pid - holding pid
+   * @returns Observable of availability data
+   */
+  getAvailability(pid: string): Observable<IAvailability> {
+    const url = `${this._appConfigService.apiEndpointPrefix}/holding/${pid}/availability`;
+    return this._httpClient.get<IAvailability>(url);
+  }
 }

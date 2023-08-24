@@ -1,6 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -41,10 +42,11 @@
           {{ 'see collections and items' | translate }}
         </ng-container>
         <ng-template #available>
-          <i class="fa fa-circle"
-            [ngClass]="{'text-success': holding.metadata.available, 'text-danger': !holding.metadata.available }">
-          </i>
-          {{ (holding.metadata.available ? 'available' : 'not available') | translate }}
+          <shared-availability
+            resource="holding"
+            [resourcePid]="holding.metadata.pid"
+            [apiService]="holdingApiService"
+          ></shared-availability>
         </ng-template>
       </span>
     </div>

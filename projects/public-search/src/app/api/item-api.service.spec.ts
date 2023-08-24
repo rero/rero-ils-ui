@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,6 +19,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
+import { IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
 import { QueryResponse } from '../record';
 import { ItemApiService } from './item-api.service';
@@ -57,13 +59,16 @@ describe('ItemService', () => {
     metadata: {}
   };
 
+  const availability: IAvailability = {
+    available: true,
+    status: 'on_loan'
+  }
+
   const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
   recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
   recordServiceSpy.totalHits.and.returnValue(1);
 
   const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post']);
-  httpClientSpy.get.and.returnValue(of(canRequest));
-  httpClientSpy.post.and.returnValue(of(request));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -95,14 +100,22 @@ describe('ItemService', () => {
   });
 
   it('should return item can request', () => {
+    httpClientSpy.get.and.returnValue(of(canRequest));
     service.canRequest('1', '1', 'xxxxxxxx').subscribe((result: any) => {
       expect(result).toEqual(canRequest);
     });
   });
 
   it('should return a result of request', () => {
+    httpClientSpy.post.and.returnValue(of(request));
     service.request({ item_pid: '1', pickup_location_pid: '1' }).subscribe((result: any) => {
       expect(result).toEqual(request);
     });
+  });
+
+  it('should return the availability of the item', () => {
+    httpClientSpy.get.and.returnValue(of(availability));
+    service.getAvailability('1')
+      .subscribe((response: IAvailability) => expect(response).toEqual(availability));
   });
 });

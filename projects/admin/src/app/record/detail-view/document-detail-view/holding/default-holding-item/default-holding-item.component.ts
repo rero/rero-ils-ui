@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,14 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ItemApiService } from '@app/admin/api/item-api.service';
+import { ItemsService } from '@app/admin/service/items.service';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { ItemsService } from '@app/admin/service/items.service';
-import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ItemRequestComponent } from '../../item-request/item-request.component';
@@ -80,6 +81,7 @@ export class DefaultHoldingItemComponent implements OnInit {
    * @param _modalService - BsModalService
    * @param _itemService - ItemService
    * @param _translateService - TranslateService
+   * @param itemApiService - ItemApiService
    */
   constructor(
     protected _recordUiService: RecordUiService,
@@ -87,7 +89,8 @@ export class DefaultHoldingItemComponent implements OnInit {
     protected _userService: UserService,
     protected _modalService: BsModalService,
     protected _itemService: ItemsService,
-    protected _translateService: TranslateService
+    protected _translateService: TranslateService,
+    public itemApiService: ItemApiService
   ) { }
 
   /** OnInit hook */

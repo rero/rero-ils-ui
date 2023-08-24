@@ -50,6 +50,7 @@ import { PersonBriefComponent } from './view/brief/person-brief/person-brief.com
 import { ContributionComponent } from './view/contribution/contribution.component';
 import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
+import { AvailabilityComponent } from './view/availability/availability.component';
 
 @NgModule({
     declarations: [
@@ -79,7 +80,8 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
         LinkPermissionsDirective,
         EntityLabelPipe,
         ContributionComponent,
-        NoContentDirective
+        NoContentDirective,
+        AvailabilityComponent
     ],
     exports: [
         CommonModule,
@@ -111,7 +113,8 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
         LinkPermissionsDirective,
         EntityLabelPipe,
         ContributionComponent,
-        NoContentDirective
+        NoContentDirective,
+        AvailabilityComponent
     ],
     imports: [
         CommonModule,
