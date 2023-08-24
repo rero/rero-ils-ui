@@ -51,6 +51,7 @@ import { SearchBarConfigService } from './service/search-bar-config.service';
 import { PartOfComponent } from './view/brief/part-of/part-of.component';
 import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
+import { AvailabilityComponent } from './view/availability/availability.component';
 
 @NgModule({
     declarations: [
@@ -81,7 +82,8 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
         IsArrayPipe,
         EntityBriefViewRemoteOrganisationComponent,
         EntityBriefViewRemotePersonComponent,
-        ContributionComponent
+        ContributionComponent,
+        AvailabilityComponent
     ],
     exports: [
         CommonModule,
@@ -108,7 +110,9 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
         LinkPermissionsDirective,
         EntityLabelPipe,
         NoContentDirective,
-        ContributionComponent
+        ContributionComponent,
+        NoContentDirective,
+        AvailabilityComponent
     ],
     imports: [
         CommonModule,

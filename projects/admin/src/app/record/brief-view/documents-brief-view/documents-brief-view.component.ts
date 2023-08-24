@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Component, Input } from '@angular/core';
+import { DocumentApiService } from '@app/admin/api/document-api.service';
 import { ResultItem } from '@rero/ng-core';
 
 @Component({
@@ -46,6 +46,12 @@ export class DocumentsBriefViewComponent implements ResultItem {
   get record(): any {
     return this._record;
   }
+
+  /**
+   * Constructor
+   * @param documentApiService - DocumentApiService
+   */
+  constructor(public documentApiService: DocumentApiService) {}
 
   /**
    * Contribution type parameter

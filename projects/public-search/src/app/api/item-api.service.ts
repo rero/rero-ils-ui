@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,24 +18,27 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
-import { BaseApi, IssueItemStatus } from '@rero/shared';
+import { BaseApi, IAvailability, IAvailabilityService, IssueItemStatus } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { QueryResponse } from '../record';
+import { AppConfigService } from '../app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ItemApiService extends BaseApi {
+export class ItemApiService extends BaseApi implements IAvailabilityService {
 
   /**
    * Constructor
    * @param _recordService - RecordService
    * @param _httpClient - HttpClient
+   * @param _appConfigService - AppConfigService
    */
   constructor(
     private _recordService: RecordService,
-    private _httpClient: HttpClient
+    private _httpClient: HttpClient,
+    private _appConfigService: AppConfigService
   ) {
     super();
   }
@@ -70,7 +74,7 @@ export class ItemApiService extends BaseApi {
   canRequest(itemPid: string, libraryPid: string, patronBarcode: string): Observable<any> {
     return this._httpClient
       .get<any>(
-        `/api/item/${itemPid}/can_request?library_pid=${libraryPid}&patron_barcode=${patronBarcode}`
+        `${this._appConfigService.apiEndpointPrefix}/item/${itemPid}/can_request?library_pid=${libraryPid}&patron_barcode=${patronBarcode}`
       );
   }
 
@@ -80,6 +84,16 @@ export class ItemApiService extends BaseApi {
    * @return Observable
    */
   request(data: { item_pid: string, pickup_location_pid: string }): Observable<any> {
-    return this._httpClient.post('/api/item/patron_request', data);
+    return this._httpClient.post(`${this._appConfigService.apiEndpointPrefix}/item/patron_request`, data);
+  }
+
+  /**
+   * Get availability by item pid
+   * @param pid - item pid
+   * @returns Observable of availability data
+   */
+  getAvailability(pid: string): Observable<IAvailability> {
+    const url = `${this._appConfigService.apiEndpointPrefix}/item/${pid}/availability?more_info=1`;
+    return this._httpClient.get<IAvailability>(url);
   }
 }

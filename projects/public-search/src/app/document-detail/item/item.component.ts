@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,6 +17,7 @@
  */
 import { Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { ItemApiService } from '../../api/item-api.service';
 
 @Component({
   selector: 'public-search-item',
@@ -72,6 +74,10 @@ export class ItemComponent {
   /**
    * Constructor
    * @param _translateService - TranslateService
+   * @param itemApiService - ItemApiService
    */
-  constructor(private _translateService: TranslateService) {}
+  constructor(
+    private _translateService: TranslateService,
+    public itemApiService: ItemApiService
+  ) {}
 }

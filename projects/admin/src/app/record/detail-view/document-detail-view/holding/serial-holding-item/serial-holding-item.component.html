@@ -1,6 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -26,16 +27,11 @@
       <ng-template #barcodeOnly>{{ item.metadata.barcode }}</ng-template>
     </div>
     <div class="col-sm-2" name="status">
-      <i class="fa fa-circle pr-1" [ngClass]="{
-        'text-success': item.metadata.availability.available,
-        'text-danger': !item.metadata.availability.available
-      }"></i>
-      {{ item.metadata.availability.display_text | getTranslatedLabel }}
-      <ng-container *ngVar="itemRequestCounter as pendingRequest">
-        <span class="pl-3" *ngIf="pendingRequest > 0">
-          ({{ pendingRequest }} {{ pendingRequest | i18nPlural: {'=1': 'request', 'other': 'requests'} | translate }})
-        </span>
-      </ng-container>
+      <shared-availability
+        resource="item"
+        [resourcePid]="item.metadata.pid"
+        [apiService]="itemApiService"
+      ></shared-availability>
     </div>
     <div class="col-sm-3" name="issue">{{ item.metadata.enumerationAndChronology }}</div>
     <div class="col-sm-2" name="call-number">
