@@ -34,14 +34,6 @@
   <header class="row mt-5 mb-3">
     <div class="col-lg-2 d-sm-block text-center">
       <shared-thumbnail [record]="record"></shared-thumbnail>
-      <ng-container *ngIf="record.metadata.genreForm">
-        <ul class="list-unstyled">
-          <li class="figure-caption" *ngFor="let genre of record.metadata.genreForm">
-            <i class="fa fa-tag mr-1"></i>
-            {{ genre.entity | entityLabel }}
-          </li>
-        </ul>
-      </ng-container>
     </div>
     <div class="col-lg-10">
       <!-- ADMIN METADATA -->
@@ -187,6 +179,13 @@
             <i class="fa fa-tag"></i> {{ subject.entity | entityLabel }}
           </span>
         </div>
+      </div>
+
+      <!-- GENRE, FORM -->
+      <div class="mt-1" *ngIf="record.metadata.genreForm">
+        <span class="mr-1" *ngFor="let genre of record.metadata.genreForm">
+          <i class="fa fa-tag mr-1"></i> {{ genre.entity | entityLabel }}
+        </span>
       </div>
 
       <!-- MASKED -->
