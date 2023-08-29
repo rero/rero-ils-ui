@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -52,6 +53,9 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   /** Document record */
   record: any;
 
+  /** Related resources */
+  relatedResources = [];
+
   /** Linked documents count */
   linkedDocumentsCount = 0;
 
@@ -101,30 +105,6 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   }
 
   /**
-   * Related resources to display below 'Subjects'
-   */
-  get relatedResources() {
-    if (this.record.metadata.electronicLocator) {
-      return this.record.metadata.electronicLocator.filter(
-        (electronicLocator: any) => [
-          'hiddenUrl', 'noInfo', 'resource', 'relatedResource', 'versionOfResource'
-        ].some(t => t === electronicLocator.type && electronicLocator.content !== 'coverImage')
-      );
-    }
-  }
-
-  /**
-   * Resources to display like a holding
-   */
-  get resources() {
-    if (this.record.metadata.electronicLocator) {
-      return this.record.metadata.electronicLocator.filter(
-        (electronicLocator: any) => ['resource', 'versionOfResource'].some(t => t === electronicLocator.type)
-      );
-    }
-  }
-
-  /**
    * Get Current language interface
    * @return string - language
    */
@@ -170,6 +150,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
     this._recordObs = this.record$.pipe(
       switchMap((record: any) => {
         this.record = record;
+        this.relatedResources = this.processRelatedResources(record);
         if (record != null && record.metadata != null && this.record.metadata.pid == null) {
           this.marc$ = this._recordService.getRecord(
             this._activatedRouter.snapshot.params.type, this.pid, 0, {
@@ -339,5 +320,22 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
       query.push(`identifiedBy.source:"${identifier.source}"`);
     }
     return `(${query.join(' AND ')})`;
+  }
+
+  /**
+   * Process related resources
+   * @param record - Record metadata
+   * @returns Array of related resources
+   */
+  private processRelatedResources(record: any): any[] {
+    if (record.metadata.electronicLocator) {
+      return record.metadata.electronicLocator.filter(
+        (electronicLocator: any) => [
+          'hiddenUrl', 'noInfo', 'resource', 'relatedResource', 'versionOfResource'
+        ].some(t => t === electronicLocator.type && electronicLocator.content !== 'coverImage')
+      );
+    }
+
+    return [];
   }
 }

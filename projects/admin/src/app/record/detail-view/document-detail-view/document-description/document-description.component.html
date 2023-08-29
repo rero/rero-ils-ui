@@ -31,9 +31,11 @@
     <admin-description-zone>
       <ng-container label>{{ 'General note' | translate }}</ng-container>
       <ng-container content>
-        <ul class="list-unstyled mb-0">
-          <li *ngFor="let note of notesGeneral.general">{{ note }}</li>
-        </ul>
+        <ng-container *ngFor="let noteType of notesGeneral | keyvalue">
+          <ul class="list-unstyled mb-0">
+            <li *ngFor="let note of noteType.value">{{ note }}</li>
+          </ul>
+        </ng-container>
       </ng-container>
     </admin-description-zone>
   </div>

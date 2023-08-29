@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,28 +26,25 @@ import { ResultItem } from '@rero/ng-core';
 })
 export class DocumentsBriefViewComponent implements ResultItem {
 
-  @Input()
-  record: any;
+  /** Set record */
+  @Input() set record(record) {
+    this._record = record;
+    this.processProvisionActivityPublications();
+  }
 
-  @Input()
-  type: string;
+  @Input() type: string;
 
-  @Input()
-  detailUrl: { link: string, external: boolean };
+  @Input() detailUrl: { link: string, external: boolean };
 
-  /** process provision activity publications */
-  get provisionActivityPublications() {
-    const provisionActivity = this.record.metadata.provisionActivity;
-    const publications = [];
-    if (undefined === provisionActivity) {
-      return publications;
-    }
-    provisionActivity.map((provision: any) => {
-      if (provision.type === 'bf:Publication' && '_text' in provision) {
-        provision._text.map((text: any) => publications.push(text));
-      }
-    });
-    return publications;
+  /** Provision activities */
+  provisionActivityPublications: any[] = [];
+
+  /** Record */
+  private _record: any;
+
+  /** Get current record */
+  get record(): any {
+    return this._record;
   }
 
   /**
@@ -63,5 +61,18 @@ export class DocumentsBriefViewComponent implements ResultItem {
       default:
         return 'missing-contribution-type';
     }
+  }
+
+  /** process provision activity publications */
+  private processProvisionActivityPublications() {
+    const { provisionActivity } = this.record.metadata;
+    if (undefined === provisionActivity) {
+      return;
+    }
+    provisionActivity.map((provision: any) => {
+      if (provision.type === 'bf:Publication' && '_text' in provision) {
+        provision._text.map((text: any) => this.provisionActivityPublications.push(text));
+      }
+    });
   }
 }

@@ -148,7 +148,7 @@
         [header]="true"></admin-other-edition>
 
       <!-- ELECTRONIC LOCATOR: RELATED RESOURCE -->
-      <div class="row" *ngIf="relatedResources">
+      <div class="row" *ngIf="relatedResources.length > 0">
         <div class="col">
           <ul class="list-unstyled mt-1 mb-0">
             <li *ngFor="let eloc of relatedResources">

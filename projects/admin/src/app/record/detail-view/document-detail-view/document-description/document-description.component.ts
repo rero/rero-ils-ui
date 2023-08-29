@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,16 +15,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-document-description',
   templateUrl: './document-description.component.html'
 })
-export class DocumentDescriptionComponent {
+export class DocumentDescriptionComponent implements OnInit {
 
+  /** Document record */
   @Input() record: any;
+  /** Cartographic attributes */
+  cartographicAttributes: any[] = [];
+  /** Edition statement */
+  editionStatement: any[] = [];
+  /** Identified bye */
+  identifiedBy: any[] = [];
+  /** All notes without general */
+  notesExceptGeneral: any[] = [];
+  /** General notes only */
+  notesGeneral: any[] = [];
+  /** Provision activity original date */
+  provisionActivityOriginalDate: any[] = [];
+  /** Title variants */
+  titleVariants: any = {};
+  /** Work access point */
+  workAccessPoint: any[] = [];
 
   /**
    * Get Current language interface
@@ -33,24 +51,46 @@ export class DocumentDescriptionComponent {
     return this.translateService.currentLang;
   }
 
-  // ---- FIELDS
+  /**
+   * Constructor
+   * @param translateService - TranslateService
+   */
+  constructor(public translateService: TranslateService) {}
 
-  /** Get cartographic attributes */
-  get cartographicAttributes(): any[] {
-    const cartographic = [];
+  /** On init hook */
+  ngOnInit(): void {
+    this.processCartographicAttributes();
+    this.processEditionStatement();
+    this.processIdentifiedBy();
+    this.processNotesExceptGeneral();
+    this.processNotesGeneral();
+    this.processProvisionActivityOriginalDate();
+    this.processTitleVariants();
+    this.processWorkAccessPoint();
+  }
+
+  /**
+   * Allow to filter provisionActivity keeping only activities that aren't 'Publication'
+   * @param element: the element to check
+   * @return True if element isn't a 'Publication', False otherwise
+   */
+  filterNotPublicationProvisionActivity(element: any): boolean {
+    return ('key' in element && element.key !== 'bf:Publication');
+  }
+
+  /** Process cartographic attributes */
+  private processCartographicAttributes(): void {
     if ('cartographicAttributes' in this.record.metadata) {
       this.record.metadata.cartographicAttributes.forEach((attribute: any) => {
         if ('projection' in attribute || ('coordinates' in attribute && 'label' in attribute.coordinates)) {
-          cartographic.push(attribute);
+          this.cartographicAttributes.push(attribute);
         }
       });
     }
-    return cartographic;
   }
 
-  /** Get list of document edition statement */
-  get editionStatement(): any[] {
-    const results = [];
+  /** Process edition statement */
+  private processEditionStatement(): void {
     if ('seriesStatement' in this.record.metadata) {
       this.record.metadata.seriesStatement.forEach((element: any) => {
         if ('_text' in element) {
@@ -58,22 +98,20 @@ export class DocumentDescriptionComponent {
           const keys = Object.keys(elementText);
           const indexDefault = keys.indexOf('default');
           if (indexDefault > -1) {
-            results.push(elementText.default);
+            this.editionStatement.push(elementText.default);
             keys.splice(indexDefault, 1);
           }
 
           keys.forEach(key => {
-            results.push(elementText[key]);
+            this.editionStatement.push(elementText[key]);
           });
         }
       });
     }
-    return results;
   }
 
-  /** Get list of document identifiers */
-  get identifiedBy(): any[] {
-    const identifiers = [];
+  /** Process identified by */
+  private processIdentifiedBy(): void {
     if ('identifiedBy' in this.record.metadata) {
       this.record.metadata.identifiedBy.forEach((id: any) => {
         const details = [];
@@ -89,62 +127,49 @@ export class DocumentDescriptionComponent {
         if (id.note) {
           details.push(id.note);
         }
-        identifiers.push({
+        this.identifiedBy.push({
           type: idType,
           value: id.value,
           details: details.join(', ')
         });
       });
     }
-    return identifiers;
   }
 
-  /** Get notes except general type */
-  get notesExceptGeneral(): any {
+  /** Process General notes */
+  private processNotesGeneral(): void {
     if ('note' in this.record.metadata) {
-      return this._sortedNotesByType(
-        this.record.metadata.note.filter((el: any) => el.noteType !== 'general')
-      );
-    }
-    return;
-  }
-
-  /** Get notes general only */
-  get notesGeneral(): any {
-    if ('note' in this.record.metadata) {
-      return this._sortedNotesByType(
+      this.notesGeneral = this._sortedNotesByType(
         this.record.metadata.note.filter((el: any) => el.noteType === 'general')
       );
     }
-    return;
   }
 
-  /**
-   * Allow to filter provisionActivity keeping only activities that aren't 'Publication'
-   * @param element: the element to check
-   * @return True if element isn't a 'Publication', False otherwise
-   */
-   filterNotPublicationProvisionActivity(element: any): boolean {
-    return ('key' in element && element.key !== 'bf:Publication');
+  /** Process all without general */
+  private processNotesExceptGeneral(): void {
+    if ('note' in this.record.metadata) {
+      this.notesExceptGeneral = this._sortedNotesByType(
+        this.record.metadata.note.filter((el: any) => el.noteType !== 'general')
+      );
+    }
   }
 
-  /** Get provision activity with available original_date field */
-  get provisionActivityOriginalDate() {
-    return ('provisionActivity' in this.record.metadata)
-    ? this.record.metadata.provisionActivity
+  /** Process provision activity original date */
+  private processProvisionActivityOriginalDate(): void {
+    if ('provisionActivity' in this.record.metadata) {
+      this.provisionActivityOriginalDate = this.record.metadata.provisionActivity
       .filter((element: any) => element.key !== 'bf:Publication')
       .filter((provision: any) => 'original_date' in provision)
-    : [];
+    }
   }
 
-  /** Get title variants by type */
-  get titleVariants(): any {
-    const variants = {};
+  /** Process title variants */
+  private processTitleVariants(): void {
     if ('title' in this.record.metadata) {
       const titles = this.record.metadata.title.filter((title: any) => title.type !== 'bf:Title');
       titles.forEach((title: any) => {
-        if (!(title.type in variants)) {
-          variants[title.type] = [];
+        if (!(title.type in this.titleVariants)) {
+          this.titleVariants[title.type] = [];
         }
         const result = [];
         result.push(title.mainTitle[0].value);
@@ -168,15 +193,13 @@ export class DocumentDescriptionComponent {
         if (variantData.length > 0) {
           variantTitle += `. ${variantData.join('. ')}`;
         }
-        variants[title.type].push(variantTitle);
+        this.titleVariants[title.type].push(variantTitle);
       });
     }
-    return variants;
   }
 
-  /** Get work access point */
-  get workAccessPoint(): string[] {
-    const work = [];
+  /** Process work access point */
+  private processWorkAccessPoint(): void {
     if ('work_access_point' in this.record.metadata) {
       this.record.metadata.work_access_point.forEach((workAccess: any) => {
         let agentFormatted = '';
@@ -264,17 +287,10 @@ export class DocumentDescriptionComponent {
         if (workAccess.date_of_work) {
           agentFormatted += workAccess.date_of_work + '. ';
         }
-        work.push(agentFormatted.trim());
+        this.workAccessPoint.push(agentFormatted.trim());
       });
     }
-    return work;
   }
-
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   */
-  constructor(public translateService: TranslateService) {}
 
   /**
    * Sorted notes by type
