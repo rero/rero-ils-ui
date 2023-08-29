@@ -42,6 +42,8 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
   record: any;
   /** Current displayed/used patron */
   patron: any;
+  /** Patron phones */
+  phones: PatronPhone[] = [];
   /** record type */
   type: string;
   /** Load operation logs on show */
@@ -62,24 +64,6 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
   /** Is operation log enabled */
   get isEnabledOperationLog(): boolean {
     return this._operationLogsService.isLogVisible('patrons');
-  }
-
-  /** Get all phones related to the patron */
-  get phones(): Array<PatronPhone> {
-    const data: Array<PatronPhone> = [];
-    if (this.patron.mobile_phone) {
-      data.push({value: this.patron.mobile_phone, type: 'Mobile', weight: 10});
-    }
-    if (this.patron.home_phone) {
-      data.push({value: this.patron.home_phone, type: 'Home', weight: 7});
-    }
-    if (this.patron.business_phone) {
-      data.push({value: this.patron.business_phone, type: 'Business', weight: 7});
-    }
-    if (this.patron.other_phone) {
-      data.push({value: this.patron.other_phone, type: 'Other', weight: -1});
-    }
-    return data.sort((a, b) => b.weight - a.weight);
   }
 
   permissions: IPermissions = PERMISSIONS;
@@ -104,6 +88,7 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
     this._subscription$ = this.record$.subscribe((record) => {
       this.record = record;
       this.patron = record.metadata;
+      this.phones = this.processPhones(record.metadata);
     });
   }
 
@@ -132,5 +117,22 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
       case 'staff_note': return 'badge-warning';
       default: return 'badge-secondary';
     }
+  }
+
+  private processPhones(record: any): PatronPhone[] {
+    const data: PatronPhone[] = [];
+    if (record.mobile_phone) {
+      data.push({value: record.mobile_phone, type: 'Mobile', weight: 10});
+    }
+    if (record.home_phone) {
+      data.push({value: record.home_phone, type: 'Home', weight: 7});
+    }
+    if (record.business_phone) {
+      data.push({value: record.business_phone, type: 'Business', weight: 7});
+    }
+    if (record.other_phone) {
+      data.push({value: record.other_phone, type: 'Other', weight: -1});
+    }
+    return data.sort((a, b) => b.weight - a.weight);
   }
 }
