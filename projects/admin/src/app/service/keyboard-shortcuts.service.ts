@@ -66,7 +66,7 @@ export class KeyboardShortcutsService {
       group: this._translateService.instant('Global shortcuts'),
       description: this._translateService.instant('Open the global help page')
     }).subscribe(
-      _ => window.open('https://ils.test.rero.ch/help', 'rero-ils-help')
+      _ => window.open('/help', 'rero-ils-help')
     );
 
     this._hotKeys.addShortcut({
