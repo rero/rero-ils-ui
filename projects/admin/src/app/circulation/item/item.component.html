@@ -80,6 +80,15 @@
           </ng-container>
         </li>
         <li name="status" *ngSwitchCase="'on_shelf'">{{ item.status | translate }}</li>
+        <li *ngSwitchCase="'at_desk'">
+          {{ item.status | translate }}
+          <ng-container *ngIf="item.loan && item.loan.pickup_location">
+            ({{ item.loan.pickup_location.pickup_name }})
+          </ng-container>
+          <ng-container *ngIf="!item.loan && item.pending_loans && item.pending_loans.length > 0 && item.pending_loans[0].pickup_location">
+            ({{ item.pending_loans[0].pickup_location.pickup_name }})
+          </ng-container>
+        </li>
         <li name="status" *ngSwitchDefault>{{ item.status | translate }}</li>
       </ng-container>
       <!-- RENEWALS, FEES, REQUESTS -->
