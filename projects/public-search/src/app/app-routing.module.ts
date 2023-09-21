@@ -70,7 +70,7 @@ export class AppRoutingModule {
             const view = urlParams[0];
             const resource = urlParams[2];
             if (view && resource) {
-              this._routeFactoryService.createRouteByRecourceNameAndView(
+              this._routeFactoryService.createRouteByResourceNameAndView(
                 resource,
                 view
               );

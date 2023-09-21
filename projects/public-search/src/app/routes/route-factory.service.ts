@@ -40,7 +40,7 @@ export class RouteFactoryService {
    * @param view - string, code of the current view
    * @throws Error if resource doesn't exists
    */
-  createRouteByRecourceNameAndView(resource: string, view: string) {
+  createRouteByResourceNameAndView(resource: string, view: string) {
     const service = this._routeCollectionService.getRouteByResourceName(resource);
     if (service) {
       const routeConfig = service.create(view);
