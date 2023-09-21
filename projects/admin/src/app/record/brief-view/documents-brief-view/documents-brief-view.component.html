@@ -47,8 +47,8 @@
       <!-- availability -->
       <ng-container *ngIf="!type.startsWith('import_') && record.metadata.type !== 'ebook'">
         <shared-availability
-          resource="document"
-          [resourcePid]="record.metadata.pid"
+          recordType="document"
+          [record]="record"
           [apiService]="documentApiService"
         ></shared-availability>
       </ng-container>

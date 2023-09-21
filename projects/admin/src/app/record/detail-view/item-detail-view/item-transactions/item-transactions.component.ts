@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,7 +36,7 @@ export class ItemTransactionsComponent implements OnInit {
   @Input() itemPid: string;
 
   /** Informs parent component that a request has been cancelled */
-  @Output() cancelRequestEvent = new EventEmitter<any>();
+  @Output() requestEvent = new EventEmitter<any>();
 
   /** Borrowed loan */
   borrowedBy: Array<any> = [];
@@ -83,7 +84,10 @@ export class ItemTransactionsComponent implements OnInit {
     });
     modalRef.content.onSubmit
       .pipe(first())
-      .subscribe(_ => this._refreshRequestList());
+      .subscribe(_ => {
+        this.requestEvent.emit();
+        this._refreshRequestList();
+      });
   }
 
   /**
@@ -99,7 +103,7 @@ export class ItemTransactionsComponent implements OnInit {
           this._translateService.instant('The pending request has been cancelled.'),
           this._translateService.instant('Request')
         );
-        this.cancelRequestEvent.emit();
+        this.requestEvent.emit();
         this._refreshRequestList();
       });
   }

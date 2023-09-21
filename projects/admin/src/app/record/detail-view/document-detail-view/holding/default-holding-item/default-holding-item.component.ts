@@ -112,14 +112,19 @@ export class DefaultHoldingItemComponent implements OnInit {
     const modalRef = this._modalService.show(ItemRequestComponent, {
       initialState: { recordPid, recordType }
     });
-    modalRef.content.onSubmit.pipe(first()).subscribe(_ => this._getPermissions());
+    modalRef.content.onSubmit.pipe(first()).subscribe(_ => {
+      this._itemService.getByPidFromEs(recordPid).subscribe(result => {
+        this.item = result;
+        this._getPermissions();
+      });
+    });
   }
 
   /**
    * Delete item
    * @param itemPid - Item pid
    */
-  delete(itemPid): void {
+  delete(itemPid: string): void {
     this.deleteItem.emit(itemPid);
   }
 
