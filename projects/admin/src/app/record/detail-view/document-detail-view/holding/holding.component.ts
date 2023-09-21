@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -87,7 +88,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
   /** onInit hook */
   ngOnInit() {
     this.holdingType = this.holding.metadata.holdings_type;
-    if (this.holdingType !== 'electronic') {
+    if (!this.isItemsCollapsed && this.holdingType !== 'electronic') {
       this._loadItems();
     }
     if (this.isCurrentOrganisation) {
@@ -99,6 +100,13 @@ export class HoldingComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.itemsRef != null) {
       this.itemsRef.unsubscribe();
+    }
+  }
+
+  /** load items */
+  loadItems(): void {
+    if (!this.items && !this.isItemsCollapsed && this.holdingType !== 'electronic') {
+      this._loadItems();
     }
   }
 
