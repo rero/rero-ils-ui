@@ -95,8 +95,8 @@
     <dt class="mb-0 col-3 label-title" translate>Status</dt>
     <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-status'}" class="mb-0 col-9">
       <shared-availability
-        resource="item"
-        [resourcePid]="item.metadata.pid"
+        recordType="item"
+        [record]="item"
         [apiService]="itemApiService"
       ></shared-availability>
     </dd>

@@ -48,8 +48,8 @@
         <div class="col-4 pl-5 font-weight-bold label-title" translate>Status</div>
         <div class="col-8">
           <shared-availability
-            resource="item"
-            [resourcePid]="item.metadata.pid"
+            recordType="item"
+            [record]="item"
             [apiService]="itemApiService"
           ></shared-availability>
         </div>

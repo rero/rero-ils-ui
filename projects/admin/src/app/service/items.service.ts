@@ -19,7 +19,7 @@ import { Injectable } from '@angular/core';
 import { ApiService, RecordService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { ItemStatus, UserService } from '@rero/shared';
+import { BaseApi, ItemStatus, UserService } from '@rero/shared';
 import { Item, ItemAction, ItemNoteType } from '../classes/items';
 
 @Injectable({
@@ -40,6 +40,17 @@ export class ItemsService {
     private _recordService: RecordService,
     private _apiService: ApiService
   ) { }
+
+  /**
+   * Get item by pid from elasticsearch
+   * @param pid - String
+   * @returns Observable<any>
+   */
+  getByPidFromEs(pid: string): Observable<any> {
+    return this._recordService.getRecords(
+      'items', `pid:${pid}`, 1, 1, undefined, undefined, BaseApi.reroJsonheaders
+    ).pipe(map((result: any) => result.hits.hits[0]));
+  }
 
   /**
    * Get Requested loans

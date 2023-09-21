@@ -20,7 +20,7 @@
     class="mr-1 fa fa-circle"
     [ngClass]="{'text-success': availability.available,'text-danger': !availability.available}"
   ></i>
-  <ng-container [ngSwitch]="resource">
+  <ng-container [ngSwitch]="recordType">
     <ng-container *ngSwitchCase="'item'" [ngTemplateOutlet]="item" [ngTemplateOutletContext]="{availability}"></ng-container>
     <ng-container *ngSwitchDefault [ngTemplateOutlet]="default" [ngTemplateOutletContext]="{availability}"></ng-container>
   </ng-container>

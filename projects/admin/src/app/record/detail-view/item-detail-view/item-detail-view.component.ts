@@ -173,10 +173,8 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
 
   /** Update item status */
   updateItemStatus(): void {
-    this._recordService.getRecord('items', this.record.metadata.pid).subscribe((item: any) => {
-      this.record.metadata.status = item.metadata.status;
-      this.record.metadata.available = item.metadata.available;
-    });
+    this._recordService.getRecord('items', this.record.metadata.pid, 1)
+      .subscribe((item: any) => this.record = item);
   }
 
   /**

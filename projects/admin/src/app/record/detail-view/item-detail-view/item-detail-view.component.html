@@ -100,8 +100,8 @@
       <dt class="col-3 label-title" translate>Availability</dt>
       <dd class="col-9">
         <shared-availability
-          resource="item"
-          [resourcePid]="record.metadata.pid"
+          recordType="item"
+          [record]="record"
           [apiService]="itemApiService"
         ></shared-availability>
       </dd>
@@ -309,7 +309,7 @@
   <!-- TRANSACTIONS -->
   <admin-item-transactions
     [itemPid]="record.metadata.pid"
-    (cancelRequestEvent)="updateItemStatus()"
+    (requestEvent)="updateItemStatus()"
   ></admin-item-transactions>
 
   <!-- OPERATION LOGS-->

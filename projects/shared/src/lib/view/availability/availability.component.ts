@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { IAvailability } from '../../interface/i-availability';
 import { IAvailabilityService } from '../../service/i-availability.service';
@@ -24,13 +24,13 @@ import { IAvailabilityService } from '../../service/i-availability.service';
   selector: 'shared-availability',
   templateUrl: './availability.component.html'
 })
-export class AvailabilityComponent implements OnInit {
+export class AvailabilityComponent implements OnInit, OnChanges {
 
-  /** Resource name */
-  @Input() resource: string;
+  /** Record Type */
+  @Input() recordType: string;
 
-  /** Resource pid */
-  @Input() resourcePid: string;
+  /** Record pid */
+  @Input() record: any;
 
   /** Resource api service */
   @Input() apiService: IAvailabilityService;
@@ -50,8 +50,12 @@ export class AvailabilityComponent implements OnInit {
   /** OnInit hook */
   ngOnInit(): void {
     this.language = this.translateService.currentLang;
+  }
+
+  /** OnChanges hook */
+  ngOnChanges(): void {
     this.apiService
-      .getAvailability(this.resourcePid)
-      .subscribe((availability: IAvailability) => this.availability = availability);
+    .getAvailability(this.record.metadata.pid)
+    .subscribe((availability: IAvailability) => this.availability = availability);
   }
 }
