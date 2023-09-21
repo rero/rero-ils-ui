@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,10 +17,9 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
 import { RecordSearchPageComponent, RecordSearchService, RecordService, RecordUiService, SearchResult } from '@rero/ng-core';
 import { AppConfigService } from '../app-config.service';
-import { RouteFactoryService } from '../routes/route-factory.service';
 
 @Component({
   selector: 'public-search-document-record-search',
@@ -27,8 +27,7 @@ import { RouteFactoryService } from '../routes/route-factory.service';
 })
 export class DocumentRecordSearchComponent extends RecordSearchPageComponent implements OnInit {
 
-  /** Base url */
-  private _baseUrl: string;
+  uriGlobalView: string;
 
   /** View code */
   private _viewCode: string;
@@ -69,7 +68,7 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
    * @param _recordSearchService - RecordSearchService
    * @param _recordService - RecordService
    * @param _appConfigService - AppConfigService
-   * @param _routeFactoryService - RouteFactoryService
+   * @param _urlSerializer - UrlSerializer
    */
   constructor(
     protected _route: ActivatedRoute,
@@ -78,7 +77,7 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
     protected _recordSearchService: RecordSearchService,
     private _recordService: RecordService,
     private _appConfigService: AppConfigService,
-    private _routeFactoryService: RouteFactoryService
+    private _urlSerializer: UrlSerializer
   ) {
     super(_route, _router, _recordSearchService, _recordUiService);
   }
@@ -86,7 +85,7 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
   /** Init */
   ngOnInit() {
     super.ngOnInit();
-    this._convertUrlForGlobalView();
+    this.uriGlobalView = this._convertUrlForGlobalView();
   }
 
   /**
@@ -99,33 +98,15 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
     }
   }
 
-  /**
-   * Launches a new documents search on all records
-   * @param event - Click on link
-   */
-  linkToGlobalDocuments(event: any) {
-    event.preventDefault();
-    this._routeFactoryService.createRouteByRecourceNameAndView(
-      'documents', 'global'
-    );
-    const queryParams = this._route.snapshot.queryParams;
-    this._router.navigate(
-      [this._baseUrl], {
-        relativeTo: this._route,
-        queryParams: {
-        q: queryParams.q || '',
-        page: 1,
-        size: queryParams.size || 10
-      }}
-    );
-  }
-
   /** Convert url for global view redirect */
   private _convertUrlForGlobalView() {
+    const { queryParams } = this._route.snapshot;
     const segments = this._router.parseUrl(this._router.url)
       .root.children.primary.segments.map(it => it.path);
     this._viewCode = segments[0];
     segments[0] = this._appConfigService.globalViewName;
-    this._baseUrl = '/' + segments.join('/');
+    const baseUri = '/' + segments.join('/');
+    const tree = this._router.createUrlTree([baseUri], { queryParams });
+    return this._urlSerializer.serialize(tree);
   }
 }

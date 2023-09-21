@@ -1,6 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020 RERO
+  Copyright (C) 2020-2023 RERO
+  Copyright (C) 2020-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -20,8 +21,6 @@
   (parametersChanged)="updateUrl($event)" (recordsSearched)="recordsSearched($event)"
 >
   <div class="my-4" *ngIf="currentType === 'documents' && showLink">
-    <a href="#" (click)="linkToGlobalDocuments($event)" translate>
-      Expand to all RERO ILS
-    </a>
+    <a href="{{ uriGlobalView }}" translate>Expand to all RERO ILS</a>
   </div>
 </ng-core-record-search>
