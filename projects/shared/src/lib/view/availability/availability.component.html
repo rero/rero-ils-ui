@@ -40,8 +40,8 @@
       {{ availability.circulation_message | getTranslatedLabel : language }}
     </span>
   </ng-container>
-  <ng-container *ngIf="availability.number_of_requests > 0">
-    ({{ availability.number_of_requests }} {{ (availability.number_of_requests > 1 ? 'requests' : 'request') | translate }})
+  <ng-container *ngIf="availability.number_of_request > 0">
+    ({{ availability.number_of_request }} {{ (availability.number_of_request > 1 ? 'requests' : 'request') | translate }})
   </ng-container>
 </ng-template>
 
