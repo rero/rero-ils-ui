@@ -19,7 +19,7 @@ export interface IAvailability {
   available: boolean;
   status?: string;
   circulation_message?: ICirculationMessage[];
-  number_of_requests?: number;
+  number_of_request?: number;
   due_date?: string;
 }
 
