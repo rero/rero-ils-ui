@@ -63,7 +63,7 @@
       <!-- Patron information -->
       <dt class="col-2 label-title text-right" translate>Requested by</dt>
       <dd class="col-10">
-        <a name="patron-name" [routerLink]="['/circulation', 'patron', item.loan.patron.barcode[0]]">
+        <a name="patron-name" [routerLink]="['/circulation', 'patron', item.loan.patron.barcode]">
           {{ item.loan.patron.name }}
         </a>
       </dd>
