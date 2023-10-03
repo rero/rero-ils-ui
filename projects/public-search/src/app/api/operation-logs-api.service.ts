@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -46,7 +47,7 @@ export class OperationLogsApiService extends BaseApi {
     itemsPerPage: number = 10
   ): Observable<Record | Error> {
     const date = moment().subtract(6, 'months').utc().format('YYYY-MM-DDTHH:mm:ss');
-    const query = `loan.patron.pid:${patronPid} AND loan.trigger:checkin AND date:[${date} TO *]`;
+    const query = `record.type:loan AND loan.patron.pid:${patronPid} AND loan.trigger:checkin AND date:[${date} TO *]`;
     return this._recordService.getRecords(
       'operation_logs', query, page, itemsPerPage,
       undefined, undefined, undefined, 'mostrecent'

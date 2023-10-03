@@ -96,7 +96,7 @@ export class OperationLogsApiService extends BaseApi {
    */
    getCheckInHistory(patronPid: string, page: number, itemsPerPage: number = 10): Observable<Record | Error> {
     const date = moment().subtract(6, 'months').utc().format('YYYY-MM-DDTHH:mm:ss');
-    const query = `_exists_:loan AND loan.patron.pid:${patronPid} AND loan.trigger:checkin AND date:[${date} TO *]`;
+    const query = `_exists_:loan AND record.type:loan AND loan.patron.pid:${patronPid} AND loan.trigger:checkin AND date:[${date} TO *]`;
     return this._recordService.getRecords(
       'operation_logs', query, page, itemsPerPage, undefined, undefined, BaseApi.reroJsonheaders, 'mostrecent');
   }
