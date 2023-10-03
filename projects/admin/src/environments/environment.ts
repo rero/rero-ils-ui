@@ -23,7 +23,7 @@ export const environment = {
   production: false,
   apiBaseUrl: '',
   $refPrefix: 'https://bib.rero.ch',
-  languages: ['fr', 'de', 'it', 'en'],
+  languages: ['fr', 'de', 'it', 'en', 'es'],
   defaultLanguage: 'en',
   adminRoles: ['system_librarian', 'librarian'],
   translationsURLs: [

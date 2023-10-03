@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   apiBaseUrl: '',
   $refPrefix: 'https://bib.rero.ch',
-  languages: ['fr', 'de', 'it', 'en'],
+  languages: ['fr', 'de', 'it', 'en', 'es'],
   globalViewName: 'global',
   translationsURLs: [
     '/static/node_modules/@rero/rero-ils-ui/dist/public-search/assets/rero-ils-ui/public-search/i18n/${lang}.json',

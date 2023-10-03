@@ -60,7 +60,8 @@ describe('MenuService', () => {
       'Public interface': 'Interface publique',
       'ui_language_de': 'Allemand',
       'ui_language_en': 'Anglais',
-      'ui_language_fr': 'Français'
+      'ui_language_fr': 'Français',
+      'ui_language_es': 'Espagnol'
     });
     translateService.setTranslation('en', {
       'Logout': 'Logout',
@@ -68,7 +69,8 @@ describe('MenuService', () => {
       'Public interface': 'Public interface',
       'ui_language_de': 'German',
       'ui_language_en': 'English',
-      'ui_language_fr': 'French'
+      'ui_language_fr': 'French',
+      'ui_language_es': 'Spanish'
     });
     translateService.use('fr');
 
