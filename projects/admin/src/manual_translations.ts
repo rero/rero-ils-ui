@@ -233,6 +233,12 @@ _('email_reply_to');
 
 // Entity type
 _('bf:ClassificationDdc');
+_('bf:Organisation');
+_('bf:Person');
+_('bf:Place');
+_('bf:Temporal');
+_('bf:Topic');
+_('bf:Work');
 
 // Non-extracted string (TODO :: search why ?)
 _('Vol. {{ volume }}')

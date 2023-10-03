@@ -41,6 +41,8 @@
       <admin-remote-entities-person-detail-view *ngSwitchCase="entityType.PERSON" [record]="record.metadata[source]" [source]="source"></admin-remote-entities-person-detail-view>
       <admin-remote-entities-organisation-detail-view *ngSwitchCase="entityType.ORGANISATION" [record]="record.metadata[source]" [source]="source"></admin-remote-entities-organisation-detail-view>
       <admin-remote-topic-detail-view *ngSwitchCase="entityType.TOPIC" [record]="record.metadata[source]" [source]="source"></admin-remote-topic-detail-view>
+      <admin-remote-topic-detail-view *ngSwitchCase="entityType.PLACE" [record]="record.metadata[source]" [source]="source"></admin-remote-topic-detail-view>
+      <admin-remote-topic-detail-view *ngSwitchCase="entityType.TEMPORAL" [record]="record.metadata[source]" [source]="source"></admin-remote-topic-detail-view>
       <span *ngSwitchDefault>{{ 'Missing template for this entity type:' | translate }} {{ record.metadata.type }}</span>
     </article>
   </article>

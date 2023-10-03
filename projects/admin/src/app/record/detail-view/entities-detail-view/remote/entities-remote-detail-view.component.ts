@@ -58,13 +58,35 @@ export class RemoteEntitiesDetailViewComponent implements DetailRecord {
   icon(type: string): { class: string, title: string } {
     switch (type) {
       case EntityType.PERSON:
-        return { class: EntityTypeIcon.PERSON, title: this._translateService.instant('Person') };
+        return {
+          class: EntityTypeIcon.PERSON,
+          title: this._translateService.instant(EntityType.PERSON)
+        };
       case EntityType.ORGANISATION:
-        return { class: EntityTypeIcon.ORGANISATION, title: this._translateService.instant('Organisation') };
+        return {
+          class: EntityTypeIcon.ORGANISATION,
+          title: this._translateService.instant(EntityType.ORGANISATION)
+        };
       case EntityType.TOPIC:
-        return { class: EntityTypeIcon.TOPIC, title: this._translateService.instant('Topic') };
+        return {
+          class: EntityTypeIcon.TOPIC,
+          title: this._translateService.instant(EntityType.TOPIC)
+        };
+      case EntityType.PLACE:
+        return {
+          class: EntityTypeIcon.PLACE,
+          title: this._translateService.instant(EntityType.PLACE)
+        };
+      case EntityType.TEMPORAL:
+        return {
+          class: EntityTypeIcon.TEMPORAL,
+          title: this._translateService.instant(EntityType.TEMPORAL)
+        };
       default:
-        return { class: 'fa-question', title: this._translateService.instant('Missing type') };
+        return {
+          class: 'fa-question',
+          title: this._translateService.instant('Missing type')
+        };
     }
   }
 
