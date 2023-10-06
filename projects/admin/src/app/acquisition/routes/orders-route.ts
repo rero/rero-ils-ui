@@ -80,6 +80,34 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
             listHeaders: {
               Accept: 'application/rero+json'
             },
+            sortOptions: [
+              {
+                label: _('Relevance'),
+                value: 'bestmatch',
+                defaultQuery: true
+              },
+              {
+                label: _('Receipt date (newest)'),
+                value: 'receipt_date',
+              },
+              {
+                label: _('Reference (asc)'),
+                value: 'reference_asc',
+              },
+              {
+                label: _('Reference (desc)'),
+                value: 'reference_desc'
+              },
+
+              {
+                label: _('Order date (newest)'),
+                value: 'order_date_new'
+              },
+              {
+                label: _('Order date (oldest)'),
+                value: 'order_date_old',
+              }
+            ],
             exportFormats: [
               {
                 label: 'CSV',
