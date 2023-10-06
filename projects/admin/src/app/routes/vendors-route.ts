@@ -74,9 +74,13 @@ export class VendorsRoute extends BaseRoute implements RouteInterface {
                 defaultQuery: true
               },
               {
-                label: _('Name'),
-                value: 'name',
+                label: _('Name (asc)'),
+                value: 'name_asc',
                 defaultNoQuery: true
+              },
+              {
+                label: _('Name (desc)'),
+                value: 'name_desc'
               }
             ],
             showFacetsIfNoResults: true
