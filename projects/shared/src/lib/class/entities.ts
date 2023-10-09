@@ -33,3 +33,25 @@ export enum EntityTypeIcon {
   TOPIC = 'fa-tag',
   WORK = 'fa-book',
 }
+
+export class Entity {
+  /**
+   * Get Entity icon
+   * @param resourceType type of entity
+   * @returns the icon class name
+   */
+   static getIcon(resourceType: string): string {
+    const icons = new Map<string, string>([
+      [EntityType.ORGANISATION, EntityTypeIcon.ORGANISATION],
+      [EntityType.PERSON, EntityTypeIcon.PERSON],
+      [EntityType.TEMPORAL, EntityTypeIcon.TEMPORAL],
+      [EntityType.PLACE, EntityTypeIcon.PLACE],
+      [EntityType.TOPIC, EntityTypeIcon.TOPIC],
+      [EntityType.WORK, EntityTypeIcon.WORK]
+    ]);
+    if (!icons.has(resourceType)) {
+      return 'fa-question-circle';
+    }
+    return icons.get(resourceType);
+  }
+}
