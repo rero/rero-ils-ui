@@ -28,7 +28,14 @@
             "main": "projects/admin/src/main.ts",
             "polyfills": "projects/admin/src/polyfills.ts",
             "tsConfig": "projects/admin/tsconfig.app.json",
-            "assets": ["projects/admin/src/assets"],
+            "assets": [
+              "projects/admin/src/assets",
+              {
+                "glob": "**/*.json",
+                "input": "projects/shared/src/assets",
+                "output": "/assets/"
+              }
+            ],
             "styles": [
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
@@ -137,18 +144,25 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": [
-              "crypto-js",
-              "easymde",
-              "moment"
-            ],
+            "allowedCommonJsDependencies": ["crypto-js", "easymde", "moment"],
             "outputPath": "build/dist/public-holdings-items",
             "index": "projects/public-holdings-items/src/index.html",
             "main": "projects/public-holdings-items/src/main.ts",
             "polyfills": "projects/public-holdings-items/src/polyfills.ts",
             "tsConfig": "projects/public-holdings-items/tsconfig.app.json",
             "aot": true,
-            "assets": [],
+            "assets": [
+              {
+                "glob": "**/*.json",
+                "input": "projects/public-search/src/assets",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*.json",
+                "input": "projects/shared/src/assets",
+                "output": "/assets/"
+              }
+            ],
             "styles": ["projects/public-search/src/app/scss/styles.scss"],
             "scripts": []
           },
@@ -243,7 +257,12 @@
             "tsConfig": "projects/public-search/tsconfig.app.json",
             "assets": [
               "projects/public-search/src/favicon.ico",
-              "projects/public-search/src/assets"
+              "projects/public-search/src/assets",
+              {
+                "glob": "**/*.json",
+                "input": "projects/shared/src/assets",
+                "output": "/assets/"
+              }
             ],
             "styles": [],
             "scripts": [],
@@ -349,18 +368,25 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": [
-              "crypto-js",
-              "easymde",
-              "moment"
-            ],
+            "allowedCommonJsDependencies": ["crypto-js", "easymde", "moment"],
             "outputPath": "build/dist/search-bar",
             "index": "projects/search-bar/src/index.html",
             "main": "projects/search-bar/src/main.ts",
             "polyfills": "projects/search-bar/src/polyfills.ts",
             "tsConfig": "projects/search-bar/tsconfig.app.json",
             "aot": true,
-            "assets": [],
+            "assets": [
+              {
+                "glob": "**/*.json",
+                "input": "projects/public-search/src/assets",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*.json",
+                "input": "projects/shared/src/assets",
+                "output": "/assets/"
+              }
+            ],
             "styles": [],
             "scripts": []
           },
@@ -490,7 +516,18 @@
             "main": "projects/public-patron-profile/src/main.ts",
             "polyfills": "projects/public-patron-profile/src/polyfills.ts",
             "tsConfig": "projects/public-patron-profile/tsconfig.app.json",
-            "assets": [],
+            "assets": [
+              {
+                "glob": "**/*.json",
+                "input": "projects/public-search/src/assets",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*.json",
+                "input": "projects/shared/src/assets",
+                "output": "/assets/"
+              }
+            ],
             "styles": ["projects/public-search/src/app/scss/styles.scss"],
             "scripts": [],
             "vendorChunk": true,
@@ -583,18 +620,25 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": [
-              "crypto-js",
-              "easymde",
-              "moment"
-            ],
+            "allowedCommonJsDependencies": ["crypto-js", "easymde", "moment"],
             "outputPath": "build/dist/public-user-profile-edit",
             "index": "projects/public-user-profile-edit/src/index.html",
             "main": "projects/public-user-profile-edit/src/main.ts",
             "polyfills": "projects/public-user-profile-edit/src/polyfills.ts",
             "tsConfig": "projects/public-user-profile-edit/tsconfig.app.json",
             "aot": true,
-            "assets": [],
+            "assets": [
+              {
+                "glob": "**/*.json",
+                "input": "projects/public-search/src/assets",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*.json",
+                "input": "projects/shared/src/assets",
+                "output": "/assets/"
+              }
+            ],
             "styles": [],
             "scripts": []
           },
@@ -679,18 +723,25 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": [
-              "crypto-js",
-              "easymde",
-              "moment"
-            ],
+            "allowedCommonJsDependencies": ["crypto-js", "easymde", "moment"],
             "outputPath": "build/dist/public-user-password-change",
             "index": "projects/public-user-password-change/src/index.html",
             "main": "projects/public-user-password-change/src/main.ts",
             "polyfills": "projects/public-user-password-change/src/polyfills.ts",
             "tsConfig": "projects/public-user-password-change/tsconfig.app.json",
             "aot": true,
-            "assets": [],
+            "assets": [
+              {
+                "glob": "**/*.json",
+                "input": "projects/public-search/src/assets",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*.json",
+                "input": "projects/shared/src/assets",
+                "output": "/assets/"
+              }
+            ],
             "styles": [],
             "scripts": []
           },

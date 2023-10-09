@@ -21,14 +21,15 @@
 
 export const environment = {
   production: false,
-  apiBaseUrl: '',
-  $refPrefix: 'https://bib.rero.ch',
-  languages: ['fr', 'de', 'it', 'en'],
-  globalViewName: 'global',
+  apiBaseUrl: "",
+  $refPrefix: "https://bib.rero.ch",
+  languages: ["fr", "de", "it", "en"],
+  globalViewName: "global",
   translationsURLs: [
-    '/assets/rero-ils-ui/public-search/i18n/${lang}.json',
-    '/api/translations/${lang}.json'
-  ]
+    "/assets/rero-ils-ui/shared/i18n/${lang}.json",
+    "/assets/rero-ils-ui/public-search/i18n/${lang}.json",
+    "/api/translations/${lang}.json",
+  ],
 };
 
 /*

@@ -27,6 +27,7 @@ export const environment = {
   defaultLanguage: 'en',
   adminRoles: ['system_librarian', 'librarian'],
   translationsURLs: [
+    '/assets/rero-ils-ui/shared/i18n/${lang}.json',
     '/assets/rero-ils-ui/admin/i18n/${lang}.json',
     '/api/translations/${lang}.json'
   ],
