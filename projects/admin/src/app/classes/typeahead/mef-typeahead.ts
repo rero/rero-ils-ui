@@ -20,7 +20,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, RecordService, SuggestionMetadata } from '@rero/ng-core';
-import { AppSettingsService } from '@rero/shared';
+import { AppSettingsService, Entity } from '@rero/shared';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { ITypeahead } from './ITypeahead-interface';
@@ -51,7 +51,7 @@ export class MefTypeahead implements ITypeahead {
     protected appSettingsService: AppSettingsService,
     private recordService: RecordService,
     private apiService: ApiService
-  ) {  }
+  ) { }
 
   /** Get name of typeahead */
   getName() {
@@ -112,8 +112,9 @@ export class MefTypeahead implements ITypeahead {
         }),
         map((data: any) => {
           const entity = {
+            label: data?.metadata?.authorized_access_point,
+            type: data?.metadata?.type,
             uri: this._get_source_uri(data?.metadata?.identifiedBy, source) || value,
-            label: data?.metadata?.authorized_access_point
           };
           const badges = [{label: source.toUpperCase()}];
           return this._buildEntityResolutionResponse(entity, badges);
@@ -137,6 +138,7 @@ export class MefTypeahead implements ITypeahead {
          map((data: any) => {
            const entity = {
              label: data.metadata.authorized_access_point,
+             type: data.metadata.type,
              uri: this._buildLocalEntityDetailViewURI(data.metadata.pid)
            };
            const badges = [];
@@ -155,8 +157,12 @@ export class MefTypeahead implements ITypeahead {
    * @param badges: badges list to append to the entity.
    * @returns the HTML representation for the entity.
    */
-  private _buildEntityResolutionResponse(entity: {label:string, uri?: string}, badges: Array<{label: string, type?: string}>): string {
-    let output = (entity?.uri)
+  private _buildEntityResolutionResponse(entity: {label:string, type: string, uri?: string}, badges: Array<{label: string, type?: string}>): string {
+    // Type of entity
+    const icon = Entity.getIcon(entity.type);
+    const title = this.translateService.instant(entity.type);
+    let output = `<i class="fa ${icon} mr-1" title="${title}"></i>`;
+    output += (entity?.uri)
       ? `<a href="${entity.uri}" target="_blank">${entity.label} <i class="fa fa-external-link"></i></a>`
       : `<span>${entity.label}</span>`;
     badges.forEach(badge => {

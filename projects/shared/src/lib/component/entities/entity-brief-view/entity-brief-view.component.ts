@@ -18,7 +18,7 @@
 
 import { AfterViewInit, Component, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
-import { EntityType, EntityTypeIcon } from '../../../class/entities';
+import { Entity, EntityType } from '../../../class/entities';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
 import { BriefViewTag } from '../../core/brief-view/brief-view.component';
 import { EntityBriefViewRemoteOrganisationComponent } from './entity-brief-view.organisation';
@@ -85,7 +85,7 @@ export class EntityBriefViewComponent implements ResultItem, OnInit, AfterViewIn
       case 'local': this._buildLocalEntityData(); break;
       default: throw new Error('Unknown entity resource type !')
     }
-    this.entityIcon = this._getEntityIcon(this.record.metadata.type);
+    this.entityIcon = Entity.getIcon(this.record.metadata.type);
   }
 
   /** AfterViewInit hook */
@@ -129,22 +129,4 @@ export class EntityBriefViewComponent implements ResultItem, OnInit, AfterViewIn
     }
     this.entityTitle = this.record.metadata.authorized_access_point;
   }
-
-  /**
-   * Get the best possible font awesome icon for an entity type
-   * @param resourceType: the entity resource type
-   * @return the icon to use.
-   */
-  private _getEntityIcon(resourceType: EntityType): string {
-    switch (resourceType) {
-      case EntityType.ORGANISATION: return EntityTypeIcon.ORGANISATION;
-      case EntityType.PERSON: return EntityTypeIcon.PERSON;
-      case EntityType.TEMPORAL: return EntityTypeIcon.TEMPORAL;
-      case EntityType.PLACE: return EntityTypeIcon.PLACE;
-      case EntityType.TOPIC: return EntityTypeIcon.TOPIC;
-      case EntityType.WORK: return EntityTypeIcon.WORK;
-      default: return 'fa-question-circle';
-    }
-  }
-
 }
