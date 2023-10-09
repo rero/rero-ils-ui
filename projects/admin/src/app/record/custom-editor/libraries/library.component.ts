@@ -123,7 +123,6 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
             this.library = new Library(record.metadata);
             this.libraryForm.populate(record.metadata);
             this.libForm = this.libraryForm.form;
-            this._buildOptions();
             this.setAsyncValidator();
           });
         } else {
@@ -131,6 +130,7 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
           this.libForm = this.libraryForm.form;
           this.setAsyncValidator();
         }
+        this._buildOptions();
       });
     });
   }
