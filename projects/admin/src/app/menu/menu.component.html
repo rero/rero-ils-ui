@@ -50,11 +50,11 @@
     </div>
   </div>
 
-  <button type="button" class="navbar-toggler d-block d-sm-none" (click)="isCollapsed = !isCollapsed"
+  <button type="button" class="navbar-toggler d-block d-lg-none" (click)="isCollapsed = !isCollapsed"
     [attr.aria-expanded]="!isCollapsed" aria-controls="navbarSupportedContent">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <div class="d-block d-sm-none navbar-collapse" id="navbarSupportedContent">
+  <div class="d-block d-lg-none navbar-collapse" id="navbarSupportedContent">
     <admin-menu-mobile class="mt-2" [class]="{'d-none': isCollapsed, 'd-block': !isCollapsed}"></admin-menu-mobile>
   </div>
 </nav>

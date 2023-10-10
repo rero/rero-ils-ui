@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
-import { MenuItemInterface } from '@rero/ng-core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MenuItem, MenuItemInterface } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-sub-menu',
@@ -25,4 +25,15 @@ import { MenuItemInterface } from '@rero/ng-core';
 export class SubMenuComponent {
   /** menu */
   @Input() menu: MenuItemInterface;
+
+  /** Event */
+  @Output() clickItem = new EventEmitter();
+
+  /**
+   * Emit a event on click item menu
+   * @param item - MenuItem
+   */
+  doClick(item: MenuItem | MenuItemInterface) {
+    this.clickItem.emit(item);
+  }
 }
