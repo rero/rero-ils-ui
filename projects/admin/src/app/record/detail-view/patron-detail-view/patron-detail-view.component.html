@@ -67,13 +67,15 @@
               </dd>
             </ng-container>
           </ng-container>
-          <dt class="col-1 text-right"><i class="fa fa-home"></i></dt>
-          <dt class="col-3" translate>Address</dt>
-          <dd class="col-8">
-            {{ patron.street }}<br/>
-            {{ patron.postal_code }} {{ patron.city }}<br/>
-            {{ 'country_' + patron.country | translate }}
-          </dd>
+          <ng-container *ngIf="patron.street || patron.postal_code || patron.city || patron.country">
+            <dt class="col-1 text-right"><i class="fa fa-home"></i></dt>
+            <dt class="col-3" translate>Address</dt>
+            <dd class="col-8">
+              <ng-container *ngIf="patron.street">{{ patron.street }}<br/></ng-container>
+              <ng-container *ngIf="patron.postal_code || patron.city">{{ patron.postal_code }} {{ patron.city }}<br/></ng-container>
+              <ng-container *ngIf="patron.country">{{ 'country_' + patron.country | translate }}</ng-container>
+            </dd>
+          </ng-container>
         </dl>
       </div>
     </div>
