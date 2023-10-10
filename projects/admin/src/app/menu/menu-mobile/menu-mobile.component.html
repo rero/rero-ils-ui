@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020 RERO
+  Copyright (C) 2020-2023 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,9 @@
 <admin-sub-menu [menu]="menuApp"></admin-sub-menu>
 <admin-sub-menu
   [class]="{'d-block': librariesSwitchIsVisible, 'd-none': !librariesSwitchIsVisible}"
-  [menu]="menuLibrariesSwitch"></admin-sub-menu>
+  [menu]="menuLibrariesSwitch"
+  (clickItem)="eventLibrarySwitchMenuClick($event)"
+></admin-sub-menu>
 <admin-sub-menu [menu]="menuLanguages"></admin-sub-menu>
 <div class="card mb-2">
   <div class="card-body">

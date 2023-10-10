@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2022 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,9 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, OnInit } from '@angular/core';
-import { MenuItemInterface } from '@rero/ng-core';
+import { MenuItem, MenuItemInterface } from '@rero/ng-core';
 import { LibrarySwitchMenuService } from '../service/library-switch-menu.service';
 import { MenuService } from '../service/menu.service';
+import { LibrarySwitchMenuEventService } from '../service/library-switch-menu-event.service';
 
 @Component({
   selector: 'admin-menu-mobile',
@@ -49,10 +50,12 @@ export class MenuMobileComponent implements OnInit {
    * Constructor
    * @param _menuService - MenuService
    * @param _librarySwitchMenuService - LibrarySwitchMenuService
+   * @param _librarySwitchMenuEventService - LibrarySwitchMenuEventService
    */
   constructor(
     private _menuService: MenuService,
-    private _librarySwitchMenuService: LibrarySwitchMenuService
+    private _librarySwitchMenuService: LibrarySwitchMenuService,
+    private _librarySwitchMenuEventService: LibrarySwitchMenuEventService
   ) { }
 
   /** OnInit hook */
@@ -72,5 +75,13 @@ export class MenuMobileComponent implements OnInit {
     if (!this.menuLanguages) {
       this._menuService.generateLanguageMenu();
     }
+  }
+
+  /**
+   * Event on library switch menu click
+   * @param event - MenuItem
+   */
+  eventLibrarySwitchMenuClick(event: MenuItem): void {
+    this._librarySwitchMenuEventService.eventMenuClick(event);
   }
 }
