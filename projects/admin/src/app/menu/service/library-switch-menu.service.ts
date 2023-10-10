@@ -40,7 +40,7 @@ export class LibrarySwitchMenuService {
 
   /** menu is visible */
   get visible(): boolean {
-    return this._userService.user.patronLibrarian.libraries.length > 1;
+    return this._userService.user.patronLibrarian.libraries.length > 0;
   }
 
   /** Get menu */
