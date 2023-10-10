@@ -1,5 +1,39 @@
 # Changelog
 
+## [v14.5.0](https://github.com/rero/rero-ils-ui/tree/v14.5.0) (2023-10-10)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.4.0...v14.5.0)
+
+**New features:**
+* Add local entities [\#1037](https://github.com/rero/rero-ils-ui/pull/1037) (by @zannkukai)
+* entities: add place and temporal display [\#1046](https://github.com/rero/rero-ils-ui/pull/1046) (by @Garfield-fr)
+
+**Enhancements:**
+* Improve performance [\#1044](https://github.com/rero/rero-ils-ui/pull/1044) (by @Garfield-fr)
+* items: sorting for standard holdings [\#1038](https://github.com/rero/rero-ils-ui/pull/1038) (by @Garfield-fr)
+* document: improved display of genre form field [\#1032](https://github.com/rero/rero-ils-ui/pull/1032) (by @Garfield-fr)
+* editor: add icon type on entity typeahead [\#1050](https://github.com/rero/rero-ils-ui/pull/1050) (by @Garfield-fr)
+* circulation: add pickup name on checkin [\#1036](https://github.com/rero/rero-ils-ui/pull/1036) (by @Garfield-fr)
+* ILL Request: better display into patron circulation [\#1018](https://github.com/rero/rero-ils-ui/pull/1018) (by @zannkukai)
+
+**Fixes:**
+* entities: fix sources order by language [\#1068](https://github.com/rero/rero-ils-ui/pull/1068) (by @Garfield-fr)
+* entities: fix source search button [\#1067](https://github.com/rero/rero-ils-ui/pull/1067) (by @Garfield-fr)
+* fix: certain texts get unselected on keystroke [\#1033](https://github.com/rero/rero-ils-ui/pull/1033) (by @Garfield-fr)
+* history: fix duplicate records [\#1047](https://github.com/rero/rero-ils-ui/pull/1047) (by @Garfield-fr)
+* fix: display manual overdue [\#1034](https://github.com/rero/rero-ils-ui/pull/1034) (by @Garfield-fr)
+* library: fix communication language on add [\#1051](https://github.com/rero/rero-ils-ui/pull/1051) (by @Garfield-fr)
+* item: update status after request [\#1039](https://github.com/rero/rero-ils-ui/pull/1039) (by @Garfield-fr)
+* circulation: fix patron barcode [\#1045](https://github.com/rero/rero-ils-ui/pull/1045) (by @Garfield-fr)
+* fix: help shortcut [\#1035](https://github.com/rero/rero-ils-ui/pull/1035) (by @Garfield-fr)
+* fees: fix error on display [\#1040](https://github.com/rero/rero-ils-ui/pull/1040) (by @Garfield-fr)
+* document: fix expand to global view [\#1042](https://github.com/rero/rero-ils-ui/pull/1042) (by @Garfield-fr)
+* shared: enable translations [\#1052](https://github.com/rero/rero-ils-ui/pull/1052) (by @jma)
+* operation history: fix pickup location label [\#1031](https://github.com/rero/rero-ils-ui/pull/1031) (by @PascalRepond)
+* issues: fix status display into holding detail view [\#1016](https://github.com/rero/rero-ils-ui/pull/1016) (by @zannkukai)
+* translations: add missing menu manual translation [\#1022](https://github.com/rero/rero-ils-ui/pull/1022) (by @PascalRepond)
+* circulation: fix item properties access on item view [\#1019](https://github.com/rero/rero-ils-ui/pull/1019) (by @zannkukai)
+
 ## [v14.4.0](https://github.com/rero/rero-ils-ui/tree/v14.4.0) (2023-07-13)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.3.0...v14.4.0)
