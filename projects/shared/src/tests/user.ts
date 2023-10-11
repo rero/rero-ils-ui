@@ -181,6 +181,7 @@ export const testUserPatronWithSettings = {
       holdings: 'hold',
       items: 'item'
     },
+    documentAdvancedSearch: false,
     userProfile: {
       readOnly: false,
       readOnlyFields: []
@@ -394,6 +395,7 @@ export const testUserPatronMultipleOrganisationsWithSettings = {
       holdings: 'hold',
       items: 'item'
     },
+    documentAdvancedSearch: false,
     userProfile: {
       readOnly: false,
       readOnlyFields: []
@@ -486,6 +488,7 @@ export const testUserLibrarianWithSettings = {
       holdings: 'hold',
       items: 'item'
     },
+    documentAdvancedSearch: false,
     userProfile: {
       readOnly: false,
       readOnlyFields: []

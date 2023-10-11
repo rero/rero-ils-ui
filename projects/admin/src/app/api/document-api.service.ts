@@ -22,6 +22,7 @@ import { IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConfigService } from '../service/app-config.service';
+import { IAdvancedSearchConfig } from '../record/search-view/document-advanced-search-form/i-advanced-search-config-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -62,5 +63,14 @@ export class DocumentApiService implements IAvailabilityService {
   getAvailability(pid: string): Observable<IAvailability> {
     const url = `${this._appConfigService.apiEndpointPrefix}/document/${pid}/availability`;
     return this._httpClient.get<IAvailability>(url);
+  }
+
+  /**
+   * Get Advanced search configuration from the backend.
+   * @returns The advanced Search config
+   */
+  getAdvancedSearchConfig(): Observable<IAdvancedSearchConfig> {
+    const url = `${this._appConfigService.apiEndpointPrefix}/document/advanced-search-config`;
+    return this._httpClient.get<IAdvancedSearchConfig>(url);
   }
 }

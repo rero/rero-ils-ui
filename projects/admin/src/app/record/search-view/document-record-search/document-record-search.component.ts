@@ -1,6 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,6 +19,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SearchResult, RecordSearchPageComponent, RecordSearchService, RecordService, RecordUiService } from '@rero/ng-core';
+import { AppSettingsService } from '@rero/shared';
 
 @Component({
   selector: 'admin-document-record-search',
@@ -29,10 +31,10 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
   private _baseUrl: string;
 
   /** Result of Elasticsearch */
-  private _searchResult: SearchResult;
+  private searchResult: SearchResult;
 
   /** Resource type */
-  private _documentType = 'documents';
+  private documentType = 'documents';
 
   /**
    * Show link for no result
@@ -40,8 +42,8 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
    */
   get showLink(): boolean {
     return this.total === 0
-      && ('organisation' in this._route.snapshot.queryParams)
-      && this._route.snapshot.queryParams.q;
+      && ('organisation' in this.activatedRoute.snapshot.queryParams)
+      && this.activatedRoute.snapshot.queryParams.q;
   }
 
   /**
@@ -49,36 +51,47 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
    * @return null or number
    */
   get total(): null | number {
-    if (this._searchResult) {
+    if (this.searchResult) {
       return this._recordService.totalHits(
-        this._searchResult.records.hits.total
+        this.searchResult.records.hits.total
       );
     }
     return null;
   }
 
   /**
+   * Advanced search button displayed
+   * according to configuration
+   * @return boolean
+   */
+  get isAdvancedSearchEnable(): boolean {
+    return this._appSettingsService.settings.documentAdvancedSearch;
+  }
+
+  /**
    * Constructor
-   * @param _activatedRoute - ActivatedRoute
-   * @param _router - Router
-   * @param _recordSearchService - RecordSearchService
-   * @param _recordUiService - RecordUiService
-   * @param _recordService - RecordService
+   * @param activatedRoute - ActivatedRoute
+   * @param router - Router
+   * @param recordSearchService - RecordSearchService
+   * @param recordUiService - RecordUiService
+   * @param recordService - RecordService
+   * @param appSettingsService - AppSettingsService
    */
   constructor(
-    protected _activatedRoute: ActivatedRoute,
-    protected _router: Router,
-    protected _recordSearchService: RecordSearchService,
-    protected _recordUiService: RecordUiService,
+    protected activatedRoute: ActivatedRoute,
+    protected router: Router,
+    protected recordSearchService: RecordSearchService,
+    protected recordUiService: RecordUiService,
     private _recordService: RecordService,
+    private _appSettingsService: AppSettingsService
   ) {
-    super(_activatedRoute, _router, _recordSearchService, _recordUiService);
+    super(activatedRoute, router, recordSearchService, recordUiService);
   }
 
   /** Init */
   ngOnInit() {
     super.ngOnInit();
-    this._baseUrl = super.getCurrentUrl(this._documentType);
+    this._baseUrl = super.getCurrentUrl(this.documentType);
   }
 
   /**
@@ -86,8 +99,8 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
    * @param event - SearchResult
    */
   recordsSearched(event: SearchResult) {
-    if (event && event.type === this._documentType) {
-      this._searchResult = event;
+    if (event && event.type === this.documentType) {
+      this.searchResult = event;
     }
   }
 
@@ -97,14 +110,27 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
    */
   linkToGlobalDocuments(event: any) {
     event.preventDefault();
-    const queryParams = this._activatedRoute.snapshot.queryParams;
-    this._router.navigate(
+    const {queryParams} = this.activatedRoute.snapshot;
+    this.router.navigate(
       [this._baseUrl],
-      { relativeTo: this._route, queryParams: {
+      { relativeTo: this.activatedRoute, queryParams: {
         q: queryParams.q || '',
         page: 1,
-        size: queryParams.size || 10
+        size: queryParams.size || 10,
+        simple: this.recordSearchService.hasFilter('simple', '1') ? '1' : '0'
       }}
     );
+  }
+
+  /**
+   * The advanced search query has changed
+   * @param queryString - Query from the advanced search component
+   */
+  changedQueryString(queryString: string): void {
+    const {queryParams} = this.activatedRoute.snapshot;
+    this.page = +queryParams.page || 1;
+    this.size = +queryParams.size || 10;
+    this.sort = queryParams.sort || 'bestmatch';
+    this.q = queryString;
   }
 }

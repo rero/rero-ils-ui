@@ -141,6 +141,7 @@ export interface ISettings {
   globalView: string;
   language: string;
   operationLogs: any;
+  documentAdvancedSearch: boolean;
   userProfile: {
     readOnly: boolean;
     readOnlyFields: string[]
