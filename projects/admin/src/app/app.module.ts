@@ -24,10 +24,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PrimengImportModule } from '@app/admin/shared/primeng-import/primeng-import.module';
 import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
+import { FormlyFieldSelect } from '@ngx-formly/bootstrap';
 import { FormlyModule } from '@ngx-formly/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import {
+  BucketNameService as CoreBucketNameService,
   CoreConfigService, LocalStorageService, RecordModule, RemoteTypeaheadService,
   TranslateLoader, TranslateService, TruncateTextPipe
 } from '@rero/ng-core';
@@ -175,6 +177,8 @@ import { ReportsListComponent } from './record/detail-view/statistics-cfg-detail
 import { StatisticsCfgDetailViewComponent } from './record/detail-view/statistics-cfg-detail-view/statistics-cfg-detail-view.component';
 import { TemplateDetailViewComponent } from './record/detail-view/template-detail-view/template-detail-view.component';
 import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
+import { FieldCustomInputTypeComponent } from './record/editor/type/field-custom.type';
+import { RepeatTypeComponent } from './record/editor/type/repeat-section.type';
 import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
 import { UserIdComponent } from './record/editor/wrappers/user-id/user-id.component';
 import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patron-type-item-type/cipo-patron-type-item-type.component';
@@ -183,6 +187,8 @@ import { AddEntityLocalComponent } from './record/formly/type/entity-typeahead/a
 import { EntityTypeaheadComponent } from './record/formly/type/entity-typeahead/entity-typeahead.component';
 import { OperationLogsDialogComponent } from './record/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
 import { OperationLogsComponent } from './record/operation-logs/operation-logs.component';
+import { DocumentAdvancedSearchFormComponent } from './record/search-view/document-advanced-search-form/document-advanced-search-form.component';
+import { DocumentAdvancedSearchComponent } from './record/search-view/document-advanced-search.component';
 import { DocumentRecordSearchComponent } from './record/search-view/document-record-search/document-record-search.component';
 import { PatronTransactionEventSearchViewComponent } from './record/search-view/patron-transaction-event-search-view/patron-transaction-event-search-view.component';
 import { PaymentsDataComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/payments-data.component';
@@ -190,6 +196,7 @@ import { PaymentDataPieComponent } from './record/search-view/patron-transaction
 import { PaymentsDataTableComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/table/payments-data-table.component';
 import { AppConfigService } from './service/app-config.service';
 import { AppInitializerService } from './service/app-initializer.service';
+import { BucketNameService } from './service/bucket-name.service';
 import { OrganisationService } from './service/organisation.service';
 import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-factory.service';
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
@@ -333,7 +340,11 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     StatisticsCfgDetailViewComponent,
     ReportDataComponent,
     ReportsListComponent,
-    EntitiesRelatedComponent
+    EntitiesRelatedComponent,
+    DocumentAdvancedSearchFormComponent,
+    RepeatTypeComponent,
+    FieldCustomInputTypeComponent,
+    DocumentAdvancedSearchComponent
   ],
   imports: [
     AppRoutingModule,
@@ -354,11 +365,11 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     FormlyModule.forRoot({
       types: [
         { name: "cipo-pt-it", component: CipoPatronTypeItemTypeComponent },
-        {
-          name: "account-select",
-          component: SelectAccountEditorWidgetComponent,
-        },
+        { name: "account-select", component: SelectAccountEditorWidgetComponent },
         { name: "entityTypeahead", component: EntityTypeaheadComponent },
+        {name: 'repeat', component: RepeatTypeComponent},
+        {name: 'select-formly', component: FormlyFieldSelect },
+        {name: 'custom-field', component: FieldCustomInputTypeComponent }
       ],
       wrappers: [
         { name: "user-id", component: UserIdComponent },
@@ -444,6 +455,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     MainTitlePipe,
     ItemHoldingsCallNumberPipe,
     CountryCodeTranslatePipe,
+    { provide: CoreBucketNameService, useClass: BucketNameService }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
