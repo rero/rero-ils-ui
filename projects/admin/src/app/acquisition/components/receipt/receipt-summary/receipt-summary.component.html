@@ -56,11 +56,16 @@
         <ng-container *ngIf="!isCollapsed">
           <!-- RECEPTION LINES ROWS :: One line for each reception line -->
           <ng-container *ngFor="let line of receipt.receipt_lines; let first = first;">
-            <div class="col-9 detail label d-inline-block" [class.separator]="first">
+            <div class="col-9 detail label d-inline-flex" [class.separator]="first">
               <strong>{{ line.quantity }}</strong><span class="mx-2">x</span>
-              <a [routerLink]="['/records', 'documents', 'detail', line.document.pid]" target="acq-detail">
-                {{ line.document.title | truncateText }}
-              </a>
+              <div>
+                <ng-container *ngIf="line.document.pid | getRecord: 'documents' | async as document">
+                  <shared-document-brief-view [record]="document.metadata"></shared-document-brief-view>
+                </ng-container>
+                <ng-container *ngIf="line.acq_account.pid | getRecord: 'acq_accounts' | async as account">
+                  <span class="account-number">{{ account.metadata.number }}</span>
+                </ng-container>
+              </div>
             </div>
             <div class="col-3 detail amount d-flex" [class.separator]="first">
               <div class="computation">

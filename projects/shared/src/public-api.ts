@@ -29,6 +29,7 @@ export * from './lib/class/user';
 
 export * from './lib/component/action-button/action-button.component';
 export * from './lib/component/core/brief-view/brief-view.component';
+export * from './lib/component/documents/document-brief-view/document-brief-view.component';
 export * from './lib/component/entities/entity-brief-view/entity-brief-view.component';
 export * from './lib/view/contribution/contribution.component';
 export * from './lib/view/entity-link.component';
@@ -48,6 +49,7 @@ export * from './lib/pipe/entity-label.pipe';
 export * from './lib/pipe/extract-source-field.pipe';
 export * from './lib/pipe/get-translated-label.pipe';
 export * from './lib/pipe/id-attribute.pipe';
+export * from './lib/pipe/identifiedby-label.pipe';
 export * from './lib/pipe/is-array.pipe';
 export * from './lib/pipe/item-holdings-call-number.pipe';
 export * from './lib/pipe/join.pipe';

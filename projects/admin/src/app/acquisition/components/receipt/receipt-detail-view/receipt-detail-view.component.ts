@@ -28,7 +28,7 @@ import { IAcqReceipt, IAcqReceiptLine } from '../../../classes/receipt';
 @Component({
   selector: 'admin-receipt-detail-view',
   templateUrl: './receipt-detail-view.component.html',
-  styleUrls: ['./receipt-detail-view.component.scss']
+  styleUrls: ['../../../acquisition.scss', './receipt-detail-view.component.scss']
 })
 export class ReceiptDetailViewComponent implements OnInit, OnDestroy, DetailRecord {
 

@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
- * Copyright (C) 2021 UCLouvain
+ * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -44,6 +44,23 @@
   @for $level from 1 to $MAX-DEPTH {
     .depth-padding-#{$level} {
       padding-left: calc(#{$DEPTH-PADDING} * #{$level});
+    }
+  }
+}
+
+// receipt ===================================================================
+//    Use these classes to manage receipt resources
+// ===========================================================================
+.receipt {
+  .account-number {
+    font-size: $small-font-size;
+    color: $secondary;
+    font-weight: bold;
+    &:before {
+      content: '[';
+    }
+    &:after {
+      content: ']';
     }
   }
 }

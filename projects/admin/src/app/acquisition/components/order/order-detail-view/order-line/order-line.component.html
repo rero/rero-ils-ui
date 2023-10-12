@@ -1,7 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
-  Copyright (C) 2021 UCLouvain
+  Copyright (C) 2021-2023 RERO
+  Copyright (C) 2021-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -23,8 +23,8 @@
               (click)="isCollapsed = !isCollapsed"
               [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
       </button>
-      <div class="d-flex align-items-start flex-column">
-        <div class="d-flex">
+      <div class="d-flex align-items-start flex-column w-100">
+        <div class="d-flex w-100">
           <i class="fa status"
              title="{{ orderLine.status | translate }}"
              [ngClass]="{
@@ -36,12 +36,11 @@
             'text-warning': orderLine.status === orderLineStatus.PARTIALLY_RECEIVED,
             'fa-window-close-o text-danger': orderLine.status === orderLineStatus.CANCELLED
           }"></i>
-          <ng-container *ngIf="orderLine.document.pid | getRecord: 'documents' | async as document">
-            <a *ngIf="document.metadata.title | mainTitle as title"
-               [routerLink]="['/records', 'documents', 'detail', document.metadata.pid]">
-              {{ title | truncateText }}
-            </a>
-          </ng-container>
+          <div class="d-flex flex-grow-1 mb-1">
+            <ng-container *ngIf="orderLine.document.pid | getRecord: 'documents' | async as document">
+              <shared-document-brief-view [record]="document.metadata"></shared-document-brief-view>
+            </ng-container>
+          </div>
           <span class="bullet-notes" *ngIf="orderLine.notes.length > 0 && isCollapsed">
             <ng-container *ngFor="let note of orderLine.notes">
               <i class="fa fa-circle fa-bullet bullet-{{ note | noteBadgeColor }}" aria-hidden="true" title="{{ note.type | translate }}"></i>
