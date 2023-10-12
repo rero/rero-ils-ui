@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-*[class^='transaction-'], *[class*=' transaction-'] {
+*[class^='fa-icon-'], *[class*=' fa-icon-'] {
   &:before {
     font-family: 'FontAwesome';
     font-weight: 100;
@@ -25,15 +25,15 @@
   }
 }
 
-.transaction-library:before {
+.fa-icon-library:before {
   content: "\f0ac";
 }
-.pickup-location:before {
+.fa-icon-pickup-location:before {
   content: "\f041";
 }
-.transaction-patron:before {
+.fa-icon-patron:before {
   content: "\f007";
 }
-.transaction-operator:before {
+.fa-icon-operator:before {
   content: "\f2be";
 }
