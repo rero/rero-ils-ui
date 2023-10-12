@@ -53,6 +53,8 @@ import { InheritedCallNumberComponent } from './view/inherited-call-number/inher
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
 import { AvailabilityComponent } from './view/availability/availability.component';
 import { EntityLinkComponent } from './view/entity-link.component';
+import { DocumentBriefViewComponent } from './component/documents/document-brief-view/document-brief-view.component';
+import { IdentifiedByLabelPipe } from './pipe/identifiedby-label.pipe';
 
 @NgModule({
   declarations: [
@@ -87,6 +89,8 @@ import { EntityLinkComponent } from './view/entity-link.component';
     NoContentDirective,
     AvailabilityComponent,
     EntityLinkComponent,
+    DocumentBriefViewComponent,
+    IdentifiedByLabelPipe
   ],
   exports: [
     CommonModule,
@@ -116,7 +120,8 @@ import { EntityLinkComponent } from './view/entity-link.component';
     ContributionComponent,
     NoContentDirective,
     AvailabilityComponent,
-    EntityLinkComponent
+    EntityLinkComponent,
+    DocumentBriefViewComponent
   ],
   imports: [
     CommonModule,

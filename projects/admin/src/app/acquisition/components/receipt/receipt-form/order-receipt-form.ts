@@ -232,19 +232,12 @@ export class OrderReceiptForm {
             },
             {
               key: 'document',
-              type: 'field-ref',
+              type: 'field-document-brief-view',
               className: 'col-5',
               wrappers: ['input-no-label'],
               templateOptions: {
                 headerClassName: 'col-5 font-weight-bold mb-2',
                 label: 'Document',
-                resource: 'documents',
-                recourceKey: 'document',
-                resourceField: 'title.0._text',
-                resourceSelect: {
-                  field: 'type',
-                  value: 'bf:Title'
-                }
               }
             },
             {

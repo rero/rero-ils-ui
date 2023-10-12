@@ -1,0 +1,51 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2023 RERO
+  Copyright (C) 2023 UCLouvain
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!-- title -->
+<a *ngIf="record.title | mainTitle as title"
+   [routerLink]="['/records', 'documents', 'detail', record.pid]" target="_blank">
+  {{ title }}
+</a>
+<!-- contribution -->
+<ng-container *ngIf="record?.contribution as entities">
+  <div class="ml-2 small" name="document-contribution">
+      <shared-contribution
+        [contributions]="entities"
+        [limitRecord]="3"
+        [activateLink]="false"
+      ></shared-contribution>
+  </div>
+</ng-container>
+<!-- provision activity publications -->
+<ng-container  *ngIf="provisionActivityPublications.length > 0">
+  <div class="ml-2 small" name="document-provision-activity">
+    {{ provisionActivityPublications | join }}
+  </div>
+</ng-container>
+
+<!-- ISBN -->
+<ng-container *ngIf="record.identifiedBy | identifiedByLabel: ['bf:Isbn', 'bf:Ean'] as identifiedBy">
+  <div class="ml-2 small-content" name="document-identified-by">
+    ISBN: {{ identifiedBy | truncateText: 3 }}
+  </div>
+</ng-container>
+<!-- ISSN -->
+<ng-container *ngIf="record.identifiedBy | identifiedByLabel: ['bf:Issn'] as identifiedBy">
+  <div class="ml-2 small-content" name="document-identified-by">
+    ISSN: {{ identifiedBy | truncateText: 3 }}
+  </div>
+</ng-container>

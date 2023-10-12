@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
- * Copyright (C) 2021 UCLouvain
+ * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -46,6 +46,7 @@ import { OrderReceiptViewComponent } from './components/receipt/receipt-form/ord
 import { OrderSummaryComponent } from './components/order/order-summary/order-summary.component';
 import { ReceiptListComponent } from './components/receipt/receipt-list/receipt-list.component';
 import { registerFormlyExtension } from './formly/extension';
+import { FieldDocumentBriefViewTypeComponent } from './formly/type/field-document-brief-view.type';
 import { FieldRefTypeComponent } from './formly/type/field-ref.type';
 import { RepeatTypeComponent } from './formly/type/repeat-section.type';
 import { SelectAccountComponent } from './formly/type/select-account/select-account.component';
@@ -70,6 +71,7 @@ import { PreviewEmailModule } from '../shared/preview-email/preview-email.module
     AccountDetailViewComponent,
     BudgetsBriefViewComponent,
     BudgetDetailViewComponent,
+    FieldDocumentBriefViewTypeComponent,
     FieldRefTypeComponent,
     InputNoLabelWrapperComponent,
     NegativeAmountPipe,
@@ -103,6 +105,7 @@ import { PreviewEmailModule } from '../shared/preview-email/preview-email.module
     FormlyModule.forChild({
       types: [
         { name: 'repeat', component: RepeatTypeComponent },
+        { name: 'field-document-brief-view', component: FieldDocumentBriefViewTypeComponent },
         { name: 'field-ref', component: FieldRefTypeComponent },
         { name: 'select-account', component: SelectAccountComponent }
       ],
