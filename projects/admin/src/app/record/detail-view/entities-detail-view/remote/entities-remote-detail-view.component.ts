@@ -96,15 +96,13 @@ export class RemoteEntitiesDetailViewComponent implements DetailRecord {
    * TODO: Modify query params.
    */
   search(metadata: any): void {
-    let catalogKey = null;
-    let catalogPid = null;
+    let catalogKey = undefined;
+    let catalogPid = undefined;
     const orderKey = this.findOrderKeyByLanguage(this._translateService.currentLang);
-    // Return false in an every loop to interrupt it
-    this._appSettingsService.settings.agentLabelOrder[orderKey].every((catalog: string) => {
-      if (metadata.sources.includes(catalog)) {
-        catalogKey = catalog;
-        catalogPid = metadata[catalog].pid;
-        return false;
+    this._appSettingsService.settings.agentLabelOrder[orderKey].forEach((source: string) => {
+      if (metadata.sources.includes(source) && !catalogKey && !catalogPid) {
+        catalogKey = source;
+        catalogPid = metadata[source].pid;
       }
     });
     if (catalogKey && catalogPid) {
