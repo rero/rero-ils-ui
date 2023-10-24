@@ -90,7 +90,7 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
               suggestions.push({
                 label: undefined,
                 value: undefined,
-                group: this._translateService.instant('link to local authority'),
+                group: 'local',
                 column: 1,
               });
             }
@@ -98,7 +98,8 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
            }),
            map((suggestions: any) => {
              let tmpSuggestions = this._splitSuggestionsByColumn(suggestions);
-             tmpSuggestions = this._orderSuggestions(tmpSuggestions);
+             tmpSuggestions = this._orderBySources(this._orderSuggestions(tmpSuggestions));
+             tmpSuggestions = this._labelGroup(tmpSuggestions);
              this.suggestionSections = this._createSuggestionGroupHeader(tmpSuggestions);
              return suggestions;
            })
@@ -180,6 +181,37 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
           ? a.label.localeCompare(b.label)
           : a.group.localeCompare(b.group))
     );
+  }
+
+  /** Order suggestions by sources */
+  private _orderBySources(suggestionSections: SuggestionMetadata[][]): SuggestionMetadata[][] {
+    const sources = this._remoteTypeahead.sources();
+    suggestionSections.map((section, index) => {
+      const order = [];
+      sources.map((source: string) => {
+        section.map((suggestion: any) => {
+          if (suggestion.group === source) {
+            order.push(suggestion);
+          }
+        });
+      });
+      if (order.length > 0 && (order.length === section.length)) {
+        suggestionSections[index] = order;
+      }
+    });
+    return suggestionSections;
+  }
+
+  /** Transform label */
+  private _labelGroup(suggestionSections: SuggestionMetadata[][]): SuggestionMetadata[][] {
+    suggestionSections.map(section => {
+      section.map(suggestion => {
+        suggestion.group = suggestion.group === 'local'
+          ? this._translateService.instant('link to local authority')
+          : this._translateService.instant('link to authority {{ sourceName }}', {sourceName: suggestion.group})
+      });
+    });
+    return suggestionSections;
   }
 
   /** Create group header for each suggestion sections. */

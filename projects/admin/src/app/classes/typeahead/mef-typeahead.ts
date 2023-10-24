@@ -243,7 +243,7 @@ export class MefTypeahead implements ITypeahead {
   private _buildRemoteSuggestions(hits: any): SuggestionMetadata[] {
     const suggestions = [];
     hits.map((hit: any) => {
-      for (const source of this._sources()) {
+      for (const source of this.sources()) {
         if (hit.metadata[source]) {
           suggestions.push(this._getNameRef(hit.metadata, source));
         }
@@ -265,7 +265,7 @@ export class MefTypeahead implements ITypeahead {
       label: metadata.authorized_access_point,
       externalLink: this._get_source_uri(metadata?.identifiedBy, sourceName),
       value: this._get_source_uri(metadata?.identifiedBy, 'mef'),
-      group: this.translateService.instant('link to authority {{ sourceName }}', {sourceName}),
+      group: sourceName,
       column: 0
     };
   }
@@ -287,15 +287,14 @@ export class MefTypeahead implements ITypeahead {
    * Get sources
    * @return array of sources
    */
-  private _sources(): string[] {
+  public sources(): string[] {
     const language = this.translateService.currentLang;
     const order: any = this.appSettingsService.agentLabelOrder;
     const key = language in order ? language : 'fallback';
     const agentSources = (key === 'fallback')
       ? order[order[key]]
       : order[key];
-    const sources = agentSources.filter((source: string) => source !== 'rero');
-    return sources;
+    return agentSources.filter((source: string) => source !== 'rero');
   }
 
   /**
@@ -310,7 +309,7 @@ export class MefTypeahead implements ITypeahead {
         description: hit?.source_catalog,
         value: this.apiService.getRefEndpoint('local_entities', hit.pid),
         externalLink: this._buildLocalEntityDetailViewURI(hit.pid),
-        group: this.translateService.instant('link to local authority'),
+        group: 'local',
         column: 1,
       };
     });
