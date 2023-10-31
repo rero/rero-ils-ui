@@ -44,11 +44,15 @@ export class IllRequestApiService extends BaseApi {
    * @param filters - criteria to apply on the query to filter the result.
    * @returns Array of ill request record
    */
-  getByPatronPid(patronPid: string, filters?: {[key: string]: string}): Observable<Record | Error> {
+  getByPatronPid(
+    patronPid: string,
+    filters?: {[key: string]: string},
+    sort: string = '-created'
+  ): Observable<Record | Error> {
     const query = `patron.pid:${patronPid}`;
     return this._recordService
       .getRecords(this.RESOURCE_NAME, query , 1, RecordService.MAX_REST_RESULTS_SIZE,
-                  undefined, filters, BaseApi.reroJsonheaders, 'created')
+                  undefined, filters, BaseApi.reroJsonheaders, sort)
       .pipe(map((result: Record) => result.hits.hits));
   }
 }

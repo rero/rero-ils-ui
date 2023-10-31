@@ -78,7 +78,7 @@
         </dd>
         <dt class="col-sm-5 col-md-3 col-lg-2 offset-1 label-title" translate>Request date</dt>
         <dd class="col-sm-6 col-md-8 col-lg-9 mb-1">{{ record.created | dateTranslate : 'medium' }}</dd>
-        <dt class="col-sm-5 col-md-3 col-lg-2 offset-1 label-title" translate>Status</dt>
+        <dt class="col-sm-5 col-md-3 col-lg-2 offset-1 label-title" translate>Request status</dt>
         <dd class="col-sm-6 col-md-8 col-lg-9 mb-1">
           <span class="badge badge-{{ badgeColor(record.metadata.status) }} px-2 py-1" translate>
             {{ record.metadata.status }}
