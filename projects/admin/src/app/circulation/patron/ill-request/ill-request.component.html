@@ -18,7 +18,11 @@
   <ng-container *ngIf="illRequests.length > 0; else noResult">
     <!-- HEADER -->
     <div class="row p-2 mb-1 bg-dark rounded text-light">
-      <div class="col-10" translate>Title</div>
+      <div class="col-4" translate>Document</div>
+      <div class="col-3" translate>Pickup location</div>
+      <div class="col-2" translate>Request date</div>
+      <div class="col-2" translate>Loan status</div>
+      <div class="col-1" translate>&nbsp;</div>
     </div>
     <admin-ill-request-item [record]="record" *ngFor="let record of illRequests"></admin-ill-request-item>
   </ng-container>

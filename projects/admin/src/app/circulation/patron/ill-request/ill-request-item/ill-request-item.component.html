@@ -17,7 +17,7 @@
 -->
 <div class="row item">
   <!-- MAIN ROW :: title, authors, status and action buttons ============== -->
-  <div class="col-10 d-flex">
+  <div class="col-4 d-flex">
     <button type="button" class="btn-show-more"
             [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
             (click)="isCollapsed = !isCollapsed"
@@ -28,8 +28,12 @@
       <div class="small">{{ record.metadata.document.authors }}</div>
     </div>
   </div>
-  <div class="col-2 text-right">
+  <div class="col-3">{{ record.metadata.pickup_location.name }}</div>
+  <div class="col-2">{{ record.created | dateTranslate:'medium'}}</div>
+  <div class="col-2">
     <span class="mr-3 badge badge-{{ badgeColor(record.metadata.loan_status) }}" translate>{{ record.metadata.loan_status }}</span>
+  </div>
+  <div class="col-1 text-right">
     <a class="btn btn-sm btn-link btn-outline-primary"
        title="{{ 'Details' | translate }}"
        [routerLink]="['/', 'records', 'ill_requests', 'detail', record.metadata.pid]"
@@ -64,14 +68,6 @@
           </ng-container>
         </dd>
       </ng-container>
-      <!-- PICKUP LOCATION -->
-      <dt class="offset-1 col-1 label-title" translate>Pickup location</dt>
-      <dd class="col-10 mb-0">{{ record.metadata.pickup_location.name }}</dd>
-      <!-- STATUS -->
-      <dt class="offset-1 col-1 label-title" translate>Status</dt>
-      <dd class="col-10 mb-0">
-        <span class="badge badge-{{badgeColor(record.metadata.status)}}" translate>{{ record.metadata.status }}</span>
-      </dd>
       <!-- SCOPE -->
       <dt class="offset-1 col-1 label-title" translate>Scope</dt>
       <dd class="col-10 mb-0">
@@ -91,6 +87,11 @@
           <span class="badge badge-light px-2 py-1 ml-2">{{ record.metadata.found_in.source }}</span>
         </dd>
       </ng-container>
+      <!-- STATUS -->
+      <dt class="offset-1 col-1 label-title" translate>Request status</dt>
+      <dd class="col-10 mb-0">
+        <span class="badge badge-{{badgeColor(record.metadata.status)}}" translate>{{ record.metadata.status }}</span>
+      </dd>
       <!-- NOTES -->
       <ng-container *ngIf="record.metadata.notes && record.metadata.notes.length > 0">
         <dt class="offset-1 col-1 label-title" translate>Note</dt>
