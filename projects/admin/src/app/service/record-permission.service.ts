@@ -164,80 +164,116 @@ export class RecordPermissionService {
   private plurialLinksMessages() {
     return {
       acq_order_lines: {
-        '=1': this._translateService.instant('has 1 acquisition order line attached'),
-        other: this._translateService.instant('has # acquisition order lines attached')
+        "=1": this._translateService.instant(
+          "has 1 acquisition order line attached"
+        ),
+        other: this._translateService.instant(
+          "has # acquisition order lines attached"
+        ),
       },
       acq_orders: {
-        '=1': this._translateService.instant('has 1 acquisition order attached'),
-        other: this._translateService.instant('has # acquisition orders attached')
+        "=1": this._translateService.instant(
+          "has 1 acquisition order attached"
+        ),
+        other: this._translateService.instant(
+          "has # acquisition orders attached"
+        ),
       },
       acq_receipt_lines: {
-        '=1': this._translateService.instant('has 1 acquisition receipt line attached'),
-        other: this._translateService.instant('has # acquisition receipts lines attached')
+        "=1": this._translateService.instant(
+          "has 1 acquisition receipt line attached"
+        ),
+        other: this._translateService.instant(
+          "has # acquisition receipts lines attached"
+        ),
       },
       acq_receipt: {
-        '=1': this._translateService.instant('has 1 acquisition receipt attached'),
-        other: this._translateService.instant('has # acquisition receipts attached')
+        "=1": this._translateService.instant(
+          "has 1 acquisition receipt attached"
+        ),
+        other: this._translateService.instant(
+          "has # acquisition receipts attached"
+        ),
       },
       acq_accounts: {
-        '=1': this._translateService.instant('has 1 acquisition account attached'),
-        other: this._translateService.instant('has # acquisition accounts attached')
+        "=1": this._translateService.instant(
+          "has 1 acquisition account attached"
+        ),
+        other: this._translateService.instant(
+          "has # acquisition accounts attached"
+        ),
       },
       budgets: {
-        '=1': this._translateService.instant('has 1 budget attached'),
-        other: this._translateService.instant('has # budgets attached')
+        "=1": this._translateService.instant("has 1 budget attached"),
+        other: this._translateService.instant("has # budgets attached"),
       },
       circ_policies: {
-        '=1': this._translateService.instant('has 1 circulation policy attached'),
-        other: this._translateService.instant('has # circulation policies attached')
+        "=1": this._translateService.instant(
+          "has 1 circulation policy attached"
+        ),
+        other: this._translateService.instant(
+          "has # circulation policies attached"
+        ),
       },
       documents: {
-        '=1': this._translateService.instant('has 1 document attached'),
-        other: this._translateService.instant('has # documents attached')
+        "=1": this._translateService.instant("has 1 document attached"),
+        other: this._translateService.instant("has # documents attached"),
       },
       fees: {
-        '=1': this._translateService.instant('has 1 fee attached'),
-        other: this._translateService.instant('has # fees attached')
+        "=1": this._translateService.instant("has 1 fee attached"),
+        other: this._translateService.instant("has # fees attached"),
       },
       holdings: {
-        '=1': this._translateService.instant('has 1 holding attached'),
-        other: this._translateService.instant('has # holdings attached')
+        "=1": this._translateService.instant("has 1 holding attached"),
+        other: this._translateService.instant("has # holdings attached"),
       },
       item_types: {
-        '=1': this._translateService.instant('has 1 item type attached'),
-        other: this._translateService.instant('has # item types attached')
+        "=1": this._translateService.instant("has 1 item type attached"),
+        other: this._translateService.instant("has # item types attached"),
       },
       items: {
-        '=1': this._translateService.instant('has 1 item attached'),
-        other: this._translateService.instant('has # items attached')
+        "=1": this._translateService.instant("has 1 item attached"),
+        other: this._translateService.instant("has # items attached"),
       },
       libraries: {
-        '=1': this._translateService.instant('has 1 library attached'),
-        other: this._translateService.instant('has # libraries attached')
+        "=1": this._translateService.instant("has 1 library attached"),
+        other: this._translateService.instant("has # libraries attached"),
       },
       loans: {
-        '=1': this._translateService.instant('has 1 loan attached'),
-        other: this._translateService.instant('has # loans attached')
+        "=1": this._translateService.instant("has 1 loan attached"),
+        other: this._translateService.instant("has # loans attached"),
       },
       locations: {
-        '=1': this._translateService.instant('has 1 location attached'),
-        other: this._translateService.instant('has # locations attached')
+        "=1": this._translateService.instant("has 1 location attached"),
+        other: this._translateService.instant("has # locations attached"),
       },
       organisations: {
-        '=1': this._translateService.instant('has 1 organisation attached'),
-        other: this._translateService.instant('has # organisations attached')
+        "=1": this._translateService.instant("has 1 organisation attached"),
+        other: this._translateService.instant("has # organisations attached"),
       },
       patron_types: {
-        '=1': this._translateService.instant('has 1 patron type attached'),
-        other: this._translateService.instant('has # patron types attached')
+        "=1": this._translateService.instant("has 1 patron type attached"),
+        other: this._translateService.instant("has # patron types attached"),
       },
       patrons: {
-        '=1': this._translateService.instant('has 1 patron attached'),
-        other: this._translateService.instant('has # patrons attached')
+        "=1": this._translateService.instant("has 1 patron attached"),
+        other: this._translateService.instant("has # patrons attached"),
+      },
+      reports: {
+        "=1": this._translateService.instant("has 1 report attached"),
+        other: this._translateService.instant("has # reports attached"),
       },
       rolled_over: {
-        other: this._translateService.instant('Fiscal year closed')
-      }
+        other: this._translateService.instant("Fiscal year closed"),
+      },
+      templates: {
+        "=1": this._translateService.instant("has 1 template attached"),
+        other: this._translateService.instant("has # templates attached"),
+      },
+      transactions: {
+        "=1": this._translateService.instant("has 1 transaction attached"),
+        other: this._translateService.instant("has # transactions attached"),
+      },
     };
   }
 

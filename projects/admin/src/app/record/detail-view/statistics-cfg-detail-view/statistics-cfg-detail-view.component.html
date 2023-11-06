@@ -15,13 +15,16 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<ng-container *ngIf="record$ | async as record">
+<ng-container *ngIf="record">
   <header class="mb-2">
     <h1>{{ record.metadata.name }}</h1>
     <span [innerHTML]="record.metadata.description | nl2br"></span>
   </header>
   <section class="my-4">
     <dl class="row mb-0">
+      <dt class="col-3 label-title" translate>Library</dt>
+      <dd class="col-9">{{ record.metadata.library.$ref | getRecord: 'libraries' : 'field' : 'name' | async }}</dd>
+
       <dt class="col-3 label-title" translate>Is active</dt>
       <dd class="col-9">
         <i
@@ -31,12 +34,21 @@
       </dd>
       <dt class="col-3 label-title" translate>Frequency</dt>
       <dd class="col-9">{{ record.metadata.frequency | translate }}</dd>
+      <ng-container *ngIf="record.metadata.filter_by_libraries?.length > 0">
+        <dt class="col-3 label-title" translate>Filter numbers by libraries</dt>
+        <dd class="col-9">
+          <div *ngFor="let lib of record.metadata.filter_by_libraries">
+            {{ lib.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+          </div>
+        </dd>
+      </ng-container>
     </dl>
 
     <div class="card mt-3">
       <h5 class="card-header" translate>Configuration</h5>
       <div class="card-body container">
         <dl class="row mb-0">
+
           <dt class="col-3 label-title" translate>Category</dt>
           <dd class="col-9">{{ record.metadata.category.type | translate }}</dd>
 
@@ -64,8 +76,31 @@
             <dt class="col-3 label-title" translate>Filter</dt>
             <dd class="col-9">{{ record.metadata.category.indicator.filter }}</dd>
           </ng-container>
+          <ng-container *ngIf="record.created">
+            <dt class="col-3 label-title" translate>Created at</dt>
+            <dd class="col-9">{{ record.created | dateTranslate: 'medium' }}</dd>
+          </ng-container>
+          <ng-container *ngIf="record.updated">
+            <dt class="col-3 label-title" translate>Updated at</dt>
+            <dd class="col-9">{{ record.updated | dateTranslate: 'medium' }}</dd>
+          </ng-container>
         </dl>
       </div>
     </div>
   </section>
+  <tabset>
+    <tab>
+      <ng-template tabHeading>
+       <span translate>Reports</span>
+      </ng-template>
+        <admin-reports-list [pid]="record.metadata.pid"></admin-reports-list>
+    </tab>
+    <tab (selectTab)="getLiveValues()">
+      <ng-template tabHeading>
+       {{ 'Live Values' | translate }}
+      </ng-template>
+        <admin-report-data *ngIf="liveData" [data]="liveData"></admin-report-data>
+    </tab>
+  </tabset>
+
 </ng-container>
