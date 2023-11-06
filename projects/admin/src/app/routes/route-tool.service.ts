@@ -21,17 +21,16 @@ import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionStatus, ApiService, RecordService } from '@rero/ng-core';
-import { PermissionsService, UserService } from '@rero/shared';
+import { AppSettingsService, PermissionsService, UserService } from '@rero/shared';
 import { Observable, of, Subscriber } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RecordPermissions } from '../classes/permissions';
 import { RecordPermissionService } from '../service/record-permission.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class RouteToolService {
-
   /**
    * Proxy for permissions service
    * @return PermissionsService
@@ -48,7 +47,6 @@ export class RouteToolService {
     return this._injector.get(TranslateService);
   }
 
-
   /** Proxy for organisation service
    *  @return OrganisationService
    */
@@ -62,6 +60,14 @@ export class RouteToolService {
    */
   get userService() {
     return this._injector.get(UserService);
+  }
+
+  /**
+   * Proxy for settings service
+   * @return AppSettingsService
+   */
+  get settingsService() {
+    return this._injector.get(AppSettingsService);
   }
 
   /**
@@ -140,7 +146,7 @@ export class RouteToolService {
    * Constructor
    * @param _injector - Injector
    */
-  constructor(private _injector: Injector) { }
+  constructor(private _injector: Injector) {}
 
   /**
    * Get Token in injector
@@ -155,7 +161,7 @@ export class RouteToolService {
    * @param message - string
    * @return Observable
    */
-  can(message: string = ''): Observable<ActionStatus> {
+  can(message: string = ""): Observable<ActionStatus> {
     return of({ can: true, message });
   }
 
@@ -164,7 +170,7 @@ export class RouteToolService {
    * @param message - string
    * @return Observable
    */
-  canNot(message: string = ''): Observable<ActionStatus> {
+  canNot(message: string = ""): Observable<ActionStatus> {
     return of({ can: false, message });
   }
 
@@ -179,10 +185,10 @@ export class RouteToolService {
   canUpdate(record: any, recordType: string): Observable<ActionStatus> {
     return new Observable((observer: Subscriber<any>): void => {
       this.recordPermissionService
-          .getPermission(recordType, record.metadata.pid)
-          .subscribe((permission: RecordPermissions) => {
-            observer.next({ can: permission.update.can, message: '' });
-          });
+        .getPermission(recordType, record.metadata.pid)
+        .subscribe((permission: RecordPermissions) => {
+          observer.next({ can: permission.update.can, message: "" });
+        });
     });
   }
 
@@ -197,18 +203,19 @@ export class RouteToolService {
   canDelete(record: any, recordType: string): Observable<ActionStatus> {
     return new Observable((observer: Subscriber<any>): void => {
       this.recordPermissionService
-          .getPermission(recordType, record.metadata.pid)
-          .subscribe((permission: RecordPermissions) => {
-            observer.next({
-              can: permission.delete.can,
-              message: (permission.delete.can)
-                ? ''
-                : this.recordPermissionService.generateDeleteMessage(permission.delete.reasons)
-            });
+        .getPermission(recordType, record.metadata.pid)
+        .subscribe((permission: RecordPermissions) => {
+          observer.next({
+            can: permission.delete.can,
+            message: permission.delete.can
+              ? ""
+              : this.recordPermissionService.generateDeleteMessage(
+                  permission.delete.reasons
+                ),
           });
+        });
     });
   }
-
 
   /**
    * Check if a record can be read
@@ -223,7 +230,7 @@ export class RouteToolService {
       this.recordPermissionService
         .getPermission(recordType, record.metadata.pid)
         .subscribe((permission: RecordPermissions) => {
-          observer.next({ can: permission.read.can, message: '' });
+          observer.next({ can: permission.read.can, message: "" });
         });
     });
   }
@@ -238,30 +245,40 @@ export class RouteToolService {
    *      - canUpdate permission
    *      - canDelete permission
    */
-  permissions(record: any, recordType: string, membership = false): Observable<any> {
+  permissions( record: any, recordType: string, membership = false): Observable<any> {
     return new Observable((observer: Subscriber<any>): void => {
       const permissionService = this.recordPermissionService;
-      permissionService.getPermission(recordType, record.metadata.pid)
-        .pipe(map((permission: RecordPermissions) => {
-          const user = this.userService.user;
-          if (membership && ('library' in record.metadata)) {
-            // Extract library pid
-            const libraryPid = ('$ref' in record.metadata.library)
-              ? record.metadata.library.$ref.split('/').pop()
-              : record.metadata.library.pid;
-            permission = permissionService.membership(user, libraryPid, permission);
-          }
-          return {
-            canRead: { can: permission.read.can, message: '' },
-            canUpdate: { can: permission.update.can, message: '' },
-            canDelete: {
-              can: permission.delete.can,
-              message: (permission.delete.can)
-              ? ''
-              : permissionService.generateDeleteMessage(permission.delete.reasons)
+      permissionService
+        .getPermission(recordType, record.metadata.pid)
+        .pipe(
+          map((permission: RecordPermissions) => {
+            const user = this.userService.user;
+            if (membership && "library" in record.metadata) {
+              // Extract library pid
+              const libraryPid =
+                "$ref" in record.metadata.library
+                  ? record.metadata.library.$ref.split("/").pop()
+                  : record.metadata.library.pid;
+              permission = permissionService.membership(
+                user,
+                libraryPid,
+                permission
+              );
             }
-          };
-        }))
+            return {
+              canRead: { can: permission.read.can, message: "" },
+              canUpdate: { can: permission.update.can, message: "" },
+              canDelete: {
+                can: permission.delete.can,
+                message: permission.delete.can
+                  ? ""
+                  : permissionService.generateDeleteMessage(
+                      permission.delete.reasons
+                    ),
+              },
+            };
+          })
+        )
         .subscribe((permission: any) => {
           observer.next(permission);
         });
@@ -278,7 +295,7 @@ export class RouteToolService {
    */
   getRouteQueryParam(name: string, defaultValue = null) {
     const queryParams = this.activatedRoute.snapshot.queryParams;
-    return (name in queryParams && queryParams[name].length > 0)
+    return name in queryParams && queryParams[name].length > 0
       ? queryParams[name]
       : defaultValue;
   }
@@ -305,9 +322,9 @@ export class RouteToolService {
    */
   private _aggFilter(aggregations: object) {
     const aggs = {};
-    Object.keys(aggregations).map(aggregation => {
-      if (aggregation.indexOf('__') > -1) {
-        const splitted = aggregation.split('__');
+    Object.keys(aggregations).map((aggregation) => {
+      if (aggregation.indexOf("__") > -1) {
+        const splitted = aggregation.split("__");
         if (this.translateService.currentLang === splitted[1]) {
           aggs[aggregation] = aggregations[aggregation];
         }
