@@ -14,19 +14,65 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ApiService } from "@rero/ng-core";
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
-  selector: 'admin-statitics-cfg-view',
-  templateUrl: './statistics-cfg-detail-view.component.html'
+  selector: "admin-statitics-cfg-view",
+  templateUrl: "./statistics-cfg-detail-view.component.html",
 })
-export class StatisticsCfgDetailViewComponent implements DetailRecord {
+export class StatisticsCfgDetailViewComponent
+  implements DetailRecord, OnInit, OnDestroy
+{
 
   /** Observable resolving record data */
   record$: Observable<any>;
 
   /** Resource type */
   type: string;
+
+  /** the api response record */
+  record: any;
+
+  // the current preview values
+  liveData: any = null;
+
+  /** Subscription to (un)follow the record$ Observable */
+  private _subscriptions = new Subscription();
+
+  /**
+   * Constructor
+   *
+   * @param _http - HttpClient
+   * @param _apiService = ApiService
+   */
+  constructor(private _http: HttpClient, private _apiService: ApiService) {}
+
+  /** OnInit hook */
+  ngOnInit() {
+    this._subscriptions = this.record$.subscribe((record) => {
+      this.record = record;
+    });
+  }
+
+  /** onDestroy hook */
+  ngOnDestroy(): void {
+    this._subscriptions.unsubscribe();
+  }
+
+  /** Preview values corresponding to the current configuration. */
+  getLiveValues(): void {
+    // only once
+    if (this.liveData != null) {
+      return;
+    }
+    const pid = this.record.metadata.pid;
+    const baseUrl = this._apiService.endpointPrefix;
+    this._http
+      .get(`${baseUrl}/stats_cfg/live/${pid}`)
+      .subscribe((res) => (this.liveData = res));
+  }
 }

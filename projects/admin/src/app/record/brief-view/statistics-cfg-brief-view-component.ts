@@ -34,6 +34,9 @@ import { ResultItem } from '@rero/ng-core';
     <div>
       <b translate>Category</b>: {{ record.metadata.category.type | translate }}
     </div>
+    <div>
+      <b translate>Indicator</b>: {{ record.metadata.category.indicator.type | translate }}
+    </div>
   </div>
   `
   })

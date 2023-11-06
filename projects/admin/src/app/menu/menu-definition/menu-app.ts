@@ -215,6 +215,19 @@ export const MENU_APP: IMenuParent[] = [
         access: {
           permissions: [PERMISSIONS.PTTR_ACCESS]
         }
+      },
+      {
+        name: "Report Configuration",
+        router_link: ["/", "records", "stats_cfg"],
+        attributes: { id: "stats-cfg-menu" },
+        extras: { iconClass: "fa fa-cog" },
+        query_params: {
+          library: "$currentLibrary",
+          active: "true",
+        },
+        access: {
+          permissions: [PERMISSIONS.STAT_CFG_ACCESS],
+        },
       }
     ]
   },
@@ -285,15 +298,6 @@ export const MENU_APP: IMenuParent[] = [
         extras: { iconClass: 'fa fa-file-code-o' },
         access: {
           permissions: [PERMISSIONS.TMPL_ACCESS]
-        }
-      },
-      {
-        name: 'Statistics configuration',
-        router_link: ['/', 'records', 'stats_cfg'],
-        attributes: { id: 'stats-cfg-menu' },
-        extras: { iconClass: 'fa fa-cog' },
-        access: {
-          permissions: [PERMISSIONS.STAT_CFG_ACCESS]
         }
       },
       {

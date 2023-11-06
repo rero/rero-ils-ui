@@ -15,65 +15,187 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from "@rero/ng-core";
-import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { of } from 'rxjs';
-import { CanAccessGuard, CAN_ACCESS_ACTIONS } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
-import { StatisticsCfgBriefViewComponent } from '../record/brief-view/statistics-cfg-brief-view-component';
-import { StatisticsCfgDetailViewComponent } from '../record/detail-view/statistics-cfg-detail-view/statistics-cfg-detail-view.component';
+import { marker as _ } from "@biesbjerg/ngx-translate-extract-marker";
+import {
+  DetailComponent,
+  EditorComponent,
+  JSONSchema7,
+  Record,
+  RecordSearchPageComponent,
+  RecordService,
+  RouteInterface,
+} from "@rero/ng-core";
+import {
+  PERMISSIONS,
+  PERMISSION_OPERATOR,
+} from "@rero/shared";
+import { of } from "rxjs";
+import { CanAccessGuard, CAN_ACCESS_ACTIONS } from "../guard/can-access.guard";
+import { PermissionGuard } from "../guard/permission.guard";
+import { StatisticsCfgBriefViewComponent } from "../record/brief-view/statistics-cfg-brief-view-component";
+import { StatisticsCfgDetailViewComponent } from "../record/detail-view/statistics-cfg-detail-view/statistics-cfg-detail-view.component";
 import { BaseRoute } from "./base-route";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { map } from "rxjs/operators";
 
 export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
-
   /** Route name */
-  readonly name = 'stats_cfg';
+  readonly name = "stats_cfg";
 
   /** Record type */
-  readonly recordType = 'stats_cfg';
+  readonly recordType = "stats_cfg";
 
   getConfiguration() {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.STAT_CFG_ACCESS, PERMISSIONS.STAT_CFG_SEARCH ], operator: PERMISSION_OPERATOR.AND }},
-        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
-        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.STAT_CFG_CREATE ] } }
+        {
+          path: "",
+          component: RecordSearchPageComponent,
+          canActivate: [PermissionGuard],
+          data: {
+            permissions: [
+              PERMISSIONS.STAT_CFG_ACCESS,
+              PERMISSIONS.STAT_CFG_SEARCH,
+            ],
+            operator: PERMISSION_OPERATOR.AND,
+          },
+        },
+        {
+          path: "detail/:pid",
+          component: DetailComponent,
+          canActivate: [CanAccessGuard],
+          data: { action: CAN_ACCESS_ACTIONS.READ },
+        },
+        {
+          path: "edit/:pid",
+          component: EditorComponent,
+          canActivate: [CanAccessGuard],
+          data: { action: CAN_ACCESS_ACTIONS.UPDATE },
+        },
+        {
+          path: "new",
+          component: EditorComponent,
+          canActivate: [PermissionGuard],
+          data: { permissions: [PERMISSIONS.STAT_CFG_CREATE] },
+        },
       ],
       data: {
         types: [
           {
             key: this.name,
-            label: _('Statistics configuration'),
+            label: _("Statistics configuration"),
             editorSettings: {
-              longMode: true,
+              longMode: false,
             },
             component: StatisticsCfgBriefViewComponent,
             detailComponent: StatisticsCfgDetailViewComponent,
             aggregationsBucketSize: 10,
-            aggregationsExpand: [
-              'category'
+            aggregationsExpand: ["library", "category", "frequency"],
+            aggregationsOrder: ["library", "category", "frequency"],
+            searchFilters: [
+              this.expertSearchFilter(),
+              {
+                label: _('Active Only'),
+                filter: 'active',
+                value: 'true'
+              }
             ],
-            aggregationsOrder: [
-              'category'
-            ],
-            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.STAT_CFG_CREATE) }),
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            listHeaders: {
+              Accept: 'application/rero+json'
+            },
+            canAdd: () =>
+              of({
+                can: this._routeToolService.permissionsService.canAccess(
+                  PERMISSIONS.STAT_CFG_CREATE
+                ),
+              }),
+            permissions: (record: any) =>
+              this._routeToolService.permissions(record, this.recordType),
+            formFieldMap: (
+              field: FormlyFieldConfig,
+              jsonSchema: JSONSchema7
+            ): FormlyFieldConfig => {
+              return this._populateLocationsByCurrentUserLibrary(field, jsonSchema);
+            },
             preCreateRecord: (data: any) => {
               const user = this._routeToolService.userService.user;
-              data.organisation = {
+              data.library = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(
-                  'organisations',
-                  user.currentOrganisation
-                )
+                  "libraries",
+                  user.currentLibrary
+                ),
               };
               return data;
             },
-          }
-        ]
-      }
+          },
+        ],
+      },
     };
+  }
+
+  /**
+   * Populate select menu with the current user library
+   * @param field - FormlyFieldConfig
+   * @param jsonSchema - JSONSchema7
+   * @return FormlyFieldConfig
+   */
+  private _populateLocationsByCurrentUserLibrary(field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig {
+    const formWidget = jsonSchema.widget;
+    if (
+      formWidget?.formlyConfig?.templateOptions?.fieldMap ===
+      "libraries"
+    ) {
+      field.type = "select";
+      field.hooks = {
+        ...field.hooks,
+        onInit: (field: FormlyFieldConfig): void => {
+          const user = this._routeToolService.userService.user;
+          const baseUrl = this._routeToolService.settingsService.baseUrl;
+          const prefix = this._routeToolService.apiService.getEndpointByType('libraries');
+          if (user.currentLibrary != null && field.formControl.value == null) {
+            field.formControl.setValue(
+              `${baseUrl}${prefix}/${user.currentLibrary}`);
+          }
+        },
+        afterContentInit: (f: FormlyFieldConfig) => {
+          const recordService = this._routeToolService.recordService;
+          const apiService = this._routeToolService.apiService;
+
+          f.templateOptions.options = recordService
+            .getRecords(
+              "libraries",
+              "",
+              1,
+              RecordService.MAX_REST_RESULTS_SIZE,
+              undefined,
+              undefined,
+              undefined,
+              "name"
+            )
+            .pipe(
+              map((result: Record) =>
+                this._routeToolService.recordService.totalHits(
+                  result.hits.total
+                ) === 0
+                  ? []
+                  : result.hits.hits
+              ),
+              map((hits) =>
+                hits.map((hit: any) => {
+                  return {
+                    label: hit.metadata.name,
+                    value: apiService.getRefEndpoint(
+                      "libraries",
+                      hit.metadata.pid
+                    ),
+                  };
+                })
+              )
+            );
+        },
+      };
+    }
+    return field;
   }
 }
