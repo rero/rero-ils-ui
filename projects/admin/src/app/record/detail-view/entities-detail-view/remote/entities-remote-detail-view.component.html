@@ -23,9 +23,10 @@
     </a>
   </div>
 
-  <h1 class="mb-0">{{ record.metadata | extractSourceField : 'authorized_access_point' }}</h1>
-  <small *ngVar="icon(record.metadata.type) as icon">
+  <h1 class="mb-0" *ngVar="icon(record.metadata.type) as icon">
     <i class="fa {{ icon.class }}" title="{{ icon.title }}" aria-hidden="true"></i>
+    {{ record.metadata | extractSourceField : 'authorized_access_point' }}</h1>
+  <small>
     {{ 'MEF ID' | translate }}: {{ record.metadata.pid }}
   </small>
   <span class="badge badge-warning" translate>Remote</span>
