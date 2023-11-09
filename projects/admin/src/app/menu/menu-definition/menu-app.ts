@@ -38,7 +38,7 @@ export const MENU_APP: IMenuParent[] = [
         name: 'Requests',
         router_link: ['/', 'circulation', 'requests'],
         attributes: { id: 'requests-menu' },
-        extras: { iconClass: 'fa fa-exchange' },
+        extras: { iconClass: 'fa fa-shopping-basket' },
         access: {
           permissions: [PERMISSIONS.CIRC_ADMIN]
         }
@@ -48,7 +48,7 @@ export const MENU_APP: IMenuParent[] = [
         router_link: ['/', 'records', 'ill_requests'],
         query_params: { library: '$currentLibrary' },
         attributes: { id: 'ill-requests-menu' },
-        extras: { iconClass: 'fa fa-shopping-basket' },
+        extras: { iconClass: 'fa fa-truck' },
         access: {
           permissions: [PERMISSIONS.ILL_ACCESS]
         }
@@ -88,7 +88,7 @@ export const MENU_APP: IMenuParent[] = [
   {
     name: 'Catalog',
     attributes: { id: 'catalog-menu' },
-    extras: { iconClass: 'fa fa-file-o' },
+    extras: { iconClass: 'fa fa-book' },
     children: [
       {
         name: 'Documents',
@@ -107,7 +107,7 @@ export const MENU_APP: IMenuParent[] = [
         name: 'Create a bibliographic record',
         router_link: ['/', 'records', 'documents', 'new'],
         attributes: { id: 'create-bibliographic-record-menu' },
-        extras: { iconClass: 'fa fa-file-o' },
+        extras: { iconClass: 'fa fa-plus-square' },
         access: {
           permissions: [PERMISSIONS.DOC_CREATE]
         }
@@ -116,7 +116,7 @@ export const MENU_APP: IMenuParent[] = [
         name: 'Import from the web',
         router_link: ['/', 'records', 'import_bnf'],
         attributes: { id: 'import-menu' },
-        extras: { iconClass: 'fa fa-file-o' },
+        extras: { iconClass: 'fa fa-cloud-download' },
         access: {
           permissions: [PERMISSIONS.DOC_CREATE]
         }
