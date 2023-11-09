@@ -126,7 +126,7 @@ export class CheckinComponent implements OnInit {
           case ItemAction.checkin:
             this._displayCirculationNote(item, ItemNoteType.CHECKIN);
             if (item.action_applied && item.action_applied.checkin) {
-              this.getPatronInfo(item.action_applied.checkin.patron.barcode[0]);
+              this.getPatronInfo(item.action_applied.checkin.patron.barcode);
             }
             if (item.status === ItemStatus.IN_TRANSIT) {
               this._toastService.warning(
