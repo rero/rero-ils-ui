@@ -34,7 +34,7 @@
       <button [routerLink]="['/', 'records', 'holdings', 'detail', holding.metadata.pid]"
               class="btn btn-outline-primary btn-sm ml-1"
               title="{{ 'Holdings detail' | translate }}">
-        <i class="fa fa-file-text-o"></i>
+        <i class="fa fa-eye"></i>
       </button>
       <!-- REQUEST BUTTON -->
       <button *ngIf="permissions && permissions.canRequest && permissions.canRequest.can; else notRequest"
