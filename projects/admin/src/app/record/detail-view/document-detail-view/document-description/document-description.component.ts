@@ -33,9 +33,9 @@ export class DocumentDescriptionComponent implements OnInit {
   /** Identified bye */
   identifiedBy: any[] = [];
   /** All notes without general */
-  notesExceptGeneral: any[] = [];
+  notesExceptGeneral: {[key: string]: string[]};
   /** General notes only */
-  notesGeneral: any[] = [];
+  notesGeneral: {[key: string]: string[]};
   /** Provision activity original date */
   provisionActivityOriginalDate: any[] = [];
   /** Title variants */
