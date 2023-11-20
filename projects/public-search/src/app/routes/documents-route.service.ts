@@ -104,6 +104,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
                 organisation: _('Library'),
                 genreForm: _('Genre, form'),
                 intendedAudience: _('Intended audience'),
+                acquisition: _('Acquisition date'),
                 year: _('Publication year'),
                 subject_fiction: _('Subject (fiction)'),
                 subject_no_fiction: _('Subject (non-fiction)'),
@@ -219,6 +220,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
         _('subject_fiction'),
         _('genreForm'),
         _('intendedAudience'),
+        _('acquisition'),
         _('status')
       ];
     } else {
@@ -232,6 +234,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
         _('subject_fiction'),
         _('genreForm'),
         _('intendedAudience'),
+        _('acquisition'),
         _('status')
       ];
     }

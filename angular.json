@@ -264,7 +264,9 @@
                 "output": "/assets/"
               }
             ],
-            "styles": [],
+            "styles": [
+              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css"
+            ],
             "scripts": [],
             "vendorChunk": true,
             "extractLicenses": false,

@@ -102,6 +102,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
               year: _('Publication year'),
               subject_fiction: _('Subject (fiction)'),
               subject_no_fiction: _('Subject (non-fiction)'),
+              acquisition: _('Acquisition date'),
             },
             showFacetsIfNoResults: true,
             allowEmptySearch: false,
@@ -115,7 +116,8 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
               'subject_fiction',
               'genreForm',
               'intendedAudience',
-              'status'
+              'acquisition',
+              'status',
             ],
             aggregationsExpand: () => {
               const expand = ['document_type'];
