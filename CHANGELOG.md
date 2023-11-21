@@ -1,5 +1,26 @@
 # Changelog
 
+## [v14.6.0](https://github.com/rero/rero-ils-ui/tree/v14.6.0) (2023-11-21)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.5.0...v14.6.0)
+
+**New features:**
+* New statistics module UI [\#1077](https://github.com/rero/rero-ils-ui/pull/1077) (by @jma)
+
+**Enhancements:**
+* menus: add new icons [\#1073](https://github.com/rero/rero-ils-ui/pull/1073) (by @PascalRepond)
+* ill requests: improve pro patron view [\#1070](https://github.com/rero/rero-ils-ui/pull/1070) (by @PascalRepond)
+
+**Fixes:**
+* libraries: add editor validation [\#1082](https://github.com/rero/rero-ils-ui/pull/1082) (by @jma)
+* documents: fix notes display [\#1075](https://github.com/rero/rero-ils-ui/pull/1075) (by @Garfield-fr)
+* circulation: fix checkin patron info [\#1072](https://github.com/rero/rero-ils-ui/pull/1072) (by @PascalRepond)
+* patron: fix display of optional address fields [\#1056](https://github.com/rero/rero-ils-ui/pull/1056) (by @Garfield-fr)
+* library switch: always show the menu [\#1058](https://github.com/rero/rero-ils-ui/pull/1058) (by @Garfield-fr)
+* library switch: fix switch on mobile [\#1059](https://github.com/rero/rero-ils-ui/pull/1059) (by @Garfield-fr)
+* entity detailed view: uniformize icon placement [\#1071](https://github.com/rero/rero-ils-ui/pull/1071) (by @PascalRepond)
+* github actions: fix labeler [\#1089](https://github.com/rero/rero-ils-ui/pull/1089) (by @PascalRepond)
+
 ## [v14.5.0](https://github.com/rero/rero-ils-ui/tree/v14.5.0) (2023-10-10)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.4.0...v14.5.0)
