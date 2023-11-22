@@ -324,12 +324,12 @@ export class LibraryFormService {
    * @param settingType - the notification type
    */
   private _buildSettingsByType(settingType: NotificationType): UntypedFormGroup {
-    const model: NotificationSettings = {
+    const model: any = {
       type: settingType,
-      email: ''
+      email: ['', Validators.email]
     };
     if ([NotificationType.AVAILABILITY].includes(settingType)) {
-      model.delay = 0;
+      model.delay = ['',  Validators.max(720)];
     }
     return this._fb.group(model);
   }
