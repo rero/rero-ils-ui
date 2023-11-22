@@ -93,6 +93,7 @@ export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
             aggregationsBucketSize: 10,
             aggregationsExpand: ["library", "category", "frequency"],
             aggregationsOrder: ["library", "category", "frequency"],
+            showFacetsIfNoResults: true,
             searchFilters: [
               this.expertSearchFilter(),
               {
