@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'shared-contribution',
@@ -44,13 +43,6 @@ export class ContributionComponent implements OnInit {
   /** If the limit is activated, we add 3 dots at the end of the contribution line. */
   limit: boolean = false;
 
-  // CONSTRUCTORS & HOOKS =====================================================
-  /**
-   * Constructor
-   * @param _translateService - TranslateService
-   */
-  constructor(private _translateService: TranslateService) {}
-
   /** OnInit hook */
   ngOnInit() {
     this.contributions = this.contributions || [];
@@ -61,18 +53,5 @@ export class ContributionComponent implements OnInit {
       this.contributions = this.contributions.slice(0, this.limitRecord);
       this.limit = true;
     }
-
-    this.contributions.forEach(contributor => {
-      if (contributor.entity?.pid) {
-        // Linked entity
-        const type = contributor.entity.resource_type;
-        contributor.entity.target = `contribution.entity.pids.${type}:${contributor.entity.pids[type]}`;
-      } else {
-        // Textual entity
-        const field = `authorized_access_point_${this._translateService.currentLang}`;
-        const fieldData = (field in contributor.entity) ? field : 'authorized_access_point';
-        contributor.entity.target = `contribution.entity.${field}:"${contributor.entity[fieldData]}"`;
-      }
-    });
   }
 }

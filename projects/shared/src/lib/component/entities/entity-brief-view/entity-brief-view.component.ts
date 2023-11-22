@@ -18,7 +18,7 @@
 
 import { AfterViewInit, Component, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
-import { Entity, EntityType } from '../../../class/entities';
+import { Entity, EntityType } from '../../../class/entity';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
 import { BriefViewTag } from '../../core/brief-view/brief-view.component';
 import { EntityBriefViewRemoteOrganisationComponent } from './entity-brief-view.organisation';

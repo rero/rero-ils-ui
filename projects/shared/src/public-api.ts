@@ -22,7 +22,7 @@
 export * from './lib/api/base-api';
 export * from './lib/api/user-api.service';
 export * from './lib/class/core';
-export * from './lib/class/entities';
+export * from './lib/class/entity';
 export * from './lib/class/holdings';
 export * from './lib/class/item-status';
 export * from './lib/class/user';
@@ -31,6 +31,7 @@ export * from './lib/component/action-button/action-button.component';
 export * from './lib/component/core/brief-view/brief-view.component';
 export * from './lib/component/entities/entity-brief-view/entity-brief-view.component';
 export * from './lib/view/contribution/contribution.component';
+export * from './lib/view/entity-link.component';
 
 export * from './lib/directive/link-permissions.directive';
 export * from './lib/directive/no-content.directive';
@@ -72,3 +73,4 @@ export * from './lib/view/brief/part-of/part-of.component';
 export * from './lib/view/inherited-call-number/inherited-call-number.component';
 export * from './lib/view/thumbnail/thumbnail.component';
 export * from './tests/user';
+

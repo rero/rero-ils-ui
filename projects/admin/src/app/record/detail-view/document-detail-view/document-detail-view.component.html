@@ -67,8 +67,7 @@
       <!-- CONTRIBUTION -->
       <shared-contribution [contributions]="record.metadata?.contribution"
                            [withRoles]="true"
-                           [activateLink]="activateLink"
-                           [withEntityLink]="true">
+                           [activateLink]="activateLink">
       </shared-contribution>
 
       <!-- PUBLICATION ACTIVITY: PUBLICATION -->
@@ -180,7 +179,12 @@
           <span *ngFor="let subject of subjects"
             class="badge badge-secondary mr-1"
             title="{{ subject.entity.type | translate }}">
-            <ng-container [ngTemplateOutlet]="entityLink" [ngTemplateOutletContext]="{ entity: subject, class: 'text-light' }"></ng-container>
+            <i class="fa fa-tag mr-1"></i>
+            <shared-entity-link
+              resourceName="subjects"
+              [entity]="subject.entity"
+              className="text-light"
+            ></shared-entity-link>
           </span>
         </div>
       </div>
@@ -188,7 +192,11 @@
       <!-- GENRE, FORM -->
       <div class="mt-1" *ngIf="record.metadata.genreForm">
         <span class="mr-1" *ngFor="let genre of record.metadata.genreForm">
-          <ng-container [ngTemplateOutlet]="entityLink" [ngTemplateOutletContext]="{ entity: genre, class: 'text-secondary' }"></ng-container>
+          <i class="fa fa-tag mr-1"></i>
+          <shared-entity-link
+            resourceName="genreForm"
+            [entity]="genre.entity"
+          ></shared-entity-link>
         </span>
       </div>
 
@@ -234,6 +242,16 @@
         </div>
       </tab>
       <!-- END OF DESCRIPTION TAB -->
+      <!-- ENTITIES RELATED -->
+      <tab id="documents-entities-tab" tabOrder="3" [active]="!record.metadata.pid">
+        <ng-template tabHeading>
+          <i class="fa fa-cubes mr-1"></i> {{ 'Related Entities' | translate }}
+        </ng-template>
+        <div class="mt-2">
+          <admin-entities-related [record]="record"></admin-entities-related>
+        </div>
+      </tab>
+      <!-- END ENTITIES RELATED -->
       <!-- LOCAL FIELDS TAB -->
       <tab
         *ngIf="!record.metadata.harvested && record.metadata.pid && showhideLocalFieldsTab"

@@ -18,10 +18,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { OperationLogsService } from '@app/admin/service/operation-logs.service';
-import { Tools } from '@app/admin/utils/tools';
 import { TranslateService } from '@ngx-translate/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { EntityType, EntityTypeIcon } from '@rero/shared';
+import { Entity, EntityType, EntityTypeIcon } from '@rero/shared';
 
 @Component({
   selector: 'admin-entities-local-detail-view',
@@ -90,7 +89,7 @@ export class EntitiesLocalDetailViewComponent implements OnInit, DetailRecord {
     this._router.navigate(
       ['/records', 'documents'],
       {
-        queryParams: { q: Tools.generateEntitySearchQuery('local', metadata.pid), simple: '0'},
+        queryParams: { q: Entity.generateSearchQuery(metadata.type, 'local', metadata.pid), simple: '0' },
         skipLocationChange: true
       },
     );

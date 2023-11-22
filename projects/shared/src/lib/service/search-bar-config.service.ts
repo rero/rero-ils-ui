@@ -21,7 +21,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { TruncateTextPipe } from '@rero/ng-core';
 import { MainTitlePipe } from '../pipe/main-title.pipe';
 import { AppSettingsService } from './app-settings.service';
-import { EntityType, EntityTypeIcon } from '../class/entities';
+import { Entity } from '../class/entity';
 
 @Injectable({
   providedIn: 'root'
@@ -136,7 +136,7 @@ export class SearchBarConfigService {
         query: '',
         category: this._translateService.instant('authors/subjects'),
         href: this.generateEntityLink(hit.metadata),
-        iconCssClass: `fa ${this.findIconByType(hit.metadata.type)}`
+        iconCssClass: `fa ${Entity.getIcon(hit.metadata.type)}`
       });
     });
     return values;
@@ -167,23 +167,6 @@ export class SearchBarConfigService {
       return `/records/${resource_type}_entities/detail/${pid}`;
     } else {
       return `/${this._viewcode}/entities/${resource_type}/${pid}`;
-    }
-  }
-
-  /**
-   * Find icon by type
-   * @param type - entity type (Ex: bf:Organisation)
-   * @returns The class icon
-   */
-  private findIconByType(type: string): string {
-    switch(type) {
-      case EntityType.ORGANISATION : return EntityTypeIcon.ORGANISATION;
-      case EntityType.PERSON : return EntityTypeIcon.PERSON;
-      case EntityType.PLACE : return EntityTypeIcon.PLACE;
-      case EntityType.TEMPORAL : return EntityTypeIcon.TEMPORAL;
-      case EntityType.TOPIC : return EntityTypeIcon.TOPIC;
-      case EntityType.WORK : return EntityTypeIcon.WORK;
-      default: return 'fa-question-circle';
     }
   }
 

@@ -117,6 +117,7 @@ import {
   OtherEditionComponent
 } from './record/detail-view/document-detail-view/document-description/other-edition/other-edition.component';
 import { DocumentDetailViewComponent } from './record/detail-view/document-detail-view/document-detail-view.component';
+import { EntitiesRelatedComponent } from './record/detail-view/document-detail-view/entities-related/entities-related.component';
 import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
 import {
   HoldingOrganisationComponent
@@ -332,6 +333,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     StatisticsCfgDetailViewComponent,
     ReportDataComponent,
     ReportsListComponent,
+    EntitiesRelatedComponent
   ],
   imports: [
     AppRoutingModule,
