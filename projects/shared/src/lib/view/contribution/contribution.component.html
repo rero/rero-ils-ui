@@ -33,7 +33,7 @@
 </ng-template>
 
 <ng-template #entityTpl let-entity=entity>
-  <ng-container *ngIf="(activateLink || withEntityLink) && entity?.target else entityNoLink">
+  <ng-container *ngIf="(activateLink || withEntityLink) else entityNoLink">
 
     <!-- ENTITY LINK -->
     <ng-container *ngIf="withEntityLink && entity?.pid else searchLink">
@@ -43,10 +43,18 @@
     <!-- SEARCH LINK -->
     <ng-template #searchLink>
       <ng-container *ngIf="view !== 'professional'; else professional">
-        <a href="/{{ view }}/search/documents?q={{ entity.target }}&simple=0">{{ entity | entityLabel }}</a>
+        <shared-entity-link
+        resourceName="contribution"
+        [external]="true"
+        [entity]="entity"
+        [routerLinkParams]="['/', view, 'search', 'documents']"
+      ></shared-entity-link>
       </ng-container>
       <ng-template #professional>
-        <a [routerLink]="['/records', 'documents']" [queryParams]="{q: entity.target, simple: 0}">{{ entity | entityLabel }}</a>
+        <shared-entity-link
+        resourceName="contribution"
+        [entity]="entity"
+      ></shared-entity-link>
       </ng-template>
     </ng-template>
   </ng-container>

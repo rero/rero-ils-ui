@@ -18,10 +18,9 @@
 
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Tools } from '@app/admin/utils/tools';
 import { TranslateService } from '@ngx-translate/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { AppSettingsService, EntityType, EntityTypeIcon } from '@rero/shared';
+import { AppSettingsService, Entity, EntityType, EntityTypeIcon } from '@rero/shared';
 
 @Component({
   selector: 'admin-remote-entities-remote-detail-view',
@@ -109,7 +108,7 @@ export class RemoteEntitiesDetailViewComponent implements DetailRecord {
       this._router.navigate(
         ['/records', 'documents'],
         {
-          queryParams: { q: Tools.generateEntitySearchQuery(catalogKey, catalogPid), simple: '0' },
+          queryParams: { q: Entity.generateSearchQuery(metadata.type, catalogKey, catalogPid), simple: '0' },
           skipLocationChange: true
         }
       );

@@ -52,6 +52,7 @@ import { PartOfComponent } from './view/brief/part-of/part-of.component';
 import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
 import { AvailabilityComponent } from './view/availability/availability.component';
+import { EntityLinkComponent } from './view/entity-link.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +86,7 @@ import { AvailabilityComponent } from './view/availability/availability.componen
     ContributionComponent,
     NoContentDirective,
     AvailabilityComponent,
+    EntityLinkComponent,
   ],
   exports: [
     CommonModule,
@@ -114,6 +116,7 @@ import { AvailabilityComponent } from './view/availability/availability.componen
     ContributionComponent,
     NoContentDirective,
     AvailabilityComponent,
+    EntityLinkComponent
   ],
   imports: [
     CommonModule,

@@ -53,22 +53,6 @@ export class DocumentsBriefViewComponent implements ResultItem {
    */
   constructor(public documentApiService: DocumentApiService) {}
 
-  /**
-   * Contribution type parameter
-   * @param contribution - object
-   * @return string - type of agent
-   */
-  contributionTypeParam(contribution: any) {
-    switch (contribution.type) {
-      case 'bf:Person':
-        return 'persons';
-      case 'bf:Organisation':
-        return 'corporate-bodies';
-      default:
-        return 'missing-contribution-type';
-    }
-  }
-
   /** process provision activity publications */
   private processProvisionActivityPublications() {
     const { provisionActivity } = this.record.metadata;

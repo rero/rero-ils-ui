@@ -296,22 +296,6 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   }
 
   /**
-   * Translate the type of the contribution for url
-   * @param contribution - document contribution
-   * @returns string, the translated type
-   */
-  contributionTypeParam(contribution: any): string {
-    switch (contribution.type) {
-      case 'bf:Person':
-        return 'persons';
-      case 'bf:Organisation':
-        return 'corporate-bodies';
-      default:
-        return 'missing-contribution-type';
-    }
-  }
-
-  /**
    * Extract and format query params
    * @param identifier - IdentifiedBy object
    * @return string, query formatted
