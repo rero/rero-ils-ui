@@ -212,6 +212,7 @@ _('Corporate bodies');
 _('Late issues');
 _('Reports & monitoring');
 _('Inventory list');
+_('Report configuration')
 _('Admin');
 _('My organisation');
 _('My library');
