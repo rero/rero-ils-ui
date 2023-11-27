@@ -108,7 +108,7 @@ export class OperationLogsApiService extends BaseApi {
    * @returns Observable
    */
   getHistoryByLoanPid(loanPid: string, type: string = 'checkin'): Observable<Record | Error> {
-    const query = `_exists_:loan AND loan.pid:${loanPid} AND loan.trigger:${type}`;
+    const query = `_exists_:loan AND loan.pid:${loanPid} AND loan.trigger:${type} AND record.type:loan`;
     return this._recordService.getRecords('operation_logs', query, 1, 1, undefined, undefined, BaseApi.reroJsonheaders)
       .pipe(map((result: any) => {
         return this._recordService.totalHits(result.hits.total) === 1
