@@ -51,6 +51,9 @@ export class CheckinComponent implements OnInit {
   /** Disabled attribute of the search input */
   searchInputDisabled = false;
 
+  /** current called item */
+  private item: any;
+
   /** Constructor
    * @param _userService: UserService
    * @param _recordService: RecordService
@@ -140,9 +143,23 @@ export class CheckinComponent implements OnInit {
         this._resetSearchInput();
       },
       error => {
-        // If no action could be done by the '/item/checkin' api, an error will be raised.
-        // catch this error to display it as a toastr message.
-        this._checkinErrorManagement(error, itemBarcode);
+        if (this.item && this.items.findIndex(i => i.barcode === this.item.barcode) === -1) {
+          // Reload item to have data up to date.
+          this._itemsService.getItem(this.item.barcode).subscribe((item: any) => {
+            delete item.actions;
+            if (!item.notes) {
+              item.notes = [];
+            }
+            item.notes.push({
+              content: error.error.status.replace(/^error:/, '').trim(),
+              type: ItemNoteType.API
+            });
+            this.items.unshift(item);
+            // If no action could be done by the '/item/checkin' api, an error will be raised.
+            // catch this error to display it as a toastr message.
+            this._checkinErrorManagement(error, item);
+          });
+        }
       }
     );
   }
@@ -175,6 +192,7 @@ export class CheckinComponent implements OnInit {
    * @param barcode: item or patron barcode
    */
   getPatronOrItem(barcode: string) {
+    this.item = undefined;
     const loggerOrg = this._loggedUser.currentOrganisation;
     const query = `patron.barcode:${barcode} AND organisation.pid:${loggerOrg}`;
     const patronQuery = this._recordService
@@ -218,6 +236,7 @@ export class CheckinComponent implements OnInit {
           }
         });
       } else if (item.total.value === 1) {
+          this.item = item.hits[0].metadata;
           // Check if the item is already into the item list. If it happens,
           // just notify the user and clear the form.
           if (this.items.find(it => it.barcode === barcode)) {
@@ -265,38 +284,29 @@ export class CheckinComponent implements OnInit {
   /** create the most relevant message concerning a checkin operation error and display it as a toastr
    *
    * @param error: the raised error
-   * @param barcode: the item barcode searched
+   * @param item: the current item
    */
-  private _checkinErrorManagement(error: any, barcode: string) {
+  private _checkinErrorManagement(error: any, item: Item) {
     // get the error message from the raised error. This will be the toastr message core.
     let message = (error.hasOwnProperty('error') && error.error.hasOwnProperty('status'))
       ? error.error.status.replace(/^error:/, '').trim()
       : error.message;
     message = this._translate.instant(message);
-
-    // the message could contains some data information from the item. So we need to load the item
-    this._itemsService.getItem(barcode).pipe(
-      finalize(() => {
-        this._toastService.warning(
-          this._translate.instant(message),
-          this._translate.instant('Checkin'),
-          { enableHtml: true }
-        );
-        this._resetSearchInput();
-      })
-    ).subscribe(
-      item => {
-        message += `<br/>${this._translate.instant('Status')}: ${this._translate.instant(item.status.toString())}`;
-        if (item.status === ItemStatus.IN_TRANSIT && item.loan && item.loan.item_destination) {
-          const library_name = item.loan.item_destination.library_name;
-          message += ` (${this._translate.instant('to')} ${library_name})`;
-          this.items.unshift(item); // Display item info
-        }
-      },
-      () => {
-        message += '<br/>' + this._translate.instant('Item not found!');
-      }
+    message += `<br/>${this._translate.instant('Status')}: ${this._translate.instant(item.status.toString())}`;
+    if (item.status === ItemStatus.IN_TRANSIT && item.loan && item.loan.item_destination) {
+      const { library_name } = item.loan.item_destination;
+      message += ` (${this._translate.instant('to')} ${library_name})`;
+    }
+    const checkinNote = item.getNote(ItemNoteType.CHECKIN);
+    if (checkinNote) {
+      message += `<br/>${this._translate.instant('Note')}: ${checkinNote.content}`
+    }
+    this._toastService.warning(
+      this._translate.instant(message),
+      this._translate.instant('Checkin'),
+      { enableHtml: true }
     );
+    this._resetSearchInput();
   }
 
   hasFees(event: boolean) {

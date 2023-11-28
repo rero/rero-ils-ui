@@ -32,6 +32,7 @@ export enum ItemNoteType {
   CONDITION = 'condition_note',
   PATRIMONIAL = 'patrimonial_note',
   ACQUISITION = 'acquisition_note',
+  API = 'api' // Only used to return the api message (component item)
 }
 
 export interface Organisation {
