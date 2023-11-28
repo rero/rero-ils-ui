@@ -35,6 +35,8 @@ import { PatronTransactionService } from '@app/admin/circulation/services/patron
 })
 export class ItemComponent implements OnInit {
 
+  NOTEAPI =  ItemNoteType.API;
+
   // COMPONENT ATTRIBUTES ====================================================
   /** Current item */
   @Input() item: any;
@@ -116,6 +118,8 @@ export class ItemComponent implements OnInit {
       ).pipe(
         map((results: any) => results.hits.hits)
       );
+    }
+    if (this.item?.document?.pid) {
       this._recordService.getRecord('documents', this.item.document.pid, 1, {
         Accept: 'application/rero+json, application/json'
       }).subscribe(document => this.document = document.metadata);
@@ -149,19 +153,23 @@ export class ItemComponent implements OnInit {
   }
 
   /**
-   * Get a note related to the item for the itemAction done.
+   * Get a note related to the item for the itemAction done or only item.
    * @return the corresponding note if the corresponding action has been done.
    */
-  getCirculationNoteForAction(): ItemNote|null {
+  getCirculationNoteForAction(): ItemNote[] {
     if (this.item.actionDone) {
       if (this.item.actionDone === this.itemAction.checkin) {
-        return this.item.getNote(ItemNoteType.CHECKIN);
+        return [this.item.getNote(ItemNoteType.CHECKIN)];
       }
       if (this.item.actionDone === this.itemAction.checkout) {
-        return this.item.getNote(ItemNoteType.CHECKOUT);
+        return [this.item.getNote(ItemNoteType.CHECKOUT)];
       }
+    } else if (this.item.notes) {
+      // Notes for item without loan.
+      // This api note is pushed on error exception.
+      return this.item?.notes.filter(i => [ItemNoteType.CHECKIN, ItemNoteType.API].includes(i.type));
     }
-    return null;
+    return [];
   }
 
   /**
@@ -175,7 +183,7 @@ export class ItemComponent implements OnInit {
 
   /**
    * Is a callout wrapper is required for this item.
-   * @param item: the item to analyse
+   * @param item: the item to analyze
    * @param type: the callout type (error, warning, info, ...)
    */
   needCallout(item: Item, type?: string): boolean {

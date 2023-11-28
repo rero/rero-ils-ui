@@ -18,7 +18,7 @@
 
 <div *ngIf="item && !(item.loading || false)"
      [ngClass]="{
-       'callout callout-warning': needCallout(item, 'warning') || (item.actionDone === itemAction.checkin && totalAmountOfFee > 0),
+       'callout callout-warning': needCallout(item, 'warning') || (item.actionDone === itemAction.checkin && totalAmountOfFee > 0) || !item.loan,
        'text-secondary': item.status !== ItemStatus.ON_LOAN
      }"
      class="row d-flex align-items-start item">
@@ -37,7 +37,7 @@
   </div>
   <!-- BARCODE -->
   <div name="barcode" class="col-2 d-flex">
-    <button *ngIf="item.loan || totalAmountOfFee || item.pending_loans || notifications$"
+    <button *ngIf="!item.actions || item.loan || totalAmountOfFee || item.pending_loans || notifications$"
             type="button" class="btn-show-more"
             [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
             (click)="isCollapsed = !isCollapsed"
@@ -47,23 +47,31 @@
       <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
       <shared-inherited-call-number class="d-block small" *ngIf="isCollapsed" [item]="item"></shared-inherited-call-number>
     </div>
-    <ng-container *ngIf="item.actionDone">
+    <ng-container *ngIf="item.actionDone; else warningItemOnly">
       <ng-container *ngIf="(item.actionDone === itemAction.checkin && item.getNote('checkin_note')) ||
                            (item.actionDone === itemAction.checkout && item.getNote('checkout_note'))">
         <i class="fa fa-exclamation-triangle text-warning mt-1 ml-auto"></i>
       </ng-container>
     </ng-container>
+    <ng-template #warningItemOnly>
+      <i *ngIf="!item.actions" class="fa fa-exclamation-triangle text-warning mt-1 ml-auto"></i>
+    </ng-template>
   </div>
   <!-- TITLE -->
   <div name="title" class="col-lg-6">
-    <a [routerLink]="['/records','documents','detail', item.document.pid]" *ngIf="item.document.title | mainTitle as title ">
-      {{ isCollapsed ? (title | truncateText: 12) : title }}
+    <a [routerLink]="['/records','documents','detail', item.document.pid]">
+      <ng-container *ngIf="item.document?.title; else itemDocumentTitle">
+        {{ isCollapsed ? (item.document.title | mainTitle | truncateText: 12) : item.document.title | mainTitle }}
+      </ng-container>
+      <ng-template #itemDocumentTitle>
+        <ng-container *ngIf="document">{{ document.title[0]._text }}</ng-container>
+      </ng-template>
     </a>
     <shared-contribution *ngIf="document" [contributions]="document?.contribution"></shared-contribution>
   </div>
   <!-- CIRCULATION INFO -->
   <div name="circ-info" class="col-2">
-    <ul class="list-unstyled mb-0">
+    <ul class="list-unstyled mb-0" *ngIf="item.loan; else itemStatus">
       <ng-container [ngSwitch]="item.status">
         <li name="status" *ngSwitchCase="'on_loan'" >
           {{ item.status | translate }}
@@ -113,6 +121,7 @@
         </span>
       </li>
     </ul>
+    <ng-template #itemStatus>{{ item.status | translate }}</ng-template>
   </div>
   <!-- ACTION DONE -->
   <div name="action-done" class="col-2">
@@ -144,7 +153,8 @@
       <ng-container *ngIf="item.location.pid | getRecord: 'locations' | async as location">
         <dt class="offset-1 col-sm-3 col-md-2 col-lg-1 label-title" translate>Location</dt>
         <dd class="col-sm-8 col-md-9 col-lg-10">
-          {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}: {{ item.location.name }}
+          {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}:
+          {{ location.metadata.name }}
         </dd>
       </ng-container>
       <ng-container *ngIf="item.loan && item.loan.extension_count">
@@ -156,13 +166,13 @@
           </span>
         </dd>
       </ng-container>
-      <ng-container *ngIf="item.actionDone === 'checkin' && item?.loan?.last_end_date">
+      <ng-container *ngIf="item.loan && item.actionDone === 'checkin' && item?.loan?.last_end_date">
         <dt class="offset-1 col-sm-3 col-md-2 col-lg-1 label-title" translate>Due date</dt>
         <dd name="due_date" class="col-sm-8 col-md-9 col-lg-10">
           {{ item.loan.last_end_date | dateTranslate :'shortDate' }}
         </dd>
       </ng-container>
-      <ng-container *ngIf="totalAmountOfFee > 0">
+      <ng-container *ngIf="item.loan && totalAmountOfFee > 0">
         <dt class="offset-1 col-sm-3 col-md-getTransitLocationPid2 col-lg-1 label-title" translate>Fees</dt>
         <dd name="fees" class="col-sm-8 col-md-9 col-lg-10">
           <span class="badge badge-warning font-weight-normal">
@@ -170,7 +180,7 @@
           </span>
         </dd>
       </ng-container>
-      <ng-container *ngIf="notifications$ | async as notifications">
+      <ng-container *ngIf="item.loan && notifications$ | async as notifications">
         <ng-container *ngIf="notifications.length > 0">
           <dt class="offset-1 col-sm-3 col-md-2 col-lg-1 label-title" translate>Notifications</dt>
           <dd name="notifications" class="col-sm-8 col-md-9 col-lg-10">
@@ -203,24 +213,37 @@
           </span>
         </dd>
       </ng-container>
-      <ng-container *ngIf="getCirculationNoteForAction() as note">
-        <dd class="col-1 text-right pr-1"><i class="fa fa-sticky-note-o text-warning"></i></dd>
-        <dt class="col-sm-3 col-md-2 col-lg-1 label-title" translate>{{ note.type }}</dt>
+      <ng-container *ngFor="let note of getCirculationNoteForAction()">
+        <ng-container *ngIf="note.type !== NOTEAPI; else notDisplayType">
+          <dd class="col-1 text-right pr-1"><i class="fa fa-sticky-note-o text-warning"></i></dd>
+          <dt class="col-sm-3 col-md-2 col-lg-1 label-title" translate>{{ note.type }}</dt>
+        </ng-container>
+        <ng-template #notDisplayType>
+          <dd class="col-1 text-right pr-1"><i class="fa fa-sticky-note-o text-warning"></i></dd>
+          <dt class="col-sm-3 col-md-2 col-lg-1 label-title" translate>Note</dt>
+        </ng-template>
         <dd name="checkin-note" class="col-sm-8 col-md-9 col-lg-10 text-justify">{{ note.content }}</dd>
       </ng-container>
       <ng-container *ngIf="debugMode">
         <dd class="col-1 text-right pr-1"><i class="fa fa-bug text-danger"></i></dd>
         <dt class="col-1 label-title text-danger" translate>Debug</dt>
-        <dd class="col-5">
-          <pre class="border p-3">{{ loan | json }}<legend>loan</legend></pre>
-        </dd>
-        <dd class="col-5" *ngIf="loan | getLoanCipo | async as cipo">
-          <pre class="border p-3">{{ cipo | json }}<legend>
-              <a [routerLink]="['/records', 'circ_policies', 'detail', cipo.pid]" target="_circulation">
-                <i class="fa fa-external-link pr-2"></i>cipo
-              </a>
-            </legend></pre>
-        </dd>
+        <ng-container *ngIf="loan; else itemNoLoan">
+          <dd class="col-5">
+            <pre class="border p-3">{{ loan | json }}<legend>loan</legend></pre>
+          </dd>
+          <dd class="col-5" *ngIf="loan | getLoanCipo | async as cipo">
+            <pre class="border p-3">{{ cipo | json }}<legend>
+                <a [routerLink]="['/records', 'circ_policies', 'detail', cipo.pid]" target="_circulation">
+                  <i class="fa fa-external-link pr-2"></i>cipo
+                </a>
+              </legend></pre>
+          </dd>
+        </ng-container>
+        <ng-template #itemNoLoan>
+          <dd class="col-5">
+            <pre class="border p-3">{{ item | json }}<legend>item</legend></pre>
+          </dd>
+        </ng-template>
       </ng-container>
     </dl>
     <ng-container *ngIf="canUseDebugMode">
