@@ -66,7 +66,24 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
             component: PatronsBriefViewComponent,
             detailComponent: PatronDetailViewComponent,
             searchFilters: [
-              this.expertSearchFilter()
+              this.expertSearchFilter(),
+              {
+                'label': 'Show only:',
+                filters: [
+                  {
+                    label: _('Expired'),
+                    filter: 'expired',
+                    value: 'true',
+                    showIfQuery: true
+                  },
+                  {
+                    label: _('Blocked'),
+                    filter: 'blocked',
+                    value: 'true',
+                    showIfQuery: true
+                  }
+                ]
+              }
             ],
             canAdd: () => of({ 'can': this._routeToolService.permissionsService.canAccess(PERMISSIONS.PTRN_CREATE) }),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),

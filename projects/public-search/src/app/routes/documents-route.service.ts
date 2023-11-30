@@ -74,7 +74,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
   /**
    * Create route
    * @param viewcode - string
-   * @return dictionnary route configuration or null if loaded
+   * @return dictionary route configuration or null if loaded
    */
   create(viewcode: string): null | {} {
     if (!(this.availableConfig.some(v => v === viewcode))) {
@@ -127,14 +127,19 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
               aggregationsBucketSize: 10,
               searchFilters: [
                 {
-                  label: _('Online resources'),
-                  filter: 'online',
-                  value: 'true'
-                },
-                {
-                  label: _('Physical resources'),
-                  filter: 'not_online',
-                  value: 'true'
+                  label: _('Show only:'),
+                  filters: [
+                    {
+                      label: _('Online resources'),
+                      filter: 'online',
+                      value: 'true'
+                    },
+                    {
+                      label: _('Physical resources'),
+                      filter: 'not_online',
+                      value: 'true'
+                    }
+                  ]
                 }
               ],
               preFilters: {

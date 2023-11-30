@@ -67,15 +67,22 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             searchFilters: [
               this.expertSearchFilter(),
               {
-                label: _('Online resources'),
-                filter: 'online',
-                value: 'true'
+                label: _('Show only:'),
+                filters: [
+                  {
+                    label: _('Online resources'),
+                    filter: 'online',
+                    value: 'true',
+                    showIfQuery: true
+                  },
+                  {
+                    label: _('Physical resources'),
+                    filter: 'not_online',
+                    value: 'true',
+                    showIfQuery: true
+                  }
+                ]
               },
-              {
-                label: _('Physical resources'),
-                filter: 'not_online',
-                value: 'true'
-              }
             ],
             canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.DOC_CREATE) }),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
