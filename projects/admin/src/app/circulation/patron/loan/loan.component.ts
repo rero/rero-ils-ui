@@ -427,6 +427,12 @@ export class LoanComponent implements OnInit, OnDestroy {
       case 'transactiondate':
         this.checkedOutItems.sort((a, b) => a.loan.transaction_date.diff(b.loan.transaction_date));
         break;
+      case 'location':
+        this.checkedOutItems.sort((a, b) => a.library_location_name.localeCompare(b.library_location_name));
+        break;
+      case '-location':
+        this.checkedOutItems.sort((a, b) => b.library_location_name.localeCompare(a.library_location_name));
+        break;
       default:
         this.checkedOutItems.sort((a, b) => b.loan.transaction_date.diff(a.loan.transaction_date));
     }
