@@ -217,7 +217,7 @@ export const MENU_APP: IMenuParent[] = [
         }
       },
       {
-        name: "Report Configuration",
+        name: "Report configuration",
         router_link: ["/", "records", "stats_cfg"],
         attributes: { id: "stats-cfg-menu" },
         extras: { iconClass: "fa fa-cog" },
