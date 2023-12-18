@@ -128,6 +128,7 @@ _('acquisition_order');
 _('at_desk');
 _('booking');
 _('request');
+_('claim_issue');
 //  - loan state
 _('CREATED');
 _('PENDING');
