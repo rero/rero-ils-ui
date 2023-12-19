@@ -15,20 +15,6 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<!-- import button for external source importation such as BNF -->
-<div *ngIf="record && record.metadata && !record.metadata.pid && pid && source" class="float-right ml-4 mt-2 mb-4" [permissions]="permissions.DOC_CREATE">
-  <a (click)="importDocument($event, record, { source: source, pid: pid })"
-    class="btn btn-sm btn-outline-primary"
-    translate>Import</a>
-</div>
-<!-- duplicate button -->
-<div *ngIf="record && record.metadata && record.metadata.pid" class="float-right mt-2 mb-4 mr-n4 btn-duplicate" [permissions]="permissions.DOC_CREATE">
-  <a [routerLink]="['/records', 'documents', 'duplicate']"
-    [queryParams]="{type: 'documents', pid: record.metadata.pid}"
-    class="btn btn-sm btn-outline-primary"
-    translate>Duplicate</a>
-</div>
-<div class="clearfix"></div>
 <ng-container *ngIf="record">
   <!-- HEADER -->
   <header class="row mt-5 mb-3">
@@ -254,7 +240,7 @@
       <!-- END ENTITIES RELATED -->
       <!-- LOCAL FIELDS TAB -->
       <tab
-        *ngIf="!record.metadata.harvested && record.metadata.pid && showhideLocalFieldsTab"
+        *ngIf="!record.metadata.harvested && record.metadata.pid && showHideLocalFieldsTab"
         id="documents-local-field-tab"
         tabOrder="4"
       >

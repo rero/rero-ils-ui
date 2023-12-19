@@ -204,6 +204,7 @@ import { PreviewEmailModule } from './shared/preview-email/preview-email.module'
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
+import { DocumentDetailComponent } from './record/detail-view/document-detail-view/document-detail/document-detail.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -344,7 +345,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     DocumentAdvancedSearchFormComponent,
     RepeatTypeComponent,
     FieldCustomInputTypeComponent,
-    DocumentAdvancedSearchComponent
+    DocumentAdvancedSearchComponent,
+    DocumentDetailComponent
   ],
   imports: [
     AppRoutingModule,
