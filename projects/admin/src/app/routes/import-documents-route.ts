@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2022 RERO
+ * Copyright (C) 2020-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  */
 
 import { TranslateService } from '@ngx-translate/core';
-import { DetailComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { ImportSourceApiService } from '../api/import-source-api.service';
@@ -24,6 +24,7 @@ import { ExternalSourceSetting } from '../classes/external-source';
 import { PermissionGuard } from '../guard/permission.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
+import { DocumentDetailComponent } from '../record/detail-view/document-detail-view/document-detail/document-detail.component';
 import { BaseRoute } from './base-route';
 import { RouteToolService } from './route-tool.service';
 
@@ -69,7 +70,7 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
       path: 'records/:type',
       children: [
         { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
-        { path: 'detail/:pid', component: DetailComponent }
+        { path: 'detail/:pid', component: DocumentDetailComponent }
       ],
       data: {
         types: []

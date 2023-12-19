@@ -16,7 +16,7 @@
  */
 
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { ComponentCanDeactivateGuard, DetailComponent, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
@@ -26,6 +26,7 @@ import { DocumentEditorComponent } from '../record/custom-editor/document-editor
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
 import { DocumentRecordSearchComponent } from '../record/search-view/document-record-search/document-record-search.component';
 import { BaseRoute } from './base-route';
+import { DocumentDetailComponent } from '../record/detail-view/document-detail-view/document-detail/document-detail.component';
 
 export class DocumentsRoute extends BaseRoute implements RouteInterface {
 
@@ -44,7 +45,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
         { path: '', component: DocumentRecordSearchComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
-        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
+        { path: 'detail/:pid', component: DocumentDetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
         { path: 'edit/:pid', component: DocumentEditorComponent, canActivate: [ CanAccessGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
         { path: 'new', component: DocumentEditorComponent, canActivate: [ PermissionGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { permissions: [ PERMISSIONS.DOC_CREATE ] } },
         { path: 'duplicate', component: DocumentEditorComponent, canActivate: [ PermissionGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { permissions: [ PERMISSIONS.DOC_CREATE ] } }
