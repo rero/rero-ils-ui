@@ -16,11 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { IBucketNameService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
-import { OrganisationApiService } from '../api/organisation-api.service';
 import { map } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
+import { LibraryApiService } from '../api/library-api.service';
+import { OrganisationApiService } from '../api/organisation-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -34,11 +35,12 @@ export class BucketNameService implements IBucketNameService {
    */
   constructor(
     private translateService: TranslateService,
-    private organisationApiService: OrganisationApiService
+    private organisationApiService: OrganisationApiService,
+    private libraryApiService: LibraryApiService
   ) { }
 
   /**
-   * Tranform aggregation name
+   * Transform aggregation name
    * @param aggregationKey - type of aggregation
    * @param value - value of current aggregation
    * @returns Observable of string
@@ -46,6 +48,7 @@ export class BucketNameService implements IBucketNameService {
   transform(aggregationKey: string, value: string): Observable<string> {
     switch (aggregationKey) {
       case 'language': return of(this.translateService.instant(`lang_${value}`));
+      case 'library': return this.libraryApiService.getByPid(value).pipe(map(record => record.name));
       case 'organisation': return this.organisationApiService.getByPid(value).pipe(map(record => record.name));
       default: return of(this.translateService.instant(value));
     }
