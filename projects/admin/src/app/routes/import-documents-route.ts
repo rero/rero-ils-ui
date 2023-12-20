@@ -93,7 +93,7 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
    * @returns observable of the string representation of the number of results.
    */
   getResultsText(hits: any): Observable<string> {
-    const total = this._routeToolService.recordService.totalHits(hits.total);
+    const total = this._routeToolService.recordService.totalHits(hits.total) || 0;
     return (total === 0)
       ? this._translateService.stream('no result')
       : this._translateService.stream('{{ total }} results of {{ remoteTotal }}', {
