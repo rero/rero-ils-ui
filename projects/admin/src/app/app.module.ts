@@ -30,7 +30,10 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import {
   BucketNameService as CoreBucketNameService,
-  CoreConfigService, LocalStorageService, RecordModule, RemoteTypeaheadService,
+  CoreConfigService,
+  RecordHandleErrorService as CoreRecordHandleErrorService,
+  LocalStorageService,
+  RecordModule, RemoteTypeaheadService,
   TranslateLoader, TranslateService, TruncateTextPipe
 } from '@rero/ng-core';
 import { ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
@@ -198,6 +201,7 @@ import { AppConfigService } from './service/app-config.service';
 import { AppInitializerService } from './service/app-initializer.service';
 import { BucketNameService } from './service/bucket-name.service';
 import { OrganisationService } from './service/organisation.service';
+import { RecordHandleErrorService } from './service/record.handle-error.service';
 import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-factory.service';
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { PreviewEmailModule } from './shared/preview-email/preview-email.module';
@@ -457,7 +461,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     MainTitlePipe,
     ItemHoldingsCallNumberPipe,
     CountryCodeTranslatePipe,
-    { provide: CoreBucketNameService, useClass: BucketNameService }
+    { provide: CoreBucketNameService, useClass: BucketNameService },
+    { provide: CoreRecordHandleErrorService, useClass: RecordHandleErrorService }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -16,8 +16,7 @@
  */
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
+import { Record, RecordService } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
