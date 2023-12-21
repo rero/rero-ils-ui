@@ -42,7 +42,7 @@
       <!-- position into queue -->
       <dt class="offset-1 col-1 label-title" translate>Position</dt>
       <dd class="col-10">
-        <span class="badge badge-info">{{ loan.metadata.rank }} / {{ item.pending_loans.length }}</span>
+        <span class="badge badge-info">{{ loan.metadata.rank }} / {{ item.current_pending_requests }}</span>
       </dd>
       <!-- item location -->
       <ng-container *ngIf="item.location.pid | getRecord: 'locations' | async as location">
