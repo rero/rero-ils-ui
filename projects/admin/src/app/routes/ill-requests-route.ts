@@ -58,8 +58,8 @@ export class IllRequestsRoute extends BaseRoute implements RouteInterface {
             canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.ILL_CREATE) }),
             canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
             canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
-            aggregationsExpand: ['status', 'loan_status', 'requester'],
-            aggregationsOrder: ['status', 'loan_status', 'requester', 'library'],
+            aggregationsExpand: ['request_status', 'loan_status', 'requester'],
+            aggregationsOrder: ['request_status', 'loan_status', 'requester', 'library'],
             listHeaders: {
               Accept: 'application/rero+json, application/json'
             },
