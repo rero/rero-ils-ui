@@ -229,7 +229,7 @@
       </tab>
       <!-- END OF DESCRIPTION TAB -->
       <!-- ENTITIES RELATED -->
-      <tab id="documents-entities-tab" tabOrder="3" [active]="!record.metadata.pid">
+      <tab *ngIf="!record.metadata.harvested && record.metadata.pid" id="documents-entities-tab" tabOrder="3">
         <ng-template tabHeading>
           <i class="fa fa-cubes mr-1"></i> {{ 'Related Entities' | translate }}
         </ng-template>
