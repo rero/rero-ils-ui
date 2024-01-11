@@ -19,6 +19,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
 import { LibraryApiService } from './library-api.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('LibraryApiService', () => {
   let service: LibraryApiService;
@@ -26,7 +27,8 @@ describe('LibraryApiService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        TranslateModule.forRoot()
       ]
     });
     service = TestBed.inject(LibraryApiService);
