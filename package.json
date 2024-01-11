@@ -88,7 +88,7 @@
     "@ngx-loading-bar/router": "^6.0.0",
     "@ngx-translate/core": "^14.0.0",
     "@rero/ng-core": "^14.6.0",
-    "@swimlane/ngx-charts": "^20.1.2",
+    "@swimlane/ngx-charts": "^20.5.0",
     "bootstrap": "^4.6.2",
     "crypto-js": "^4.1.1",
     "easymde": "^2.18.0",
