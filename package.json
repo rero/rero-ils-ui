@@ -90,7 +90,7 @@
     "@rero/ng-core": "^14.6.0",
     "@swimlane/ngx-charts": "^20.1.2",
     "bootstrap": "^4.6.2",
-    "crypto-js": "^4.1.1",
+    "crypto-js": "^4.2.0",
     "easymde": "^2.18.0",
     "font-awesome": "^4.7.0",
     "issn": "^1.0.6",
