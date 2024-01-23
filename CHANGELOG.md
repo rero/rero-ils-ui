@@ -1,5 +1,35 @@
 # Changelog
 
+## [v14.7.0](https://github.com/rero/rero-ils-ui/tree/v14.7.0) (2024-02-15)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.6.0...v14.7.0)
+
+**New features:**
+* document: implement advanced search [\#1069](https://github.com/rero/rero-ils-ui/pull/1069) (by @Garfield-fr)
+* feat(documents): hide related entities tab [\#1099](https://github.com/rero/rero-ils-ui/pull/1099) (by @Garfield-fr)
+* document: add acquisition aggregation [\#1076](https://github.com/rero/rero-ils-ui/pull/1076) (by @Garfield-fr)
+* circulation: item on check-in list without loan [\#1085](https://github.com/rero/rero-ils-ui/pull/1085) (by @Garfield-fr)
+* circulation: add sort on location (checkout) [\#1086](https://github.com/rero/rero-ils-ui/pull/1086) (by @Garfield-fr)
+* patron: add blocked and expired filters [\#1088](https://github.com/rero/rero-ils-ui/pull/1088) (by @Garfield-fr)
+
+**Enhancements:**
+* acquisition: displaying more document information [\#1062](https://github.com/rero/rero-ils-ui/pull/1062) (by @lauren-d)
+* acquisition: add sort config [\#1063](https://github.com/rero/rero-ils-ui/pull/1063) (by @lauren-d)
+* entities: some improve navigation and links [\#1081](https://github.com/rero/rero-ils-ui/pull/1081) (by @Garfield-fr)
+* chore: implement new handle error service [\#1094](https://github.com/rero/rero-ils-ui/pull/1094) (by @Garfield-fr)
+
+**Fixes:**
+* patron: fix total pending requests number [\#1095](https://github.com/rero/rero-ils-ui/pull/1095) (by @PascalRepond)
+* ill requests: adapt facet label [\#1096](https://github.com/rero/rero-ils-ui/pull/1096) (by @PascalRepond)
+* translations: fix untranslated notif setting [\#1092](https://github.com/rero/rero-ils-ui/pull/1092) (by @PascalRepond)
+* circulation: fix patron history [\#1084](https://github.com/rero/rero-ils-ui/pull/1084) (by @Garfield-fr)
+* aggregation: fix library filter facet [\#1091](https://github.com/rero/rero-ils-ui/pull/1091) (by @Garfield-fr)
+
+**Other changes:**
+* chore: upgrade to node v16 [\#1098](https://github.com/rero/rero-ils-ui/pull/1098) (by @Garfield-fr)
+* documents: refactoring action buttons [\#1090](https://github.com/rero/rero-ils-ui/pull/1090) (by @Garfield-fr)
+* dependencies: update [\#1108](https://github.com/rero/rero-ils-ui/pull/1108) (by @PascalRepond)
+
 ## [v14.6.0](https://github.com/rero/rero-ils-ui/tree/v14.6.0) (2023-11-21)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.5.0...v14.6.0)
