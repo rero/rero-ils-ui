@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { RecordService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { Observable, of } from 'rxjs';
@@ -24,7 +24,7 @@ import { map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class IsBudgetActiveGuard implements CanActivate {
+export class IsBudgetActiveGuard  {
 
   /**
    * Constructor

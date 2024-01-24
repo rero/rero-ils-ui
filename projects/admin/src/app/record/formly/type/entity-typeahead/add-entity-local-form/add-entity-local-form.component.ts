@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
- * Copyright (C) 2019-2023 UCLouvain
+ * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2024 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +20,7 @@ import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { TranslateService } from '@ngx-translate/core';
-import { LoggerService, RecordService, formToWidget, orderedJsonSchema } from '@rero/ng-core';
+import { RecordService, orderedJsonSchema, processJsonSchema } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 
@@ -71,14 +71,12 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
   /**
    * Constructor
    * @param recordService - RecordService
-   * @param loggerService - LoggerService
    * @param formlyJsonschema - FormlyJsonschema
    * @param translateService - TranslateService
    * @param toastrService - ToastrService
    */
   constructor(
     private recordService: RecordService,
-    private loggerService: LoggerService,
     private formlyJsonschema: FormlyJsonschema,
     private translateService: TranslateService,
     private toastrService: ToastrService
@@ -98,7 +96,7 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
       selectedType = (selected.length === 0) ? this.entityTypeFilters[0].value : selected[0].value;
     }
     this.subscriptions.add(this.recordService.getSchemaForm('local_entities').subscribe((schema) => {
-      schema = formToWidget(schema.schema, this.loggerService);
+      schema = processJsonSchema(schema.schema);
       // Transfer the selected oneOf to the root schema
       schema = schema.oneOf.find((element: any) => element.properties.type.const === this.translatedType(selectedType));
       // Deleting the oneOf key from the schema

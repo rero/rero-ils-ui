@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
-import { FieldArrayType } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
-import { ApiService } from '@rero/ng-core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CirculationPolicyApiService } from '@app/admin/api/circulation-policy-api.service';
 import { ItemTypeApiService } from '@app/admin/api/item-type-api.service';
 import { PatronTypeApiService } from '@app/admin/api/patron-type-api.service';
+import { FieldArrayType } from '@ngx-formly/core';
+import { TranslateService } from '@ngx-translate/core';
+import { ApiService } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
 import { Settings } from './class/settings';
 
@@ -46,26 +46,28 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
    // GETTER & SETTER ==========================================================
   /** Section title */
   get title(): string {
-    return 'label' in this.field.templateOptions
-      ? this.field.templateOptions.label
-      : this._translateService.instant('Item types / Patron types matching');
+    return 'label' in this.field.props
+      ? this.field.props.label
+      : this.translateService.instant('Item types / Patron types matching');
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _patronTypeApiService - PatronTypeApiService
-   * @param _itemTypeApiService - ItemTypeApiService
-   * @param _circulationPolicyApiService - CirculationPolicyApiService
-   * @param _translateService - TranslateService
-   * @param _apiService - ApiService
+   * @param patronTypeApiService - PatronTypeApiService
+   * @param itemTypeApiService - ItemTypeApiService
+   * @param circulationPolicyApiService - CirculationPolicyApiService
+   * @param translateService - TranslateService
+   * @param apiService - ApiService
+   * @param ref: ChangeDetectorRef
    */
   constructor(
-    private _patronTypeApiService: PatronTypeApiService,
-    private _itemTypeApiService: ItemTypeApiService,
-    private _circulationPolicyApiService: CirculationPolicyApiService,
-    private _translateService: TranslateService,
-    private _apiService: ApiService
+    private patronTypeApiService: PatronTypeApiService,
+    private itemTypeApiService: ItemTypeApiService,
+    private circulationPolicyApiService: CirculationPolicyApiService,
+    private translateService: TranslateService,
+    private apiService: ApiService,
+    private ref: ChangeDetectorRef
   ) {
     super();
   }
@@ -76,9 +78,9 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
     this._prevSelectedLibraries = this._getLibrariesRef(appliedLibraries);
 
     forkJoin([
-      this._patronTypeApiService.getAll(),
-      this._itemTypeApiService.getAll(),
-      this._circulationPolicyApiService.getAll(this.field.parent.model.pid)
+      this.patronTypeApiService.getAll(),
+      this.itemTypeApiService.getAll(),
+      this.circulationPolicyApiService.getAll(this.field.parent.model.pid)
     ]).subscribe(([patronTypes, itemTypes, circPolicies]) => {
       this.patronTypes = patronTypes;
       this._itemTypes = itemTypes;
@@ -127,21 +129,22 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
   private _setting(itemTypePid: string, patronTypePid: string): Setting {
     return {
       item_type: {
-        $ref: this._apiService.getRefEndpoint('item_types', itemTypePid)
+        $ref: this.apiService.getRefEndpoint('item_types', itemTypePid)
       },
       patron_type: {
-        $ref: this._apiService.getRefEndpoint('patron_types', patronTypePid)
+        $ref: this.apiService.getRefEndpoint('patron_types', patronTypePid)
       }
     };
   }
 
   /** Build and load the settings table */
   private _loadSettings(): void {
-    const settings = new Settings(this._apiService);
+    const settings = new Settings(this.apiService);
     this.settings = settings
       .setCirculationPolicy(this.form.value)
       .createStructure(this._itemTypes, this.patronTypes, this._circPolicies, this._prevSelectedLibraries)
       .getStructure();
+    this.ref.detectChanges();
   }
 
   /** Get libraries references */

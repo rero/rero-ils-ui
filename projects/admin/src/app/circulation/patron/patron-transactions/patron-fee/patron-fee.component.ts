@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -122,7 +122,7 @@ export class PatronFeeComponent implements OnInit {
     this.formFields = [{
       key: 'type',
       type: 'selectWithSort',
-      templateOptions: {
+      props: {
         label: 'Type',
         required: true,
         options: properties.type.form.options
@@ -130,25 +130,25 @@ export class PatronFeeComponent implements OnInit {
     }, {
       key: 'total_amount',
       type: 'input',
-      templateOptions: {
+      props: {
         type: 'number',
         label: 'Amount',
         required: true,
-        addonLeft: {
-          text: getCurrencySymbol(this._organisationService.organisation.default_currency, 'wide')
-        }
+        addonLeft: [
+          getCurrencySymbol(this._organisationService.organisation.default_currency, 'wide')
+        ]
       }
     }, {
       key: 'note',
       type: 'input',
-      templateOptions: {
+      props: {
         label: 'Note'
       }
     }, {
       key: 'creation_date',
       type: 'dateTimePicker',
       wrappers: ['form-field'],
-      templateOptions: {
+      props: {
         label: 'Date',
         required: true,
         dateFormat: 'yy-mm-dd',

@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
- * Copyright (C) 2020-2023 UCLouvain
+ * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2024 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -98,7 +98,7 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
    * @return Observable providing object with 2 attributes :
    *   - 'can' - Boolean: to know if the resource could be used
    *   - 'message' - String: the message to display if the record cannot be used
-   *   - 'url' - String: the url to use thii template (optional)
+   *   - 'url' - String: the url to use this template (optional)
    */
   private _canUse(record: any) {
     const usableTemplateTypes = ['documents', 'patrons'];
@@ -129,7 +129,7 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
    * @param data: the initial data
    */
   private _addDefaultValuesForTemplate(data: any) {
-    const user = this._routeToolService.userService.user;
+    const { user } = this._routeToolService.userService;
     if (!data.hasOwnProperty('visibility')) {
       data.visibility = 'private';
     }

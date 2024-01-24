@@ -24,7 +24,7 @@ import { DocumentAdvancedSearchFormComponent } from './document-advanced-search-
 @Component({
   selector: 'admin-document-advanced-search',
   template: `
-    <button *ngIf="!simple" type="button" class="btn btn-outline-primary" (click)="openModalBox()">
+    <button *ngIf="!simple" type="button" class="btn btn-outline-primary mt-2" (click)="openModalBox()">
       {{ 'Build advanced query' | translate }}
       <i class="fa fa-search ml-1" aria-hidden="true"></i>
     </button>

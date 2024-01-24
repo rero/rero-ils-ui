@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -113,10 +113,8 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
               return record;
             },
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
-              if (field.templateOptions.label === 'Role') {
-                if (field.asyncValidators == null) {
-                  field.asyncValidators = {};
-                }
+              if (field.props.label === 'Role' && field.asyncValidators == null) {
+                    field.asyncValidators = {};
               }
               return this._limitUserFormField(field, jsonSchema);
             },
@@ -157,10 +155,10 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
     //   will be disabled.  We can't hide the restricted role because if the edited user has already this role
     //   this information will be lost on save !
     const formWidget = jsonSchema.widget;
-    if (formWidget?.formlyConfig?.templateOptions?.fieldMap === 'roles') {
-      const values = Object.assign([], field.templateOptions.options);  // create a clone of original values
-      field.templateOptions.options = this._routeToolService.recordPermissionService.getRolesManagementPermissions().pipe(
-        map(results => {
+    if (formWidget?.formlyConfig?.props?.fieldMap === 'roles') {
+      const values = Object.assign([], field.props.options);  // create a clone of original values
+      field.props.options = this._routeToolService.recordPermissionService.getRolesManagementPermissions().pipe(
+        map((results: any) => {
           values.forEach((role: any) => role.disabled = !results.allowed_roles.includes(role.value));
           return values;
         })
@@ -171,14 +169,13 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
     //   If current logged user doesn't have the 'system_librarian' role, then the only library available
     //   should be the current_user.current_library. Set default value for library select the current_library URI
     //   and disable the field (so the user can't change/manage other libraries)
-    if (formWidget?.formlyConfig?.templateOptions?.fieldMap === 'libraries') {
+    if (formWidget?.formlyConfig?.props?.fieldMap === 'libraries') {
       field.type = 'select';
       field.hooks = {
         ...field.hooks,
         afterContentInit: (f: FormlyFieldConfig) => {
-          const user = this._routeToolService.userService.user;
-          const recordService = this._routeToolService.recordService;
-          const apiService = this._routeToolService.apiService;
+          const { user } = this._routeToolService.userService;
+          const { apiService, recordService } = this._routeToolService;
 
           // Extract libraries from patron > libraries
           const libraries = [];
@@ -188,7 +185,7 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
             });
           });
 
-          f.templateOptions.options = recordService.getRecords(
+          f.props.options = recordService.getRecords(
             'libraries',
             `pid:${libraries.join(' OR pid:')}`, 1,
             RecordService.MAX_REST_RESULTS_SIZE,
@@ -199,7 +196,7 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
           ).pipe(
             map((result: Record) => this._routeToolService
               .recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-            map(hits => {
+            map((hits: any) => {
               return hits.map((hit: any) => {
                 return {
                   label: hit.metadata.name,

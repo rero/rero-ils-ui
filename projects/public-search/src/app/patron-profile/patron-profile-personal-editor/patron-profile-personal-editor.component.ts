@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -92,31 +92,31 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
 
               // post process JSONSchema7 to FormlyFieldConfig conversion
               map: (field: FormlyFieldConfig, jsonSchema: any) => {
-                // If 'format' is defined into the jsonSchema, use it as templateOptions to try a validation on this field.
+                // If 'format' is defined into the jsonSchema, use it as props to try a validation on this field.
                 // See: `email.validator.ts` file
                 if (jsonSchema.format) {
-                  field.templateOptions.type = jsonSchema.format;
+                  field.props.type = jsonSchema.format;
                 }
                 // Add the "row" class to the main object
                 if (field.key == null) {
-                  field.templateOptions.containerCssClass = 'row';
+                  field.props.containerCssClass = 'row';
                 }
                 const fkey = String(field.key);
                 // Add a class on each field
-                field.templateOptions.itemCssClass = (fkey in this._cssConfig)
+                field.props.itemCssClass = (fkey in this._cssConfig)
                   ? this._cssConfig[fkey]
                   : this._cssConfig.default;
                 // Deactivation of the fields if we have a patron record
                 if ((this._userService.user.roles.length > 0) && (field.key !== undefined && disabledFields.includes(fkey))) {
-                  field.templateOptions.readonly = true;
+                  field.props.readonly = true;
                 }
                 // Hide password field
                 if (fkey === 'password') {
-                  field.templateOptions.readonly = true;
+                  field.props.readonly = true;
                   field.hide = true;
                 }
                 if (fkey === 'country') {
-                  field.templateOptions.options.forEach((option: any) => {
+                  field.props.options.forEach((option: any) => {
                     option.label = this._translateService.instant('country_' + option.value);
                   });
                 }

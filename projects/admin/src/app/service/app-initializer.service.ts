@@ -81,7 +81,7 @@ export class AppInitializerService {
 
   /** Initialize Translate Service */
   private initTranslateService(): Observable<any> {
-    let language = this._appSettingsService.settings.language;
+    let {language} = this._appSettingsService.settings;
     if (language == null) {
       const browserLang = this._translateService.getBrowserLang();
       language = browserLang.match(this._appConfigService.languages.join('|')) ?

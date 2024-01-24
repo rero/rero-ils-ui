@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -66,7 +66,7 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
             aggregationsOrder: ['type', 'library', 'teacher', 'subject'],
             aggregationsExpand: ['type'],
             preprocessRecordEditor: (record: any) => {
-              const user = this._routeToolService.userService.user;
+              const { user } = this._routeToolService.userService;
               if (!record.pid) {
                 // set the user's default library at the time of creation
                 record.libraries = [];
@@ -80,7 +80,7 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
               return record;
             },
             preCreateRecord: (data: any) => {
-              const user = this._routeToolService.userService.user;
+              const { user } = this._routeToolService.userService;
               data.organisation = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(
                   'organisations',
@@ -91,8 +91,8 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
             },
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
               const formWidget = jsonSchema.widget;
-              if (formWidget?.formlyConfig?.templateOptions?.fieldMap) {
-                switch (formWidget.formlyConfig.templateOptions.fieldMap) {
+              if (formWidget?.formlyConfig?.props?.fieldMap) {
+                switch (formWidget.formlyConfig.props.fieldMap) {
                   case 'library':
                     return this.populateLibrariesByCurrentUser(field);
                 }
@@ -131,9 +131,8 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
     field.hooks = {
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
-        const user = this._routeToolService.userService.user;
-        const recordService = this._routeToolService.recordService;
-        const apiService = this._routeToolService.apiService;
+        const { user } = this._routeToolService.userService;
+        const { apiService, recordService } = this._routeToolService;
 
         // Extract libraries from patron > libraries
         const libraries = [];
@@ -143,7 +142,7 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
           });
         });
 
-        f.templateOptions.options = recordService.getRecords(
+        f.props.options = recordService.getRecords(
           'libraries',
           `pid:${libraries.join(' OR pid:')}`, 1,
           RecordService.MAX_REST_RESULTS_SIZE,
@@ -153,7 +152,7 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
           'name'
         ).pipe(
           map((result: Record) => result.hits.total === 0 ? [] : result.hits.hits),
-          map(hits => {
+          map((hits: any) => {
             return hits.map((hit: any) => {
               return {
                 label: hit.metadata.name,

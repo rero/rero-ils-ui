@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -122,7 +122,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             ],
             aggregationsExpand: () => {
               const expand = ['document_type'];
-              const queryParams = this._routeToolService.activatedRoute.snapshot.queryParams;
+              const { queryParams } = this._routeToolService.activatedRoute.snapshot;
               if (queryParams.location || queryParams.library) {
                 expand.push('organisation');
               }

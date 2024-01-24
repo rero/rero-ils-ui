@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -98,7 +98,7 @@ export class ItemRequestComponent implements OnInit {
   ngOnInit() {
     this.currentUser = this._userService.user;
     const initialState: any = this._modalService.config.initialState;
-    if (initialState.hasOwnProperty('recordPid')) {
+    if (!Object.hasOwn(initialState, 'recordPid')) {
       this.closeModal();
     }
     this.recordPid = initialState.recordPid;
@@ -136,7 +136,7 @@ export class ItemRequestComponent implements OnInit {
       .pipe(tap(() => this.requestInProgress = false))
       .subscribe(
         (_: unknown) => {
-          this.onSubmit.next();
+          this.onSubmit.next(undefined);
           this.closeModal();
           this._toastr.success(
             this._translateService.instant('Request registered.'),
@@ -172,7 +172,7 @@ export class ItemRequestComponent implements OnInit {
             key: 'patronBarcode',
             type: 'input',
             focus: true,
-            templateOptions: {
+            props: {
               label: this._translateService.instant('Patron barcode'),
               required: true,
               keydown: (field, event) => {
@@ -228,7 +228,7 @@ export class ItemRequestComponent implements OnInit {
           {
             key: 'pickupPid',
             type: 'select',
-            templateOptions: {
+            props: {
               label: this._translateService.instant('Pickup location'),
               required: true,
               placeholder: this._translateService.instant('Select…'),
@@ -240,7 +240,7 @@ export class ItemRequestComponent implements OnInit {
           this.formFields.push({
             key: 'description',
             type: 'input',
-            templateOptions: {
+            props: {
               label: this._translateService.instant('Collection or item year, volume, number, pages'),
               placeholder: this._translateService.instant('Year / Volume / Number / Pages'),
               maxLength: 100,

@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 UCLouvain
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2024 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -67,25 +67,25 @@ export class OperationLogsComponent implements OnInit {
     const linkText = (count > 1)
       ? _('{{ counter }} hidden operation logs')
       : _('{{ counter }} hidden operation log');
-    return this._translateService.instant(linkText, { counter: count });
+    return this.translateService.instant(linkText, { counter: count });
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _operationLogsApiService - OperationLogsApiService
-   * @param _operationLogService - OperationLogsService
-   * @param _translateService - TranslateService
+   * @param operationLogsApiService - OperationLogsApiService
+   * @param operationLogService - OperationLogsService
+   * @param translateService - TranslateService
    */
   constructor(
-    private _operationLogsApiService: OperationLogsApiService,
-    private _operationLogService: OperationLogsService,
-    private _translateService: TranslateService
+    private operationLogsApiService: OperationLogsApiService,
+    private operationLogService: OperationLogsService,
+    private translateService: TranslateService
   ) {}
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.resourceKey = this._operationLogService.getResourceKeyByResourceName(this.resourceType);
+    this.resourceKey = this.operationLogService.getResourceKeyByResourceName(this.resourceType);
     forkJoin([this._operationLogsQuery(1, 'create'), this._operationLogsQuery(1, 'update')])
       .pipe(
         finalize(() => this.loadedRecord = true)
@@ -120,7 +120,7 @@ export class OperationLogsComponent implements OnInit {
    * @return Observable
    */
   private _operationLogsQuery(page: number, action: 'create' | 'update'): Observable<any> {
-    return this._operationLogsApiService
+    return this.operationLogsApiService
       .getLogs(this.resourceKey, this.resourcePid, action, page, this.itemsPerPage)
       .pipe(map((response: Record) => response.hits));
   }
