@@ -1,6 +1,6 @@
  <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,29 +14,33 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="record && record.metadata.partOf">
-  <!-- part of -->
-  <ng-container *ngFor="let partOf of record.metadata.partOf; let i = index">
+@if (record && record.metadata.partOf) {
+  @for (partOf of record.metadata.partOf; track partOf; let i = $index) {
     <div class="mb-0">
       <b>{{ getPartOfLabel(record) }}</b>:
-      <ng-container *ngIf="isPublicView; else adminLink">
+      @if (isPublicView) {
         <a id="{{ 'doc-part-of-' + i }}" href="/{{ viewcode }}/documents/{{ partOf.document.pid }}">
           {{ partOf.document.title }}
         </a>
-      </ng-container>
-      <ng-template #adminLink>
+      } @else {
         <a id="{{ 'doc-part-of-' + i }}" [routerLink]="['/records', 'documents', 'detail', partOf.document.pid]">
           {{ partOf.document.title }}
         </a>
-      </ng-template>
-      <ng-container *ngIf="partOf.numbering">
-        <span>; </span>
-        <ng-container *ngFor="let numbering of partOf.numbering; let isLast = last">
-          <span class="list-inline-item" id="{{ 'doc-part-of-numbering-' + i }}" *ngIf="formatNumbering(numbering) as num">
-            {{ num }}<ng-container *ngIf="!isLast">, </ng-container>
-          </span>
-        </ng-container>
-      </ng-container>
+      }
+      @if (partOf.numbering) {
+          ;
+          @for(numbering of partOf.numbering; track numbering; let i = $index; let isLast = $last) {
+            @if (formatNumbering(numbering); as num) {
+              <span class="list-inline-item" id="{{ 'doc-part-of-numbering-' + i }}">
+                {{ num }}
+                @if (!isLast) {
+                  ,
+                }
+              </span>
+            }
+          }
+      }
     </div>
-  </ng-container>
-</ng-container>
+  }
+}
+

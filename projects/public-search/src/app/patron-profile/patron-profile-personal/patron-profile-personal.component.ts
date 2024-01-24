@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -38,14 +38,14 @@ export class PatronProfilePersonalComponent {
    *
    * @returns true if the user settings is read only.
    */
-  get diabledButtonOnReadyOnly(): boolean {
-    return !this._appSettingsService.settings.userProfile.readOnly;
+  get disabledButtonOnReadyOnly(): boolean {
+    return !this.appSettingsService.settings.userProfile.readOnly;
   }
 
   /**
    * Constructor
    *
-   * @param _appSettingsService - AppSettingsService
+   * @param appSettingsService - AppSettingsService
    */
-  constructor(private _appSettingsService: AppSettingsService) {}
+  constructor(private appSettingsService: AppSettingsService) {}
 }

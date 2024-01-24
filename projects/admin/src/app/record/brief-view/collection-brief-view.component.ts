@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,18 +27,19 @@ import { ResultItem } from '@rero/ng-core';
     ({{ record.metadata.collection_id }})
   </h5>
   <div class="card-text">
-    <div *ngIf="record.metadata.teachers" id="collection-teacher">
-      <ng-container *ngFor="let teacher of record.metadata.teachers; let last = last">
-      {{ teacher.name }}
-      {{ last ? '' : ', ' }}
-      </ng-container>
-    </div>
-    <div
-      *ngIf="record.metadata.description"
-      id="collection-start-end-date"
-      [innerHtml]="record.metadata.description | nl2br"
-    >
-    </div>
+    @if (record.metadata.teachers) {
+      <div id="collection-teacher">
+        @for (teacher of record.metadata.teachers; track teacher; let last = $last) {
+          {{ teacher.name }} {{ last ? '' : ', ' }}
+        }
+      </div>
+    }
+    @if (record.metadata.description) {
+      <div
+        id="collection-start-end-date"
+        [innerHtml]="record.metadata.description | nl2br"
+      ></div>
+    }
     {{ record.metadata.start_date | dateTranslate: 'mediumDate' }}
     - {{ record.metadata.end_date | dateTranslate: 'mediumDate' }}
   </div>
@@ -46,11 +47,9 @@ import { ResultItem } from '@rero/ng-core';
 })
 export class CollectionBriefViewComponent implements ResultItem {
 
-  @Input()
-  record: any;
+  @Input() record: any;
 
-  @Input()
-  type: string;
+  @Input() type: string;
 
   @Input()
   detailUrl: { link: string, external: boolean };

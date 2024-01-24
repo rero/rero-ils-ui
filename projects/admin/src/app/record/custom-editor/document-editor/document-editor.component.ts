@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,18 +41,18 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
 
   /**
    * Constructor
-   * @param _editorService - EditorService
-   * @param _toastrService - ToastrService
-   * @param _translateService - TranslateService
-   * @param _route - ActivatedRoute
-   * @param _recordService - RecordService
+   * @param editorService - EditorService
+   * @param toastrService - ToastrService
+   * @param translateService - TranslateService
+   * @param route - ActivatedRoute
+   * @param recordService - RecordService
    */
   constructor(
-    private _editorService: EditorService,
-    private _toastrService: ToastrService,
-    private _translateService: TranslateService,
-    private _route: ActivatedRoute,
-    private _recordService: RecordService
+    private editorService: EditorService,
+    private toastrService: ToastrService,
+    private translateService: TranslateService,
+    private route: ActivatedRoute,
+    private recordService: RecordService
   ) { super() }
 
   /**
@@ -60,15 +60,15 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
    * @param source string - the external source
    * @param pid string - identifier of the external record
    */
-  importFromExternalSource(source: string, pid: string) {
-    this._editorService.getRecordFromExternal(source, pid).subscribe(
+  importFromExternalSource(source: string, pid: string): void {
+    this.editorService.getRecordFromExternal(source, pid).subscribe(
       record => {
         if (record) {
           this.model = record.metadata;
         } else {
-          this._toastrService.warning(
-            this._translateService.instant('Does not exists on the remote server!'),
-            this._translateService.instant('Import')
+          this.toastrService.warning(
+            this.translateService.instant('Does not exists on the remote server!'),
+            this.translateService.instant('Import')
           );
         }
       }
@@ -80,18 +80,18 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
    * @param type string - resource type
    * @param pid - resource pid
    */
-  duplicateRecord(type: string, pid: string) {
-    this._recordService.getRecord(type, pid).subscribe(
+  duplicateRecord(type: string, pid: string): void {
+    this.recordService.getRecord(type, pid).subscribe(
       record => {
         if (record) {
           delete (record.metadata.pid);
           delete (record.metadata.harvested);
           this.model = record.metadata;
-          this._toastrService.success('Document duplicated');
+          this.toastrService.success('Document duplicated');
         } else {
-          this._toastrService.warning(
-            this._translateService.instant('This document does not exists!'),
-            this._translateService.instant('Duplicate')
+          this.toastrService.warning(
+            this.translateService.instant('This document does not exists!'),
+            this.translateService.instant('Duplicate')
           );
         }
       }
@@ -106,9 +106,9 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
    *
    * @param value - true if the child editor component is currently loading data
    */
-  loadingChanged(value: boolean) {
+  loadingChanged(value: boolean): void {
     if (value === false) {
-      combineLatest([this._route.params, this._route.queryParams])
+      combineLatest([this.route.params, this.route.queryParams])
       .subscribe(([params, queryParams]) => {
         if (queryParams.pid) {
           if (queryParams.source && queryParams.source !== 'templates') {

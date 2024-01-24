@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
- * Copyright (C) 2019-2022 UCLouvain
+ * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2024 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -51,26 +51,26 @@ export class UserService {
   // CONSTRUCTOR ==============================================================
   /**
    * Constructor
-   * @param _userApiService - UserApiService
-   * @param _appSettingsService - AppSettingsService
-   * @param _permissionsService - PermissionsService
+   * @param userApiService - UserApiService
+   * @param appSettingsService - AppSettingsService
+   * @param permissionsService - PermissionsService
    */
   constructor(
-    private _userApiService: UserApiService,
-    private _appSettingsService: AppSettingsService,
-    private _permissionsService: PermissionsService
+    private userApiService: UserApiService,
+    private appSettingsService: AppSettingsService,
+    private permissionsService: PermissionsService
   ) { }
 
   /** load */
   load(): Observable<IUser> {
-    return this._userApiService
+    return this.userApiService
       .getLoggedUser()
       .pipe(
         map((loggedUser: any) => {
-          this._appSettingsService.settings = loggedUser.settings;
+          this.appSettingsService.settings = loggedUser.settings;
           delete loggedUser['settings'];
           if (loggedUser.permissions) {
-          this._permissionsService.setPermissions(loggedUser.permissions);
+          this.permissionsService.setPermissions(loggedUser.permissions);
         }
         this._user = new User(loggedUser);
         this._loaded.next(this._user);

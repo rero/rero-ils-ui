@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020-2023 RERO
+  Copyright (C) 2020-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,10 +14,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="item && document">
+@if (item && document) {
   <!-- FIRST ROW : barcode, title, availability, action button -->
   <div class="col-2">
-    <button type="button" class="pl-0 pt-0 btn"
+    <button type="button" class="btn-show-more"
             (click)="isCollapsed = !isCollapsed"
             [attr.aria-expanded]="!isCollapsed"
             aria-controls="collapse">
@@ -26,9 +26,11 @@
     <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
   </div>
   <div class="col-5">
-    <a [routerLink]="['/records', 'documents', 'detail', document.pid]" *ngIf="document.title | mainTitle as title">
-      {{ title }}
-    </a><br/>
+    @if (document.title | mainTitle; as title) {
+      <a [routerLink]="['/records', 'documents', 'detail', document.pid]">
+        {{ title }}
+      </a><br/>
+    }
     <shared-contribution [contributions]="document?.contribution"></shared-contribution>
   </div>
   <div class="col-2">{{ loan.created | dateTranslate: 'short' }}</div>
@@ -36,21 +38,23 @@
   <div class="col-1 text-right">
     <admin-cancel-request-button [loan]="loan" (cancelRequestEvent)="cancelRequest($event)"></admin-cancel-request-button>
   </div>
-  <!-- SECOND ROW : item detail -->
-  <div class="col-12" *ngIf="!isCollapsed">
-    <dl class="row">
-      <!-- position into queue -->
-      <dt class="offset-1 col-1 label-title" translate>Position</dt>
-      <dd class="col-10">
-        <span class="badge badge-info">{{ loan.metadata.rank }} / {{ item.current_pending_requests }}</span>
-      </dd>
-      <!-- item location -->
-      <ng-container *ngIf="item.location.pid | getRecord: 'locations' | async as location">
-        <dt class="offset-1 col-1 label-title" translate>Location</dt>
+  <!-- SECOND ROW: item detail -->
+  @if (!isCollapsed) {
+    <div class="col-12">
+      <dl class="row">
+        <!-- position into queue -->
+        <dt class="offset-1 col-1 label-title" translate>Position</dt>
         <dd class="col-10">
-          {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}: {{ item.location.name }}
+          <span class="badge badge-info">{{ loan.metadata.rank }} / {{ item.current_pending_requests }}</span>
         </dd>
-      </ng-container>
-    </dl>
-  </div>
-</ng-container>
+        <!-- item location -->
+        @if (item.location.pid | getRecord: 'locations' | async; as location) {
+          <dt class="offset-1 col-1 label-title" translate>Location</dt>
+          <dd class="col-10">
+            {{ $any(location).metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}: {{ item.location.name }}
+          </dd>
+        }
+      </dl>
+    </div>
+  }
+}

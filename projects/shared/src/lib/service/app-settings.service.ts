@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2022 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,16 +22,16 @@ import { Injectable } from '@angular/core';
 export class AppSettingsService {
 
   /** Application settings */
-  private _settings: ISettings;
+  private appSettings: ISettings;
 
   /** Current view code */
-  private _currentViewCode: string;
+  private appCurrentViewCode: string;
 
   /**
    * Set settings
    */
   set settings(config: ISettings) {
-    this._settings = config;
+    this.appSettings = config;
   }
 
   /**
@@ -39,7 +39,7 @@ export class AppSettingsService {
    * @return ISettings
    */
   get settings(): ISettings {
-    return this._settings;
+    return this.appSettings;
   }
 
   /**
@@ -47,7 +47,7 @@ export class AppSettingsService {
    * @param viewcode - string
    */
   set currentViewCode(viewcode: string) {
-    this._currentViewCode = viewcode;
+    this.appCurrentViewCode = viewcode;
   }
 
   /**
@@ -55,7 +55,7 @@ export class AppSettingsService {
    * @return string or undefined
    */
   get currentViewCode(): string | undefined {
-    return this._currentViewCode;
+    return this.appCurrentViewCode;
   }
 
   /**
@@ -64,7 +64,7 @@ export class AppSettingsService {
    */
   get baseUrl(): string {
     this._checkSettings();
-    return this._settings.baseUrl;
+    return this.appSettings.baseUrl;
   }
 
   /**
@@ -73,7 +73,7 @@ export class AppSettingsService {
    */
   get agentSources(): string[] {
     this._checkSettings();
-    return this._settings.agentSources;
+    return this.appSettings.agentSources;
   }
 
   /**
@@ -82,7 +82,7 @@ export class AppSettingsService {
    */
   get agentAgentTypes(): any {
     this._checkSettings();
-    return this._settings.agentAgentTypes;
+    return this.appSettings.agentAgentTypes;
   }
 
   /**
@@ -91,7 +91,7 @@ export class AppSettingsService {
    */
   get agentLabelOrder(): any {
     this._checkSettings();
-    return this._settings.agentLabelOrder;
+    return this.appSettings.agentLabelOrder;
   }
 
   /**
@@ -100,7 +100,7 @@ export class AppSettingsService {
    */
   get globalViewCode(): string {
     this._checkSettings();
-    return this._settings.globalView;
+    return this.appSettings.globalView;
   }
 
   /**
@@ -109,7 +109,7 @@ export class AppSettingsService {
    */
   get currentLanguage(): string {
     this._checkSettings();
-    return this._settings.language;
+    return this.appSettings.language;
   }
 
   /**
@@ -118,7 +118,7 @@ export class AppSettingsService {
    */
   get operationLogs(): any {
     this._checkSettings();
-    return this._settings.operationLogs;
+    return this.appSettings.operationLogs;
   }
 
   /**
@@ -126,7 +126,7 @@ export class AppSettingsService {
    * @throw SettingsError
    */
   private _checkSettings(): void {
-    if (!this._settings) {
+    if (!this.appSettings) {
       throw new SettingsError('Set settings before call function.');
     }
   }

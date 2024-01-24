@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -77,18 +77,18 @@ export class CirculationLogsComponent implements OnInit {
     const linkText = (count > 1)
       ? _('{{ counter }} hidden circulations logs')
       : _('{{ counter }} hidden circulations log');
-    return this._translateService.instant(linkText, { counter: count });
+    return this.translateService.instant(linkText, { counter: count });
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _operationLogsApiService - OperationLogsApiService
-   * @param _translateService - TranslateService
+   * @param operationLogsApiService - OperationLogsApiService
+   * @param translateService - TranslateService
    */
   constructor(
-    private _operationLogsApiService: OperationLogsApiService,
-    private _translateService: TranslateService
+    private operationLogsApiService: OperationLogsApiService,
+    private translateService: TranslateService
   ) {}
 
   /** OnInit hook */
@@ -180,7 +180,7 @@ export class CirculationLogsComponent implements OnInit {
    * @return Observable
    */
   private _circulationLogsQuery(page: number): Observable<any> {
-    return this._operationLogsApiService
+    return this.operationLogsApiService
       .getCirculationLogs(this.resourceType, this.resourcePid, page, this.itemsPerPage, this.filterTypes)
       .pipe(map((response: Record) =>  response.hits));
   }

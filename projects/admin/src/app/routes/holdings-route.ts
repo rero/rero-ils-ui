@@ -107,17 +107,16 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
     jsonSchema: JSONSchema7): FormlyFieldConfig {
 
     const formWidget = jsonSchema.widget;
-    if (formWidget?.formlyConfig?.templateOptions?.fieldMap === 'location') {
+    if (formWidget?.formlyConfig?.props?.fieldMap === 'location') {
       field.type = 'select';
       field.hooks = {
         ...field.hooks,
         afterContentInit: (f: FormlyFieldConfig) => {
-          const user = this._routeToolService.userService.user;
-          const recordService = this._routeToolService.recordService;
-          const apiService = this._routeToolService.apiService;
+          const { user } = this._routeToolService.userService;
+          const { apiService, recordService } = this._routeToolService;
           const libraryPid = user.currentLibrary;
           const query = `library.pid:${libraryPid}`;
-          f.templateOptions.options = recordService.getRecords(
+          f.props.options = recordService.getRecords(
             'locations',
             query, 1,
             RecordService.MAX_REST_RESULTS_SIZE,
@@ -127,7 +126,7 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
             'name'
           ).pipe(
             map((result: Record) => this._routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-            map(hits => {
+            map((hits: any) => {
               return hits.map((hit: any) => {
                 return {
                   label: hit.metadata.name,

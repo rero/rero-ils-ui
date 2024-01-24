@@ -36,7 +36,7 @@ export class PatronProfileDocumentComponent implements OnInit {
   // GETTER & SETTER ==========================================================
   /** Get current viewcode */
   get viewcode(): string {
-    return this._patronProfileMenuService.currentPatron.organisation.code;
+    return this.patronProfileMenuService.currentPatron.organisation.code;
   }
 
   /** Get the formatted call numbers for the related item */
@@ -50,17 +50,17 @@ export class PatronProfileDocumentComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _patronProfileMenuService - PatronProfileMenuService
-   * @param _recordService - RecordService
+   * @param patronProfileMenuService - PatronProfileMenuService
+   * @param recordService - RecordService
    */
   constructor(
-    private _patronProfileMenuService: PatronProfileMenuService,
-    private _recordService: RecordService
+    private patronProfileMenuService: PatronProfileMenuService,
+    private recordService: RecordService
   ) {}
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._recordService
+    this.recordService
       .getRecord('documents', this.record.metadata.document.pid, 1, {Accept: 'application/rero+json, application/json'})
       .subscribe(document => this.document = document.metadata);
   }

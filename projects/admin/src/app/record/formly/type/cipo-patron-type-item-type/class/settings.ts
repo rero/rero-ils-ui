@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,23 +18,23 @@ import { ApiService } from '@rero/ng-core';
 
 export class Settings {
 
-  /** Current circulation polic  */
-  private _circulationPolicy: any;
+  /** Current circulation policy  */
+  private circulationPolicy: any;
 
   /** Current circulation policy Matching */
-  private _circulationMatching = [];
+  private circulationMatching = [];
 
   /** Matching patronType / itemType */
-  private _matching = [];
+  private matching = [];
 
   /** Settings */
-  private _settings = [];
+  private settings = [];
 
   /**
    * Constructor
-   * @param _apiService - ApiService
+   * @param apiService - ApiService
    */
-  constructor(private _apiService: ApiService) {}
+  constructor(private apiService: ApiService) {}
 
   /**
    * Set Circulation policy
@@ -42,7 +42,7 @@ export class Settings {
    * @return this
    */
   setCirculationPolicy(circulationPolicy: any): this {
-    this._circulationPolicy = circulationPolicy;
+    this.circulationPolicy = circulationPolicy;
     return this;
   }
 
@@ -55,8 +55,8 @@ export class Settings {
    * @return this
    */
   createStructure(itemTypes: any[], patronTypes: any[], circPolicies: any[], appliedToLibraries: any[]): this {
-    if ('settings' in this._circulationPolicy) {
-      this._circulationMatching = this._processSettings(this._circulationPolicy.settings, []);
+    if ('settings' in this.circulationPolicy) {
+      this.circulationMatching = this._processSettings(this.circulationPolicy.settings, []);
     }
     const appliedToLibrariesPids = appliedToLibraries.map(uri => uri.substring(uri.lastIndexOf('/') + 1));
     this._processCirculationPolicies(circPolicies, appliedToLibrariesPids);
@@ -64,7 +64,7 @@ export class Settings {
       const item = {
         pid: itemType.metadata.pid,
         label: itemType.metadata.name,
-        value: this._apiService.getRefEndpoint('item_types', itemType.metadata.pid),
+        value: this.apiService.getRefEndpoint('item_types', itemType.metadata.pid),
         patronTypes: []
       };
       patronTypes.forEach(patronType => {
@@ -72,12 +72,12 @@ export class Settings {
         item.patronTypes.push({
           pid: patronType.metadata.pid,
           label: patronType.metadata.name,
-          value: this._apiService.getRefEndpoint('patron_types', patronType.metadata.pid),
-          checked: this._circulationMatching.some(e => e === key),
-          disabled: this._matching.some(e => e === key)
+          value: this.apiService.getRefEndpoint('patron_types', patronType.metadata.pid),
+          checked: this.circulationMatching.some(e => e === key),
+          disabled: this.matching.some(e => e === key)
         });
       });
-      this._settings.push(item);
+      this.settings.push(item);
     });
     return this;
   }
@@ -87,7 +87,7 @@ export class Settings {
    * @return array of settings
    */
   getStructure(): any[] {
-    return this._settings;
+    return this.settings;
   }
 
   /**
@@ -110,8 +110,8 @@ export class Settings {
           }
         }
 
-        this._matching = this._matching.concat(
-          this._processSettings(policy.metadata.settings, this._matching)
+        this.matching = this.matching.concat(
+          this._processSettings(policy.metadata.settings, this.matching)
         );
       }
     });

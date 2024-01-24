@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,50 +14,54 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<form [formGroup]="form" (ngSubmit)="onSubmit(model)" class="container" *ngIf="loaded">
+@if (loaded) {
+  <form [formGroup]="form" (ngSubmit)="onSubmit(model)" class="container">
 
-    <!-- FORM HEADER :: title and action buttons ========================== -->
-    <section class="d-flex mb-3" >
-      <h1 translate>Receipt of an order</h1>
-      <div class="ml-auto">
-        <button type="reset" class="btn btn-outline-danger btn-sm" [routerLink]="['/', 'records', 'acq_orders', 'detail', orderRecord.pid]">
-          <i class="fa fa-times"></i>
-          {{ 'Cancel' | translate }}
-        </button>
-        <button type="submit" class="btn btn-primary btn-sm ml-1" [disabled]="!form.valid || orderSend">
-          <i class="fa" [ngClass]="{'fa-save': !orderSend, 'fa-spinner fa-pulse': orderSend}"></i>
-          {{ 'Save' | translate }}
-        </button>
-      </div>
-    </section>
+      <!-- FORM HEADER :: title and action buttons -->
+      <section class="d-flex mb-3" >
+        <h1 translate>Receipt of an order</h1>
+        <div class="ml-auto">
+          <button type="reset" class="btn btn-outline-danger btn-sm" [routerLink]="['/', 'records', 'acq_orders', 'detail', orderRecord.pid]">
+            <i class="fa fa-times"></i>
+            {{ 'Cancel' | translate }}
+          </button>
+          <button type="submit" class="btn btn-primary btn-sm ml-1" [disabled]="!form.valid || orderSend">
+            <i class="fa" [ngClass]="{'fa-save': !orderSend, 'fa-spinner fa-pulse': orderSend}"></i>
+            {{ 'Save' | translate }}
+          </button>
+        </div>
+      </section>
 
-    <!-- KNOWN ORDER/RECEIPT DATA -->
-    <div class="row card known-data">
-      <div class="card-header">
-        <button type="button" class="btn-show-more"
-                [ngClass]="{'btn-expanded': !knownDataCollapsed, 'btn-collapsed': knownDataCollapsed}"
-                (click)="knownDataCollapsed = !knownDataCollapsed"
-                [attr.aria-expanded]="!knownDataCollapsed" aria-controls="collapse">
-        </button>
-        <h5 class="d-inline-block" translate>Order overview</h5>
-      </div>
-      <div class="card-body callout callout-info callout-bg-info pt-0" [hidden]="knownDataCollapsed">
-        <admin-order-summary [order]="orderRecord"></admin-order-summary>
-        <div class="card w-100 pt-0" *ngIf="receiptRecord">
-          <div class="card-header"><h5 translate>Already in this receipt</h5></div>
-          <div class="card-body p-0">
-            <admin-receipt-summary [receiptPid]="receiptRecord.pid" [collapsable]="false" [allowActions]="false" class="container">
-            </admin-receipt-summary>
-          </div>
+      <!-- KNOWN ORDER/RECEIPT DATA -->
+      <div class="row card known-data">
+        <div class="card-header">
+          <button type="button" class="btn-show-more"
+                  [ngClass]="{'btn-expanded': !knownDataCollapsed, 'btn-collapsed': knownDataCollapsed}"
+                  (click)="knownDataCollapsed = !knownDataCollapsed"
+                  [attr.aria-expanded]="!knownDataCollapsed" aria-controls="collapse">
+          </button>
+          <h5 class="d-inline-block" translate>Order overview</h5>
+        </div>
+        <div class="card-body callout callout-info callout-bg-info pt-0" [hidden]="knownDataCollapsed">
+          <admin-order-summary [order]="orderRecord"></admin-order-summary>
+          @if (receiptRecord) {
+            <div class="card w-100 pt-0">
+              <div class="card-header"><h5 translate>Already in this receipt</h5></div>
+              <div class="card-body p-0">
+                <admin-receipt-summary [receiptPid]="receiptRecord.pid" [collapsable]="false" [allowActions]="false" class="container">
+                </admin-receipt-summary>
+              </div>
+            </div>
+          }
         </div>
       </div>
-    </div>
 
-    <!-- FORMLY FORM -->
-    <div class="row card p-0 my-3">
-      <div class="card-header">
-        <h5 translate>Receipt new data</h5>
+      <!-- FORMLY FORM -->
+      <div class="row card p-0 my-3">
+        <div class="card-header">
+          <h5 translate>Receipt new data</h5>
+        </div>
+        <formly-form class="card-body" [form]="form" [fields]="fields" [model]="model"></formly-form>
       </div>
-      <formly-form class="card-body" [form]="form" [fields]="fields" [model]="model"></formly-form>
-    </div>
-</form>
+  </form>
+}

@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
- * Copyright (C) 2021 UCLouvain
+ * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 import { FieldType } from '@ngx-formly/core';
 import { ApiService } from '@rero/ng-core';
-import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 
 @Component({
   selector: 'admin-select-account',
@@ -36,19 +36,19 @@ export class SelectAccountComponent extends FieldType implements OnInit {
 
   /**
    * Constructor
-   * @param _changeDetectorRef - ChangeDetectorRef
-   * @param _apiService - ApiService
+   * @param changeDetectorRef - ChangeDetectorRef
+   * @param apiService - ApiService
    */
   constructor(
-    private _changeDetectorRef: ChangeDetectorRef,
-    private _apiService: ApiService) {
+    private changeDetectorRef: ChangeDetectorRef,
+    private apiService: ApiService) {
     super();
   }
 
   /** OnInit Hook */
   ngOnInit() {
-    this.to.options.forEach((option: any) => this.accountList.push(option));
-    this.currency = this.to.currency;
+    this.props.options.forEach((option: any) => this.accountList.push(option));
+    this.currency = this.props.currency;
 
     if (this.formControl.value) {
       const currentPid = this.formControl.value.substring(this.formControl.value.lastIndexOf('/') + 1);
@@ -64,9 +64,9 @@ export class SelectAccountComponent extends FieldType implements OnInit {
    * @param account - The selected account.
    */
   selectAccount(account: IAcqAccount): void {
-    const accountRef = this._apiService.getRefEndpoint('acq_accounts', account.pid);
+    const accountRef = this.apiService.getRefEndpoint('acq_accounts', account.pid);
     this.selectedAccount = account;
     this.formControl.patchValue(accountRef);
-    this._changeDetectorRef.markForCheck();
+    this.changeDetectorRef.markForCheck();
   }
 }

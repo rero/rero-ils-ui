@@ -1,7 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2022 RERO
-  Copyright (C) 2021-2022 UCLouvain
+  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,26 +15,39 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div *ngIf="record"
-     [attr.id]="record.metadata.pid | idAttribute : {'prefix': 'patron', 'suffix': 'brief-view'}"
-     class="patron-brief brief-view">
-  <h5 class="card-title">
-    <a [routerLink]="[detailUrl.link]">
-      {{ record.metadata.last_name }}<ng-container *ngIf="record.metadata.first_name">, {{ record.metadata.first_name }}</ng-container>
-    </a>
-    <div *ngIf="circulationAccess && record.metadata.patron" class="action-buttons">
-      <a [routerLink]="['/circulation', 'patron', record.metadata.patron.barcode[0]]" class="btn-link btn btn-sm btn-outline-primary">
-        <i class="fa fa-exchange mr-2"></i>
-        {{ 'Circulation' | translate }}
+@if (record) {
+  <div
+    [attr.id]="record.metadata.pid | idAttribute : {'prefix': 'patron', 'suffix': 'brief-view'}"
+    class="patron-brief brief-view"
+  >
+    <h5 class="card-title">
+      <a [routerLink]="[detailUrl.link]">
+        {{ record.metadata.last_name }}
+        @if (record.metadata.first_name) {
+          {{ record.metadata.first_name }}
+        }
       </a>
-    </div>
-  </h5>
-  <div class="card-text">
+      @if (circulationAccess && record.metadata.patron) {
+        <div class="action-buttons">
+          <a
+            [routerLink]="['/circulation', 'patron', record.metadata.patron.barcode[0]]"
+            class="btn-link btn btn-sm btn-outline-primary"
+          >
+            <i class="fa fa-exchange mr-2"></i>
+            {{ 'Circulation' | translate }}
+          </a>
+        </div>
+      }
+    </h5>
+    <div class="card-text">
     <p>
-      <small class="badge badge-pill mr-1" [class]="getRoleBadgeColor(role)" *ngFor="let role of record.metadata.roles">
-        {{ role | translate }}
-      </small>
+      @for (role of record.metadata.roles; track role) {
+        <small class="badge badge-pill mr-1" [class]="getRoleBadgeColor(role)">
+          {{ role | translate }}
+        </small>
+      }
     </p>
     <p>{{ record.metadata.birth_date | dateTranslate:'mediumDate' }} &mdash; {{ record.metadata.city }}</p>
+    </div>
   </div>
-</div>
+}

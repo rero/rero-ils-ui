@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2019-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -46,15 +46,18 @@
           </div>
         </div>
       </div>
-      <div class="row col mt-1" *ngIf="checkoutSettings">
-        <span *ngFor="let setting of checkoutSettings" class="badge px-2 py-0 mr-2"
-        [ngClass]="setting.extra?.class || 'badge-warning'">
-          {{ setting.label }}
-          <button class="btn btn-small p-0 ml-1" (click)="removeCheckoutSettings(setting.key)">
-            <i class="fa fa-times-circle"></i>
-          </button>
-        </span>
-      </div>
+      @if (checkoutSettings) {
+        <div class="row col mt-1">
+          @for (setting of checkoutSettings; track setting) {
+            <span class="badge px-2 py-0 mr-2" [ngClass]="setting.extra?.class || 'badge-warning'">
+              {{ setting.label }}
+              <button class="btn btn-small p-0 ml-1" (click)="removeCheckoutSettings(setting.key)">
+                <i class="fa fa-times-circle"></i>
+              </button>
+            </span>
+          }
+        </div>
+      }
     </div>
     <div class="col"></div>
     <!-- Sorting loans -->

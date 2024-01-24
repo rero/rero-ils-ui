@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020 RERO
+  Copyright (C) 2020-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="transactions">
+@if (transactions) {
   <form [formGroup]="form" (ngSubmit)="onSubmitForm()">
     <div class="modal-header">
     <h5 class="modal-title">{{ action | translate }}</h5>
@@ -23,30 +23,34 @@
     </button>
   </div>
     <div class="modal-body">
-      <div class="card mb-4" *ngFor="let transaction of transactions">
-        <div class="card-body">
-          <h5 class="card-title">{{ transaction.type | translate }}</h5>
-          <div class="card-text">
-            <div class="row" *ngIf="transaction.note">
-              <label class="col-4 label-title" translate>Note</label>
-              <span class="col-8">{{ transaction.note}}</span>
-            </div>
-            <div class="row">
-              <label class="col-4 label-title" translate>Creation date</label>
-              <span class="col-8">{{ transaction.creation_date | dateTranslate: 'shortDate'}}</span>
-            </div>
-            <div class="row">
-              <label class="col-4 label-title" translate>Total amount</label>
-              <span class="col-8">{{ transaction.total_amount | currency: organisation.default_currency }}</span>
+      @for (transaction of transactions; track transaction) {
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title">{{ transaction.type | translate }}</h5>
+            <div class="card-text">
+              @if (transaction.note) {
+                <div class="row">
+                  <label class="col-4 label-title" translate>Note</label>
+                  <span class="col-8">{{ transaction.note}}</span>
+                </div>
+              }
+              <div class="row">
+                <label class="col-4 label-title" translate>Creation date</label>
+                <span class="col-8">{{ transaction.creation_date | dateTranslate: 'shortDate'}}</span>
+              </div>
+              <div class="row">
+                <label class="col-4 label-title" translate>Total amount</label>
+                <span class="col-8">{{ transaction.total_amount | currency: organisation.default_currency }}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      }
       <formly-form [form]="form" [fields]="formFields" [model]="model"></formly-form>
     </div>
     <div class="modal-footer">
       <button type="submit" class="btn btn-primary" [disabled]="this.form.status !== 'VALID'" translate>Save</button>
     </div>
   </form>
-</ng-container>
+}
 

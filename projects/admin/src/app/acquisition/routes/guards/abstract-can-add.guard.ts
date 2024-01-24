@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,12 +24,12 @@ export abstract class AbstractCanAddGuard {
 
   /**
    * Constructor
-   * @param _recordService - RecordService
-   * @param _router - Router
+   * @param recordService - RecordService
+   * @param router - Router
    */
    protected constructor(
-    protected _recordService: RecordService,
-    protected _router: Router
+    protected recordService: RecordService,
+    protected router: Router
   ) {}
 
   /**
@@ -48,17 +48,17 @@ export abstract class AbstractCanAddGuard {
    * @returns Observable boolean
    */
   protected canAdd(resource: string, pid: string): Observable<boolean> {
-    return this._recordService.getRecord(resource, pid, 0, BaseApi.reroJsonheaders).pipe(
+    return this.recordService.getRecord(resource, pid, 0, BaseApi.reroJsonheaders).pipe(
       map((record: any) => record.metadata),
       map((record: any) => {
         if (!('is_current_budget' in record) || !record.is_current_budget) {
-          this._router.navigate(['/errors/403'], { skipLocationChange: true });
+          this.router.navigate(['/errors/403'], { skipLocationChange: true });
           return false;
         }
         return true;
       }),
       catchError(() => {
-        this._router.navigate(['/errors/404'], { skipLocationChange: true });
+        this.router.navigate(['/errors/404'], { skipLocationChange: true });
         return of(false);
       })
     );

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,15 +20,15 @@ import { createCustomElement } from '@angular/elements';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { FormlyModule } from '@ngx-formly/core';
+import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CoreConfigService, CoreModule, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { fieldPasswordMatchValidator, PatronProfilePasswordComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-password/patron-profile-password.component';
+import { PatronProfilePasswordComponent, fieldPasswordMatchValidator } from 'projects/public-search/src/app/patron-profile/patron-profile-password/patron-profile-password.component';
 import { AppConfigService } from './app-config.service';
 import { AppInitializerService } from './app-initializer.service';
 
@@ -51,7 +51,7 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
         { name: 'passwordMatch', validation: fieldPasswordMatchValidator }
       ]
     }),
-    FormlyBootstrapModule,
+    FormlyPrimeNGModule,
     CoreModule,
     RecordModule,
     ReactiveFormsModule,

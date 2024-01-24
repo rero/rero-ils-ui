@@ -1,7 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2022 RERO
-  Copyright (C) 2022 UCLouvain
+  Copyright (C) 2022-2024 RERO
+  Copyright (C) 2022-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -36,40 +36,44 @@
           <dt class="label-title col-3" translate>Status</dt>
           <dd class="col-9">
             <span class="badge" [class]="stateClass">{{ record.metadata.state | translate }}</span>
-            <ng-container [ngSwitch]="record.metadata.state">
+            @switch(record.metadata.state) {
               <!-- ITEM_ON_LOAN additional information -->
-              <span *ngSwitchCase="loanState.ITEM_ON_LOAN">
-                <span *ngIf="record.metadata?.is_late" class="badge badge-danger ml-1" translate>overdue</span>
-                ({{ 'due date' | translate }}
-                <span [ngClass]="{'text-danger font-weight-bold': record.metadata?.is_late}">
-                  {{record.metadata.end_date | date: 'shortDate' }}</span>)
-              </span>
+              @case (loanState.ITEM_ON_LOAN) {
+                @if (record.metadata?.is_late) {
+                  <span class="badge badge-danger ml-1" translate>overdue</span>
+                  ({{ 'due date' | translate }}
+                  <span [ngClass]="{'text-danger font-weight-bold': record.metadata?.is_late}">
+                    {{record.metadata.end_date | date: 'shortDate' }}</span>)
+                }
+              }
               <!-- REQUEST additional information -->
-              <span *ngSwitchCase="loanState.ITEM_AT_DESK">
+              @case (loanState.ITEM_AT_DESK) {
                 ({{ 'request expire at' | translate }}
-                 <span [ngClass]="{'text-danger': isRequestExpired}">{{ record.metadata.request_expire_date | date: 'shortDate' }}</span>)
-              </span>
-            </ng-container>
+                <span [ngClass]="{'text-danger': isRequestExpired}">{{ record.metadata.request_expire_date | date: 'shortDate' }}</span>)
+              }
+            }
           </dd>
         </dl>
       </div>
     </div>
     <!-- ACTIONS BUTTON -->
     <div class="col-2 text-right">
-      <button class="btn btn-sm btn-outline-secondary"
-              (click)="openTransactionHistoryDialog(record.metadata.pid)"
-      >
+      <button class="btn btn-sm btn-outline-secondary" (click)="openTransactionHistoryDialog(record.metadata.pid)">
         <i class="fa fa-history"></i>
       </button>
-      <button class="debug-button btn btn-sm btn-outline-warning ml-1"
-              *ngIf="canUseDebugMode"
-              [class.btn-hover]="debugMode"
-              (click)="debugMode=!debugMode">
-        <i class="fa fa-bug pr-1"></i>
-        <i class="fa" [ngClass]="debugMode ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
-      </button>
+      @if (canUseDebugMode) {
+        <button class="debug-button btn btn-sm btn-outline-warning ml-1"
+          [class.btn-hover]="debugMode"
+          (click)="debugMode=!debugMode"
+        >
+          <i class="fa fa-bug pr-1"></i>
+          <i class="fa" [ngClass]="debugMode ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
+        </button>
+      }
     </div>
     <!-- DEBUG PANEL -->
-    <pre class="col-12 mt-2" *ngIf="debugMode">{{ record.metadata | json }}</pre>
+    @if (debugMode) {
+      <pre class="col-12 mt-2">{{ record.metadata | json }}</pre>
+    }
   </div>
 </section>

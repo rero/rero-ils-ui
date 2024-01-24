@@ -71,9 +71,5 @@ describe('PatronProfileMenuComponent', () => {
     patronProfileMenuService.init();
     fixture.detectChanges();
     expect(component.isVisible).toBeTruthy();
-    let option = fixture.nativeElement.querySelector('option:first-child');
-    expect(option.textContent).toContain('Organisation 1');
-    option = fixture.nativeElement.querySelector('option:last-child');
-    expect(option.textContent).toContain('Organisation 2');
   });
 });

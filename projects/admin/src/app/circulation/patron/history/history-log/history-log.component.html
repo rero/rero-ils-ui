@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2021-2023 RERO
+ Copyright (C) 2021-2024 RERO
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div class="col" *ngVar="log.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document">
-  <!-- Basic loan informations -->
+  <!-- Basic loan information's -->
   <div class="row">
     <div class="col-sm-6 position-relative">
       <button type="button" class="pl-0 pt-0 btn float-left"
@@ -24,75 +24,85 @@
               aria-controls="collapse">
         <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" class="fa" aria-hidden="true"></i>
       </button>
-      <a *ngIf="document; else noDocument" [routerLink]="['/records','documents','detail', log.metadata.loan.item.document.pid]">
-         {{ log.metadata.loan.item.document.title }}
-      </a>
-      <ng-template #noDocument>
+      @if (document) {
+        <a [routerLink]="['/records','documents','detail', log.metadata.loan.item.document.pid]">
+           {{ log.metadata.loan.item.document.title }}
+        </a>
+      } @else {
         {{ log.metadata.loan.item.document.title }}
-      </ng-template>
+      }
     </div>
     <div class="col-sm-4">
-      <shared-contribution
-        *ngIf="document?.metadata?.contribution && document.metadata.contribution.length > 0; else noContributionRecord"
-        [contributions]="document.metadata.contribution"
-        [limitRecord]="3"
-      ></shared-contribution>
-      <ng-template #noContributionRecord>&nbsp;</ng-template>
+      @if (document?.metadata?.contribution && document.metadata.contribution.length > 0) {
+        <shared-contribution [contributions]="document.metadata.contribution" [limitRecord]="3"></shared-contribution>
+      } @else {
+        &nbsp;
+      }
     </div>
     <div class="col-sm-2">
       {{ log.metadata.date | dateTranslate: 'short' }}
     </div>
   </div>
-  <!-- Transaction history checkin / checkout -->
-  <div class="mt-1" *ngIf="!isCollapsed">
-    <ng-container *ngIf="log.metadata.loan.item.pid | getRecord:'items' | async as item">
-      <div class="row">
-        <div class="col-2 font-weight-bold" translate>Item</div>
-        <div class="col-10">
-          <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]">
-            <ng-container *ngIf="!item.metadata.barcode && !item.metadata.call_number">{{ item.metadata.pid }}</ng-container>
-            <ng-container *ngIf="item.metadata.barcode">{{ item.metadata.barcode }}</ng-container>
-            <ng-container *ngIf="!item.metadata.barcode && item.metadata.call_number">{{ item.metadata.call_number }}</ng-container>
-          </a>
+  <!-- Transaction history check-in / checkout -->
+  @if (!isCollapsed) {
+    <div class="mt-1">
+      @if (log.metadata.loan.item.pid | getRecord:'items' | async; as item) {
+        <div class="row">
+          <div class="col-2 font-weight-bold" translate>Item</div>
+          <div class="col-10">
+            <a [routerLink]="['/records', 'items', 'detail', $any(item).metadata.pid]">
+              @if (!$any(item).metadata.barcode && !$any(item).metadata.call_number) {
+                {{ $any(item).metadata.pid }}
+              }
+              @if ($any(item).metadata.barcode) {
+                {{ $any(item).metadata.barcode }}
+              }
+              @if (!$any(item).metadata.barcode && $any(item).metadata.call_number) {
+                {{ $any(item).metadata.call_number }}
+              }
+            </a>
+          </div>
         </div>
-      </div>
-    </ng-container>
-    <h6 class="mt-2" translate>Transaction history</h6>
-    <section class="col events-timeline">
-      <!-- checkin event -->
-      <div class="row pl-2 pr-2 align-items-start timeline-event">
-        <div class="col-lg-2 pr-4 text-right event-timestamp">
-          <i class="fa fa-calendar-o"></i> {{ log.metadata.date | dateTranslate: 'short' }}
-        </div>
-        <div class="col-lg-10 event-content">
-          <div class="row">
-            <div class="col-3 pl-3">
-              <i class="fa fa-angle-double-left text-success pr-2"></i>
-              {{ 'Checkin' | translate }}
-            </div>
-            <div class="col-9">
-              <admin-history-log-library [location]="log.metadata.loan.transaction_location"></admin-history-log-library>
+      }
+      <h6 class="mt-2" translate>Transaction history</h6>
+      <section class="col events-timeline">
+        <!-- check-in event -->
+        <div class="row pl-2 pr-2 align-items-start timeline-event">
+          <div class="col-lg-2 pr-4 text-right event-timestamp">
+            <i class="fa fa-calendar-o"></i> {{ log.metadata.date | dateTranslate: 'short' }}
+          </div>
+          <div class="col-lg-10 event-content">
+            <div class="row">
+              <div class="col-3 pl-3">
+                <i class="fa fa-angle-double-left text-success pr-2"></i>
+                {{ 'Checkin' | translate }}
+              </div>
+              <div class="col-9">
+                <admin-history-log-library [location]="log.metadata.loan.transaction_location"></admin-history-log-library>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <!-- checkout event -->
-      <div *ngIf="checkout" class="row pl-2 pr-2 align-items-start timeline-event">
-        <div class="col-lg-2 pr-4 text-right event-timestamp">
-          <i class="fa fa-calendar-o"></i> {{ checkout.metadata.date | dateTranslate: 'short' }}
-        </div>
-        <div class="col-lg-10 event-content">
-          <div class="row">
-            <div class="col-3 pl-3">
-              <i class="fa fa-angle-double-right text-danger pr-2"></i>
-              {{ 'Checkout' | translate }}
+        <!-- checkout event -->
+        @if (checkout) {
+          <div class="row pl-2 pr-2 align-items-start timeline-event">
+            <div class="col-lg-2 pr-4 text-right event-timestamp">
+              <i class="fa fa-calendar-o"></i> {{ checkout.metadata.date | dateTranslate: 'short' }}
             </div>
-            <div class="col-9">
-              <admin-history-log-library [location]="checkout.metadata.loan.transaction_location"></admin-history-log-library>
+            <div class="col-lg-10 event-content">
+              <div class="row">
+                <div class="col-3 pl-3">
+                  <i class="fa fa-angle-double-right text-danger pr-2"></i>
+                  {{ 'Checkout' | translate }}
+                </div>
+                <div class="col-9">
+                  <admin-history-log-library [location]="checkout.metadata.loan.transaction_location"></admin-history-log-library>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-  </div>
+        }
+      </section>
+    </div>
+  }
 </div>

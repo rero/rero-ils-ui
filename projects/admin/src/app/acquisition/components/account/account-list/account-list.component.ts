@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  * Copyright (C) 2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -53,14 +53,14 @@ export class AccountListComponent implements OnInit {
   // GETTER & SETTER ============================================================
   /** Get the current organisation */
   get organisation(): any {
-    return this._organisationService.organisation;
+    return this.organisationService.organisation;
   }
 
   /** Get a message containing the reasons why record list cannot be exported */
   get exportInfoMessage(): string {
     return (this.rootAccounts.length === 0)
-      ? this._translateService.instant('Result list is empty.')
-      : this._translateService.instant('Too many items. Should be less than {{max}}.',
+      ? this.translateService.instant('Result list is empty.')
+      : this.translateService.instant('Too many items. Should be less than {{max}}.',
         { max: RecordService.MAX_REST_RESULTS_SIZE }
       );
   }
@@ -68,24 +68,24 @@ export class AccountListComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ========================================================
   /**
    * Constructor
-   * @param _userService: UserService
-   * @param _acqAccountApiService: AcqAccountApiService
-   * @param _organisationService: OrganisationService
-   * @param _apiService: ApiService
-   * @param _translateService: TranslateService
+   * @param userService: UserService
+   * @param acqAccountApiService: AcqAccountApiService
+   * @param organisationService: OrganisationService
+   * @param apiService: ApiService
+   * @param translateService: TranslateService
    */
   constructor(
-    private _userService: UserService,
-    private _acqAccountApiService: AcqAccountApiService,
-    private _organisationService: OrganisationService,
-    private _apiService: ApiService,
-    private _translateService: TranslateService,
+    private userService: UserService,
+    private acqAccountApiService: AcqAccountApiService,
+    private organisationService: OrganisationService,
+    private apiService: ApiService,
+    private translateService: TranslateService,
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._libraryPid = this._userService.user.currentLibrary;
-    this._acqAccountApiService.getAccounts(this._libraryPid, null).subscribe(
+    this._libraryPid = this.userService.user.currentLibrary;
+    this.acqAccountApiService.getAccounts(this._libraryPid, null).subscribe(
       accounts => {
         this.rootAccounts = accounts;
         this.exportOptions = this._exportFormats();
@@ -126,9 +126,7 @@ export class AccountListComponent implements OnInit {
       `library.pid:${this._libraryPid}`
     ];
     const query = defaultQueryParams.join(' AND ');
-    const baseUrl = format.endpoint
-      ? format.endpoint
-      : this._apiService.getExportEndpointByType('acq_accounts');
+    const baseUrl = format.endpoint || this.apiService.getExportEndpointByType('acq_accounts');
     const params = new HttpParams()
       .set('q', query)
       .set('format', format.format);
@@ -147,6 +145,6 @@ export class AccountListComponent implements OnInit {
     const totalResults = this.rootAccounts.length;
     return (format.hasOwnProperty('disableMaxRestResultsSize') && format.disableMaxRestResultsSize)
       ? totalResults > 0
-      : 0 < totalResults && totalResults < RecordService.MAX_REST_RESULTS_SIZE;
+      : totalResults > 0 && totalResults < RecordService.MAX_REST_RESULTS_SIZE;
   }
 }

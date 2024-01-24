@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,10 +18,33 @@
 
 @import 'bootstrap/scss/bootstrap';
 
+:host ::ng-deep .p-component {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+:host ::ng-deep .p-accordion-header {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+:host ::ng-deep .p-tabview-nav a,
+:host ::ng-deep .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link  {
+  color: gray;
+  font-weight: 600;
+}
+
+:host ::ng-deep .p-highlight a {
+  color: #212529;
+}
+
 :host ::ng-deep .p-accordion-header-link {
   @extend .p-3;
   @extend .d-flex;
   @extend .align-items-center;
+
+  color: gray;
+  font-weight: 600;
 
   .opening-days-summary .fa {
     @extend .mr-0;

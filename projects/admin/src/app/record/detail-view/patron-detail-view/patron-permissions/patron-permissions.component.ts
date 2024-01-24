@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
- * Copyright (C) 2019-2022 UCLouvain
+ * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -38,16 +38,14 @@ export class PatronPermissionsComponent implements OnChanges {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _permissionApiService - PermissionApiService
+   * @param permissionApiService - PermissionApiService
    */
-  constructor(
-    private _permissionApiService: PermissionApiService
-  ) { }
+  constructor(private permissionApiService: PermissionApiService) {}
 
   /** OnChanges hook */
   ngOnChanges(changes: SimpleChanges): void {
-    if (!changes.hidden.currentValue && 0 === this.permissions.length) {
-      this._permissionApiService
+    if (!changes.hidden.currentValue && this.permissions.length === 0) {
+      this.permissionApiService
         .getUserPermissions(this.pid)
         .subscribe((permissions: IPatronPermission[]) => {
           this.permissions = permissions;

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,28 +19,28 @@ import { Subject } from 'rxjs';
 export class Paginator {
 
   /** Event on more */
-  private _more = new Subject<number>();
+  private more = new Subject<number>();
 
   /** Records count */
-  private _recordsCount = 0;
+  private recordsCount = 0;
 
   /** Hidden info (after show more link) */
-  private _hiddenInfo: { singular: string, plurial: string } = undefined;
+  private hiddenInfo: { singular: string, plurial: string } = undefined;
 
   /** Hidden records count */
-  private _hiddenCount = 0;
+  private hiddenCount = 0;
 
   /** More event */
   get more$() {
-    return this._more.asObservable();
+    return this.more.asObservable();
   }
 
   /**
    * Constructor
-   * @param _page - number (default: 1)
-   * @param _recordsPerPage - number (default: 10)
+   * @param page - number (default: 1)
+   * @param recordsPerPage - number (default: 10)
    */
-  constructor(private _page: number = 1, private _recordsPerPage: number = 10) {}
+  constructor(private page: number = 1, private recordsPerPage: number = 10) {}
 
   /**
    * Set Page
@@ -48,7 +48,7 @@ export class Paginator {
    * @return Paginator
    */
   setPage(page: number): Paginator {
-    this._page = page;
+    this.page = page;
     return this;
   }
 
@@ -57,7 +57,7 @@ export class Paginator {
    * @return number
    */
   getPage(): number {
-    return this._page;
+    return this.page;
   }
 
   /**
@@ -66,7 +66,7 @@ export class Paginator {
    * @return Paginator
    */
   setRecordsPerPage(recordsPerPage: number): Paginator {
-    this._recordsPerPage = recordsPerPage;
+    this.recordsPerPage = recordsPerPage;
     return this;
   }
 
@@ -75,7 +75,7 @@ export class Paginator {
    * @return number
    */
   getRecordsPerPage(): number {
-    return this._recordsPerPage;
+    return this.recordsPerPage;
   }
 
   /**
@@ -84,7 +84,7 @@ export class Paginator {
    * @return Paginator
    */
   setRecordsCount(recordsCount: number): Paginator {
-    this._recordsCount = recordsCount;
+    this.recordsCount = recordsCount;
     return this;
   }
 
@@ -93,7 +93,7 @@ export class Paginator {
    * @return number
    */
   getRecordsCount(): number {
-    return this._recordsCount;
+    return this.recordsCount;
   }
 
   /**
@@ -103,7 +103,7 @@ export class Paginator {
    * @return Paginator
    */
   setHiddenInfo(singular: string, plurial: string): Paginator {
-    this._hiddenInfo = { singular, plurial };
+    this.hiddenInfo = { singular, plurial };
     return this;
   }
 
@@ -112,12 +112,12 @@ export class Paginator {
    * @return string
    */
   getHiddenInfo(): string {
-    if (this._hiddenInfo) {
-      this._hiddenCount = this._recordsCount - (this._page * this._recordsPerPage);
-      if (this._hiddenCount < 0) { this._hiddenCount = 0; }
-      return (this._hiddenCount > 1)
-        ? this._hiddenInfo.plurial
-        : this._hiddenInfo.singular;
+    if (this.hiddenInfo) {
+      this.hiddenCount = this.recordsCount - (this.page * this.recordsPerPage);
+      this.hiddenCount = Math.max(this.hiddenCount, 0)
+      return (this.hiddenCount > 1)
+        ? this.hiddenInfo.plurial
+        : this.hiddenInfo.singular;
     }
   }
 
@@ -126,7 +126,7 @@ export class Paginator {
    * @return number
    */
   getHiddenCount(): number {
-    return this._hiddenCount;
+    return this.hiddenCount;
   }
 
   /**
@@ -134,8 +134,8 @@ export class Paginator {
    * @return boolean
    */
   isShowMore(): boolean {
-    return this._recordsCount > 0
-      && ((this._page * this._recordsPerPage) < this._recordsCount);
+    return this.recordsCount > 0
+      && ((this.page * this.recordsPerPage) < this.recordsCount);
   }
 
   /**
@@ -143,7 +143,7 @@ export class Paginator {
    * @param page - number
    */
   next(page?: number) {
-    this._page = (!page) ? this._page + 1 : page;
-    this._more.next(this._page);
+    this.page = (!page) ? this.page + 1 : page;
+    this.more.next(this.page);
   }
 }

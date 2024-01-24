@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,21 +21,29 @@ import { Component, Input } from '@angular/core';
   template: `
   <h5 class="mb-0 card-title">
     <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }} </a>
-    <small *ngIf="record.metadata.visibility && record.metadata.visibility === 'private'">
-      <i class="fa fa-lock text-secondary" aria-hidden="true"></i>
-    </small>
+    @if (record.metadata.visibility === 'private') {
+      <small>
+        <i class="fa fa-lock text-secondary" aria-hidden="true"></i>
+      </small>
+    }
   </h5>
   <div class="card-text">
     <ul class="list-inline mb-0">
-      <li *ngIf="record.metadata.description">
-        {{ record.metadata.description | truncateText: 8 }}
-      </li>
-      <li *ngIf="record.metadata.creator.pid | getRecord: 'patrons' | async as creator">
-        {{ creator.metadata.first_name }} {{ creator.metadata.last_name }}
-      </li>
-      <li *ngIf="record.metadata.template_type" translate>
-        {{ record.metadata.template_type }}
-      </li>
+      @if (record.metadata.description) {
+        <li>
+          {{ record.metadata.description | truncateText: 8 }}
+        </li>
+      }
+      @if ($any(record.metadata.creator.pid | getRecord: 'patrons' | async); as creator) {
+        <li>
+          {{ creator.metadata.first_name }} {{ creator.metadata.last_name }}
+        </li>
+      }
+      @if (record.metadata.template_type) {
+        <li translate>
+          {{ record.metadata.template_type }}
+        </li>
+      }
     </ul>
   </div>
   `
@@ -43,10 +51,11 @@ import { Component, Input } from '@angular/core';
 export class TemplatesBriefViewComponent {
 
   /** Record data */
-  @Input()
-  record: any;
+  @Input() record: any;
+
+  /** Resource type */
+  @Input() type: string;
 
   /** Detail URL to navigate to detail view */
-  @Input()
-  detailUrl: { link: string, external: boolean };
+  @Input() detailUrl: { link: string, external: boolean };
 }

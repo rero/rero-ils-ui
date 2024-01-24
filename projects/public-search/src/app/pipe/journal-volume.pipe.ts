@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,9 +24,9 @@ export class JournalVolumePipe implements PipeTransform {
 
   /**
    * Constructor
-   * @param _translateService - TranslateService
+   * @param translateService - TranslateService
    */
-  public constructor(private _translateService: TranslateService) {}
+  public constructor(private translateService: TranslateService) {}
 
   /**
    * Transform
@@ -37,12 +37,12 @@ export class JournalVolumePipe implements PipeTransform {
   transform(journal: { journal_title?: string, volume?: string, number?: string }, separator: string = ' — '): string {
     const data = [];
     if ('volume' in journal) {
-      data.push(this._translateService.instant(
+      data.push(this.translateService.instant(
         'Vol. {{ volume }}', { volume: journal.volume }
       ));
     }
     if ('number' in journal) {
-      data.push(this._translateService.instant(
+      data.push(this.translateService.instant(
         'n°. {{ number }}', { number: journal.number }
       ));
     }

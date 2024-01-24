@@ -243,5 +243,8 @@ _('bf:Topic');
 _('bf:Work');
 
 // Non-extracted string (TODO :: search why ?)
-_('Vol. {{ volume }}')
-_('n°. {{ number }}')
+_('Vol. {{ volume }}');
+_('n°. {{ number }}');
+
+// Circulation policies
+_('/ day');

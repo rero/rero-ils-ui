@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,33 +14,33 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<!-- header -->
 <section id="histories-section" class="container my-2">
   <div class="d-none d-lg-flex row p-2 bg-dark rounded text-light">
     <div class="col-10" translate>Document</div>
     <div class="col-2" translate>Return date</div>
   </div>
 
-  <div class="row" *ngIf="!loaded; else display">
-    <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
-  </div>
-  <ng-template #display>
-    <ng-container *ngIf="paginator.getRecordsCount() > 0; else noRecord">
+  @defer (when loaded) {
+    @if (paginator.getRecordsCount() > 0) {
       <div class="row border">
         <div class="container">
-          <public-search-patron-profile-history
-            *ngFor="let loan of records"
-            [record]="loan"
-            id="history-{{ loan.metadata.pid }}" class="row border-bottom">
-          </public-search-patron-profile-history>
+          @for (loan of records; track loan) {
+            <public-search-patron-profile-history
+              [record]="loan"
+              id="history-{{ loan.metadata.pid }}" class="row border-bottom">
+            </public-search-patron-profile-history>
+          }
         </div>
       </div>
       <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator" class="row"></shared-search-show-more-pager>
-    </ng-container>
-    <ng-template #noRecord>
+    } @else {
       <div class="row">
         <span class="col mt-2 font-weight-bold" translate>No history</span>
       </div>
-    </ng-template>
-  </ng-template>
+    }
+  } @placeholder {
+    <div class="row">
+      <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
+    </div>
+  }
 </section>

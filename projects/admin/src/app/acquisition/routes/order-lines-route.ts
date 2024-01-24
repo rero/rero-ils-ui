@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
             redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_order, '/records/acq_orders/detail'),
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
               const formWidget = jsonSchema.widget;
-              if (formWidget?.formlyConfig?.templateOptions?.fieldMap === 'amount') {
+              if (formWidget?.formlyConfig?.props?.fieldMap === 'amount') {
                 return this._amountSymbol(field);
               }
               return field;
@@ -71,7 +71,7 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
   }
 
   /**
-   * Add default informations to an account record before creating it.
+   * Add default information's to an account record before creating it.
    * @param data: the data to improve
    * @return: the enrich data
    */
@@ -91,9 +91,9 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
     // TODO :: This isn't the organisation currency that we need to use, it's the order related vendor currency
     //         But how to retrieve the order from here ??? and how get quickly currency to use into
     const service = this._routeToolService.getInjectorToken(OrganisationService);
-    field.templateOptions.addonLeft = {
-      text: getCurrencySymbol(service.organisation.default_currency, 'wide')
-    };
+    field.props.addonLeft = [
+      getCurrencySymbol(service.organisation.default_currency, 'wide')
+    ];
     return field;
   }
 }

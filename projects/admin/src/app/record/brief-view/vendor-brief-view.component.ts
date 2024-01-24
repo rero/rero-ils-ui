@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 
 @Component({
@@ -24,17 +24,40 @@ import { ResultItem } from '@rero/ng-core';
     <h5 class="mb-0 card-title">
       <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
     </h5>
+    @if (address) {
+      @if (address.street) {
+        {{ address.street }},
+      }
+      @if (address.postal_code || address.city) {
+        {{ address.postal_code }} {{ address.city }}
+      }
+      @if (address.country) {
+        @if (address.postal_code || address.city) {
+          /
+        }
+        {{ address.country }}
+      }
+    }
   `,
   styleUrls: []
 })
-export class VendorBriefViewComponent implements ResultItem {
+export class VendorBriefViewComponent implements ResultItem, OnInit {
 
   /** Record  data */
-  record: any;
+  @Input() record: any;
 
   /** Resource type */
-  type: string;
+  @Input() type: string;
 
   /** Detail URL to navigate to detail view */
-  detailUrl: { link: string, external: boolean };
+  @Input() detailUrl: { link: string, external: boolean };
+
+  // Default address
+  address: any;
+
+  /** OnInit hook */
+  ngOnInit(): void {
+    const contact: any[] = this.record.metadata.contacts.filter((contact: any) => contact.type === 'default');
+    this.address = (contact.length > 0) ? contact[0] : undefined;
+  }
 }

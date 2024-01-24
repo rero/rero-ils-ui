@@ -1,7 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2022 RERO
-  Copyright (C) 2019-2022 UCLouvain
+  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div *ngIf="permissions.length > 0; else loading">
+@defer (when permissions.length > 0) {
   <div class="my-2">
     <label for="filter" translate>Filter permission list</label>
     <input id="filter" class="form-control" #search (keyup)="filterPermissions(search.value)" />
@@ -26,10 +26,10 @@
     <div class="col-2 font-weight-bold text-center text-uppercase" translate>Access</div>
   </div>
   <div>
-    <admin-patron-permission *ngFor="let permission of filteredPermissions; let index = index" [permission]="permission" [index]="index"></admin-patron-permission>
+    @for (permission of filteredPermissions; track permission; let index = $index) {
+      <admin-patron-permission [permission]="permission" [index]="index"></admin-patron-permission>
+    }
   </div>
-</div>
-
-<ng-template #loading>
+} @placeholder {
   <i class="fa fa-spinner"></i> {{ 'loading in progress...' | translate }}
-</ng-template>
+}

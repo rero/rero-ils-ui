@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
  * Copyright (C) 2019-2024 RERO
- * Copyright (C) 2021-2024 UCLouvain
+ * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -159,8 +159,9 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
    */
   private initField(field: any, fieldParentKey: string, subject: BehaviorSubject<any>): void {
     if (Object.keys(this.fieldDataConfig).some(key => key === fieldParentKey)) {
-      field.templateOptions.options = subject.asObservable();
-      field.templateOptions.sort = false;
+      field.props.options = subject.asObservable();
+      field.props.minItemsToDisplaySearch = 10;
+      field.props.sort = false;
       field.type = 'select';
       subject.next(this.fieldDataConfig[fieldParentKey]);
     } else {
@@ -176,9 +177,9 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
    */
   private initFieldSearchType(field: any, fieldParentKey: string, subject: BehaviorSubject<any>): void {
     if (Object.keys(this.fieldsSearchTypeConfig).some(key => key === fieldParentKey)) {
-      field.templateOptions.options = subject.asObservable();
-      field.templateOptions.sort = false;
-      field.templateOptions.readonly = this.fieldsSearchTypeConfig[fieldParentKey].length < 2;
+      field.props.options = subject.asObservable();
+      field.props.sort = false;
+      field.props.readonly = this.fieldsSearchTypeConfig[fieldParentKey].length < 2;
       subject.next(this.fieldsSearchTypeConfig[fieldParentKey]);
       const fieldSearchTypeValue = this.fieldsSearchTypeConfig[fieldParentKey][0].value;
       if (
@@ -216,7 +217,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                 type: 'select',
                 key: 'field',
                 defaultValue: 'title',
-                templateOptions: {
+                props: {
                   sort: false,
                   hideLabel: true,
                   hideLabelSelectOption: true,
@@ -230,7 +231,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                 type: 'select',
                 key: 'searchType',
                 defaultValue: false,
-                templateOptions: {
+                props: {
                   hideLabelSelectOption: true,
                   options: []
                 },
@@ -242,7 +243,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                 className: 'col-4',
                 type: 'custom-field',
                 key: 'term',
-                templateOptions: {
+                props: {
                   hideLabel: true,
                   required: true,
                 },
@@ -257,7 +258,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
       {
         key: 'search',
         type: 'repeat',
-        templateOptions: {
+        props: {
           maxItems: 4,
           minItems: 1,
         },
@@ -271,7 +272,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                   type: 'select',
                   key: 'operator',
                   defaultValue: AdvancedSearchService.OPERATOR_AND,
-                  templateOptions: {
+                  props: {
                     hideLabel: true,
                     required: true,
                     options: this.advancedSearchService.getOperators(),
@@ -282,7 +283,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                   type: 'select',
                   key: 'field',
                   defaultValue: 'title',
-                  templateOptions: {
+                  props: {
                     sort: false,
                     hideLabel: true,
                     hideLabelSelectOption: true,
@@ -296,7 +297,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                   type: 'select',
                   key: 'searchType',
                   defaultValue: false,
-                  templateOptions: {
+                  props: {
                     hideLabelSelectOption: true,
                     options: []
                   },
@@ -308,7 +309,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                   className: 'col-4',
                   type: 'custom-field',
                   key: 'term',
-                  templateOptions: {
+                  props: {
                     hideLabel: true,
                     options: [],
                   },

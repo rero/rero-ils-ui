@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,10 +27,12 @@ import { EntityTypeFilter } from './entity-typeahead.interface';
 @Component({
   selector: 'admin-add-entity-local',
   template: `
-  <button class="btn btn-sm btn-primary mt-2" *ngIf="canAdd" (click)="addEntity()">
-    <i class="fa fa-plus-square-o" aria-hidden="true"></i>
-    {{ 'Add local entity' | translate }}
-  </button>
+  @if (canAdd) {
+    <button class="btn btn-sm btn-primary mt-2" (click)="addEntity()">
+      <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+      {{ 'Add local entity' | translate }}
+    </button>
+  }
   `
 })
 export class AddEntityLocalComponent {

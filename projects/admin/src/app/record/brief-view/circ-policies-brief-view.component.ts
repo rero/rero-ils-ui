@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,26 +15,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-circ-policies-brief-view',
   template: `
-  <h5 class="mb-0 card-title"><a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a></h5>
-  <div class="card-text">
-    <span *ngIf="record.metadata.description">
-      {{ record.metadata.description }}
+  <h5 class="mb-0 card-title">
+    <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
+    <span class="badge badge-light ml-2 align-top">
+      <small>
+      @if (record.metadata.policy_library_level) {
+        {{ 'Library' | translate }}
+      } @else {
+        {{ 'Organisation' | translate }}
+      }
+    </small>
     </span>
+  </h5>
+  <div class="card-text">
+    @if (record.metadata.description) {
+      {{ record.metadata.description }}
+    }
   </div>
   `,
   styles: []
 })
 export class CircPoliciesBriefViewComponent implements ResultItem {
 
-  record: any;
+  @Input() record: any;
 
-  type: string;
+  @Input() type: string;
 
-  detailUrl: { link: string, external: boolean };
+  @Input() detailUrl: { link: string, external: boolean };
 }

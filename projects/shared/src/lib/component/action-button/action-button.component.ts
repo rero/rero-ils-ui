@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 UCLouvain
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,25 +20,23 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 @Component({
   selector: 'shared-action-button',
   template: `
-    <ng-container *ngIf="!disabled; else disabledInfo">
-      <ng-container *ngIf="url && url.length > 0; else clickButton">
+    @if (!disabled) {
+      @if (url && url.length > 0) {
         <button type="button" class="btn btn-sm {{ class }}" [title]="title" [routerLink]="url" [queryParams]="queryParams">
           <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
         </button>
-      </ng-container>
-      <ng-template #clickButton>
+      } @else {
         <button type="button" class="btn btn-sm {{ class }}" [title]="title" (click)="onClick($event)">
           <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
         </button>
-      </ng-template>
-    </ng-container>
-    <ng-template #disabledInfo>
+      }
+    } @else {
       <button type="button" class="btn btn-sm disabled {{ class }}"
               [title]="title" [popover]="tolTemplate" triggers="mouseenter:mouseleave">
         <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
       </button>
       <ng-template #tolTemplate><div [innerHtml]="message | nl2br"></div></ng-template>
-    </ng-template>
+    }
     <ng-template #contentTpl><ng-content></ng-content></ng-template>
   `
 })

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,7 @@ import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { IPatron, UserService } from '@rero/shared';
 import { TabsetComponent } from 'ngx-bootstrap/tabs';
-import { forkJoin, Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { IllRequestApiService } from '../api/ill-request-api.service';
 import { LoanApiService } from '../api/loan-api.service';
 import { OperationLogsApiService } from '../api/operation-logs-api.service';
@@ -42,7 +42,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   @Input() viewcode: string;
 
   /** Observable subscription */
-  private _subscription = new Subscription();
+  private subscription = new Subscription();
 
   /** Fees on loans */
   loansFeesTotal = 0;
@@ -86,43 +86,43 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
    * @return IPatron
    */
   get patron(): IPatron {
-    return this._patronProfileMenuService.currentPatron;
+    return this.patronProfileMenuService.currentPatron;
   }
 
   /**
    * Constructor
-   * @param _patronTransactionApiService - PatronTransactionApiService
-   * @param _recordService - RecordService
-   * @param _loanApiService - LoanApiService
-   * @param _illRequestApiService - IllRequestApiService
-   * @param _patronProfileService - PatronProfileService
-   * @param _userService - UserService
-   * @param _patronProfileMenuService - PatronProfileMenuService
-   * @param _operationLogsService - OperationLogsService
+   * @param patronTransactionApiService - PatronTransactionApiService
+   * @param recordService - RecordService
+   * @param loanApiService - LoanApiService
+   * @param illRequestApiService - IllRequestApiService
+   * @param patronProfileService - PatronProfileService
+   * @param userService - UserService
+   * @param patronProfileMenuService - PatronProfileMenuService
+   * @param operationLogsService - OperationLogsService
    */
   constructor(
-    private _patronTransactionApiService: PatronTransactionApiService,
-    private _recordService: RecordService,
-    private _loanApiService: LoanApiService,
-    private _illRequestApiService: IllRequestApiService,
-    private _patronProfileService: PatronProfileService,
-    private _userService: UserService,
-    private _patronProfileMenuService: PatronProfileMenuService,
-    private _operationLogsApiService: OperationLogsApiService
+    private patronTransactionApiService: PatronTransactionApiService,
+    private recordService: RecordService,
+    private loanApiService: LoanApiService,
+    private illRequestApiService: IllRequestApiService,
+    private patronProfileService: PatronProfileService,
+    private userService: UserService,
+    private patronProfileMenuService: PatronProfileMenuService,
+    private operationLogsApiService: OperationLogsApiService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
     this.feeTotal = 0;
-    this._subscription.add(
-      this._patronProfileService.loanFeesEvent$.subscribe((fees: number) =>
+    this.subscription.add(
+      this.patronProfileService.loanFeesEvent$.subscribe((fees: number) =>
         this.loansFeesTotal = +((this.loansFeesTotal + fees).toFixed(2))
       )
     );
-    this.user = this._userService.user;
+    this.user = this.userService.user;
     if (this.user.isAuthenticated && this.user.isPatron) {
-      this._subscription.add(
-        this._patronProfileMenuService.onChange$.subscribe((menu: IMenu) => {
+      this.subscription.add(
+        this.patronProfileMenuService.onChange$.subscribe((menu: IMenu) => {
           this._resetTabs();
           // When the component is initialized, the staticTabs is undefined.
           // After initialization, the staticTabs variable is available.
@@ -131,45 +131,45 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
             this.staticTabs.tabs[0].active = true;
           }
           this._patronPid = menu.value;
-          const loanQuery = this._loanApiService.getOnLoan(this._patronPid, 1, 1, undefined);
-          const requestQuery = this._loanApiService.getRequest(this._patronPid, 1, 1, undefined);
-          const feeQuery = this._patronTransactionApiService.getFees(this._patronPid, 'open', 1, 1, undefined);
-          const historyQuery = this._operationLogsApiService.getHistory(this._patronPid, 1, 1);
-          const illRequestQuery = this._illRequestApiService.getPublicIllRequest(this._patronPid, 1, 1, undefined);
+          const loanQuery = this.loanApiService.getOnLoan(this._patronPid, 1, 1, undefined);
+          const requestQuery = this.loanApiService.getRequest(this._patronPid, 1, 1, undefined);
+          const feeQuery = this.patronTransactionApiService.getFees(this._patronPid, 'open', 1, 1, undefined);
+          const historyQuery = this.operationLogsApiService.getHistory(this._patronPid, 1, 1);
+          const illRequestQuery = this.illRequestApiService.getPublicIllRequest(this._patronPid, 1, 1, undefined);
           forkJoin([loanQuery, requestQuery, feeQuery, historyQuery, illRequestQuery])
             .subscribe((
               [loanResponse, requestResponse, feeResponse, historyResponse, illRequestResponse]:
                 [Record, Record, Record, Record, Record]
             ) => {
-              this.tabs.loan = { loaded: true, count: this._recordService.totalHits(loanResponse.hits.total) };
-              this.tabs.request.count = this._recordService.totalHits(requestResponse.hits.total);
-              this.tabs.fee.count = this._recordService.totalHits(feeResponse.hits.total);
+              this.tabs.loan = { loaded: true, count: this.recordService.totalHits(loanResponse.hits.total) };
+              this.tabs.request.count = this.recordService.totalHits(requestResponse.hits.total);
+              this.tabs.fee.count = this.recordService.totalHits(feeResponse.hits.total);
               this.feeTotal = feeResponse.aggregations.total.value;
-              this.tabs.history.count = this._recordService.totalHits(historyResponse.hits.total);
-              this.tabs.illRequest.count = this._recordService.totalHits(illRequestResponse.hits.total);
+              this.tabs.history.count = this.recordService.totalHits(historyResponse.hits.total);
+              this.tabs.illRequest.count = this.recordService.totalHits(illRequestResponse.hits.total);
             });
         })
       );
       /** Update tab history if cancel a request */
-      this._subscription.add(
-        this._patronProfileService.cancelRequestEvent$.subscribe(() => {
+      this.subscription.add(
+        this.patronProfileService.cancelRequestEvent$.subscribe(() => {
           this.tabs.request.count--;
           this.tabs.history.loaded = false;
-          this._operationLogsApiService.getHistory(this._patronPid, 1, 1).subscribe((historyResponse: Record) => {
+          this.operationLogsApiService.getHistory(this._patronPid, 1, 1).subscribe((historyResponse: Record) => {
             this.tabs.history = {
               loaded: false,
-              count: this._recordService.totalHits(historyResponse.hits.total)
+              count: this.recordService.totalHits(historyResponse.hits.total)
             };
           });
         })
       );
-      this._patronProfileMenuService.change(this._currentPatronPid(this.viewcode));
+      this.patronProfileMenuService.change(this._currentPatronPid(this.viewcode));
     }
   }
 
   /** OnDestroy hook */
   ngOnDestroy(): void {
-    this._subscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   /**
@@ -179,7 +179,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   selectTab(name: string): void {
     if ((name in this.tabs) && !this.tabs[name].loaded) {
       this.tabs[name].loaded = true;
-      this._patronProfileService.changeTab(
+      this.patronProfileService.changeTab(
         { name, count: this.tabs[name].count }
       );
     }

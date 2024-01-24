@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-   Copyright (C) 2019-2022 RERO
+   Copyright (C) 2019-2024 RERO
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU Affero General Public License as published by
@@ -16,44 +16,53 @@
 -->
 <div class="card mt-2" id="item-loans-requests" [permissions]="permissions.CIRC_ADMIN">
   <!-- Loan borrowed -->
-  <ng-container *ngIf="borrowedBy.length > 0">
-    <div class="card-header font-weight-bold" translate>Borrowed by</div>
-    <div class="card-body">
-      <div class="row mb-2">
-        <div class="col-4 font-weight-bold" translate>Patron</div>
-        <div class="col-4 font-weight-bold" translate>Renewal</div>
-        <div class="col-3 font-weight-bold" translate>Due date</div>
+  <div class="card-header font-weight-bold" translate>Borrowed by</div>
+  @defer (when borrowedBy) {
+    @if (borrowedBy.length > 0) {
+      <div class="card-body">
+        <div class="row mb-2">
+          <div class="col-4 font-weight-bold" translate>Patron</div>
+          <div class="col-4 font-weight-bold" translate>Renewal</div>
+          <div class="col-3 font-weight-bold" translate>Due date</div>
+        </div>
+        <admin-item-transaction type="loan_borrow" [transaction]="borrowedBy[0]"></admin-item-transaction>
       </div>
-      <admin-item-transaction
-        type="loan_borrow"
-        [transaction]="borrowedBy[0]"
-      ></admin-item-transaction>
-    </div>
-  </ng-container>
-  <!-- Loan requested -->
+    } @else {
+      <div class="p-3" translate>No item borrowed</div>
+    }
+  } @placeholder {
+    <i class="fa fa-spinner"></i> {{ 'loading in progress...' | translate }}
+  }
 
+  <!-- Loan requested -->
   <div class="card-header">
     <b translate>Requested by</b>
     <button class="btn btn-outline-primary btn-link btn-sm ml-2 float-right" (click)="addRequest()">
       <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} …
     </button>
   </div>
-  <div class="card-body" *ngIf="requestedBy.length > 0 else noRequest">
-    <div class="row mb-2">
-      <div class="col-4 font-weight-bold" translate>Patron</div>
-      <div class="col-4 font-weight-bold" translate>Pick-up Location</div>
-      <div class="col-3 font-weight-bold" translate>Request date</div>
-    </div>
-    <admin-item-transaction
-      *ngFor="let request of requestedBy"
-      type="loan_request"
-      [transaction]="request"
-      [itemPid]="itemPid"
-      (cancelRequestEvent)="cancelRequest($event)"
-      (updatePickupLocationEvent)="updateRequestPickupLocation($event)"
-    ></admin-item-transaction>
-  </div>
-  <ng-template #noRequest>
-    <div class="p-3" translate>No pending request</div>
-  </ng-template>
+  @defer (when requestedBy) {
+    @if (requestedBy.length > 0) {
+      <div class="card-body">
+        <div class="row mb-2">
+          <div class="col-4 font-weight-bold" translate>Patron</div>
+          <div class="col-4 font-weight-bold" translate>Pick-up Location</div>
+          <div class="col-3 font-weight-bold" translate>Request date</div>
+        </div>
+        @for (request of requestedBy; track request) {
+          <admin-item-transaction
+            type="loan_request"
+            [transaction]="request"
+            [itemPid]="itemPid"
+            (cancelRequestEvent)="cancelRequest($event)"
+            (updatePickupLocationEvent)="updateRequestPickupLocation($event)"
+          ></admin-item-transaction>
+        }
+      </div>
+    } @else {
+      <div class="p-3" translate>No pending request</div>
+    }
+  } @placeholder {
+    <i class="fa fa-spinner"></i> {{ 'loading in progress...' | translate }}
+  }
 </div>

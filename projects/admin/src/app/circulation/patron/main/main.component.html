@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2019-2023 RERO
+ Copyright (C) 2019-2024 RERO
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published by
@@ -14,8 +14,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<ng-container *ngIf="patron">
+@if (patron) {
   <div class="col mb-4">
     <admin-circulation-patron-detailed
       [patron]="patron"
@@ -35,9 +34,9 @@
           [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', barcode, 'loan']">
           {{ 'On loan' | translate }}
-          <span *ngIf="statLoan > 0" class="badge badge-info font-weight-normal">
-            {{ statLoan }}
-          </span>
+          @if (statLoan > 0) {
+            <span class="badge badge-info font-weight-normal">{{ statLoan }}</span>
+          }
         </a>
       </li>
       <li class="nav-item" *ngVar="getCirculationStatistics('pickup') as statPickup">
@@ -48,9 +47,9 @@
           [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', barcode, 'pickup']">
           {{ 'To pick up' | translate }}
-          <span *ngIf="statPickup > 0" class="badge badge-info font-weight-normal">
-            {{ statPickup }}
-          </span>
+          @if (statPickup > 0) {
+            <span class="badge badge-info font-weight-normal">{{ statPickup }}</span>
+          }
         </a>
       </li>
       <li class="nav-item" *ngVar="getCirculationStatistics('pending') as statPending">
@@ -61,9 +60,9 @@
           [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', barcode, 'pending']">
           {{ 'Pending' | translate }}
-          <span *ngIf="statPending > 0" class="badge badge-info font-weight-normal">
-            {{ statPending }}
-          </span>
+          @if (statPending > 0) {
+            <span class="badge badge-info font-weight-normal">{{ statPending }}</span>
+          }
         </a>
       </li>
       <li class="nav-item" *ngVar="getCirculationStatistics('ill') as statIll">
@@ -74,9 +73,9 @@
           [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', barcode, 'ill']">
           {{ 'Interlibrary loan' | translate }}
-          <span *ngIf="statIll > 0" class="badge badge-info font-weight-normal">
-            {{ statIll }}
-          </span>
+          @if (statIll > 0) {
+            <span class="badge badge-info font-weight-normal">{{ statIll }}</span>
+          }
         </a>
       </li>
       <li class="nav-item">
@@ -87,8 +86,7 @@
           [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', barcode, 'profile']"
           translate
-          >Profile</a
-        >
+        >Profile</a>
       </li>
       <li class="nav-item">
         <a
@@ -98,27 +96,29 @@
           [routerLinkActiveOptions]="{exact: true}"
           [routerLink]="['/circulation', 'patron', barcode, 'fees']">
           {{ 'Fees' | translate }}
-          <span *ngIf="feesTotalAmount > 0" class="badge badge-warning font-weight-normal">
-            {{ feesTotalAmount | currency: organisation.default_currency }}
-          </span>
+          @if (feesTotalAmount > 0) {
+            <span class="badge badge-warning font-weight-normal">
+              {{ feesTotalAmount | currency: organisation.default_currency }}
+            </span>
+          }
         </a>
       </li>
-      <li *ngIf="patron.keep_history" class="nav-item">
-        <a
-          id="history-tab"
-          class="nav-link"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', barcode, 'history']">
-          {{ 'History' | translate }}
-          <span class="badge badge-info font-weight-normal">
-            {{ historyCount }}
-          </span>
-        </a>
-      </li>
+      @if (patron.keep_history) {
+        <li class="nav-item">
+          <a
+            id="history-tab"
+            class="nav-link"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{exact: true}"
+            [routerLink]="['/circulation', 'patron', barcode, 'history']">
+            {{ 'History' | translate }}
+            <span class="badge badge-info font-weight-normal">{{ historyCount }}</span>
+          </a>
+        </li>
+      }
     </ul>
     <div class="mt-4">
       <router-outlet></router-outlet>
     </div>
   </div>
-</ng-container>
+}

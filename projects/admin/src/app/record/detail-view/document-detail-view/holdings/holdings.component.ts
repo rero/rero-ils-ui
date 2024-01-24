@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -58,7 +58,7 @@ export class HoldingsComponent implements OnInit {
    */
   get isLinkShowMore(): boolean {
     return this.holdingsTotal > 0
-      && ((this.page * this._holdingsApiService.ITEMS_PER_PAGE) < this.holdingsTotal);
+      && ((this.page * this.holdingsApiService.ITEMS_PER_PAGE) < this.holdingsTotal);
   }
 
   /**
@@ -66,14 +66,12 @@ export class HoldingsComponent implements OnInit {
    * @return string
    */
   get hiddenHoldings(): string {
-    let count = this.holdingsTotal - (this.page * this._holdingsApiService.ITEMS_PER_PAGE);
-    if (count < 0) {
-      count = 0;
-    }
+    let count = this.holdingsTotal - (this.page * this.holdingsApiService.ITEMS_PER_PAGE);
+    count = Math.max(count, 0)
     const linkText = (count > 1)
       ? '{{ counter }} hidden holdings'
       : '{{ counter }} hidden holding';
-    const linkTextTranslate = this._translateService.instant(linkText);
+    const linkTextTranslate = this.translateService.instant(linkText);
     return linkTextTranslate.replace('{{ counter }}', count);
   }
 
@@ -84,24 +82,24 @@ export class HoldingsComponent implements OnInit {
 
   /** return the organisation pid */
   get organisationPid(): string {
-    return this._userService.user.currentOrganisation;
+    return this.userService.user.currentOrganisation;
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _userService - UserService
-   * @param _holdingsApiService - HoldingsApiService
-   * @param _recordUiService - RecordUiService
-   * @param _recordPermissionService - RecordPermissionService
-   * @param _translateService - TranslateService
+   * @param userService - UserService
+   * @param holdingsApiService - HoldingsApiService
+   * @param recordUiService - RecordUiService
+   * @param recordPermissionService - RecordPermissionService
+   * @param translateService - TranslateService
    */
   constructor(
-    private _userService: UserService,
-    private _holdingsApiService: HoldingsApiService,
-    private _recordUiService: RecordUiService,
-    private _recordPermissionService: RecordPermissionService,
-    private _translateService: TranslateService
+    private userService: UserService,
+    private holdingsApiService: HoldingsApiService,
+    private recordUiService: RecordUiService,
+    private recordPermissionService: RecordPermissionService,
+    private translateService: TranslateService
   ) { }
 
   /** onInit hook */
@@ -110,8 +108,8 @@ export class HoldingsComponent implements OnInit {
     const holdingsRecords = this._holdingsQuery(this.documentPid, this.organisationPid, 1, this.isCurrentOrganisation);
     const holdingsCount = this._holdingsCountQuery(this.documentPid, this.organisationPid, this.isCurrentOrganisation);
     if (this.isCurrentOrganisation) {
-      const holdPermissionsRef = this._recordPermissionService.getPermission('holdings');
-      const itemPermissionsRef = this._recordPermissionService.getPermission('items');
+      const holdPermissionsRef = this.recordPermissionService.getPermission('holdings');
+      const itemPermissionsRef = this.recordPermissionService.getPermission('items');
       forkJoin([holdingsRecords, holdingsCount, holdPermissionsRef, itemPermissionsRef])
         .subscribe(([holdings, counter, holdPerm, itemPerm]) => {
           this.holdings = holdings;
@@ -143,13 +141,13 @@ export class HoldingsComponent implements OnInit {
    *          * 'callBackend' : boolean if backend API should be called
    */
   deleteHolding(data: { holding: any, callBackend: boolean }) {
-    const holding = data.holding;
+    const { holding } = data;
     if (data.callBackend === false) {
       this.holdings = this.holdings.filter(
         h => h.metadata.pid !== holding.metadata.pid
       );
     } else {
-      this._recordUiService.deleteRecord('holdings', holding.metadata.pid)
+      this.recordUiService.deleteRecord('holdings', holding.metadata.pid)
         .subscribe((success: any) => {
           if (success) {
             this.holdings = this.holdings.filter(
@@ -169,7 +167,7 @@ export class HoldingsComponent implements OnInit {
    */
   private _holdingsCountQuery(
     documentPid: string, organisationPid: string, isCurrentOrganisation: boolean = true): Observable<number> {
-    return this._holdingsApiService.getHoldingsCount(documentPid, organisationPid, isCurrentOrganisation);
+    return this.holdingsApiService.getHoldingsCount(documentPid, organisationPid, isCurrentOrganisation);
   }
 
 
@@ -183,7 +181,7 @@ export class HoldingsComponent implements OnInit {
    */
   private _holdingsQuery(
     documentPid: string, organisationPid: string, page: number, isCurrentOrganisation: boolean = true): Observable<any> {
-    return this._holdingsApiService.getHoldings(
-      documentPid, organisationPid, isCurrentOrganisation, page, this._holdingsApiService.ITEMS_PER_PAGE);
+    return this.holdingsApiService.getHoldings(
+      documentPid, organisationPid, isCurrentOrganisation, page, this.holdingsApiService.ITEMS_PER_PAGE);
   }
 }

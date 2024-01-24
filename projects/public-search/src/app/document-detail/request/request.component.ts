@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -59,37 +59,35 @@ export class RequestComponent implements OnInit {
 
   /**
    * Constructor
-   * @param _itemApiService - ItemApiService
-   * @param _holdingsApiService: HoldingsApiService
-   * @param _userService - UserService
+   * @param itemApiService - ItemApiService
+   * @param holdingsApiService: HoldingsApiService
+   * @param userService - UserService
    */
   constructor(
-    private _itemApiService: ItemApiService,
-    private _holdingsApiService: HoldingsApiService,
-    private _userService: UserService,
+    private itemApiService: ItemApiService,
+    private holdingsApiService: HoldingsApiService,
+    private userService: UserService,
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
     let apiRequest = null;
     switch (this.recordType) {
-        case 'holding': { apiRequest = this._holdingsApiService; break; }
-        case 'item': { apiRequest = this._itemApiService; break; }
+        case 'holding': { apiRequest = this.holdingsApiService; break; }
+        case 'item': { apiRequest = this.itemApiService; break; }
         default: throw new TypeError(`${this.recordType} isn't supported`);
     }
 
-    if (this._userService.user) {
-      if (this.record) {
-        this._patron = this._userService.user.getPatronByOrganisationPid(
-          this.record.metadata.organisation.pid
-        );
-        if (this._patron?.patron) {
-          apiRequest.canRequest(
-            this.record.metadata.pid,
-            this.record.metadata.library.pid,
-            this._patron.patron.barcode[0],
-          ).subscribe((can: any) => this.canRequest = can);
-        }
+    if (this.userService.user && this.record) {
+      this._patron = this.userService.user.getPatronByOrganisationPid(
+        this.record.metadata.organisation.pid
+      );
+      if (this._patron?.patron) {
+        apiRequest.canRequest(
+          this.record.metadata.pid,
+          this.record.metadata.library.pid,
+          this._patron.patron.barcode[0],
+        ).subscribe((can: any) => this.canRequest = can);
       }
     }
   }

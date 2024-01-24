@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -64,33 +64,33 @@ export class ItemsComponent implements OnInit {
     const linkText = (count > 1)
       ? _('{{ counter }} hidden items')
       : _('{{ counter }} hidden item');
-    return this._translateService.instant(linkText, { counter: count });
+    return this.translateService.instant(linkText, { counter: count });
   }
 
   // CONSTRUCTOR & HOOKS ====================================================
   /**
    * Constructor
-   * @param _itemApiService - ItemApiService
-   * @param _translateService - TranslateService
+   * @param itemApiService - ItemApiService
+   * @param translateService - TranslateService
    */
   constructor(
-    private _itemApiService: ItemApiService,
-    private _translateService: TranslateService
+    private itemApiService: ItemApiService,
+    private translateService: TranslateService
   ) { }
 
   ngOnInit(): void {
-    this._loadItems();
+    this.loadItems();
   }
 
   // COMPONENT FUNCTIONS ==================================================
   /** Handler when 'show more items' link is clicked. */
   showMore() {
     this.page++;
-    this._loadItems();
+    this.loadItems();
   }
 
-  private _loadItems(): void {
-    this._itemApiService.getItemsByHoldingsAndViewcode(
+  private loadItems(): void {
+    this.itemApiService.getItemsByHoldingsAndViewcode(
       this.holding,
       this.viewcode,
       this.page,

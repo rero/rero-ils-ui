@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,7 +30,7 @@ export class PatronProfileMenuComponent {
    * @return boolean
    */
   get isVisible(): boolean {
-    return this._patronProfileMenuService.isMultiOrganisation;
+    return this.patronProfileMenuService.isMultiOrganisation;
   }
 
   /**
@@ -38,24 +38,23 @@ export class PatronProfileMenuComponent {
    * @return array
    */
   get menuOptions(): IMenu[] {
-    const menuSelected = this._patronProfileMenuService.menu
+    console.log('MENU');
+    const menuSelected = this.patronProfileMenuService.menu
       .find((menu: any) => menu.value === this.patronPid);
     if (menuSelected) {
       menuSelected.selected = true;
     }
-    return this._patronProfileMenuService.menu;
+    return this.patronProfileMenuService.menu;
   }
 
   /**
    * Constructor
    * @param _patronProfileMenuService - PatronProfileMenuService
    */
-  constructor(
-    private _patronProfileMenuService: PatronProfileMenuService
-  ) {}
+  constructor(private patronProfileMenuService: PatronProfileMenuService) {}
 
   /** on change */
   onChange(patronPid: string): void {
-    this._patronProfileMenuService.change(patronPid);
+    this.patronProfileMenuService.change(patronPid);
   }
 }

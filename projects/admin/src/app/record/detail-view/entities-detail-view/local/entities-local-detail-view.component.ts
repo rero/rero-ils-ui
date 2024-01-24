@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -42,19 +42,19 @@ export class EntitiesLocalDetailViewComponent implements OnInit, DetailRecord {
 
   /**
    * Constructor
-   * @param _translateService - TranslateService
-   * @param _router - Router
-   * @param _operationLogsService - OperationLogsService
+   * @param translateService - TranslateService
+   * @param router - Router
+   * @param operationLogsService - OperationLogsService
    */
   constructor(
-    private _translateService: TranslateService,
-    private _router: Router,
-    private _operationLogsService: OperationLogsService
+    private translateService: TranslateService,
+    private router: Router,
+    private operationLogsService: OperationLogsService
   ) {}
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.isEnabledOperationLog = this._operationLogsService.isLogVisible('local_entities');
+    this.isEnabledOperationLog = this.operationLogsService.isLogVisible('local_entities');
   }
 
   /**
@@ -65,19 +65,19 @@ export class EntitiesLocalDetailViewComponent implements OnInit, DetailRecord {
   icon(type: string): { class: string, title: string } {
     switch (type) {
       case EntityType.ORGANISATION:
-        return { class: EntityTypeIcon.ORGANISATION, title: this._translateService.instant('Organisation') };
+        return { class: EntityTypeIcon.ORGANISATION, title: this.translateService.instant('Organisation') };
       case EntityType.PERSON:
-        return { class: EntityTypeIcon.PERSON, title: this._translateService.instant('Person') };
+        return { class: EntityTypeIcon.PERSON, title: this.translateService.instant('Person') };
       case EntityType.PLACE:
-        return { class: EntityTypeIcon.PLACE, title: this._translateService.instant('Place') };
+        return { class: EntityTypeIcon.PLACE, title: this.translateService.instant('Place') };
       case EntityType.TEMPORAL:
-        return { class: EntityTypeIcon.TEMPORAL, title: this._translateService.instant('Temporal') };
+        return { class: EntityTypeIcon.TEMPORAL, title: this.translateService.instant('Temporal') };
       case EntityType.TOPIC:
-        return { class: EntityTypeIcon.TOPIC, title: this._translateService.instant('Topic') };
+        return { class: EntityTypeIcon.TOPIC, title: this.translateService.instant('Topic') };
       case EntityType.WORK:
-        return { class: EntityTypeIcon.WORK, title: this._translateService.instant('Work') };
+        return { class: EntityTypeIcon.WORK, title: this.translateService.instant('Work') };
       default:
-        return { class: 'fa-question', title: this._translateService.instant('Missing type') };
+        return { class: 'fa-question', title: this.translateService.instant('Missing type') };
     }
   }
 
@@ -86,7 +86,7 @@ export class EntitiesLocalDetailViewComponent implements OnInit, DetailRecord {
    * @param metadata - the record metadata
    */
   search(metadata: any): void {
-    this._router.navigate(
+    this.router.navigate(
       ['/records', 'documents'],
       {
         queryParams: { q: Entity.generateSearchQuery(metadata.type, 'local', metadata.pid), simple: '0' },

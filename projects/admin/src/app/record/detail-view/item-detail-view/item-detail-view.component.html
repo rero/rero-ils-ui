@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,52 +15,59 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="record">
-  <div *ngIf="recordPermissions?.update?.can && isIssue && isClaimAllowed" class="float-right mt-2 mr-n4 btn-additional-action">
-    <a class="btn btn-sm btn-outline-primary" (click)="openClaimEmailDialog()" translate>Add a claim</a>
-  </div>
-  <div *ngIf="isIssue">
+@if (record) {
+  @if (recordPermissions?.update?.can && isIssue && isClaimAllowed) {
+    <div class="float-right mt-2 mr-n4 btn-additional-action">
+      <a class="btn btn-sm btn-outline-primary" (click)="openClaimEmailDialog()" translate>Add a claim</a>
+    </div>
+  }
+  @if (isIssue) {
     <a [routerLink]="parentHoldingUrl">
       <i class="fa fa-arrow-left mr-1"></i>
       {{ 'Back to parent holding' | translate }}
     </a>
-  </div>
+  }
   <header>
     <h1>{{ 'Barcode' | translate }} {{ record.metadata.barcode }}</h1>
   </header>
   <section class="mb-4">
-    <admin-record-masked *ngIf="record.metadata._masked" [record]="record" [withLabel]="true"></admin-record-masked>
+    @if (record.metadata._masked) {
+      <admin-record-masked [record]="record" [withLabel]="true"></admin-record-masked>
+    }
     <dl class="row mb-0">
       <!-- INHERITED CALL NUMBER -->
-      <ng-container *ngIf="record | itemHoldingsCallNumber | async as callNumber">
-        <ng-container *ngIf="(callNumber | json) !== ({ first: {}, second: {} } | json)">
-          <dt class="col-3 label-title" translate>Call number </dt>
+      @if (record | itemHoldingsCallNumber | async; as callNumber) {
+        @if ((callNumber | json) !== ({ first: {}, second: {} } | json)) {
+          <dt class="col-3 label-title" translate>Call number</dt>
           <dd class="col-9">
             <shared-inherited-call-number [item]="record" context="first"></shared-inherited-call-number>
           </dd>
-        </ng-container>
-      </ng-container>
+        }
+      }
       <!-- SECOND CALL NUMBER -->
-      <ng-container *ngIf="record.metadata.second_call_number">
+      @if (record.metadata.second_call_number) {
         <dt class="col-3 label-title" translate>Second call number</dt>
         <dd class="col-9">{{ record.metadata.second_call_number }}</dd>
-      </ng-container>
+      }
       <!-- ENUMERATION AND CHRONOLOGY / UNIT -->
-      <ng-container *ngIf="record.metadata.enumerationAndChronology">
+      @if (record.metadata.enumerationAndChronology) {
         <dt class="col-3 label-title" translate>Unit</dt>
         <dd class="col-9">{{ record.metadata.enumerationAndChronology }}</dd>
-      </ng-container>
+      }
       <!-- ITEM TYPE -->
       <dt class="col-3 label-title" translate>Type</dt>
       <dd class="col-9" *ngVar="record.metadata.item_type.pid | getRecord:'item_types': 'field':'name' | async as defaultItty">
-        <ng-container *ngIf="hasTemporaryItemType(); else defaultItemTypeBlock">
+        @if (hasTemporaryItemType()) {
           <del class="text-muted mr-2">{{ defaultItty }}</del>
           {{ record.metadata.temporary_item_type.pid | getRecord:'item_types': 'field':'name' | async }}
-          <span *ngIf="record.metadata.temporary_item_type.end_date as endDate" class="ml-1 small text-secondary">
-            (<i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }})
-          </span>
-        </ng-container>
-        <ng-template #defaultItemTypeBlock>{{ defaultItty }}</ng-template>
+          @if (record.metadata.temporary_item_type.end_date; as endDate) {
+            <span class="ml-1 small text-secondary">
+              (<i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }})
+            </span>
+          }
+        } @else {
+          {{ defaultItty }}
+        }
       </dd>
       <!-- DOCUMENT -->
       <dt class="col-3 label-title" translate>Document</dt>
@@ -70,32 +77,34 @@
         </a>
       </dd>
       <!-- LIBRARY -->
-      <dt class="col-3 label-title" translate>Library</dt>
-      <dd class="col-9">
-        <ng-container *ngIf="location">
+      @if (location) {
+        <dt class="col-3 label-title" translate>Library</dt>
+        <dd class="col-9">
           {{ location.metadata.library.pid | getRecord: 'libraries': 'field': 'name' | async }}
-        </ng-container>
-      </dd>
+        </dd>
+      }
       <!-- LOCATION -->
-      <dt class="col-3 label-title" translate>Location</dt>
-      <dd class="col-9">
-        <ng-container *ngIf="location">{{ location.metadata.name }}</ng-container>
-      </dd>
+      @if (location) {
+        <dt class="col-3 label-title" translate>Location</dt>
+        <dd class="col-9">{{ location.metadata.name }}</dd>
+      }
       <!-- TEMPORARY LOCATION -->
-      <ng-container *ngIf="record.metadata.temporary_location">
+      @if (record.metadata.temporary_location) {
         <dt class="col-3 label-title" translate>Temporary location</dt>
         <dd class="col-9">{{ record.metadata.temporary_location.pid | getRecord: 'locations' : 'field' : 'name' | async }}</dd>
-      </ng-container>
+      }
       <!-- ITEM IN COLLECTION -->
-      <ng-container *ngIf="record.metadata.pid | itemInCollection | async as collections">
+      @if (record.metadata.pid | itemInCollection | async; as collections) {
         <dt class="col-3 label-title" translate>Exhibition/course</dt>
         <dd class="col-9">
-          <ng-container *ngFor="let collection of collections; let last=last">
-            <a [routerLink]="['/records', 'collections', 'detail', collection.metadata.pid]">{{ collection.metadata.title }}</a>
+          @for (collection of collections; track collection; let last=$last) {
+            <a
+              [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]"
+            >{{ $any(collection).metadata.title }}</a>
             {{ last ? '' : '; ' }}
-          </ng-container>
+          }
         </dd>
-      </ng-container>
+      }
       <!-- AVAILABILITY -->
       <dt class="col-3 label-title" translate>Availability</dt>
       <dd class="col-9">
@@ -109,167 +118,177 @@
       <dt class="col-3 label-title" translate>New acquisition</dt>
       <dd class="col-9">
         <i class="fa"
-           [ngClass]="(record.metadata.acquisition_date) ? 'fa-check text-success' : 'fa-times text-danger'"
-           aria-hidden="true">
+            [ngClass]="(record.metadata.acquisition_date) ? 'fa-check text-success' : 'fa-times text-danger'"
+            aria-hidden="true">
         </i>
-        <span class="ml-1" *ngIf="record.metadata.acquisition_date">
-          ({{ record.metadata.acquisition_date | dateTranslate : 'shortDate' }})
-        </span>
+        @if (record.metadata.acquisition_date) {
+          <span class="ml-1">
+            ({{ record.metadata.acquisition_date | dateTranslate : 'shortDate' }})
+          </span>
+        }
       </dd>
       <!-- PRICE -->
-      <ng-container *ngIf="record.metadata | keyExists:'price'">
+      @if (record.metadata | keyExists:'price') {
         <dt class="col-3 label-title" translate>Price</dt>
         <dd class="col-9">{{ record.metadata.price | currency:organisationCurrency:'symbol' }}</dd>
-      </ng-container>
+      }
       <!-- PAC CODE -->
-      <ng-container *ngIf="record.metadata | keyExists:'pac_code'">
+      @if (record.metadata | keyExists:'pac_code') {
         <dt class="col-3 label-title" translate>PAC code</dt>
         <dd class="col-9">{{ record.metadata.pac_code | translate }}</dd>
-      </ng-container>
+      }
       <!-- URL -->
-      <ng-container *ngIf="record.metadata | keyExists:'url'">
+      @if (record.metadata | keyExists:'url') {
         <dt class="col-3 label-title" translate>Online access</dt>
         <dd class="col-9"><a [href]="record.metadata.url | safeUrl ">{{ record.metadata.url }}</a></dd>
-      </ng-container>
+      }
     </dl>
   </section>
 
   <!-- ISSUE DATA -->
-  <section *ngIf="isIssue">
-    <header>
-      <h3 translate>Issue data</h3>
-    </header>
-    <dl class="row">
-      <!-- is regular -->
-      <dt class="col-3 label-title" translate>Regular issue</dt>
-      <dd class="col-9">
-        <i class="fa"
-           [ngClass]="(record.metadata.issue.regular) ? 'fa-check text-success' : 'fa-times text-danger'"
-           aria-hidden="true">
-        </i>
-      </dd>
-      <!-- expected date -->
-      <dt class="col-3 label-title" translate>Expected date</dt>
-      <dd class="col-9">{{ record.metadata.issue.expected_date | dateTranslate }}</dd>
-      <!-- received date -->
-      <dt class="col-3 label-title" translate>Received date</dt>
-      <dd class="col-9">
-        <ng-container *ngIf="record.metadata.issue.status === issueItemStatus.RECEIVED; else notYetReceived">
-          {{ record.metadata.issue.received_date | dateTranslate }}
-        </ng-container>
-        <ng-template #notYetReceived>
-          <span class="no-data" translate>Not yet received</span>
-        </ng-template>
-      </dd>
-      <!-- issue status -->
-      <dt class="col-3 abel-title" translate>Status</dt>
-      <dd class="col-9">
-        <i class="fa" [ngClass]="getIcon(record.metadata.issue.status)"></i>
-        {{ record.metadata.issue.status | translate }} ({{ record.metadata.issue.status_date | dateTranslate }})
-      </dd>
-    </dl>
-  </section>
-
-  <!-- NOTES -->
-  <section *ngIf="record.metadata.notes">
-    <div class="card item-notes">
-      <div class="card-header" translate>Notes</div>
-      <div class="card-body">
-        <div class="row mb-1" *ngFor="let note of record.metadata.notes">
-          <dt class="col-3 label-title">
-            <i class="fa mr-4 small"
-               [ngClass]="{
-                  'fa-eye text-success': isPublicNote(note),
-                  'fa-eye-slash text-secondary': !isPublicNote(note)
-               }"
-            ></i>
-            <strong translate>{{ note.type }}</strong>
-          </dt>
-          <dd class="col-9 text-justify" [innerHTML]="note.content | nl2br"></dd>
-        </div>
-      </div>
-      <div class="card-footer text-muted small">
-        <i class="fa fa-eye text-success"></i> {{ 'Public notes' | translate }}
-        <i class="fa fa-eye-slash text-secondary ml-4"></i> {{ 'Staff notes' | translate }}
-      </div>
-    </div>
-  </section>
-
-  <!-- LEGACY -->
-  <ng-container *ngIf="(record.metadata | keyExists:'legacy_checkout_count') || (record.metadata | keyExists:'legacy_circulation_rules')">
-    <section class="mb-4 mt-4">
-      <header class="row">
-        <h4 translate>Legacy circulation rules</h4>
+  @if (isIssue) {
+    <section>
+      <header>
+        <h3 translate>Issue data</h3>
       </header>
-      <dl class="row mb-0">
-        <!-- LEGACY CHECKOUT COUNT -->
-        <ng-container *ngIf="record.metadata | keyExists:'legacy_checkout_count'">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Checkout count
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ record.metadata.legacy_checkout_count }}
-          </dd>
-        </ng-container>
-        <!-- LEGACY LOAN DURATION -->
-        <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'loan_duration'">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Loan duration
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ record.metadata.legacy_circulation_rules.loan_duration }}
-          </dd>
-        </ng-container>
-        <!-- LEGACY USE ITEM SPECIFIC RULES -->
-        <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'use_item_specific_rules'">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Use item specific rules
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            <i
-              class="fa fa-circle"
-              [ngClass]="{
-                'text-danger': !record.metadata.legacy_circulation_rules.use_item_specific_rules,
-                'text-success': !record.metadata.legacy_circulation_rules.use_item_specific_rules
-              }"
-              aria-hidden="true"
-            ></i>
-          </dd>
-        </ng-container>
-        <!-- LEGACY ALLOW REQUEST -->
-        <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'allow_request'">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Allow request
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            <i
-              class="fa fa-circle"
-              [ngClass]="{
-                'text-danger': !record.metadata.legacy_circulation_rules.allow_request,
-                'text-success': record.metadata.legacy_circulation_rules.allow_request }"
-              aria-hidden="true"
-            ></i>
-          </dd>
-        </ng-container>
-        <!-- LEGACY ALLOW REQUEST -->
-        <ng-container *ngIf="record.metadata.legacy_circulation_rules | keyExists:'floats'">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Floats
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            <i
-              class="fa fa-circle"
-              [ngClass]="{
-                'text-danger': !record.metadata.legacy_circulation_rules.floats,
-                'text-success': record.metadata.legacy_circulation_rules.floats
-              }"
-              aria-hidden="true"
-            ></i>
-          </dd>
-        </ng-container>
+      <dl class="row">
+        <!-- is regular -->
+        <dt class="col-3 label-title" translate>Regular issue</dt>
+        <dd class="col-9">
+          <i class="fa"
+              [ngClass]="(record.metadata.issue.regular) ? 'fa-check text-success' : 'fa-times text-danger'"
+              aria-hidden="true">
+          </i>
+        </dd>
+        <!-- expected date -->
+        <dt class="col-3 label-title" translate>Expected date</dt>
+        <dd class="col-9">{{ record.metadata.issue.expected_date | dateTranslate }}</dd>
+        <!-- received date -->
+        <dt class="col-3 label-title" translate>Received date</dt>
+        <dd class="col-9">
+          @if (record.metadata.issue.status === issueItemStatus.RECEIVED) {
+            {{ record.metadata.issue.received_date | dateTranslate }}
+          } @else {
+            <span class="no-data" translate>Not yet received</span>
+          }
+        </dd>
+        <!-- issue status -->
+        <dt class="col-3 abel-title" translate>Status</dt>
+        <dd class="col-9">
+          <i class="fa" [ngClass]="getIcon(record.metadata.issue.status)"></i>
+          {{ record.metadata.issue.status | translate }} ({{ record.metadata.issue.status_date | dateTranslate }})
+        </dd>
       </dl>
     </section>
-  </ng-container>
+  }
+
+  <!-- NOTES -->
+  @if (record.metadata.notes) {
+    <section>
+      <div class="card item-notes">
+        <div class="card-header" translate>Notes</div>
+        <div class="card-body">
+          @for (note of record.metadata.notes; track note) {
+            <div class="row mb-1">
+              <dt class="col-3 label-title">
+                <i class="fa mr-4 small"
+                    [ngClass]="{
+                      'fa-eye text-success': isPublicNote(note),
+                      'fa-eye-slash text-secondary': !isPublicNote(note)
+                    }"
+                ></i>
+                <strong translate>{{ note.type }}</strong>
+              </dt>
+              <dd class="col-9 text-justify" [innerHTML]="note.content | nl2br"></dd>
+            </div>
+          }
+        </div>
+        <div class="card-footer text-muted small">
+          <i class="fa fa-eye text-success"></i> {{ 'Public notes' | translate }}
+          <i class="fa fa-eye-slash text-secondary ml-4"></i> {{ 'Staff notes' | translate }}
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- LEGACY -->
+  @if ((record.metadata | keyExists:'legacy_checkout_count') || (record.metadata | keyExists:'legacy_circulation_rules')) {
+    <section class="mb-4 mt-4">
+      <div class="card">
+        <div class="card-header" translate>Legacy circulation rules</div>
+        <div class="card-body">
+          <dl class="row mb-0">
+            <!-- LEGACY CHECKOUT COUNT -->
+            @if (record.metadata | keyExists:'legacy_checkout_count') {
+              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+                Checkout count
+              </dt>
+              <dd class="col-sm-7 col-md-8 mb-0">
+                {{ record.metadata.legacy_checkout_count }}
+              </dd>
+            }
+            <!-- LEGACY LOAN DURATION -->
+            @if (record.metadata.legacy_circulation_rules | keyExists:'loan_duration') {
+              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+                Loan duration
+              </dt>
+              <dd class="col-sm-7 col-md-8 mb-0">
+                {{ record.metadata.legacy_circulation_rules.loan_duration }}
+              </dd>
+            }
+            <!-- LEGACY USE ITEM SPECIFIC RULES -->
+            @if (record.metadata.legacy_circulation_rules | keyExists:'use_item_specific_rules') {
+              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+                Use item specific rules
+              </dt>
+              <dd class="col-sm-7 col-md-8 mb-0">
+                <i
+                  class="fa fa-circle"
+                  [ngClass]="{
+                    'text-danger': !record.metadata.legacy_circulation_rules.use_item_specific_rules,
+                    'text-success': !record.metadata.legacy_circulation_rules.use_item_specific_rules
+                  }"
+                  aria-hidden="true"
+                ></i>
+              </dd>
+            }
+            <!-- LEGACY ALLOW REQUEST -->
+            @if (record.metadata.legacy_circulation_rules | keyExists:'allow_request') {
+              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+                Allow request
+              </dt>
+              <dd class="col-sm-7 col-md-8 mb-0">
+                <i
+                  class="fa fa-circle"
+                  [ngClass]="{
+                    'text-danger': !record.metadata.legacy_circulation_rules.allow_request,
+                    'text-success': record.metadata.legacy_circulation_rules.allow_request }"
+                  aria-hidden="true"
+                ></i>
+              </dd>
+            }
+
+            <!-- LEGACY ALLOW REQUEST -->
+            @if (record.metadata.legacy_circulation_rules | keyExists:'floats') {
+              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+                Floats
+              </dt>
+              <dd class="col-sm-7 col-md-8 mb-0">
+                <i
+                  class="fa fa-circle"
+                  [ngClass]="{
+                    'text-danger': !record.metadata.legacy_circulation_rules.floats,
+                    'text-success': record.metadata.legacy_circulation_rules.floats
+                  }"
+                  aria-hidden="true"
+                ></i>
+              </dd>
+            }
+          </dl>
+        </div>
+      </div>
+    </section>
+  }
 
   <!-- TABS -->
   <section class="mt-3 mb-4">
@@ -285,43 +304,39 @@
       </tab>
       <!-- END OF LOCAL FIELDS TAB ---------------------------------------------------->
       <!-- CLAIMS TAB ------------------------------------------------------------>
-      <tab *ngIf="record.metadata?.issue?.claims" id="documents-claims-tab" tabOrder="2">
-        <ng-template tabHeading>
-          <i class="fa fa-gavel mr-1"></i>
-            <span [ngPlural]="record.metadata.issue.claims.counter">
-              <ng-template ngPluralCase="=0">{{ 'Claim' | translate }}</ng-template>
-              <ng-template ngPluralCase="=1">{{ 'Claim' | translate }}</ng-template>
-              <ng-template ngPluralCase="other">{{ 'Claims' | translate }}</ng-template>
-            </span>
-            <span class="ml-2 badge badge-info font-weight-normal">{{ record.metadata.issue.claims.counter }}</span>
-        </ng-template>
-        <div class="mt-2">
-          <ul>
-            <li *ngFor="let date of claimsDates">
-              {{ date | dateTranslate: 'shortDate' }} - {{ date | dateTranslate: 'shortTime' }}
-            </li>
-          </ul>
-        </div>
-      </tab>
+      @if (record.metadata?.issue?.claims) {
+        <tab id="documents-claims-tab" tabOrder="2">
+          <ng-template tabHeading>
+            <i class="fa fa-gavel mr-1"></i>
+              <span [ngPlural]="record.metadata.issue.claims.counter">
+                <ng-template ngPluralCase="=0">{{ 'Claim' | translate }}</ng-template>
+                <ng-template ngPluralCase="=1">{{ 'Claim' | translate }}</ng-template>
+                <ng-template ngPluralCase="other">{{ 'Claims' | translate }}</ng-template>
+              </span>
+              <span class="ml-2 badge badge-info font-weight-normal">{{ record.metadata.issue.claims.counter }}</span>
+          </ng-template>
+          <div class="mt-2">
+            <ul>
+              @for (date of claimsDates; track date) {
+                <li>
+                  {{ date | dateTranslate: 'shortDate' }} - {{ date | dateTranslate: 'shortTime' }}
+                </li>
+              }
+            </ul>
+          </div>
+        </tab>
+      }
     </tabset>
   </section>
 
   <!-- TRANSACTIONS -->
-  <admin-item-transactions
-    [itemPid]="record.metadata.pid"
-    (requestEvent)="updateItemStatus()"
-  ></admin-item-transactions>
+  <admin-item-transactions [itemPid]="record.metadata.pid" (requestEvent)="updateItemStatus()"></admin-item-transactions>
 
   <!-- OPERATION LOGS-->
-  <admin-operation-logs-dialog
-    *ngIf="isEnabledOperationLog"
-    [resourceType]="'items'"
-    [resourcePid]="record.metadata.pid"
-  ></admin-operation-logs-dialog>
+  @if (isEnabledOperationLog) {
+    <admin-operation-logs-dialog [resourceType]="'items'" [resourcePid]="record.metadata.pid"></admin-operation-logs-dialog>
+  }
 
   <!-- CIRCULATION LOGS -->
-  <admin-circulation-logs-dialog
-    [resourcePid]="record.metadata.pid"
-    [resourceType]="'item'"
-  ></admin-circulation-logs-dialog>
-</ng-container>
+  <admin-circulation-logs-dialog [resourcePid]="record.metadata.pid" [resourceType]="'item'"></admin-circulation-logs-dialog>
+}

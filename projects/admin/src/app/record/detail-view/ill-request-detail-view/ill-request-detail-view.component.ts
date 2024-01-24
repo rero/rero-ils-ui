@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,19 +40,19 @@ export class IllRequestDetailViewComponent implements DetailRecord, OnInit {
   // CONSTRUCTOR & HOOKS =======================================================
   /**
    * Constructor
-   * @param _recordService - RecordService
-   * @param _illRequestService - IllRequestsService
+   * @param recordService - RecordService
+   * @param illRequestService - IllRequestsService
    */
   constructor(
-    private _recordService: RecordService,
-    private _illRequestService: IllRequestsService,
+    private recordService: RecordService,
+    private illRequestService: IllRequestsService,
   ) {}
 
   /** OnInit hook */
   ngOnInit(): void {
     this.record$.subscribe((record) => {
       this.record = record;
-      this._recordService.getRecord('patrons', this.record.metadata.patron.pid).subscribe(
+      this.recordService.getRecord('patrons', this.record.metadata.patron.pid).subscribe(
         (patron) => this.requester = patron.metadata
       );
     });
@@ -61,7 +61,7 @@ export class IllRequestDetailViewComponent implements DetailRecord, OnInit {
   // FUNCTIONS =================================================================
   /** get the bootstrap color to apply on the request status badge */
   badgeColor(status: string): string {
-    return this._illRequestService.badgeColor(status);
+    return this.illRequestService.badgeColor(status);
   }
 
 }

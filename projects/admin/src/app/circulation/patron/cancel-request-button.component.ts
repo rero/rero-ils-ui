@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023 RERO
+ * Copyright (C) 2023-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,22 +24,21 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'admin-cancel-request-button',
   template: `
-  <ng-container *ngIf="canCancelRequest(); else noCancel">
+  @if (canCancelRequest()) {
     <button type="button"
             class="btn btn-outline-danger btn-sm"
             (click)="showCancelRequestDialog()"
             name="cancel">
       <i class="fa fa-trash-o" aria-hidden="true"></i>
     </button>
-  </ng-container>
-  <ng-template #noCancel>
+  } @else {
     <button type="button" class="btn btn-outline-danger btn-sm"
             title="{{'The request cannot be cancelled' | translate }}"
             name="cancel"
             disabled>
       <i class="fa fa-trash-o" aria-hidden="true"></i>
     </button>
-  </ng-template>
+  }
   `
 })
 export class CancelRequestButtonComponent {
@@ -52,16 +51,16 @@ export class CancelRequestButtonComponent {
 
   /**
    * Constructor
-   * @param _loanService - LoanService
-   * @param _userService - UserService
-   * @param _translateService - TranslateService
-   * @param _toastrService - ToastrService
+   * @param loanService - LoanService
+   * @param userService - UserService
+   * @param translateService - TranslateService
+   * @param toastrService - ToastrService
    */
   public constructor(
-    private _loanService: LoanService,
-    private _userService: UserService,
-    private _translateService: TranslateService,
-    private _toastrService: ToastrService
+    private loanService: LoanService,
+    private userService: UserService,
+    private translateService: TranslateService,
+    private toastrService: ToastrService
   ) {}
 
   /**
@@ -69,21 +68,21 @@ export class CancelRequestButtonComponent {
    * @returns true if it is possible to cancel a loan
    */
   canCancelRequest(): boolean {
-    return this._loanService.canCancelRequest(this.loan);
+    return this.loanService.canCancelRequest(this.loan);
   }
 
   /** Show a confirmation dialog box for cancel request. */
   showCancelRequestDialog(): void {
-    this._loanService.cancelRequestDialog().subscribe((confirm: boolean) => {
+    this.loanService.cancelRequestDialog().subscribe((confirm: boolean) => {
       if (confirm) {
-        this._loanService.cancelLoan(
+        this.loanService.cancelLoan(
           this.loan.metadata.item.pid,
           this.loan.metadata.pid,
-          this._userService.user.currentLibrary
+          this.userService.user.currentLibrary
         ).subscribe(() => {
-          this._toastrService.warning(
-            this._translateService.instant('The request has been cancelled.'),
-            this._translateService.instant('Request')
+          this.toastrService.warning(
+            this.translateService.instant('The request has been cancelled.'),
+            this.translateService.instant('Request')
           );
           this.cancelRequestEvent.emit(this.loan.id);
         });

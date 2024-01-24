@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,29 +14,29 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="itemMetadata" [ngSwitch]="context">
-
-  <ng-container *ngSwitchCase="'first'">
-    <ng-container *ngIf="itemMetadata | itemHoldingsCallNumber | async as callNumber">
-      <ng-container *ngIf="callNumber.first.source === 'holding'">
-        <i class="fa fa-link text-warning" title="{{ 'inherited' | translate }}" aria-hidden="true"></i>
-      </ng-container>
-      {{ callNumber.first.value }}
-    </ng-container>
-  </ng-container>
-
-  <ng-container *ngSwitchDefault>
-    <ng-container *ngIf="itemMetadata | itemHoldingsCallNumber | async as callNumber">
-      <ng-container *ngIf="callNumber.first.value">
+@if (itemMetadata) {
+  @switch (context) {
+    @case ('first') {
+      @if (itemMetadata | itemHoldingsCallNumber | async; as callNumber) {
+        @if (callNumber.first.source === 'holding') {
+          <i class="fa fa-link text-warning" title="{{ 'inherited' | translate }}" aria-hidden="true"></i>
+        }
         {{ callNumber.first.value }}
-      </ng-container>
-      <ng-container *ngIf="callNumber.first.value && callNumber.second.value">
-        |
-      </ng-container>
-      <ng-container *ngIf="callNumber.second.value">
-        {{ callNumber.second.value }}
-      </ng-container>
-    </ng-container>
-  </ng-container>
 
-</ng-container>
+      }
+    }
+    @default {
+      @if (itemMetadata | itemHoldingsCallNumber | async; as callNumber) {
+        @if (callNumber.first.value) {
+          {{ callNumber.first.value }}
+        }
+        @if (callNumber.first.value && callNumber.second.value) {
+          |
+        }
+        @if (callNumber.second.value) {
+          {{ callNumber.second.value }}
+        }
+      }
+    }
+  }
+}

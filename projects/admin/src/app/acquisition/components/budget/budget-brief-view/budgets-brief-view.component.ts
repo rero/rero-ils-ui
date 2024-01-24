@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -45,17 +45,17 @@ export class BudgetsBriefViewComponent implements ResultItem {
 
   /**
    * Constructor
-   * @param _translateService - TranslateService
+   * @param translateService - TranslateService
    */
-  public constructor(private _translateService: TranslateService) {}
+  public constructor(private translateService: TranslateService) {}
 
   /**
-   * Status of the bugdet on bullet title
+   * Status of the budget on bullet title
    * @returns string - status
    */
   get title() {
     return this.record.metadata.is_active
-      ? this._translateService.instant('Active')
-      : this._translateService.instant('Inactive');
+      ? this.translateService.instant('Active')
+      : this.translateService.instant('Inactive');
   }
 }
