@@ -46,6 +46,14 @@ export class VendorDetailViewComponent implements DetailRecord {
   }
 
   /**
+   * Get Current language interface
+   * @return string - language
+   */
+  get currentLanguage() {
+    return this._translateService.currentLang;
+  }
+
+  /**
    * Constructor
    * @param _translateService - TranslateService
    * @param _operationLogsService - OperationLogsService
@@ -55,11 +63,8 @@ export class VendorDetailViewComponent implements DetailRecord {
     private _operationLogsService: OperationLogsService
   ) {}
 
-  /**
-   * Get Current language interface
-   * @return string - language
-   */
-  get currentLanguage() {
-    return this._translateService.currentLang;
-  }
+    filterContact(contacts: any[], type: string): any {
+      const contact = contacts.filter((contact: any) => contact.type === type);
+      return contact.length === 0 ? undefined : contact[0];
+    }
 }

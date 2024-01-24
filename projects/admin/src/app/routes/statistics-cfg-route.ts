@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023 RERO
+ * Copyright (C) 2023-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -120,7 +120,7 @@ export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
               return this._populateLocationsByCurrentUserLibrary(field, jsonSchema);
             },
             preCreateRecord: (data: any) => {
-              const user = this._routeToolService.userService.user;
+              const { user } = this._routeToolService.userService;
               data.library = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(
                   "libraries",
@@ -144,15 +144,15 @@ export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
   private _populateLocationsByCurrentUserLibrary(field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig {
     const formWidget = jsonSchema.widget;
     if (
-      formWidget?.formlyConfig?.templateOptions?.fieldMap ===
+      formWidget?.formlyConfig?.props?.fieldMap ===
       "libraries"
     ) {
       field.type = "select";
       field.hooks = {
         ...field.hooks,
         onInit: (field: FormlyFieldConfig): void => {
-          const user = this._routeToolService.userService.user;
-          const baseUrl = this._routeToolService.settingsService.baseUrl;
+          const { user } = this._routeToolService.userService;
+          const { baseUrl } = this._routeToolService.settingsService;
           const prefix = this._routeToolService.apiService.getEndpointByType('libraries');
           if (user.currentLibrary != null && field.formControl.value == null) {
             field.formControl.setValue(
@@ -160,10 +160,9 @@ export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
           }
         },
         afterContentInit: (f: FormlyFieldConfig) => {
-          const recordService = this._routeToolService.recordService;
-          const apiService = this._routeToolService.apiService;
+          const { apiService, recordService } = this._routeToolService;
 
-          f.templateOptions.options = recordService
+          f.props.options = recordService
             .getRecords(
               "libraries",
               "",
@@ -182,7 +181,7 @@ export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
                   ? []
                   : result.hits.hits
               ),
-              map((hits) =>
+              map((hits: any) =>
                 hits.map((hit: any) => {
                   return {
                     label: hit.metadata.name,

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,10 +27,10 @@ import { FieldArrayType } from '@ngx-formly/core';
       <div class="col-1 my-0 pt-2 pl-0 d-flex">
         <ng-container
           *ngIf="field.parent.fieldGroup.length > to.minItems"
-        ><i (click)="remove(i)" class="pl-3 fa fa-lg fa-trash text-danger" aria-hidden="true"></i></ng-container>
+        ><i (click)="remove(i)" class="mt-3 pl-3 fa fa-lg fa-trash text-danger" aria-hidden="true"></i></ng-container>
         <ng-container
-          *ngIf="field.parent.templateOptions.maxItems > field.parent.fieldGroup.length && field.parent.fieldGroup.length -1 === i"
-        ><i (click)="add()" class="pl-3 fa fa-lg fa-plus-circle text-primary" aria-hidden="true"></i></ng-container>
+          *ngIf="field.parent.props.maxItems > field.parent.fieldGroup.length && field.parent.fieldGroup.length -1 === i"
+        ><i (click)="add()" class="mt-3 pl-3 fa fa-lg fa-plus-circle text-primary" aria-hidden="true"></i></ng-container>
       </div>
     </div>
   `,

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2019-2023 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -70,14 +70,14 @@
     <section class="m-2 p-2">
       <tabset>
         <!-- DEFAULT CONTACT -->
-        <ng-container *ngIf="record.metadata.default_contact as defaultContact">
-          <tab heading="Default contact details" id="default_address">
+        <ng-container *ngIf="filterContact(record.metadata.contacts, 'default') as defaultContact">
+          <tab heading="{{ 'Default contact details' | translate }}" id="default_address">
             <admin-address-type [addressType]="defaultContact"></admin-address-type>
           </tab>
         </ng-container>
         <!-- ORDER CONTACT -->
-        <ng-container *ngIf="record.metadata.order_contact as orderContact">
-          <tab heading="Order contact details" id="order_address">
+        <ng-container *ngIf="filterContact(record.metadata.contacts, 'order') as orderContact">
+          <tab heading="{{ 'Order contact details' | translate }}" id="order_address">
             <admin-address-type [addressType]="orderContact"></admin-address-type>
           </tab>
         </ng-container>

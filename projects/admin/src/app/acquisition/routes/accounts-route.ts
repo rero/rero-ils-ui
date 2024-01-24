@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2023 RERO
- * Copyright (C) 2022-2023 UCLouvain
+ * Copyright (C) 2022-2024 RERO
+ * Copyright (C) 2022-2024 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -62,7 +62,7 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
             redirectUrl: () => of('/acquisition/accounts'),
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
               const formWidget = jsonSchema.widget;
-              if (formWidget?.formlyConfig?.templateOptions?.fieldMap === 'amount') {
+              if (formWidget?.formlyConfig?.props?.fieldMap === 'amount') {
                 return this._amountSymbol(field);
               }
               return field;
@@ -74,12 +74,12 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
   }
 
   /**
-   * Add default informations to an account record before creating it.
+   * Add default information's to an account record before creating it.
    * @param data - the data to improve
    * @return the enrich data
    */
   private _addDefaultInformation(data: any): any {
-    const user = this._routeToolService.userService.user;
+    const { user } = this._routeToolService.userService;
     data.library = {
       $ref: this._routeToolService.apiService.getRefEndpoint('libraries', user.currentLibrary)
     };
@@ -97,9 +97,9 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
   private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
     const service = this._routeToolService.getInjectorToken(OrganisationService);
     if (service.organisation) {
-      field.templateOptions.addonLeft = {
-        text: getCurrencySymbol(service.organisation.default_currency, 'wide')
-      };
+      field.props.addonLeft = [
+        getCurrencySymbol(service.organisation.default_currency, 'wide')
+      ];
     }
     return field;
   }

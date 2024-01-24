@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,15 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { ApiService, extractIdOnRef } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { IAcqAccount } from '../../../classes/account';
-import { IAcqOrder, IAcqOrderLine, AcqOrderLineStatus } from '../../../classes/order';
-import { IAcqReceipt } from '../../../classes/receipt';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
+import { IAcqAccount } from '../../../classes/account';
+import { AcqOrderLineStatus, IAcqOrder, IAcqOrderLine } from '../../../classes/order';
+import { IAcqReceipt } from '../../../classes/receipt';
 import { orderAccountsAsTree } from '../../../utils/account';
 import { IAcqReceiptModel, OrderReceipt } from './order-receipt';
 
@@ -33,26 +34,26 @@ import { IAcqReceiptModel, OrderReceipt } from './order-receipt';
 export class OrderReceiptForm {
 
   /** Order Record */
-  private _orderRecord: any;
+  private orderRecord: any;
 
   /** Model */
-  private _model: IAcqReceiptModel;
+  private model: IAcqReceiptModel;
 
   /** Form fields config */
-  private _config: FormlyFieldConfig[];
+  private config: any;
 
   /**
    * Constructor
-   * @param _acqOrderApiService - AcqOrderApiService
-   * @param _acqAccountApiService - AcqAccountApiService
-   * @param _apiService - ApiService
-   * @param _orderReceipt - OrderReceipt
+   * @param acqOrderApiService - AcqOrderApiService
+   * @param acqAccountApiService - AcqAccountApiService
+   * @param apiService - ApiService
+   * @param orderReceipt - OrderReceipt
    */
   constructor(
-    private _acqOrderApiService: AcqOrderApiService,
-    private _acqAccountApiService: AcqAccountApiService,
-    private _apiService: ApiService,
-    private _orderReceipt: OrderReceipt
+    private acqOrderApiService: AcqOrderApiService,
+    private acqAccountApiService: AcqAccountApiService,
+    private apiService: ApiService,
+    private orderReceipt: OrderReceipt
   ) {}
 
   /**
@@ -61,7 +62,7 @@ export class OrderReceiptForm {
    * @returns OrderReceiptForm
    */
   setModel(model: IAcqReceiptModel): OrderReceiptForm {
-    this._model = model;
+    this.model = model;
     return this;
   }
 
@@ -70,7 +71,7 @@ export class OrderReceiptForm {
    * @returns IReceiptModel
    */
   getModel(): IAcqReceiptModel {
-    return this._model;
+    return this.model;
   }
 
   /**
@@ -78,7 +79,7 @@ export class OrderReceiptForm {
    * @returns Object order record
    */
   getOrderRecord() {
-    return this._orderRecord;
+    return this.orderRecord;
   }
 
   /**
@@ -86,7 +87,7 @@ export class OrderReceiptForm {
    * @return: the formly fields configuration
    */
   getConfig(): FormlyFieldConfig[] {
-    return this._config;
+    return this.config;
   }
 
   /**
@@ -95,35 +96,35 @@ export class OrderReceiptForm {
    * @returns Observable
    */
   createForm(orderPid: string): Observable<boolean> {
-    this._config = this._getConfig();
-    return this._acqOrderApiService
+    this.config = this._getConfig();
+    return this.acqOrderApiService
       .getOrder(orderPid)
       .pipe(
-        tap((order: IAcqOrder) => this._orderRecord = order),
+        tap((order: IAcqOrder) => this.orderRecord = order),
         switchMap((order: IAcqOrder) => {
           const libraryRef = order.library.$ref;
           const libraryPid = extractIdOnRef(libraryRef);
-          this._acqAccountApiService
+          this.acqAccountApiService
             .getAccounts(libraryPid)
             .subscribe((accounts: IAcqAccount[]) => {
-              const to = this._config
-                .filter((field) => field.key === 'amountAdjustments')[0].fieldArray.fieldGroup
-                .filter((field) => field.key === 'acqAccount')[0].templateOptions;
-              to.currency = order.currency;
-              to.options = orderAccountsAsTree(accounts);
+              const to = this.config
+                .filter((field: any) => field.key === 'amountAdjustments')[0].fieldArray.fieldGroup
+                .filter((field: any) => field.key === 'acqAccount')[0].props;
+                to.currency = order.currency;
+                to.options = orderAccountsAsTree(accounts);
             });
           // Build the model
-          this._model.acqOrderRef = this._apiService.getRefEndpoint('acq_orders', order.pid);
-          this._model.libraryRef = libraryRef;
-          this._model.organisationRef = order.organisation.$ref;
+          this.model.acqOrderRef = this.apiService.getRefEndpoint('acq_orders', order.pid);
+          this.model.libraryRef = libraryRef;
+          this.model.organisationRef = order.organisation.$ref;
           order.vendor.pid = extractIdOnRef(order.vendor.$ref);
           const query = `AND (NOT status:"${AcqOrderLineStatus.CANCELLED}" OR NOT status:"${AcqOrderLineStatus.RECEIVED}")`;
-          return this._acqOrderApiService.getOrderLines(order.pid, query).pipe(
+          return this.acqOrderApiService.getOrderLines(order.pid, query).pipe(
             map((lines: IAcqOrderLine[]) => {
               lines.forEach((line: any) => {
                 const quantityReceived = line.received_quantity || 0;
-                this._model.receiveLines.push({
-                  acqOrderLineRef: this._apiService.getRefEndpoint('acq_order_lines', line.pid),
+                this.model.receiveLines.push({
+                  acqOrderLineRef: this.apiService.getRefEndpoint('acq_order_lines', line.pid),
                   selected: false,
                   document: line.document.pid,
                   quantity: line.quantity - quantityReceived,
@@ -147,26 +148,26 @@ export class OrderReceiptForm {
   processForm(model: IAcqReceiptModel, record: IAcqReceipt): IAcqReceipt {
     // create the default record
     record = (!record)
-      ? this._orderReceipt.processBaseRecord(model)
+      ? this.orderReceipt.processBaseRecord(model)
       : record;
     if (!record.hasOwnProperty('amount_adjustments')) {
       record.amount_adjustments = [];
     } else {
       // we received the resolved `acq_account` with pid, but we need the `$ref` field to send the form.
       record.amount_adjustments.map(
-        (adjustment: any) => adjustment.acq_account = {$ref: this._apiService.getRefEndpoint('acq_accounts', adjustment.acq_account.pid)}
+        (adjustment: any) => adjustment.acq_account = {$ref: this.apiService.getRefEndpoint('acq_accounts', adjustment.acq_account.pid)}
       );
     }
     if (!record.hasOwnProperty('notes')) {
       record.notes = [];
     }
     // Update the record with model data
-    record.amount_adjustments = [...record.amount_adjustments, ...this._orderReceipt.processAdjustments(model)];
+    record.amount_adjustments = [...record.amount_adjustments, ...this.orderReceipt.processAdjustments(model)];
     record.notes = [...record.notes, ...model.notes || []];
     if (model.reference && model.reference.length > 0) {
       record.reference = model.reference;
     }
-    return this._orderReceipt.cleanData(record);
+    return this.orderReceipt.cleanData(record);
   }
 
   /**
@@ -178,16 +179,16 @@ export class OrderReceiptForm {
       {
         key: 'reference',
         type: 'string',
-        templateOptions: {
-          label: 'Reference',
-        }
+        props: {
+          label: _('Reference'),
+        },
       },
       {
         key: 'receiptDate',
         type: 'datepicker',
-        templateOptions: {
+        props: {
           type: 'date',
-          label: 'Reception date',
+          label: _('Reception date'),
           required: true
         }
       },
@@ -200,9 +201,9 @@ export class OrderReceiptForm {
       {
         key: 'receiveLines',
         type: 'repeat',
-        templateOptions: {
+        props: {
           className: 'pl-0 my-0 font-weight-bold',
-          label: 'Order line(s)',
+          label: _('Order line(s)'),
           addButton: false,
           trashButton: false,
           minLength: 0
@@ -225,9 +226,9 @@ export class OrderReceiptForm {
               type: 'checkbox',
               className: 'col-1',
               wrappers: ['input-no-label'],
-              templateOptions: {
+              props: {
+                hideLabel: true,
                 headerClassName: 'col-1 font-weight-bold mb-2',
-                label: ''
               }
             },
             {
@@ -235,9 +236,16 @@ export class OrderReceiptForm {
               type: 'field-document-brief-view',
               className: 'col-5',
               wrappers: ['input-no-label'],
-              templateOptions: {
+              props: {
                 headerClassName: 'col-5 font-weight-bold mb-2',
-                label: 'Document',
+                label: _('Document'),
+                resource: 'documents',
+                resourceKey: 'document',
+                resourceField: 'title.0._text',
+                resourceSelect: {
+                  field: 'type',
+                  value: 'bf:Title'
+                }
               }
             },
             {
@@ -250,10 +258,10 @@ export class OrderReceiptForm {
               type: 'input',
               className: 'col-2',
               wrappers: ['input-no-label'],
-              templateOptions: {
+              props: {
                 headerClassName: 'col-2 font-weight-bold mb-2',
                 type: 'number',
-                label: 'Qty',
+                label: _('Qty'),
                 required: true,
                 min: 1
               }
@@ -263,10 +271,10 @@ export class OrderReceiptForm {
               type: 'input',
               className: 'col-2',
               wrappers: ['input-no-label'],
-              templateOptions: {
+              props: {
                 headerClassName: 'col-2 font-weight-bold mb-2',
                 type: 'number',
-                label: 'Amount',
+                label: _('Amount'),
                 required: true,
                 min: 0
               }
@@ -276,15 +284,15 @@ export class OrderReceiptForm {
               type: 'input',
               className: 'col-2',
               wrappers: ['input-no-label'],
-              templateOptions: {
+              props: {
                 headerClassName: 'col-2 font-weight-bold mb-2',
                 type: 'number',
-                label: 'Vat Rate',
+                label: _('Vat Rate'),
                 min: 0,
                 max: 100,
-                addonRight: {
-                  text: '%'
-                }
+                addonRight: [
+                  '%'
+                ]
               }
             }
           ]
@@ -293,9 +301,9 @@ export class OrderReceiptForm {
       {
         key: 'amountAdjustments',
         type: 'repeat',
-        templateOptions: {
+        props: {
           className: 'pl-0 my-0 font-weight-bold',
-          label: 'Fees, discounts and other adjustments',
+          label: _('Fees, discounts and other adjustments'),
           addButton: true,
           trashButton: true
         },
@@ -304,8 +312,8 @@ export class OrderReceiptForm {
             {
               key: 'label',
               type: 'input',
-              templateOptions: {
-                label: 'Label',
+              props: {
+                label: _('Label'),
                 required: true,
                 minLength: 3
               }
@@ -314,10 +322,10 @@ export class OrderReceiptForm {
               key: 'amount',
               type: 'input',
               defaultValue: 1,
-              templateOptions: {
-                label: 'Amount',
+              props: {
+                label: _('Amount'),
                 type: 'number',
-                description: 'To specify a discount, enter a negative amount',
+                description: _('To specify a discount, enter a negative amount'),
                 required: true
               }
             },
@@ -325,9 +333,9 @@ export class OrderReceiptForm {
               key: 'acqAccount',
               type: 'select-account',
               wrappers: ['form-field'],
-              templateOptions: {
-                placeholder: 'Select an account',
-                label: 'Account',
+              props: {
+                placeholder: _('Select an account'),
+                label: _('Account'),
                 required: true,
                 options: []
               }
@@ -338,9 +346,9 @@ export class OrderReceiptForm {
       {
         key: 'notes',
         type: 'repeat',
-        templateOptions: {
+        props: {
           className: 'pl-0 my-0 font-weight-bold',
-          label: 'Notes',
+          label: _('Notes'),
           addButton: true,
           trashButton: true
         },
@@ -350,18 +358,18 @@ export class OrderReceiptForm {
               key: 'type',
               type: 'select',
               defaultValue: 'staff_note',
-              templateOptions: {
-                label: 'Type',
+              props: {
+                label: _('Type'),
                 options: [
-                  { label: 'staff_note', value: 'staff_note' }
+                  { label: _('staff_note'), value: 'staff_note' }
                 ]
               }
             },
             {
               key: 'content',
               type: 'textarea',
-              templateOptions: {
-                label: 'Note',
+              props: {
+                label: _('Note'),
                 required: true,
                 rows: 5
               }

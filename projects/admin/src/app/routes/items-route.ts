@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -199,7 +199,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
     };
     // TODO: Refactor this after the change of AppInitializer service with user.
     this._routeToolService.userService.loaded$.subscribe(() => {
-      const patronLibrarian = this._routeToolService.userService.user.patronLibrarian;
+      const { patronLibrarian } = this._routeToolService.userService.user;
       if (patronLibrarian) {
         config.data.types[0].preFilters.organisation = patronLibrarian.organisation.pid;
       }
@@ -234,17 +234,16 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
    */
   private _populateLocationsByCurrentUserLibrary(field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig {
     const formWidget = jsonSchema.widget;
-    if (formWidget?.formlyConfig?.templateOptions?.fieldMap === 'location') {
+    if (formWidget?.formlyConfig?.props?.fieldMap === 'location') {
       field.type = 'select';
       field.hooks = {
         ...field.hooks,
         afterContentInit: (f: FormlyFieldConfig) => {
-          const user = this._routeToolService.userService.user;
-          const recordService = this._routeToolService.recordService;
-          const apiService = this._routeToolService.apiService;
+          const { user } = this._routeToolService.userService;
+          const { apiService, recordService } = this._routeToolService;
           const libraryPid = user.currentLibrary;
           const query = `library.pid:${libraryPid}`;
-          f.templateOptions.options = recordService
+          f.props.options = recordService
             .getRecords('locations', query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, 'name')
             .pipe(
               map((result: Record) => this._routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),

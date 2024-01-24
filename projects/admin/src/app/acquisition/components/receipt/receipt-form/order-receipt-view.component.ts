@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -63,7 +63,7 @@ export class OrderReceiptViewComponent implements OnInit {
     // The reference field should be enabled only for `AcqReceipt` creation, not for update.
     // To update this field, user must use the classic resource editor.
     if (this.model.pid) {
-      this._fields.find(field => field.key === 'reference').templateOptions.readonly = true;
+      this._fields.find(field => field.key === 'reference').props.readonly = true;
     }
     return this._fields;
   }

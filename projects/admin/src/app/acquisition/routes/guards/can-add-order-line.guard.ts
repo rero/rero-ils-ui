@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { RecordService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { AbstractCanAddGuard } from './abstract-can-add.guard';
@@ -23,7 +23,7 @@ import { AbstractCanAddGuard } from './abstract-can-add.guard';
 @Injectable({
   providedIn: 'root'
 })
-export class CanAddOrderLineGuard extends AbstractCanAddGuard implements CanActivate {
+export class CanAddOrderLineGuard extends AbstractCanAddGuard  {
 
   /**
    * Constructor

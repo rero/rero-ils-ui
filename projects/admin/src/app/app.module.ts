@@ -24,8 +24,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PrimengImportModule } from '@app/admin/shared/primeng-import/primeng-import.module';
 import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
-import { FormlyFieldSelect } from '@ngx-formly/bootstrap';
 import { FormlyModule } from '@ngx-formly/core';
+import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
+import { FormlyFieldSelect, FormlySelectModule } from '@ngx-formly/primeng/select';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import {
@@ -122,6 +123,7 @@ import {
   OtherEditionComponent
 } from './record/detail-view/document-detail-view/document-description/other-edition/other-edition.component';
 import { DocumentDetailViewComponent } from './record/detail-view/document-detail-view/document-detail-view.component';
+import { DocumentDetailComponent } from './record/detail-view/document-detail-view/document-detail/document-detail.component';
 import { EntitiesRelatedComponent } from './record/detail-view/document-detail-view/entities-related/entities-related.component';
 import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
 import {
@@ -208,7 +210,6 @@ import { PreviewEmailModule } from './shared/preview-email/preview-email.module'
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { DocumentDetailComponent } from './record/detail-view/document-detail-view/document-detail/document-detail.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -360,6 +361,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     BsDropdownModule.forRoot(),
     NgxChartsModule,
     CollapseModule.forRoot(),
+    FormlyPrimeNGModule,
+    FormlySelectModule,
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
@@ -369,6 +372,10 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     TooltipModule.forRoot(),
     PopoverModule.forRoot(),
     FormlyModule.forRoot({
+      extras: {
+        checkExpressionOn: 'changeDetectionCheck',
+        resetFieldOnHide: true
+      },
       types: [
         { name: "cipo-pt-it", component: CipoPatronTypeItemTypeComponent },
         { name: "account-select", component: SelectAccountEditorWidgetComponent },

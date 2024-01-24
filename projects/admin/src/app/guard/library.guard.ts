@@ -16,7 +16,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
@@ -25,7 +25,7 @@ import { catchError, map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class LibraryGuard implements CanActivate {
+export class LibraryGuard  {
 
   /**
    * Constructor
