@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,11 +16,11 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { TranslateService } from '@ngx-translate/core';
-import { formToWidget, JSONSchema7, LoggerService, orderedJsonSchema, RecordService, removeEmptyValues } from '@rero/ng-core';
+import { JSONSchema7, RecordService, orderedJsonSchema, processJsonSchema, removeEmptyValues } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
@@ -61,12 +61,11 @@ export class UserIdEditorComponent implements OnInit {
    * Constructor
    *
    * @param _recordService - ng-core RecordService
-   * @param bsModalRef - ngx-boostrap BsModalRef
+   * @param bsModalRef - ngx-bootstrap BsModalRef
    * @param _formlyJsonschema - ngx-formly FormlyJsonschema
    * @param _toastService - ngx-toastr ToastrService
    * @param _translateService - ngx-translate TranslateService
    * @param _userService - rero/shared UserService
-   * @param _loggerService - ng-core LoggerService
    */
   constructor(
     private _recordService: RecordService,
@@ -74,8 +73,7 @@ export class UserIdEditorComponent implements OnInit {
     private _formlyJsonschema: FormlyJsonschema,
     private _toastService: ToastrService,
     private _translateService: TranslateService,
-    private _userService: UserService,
-    private _loggerService: LoggerService
+    private _userService: UserService
   ) {
     this.form = new UntypedFormGroup({});
   }
@@ -88,22 +86,22 @@ export class UserIdEditorComponent implements OnInit {
       tap(
         schema => {
           if (schema != null) {
-            schema = formToWidget(schema.schema, this._loggerService);
+            schema = processJsonSchema(schema.schema);
             this.fields = [
               this._formlyJsonschema.toFieldConfig(orderedJsonSchema(schema), {
 
                 // post process JSONSchema7 to FormlyFieldConfig conversion
                 map: (field: FormlyFieldConfig, jsonSchema: JSONSchema7) => {
-                  // If 'format' is defined into the jsonSchema, use it as templateOptions to try a validation on this field.
+                  // If 'format' is defined into the jsonSchema, use it as props to try a validation on this field.
                   // See: `email.validator.ts` file
                   if (jsonSchema.format) {
-                    field.templateOptions.type = jsonSchema.format;
+                    field.props.type = jsonSchema.format;
                     if (field.asyncValidators == null) {
                       field.asyncValidators = {};
                     }
                     field.asyncValidators.uniqueEmail = this.getUniqueValidator('email');
                   }
-                  if (field.templateOptions.label === 'Username') {
+                  if (field.props.label === 'Username') {
                     if (field.asyncValidators == null) {
                       field.asyncValidators = {};
                     }
@@ -111,7 +109,7 @@ export class UserIdEditorComponent implements OnInit {
                   }
                   if (field.key === 'password') {
                     if (!this.userID) {
-                      field.templateOptions.required = true;
+                      field.props.required = true;
                     }
                     this.passwordField = field;
                   }
@@ -139,7 +137,7 @@ export class UserIdEditorComponent implements OnInit {
           ? of({})
           : this._recordService.getRecord('users', this.userID);
       }),
-      map(user => user.metadata)
+      map((user: any) => user.metadata)
     ).subscribe(model => this.model = model);
   }
 
@@ -151,7 +149,7 @@ export class UserIdEditorComponent implements OnInit {
   searchValueUpdated(query: (string | null)): void {
     if (!query) {
       this.loadedUserID = null;
-      this.passwordField.templateOptions.required = true;
+      this.passwordField.props.required = true;
       this.form.reset();
       this.model = {};
       return;
@@ -189,7 +187,7 @@ export class UserIdEditorComponent implements OnInit {
           this._translateService.instant('The personal data has been successfully linked to this patron.')
         );
         this.loadedUserID = model.id;
-        this.passwordField.templateOptions.required = false;
+        this.passwordField.props.required = false;
         this.form.reset();
         return this.model = model.metadata ? model.metadata : null;
       }),

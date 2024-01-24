@@ -16,7 +16,7 @@
 -->
 <ng-container *ngIf="user$ | async as user; else create">
   <strong>
-    {{user.metadata.last_name}}, {{ user.metadata.first_name }} <span *ngIf="user.metadata.city">({{ user.metadata.city}})</span>
+    {{ user.metadata.last_name }}, {{ user.metadata.first_name }} <span *ngIf="user.metadata.city">({{ user.metadata.city }})</span>
   </strong>
   <button type="button" class="btn btn-outline-primary btn-sm align-baseline ml-2" (click)="openModal()" translate>
     Edit

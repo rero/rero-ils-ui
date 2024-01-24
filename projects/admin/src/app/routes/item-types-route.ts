@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -58,7 +58,7 @@ export class ItemTypesRoute extends BaseRoute implements RouteInterface {
             canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.ITTY_CREATE) }),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => {
-              const user = this._routeToolService.userService.user;
+              const { user } = this._routeToolService.userService;
               data.organisation = {
                 $ref: this._routeToolService.apiService.getRefEndpoint(
                   'organisations',

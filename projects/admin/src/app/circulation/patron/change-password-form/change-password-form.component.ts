@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -62,7 +62,7 @@ export class ChangePasswordFormComponent implements OnInit {
    */
   ngOnInit() {
     const initialState: any = this._modalService.config.initialState;
-    if (initialState.hasOwnProperty('patron')) {
+    if (!initialState.hasOwnProperty('patron')) {
       this.closeModal();
     }
     this.patron = initialState.patron;
@@ -106,7 +106,7 @@ export class ChangePasswordFormComponent implements OnInit {
           key: 'password',
           type: 'passwordGenerator',
           focus: true,
-          templateOptions: {
+          props: {
             api: "/api/user/password/generate",
             label: this._translateService.instant('New password'),
             required: true,

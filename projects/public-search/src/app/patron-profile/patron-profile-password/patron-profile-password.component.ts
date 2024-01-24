@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2023 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -68,7 +68,7 @@ export class PatronProfilePasswordComponent {
         key: 'password',
         type: 'input',
         focus: true,
-        templateOptions: {
+        props: {
           type: 'password',
           label: _('Current password'),
           required: true,
@@ -77,7 +77,7 @@ export class PatronProfilePasswordComponent {
       {
         key: 'newPassword',
         type: 'input',
-        templateOptions: {
+        props: {
           type: 'password',
           label: _('New password'),
           required: true,
@@ -91,7 +91,7 @@ export class PatronProfilePasswordComponent {
       {
         key: 'confirmPassword',
         type: 'input',
-        templateOptions: {
+        props: {
           type: 'password',
           label: _('Confirm new password'),
           required: true,
@@ -159,7 +159,7 @@ export class PatronProfilePasswordComponent {
         // Set error on field
         const formField = this._fieldsMatching[response.error.field];
         this.form.get(formField).setErrors({ invalid: { message: response.error.message } });
-        // Make forcus on error field
+        // Make focus on error field
         this._el.nativeElement.querySelector(`#${formField}`).focus();
       }
     });
@@ -169,7 +169,7 @@ export class PatronProfilePasswordComponent {
   validatePassword(): any {
     return {
       expression: (control: UntypedFormControl) => {
-        const value = control.value;
+        const { value } = control;
         if (value == null || value.length === 0) {
           return of(true);
         }

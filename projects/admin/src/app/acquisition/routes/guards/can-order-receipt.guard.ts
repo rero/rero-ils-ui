@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { extractIdOnRef } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { combineLatest, Observable, of } from 'rxjs';
@@ -28,7 +28,7 @@ import { IAcqReceipt } from '../../classes/receipt';
 @Injectable({
   providedIn: 'root'
 })
-export class CanOrderReceiptGuard implements CanActivate {
+export class CanOrderReceiptGuard  {
 
   /**
    * Constructor

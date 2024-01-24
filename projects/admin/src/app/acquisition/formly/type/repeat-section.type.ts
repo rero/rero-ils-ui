@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,9 +23,9 @@ import { FieldArrayType } from '@ngx-formly/core';
     <div class="card my-2">
       <div class="card-header">
         <label
-          *ngIf="field.templateOptions.label || field.templateOptions.addButton" class="col" [ngClass]="field.templateOptions.className">
-          <span *ngIf="field.templateOptions.label" >{{ field.templateOptions.label }}</span>
-          <button *ngIf="field.templateOptions.addButton"
+          *ngIf="field.props.label || field.props.addButton" class="col" [ngClass]="field.props.className">
+          <span *ngIf="field.props.label" >{{ field.props.label }}</span>
+          <button *ngIf="field.props.addButton"
                   type="button"
                   class="btn btn-link text-secondary btn-sm ng-star-inserted"
                   (click)="add()">
@@ -35,13 +35,13 @@ import { FieldArrayType } from '@ngx-formly/core';
       </div>
       <div class="card-body" *ngIf="field.fieldGroup.length > 0">
         <div class="row">
-          <div [ngClass]="field.templateOptions.trashButton ? 'col-11': 'col-12'">
+          <div [ngClass]="field.props.trashButton ? 'col-11': 'col-12'">
             <div class="row">
               <ng-container *ngFor="let field of field.fieldGroup[0].fieldGroup">
                 <ng-container *ngIf="field.className">
-                  <div class="{{ field.templateOptions.headerClassName }}">
-                    {{ field.templateOptions.label }}
-                    <ng-container *ngIf="field.templateOptions.required">&nbsp;*</ng-container>
+                  <div class="{{ field.props.headerClassName }}">
+                    {{ field.props.label }}
+                    <ng-container *ngIf="field.props.required">&nbsp;*</ng-container>
                   </div>
                 </ng-container>
               </ng-container>
@@ -51,7 +51,7 @@ import { FieldArrayType } from '@ngx-formly/core';
         <div *ngFor="let f of field.fieldGroup; let i = index;" class="row" [ngClass]="{ 'bg-light': i % 2 }">
           <ng-container *ngIf="f.fieldGroup.length > 0">
             <formly-field class="col" [field]="f"></formly-field>
-            <div *ngIf="field.templateOptions.trashButton" class="col-1 d-flex align-items-center">
+            <div *ngIf="field.props.trashButton" class="col-1 d-flex align-items-center">
               <button class="btn btn-link text-secondary btn-sm" type="button" (click)="remove(i)" *ngIf="showTrash">
                 <i class="fa fa-trash"></i>
               </button>
@@ -70,6 +70,6 @@ export class RepeatTypeComponent extends FieldArrayType {
    * @returns boolean
    */
   get showTrash() {
-    return this.field.fieldGroup.length > (this.to.minLength || 0);
+    return this.field.fieldGroup.length > (this.props.minLength || 0);
   }
 }

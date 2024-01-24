@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,17 +14,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { RecordService } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-formly-field-type',
   template: `
-    <div class="{{ field.templateOptions.className }}">
+    <div class="{{ field.props.className }}">
       {{ value }}
     </div>
-  `
+  `,
 })
 export class FieldRefTypeComponent extends FieldType implements OnInit {
 
@@ -33,22 +33,22 @@ export class FieldRefTypeComponent extends FieldType implements OnInit {
 
   /**
    * Constructor
-   * @param _recordService - RecordService
+   * @param recordService - RecordService
+   * @param ref - ChangeDetectorRef
    */
-  constructor(private _recordService: RecordService) {
+  constructor(private recordService: RecordService, private ref: ChangeDetectorRef) {
     super();
   }
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._recordService.getRecords(this.to.resource, `pid:${this.model[this.to.recourceKey]}`)
+    this.recordService.getRecords(this.props.resource, `pid:${this.model[this.props.resourceKey]}`)
       .subscribe((result: any) => {
-        if (this._recordService.totalHits(result.hits.total) === 1) {
+        if (this.recordService.totalHits(result.hits.total) === 1) {
           let data = result.hits.hits[0].metadata;
-          const keys = this.to.resourceField.split('.');
-          if (this.to.resourceSelect) {
-            const field = this.to.resourceSelect.field;
-            const value = this.to.resourceSelect.value;
+          const keys = this.props.resourceField.split('.');
+          if (this.props.resourceSelect) {
+            const {field, value} = this.props.resourceSelect;
             data[keys[0]] = data[keys[0]].filter((element: any) => element[field] === value);
           }
           keys.forEach((key: string) => {
@@ -62,6 +62,7 @@ export class FieldRefTypeComponent extends FieldType implements OnInit {
         } else {
           this.value = '---';
         }
+        this.ref.detectChanges();
       });
   }
 }

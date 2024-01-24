@@ -1,3 +1,19 @@
+/*
+ * RERO ILS UI
+ * Copyright (C) 2021-2024 RERO
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 import { getCurrencySymbol } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
@@ -80,7 +96,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
       key: 'amount',
       type: 'input',
       focus: true,
-      templateOptions: {
+      props: {
         label: this._translateService.instant('Amount'),
         type: 'number',
         min: 0,
@@ -88,9 +104,9 @@ export class PatronTransactionEventFormComponent implements OnInit {
         step: 0.1,
         pattern: '^\\d*(\\.\\d{0,2})?$',
         required: true,
-        addonLeft: {
-          text: getCurrencySymbol(this._organisationService.organisation.default_currency, 'wide')
-        }
+        addonLeft: [
+          getCurrencySymbol(this._organisationService.organisation.default_currency, 'wide')
+        ]
       },
       validation: {
         messages: {
@@ -113,7 +129,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
     return {
       key: 'method',
       type: 'select',
-      templateOptions: {
+      props: {
         label: this._translateService.instant('Payment method'),
         required: true,
         placeholder: this._translateService.instant('Select…'),
@@ -133,7 +149,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
     return {
       key: 'comment',
       type: 'textarea',
-      templateOptions: {
+      props: {
         label: this._translateService.instant('Comment'),
         required: true,
         placeholder,

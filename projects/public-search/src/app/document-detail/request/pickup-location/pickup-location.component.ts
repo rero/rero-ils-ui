@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -95,7 +95,7 @@ export class PickupLocationComponent implements OnInit {
           this.fields.push({
             key: 'description',
             type: 'textarea',
-            templateOptions: {
+            props: {
               label: this._translateService.instant('Collection or item year, volume, number, pages'),
               placeholder: this._translateService.instant('Year / Volume / Number / Pages'),
               maxLength: 100,
@@ -107,7 +107,7 @@ export class PickupLocationComponent implements OnInit {
         this.fields.push({
           key: `pickup`,
           type: 'select',
-          templateOptions: {
+          props: {
             label: this._translateService.instant('Pickup location'),
             required: true,
             options

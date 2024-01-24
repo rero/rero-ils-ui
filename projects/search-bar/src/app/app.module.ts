@@ -60,7 +60,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         SharedModule
     ],
     providers: [
-        // TODO: remove this to avoid api call. It still neded because
+        // TODO: remove this to avoid api call. It still needed because
         //       `_getContributionName` need API config.
         { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true }
     ]

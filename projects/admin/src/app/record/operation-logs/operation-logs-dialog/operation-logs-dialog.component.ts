@@ -39,9 +39,9 @@ export class OperationLogsDialogComponent {
 
   /**
    * Constructor
-   * @param _modalService - BsModalService
+   * @param modalService - BsModalService
    */
-  constructor(private _modalService: BsModalService) {}
+  constructor(private modalService: BsModalService) {}
 
   /** Open operation logs dialog */
   openDialog(): void {
@@ -53,7 +53,7 @@ export class OperationLogsDialogComponent {
         resourcePid: this.resourcePid
       }
     };
-    this.bsModalRef = this._modalService.show(OperationLogsComponent, config);
+    this.bsModalRef = this.modalService.show(OperationLogsComponent, config);
     this.bsModalRef.content.dialogClose$.subscribe((value: boolean) => {
       if (value) {
         this.bsModalRef.hide();

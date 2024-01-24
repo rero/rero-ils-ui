@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -37,12 +37,12 @@ export class UserIdComponent extends FieldWrapper implements OnInit {
 
   /**
    * constructor
-   * @param _modalService - ngx-boostrap BsModalService
-   * @param _recordService - ng-core RecordService
+   * @param modalService - ngx-bootstrap BsModalService
+   * @param recordService - ng-core RecordService
    */
   constructor(
-    private _modalService: BsModalService,
-    private _recordService: RecordService
+    private modalService: BsModalService,
+    private recordService: RecordService
   ) {
     super();
   }
@@ -52,7 +52,7 @@ export class UserIdComponent extends FieldWrapper implements OnInit {
    */
   ngOnInit(): void {
     if (this.formControl && this.formControl.value != null) {
-      this.user$ = this._recordService.getRecord('users', this.formControl.value);
+      this.user$ = this.recordService.getRecord('users', this.formControl.value);
     }
   }
 
@@ -61,7 +61,7 @@ export class UserIdComponent extends FieldWrapper implements OnInit {
    */
   openModal(): void {
     // return;
-    this.modalRef = this._modalService.show(
+    this.modalRef = this.modalService.show(
       UserIdEditorComponent,
       {
         class: 'modal-lg',
@@ -70,12 +70,12 @@ export class UserIdComponent extends FieldWrapper implements OnInit {
       });
     this.user$ = this.modalRef.onHidden.pipe(
       switchMap(() => {
-        const userID = this.modalRef.content.userID;
+        const { userID } = this.modalRef.content;
         if (userID != null) {
           this.formControl.setValue(userID);
           // need to force the role validation as the user can be changed
           this.formControl.root.get('roles').updateValueAndValidity();
-          return this._recordService.getRecord('users', userID);
+          return this.recordService.getRecord('users', userID);
         }
         return of(null);
       })

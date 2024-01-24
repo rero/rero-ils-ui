@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
- * Copyright (C) 2021 UCLouvain
+ * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2024 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -47,8 +47,8 @@ export class SelectAccountComponent extends FieldType implements OnInit {
 
   /** OnInit Hook */
   ngOnInit() {
-    this.to.options.forEach((option: any) => this.accountList.push(option));
-    this.currency = this.to.currency;
+    this.props.options.forEach((option: any) => this.accountList.push(option));
+    this.currency = this.props.currency;
 
     if (this.formControl.value) {
       const currentPid = this.formControl.value.substring(this.formControl.value.lastIndexOf('/') + 1);

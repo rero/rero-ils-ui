@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -79,9 +79,9 @@ describe('CanAccessGuard', () => {
       model: {
         document: 1
       },
-      templateOptions: {
+      props: {
       resource: 'documents',
-      recourceKey: 'document',
+      resourceKey: 'document',
       resourceField: 'title.0._text'
     }};
     fieldType.ngOnInit();
@@ -104,9 +104,9 @@ describe('CanAccessGuard', () => {
       model: {
         document: 1
       },
-      templateOptions: {
+      props: {
       resource: 'documents',
-      recourceKey: 'document',
+      resourceKey: 'document',
       resourceField: 'title.0._text'
     }};
     fieldType.ngOnInit();
@@ -137,9 +137,9 @@ describe('CanAccessGuard', () => {
       model: {
         document: 1
       },
-      templateOptions: {
+      props: {
       resource: 'documents',
-      recourceKey: 'document',
+      resourceKey: 'document',
       resourceField: 'title.0._text',
       resourceSelect: {
         field: 'type',

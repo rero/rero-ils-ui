@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { PermissionsService, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 
@@ -39,7 +39,7 @@ import { Observable, of } from 'rxjs';
  @Injectable({
   providedIn: 'root'
 })
-export class PermissionGuard implements CanActivate {
+export class PermissionGuard  {
 
   /**
    * Constructor
