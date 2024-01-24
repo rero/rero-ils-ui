@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -70,41 +70,41 @@ export class ItemRequestComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _modalService - BsModalService
-   * @param _bsModalRef - BsModalRef
-   * @param _userService - UserService
-   * @param _recordService - RecordService
-   * @param _http - HttpClient
-   * @param _toastr - ToastrService
-   * @param _translateService - TranslateService
-   * @param _loanService: LoanService
-   * @param _itemService: ItemService
-   * @param _holdingService: HoldingsService
+   * @param modalService - BsModalService
+   * @param bsModalRef - BsModalRef
+   * @param userService - UserService
+   * @param recordService - RecordService
+   * @param http - HttpClient
+   * @param toastr - ToastrService
+   * @param translateService - TranslateService
+   * @param loanService: LoanService
+   * @param itemService: ItemService
+   * @param holdingService: HoldingsService
    */
   constructor(
-    private _modalService: BsModalService,
-    private _bsModalRef: BsModalRef,
-    private _userService: UserService,
-    private _recordService: RecordService,
-    private _http: HttpClient,
-    private _toastr: ToastrService,
-    private _loanService: LoanService,
-    private _translateService: TranslateService,
-    private _itemService: ItemsService,
-    private _holdingService: HoldingsService,
+    private modalService: BsModalService,
+    private bsModalRef: BsModalRef,
+    private userService: UserService,
+    private recordService: RecordService,
+    private http: HttpClient,
+    private toastr: ToastrService,
+    private loanService: LoanService,
+    private translateService: TranslateService,
+    private itemService: ItemsService,
+    private holdingService: HoldingsService,
   ) { }
 
   /** OnInit hook */
   ngOnInit() {
-    this.currentUser = this._userService.user;
-    const initialState: any = this._modalService.config.initialState;
-    if (initialState.hasOwnProperty('recordPid')) {
+    this.currentUser = this.userService.user;
+    const initialState: any = this.modalService.config.initialState;
+    if (!Object.hasOwn(initialState, 'recordPid')) {
       this.closeModal();
     }
     this.recordPid = initialState.recordPid;
     this.recordType = initialState.recordType;
-    this.service = (this.recordType === 'item') ? this._itemService : this._holdingService;
-    this.requestedBy$ = (this.recordType === 'item') ?  this._loanService.requestedBy$(this.recordPid) : null;
+    this.service = (this.recordType === 'item') ? this.itemService : this.holdingService;
+    this.requestedBy$ = (this.recordType === 'item') ?  this.loanService.requestedBy$(this.recordPid) : null;
     this.initForm();
   }
 
@@ -132,21 +132,21 @@ export class ItemRequestComponent implements OnInit {
       key = 'description';
       body[key] = model.description;
     }
-    this._http.post(`/api/${this.recordType}/request`, body)
+    this.http.post(`/api/${this.recordType}/request`, body)
       .pipe(tap(() => this.requestInProgress = false))
       .subscribe(
         (_: unknown) => {
-          this.onSubmit.next();
+          this.onSubmit.next(undefined);
           this.closeModal();
-          this._toastr.success(
-            this._translateService.instant('Request registered.'),
-            this._translateService.instant('Item request')
+          this.toastr.success(
+            this.translateService.instant('Request registered.'),
+            this.translateService.instant('Item request')
           );
         },
         (error: unknown) => {
-          this._toastr.error(
-            this._translateService.instant('An error has occurred. Please try again.'),
-            this._translateService.instant('Item request'),
+          this.toastr.error(
+            this.translateService.instant('An error has occurred. Please try again.'),
+            this.translateService.instant('Item request'),
             { disableTimeOut: true }
           );
         }
@@ -158,7 +158,7 @@ export class ItemRequestComponent implements OnInit {
    * @param event - Event
    */
   closeModal() {
-    this._bsModalRef.hide();
+    this.bsModalRef.hide();
   }
 
   /**
@@ -172,8 +172,8 @@ export class ItemRequestComponent implements OnInit {
             key: 'patronBarcode',
             type: 'input',
             focus: true,
-            templateOptions: {
-              label: this._translateService.instant('Patron barcode'),
+            props: {
+              label: this.translateService.instant('Patron barcode'),
               required: true,
               keydown: (field, event) => {
                 if (event.key === 'Enter') {
@@ -185,7 +185,7 @@ export class ItemRequestComponent implements OnInit {
               userExist: {
                 expression: (fc: UntypedFormControl) =>  {
                   return new Promise((resolve) => {
-                    const value = fc.value;
+                    const { value } = fc;
                     if (value.length > 2) {
                       this.getPatron(fc.value).subscribe((result: any) => {
                         this.patron = (result.length === 1)
@@ -196,12 +196,12 @@ export class ItemRequestComponent implements OnInit {
                     }
                   });
                 },
-                message: this._translateService.instant('Patron not found.')
+                message: this.translateService.instant('Patron not found.')
               },
               can_request: {
                 expression: (fc: UntypedFormControl) => {
                   return new Promise((resolve) => {
-                    const value = fc.value;
+                    const { value } = fc;
                     if (value.length > 2) {
                       this.service.canRequest(
                         this.recordPid,
@@ -218,7 +218,7 @@ export class ItemRequestComponent implements OnInit {
                   });
                 },
                 message: () => {
-                  return this._translateService.instant(
+                  return this.translateService.instant(
                     this.canRequestMessage
                   );
                 }
@@ -228,10 +228,10 @@ export class ItemRequestComponent implements OnInit {
           {
             key: 'pickupPid',
             type: 'select',
-            templateOptions: {
-              label: this._translateService.instant('Pickup location'),
+            props: {
+              label: this.translateService.instant('Pickup location'),
               required: true,
-              placeholder: this._translateService.instant('Select…'),
+              placeholder: this.translateService.instant('Select…'),
               options: pickups
             }
           }
@@ -240,9 +240,9 @@ export class ItemRequestComponent implements OnInit {
           this.formFields.push({
             key: 'description',
             type: 'input',
-            templateOptions: {
-              label: this._translateService.instant('Collection or item year, volume, number, pages'),
-              placeholder: this._translateService.instant('Year / Volume / Number / Pages'),
+            props: {
+              label: this.translateService.instant('Collection or item year, volume, number, pages'),
+              placeholder: this.translateService.instant('Year / Volume / Number / Pages'),
               maxLength: 100,
               required: true,
             }
@@ -263,7 +263,7 @@ export class ItemRequestComponent implements OnInit {
    */
 
   private getPickupLocations(): Observable<Array<any>> {
-    const currentLibrary = this.currentUser.currentLibrary;
+    const { currentLibrary } = this.currentUser;
     return this.service.getPickupLocations(this.recordPid).pipe(
       map((locations: any) => locations.map((loc: any) => {
         if (this.pickupDefaultValue === undefined && loc.library.pid === currentLibrary) {
@@ -284,9 +284,9 @@ export class ItemRequestComponent implements OnInit {
    */
   private getPatron(barcode: string) {
     const query = `barcode:${barcode}`;
-    return this._recordService.getRecords('patrons', query, 1, 1).pipe(
+    return this.recordService.getRecords('patrons', query, 1, 1).pipe(
       debounceTime(500),
-      map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+      map((result: Record) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
       shareReplay(1)
     );
   }

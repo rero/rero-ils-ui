@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,12 +16,12 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
-import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
-import { OrganisationService } from '@app/admin/service/organisation.service';
-import { forkJoin } from 'rxjs';
 import { Item } from '@app/admin/classes/items';
+import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
+import { OrganisationService } from '@app/admin/service/organisation.service';
+import { RecordService } from '@rero/ng-core';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'admin-overdue-transaction',
@@ -44,24 +44,24 @@ export class OverdueTransactionComponent implements OnInit {
    *  @return: current organisation
    */
   get organisation() {
-    return this._organisationService.organisation;
+    return this.organisationService.organisation;
   }
 
   // CONSTRUCTOR & HOOKS =====================================================
   /**
    * constructor
-   * @param _organisationService - OrganisationService
-   * @param _recordService - RecordService
+   * @param organisationService - OrganisationService
+   * @param recordService - RecordService
    */
   constructor(
-    private _organisationService: OrganisationService,
-    private _recordService: RecordService
+    private organisationService: OrganisationService,
+    private recordService: RecordService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
-    const itemRecord$ = this._recordService.getRecord('items', this.transaction.loan.item_pid.value);
-    const documentRecord$ = this._recordService.getRecord('documents', this.transaction.loan.document_pid);
+    const itemRecord$ = this.recordService.getRecord('items', this.transaction.loan.item_pid.value);
+    const documentRecord$ = this.recordService.getRecord('documents', this.transaction.loan.document_pid);
     forkJoin([itemRecord$, documentRecord$]).subscribe(
       ([itemData, documentData]) => {
         this.item = new Item(itemData.metadata);

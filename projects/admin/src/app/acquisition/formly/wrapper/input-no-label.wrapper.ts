@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,9 +22,11 @@ selector: 'admin-formly-input-no-label-wrapper',
 template: `
   <div class="my-2">
     <ng-container #fieldComponent></ng-container>
-    <div *ngIf="showError" class="invalid-feedback d-block">
-      <formly-validation-message [field]="field"></formly-validation-message>
-    </div>
+    @if (showError) {
+      <div class="invalid-feedback d-block">
+        <formly-validation-message [field]="field"></formly-validation-message>
+      </div>
+    }
   </div>
   `
 })

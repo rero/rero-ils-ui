@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ export class DefaultHoldingItemComponent implements OnInit {
   // GETTER & SETTER ==========================================================
   /** Current interface language */
   get language() {
-    return this._translateService.currentLang;
+    return this.translateService.currentLang;
   }
 
   /**
@@ -64,32 +64,32 @@ export class DefaultHoldingItemComponent implements OnInit {
 
   /** Message containing the reasons why the item cannot be deleted. */
   get deleteInfoMessage(): string {
-    return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
+    return this.recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
   }
 
   /** Message containing the reasons wht the item cannot be requested. */
   get cannotRequestInfoMessage(): string {
-    return this._recordPermissionService.generateTooltipMessage(this.permissions.canRequest.reasons, 'request');
+    return this.recordPermissionService.generateTooltipMessage(this.permissions.canRequest.reasons, 'request');
   }
 
   // CONSTRUCTOR & HOOKS ==============================================================
   /**
    * Constructor
-   * @param _recordUiService - RecordUiService
-   * @param _userService - UserService
-   * @param _recordPermissionService - RecordPermissionService
-   * @param _modalService - BsModalService
-   * @param _itemService - ItemService
-   * @param _translateService - TranslateService
+   * @param recordUiService - RecordUiService
+   * @param userService - UserService
+   * @param recordPermissionService - RecordPermissionService
+   * @param modalService - BsModalService
+   * @param itemService - ItemService
+   * @param translateService - TranslateService
    * @param itemApiService - ItemApiService
    */
   constructor(
-    protected _recordUiService: RecordUiService,
-    protected _recordPermissionService: RecordPermissionService,
-    protected _userService: UserService,
-    protected _modalService: BsModalService,
-    protected _itemService: ItemsService,
-    protected _translateService: TranslateService,
+    protected recordUiService: RecordUiService,
+    protected recordPermissionService: RecordPermissionService,
+    protected userService: UserService,
+    protected modalService: BsModalService,
+    protected itemService: ItemsService,
+    protected translateService: TranslateService,
     public itemApiService: ItemApiService
   ) { }
 
@@ -100,7 +100,6 @@ export class DefaultHoldingItemComponent implements OnInit {
     }
   }
 
-
   // COMPONENT FUNCTIONS ======================================================
 
   /**
@@ -109,11 +108,11 @@ export class DefaultHoldingItemComponent implements OnInit {
    * @param recordType - the record type (should be `item`)
    */
   addRequest(recordPid: string, recordType: string): void {
-    const modalRef = this._modalService.show(ItemRequestComponent, {
+    const modalRef = this.modalService.show(ItemRequestComponent, {
       initialState: { recordPid, recordType }
     });
     modalRef.content.onSubmit.pipe(first()).subscribe(_ => {
-      this._itemService.getByPidFromEs(recordPid).subscribe(result => {
+      this.itemService.getByPidFromEs(recordPid).subscribe(result => {
         this.item = result;
         this._getPermissions();
       });
@@ -131,16 +130,16 @@ export class DefaultHoldingItemComponent implements OnInit {
   // PRIVATE COMPONENT FUNCTIONS ==============================================
   /** Get permissions */
   private _getPermissions(): void {
-    const permissionObs = this._recordPermissionService.getPermission('items', this.item.metadata.pid);
-    const canRequestObs = this._itemService.canRequest(this.item.metadata.pid);
-    forkJoin([permissionObs, canRequestObs]).subscribe(
+    const permissionObs$ = this.recordPermissionService.getPermission('items', this.item.metadata.pid);
+    const canRequestObs$ = this.itemService.canRequest(this.item.metadata.pid);
+    forkJoin([permissionObs$, canRequestObs$]).subscribe(
       ([permissions, canRequest]) => {
         // DEV NOTES :: Why using switch location.
         //   The item permissions returned by server could be limited by the `membership` method. This method check if the item owning
         //   library is the same as current UI used library. So the switch library button should be displayed if the user may edit the item
         //   but are not using the same library as item owning library.
         const switchLocation = {can: permissions.update.can };
-        this.permissions = this._recordPermissionService.membership(this._userService.user, this.item.metadata.library.pid, permissions);
+        this.permissions = this.recordPermissionService.membership(this.userService.user, this.item.metadata.library.pid, permissions);
         this.permissions.switchLocation = switchLocation;
         this.permissions.canRequest = canRequest;
       });

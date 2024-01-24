@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,7 +29,7 @@ export class HoldingOrganisationComponent implements OnInit {
   /** Document record */
   @Input() document: any;
 
-  /** All elements is loade */
+  /** All elements is loaded */
   ready = false;
   /** Holdings count for current organisation */
   currentOrganisationCount = 0;
@@ -50,25 +50,25 @@ export class HoldingOrganisationComponent implements OnInit {
 
   /**
    * Constructor
-   * @param _holdingsApiService - HoldingsApiService
-   * @param _userService - UserService
+   * @param holdingsApiService - HoldingsApiService
+   * @param userService - UserService
    */
   constructor(
-    private _holdingsApiService: HoldingsApiService,
-    private _userService: UserService
+    private holdingsApiService: HoldingsApiService,
+    private userService: UserService
   ) {}
 
   /** On init hook */
   ngOnInit(): void {
     const documentPid = this.document.metadata.pid;
-    const organisationPid = this._userService.user.currentOrganisation;
-    const currentOrganisation = this._holdingsApiService.getHoldingsCount(
+    const organisationPid = this.userService.user.currentOrganisation;
+    const currentOrganisation$ = this.holdingsApiService.getHoldingsCount(
       documentPid, organisationPid);
-    const otherOrganisation = this._holdingsApiService.getHoldingsCount(
+    const otherOrganisation$ = this.holdingsApiService.getHoldingsCount(
       documentPid, organisationPid, false
     );
 
-    forkJoin([currentOrganisation, otherOrganisation])
+    forkJoin([currentOrganisation$, otherOrganisation$])
       .subscribe(([currentCount, otherCount]) => {
         this.currentOrganisationCount = currentCount;
         this.otherOrganisationCount = otherCount;

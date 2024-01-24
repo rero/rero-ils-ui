@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RecordPermissions } from '../classes/permissions';
@@ -24,7 +24,7 @@ import { RecordPermissionService } from '../service/record-permission.service';
 @Injectable({
   providedIn: 'root'
 })
-export class CanAccessGuard implements CanActivate {
+export class CanAccessGuard  {
 
   private _mandatoryParams = [
     'type',

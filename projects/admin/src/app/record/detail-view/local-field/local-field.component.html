@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,48 +15,57 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="!isLoading">
-  <div class="container-fluid" *ngIf="localFields.length > 0 else addLocalField">
-    <dl class="row">
-      <ng-container *ngFor="let field of localFields">
-        <dt class="col-2 label-title" translate>{{ 'local_' + field.name }}</dt>
-        <dd class="col-10">{{ field.value | join:'; ' }}</dd>
-      </ng-container>
-    </dl>
+@defer (when isLoading) {
+  @if (localFields.length > 0) {
+    <div class="container-fluid">
+      <dl class="row">
+        @for (field of localFields; track field) {
+          <dt class="col-2 label-title" translate>{{ 'local_' + field.name }}</dt>
+          <dd class="col-10">{{ field.value | join:'; ' }}</dd>
+        }
+      </dl>
 
-    <div class="mt-2">
-      <button
-        *ngIf="recordPermissions && recordPermissions.update.can"
-        [routerLink]="['/records', 'local_fields', 'edit', localFieldRecordPid]"
-        [queryParams]="{ type: resourceType, ref: resourcePid }"
-        class="btn btn-sm btn-outline-primary ml-1"
-        name="edit"
-        type="button"
-        title="{{ 'Edit' | translate }}"
-      >
-        <i class="fa fa-pencil"></i> {{ 'Edit' | translate }}
-      </button>
-      <button
-        *ngIf="recordPermissions && recordPermissions.delete.can"
-        class="btn btn-sm btn-outline-danger ml-1"
-        title="{{ 'Delete' | translate }}"
-        (click)="delete()"
-      >
-        <i class="fa fa-trash"></i> {{ 'Delete' | translate }}
-      </button>
+      <div class="mt-2">
+        @if (recordPermissions) {
+          @if (recordPermissions.update.can) {
+            <button
+              [routerLink]="['/records', 'local_fields', 'edit', localFieldRecordPid]"
+              [queryParams]="{ type: resourceType, ref: resourcePid }"
+              class="btn btn-sm btn-outline-primary ml-1"
+              name="edit"
+              type="button"
+              title="{{ 'Edit' | translate }}"
+            >
+              <i class="fa fa-pencil"></i> {{ 'Edit' | translate }}
+            </button>
+          }
+          @if (recordPermissions.delete.can) {
+            <button
+              class="btn btn-sm btn-outline-danger ml-1"
+              title="{{ 'Delete' | translate }}"
+              (click)="delete()"
+            >
+              <i class="fa fa-trash"></i> {{ 'Delete' | translate }}
+            </button>
+          }
+        } @else {
+          &nbsp;
+        }
+      </div>
     </div>
-  </div>
-</ng-container>
+  } @else {
+    <div class="text-right">
+      <a
+        [routerLink]="['/records', 'local_fields', 'new']"
+        [queryParams]="{ type: resourceType, ref: resourcePid }"
+        class="btn btn-sm btn-outline-primary"
+        [permissions]="permissions.LOFI_CREATE"
+      >
+        <i class="fa fa-plus-square-o"></i> {{ 'Add local fields' | translate }}
+      </a>
+    </div>
+  }
 
-<ng-template #addLocalField>
-  <div class="text-right">
-    <a
-      [routerLink]="['/records', 'local_fields', 'new']"
-      [queryParams]="{ type: resourceType, ref: resourcePid }"
-      class="btn btn-sm btn-outline-primary"
-      [permissions]="permissions.LOFI_CREATE"
-    >
-      <i class="fa fa-plus-square-o"></i> {{ 'Add local fields' | translate }}
-    </a>
-  </div>
-</ng-template>
+} @placeholder {
+  <i class="fa fa-spinner"></i> {{ 'loading in progress...' | translate }}
+}

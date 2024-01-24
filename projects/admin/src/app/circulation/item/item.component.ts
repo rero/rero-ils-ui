@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
-import { ItemStatus, PermissionsService } from '@rero/shared';
+import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
+import { Organisation } from '@app/admin/classes/core';
 import { Item, ItemAction, ItemNote, ItemNoteType } from '@app/admin/classes/items';
 import { Loan, LoanState } from '@app/admin/classes/loans';
 import { ItemsService } from '@app/admin/service/items.service';
 import { OrganisationService } from '@app/admin/service/organisation.service';
+import { RecordService } from '@rero/ng-core';
+import { ItemStatus, PermissionsService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Organisation } from '@app/admin/classes/core';
-import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 
 @Component({
   selector: 'admin-item',
@@ -70,7 +70,7 @@ export class ItemComponent implements OnInit {
    * @returns current organisation
    */
   get organisation(): Organisation {
-    return this._organisationService.organisation;
+    return this.organisationService.organisation;
   }
 
   /**
@@ -78,25 +78,25 @@ export class ItemComponent implements OnInit {
    * @returns True if the debug mode can be enabled and switched
    */
   get canUseDebugMode(): boolean {
-    return this._permissionsService.canAccessDebugMode();
+    return this.permissionsService.canAccessDebugMode();
   }
 
 
   // CONSTRUCTOR & HOOKS ====================================================
   /**
    * Constructor
-   * @param _recordService - Record Service
-   * @param _organisationService - Organisation Service
-   * @param _patronTransactionService - Patron transaction Service
-   * @param _itemService - Item Service
-   * @param _permissionsService - PermissionsService
+   * @param recordService - Record Service
+   * @param organisationService - Organisation Service
+   * @param patronTransactionService - Patron transaction Service
+   * @param itemService - Item Service
+   * @param permissionsService - PermissionsService
    */
   constructor(
-    private _recordService: RecordService,
-    private _organisationService: OrganisationService,
-    private _patronTransactionService: PatronTransactionService,
-    private _itemService: ItemsService,
-    private _permissionsService: PermissionsService
+    private recordService: RecordService,
+    private organisationService: OrganisationService,
+    private patronTransactionService: PatronTransactionService,
+    private itemService: ItemsService,
+    private permissionsService: PermissionsService
   ) {  }
 
   /** OnInit hook */
@@ -104,15 +104,15 @@ export class ItemComponent implements OnInit {
     this.loan = (this.item && this.item.loan) ? new Loan(this.item.loan) : null;
     if (this.loan) {
       const loanPid = this.item.loan.pid;
-      this._patronTransactionService.patronTransactionsByLoan$(loanPid, 'overdue', 'open').subscribe(
+      this.patronTransactionService.patronTransactionsByLoan$(loanPid, 'overdue', 'open').subscribe(
         (transactions) => {
-          this.totalAmountOfFee = this._patronTransactionService.computeTotalTransactionsAmount(transactions);
+          this.totalAmountOfFee = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
           if (this.totalAmountOfFee > 0) {
             this.hasFeesEmitter.emit(true);
           }
         }
       );
-      this.notifications$ = this._recordService.getRecords(
+      this.notifications$ = this.recordService.getRecords(
         'notifications', `context.loan.pid:${loanPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE,
         [], {}, null, 'mostrecent'
       ).pipe(
@@ -120,7 +120,7 @@ export class ItemComponent implements OnInit {
       );
     }
     if (this.item?.document?.pid) {
-      this._recordService.getRecord('documents', this.item.document.pid, 1, {
+      this.recordService.getRecord('documents', this.item.document.pid, 1, {
         Accept: 'application/rero+json, application/json'
       }).subscribe(document => this.document = document.metadata);
     }
@@ -187,6 +187,6 @@ export class ItemComponent implements OnInit {
    * @param type: the callout type (error, warning, info, ...)
    */
   needCallout(item: Item, type?: string): boolean {
-    return this._itemService.needCallout(item, type);
+    return this.itemService.needCallout(item, type);
   }
 }

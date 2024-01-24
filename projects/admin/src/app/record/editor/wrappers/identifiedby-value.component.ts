@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,15 +28,19 @@ import { IdentifierTypes } from '../../../classes/identifiers';
   selector: 'admin-identifiedby-value',
   template: `
     <ng-container #fieldComponent></ng-container>
-    <div *ngIf="message$ | async as message" class="invalid-feedback text-danger d-block">
-      {{ message | translate }}
-    </div>
-    <div *ngIf="asyncRecord$ | async as record" class="invalid-feedback text-info d-block">
-      {{ 'A document already exists under this reference' | translate }}:
-      <a [routerLink]="['/records', 'documents', 'detail', record.pid]" target="_blank">
-        {{ 'Show' | translate }}
-      </a>
-    </div>
+    @if (message$ | async; as message) {
+      <div class="invalid-feedback text-danger d-block">
+        {{ message | translate }}
+      </div>
+    }
+    @if (asyncRecord$ | async; as record) {
+      <div class="invalid-feedback text-info d-block">
+        {{ 'A document already exists under this reference' | translate }}:
+        <a [routerLink]="['/records', 'documents', 'detail', $any(record).pid]" target="_blank">
+          {{ 'Show' | translate }}
+        </a>
+      </div>
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -53,9 +57,9 @@ export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
 
   /**
    * Constructor
-   * @param _recordService - RecordService
+   * @param recordService - RecordService
    */
-  constructor(private _recordService: RecordService) {
+  constructor(private recordService: RecordService) {
     super();
   }
 
@@ -63,7 +67,7 @@ export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
   ngOnInit(): void {
     const control = this.formControl;
     const type = control.parent.get('type');
-    this.recordPid = this.field.templateOptions.pid;
+    this.recordPid = this.field.props.pid;
 
     const obs = combineLatest([control.valueChanges, type.valueChanges]);
     this._initializeObservableMessage(obs);
@@ -145,12 +149,12 @@ export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
    * @return Observable with document metadata if any identifiers matching a known document, null otherwise.
    */
   private _queryCheck(identifierValues: Array<string>): Observable<any> {
-    return this._recordService
+    return this.recordService
       .getRecords('documents', undefined, 1, 1, undefined, {identifiers: identifierValues})
       .pipe(
         map((result: Record) => {
           return (
-            this._recordService.totalHits(result.hits.total) > 0
+            this.recordService.totalHits(result.hits.total) > 0
             && result.hits.hits[0].metadata.pid !== this.recordPid
           )
             ? result.hits.hits[0].metadata

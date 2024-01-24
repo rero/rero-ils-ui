@@ -56,7 +56,7 @@ export enum ItemAction {
   no = 'no'
 }
 
-type ItemActionObjectType<R> = {[key in keyof typeof ItemAction]: R };
+type ItemActionObjectType = {[key in keyof typeof ItemAction]: any };
 
 export class ItemNote {
   type: ItemNoteType;
@@ -86,7 +86,7 @@ export class Item {
   organisation: Organisation;
   pid: string;
   requests_count: number;
-  action_applied?: ItemActionObjectType<object>;
+  action_applied?: ItemActionObjectType;
   _currentAction: ItemAction;
   actionDone: ItemAction;
   loan: Loan;

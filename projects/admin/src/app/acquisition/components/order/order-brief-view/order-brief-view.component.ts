@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -82,15 +82,13 @@ export class OrderBriefViewComponent implements ResultItem, OnInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * constructor
-   * @param _acqOrderApiService - AcqOrderApiService
+   * @param acqOrderApiService - AcqOrderApiService
    */
-  constructor(
-    private _acqOrderApiService: AcqOrderApiService
-  ) {}
+  constructor(private acqOrderApiService: AcqOrderApiService) {}
 
   /** OnInit hook */
   ngOnInit(): void {
-    const metadata = {...this._acqOrderApiService.orderDefaultData, ...this.record.metadata};
+    const metadata = {...this.acqOrderApiService.orderDefaultData, ...this.record.metadata};
     // FILTERS NOTES ::
     //   the notes fields from AcqOrder ES index contains all notes from all related resources.
     //   We only need to keep the notes from itself.

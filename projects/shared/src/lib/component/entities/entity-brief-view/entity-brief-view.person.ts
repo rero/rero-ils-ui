@@ -1,11 +1,32 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+/*
+ * RERO ILS UI
+ * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2024 UCLouvain
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+import { Component, Input, OnInit } from '@angular/core';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
 
 @Component({
   selector: 'shared-remote-person-entity-brief-view',
   template: `
-    <p *ngIf="dates">{{ dates | join : ' - ' }}</p>
-    <p *ngIf="bibliographicInformation" [innerHTML]="bibliographicInformation | urlActive:'_blank' | nl2br"></p>
+    @if (dates) {
+      <p>{{ dates | join : ' - ' }}</p>
+    }
+    @if (bibliographicInformation) {
+      <p [innerHTML]="bibliographicInformation | urlActive:'_blank' | nl2br"></p>
+    }
   `,
   providers: [ExtractSourceFieldPipe],
 })
@@ -16,7 +37,11 @@ export class EntityBriefViewRemotePersonComponent implements OnInit {
   dates: Array<string> = [];
   bibliographicInformation: string = null;
 
-  constructor(private pipe: ExtractSourceFieldPipe) { }
+  /**
+   * Constructor
+   * @param pipe - ExtractSourceFieldPipe
+   */
+  constructor(private pipe: ExtractSourceFieldPipe) {}
 
   ngOnInit(): void {
     this.dates = [

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,27 +15,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, OnInit } from '@angular/core';
-import { FieldType } from '@ngx-formly/core';
+import { FieldType, FieldTypeConfig } from '@ngx-formly/core';
 
 @Component({
   selector: 'admin-field-custom-input',
   template: `
     <div class="form-group m-0 d-flex align-items-start">
       <!-- label -->
-      <label [attr.for]="id" class="mr-2 col-form-label" *ngIf="to.label && to.hideLabel !== true" [tooltip]="to.description">
-        {{ to.label }}<ng-container *ngIf="to.required && to.hideRequiredMarker !== true">&nbsp;*</ng-container>
-      </label>
+      @if (props.label && props.hideLabel !== true) {
+        <label [attr.for]="id" class="mr-2 col-form-label" [tooltip]="props.description">
+          {{ props.label }}
+          @if (props.required && props.hideRequiredMarker !== true) {
+            &nbsp;*
+          }
+        </label>
+      }
       <!-- field -->
       <div class="flex-grow-1">
-        <ng-container [ngSwitch]="field.type">
-          <formly-field *ngSwitchCase="'input'" [field]="field"></formly-field>
-          <formly-field *ngSwitchCase="'select'" [field]="field"></formly-field>
-        </ng-container>
+        @switch (field.type) {
+          @case ('input') {
+            <formly-field [field]="field"></formly-field>
+          }
+          @case ('select') {
+            <formly-field [field]="field"></formly-field>
+          }
+        }
       </div>
     </div>
   `,
 })
-export class FieldCustomInputTypeComponent extends FieldType implements OnInit {
+export class FieldCustomInputTypeComponent extends FieldType<FieldTypeConfig> implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {

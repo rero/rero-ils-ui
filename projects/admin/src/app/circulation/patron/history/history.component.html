@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2020 RERO
+ Copyright (C) 2020-2024 RERO
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published by
@@ -14,22 +14,23 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section *ngIf="historyLogs$ | async as logs" class="content">
-  <ng-container *ngIf="logs.length > 0; else noHistory">
-    <!-- HEADER -->
-    <div class="row p-2 mb-1 bg-dark rounded text-light">
-      <div class="col-sm-6" translate>Title</div>
-      <div class="col-sm-4" translate>Authors</div>
-      <div class="col-sm-2" translate>Return date</div>
-    </div>
-    <!-- LINES -->
-    <div *ngFor="let log of logs">
-      <admin-history-log [log]="log" class="row mb-1 p-1 border rounded"></admin-history-log>
-    </div>
-  </ng-container>
-  <ng-template #noHistory>
-    {{ 'No history.' | translate }}
-  </ng-template>
-</section>
+@if (historyLogs$ | async; as logs) {
+  <section class="content">
+    @if (logs.length > 0) {
+      <!-- HEADER -->
+      <div class="row p-2 mb-1 bg-dark rounded text-light">
+        <div class="col-sm-6" translate>Title</div>
+        <div class="col-sm-4" translate>Authors</div>
+        <div class="col-sm-2" translate>Return date</div>
+      </div>
+      <!-- LINES -->
+      @for (log of logs; track log) {
+        <admin-history-log [log]="log" class="row mb-1 p-1 border rounded"></admin-history-log>
+      }
+    } @else {
+      {{ 'No history.' | translate }}
+    }
+  </section>
+}
 
 

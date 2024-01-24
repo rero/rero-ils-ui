@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,18 +15,19 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ngx-loading-bar [includeSpinner]="false" height="3px"></ngx-loading-bar>
-<ng-container *ngIf="holdings.length > 0">
-  <public-search-holding *ngFor="let holding of holdings"
-                         [holding]="holding"
-                         [viewcode]="viewcode"
-                         [collapsed]="holdingsTotal > 1"
-                         [attr.id]="holding.metadata.pid | idAttribute : {prefix: 'holding'}"
-                         class="card mt-2 w-100">
-  </public-search-holding>
-  <ng-container *ngIf="isLinkShowMore">
+@if (holdings.length > 0) {
+  @for (holding of holdings; track holding) {
+    <public-search-holding [holding]="holding"
+                            [viewcode]="viewcode"
+                            [collapsed]="holdingsTotal > 1"
+                            [attr.id]="holding.metadata.pid | idAttribute : {prefix: 'holding'}"
+                            class="card mt-2 w-100">
+    </public-search-holding>
+  }
+  @if (isLinkShowMore) {
     <button class="btn btn-link p-0 pr-1 show-more-holdings" (click)="showMore($event)">
       <i class="fa fa-plus-square-o"></i> {{ 'Show more' | translate }}
     </button>
     <small>({{ hiddenHoldings }})</small>
-  </ng-container>
-</ng-container>
+  }
+}

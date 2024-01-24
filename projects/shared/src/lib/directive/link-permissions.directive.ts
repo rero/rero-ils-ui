@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
- * Copyright (C) 2019-2022 UCLouvain
+ * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -48,23 +48,23 @@ export class LinkPermissionsDirective implements AfterViewInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _el - ElementRef
-   * @param _renderer - Renderer2
-   * @param _permissionsService - PermissionsService
+   * @param el - ElementRef
+   * @param renderer - Renderer2
+   * @param permissionsService - PermissionsService
    */
   constructor(
-    private _el: ElementRef,
-    private _renderer: Renderer2,
-    private _permissionsService: PermissionsService,
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private permissionsService: PermissionsService,
   ) { }
 
   /** AfterViewInit hook */
   ngAfterViewInit(): void {
-    if (!this._permissionsService.canAccess(this._permissions, this._operator)) {
-      const el : HTMLElement = this._el.nativeElement;
+    if (!this.permissionsService.canAccess(this._permissions, this._operator)) {
+      const el : HTMLElement = this.el.nativeElement;
       const parent = el.parentNode;
-      this._renderer.removeChild(parent, el);
-      parent.append(this._el.nativeElement.textContent);
+      this.renderer.removeChild(parent, el);
+      parent.append(this.el.nativeElement.textContent);
     }
   }
 }

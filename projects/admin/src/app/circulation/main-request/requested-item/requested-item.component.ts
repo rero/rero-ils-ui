@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,8 +16,8 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
 import { LoanState } from '@app/admin/classes/loans';
+import { RecordService } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-requested-item',
@@ -47,16 +47,14 @@ export class RequestedItemComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ====================================================
   /**
    * Constructor
-   * @param _recordService - RecordService
+   * @param recordService - RecordService
    */
-  constructor(
-    private _recordService: RecordService
-  ) { }
+  constructor(private recordService: RecordService) {}
 
   /** OnInit hook */
   ngOnInit() {
     if (this.item) {
-      this._recordService.getRecord('documents', this.item.loan.document_pid, 1, {
+      this.recordService.getRecord('documents', this.item.loan.document_pid, 1, {
         Accept: 'application/rero+json, application/json'
       }).subscribe(document => this.document = document.metadata);
     }

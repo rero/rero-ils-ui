@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,8 +21,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { FormlyModule } from '@ngx-formly/core';
+import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -99,7 +99,7 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
     HttpClientXsrfModule,
     FormsModule,
     FormlyModule.forRoot(),
-    FormlyBootstrapModule,
+    FormlyPrimeNGModule,
     CoreModule,
     RecordModule,
     ReactiveFormsModule,

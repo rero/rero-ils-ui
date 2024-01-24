@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { extractIdOnRef } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { combineLatest, Observable, of } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AcqOrderApiService } from '../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../api/acq-receipt-api.service';
@@ -28,20 +28,20 @@ import { IAcqReceipt } from '../../classes/receipt';
 @Injectable({
   providedIn: 'root'
 })
-export class CanOrderReceiptGuard implements CanActivate {
+export class CanOrderReceiptGuard  {
 
   /**
    * Constructor
-   * @param _acqOrderApiService - AcqOrderApiService
-   * @param _acqReceiptApiService - AcqReceiptApiService
-   * @param _router - Router
-   * @param _userService - UserService
+   * @param acqOrderApiService - AcqOrderApiService
+   * @param acqReceiptApiService - AcqReceiptApiService
+   * @param router - Router
+   * @param userService - UserService
    */
   constructor(
-    private _acqOrderApiService: AcqOrderApiService,
-    private _acqReceiptApiService: AcqReceiptApiService,
-    private _router: Router,
-    private _userService: UserService
+    private acqOrderApiService: AcqOrderApiService,
+    private acqReceiptApiService: AcqReceiptApiService,
+    private router: Router,
+    private userService: UserService
   ) {}
 
   /**
@@ -58,7 +58,7 @@ export class CanOrderReceiptGuard implements CanActivate {
           return this._orderQuery(orderPid).pipe(
             map((validate: boolean) => {
               if (!validate) {
-                this._router.navigate(['/errors/403'], { skipLocationChange: true });
+                this.router.navigate(['/errors/403'], { skipLocationChange: true });
                 return false;
               }
               return true;
@@ -71,7 +71,7 @@ export class CanOrderReceiptGuard implements CanActivate {
           ]).pipe(
             map(([order, receipt]) => {
               if (!order || !receipt) {
-                this._router.navigate(['/errors/403'], { skipLocationChange: true });
+                this.router.navigate(['/errors/403'], { skipLocationChange: true });
                 return false;
               }
               return true;
@@ -79,7 +79,7 @@ export class CanOrderReceiptGuard implements CanActivate {
           );
         }
       } else {
-        this._router.navigate(['/errors/400'], { skipLocationChange: true });
+        this.router.navigate(['/errors/400'], { skipLocationChange: true });
         return of(false);
       }
   }
@@ -92,9 +92,9 @@ export class CanOrderReceiptGuard implements CanActivate {
    * @returns Observable<boolean>: True if a receipt could be managed, False otherwise
    */
   private _orderQuery(orderPid: string): Observable<boolean> {
-    return this._acqOrderApiService.getOrder(orderPid).pipe(
+    return this.acqOrderApiService.getOrder(orderPid).pipe(
         map((order: IAcqOrder) => {
-          if (this._userService.user.currentLibrary !== extractIdOnRef(order.library.$ref)) {
+          if (this.userService.user.currentLibrary !== extractIdOnRef(order.library.$ref)) {
             return false;
           }
           if (!order.is_current_budget) {
@@ -114,7 +114,7 @@ export class CanOrderReceiptGuard implements CanActivate {
    * @returns Observable<boolean>: True if the receipt is well related to this order
    */
   private _receiptQuery(receiptPid: string, orderPid: string): Observable<boolean> {
-    return this._acqReceiptApiService.getReceipt(receiptPid).pipe(
+    return this.acqReceiptApiService.getReceipt(receiptPid).pipe(
         map((receipt: IAcqReceipt) => orderPid === receipt.acq_order.pid),
         catchError(() => of(false))
       );

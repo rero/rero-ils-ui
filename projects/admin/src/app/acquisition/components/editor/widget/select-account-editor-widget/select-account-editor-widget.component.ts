@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
  */
 import { getCurrencySymbol } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { IAcqAccount } from '@app/admin/acquisition/classes/account';
+import { OrganisationService } from '@app/admin/service/organisation.service';
 import { FieldType } from '@ngx-formly/core';
 import { ApiService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { IAcqAccount } from '@app/admin/acquisition/classes/account';
-import { OrganisationService } from '@app/admin/service/organisation.service';
 import { AcqAccountApiService } from '../../../../api/acq-account-api.service';
 import { orderAccountsAsTree } from '../../../../utils/account';
 
@@ -41,7 +41,7 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
   // GETTER & SETTER ============================================================
   /** Get the current organisation */
   get organisation(): any {
-    return this._organisationService.organisation;
+    return this.organisationService.organisation;
   }
 
   /** Get the currency symbol for the organisation */
@@ -52,24 +52,24 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _acqAccountApiService - AcqAccountApiService
-   * @param _organisationService - OrganisationService
-   * @param _apiService - ApiService
-   * @param _userService - UserService
+   * @param acqAccountApiService - AcqAccountApiService
+   * @param organisationService - OrganisationService
+   * @param apiService - ApiService
+   * @param userService - UserService
    */
   constructor(
-    private _acqAccountApiService: AcqAccountApiService,
-    private _organisationService: OrganisationService,
-    private _apiService: ApiService,
-    private _userService: UserService
+    private acqAccountApiService: AcqAccountApiService,
+    private organisationService: OrganisationService,
+    private apiService: ApiService,
+    private userService: UserService
   ) {
     super();
   }
 
   /** OnInit hook */
   ngOnInit(): void {
-    const libraryPid = this._userService.user.currentLibrary;
-    this._acqAccountApiService.getAccounts(libraryPid).subscribe((accounts: IAcqAccount[]) => {
+    const libraryPid = this.userService.user.currentLibrary;
+    this.acqAccountApiService.getAccounts(libraryPid).subscribe((accounts: IAcqAccount[]) => {
       accounts = orderAccountsAsTree(accounts);
       this.accountList = accounts;
 
@@ -89,7 +89,7 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
    * @param account - The selected account.
    */
   selectAccount(account: IAcqAccount): void {
-    const accountRef = this._apiService.getRefEndpoint('acq_accounts', account.pid);
+    const accountRef = this.apiService.getRefEndpoint('acq_accounts', account.pid);
     this.selectedAccount = account;
     this.formControl.patchValue(accountRef);
   }

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2023 RERO
+ * Copyright (C) 2022-2024 RERO
  * Copyright (C) 2022-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -57,8 +57,8 @@ export class ReceivedIssueComponent implements OnInit {
    */
   get iconTitle(): string {
     return (this.issue.metadata._masked)
-      ? this._translateService.instant('Masked')
-      : this._translateService.instant(this.issue.metadata.issue.status);
+      ? this.translateService.instant('Masked')
+      : this.translateService.instant(this.issue.metadata.issue.status);
   }
 
   /** @return last claim date */
@@ -70,34 +70,34 @@ export class ReceivedIssueComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _holdingService - HoldingService
-   * @param _translateService - TranslateService
-   * @param _recordPermissionService - RecordPermissionService
-   * @param _recordUiService: RecordUiService
-   * @param _issueService: IssueService
-   * @param _userService: UserService
+   * @param holdingService - HoldingService
+   * @param translateService - TranslateService
+   * @param recordPermissionService - RecordPermissionService
+   * @param recordUiService: RecordUiService
+   * @param issueService: IssueService
+   * @param userService: UserService
    */
   constructor(
-    private _holdingService: HoldingsService,
-    private _translateService: TranslateService,
-    private _recordPermissionService: RecordPermissionService,
-    private _recordUiService: RecordUiService,
-    private _issueService: IssueService,
-    private _userService: UserService
+    private holdingService: HoldingsService,
+    private translateService: TranslateService,
+    private recordPermissionService: RecordPermissionService,
+    private recordUiService: RecordUiService,
+    private issueService: IssueService,
+    private userService: UserService
   ) { }
 
   // COMPONENT FUNCTIONS ======================================================
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._recordPermissionService
+    this.recordPermissionService
       .getPermission('items', this.issue.metadata.pid)
-      .subscribe(permission => this.recordPermissions =  this._recordPermissionService.membership(
-        this._userService.user,
+      .subscribe(permission => this.recordPermissions =  this.recordPermissionService.membership(
+        this.userService.user,
         this.issue.metadata.library.pid,
         permission
       ));
-    this.isClaimAllowed = this._issueService.isClaimAllowed(this.issue.metadata.issue.status);
+    this.isClaimAllowed = this.issueService.isClaimAllowed(this.issue.metadata.issue.status);
   }
 
   /**
@@ -108,7 +108,7 @@ export class ReceivedIssueComponent implements OnInit {
   getIcon(realState: boolean = false): string {
     return (this.issue.metadata._masked && !realState)
       ? 'fa-eye-slash text-danger'
-      : this._holdingService.getIcon(this.issue.metadata.issue.status);
+      : this.holdingService.getIcon(this.issue.metadata.issue.status);
   }
 
   /**
@@ -118,7 +118,7 @@ export class ReceivedIssueComponent implements OnInit {
    */
   deleteInfoMessage(issue: any): string {
     return (this.recordPermissions?.delete?.reasons)
-      ? this._recordPermissionService.generateDeleteMessage(this.recordPermissions.delete.reasons)
+      ? this.recordPermissionService.generateDeleteMessage(this.recordPermissions.delete.reasons)
       : '';
   }
 
@@ -127,14 +127,14 @@ export class ReceivedIssueComponent implements OnInit {
    * @param issue: The issue item to delete
    */
   deleteIssue(issue) {
-    this._recordUiService.deleteRecord('items', issue.metadata.pid).subscribe(
+    this.recordUiService.deleteRecord('items', issue.metadata.pid).subscribe(
       () => this.delete.emit(issue)
     );
   }
 
   /** Open claim dialog */
   openClaimEmailDialog(): void {
-    const modalRef = this._issueService.openClaimEmailDialog(this.issue);
+    const modalRef = this.issueService.openClaimEmailDialog(this.issue);
     modalRef.content.recordChange.subscribe((record: any) => this.issue = record);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
- * Copyright (C) 2019-2023 UCLouvain
+ * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2024 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -52,16 +52,16 @@ export class SearchBarConfigService {
 
   /**
    * Constructor
-   * @param _translateService - TranslateService
-   * @param _mainTitlePipe - MainTitlePipe
-   * @param _appSettingsService - AppSettingsService
-   * @param _truncatePipe - TruncateTextPipe
+   * @param translateService - TranslateService
+   * @param mainTitlePipe - MainTitlePipe
+   * @param appSettingsService - AppSettingsService
+   * @param truncatePipe - TruncateTextPipe
    */
   constructor(
-    private _translateService: TranslateService,
-    private _mainTitlePipe: MainTitlePipe,
-    private _appSettingsService: AppSettingsService,
-    private _truncatePipe: TruncateTextPipe
+    private translateService: TranslateService,
+    private mainTitlePipe: MainTitlePipe,
+    private appSettingsService: AppSettingsService,
+    private truncatePipe: TruncateTextPipe
   ) {}
 
   /**
@@ -104,17 +104,17 @@ export class SearchBarConfigService {
   private getDocumentsSuggestions(query: string, documents: any): any[] {
     const values = [];
     documents.hits.hits.map((hit: any) => {
-      const title = this._mainTitlePipe.transform(hit.metadata.title);
+      const title = this.mainTitlePipe.transform(hit.metadata.title);
       let text = title;
       if (title.length > this._maxLengthSuggestion) {
-        text = this._truncatePipe.transform(title, this._maxLengthSuggestion);
+        text = this.truncatePipe.transform(title, this._maxLengthSuggestion);
       }
 
       values.push({
         text: this.highlightSearch(text, query),
         query: title.replace(/[:\-\[\]()/"]/g, ' ').replace(/\s\s+/g, ' '),
         index: 'documents',
-        category: this._translateService.instant('documents')
+        category: this.translateService.instant('documents')
       });
     });
     return values;
@@ -134,7 +134,7 @@ export class SearchBarConfigService {
         text: this.highlightSearch(text, query),
         index: 'entities',
         query: '',
-        category: this._translateService.instant('authors/subjects'),
+        category: this.translateService.instant('authors/subjects'),
         href: this.generateEntityLink(hit.metadata),
         iconCssClass: `fa ${Entity.getIcon(hit.metadata.type)}`
       });
@@ -187,8 +187,8 @@ export class SearchBarConfigService {
    */
   private _getContributionName(metadata: any): string {
     if (metadata.resource_type === 'remote') {
-      const language = this._translateService.currentLang;
-      const order: any = this._appSettingsService.agentLabelOrder;
+      const language = this.translateService.currentLang;
+      const order: any = this.appSettingsService.agentLabelOrder;
       const key = (language in order) ? language : 'fallback';
       const agentSources = (key === 'fallback')
         ? order[order[key]]
@@ -200,7 +200,7 @@ export class SearchBarConfigService {
         }
       }
     } else {
-      const key = `authorized_access_point_${this._translateService.currentLang}`;
+      const key = `authorized_access_point_${this.translateService.currentLang}`;
       const accessPointKey = Object.keys(metadata).includes(key) ? key : 'authorized_access_point';
       return metadata[accessPointKey];
     }

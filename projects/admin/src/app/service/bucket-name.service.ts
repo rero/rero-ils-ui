@@ -33,6 +33,7 @@ export class BucketNameService implements IBucketNameService {
    * Constructor
    * @param translateService - TranslateService
    * @param organisationApiService - OrganisationApiService
+   * @param libraryApiService - LibraryApiService
    */
   constructor(
     private translateService: TranslateService,
@@ -47,11 +48,13 @@ export class BucketNameService implements IBucketNameService {
    * @returns Observable of string
    */
   transform(aggregationKey: string, value: string): Observable<string> {
+    console.log();
     switch (aggregationKey) {
       case 'claims_count':
         const label = Number(value) < 2 ? _('{{count}} claim') : _('{{count}} claims');
         return of(this.translateService.instant(label, { count: value }));
       case 'language': return of(this.translateService.instant(`lang_${value}`));
+      case 'transaction_library':
       case 'library': return this.libraryApiService.getByPid(value).pipe(map(record => record.name));
       case 'organisation': return this.organisationApiService.getByPid(value).pipe(map(record => record.name));
       default: return of(this.translateService.instant(value));

@@ -1,0 +1,74 @@
+{
+  "/patrons/*": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/patrons": "https://localhost:5000/patrons"
+    },
+    "headers": {
+      "Connection": "keep-alive"
+    }
+  },
+  "/schemas": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/schemas": "https://localhost:5000/schemas"
+    },
+    "headers": {
+      "Connection": "keep-alive"
+    }
+  },
+  "/api/*": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": "https://localhost:5000/api"
+    },
+    "headers": {
+      "Connection": "keep-alive"
+    }
+  },
+  "/notifications/*": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/notifications": "https://localhost:5000/notifications"
+    },
+    "headers": {
+      "Connection": "keep-alive"
+    }
+  },
+  "/static/*": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/static": "https://localhost:5000/static"
+    },
+    "headers": {
+      "Connection": "keep-alive"
+    }
+  },
+  "/lang/*": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": "https://localhost:5000/lang"
+    },
+    "headers": {
+      "Connection": "keep-alive"
+    }
+  }
+}

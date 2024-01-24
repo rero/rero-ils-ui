@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2023 RERO
+  Copyright (C) 2021-2024 RERO
   Copyright (C) 2021-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -16,67 +16,78 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div class="row receipt">
-  <ng-container *ngIf="receipt else loading">
-    <!-- RECEIPT INFORMATION COLUMN ======================================= -->
+  @if (receipt) {
+    <!-- RECEIPT INFORMATION COLUMN -->
     <div class="col container">
       <div class="row">
         <!-- FIRST ROW :: receipt detail (always visible) -->
         <div class="col-9 d-flex">
-          <button type="button" class="btn-show-more"
-                  *ngIf="collapsable"
-                  [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
-                  (click)="isCollapsed = !isCollapsed"
-                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
-          </button>
+          @if (collapsable) {
+            <button type="button" class="btn-show-more"
+                    [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
+                    (click)="isCollapsed = !isCollapsed"
+                    [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
+            </button>
+          }
           <label>
-            <ng-container *ngIf="recordPermissions; else noLink">
+            @if (recordPermissions) {
               <a [routerLink]="['/records', 'acq_receipts', 'detail', receipt.pid]">{{ receipt.reference }}</a>
-            </ng-container>
-            <ng-template #noLink>{{ receipt.reference }}</ng-template>
-            <span class="reception-dates" *ngIf="receipt | receptionDates as reception_dates">
-              ({{ reception_dates.join(', ') }})
-            </span>
+
+            } @else {
+              {{ receipt.reference }}
+            }
+            @if (receipt | receptionDates; as reception_dates) {
+              <span class="reception-dates">
+                ({{ reception_dates.join(', ') }})
+              </span>
+            }
           </label>
-          <span class="bullet-notes" *ngIf="receipt.notes.length > 0 && isCollapsed">
-          <ng-container *ngFor="let note of receipt.notes">
-            <i class="fa fa-circle fa-bullet bullet-{{ note | noteBadgeColor }}" aria-hidden="true" title="{{ note.type | translate }}"></i>
-          </ng-container>
-        </span>
-          <div class="ml-auto" *ngIf="receipt.quantity">
-            <div class="badge badge-info small">
-              <i class="fa fa-sign-in mr-1"></i>
-              {{ receipt.quantity }}
-              {{ receipt.quantity | i18nPlural: {'=1': 'item', 'other': 'items'} | translate }}
+          @if (receipt.notes.length > 0 && isCollapsed) {
+            <span class="bullet-notes">
+              @for (note of receipt.notes; track note) {
+                <i class="fa fa-circle fa-bullet bullet-{{ note | noteBadgeColor }}" aria-hidden="true" title="{{ note.type | translate }}"></i>
+              }
+            </span>
+          }
+          @if (receipt.quantity) {
+            <div class="ml-auto">
+              <div class="badge badge-info small">
+                <i class="fa fa-sign-in mr-1"></i>
+                {{ receipt.quantity }}
+                {{ receipt.quantity | i18nPlural: {'=1': 'item', 'other': 'items'} | translate }}
+              </div>
             </div>
-          </div>
+          }
         </div>
         <div class="col-3 amount">
           <div class="total-amount">{{ receipt.total_amount | currency:receipt.currency:'symbol' }}</div>
         </div>
-        <ng-container *ngIf="!isCollapsed">
+        @if (!isCollapsed) {
           <!-- RECEPTION LINES ROWS :: One line for each reception line -->
-          <ng-container *ngFor="let line of receipt.receipt_lines; let first = first;">
+          @for (line of receipt.receipt_lines; track line; let first = $first) {
             <div class="col-9 detail label d-inline-flex" [class.separator]="first">
               <strong>{{ line.quantity }}</strong><span class="mx-2">x</span>
               <div>
-                <ng-container *ngIf="line.document.pid | getRecord: 'documents' | async as document">
-                  <shared-document-brief-view [record]="document.metadata"></shared-document-brief-view>
-                </ng-container>
-                <ng-container *ngIf="line.acq_account.pid | getRecord: 'acq_accounts' | async as account">
-                  <span class="account-number">{{ account.metadata.number }}</span>
-                </ng-container>
+                @if (line.document.pid | getRecord: 'documents' | async; as document) {
+                  <shared-document-brief-view [record]="$any(document).metadata"></shared-document-brief-view>
+                }
+                @if ($any(line).acq_account.pid | getRecord: 'acq_accounts' | async; as account) {
+                  <span class="account-number">{{ $any(account).metadata.number }}</span>
+                }
               </div>
             </div>
             <div class="col-3 detail amount d-flex" [class.separator]="first">
               <div class="computation">
-                ({{ line.quantity }} x {{ line.amount | currency:receipt.currency:'symbol' }}<ng-container *ngIf="line.vat_rate">
-                + {{ line.vat_rate }}%</ng-container>)
+                ({{ line.quantity }} x {{ line.amount | currency:receipt.currency:'symbol' }}
+                @if (line.vat_rate) {
+                  + {{ line.vat_rate }}%
+                })
               </div>
               <div class="total-amount ml-auto">{{ line | receiptLineTotalAmount | currency:receipt.currency:'symbol' }}</div>
             </div>
-          </ng-container>
+          }
           <!-- RECEIPT ADJUSTMENTS :: One line for each adjustment -->
-          <ng-container *ngFor="let adjustment of receipt.amount_adjustments">
+          @for (adjustment of receipt.amount_adjustments; track adjustment) {
             <div class="col-9 detail label">
               <i class="fa fa-long-arrow-right mr-3"></i>
               {{ adjustment.label }}
@@ -84,52 +95,53 @@
             <div class="col-3 detail amount">
               <div class="total-amount">{{ adjustment.amount | currency:receipt.currency:'symbol' }}</div>
             </div>
-          </ng-container>
+          }
           <!-- RECEIPT NOTES -->
-          <ng-container *ngFor="let note of receipt.notes">
+          @for (note of receipt.notes; track note) {
             <div class="col-9 detail label">
               <span class="mr-3 badge badge-{{ note | noteBadgeColor }}">{{ note.type | translate }}</span>
               <span [innerHTML]="note.content | nl2br"></span>
             </div>
             <div class="col-3 detail amount">&nbsp;</div>
-          </ng-container>
-        </ng-container>
+          }
+        }
       </div>
     </div>
-    <!-- ACTION BUTTON COLUMN ============================================= -->
-    <div class="col-2 actions-column pl-0 text-right" *ngIf="recordPermissions && allowActions">
-      <!-- CONTINUE BUTTON ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <shared-action-button
-        [title]="'Resume' | translate"
-        [class]="'btn-outline-primary mr-1'"
-        [disabled]="!recordPermissions.create.can"
-        [url]="['/', 'acquisition', 'acq_orders', receipt.acq_order.pid, 'receive']"
-        [queryParams]="{ receipt: receipt.pid }"
-        [message]="resumeInfoMessage"
-      >
-        <i class="fa fa-forward"></i> {{ 'Resume' | translate }}
-      </shared-action-button>
-      <shared-action-button
-        [title]="'Edit' | translate"
-        [class]="'btn-outline-primary mr-1'"
-        [disabled]="!recordPermissions.update.can"
-        [url]="['/records', 'acq_receipts', 'edit', receipt.pid]"
-        [message]="editInfoMessage"
-      >
-        <i class="fa fa-pencil"></i>
-      </shared-action-button>
-      <shared-action-button
-        [title]="'Delete' | translate"
-        [class]="'btn-outline-danger'"
-        [disabled]="!recordPermissions.delete.can"
-        [message]="deleteInfoMessage"
-        (btnClick)="deleteReceipt()"
-      >
-        <i class="fa fa-trash"></i>
-      </shared-action-button>
-    </div>
-  </ng-container>
+    <!-- ACTION BUTTON COLUMN -->
+    @if (recordPermissions && allowActions) {
+      <div class="col-2 actions-column pl-0 text-right">
+        <!-- CONTINUE BUTTON -->
+        <shared-action-button
+          [title]="'Resume' | translate"
+          [class]="'btn-outline-primary mr-1'"
+          [disabled]="!recordPermissions.create.can"
+          [url]="['/', 'acquisition', 'acq_orders', receipt.acq_order.pid, 'receive']"
+          [queryParams]="{ receipt: receipt.pid }"
+          [message]="resumeInfoMessage"
+        >
+          <i class="fa fa-forward"></i> {{ 'Resume' | translate }}
+        </shared-action-button>
+        <shared-action-button
+          [title]="'Edit' | translate"
+          [class]="'btn-outline-primary mr-1'"
+          [disabled]="!recordPermissions.update.can"
+          [url]="['/records', 'acq_receipts', 'edit', receipt.pid]"
+          [message]="editInfoMessage"
+        >
+          <i class="fa fa-pencil"></i>
+        </shared-action-button>
+        <shared-action-button
+          [title]="'Delete' | translate"
+          [class]="'btn-outline-danger'"
+          [disabled]="!recordPermissions.delete.can"
+          [message]="deleteInfoMessage"
+          (btnClick)="deleteReceipt()"
+        >
+          <i class="fa fa-trash"></i>
+        </shared-action-button>
+      </div>
+    }
+  } @else {
+    <i class="fa fa-spinner fa-pulse py-2"></i>
+  }
 </div>
-<ng-template #loading>
-  <i class="fa fa-spinner fa-pulse py-2"></i>
-</ng-template>

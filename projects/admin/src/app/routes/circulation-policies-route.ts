@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -83,8 +83,8 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
             },
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
               const formWidget = jsonSchema.widget;
-              if (formWidget?.formlyConfig?.templateOptions?.fieldMap) {
-                switch (formWidget.formlyConfig.templateOptions.fieldMap) {
+              if (formWidget?.formlyConfig?.props?.fieldMap) {
+                switch (formWidget.formlyConfig.props.fieldMap) {
                   case 'library':
                     return this._populateLibraryByCurrentUser(field);
                   case 'notification_template':
@@ -126,11 +126,10 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
     field.hooks = {
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
-        const user = this._routeToolService.userService.user;
-        const recordService = this._routeToolService.recordService;
-        const apiService = this._routeToolService.apiService;
+        const {user} = this._routeToolService.userService;
+        const { apiService, recordService } = this._routeToolService;
         const query = `organisation.pid:${user.currentOrganisation}`;
-        f.templateOptions.options = recordService.getRecords(
+        f.props.options = recordService.getRecords(
           'libraries',
           query, 1,
           RecordService.MAX_REST_RESULTS_SIZE,
@@ -141,7 +140,7 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
         ).pipe(
           map((result: Record) =>
             this._routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-          map(hits => {
+          map((hits: any) => {
             return hits.map((hit: any) => {
               return {
                 label: hit.metadata.name,
@@ -168,7 +167,7 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
     field.hooks = {
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
-        f.templateOptions.options = this._routeToolService.httpClient
+        f.props.options = this._routeToolService.httpClient
           .get('/api/notifications/templates/list')
           .pipe(
             map((response: any) => {
@@ -189,9 +188,9 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
    */
   private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
     const service = this._routeToolService.getInjectorToken(OrganisationService);
-    field.templateOptions.addonLeft = {
-      text: getCurrencySymbol(service.organisation.default_currency, 'wide')
-    };
+    field.props.addonLeft = [
+      getCurrencySymbol(service.organisation.default_currency, 'wide')
+    ];
     return field;
   }
 
@@ -201,11 +200,10 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
    * @return FormlyFieldConfig
    */
   private _feeAmountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
-    const translate = this._routeToolService.getInjectorToken(TranslateService);
     field = this._amountSymbol(field);
-    field.templateOptions.addonRight = {
-      text: '/ ' + translate.instant('day')
-    };
+    field.props.addonRight = [
+      '/ day'
+    ];
     return field;
   }
 }

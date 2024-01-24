@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,12 +20,12 @@ import { getCurrencySymbol } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
-import { OrganisationService } from '@app/admin/service/organisation.service';
-import { IAcqAccount } from '../../../classes/account';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
+import { IAcqAccount } from '../../../classes/account';
 import { orderAccountsAsTree } from '../../../utils/account';
 
 @Component({
@@ -44,14 +44,14 @@ export class AccountTransferComponent implements OnInit {
   form: UntypedFormGroup;
 
   /** the accounts available for transfer */
-  private _accountsTree: IAcqAccount[] = [];
+  private accountsTree: IAcqAccount[] = [];
   /** store the selected budgets */
-  private _selectedBudgetPid: string = undefined;
+  private selectedBudgetPid: string = undefined;
 
   // GETTER & SETTER ============================================================
   /** Get the current organisation */
   get organisation(): any {
-    return this._organisationService.organisation;
+    return this.organisationService.organisation;
   }
 
   /** Get the currency symbol for the organisation */
@@ -62,24 +62,24 @@ export class AccountTransferComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ========================================================
   /**
    * Constructor
-   * @param _acqAccountApiService - AcqAccountApiService
-   * @param _organisationService - OrganisationService
-   * @param _formBuilder - FormBuilder,
-   * @param _toastrService - ToastrService,
-   * @param _translateService - TranslateService
-   * @param _router - Router
-   * @param _userService - UserService
+   * @param acqAccountApiService - AcqAccountApiService
+   * @param organisationService - OrganisationService
+   * @param formBuilder - FormBuilder,
+   * @param toastrService - ToastrService,
+   * @param translateService - TranslateService
+   * @param router - Router
+   * @param userService - UserService
    */
   constructor(
-    private _acqAccountApiService: AcqAccountApiService,
-    private _organisationService: OrganisationService,
-    private _formBuilder: UntypedFormBuilder,
-    private _toastrService: ToastrService,
-    private _translateService: TranslateService,
-    private _router: Router,
-    private _userService: UserService
+    private acqAccountApiService: AcqAccountApiService,
+    private organisationService: OrganisationService,
+    private formBuilder: UntypedFormBuilder,
+    private toastrService: ToastrService,
+    private translateService: TranslateService,
+    private router: Router,
+    private userService: UserService
   ) {
-    this.form = this._formBuilder.group({
+    this.form = this.formBuilder.group({
       source: [undefined, Validators.required],
       target: [undefined, Validators.required],
       amount: [0, Validators.min(0.01)]
@@ -106,7 +106,7 @@ export class AccountTransferComponent implements OnInit {
 
   /** Handle event when a budget is selected */
   selectBudget(event: any): void {
-    this._selectedBudgetPid = event.target.value;
+    this.selectedBudgetPid = event.target.value;
     this._filterAccountToDisplay();
   }
 
@@ -121,14 +121,14 @@ export class AccountTransferComponent implements OnInit {
 
   /** Submit the form */
   submit(): void {
-    this._acqAccountApiService
+    this.acqAccountApiService
       .transferFunds(this.form.value.source.pid, this.form.value.target.pid, this.form.value.amount)
       .subscribe(
         () => {
-          this._toastrService.success(this._translateService.instant('Fund transfer successful!'));
-          this._router.navigate(['/', 'acquisition', 'accounts']);
+          this.toastrService.success(this.translateService.instant('Fund transfer successful!'));
+          this.router.navigate(['/', 'acquisition', 'accounts']);
         },
-        (err) => { this._toastrService.error(this._translateService.instant(err.error.message)); }
+        (err) => { this.toastrService.error(this.translateService.instant(err.error.message)); }
       );
   }
 
@@ -148,20 +148,19 @@ export class AccountTransferComponent implements OnInit {
   // PRIVATE FUNCTIONS ========================================================
   /** Load accounts and budgets. Order accounts as a hierarchical tree */
   private _loadData(): void {
-    const libraryPid = this._userService.user.currentLibrary;
-    this._acqAccountApiService
+    const libraryPid = this.userService.user.currentLibrary;
+    this.acqAccountApiService
       .getAccounts(libraryPid, undefined, {sort: 'depth'})
       .subscribe((accounts: IAcqAccount[]) => {
-        this._accountsTree = orderAccountsAsTree(accounts);
-        this.budgets = Array.from(new Set(this._accountsTree.map((account: IAcqAccount) => account.budget.pid)));
-        this._selectedBudgetPid = this.budgets.find(Boolean);  // get the first element
+        this.accountsTree = orderAccountsAsTree(accounts);
+        this.budgets = Array.from(new Set(this.accountsTree.map((account: IAcqAccount) => account.budget.pid)));
+        this.selectedBudgetPid = this.budgets.find(Boolean);  // get the first element
         this._filterAccountToDisplay();
       });
   }
 
   /** Allow to filter loaded accounts by the selected budget */
   private _filterAccountToDisplay(): void {
-    this.accountsToDisplay = this._accountsTree.filter((acc: IAcqAccount) => acc.budget.pid === this._selectedBudgetPid);
+    this.accountsToDisplay = this.accountsTree.filter((acc: IAcqAccount) => acc.budget.pid === this.selectedBudgetPid);
   }
-
 }

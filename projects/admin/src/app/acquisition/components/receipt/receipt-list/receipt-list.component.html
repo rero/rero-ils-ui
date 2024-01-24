@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2023 RERO
+  Copyright (C) 2021-2024 RERO
   Copyright (C) 2021-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -22,38 +22,39 @@
       <span class="badge badge-secondary ml-2">{{ numberOfReceipt }}</span>
     </h5>
     <div class="col-4 text-right">
-      <ng-container *ngIf="recordPermissions; else space">
-        <a *ngIf="recordPermissions.create.can; else createInfo"
-         class="btn btn-sm btn-outline-primary"
-         [routerLink]="['/', 'acquisition', 'acq_orders', order.pid, 'receive']"
-        >
-          <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
-        </a>
-        <ng-template #createInfo>
+      @if (recordPermissions) {
+        @if (recordPermissions.create.can) {
+          <a class="btn btn-sm btn-outline-primary"
+            [routerLink]="['/', 'acquisition', 'acq_orders', order.pid, 'receive']"
+          >
+            <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
+          </a>
+        } @else {
           <button type="button" class="btn btn-sm btn-outline-primary disabled"
                   [popover]="tolTemplate" triggers="mouseenter:mouseleave">
             <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
           </button>
           <ng-template #tolTemplate><div [innerHtml]="createInfoMessage | nl2br"></div></ng-template>
-        </ng-template>
-      </ng-container>
-      <ng-template #space>&nbsp;</ng-template>
+        }
+      } @else {
+        &nbsp;
+      }
     </div>
   </div>
   <div class="card-body p-0">
-    <ng-container *ngIf="receipts; else loading">
-      <ng-container *ngIf="receipts.length > 0; else noOrderLines">
-        <admin-receipt-summary *ngFor="let receipt of receipts"
-                               [receiptPid]="receipt.pid"
-                               [allowActions]="true"
-                               [recordPermissions]="recordPermissions"
-                               >
-        </admin-receipt-summary>
-      </ng-container>
-      <ng-template #noOrderLines>
+    @if (receipts) {
+      @if (receipts.length > 0) {
+        @for (receipt of receipts; track receipt) {
+          <admin-receipt-summary [receiptPid]="receipt.pid"
+            [allowActions]="true"
+            [recordPermissions]="recordPermissions"
+          ></admin-receipt-summary>
+        }
+      } @else {
         <div class="py-3" translate>No receipt</div>
-      </ng-template>
-    </ng-container>
-    <ng-template #loading><i class="fa fa-spinner fa-spin"></i></ng-template>
+      }
+    } @else {
+      <i class="fa fa-spinner fa-spin"></i>
+    }
   </div>
 </div>

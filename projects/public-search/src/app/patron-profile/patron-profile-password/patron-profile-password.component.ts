@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2023 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -68,7 +68,7 @@ export class PatronProfilePasswordComponent {
         key: 'password',
         type: 'input',
         focus: true,
-        templateOptions: {
+        props: {
           type: 'password',
           label: _('Current password'),
           required: true,
@@ -77,7 +77,7 @@ export class PatronProfilePasswordComponent {
       {
         key: 'newPassword',
         type: 'input',
-        templateOptions: {
+        props: {
           type: 'password',
           label: _('New password'),
           required: true,
@@ -91,7 +91,7 @@ export class PatronProfilePasswordComponent {
       {
         key: 'confirmPassword',
         type: 'input',
-        templateOptions: {
+        props: {
           type: 'password',
           label: _('Confirm new password'),
           required: true,
@@ -103,39 +103,39 @@ export class PatronProfilePasswordComponent {
   }];
 
   /** Matching fields between invenio and Angular */
-  private _fieldsMatching = {
+  private fieldsMatching = {
     password: 'password',
     new_password: 'newPassword',
     new_password_confirm: 'confirmPassword'
   };
 
   /** Error message for password validator */
-  private _validatePasswordMessage: string = '';
+  private validatePasswordMessage: string = '';
 
   /**
    * Constructor
    *
-   * @param _toastrService - ToastrService
-   * @param _translateService - TranslateService
-   * @param _userApiService - UserApiService
-   * @param _appSettingsService - AppSettingsService
-   * @param _el - ElementRef
+   * @param toastrService - ToastrService
+   * @param translateService - TranslateService
+   * @param userApiService - UserApiService
+   * @param appSettingsService - AppSettingsService
+   * @param el - ElementRef
    */
   constructor(
-    private _toastrService: ToastrService,
-    private _translateService: TranslateService,
-    private _userApiService: UserApiService,
-    private _appSettingsService: AppSettingsService,
-    private _el: ElementRef,
-    @Inject(DOCUMENT) private _document: Document
+    private toastrService: ToastrService,
+    private translateService: TranslateService,
+    private userApiService: UserApiService,
+    private appSettingsService: AppSettingsService,
+    private el: ElementRef,
+    @Inject(DOCUMENT) private document: Document
   ) { }
 
   /** Submit form */
   submit() {
     this.form.updateValueAndValidity();
     if (this.form.valid === false) {
-      this._toastrService.error(
-        this._translateService.instant('The form contains errors.')
+      this.toastrService.error(
+        this.translateService.instant('The form contains errors.')
       );
       return;
     }
@@ -146,21 +146,21 @@ export class PatronProfilePasswordComponent {
       new_password_confirm: this.model.confirmPassword
     };
 
-    this._userApiService.updatePassword(data).pipe(
+    this.userApiService.updatePassword(data).pipe(
       catchError((err: any) =>  of({ success: false, message: err.message, error: err.error.errors[0] }))
     ).subscribe((response: IPasswordResponse) => {
       if (!('success' in response)) {
-        this._toastrService.success(
-          this._translateService.instant(response.message)
+        this.toastrService.success(
+          this.translateService.instant(response.message)
         );
         // Close password form and show personal data
         this._redirect();
       } else {
         // Set error on field
-        const formField = this._fieldsMatching[response.error.field];
+        const formField = this.fieldsMatching[response.error.field];
         this.form.get(formField).setErrors({ invalid: { message: response.error.message } });
-        // Make forcus on error field
-        this._el.nativeElement.querySelector(`#${formField}`).focus();
+        // Make focus on error field
+        this.el.nativeElement.querySelector(`#${formField}`).focus();
       }
     });
   }
@@ -169,20 +169,20 @@ export class PatronProfilePasswordComponent {
   validatePassword(): any {
     return {
       expression: (control: UntypedFormControl) => {
-        const value = control.value;
+        const { value } = control;
         if (value == null || value.length === 0) {
           return of(true);
         }
-        return this._userApiService.validatePassword(value).pipe(
+        return this.userApiService.validatePassword(value).pipe(
           debounceTime(500),
           map(() => of(true)),
           catchError((response) => {
-            this._validatePasswordMessage = response.error.message;
+            this.validatePasswordMessage = response.error.message;
             return of(false);
           })
         );
       },
-      message: () => this._translateService.instant(this._validatePasswordMessage)
+      message: () => this.translateService.instant(this.validatePasswordMessage)
     };
   }
 
@@ -193,9 +193,7 @@ export class PatronProfilePasswordComponent {
 
   /** Redirect to external project */
   private _redirect(): void {
-    this._document.location.href = this.referer
-      ? this.referer
-      : this._appSettingsService.baseUrl;
+    this.document.location.href = this.referer || this.appSettingsService.baseUrl;
   }
 }
 

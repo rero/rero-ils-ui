@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -55,14 +55,14 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _remoteTypeahead - MefTypeahead
-   * @param _translateService - TranslateService
-   * @param _permissionService - PermissionsService
+   * @param remoteTypeahead - MefTypeahead
+   * @param translateService - TranslateService
+   * @param permissionService - PermissionsService
    */
   constructor(
-    private _remoteTypeahead: MefTypeahead,
-    private _translateService: TranslateService,
-    private _permissionService: PermissionsService
+    private remoteTypeahead: MefTypeahead,
+    private translateService: TranslateService,
+    private permissionService: PermissionsService
   ) {
     super();
   }
@@ -75,7 +75,7 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
      switchMap((query: string) => {
        const selectedEntityType = this.entityTypeFilters.find(entity => entity.selected) || this.entityTypeFilters[0];
        const options = {filters: {selected: selectedEntityType.value}};
-       return this._remoteTypeahead
+       return this.remoteTypeahead
          .getSuggestions(options, query, this._numberOfSuggestions)
          .pipe(
            map((suggestions: any) => {
@@ -84,7 +84,7 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
             // added manually (see above).
             // In such case, don't create any TypeaheadMatch.
             if (
-              this._permissionService.canAccess(PERMISSIONS.LOCENT_CREATE)
+              this.permissionService.canAccess(PERMISSIONS.LOCENT_CREATE)
               && suggestions.find((suggestion: SuggestionMetadata) => suggestion.column === 1) === undefined
             ) {
               suggestions.push({
@@ -112,7 +112,7 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
        switchMap((value: string) => {
          const selectedEntityType = this.entityTypeFilters.find(entity => entity.selected) || this.entityTypeFilters[0];
          const options = {filters: {selected: selectedEntityType.value}};
-         return this._remoteTypeahead.getValueAsHTML(options, value);
+         return this.remoteTypeahead.getValueAsHTML(options, value);
        })
      );
 
@@ -149,11 +149,11 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
   }
 
   // PRIVATE COMPONENT FUNCTIONS ==============================================
-  /** Build the entity type filters based on `templateOptions` field section. */
+  /** Build the entity type filters based on `props` field section. */
   private _buildEntityTypeFilters(): void {
-    this.to?.filters?.options.map(option => this.entityTypeFilters.push({
+    this.props?.filters?.options.map(option => this.entityTypeFilters.push({
       ...option,
-      ...{selected: option.value === this.to?.filters?.default}
+      ...{selected: option.value === this.props?.filters?.default}
     }));
   }
 
@@ -185,7 +185,7 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
 
   /** Order suggestions by sources */
   private _orderBySources(suggestionSections: SuggestionMetadata[][]): SuggestionMetadata[][] {
-    const sources = this._remoteTypeahead.sources();
+    const sources = this.remoteTypeahead.sources();
     suggestionSections.map((section, index) => {
       const order = [];
       sources.map((source: string) => {
@@ -207,8 +207,8 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
     suggestionSections.map(section => {
       section.map(suggestion => {
         suggestion.group = suggestion.group === 'local'
-          ? this._translateService.instant('link to local authority')
-          : this._translateService.instant('link to authority {{ sourceName }}', {sourceName: suggestion.group})
+          ? this.translateService.instant('link to local authority')
+          : this.translateService.instant('link to authority {{ sourceName }}', {sourceName: suggestion.group})
       });
     });
     return suggestionSections;

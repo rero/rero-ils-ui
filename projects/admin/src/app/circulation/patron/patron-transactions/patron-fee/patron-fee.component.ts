@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,12 +21,11 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
+import { DateTime } from 'luxon';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { PatronTransactionApiService } from 'projects/admin/src/app/api/patron-transaction-api.service';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
-
-import { DateTime } from 'luxon';
 
 @Component({
   selector: 'admin-patron-fee',
@@ -53,24 +52,24 @@ export class PatronFeeComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _recordService - RecordService
-   * @param _bsModalRef - BsModalRef
-   * @param _toastr - ToastrService
-   * @param _translateService - TranslateService
-   * @param _organisationService - OrganisationService
-   * @param _userService - UserService
-   * @param _patronTransactionApiService - PatronTransactionApiService
-   * @param _apiService - ApiService
+   * @param recordService - RecordService
+   * @param bsModalRef - BsModalRef
+   * @param toastr - ToastrService
+   * @param translateService - TranslateService
+   * @param organisationService - OrganisationService
+   * @param userService - UserService
+   * @param patronTransactionApiService - PatronTransactionApiService
+   * @param apiService - ApiService
    */
   constructor(
-    private _recordService: RecordService,
-    private _bsModalRef: BsModalRef,
-    private _toastr: ToastrService,
-    private _translateService: TranslateService,
-    private _organisationService: OrganisationService,
-    private _userService: UserService,
-    private _patronTransactionApiService: PatronTransactionApiService,
-    private _apiService: ApiService
+    private recordService: RecordService,
+    private bsModalRef: BsModalRef,
+    private toastr: ToastrService,
+    private translateService: TranslateService,
+    private organisationService: OrganisationService,
+    private userService: UserService,
+    private patronTransactionApiService: PatronTransactionApiService,
+    private apiService: ApiService
   ) { }
 
   /** OnInit Hook */
@@ -78,7 +77,7 @@ export class PatronFeeComponent implements OnInit {
     if (!this.patronPid) {
       this.closeModal();
     }
-    const librarySchema$ = this._recordService.getSchemaForm('patron_transactions');
+    const librarySchema$ = this.recordService.getSchemaForm('patron_transactions');
     librarySchema$.subscribe((schema: any) => {
       this._initForm(schema.schema.properties);
     });
@@ -93,19 +92,19 @@ export class PatronFeeComponent implements OnInit {
     if (model.creation_date instanceof Date) {
       model.creation_date = DateTime.fromObject(model.creation_date).toISO();
     }
-    this._patronTransactionApiService.addFee(model).subscribe(
+    this.patronTransactionApiService.addFee(model).subscribe(
       () => {
         this.onSubmit.next('submit');
         this.closeModal();
-        this._toastr.success(
-          this._translateService.instant('Added a new fee.'),
-          this._translateService.instant('Patron transaction')
+        this.toastr.success(
+          this.translateService.instant('Added a new fee.'),
+          this.translateService.instant('Patron transaction')
         );
       },
       () => {
-        this._toastr.error(
-          this._translateService.instant('An error has occurred. Please try again.'),
-          this._translateService.instant('Patron transaction'),
+        this.toastr.error(
+          this.translateService.instant('An error has occurred. Please try again.'),
+          this.translateService.instant('Patron transaction'),
           { disableTimeOut: true }
         );
       }
@@ -114,7 +113,7 @@ export class PatronFeeComponent implements OnInit {
 
   /** Close modal box */
   closeModal(): void {
-    this._bsModalRef.hide();
+    this.bsModalRef.hide();
   }
 
   /** Init form model */
@@ -122,7 +121,7 @@ export class PatronFeeComponent implements OnInit {
     this.formFields = [{
       key: 'type',
       type: 'selectWithSort',
-      templateOptions: {
+      props: {
         label: 'Type',
         required: true,
         options: properties.type.form.options
@@ -130,25 +129,25 @@ export class PatronFeeComponent implements OnInit {
     }, {
       key: 'total_amount',
       type: 'input',
-      templateOptions: {
+      props: {
         type: 'number',
         label: 'Amount',
         required: true,
-        addonLeft: {
-          text: getCurrencySymbol(this._organisationService.organisation.default_currency, 'wide')
-        }
+        addonLeft: [
+          getCurrencySymbol(this.organisationService.organisation.default_currency, 'wide')
+        ]
       }
     }, {
       key: 'note',
       type: 'input',
-      templateOptions: {
+      props: {
         label: 'Note'
       }
     }, {
       key: 'creation_date',
       type: 'dateTimePicker',
       wrappers: ['form-field'],
-      templateOptions: {
+      props: {
         label: 'Date',
         required: true,
         dateFormat: 'yy-mm-dd',
@@ -161,21 +160,21 @@ export class PatronFeeComponent implements OnInit {
       total_amount: null,
       creation_date: new Date(),
       patron: {
-        $ref: this._apiService.getRefEndpoint('patrons', this.patronPid)
+        $ref: this.apiService.getRefEndpoint('patrons', this.patronPid)
       },
       organisation: {
-        $ref: this._apiService.getRefEndpoint('organisations', this.organisationPid)
+        $ref: this.apiService.getRefEndpoint('organisations', this.organisationPid)
       },
       library: {
-        $ref: this._apiService.getRefEndpoint('libraries', this._userService.user.currentLibrary)
+        $ref: this.apiService.getRefEndpoint('libraries', this.userService.user.currentLibrary)
       },
       status: 'open',
       event: {
         operator: {
-          $ref: this._apiService.getRefEndpoint('patrons', this._userService.user.patronLibrarian.pid)
+          $ref: this.apiService.getRefEndpoint('patrons', this.userService.user.patronLibrarian.pid)
         },
         library: {
-          $ref: this._apiService.getRefEndpoint('libraries', this._userService.user.currentLibrary)
+          $ref: this.apiService.getRefEndpoint('libraries', this.userService.user.currentLibrary)
         }
       }
     }

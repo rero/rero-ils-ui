@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { RecordService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { AbstractCanAddGuard } from './abstract-can-add.guard';
@@ -23,18 +23,18 @@ import { AbstractCanAddGuard } from './abstract-can-add.guard';
 @Injectable({
   providedIn: 'root'
 })
-export class CanAddOrderLineGuard extends AbstractCanAddGuard implements CanActivate {
+export class CanAddOrderLineGuard extends AbstractCanAddGuard  {
 
   /**
    * Constructor
-   * @param _recordService - RecordService
-   * @param _router - Router
+   * @param recordService - RecordService
+   * @param router - Router
    */
    constructor(
-    _recordService: RecordService,
-    _router: Router
+    recordService: RecordService,
+    router: Router
   ) {
-    super(_recordService, _router);
+    super(recordService, router);
   }
 
   /**
@@ -46,7 +46,7 @@ export class CanAddOrderLineGuard extends AbstractCanAddGuard implements CanActi
   canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
     const orderPid = route.queryParams.order;
     if (!orderPid) {
-      this._router.navigate(['/errors/400'], { skipLocationChange: true });
+      this.router.navigate(['/errors/400'], { skipLocationChange: true });
       return of(false);
     }
     return this.canAdd('acq_orders', orderPid);

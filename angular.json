@@ -5,7 +5,11 @@
   "projects": {
     "admin": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
       "root": "projects/admin",
       "sourceRoot": "projects/admin/src",
       "prefix": "admin",
@@ -40,8 +44,11 @@
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeicons/primeicons.css",
+              "node_modules/primeflex/primeflex.min.css",
+              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+              "node_modules/ngx-spinner/animations/ball-zig-zag.css",
               "projects/admin/src/app/scss/styles.scss",
-              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css"
+              "projects/shared/src/scss/styles.scss"
             ],
             "scripts": [],
             "vendorChunk": true,
@@ -85,18 +92,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "admin:build"
+            "buildTarget": "admin:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "admin:build:production"
+              "buildTarget": "admin:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "admin:build"
+            "buildTarget": "admin:build"
           }
         },
         "test": {
@@ -150,7 +157,6 @@
             "main": "projects/public-holdings-items/src/main.ts",
             "polyfills": "projects/public-holdings-items/src/polyfills.ts",
             "tsConfig": "projects/public-holdings-items/tsconfig.app.json",
-            "aot": true,
             "assets": [
               {
                 "glob": "**/*.json",
@@ -163,7 +169,15 @@
                 "output": "/assets/"
               }
             ],
-            "styles": ["projects/public-search/src/app/scss/styles.scss"],
+            "styles": [
+              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeflex/primeflex.min.css",
+              "node_modules/ngx-spinner/animations/ball-zig-zag.css",
+              "projects/public-search/src/app/scss/styles.scss",
+              "projects/shared/src/scss/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -178,7 +192,6 @@
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -195,19 +208,19 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "public-holdings-items:build",
-            "port": 4201
+            "port": 4201,
+            "buildTarget": "public-holdings-items:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "public-holdings-items:build:production"
+              "buildTarget": "public-holdings-items:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "public-holdings-items:build"
+            "buildTarget": "public-holdings-items:build"
           }
         },
         "e2e": {
@@ -265,7 +278,12 @@
               }
             ],
             "styles": [
-              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css"
+              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeflex/primeflex.min.css",
+              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+              "projects/shared/src/scss/styles.scss"
             ],
             "scripts": [],
             "vendorChunk": true,
@@ -309,19 +327,19 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "public-search:build",
-            "port": 4202
+            "port": 4202,
+            "buildTarget": "public-search:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "public-search:build:production"
+              "buildTarget": "public-search:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "public-search:build"
+            "buildTarget": "public-search:build"
           }
         },
         "test": {
@@ -353,8 +371,8 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "projects/public-search/src/**/*.ts",
-              "projects/public-search/src/**/*.html"
+              "projects/public-search/**/*.ts",
+              "projects/public-search/**/*.html"
             ]
           }
         }
@@ -376,7 +394,6 @@
             "main": "projects/search-bar/src/main.ts",
             "polyfills": "projects/search-bar/src/polyfills.ts",
             "tsConfig": "projects/search-bar/tsconfig.app.json",
-            "aot": true,
             "assets": [
               {
                 "glob": "**/*.json",
@@ -404,7 +421,6 @@
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -421,19 +437,19 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "search-bar:build",
-            "port": 4203
+            "port": 4203,
+            "buildTarget": "search-bar:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "search-bar:build:production"
+              "buildTarget": "search-bar:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "search-bar:build"
+            "buildTarget": "search-bar:build"
           }
         },
         "e2e": {
@@ -530,7 +546,10 @@
                 "output": "/assets/"
               }
             ],
-            "styles": ["projects/public-search/src/app/scss/styles.scss"],
+            "styles": [
+              "projects/public-search/src/app/scss/styles.scss",
+              "projects/shared/src/scss/styles.scss"
+            ],
             "scripts": [],
             "vendorChunk": true,
             "extractLicenses": false,
@@ -574,19 +593,19 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "public-patron-profile:build",
-            "port": 4204
+            "port": 4204,
+            "buildTarget": "public-patron-profile:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "public-patron-profile:build:production"
+              "buildTarget": "public-patron-profile:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "public-patron-profile:build"
+            "buildTarget": "public-patron-profile:build"
           }
         },
         "e2e": {
@@ -628,7 +647,6 @@
             "main": "projects/public-user-profile-edit/src/main.ts",
             "polyfills": "projects/public-user-profile-edit/src/polyfills.ts",
             "tsConfig": "projects/public-user-profile-edit/tsconfig.app.json",
-            "aot": true,
             "assets": [
               {
                 "glob": "**/*.json",
@@ -641,7 +659,13 @@
                 "output": "/assets/"
               }
             ],
-            "styles": [],
+            "styles": [
+              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeflex/primeflex.min.css",
+              "projects/shared/src/scss/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -677,19 +701,19 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "public-user-profile-edit:build",
-            "port": 4206
+            "port": 4206,
+            "buildTarget": "public-user-profile-edit:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "public-user-profile-edit:build:production"
+              "buildTarget": "public-user-profile-edit:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "public-user-profile-edit:build"
+            "buildTarget": "public-user-profile-edit:build"
           }
         },
         "e2e": {
@@ -731,7 +755,6 @@
             "main": "projects/public-user-password-change/src/main.ts",
             "polyfills": "projects/public-user-password-change/src/polyfills.ts",
             "tsConfig": "projects/public-user-password-change/tsconfig.app.json",
-            "aot": true,
             "assets": [
               {
                 "glob": "**/*.json",
@@ -744,7 +767,13 @@
                 "output": "/assets/"
               }
             ],
-            "styles": [],
+            "styles": [
+              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeflex/primeflex.min.css",
+              "projects/shared/src/scss/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -780,19 +809,19 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "public-user-password-change:build",
-            "port": 4205
+            "port": 4205,
+            "buildTarget": "public-user-password-change:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "public-user-password-change:build:production"
+              "buildTarget": "public-user-password-change:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "public-user-password-change:build"
+            "buildTarget": "public-user-password-change:build"
           }
         },
         "e2e": {
@@ -818,5 +847,10 @@
         }
       }
     }
+  },
+  "cli": {
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

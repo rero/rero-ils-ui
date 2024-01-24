@@ -69,7 +69,7 @@ describe('User', () => {
     expect(user.currentLibrary).toEqual('2');
   });
 
-  it('Should return the current organistion', () => {
+  it('Should return the current organisation', () => {
     expect(user.currentOrganisation).toBeUndefined();
     user.currentOrganisation = '1';
     expect(user.currentOrganisation).toEqual('1');

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,6 +21,7 @@ import { CoreModule, RecordService } from '@rero/ng-core';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { FieldRefTypeComponent } from './field-ref.type';
+import { ChangeDetectorRef } from '@angular/core';
 
 describe('CanAccessGuard', () => {
   let recordService: RecordService;
@@ -40,6 +41,8 @@ describe('CanAccessGuard', () => {
 
   const recordServiceSpy = jasmine.createSpyObj('Recordservice', ['getRecords', 'totalHits']);
   recordServiceSpy.totalHits.and.returnValue(1);
+  const changeDetectorRefSpy = jasmine.createSpyObj(ChangeDetectorRef, ['detectChanges']);
+
 
 
   beforeEach(() => {
@@ -50,7 +53,8 @@ describe('CanAccessGuard', () => {
         CoreModule
       ],
       providers: [
-        { provide: RecordService, useValue: recordServiceSpy }
+        { provide: RecordService, useValue: recordServiceSpy },
+        ChangeDetectorRef
       ]
 
     });
@@ -59,7 +63,8 @@ describe('CanAccessGuard', () => {
 
   it('should be created', () => {
     recordServiceSpy.getRecords.and.returnValue(of(result));
-    expect(new FieldRefTypeComponent(recordService)).toBeTruthy();
+
+    expect(new FieldRefTypeComponent(recordService, changeDetectorRefSpy)).toBeTruthy();
   });
 
   it('should return the title', () => {
@@ -74,14 +79,14 @@ describe('CanAccessGuard', () => {
       type: 'bf:Title'
     }];
     recordServiceSpy.getRecords.and.returnValue(of(record));
-    const fieldType = new FieldRefTypeComponent(recordService);
+    const fieldType = new FieldRefTypeComponent(recordService, changeDetectorRefSpy);
     fieldType.field = {
       model: {
         document: 1
       },
-      templateOptions: {
+      props: {
       resource: 'documents',
-      recourceKey: 'document',
+      resourceKey: 'document',
       resourceField: 'title.0._text'
     }};
     fieldType.ngOnInit();
@@ -99,14 +104,14 @@ describe('CanAccessGuard', () => {
       type: 'bf:AbbreviatedTitle'
     }];
     recordServiceSpy.getRecords.and.returnValue(of(record));
-    const fieldType = new FieldRefTypeComponent(recordService);
+    const fieldType = new FieldRefTypeComponent(recordService, changeDetectorRefSpy);
     fieldType.field = {
       model: {
         document: 1
       },
-      templateOptions: {
+      props: {
       resource: 'documents',
-      recourceKey: 'document',
+      resourceKey: 'document',
       resourceField: 'title.0._text'
     }};
     fieldType.ngOnInit();
@@ -132,14 +137,14 @@ describe('CanAccessGuard', () => {
       }
     ];
     recordServiceSpy.getRecords.and.returnValue(of(record));
-    const fieldType = new FieldRefTypeComponent(recordService);
+    const fieldType = new FieldRefTypeComponent(recordService, changeDetectorRefSpy);
     fieldType.field = {
       model: {
         document: 1
       },
-      templateOptions: {
+      props: {
       resource: 'documents',
-      recourceKey: 'document',
+      resourceKey: 'document',
       resourceField: 'title.0._text',
       resourceSelect: {
         field: 'type',

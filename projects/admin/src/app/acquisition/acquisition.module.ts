@@ -19,7 +19,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { FormlyModule, FORMLY_CONFIG } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, CoreModule, RecordModule } from '@rero/ng-core';
@@ -62,6 +61,7 @@ import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pi
 import { PermissionsService, SharedModule } from '@rero/shared';
 import { OrderEmailFormComponent } from './components/order/order-email-form/order-email-form.component';
 import { PreviewEmailModule } from '../shared/preview-email/preview-email.module';
+import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
 
 @NgModule({
   declarations: [
@@ -101,7 +101,7 @@ import { PreviewEmailModule } from '../shared/preview-email/preview-email.module
     AcquisitionRoutingModule,
     FormlyModule,
     ReactiveFormsModule,
-    FormlyBootstrapModule,
+    FormlyPrimeNGModule,
     FormlyModule.forChild({
       types: [
         { name: 'repeat', component: RepeatTypeComponent },

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,14 +42,14 @@ export class MainRequestComponent implements OnInit, OnDestroy {
 
   /** options used to sort requested items list */
   public sortingCriteria = [
-    {value: 'requestdate', label: this._translateService.instant('Request date'), icon: 'fa-sort-numeric-asc'},
-    {value: '-requestdate', label: this._translateService.instant('Request date (desc)'), icon: 'fa-sort-numeric-desc'},
-    {value: 'callnumber', label: this._translateService.instant('Call number'), icon: 'fa-sort-alpha-asc'},
-    {value: '-callnumber', label: this._translateService.instant('Call number (desc)'), icon: 'fa-sort-alpha-desc'},
-    {value: 'location', label: this._translateService.instant('Location'), icon: 'fa-sort-alpha-asc'},
-    {value: '-location', label: this._translateService.instant('Location (desc)'), icon: 'fa-sort-alpha-desc'},
-    {value: 'pickuplocation', label: this._translateService.instant('Pick-up location'), icon: 'fa-sort-alpha-asc'},
-    {value: '-pickuplocation', label: this._translateService.instant('Pick-up location (desc)'), icon: 'fa-sort-alpha-desc'},
+    {value: 'requestdate', label: this.translateService.instant('Request date'), icon: 'fa-sort-numeric-asc'},
+    {value: '-requestdate', label: this.translateService.instant('Request date (desc)'), icon: 'fa-sort-numeric-desc'},
+    {value: 'callnumber', label: this.translateService.instant('Call number'), icon: 'fa-sort-alpha-asc'},
+    {value: '-callnumber', label: this.translateService.instant('Call number (desc)'), icon: 'fa-sort-alpha-desc'},
+    {value: 'location', label: this.translateService.instant('Location'), icon: 'fa-sort-alpha-asc'},
+    {value: '-location', label: this.translateService.instant('Location (desc)'), icon: 'fa-sort-alpha-desc'},
+    {value: 'pickuplocation', label: this.translateService.instant('Pick-up location'), icon: 'fa-sort-alpha-asc'},
+    {value: '-pickuplocation', label: this.translateService.instant('Pick-up location (desc)'), icon: 'fa-sort-alpha-desc'},
   ];
 
   /** the placeholder string used on the */
@@ -68,32 +68,32 @@ export class MainRequestComponent implements OnInit, OnDestroy {
   public searchInputDisabled = false;
 
   /** the library pid for which load the requested items */
-  private _libraryPid: string;
+  private libraryPid: string;
   /** the subscription for the interval refreshing */
-  private _intervalSubscription = new Subscription();
+  private intervalSubscription = new Subscription();
   /** the sort criteria used */
-  private _sortCriteria = this.sortingCriteria[1].value;
+  private sortCriteria = this.sortingCriteria[1].value;
 
 
   // COMPONENT CONSTRUCTOR ===========================================================
   /** Constructor
-   * @param _userService: User Service
-   * @param _itemsService: Items Service
-   * @param _translateService: Translate Service
-   * @param _toastService: Toastr Service
+   * @param userService: User Service
+   * @param itemsService: Items Service
+   * @param translateService: Translate Service
+   * @param toastService: Toastr Service
    */
   constructor(
-    private _userService: UserService,
-    private _itemsService: ItemsService,
-    private _translateService: TranslateService,
-    private _toastService: ToastrService,
+    private userService: UserService,
+    private itemsService: ItemsService,
+    private translateService: TranslateService,
+    private toastService: ToastrService,
   ) {}
 
   /** OnInit hook */
   ngOnInit() {
-    const user = this._userService.user;
+    const { user } = this.userService;
     if (user) {
-      this._libraryPid = user.currentLibrary;
+      this.libraryPid = user.currentLibrary;
       this.getRequestedLoans();
       this._enableAutoRefresh();
     }
@@ -101,20 +101,20 @@ export class MainRequestComponent implements OnInit, OnDestroy {
 
   /** OnDestroy hook */
   ngOnDestroy() {
-    if (this._intervalSubscription) {
-      this._intervalSubscription.unsubscribe();
+    if (this.intervalSubscription) {
+      this.intervalSubscription.unsubscribe();
     }
   }
 
   // PRIVATE FUNCTIONS ========================================================================
   /** Enable the requested items auto-refresh behavior if needed */
   private _enableAutoRefresh() {
-    if (this._intervalSubscription) {
-      this._intervalSubscription.unsubscribe();
-      this._intervalSubscription = new Subscription();
+    if (this.intervalSubscription) {
+      this.intervalSubscription.unsubscribe();
+      this.intervalSubscription = new Subscription();
     }
     if (this.refreshInterval > 0) {
-      this._intervalSubscription = interval(this.refreshInterval).subscribe(() => this.getRequestedLoans());
+      this.intervalSubscription = interval(this.refreshInterval).subscribe(() => this.getRequestedLoans());
     }
   }
 
@@ -127,7 +127,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
     this.items = items.sort((a, b) => {
       const aTime = moment(a.loan.transaction_date);
       const bTime = moment(b.loan.transaction_date);
-      switch (this._sortCriteria) {
+      switch (this.sortCriteria) {
         case '-requestdate': return bTime.diff(aTime);
         case 'callnumber':
           return (('call_number' in a) && ('call_number' in b))
@@ -141,7 +141,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
         case '-location':
           const locA = a.library.name + ' ' + a.location.name;
           const locB = b.library.name + ' ' + b.location.name;
-          return (this._sortCriteria === 'location')
+          return (this.sortCriteria === 'location')
             ? locA.localeCompare(locB)
             : locB.localeCompare(locA);
         case 'pickuplocation':
@@ -152,7 +152,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
           const pickB = (a.loan.pickup_location.pickup_name)
             ? b.loan.pickup_location.pickup_name
             : b.loan.pickup_location.library_name + ' ' + b.loan.pickup_location.name;
-          return (this._sortCriteria === 'pickuplocation')
+          return (this.sortCriteria === 'pickuplocation')
             ? pickA.localeCompare(pickB)
             : pickB.localeCompare(pickA);
         default: return aTime.diff(bTime);
@@ -164,7 +164,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
 
   /** Get the requested loans for the library of the current user */
   getRequestedLoans() {
-   this._itemsService.getRequestedLoans(this._libraryPid).subscribe(items => {
+   this.itemsService.getRequestedLoans(this.libraryPid).subscribe(items => {
      this._sortingRequestedLoans(items);
    });
   }
@@ -182,20 +182,20 @@ export class MainRequestComponent implements OnInit, OnDestroy {
     this.searchText = searchText;
     const item = this.items.find(currItem => currItem.barcode === searchText);
     if (item === undefined) {
-      this._toastService.warning(
-        this._translateService.instant('No request corresponding to the given item has been found.'),
-        this._translateService.instant('request')
+      this.toastService.warning(
+        this.translateService.instant('No request corresponding to the given item has been found.'),
+        this.translateService.instant('request')
       );
       this._resetSearchInput();
     } else {
       /*const items = this.items;
       this.items = null;*/
-      this._itemsService.doValidateRequest(item, this._libraryPid).subscribe(
+      this.itemsService.doValidateRequest(item, this.libraryPid).subscribe(
         newItem => {
           this._sortingRequestedLoans(this.items.map(currItem => (currItem.pid === newItem.pid) ? newItem : currItem));
-          this._toastService.warning(
-            this._translateService.instant('The item is ').concat(this._translateService.instant(newItem.status)),
-            this._translateService.instant('request')
+          this.toastService.warning(
+            this.translateService.instant('The item is ').concat(this.translateService.instant(newItem.status)),
+            this.translateService.instant('request')
           );
           this._resetSearchInput();
         }
@@ -234,7 +234,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
    * @param criteria: the sort criteria
    */
   selectingSortCriteria(criteria: string) {
-    this._sortCriteria = criteria;
+    this.sortCriteria = criteria;
     this._sortingRequestedLoans(this.items);
   }
 

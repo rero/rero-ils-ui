@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,7 +23,7 @@ import { ToastrService } from 'ngx-toastr';
 import { finalize, tap } from 'rxjs/operators';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { IAcqReceipt } from '../../../classes/receipt';
-import { ICreateLineMessage, IAcqReceiptModel, OrderReceipt } from './order-receipt';
+import { IAcqReceiptModel, ICreateLineMessage, OrderReceipt } from './order-receipt';
 import { OrderReceiptForm } from './order-receipt-form';
 
 @Component({
@@ -63,7 +63,7 @@ export class OrderReceiptViewComponent implements OnInit {
     // The reference field should be enabled only for `AcqReceipt` creation, not for update.
     // To update this field, user must use the classic resource editor.
     if (this.model.pid) {
-      this._fields.find(field => field.key === 'reference').templateOptions.readonly = true;
+      this._fields.find(field => field.key === 'reference').props.readonly = true;
     }
     return this._fields;
   }
@@ -71,27 +71,27 @@ export class OrderReceiptViewComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _route - ActivatedRoute
-   * @param _router - Router
-   * @param _orderReceipt - OrderReceipt
-   * @param _acqReceiptApiService - AcqReceiptApiService
-   * @param _toastrService - ToastrService
-   * @param _translateService - TranslateService
-   * @param _orderReceiptForm - OrderReceiptForm
+   * @param route - ActivatedRoute
+   * @param router - Router
+   * @param orderReceipt - OrderReceipt
+   * @param acqReceiptApiService - AcqReceiptApiService
+   * @param toastrService - ToastrService
+   * @param translateService - TranslateService
+   * @param orderReceiptForm - OrderReceiptForm
    */
   constructor(
-    private _route: ActivatedRoute,
-    private _router: Router,
-    private _orderReceipt: OrderReceipt,
-    private _acqReceiptApiService: AcqReceiptApiService,
-    private _toastrService: ToastrService,
-    private _translateService: TranslateService,
-    private _orderReceiptForm: OrderReceiptForm
+    private route: ActivatedRoute,
+    private router: Router,
+    private orderReceipt: OrderReceipt,
+    private acqReceiptApiService: AcqReceiptApiService,
+    private toastrService: ToastrService,
+    private translateService: TranslateService,
+    private orderReceiptForm: OrderReceiptForm
   ) {}
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.orderPid = this._route.snapshot.paramMap.get('pid');
+    this.orderPid = this.route.snapshot.paramMap.get('pid');
     this._generateForm();
   }
 
@@ -103,21 +103,20 @@ export class OrderReceiptViewComponent implements OnInit {
   onSubmit(model: IAcqReceiptModel): void {
     this.orderSend = true;
     let record: IAcqReceipt = (!this.receiptRecord)
-      ? this._orderReceipt.processBaseRecord(model)
-      : this._orderReceipt.processExistingRecord(this.receiptRecord);
-    record = this._orderReceiptForm.processForm(model, record);
+      ? this.orderReceipt.processBaseRecord(model)
+      : this.orderReceipt.processExistingRecord(this.receiptRecord);
+    record = this.orderReceiptForm.processForm(model, record);
 
     const receiptApi$ = (!this.receiptRecord)
-      ? this._acqReceiptApiService.createReceipt(record).pipe(tap(receipt => model.pid = receipt.pid))
-      : this._acqReceiptApiService.updateReceipt(record.pid, record);
+      ? this.acqReceiptApiService.createReceipt(record).pipe(tap(receipt => model.pid = receipt.pid))
+      : this.acqReceiptApiService.updateReceipt(record.pid, record);
     receiptApi$
       .pipe(finalize(() => this.orderSend = false))
       .subscribe(
-        (receipt: IAcqReceipt) => this._createLinesAndMessage(model, receipt),
+        (receipt: IAcqReceipt) => this.createLinesAndMessage(model, receipt),
         (err) => {
-          console.error(err);
-          this._toastrService.error(
-            err.title, this._translateService.instant('Receipt'),
+          this.toastrService.error(
+            err.title, this.translateService.instant('Receipt'),
             { disableTimeOut: true, closeButton: true }
           );
         }
@@ -129,12 +128,12 @@ export class OrderReceiptViewComponent implements OnInit {
    * Generate Form
    */
   private _generateForm(): void {
-    this.model = this._orderReceipt.model;
+    this.model = this.orderReceipt.model;
 
     // Try to load the receipt depending of the url argument
-    const receiptPid = this._route.snapshot.queryParams.receipt;
+    const receiptPid = this.route.snapshot.queryParams.receipt;
     if (receiptPid) {
-      this._acqReceiptApiService
+      this.acqReceiptApiService
         .getReceipt(receiptPid)
         .subscribe((receipt: IAcqReceipt) => {
           this.receiptRecord = receipt;
@@ -142,13 +141,13 @@ export class OrderReceiptViewComponent implements OnInit {
           this.model.reference = receipt.reference;
         });
     }
-    this._orderReceiptForm
+    this.orderReceiptForm
       .setModel(this.model)
       .createForm(this.orderPid)
       .subscribe((loaded: boolean) => {
-        this.orderRecord = this._orderReceiptForm.getOrderRecord();
-        this.model = this._orderReceiptForm.getModel();
-        this._fields = this._orderReceiptForm.getConfig();
+        this.orderRecord = this.orderReceiptForm.getOrderRecord();
+        this.model = this.orderReceiptForm.getModel();
+        this._fields = this.orderReceiptForm.getConfig();
         this.loaded = loaded;
       });
   }
@@ -158,38 +157,38 @@ export class OrderReceiptViewComponent implements OnInit {
    * @param model: the model to process
    * @param receipt: the parent receipt object
    */
-  private _createLinesAndMessage(model: IAcqReceiptModel, receipt: IAcqReceipt): void {
+  private createLinesAndMessage(model: IAcqReceiptModel, receipt: IAcqReceipt): void {
     // receipt exists, we can create corresponding lines
-    const lines = this._orderReceipt.processLines(model);
+    const lines = this.orderReceipt.processLines(model);
     if (lines.length > 0) {
-      this._acqReceiptApiService
+      this.acqReceiptApiService
         .createReceiptLines(model.pid, lines)
         .subscribe((result: ICreateLineMessage) => {
           if (result.success) {
-            this._toastrService.success(
-              this._translateService.instant('Receipt operations were successful'),
-              this._translateService.instant('Receipt')
+            this.toastrService.success(
+              this.translateService.instant('Receipt operations were successful'),
+              this.translateService.instant('Receipt')
             );
           } else {
-            this._toastrService.error(
-              this._translateService.instant(result.messages),
-              this._translateService.instant('Receipt'),
+            this.toastrService.error(
+              this.translateService.instant(result.messages),
+              this.translateService.instant('Receipt'),
               {disableTimeOut: true, closeButton: true}
             );
           }
-          this._redirectToOrder();
+          this.redirectToOrder();
         });
     } else {
-      this._toastrService.success(
-        this._translateService.instant('Receipt operations were successful'),
-        this._translateService.instant('Receipt')
+      this.toastrService.success(
+        this.translateService.instant('Receipt operations were successful'),
+        this.translateService.instant('Receipt')
       );
-      this._redirectToOrder();
+      this.redirectToOrder();
     }
   }
 
   /** Redirect to order detail view */
-  private _redirectToOrder(): void {
-    this._router.navigate(['/', 'records', 'acq_orders', 'detail', this.orderPid]);
+  private redirectToOrder(): void {
+    this.router.navigate(['/', 'records', 'acq_orders', 'detail', this.orderPid]);
   }
 }

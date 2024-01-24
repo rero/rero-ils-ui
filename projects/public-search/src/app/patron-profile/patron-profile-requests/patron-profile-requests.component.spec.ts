@@ -108,6 +108,6 @@ describe('PatronProfileRequestComponent', () => {
     patronProfileService.changeTab({ name: 'request', count: 0 });
     fixture.detectChanges();
     const loading = fixture.nativeElement.querySelectorAll('div')[6];
-    expect(loading.textContent).toContain('No request');
+    expect(loading.textContent).toContain('Loading in progress');
   });
 });

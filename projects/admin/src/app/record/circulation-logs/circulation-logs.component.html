@@ -1,7 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2023 RERO
-  Copyright (C) 2023 UCLouvain
+  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -25,59 +25,69 @@
         </button>
       </div>
       <div class="modal-body overflow-auto overflow-max-size">
-        <admin-circulation-stats *ngIf="resourceType === 'item'" [itemPid]="this.resourcePid"></admin-circulation-stats>
+        @if (resourceType === 'item') {
+          <admin-circulation-stats [itemPid]="this.resourcePid"></admin-circulation-stats>
+        }
         <div class="mb-3">
           <span class="float-left label-title mr-2 font-weight-bold" translate>Filter</span>
           <ul class="list-inline mb-0">
-            <li class="list-inline-item mr-2" *ngFor="let filter of filterTypes | keyvalue">
-              <div class="custom-control custom-switch mb-0">
-                <input type="checkbox" class="custom-control-input mt-1" [id]="filter.key" [checked]="filter.value" (click)="filterCheck(filter.key)">
-                <label class="custom-control-label" [for]="filter.key">{{ ('op_filter_' + filter.key) | translate }}</label>
-              </div>
-            </li>
+            @for (filter of filterTypes | keyvalue; track filter) {
+              <li class="list-inline-item mr-2">
+                <div class="custom-control custom-switch mb-0">
+                  <input type="checkbox" class="custom-control-input mt-1" [id]="filter.key" [checked]="filter.value" (click)="filterCheck(filter.key)">
+                  <label class="custom-control-label" [for]="filter.key">{{ ('op_filter_' + filter.key) | translate }}</label>
+                </div>
+              </li>
+            }
           </ul>
         </div>
-        <ng-container *ngIf="loadedRecord; else loaded">
-          <ng-container *ngIf="recordTotals > 0; else noRecord">
-            <ng-container *ngFor="let record of records; first as isFirst; let idx = index">
-              <div class="transactionDate" *ngIf="isFirst || !isSamePeriod(record, records[idx-1])">
-                {{ record.metadata.date | dateTranslate :'MMMM Y' | titlecase }}
-              </div>
-              <ng-container [ngSwitch]="getRecordType(record)">
-                <admin-circulation-log-notification *ngSwitchCase="'notification'"
-                  [record]="record"
-                  [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
-                  [separator]="!isSamePeriod(record, records[idx-1], 'day')"
-                  (mouseenter)="mouseEventTransaction(record, $event)"
-                  (mouseleave)="highlightedLoanPid=null"
-                ></admin-circulation-log-notification>
-                <admin-circulation-log-loan *ngSwitchCase="'circulation'"
-                  [record]="record"
-                  [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
-                  [separator]="!isSamePeriod(record, records[idx-1], 'day')"
-                  (closeDialogEvent)="closeDialog()"
-                  (mouseenter)="mouseEventTransaction(record, $event)"
-                  (mouseleave)="highlightedLoanPid=null"
-                ></admin-circulation-log-loan>
-              </ng-container>
-            </ng-container>
-          </ng-container>
-        </ng-container>
+        @defer {
+          @if (recordTotals > 0) {
+            @for (record of records; track record; let isFirst = $first; let idx = $index) {
+              @if (isFirst || !isSamePeriod(record, records[idx-1])) {
+                <div class="transactionDate">
+                  {{ record.metadata.date | dateTranslate :'MMMM Y' | titlecase }}
+                </div>
+              }
+              @switch (getRecordType(record)) {
+                @case('notification') {
+                  <admin-circulation-log-notification
+                    [record]="record"
+                    [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
+                    [separator]="!isSamePeriod(record, records[idx-1], 'day')"
+                    (mouseenter)="mouseEventTransaction(record, $event)"
+                    (mouseleave)="highlightedLoanPid=null"
+                  ></admin-circulation-log-notification>
+                }
+                @case('circulation') {
+                  <admin-circulation-log-loan
+                    [record]="record"
+                    [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
+                    [separator]="!isSamePeriod(record, records[idx-1], 'day')"
+                    (closeDialogEvent)="closeDialog()"
+                    (mouseenter)="mouseEventTransaction(record, $event)"
+                    (mouseleave)="highlightedLoanPid=null"
+                  ></admin-circulation-log-loan>
+                }
+              }
+            }
+          } @else {
+            {{ 'No transaction found' | translate }}
+          }
+        } @loading {
+          {{ 'loading in progress' | translate }}
+        }
       </div>
       <div class="modal-footer py-1 justify-content-start">
-        <ng-container *ngIf="loadedRecord && isLinkShowMore">
+        @if (loadedRecord && isLinkShowMore) {
           <button type="button" id="show-more-items-{{ resourcePid }}" class="btn btn-link pl-1" (click)="showMore()">
             <i class="fa fa-arrow-circle-o-down"></i> {{ 'Show more' | translate }}
           </button>
-          <small *ngIf="isLinkShowMore">({{ hiddenTransactionLabel }})</small>
-        </ng-container>
+          @if (isLinkShowMore) {
+            <small>({{ hiddenTransactionLabel }})</small>
+          }
+        }
       </div>
     </div>
   </div>
 </div>
-<ng-template #noRecord>
-  {{ 'No transaction found' | translate }}
-</ng-template>
-<ng-template #loaded>
-  {{ 'loading in progress' | translate }}
-</ng-template>

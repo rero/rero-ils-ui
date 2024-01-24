@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,11 +17,11 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { FormlyModule } from '@ngx-formly/core';
+import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrModule } from 'ngx-toastr';
-import { fieldPasswordMatchValidator, PatronProfilePasswordComponent } from './patron-profile-password.component';
+import { PatronProfilePasswordComponent, fieldPasswordMatchValidator } from './patron-profile-password.component';
 
 
 describe('PatronProfilePasswordComponent', () => {
@@ -42,7 +42,7 @@ describe('PatronProfilePasswordComponent', () => {
             { name: 'passwordMatch', validation: fieldPasswordMatchValidator }
           ]
         }),
-        FormlyBootstrapModule
+        FormlyPrimeNGModule
       ]
     })
     .compileComponents();

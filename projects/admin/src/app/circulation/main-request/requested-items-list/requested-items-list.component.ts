@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,7 +35,7 @@ export class RequestedItemsListComponent implements OnChanges {
 
 
   /** the know item barcode list */
-  private _knownItemBarcodes: Array<string> = null;
+  private knownItemBarcodes: Array<string> = null;
 
   // CONSTRUCTOR & HOOKS ====================================================
   /**
@@ -44,7 +44,7 @@ export class RequestedItemsListComponent implements OnChanges {
    */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.hasOwnProperty('items') && !changes.items.firstChange && changes.items.previousValue) {
-      this._knownItemBarcodes = changes.items.previousValue.map((item) => item.barcode);
+      this.knownItemBarcodes = changes.items.previousValue.map((item) => item.barcode);
     }
   }
 
@@ -59,7 +59,7 @@ export class RequestedItemsListComponent implements OnChanges {
     if (item.loan.state !== LoanState.PENDING) {
       return 'callout-success callout-bg-success';
     }
-    return (this._knownItemBarcodes && !this._knownItemBarcodes.includes(item.barcode))
+    return (this.knownItemBarcodes && !this.knownItemBarcodes.includes(item.barcode))
       ? 'callout-warning callout-bg-warning'
       : null;
   }

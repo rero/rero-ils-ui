@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,18 +14,16 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="ready; else loaded">
+@defer (when ready) {
   <!-- current organisation -->
   <admin-holdings [holdingType]="holdingType" [document]="document"></admin-holdings>
 
   <!-- other organisations -->
-  <ng-container *ngIf="otherOrganisationCount > 0">
+  @if (otherOrganisationCount > 0) {
     <h5 class="other" translate>Other organisations</h5>
     <admin-holdings [holdingType]="holdingType" [document]="document" [isCurrentOrganisation]="false"></admin-holdings>
-  </ng-container>
-</ng-container>
-
-<ng-template #loaded>
+  }
+} @loading {
   <span class="spinner-grow spinner-grow-sm" role="status"></span>
   <span class="ml-1" translate>loading in progress...</span>
-</ng-template>
+}

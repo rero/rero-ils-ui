@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -16,78 +16,101 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <!-- Place order button -->
-<section *ngIf="order?.is_current_budget && order?.pid" class="float-right mt-2 mr-n4 btn-additional-action">
-  <a *ngIf="recordPermissions && recordPermissions.update.can && order.status === acqOrderStatus.PENDING"
-     (click)="placeOrderDialog()"
-     class="btn btn-sm btn-primary"
-     [ngClass]="{'disabled': !canPlaceOrder}"
-  >
-    <i class="fa fa-shopping-cart"></i>
-    {{ 'Place order' | translate }}
-  </a>
-</section>
+@if (order?.is_current_budget && order?.pid) {
+  <section class="float-right mt-2 mr-n4 btn-additional-action">
+    @if (recordPermissions && recordPermissions.update.can && order.status === acqOrderStatus.PENDING) {
+      <a (click)="placeOrderDialog()"
+         class="btn btn-sm btn-primary"
+         [ngClass]="{'disabled': !canPlaceOrder}"
+      >
+        <i class="fa fa-shopping-cart"></i>
+        {{ 'Place order' | translate }}
+      </a>
+    }
+  </section>
+}
 
-<div *ngIf="order && order.pid" class="container-fluid mt-2" [class.rollovered]="!order.is_current_budget">
-  <!-- ROLLOVER INFO -->
-  <div *ngIf="!order.is_current_budget" class="fiscal-year-closed" translate>Fiscal year closed</div>
+@if (order && order.pid) {
+  <div class="container-fluid mt-2" [class.rollovered]="!order.is_current_budget">
+    <!-- ROLLOVER INFO -->
+    @if (!order.is_current_budget) {
+      <div class="fiscal-year-closed" translate>Fiscal year closed</div>
+    }
 
-  <h1 class="mb-3">{{ order.reference }}</h1>
-  <!-- ORDER SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <admin-order-summary [order]="order">
-   <ng-container notes *ngIf="order.notes && order.notes.length > 0">
-     <dt class="col-6 label-title" translate>Notes</dt>
-     <dd class="col-6">
-       <a href (click)="scrollTo($event, 'notes'); notesCollapsed = false;" *ngFor="let note of order.notes">
-         <span class="badge badge-{{ note | noteBadgeColor }} mr-2">{{ note.type | translate }}</span>
-       </a>
-     </dd>
-    </ng-container>
-  </admin-order-summary>
+    <h1 class="mb-3">{{ order.reference }}</h1>
+    <!-- ORDER SUMMARY -->
+    <admin-order-summary [order]="order">
+      @if (order.notes && order.notes.length > 0) {
+        <dt class="col-6 label-title" translate>Notes</dt>
+        <dd class="col-6">
+          @for (note of order.notes; track note) {
+            <a href (click)="scrollTo($event, 'notes'); notesCollapsed = false;">
+              <span class="badge badge-{{ note | noteBadgeColor }} mr-2">{{ note.type | translate }}</span>
+            </a>
+          }
+        </dd>
+      }
+    </admin-order-summary>
 
-  <tabset #orderTabs>
-    <!-- ORDER DETAIL VIEW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <tab heading="{{ 'Order' | translate }}">
-      <!-- ORDER LINES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <admin-order-lines class="row" [order]="order" [recordPermissions]="recordPermissions" *ngIf="isPermissionsLoaded"></admin-order-lines>
-      <!-- ORDER NOTES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <div class="row mt-3" *ngIf="order.notes && order.notes.length > 0">
-        <a id="notes"></a>
-        <div class="card container notes">
-          <div class="card-header row">
-            <h5 class="m-0">
-              <button type="button" class="btn-show-more"
-                      [ngClass]="{'btn-expanded': !notesCollapsed, 'btn-collapsed': notesCollapsed}"
-                      (click)="notesCollapsed = !notesCollapsed"
-                      [attr.aria-expanded]="!notesCollapsed" aria-controls="collapse">
-              </button>
-              {{ order.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} | translate }}
-              <span *ngIf="notesCollapsed" class="badge badge-secondary ml-2">{{ order.notes.length }}</span>
-            </h5>
-          </div>
-          <div class="card-body py-2" *ngIf="!notesCollapsed">
-            <div class="row note" *ngFor="let note of order.notes">
-              <div class="col-2"><span class="badge badge-{{ note | noteBadgeColor }}">{{ note.type | translate }}</span></div>
-              <blockquote class="col" [innerHTML]="note.content | nl2br"></blockquote>
+    <tabset #orderTabs>
+      <!-- ORDER DETAIL VIEW -->
+      <tab heading="{{ 'Order' | translate }}">
+        <!-- ORDER LINES -->
+        @if (isPermissionsLoaded) {
+          <admin-order-lines class="row" [order]="order" [recordPermissions]="recordPermissions"></admin-order-lines>
+        }
+        <!-- ORDER NOTES -->
+        @if (order.notes && order.notes.length > 0) {
+          <div class="row mt-3">
+            <a id="notes"></a>
+            <div class="card container notes">
+              <div class="card-header row">
+                <h5 class="m-0">
+                  <button type="button" class="btn-show-more"
+                          [ngClass]="{'btn-expanded': !notesCollapsed, 'btn-collapsed': notesCollapsed}"
+                          (click)="notesCollapsed = !notesCollapsed"
+                          [attr.aria-expanded]="!notesCollapsed" aria-controls="collapse">
+                  </button>
+                  {{ order.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} | translate }}
+                  @if (notesCollapsed) {
+                    <span class="badge badge-secondary ml-2">{{ order.notes.length }}</span>
+                  }
+                </h5>
+              </div>
+              @if (!notesCollapsed) {
+                <div class="card-body py-2">
+                  @for (note of order.notes; track note) {
+                    <div class="row note">
+                      <div class="col-2"><span class="badge badge-{{ note | noteBadgeColor }}">{{ note.type | translate }}</span></div>
+                      <blockquote class="col" [innerHTML]="note.content | nl2br"></blockquote>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           </div>
-        </div>
-      </div>
-    </tab>
-    <!-- RECEIPTS DETAIL VIEW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <tab heading="{{ 'Reception' | translate }}" [disabled]="!canViewReceipts">
-      <admin-receipt-list class="row" [order]="order" [recordPermissions]="recordPermissions" *ngIf="isPermissionsLoaded"></admin-receipt-list>
-    </tab>
-    <!-- HISTORY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <tab heading="{{ 'History' | translate }}" *ngIf="historyVersions && historyVersions.length > 1">
-      <p-timeline [value]="historyVersions">
-        <ng-template pTemplate="marker" let-event>
-          <div [class.p-timeline-event-marker-current]="event.active" class="p-timeline-event-marker"></div>
-        </ng-template>
-        <ng-template pTemplate="content" let-event>
-          <a [routerLink]="['/records', 'acq_orders', 'detail', event.pid]">{{ event.label }}</a>
-          <small>{{ event.description }}</small>
-        </ng-template>
-      </p-timeline>
-    </tab>
-  </tabset>
-</div>
+        }
+      </tab>
+      <!-- RECEIPTS DETAIL VIEW -->
+      <tab heading="{{ 'Reception' | translate }}" [disabled]="!canViewReceipts">
+        @if (isPermissionsLoaded) {
+          <admin-receipt-list class="row" [order]="order" [recordPermissions]="recordPermissions"></admin-receipt-list>
+        }
+      </tab>
+      <!-- HISTORY -->
+      @if (historyVersions && historyVersions.length > 1) {
+        <tab heading="{{ 'History' | translate }}">
+          <p-timeline [value]="historyVersions">
+            <ng-template pTemplate="marker" let-event>
+              <div [class.p-timeline-event-marker-current]="event.active" class="p-timeline-event-marker"></div>
+            </ng-template>
+            <ng-template pTemplate="content" let-event>
+              <a [routerLink]="['/records', 'acq_orders', 'detail', event.pid]">{{ event.label }}</a>
+              <small>{{ event.description }}</small>
+            </ng-template>
+          </p-timeline>
+        </tab>
+      }
+    </tabset>
+  </div>
+}

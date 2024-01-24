@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -38,19 +38,19 @@ export class LocationComponent implements OnInit {
 
   /**
    * Constructor
-   * @param _recordUiService: RecordUiService
-   * @param _recordPermissionService: RecordPermissionService
+   * @param recordUiService: RecordUiService
+   * @param recordPermissionService: RecordPermissionService
    */
   constructor(
-    private _recordUiService: RecordUiService,
-    private _recordPermissionService: RecordPermissionService
+    private recordUiService: RecordUiService,
+    private recordPermissionService: RecordPermissionService
   ) { }
 
   /**
    * Init
    */
   ngOnInit() {
-    this._recordPermissionService.getPermission('locations', this.location.metadata.pid).subscribe(
+    this.recordPermissionService.getPermission('locations', this.location.metadata.pid).subscribe(
       (permissions) => this.permissions = permissions
     );
   }
@@ -60,7 +60,7 @@ export class LocationComponent implements OnInit {
    * @param locationPid - location PID
    */
   delete(locationPid: string) {
-    this._recordUiService.deleteRecord('locations', locationPid).subscribe((success: boolean) => {
+    this.recordUiService.deleteRecord('locations', locationPid).subscribe((success: boolean) => {
       if (success) {
         this.deleteLocation.emit(locationPid);
       }
@@ -71,7 +71,7 @@ export class LocationComponent implements OnInit {
    * Return a message containing the reasons wht the item cannot be requested
    */
   get deleteInfoMessage(): string {
-    return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
+    return this.recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
   }
 
 }

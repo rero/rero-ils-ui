@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020 RERO
+  Copyright (C) 2020-2024 RERO
   Copyright (C) 2020 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="title">
+@if (title) {
   <div class="modal-header">
     <h5 class="modal-title">{{ title }}</h5>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -23,20 +23,26 @@
     </button>
   </div>
   <div class="modal-body">
-    <table class="hotkeys-table-help" cellspacing="0" width="100%" *ngFor="let hotkeyGroup of hotkeys">
-      <thead *ngIf="hotkeyGroup.group">
-        <tr>
-          <th class="hotkeys-table-help-group" colspan="2">{{ hotkeyGroup.group }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="hotkeys-table-help-shortcut" *ngFor="let hotkey of hotkeyGroup.hotkeys">
-          <td class="hotkeys-table-help-shortcut-description" width="75%">{{ hotkey.description }}</td>
-          <td class="hotkeys-table-help-shortcut-keys" width="25%">
-            <kbd [innerHTML]="hotkey.keys | hotkeysShortcut"></kbd>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    @for (hotkeyGroup of hotkeys; track hotkeyGroup) {
+      <table class="hotkeys-table-help" cellspacing="0" width="100%">
+        @if (hotkeyGroup.group) {
+          <thead>
+            <tr>
+              <th class="hotkeys-table-help-group" colspan="2">{{ hotkeyGroup.group }}</th>
+            </tr>
+          </thead>
+        }
+        <tbody>
+          @for (hotkey of hotkeyGroup.hotkeys; track hotkey) {
+            <tr class="hotkeys-table-help-shortcut">
+              <td class="hotkeys-table-help-shortcut-description" width="75%">{{ hotkey.description }}</td>
+              <td class="hotkeys-table-help-shortcut-keys" width="25%">
+                <kbd [innerHTML]="hotkey.keys | hotkeysShortcut"></kbd>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
   </div>
-</ng-container>
+}

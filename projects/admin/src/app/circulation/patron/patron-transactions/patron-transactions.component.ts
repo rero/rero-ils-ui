@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2022 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -55,11 +55,11 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   };
 
   /** Current patron */
-  private _patron: any = undefined;
+  private patron: any = undefined;
   /** Modal used for manual fee */
-  private _modalRef: BsModalRef;
+  private modalRef: BsModalRef;
   /** Component subscriptions */
-  private _subscriptions = new Subscription();
+  private subscriptions = new Subscription();
 
 
   // GETTER & SETTER ======================================================================
@@ -68,7 +68,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
    * @return current organisation
    */
   get organisation() {
-    return this._organisationService.organisation;
+    return this.organisationService.organisation;
   }
 
   /**
@@ -76,7 +76,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
    * @return the list of corresponding transactions.
    */
   get myLibraryEngagedFees(): Array<PatronTransaction> {
-    const libraryPID = this._userService.user.currentLibrary;
+    const libraryPID = this.userService.user.currentLibrary;
     return this.tabs.engagedFees.transactions.filter(t => t.library != null && t.library.pid === libraryPID);
   }
 
@@ -84,58 +84,58 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   // CONSTRUCTOR & HOOKS ==================================================================
   /**
    * constructor
-   * @param _patronService - PatronService
-   * @param _organisationService - OrganisationService
-   * @param _patronTransactionService - PatronTransactionService
-   * @param _modalService - BsModalService
-   * @param _userService - UserService
+   * @param patronService - PatronService
+   * @param organisationService - OrganisationService
+   * @param patronTransactionService - PatronTransactionService
+   * @param modalService - BsModalService
+   * @param userService - UserService
    */
   constructor(
-    private _patronService: PatronService,
-    private _organisationService: OrganisationService,
-    private _patronTransactionService: PatronTransactionService,
-    private _modalService: BsModalService,
-    private _userService: UserService
+    private patronService: PatronService,
+    private organisationService: OrganisationService,
+    private patronTransactionService: PatronTransactionService,
+    private modalService: BsModalService,
+    private userService: UserService
   ) {}
 
   /** OnInit hook */
   ngOnInit() {
-    this._patronService.currentPatron$.subscribe((patron: any) => {
+    this.patronService.currentPatron$.subscribe((patron: any) => {
       if (patron) {
-        this._patron = patron;
+        this.patron = patron;
         // engaged fees
-        this._subscriptions.add(
-          this._patronTransactionService
+        this.subscriptions.add(
+          this.patronTransactionService
             .patronTransactionsSubject$
             .subscribe((transactions) => {
               this.tabs.engagedFees.transactions = transactions;
-              this.tabs.engagedFees.totalAmount = this._patronTransactionService.computeTotalTransactionsAmount(transactions);
+              this.tabs.engagedFees.totalAmount = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
             }
           )
         );
         // overdue fees
-        this._patronService
-          .getOverduesPreview(this._patron.pid)
+        this.patronService
+          .getOverduesPreview(this.patron.pid)
           .subscribe((overdues) => {
             this.tabs.overduePreviewFees.transactions = overdues;
             this.tabs.overduePreviewFees.totalAmount = overdues.reduce((acc, overdue) => acc + overdue.fees.total, 0);
           });
-        this._reloadEngagedFees();
+        this.reloadEngagedFees();
       }
     });
   }
 
   /** OnDestroy hook */
   ngOnDestroy() {
-    this._subscriptions.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   // COMPONENT FUNCTIONS ==================================================================
   /** load all PatronTransactions for the patron without 'status' restriction */
   loadFeesHistory() {
-    if (this._patron && this.tabs.historyFees.transactions === null) {
-      this._patronTransactionService
-        .patronTransactionsByPatron$(this._patron.pid, undefined, PatronTransactionStatus.CLOSED.toString())
+    if (this.patron && this.tabs.historyFees.transactions === null) {
+      this.patronTransactionService
+        .patronTransactionsByPatron$(this.patron.pid, undefined, PatronTransactionStatus.CLOSED.toString())
         .subscribe(transactions => {
           this.tabs.historyFees.transactions = transactions;
         });
@@ -149,7 +149,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
       mode: 'full',
       transactions: this.tabs.engagedFees.transactions
     };
-    this._modalService.show(PatronTransactionEventFormComponent, {initialState});
+    this.modalService.show(PatronTransactionEventFormComponent, {initialState});
   }
 
   /** Allow to pay the total of each pending patron transactions */
@@ -159,7 +159,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
       mode: 'full',
       transactions: this.myLibraryEngagedFees
     };
-    this._modalService.show(PatronTransactionEventFormComponent, {initialState});
+    this.modalService.show(PatronTransactionEventFormComponent, {initialState});
   }
 
   /**
@@ -175,24 +175,24 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
 
   /** Opening a modal to manually add a fee. */
   addFee(): void {
-    this._modalRef = this._modalService.show(PatronFeeComponent, {
+    this.modalRef = this.modalService.show(PatronFeeComponent, {
         ignoreBackdropClick: true,
         initialState: {
-          patronPid: this._patron.pid,
-          organisationPid: this._patron.organisation.pid
+          patronPid: this.patron.pid,
+          organisationPid: this.patron.organisation.pid
         }
       }
     );
-    this._subscriptions.add(
-      this._modalRef.content.onSubmit
+    this.subscriptions.add(
+      this.modalRef.content.onSubmit
         .pipe(first())
-        .subscribe(() => this._reloadEngagedFees())
+        .subscribe(() => this.reloadEngagedFees())
     );
   }
 
   // PRIVATE COMPONENTS FUNCTIONS =============================================
   /** Notify than engaged fees for the current patron should be reloaded. */
-  private _reloadEngagedFees(): void {
-    this._patronTransactionService.emitPatronTransactionByPatron(this._patron.pid, undefined, 'open');
+  private reloadEngagedFees(): void {
+    this.patronTransactionService.emitPatronTransactionByPatron(this.patron.pid, undefined, 'open');
   }
 }

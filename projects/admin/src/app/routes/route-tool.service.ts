@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -79,8 +79,8 @@ export class RouteToolService {
   }
 
   /**
-   * Proxy for actived route
-   * @return ActivedRoute
+   * Proxy for activated route
+   * @return ActivatedRoute
    */
   get activatedRoute() {
     return this._injector.get(ActivatedRoute);
@@ -252,7 +252,7 @@ export class RouteToolService {
         .getPermission(recordType, record.metadata.pid)
         .pipe(
           map((permission: RecordPermissions) => {
-            const user = this.userService.user;
+            const { user } = this.userService;
             if (membership && "library" in record.metadata) {
               // Extract library pid
               const libraryPid =
@@ -294,7 +294,7 @@ export class RouteToolService {
    * @return mixed - string | null
    */
   getRouteQueryParam(name: string, defaultValue = null) {
-    const queryParams = this.activatedRoute.snapshot.queryParams;
+    const { queryParams } = this.activatedRoute.snapshot;
     return name in queryParams && queryParams[name].length > 0
       ? queryParams[name]
       : defaultValue;
@@ -306,13 +306,12 @@ export class RouteToolService {
    * @return Observable
    */
   aggregationFilter(aggregations: object): Observable<any> {
-    const obs = new Observable((observer: Subscriber<any>): void => {
+    return new Observable((observer: Subscriber<any>): void => {
       observer.next(this._aggFilter(aggregations));
       this.translateService.onLangChange.subscribe(() => {
         observer.next(this._aggFilter(aggregations));
       });
     });
-    return obs;
   }
 
   /**

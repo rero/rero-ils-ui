@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2023 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -23,7 +23,7 @@
   </button>
   <div class="container-fluid">
     <div class="row">
-      <!-- DOCUMENT & ADDITIONAL DATA ===================================== -->
+      <!-- DOCUMENT & ADDITIONAL DATA -->
       <public-search-patron-profile-document
           [record]="record"
           [showAdditionalInformation]="!isCollapsed"
@@ -35,7 +35,7 @@
           <dd class="col-sm-6 col-md-8 col-lg-9">{{ record.metadata.library.name }}</dd>
         </dl>
       </public-search-patron-profile-document>
-      <!-- DUE DATE & BADGES ============================================== -->
+      <!-- DUE DATE & BADGES -->
       <div class="col-lg-2 col-md-6 col-sm-6 pl-0">
         <div>
           <span class="d-inline d-lg-none label-title font-weight-bold" translate>Due date</span>
@@ -43,38 +43,48 @@
             {{ record.metadata.end_date | dateTranslate :'shortDate' }}
           </span>
         </div>
-        <div *ngIf="record.metadata.extension_count && record.metadata.extension_count > 0" class="badge badge-secondary font-weight-normal">
-          {{ record.metadata.extension_count }}
-          {{ record.metadata.extension_count | i18nPlural: {'=1': 'renewal', 'other': 'renewals'} | translate }}
-        </div>
-        <div *ngIf="record.metadata.overdue">
-          <span class="badge badge-warning font-weight-normal" translate>overdue</span>
-          <span *ngIf="fees > 0" title="{{ 'Fees to date' | translate }}">
-            {{ fees | currency:organisation.currency:'symbol' }}
-          </span>
-        </div>
-        <div *ngIf="isDueSoon" class="badge badge-secondary font-weight-normal" translate>approching due date</div>
+        @if (record.metadata.extension_count && record.metadata.extension_count > 0) {
+          <div class="badge badge-secondary font-weight-normal">
+            {{ record.metadata.extension_count }}
+            {{ record.metadata.extension_count | i18nPlural: {'=1': 'renewal', 'other': 'renewals'} | translate }}
+          </div>
+        }
+        @if (record.metadata.overdue) {
+          <div>
+            <span class="badge badge-warning font-weight-normal" translate>overdue</span>
+            @if (fees > 0) {
+              <span title="{{ 'Fees to date' | translate }}">
+                {{ fees | currency:organisation.currency:'symbol' }}
+              </span>
+            }
+          </div>
+        }
+        @if (isDueSoon) {
+          <div class="badge badge-secondary font-weight-normal" translate>approaching due date</div>
+        }
       </div>
-      <!-- ACTION BUTTONS COLUMN ========================================== -->
+      <!-- ACTION BUTTONS COLUMN -->
       <div class="col-lg-2 col-md-6 col-sm-6 text-right pr-0">
-        <button
-          *ngIf="canExtend.can; else expendDisabled"
-          type="button"
-          class="btn btn-sm btn-primary"
-          (click)="renew()"
-          [disabled]="renewInProgress || actionDone"
-        >
-          <span *ngIf="renewInProgress" class="spinner-border spinner-border-sm mr-1" role="status"></span>
-          {{ 'Renew' | translate }}
-        </button>
-        <ng-template #expendDisabled>
+        @if (canExtend.can) {
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            (click)="renew()"
+            [disabled]="renewInProgress || actionDone"
+          >
+            @if (renewInProgress) {
+              <span class="spinner-border spinner-border-sm mr-1" role="status"></span>
+            }
+            {{ 'Renew' | translate }}
+          </button>
+        } @else {
           <button
             type="button"
             class="btn btn-sm btn-primary disabled"
             tooltip="{{ canExtend.reasons | arrayTranslate | join:' / '}}"
             translate
           >Renew</button>
-        </ng-template>
+        }
       </div>
     </div>
   </div>

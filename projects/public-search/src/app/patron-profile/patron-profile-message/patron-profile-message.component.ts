@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,11 +21,13 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
 
 @Component({
   selector: 'public-search-patron-profile-message',
-  template: `<div
-    *ngFor="let message of messages"
-    class="alert alert-{{ message.type }} mb-2"
-    [innerHTML]="message.content | nl2br"
-  ></div>`
+  template: `
+    @for (message of messages; track message) {
+      <div
+        class="alert alert-{{ message.type }} mb-2"
+        [innerHTML]="message.content | nl2br"
+      ></div>
+    }`
 })
 export class PatronProfileMessageComponent implements OnInit, OnDestroy {
 
@@ -37,18 +39,19 @@ export class PatronProfileMessageComponent implements OnInit, OnDestroy {
 
   /**
    * Constructor
-   * @param _patronProfileMenuService - PatronProfileMenuService
+   * @param patronApiService - PatronApiService
+   * @param patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
-    private _patronApiService: PatronApiService,
-    private _patronProfileMenuService: PatronProfileMenuService
+    private patronApiService: PatronApiService,
+    private patronProfileMenuService: PatronProfileMenuService
   ) {}
 
   /** OnInit hook */
   ngOnInit(): void {
     this._loanMessage();
     this._subscription.add(
-      this._patronProfileMenuService.onChange$.subscribe(() => {
+      this.patronProfileMenuService.onChange$.subscribe(() => {
         this._loanMessage();
       })
     );
@@ -61,8 +64,8 @@ export class PatronProfileMessageComponent implements OnInit, OnDestroy {
 
   /** load message */
   private _loanMessage(): void {
-    const patronPid = this._patronProfileMenuService.currentPatron.pid;
-    this._patronApiService.getMessages(patronPid)
+    const patronPid = this.patronProfileMenuService.currentPatron.pid;
+    this.patronApiService.getMessages(patronPid)
       .subscribe((messages: Message[]) => this.messages = messages);
   }
 }

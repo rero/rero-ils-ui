@@ -1,6 +1,6 @@
  <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,32 +14,37 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<ng-container *ngIf="settings">
+@if (settings) {
   <div class="table-responsive-sm">
     <table class="table table-sm table-striped table-hover">
       <thead>
         <tr>
           <th>&nbsp;</th>
-          <th class="text-center" scope="col" *ngFor="let patronType of patronTypes">
-            {{ patronType.metadata.name }}
-          </th>
+          @for (patronType of patronTypes; track patronType) {
+            <th class="text-center" scope="col">
+              {{ patronType.metadata.name }}
+            </th>
+          }
         </tr>
       </thead>
       <tbody>
-        <tr scope="row" *ngFor="let itemType of settings; let index = index">
-          <td>{{ itemType.label }}</td>
-          <td *ngFor="let patronType of itemType.patronTypes" class="text-center">
-            <input
-              type="checkbox"
-              [checked]="patronType.checked"
-              [disabled]="patronType.disabled"
-              [indeterminate]="patronType.disabled"
-              (click)="onClick($event.target.checked, itemType.pid, patronType.pid)"
-            >
-          </td>
-        </tr>
+        @for (itemType of settings; track itemType; let index = $index) {
+          <tr scope="row">
+            <td>{{ itemType.label }}</td>
+            @for (patronType of itemType.patronTypes; track patronType) {
+              <td class="text-center">
+                <input
+                  type="checkbox"
+                  [checked]="patronType.checked"
+                  [disabled]="patronType.disabled"
+                  [indeterminate]="patronType.disabled"
+                  (click)="onClick($event.target.checked, itemType.pid, patronType.pid)"
+                >
+              </td>
+            }
+          </tr>
+        }
       </tbody>
     </table>
   </div>
-</ng-container>
+}

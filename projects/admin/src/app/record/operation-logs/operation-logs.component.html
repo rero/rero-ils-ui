@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2023 RERO
+  Copyright (C) 2021-2024 RERO
   Copyright (C) 2021-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div class="modal d-block" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" translate>Operation history</h5>
@@ -25,28 +25,35 @@
         </button>
       </div>
       <div class="modal-body container">
-        <ng-container *ngIf="loadedRecord; else loaded">
-          <ng-container *ngIf="createRecord || records.length > 0; else noRecord">
-            <ng-container *ngIf="createRecord"
-                          [ngTemplateOutlet]="operationLog"
-                          [ngTemplateOutletContext]="{data: createRecord.metadata}">
-            </ng-container>
-            <ng-container *ngIf="recordTotals > 0">
-              <ng-container *ngFor="let record of records"
-                            [ngTemplateOutlet]="operationLog"
-                            [ngTemplateOutletContext]="{data: record.metadata}">
+        @if (loadedRecord) {
+          @if (createRecord || records.length > 0) {
+            @if (createRecord) {
+              <ng-container [ngTemplateOutlet]="operationLog"
+                            [ngTemplateOutletContext]="{data: createRecord.metadata}">
               </ng-container>
-              <ng-container *ngIf="isLinkShowMore">
+            }
+            @if (recordTotals > 0) {
+              @for (record of records; track record) {
+                <ng-container [ngTemplateOutlet]="operationLog"
+                              [ngTemplateOutletContext]="{data: record.metadata}">
+                </ng-container>
+              }
+              @if (isLinkShowMore) {
                 <button type="button" class="btn btn-link pl-1" (click)="showMore()">
                   <i class="fa fa-arrow-circle-o-down"></i> {{ 'Show more' | translate }}
                 </button>
-                <small *ngIf="isLinkShowMore">({{ hiddenOperationLogs }})</small>
-              </ng-container>
-            </ng-container>
-          </ng-container>
-          <ng-template #noRecord>{{ 'No history for this item' | translate }}</ng-template>
-        </ng-container>
-        <ng-template #loaded><i class="fa fa-spinner fa-pulse"></i></ng-template>
+                @if (isLinkShowMore) {
+                  <small>({{ hiddenOperationLogs }})</small>
+                }
+              }
+            }
+          } @else {
+            {{ 'No history for this item' | translate }}
+          }
+
+        } @else {
+          <i class="fa fa-spinner fa-pulse"></i>
+        }
       </div>
     </div>
   </div>
@@ -60,7 +67,9 @@
     <div class="col-2 operation">{{ metadata.operation | translate }}</div>
     <div class="col">
       {{ metadata.user_name }}
-      <ng-container *ngIf="metadata.library">- {{ metadata.library.name }}</ng-container>
+      @if (metadata.library) {
+        - {{ metadata.library.name }}
+      }
     </div>
   </div>
 </ng-template>

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,9 +28,6 @@ import { ITabEvent, PatronProfileService } from '../patron-profile.service';
 })
 export class PatronProfileRequestsComponent implements OnInit, OnDestroy {
 
-  /** Observable subscription */
-  private _subscription = new Subscription();
-
   /** First call of get record */
   loaded = false;
 
@@ -38,48 +35,46 @@ export class PatronProfileRequestsComponent implements OnInit, OnDestroy {
   records = [];
 
   /** Records paginator */
-  private _paginator: Paginator;
+  paginator: Paginator;
 
-  /** Get paginator */
-  get paginator(): Paginator {
-    return this._paginator;
-  }
+  /** Observable subscription */
+  private subscription = new Subscription();
 
   /**
    * Constructor
-   * @param _loanApiService - LoanApiService
-   * @param _patronProfileService - PatronProfileService
-   * @param _patronProfileMenuService - PatronProfileMenuService
+   * @param loanApiService - LoanApiService
+   * @param patronProfileService - PatronProfileService
+   * @param patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
-    private _loanApiService: LoanApiService,
-    private _patronProfileService: PatronProfileService,
-    private _patronProfileMenuService: PatronProfileMenuService
+    private loanApiService: LoanApiService,
+    private patronProfileService: PatronProfileService,
+    private patronProfileMenuService: PatronProfileMenuService
   ) {}
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._paginator = new Paginator();
-    this._paginator
+    this.paginator = new Paginator();
+    this.paginator
       .setHiddenInfo(
         _('({{ count }} hidden request)'),
         _('({{ count }} hidden requests)')
       );
-    this._subscription.add(
-      this._paginator.more$.subscribe((page: number) => {
+    this.subscription.add(
+      this.paginator.more$.subscribe((page: number) => {
         this._requestQuery(page).subscribe((response: Record) => {
           this.records = this.records.concat(response.hits.hits);
         });
       })
     );
-    this._subscription.add(
-      this._patronProfileService.tabsEvent$.subscribe((event: ITabEvent) => {
+    this.subscription.add(
+      this.patronProfileService.tabsEvent$.subscribe((event: ITabEvent) => {
         if (event.name === 'request') {
           if (event.count === 0) {
             this.loaded = true;
           } else {
             this._requestQuery(1).subscribe((response: Record) => {
-              this._paginator.setRecordsCount(response.hits.total.value);
+              this.paginator.setRecordsCount(response.hits.total.value);
               this.records = response.hits.hits;
               this.loaded = true;
             });
@@ -87,15 +82,15 @@ export class PatronProfileRequestsComponent implements OnInit, OnDestroy {
         }
       })
     );
-    this._subscription.add(
-      this._patronProfileService.cancelRequestEvent$.subscribe((requestPid: string) => {
+    this.subscription.add(
+      this.patronProfileService.cancelRequestEvent$.subscribe((requestPid: string) => {
         this.records = this.records.filter(record => record.metadata.pid !== requestPid);
-        this._paginator.setRecordsCount(this.records.length);
+        this.paginator.setRecordsCount(this.records.length);
       })
     );
     /** Cleaning up after the change of organization */
-    this._subscription.add(
-      this._patronProfileMenuService.onChange$.subscribe(() => {
+    this.subscription.add(
+      this.patronProfileMenuService.onChange$.subscribe(() => {
         this.paginator.setRecordsCount(0);
         this.records = [];
         this.loaded = false;
@@ -105,7 +100,7 @@ export class PatronProfileRequestsComponent implements OnInit, OnDestroy {
 
   /** OnDestroy hook */
   ngOnDestroy(): void {
-    this._subscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   /**
@@ -114,8 +109,8 @@ export class PatronProfileRequestsComponent implements OnInit, OnDestroy {
    * @return Observable
    */
   private _requestQuery(page: number): Observable<Record | Error> {
-    const patronPid = this._patronProfileMenuService.currentPatron.pid;
-    return this._loanApiService
-      .getRequest(patronPid, page, this._paginator.getRecordsPerPage());
+    const patronPid = this.patronProfileMenuService.currentPatron.pid;
+    return this.loanApiService
+      .getRequest(patronPid, page, this.paginator.getRecordsPerPage());
   }
 }

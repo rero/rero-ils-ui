@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -36,9 +36,6 @@ export class LocationDetailViewComponent implements OnInit, OnDestroy, DetailRec
 
   /** The observer to the record observable */
   private _recordObs: Subscription;
-
-  /** Constructor */
-  constructor() { }
 
   /** On init hook */
   ngOnInit() {

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -34,21 +34,21 @@ export class IllRequestComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _illRequestApiService - IllRequestApiService
-   * @param _patronService - PatronService
+   * @param illRequestApiService - IllRequestApiService
+   * @param patronService - PatronService
    */
   constructor(
-    private _illRequestApiService: IllRequestApiService,
-    private _patronService: PatronService
+    private illRequestApiService: IllRequestApiService,
+    private patronService: PatronService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.illRequests$ = this._patronService.currentPatron$.pipe(
+    this.illRequests$ = this.patronService.currentPatron$.pipe(
       switchMap((patron: any) => {
         return (!patron)
           ? of(null)
-          : this._illRequestApiService.getByPatronPid(patron.pid)
+          : this.illRequestApiService.getByPatronPid(patron.pid)
       }
     ));
   }

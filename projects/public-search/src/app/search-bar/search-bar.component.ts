@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ export class SearchBarComponent implements OnInit {
   }
 
   get typeaheadOptionsLimit(): number {
-    return this._searchBarConfigService.typeaheadOptionsLimit;
+    return this.searchBarConfigService.typeaheadOptionsLimit;
   }
 
   /** Array types config */
@@ -46,22 +46,22 @@ export class SearchBarComponent implements OnInit {
 
   /**
    * Constructor
-   * @param _translateService - TranslateService
-   * @param _searchBarConfigService - SearchBarConfigService
+   * @param translateService - TranslateService
+   * @param searchBarConfigService - SearchBarConfigService
    */
   constructor(
-    private _translateService: TranslateService,
-    private _searchBarConfigService: SearchBarConfigService
+    private translateService: TranslateService,
+    private searchBarConfigService: SearchBarConfigService
   ) {
-    this.placeholder = this._translateService.instant('Search');
+    this.placeholder = this.translateService.instant('Search');
   }
 
   /** OnInit hook */
   ngOnInit(): void {
     if (this.language) {
-      this._translateService.use(this.language);
+      this.translateService.use(this.language);
     }
-    this.recordTypes = this._searchBarConfigService.getConfig(
+    this.recordTypes = this.searchBarConfigService.getConfig(
       false, this, this.viewcode, this.maxLengthSuggestion
     );
   }

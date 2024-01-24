@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +21,7 @@ import moment from 'moment';
 @Component({
   selector: 'admin-holding-item-temporary-item-type',
   template: `
-    <ng-container *ngIf="hasTemporaryItemType()">
+    @if (hasTemporaryItemType()) {
       <div class="row">
         <div class="col-4 pl-5">
           <i class="fa fa-long-arrow-right pr-1"></i>
@@ -30,12 +30,14 @@ import moment from 'moment';
         </div>
         <div class="col-8">
           {{ record.metadata.temporary_item_type.pid | getRecord:'item_types': 'field':'name' | async }}
-          <span *ngIf="record.metadata.temporary_item_type.end_date as endDate" class="ml-1 small text-secondary">
-            (<i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }})
-          </span>
+          @if (record.metadata.temporary_item_type.end_date; as endDate) {
+            <span class="ml-1 small text-secondary">
+              (<i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }})
+            </span>
+          }
         </div>
       </div>
-    </ng-container>
+    }
   `
 })
 export class HoldingItemTemporaryItemTypeComponent {

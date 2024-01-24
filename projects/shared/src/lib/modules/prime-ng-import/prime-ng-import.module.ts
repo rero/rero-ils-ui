@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,11 +18,15 @@
 
 import { NgModule } from '@angular/core';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TabViewModule } from 'primeng/tabview';
 import { TimelineModule } from 'primeng/timeline';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
   exports: [
+    CardModule,
     SkeletonModule,
+    TabViewModule,
     TimelineModule
   ]
 })

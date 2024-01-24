@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ import { ItemStatus, User, UserService } from '@rero/shared';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
-import { finalize, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Item, ItemAction, ItemNoteType } from '../../classes/items';
 import { ItemsService } from '../../service/items.service';
 import { PatronService } from '../../service/patron.service';
@@ -55,29 +55,29 @@ export class CheckinComponent implements OnInit {
   private item: any;
 
   /** Constructor
-   * @param _userService: UserService
-   * @param _recordService: RecordService
-   * @param _itemsService: ItemsService
-   * @param _router: Router
-   * @param _translate: TranslateService
-   * @param _toastService: ToastrService
-   * @param _patronService: PatronService
-   * @param _modalService: BsModalService
+   * @param userService: UserService
+   * @param recordService: RecordService
+   * @param itemsService: ItemsService
+   * @param router: Router
+   * @param translate: TranslateService
+   * @param toastService: ToastrService
+   * @param patronService: PatronService
+   * @param modalService: BsModalService
    */
   constructor(
-    private _userService: UserService,
-    private _recordService: RecordService,
-    private _itemsService: ItemsService,
-    private _router: Router,
-    private _translate: TranslateService,
-    private _toastService: ToastrService,
-    private _patronService: PatronService,
-    private _modalService: BsModalService
+    private userService: UserService,
+    private recordService: RecordService,
+    private itemsService: ItemsService,
+    private router: Router,
+    private translate: TranslateService,
+    private toastService: ToastrService,
+    private patronService: PatronService,
+    private modalService: BsModalService
   ) {}
 
   ngOnInit() {
-    this._loggedUser = this._userService.user;
-    this._patronService.currentPatron$.subscribe(
+    this._loggedUser = this.userService.user;
+    this.patronService.currentPatron$.subscribe(
       patron => this.patronInfo = patron
     );
     this.currentLibraryPid = this._loggedUser.currentLibrary;
@@ -102,28 +102,28 @@ export class CheckinComponent implements OnInit {
   checkin(itemBarcode: string) {
     this.searchInputFocus = false;
     this.searchInputDisabled = true;
-    this._itemsService.checkin(itemBarcode, this._loggedUser.currentLibrary).subscribe(
+    this.itemsService.checkin(itemBarcode, this._loggedUser.currentLibrary).subscribe(
       item => {
         // TODO: remove this when policy will be in place
         if (item === null || item.location.organisation.pid !== this._loggedUser.currentOrganisation) {
-          this._toastService.error(
-            this._translate.instant('Item or patron not found!'),
-            this._translate.instant('Checkin')
+          this.toastService.error(
+            this.translate.instant('Item or patron not found!'),
+            this.translate.instant('Checkin')
           );
           this._resetSearchInput();
           return;
         }
         if (item.hasRequests) {
-          this._toastService.warning(
-            this._translate.instant('The item contains requests'),
-            this._translate.instant('Checkin')
+          this.toastService.warning(
+            this.translate.instant('The item contains requests'),
+            this.translate.instant('Checkin')
           );
         }
         switch (item.actionDone) {
           case ItemAction.return_missing:
-            this._toastService.warning(
-              this._translate.instant('The item has been returned from missing'),
-              this._translate.instant('Checkin')
+            this.toastService.warning(
+              this.translate.instant('The item has been returned from missing'),
+              this.translate.instant('Checkin')
             );
             break;
           case ItemAction.checkin:
@@ -132,9 +132,9 @@ export class CheckinComponent implements OnInit {
               this.getPatronInfo(item.action_applied.checkin.patron.barcode);
             }
             if (item.status === ItemStatus.IN_TRANSIT) {
-              this._toastService.warning(
-                this._translate.instant('The item is ' + ItemStatus.IN_TRANSIT),
-                this._translate.instant('Checkin')
+              this.toastService.warning(
+                this.translate.instant('The item is ' + ItemStatus.IN_TRANSIT),
+                this.translate.instant('Checkin')
               );
             }
             break;
@@ -145,7 +145,7 @@ export class CheckinComponent implements OnInit {
       error => {
         if (this.item && this.items.findIndex(i => i.barcode === this.item.barcode) === -1) {
           // Reload item to have data up to date.
-          this._itemsService.getItem(this.item.barcode).subscribe((item: any) => {
+          this.itemsService.getItem(this.item.barcode).subscribe((item: any) => {
             delete item.actions;
             if (!item.notes) {
               item.notes = [];
@@ -171,14 +171,14 @@ export class CheckinComponent implements OnInit {
   getPatronInfo(barcode: string) {
     if (barcode) {
       this.barcode = barcode;
-      this._patronService
+      this.patronService
         .getPatron(barcode)
         .subscribe(
           () => {},
           (error) => {
-            this._toastService.error(
+            this.toastService.error(
               error.message,
-              this._translate.instant('Checkin')
+              this.translate.instant('Checkin')
             );
           }
         );
@@ -195,35 +195,35 @@ export class CheckinComponent implements OnInit {
     this.item = undefined;
     const loggerOrg = this._loggedUser.currentOrganisation;
     const query = `patron.barcode:${barcode} AND organisation.pid:${loggerOrg}`;
-    const patronQuery = this._recordService
+    const patronQuery = this.recordService
       .getRecords('patrons', query, 1, 1, [])
       .pipe(map((result: Record) => result.hits));
-    const itemQuery = this._recordService
+    const itemQuery = this.recordService
       .getRecords('items', `barcode:${barcode}`, 1, 1, [])
       .pipe(map((result: Record) => result.hits));
     forkJoin([patronQuery, itemQuery])
     .subscribe(([patron, item]: any[]) => {
       if (patron.total.value === 0 && item.total.value === 0) {
-        this._toastService.warning(
-          this._translate.instant('Patron not found!'),
-          this._translate.instant('Checkin')
+        this.toastService.warning(
+          this.translate.instant('Patron not found!'),
+          this.translate.instant('Checkin')
         );
       }
       if (patron.total.value > 1 && item.total.value === 0) {
-        this._toastService.warning(
-          this._translate.instant('Found more than one patron.'),
-          this._translate.instant('Checkin')
+        this.toastService.warning(
+          this.translate.instant('Found more than one patron.'),
+          this.translate.instant('Checkin')
         );
       }
       if (patron.total.value === 1 && item.total.value === 1) {
-        const modalRef: BsModalRef = this._modalService.show(CheckinActionComponent, {
+        const modalRef: BsModalRef = this.modalService.show(CheckinActionComponent, {
           ignoreBackdropClick: true,
           keyboard: true
         });
         modalRef.onHidden.subscribe(() => {
           switch (modalRef.content.action) {
             case 'patron':
-              this._router.navigate(
+              this.router.navigate(
                 ['/circulation', 'patron', barcode, 'loan']
               );
               break;
@@ -240,23 +240,23 @@ export class CheckinComponent implements OnInit {
           // Check if the item is already into the item list. If it happens,
           // just notify the user and clear the form.
           if (this.items.find(it => it.barcode === barcode)) {
-            this._toastService.warning(
-              this._translate.instant('The item is already in the list.'),
-              this._translate.instant('Checkin')
+            this.toastService.warning(
+              this.translate.instant('The item is already in the list.'),
+              this.translate.instant('Checkin')
             );
             this._resetSearchInput();
           } else {
             this.checkin(barcode);
           }
       } else if (patron.total.value === 1) {
-          this._router.navigate(
+          this.router.navigate(
             ['/circulation', 'patron', barcode, 'loan']
           );
       }
     },
-    error => this._toastService.error(
+    error => this.toastService.error(
         error.message,
-        this._translate.instant('Checkin')
+        this.translate.instant('Checkin')
       )
     );
   }
@@ -269,7 +269,7 @@ export class CheckinComponent implements OnInit {
   private _displayCirculationNote(item: Item, noteType: ItemNoteType): void {
     const note = item.getNote(noteType);
     if (note != null) {
-      this._toastService.warning(
+      this.toastService.warning(
         note.content, null,
         {
           closeButton: true,    // add a close button to the toastr message
@@ -291,19 +291,19 @@ export class CheckinComponent implements OnInit {
     let message = (error.hasOwnProperty('error') && error.error.hasOwnProperty('status'))
       ? error.error.status.replace(/^error:/, '').trim()
       : error.message;
-    message = this._translate.instant(message);
-    message += `<br/>${this._translate.instant('Status')}: ${this._translate.instant(item.status.toString())}`;
+    message = this.translate.instant(message);
+    message += `<br/>${this.translate.instant('Status')}: ${this.translate.instant(item.status.toString())}`;
     if (item.status === ItemStatus.IN_TRANSIT && item.loan && item.loan.item_destination) {
       const { library_name } = item.loan.item_destination;
-      message += ` (${this._translate.instant('to')} ${library_name})`;
+      message += ` (${this.translate.instant('to')} ${library_name})`;
     }
     const checkinNote = item.getNote(ItemNoteType.CHECKIN);
     if (checkinNote) {
-      message += `<br/>${this._translate.instant('Note')}: ${checkinNote.content}`
+      message += `<br/>${this.translate.instant('Note')}: ${checkinNote.content}`
     }
-    this._toastService.warning(
-      this._translate.instant(message),
-      this._translate.instant('Checkin'),
+    this.toastService.warning(
+      this.translate.instant(message),
+      this.translate.instant('Checkin'),
       { enableHtml: true }
     );
     this._resetSearchInput();
@@ -311,9 +311,9 @@ export class CheckinComponent implements OnInit {
 
   hasFees(event: boolean) {
     if (event) {
-      this._toastService.error(
-        this._translate.instant('The item has fees'),
-        this._translate.instant('Checkin')
+      this.toastService.error(
+        this.translate.instant('The item has fees'),
+        this.translate.instant('Checkin')
       );
     }
   }

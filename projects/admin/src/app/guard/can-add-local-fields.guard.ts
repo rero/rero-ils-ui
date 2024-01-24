@@ -16,7 +16,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { UserService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -25,7 +25,7 @@ import { LocalFieldApiService } from '../api/local-field-api.service';
 @Injectable({
   providedIn: 'root'
 })
-export class CanAddLocalFieldsGuard implements CanActivate {
+export class CanAddLocalFieldsGuard  {
   /**
    * This guards allows to control the existence of the resource
    * for the current organization. If a record exists, it blocks

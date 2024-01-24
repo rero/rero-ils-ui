@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
-import { IAcqOrder, IAcqOrderLine, AcqOrderLineStatus, AcqOrderStatus } from '../../../classes/order';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
+import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
+import { AcqOrderLineStatus, AcqOrderStatus, IAcqOrder, IAcqOrderLine } from '../../../classes/order';
 import { IAcqReceipt } from '../../../classes/receipt';
 
 @Component({
@@ -37,25 +37,25 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
   acqOrderStatus = AcqOrderStatus;
 
   /** all component subscription */
-  private _subscriptions = new Subscription();
+  private subscriptions = new Subscription();
 
   // CONSTRUCTOR & HOOKS ======================================================
 
   /**
    * Constructor
-   * @param _acqOrderApiService - AcqOrderApiService
-   * @param _acqReceiptApiService - AcqReceiptApiService
+   * @param acqOrderApiService - AcqOrderApiService
+   * @param acqReceiptApiService - AcqReceiptApiService
    */
   constructor(
-    private _acqOrderApiService: AcqOrderApiService,
-    private _acqReceiptApiService: AcqReceiptApiService
+    private acqOrderApiService: AcqOrderApiService,
+    private acqReceiptApiService: AcqReceiptApiService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
     // Subscription when an order line is deleted
-    this._subscriptions.add(
-      this._acqOrderApiService
+    this.subscriptions.add(
+      this.acqOrderApiService
         .deletedOrderLineSubject$
         .subscribe(
           (orderLine: IAcqOrderLine) => {
@@ -66,8 +66,8 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
           }
         )
     );
-    this._subscriptions.add(
-      this._acqReceiptApiService
+    this.subscriptions.add(
+      this.acqReceiptApiService
         .deletedReceiptSubject$
         .subscribe(
           (receipt: IAcqReceipt) => {
@@ -80,6 +80,6 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
 
   /** OnDestroy hook */
   ngOnDestroy() {
-    this._subscriptions.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 }

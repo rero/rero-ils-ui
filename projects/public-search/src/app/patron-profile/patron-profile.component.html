@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,8 +15,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ngx-loading-bar [includeSpinner]="false" height="3px"></ngx-loading-bar>
-<ng-container *ngIf="user">
-  <ng-container *ngIf="user.isAuthenticated && user.isPatron; else noAuthenticated">
+@if (user) {
+  @if (user.isAuthenticated && user.isPatron) {
     <header>
       <h3>{{ fullname }}</h3>
     </header>
@@ -32,9 +32,11 @@
           <ng-template tabHeading>
             {{ 'Loans' | translate }}
             <span class="badge badge-info">{{ tabs.loan.count }}</span>
-            <span class="badge badge-warning font-weight-normal ml-1" *ngIf="loansFeesTotal > 0" title="{{ 'Fees to date' | translate }}">
-              {{ loansFeesTotal | currency:patron.organisation.currency:'symbol' }}
-            </span>
+            @if (loansFeesTotal > 0) {
+              <span class="badge badge-warning font-weight-normal ml-1" title="{{ 'Fees to date' | translate }}">
+                {{ loansFeesTotal | currency:patron.organisation.currency:'symbol' }}
+              </span>
+            }
           </ng-template>
           <public-search-patron-profile-loans [count]="tabs.loan.count"></public-search-patron-profile-loans>
         </tab>
@@ -73,11 +75,10 @@
         </tab>
       </tabset>
     </section>
-  </ng-container>
-</ng-container>
-<ng-template #noAuthenticated>
-  <div class="text-center">
-    <h3 class="mt-4 mb-4" translate>Access denied</h3>
-    {{ 'You are not identified as a patron.' | translate }}
-  </div>
-</ng-template>
+  } @else {
+    <div class="text-center">
+      <h3 class="mt-4 mb-4" translate>Access denied</h3>
+      {{ 'You are not identified as a patron.' | translate }}
+    </div>
+  }
+}

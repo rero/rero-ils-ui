@@ -8,12 +8,6 @@
       "files": [
         "*.ts"
       ],
-      "parserOptions": {
-        "project": [
-          "projects/admin/tsconfig.eslint.json"
-        ],
-        "createDefaultProgram": false
-      },
       "rules": {
         "@angular-eslint/directive-selector": [
           "error",
