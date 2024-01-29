@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
- * Copyright (C) 2021-2023 UCLouvain
+ * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2021-2024 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -159,11 +159,8 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
    */
   private initField(field: any, fieldParentKey: string, subject: BehaviorSubject<any>): void {
     if (Object.keys(this.fieldDataConfig).some(key => key === fieldParentKey)) {
-      field.templateOptions = {
-        options: subject.asObservable(),
-        minItemsToDisplaySearch: 10,
-        sort: false,
-      };
+      field.templateOptions.options = subject.asObservable();
+      field.templateOptions.sort = false;
       field.type = 'select';
       subject.next(this.fieldDataConfig[fieldParentKey]);
     } else {
@@ -179,10 +176,9 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
    */
   private initFieldSearchType(field: any, fieldParentKey: string, subject: BehaviorSubject<any>): void {
     if (Object.keys(this.fieldsSearchTypeConfig).some(key => key === fieldParentKey)) {
-      field.templateOptions = {
-        options: subject.asObservable(),
-        sort: false,
-      };
+      field.templateOptions.options = subject.asObservable();
+      field.templateOptions.sort = false;
+      field.templateOptions.readonly = this.fieldsSearchTypeConfig[fieldParentKey].length < 2;
       subject.next(this.fieldsSearchTypeConfig[fieldParentKey]);
       const fieldSearchTypeValue = this.fieldsSearchTypeConfig[fieldParentKey][0].value;
       if (
@@ -223,7 +219,9 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                 templateOptions: {
                   sort: false,
                   hideLabel: true,
+                  hideLabelSelectOption: true,
                   required: true,
+                  minItemsToDisplaySearch: 999,
                   options: this.advancedSearchService.getFieldsConfig(),
                 },
               },
@@ -233,6 +231,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                 key: 'searchType',
                 defaultValue: false,
                 templateOptions: {
+                  hideLabelSelectOption: true,
                   options: []
                 },
                 hooks: {
@@ -286,7 +285,9 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                   templateOptions: {
                     sort: false,
                     hideLabel: true,
+                    hideLabelSelectOption: true,
                     required: true,
+                    minItemsToDisplaySearch: 999,
                     options: this.advancedSearchService.getFieldsConfig(),
                   },
                 },
@@ -296,6 +297,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                   key: 'searchType',
                   defaultValue: false,
                   templateOptions: {
+                    hideLabelSelectOption: true,
                     options: []
                   },
                   hooks: {
