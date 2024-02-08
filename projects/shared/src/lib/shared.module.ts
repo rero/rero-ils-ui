@@ -55,6 +55,7 @@ import { AvailabilityComponent } from './view/availability/availability.componen
 import { EntityLinkComponent } from './view/entity-link.component';
 import { DocumentBriefViewComponent } from './component/documents/document-brief-view/document-brief-view.component';
 import { IdentifiedByLabelPipe } from './pipe/identifiedby-label.pipe';
+import { FilesComponent } from './component/documents/files/files.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +91,8 @@ import { IdentifiedByLabelPipe } from './pipe/identifiedby-label.pipe';
     AvailabilityComponent,
     EntityLinkComponent,
     DocumentBriefViewComponent,
-    IdentifiedByLabelPipe
+    IdentifiedByLabelPipe,
+    FilesComponent
   ],
   exports: [
     CommonModule,
@@ -121,7 +123,8 @@ import { IdentifiedByLabelPipe } from './pipe/identifiedby-label.pipe';
     NoContentDirective,
     AvailabilityComponent,
     EntityLinkComponent,
-    DocumentBriefViewComponent
+    DocumentBriefViewComponent,
+    FilesComponent
   ],
   imports: [
     CommonModule,
@@ -130,6 +133,7 @@ import { IdentifiedByLabelPipe } from './pipe/identifiedby-label.pipe';
     RouterModule,
     TooltipModule.forRoot(),
     PopoverModule.forRoot(),
+    PrimeNgImportModule
   ],
   providers: [
     SearchBarConfigService,
