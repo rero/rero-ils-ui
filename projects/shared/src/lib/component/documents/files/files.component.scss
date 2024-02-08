@@ -1,7 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
- * Copyright (C) 2019-2022 UCLouvain
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,24 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { NgModule } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { CarouselModule } from 'primeng/carousel';
-import { SkeletonModule } from 'primeng/skeleton';
-import { TabViewModule } from 'primeng/tabview';
-import { TagModule } from 'primeng/tag';
-import { TimelineModule } from 'primeng/timeline';
+:host ::ng-deep {
+  img {
+    max-width: 80px;
+  }
+  .action button{
+    border-radius: 50%;
+    height: 2.357rem;
+  }
+  a {
+    color: #495057;
+  }
+  .p-highlight button {
+    background: #495057;
+  }
+  .p-carousel ul{
+    margin-bottom: 0;
+  }
+}
 
-@NgModule({
-  exports: [
-    CardModule,
-    SkeletonModule,
-    TabViewModule,
-    TimelineModule,
-    CarouselModule,
-    TagModule,
-    ButtonModule
-  ]
-})
-export class PrimeNgImportModule { }
