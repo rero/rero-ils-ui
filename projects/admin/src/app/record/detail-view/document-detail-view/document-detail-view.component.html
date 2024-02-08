@@ -239,6 +239,8 @@
           <ng-template tabHeading>
             <i class="fa fa-list-ul mr-1"></i>{{ 'Get' | translate }}
           </ng-template>
+          <!-- FILES -->
+          <shared-doc-files class="mb-2" [documentPid]="record.metadata.pid"></shared-doc-files>
           <div class="mt-2">
             <!-- HOLDINGS -->
             <admin-holding-organisation [document]="record"></admin-holding-organisation>

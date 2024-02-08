@@ -30,6 +30,7 @@ export * from './lib/class/user';
 export * from './lib/component/action-button/action-button.component';
 export * from './lib/component/core/brief-view/brief-view.component';
 export * from './lib/component/documents/document-brief-view/document-brief-view.component';
+export * from './lib/component/documents/files/files.component';
 export * from './lib/component/entities/entity-brief-view/entity-brief-view.component';
 export * from './lib/view/contribution/contribution.component';
 export * from './lib/view/entity-link.component';

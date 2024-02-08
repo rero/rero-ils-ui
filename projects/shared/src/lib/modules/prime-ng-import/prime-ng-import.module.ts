@@ -19,11 +19,17 @@
 import { NgModule } from '@angular/core';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TimelineModule } from 'primeng/timeline';
+import { CarouselModule } from 'primeng/carousel';
+import { TagModule } from 'primeng/tag';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   exports: [
     SkeletonModule,
-    TimelineModule
+    TimelineModule,
+    CarouselModule,
+    TagModule,
+    ButtonModule
   ]
 })
 export class PrimeNgImportModule { }
