@@ -15,6 +15,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ngx-loading-bar [includeSpinner]="false" height="3px"></ngx-loading-bar>
+
+<shared-doc-files [documentPid]="documentpid"></shared-doc-files>
+
 @if (holdings.length > 0) {
   @for (holding of holdings; track holding) {
     <public-search-holding [holding]="holding"

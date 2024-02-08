@@ -128,6 +128,15 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
               aggregationsBucketSize: 10,
               searchFilters: [
                 {
+                  filters: [
+                    {
+                      label: _('Search in full text'),
+                      filter: 'fulltext',
+                      value: 'true'
+                    }
+                  ]
+                },
+                {
                   label: _('Show only:'),
                   filters: [
                     {
