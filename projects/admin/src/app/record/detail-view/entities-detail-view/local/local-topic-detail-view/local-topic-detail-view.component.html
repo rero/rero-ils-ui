@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,20 +15,16 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<dl class="row mb-0">
-
-</dl>
 
 <!-- GLOBAL FIELDS -->
 <admin-entities-local-global [record]="record">
   <!-- NAME -->
-  <ng-container *ngIf="record.name">
+  @if (record.name) {
     <dt translate>Name</dt>
     <dd>{{ record.name }}</dd>
-  </ng-container>
-
+  }
   <!-- GENRE FORM -->
-  <ng-container *ngIf="record.genreForm">
+  @if (record.genreForm) {
     <dt translate>Genre form</dt>
     <dd>
       <i class="fa mr-2" [ngClass]="{
@@ -36,15 +32,18 @@
         'fa-times text-danger': !record.conference
       }"></i>
     </dd>
-  </ng-container>
-
+  }
   <!-- ALTERNATIVE NAMES -->
-  <ng-container *ngIf="record.alternative_names && record.alternative_names.length > 0">
-    <dt translate>Alternative names</dt>
-    <dd>
-      <ul>
-        <li *ngFor="let name of record.alternative_names">{{ name }}</li>
-      </ul>
-    </dd>
-  </ng-container>
+  @if (record.alternative_names && record.alternative_names.length > 0) {
+    <ng-container>
+      <dt translate>Alternative names</dt>
+      <dd>
+        <ul>
+          @for (name of record.alternative_names; track name) {
+            <li>{{ name }}</li>
+          }
+        </ul>
+      </dd>
+    </ng-container>
+  }
 </admin-entities-local-global>

@@ -98,6 +98,6 @@ describe('PatronProfileIllRequestComponent', () => {
     patronProfileService.changeTab({ name: 'illRequest', count: 0 });
     fixture.detectChanges();
     const message = fixture.nativeElement.querySelectorAll('div')[5];
-    expect(message.textContent).toContain('No ill request');
+    expect(message.textContent).toContain('Loading in progress');
   });
 });

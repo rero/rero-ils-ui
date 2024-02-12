@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020-2023 RERO
+  Copyright (C) 2020-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,44 +14,50 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="items">
-  <h3 class="mt-4 mb-0" translate>Items</h3>
+<h3 class="mt-4 mb-2" translate>Items</h3>
+@if (items) {
   <ul class="list-unstyled">
-    <ng-container *ngFor="let item of items; let isOdd=odd">
-      <li class="py-1" [ngClass]="{ 'bg-light': isOdd }" *ngIf="item.pid | getRecord: 'items' | async as itemData">
-        <ng-container
-          *ngIf="itemData.metadata.document.pid | getRecord:'documents':'object':null:{Accept: 'application/rero+json'} | async as document"
-        >
+    @for (item of items; track item; let isOdd=$odd) {
+      <li class="py-2 px-2" [ngClass]="{ 'bg-light': isOdd }" *ngVar="item.pid | getRecord: 'items' | async as itemData">
+        @if ($any(itemData).metadata.document.pid | getRecord:'documents':'object':null:{Accept: 'application/rero+json'} | async; as document) {
           <h5>
             <a [routerLink]="['/records','documents', 'detail', itemData.metadata.document.pid]">
-              {{ document.metadata.title[0]._text }}
+              {{ $any(document).metadata.title[0]._text }}
             </a>
           </h5>
           <div class="my-2">
-            <shared-contribution [contributions]="document.metadata?.contribution"></shared-contribution>
-            <div>
-              <span class="font-weight-bold" translate>Publication</span>:
-              {{ document.metadata.provisionActivity[0]._text[0].value }}
-            </div>
-            <div>
-              <span class="font-weight-bold" translate>Barcode</span>:
-              {{ itemData.metadata.barcode }}
-            </div>
-            <!-- INHERITED CALL NUMBER -->
-            <div *ngIf="itemData | itemHoldingsCallNumber | async as callNumber">
-              <span class="font-weight-bold" translate>Call number</span>:
-              <shared-inherited-call-number [item]="itemData"></shared-inherited-call-number>
-            </div>
-
-            <div *ngIf="itemData.metadata.location.pid | getRecord:'locations' | async as location">
-              <span class="font-weight-bold" translate>Library</span>:
-              <ng-container *ngIf="location.metadata.library.pid | getRecord: 'libraries' | async as library">
-                {{ library.metadata.name }} - {{ location.metadata.name }}
-              </ng-container>
-            </div>
+            @if ($any(document).metadata.contribution) {
+              <shared-contribution [contributions]="$any(document).metadata.contribution"></shared-contribution>
+            }
           </div>
-        </ng-container>
+          <dl class="row">
+            <dt class="col-2 py-0 label-title" translate>Publication</dt>
+            <dd class="col-10 py-0 mb-0">
+              {{ $any(document).metadata.provisionActivity[0]._text[0].value }}
+            </dd>
+            <dt class="col-2 py-0 label-title" translate>Barcode</dt>
+            <dd class="col-10 py-0 mb-0">
+              {{ itemData.metadata.barcode }}
+            </dd>
+            @if (itemData | itemHoldingsCallNumber | async; as callNumber) {
+              @if ((callNumber.first | json) !== '{}' || (callNumber.second | json) !== '{}') {
+                <dt class="col-2 py-0 label-title" translate>Call number</dt>
+                <dd class="col-10 py-0 mb-0">
+                  <shared-inherited-call-number [item]="itemData"></shared-inherited-call-number>
+                </dd>
+              }
+            }
+            @if (itemData.metadata.location.pid | getRecord:'locations' | async; as location) {
+              <dt class="col-2 py-0 label-title" translate>Library</dt>
+              <dd class="col-10 py-0 mb-0">
+                @if ($any(location).metadata.library.pid | getRecord: 'libraries' | async; as library) {
+                  {{ $any(library).metadata.name }} - {{ $any(location).metadata.name }}
+                }
+              </dd>
+            }
+          </dl>
+        }
       </li>
-    </ng-container>
+    }
   </ul>
-</ng-container>
+}

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,11 +40,9 @@ export class GetTranslatedLabelPipe implements PipeTransform {
 
   /**
    * constructor
-   * @param _translateService - TranslateService
+   * @param translateService - TranslateService
    */
-  constructor(
-    private _translateService: TranslateService
-  ){ }
+  constructor(private translateService: TranslateService) {}
 
   /**
    * get the best possible label
@@ -57,12 +55,12 @@ export class GetTranslatedLabelPipe implements PipeTransform {
     if (!Array.isArray(entries)) {
       return null;
     }
-    language = language || this._translateService.currentLang;
+    language = language || this.translateService.currentLang;
     const labels = entries.filter(entry => entry.language === language);
     if (labels.length > 0) {  // We find a correct entry ! Return the label
       return labels[0].label;
     } else if (entries.length > 0) {  // we didn't find any entry. Return the first label from the input entries.
-      return this._translateService.instant(entries[0].label);
+      return this.translateService.instant(entries[0].label);
     }
     return null;
   }

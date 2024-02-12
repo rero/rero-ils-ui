@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnInit } from '@angular/core';
-import { forkJoin } from 'rxjs';
-import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { RecordPermissions } from '@app/admin/classes/permissions';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
-import { IAcqReceipt } from '../../../classes/receipt';
+import { forkJoin } from 'rxjs';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
+import { IAcqReceipt } from '../../../classes/receipt';
 import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
 
 @Component({
@@ -52,35 +52,35 @@ export class ReceiptSummaryComponent implements OnInit {
    */
   get deleteInfoMessage(): string {
     return (!this.recordPermissions.delete.can)
-      ? this._recordPermissionService.generateDeleteMessage(this.recordPermissions.delete.reasons)
+      ? this.recordPermissionService.generateDeleteMessage(this.recordPermissions.delete.reasons)
       : '';
   }
   get editInfoMessage(): string {
     return (!this.recordPermissions.update.can)
-      ? this._recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'update')
+      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'update')
       : '';
   }
   get resumeInfoMessage(): string {
     return (!this.recordPermissions.create.can)
-      ? this._recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons, 'resume')
+      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons, 'resume')
       : '';
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _recordPermissionService - RecordPermissionService
-   * @param _acqReceiptApiService - AcqReceiptApiService
-   * @param _acqOrderApiService - AcqOrderApiService
-   * @param _currentLibraryPermissionValidator - CurrentLibraryPermissionValidator
-   * @param _receivedOrderPermissionValidator - ReceivedOrderPermissionValidator
+   * @param recordPermissionService - RecordPermissionService
+   * @param acqReceiptApiService - AcqReceiptApiService
+   * @param acqOrderApiService - AcqOrderApiService
+   * @param currentLibraryPermissionValidator - CurrentLibraryPermissionValidator
+   * @param receivedOrderPermissionValidator - ReceivedOrderPermissionValidator
    */
   constructor(
-    private _recordPermissionService: RecordPermissionService,
-    private _acqReceiptApiService: AcqReceiptApiService,
-    private _acqOrderApiService: AcqOrderApiService,
-    private _currentLibraryPermissionValidator: CurrentLibraryPermissionValidator,
-    private _receivedOrderPermissionValidator: ReceivedOrderPermissionValidator
+    private recordPermissionService: RecordPermissionService,
+    private acqReceiptApiService: AcqReceiptApiService,
+    private acqOrderApiService: AcqOrderApiService,
+    private currentLibraryPermissionValidator: CurrentLibraryPermissionValidator,
+    private receivedOrderPermissionValidator: ReceivedOrderPermissionValidator
   ) { }
 
   /** OnInit hook */
@@ -92,18 +92,18 @@ export class ReceiptSummaryComponent implements OnInit {
     if (!this.recordPermissions) {
       this.allowActions = false;
     }
-    this._acqReceiptApiService
+    this.acqReceiptApiService
       .getReceipt(this.receiptPid)
       .subscribe((receipt: IAcqReceipt) => {
         this.receipt = receipt;
         // Load permissions only if we need to display the action buttons
         if (this.allowActions) {
-          const order$ = this._acqOrderApiService.getOrder(this.receipt.acq_order.pid);
-          const permissions$ = this._recordPermissionService.getPermission('acq_receipts', this.receipt.pid);
+          const order$ = this.acqOrderApiService.getOrder(this.receipt.acq_order.pid);
+          const permissions$ = this.recordPermissionService.getPermission('acq_receipts', this.receipt.pid);
           forkJoin([order$, permissions$]).subscribe(
             ([order, permissions]) => {
-              this.recordPermissions = this._currentLibraryPermissionValidator.validate(permissions, this.receipt.library.pid);
-              this.recordPermissions = this._receivedOrderPermissionValidator.validate(permissions, order);
+              this.recordPermissions = this.currentLibraryPermissionValidator.validate(permissions, this.receipt.library.pid);
+              this.recordPermissions = this.receivedOrderPermissionValidator.validate(permissions, order);
             }
           );
         }
@@ -113,6 +113,6 @@ export class ReceiptSummaryComponent implements OnInit {
   // COMPONENT FUNCTIONS ======================================================
   /** Delete a receipt */
   deleteReceipt(): void {
-    this._acqReceiptApiService.delete(this.receipt);
+    this.acqReceiptApiService.delete(this.receipt);
   }
 }

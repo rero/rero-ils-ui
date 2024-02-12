@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023 RERO
+ * Copyright (C) 2023-2024 RERO
  * Copyright (C) 2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -53,23 +53,23 @@ export class OrderEmailFormComponent implements OnInit, OnDestroy {
   response?: IPreview;
 
   /** all component subscription */
-  private _subscriptions = new Subscription();
+  private subscriptions = new Subscription();
 
   /**
    * Constructor
-   * @param _acqOrderApiService - AcqOrderApiService
-   * @param _toastrService - ToastrService
-   * @param _translateService - TranslateService
+   * @param acqOrderApiService - AcqOrderApiService
+   * @param toastrService - ToastrService
+   * @param translateService - TranslateService
    */
   constructor(
-    private _acqOrderApiService: AcqOrderApiService,
-    private _toastrService: ToastrService,
-    private _translateService: TranslateService
+    private acqOrderApiService: AcqOrderApiService,
+    private toastrService: ToastrService,
+    private translateService: TranslateService
   ) { }
 
   /** onInit hook */
   ngOnInit(): void {
-    this._subscriptions.add(this._acqOrderApiService
+    this.subscriptions.add(this.acqOrderApiService
       .getOrderPreview(this.order.pid)
       .subscribe((response: IPreview) => {
         this.suggestions = Tools.processRecipientSuggestions(response.recipient_suggestions);
@@ -80,7 +80,7 @@ export class OrderEmailFormComponent implements OnInit, OnDestroy {
 
   /** onDestroy hook */
   ngOnDestroy(): void {
-      this._subscriptions.unsubscribe();
+      this.subscriptions.unsubscribe();
   }
 
   /**
@@ -88,31 +88,31 @@ export class OrderEmailFormComponent implements OnInit, OnDestroy {
    * @param recipients Array of email addresses
    */
   confirmOrder(recipients: ITypeEmail[]): void {
-    this._acqOrderApiService
+    this.acqOrderApiService
       .sendOrder(this.order.pid, recipients)
       .subscribe(
         (notification: Notification) => {
           if (notification.notification_sent) {
-            this._toastrService.success(
-              this._translateService.instant('order has been sent'),
-              this._translateService.instant('Order sent')
+            this.toastrService.success(
+              this.translateService.instant('order has been sent'),
+              this.translateService.instant('Order sent')
             );
           } else {
-            this._toastrService.warning(
-              this._translateService.instant('order not yet send'),
-              this._translateService.instant('Order delayed'),
+            this.toastrService.warning(
+              this.translateService.instant('order not yet send'),
+              this.translateService.instant('Order delayed'),
               { disableTimeOut: true, closeButton: true }
             );
           }
           this.closeEmailDialog();
-          this._acqOrderApiService
+          this.acqOrderApiService
             .getOrder(this.order.pid)
             .subscribe((order: IAcqOrder) => this.recordChange.next(order));
         },
         (error: any) => {
-          this._toastrService.error(
+          this.toastrService.error(
             error.error.message,
-            this._translateService.instant('Error when placing an order !'),
+            this.translateService.instant('Error when placing an order !'),
             { disableTimeOut: true, closeButton: true }
           );
        });

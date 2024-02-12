@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,21 +25,18 @@ import { ResultItem } from '@rero/ng-core';
     <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
   </h5>
   <div class="card-text">
-    <span *ngIf="record.metadata.description">
+    @if (record.metadata.description) {
       {{ record.metadata.description }}
-    </span>
+    }
   </div>
   `,
   styles: []
 })
 export class PatronTypesBriefViewComponent implements ResultItem {
 
-  @Input()
-  record: any;
+  @Input() record: any;
 
-  @Input()
-  type: string;
+  @Input() type: string;
 
-  @Input()
-  detailUrl: { link: string, external: boolean };
+  @Input() detailUrl: { link: string, external: boolean };
 }

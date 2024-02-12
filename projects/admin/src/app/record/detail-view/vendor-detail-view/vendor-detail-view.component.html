@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,81 +14,66 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="record$ | async as record">
+@if (record$ | async; as record) {
   <h1 class="mb-3">{{ record.metadata.name }}</h1>
   <article>
     <section class="m-2 p-2">
       <dl class="row mb-0">
         <!-- WEBSITE -->
-        <ng-container *ngIf="record.metadata.website">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Website
-          </dt>
+        @if (record.metadata.website) {
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Website</dt>
           <dd class="col-sm-7 col-md-8 mb-0">
             <a target="_blank" href="{{ record.metadata.website }}">{{ record.metadata.website }}</a>
           </dd>
-        </ng-container>
+        }
         <!-- COMMUNICATION_LANGUAGE -->
-        <ng-container *ngIf="record.metadata.communication_language && record.metadata.communication_language.length > 0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Communication language
-          </dt>
+        @if (record.metadata.communication_language && record.metadata.communication_language.length > 0) {
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Communication language</dt>
           <dd class="col-sm-7 col-md-8 mb-0">
             {{ record.metadata.communication_language | translateLanguage:currentLanguage }}
           </dd>
-        </ng-container>
+        }
         <!-- CURRENCY -->
-        <ng-container *ngIf="record.metadata.currency">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Currency
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ record.metadata.currency }}
-          </dd>
-        </ng-container>
+        @if (record.metadata.currency) {
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Currency</dt>
+          <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.currency }}</dd>
+        }
         <!-- VAT RATE -->
-        <ng-container *ngIf="record.metadata.tva_rate">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-           VAT
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ record.metadata.tva_rate }}
-          </dd>
-        </ng-container>
+        @if (record.metadata.tva_rate) {
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>VAT</dt>
+          <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.tva_rate }}</dd>
+        }
         <!-- NOTE -->
-        <ng-container *ngIf="record.metadata.note">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Note
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ record.metadata.note }}
-          </dd>
-        </ng-container>
+        @if (record.metadata.note) {
+          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Note</dt>
+          <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.note }}</dd>
+        }
       </dl>
     </section>
 
     <section class="m-2 p-2">
       <tabset>
         <!-- DEFAULT CONTACT -->
-        <ng-container *ngIf="filterContact(record.metadata.contacts, 'default') as defaultContact">
+        @if (filterContact(record.metadata.contacts, 'default'); as defaultContact) {
           <tab heading="{{ 'Default contact details' | translate }}" id="default_address">
             <admin-address-type [addressType]="defaultContact"></admin-address-type>
           </tab>
-        </ng-container>
+        }
         <!-- ORDER CONTACT -->
-        <ng-container *ngIf="filterContact(record.metadata.contacts, 'order') as orderContact">
+        @if (filterContact(record.metadata.contacts, 'order'); as orderContact) {
           <tab heading="{{ 'Order contact details' | translate }}" id="order_address">
             <admin-address-type [addressType]="orderContact"></admin-address-type>
           </tab>
-        </ng-container>
+        }
       </tabset>
     </section>
 
     <!-- OPERATION LOGS-->
-    <admin-operation-logs
-      *ngIf="isEnabledOperationLog"
-      resourceType="vendors"
-      [resourcePid]="record.metadata.pid"
-    ></admin-operation-logs>
+    @if (isEnabledOperationLog) {
+      <admin-operation-logs
+        resourceType="vendors"
+        [resourcePid]="record.metadata.pid"
+      ></admin-operation-logs>
+    }
   </article>
-</ng-container>
+}

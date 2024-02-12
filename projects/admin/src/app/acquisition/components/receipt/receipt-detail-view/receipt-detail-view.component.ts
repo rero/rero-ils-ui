@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,12 +17,11 @@
  */
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { forkJoin, Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, forkJoin } from 'rxjs';
 import { RecordPermissions } from '../../../../classes/permissions';
 import { RecordPermissionService } from '../../../../service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '../../../../utils/permissions';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
-import { IAcqNote } from '../../../classes/common';
 import { IAcqReceipt, IAcqReceiptLine } from '../../../classes/receipt';
 
 @Component({
@@ -45,7 +44,7 @@ export class ReceiptDetailViewComponent implements OnInit, OnDestroy, DetailReco
   receiptLines: IAcqReceiptLine[] = [];
 
   /** all component subscription */
-  private _subscriptions = new Subscription();
+  private subscriptions = new Subscription();
 
 
   // GETTER & SETTER ==========================================================
@@ -55,49 +54,49 @@ export class ReceiptDetailViewComponent implements OnInit, OnDestroy, DetailReco
    */
   get deleteInfoMessage(): string|null  {
     if (!this.permissions.delete.can) {
-      return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
+      return this.recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
     }
   }
   get editInfoMessage(): string|null {
     if (!this.permissions.update.can) {
-      return this._recordPermissionService.generateTooltipMessage(this.permissions.update.reasons, 'update');
+      return this.recordPermissionService.generateTooltipMessage(this.permissions.update.reasons, 'update');
     }
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _acqReceiptApiService - AcqReceiptApiService
-   * @param _recordPermissionService - RecordPermissionService
-   * @param _currentLibraryPermissionValidator - CurrentLibraryPermissionValidator
+   * @param acqReceiptApiService - AcqReceiptApiService
+   * @param recordPermissionService - RecordPermissionService
+   * @param currentLibraryPermissionValidator - CurrentLibraryPermissionValidator
    */
   constructor(
-    private _acqReceiptApiService: AcqReceiptApiService,
-    private _recordPermissionService: RecordPermissionService,
-    private _currentLibraryPermissionValidator: CurrentLibraryPermissionValidator
+    private acqReceiptApiService: AcqReceiptApiService,
+    private recordPermissionService: RecordPermissionService,
+    private currentLibraryPermissionValidator: CurrentLibraryPermissionValidator
   ) { }
 
   /** OnInit hook */
   ngOnInit() {
     this.record$.subscribe((record: any) => {
-      this.receipt = {...this._acqReceiptApiService.receiptDefaultData, ...record.metadata};
-      const receiptLines$ = this._acqReceiptApiService.getReceiptLines(this.receipt.pid);
-      const permissions$ = this._recordPermissionService.getPermission(this.type, this.receipt.pid);
+      this.receipt = {...this.acqReceiptApiService.receiptDefaultData, ...record.metadata};
+      const receiptLines$ = this.acqReceiptApiService.getReceiptLines(this.receipt.pid);
+      const permissions$ = this.recordPermissionService.getPermission(this.type, this.receipt.pid);
       forkJoin([receiptLines$, permissions$])
         .subscribe(([receiptLines, permissions]) => {
           this.receiptLines = receiptLines;
-          this.permissions = this._currentLibraryPermissionValidator.validate(permissions, this.receipt.library.pid);
+          this.permissions = this.currentLibraryPermissionValidator.validate(permissions, this.receipt.library.pid);
         });
     });
-    this._subscriptions.add(
-      this._acqReceiptApiService.deletedReceiptLineSubject$
+    this.subscriptions.add(
+      this.acqReceiptApiService.deletedReceiptLineSubject$
         .subscribe((receiptLine) => this.receipt.receipt_lines = this.receipt.receipt_lines.filter(line => line.pid !== receiptLine.pid))
     );
   }
 
   /** OnDestroy hook */
   ngOnDestroy() {
-    this._subscriptions.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   // COMPONENTS FUNCTIONS =====================================================
@@ -106,17 +105,6 @@ export class ReceiptDetailViewComponent implements OnInit, OnDestroy, DetailReco
    * @param line - the receipt line to delete.
    */
   deleteReceiptLine(line: IAcqReceiptLine): void {
-    this._acqReceiptApiService.deleteReceiptLine(line);
-  }
-
-  /**
-   * extract receipt line notes from raw data record.
-   * @param receiptLineRawData: the data to analyze.
-   * @return the list of notes about this receiptLine.
-   */
-  getReceiptLinetNotes(receiptLineRawData: any|null): IAcqNote[] {
-    return (receiptLineRawData && receiptLineRawData.metadata && receiptLineRawData.metadata.notes)
-      ? receiptLineRawData.metadata.notes
-      : [];
+    this.acqReceiptApiService.deleteReceiptLine(line);
   }
 }

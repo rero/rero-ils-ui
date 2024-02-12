@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2021 RERO
+ Copyright (C) 2021-2024 RERO
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published by
@@ -15,9 +15,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <i class="fa fa-map-marker mr-1"></i>
-<ng-container *ngIf="location.library; else noLibrary">
+@if (location.library) {
   {{ location.library.name }}
-</ng-container>
-<ng-template #noLibrary>
+} @else {
   {{ location.name }}
-</ng-template>
+}

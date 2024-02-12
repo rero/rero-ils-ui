@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2023 RERO
+  Copyright (C) 2021-2024 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -20,85 +20,78 @@
      [class]="{'bg-light': index % 2 === 0}">
   <dl class="m-0 py-2 row">
     <!-- LIBRARY AND LOCATION -->
-    <ng-container *ngIf="context === 'book'">
+    @if (context === 'book') {
       <dt class="mb-0 col-3 label-title" translate>Location</dt>
       <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location'}" class="mb-0 col-9">
         {{ item.metadata.library.name }}: {{ item.metadata.location.name }}
       </dd>
-    </ng-container>
+    }
     <!-- CALL NUMBER -->
-    <ng-container *ngIf="item.metadata.call_number">
+    @if (item.metadata.call_number) {
       <dt class="mb-0 col-3 label-title" translate>Call number</dt>
       <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-call-number'}" class="mb-0 col-9">
         {{ item.metadata.call_number }}
-        <ng-container *ngIf="item.metadata.second_call_number">
+        @if (item.metadata.second_call_number) {
           | {{ item.metadata.second_call_number }}
-        </ng-container>
+        }
       </dd>
-    </ng-container>
+    }
     <!-- ITEM IN COLLECTION -->
-    <ng-container *ngIf="item.metadata.in_collection; else temporaryLocation">
+    @if (item.metadata.in_collection) {
       <dt class="mb-0 col-3 label-title" translate>Temporary location</dt>
       <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location-temporary'}" class="mb-0 col-9">
-        <ng-container *ngFor="let collection of item.metadata.in_collection; let last = last">
+        @for (collection of item.metadata.in_collection; track collection; let last = $last) {
           <a href="/{{ collection.viewcode }}/collections/{{ collection.pid }}">{{ collection.title }}</a>
           {{ last ? '' : '; ' }}
-        </ng-container>
+        }
       </dd>
-    </ng-container>
-    <!-- ITEM TEMPORARY LOCATION -->
-    <ng-template #temporaryLocation>
-      <ng-container *ngIf="item.metadata.temporary_location">
+    } @else {
+      @if (item.metadata.temporary_location) {
         <dt class="mb-0 col-3 label-title" translate>Temporary location</dt>
         <dd class="mb-0 col-9">
           <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
           {{ item.metadata.temporary_location.name }}
         </dd>
-      </ng-container>
-    </ng-template>
+      }
+    }
     <!-- ITEM CIRCULATION INFORMATION -->
-    <ng-container *ngIf="circulationInformation">
+    @if (circulationInformation) {
       <dt class="mb-0 col-3 label-title" translate>Circulation information</dt>
       <dd class="mb-0 col-9">
         <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
         {{ circulationInformation }}
       </dd>
-    </ng-container>
-
+    }
     <!-- ENUMERATION AND CHRONOLOGY -->
-    <ng-container *ngIf="item.metadata.enumerationAndChronology">
+    @if (item.metadata.enumerationAndChronology) {
       <dt class="mb-0 col-3 label-title" translate>Unit</dt>
       <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-enum-chrono'}" class="mb-0 col-9">
         {{ item.metadata.enumerationAndChronology }}
       </dd>
-    </ng-container>
+    }
     <!-- BARCODE -->
     <dt class="mb-0 col-3 label-title" translate>Barcode</dt>
     <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-barcode'}" class="mb-0 col-9">
       {{ item.metadata.barcode }}
     </dd>
     <!-- NOTES -->
-    <ng-container *ngIf="item.metadata.notes && item.metadata.notes.length > 0">
-      <ng-container *ngFor="let note of item.metadata.notes | notesFilter : noteAuthorizedTypes">
+    @if (item.metadata.notes && item.metadata.notes.length > 0) {
+      @for (note of item.metadata.notes | notesFilter : noteAuthorizedTypes; track note) {
         <dt class="mb-0 col-3 label-title">{{ note.type | translate }}</dt>
         <dd class="mb-0 col-9" [innerHTML]="note.content | nl2br"></dd>
-      </ng-container>
-    </ng-container>
+      }
+    }
     <!-- URL -->
-    <ng-container *ngIf="item.metadata.url">
+    @if (item.metadata.url) {
       <dt class="mb-0 col-3 label-title" translate>URL</dt>
       <dd class="mb-0 col-9">
         <a target="_blank" [href]="item.metadata.url | safeUrl">{{ item.metadata.url }}</a>
       </dd>
-    </ng-container>
+    }
     <!-- STATUS -->
     <dt class="mb-0 col-3 label-title" translate>Status</dt>
     <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-status'}" class="mb-0 col-9">
-      <shared-availability
-        recordType="item"
-        [record]="item"
-        [apiService]="itemApiService"
-      ></shared-availability>
+      <shared-availability recordType="item" [record]="item" [apiService]="itemApiService"></shared-availability>
     </dd>
   </dl>
 

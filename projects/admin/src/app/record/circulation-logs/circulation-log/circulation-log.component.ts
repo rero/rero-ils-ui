@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -51,16 +51,16 @@ export class CirculationLogComponent {
    * @returns True if the debug mode can be enabled and switched
    */
   get canUseDebugMode(): boolean {
-    return this._permissionsService.canAccessDebugMode();
+    return this.permissionsService.canAccessDebugMode();
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _userService - UserService
+   * @param permissionsService - PermissionsService
    */
   constructor(
-    private _permissionsService: PermissionsService
+    private permissionsService: PermissionsService
   ) {  }
 
   // COMPONENT FUNCTIONS ======================================================

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -37,69 +37,68 @@
     </div>
     <div id="holding-available-{{ holding.metadata.pid }}" class="col-sm-12 col-md-3">
       <span [hidden]="!collapsed">
-        <ng-container *ngIf="holding.metadata.holdings_type === 'serial'; else available">
-          <i class="fa fa-circle text-warning"></i>
-          {{ 'see collections and items' | translate }}
-        </ng-container>
-        <ng-template #available>
-          <shared-availability
-            recordType="holding"
-            [record]="holding"
-            [apiService]="holdingApiService"
-          ></shared-availability>
-        </ng-template>
+        @if (holding.metadata.holdings_type === 'serial') {
+            <i class="fa fa-circle text-warning"></i>
+            {{ 'see collections and items' | translate }}
+        } @else {
+          <shared-availability recordType="holding" [record]="holding" [apiService]="holdingApiService"></shared-availability>
+        }
       </span>
     </div>
   </div>
-  <!-- SERIAL HOLDING INFORMATIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <dl class="row ml-1 pt-3" *ngIf="holding.metadata.holdings_type === 'serial'">
-    <!-- CALL NUMBER -->
-    <ng-container *ngIf="holding.metadata.call_number">
-      <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Call number</dt>
-      <dd id="holding-call-number-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">
-        {{ holding.metadata.call_number }}
-        <ng-container *ngIf="holding.metadata.second_call_number">
-        | {{ holding.metadata.second_call_number }}
-      </ng-container>
-      </dd>
-    </ng-container>
-    <!-- ENUMERATION AND CHRONOLOGY -->
-    <ng-container *ngIf="holding.metadata.enumerationAndChronology">
-      <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Available collection</dt>
-      <dd id="holding-enum-chro-{{ holding.metadata.pid }}"
-          class="col-lg-9 col-sm-8 mb-0"
-          [innerHTML]="holding.metadata.enumerationAndChronology | nl2br">
-      </dd>
-    </ng-container>
-    <!-- SUPPLEMENTARY CONTENT -->
-    <ng-container *ngIf="holding.metadata.supplementaryContent">
-      <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Supplementary content</dt>
-      <dd id="holding-sup-content-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">{{ holding.metadata.supplementaryContent }}</dd>
-    </ng-container>
-    <!-- INDEX -->
-    <ng-container *ngIf="holding.metadata.index">
-      <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Indexes</dt>
-      <dd id="holding-index-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">{{ holding.metadata.index }}</dd>
-    </ng-container>
-    <!-- MISSING ISSUES -->
-    <ng-container *ngIf="holding.metadata.missing_issues">
-      <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Missing issues</dt>
-      <dd id="holding-missing-issues-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">{{ holding.metadata.missing_issues }}</dd>
-    </ng-container>
-    <!-- NOTE -->
-    <ng-container *ngIf="holding.metadata.notes">
-      <ng-container *ngFor="let note of holding.metadata.notes | notesFilter : noteAuthorizedTypes">
-        <dt class="col-sm-4 col-lg-3 label-title mb-0">
-          <i class="fa fa-sticky-note-o pr-2"></i>
-          {{ note.type | translate }}
-        </dt>
-        <dd class="col-sm-8 col-lg-9 mb-0" [innerHTML]="note.content | nl2br"></dd>
-      </ng-container>
-    </ng-container>
-  </dl>
+  <!-- SERIAL HOLDING INFORMATION'S -->
+  @if (holding.metadata.holdings_type === 'serial') {
+    <dl class="row ml-1 pt-3">
+      <!-- CALL NUMBER -->
+      @if (holding.metadata.call_number) {
+        <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Call number</dt>
+        <dd id="holding-call-number-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">
+          {{ holding.metadata.call_number }}
+          @if (holding.metadata.second_call_number) {
+            | {{ holding.metadata.second_call_number }}
+          }
+        </dd>
+      }
+      <!-- ENUMERATION AND CHRONOLOGY -->
+      @if (holding.metadata.enumerationAndChronology) {
+        <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Available collection</dt>
+        <dd id="holding-enum-chro-{{ holding.metadata.pid }}"
+            class="col-lg-9 col-sm-8 mb-0"
+            [innerHTML]="holding.metadata.enumerationAndChronology | nl2br">
+        </dd>
+      }
+      <!-- SUPPLEMENTARY CONTENT -->
+      @if (holding.metadata.supplementaryContent) {
+        <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Supplementary content</dt>
+        <dd id="holding-sup-content-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">{{ holding.metadata.supplementaryContent }}</dd>
+      }
+      <!-- INDEX -->
+      @if (holding.metadata.index) {
+        <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Indexes</dt>
+        <dd id="holding-index-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">{{ holding.metadata.index }}</dd>
+      }
+      <!-- MISSING ISSUES -->
+      @if (holding.metadata.missing_issues) {
+        <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Missing issues</dt>
+        <dd id="holding-missing-issues-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">{{ holding.metadata.missing_issues }}</dd>
+      }
+      <!-- NOTE -->
+      @if (holding.metadata.notes) {
+        @for (note of holding.metadata.notes | notesFilter : noteAuthorizedTypes; track note) {
+          <dt class="col-sm-4 col-lg-3 label-title mb-0">
+            <i class="fa fa-sticky-note-o pr-2"></i>
+            {{ note.type | translate }}
+          </dt>
+          <dd class="col-sm-8 col-lg-9 mb-0" [innerHTML]="note.content | nl2br"></dd>
+        }
+      }
+    </dl>
+  }
 </div>
-<ng-container *ngIf="!collapsed">
-  <public-search-items *ngIf="holding.metadata.public_items_count > 0" [holding]="holding" [viewcode]="viewcode"></public-search-items>
+@if (!collapsed) {
+  @if (holding.metadata.public_items_count > 0) {
+    <public-search-items [holding]="holding" [viewcode]="viewcode"></public-search-items>
+  }
   <public-search-request
     [record]="holding"
     recordType="holding"
@@ -108,4 +107,4 @@
     class="w-100"
     [ngClass]="{'mt-2': holding.metadata.public_items_count === 0}"
   ></public-search-request>
-</ng-container>
+}

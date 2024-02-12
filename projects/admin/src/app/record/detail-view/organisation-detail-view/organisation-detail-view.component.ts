@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,13 +39,11 @@ export class OrganisationDetailViewComponent implements DetailRecord {
    * @return boolean
    */
   get isEnabledOperationLog(): boolean {
-    return this._operationLogsService.isLogVisible('organisations');
+    return this.operationLogsService.isLogVisible('organisations');
   }
 
   /** Constructor
-   * @param _operationLogsService - OperationLogsService
+   * @param operationLogsService - OperationLogsService
    */
-  constructor(
-    private _operationLogsService: OperationLogsService
-  ) {}
+  constructor(private operationLogsService: OperationLogsService) {}
 }

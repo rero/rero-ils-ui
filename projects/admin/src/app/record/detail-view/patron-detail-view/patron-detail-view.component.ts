@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -58,34 +58,34 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
   };
 
   /** Subscription to (un)follow the record$ Observable */
-  private _subscription$ = new Subscription();
+  private subscription$ = new Subscription();
 
   // GETTER AND SETTER ========================================================
   /** Is operation log enabled */
   get isEnabledOperationLog(): boolean {
-    return this._operationLogsService.isLogVisible('patrons');
+    return this.operationLogsService.isLogVisible('patrons');
   }
 
   permissions: IPermissions = PERMISSIONS;
 
   get canAccessDisplayPermissions(): boolean {
-    return this._permissionsService.canAccess(PERMISSIONS.PERM_MANAGEMENT);
+    return this.permissionsService.canAccess(PERMISSIONS.PERM_MANAGEMENT);
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor.
-   * @param _operationLogsService - OperationLogsService
-   * @param _permissionsService - PermissionsService
+   * @param operationLogsService - OperationLogsService
+   * @param permissionsService - PermissionsService
    */
   constructor(
-    private _operationLogsService: OperationLogsService,
-    private _permissionsService: PermissionsService
+    private operationLogsService: OperationLogsService,
+    private permissionsService: PermissionsService
   ) {}
 
   /** OnInit hook */
   ngOnInit() {
-    this._subscription$ = this.record$.subscribe((record) => {
+    this.subscription$ = this.record$.subscribe((record) => {
       this.record = record;
       this.patron = record.metadata;
       this.phones = this.processPhones(record.metadata);
@@ -94,7 +94,7 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
 
   /** OnDestroy hook */
   ngOnDestroy() {
-    this._subscription$.unsubscribe();
+    this.subscription$.unsubscribe();
   }
 
   // COMPONENTS FUNCTIONS =====================================================

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -18,19 +18,23 @@
   <h4 class="modal-title pull-left" translate>Import</h4>
 </div>
 <div class="modal-body">
-  <h5 *ngIf="records.length < 2; else plurial" translate>A document is available</h5>
-  <ng-template #plurial>
+  @if (records.length < 2) {
+    <h5 translate>A document is available</h5>
+  } @else {
     <h5 translate>Documents are available</h5>
-  </ng-template>
+  }
   <ul class="list-unstyled mb-0">
-    <li *ngFor="let record of records">
-      <a [routerLink]="['/records', 'documents', 'detail', record.metadata.pid]" (click)="close()">
-      <ng-container *ngIf="record.metadata.ui_title_text_responsibility; else noTitle">
-        {{ record.metadata.ui_title_text_responsibility }}
-      </ng-container>
-      <ng-template #noTitle>{{ 'Document' | translate }}</ng-template>
-      </a>
-    </li>
+    @for (record of records; track record) {
+      <li>
+        <a [routerLink]="['/records', 'documents', 'detail', $any(record).metadata.pid]" (click)="close()">
+          @if ($any(record).metadata.ui_title_text_responsibility) {
+            {{ $any(record).metadata.ui_title_text_responsibility }}
+          } @else {
+            {{ 'Document' | translate }}
+          }
+        </a>
+      </li>
+    }
   </ul>
   <div class="font-weight-bold mt-3" translate>Do you want to import this document?</div>
 </div>

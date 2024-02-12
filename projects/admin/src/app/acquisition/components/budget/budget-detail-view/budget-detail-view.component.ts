@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { OrganisationService } from '@app/admin/service/organisation.service';
+import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';
@@ -42,25 +42,25 @@ export class BudgetDetailViewComponent implements DetailRecord, OnInit, OnDestro
   // GETTER & SETTER ==========================================================
   /** Get the currency code used for the current loaded organisation */
   get currencyCode(): string {
-    return this._organisationService.organisation.default_currency;
+    return this.organisationService.organisation.default_currency;
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _budgetApiService - AcqBudgetApiService
-   * @param _organisationService - OrganisationService
+   * @param budgetApiService - AcqBudgetApiService
+   * @param organisationService - OrganisationService
    */
   constructor(
-    private _budgetApiService: AcqBudgetApiService,
-    private _organisationService: OrganisationService
+    private budgetApiService: AcqBudgetApiService,
+    private organisationService: OrganisationService
   ) {}
 
   /** OnInit hook */
   ngOnInit() {
     this._subscriptions.add(
       this.record$
-        .pipe(switchMap((record: any) => this._budgetApiService.getBudgetTotalAmount(record.metadata.pid)))
+        .pipe(switchMap((record: any) => this.budgetApiService.getBudgetTotalAmount(record.metadata.pid)))
         .subscribe(total => this.totalAmount = total));
   }
 

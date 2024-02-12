@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,13 +16,13 @@
  */
 
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { HoldingsService } from '@app/admin/service/holdings.service';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { UserService } from '@rero/shared';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { HoldingsService } from '@app/admin/service/holdings.service';
-import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ItemRequestComponent } from '../item-request/item-request.component';
@@ -60,28 +60,28 @@ export class HoldingComponent implements OnInit, OnDestroy {
   // GETTER & SETTER ==========================================================
   /** Current interface language */
   get language() {
-    return this._translateService.currentLang;
+    return this.translateService.currentLang;
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _recordUiService - RecordUiService
-   * @param _recordService - RecordService
-   * @param _recordPermissionService - RecordPermissionService
-   * @param _translateService - TranslateService
-   * @param _userService - UserService
-   * @param _holdingService: HoldingsService
-   * @param _modalService - BsModalService
+   * @param recordUiService - RecordUiService
+   * @param recordService - RecordService
+   * @param recordPermissionService - RecordPermissionService
+   * @param translateService - TranslateService
+   * @param userService - UserService
+   * @param holdingService: HoldingsService
+   * @param modalService - BsModalService
    */
   constructor(
-    private _recordUiService: RecordUiService,
-    private _recordService: RecordService,
-    private _recordPermissionService: RecordPermissionService,
-    private _translateService: TranslateService,
-    protected _userService: UserService,
-    protected _holdingService: HoldingsService,
-    protected _modalService: BsModalService,
+    private recordUiService: RecordUiService,
+    private recordService: RecordService,
+    private recordPermissionService: RecordPermissionService,
+    private translateService: TranslateService,
+    protected userService: UserService,
+    protected holdingService: HoldingsService,
+    protected modalService: BsModalService,
   ) { }
 
   /** onInit hook */
@@ -104,13 +104,13 @@ export class HoldingComponent implements OnInit, OnDestroy {
 
   /** Get permissions */
   private _getPermissions(): void {
-    const permissionObs = this._recordPermissionService.getPermission('holdings', this.holding.metadata.pid);
-    const canRequestObs = this._holdingService.canRequest(this.holding.metadata.pid);
+    const permissionObs = this.recordPermissionService.getPermission('holdings', this.holding.metadata.pid);
+    const canRequestObs = this.holdingService.canRequest(this.holding.metadata.pid);
     forkJoin([permissionObs, canRequestObs]).subscribe(
       ([permissions, canRequest]) => {
-        this.permissions = this._recordPermissionService
+        this.permissions = this.recordPermissionService
           .membership(
-            this._userService.user,
+            this.userService.user,
             this.holding.metadata.library.pid,
             permissions
           );
@@ -123,7 +123,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
    * @param recordPid - string
    */
   addRequest(recordPid: string, recordType: string): void {
-    const modalRef = this._modalService.show(ItemRequestComponent, {
+    const modalRef = this.modalService.show(ItemRequestComponent, {
       initialState: { recordPid, recordType }
     });
     modalRef.content.onSubmit.pipe(first()).subscribe(_ => {
@@ -136,7 +136,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
    * Return a message containing the reasons wht the holding cannot be requested
    */
   get cannotRequestInfoMessage(): string {
-    return this._recordPermissionService.generateTooltipMessage(this.permissions.canRequest.reasons, 'request');
+    return this.recordPermissionService.generateTooltipMessage(this.permissions.canRequest.reasons, 'request');
   }
 
   /** Load the items corresponding to a given holding PID. */
@@ -152,11 +152,11 @@ export class HoldingComponent implements OnInit, OnDestroy {
         sort = 'enumeration_chronology';
         break;
     }
-    this.itemsRef = this._recordService
+    this.itemsRef = this.recordService
       .getRecords('items', query, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, {Accept: 'application/rero+json'}, sort)
       .subscribe((result: Record) => {
-        this.items = (this._recordService.totalHits(result.hits.total) > 0) ? result.hits.hits : null;
-        this.totalItemsCounter = this._recordService.totalHits(result.hits.total);
+        this.items = (this.recordService.totalHits(result.hits.total) > 0) ? result.hits.hits : null;
+        this.totalItemsCounter = this.recordService.totalHits(result.hits.total);
       });
   }
 
@@ -176,7 +176,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
    * @param itemPid: string - the PID of the item to remove.
    */
   deleteItem(itemPid: string): void {
-    this._recordUiService.deleteRecord('items', itemPid).subscribe(
+    this.recordUiService.deleteRecord('items', itemPid).subscribe(
       (success: boolean) => {
         if (success) {
           // Remove the corresponding item from the item list.
@@ -214,7 +214,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
    * @return the delete info message use hover the delete button
    */
   get deleteInfoMessage(): string {
-    return this._recordPermissionService.generateDeleteMessage(
+    return this.recordPermissionService.generateDeleteMessage(
       this.permissions.delete.reasons
     );
   }
@@ -245,7 +245,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
     };
     const message = messages.hasOwnProperty(itemType) ? messages[itemType] : messages.default;
     const additionalItemCounter = this.totalItemsCounter - this.displayItemsCounter;
-    return this._translateService.instant(
+    return this.translateService.instant(
       (additionalItemCounter === 1) ? message.singular : message.plural,
       {counter: additionalItemCounter}
     );

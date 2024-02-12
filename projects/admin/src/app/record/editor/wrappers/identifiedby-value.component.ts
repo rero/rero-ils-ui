@@ -28,15 +28,19 @@ import { IdentifierTypes } from '../../../classes/identifiers';
   selector: 'admin-identifiedby-value',
   template: `
     <ng-container #fieldComponent></ng-container>
-    <div *ngIf="message$ | async as message" class="invalid-feedback text-danger d-block">
-      {{ message | translate }}
-    </div>
-    <div *ngIf="asyncRecord$ | async as record" class="invalid-feedback text-info d-block">
-      {{ 'A document already exists under this reference' | translate }}:
-      <a [routerLink]="['/records', 'documents', 'detail', record.pid]" target="_blank">
-        {{ 'Show' | translate }}
-      </a>
-    </div>
+    @if (message$ | async; as message) {
+      <div class="invalid-feedback text-danger d-block">
+        {{ message | translate }}
+      </div>
+    }
+    @if (asyncRecord$ | async; as record) {
+      <div class="invalid-feedback text-info d-block">
+        {{ 'A document already exists under this reference' | translate }}:
+        <a [routerLink]="['/records', 'documents', 'detail', $any(record).pid]" target="_blank">
+          {{ 'Show' | translate }}
+        </a>
+      </div>
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

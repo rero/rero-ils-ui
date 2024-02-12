@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
   Copyright (C) 2021 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,76 +15,78 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="row account" *ngIf="account && permissions else loading">
-  <!-- NAME ================================================================= -->
-  <div class="col-5 account-name depth-padding-{{ account.depth }}">
-    <a [routerLink]="[detailUrl]">{{ account.name }}</a>
-  </div>
-  <div class="col-1 account-number">
-    <ng-container *ngIf="account.number">[{{ account.number }}]</ng-container>
-  </div>
-  <!-- ACCOUNTING INFORMATIONS ============================================== -->
-  <div class="col-1 amount">
-    {{ account.allocated_amount | currency: organisation.default_currency }}
-  </div>
-  <ng-container *ngVar="account | accountAvailableAmount as available_amount">
-    <div class="col-1 amount" [class]="{
-      'text-success': available_amount > 0,
-      'text-muted': available_amount === 0,
-      'text-warning': available_amount < 0
-    }">
-      {{ available_amount | currency: organisation.default_currency }}
+@defer (when account && permissions) {
+  <div class="row account">
+    <!-- NAME -->
+    <div class="col-5 account-name depth-padding-{{ account.depth }}">
+      <a [routerLink]="[detailUrl]">{{ account.name }}</a>
     </div>
-  </ng-container>
-  <div class="col-1 amount" [class]="{
-    'text-danger': account.encumbrance_amount.self > 0,
-    'text-muted': account.encumbrance_amount.self <= 0
-  }">
-    {{ account.encumbrance_amount.self | currency: organisation.default_currency }}
+    <div class="col-1 account-number">
+      @if (account.number) {
+        [{{ account.number }}]
+      }
+    </div>
+    <!-- ACCOUNTING INFORMATION'S -->
+    <div class="col-1 amount">
+      {{ account.allocated_amount | currency: organisation.default_currency }}
+    </div>
+    <ng-container *ngVar="account | accountAvailableAmount as available_amount">
+      <div class="col-1 amount" [class]="{
+        'text-success': available_amount > 0,
+        'text-muted': available_amount === 0,
+        'text-warning': available_amount < 0
+      }">
+        {{ available_amount | currency: organisation.default_currency }}
+      </div>
+    </ng-container>
+    <div class="col-1 amount" [class]="{
+      'text-danger': account.encumbrance_amount.self > 0,
+      'text-muted': account.encumbrance_amount.self <= 0
+    }">
+      {{ account.encumbrance_amount.self | currency: organisation.default_currency }}
+    </div>
+    <div class="col-1 amount" [class]="{
+      'text-danger': account.expenditure_amount.self > 0,
+      'text-muted': account.expenditure_amount.self <= 0
+    }">
+      {{ account.expenditure_amount.self | currency: organisation.default_currency}}
+    </div>
+    <div class="col-1 amount" [class]="{
+      'text-muted': account.remaining_balance.self === 0,
+      'text-warning': account.remaining_balance.self < 0
+    }">
+      {{ account.remaining_balance.self | currency: organisation.default_currency }}
+    </div>
+    <!-- ACTION BUTTONS -->
+    <div class="col-1 pr-0 text-right">
+      @if (permissions.update.can) {
+        <button type="button" class="btn btn-outline-primary btn-sm"
+                [routerLink]="['/records', 'acq_accounts', 'edit', account.pid]">
+          <i class="fa fa-pencil"></i>
+        </button>
+      }
+      @if (permissions.delete.can) {
+        <button type="button" class="btn btn-outline-danger btn-sm ml-1" (click)="delete()">
+          <i class="fa fa-trash"></i>
+        </button>
+      } @else {
+        <button type="button" class="btn btn-sm btn-outline-danger disabled ml-1"
+                title="{{ 'Delete' | translate}}"
+                [popover]="tolTemplate" triggers="mouseenter:mouseleave">
+          <i class="fa fa-trash"></i>
+        </button>
+        <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
+      }
+    </div>
   </div>
-  <div class="col-1 amount" [class]="{
-    'text-danger': account.expenditure_amount.self > 0,
-    'text-muted': account.expenditure_amount.self <= 0
-  }">
-    {{ account.expenditure_amount.self | currency: organisation.default_currency}}
-  </div>
-  <div class="col-1 amount" [class]="{
-    'text-muted': account.remaining_balance.self === 0,
-    'text-warning': account.remaining_balance.self < 0
-  }">
-    {{ account.remaining_balance.self | currency: organisation.default_currency }}
-  </div>
-  <!-- ACTION BUTTONS ======================================================= -->
-  <div class="col-1 pr-0 text-right">
-    <button *ngIf="permissions.update.can"
-            type="button" class="btn btn-outline-primary btn-sm"
-            [routerLink]="['/records', 'acq_accounts', 'edit', account.pid]">
-      <i class="fa fa-pencil"></i>
-    </button>
-    <button *ngIf="permissions.delete.can; else notDelete"
-            type="button" class="btn btn-outline-danger btn-sm ml-1"
-            (click)="delete()">
-      <i class="fa fa-trash"></i>
-    </button>
-    <ng-template #notDelete>
-      <button type="button" class="btn btn-sm btn-outline-danger disabled ml-1"
-              title="{{ 'Delete' | translate}}"
-              [popover]="tolTemplate" triggers="mouseenter:mouseleave">
-        <i class="fa fa-trash"></i>
-      </button>
-      <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
-    </ng-template>
-  </div>
-</div>
-<admin-account-brief-view
-  *ngFor="let child_account of children"
-  [account]="child_account"
-  [loadChildren]="loadChildren"
-  (deleteAccount)="accountDeleted($event)"
->
-</admin-account-brief-view>
-
-
-<ng-template #loading>
+} @placeholder {
   <i class="fa fa-spinner"></i>
-</ng-template>
+}
+
+@for (childAccount of children; track childAccount) {
+  <admin-account-brief-view
+    [account]="childAccount"
+    [loadChildren]="loadChildren"
+    (deleteAccount)="accountDeleted($event)"
+  ></admin-account-brief-view>
+}

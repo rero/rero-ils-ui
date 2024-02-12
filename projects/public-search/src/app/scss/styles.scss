@@ -21,6 +21,12 @@
 @import 'bootstrap/scss/mixins';
 @import 'ngx-toastr/toastr-bs4-alert';
 
+// ADJUST BOOTSTRAP / PRIMENG -------------------
+.col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 // FIELDS FORMAT -----------------------
 ng-core-formly-field-primeng-input > input,
 formly-field > input {

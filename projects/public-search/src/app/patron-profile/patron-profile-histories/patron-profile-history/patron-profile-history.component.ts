@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,14 +32,12 @@ export class PatronProfileHistoryComponent {
 
   /** Get current viewcode */
   get viewcode(): string {
-    return this._patronProfileMenuService.currentPatron.organisation.code;
+    return this.patronProfileMenuService.currentPatron.organisation.code;
   }
 
   /**
    * Constructor
-   * @param _patronProfileMenuService - PatronProfileMenuService
+   * @param patronProfileMenuService - PatronProfileMenuService
    */
-  constructor(
-    private _patronProfileMenuService: PatronProfileMenuService
-  ) {}
+  constructor(private patronProfileMenuService: PatronProfileMenuService) {}
 }

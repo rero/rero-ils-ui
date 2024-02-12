@@ -68,22 +68,22 @@ export class PickupLocationComponent implements OnInit {
   };
 
   /**
-   * Construtor
-   * @param _locationApiService - LocationApiService
-   * @param _itemApiService - ItemApiService
-   * @param _holdingsApiService - HoldingsApiService
-   * @param _translateService - TranslateService
+   * Constructor
+   * @param locationApiService - LocationApiService
+   * @param itemApiService - ItemApiService
+   * @param holdingsApiService - HoldingsApiService
+   * @param translateService - TranslateService
    */
   constructor(
-    private _locationApiService: LocationApiService,
-    private _itemApiService: ItemApiService,
-    private _holdingsApiService: HoldingsApiService,
-    private _translateService: TranslateService
+    private locationApiService: LocationApiService,
+    private itemApiService: ItemApiService,
+    private holdingsApiService: HoldingsApiService,
+    private translateService: TranslateService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._locationApiService
+    this.locationApiService
       .getPickupLocationsByRecordId(this.recordType, this.record.metadata.pid)
       .subscribe((pickups: any) => {
         const options = [];
@@ -96,8 +96,8 @@ export class PickupLocationComponent implements OnInit {
             key: 'description',
             type: 'textarea',
             props: {
-              label: this._translateService.instant('Collection or item year, volume, number, pages'),
-              placeholder: this._translateService.instant('Year / Volume / Number / Pages'),
+              label: this.translateService.instant('Collection or item year, volume, number, pages'),
+              placeholder: this.translateService.instant('Year / Volume / Number / Pages'),
               maxLength: 100,
               required: true,
             }
@@ -108,7 +108,7 @@ export class PickupLocationComponent implements OnInit {
           key: `pickup`,
           type: 'select',
           props: {
-            label: this._translateService.instant('Pickup location'),
+            label: this.translateService.instant('Pickup location'),
             required: true,
             options
           }
@@ -125,13 +125,13 @@ export class PickupLocationComponent implements OnInit {
   submit() {
     this.requestInProgress = true;
     if (this.recordType === 'holding') {
-      this.apiRequest = this._holdingsApiService.request({
+      this.apiRequest = this.holdingsApiService.request({
         holding_pid: this.record.metadata.pid,
         pickup_location_pid: this.model.pickup,
         description: this.model.description,
       });
     } else if (this.recordType === 'item') {
-      this.apiRequest = this._itemApiService.request({
+      this.apiRequest = this.itemApiService.request({
         item_pid: this.record.metadata.pid,
         pickup_location_pid: this.model.pickup,
       });
@@ -146,13 +146,13 @@ export class PickupLocationComponent implements OnInit {
       () => {
         this.requestMessage = {
           success: true,
-          message: this._translateService.instant('Your request has been placed.')
+          message: this.translateService.instant('Your request has been placed.')
         };
       },
       () => {
         this.requestMessage = {
           success: false,
-          message: this._translateService.instant('Error on this request.')
+          message: this.translateService.instant('Error on this request.')
         };
       }
     );

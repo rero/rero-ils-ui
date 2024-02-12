@@ -25,6 +25,7 @@ import { AppRoutingModule } from '../../../app-routing.module';
 import { FrontpageComponent } from '../../../widgets/frontpage/frontpage.component';
 import { CollectionDetailViewComponent } from './collection-detail-view.component';
 import { CollectionItemsComponent } from './collection-items/collection-items.component';
+import { of } from 'rxjs';
 
 describe('CollectionDetailViewComponent', () => {
   let component: CollectionDetailViewComponent;
@@ -54,6 +55,7 @@ describe('CollectionDetailViewComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CollectionDetailViewComponent);
     component = fixture.componentInstance;
+    component.record$ = of(undefined);
     fixture.detectChanges();
   });
 

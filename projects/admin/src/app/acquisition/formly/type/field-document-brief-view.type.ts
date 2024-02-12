@@ -16,16 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { RecordService } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-formly-field-type',
   template: `
-    <ng-container *ngIf="record">
+    @if (record) {
       <shared-document-brief-view [record]="record"></shared-document-brief-view>
-    </ng-container>
+    }
   `
 })
 export class FieldDocumentBriefViewTypeComponent extends FieldType implements OnInit {
@@ -35,16 +35,23 @@ export class FieldDocumentBriefViewTypeComponent extends FieldType implements On
 
   /**
    * Constructor
-   * @param _recordService - RecordService
+   * @param recordService - RecordService
+   * @param changeDetectorRef - ChangeDetectorRef
    */
-  constructor(private _recordService: RecordService) {
+  constructor(
+    private recordService: RecordService,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {
     super();
   }
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._recordService
+    this.recordService
       .getRecord('documents', this.model['document'])
-      .subscribe((data: any) => this.record = data.metadata);
+      .subscribe((data: any) => {
+        this.record = data.metadata;
+        this.changeDetectorRef.detectChanges();
+      });
   }
 }

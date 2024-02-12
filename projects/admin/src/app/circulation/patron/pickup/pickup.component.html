@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2020-2023 RERO
+ Copyright (C) 2020-2024 RERO
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published by
@@ -15,24 +15,25 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <section class="content">
-  <div *ngIf="loans && loans.length > 0; else noPickup">
-    <!-- HEADER -->
-    <div class="row p-2 mb-1 bg-dark rounded text-light row">
-      <div class="col-2" translate>Item</div>
-      <div class="col-4" translate>Title</div>
-      <div class="col-3" translate>Pickup location</div>
-      <div class="col-2" translate>To pick-up until</div>
-      <div class="col-1">&nbsp;</div>
+  @if (loans && loans.length > 0) {
+    <div>
+      <!-- HEADER -->
+      <div class="row p-2 mb-1 bg-dark rounded text-light row">
+        <div class="col-2" translate>Item</div>
+        <div class="col-4" translate>Title</div>
+        <div class="col-3" translate>Pickup location</div>
+        <div class="col-2" translate>To pick-up until</div>
+        <div class="col-1">&nbsp;</div>
+      </div>
+      @for (loan of loans; track loan) {
+        <admin-pickup-item
+          [loan]="loan"
+          class="row p-2 mb-1 border rounded align-middle"
+          (cancelRequestEvent)="cancelRequest($event)"
+        ></admin-pickup-item>
+      }
     </div>
-    <admin-pickup-item
-      *ngFor="let loan of loans"
-      [loan]="loan"
-      class="row p-2 mb-1 border rounded align-middle"
-      (cancelRequestEvent)="cancelRequest($event)"
-    ></admin-pickup-item>
-  </div>
+  } @else {
+    {{ 'No items' | translate }}
+  }
 </section>
-
-<ng-template #noPickup>
-  {{ 'No items' | translate }}
-</ng-template>

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,14 +39,14 @@ export class PatronsBriefViewComponent implements ResultItem {
    * @return true if the circulation permission is allowed
    */
    get circulationAccess(): boolean {
-    return this._permissionsService.canAccess(PERMISSIONS.CIRC_ADMIN);
+    return this.permissionsService.canAccess(PERMISSIONS.CIRC_ADMIN);
   }
 
   /**
    * Constructor
-   * @param _permissionsService - PermissionsService
+   * @param permissionsService - PermissionsService
    */
-  constructor(private _permissionsService: PermissionsService) {}
+  constructor(private permissionsService: PermissionsService) {}
 
   /**
    * Get the color badge to apply for a specific role

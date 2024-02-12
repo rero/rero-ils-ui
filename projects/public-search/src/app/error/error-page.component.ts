@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,7 +29,9 @@ export function _(str: string) {
   template: `
     <div class="alert alert-{{ messages[statusCode].level || 'danger' }}">
       <h1 class="alert-heading mb-4">{{ statusCode }} - {{ messages[statusCode].title }}</h1>
-      <pre *ngFor="let text of messages[statusCode].description || []">{{ text }}</pre>
+      @for (text of messages[statusCode].description || []; track text) {
+        <pre>{{ text }}</pre>
+      }
       <hr>
       <p>For any information please contact system administrator</p>
     </div>
@@ -40,11 +42,11 @@ export class ErrorPageComponent implements OnInit {
 
   /** the status code to display. By default 404 : Page not found */
   statusCode = 404;
-  /** All messages ablt to be managed by this component. Availables for each error are :
+  /** All messages alt to be managed by this component. Available for each error are :
    *   - title : the error title
    *   - description : A human readable description of this error as Array<string>. Each array
    *                   element will be a separate line.
-   *   - level: the boostrap alert look-and-feel level to use for the error. 'danger' by default.
+   *   - level: the bootstrap alert look-and-feel level to use for the error. 'danger' by default.
    */
   messages = {
     401: {
@@ -71,7 +73,7 @@ export class ErrorPageComponent implements OnInit {
     },
     500: {
       title: _('Internal server error'),
-      desctiption: [_('Oops, Something went wrong !')]
+      description: [_('Oops, Something went wrong !')]
     }
   };
 
@@ -79,10 +81,10 @@ export class ErrorPageComponent implements OnInit {
    * Constructor
    * @param _route - ActivatedRoute
    */
-  constructor(private _route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this._route.params.pipe(
+    this.route.params.pipe(
       map(params => params.status_code || 404),  // check for status_code parameter from ActivatedRoute
       map(code => /^\d+$/.test(code) ? parseInt(code, 10) : 404),  // try to parse status code to integer
       map(code => code in this.messages ? code : 404)  // check if http code definition exists

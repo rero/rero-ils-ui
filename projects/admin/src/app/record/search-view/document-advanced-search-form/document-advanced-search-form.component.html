@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
   Copyright (C) 2021-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -16,18 +16,20 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="card" *ngIf="configurationLoaded">
-  <div class="card-header">
-    {{ 'Build advanced query' | translate }}
-    <i class="fa fa-times float-right mt-1" aria-hidden="true" (click)="close()"></i>
+@if (configurationLoaded) {
+  <div class="card">
+    <div class="card-header">
+      {{ 'Build advanced query' | translate }}
+      <i class="fa fa-times float-right mt-1" aria-hidden="true" (click)="close()"></i>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <formly-form [model]="model" [fields]="fieldsConfig" [options]="options" [form]="form"></formly-form>
+        <button type="submit" class="btn btn-sm btn-primary submit-button float-right" [disabled]="!form.valid" translate>
+          Search
+        </button>
+        <a class="btn btn-sm btn-outline-primary float-right mr-2" (click)="clear()" translate>Clear</a>
+      </form>
+    </div>
   </div>
-  <div class="card-body">
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <formly-form [model]="model" [fields]="fieldsConfig" [options]="options" [form]="form"></formly-form>
-      <button type="submit" class="btn btn-sm btn-primary submit-button float-right" [disabled]="!form.valid" translate>
-        Search
-      </button>
-      <a class="btn btn-sm btn-outline-primary float-right mr-2" (click)="clear()" translate>Clear</a>
-    </form>
-  </div>
-</div>
+}

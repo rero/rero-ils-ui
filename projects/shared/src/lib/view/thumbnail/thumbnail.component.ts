@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -51,18 +51,16 @@ export class ThumbnailComponent implements OnInit {
 
   /**
    * Constructor
-   * @param _httpClient - HttpClient
+   * @param httpClient - HttpClient
    */
-  constructor(
-    private _httpClient: HttpClient
-  ) { }
+  constructor(private httpClient: HttpClient) {}
 
   /**
    * Get cover url
    * @returns string - url of the cover if cover exists.
    */
   getCoverUrl() {
-    this._httpClient.get<any>(`/api/document/cover/${this.isbn}`).pipe(
+    this.httpClient.get<any>(`/api/document/cover/${this.isbn}`).pipe(
       catchError(e => {
         if (e.status === 404) {
           return of(null);

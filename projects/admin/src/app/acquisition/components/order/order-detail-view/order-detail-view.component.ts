@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,16 +17,17 @@
  */
 import { ViewportScroller } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
+import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
-import { AcqOrderHistoryVersion, AcqOrderStatus, IAcqOrder, AcqOrderHistoryVersionResponseInterface } from '../../../classes/order';
+import { AcqOrderHistoryVersion, AcqOrderHistoryVersionResponseInterface, AcqOrderStatus, IAcqOrder } from '../../../classes/order';
 import { OrderEmailFormComponent } from '../order-email-form/order-email-form.component';
+import { extractIdOnRef } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-acquisition-order-detail-view',
@@ -53,10 +54,8 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
   /** history versions of this order */
   historyVersions: AcqOrderHistoryVersion[] = [];
 
-  /** modal reference */
-  private _modalRef: BsModalRef;
   /** all component subscription */
-  private _subscriptions = new Subscription();
+  private subscriptions = new Subscription();
 
   // GETTER & SETTER ==========================================================
   /** Determine if the order could be "placed/ordered" */
@@ -71,28 +70,28 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
 
   // CONSTRUCTOR & HOOKS ======================================================
   /** Constructor
-   * @param _scroller - ViewportScroller
-   * @param _modalService - BsModalService
-   * @param _recordPermissionService - RecordPermissionService
-   * @param _permissionValidator - CurrentLibraryPermissionValidator
-   * @param _acqOrderService - AcqOrderApiService
+   * @param scroller - ViewportScroller
+   * @param modalService - BsModalService
+   * @param recordPermissionService - RecordPermissionService
+   * @param permissionValidator - CurrentLibraryPermissionValidator
+   * @param acqOrderService - AcqOrderApiService
    */
   constructor(
-    private _scroller: ViewportScroller,
-    private _modalService: BsModalService,
-    private _recordPermissionService: RecordPermissionService,
-    private _acqOrderService: AcqOrderApiService,
-    private _permissionValidator: CurrentLibraryPermissionValidator
+    private scroller: ViewportScroller,
+    private modalService: BsModalService,
+    private recordPermissionService: RecordPermissionService,
+    private acqOrderService: AcqOrderApiService,
+    private permissionValidator: CurrentLibraryPermissionValidator
   ) { }
 
   /** OnInit hook */
   ngOnInit() {
-    this._subscriptions.add(this.record$.subscribe(
+    this.subscriptions.add(this.record$.subscribe(
       (record: any) => {
         this.order = record.metadata;
         if (this.order.is_current_budget) {
-          this._subscriptions.add(this._recordPermissionService.getPermission('acq_orders', this.order.pid)
-          .pipe(map((permissions) => this._permissionValidator.validate(permissions, this.order.library.pid)))
+          this.subscriptions.add(this.recordPermissionService.getPermission('acq_orders', this.order.pid)
+          .pipe(map((permissions) => this.permissionValidator.validate(permissions, this.order.library.pid)))
           .subscribe((permissions) => {
             this.recordPermissions = permissions;
             this.isPermissionsLoaded = true;
@@ -101,24 +100,11 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
           this.isPermissionsLoaded = true;
         }
 
-        /* UPDATE 'EDIT' BUTTON
-         *   if the related order has the PENDING status, then a new action 'place order' button should be
-         *   added near the 'edit' button. This new button should be considered as the new primary button,
-         *   then the edit button should loose this privilege.
-         */
-        setTimeout(() => {
-          if (this.order.status === AcqOrderStatus.PENDING) {
-            const button = document.getElementById('detail-edit-button');
-            button.classList.remove('btn-primary');
-            button.classList.add('btn-outline-primary');
-          }
-        });
-
         // Ask for order history
-        this._acqOrderService.getOrderHistory(this.order.pid);
+        this.acqOrderService.getOrderHistory(this.order.pid);
       }
     ));
-    this._subscriptions.add(this._acqOrderService.acqOrderHistorySubject.subscribe(
+    this.subscriptions.add(this.acqOrderService.acqOrderHistorySubject.subscribe(
       (versions: AcqOrderHistoryVersionResponseInterface[]) => {
         this.historyVersions = versions.map(version => new AcqOrderHistoryVersion(version));
       }));
@@ -126,7 +112,7 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
 
   /** OnDestroy hook */
   ngOnDestroy(): void {
-      this._subscriptions.unsubscribe();
+      this.subscriptions.unsubscribe();
   }
 
   // COMPONENT FUNCTIONS =======================================================
@@ -137,7 +123,7 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
    */
   scrollTo(e: Event, anchorId: string): void {
     e.preventDefault();
-    this._scroller.scrollToAnchor(anchorId);
+    this.scroller.scrollToAnchor(anchorId);
   }
 
   /**
@@ -145,7 +131,7 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
    * If the user submit the form (and submitting is success), then update the order to get the updated data.
    */
   placeOrderDialog() {
-    const modalRef = this._modalService.show(OrderEmailFormComponent, {
+    const modalRef = this.modalService.show(OrderEmailFormComponent, {
       ignoreBackdropClick: true,
       keyboard: true,
       class: 'modal-xl',
@@ -157,6 +143,9 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
     modalRef.content.closeDialog.subscribe((close: boolean) => modalRef.hide());
     modalRef.content.recordChange.subscribe((order: IAcqOrder) => {
       if (this.order.pid === order.pid) {
+        if (order.vendor.$ref) {
+          order.vendor.pid = extractIdOnRef(order.vendor.$ref);
+        }
         this.order = order;
       }
     });

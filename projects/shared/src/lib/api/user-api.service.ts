@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,13 +31,14 @@ export class UserApiService {
 
   /**
    * Constructor
-   * @param _httpClient - HttpClient
+   * @param httpClient - HttpClient
+   * @param apiService - ApiService
    */
   constructor(
-    private _httpClient: HttpClient,
-    private _apiService: ApiService
+    private httpClient: HttpClient,
+    private apiService: ApiService
   ) {
-    this._apiPrefix = this._apiService.endpointPrefix;
+    this._apiPrefix = this.apiService.endpointPrefix;
   }
 
   /**
@@ -45,7 +46,7 @@ export class UserApiService {
    * @return Observable
    */
   getLoggedUser(): Observable<any> {
-    return this._httpClient.get<any>(User.LOGGED_URL);
+    return this.httpClient.get<any>(User.LOGGED_URL);
   }
 
   /**
@@ -62,6 +63,6 @@ export class UserApiService {
       new_password_confirm: password
     };
     const url = `${this._apiPrefix}/change-password`;
-    return this._httpClient.post<any>(url, data);
+    return this.httpClient.post<any>(url, data);
   }
 }

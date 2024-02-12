@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
   Copyright (C) 2021 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,9 +15,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="record$ | async as record">
+@if (record$ | async; as record) {
   <!-- ROLLOVER INFO -->
-  <div *ngIf="!record.metadata.is_active" class="fiscal-year-closed" translate>Fiscal year closed</div>
+  @if (!record.metadata.is_active) {
+    <div class="fiscal-year-closed" translate>Fiscal year closed</div>
+  }
   <header>
     <h1>{{ record.metadata.name }}</h1>
   </header>
@@ -27,4 +29,4 @@
       <dd class="col-9">{{ totalAmount | currency:currencyCode:'symbol' }}</dd>
     </dl>
   </section>
-</ng-container>
+}

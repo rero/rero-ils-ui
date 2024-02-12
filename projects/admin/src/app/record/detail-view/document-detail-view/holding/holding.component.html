@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2019-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -22,127 +22,152 @@
               (click)="isItemsCollapsed = !isItemsCollapsed"
               [attr.aria-expanded]="!isItemsCollapsed" aria-controls="collapse">
       </button>
-      <admin-record-masked *ngIf="holding.metadata._masked" [record]="holding"></admin-record-masked>
+      @if (holding.metadata._masked) {
+        <admin-record-masked [record]="holding"></admin-record-masked>
+      }
       <span>{{ holding.metadata.library.name }}: {{ holding.metadata.location.name }}</span>
     </div>
     <div class="col-2 mt-1">
       {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}
     </div>
-    <div *ngIf="holdingType === 'serial'" class="col text-right">
-    <ng-container *ngIf="permissions; else noAction">
-      <!-- HOLDING VIEW -->
-      <button [routerLink]="['/', 'records', 'holdings', 'detail', holding.metadata.pid]"
-              class="btn btn-outline-primary btn-sm ml-1"
-              title="{{ 'Holdings detail' | translate }}">
-        <i class="fa fa-eye"></i>
-      </button>
-      <!-- REQUEST BUTTON -->
-      <button *ngIf="permissions && permissions.canRequest && permissions.canRequest.can; else notRequest"
-            type="button" class="btn btn-outline-primary btn-sm ml-1" (click)="addRequest(holding.metadata.pid, 'holding')"
-            title="{{ 'Holdings request' | translate }}"
-            name="request">
-        <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-      </button>
-      <ng-template #notRequest>
-        <button type="button" class="btn btn-outline-primary btn-sm ml-1 disabled"
-          title="{{ 'Holdings request' | translate }}"
-          [popover]="tolTemplate" triggers="mouseenter:mouseleave"
-          name="request">
-        <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-        </button>
-        <ng-template #tolTemplate><div [innerHtml]="cannotRequestInfoMessage | nl2br"></div></ng-template>
-      </ng-template>
-      <!-- EDIT BUTTON -->
-      <button *ngIf="permissions && permissions.update && permissions.update.can"
+
+    @if (holdingType === 'serial') {
+      <div class="col text-right">
+        @if (permissions) {
+          <!-- HOLDING VIEW -->
+          <button [routerLink]="['/', 'records', 'holdings', 'detail', holding.metadata.pid]"
+                  class="btn btn-outline-primary btn-sm ml-1"
+                  title="{{ 'Holdings detail' | translate }}">
+            <i class="fa fa-eye"></i>
+          </button>
+          <!-- REQUEST BUTTON -->
+          @if (permissions && permissions.canRequest && permissions.canRequest.can) {
+            <button
+              type="button" class="btn btn-outline-primary btn-sm ml-1" (click)="addRequest(holding.metadata.pid, 'holding')"
+              title="{{ 'Holdings request' | translate }}"
+              name="request"
+            >
+              <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+            </button>
+          } @else {
+              <button type="button" class="btn btn-outline-primary btn-sm ml-1 disabled"
+                title="{{ 'Holdings request' | translate }}"
+                [popover]="tolTemplate" triggers="mouseenter:mouseleave"
+                name="request">
+              <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+              </button>
+              <ng-template #tolTemplate><div [innerHtml]="cannotRequestInfoMessage | nl2br"></div></ng-template>
+          }
+          <!-- EDIT BUTTON -->
+          @if (permissions && permissions.update && permissions.update.can) {
+            <button
               title="{{ 'Edit holdings' | translate }}"
               [routerLink]="['/', 'records', 'holdings', 'edit', holding.metadata.pid]"
-              class="btn btn-outline-primary btn-sm ml-1">
-        <i class="fa fa-pencil"></i>
-      </button>
-      <!-- DELETE BUTTON -->
-      <button *ngIf="permissions && permissions.delete && permissions.delete.can; else deleteInfo" type="button"
-      title="{{ 'Delete holdings' | translate }}"
-        class="btn btn-outline-danger btn-sm ml-1" (click)="delete()">
-        <i class="fa fa-trash"></i>
-      </button>
-    </ng-container>
-    <ng-template #noAction></ng-template>
-    </div>
-    <admin-holding-detail *ngIf="holdingType === 'serial'" context="document" [holding]="holding" class="col-sm-12"></admin-holding-detail>
-  </div>
-  <div class="card-body" *ngIf="!isItemsCollapsed">
-    <ng-container [ngSwitch]="holdingType">
-
-      <!-- ELECTRONIC HOLDING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <div class="row" *ngSwitchCase="'electronic'">
-          <div class="col" *ngFor="let elocation of holding.metadata.electronic_location">
-            <a class="rero-ils-external-link" [href]="elocation.uri | safeUrl">{{ elocation.source }}</a>
-          </div>
+              class="btn btn-outline-primary btn-sm ml-1"
+            >
+              <i class="fa fa-pencil"></i>
+            </button>
+          }
+          <!-- DELETE BUTTON -->
+          @if (permissions && permissions.delete && permissions.delete.can) {
+            <button
+              type="button"
+              title="{{ 'Delete holdings' | translate }}"
+              class="btn btn-outline-danger btn-sm ml-1" (click)="delete()"
+            >
+              <i class="fa fa-trash"></i>
+            </button>
+          } @else {
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger ml-1 disabled"
+              [popover]="tolTemplate"
+              triggers="mouseenter:mouseleave"
+            >
+              <i class="fa fa-trash"></i>
+            </button>
+            <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
+          }
+        }
       </div>
-
-      <!-- SERIAL HOLDING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <ng-container *ngSwitchCase="'serial'">
-        <ng-container *ngIf="items else no_items">
-          <div class="row font-weight-bold">
-            <div class="col-sm-3" translate>Barcode</div>
-            <div class="col-sm-2" translate>Status</div>
-            <div class="col-sm-3" translate>Unit</div>
-            <div class="col-sm-2" translate>Call number</div>
-          </div>
-          <admin-serial-holding-item
-              *ngFor="let item of items | slice:0: displayItemsCounter"
-              [holding]="holding"
-              [item]="item"
-              [isCurrentOrganisation]="isCurrentOrganisation"
-              (deleteItem)="deleteItem($event)"
-              [attr.id]="item.metadata.barcode | idAttribute:{prefix: 'item'}">
-          ></admin-serial-holding-item>
-          <div class="row pl-3" *ngIf="displayItemsCounter < totalItemsCounter">
-            <a [routerLink]="[]" (click)="showMore(5)" [attr.id]="holding.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
-              <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
-              {{ 'Show more' | translate }} ...
-            </a>
-            <span class="pl-2 pt-1 small text-secondary">({{ showMoreItemsCounter('issue') }})</span>
-          </div>
-        </ng-container>
-        <ng-template #no_items>
+      <admin-holding-detail context="document" [holding]="holding" class="col-sm-12"></admin-holding-detail>
+    }
+  </div>
+  @if (!isItemsCollapsed) {
+    <div class="card-body">
+      @switch (holdingType) {
+        <!-- ELECTRONIC HOLDING -->
+        @case ('electronic') {
           <div class="row">
-            <div class="offset-sm-1 col-sm-11" translate>No item received.</div>
+            @for (elocation of holding.metadata.electronic_location; track elocation) {
+              <div class="col">
+                <a class="rero-ils-external-link" [href]="elocation.uri | safeUrl">{{ elocation.source }}</a>
+              </div>
+            }
           </div>
-        </ng-template>
-      </ng-container>
-
-      <!-- DEFAULT HOLDING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <ng-container *ngSwitchDefault>
-        <ng-container *ngIf="items && items.length > 0">
-          <ng-container *ngFor="let item of items | slice:0: displayItemsCounter; let last = last">
-            <admin-default-holding-item
+        }
+        <!-- SERIAL HOLDING -->
+        @case ('serial') {
+          @if (items) {
+            <div class="row font-weight-bold">
+              <div class="col-sm-3" translate>Barcode</div>
+              <div class="col-sm-2" translate>Status</div>
+              <div class="col-sm-3" translate>Unit</div>
+              <div class="col-sm-2" translate>Call number</div>
+            </div>
+            @for (item of items | slice:0: displayItemsCounter; track item) {
+              <admin-serial-holding-item
                 [holding]="holding"
                 [item]="item"
                 [isCurrentOrganisation]="isCurrentOrganisation"
                 (deleteItem)="deleteItem($event)"
-                [attr.id]="item.metadata.barcode | idAttribute:{prefix: 'item'}">
-            </admin-default-holding-item>
-            <ng-container *ngIf="!last">
-              <hr>
-            </ng-container>
-          </ng-container>
-          <div class="row pl-3" *ngIf="displayItemsCounter < totalItemsCounter">
-            <a [routerLink]="[]" (click)="showMore(5)" [attr.id]="holding.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
-              <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
-              {{ 'Show more' | translate }} ...
-            </a>
-            <span class="pl-2 pt-1 small text-secondary">({{ showMoreItemsCounter('item') }})</span>
-          </div>
-        </ng-container>
-      </ng-container>
-    </ng-container>
-  </div>
-</div>
+                [attr.id]="$any(item).metadata.barcode | idAttribute:{prefix: 'item'}"
+              ></admin-serial-holding-item>
+            }
+            @if (displayItemsCounter < totalItemsCounter) {
+              <div class="row pl-3">
+                <a [routerLink]="[]" (click)="showMore(5)" [attr.id]="holding.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
+                  <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
+                  {{ 'Show more' | translate }} ...
+                </a>
+                <span class="pl-2 pt-1 small text-secondary">({{ showMoreItemsCounter('issue') }})</span>
+              </div>
+            }
+          } @else {
+            <div class="row">
+              <div class="offset-sm-1 col-sm-11" translate>No item received.</div>
+            </div>
+          }
 
-<ng-template #deleteInfo>
-  <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"  [popover]="tolTemplate" triggers="mouseenter:mouseleave">
-    <i class="fa fa-trash"></i>
-  </button>
-  <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
-</ng-template>
+
+        }
+        @default {
+          <!-- DEFAULT HOLDING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+          @if (items && items.length > 0) {
+            @for (item of items | slice:0: displayItemsCounter; track item; let last = $last) {
+                <admin-default-holding-item
+                    [holding]="holding"
+                    [item]="item"
+                    [isCurrentOrganisation]="isCurrentOrganisation"
+                    (deleteItem)="deleteItem($event)"
+                    [attr.id]="$any(item).metadata.barcode | idAttribute:{prefix: 'item'}">
+                </admin-default-holding-item>
+                @if (!last) {
+                  <hr>
+                }
+            }
+            @if (displayItemsCounter < totalItemsCounter) {
+              <div class="row pl-3">
+                <a [routerLink]="[]" (click)="showMore(5)" [attr.id]="holding.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
+                  <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
+                  {{ 'Show more' | translate }} ...
+                </a>
+                <span class="pl-2 pt-1 small text-secondary">({{ showMoreItemsCounter('item') }})</span>
+              </div>
+            }
+          }
+        }
+      }
+    </div>
+  }
+</div>

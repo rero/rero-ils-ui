@@ -26,7 +26,7 @@ export class NoteBadgeColorPipe implements PipeTransform {
   /**
    * Get the color (class) to use to highlight a note.
    * @param note: the note to analyze
-   * @return: the color/class (boostrap) to use for the note.
+   * @return: the color/class (bootstrap) to use for the note.
    */
   transform(note: IAcqNote): string {
     switch (note.type) {

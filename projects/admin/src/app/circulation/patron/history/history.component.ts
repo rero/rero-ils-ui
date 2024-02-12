@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,19 +33,19 @@ export class HistoryComponent implements OnInit {
 
   /**
    * Constructor
-   * @param _patronService - PatronService
-   * @param _operationLogsApiService - OperationLogsApiService
+   * @param patronService - PatronService
+   * @param operationLogsApiService - OperationLogsApiService
    */
   constructor(
-    private _patronService: PatronService,
-    private _operationLogsApiService: OperationLogsApiService
+    private patronService: PatronService,
+    private operationLogsApiService: OperationLogsApiService
   ) {}
 
   /** OnInit hook */
   ngOnInit() {
-    this.historyLogs$ = this._patronService.currentPatron$.pipe(
+    this.historyLogs$ = this.patronService.currentPatron$.pipe(
       switchMap((patron: any) => {
-        return this._operationLogsApiService.getCheckInHistory(
+        return this.operationLogsApiService.getCheckInHistory(
           patron.pid,
           1,
           RecordService.MAX_REST_RESULTS_SIZE

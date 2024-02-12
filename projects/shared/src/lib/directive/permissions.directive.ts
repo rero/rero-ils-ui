@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
- * Copyright (C) 2019-2022 UCLouvain
+ * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -48,19 +48,19 @@ export class PermissionsDirective implements AfterViewInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _el - ElementRef
-   * @param _permissionsService - PermissionsService
+   * @param el - ElementRef
+   * @param permissionsService - PermissionsService
    */
   constructor(
-    private _el: ElementRef,
-    private _permissionsService: PermissionsService
+    private el: ElementRef,
+    private permissionsService: PermissionsService
   ) { }
 
   /** AfterViewInit hook */
   ngAfterViewInit(): void {
     // Remove element if not allowed
-    if (!this._permissionsService.canAccess(this._permissions, this._operator)) {
-      this._el.nativeElement.remove();
+    if (!this.permissionsService.canAccess(this._permissions, this._operator)) {
+      this.el.nativeElement.remove();
     }
   }
 }

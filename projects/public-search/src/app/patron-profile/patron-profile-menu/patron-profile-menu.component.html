@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,10 +14,15 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<form *ngIf="isVisible">
-    <select class="form-control form-select form-select-sm ml-1 col-6" (change)="onChange($event.target.value)">
-      <option class="form-control" *ngFor="let option of menuOptions" [value]="option.value" [selected]="option.selected">
-        {{ option.name }}
-      </option>
-    </select>
-</form>
+@defer (when isVisible) {
+  <form>
+    MENU: {{ menuOptions | json }}
+      <select class="form-control form-select form-select-sm ml-1 col-6" (change)="onChange($event.target.value)">
+        @for (option of menuOptions; track option) {
+          <option class="form-control" [value]="option.value" [selected]="option.selected">
+            {{ option.name }}
+          </option>
+        }
+      </select>
+  </form>
+}

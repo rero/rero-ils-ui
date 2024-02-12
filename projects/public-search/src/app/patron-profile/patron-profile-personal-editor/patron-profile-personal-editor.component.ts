@@ -21,10 +21,10 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { TranslateService } from '@ngx-translate/core';
-import { orderedJsonSchema, RecordService, removeEmptyValues } from '@rero/ng-core';
+import { RecordService, orderedJsonSchema, removeEmptyValues } from '@rero/ng-core';
 import { AppSettingsService, UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin, of, Subscription } from 'rxjs';
+import { Subscription, forkJoin, of } from 'rxjs';
 import { debounceTime, map, tap } from 'rxjs/operators';
 
 @Component({
@@ -63,32 +63,32 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   /**
    * Constructor
    *
-   * @param _recordService - RecordService
-   * @param _formlyJsonschema - FormlyJsonschema
-   * @param _toastrService - ToastrService
-   * @param _translateService - TranslateService
-   * @param _appSettingsService - AppSettingsService
-   * @param _userService - UserService
-   * @param _document - Document
+   * @param recordService - RecordService
+   * @param formlyJsonschema - FormlyJsonschema
+   * @param toastrService - ToastrService
+   * @param translateService - TranslateService
+   * @param appSettingsService - AppSettingsService
+   * @param userService - UserService
+   * @param document - Document
    */
   constructor(
-    private _recordService: RecordService,
-    private _formlyJsonschema: FormlyJsonschema,
-    private _toastrService: ToastrService,
-    private _translateService: TranslateService,
-    private _appSettingsService: AppSettingsService,
-    private _userService: UserService,
-    @Inject(DOCUMENT) private _document: Document
+    private recordService: RecordService,
+    private formlyJsonschema: FormlyJsonschema,
+    private toastrService: ToastrService,
+    private translateService: TranslateService,
+    private appSettingsService: AppSettingsService,
+    private userService: UserService,
+    @Inject(DOCUMENT) private document: Document
   ) { }
 
   /** Init hook */
   ngOnInit(): void {
-    const schemaForm = this._recordService.getSchemaForm('users').pipe(
+    const schemaForm = this.recordService.getSchemaForm('users').pipe(
       tap(schema => {
         if (schema) {
-          const disabledFields = this._appSettingsService.settings.userProfile.readOnlyFields;
+          const disabledFields = this.appSettingsService.settings.userProfile.readOnlyFields;
           this.fields = [
-            this._formlyJsonschema.toFieldConfig(orderedJsonSchema(schema.schema), {
+            this.formlyJsonschema.toFieldConfig(orderedJsonSchema(schema.schema), {
 
               // post process JSONSchema7 to FormlyFieldConfig conversion
               map: (field: FormlyFieldConfig, jsonSchema: any) => {
@@ -107,7 +107,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
                   ? this._cssConfig[fkey]
                   : this._cssConfig.default;
                 // Deactivation of the fields if we have a patron record
-                if ((this._userService.user.roles.length > 0) && (field.key !== undefined && disabledFields.includes(fkey))) {
+                if ((this.userService.user.roles.length > 0) && (field.key !== undefined && disabledFields.includes(fkey))) {
                   field.props.readonly = true;
                 }
                 // Hide password field
@@ -117,13 +117,13 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
                 }
                 if (fkey === 'country') {
                   field.props.options.forEach((option: any) => {
-                    option.label = this._translateService.instant('country_' + option.value);
+                    option.label = this.translateService.instant('country_' + option.value);
                   });
                 }
                 // Translate validator message
                 if ('validation' in field  && 'messages' in field.validation) {
                   Object.keys(jsonSchema.widget.formlyConfig.validation.messages).forEach((key: string) => {
-                    field.validation.messages[key] = this._translateService.instant(String(field.validation.messages[key]));
+                    field.validation.messages[key] = this.translateService.instant(String(field.validation.messages[key]));
                   });
                 }
 
@@ -133,7 +133,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
                     if (field.asyncValidators == null) {
                       field.asyncValidators = {};
                     }
-                    field.asyncValidators.uniqueEmail = this._getUniqueValidator(
+                    field.asyncValidators.uniqueEmail = this.getUniqueValidator(
                       'email',
                       jsonSchema.widget.formlyConfig.validation.messages.uniqueEmailMessage
                     );
@@ -142,7 +142,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
                     if (field.asyncValidators == null) {
                       field.asyncValidators = {};
                     }
-                    field.asyncValidators.uniqueUsername = this._getUniqueValidator(
+                    field.asyncValidators.uniqueUsername = this.getUniqueValidator(
                       'username',
                       jsonSchema.widget.formlyConfig.validation.messages.uniqueUsernameMessage
                     );
@@ -167,7 +167,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
       })
     );
 
-    const userQuery = this._recordService.getRecord('users', this._userService.user.id.toString());
+    const userQuery = this.recordService.getRecord('users', this.userService.user.id.toString());
 
     this._subscriptions.add(
       forkJoin([schemaForm, userQuery]).subscribe(([schema, user]: [any, any]) => {
@@ -186,19 +186,19 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   submit() {
     this.form.updateValueAndValidity();
     if (this.form.valid === false) {
-      this._toastrService.error(
-        this._translateService.instant('The form contains errors.')
+      this.toastrService.error(
+        this.translateService.instant('The form contains errors.')
       );
       return;
     }
     const data = removeEmptyValues(this.form.value);
     // Update user record and reload logged user
-    this._recordService
-      .update('users', this._userService.user.id.toString(), data)
+    this.recordService
+      .update('users', this.userService.user.id.toString(), data)
       .subscribe(
         () => {
-          this._toastrService.success(this._translateService.instant('Your personal data has been updated.'));
-          this._redirect();
+          this.toastrService.success(this.translateService.instant('Your personal data has been updated.'));
+          this.redirect();
         },
         (error) => this.formError = error.title
       );
@@ -207,14 +207,14 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   // PRIVATE COMPONENT FUNCTIONS ==============================================
   /** Cancel edition */
   cancel(): void {
-    this._redirect();
+    this.redirect();
   }
 
   /** Redirect to external project */
-  private _redirect(): void {
-    this._document.location.href = this.referer
+  private redirect(): void {
+    this.document.location.href = this.referer
       ? this.referer
-      : this._appSettingsService.baseUrl;
+      : this.appSettingsService.baseUrl;
   }
 
   /**
@@ -224,21 +224,21 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
    *                    or username.
    * @returns boolean, true if find a value boolean.
    */
-  private _getUniqueValidator(fieldName: string, message: string) {
+  private getUniqueValidator(fieldName: string, message: string) {
     return {
       expression: (control: UntypedFormControl) => {
-        const value = control.value;
+        const { value } = control;
         return (value == null || value.length === 0)
           ? of(true)
-          : this._recordService.getRecords('users', `${fieldName}:${value}`).pipe(
+          : this.recordService.getRecords('users', `${fieldName}:${value}`).pipe(
               debounceTime(1000),
               map((res: any) => {
                 return (res.hits.hits.length === 0) ||
-                  (res.hits.hits.length === 1 && res.hits.hits[0].id === this._userService.user.id);
+                  (res.hits.hits.length === 1 && res.hits.hits[0].id === this.userService.user.id);
               })
             );
       },
-      message: this._translateService.instant(message)
+      message: this.translateService.instant(message)
     };
   }
 }

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -27,31 +27,30 @@
     </div>
   </div>
 
-  <ng-container *ngIf="!loaded; else display">
+  @if (!loaded) {
     <div class="row">
       <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
     </div>
-  </ng-container>
-
-  <ng-template #display>
-    <div class="row border" *ngIf="paginator.getRecordsCount() > 0; else noRecord">
-      <div class="container-fluid">
-        <div id="fees-data">
-          <public-search-patron-profile-fee
-            *ngFor="let record of records"
-            [record]="record"
-            id="fee-{{ record.metadata.pid }}"
-            class="row border-bottom">
-          </public-search-patron-profile-fee>
-          <shared-search-show-more-pager id="show-more-fees" [paginator]="paginator"></shared-search-show-more-pager>
+  } @else {
+    @if (paginator.getRecordsCount() > 0) {
+      <div class="row border">
+        <div class="container-fluid">
+          <div id="fees-data">
+            @for (record of records; track record) {
+              <public-search-patron-profile-fee
+                [record]="record"
+                id="fee-{{ record.metadata.pid }}"
+                class="row border-bottom">
+              </public-search-patron-profile-fee>
+            }
+            <shared-search-show-more-pager id="show-more-fees" [paginator]="paginator"></shared-search-show-more-pager>
+          </div>
         </div>
       </div>
-    </div>
-
-    <ng-template #noRecord>
+    } @else {
       <div class="row">
         <div class="col mt-2 font-weight-bold" translate>No fee</div>
       </div>
-    </ng-template>
-  </ng-template>
+    }
+  }
 </section>

@@ -20,19 +20,21 @@ import { FieldArrayType } from '@ngx-formly/core';
 @Component({
   selector: 'admin-repeat-section',
   template: `
-    <div *ngFor="let field of field.fieldGroup; let i = index;" class="row">
-      <div class="col-11">
-        <formly-field [field]="field"></formly-field>
+    @for (field of field.fieldGroup; track field; let i = $index) {
+      <div class="row">
+        <div class="col-11">
+          <formly-field [field]="field"></formly-field>
+        </div>
+        <div class="col-1 my-0 pt-2 pl-0 d-flex">
+          @if (field.parent.fieldGroup.length > props.minItems) {
+            <i (click)="remove(i)" class="mt-3 pl-3 fa fa-lg fa-trash text-danger" aria-hidden="true"></i>
+          }
+          @if (field.parent.props.maxItems > field.parent.fieldGroup.length && field.parent.fieldGroup.length -1 === i) {
+            <i (click)="add()" class="mt-3 pl-3 fa fa-lg fa-plus-circle text-primary" aria-hidden="true"></i>
+          }
+        </div>
       </div>
-      <div class="col-1 my-0 pt-2 pl-0 d-flex">
-        <ng-container
-          *ngIf="field.parent.fieldGroup.length > to.minItems"
-        ><i (click)="remove(i)" class="mt-3 pl-3 fa fa-lg fa-trash text-danger" aria-hidden="true"></i></ng-container>
-        <ng-container
-          *ngIf="field.parent.props.maxItems > field.parent.fieldGroup.length && field.parent.fieldGroup.length -1 === i"
-        ><i (click)="add()" class="mt-3 pl-3 fa fa-lg fa-plus-circle text-primary" aria-hidden="true"></i></ng-container>
-      </div>
-    </div>
+    }
   `,
 })
 export class RepeatTypeComponent extends FieldArrayType { }

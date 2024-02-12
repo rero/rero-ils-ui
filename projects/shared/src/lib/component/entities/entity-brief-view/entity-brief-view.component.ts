@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -38,7 +38,9 @@ import { EntityBriefViewRemotePersonComponent } from './entity-brief-view.person
       </ng-template>
       <ng-template rTemplate="tags" let-tags>
         <ul>
-          <li *ngFor="let tag of tags" class="tag-{{ tag?.type }}">{{ tag.label }}</li>
+          @for (tag of tags; track tag) {
+            <li class="tag-{{ tag?.type }}">{{ tag.label }}</li>
+          }
         </ul>
       </ng-template>
     </shared-brief-view>
@@ -74,9 +76,7 @@ export class EntityBriefViewComponent implements ResultItem, OnInit, AfterViewIn
    * Constructor
    * @param extractedSourceFieldPipe: ExtractSourceFieldPipe
    */
-  constructor(
-    private extractedSourceFieldPipe: ExtractSourceFieldPipe
-  ) { }
+  constructor(private extractedSourceFieldPipe: ExtractSourceFieldPipe) { }
 
   /** OnInit hook */
   ngOnInit(): void {

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2019-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,36 +14,28 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="record$ | async as record">
+@if (record$ | async; as record) {
   <h1>{{ record.metadata.name }}</h1>
   <dl class="row">
     <!-- ADDRESS -->
-    <ng-container *ngIf="record.metadata.address">
+    @if (record.metadata.address) {
       <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Address</dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.metadata.address }}
-      </dd>
-    </ng-container>
+      <dd class="col-sm-7 col-md-8 mb-0" [innerHTML]="record.metadata.address | nl2br"></dd>
+    }
     <!-- CODE -->
-    <ng-container *ngIf="record.metadata.address">
+    @if (record.metadata.code) {
       <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Code</dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.metadata.code }}
-      </dd>
-    </ng-container>
+      <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.code }}</dd>
+    }
     <!-- DEFAULT CURRENCY -->
-    <ng-container *ngIf="record.metadata.default_currency">
+    @if (record.metadata.default_currency) {
       <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Default currency</dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.metadata.default_currency }}
-      </dd>
-    </ng-container>
+      <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.default_currency }}</dd>
+    }
   </dl>
 
   <!-- OPERATION LOGS-->
-  <admin-operation-logs
-    *ngIf="isEnabledOperationLog"
-    resourceType="organisations"
-    [resourcePid]="record.metadata.pid"
-  ></admin-operation-logs>
-</ng-container>
+  @if (isEnabledOperationLog) {
+    <admin-operation-log resourceType="organisations" [resourcePid]="record.metadata.pid"></admin-operation-log>
+  }
+}

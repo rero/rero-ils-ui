@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2022 RERO
+  Copyright (C) 2019-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,53 +14,56 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="row" *ngIf="canAdd">
-  <div class="col">
-    <div class="btn-group pull-right" dropdown>
-      <button [permissions]="[permissions.HOLD_CREATE, permissions.ITEM_CREATE]"
-              id="document-add-actions"
-              dropdownToggle
-              type="button"
-              class="btn btn-sm btn-outline-primary dropdown-toggle"
-              aria-controls="dropdown-animated">
-        {{ 'Add' | translate }}
-        <span class="caret"></span>
-      </button>
-      <ul id="document-add-actions-animated"
-         *dropdownMenu class="dropdown-menu dropdown-menu-right"
-         role="menu"
-         aria-labelledby="document-add-actions">
-        <li class="text-right" role="menuitem" [permissions]="permissions.ITEM_CREATE">
-          <a class="dropdown-item"
-             [routerLink]="['/', 'records', 'items', 'new']"
-             [queryParams]="{ document: document.metadata.pid }"
-             translate>an item</a>
-        </li>
-        <li class="text-right" role="menuitem" [permissions]="permissions.HOLD_CREATE">
-          <a class="dropdown-item"
-             [routerLink]="['/', 'records', 'holdings', 'new']"
-             [queryParams]="{ document: document.metadata.pid }"
-             translate>a holdings</a>
-        </li>
-      </ul>
+@if (canAdd) {
+  <div class="row">
+    <div class="col">
+      <div class="btn-group pull-right" dropdown>
+        <button [permissions]="[permissions.HOLD_CREATE, permissions.ITEM_CREATE]"
+                id="document-add-actions"
+                dropdownToggle
+                type="button"
+                class="btn btn-sm btn-outline-primary dropdown-toggle"
+                aria-controls="dropdown-animated">
+          {{ 'Add' | translate }}
+          <span class="caret"></span>
+        </button>
+        <ul id="document-add-actions-animated"
+           *dropdownMenu class="dropdown-menu dropdown-menu-right"
+           role="menu"
+           aria-labelledby="document-add-actions">
+          <li class="text-right" role="menuitem" [permissions]="permissions.ITEM_CREATE">
+            <a class="dropdown-item"
+               [routerLink]="['/', 'records', 'items', 'new']"
+               [queryParams]="{ document: document.metadata.pid }"
+               translate>an item</a>
+          </li>
+          <li class="text-right" role="menuitem" [permissions]="permissions.HOLD_CREATE">
+            <a class="dropdown-item"
+               [routerLink]="['/', 'records', 'holdings', 'new']"
+               [queryParams]="{ document: document.metadata.pid }"
+               translate>a holdings</a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
-</div>
+}
 
-<ng-container *ngIf="holdings">
-  <admin-document-holding
-    *ngFor="let holding of holdings"
-    [holding]="holding"
-    [isItemsCollapsed]="holdingsTotal > 1"
-    [isCurrentOrganisation]="isCurrentOrganisation"
-    (deleteHolding)="deleteHolding($event)"
-  >
-  </admin-document-holding>
-  <ng-container *ngIf="isLinkShowMore">
+@if (holdings) {
+  @for (holding of holdings; track holding) {
+    <admin-document-holding
+      [holding]="holding"
+      [isItemsCollapsed]="holdingsTotal > 1"
+      [isCurrentOrganisation]="isCurrentOrganisation"
+      (deleteHolding)="deleteHolding($event)"
+    >
+    </admin-document-holding>
+  }
+  @if (isLinkShowMore) {
     <button class="btn btn-link" (click)="showMore()">
       <i class="fa fa-arrow-circle-o-down"></i>
       {{ 'Show more' | translate }}
     </button>
-    <small *ngIf="isLinkShowMore">({{ hiddenHoldings }})</small>
-  </ng-container>
-</ng-container>
+    <small>({{ hiddenHoldings }})</small>
+  }
+}

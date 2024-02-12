@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,10 +20,12 @@ import { ItemNote } from '@app/admin/classes/items';
 @Component({
   selector: 'admin-holding-item-note',
   template: `
-    <div class="row" *ngIf="note">
-      <div class="col-4 font-weight-bold label-title pl-5">{{ note.type.toString() | translate}}</div>
-      <div class="col-8" [innerHTML]="note.content"></div>
-    </div>
+    @if (note) {
+      <div class="row">
+        <div class="col-4 font-weight-bold label-title pl-5">{{ note.type.toString() | translate }}</div>
+        <div class="col-8" [innerHTML]="note.content"></div>
+      </div>
+    }
   `
 })
 export class HoldingItemNoteComponent {

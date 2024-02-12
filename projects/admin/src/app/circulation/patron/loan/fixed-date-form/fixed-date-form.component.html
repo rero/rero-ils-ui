@@ -1,6 +1,6 @@
 <!--
   RERO angular core
-  Copyright (C) 2020-2023 RERO
+  Copyright (C) 2020-2024 RERO
   Copyright (C) 2020-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -36,20 +36,22 @@
                [bsConfig]="bsConfig"
         >
       </div>
-      <ng-container *ngIf="formGroup.controls.endDate.valid || !formGroup.controls.endDate.touched">
+      @if (formGroup.controls.endDate.valid || !formGroup.controls.endDate.touched) {
         <small class="form-text text-warning">
           <i class="fa fa-exclamation-triangle pr-1"></i>
           {{ 'This date will override the circulation policy behavior' | translate }}
         </small>
-      </ng-container>
-      <ng-container *ngIf="formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('required')"
-                    [ngTemplateOutlet]="errorMessage"
-                    [ngTemplateOutletContext]="{message: 'The field is required' | translate}">
-      </ng-container>
-      <ng-container *ngIf="formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('minimum-date')"
-                    [ngTemplateOutlet]="errorMessage"
-                    [ngTemplateOutletContext]="{message: 'Selected date cannot be in the past.' | translate}">
-      </ng-container>
+      }
+      @if (formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('required')) {
+        <ng-container [ngTemplateOutlet]="errorMessage"
+                      [ngTemplateOutletContext]="{message: 'The field is required' | translate}">
+        </ng-container>
+      }
+      @if (formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('minimum-date')) {
+        <ng-container [ngTemplateOutlet]="errorMessage"
+                      [ngTemplateOutletContext]="{message: 'Selected date cannot be in the past.' | translate}">
+        </ng-container>
+      }
     </div>
     <div class="form-group form-check">
       <input type="checkbox" class="form-check-input" id="remember" formControlName="remember">

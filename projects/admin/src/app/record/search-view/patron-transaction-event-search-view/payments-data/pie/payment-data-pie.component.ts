@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -46,25 +46,25 @@ export class PaymentDataPieComponent implements OnInit {
   // GETTER & SETTER ==========================================================
   /** Organisation currency */
   get org_currency() {
-    return this._organisationService.organisation.default_currency;
+    return this.organisationService.organisation.default_currency;
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _organisationService: OrganisationService
-   * @param _translateService: TranslateService
+   * @param organisationService: OrganisationService
+   * @param translateService: TranslateService
    */
   constructor(
-    private _organisationService: OrganisationService,
-    private _translateService: TranslateService
+    private organisationService: OrganisationService,
+    private translateService: TranslateService
   ) {}
 
   /** OnInit hook */
   ngOnInit() {
     if (this.data.subtypes) {
       this.data.subtypes.map(subtype => this.values.push({
-        name: this._translateService.instant(subtype.name),
+        name: this.translateService.instant(subtype.name),
         value: subtype.total
       }));
     }

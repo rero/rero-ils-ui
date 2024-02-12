@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,13 +16,12 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
-import { Subject } from 'rxjs';
-
-import { LibraryExceptionFormService } from '../library-exception-form.service';
 import { TranslateService } from '@ngx-translate/core';
+import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+import { BsModalRef } from 'ngx-bootstrap/modal';
+import { Subject } from 'rxjs';
+import { LibraryExceptionFormService } from '../library-exception-form.service';
 
 @Component({
   selector: 'admin-libraries-exception-dates-edit',
@@ -62,7 +61,7 @@ export class ExceptionDatesEditComponent implements OnInit {
   }
 
   onPeriodChange(event) {
-    const target = event.target;
+    const { target } = event;
     const value = target.value === 'true';
     this.form.is_period.setValue(value);
     if (value) {
@@ -74,7 +73,7 @@ export class ExceptionDatesEditComponent implements OnInit {
   }
 
   onDateStatusChange(event) {
-    const target = event.target;
+    const { target } = event;
     const value = target.value === 'true';
     this.form.is_open.setValue(value);
   }

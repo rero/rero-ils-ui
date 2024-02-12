@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,6 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<!-- header -->
 <section id="ill-request-section" class="container my-2">
   <div class="d-none d-lg-block">
     <div class="row bg-dark rounded text-light p-2">
@@ -23,32 +22,28 @@
     </div>
   </div>
 
-
-  <ng-container *ngIf="!loaded; else display">
-    <div class="row">
-      <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
-    </div>
-  </ng-container>
-
-  <ng-template #display>
-    <ng-container *ngIf="paginator.getRecordsCount() > 0; else noRecord">
+  @defer (when loaded) {
+    @if (paginator.getRecordsCount() > 0) {
       <div class="row border">
         <div class="container-fluid">
-          <public-search-patron-profile-ill-request
-            *ngFor="let record of records"
-            [record]="record"
-            id="ill-request-{{ record.metadata.pid }}"
-            class="row border-bottom">
-          </public-search-patron-profile-ill-request>
+          @for (record of records; track record) {
+            <public-search-patron-profile-ill-request
+              [record]="record"
+              id="ill-request-{{ record.metadata.pid }}"
+              class="row border-bottom">
+            </public-search-patron-profile-ill-request>
+          }
           <shared-search-show-more-pager id="show-more-ill-requests" [paginator]="paginator"></shared-search-show-more-pager>
         </div>
       </div>
-    </ng-container>
-
-    <ng-template #noRecord>
+    } @else {
       <div class="row">
         <div class="col mt-2 font-weight-bold" translate>No ill request</div>
       </div>
-    </ng-template>
-  </ng-template>
+    }
+  } @placeholder {
+    <div class="row">
+      <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
+    </div>
+  }
 </section>

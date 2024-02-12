@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -18,41 +18,38 @@
 
 <admin-entities-local-global [record]="record">
   <!-- NAME -->
-  <ng-container *ngIf="record.name">
+  @if (record.name) {
     <dt translate>Name</dt>
     <dd>{{ record.name }}</dd>
-  </ng-container>
-
+  }
   <!-- SUBORDINATE UNIT -->
-  <ng-container *ngIf="record.subordinate_unit">
+  @if (record.subordinate_unit) {
     <dt translate>Subordinate unit</dt>
     <dd>
       <ul>
-        <li *ngFor="let name of record.subordinate_unit">{{ name }}</li>
+        @for (name of record.subordinate_unit; track name) {
+          <li>{{ name }}</li>
+        }
       </ul>
     </dd>
-  </ng-container>
-
+  }
   <!-- CONFERENCE PLACE -->
-  <ng-container *ngIf="record.conference_place">
+  @if (record.conference_place) {
     <dt translate>Conference place</dt>
     <dd>{{ record.conference_place }}</dd>
-  </ng-container>
-
+  }
   <!-- CONFERENCE NUMBERING -->
-  <ng-container *ngIf="record.conference_numbering">
+  @if (record.conference_numbering) {
     <dt translate>Conference numbering</dt>
     <dd>{{ record.conference_numbering }}</dd>
-  </ng-container>
-
+  }
   <!-- CONFERENCE DATE -->
-  <ng-container *ngIf="record.conference_date">
+  @if (record.conference_date) {
     <dt translate>Conference date</dt>
     <dd>{{ record.conference_date }}</dd>
-  </ng-container>
-
+  }
   <!-- CONFERENCE -->
-  <ng-container *ngIf="record.conference">
+  @if (record.conference) {
     <dt translate>Conference</dt>
     <dd>
       <i class="fa mr-2" [ngClass]="{
@@ -60,27 +57,26 @@
         'fa-times text-danger': !record.conference
       }"></i>
     </dd>
-  </ng-container>
-
+  }
   <!-- START DATE -->
-  <ng-container *ngIf="record.start_date">
+  @if (record.start_date) {
     <dt translate>Start date</dt>
     <dd>{{ record.start_date }}</dd>
-  </ng-container>
-
+  }
   <!-- END DATE -->
-  <ng-container *ngIf="record.end_date">
+  @if (record.end_date) {
     <dt translate>End date</dt>
     <dd>{{ record.end_date }}</dd>
-  </ng-container>
-
+  }
   <!-- ALTERNATIVE NAMES -->
-  <ng-container *ngIf="record.alternative_names && record.alternative_names.length > 0">
+  @if (record.alternative_names && record.alternative_names.length > 0) {
     <dt translate>Alternative names</dt>
     <dd>
       <ul>
-        <li *ngFor="let name of record.alternative_names">{{ name }}</li>
+        @for (name of record.alternative_names; track name) {
+          <li>{{ name }}</li>
+        }
       </ul>
     </dd>
-  </ng-container>
+  }
 </admin-entities-local-global>

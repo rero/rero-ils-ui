@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -37,20 +37,20 @@ export class PatronProfileFeeComponent {
   events = [];
 
   /** loaded */
-  private _loaded = false;
+  private loaded = false;
 
   get organisation(): IOrganisation {
-    return this._patronProfileMenuService.currentPatron.organisation;
+    return this.patronProfileMenuService.currentPatron.organisation;
   }
 
   /**
    * Constructor
-   * @param _patronTransactionEventApiService - PatronTransactionEventApiService
-   * @param _patronProfileMenuService - PatronProfileMenuService
+   * @param patronTransactionEventApiService - PatronTransactionEventApiService
+   * @param patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
-    private _patronTransactionEventApiService: PatronTransactionEventApiService,
-    private _patronProfileMenuService: PatronProfileMenuService
+    private patronTransactionEventApiService: PatronTransactionEventApiService,
+    private patronProfileMenuService: PatronProfileMenuService
   ) {}
 
   /**
@@ -58,10 +58,10 @@ export class PatronProfileFeeComponent {
    * @param feePid - string
    */
   expanded(feePid: string): void {
-    if (!this._loaded) {
-      this._patronTransactionEventApiService
+    if (!this.loaded) {
+      this.patronTransactionEventApiService
         .getEvents(feePid).subscribe((response: Record) => {
-          this._loaded = true;
+          this.loaded = true;
           this.events = response.hits.hits;
         });
     }

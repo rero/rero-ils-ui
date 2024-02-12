@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,12 +27,12 @@ export class ExtractSourceFieldPipe implements PipeTransform {
 
   /**
    * Constructor
-   * @param _appSettingsService - AppSettingsService
-   * @param _translateService - TranslateService
+   * @param appSettingsService - AppSettingsService
+   * @param translateService - TranslateService
    */
   constructor(
-    private _appSettingsService: AppSettingsService,
-    private _translateService: TranslateService
+    private appSettingsService: AppSettingsService,
+    private translateService: TranslateService
   ) {}
 
   /**
@@ -42,8 +42,8 @@ export class ExtractSourceFieldPipe implements PipeTransform {
    * @return the requested field from metadata for the best possible source.
    */
   transform(metadata: any, field: string): any {
-    const contributionsLabel: any = this._appSettingsService.agentLabelOrder;
-    const language = this._translateService.currentLang;
+    const contributionsLabel: any = this.appSettingsService.agentLabelOrder;
+    const language = this.translateService.currentLang;
     const agentLabelOrder = (language in contributionsLabel)
       ? contributionsLabel[language]
       : contributionsLabel[contributionsLabel.fallback];

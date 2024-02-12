@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
   Copyright (C) 2020-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -16,32 +16,30 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<h5 class="mb-0 card-title">
+<h5 class="mb-0">
   <a [routerLink]="['/records', 'items', 'detail', record.metadata.pid]">
       {{ record.metadata.ui_title_text }}
   </a>
 </h5>
-<ng-container class="card-text">
-  <dl class="row mb-0 ml-1">
-    <!-- INHERITED CALL NUMBER -->
-    <ng-container *ngIf="record | itemHoldingsCallNumber | async as callNumber">
+<dl class="row mb-0 ml-1">
+  <!-- INHERITED CALL NUMBER -->
+  @if (record | itemHoldingsCallNumber | async; as callNumber) {
+    @if ((callNumber.first | json) !== '{}' || (callNumber.second | json) !== '{}') {
       <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Call number</dt>
       <dd class="col-sm-7 col-md-8 mb-0">
         <shared-inherited-call-number [item]="record" context="first"></shared-inherited-call-number>
-        <ng-container *ngIf="record.metadata.second_call_number">| {{ record.metadata.second_call_number }}</ng-container>
+        @if (record.metadata.second_call_number) {
+          | {{ record.metadata.second_call_number }}
+        }
       </dd>
-    </ng-container>
-    <ng-container *ngIf="record.metadata.barcode">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Barcode</dt>
-      <dd class="col-sm-7 col-md-8 mb-0">
-        {{ record.metadata.barcode }}
-      </dd>
-    </ng-container>
-    <ng-container *ngIf="record.metadata.current_pending_requests > 0">
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Current requests</dt>
-      <dd  class="col-sm-7 col-md-8 mb-0">
-        {{ record.metadata.current_pending_requests }}
-      </dd>
-    </ng-container>
-  </dl>
-</ng-container>
+    }
+  }
+  @if (record.metadata.barcode) {
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Barcode</dt>
+    <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.barcode }}</dd>
+  }
+  @if (record.metadata.current_pending_requests > 0) {
+    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Current requests</dt>
+    <dd  class="col-sm-7 col-md-8 mb-0">{{ record.metadata.current_pending_requests }}</dd>
+  }
+</dl>

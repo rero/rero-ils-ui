@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -36,51 +36,46 @@ export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
   records = [];
 
   /** Records paginator */
-  private _paginator: Paginator;
+  paginator: Paginator;
 
   /** Observable subscription */
   private _subscription = new Subscription();
 
-  /** Get paginator */
-  get paginator(): Paginator {
-    return this._paginator;
-  }
-
   /**
    * Constructor
-   * @param _illRequestApiService - IllRequestApiService
-   * @param _patronProfileService - PatronProfileService
-   * @param _patronProfileMenuService - PatronProfileMenuService
+   * @param illRequestApiService - IllRequestApiService
+   * @param patronProfileService - PatronProfileService
+   * @param patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
-    private _illRequestApiService: IllRequestApiService,
-    private _patronProfileService: PatronProfileService,
-    private _patronProfileMenuService: PatronProfileMenuService
+    private illRequestApiService: IllRequestApiService,
+    private patronProfileService: PatronProfileService,
+    private patronProfileMenuService: PatronProfileMenuService
   ) {}
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._paginator = new Paginator();
-    this._paginator
+    this.paginator = new Paginator();
+    this.paginator
       .setHiddenInfo(
         _('({{ count }} hidden ill request)'),
         _('({{ count }} hidden ill requests)')
       );
     this._subscription.add(
-      this._paginator.more$.subscribe((page: number) => {
+      this.paginator.more$.subscribe((page: number) => {
         this._illRequestQuery(page).subscribe((response: Record) => {
           this.records = this.records.concat(response.hits.hits);
         });
       })
     );
     this._subscription.add(
-      this._patronProfileService.tabsEvent$.subscribe((event: ITabEvent) => {
+      this.patronProfileService.tabsEvent$.subscribe((event: ITabEvent) => {
         if (event.name === 'illRequest') {
           if (event.count === 0) {
             this.loaded = true;
           } else {
             this._illRequestQuery(1).subscribe((response: Record) => {
-              this._paginator.setRecordsCount(response.hits.total.value);
+              this.paginator.setRecordsCount(response.hits.total.value);
               this.records = response.hits.hits;
               this.loaded = true;
             });
@@ -90,7 +85,7 @@ export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
     );
     /** Cleaning up after the change of organization */
     this._subscription.add(
-      this._patronProfileMenuService.onChange$.subscribe(() => {
+      this.patronProfileMenuService.onChange$.subscribe(() => {
         this.paginator.setRecordsCount(0);
         this.records = [];
         this.loaded = false;
@@ -109,8 +104,8 @@ export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
    * @return Observable
    */
   private _illRequestQuery(page: number): Observable<Record | Error> {
-    const patronPid = this._patronProfileMenuService.currentPatron.pid;
-    return this._illRequestApiService
-      .getPublicIllRequest(patronPid, page, this._paginator.getRecordsPerPage());
+    const patronPid = this.patronProfileMenuService.currentPatron.pid;
+    return this.illRequestApiService
+      .getPublicIllRequest(patronPid, page, this.paginator.getRecordsPerPage());
   }
 }

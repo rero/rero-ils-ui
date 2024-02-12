@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2019-2023 RERO
+ Copyright (C) 2019-2024 RERO
  Copyright (C) 2019-2023 UCLouvain
 
  This program is free software: you can redistribute it and/or modify
@@ -41,70 +41,75 @@
       <i class="fa fa-eye" aria-hidden="true"></i>
     </a>
   </div>
-  <!-- DETAIL ROWS :: collapsible detail informations ===================== -->
-  <div name="collapsed-details" class="col-12 mt-2" *ngIf="!isCollapsed">
-    <dl class="row">
-      <!-- PUBLISHER -->
-      <ng-container *ngIf="record.metadata.document.publisher">
-        <dt class="offset-1 col-1 label-title" translate>Publisher</dt>
-        <dd class="col-10 mb-0">{{ record.metadata.document.publisher }}</dd>
-      </ng-container>
-      <!-- YEAR -->
-      <ng-container *ngIf="record.metadata.document.year">
-        <dt class="offset-1 col-1 label-title" translate>Year</dt>
-        <dd class="col-10 mb-0">{{ record.metadata.document.year }}</dd>
-      </ng-container>
-      <!-- IDENTIFIER -->
-      <ng-container *ngIf="record.metadata.document.identifier">
-        <dt class="offset-1 col-1 label-title" translate>Identifier</dt>
-        <dd class="col-10 mb-0">{{ record.metadata.document.identifier }}</dd>
-      </ng-container>
-      <!-- SOURCE -->
-      <ng-container *ngIf="record.metadata.document.source">
-        <dt class="offset-1 col-1 label-title" translate>Source</dt>
+  <!-- DETAIL ROWS :: collapsible detail information's -->
+  @if (!isCollapsed) {
+    <div name="collapsed-details" class="col-12 mt-2">
+      <dl class="row">
+        <!-- PUBLISHER -->
+        @if (record.metadata.document.publisher) {
+          <dt class="offset-1 col-1 label-title" translate>Publisher</dt>
+          <dd class="col-10 mb-0">{{ record.metadata.document.publisher }}</dd>
+        }
+        <!-- YEAR -->
+        @if (record.metadata.document.year) {
+          <dt class="offset-1 col-1 label-title" translate>Year</dt>
+          <dd class="col-10 mb-0">{{ record.metadata.document.year }}</dd>
+        }
+        <!-- IDENTIFIER -->
+        @if (record.metadata.document.identifier) {
+          <dt class="offset-1 col-1 label-title" translate>Identifier</dt>
+          <dd class="col-10 mb-0">{{ record.metadata.document.identifier }}</dd>
+        }
+        <!-- SOURCE -->
+        @if (record.metadata.document.source) {
+          <dt class="offset-1 col-1 label-title" translate>Source</dt>
+          <dd class="col-10 mb-0">
+            @if (record.metadata.document.source.volume || record.metadata.document.source.number) {
+              {{ record.metadata.document.source | journalVolume }}
+            }
+          </dd>
+        }
+        <!-- SCOPE -->
+        <dt class="offset-1 col-1 label-title" translate>Scope</dt>
         <dd class="col-10 mb-0">
-          <ng-container *ngIf="record.metadata.document.source.volume || record.metadata.document.source.number">
-            {{ record.metadata.document.source | journalVolume }}
-          </ng-container>
+          @if (record.metadata.copy) {
+            {{ 'Copy' | translate }}
+          } @else {
+            {{ 'Loan' | translate }}
+          }
         </dd>
-      </ng-container>
-      <!-- SCOPE -->
-      <dt class="offset-1 col-1 label-title" translate>Scope</dt>
-      <dd class="col-10 mb-0">
-        <ng-container *ngIf="record.metadata.copy; else scopeLoan">{{ 'Copy' | translate }}</ng-container>
-        <ng-template #scopeLoan>{{ 'Loan' | translate }}</ng-template>
-      </dd>
-      <!-- PAGES -->
-      <ng-container *ngIf="record.metadata.copy && record.metadata.pages">
-        <dt class="offset-1 col-1 label-title" translate>Pages</dt>
-        <dd class="col-10 mb-0">{{ record.metadata.pages }}</dd>
-      </ng-container>
-      <!-- FOUND IN -->
-      <ng-container *ngIf="record.metadata.found_in">
-        <dt class="offset-1 col-1 label-title" translate>Found in</dt>
+        <!-- PAGES -->
+        @if (record.metadata.copy && record.metadata.pages) {
+          <dt class="offset-1 col-1 label-title" translate>Pages</dt>
+          <dd class="col-10 mb-0">{{ record.metadata.pages }}</dd>
+        }
+        <!-- FOUND IN -->
+        @if (record.metadata.found_in) {
+          <dt class="offset-1 col-1 label-title" translate>Found in</dt>
+          <dd class="col-10 mb-0">
+            <a href="{{ record.metadata.found_in.url }}">{{ record.metadata.found_in.url }}</a>
+            <span class="badge badge-light px-2 py-1 ml-2">{{ record.metadata.found_in.source }}</span>
+          </dd>
+        }
+        <!-- STATUS -->
+        <dt class="offset-1 col-1 label-title" translate>Request status</dt>
         <dd class="col-10 mb-0">
-          <a href="{{ record.metadata.found_in.url }}">{{ record.metadata.found_in.url }}</a>
-          <span class="badge badge-light px-2 py-1 ml-2">{{ record.metadata.found_in.source }}</span>
+          <span class="badge badge-{{badgeColor(record.metadata.status)}}" translate>{{ record.metadata.status }}</span>
         </dd>
-      </ng-container>
-      <!-- STATUS -->
-      <dt class="offset-1 col-1 label-title" translate>Request status</dt>
-      <dd class="col-10 mb-0">
-        <span class="badge badge-{{badgeColor(record.metadata.status)}}" translate>{{ record.metadata.status }}</span>
-      </dd>
-      <!-- NOTES -->
-      <ng-container *ngIf="record.metadata.notes && record.metadata.notes.length > 0">
-        <dt class="offset-1 col-1 label-title" translate>Note</dt>
-        <dd class="col-10 mb-0">
-          <blockquote>
-            <ul class="list-unstyled">
-              <li *ngFor="let note of record.metadata.notes"
-                  [innerHTML]="note.content | nl2br">
-              </li>
-            </ul>
-          </blockquote>
-        </dd>
-      </ng-container>
-    </dl>
-  </div>
+        <!-- NOTES -->
+        @if (record.metadata.notes && record.metadata.notes.length > 0) {
+          <dt class="offset-1 col-1 label-title" translate>Note</dt>
+          <dd class="col-10 mb-0">
+            <blockquote>
+              <ul class="list-unstyled">
+                @for (note of record.metadata.notes; track note) {
+                  <li [innerHTML]="note.content | nl2br"></li>
+                }
+              </ul>
+            </blockquote>
+          </dd>
+        }
+      </dl>
+    </div>
+  }
 </div>
