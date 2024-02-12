@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,36 +15,30 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="availability; else loading">
-  <i
-    class="mr-1 fa fa-circle"
-    [ngClass]="{'text-success': availability.available,'text-danger': !availability.available}"
-  ></i>
-  <ng-container [ngSwitch]="recordType">
-    <ng-container *ngSwitchCase="'item'" [ngTemplateOutlet]="item" [ngTemplateOutletContext]="{availability}"></ng-container>
-    <ng-container *ngSwitchDefault [ngTemplateOutlet]="default" [ngTemplateOutletContext]="{availability}"></ng-container>
-  </ng-container>
-</ng-container>
-
-<ng-template #default let-availability=availability>
-  {{ (availability.available ? 'available' : 'not available') | translate }}
-</ng-template>
-
-<ng-template #item let-availability=availability>
-  <ng-container [ngSwitch]="availability.status">
-    <span *ngSwitchCase="'on_loan'">
-      {{ 'due until' | translate }}
-      {{ availability.due_date | dateTranslate :'shortDate' }}
-    </span>
-    <span *ngSwitchDefault>
-      {{ availability.circulation_message | getTranslatedLabel : language }}
-    </span>
-  </ng-container>
-  <ng-container *ngIf="availability.number_of_request > 0">
-    ({{ availability.number_of_request }} {{ (availability.number_of_request > 1 ? 'requests' : 'request') | translate }})
-  </ng-container>
-</ng-template>
-
-<ng-template #loading>
+@defer (when availability) {
+    <i
+      class="mr-1 fa fa-circle"
+      [ngClass]="{'text-success': availability.available,'text-danger': !availability.available}"
+    ></i>
+    @switch (recordType) {
+      @case('item') {
+        @switch(availability.status) {
+          @case('on_loan') {
+            {{ 'due until' | translate }}
+            {{ availability.due_date | dateTranslate :'shortDate' }}
+          }
+          @default {
+            {{ availability.circulation_message | getTranslatedLabel : language }}
+          }
+        }
+        @if (availability.number_of_request > 0) {
+          ({{ availability.number_of_request }} {{ (availability.number_of_request > 1 ? 'requests' : 'request') | translate }})
+        }
+      }
+      @default {
+        {{ (availability.available ? 'available' : 'not available') | translate }}
+      }
+    }
+} @loading {
   <i class="fa fa-spinner"></i>
-</ng-template>
+}

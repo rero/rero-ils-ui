@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023 RERO
+ * Copyright (C) 2023-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,12 +32,12 @@ export class ReportsListComponent implements OnInit {
 
   /**
    * Constructor
-   * @param _recordService - RecordService
-   * @param _apiService - ApiService
+   * @param recordService - RecordService
+   * @param apiService - ApiService
    */
   constructor(
-    private _recordService: RecordService,
-    private _apiService: ApiService
+    private recordService: RecordService,
+    private apiService: ApiService
   ) {}
 
   /**
@@ -47,16 +47,16 @@ export class ReportsListComponent implements OnInit {
    * @returns the URL as string.
    */
   getReportUrl(pid: string): string {
-    return `${this._apiService.getEndpointByType("stats")}/${pid}`;
+    return `${this.apiService.getEndpointByType("stats")}/${pid}`;
   }
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._recordService
+    this.recordService
       .getRecords("stats", `config.pid:${this.pid}`, 1, 100)
       .pipe(
         map((result: Record) =>
-          this._recordService.totalHits(result.hits.total) === 0
+          this.recordService.totalHits(result.hits.total) === 0
             ? []
             : result.hits.hits
         )

@@ -8,14 +8,6 @@
       "files": [
         "*.ts"
       ],
-      "parserOptions": {
-        "project": [
-          "projects/public-search/tsconfig.app.json",
-          "projects/public-search/tsconfig.spec.json",
-          "projects/public-search/e2e/tsconfig.json"
-        ],
-        "createDefaultProgram": true
-      },
       "rules": {
         "@angular-eslint/directive-selector": [
           "error",

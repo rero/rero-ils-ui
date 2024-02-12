@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
- * Copyright (C) 2022 UCLouvain
+ * Copyright (C) 2022-2024 RERO
+ * Copyright (C) 2022-2024 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,7 +24,7 @@ import { PERMISSIONS, PERMISSION_OPERATOR } from '../util/permissions';
 export class PermissionsService {
 
   /** Permissions set */
-  private _permissions = new Set<string>();
+  private permissions = new Set<string>();
 
   /**
    * Set all permissions in set
@@ -33,8 +33,8 @@ export class PermissionsService {
    */
   setPermissions(permissions: string[]): this {
     permissions.map((permission: string) => {
-      if (!this._permissions.has(permission)) {
-        this._permissions.add(permission);
+      if (!this.permissions.has(permission)) {
+        this.permissions.add(permission);
       }
     });
 
@@ -54,9 +54,9 @@ export class PermissionsService {
 
     switch(operator) {
       case PERMISSION_OPERATOR.OR:
-        return permission.some((perm: string) => this._permissions.has(perm));
+        return permission.some((perm: string) => this.permissions.has(perm));
       case PERMISSION_OPERATOR.AND:
-        return permission.every((perm: string) => this._permissions.has(perm))
+        return permission.every((perm: string) => this.permissions.has(perm))
       default:
         throw new Error(
           'Permission operator: The values for the operator is "and" or "or".'
@@ -69,6 +69,6 @@ export class PermissionsService {
    * @returns true if the permission is granted
    */
   canAccessDebugMode(): boolean {
-    return this._permissions.has(PERMISSIONS.DEBUG_MODE);
+    return this.permissions.has(PERMISSIONS.DEBUG_MODE);
   }
 }

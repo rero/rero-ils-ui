@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,13 +17,11 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { Record } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { OrganisationService } from '../../../../service/organisation.service';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { IAcqAccount } from '../../../classes/account';
-import { OrganisationService } from '../../../../service/organisation.service';
 
 @Component({
   selector: 'admin-acquisition-account-detail-view',
@@ -43,24 +41,24 @@ export class AccountDetailViewComponent implements OnInit, DetailRecord {
   // GETTER & SETTER ============================================================
   /** Get the current budget pid for the organisation */
   get organisation(): any {
-    return this._organisationService.organisation;
+    return this.organisationService.organisation;
   }
 
   // CONSTRUCTOR & HOOKS ========================================================
   /**
    * Constructor
-   * @param _acqAccountApiService - AcqAccountApiService
-   * @param _organisationService - OrganisationService
+   * @param acqAccountApiService - AcqAccountApiService
+   * @param organisationService - OrganisationService
    */
   constructor(
-    private _acqAccountApiService: AcqAccountApiService,
-    private _organisationService: OrganisationService
+    private acqAccountApiService: AcqAccountApiService,
+    private organisationService: OrganisationService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
     this.record$.subscribe((data: any) => {
-      this.esRecord$ = this._acqAccountApiService.getAccount(data.metadata.pid);
+      this.esRecord$ = this.acqAccountApiService.getAccount(data.metadata.pid);
     });
   }
 

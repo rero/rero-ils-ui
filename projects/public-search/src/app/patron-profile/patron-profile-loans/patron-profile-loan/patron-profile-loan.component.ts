@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -55,12 +55,12 @@ export class PatronProfileLoanComponent implements OnInit {
   // GETTER & SETTER ==========================================================
   /** Get organisation for current patron */
   get organisation(): IOrganisation {
-    return this._patronProfileMenuService.currentPatron.organisation;
+    return this.patronProfileMenuService.currentPatron.organisation;
   }
 
   /** Get current viewcode */
   get viewcode(): string {
-    return this._patronProfileMenuService.currentPatron.organisation.code;
+    return this.patronProfileMenuService.currentPatron.organisation.code;
   }
   /** Check if the loan should be returned in very few days */
   get isDueSoon(): boolean {
@@ -72,31 +72,31 @@ export class PatronProfileLoanComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _loanApiService - LoanApiService
-   * @param _translateService - TranslateService
-   * @param _toastService - ToastrService
-   * @param _patronProfileMenuService - PatronProfileMenuService
-   * @param _patronProfileService - PatronProfileService
+   * @param loanApiService - LoanApiService
+   * @param translateService - TranslateService
+   * @param toastService - ToastrService
+   * @param patronProfileMenuService - PatronProfileMenuService
+   * @param patronProfileService - PatronProfileService
    */
   constructor(
-    private _loanApiService: LoanApiService,
-    private _translateService: TranslateService,
-    private _toastService: ToastrService,
-    private _patronProfileMenuService: PatronProfileMenuService,
-    private _patronProfileService: PatronProfileService
+    private loanApiService: LoanApiService,
+    private translateService: TranslateService,
+    private toastService: ToastrService,
+    private patronProfileMenuService: PatronProfileMenuService,
+    private patronProfileService: PatronProfileService
   ) {}
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._loanApiService
+    this.loanApiService
       .canExtend(this.record.metadata.pid)
       .subscribe((response: CanExtend) => this.canExtend = response);
     if (this.record.metadata.overdue) {
-      this._loanApiService
+      this.loanApiService
         .getPreviewOverdue(this.record.metadata.pid)
         .subscribe((response: LoanOverduePreview) => {
           this.fees = +response.total.toFixed(2);
-          this._patronProfileService.loanFees(this.fees);
+          this.patronProfileService.loanFees(this.fees);
         });
     }
   }
@@ -104,9 +104,9 @@ export class PatronProfileLoanComponent implements OnInit {
   // COMPONENTS FUNCTIONS =====================================================
   /** Renew the current loan */
   renew(): void {
-    const patronPid = this._patronProfileMenuService.currentPatron.pid;
+    const patronPid = this.patronProfileMenuService.currentPatron.pid;
     this.renewInProgress = true;
-    this._loanApiService.renew({
+    this.loanApiService.renew({
       pid: this.record.metadata.pid,
       item_pid: this.record.metadata.item.pid,
       transaction_location_pid: this.record.metadata.item.location.pid,
@@ -122,14 +122,14 @@ export class PatronProfileLoanComponent implements OnInit {
         if ('overdue' in this.record.metadata) {
           delete this.record.metadata.overdue;
         }
-        this._toastService.success(
-          this._translateService.instant('The item has been renewed.'),
-          this._translateService.instant('Success')
+        this.toastService.success(
+          this.translateService.instant('The item has been renewed.'),
+          this.translateService.instant('Success')
         );
       } else {
-        this._toastService.error(
-          this._translateService.instant('Error during the renewal of the item.'),
-          this._translateService.instant('Error')
+        this.toastService.error(
+          this.translateService.instant('Error during the renewal of the item.'),
+          this.translateService.instant('Error')
         );
       }
     });

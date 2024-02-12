@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2022-2023 RERO
+  Copyright (C) 2022-2024 RERO
   Copyright (C) 2022-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -26,89 +26,106 @@
                   [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
           </button>
           <div class="pull-right">
-            <i class="fa" [ngClass]="getIcon()" [title]="iconTitle" *ngIf="isCollapsed"></i>
+            @if (isCollapsed) {
+              <i class="fa" [ngClass]="getIcon()" [title]="iconTitle"></i>
+            }
           </div>
         </div>
         <div class="col-8">
           <a [routerLink]="['/records', 'items', 'detail', issue.metadata.pid]" class="issue-title">
             {{ issue.metadata.enumerationAndChronology }}
           </a>
-          <span class="badge badge-pill badge-info mx-2" *ngIf="issue.new_issue" translate>New</span>
-          <i class="fa fa-sticky-note-o mx-2 text-warning" *ngIf="issue.metadata.notes"></i>
+          @if (issue.new_issue) {
+            <span class="badge badge-pill badge-info mx-2" translate>New</span>
+          }
+          @if (issue.metadata.notes) {
+            <i class="fa fa-sticky-note-o mx-2 text-warning"></i>
+          }
           <shared-inherited-call-number class="call-numbers px-2" [item]="issue"></shared-inherited-call-number>
-          <i *ngIf="issue.metadata?.issue?.claims?.counter > 0 && isCollapsed" class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
+          @if (issue.metadata?.issue?.claims?.counter > 0 && isCollapsed) {
+            <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
+          }
         </div>
-        <span class="col-3 text-right" *ngIf="isCollapsed">
-          {{ issue.metadata.issue.status_date | dateTranslate : 'shortDate' }}
-        </span>
-        <dl class="col-12 row mb-1" *ngIf="!isCollapsed">
-          <dd class="offset-1 col-11 text-danger mb-0" *ngIf="issue.metadata._masked">
-            <i class="fa fa-eye-slash pr-1"></i>
-            {{ 'This issue has been marked as masked' | translate }}
-          </dd>
-          <dt class="offset-1 col-3 label-title" translate>Status</dt>
-          <dd class="col-8 mb-0">
-            <i class="fa pr-2" [class]="getIcon(true)"></i>
-            {{ issue.metadata.issue.status | translate }}
-            <span class="small pl-2 text-secondary">
-              ({{ 'Assigned on' | translate }} {{ issue.metadata.issue.status_date | dateTranslate }})
-            </span>
-          </dd>
-          <dt class="offset-1 col-3 label-title" translate>Expected date</dt>
-          <dd class="col-8 mb-0">{{ issue.metadata.issue.expected_date | dateTranslate }}</dd>
-          <ng-container *ngIf="issue.metadata.issue.status === issueItemStatusRef.RECEIVED">
-            <dt class="offset-1 col-3 label-title" translate>Received date</dt>
-            <dd class="col-8 mb-0">{{ issue.metadata.issue.received_date | dateTranslate }}</dd>
-          </ng-container>
-          <ng-container *ngIf="issue.metadata?.issue?.claims?.counter > 0">
-            <dt class="offset-1 col-3 label-title" translate>
-              <span [ngPlural]="issue.metadata.issue.claims.counter">
-                <ng-template ngPluralCase="=1">{{ 'Claim' | translate }}</ng-template>
-                <ng-template ngPluralCase="other">{{ 'Claims' | translate }}</ng-template>
-              </span>
-            </dt>
+        @if (isCollapsed) {
+          <span class="col-3 text-right">
+            {{ issue.metadata.issue.status_date | dateTranslate : 'shortDate' }}
+          </span>
+        }
+        @if (!isCollapsed) {
+          <dl class="col-12 row mb-1">
+            @if (issue.metadata._masked) {
+              <dd class="offset-1 col-11 text-danger mb-0">
+                <i class="fa fa-eye-slash pr-1"></i>
+                {{ 'This issue has been marked as masked' | translate }}
+              </dd>
+            }
+            <dt class="offset-1 col-3 label-title" translate>Status</dt>
             <dd class="col-8 mb-0">
-              {{ issue.metadata.issue.claims.counter }}
+              <i class="fa pr-2" [class]="getIcon(true)"></i>
+              {{ issue.metadata.issue.status | translate }}
               <span class="small pl-2 text-secondary">
-                ({{ 'last claim' | translate }}: {{ claimLastDate | dateTranslate: 'short' }})
+                ({{ 'Assigned on' | translate }} {{ issue.metadata.issue.status_date | dateTranslate }})
               </span>
             </dd>
-          </ng-container>
-        </dl>
+            <dt class="offset-1 col-3 label-title" translate>Expected date</dt>
+            <dd class="col-8 mb-0">{{ issue.metadata.issue.expected_date | dateTranslate }}</dd>
+            @if (issue.metadata.issue.status === issueItemStatusRef.RECEIVED) {
+              <dt class="offset-1 col-3 label-title" translate>Received date</dt>
+              <dd class="col-8 mb-0">{{ issue.metadata.issue.received_date | dateTranslate }}</dd>
+            }
+            @if (issue.metadata?.issue?.claims?.counter > 0) {
+              <dt class="offset-1 col-3 label-title" translate>
+                <span [ngPlural]="issue.metadata.issue.claims.counter">
+                  <ng-template ngPluralCase="=1">{{ 'Claim' | translate }}</ng-template>
+                  <ng-template ngPluralCase="other">{{ 'Claims' | translate }}</ng-template>
+                </span>
+              </dt>
+              <dd class="col-8 mb-0">
+                {{ issue.metadata.issue.claims.counter }}
+                <span class="small pl-2 text-secondary">
+                  ({{ 'last claim' | translate }}: {{ claimLastDate | dateTranslate: 'short' }})
+                </span>
+              </dd>
+            }
+          </dl>
+        }
       </div>
     </div>
     <div class="col-2 text-right">
       <!-- CLAIMS BUTTON -->
-      <button *ngIf="recordPermissions?.update?.can && isClaimAllowed"
-              type="button"
-              title="{{ 'Claim' | translate }}"
-              class="btn btn-sm btn-outline-primary ml-1"
-              (click)="openClaimEmailDialog()">
-        <i class="fa fa-gavel"></i>
-      </button>
-      <!-- EDIT BUTTON -->
-      <button *ngIf="recordPermissions?.update?.can"
-              type="button" class="btn btn-sm btn-outline-primary ml-1"
-              title="{{ 'Edit' | translate }}"
-              [routerLink]="['/records', 'items', 'edit', issue.metadata.pid]"
-              [queryParams]="{'redirectTo': 'records/holdings/detail/' + holding.id }">
-        <i class="fa fa-pencil"></i>
-      </button>
+      @if (recordPermissions?.update?.can) {
+        @if (isClaimAllowed) {
+          <button type="button"
+                  title="{{ 'Claim' | translate }}"
+                  class="btn btn-sm btn-outline-primary ml-1"
+                  (click)="openClaimEmailDialog()">
+            <i class="fa fa-gavel"></i>
+          </button>
+        }
+        <!-- EDIT BUTTON -->
+        <button type="button" class="btn btn-sm btn-outline-primary ml-1"
+                title="{{ 'Edit' | translate }}"
+                [routerLink]="['/records', 'items', 'edit', issue.metadata.pid]"
+                [queryParams]="{'redirectTo': 'records/holdings/detail/' + holding.id }">
+          <i class="fa fa-pencil"></i>
+        </button>
+      }
+
       <!-- DELETE BUTTON -->
-      <button *ngIf="recordPermissions?.delete?.can; else deleteInfo"
-              type="button" class="btn btn-outline-danger btn-sm ml-1"
-              title="{{ 'Delete' | translate }}"
-              (click)="deleteIssue(issue)">
-        <i class="fa fa-trash" ></i>
-      </button>
-      <ng-template #deleteInfo>
+      @if (recordPermissions?.delete?.can) {
+        <button type="button" class="btn btn-outline-danger btn-sm ml-1"
+                title="{{ 'Delete' | translate }}"
+                (click)="deleteIssue(issue)">
+          <i class="fa fa-trash" ></i>
+        </button>
+      } @else {
         <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"
                 title="{{ 'Delete' | translate }}"
                 [popover]="tolTemplate" triggers="mouseenter:mouseleave">
           <i class="fa fa-trash"></i>
         </button>
         <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage(issue) | nl2br"></div></ng-template>
-      </ng-template>
+      }
     </div>
   </div>
 </div>

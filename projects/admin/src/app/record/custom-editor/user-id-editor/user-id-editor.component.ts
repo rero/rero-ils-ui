@@ -60,20 +60,20 @@ export class UserIdEditorComponent implements OnInit {
   /**
    * Constructor
    *
-   * @param _recordService - ng-core RecordService
+   * @param recordService - ng-core RecordService
    * @param bsModalRef - ngx-bootstrap BsModalRef
-   * @param _formlyJsonschema - ngx-formly FormlyJsonschema
-   * @param _toastService - ngx-toastr ToastrService
-   * @param _translateService - ngx-translate TranslateService
-   * @param _userService - rero/shared UserService
+   * @param formlyJsonschema - ngx-formly FormlyJsonschema
+   * @param toastService - ngx-toastr ToastrService
+   * @param translateService - ngx-translate TranslateService
+   * @param userService - rero/shared UserService
    */
   constructor(
-    private _recordService: RecordService,
+    private recordService: RecordService,
     public bsModalRef: BsModalRef,
-    private _formlyJsonschema: FormlyJsonschema,
-    private _toastService: ToastrService,
-    private _translateService: TranslateService,
-    private _userService: UserService
+    private formlyJsonschema: FormlyJsonschema,
+    private toastService: ToastrService,
+    private translateService: TranslateService,
+    private userService: UserService
   ) {
     this.form = new UntypedFormGroup({});
   }
@@ -82,13 +82,13 @@ export class UserIdEditorComponent implements OnInit {
    * Get the JSONSchema and add validators.
    */
   ngOnInit(): void {
-    this._recordService.getSchemaForm('users').pipe(
+    this.recordService.getSchemaForm('users').pipe(
       tap(
         schema => {
           if (schema != null) {
             schema = processJsonSchema(schema.schema);
             this.fields = [
-              this._formlyJsonschema.toFieldConfig(orderedJsonSchema(schema), {
+              this.formlyJsonschema.toFieldConfig(orderedJsonSchema(schema), {
 
                 // post process JSONSchema7 to FormlyFieldConfig conversion
                 map: (field: FormlyFieldConfig, jsonSchema: JSONSchema7) => {
@@ -135,7 +135,7 @@ export class UserIdEditorComponent implements OnInit {
       switchMap(() => {
         return (this.userID == null)
           ? of({})
-          : this._recordService.getRecord('users', this.userID);
+          : this.recordService.getRecord('users', this.userID);
       }),
       map((user: any) => user.metadata)
     ).subscribe(model => this.model = model);
@@ -154,11 +154,11 @@ export class UserIdEditorComponent implements OnInit {
       this.model = {};
       return;
     }
-    this._recordService.getRecords('users', query).pipe(
+    this.recordService.getRecords('users', query).pipe(
       map((res: any) => {
         if (res.hits.hits.length === 0) {
-          this._toastService.warning(
-            this._translateService.instant('User not found.')
+          this.toastService.warning(
+            this.translateService.instant('User not found.')
           );
           return null;
         }
@@ -170,26 +170,26 @@ export class UserIdEditorComponent implements OnInit {
           return null;
         }
         // current logged user organisation
-        const currentOrgPid = this._userService.user.currentOrganisation;
+        const currentOrgPid = this.userService.user.currentOrganisation;
         const patronAccounts = model.metadata.patrons;
         // user has patron account
         if (patronAccounts && patronAccounts.length > 0) {
-          const patronAccount = patronAccounts.filter(ptrn => ptrn.organisation.pid === currentOrgPid).pop();
+          const patronAccount = patronAccounts.filter((ptrn: any) => ptrn.organisation.pid === currentOrgPid).pop();
           // user has already an account in the logged librarian organisation
           if (patronAccount != null) {
-            this._toastService.info(
-              this._translateService.instant('This person is already registered in your organisation.')
+            this.toastService.info(
+              this.translateService.instant('This person is already registered in your organisation.')
             );
             return of(null);
           }
         }
-        this._toastService.info(
-          this._translateService.instant('The personal data has been successfully linked to this patron.')
+        this.toastService.info(
+          this.translateService.instant('The personal data has been successfully linked to this patron.')
         );
         this.loadedUserID = model.id;
         this.passwordField.props.required = false;
         this.form.reset();
-        return this.model = model.metadata ? model.metadata : null;
+        return this.model = model.metadata || null;
       }),
     ).subscribe();
   }
@@ -202,8 +202,8 @@ export class UserIdEditorComponent implements OnInit {
   submit(): void {
     this.form.updateValueAndValidity();
     if (this.form.valid === false) {
-      this._toastService.error(
-        this._translateService.instant('The form contains errors.')
+      this.toastService.error(
+        this.translateService.instant('The form contains errors.')
       );
       return;
     }
@@ -214,11 +214,11 @@ export class UserIdEditorComponent implements OnInit {
     }
     if (this.userID != null) {
       data.pid = this.userID;
-      this._recordService.update('users', data.pid, data).subscribe(() => {
+      this.recordService.update('users', data.pid, data).subscribe(() => {
         this.bsModalRef.hide();
       });
     } else {
-      this._recordService.create('users', data).subscribe((res) => {
+      this.recordService.create('users', data).subscribe((res) => {
         this.userID = res.id;
         this.bsModalRef.hide();
       });
@@ -234,14 +234,14 @@ export class UserIdEditorComponent implements OnInit {
   getUniqueValidator(fieldName: string) {
     return {
       expression: (control: UntypedFormControl) => {
-        const value = control.value;
+        const { value } = control;
         if (value == null || value.length === 0) {
           return of(true);
         }
-        return this._recordService.getRecords('users', `${fieldName}:${value}`).pipe(
+        return this.recordService.getRecords('users', `${fieldName}:${value}`).pipe(
           debounceTime(1000),
           map((res: any) => {
-            const id = this.loadedUserID ? this.loadedUserID : this.userID;
+            const id = this.loadedUserID || this.userID;
             return (res.hits.hits.length === 0) ||
               (res.hits.hits.length === 1 && res.hits.hits[0].id === id);
           })

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2019-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,36 +14,36 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<ng-container *ngIf="record">
-  <h2 id="template-name" class="pl-0" *ngIf="record.metadata.name">
-    {{ record.metadata.name }} <ng-container *ngIf="record.metadata.visibility && record.metadata.visibility === 'private'">
-      <i class="fa fa-lock text-secondary" aria-hidden="true"></i>
-    </ng-container>
+@if (record) {
+  <h2 id="template-name" class="pl-0">
+    {{ record.metadata.name }}
+    @if (record.metadata.visibility && record.metadata.visibility === 'private') {
+      <i class="fa fa-lock text-secondary ml-2" aria-hidden="true"></i>
+    }
   </h2>
   <dl class="row mb-0">
     <!-- DESCRIPTION -->
-    <ng-container *ngIf="record.metadata.description">
+    @if (record.metadata.description) {
       <dt [ngClass]="dtCssClass">
         <span class="label-title" translate>
           Description
         </span>
       </dt>
       <dd id="template-description" [ngClass]="ddCssClass" [innerHTML]="record.metadata.description | nl2br"></dd>
-    </ng-container>
+    }
     <!-- CREATOR -->
-    <ng-container *ngIf="record.metadata.creator.pid | getRecord: 'patrons' | async as creator">
+    @if (record.metadata.creator.pid | getRecord: 'patrons' | async; as creator) {
       <dt [ngClass]="dtCssClass">
         <span class="label-title" translate>
           Creator
         </span>
       </dt>
       <dd id="template-creator" [ngClass]="ddCssClass">
-        {{ creator.metadata.first_name }} {{ creator.metadata.last_name }}
+        {{ $any(creator).metadata.first_name }} {{ $any(creator).metadata.last_name }}
       </dd>
-    </ng-container>
+    }
     <!-- TYPE -->
-    <ng-container *ngIf="record.metadata.template_type">
+    @if (record.metadata.template_type) {
       <dt [ngClass]="dtCssClass">
         <span class="label-title" translate>
           Type
@@ -52,6 +52,6 @@
       <dd id="template-type" [ngClass]="ddCssClass">
         {{ record.metadata.template_type }}
       </dd>
-    </ng-container>
+    }
   </dl>
-</ng-container>
+}

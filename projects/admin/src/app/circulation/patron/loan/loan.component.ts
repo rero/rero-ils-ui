@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -63,20 +63,20 @@ export class LoanComponent implements OnInit, OnDestroy {
   currentLibraryPid: string;
 
   /** ready to pickup items */
-  private _pickupItems = [];
+  private pickupItems = [];
   /** Observable subscription */
-  private _subscription = new Subscription();
+  private subscription = new Subscription();
   /** checkout list sort criteria */
-  private _sortCriteria = '-transaction_date';
+  private sortCriteria = '-transaction_date';
   /** modal reference */
-  private _modalRef: BsModalRef;
+  private modalRef: BsModalRef;
   /** checkout circulation special settings */
-  private _checkoutCirculationSettings: CirculationSetting[] = [];
+  private checkoutCirculationSettings: CirculationSetting[] = [];
 
   // GETTER & SETTER ================================================
   /** Return the circulation special settings */
   get checkoutSettings(): CirculationSetting[] | null {
-    return this._checkoutCirculationSettings;
+    return this.checkoutCirculationSettings;
   }
 
   /**
@@ -85,7 +85,7 @@ export class LoanComponent implements OnInit, OnDestroy {
    */
   private _setCheckoutSetting(setting: CirculationSetting) {
     this.removeCheckoutSettings(setting.key);
-    this._checkoutCirculationSettings.push(setting);
+    this.checkoutCirculationSettings.push(setting);
   }
 
   /**
@@ -94,7 +94,7 @@ export class LoanComponent implements OnInit, OnDestroy {
    * @return the value of the setting. null if key isn't found
    */
   private _getCheckoutSetting(key: string): any | null {
-    const setting = this._checkoutCirculationSettings.find(element => element.key === key);
+    const setting = this.checkoutCirculationSettings.find(element => element.key === key);
     return (setting !== undefined)
       ? setting.value
       : null;
@@ -106,47 +106,47 @@ export class LoanComponent implements OnInit, OnDestroy {
    * @return the circulation setting removed or null if the setting is not found
    */
   removeCheckoutSettings(key: string): CirculationSetting | CirculationSetting[] | null {
-    const idx = this._checkoutCirculationSettings.findIndex(setting => setting.key === key);
+    const idx = this.checkoutCirculationSettings.findIndex(setting => setting.key === key);
     if (idx >= 0) {
-      if (key === 'endDate' && this._checkoutCirculationSettings[idx].extra.remember) {
-        this._loanFixedDateService.remove();
+      if (key === 'endDate' && this.checkoutCirculationSettings[idx].extra.remember) {
+        this.loanFixedDateService.remove();
       }
-      return this._checkoutCirculationSettings.splice(idx, 1);
+      return this.checkoutCirculationSettings.splice(idx, 1);
     }
   }
 
   // CONSTRUCTOR & HOOKS ============================================
   /**
    * Constructor
-   * @param _itemsService - Items Service
-   * @param _translateService - Translate Service
-   * @param _toastService - Toastr Service
-   * @param _patronService - Patron Service
-   * @param _userService - UserService
-   * @param _modalService - BsModalService
-   * @param _dateTranslatePipe - DateTranslatePipe
-   * @param _circulationService - CirculationService
-   * @param _loanFixedDateService - LoanFixedDateService
+   * @param itemsService - Items Service
+   * @param translateService - Translate Service
+   * @param toastService - Toastr Service
+   * @param patronService - Patron Service
+   * @param userService - UserService
+   * @param modalService - BsModalService
+   * @param dateTranslatePipe - DateTranslatePipe
+   * @param circulationService - CirculationService
+   * @param loanFixedDateService - LoanFixedDateService
    */
   constructor(
-    private _itemsService: ItemsService,
-    private _translateService: TranslateService,
-    private _toastService: ToastrService,
-    private _patronService: PatronService,
-    private _userService: UserService,
-    private _modalService: BsModalService,
-    private _dateTranslatePipe: DateTranslatePipe,
-    private _circulationService: CirculationService,
-    private _loanFixedDateService: LoanFixedDateService
+    private itemsService: ItemsService,
+    private translateService: TranslateService,
+    private toastService: ToastrService,
+    private patronService: PatronService,
+    private userService: UserService,
+    private modalService: BsModalService,
+    private dateTranslatePipe: DateTranslatePipe,
+    private circulationService: CirculationService,
+    private loanFixedDateService: LoanFixedDateService
   ) {}
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._subscription.add(this._patronService.currentPatron$.subscribe((patron: any) => {
+    this.subscription.add(this.patronService.currentPatron$.subscribe((patron: any) => {
       this.patron = patron;
       if (patron) {
-        const loanedItems$ = this._patronService.getItems(patron.pid, this._sortCriteria);
-        const pickupItems$ = this._patronService.getItemsPickup(patron.pid);
+        const loanedItems$ = this.patronService.getItems(patron.pid, this.sortCriteria);
+        const pickupItems$ = this.patronService.getItemsPickup(patron.pid);
         forkJoin([loanedItems$, pickupItems$]).subscribe(
           ([loanedItems, pickupItems]) => {
             // loanedItems is an array of brief item data (pid, barcode). For each one, we need to
@@ -155,20 +155,20 @@ export class LoanComponent implements OnInit, OnDestroy {
             this.checkedOutItems = loanedItems;
             // for each checkedOutElement call the detail item service.
             loanedItems.forEach((data: any, index) => {
-              this._patronService.getItem(data.barcode).subscribe(item => loanedItems[index] = item);
+              this.patronService.getItem(data.barcode).subscribe(item => loanedItems[index] = item);
             });
 
             // we need to know which items are ready to pickup to decrement the counter if a checkout
             // operation is done on one of this items.
-            this._pickupItems = pickupItems;
+            this.pickupItems = pickupItems;
           }, error => {}
         );
       }
     }));
-    this.currentLibraryPid = this._userService.user.currentLibrary;
+    this.currentLibraryPid = this.userService.user.currentLibrary;
     this.searchInputFocus = true;
     // Assignment of end date if present in locale storage
-    const fixedDateValue = this._loanFixedDateService.get();
+    const fixedDateValue = this.loanFixedDateService.get();
     if (fixedDateValue) {
       this.setCheckoutDateSetting(fixedDateValue, true);
     }
@@ -176,7 +176,7 @@ export class LoanComponent implements OnInit, OnDestroy {
 
   /** OnDestroy hook */
   ngOnDestroy(): void {
-    this._subscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   // COMPONENT FUNCTIONS ========================================================
@@ -204,38 +204,38 @@ export class LoanComponent implements OnInit, OnDestroy {
       item.currentAction = ItemAction.checkin;
       this.applyItems([item]);
       if (item.pending_loans) {
-        this._toastService.warning(
-          this._translateService.instant('The item has a request'),
-          this._translateService.instant('Checkin')
+        this.toastService.warning(
+          this.translateService.instant('The item has a request'),
+          this.translateService.instant('Checkin')
         );
       }
       if (item.status === ItemStatus.IN_TRANSIT) {
-        this._toastService.warning(
-          this._translateService.instant('The item is in transit'),
-          this._translateService.instant('Checkin')
+        this.toastService.warning(
+          this.translateService.instant('The item is in transit'),
+          this.translateService.instant('Checkin')
         );
       }
     } else {
-      this._itemsService.getItem(barcode, this.patron.pid).subscribe(
+      this.itemsService.getItem(barcode, this.patron.pid).subscribe(
         newItem => {
           if (newItem === null) {
-            this._toastService.error(
-              this._translateService.instant('Item not found'),
-              this._translateService.instant('Checkout')
+            this.toastService.error(
+              this.translateService.instant('Item not found'),
+              this.translateService.instant('Checkout')
             );
             this._resetSearchInput();
           } else {
             if (newItem.status === ItemStatus.ON_LOAN) {
-              this._toastService.error(
-                this._translateService.instant('Checkout impossible: the item is already on loan for another patron'),
-                this._translateService.instant('Checkout')
+              this.toastService.error(
+                this.translateService.instant('Checkout impossible: the item is already on loan for another patron'),
+                this.translateService.instant('Checkout')
               );
               this._resetSearchInput();
             } else {
               if (newItem.pending_loans && newItem.pending_loans[0].patron_pid !== this.patron.pid) {
-                this._toastService.error(
-                  this._translateService.instant('Checkout impossible: the item is requested by another patron'),
-                  this._translateService.instant('Checkout')
+                this.toastService.error(
+                  this.translateService.instant('Checkout impossible: the item is requested by another patron'),
+                  this.translateService.instant('Checkout')
                 );
                 this._resetSearchInput();
               } else {
@@ -246,9 +246,9 @@ export class LoanComponent implements OnInit, OnDestroy {
           }
         },
         error => {
-          this._toastService.error(
-            this._translateService.instant(error.message),
-            this._translateService.instant('Checkout')
+          this.toastService.error(
+            this.translateService.instant(error.message),
+            this.translateService.instant('Checkout')
           );
           this._resetSearchInput();
         }
@@ -266,14 +266,14 @@ export class LoanComponent implements OnInit, OnDestroy {
       if (item.currentAction !== ItemAction.no) {
         const additionalParams = {};
         if (item.currentAction === ItemAction.checkout) {
-          this._checkoutCirculationSettings.map(setting => additionalParams[setting.key] = setting.value);
+          this.checkoutCirculationSettings.map(setting => additionalParams[setting.key] = setting.value);
         }
         observables.push(
-          this._itemsService.doAction(
+          this.itemsService.doAction(
             item,
             this.currentLibraryPid,
             // TODO: user or patron ?
-            this._userService.user.patronLibrarian.pid,
+            this.userService.user.patronLibrarian.pid,
             this.patron.pid,
             additionalParams
           )
@@ -291,13 +291,13 @@ export class LoanComponent implements OnInit, OnDestroy {
               // display a toast message if the item goes in transit...
               if (newItem.status === ItemStatus.IN_TRANSIT) {
                 const destination = newItem.loan.item_destination.library_name;
-                this._toastService.warning(
-                  this._translateService.instant('The item is in transit to [{{ destination }}]', {destination}),
-                  this._translateService.instant('Checkin')
+                this.toastService.warning(
+                  this.translateService.instant('The item is in transit to [{{ destination }}]', {destination}),
+                  this.translateService.instant('Checkin')
                 );
               }
-              this._circulationService.decrementCirculationStatistic('loans');
-              this._circulationService.incrementCirculationStatistic('history');
+              this.circulationService.decrementCirculationStatistic('loans');
+              this.circulationService.incrementCirculationStatistic('history');
               break;
             }
             case ItemAction.checkout: {
@@ -305,12 +305,12 @@ export class LoanComponent implements OnInit, OnDestroy {
               this._displayCirculationNote(newItem, ItemNoteType.CHECKOUT);
               this.checkedOutItems.unshift(newItem);
               this.checkedInItems = this.checkedInItems.filter(currItem => currItem.pid !== newItem.pid);
-              this._circulationService.incrementCirculationStatistic('loans');
+              this.circulationService.incrementCirculationStatistic('loans');
               // check if items was ready to pickup. if yes, then we need to decrement the counter
-              const idx = this._pickupItems.findIndex(item => item.metadata.item.pid === newItem.pid);
+              const idx = this.pickupItems.findIndex(item => item.metadata.item.pid === newItem.pid);
               if (idx > -1) {
-                this._pickupItems.splice(idx, 1);
-                this._circulationService.decrementCirculationStatistic('pickup');
+                this.pickupItems.splice(idx, 1);
+                this.circulationService.decrementCirculationStatistic('pickup');
               }
               break;
             }
@@ -330,23 +330,23 @@ export class LoanComponent implements OnInit, OnDestroy {
           errorMessage = err.error.message;
         }
         if (err.error.status === 403) {
-          let message = this._translateService.instant(errorMessage) || this._translateService.instant('Checkout is not allowed by circulation policy');
-          let title =  this._translateService.instant('Circulation');
+          let message = this.translateService.instant(errorMessage) || this.translateService.instant('Checkout is not allowed by circulation policy');
+          let title =  this.translateService.instant('Circulation');
           if (message.includes(': ')) {
             const splittedData = message.split(': ', 2);
             title = splittedData[0].trim();
             message = splittedData[1].trim();
             message = message.charAt(0).toUpperCase() + message.slice(1);
           }
-          this._toastService.error(
+          this.toastService.error(
             message,
             title,
             {disableTimeOut: true, closeButton: true, enableHtml: true}
           );
         } else {
-          this._toastService.error(
-            this._translateService.instant('An error occurred on the server: ') + errorMessage,
-            this._translateService.instant('Circulation'),
+          this.toastService.error(
+            this.translateService.instant('An error occurred on the server: ') + errorMessage,
+            this.translateService.instant('Circulation'),
             {disableTimeOut: true, closeButton: true, enableHtml: true}
           );
         }
@@ -363,7 +363,7 @@ export class LoanComponent implements OnInit, OnDestroy {
   private _displayCirculationNote(item: Item, noteType: ItemNoteType): void {
     const note = item.getNote(noteType);
     if (note != null) {
-      this._toastService.warning(
+      this.toastService.warning(
         note.content, null,
         {
           closeButton: true,    // add a close button to the toastr message
@@ -390,9 +390,9 @@ export class LoanComponent implements OnInit, OnDestroy {
         settingEndDate.getMonth() !== loanEndDate.getMonth() ||
         settingEndDate.getDate() !== loanEndDate.getDate()
       ) {
-        this._toastService.warning(
-          this._translateService.instant('The due date has been set to the next business day, since the selected day is closed.'),
-          this._translateService.instant('Checkout')
+        this.toastService.warning(
+          this.translateService.instant('The due date has been set to the next business day, since the selected day is closed.'),
+          this.translateService.instant('Checkout')
         );
       }
     }
@@ -404,9 +404,9 @@ export class LoanComponent implements OnInit, OnDestroy {
    */
   hasFees(event: boolean): void {
     if (event) {
-      this._toastService.error(
-        this._translateService.instant('The item has fees'),
-        this._translateService.instant('Checkin')
+      this.toastService.error(
+        this.translateService.instant('The item has fees'),
+        this.translateService.instant('Checkin')
       );
     }
   }
@@ -443,15 +443,15 @@ export class LoanComponent implements OnInit, OnDestroy {
    * Subscribe to modal onHide event to get data entered by user and perform job if needed.
    */
   openFixedEndDateDialog(): void {
-    this._modalRef = this._modalService.show(FixedDateFormComponent, {
+    this.modalRef = this.modalService.show(FixedDateFormComponent, {
         ignoreBackdropClick: true,
         keyboard: true
     });
-    this._modalRef.content.onSubmit.subscribe(result => {
+    this.modalRef.content.onSubmit.subscribe(result => {
       if ('action' in result && result.action === 'submit') {
         const date = this.setCheckoutDateSetting(result.content.endDate, result.content.remember);
         if (result.content.remember) {
-          this._loanFixedDateService.set(date);
+          this.loanFixedDateService.set(date);
         }
       }
     });
@@ -465,10 +465,10 @@ export class LoanComponent implements OnInit, OnDestroy {
    */
   setCheckoutDateSetting(endDate: string, remember: boolean): string {
     const checkoutEndDate = moment(endDate, FixedDateFormComponent.DATE_FORMAT).toDate().setHours(23, 59);
-    const formattedDate = this._dateTranslatePipe.transform(checkoutEndDate, 'shortDate');
+    const formattedDate = this.dateTranslatePipe.transform(checkoutEndDate, 'shortDate');
     const setting = {
       key: 'endDate',
-      label: this._translateService.instant('Active chosen due date: {{ endDate }}', {endDate: formattedDate}),
+      label: this.translateService.instant('Active chosen due date: {{ endDate }}', {endDate: formattedDate}),
       value: new Date(checkoutEndDate).toISOString(),
       extra: {
         remember,
@@ -487,7 +487,7 @@ export class LoanComponent implements OnInit, OnDestroy {
   overrideBlocking(): void {
     this._setCheckoutSetting({
       key: 'overrideBlocking',
-      label: this._translateService.instant('Override blockings'),
+      label: this.translateService.instant('Override blockings'),
       value: true
     });
   }

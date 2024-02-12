@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,11 +16,10 @@
  */
 
 
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { ExceptionDates, Library } from '@app/admin/classes/library';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ExceptionDatesEditComponent } from '../exception-dates-edit/exception-dates-edit.component';
-import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'admin-libraries-exception-dates-list',

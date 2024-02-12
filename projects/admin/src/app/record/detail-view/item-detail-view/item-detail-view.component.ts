@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -54,14 +54,14 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
   recordPermissions: any;
 
   /** Record subscription */
-  private _recordObs: Subscription;
+  private recordObs: Subscription;
 
   /**
    * Is operation log enabled
    * @return boolean
    */
   get isEnabledOperationLog(): boolean {
-    return this._operationLogsService.isLogVisible('items');
+    return this.operationLogsService.isLogVisible('items');
   }
 
   /**
@@ -85,12 +85,12 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
    * @return string
    */
   get organisationCurrency(): string {
-    return this._organisationService.organisation.default_currency;
+    return this.organisationService.organisation.default_currency;
   }
 
   /** Allow claim (show button) */
   get isClaimAllowed(): boolean {
-    return this._issueService.isClaimAllowed(this.record.metadata.issue.status);
+    return this.issueService.isClaimAllowed(this.record.metadata.issue.status);
   }
 
   /** returns an array of claim dates in DESC order */
@@ -108,46 +108,46 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
   /**
    * Constructor
    * @param itemApiService - ItemApiService
-   * @param _recordService - RecordService
-   * @param _holdingService - HoldingsService
-   * @param _operationLogsService - OperationLogsService
-   * @param _organisationService - OrganisationService
-   * @param _issueService - IssueService
-   * @param _recordPermissionService - RecordPermissionService
-   * @param _userService - UserService
+   * @param recordService - RecordService
+   * @param holdingService - HoldingsService
+   * @param operationLogsService - OperationLogsService
+   * @param organisationService - OrganisationService
+   * @param issueService - IssueService
+   * @param recordPermissionService - RecordPermissionService
+   * @param userService - UserService
    */
   constructor(
     public itemApiService: ItemApiService,
-    private _recordService: RecordService,
-    private _holdingService: HoldingsService,
-    private _operationLogsService: OperationLogsService,
-    private _organisationService: OrganisationService,
-    private _issueService: IssueService,
-    private _recordPermissionService: RecordPermissionService,
-    private _userService: UserService
+    private recordService: RecordService,
+    private holdingService: HoldingsService,
+    private operationLogsService: OperationLogsService,
+    private organisationService: OrganisationService,
+    private issueService: IssueService,
+    private recordPermissionService: RecordPermissionService,
+    private userService: UserService
   ) {}
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._recordObs = this.record$.pipe(
+    this.recordObs = this.record$.pipe(
       switchMap((record: any) => {
-        return this._recordPermissionService.getPermission('items', record.metadata.pid).pipe(
+        return this.recordPermissionService.getPermission('items', record.metadata.pid).pipe(
           map(permission => {
-            this.recordPermissions = this._recordPermissionService
-              .membership(this._userService.user, record.metadata.library.pid, permission);
+            this.recordPermissions = this.recordPermissionService
+              .membership(this.userService.user, record.metadata.library.pid, permission);
             return record;
           })
         )
       })
     ).subscribe((record: any) => {
       this.record = record;
-      this._recordService.getRecord('locations', record.metadata.location.pid, 1).subscribe(data => this.location = data);
+      this.recordService.getRecord('locations', record.metadata.location.pid, 1).subscribe(data => this.location = data);
     });
   }
 
   /** OnDestroy hook */
   ngOnDestroy() {
-    this._recordObs.unsubscribe();
+    this.recordObs.unsubscribe();
   }
 
   /**
@@ -173,7 +173,7 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
 
   /** Update item status */
   updateItemStatus(): void {
-    this._recordService.getRecord('items', this.record.metadata.pid, 1)
+    this.recordService.getRecord('items', this.record.metadata.pid, 1)
       .subscribe((item: any) => this.record = item);
   }
 
@@ -182,12 +182,12 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
    * @return string
    */
   getIcon(status: IssueItemStatus): string {
-    return this._holdingService.getIcon(status);
+    return this.holdingService.getIcon(status);
   }
 
   /** Open claim dialog */
   openClaimEmailDialog(): void {
-    const bsModalRef = this._issueService.openClaimEmailDialog(this.record);
+    const bsModalRef = this.issueService.openClaimEmailDialog(this.record);
     bsModalRef.content.recordChange.subscribe(() => this.record$
       .subscribe((record: any) => this.record = record));
   }

@@ -47,12 +47,12 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
 
 @NgModule({
     declarations: [
+        HoldingComponent,
         HoldingsComponent,
         ItemComponent,
         ItemsComponent,
-        HoldingComponent,
-        RequestComponent,
-        PickupLocationComponent
+        PickupLocationComponent,
+        RequestComponent
     ],
     imports: [
         BrowserModule,

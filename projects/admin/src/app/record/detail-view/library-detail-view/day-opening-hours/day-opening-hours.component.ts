@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
- * Copyright (C) 2022 UCLouvain
+ * Copyright (C) 2022-2024 RERO
+ * Copyright (C) 2022-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,12 +29,13 @@ import { Component, Input } from '@angular/core';
         }"></i>
       </dd>
       <dd class="col">
-        <ng-container *ngIf="day.is_open; else closed">
-          <span class="period" *ngFor="let time of day.times">{{ time.start_time }} - {{ time.end_time }}</span>
-        </ng-container>
-        <ng-template #closed>
+        @if (day.is_open) {
+          @for (time of day.times; track time) {
+            <span class="period">{{ time.start_time }} - {{ time.end_time }}</span>
+          }
+        } @else {
           <span class="text-danger" translate>Closed</span>
-        </ng-template>
+        }
       </dd>
     </dl>
   `,

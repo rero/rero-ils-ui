@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2019-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,20 +14,21 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<ng-container *ngIf="record && record.metadata">
+@if (record) {
   <div class="align-self-start d-flex">
     <figure class="mb-0" [ngClass]="figureStyle">
-      <img *ngIf="svgImage" class="svg-image" [ngClass]="imageCssClass" [src]="coverUrl">
-      <img *ngIf="!svgImage" [ngClass]="imageCssClass" [src]="coverUrl">
-      <ng-container *ngFor="let type of record.metadata.type">
-        <ng-container *ngIf="type.subtype; else mainTypeBlock">
+      @if (svgImage) {
+        <img class="svg-image" [ngClass]="imageCssClass" [src]="coverUrl">
+      } @else {
+        <img [ngClass]="imageCssClass" [src]="coverUrl">
+      }
+      @for (type of record.metadata.type; track type) {
+        @if (type.subtype) {
           <figcaption class="figure-caption text-center font-weight-bold" translate>{{ type.subtype }}</figcaption>
-        </ng-container>
-        <ng-template #mainTypeBlock>
+        } @else {
           <figcaption class="figure-caption text-center font-weight-bold" translate>{{ type.main_type }}</figcaption>
-        </ng-template>
-      </ng-container>
+        }
+      }
     </figure>
   </div>
-</ng-container>
+}

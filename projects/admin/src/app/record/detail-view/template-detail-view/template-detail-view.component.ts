@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -44,30 +44,30 @@ export class TemplateDetailViewComponent implements OnInit, OnDestroy {
   dtCssClass = 'col-sm-3';
 
   /** Record subscription */
-  private _recordSubscription: Subscription;
+  private recordSubscription: Subscription;
 
   /** External identifier for imported record. */
   get pid() {
-    return this._router.snapshot.params.pid;
+    return this.router.snapshot.params.pid;
   }
 
   /** constructor
-   * @param _router - ActivatedRoute to get url parameters.
-   * @param _recordService - RecordService to the MARC version for the record.
+   * @param router - ActivatedRoute to get url parameters.
+   * @param recordService - RecordService to the MARC version for the record.
    */
   constructor(
-    private _router: ActivatedRoute,
-    private _recordService: RecordService
+    private router: ActivatedRoute,
+    private recordService: RecordService
   ) { }
 
   /** On init hook */
   ngOnInit(): void {
-    this._recordSubscription = this.record$.subscribe((record: any) => {
+    this.recordSubscription = this.record$.subscribe((record: any) => {
       this.record = record;
       // only for imported record
       if (record != null && record.metadata != null && this.record.metadata.pid == null) {
-        this.marc$ = this._recordService.getRecord(
-          this._router.snapshot.params.type, this.pid, 0, {
+        this.marc$ = this.recordService.getRecord(
+          this.router.snapshot.params.type, this.pid, 0, {
           Accept: 'application/marc+json, application/json'
         });
       } else {
@@ -78,6 +78,6 @@ export class TemplateDetailViewComponent implements OnInit, OnDestroy {
 
   /** On destroy hook */
   ngOnDestroy(): void {
-    this._recordSubscription.unsubscribe();
+    this.recordSubscription.unsubscribe();
   }
 }

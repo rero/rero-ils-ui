@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ export class AccountBriefViewComponent implements OnInit {
   // GETTER & SETTER ============================================================
   /** Get the current budget pid for the organisation */
   get organisation(): any {
-    return this._organisationService.organisation;
+    return this.organisationService.organisation;
   }
 
   /** Get the URL to access detail view for this account */
@@ -63,39 +63,39 @@ export class AccountBriefViewComponent implements OnInit {
    * @return the message to display into the tooltip box
    */
   get deleteInfoMessage(): string {
-    return this._recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
+    return this.recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
   }
 
   // CONSTRUCTOR & HOOKS ========================================================
   /**
    * Constructor
-   * @param _recordPermissionService - RecordPermissionService
-   * @param _organisationService - OrganisationService
-   * @param _accountApiService - AcqAccountApiService
-   * @param _toastrService - ToastrService
-   * @param _translateService - TranslateService
-   * @param _userService - UserService
+   * @param recordPermissionService - RecordPermissionService
+   * @param organisationService - OrganisationService
+   * @param accountApiService - AcqAccountApiService
+   * @param toastrService - ToastrService
+   * @param translateService - TranslateService
+   * @param userService - UserService
    */
   constructor(
-    private _recordPermissionService: RecordPermissionService,
-    private _organisationService: OrganisationService,
-    private _accountApiService: AcqAccountApiService,
-    private _toastrService: ToastrService,
-    private _translateService: TranslateService,
-    private _userService: UserService
+    private recordPermissionService: RecordPermissionService,
+    private organisationService: OrganisationService,
+    private accountApiService: AcqAccountApiService,
+    private toastrService: ToastrService,
+    private translateService: TranslateService,
+    private userService: UserService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
     if (this.account) {
       // load account permissions
-      this._recordPermissionService
+      this.recordPermissionService
         .getPermission('acq_accounts', this.account.pid)
         .subscribe((data: RecordPermissions) => this.permissions = data);
       // load children accounts
       if (this.loadChildren) {
-        const libraryPid = this._userService.user.currentLibrary;
-        this._accountApiService
+        const libraryPid = this.userService.user.currentLibrary;
+        this.accountApiService
           .getAccounts(libraryPid, this.account.pid)
           .subscribe(accounts => this.children = accounts);
       }
@@ -105,10 +105,10 @@ export class AccountBriefViewComponent implements OnInit {
   // COMPONENT FUNCTIONS ========================================================
   /** Delete the account */
   delete() {
-    this._accountApiService
+    this.accountApiService
       .delete(this.account.pid)
       .subscribe(() => {
-        this._toastrService.success(this._translateService.instant('Account deleted'));
+        this.toastrService.success(this.translateService.instant('Account deleted'));
         this.deleteAccount.emit(this.account);
       });
   }
@@ -117,5 +117,4 @@ export class AccountBriefViewComponent implements OnInit {
   accountDeleted(account: IAcqAccount): void {
     this.children = this.children.filter(item => item.pid !== account.pid);
   }
-
 }

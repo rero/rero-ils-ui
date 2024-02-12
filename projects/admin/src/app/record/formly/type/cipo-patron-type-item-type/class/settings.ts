@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,9 +32,9 @@ export class Settings {
 
   /**
    * Constructor
-   * @param _apiService - ApiService
+   * @param apiService - ApiService
    */
-  constructor(private _apiService: ApiService) {}
+  constructor(private apiService: ApiService) {}
 
   /**
    * Set Circulation policy
@@ -64,7 +64,7 @@ export class Settings {
       const item = {
         pid: itemType.metadata.pid,
         label: itemType.metadata.name,
-        value: this._apiService.getRefEndpoint('item_types', itemType.metadata.pid),
+        value: this.apiService.getRefEndpoint('item_types', itemType.metadata.pid),
         patronTypes: []
       };
       patronTypes.forEach(patronType => {
@@ -72,7 +72,7 @@ export class Settings {
         item.patronTypes.push({
           pid: patronType.metadata.pid,
           label: patronType.metadata.name,
-          value: this._apiService.getRefEndpoint('patron_types', patronType.metadata.pid),
+          value: this.apiService.getRefEndpoint('patron_types', patronType.metadata.pid),
           checked: this.circulationMatching.some(e => e === key),
           disabled: this.matching.some(e => e === key)
         });

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2023 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,6 @@
  */
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import moment from 'moment';
-import { hasOwnProp } from 'ngx-bootstrap/chronos/utils/type-checks';
 import { getBootstrapLevel } from '../../../utils/utils';
 import { CirculationService } from '../../services/circulation.service';
 
@@ -70,19 +69,17 @@ export class CardComponent {
 
   /** Get the circulation messages about the loaded patron if exists */
   get circulationMessages(): Array<{type: string, content: string}> {
-    return (this._circulationService.hasOwnProperty('circulationInformations'))
-      ? this._circulationService.circulationInformations.messages
+    return (this.circulationService.hasOwnProperty('circulationInformations'))
+      ? this.circulationService.circulationInformations.messages
       : [];
   }
 
   // CONSTRUCTOR ==============================================================
   /**
    * constructor
-   * @param _circulationService - CirculationService
+   * @param circulationService - CirculationService
    */
-  constructor(
-    private _circulationService: CirculationService
-  ) {}
+  constructor(private circulationService: CirculationService) {}
 
 
   // COMPONENT FUNCTIONS ======================================================
@@ -94,7 +91,7 @@ export class CardComponent {
   }
 
   /**
-   * Get boostrap color by level
+   * Get bootstrap color by level
    * @param level - string
    * @return string
    */

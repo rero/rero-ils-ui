@@ -1,6 +1,6 @@
  <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
   Copyright (C) 2021 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,32 +15,46 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<article class="row order-brief-view" *ngIf="order">
-  <div class="col-9 pl-0">
-    <h5 class="m-0"><a [routerLink]="[detailUrl.link]">{{ order.reference }}</a></h5>
-    <ng-container *ngVar="order.notes | notesFilter: [noteType.STAFF_NOTE] as notes">
-      <div class="description" *ngIf="notes.length > 0" [innerHTML]="notes[0].content | nl2br"></div>
-    </ng-container>
-    <div class="metadata">
-      {{ order.status | translate }}
-      <ng-container [ngSwitch]="order.status">
-        <ng-container *ngSwitchCase="orderStatus.ORDERED"> - {{ orderDate | dateTranslate: 'shortDate' }}</ng-container>
-        <ng-container *ngSwitchCase="orderStatus.RECEIVED"> - {{ receptionDate | dateTranslate: 'shortDate' }}</ng-container>
-        <ng-container *ngSwitchCase="orderStatus.PARTIALLY_RECEIVED"> - {{ receptionDate | dateTranslate: 'shortDate' }}</ng-container>
+@if (order) {
+  <article class="row order-brief-view">
+    <div class="col-9 pl-0">
+      <h5 class="m-0"><a [routerLink]="[detailUrl.link]">{{ order.reference }}</a></h5>
+      <ng-container *ngVar="order.notes | notesFilter: [noteType.STAFF_NOTE] as notes">
+        @if (notes.length > 0) {
+          <div class="description" [innerHTML]="notes[0].content | nl2br"></div>
+        }
       </ng-container>
-      <ng-container *ngVar="order.vendor.pid | getRecord: 'vendors': 'field': 'name' | async as vendor">
-        - {{ vendor | truncateText : 10 : '...'}}
-      </ng-container>
+      <div class="metadata">
+        {{ order.status | translate }}
+        @switch (order.status) {
+          @case (orderStatus.ORDERED) {
+            - {{ orderDate | dateTranslate: 'shortDate' }}
+          }
+          @case (orderStatus.RECEIVED) {
+            - {{ receptionDate | dateTranslate: 'shortDate' }}
+          }
+          @case (orderStatus.PARTIALLY_RECEIVED) {
+            - {{ receptionDate | dateTranslate: 'shortDate' }}
+          }
+        }
+        <ng-container *ngVar="order.vendor.pid | getRecord: 'vendors': 'field': 'name' | async as vendor">
+          - {{ vendor | truncateText : 10 : '…'}}
+        </ng-container>
+      </div>
     </div>
-  </div>
-  <div class="col-3 ordinal-infos">
-    <div class="accounting-infos" *ngIf="displayProvisionalAccountingData">
-      <label class="total-amount">{{ order.account_statement.provisional.total_amount | currency : order.currency }}</label>
-      <span class="counter ordered-counter border-left">{{ order.account_statement.provisional.quantity }}</span>
+    <div class="col-3 ordinal-infos">
+      @if (displayProvisionalAccountingData) {
+        <div class="accounting-infos">
+          <label class="total-amount">{{ order.account_statement.provisional.total_amount | currency : order.currency }}</label>
+          <span class="counter ordered-counter border-left">{{ order.account_statement.provisional.quantity }}</span>
+        </div>
+      }
+      @if (displayExpenditureAccountingData) {
+        <div class="accounting-infos">
+          <label class="total-amount">{{ order.account_statement.expenditure.total_amount | currency : order.currency }}</label>
+          <span class="counter received-counter border-left">{{ order.account_statement.expenditure.quantity }}</span>
+        </div>
+      }
     </div>
-    <div class="accounting-infos" *ngIf="displayExpenditureAccountingData">
-      <label class="total-amount">{{ order.account_statement.expenditure.total_amount | currency : order.currency }}</label>
-      <span class="counter received-counter border-left">{{ order.account_statement.expenditure.quantity }}</span>
-    </div>
-  </div>
-</article>
+  </article>
+}

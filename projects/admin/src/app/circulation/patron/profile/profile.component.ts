@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,27 +27,25 @@ import { ChangePasswordFormComponent } from '../change-password-form/change-pass
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 
-  /**
-   * Current patron
-   */
-  currentPatron$;
+  /** Current patron */
+  currentPatron$: any;
 
   /** Observable subscription */
-  private _subscription = new Subscription();
+  private subscription = new Subscription();
 
   /** Patron permission */
-  private _permissions;
+  private permissions: any;
 
   /**
    * Constructor
-   * @param _patronService - PatronService
-   * @param _modalService - BsModalService
-   * @param _recordPermission - RecordPermissionService
+   * @param patronService - PatronService
+   * @param modalService - BsModalService
+   * @param recordPermission - RecordPermissionService
    */
   constructor(
-    private _patronService: PatronService,
-    private _modalService: BsModalService,
-    private _recordPermission: RecordPermissionService
+    private patronService: PatronService,
+    private modalService: BsModalService,
+    private recordPermission: RecordPermissionService
   ) {
   }
 
@@ -55,12 +53,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * Component initialization.
    */
   ngOnInit() {
-    this.currentPatron$ = this._patronService.currentPatron$;
-    this._subscription = this.currentPatron$.subscribe(patron => {
+    this.currentPatron$ = this.patronService.currentPatron$;
+    this.subscription = this.currentPatron$.subscribe((patron: any) => {
       if (patron && patron.pid) {
-        this._recordPermission.getPermission('patrons', patron.pid).subscribe(
+        this.recordPermission.getPermission('patrons', patron.pid).subscribe(
           perm => {
-            this._permissions = perm;
+            this.permissions = perm;
           }
         );
       }
@@ -73,12 +71,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * @returns True if the logged user can edit the current patron.
    */
   canUpdate() {
-    return this._permissions && this._permissions.update && this._permissions.update.can === true;
+    return this.permissions && this.permissions.update && this.permissions.update.can === true;
   }
 
   /** Component destroy */
   ngOnDestroy() {
-    this._subscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   /**
@@ -90,6 +88,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const initialState = {
       patron
     };
-    this._modalService.show(ChangePasswordFormComponent, { initialState });
+    this.modalService.show(ChangePasswordFormComponent, { initialState });
   }
 }

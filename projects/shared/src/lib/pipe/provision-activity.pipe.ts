@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,12 +17,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 export enum ProvisionActivityType {
-
   PUBLICATION = 'bf:Publication',
   MANUFACTURE = 'bf:Manufacture',
   PRODUCTION = 'bf:Production',
   DISTRIBUTION = 'bf:Distribution'
-
 }
 
 @Pipe({

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -16,49 +16,49 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<ul class="contributor-list-inline" *ngIf="contributions">
-  <li *ngFor="let contributor of contributions; last as isLast">
-    <ng-container [ngTemplateOutlet]="contributorTpl" [ngTemplateOutletContext]="{contributor}"></ng-container>
-  </li>
-  <li *ngIf="limit">…</li>
-</ul>
+@if (contributions) {
+  <ul class="contributor-list-inline">
+    @for (contributor of contributions; track contributor) {
+      <li>
+        <ng-container [ngTemplateOutlet]="contributorTpl" [ngTemplateOutletContext]="{contributor}"></ng-container>
+      </li>
+      @if (limit) {
+        …
+      }
+    }
+  </ul>
+}
 
 <ng-template #contributorTpl let-contributor='contributor'>
   <ng-container [ngTemplateOutlet]="entityTpl" [ngTemplateOutletContext]="{entity: contributor.entity}"></ng-container>
-  <ng-container *ngIf="withRoles && contributor.role && contributor.role.length > 0">
+  @if (withRoles && contributor.role && contributor.role.length > 0) {
     <ul class="contributor-roles">
-      <li class="contributor-role" *ngFor="let role of contributor.role">{{ role | translate }}</li>
+      @for (role of contributor.role; track role) {
+        <li class="contributor-role">{{ role | translate }}</li>
+      }
     </ul>
-  </ng-container>
+  }
 </ng-template>
 
 <ng-template #entityTpl let-entity=entity>
-  <ng-container *ngIf="(activateLink || withEntityLink) else entityNoLink">
-
-    <!-- ENTITY LINK -->
-    <ng-container *ngIf="withEntityLink && entity?.pid else searchLink">
+  @if (activateLink || withEntityLink) {
+    @if (withEntityLink && entity?.pid) {
       <a [routerLink]="['/records/', entity.resource_type+'_entities', 'detail', entity.pid]">{{ entity | entityLabel }}</a>
-    </ng-container>
-
-    <!-- SEARCH LINK -->
-    <ng-template #searchLink>
-      <ng-container *ngIf="view !== 'professional'; else professional">
+    } @else {
+      @if (view !== 'professional') {
         <shared-entity-link
         resourceName="contribution"
         [external]="true"
         [entity]="entity"
         [routerLinkParams]="['/', view, 'search', 'documents']"
       ></shared-entity-link>
-      </ng-container>
-      <ng-template #professional>
+      } @else {
         <shared-entity-link
-        resourceName="contribution"
-        [entity]="entity"
-      ></shared-entity-link>
-      </ng-template>
-    </ng-template>
-  </ng-container>
-
-  <!-- NO LINK -->
-  <ng-template #entityNoLink>{{ entity | entityLabel }}</ng-template>
-</ng-template>
+          resourceName="contribution"
+          [entity]="entity"
+        ></shared-entity-link>
+      }
+    }
+  } @else {
+    {{ entity | entityLabel }}
+  }

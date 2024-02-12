@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ export class ItemComponent {
     this._item = item;
     const { circulation_information } = item.metadata.item_type;
     if (circulation_information) {
-      const information = circulation_information.find((obj: any) => obj.language === this._translateService.currentLang);
+      const information = circulation_information.find((obj: any) => obj.language === this.translateService.currentLang);
       if (information) {
         this.circulationInformation = information.label;
       }
@@ -63,7 +63,7 @@ export class ItemComponent {
 
   /** Current interface language */
   get language() {
-    return this._translateService.currentLang;
+    return this.translateService.currentLang;
   }
 
   /** Get item record */
@@ -73,11 +73,11 @@ export class ItemComponent {
 
   /**
    * Constructor
-   * @param _translateService - TranslateService
+   * @param translateService - TranslateService
    * @param itemApiService - ItemApiService
    */
   constructor(
-    private _translateService: TranslateService,
+    private translateService: TranslateService,
     public itemApiService: ItemApiService
   ) {}
 }

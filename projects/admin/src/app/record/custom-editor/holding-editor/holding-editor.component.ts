@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractCanDeactivateComponent, removeEmptyValues } from '@rero/ng-core';
-import { BehaviorSubject, of, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { EditorService } from '../../../service/editor.service';
 import { PredictionIssue } from '../../../service/holdings.service';
@@ -56,25 +56,25 @@ export class HoldingEditorComponent extends AbstractCanDeactivateComponent imple
 
 
   /** Observable subscription */
-  private _subscription = new Subscription();
+  private subscription = new Subscription();
 
   /**
    * Constructor.
-   * @param _editorService - the local editor service
+   * @param editorService - the local editor service
    */
-  constructor(private _editorService: EditorService) {
+  constructor(private editorService: EditorService) {
     super();
   }
 
   /** Component initialization. */
   ngOnInit() {
-    this._subscription = this.predictionModel$.pipe(
+    this.subscription = this.predictionModel$.pipe(
       // wait .5s before the last change
       debounceTime(500),
       // only if the patterns changed
       distinctUntilChanged((a, b) => JSON.stringify(a.patterns) === JSON.stringify(b.patterns)),
       // cancel previous pending requests
-      switchMap(modelValue => this._editorService.getHoldingPatternPreview(
+      switchMap(modelValue => this.editorService.getHoldingPatternPreview(
         modelValue, this.numberOfSerialPreviewExamples).pipe(
           catchError((error) => {
             // if the syntax is not valid the server returns an 400 error
@@ -95,7 +95,7 @@ export class HoldingEditorComponent extends AbstractCanDeactivateComponent imple
 
   /** Component destruction. */
   ngOnDestroy() {
-    this._subscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   /**

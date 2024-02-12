@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,9 +32,9 @@ export class DialogImportComponent {
 
   /**
    * Constructor
-   * @param _bsModalRef - BsModalRef
+   * @param bsModalRef - BsModalRef
    */
-  constructor(private _bsModalRef: BsModalRef) {}
+  constructor(private bsModalRef: BsModalRef) {}
 
   /** Confirm action */
   confirm() {
@@ -50,6 +50,6 @@ export class DialogImportComponent {
 
   /** Close modal box */
   close() {
-    this._bsModalRef.hide();
+    this.bsModalRef.hide();
   }
 }

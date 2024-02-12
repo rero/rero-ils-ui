@@ -1,7 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2022 RERO
-  Copyright (C) 2019-2022 UCLouvain
+  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -28,19 +28,20 @@
   </div>
   <div id="reasons" class="col my-1 ml-5" [hidden]="isCollapsed">
     <ul class="list-unstyled mb-0">
-      <li *ngFor="let role of permission.reasons | keyvalue">
-        <div class="row">
-          <div class="col-6">{{ role.key | translate }}</div>
-          <div class="col">
-            <i class="fa fa-square" [ngClass]="{
-               'text-success': role.value === true,
-               'text-danger': role.value === false,
-               'text-secondary': role.value === null
-            }">
-          </i>
+      @for (role of permission.reasons | keyvalue; track role) {
+        <li>
+          <div class="row">
+            <div class="col-6">{{ role.key | translate }}</div>
+            <div class="col">
+              <i class="fa fa-square" [ngClass]="{
+                 'text-success': role.value === true,
+                 'text-danger': role.value === false,
+                 'text-secondary': role.value === null
+              }"></i>
+            </div>
           </div>
-        </div>
-      </li>
+        </li>
+      }
     </ul>
   </div>
 </div>

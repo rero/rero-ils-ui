@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,34 +14,37 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div *ngIf="!header; else editionHeader">
+@if (!header) {
   <admin-description-zone>
     <ng-container label>{{ fieldLabel }}</ng-container>
     <ng-container content>
       <ul class="list-unstyled mb-0">
-        <li *ngFor="let edition of field">
-          <ng-container *ngIf="edition.label; else editionLink">{{ edition.label }}</ng-container>
-          <ng-template #editionLink>
-            <ng-container *ngIf="edition.pid | getRecord : 'documents' : 'field' : 'title' | async as documentTitle">
-              <a [routerLink]="['/records', 'documents', 'detail', edition.pid]">{{ documentTitle | mainTitleRelation }}</a>
-            </ng-container>
-          </ng-template>
-        </li>
+        @for (edition of field; track edition) {
+          <li>
+            @if (edition.label) {
+              {{ edition.label }}
+            } @else {
+              @if (edition.pid | getRecord : 'documents' : 'field' : 'title' | async; as documentTitle) {
+                <a [routerLink]="['/records', 'documents', 'detail', edition.pid]">{{ $any(documentTitle) | mainTitleRelation }}</a>
+              }
+            }
+          </li>
+        }
       </ul>
     </ng-container>
   </admin-description-zone>
-</div>
-<ng-template #editionHeader>
+} @else {
   <div class="mb-0">
     <b>{{ fieldLabel }}</b>:
-    <ng-container *ngFor="let edition of field; last as isLast">
-      <ng-container *ngIf="edition.label; else editionLink">{{ edition.label }}</ng-container>
-      <ng-template #editionLink>
-        <ng-container *ngIf="edition.pid | getRecord : 'documents' : 'field' : 'title' | async as documentTitle">
-          <a [routerLink]="['/records', 'documents', 'detail', edition.pid]">{{ documentTitle | mainTitleRelation }}</a>
-        </ng-container>
-      </ng-template>
-      <ng-container *ngIf="!isLast">; </ng-container>
-    </ng-container>
+    @for (edition of field; track edition; let isLast = $last) {
+      @if (edition.label) {
+        {{ edition.label }}
+      } @else {
+        @if (edition.pid | getRecord : 'documents' : 'field' : 'title' | async; as documentTitle) {
+          <a [routerLink]="['/records', 'documents', 'detail', edition.pid]">{{ $any(documentTitle) | mainTitleRelation }}</a>
+        }
+      }
+      @if (!isLast) {; }
+    }
   </div>
-</ng-template>
+}

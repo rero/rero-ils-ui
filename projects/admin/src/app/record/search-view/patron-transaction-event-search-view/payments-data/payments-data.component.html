@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2022 RERO
+  Copyright (C) 2019-2024 RERO
   Copyright (C) 2019-2022 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,18 +15,24 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="card mb-2" *ngIf="data.total > 0">
-  <div class="card-header p-0 d-flex">
-    <h5 class="mb-0 btn btn-link text-decoration-none" translate>Amount received</h5>
-    <button class="btn btn-link ml-auto" (click)="updateMode($event)">
-      <i class="fa" [ngClass]="{'fa-list': mode === 'pie', 'fa-pie-chart': mode === 'table'}"></i>
-    </button>
+@if (data.total > 0) {
+  <div class="card mb-2">
+    <div class="card-header p-0 d-flex">
+      <h5 class="mb-0 btn btn-link text-decoration-none" translate>Amount received</h5>
+      <button class="btn btn-link ml-auto" (click)="updateMode($event)">
+        <i class="fa" [ngClass]="{'fa-list': mode === 'pie', 'fa-pie-chart': mode === 'table'}"></i>
+      </button>
+    </div>
+    <div class="card-body p-0">
+      @switch (mode) {
+        @case ('table') {
+          <admin-payments-data-table [data]="data"></admin-payments-data-table>
+        }
+        @case ('pie') {
+          <admin-payments-data-pie [data]="data" class="text-center"></admin-payments-data-pie>
+        }
+      }
+    </div>
   </div>
-  <div class="card-body p-0">
-    <ng-container [ngSwitch]="mode">
-      <admin-payments-data-table *ngSwitchCase="'table'" [data]="data"></admin-payments-data-table>
-      <admin-payments-data-pie *ngSwitchCase="'pie'" [data]="data" class="text-center"></admin-payments-data-pie>
-    </ng-container>
-  </div>
-</div>
+}
 

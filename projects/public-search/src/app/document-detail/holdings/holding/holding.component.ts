@@ -46,17 +46,17 @@ export class HoldingComponent {
   // GETTER & SETTER ==========================================================
   /** Current interface language */
   get language() {
-    return this._translateService.currentLang;
+    return this.translateService.currentLang;
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _translateService - TranslateService
+   * @param translateService - TranslateService
    * @param holdingApiService: HoldingsApiService
    */
   constructor(
-    private _translateService: TranslateService,
+    private translateService: TranslateService,
     public holdingApiService: HoldingsApiService
   ) {}
 }

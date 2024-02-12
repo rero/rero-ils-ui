@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,10 +14,12 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="mb-2" *ngIf="checkedOutItems && checkedOutItems.length === 0 && patron">
-  <span translate>No loan for the current patron.</span>
-</div>
-<div *ngIf="(checkedOutItems && checkedOutItems.length > 0) || (checkedInItems && checkedInItems.length > 0)">
+@if (checkedOutItems && checkedOutItems.length === 0 && patron) {
+  <div class="mb-2">
+    <span translate>No loan for the current patron.</span>
+  </div>
+}
+@if ((checkedOutItems && checkedOutItems.length > 0) || (checkedInItems && checkedInItems.length > 0)) {
   <!-- HEADER -->
   <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded p-1">
     <div class="col-2" >
@@ -31,33 +33,35 @@
     <div class="col-6" translate>Document</div>
     <div class="col-3" translate>Circulation info</div>
     <div class="col-1">
-      <ng-container *ngIf="patron">
+      @if (patron) {
         <button class="btn btn-primary float-right btn-sm my-1"
                 (click)="extendAllLoansClick()"
                 [disabled]="loansToExtend.length < 1"
                 id="renew-all-button"
                 translate
         >Renew all</button>
-      </ng-container>
+      }
     </div>
   </div>
 
-  <!-- CHECKED OUT ITEMS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
-  <admin-item *ngFor="let item of checkedOutItems"
-              [patron]="patron"
-              [item]="item"
-              [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
-              [isCollapsed]="allCollapsed"
-              (extendLoanClicked)="extendLoanClick($event, item)">
-  </admin-item>
+  <!-- CHECKED OUT ITEMS -->
+  @for (item of checkedOutItems; track item) {
+    <admin-item [patron]="patron"
+                [item]="item"
+                [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
+                [isCollapsed]="allCollapsed"
+                (extendLoanClicked)="extendLoanClick($event, item)">
+    </admin-item>
+  }
 
-  <!-- CHECKED IN ITEMS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- CHECKED IN ITEMS -->
   <!--   Callout border for [TRANSIT|REQUEST|FEE] -->
-  <admin-item *ngFor="let item of checkedInItems"
-              [patron]="patron"
-              [item]="item"
-              [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
-              [isCollapsed]="allCollapsed"
-              (hasFeesEmitter)="hasFees($event)">
-  </admin-item>
-</div>
+  @for (item of checkedInItems; track item) {
+    <admin-item [patron]="patron"
+                [item]="item"
+                [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
+                [isCollapsed]="allCollapsed"
+                (hasFeesEmitter)="hasFees($event)">
+    </admin-item>
+  }
+}

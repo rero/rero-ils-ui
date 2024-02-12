@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,18 +21,18 @@ import { Entity } from '../class/entity';
 @Component({
   selector: 'shared-entity-link',
   template: `
-    <a
-      *ngIf="!external; else externalLink"
-      [class]="className"
-      [routerLink]="routerLinkParams"
-      [queryParams]="queryParams"
-    >{{ linkName }}</a>
-    <ng-template #externalLink>
-    <a
-      [class]="className"
-      [attr.href]="externalHrefLink"
-    >{{ linkName }}</a>
-    </ng-template>
+    @if (!external) {
+      <a
+        [class]="className"
+        [routerLink]="routerLinkParams"
+        [queryParams]="queryParams"
+      >{{ linkName }}</a>
+    } @else {
+      <a
+        [class]="className"
+        [attr.href]="externalHrefLink"
+      >{{ linkName }}</a>
+    }
   `
 })
 export class EntityLinkComponent implements OnInit {

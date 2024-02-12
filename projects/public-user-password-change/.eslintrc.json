@@ -8,14 +8,6 @@
       "files": [
         "*.ts"
       ],
-      "parserOptions": {
-        "project": [
-          "projects/public-user-password-change/tsconfig.app.json",
-          "projects/public-user-password-change/tsconfig.spec.json",
-          "projects/public-user-password-change/e2e/tsconfig.json"
-        ],
-        "createDefaultProgram": true
-      },
       "rules": {
         "@angular-eslint/directive-selector": [
           "error",

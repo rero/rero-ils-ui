@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,12 +33,10 @@ export class PaymentsDataTableComponent {
   // GETTER & SETTER ==========================================================
   /** Organisation currency */
   get org_currency() {
-    return this._organisationService.organisation.default_currency;
+    return this.organisationService.organisation.default_currency;
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
-  constructor(
-    private _organisationService: OrganisationService
-  ) {}
+  constructor(private organisationService: OrganisationService) {}
 
 }

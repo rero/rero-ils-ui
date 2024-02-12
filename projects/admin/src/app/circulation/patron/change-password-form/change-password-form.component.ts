@@ -43,25 +43,25 @@ export class ChangePasswordFormComponent implements OnInit {
 
   /**
    * Constructor
-   * @param _modalService - BsModalService
-   * @param _bsModalRef - BsModalRef
-   * @param _translateService - TranslateService
-   * @param _toastr - ToastrService
-   * @param _userApiService - UserApiService
+   * @param modalService - BsModalService
+   * @param bsModalRef - BsModalRef
+   * @param translateService - TranslateService
+   * @param toastr - ToastrService
+   * @param userApiService - UserApiService
    */
   constructor(
-    private _modalService: BsModalService,
-    private _bsModalRef: BsModalRef,
-    private _translateService: TranslateService,
-    private _toastr: ToastrService,
-    private _userApiService: UserApiService
+    private modalService: BsModalService,
+    private bsModalRef: BsModalRef,
+    private translateService: TranslateService,
+    private toastr: ToastrService,
+    private userApiService: UserApiService
   ) { }
 
   /**
    * Component initialization.
    */
   ngOnInit() {
-    const initialState: any = this._modalService.config.initialState;
+    const initialState: any = this.modalService.config.initialState;
     if (!initialState.hasOwnProperty('patron')) {
       this.closeModal();
     }
@@ -74,21 +74,21 @@ export class ChangePasswordFormComponent implements OnInit {
    * @param model - Object
    */
   submit(patron, model) {
-    this._userApiService.changePassword(patron.username, model.password).subscribe(
+    this.userApiService.changePassword(patron.username, model.password).subscribe(
       () => {
-        this._toastr.success(
-          this._translateService.instant('The patron password has been changed.'),
+        this.toastr.success(
+          this.translateService.instant('The patron password has been changed.'),
         );
         this.closeModal();
       },
       (resp) => {
-        let error = this._translateService.instant('An error has occurred.');
+        let error = this.translateService.instant('An error has occurred.');
         if (resp.error && resp.error.message) {
           error = `${error}: (${resp.error.message})`;
         }
-        this._toastr.error(
+        this.toastr.error(
           error,
-          this._translateService.instant('Update Patron Password'),
+          this.translateService.instant('Update Patron Password'),
           { disableTimeOut: true }
         );
         this.closeModal();
@@ -108,7 +108,7 @@ export class ChangePasswordFormComponent implements OnInit {
           focus: true,
           props: {
             api: "/api/user/password/generate",
-            label: this._translateService.instant('New password'),
+            label: this.translateService.instant('New password'),
             required: true,
             keydown: (field, event) => {
               if (event.key === 'Enter') {
@@ -126,6 +126,6 @@ export class ChangePasswordFormComponent implements OnInit {
    * @param event - Event
    */
   closeModal() {
-    this._bsModalRef.hide();
+    this.bsModalRef.hide();
   }
 }

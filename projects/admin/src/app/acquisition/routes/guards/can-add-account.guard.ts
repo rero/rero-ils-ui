@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,14 +27,14 @@ export class CanAddAccountGuard extends AbstractCanAddGuard  {
 
   /**
    * Constructor
-   * @param _recordService - RecordService
-   * @param _router - Router
+   * @param recordService - RecordService
+   * @param router - Router
    */
    constructor(
-    _recordService: RecordService,
-    _router: Router
+    recordService: RecordService,
+    router: Router
   ) {
-    super(_recordService, _router);
+    super(recordService, router);
   }
 
   /**
@@ -46,7 +46,7 @@ export class CanAddAccountGuard extends AbstractCanAddGuard  {
   canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
     const budgetPid = route.queryParams.budget;
     if (!budgetPid) {
-      this._router.navigate(['/errors/400'], { skipLocationChange: true });
+      this.router.navigate(['/errors/400'], { skipLocationChange: true });
       return of(false);
     }
     return this.canAdd('budgets', budgetPid);

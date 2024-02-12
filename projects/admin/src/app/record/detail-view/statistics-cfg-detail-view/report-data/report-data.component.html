@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2023 RERO
+  Copyright (C) 2023-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,14 +15,16 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<p-table *ngIf="data && data.length > 0; else noResult" [value]="data" [tableStyle]="{ 'min-width': '50rem' }">
-  <ng-template pTemplate="body" let-line>
-    <tr>
-      <td *ngFor="let value of line">{{ value }}</td>
-    </tr>
-  </ng-template>
-</p-table>
-
-<ng-template #noResult>
+@if (data && data.length > 0) {
+  <p-table [value]="data" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="body" let-line>
+      <tr>
+        @for (value of line; track value) {
+          <td>{{ value }}</td>
+        }
+      </tr>
+    </ng-template>
+  </p-table>
+} @else {
   <p class="m-0 px-4 py-2 text-muted" translate>No result</p>
-</ng-template>
+}

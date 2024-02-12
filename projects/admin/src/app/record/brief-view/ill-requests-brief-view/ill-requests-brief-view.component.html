@@ -1,7 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020 RERO
-  Copyright (C) 2020 UCLouvain
+  Copyright (C) 2020-2024 RERO
+  Copyright (C) 2020-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,23 +15,29 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="record && requester">
+@if (record && requester) {
   <span class="badge badge-{{ badgeColor }} float-right px-2 py-1" translate>{{ record.metadata.status }}</span>
   <h5 class="mb-0">
     <a [routerLink]="[detailUrl.link]">
       {{ record.metadata.document.title }}
     </a>
   </h5>
-  <div class="small" *ngIf="record.metadata.document.authors as authors">{{ authors }}</div>
+  @if (record.metadata.document.authors) {
+    <div class="small">{{ record.metadata.document.authors }}</div>
+  }
   <dl class="mt-2 row">
     <dt class="col-sm-6 col-md-3 label-title" translate>Requested by</dt>
     <dd class="col-sm-6 col-md-9 mb-0">
-      <a *ngIf="requester && requester.patron && requester.patron.barcode[0]" [routerLink]="['/circulation', 'patron', requester.patron.barcode[0]]">
-        <span id="patron-last-name">{{ requester.last_name }}</span>
-        <span id="patron-first-name" *ngIf="requester.first_name as firstName">, {{ firstName }}</span>
-      </a>
+      @if (requester && requester.patron && requester.patron.barcode[0]) {
+        <a [routerLink]="['/circulation', 'patron', requester.patron.barcode[0]]">
+          <span id="patron-last-name">{{ requester.last_name }}</span>
+          @if (requester.first_name) {
+            <span id="patron-first-name">, {{ requester.first_name }}</span>
+          }
+        </a>
+      }
     </dd>
     <dt class="col-sm-6 col-md-3 label-title" translate>Request date</dt>
     <dd class="col-sm-6 col-md-9 mb-0">{{ record.created | dateTranslate:'medium' }}</dd>
   </dl>
-</ng-container>
+}

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2019-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -19,72 +19,72 @@
     <div class="p-2">
       <dl class="row mb-0">
         <!-- CONTACT_PERSON -->
-        <ng-container *ngIf="addressType.contact_person">
+        @if (addressType.contact_person) {
           <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
             Contact person
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
             {{ addressType.contact_person }}
           </dd>
-        </ng-container>
+        }
         <!-- STREET -->
-        <ng-container *ngIf="addressType.street">
+        @if (addressType.street) {
           <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
             Street
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
             {{ addressType.street }}
           </dd>
-        </ng-container>
+        }
         <!-- POSTAL_CODE -->
-        <ng-container *ngIf="addressType.postal_code">
+        @if (addressType.postal_code) {
           <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
             Postal code
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
             {{ addressType.postal_code }}
           </dd>
-        </ng-container>
+        }
         <!-- CITY -->
-        <ng-container *ngIf="addressType.city">
+        @if (addressType.city) {
           <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
             City
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
             {{ addressType.city }}
           </dd>
-        </ng-container>
+        }
         <!-- COUNTRY -->
-        <ng-container *ngIf="addressType.country">
+        @if (addressType.country) {
           <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
             Country
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
             {{ addressType.country }}
           </dd>
-        </ng-container>
+        }
       </dl>
     </div>
     <div class="p-2">
       <dl class="row mb-0">
-        <!-- COUNTRY -->
-        <ng-container *ngIf="addressType.phone">
+        <!-- PHONE -->
+        @if (addressType.phone) {
           <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
             Phone
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
             {{ addressType.phone }}
           </dd>
-        </ng-container>
+        }
         <!-- EMAIL -->
-        <ng-container *ngIf="addressType.email">
+        @if (addressType.email) {
           <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
             Email
           </dt>
           <dd class="col-sm-7 col-md-8 mb-0">
             {{ addressType.email }}
           </dd>
-        </ng-container>
+        }
       </dl>
     </div>
   </section>

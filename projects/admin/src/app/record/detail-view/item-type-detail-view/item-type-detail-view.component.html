@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2019-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,14 +14,14 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="record$ | async as record">
+@if (record$ | async; as record) {
   <h1 class="mb-5">{{ record.metadata.name }}</h1>
   <dl class="row">
-    <!-- DESCRIPTIION -->
-    <ng-container *ngIf="record.metadata.description">
+    <!-- DESCRIPTION -->
+    @if (record.metadata.description) {
       <dt class="col-3 label-title" translate>Description</dt>
       <dd class="col-9">{{ record.metadata.description }}</dd>
-    </ng-container>
+    }
     <!-- TYPE -->
     <dt class="col-3 label-title" translate>Type</dt>
     <dd class="col-9">{{ record.metadata.type }}</dd>
@@ -34,34 +34,36 @@
       }"></i>
     </dd>
     <!-- DISPLAYED status -->
-    <ng-container *ngIf="record.metadata.displayed_status">
+    @if (record.metadata.displayed_status) {
       <dt class="col-3 label-title" translate>Displayed status</dt>
       <dd class="col-9">
         <ul class="list-unstyled m-0 p-0">
-          <li *ngFor="let status of record.metadata.displayed_status">
-            <span class="small font-weight-bold text-info language-statement">
-              <i class="fa fa-language"></i>
-              ({{ status.language }})
-            </span>
-            {{ status.label }}
-          </li>
+          @for (status of record.metadata.displayed_status; track status) {
+            <li>
+              <span class="small font-weight-bold text-info language-statement">
+                <i class="fa fa-language"></i> ({{ status.language }})
+              </span>
+              {{ status.label }}
+            </li>
+          }
         </ul>
       </dd>
-    </ng-container>
-    <!-- CIRCULATION INFORMATIONS -->
-    <ng-container *ngIf="record.metadata.circulation_information">
+    }
+    <!-- CIRCULATION INFORMATION'S -->
+    @if (record.metadata.circulation_information) {
       <dt class="col-3 label-title" translate>Circulation information</dt>
       <dd class="col-9">
         <ul class="list-unstyled m-0 p-0">
-        <li *ngFor="let circulation of record.metadata.circulation_information">
-          <span class="small font-weight-bold text-info language-statement">
-            <i class="fa fa-language"></i>
-            ({{ circulation.language }})
-          </span>
-          {{ circulation.label }}
-        </li>
+          @for (circulation of record.metadata.circulation_information; track circulation) {
+            <li>
+              <span class="small font-weight-bold text-info language-statement">
+                <i class="fa fa-language"></i> ({{ circulation.language }})
+              </span>
+              {{ circulation.label }}
+            </li>
+          }
         </ul>
       </dd>
-    </ng-container>
+    }
   </dl>
-</ng-container>
+}

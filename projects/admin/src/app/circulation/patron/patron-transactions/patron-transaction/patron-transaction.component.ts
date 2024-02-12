@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,11 +16,10 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { OrganisationService } from '@app/admin/service/organisation.service';
-import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
+import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
+import { OrganisationService } from '@app/admin/service/organisation.service';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import {
   PatronTransactionEventFormComponent
 } from '../patron-transaction-event-form/patron-transaction-event-form.component';
@@ -66,27 +65,26 @@ export class PatronTransactionComponent implements OnInit {
    *  @return: current organisation
    */
   get organisation() {
-    return this._organisationService.organisation;
+    return this.organisationService.organisation;
   }
   // CONSTRUCTOR & HOOKS ============================================
   /**
    * Constructor
-   * @param _organisationService - OrganisationService
-   * @param _patronTransactionService - PatronTransactionService
-   * @param _modalService - BsModalService
-   * @param _translateService - TranslateService
+   * @param organisationService - OrganisationService
+   * @param patronTransactionService - PatronTransactionService
+   * @param modalService - BsModalService
+   * @param translateService - TranslateService
    */
   constructor(
-    private _organisationService: OrganisationService,
-    private _patronTransactionService: PatronTransactionService,
-    private _modalService: BsModalService,
-    private _translateService: TranslateService
+    private organisationService: OrganisationService,
+    private patronTransactionService: PatronTransactionService,
+    private modalService: BsModalService
   ) {}
 
   /** OnInit hook */
   ngOnInit() {
     if (this.transaction) {
-      this._patronTransactionService.loadTransactionHistory(this.transaction);
+      this.patronTransactionService.loadTransactionHistory(this.transaction);
     }
   }
 
@@ -113,6 +111,6 @@ export class PatronTransactionComponent implements OnInit {
       mode,
       transactions: [this.transaction]
     };
-    this._modalService.show(PatronTransactionEventFormComponent, {initialState});
+    this.modalService.show(PatronTransactionEventFormComponent, {initialState});
   }
 }

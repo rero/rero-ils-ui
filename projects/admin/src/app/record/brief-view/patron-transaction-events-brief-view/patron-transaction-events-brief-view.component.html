@@ -1,7 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2022 RERO
-  Copyright (C) 2019-2022 UCLouvain
+  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,35 +15,38 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section *ngIf="loaded else skeleton">
+
+@defer(when loaded) {
   <div class="content">
-    <ng-container [ngSwitch]="parent.type">
-      <admin-patron-transaction-event-overdue
-        *ngSwitchCase="'overdue'"
-        [parent]="parent" [event]="event">
-      </admin-patron-transaction-event-overdue>
-      <admin-patron-transaction-event-default
-        *ngSwitchDefault
-        [parent]="parent" [event]="event">
-      </admin-patron-transaction-event-default>
-    </ng-container>
+    @switch (parent.type) {
+      @case ('overdue') {
+        <admin-patron-transaction-event-overdue [parent]="parent" [event]="event">
+        </admin-patron-transaction-event-overdue>
+      }
+      @default {
+        <admin-patron-transaction-event-default [parent]="parent" [event]="event">
+        </admin-patron-transaction-event-default>
+      }
+    }
     <span class="badge badge-{{ event.type }}">
-      <ng-container *ngIf="event.type !== eventTypes.DISPUTE else dispute">
+      @if (event.type !== eventTypes.DISPUTE) {
         {{ event.amount | currency : organisation.default_currency }}
-      </ng-container>
-      <ng-template #dispute>{{ 'dispute' | translate }}</ng-template>
+      } @else {
+        {{ 'dispute' | translate }}
+      }
     </span>
   </div>
   <div class="meta">
-    <span class="operator" *ngIf="event.operator">{{ event.operator.name }}</span>
-    <span class="library ml-2" *ngIf="event.library">{{ event.library.name }}</span>
+    @if (event.operator) {
+      <span class="operator">{{ event.operator.name }}</span>
+    }
+    @if (event.library) {
+      <span class="library ml-2">{{ event.library.name }}</span>
+    }
     <span class="transaction-type ml-2">{{ parent.type | translate }}</span>
     <span class="creation-date">{{ event.creation_date | date : 'short' }}</span>
   </div>
-</section>
-
-
-<ng-template #skeleton>
+} @loading {
   <div class="d-flex">
     <div class="w-100 container p-0">
       <p-skeleton styleClass="mb-1"></p-skeleton>
@@ -61,4 +64,4 @@
     <p-skeleton width="200px" height="1.5rem" styleClass="ml-1"></p-skeleton>
     <p-skeleton width="100px" height="1.5rem" class="ml-auto"></p-skeleton>
   </div>
-</ng-template>
+}

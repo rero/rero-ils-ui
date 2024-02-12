@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
-  Copyright (C) 2020-2022 RERO
+  Copyright (C) 2020-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -22,17 +22,21 @@
         <li [class.open-tab]="tabs.engagedFees.isOpen">
           <button class="btn btn-link btn-block clearfix" (click)="openTab(tabs.engagedFees)">
             <span translate>Engaged fees</span>
-            <span class="badge badge-warning float-right" *ngIf="tabs.engagedFees.totalAmount > 0">
-              {{ tabs.engagedFees.totalAmount | currency: organisation.default_currency }}
-            </span>
+            @if (tabs.engagedFees.totalAmount > 0) {
+              <span class="badge badge-warning float-right">
+                {{ tabs.engagedFees.totalAmount | currency: organisation.default_currency }}
+              </span>
+            }
           </button>
         </li>
         <li [class.open-tab]="tabs.overduePreviewFees.isOpen">
           <button class="btn btn-link btn-block clearfix" (click)="openTab(tabs.overduePreviewFees); loadFeesHistory()">
             <span translate>Overdue preview fees</span>
-            <span class="badge badge-secondary badge-opacity-30 float-right" *ngIf="tabs.overduePreviewFees.totalAmount > 0">
-              {{ tabs.overduePreviewFees.totalAmount | currency: organisation.default_currency }}
-            </span>
+            @if (tabs.overduePreviewFees.totalAmount > 0) {
+              <span class="badge badge-secondary badge-opacity-30 float-right">
+                {{ tabs.overduePreviewFees.totalAmount | currency: organisation.default_currency }}
+              </span>
+            }
           </button>
         </li>
         <li [class.open-tab]="tabs.historyFees.isOpen">
@@ -52,13 +56,13 @@
             {{ 'Add a fee' | translate }}
           </button>
         </div>
-        <ng-container *ngIf="tabs.engagedFees.transactions.length > 0; else noTransaction">
+        @if (tabs.engagedFees.transactions.length > 0) {
           <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
             <div class="col-2 pl-20" translate>Date</div>
             <div class="col-4" translate>Category</div>
             <div class="col-3" translate>Library</div>
             <div class="col-2 text-right">
-              {{ 'Total amount' | translate }} : {{ tabs.engagedFees.totalAmount | currency: organisation.default_currency }}
+              {{ 'Total amount' | translate }}: {{ tabs.engagedFees.totalAmount | currency: organisation.default_currency }}
             </div>
             <div class="col-1 pl-0">
               <div class="btn-group" dropdown>
@@ -77,48 +81,46 @@
               </div>
             </div>
           </div>
-          <admin-patron-transaction
-            *ngFor="let t of tabs.engagedFees.transactions" [transaction]="t"
-            class="row mb-1">
-          </admin-patron-transaction>
-        </ng-container>
+          @for (t of tabs.engagedFees.transactions; track t) {
+            <admin-patron-transaction [transaction]="t" class="row mb-1"></admin-patron-transaction>
+          }
+        } @else {
+          {{ 'No pending fee for this patron' | translate }}
+        }
       </div>
       <!-- OVERDUE PREVIEW FEES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       <div [hidden]="!tabs.overduePreviewFees.isOpen">
-        <ng-container *ngIf="tabs.overduePreviewFees.transactions.length > 0; else noOverdueTransaction">
+        @if (tabs.overduePreviewFees.transactions.length > 0) {
           <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
             <div class="col-2 pl-20 my-2" translate>Due date</div>
             <div class="col-7" translate>Document</div>
             <div class="col-2 text-right">
-              {{ 'Total amount' | translate }} : {{ tabs.overduePreviewFees.totalAmount | currency: organisation.default_currency }}
+              {{ 'Total amount' | translate }}: {{ tabs.overduePreviewFees.totalAmount | currency: organisation.default_currency }}
             </div>
             <div class="col-1"></div>
           </div>
-          <admin-overdue-transaction
-            *ngFor="let t of tabs.overduePreviewFees.transactions" [transaction]="t"
-            class="row mb-1">
-          </admin-overdue-transaction>
-        </ng-container>
+          @for (t of tabs.overduePreviewFees.transactions; track t) {
+            <admin-overdue-transaction [transaction]="t" class="row mb-1"></admin-overdue-transaction>
+          }
+        } @else {
+          {{ 'No overdue fees for this patron' | translate }}
+        }
       </div>
       <!-- fees history ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       <div [hidden]="!tabs.historyFees.isOpen">
-        <ng-container *ngIf="tabs.historyFees.transactions !== null && tabs.historyFees.transactions.length > 0; else noHistory">
+        @if (tabs.historyFees.transactions !== null && tabs.historyFees.transactions.length > 0) {
           <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
             <div class="col-2 pl-20 my-2" translate>Date</div>
             <div class="col-4" translate>Category</div>
             <div class="col-5" translate>Library</div>
           </div>
-          <admin-patron-transaction
-            class="row mb-1 align-items-start"
-            *ngFor="let t of tabs.historyFees.transactions" [transaction]="t">
-          </admin-patron-transaction>
-        </ng-container>
+          @for (t of tabs.historyFees.transactions; track t) {
+            <admin-patron-transaction class="row mb-1 align-items-start" [transaction]="t"></admin-patron-transaction>
+          }
+        } @else {
+          {{ 'No fee history for this patron' | translate }}
+        }
       </div>
     </div>
   </div>
 </section>
-
-
-<ng-template #noTransaction>{{ 'No pending fee for this patron' | translate }}</ng-template>
-<ng-template #noOverdueTransaction>{{ 'No overdue fees for this patron' | translate }}</ng-template>
-<ng-template #noHistory>{{ 'No fee history for this patron' | translate }}</ng-template>

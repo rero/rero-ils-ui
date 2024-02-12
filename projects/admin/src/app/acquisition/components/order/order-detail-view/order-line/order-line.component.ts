@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
-import { forkJoin, Subscription } from 'rxjs';
+import { RecordService } from '@rero/ng-core';
+import { Subscription, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqOrderLineStatus, IAcqOrderLine } from '../../../../classes/order';
@@ -49,7 +49,7 @@ export class OrderLineComponent implements OnInit, OnDestroy {
   orderLineStatus = AcqOrderLineStatus;
 
   /** all component subscription */
-  private _subscriptions = new Subscription();
+  private subscriptions = new Subscription();
 
   // GETTER & SETTER ==========================================================
   /**
@@ -58,35 +58,35 @@ export class OrderLineComponent implements OnInit, OnDestroy {
    */
   get deleteInfoMessage(): string {
     return (!this.recordPermissions.delete.can)
-      ? this._recordPermissionService.generateDeleteMessage(this.recordPermissions.delete.reasons)
+      ? this.recordPermissionService.generateDeleteMessage(this.recordPermissions.delete.reasons)
       : null;
   }
   get editInfoMessage(): string {
     return (!this.recordPermissions.update.can)
-      ? this._recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'update')
+      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'update')
       : null;
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /** Constructor
-   * @param _recordPermissionService - RecordPermissionService
-   * @param _recordService - RecordService
-   * @param _acqOrderApiService - AcqOrderApiService
-   * @param _permissionValidator - CurrentLibraryPermissionValidator
+   * @param recordPermissionService - RecordPermissionService
+   * @param recordService - RecordService
+   * @param acqOrderApiService - AcqOrderApiService
+   * @param permissionValidator - CurrentLibraryPermissionValidator
    */
   constructor(
-    private _recordPermissionService: RecordPermissionService,
-    private _recordService: RecordService,
-    private _acqOrderApiService: AcqOrderApiService,
-    private _permissionValidator: CurrentLibraryPermissionValidator
+    private recordPermissionService: RecordPermissionService,
+    private recordService: RecordService,
+    private acqOrderApiService: AcqOrderApiService,
+    private permissionValidator: CurrentLibraryPermissionValidator
   ) { }
 
   /** OnInit hook */
   ngOnInit() {
-    const account$ = this._recordService.getRecord('acq_accounts', this.orderLine.acq_account.pid);
+    const account$ = this.recordService.getRecord('acq_accounts', this.orderLine.acq_account.pid);
     if (this.recordPermissions) {
-      const permissions$ = this._recordPermissionService.getPermission('acq_order_lines', this.orderLine.pid).pipe(
-        map((permissions) => this._permissionValidator.validate(permissions, this.order.library.pid))
+      const permissions$ = this.recordPermissionService.getPermission('acq_order_lines', this.orderLine.pid).pipe(
+        map((permissions) => this.permissionValidator.validate(permissions, this.order.library.pid))
       );
       forkJoin([permissions$, account$]).subscribe(
         ([permissions, account]) => {
@@ -95,18 +95,18 @@ export class OrderLineComponent implements OnInit, OnDestroy {
         }
       );
     } else {
-      this._subscriptions.add(account$.subscribe(account => this.account = account));
+      this.subscriptions.add(account$.subscribe(account => this.account = account));
     }
   }
 
   /** onDestroy hook */
   ngOnDestroy(): void {
-    this._subscriptions.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   // COMPONENT FUNCTIONS ======================================================
   /** Delete the order line */
   deleteOrderLine() {
-    this._acqOrderApiService.deleteOrderLine(this.orderLine);
+    this.acqOrderApiService.deleteOrderLine(this.orderLine);
   }
 }

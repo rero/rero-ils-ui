@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -47,26 +47,21 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
   nRecords = 20;
 
   /** Records paginator */
-  private _paginator: Paginator;
-
-  /** Get paginator */
-  get paginator(): Paginator {
-    return this._paginator;
-  }
+  paginator: Paginator;
 
   /**
    * Constructor
-   * @param _loanApiService - LoanApiService
-   * @param _patronProfileMenuService - PatronProfileMenuService
+   * @param loanApiService - LoanApiService
+   * @param patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
-    private _loanApiService: LoanApiService,
-    private _patronProfileMenuService: PatronProfileMenuService
+    private loanApiService: LoanApiService,
+    private patronProfileMenuService: PatronProfileMenuService
   ) {}
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._initialisePaginatorAndSubscription();
+    this._initializePaginatorAndSubscription();
     this._initialLoad();
   }
 
@@ -75,10 +70,10 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
     this._subscription.unsubscribe();
   }
 
-  /** Initialise paginator and subscription */
-  private _initialisePaginatorAndSubscription(): void {
-    this._paginator = new Paginator();
-    this._paginator
+  /** Initialize paginator and subscription */
+  private _initializePaginatorAndSubscription(): void {
+    this.paginator = new Paginator();
+    this.paginator
       .setRecordsPerPage(this.nRecords)
       .setHiddenInfo(
         _('({{ count }} hidden loan)'),
@@ -87,7 +82,7 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
 
     this._subscription = new Subscription();
     this._subscription.add(
-      this._paginator.more$.subscribe((page: number) => {
+      this.paginator.more$.subscribe((page: number) => {
         this._loanQuery(page).subscribe((response: Record) => {
           this.records = this.records.concat(response.hits.hits);
           this.page = page;
@@ -95,7 +90,7 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
       })
     );
     this._subscription.add(
-      this._patronProfileMenuService.onChange$.subscribe(() => {
+      this.patronProfileMenuService.onChange$.subscribe(() => {
         this._resetPaginator();
       })
     );
@@ -104,7 +99,7 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
   /** Initial records load */
   private _initialLoad(): void {
     this._loanQuery(1).subscribe((response: Record) => {
-      this._paginator.setRecordsCount(response.hits.total.value);
+      this.paginator.setRecordsCount(response.hits.total.value);
       this.records = response.hits.hits;
       this.loaded = true;
     });
@@ -116,15 +111,15 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
    * @return Observable
    */
   private _loanQuery(page: number): Observable<Record | Error> {
-    const patronPid = this._patronProfileMenuService.currentPatron.pid;
-    return this._loanApiService
-      .getOnLoan(patronPid, page, this._paginator.getRecordsPerPage(), undefined, this.sortCriteria);
+    const patronPid = this.patronProfileMenuService.currentPatron.pid;
+    return this.loanApiService
+      .getOnLoan(patronPid, page, this.paginator.getRecordsPerPage(), undefined, this.sortCriteria);
   }
 
   /** Reset paginator when patron profile menu has changed */
   private _resetPaginator(){
     this._loanQuery(1).subscribe((response: Record) => {
-      this._paginator
+      this.paginator
         .setPage(1)
         .setRecordsCount(response.hits.total.value);
 
@@ -140,11 +135,11 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
     */
   selectingSortCriteria(sortCriteria: string) {
     this.sortCriteria = sortCriteria;
-    this._paginator.setRecordsPerPage(this.page * this.nRecords);
+    this.paginator.setRecordsPerPage(this.page * this.nRecords);
 
     this._loanQuery(1).subscribe((response: Record) => {
       this.records = response.hits.hits;
-      this._paginator.setRecordsPerPage(this.nRecords);
+      this.paginator.setRecordsPerPage(this.nRecords);
       this.loaded = true;
     });
   }

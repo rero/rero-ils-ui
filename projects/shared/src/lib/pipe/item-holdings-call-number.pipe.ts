@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,7 +25,11 @@ import { Observable, of } from 'rxjs';
 })
 export class ItemHoldingsCallNumberPipe implements PipeTransform {
 
-  constructor(private _recordService: RecordService) { }
+  /**
+   * Constructor
+   * @param recordService - RecordService
+   */
+  constructor(private recordService: RecordService) { }
 
   /**
    * Get item call numbers
@@ -47,7 +51,7 @@ export class ItemHoldingsCallNumberPipe implements PipeTransform {
         }
       });
     } else {
-      return this._recordService.getRecord('holdings', record.holding.pid, 1).pipe(map(data => {
+      return this.recordService.getRecord('holdings', record.holding.pid, 1).pipe(map(data => {
         if (data && data.metadata && 'call_number' in data.metadata) {
           return {
             first: {

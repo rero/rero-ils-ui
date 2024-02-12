@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023 RERO
+ * Copyright (C) 2023-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,8 +29,9 @@ import { ResultItem } from '@rero/ng-core';
     ></i>
   <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a></h5>
   <div class="card-text">
-    <div *ngIf="record.metadata.description" [innerHTML]="record.metadata.description | truncateText: 30">
-    </div>
+    @if (record.metadata.description) {
+      <div [innerHTML]="record.metadata.description | truncateText: 30"></div>
+    }
     <div>
       <b translate>Category</b>: {{ record.metadata.category.type | translate }}
     </div>
@@ -53,9 +54,9 @@ export class StatisticsCfgBriefViewComponent implements ResultItem {
 
   /**
    * Constructor
-   * @param _translateService - TranslateService
+   * @param translateService - TranslateService
    */
-  public constructor(private _translateService: TranslateService) {}
+  public constructor(private translateService: TranslateService) {}
 
   /**
    * Status of the configuration on bullet title
@@ -63,7 +64,7 @@ export class StatisticsCfgBriefViewComponent implements ResultItem {
    */
     get activeLabel() {
       return this.record.metadata.is_active
-        ? this._translateService.instant('Active')
-        : this._translateService.instant('Inactive');
+        ? this.translateService.instant('Active')
+        : this.translateService.instant('Inactive');
     }
 }

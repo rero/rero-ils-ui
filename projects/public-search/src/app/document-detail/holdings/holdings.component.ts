@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -65,26 +65,26 @@ export class HoldingsComponent implements OnInit {
     const linkText = (count > 1)
       ? _('{{ counter }} hidden holdings')
       : _('{{ counter }} hidden holding');
-    return this._translateService.instant(linkText, { counter: count });
+    return this.translateService.instant(linkText, { counter: count });
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _holdingsApiService - HoldingsApiService
-   * @param _translateService - TranslateService
-   * @param _appSettingsService - AppSettingsService
+   * @param holdingsApiService - HoldingsApiService
+   * @param translateService - TranslateService
+   * @param appSettingsService - AppSettingsService
    */
   constructor(
-    private _holdingsApiService: HoldingsApiService,
-    private _translateService: TranslateService,
-    private _appSettingsService: AppSettingsService
+    private holdingsApiService: HoldingsApiService,
+    private translateService: TranslateService,
+    private appSettingsService: AppSettingsService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
     // Set view code to app settings
-    this._appSettingsService.currentViewCode = this.viewcode;
+    this.appSettingsService.currentViewCode = this.viewcode;
     this._holdingsQuery(1).subscribe((response: QueryResponse) => {
       this.holdingsTotal = response.total.value;
       this.holdings = response.hits;
@@ -105,7 +105,7 @@ export class HoldingsComponent implements OnInit {
    * @return Observable
    */
   private _holdingsQuery(page: number): Observable<QueryResponse> {
-    return this._holdingsApiService
+    return this.holdingsApiService
       .getHoldingsByDocumentPidAndViewcode(this.documentpid, this.viewcode, page, this.holdingsPerPage);
   }
 }
