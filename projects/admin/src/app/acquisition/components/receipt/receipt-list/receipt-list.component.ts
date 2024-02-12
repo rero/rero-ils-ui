@@ -19,7 +19,7 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
-import { of, Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { IAcqOrder } from '../../../classes/order';
@@ -41,7 +41,7 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
   receipts: IAcqReceipt[] = undefined;
 
   /** all component subscription */
-  private _subscriptions = new Subscription();
+  private subscriptions = new Subscription();
 
   // GETTER & SETTER ==========================================================
   /**
@@ -49,7 +49,7 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
    * @return the message to display into the tooltip box
    */
   get createInfoMessage(): string {
-    return this._recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons, 'create');
+    return this.recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons, 'create');
   }
 
   /**
@@ -63,24 +63,24 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _acqReceiptApiService - AcqReceiptApiService
-   * @param _recordPermissionService - RecordPermissionService
-   * @param _currentLibraryPermissionValidator - CurrentLibraryPermissionValidator
-   * @param _receivedOrderPermissionValidator - ReceivedOrderPermissionValidator
+   * @param acqReceiptApiService - AcqReceiptApiService
+   * @param recordPermissionService - RecordPermissionService
+   * @param currentLibraryPermissionValidator - CurrentLibraryPermissionValidator
+   * @param receivedOrderPermissionValidator - ReceivedOrderPermissionValidator
    */
   constructor(
-    private _acqReceiptApiService: AcqReceiptApiService,
-    private _recordPermissionService: RecordPermissionService,
-    private _currentLibraryPermissionValidator: CurrentLibraryPermissionValidator,
-    private _receivedOrderPermissionValidator: ReceivedOrderPermissionValidator
+    private acqReceiptApiService: AcqReceiptApiService,
+    private recordPermissionService: RecordPermissionService,
+    private currentLibraryPermissionValidator: CurrentLibraryPermissionValidator,
+    private receivedOrderPermissionValidator: ReceivedOrderPermissionValidator
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
     this._loadPermissions();
     this._loadReceipts();
-    this._subscriptions.add(
-      this._acqReceiptApiService.deletedReceiptSubject$.subscribe((deletedReceipt: IAcqReceipt) => {
+    this.subscriptions.add(
+      this.acqReceiptApiService.deletedReceiptSubject$.subscribe((deletedReceipt: IAcqReceipt) => {
         this.receipts = this.receipts.filter((receipt: IAcqReceipt) => receipt.pid !== deletedReceipt.pid);
       })
     );
@@ -95,13 +95,13 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
 
   /** OnDestroy hook */
   ngOnDestroy() {
-    this._subscriptions.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   // PRIVATE COMPONENT METHODS ================================================
   /** load receipts related to an order */
   private _loadReceipts(): void {
-    this._acqReceiptApiService
+    this.acqReceiptApiService
       .getReceiptsForOrder(this.order.pid)
       .subscribe((receipts: IAcqReceipt[]) => this.receipts = receipts);
   }
@@ -114,14 +114,14 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
     if (this.recordPermissions) {
       const permissions$ = this.recordPermissions
         ? of(this.recordPermissions)
-        : this._recordPermissionService.getPermission('acq_orders', this.order.pid);
+        : this.recordPermissionService.getPermission('acq_orders', this.order.pid);
       const obsPermissions = permissions$
         .pipe(
-          map(permissions => this._currentLibraryPermissionValidator.validate(permissions, this.order.library.pid)),
-          map(permissions => this._receivedOrderPermissionValidator.validate(permissions, this.order))
+          map(permissions => this.currentLibraryPermissionValidator.validate(permissions, this.order.library.pid)),
+          map(permissions => this.receivedOrderPermissionValidator.validate(permissions, this.order))
         )
         .subscribe((permissions) => this.recordPermissions = permissions);
-      this._subscriptions.add(obsPermissions);
+      this.subscriptions.add(obsPermissions);
       }
     }
 }

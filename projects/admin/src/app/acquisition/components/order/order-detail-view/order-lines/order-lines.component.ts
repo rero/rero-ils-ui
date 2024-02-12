@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
   orderLines: IAcqOrderLine[] = undefined;
 
   /** all component subscription */
-  private _subscriptions = new Subscription();
+  private subscriptions = new Subscription();
 
   // GETTER & SETTER ==========================================================
   /**
@@ -45,25 +45,25 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
    * @return the message to display into the tooltip box
    */
   get createInfoMessage(): string {
-    return this._recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'create');
+    return this.recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'create');
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _acqOrderApiService - AcqOrderApiService
-   * @param _recordPermissionService - RecordPermissionService
+   * @param acqOrderApiService - AcqOrderApiService
+   * @param recordPermissionService - RecordPermissionService
    */
   constructor(
-    private _acqOrderApiService: AcqOrderApiService,
-    private _recordPermissionService: RecordPermissionService
+    private acqOrderApiService: AcqOrderApiService,
+    private recordPermissionService: RecordPermissionService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._loadOrderLines();
-    this._subscriptions.add(
-      this._acqOrderApiService
+    this.loadOrderLines();
+    this.subscriptions.add(
+      this.acqOrderApiService
         .deletedOrderLineSubject$
         .subscribe(
           (orderLine: IAcqOrderLine) => this.orderLines = this.orderLines.filter((line: IAcqOrderLine) => line.pid !== orderLine.pid)
@@ -74,19 +74,19 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
   /** OnChanges hook */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.hasOwnProperty('order')) {
-      this._loadOrderLines();
+      this.loadOrderLines();
     }
   }
 
   /** OnDestroy hook */
   ngOnDestroy() {
-    this._subscriptions.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   // PRIVATE COMPONENT METHODS ================================================
   /** load order lines related to this order */
-  private _loadOrderLines(): void {
-    this._acqOrderApiService
+  private loadOrderLines(): void {
+    this.acqOrderApiService
       .getOrderLines(this.order.pid)
       .subscribe((lines: IAcqOrderLine[]) => this.orderLines = lines);
   }

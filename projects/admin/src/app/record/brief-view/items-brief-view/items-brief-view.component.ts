@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,22 +25,12 @@ import { ResultItem } from '@rero/ng-core';
 })
 export class ItemsBriefViewComponent implements ResultItem {
 
-  /**
-   * Record
-   */
-  @Input()
-  record: any;
+  /** Record */
+  @Input() record: any;
 
-  /**
-   * Type of record
-   */
-  @Input()
-  type: string;
+  /** Type of record */
+  @Input() type: string;
 
-  /**
-   * Detail Url
-   */
-  @Input()
-  detailUrl: { link: string, external: boolean };
-
+  /** Detail Url */
+  @Input() detailUrl: { link: string, external: boolean };
 }

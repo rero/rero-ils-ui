@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2019-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,25 +15,29 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <h1 class="mb-2" translate>Holdings</h1>
-<admin-record-masked *ngIf="holding.metadata._masked" [record]="holding" [withLabel]="true"></admin-record-masked>
-<div class="card mb-3" *ngIf="holding.metadata.document.pid | getRecord:'documents' | async as document">
-  <div class="card-body row">
-    <a [routerLink]="['/records', 'documents', 'detail', document.metadata.pid]" class="col-1">
-      <i class="fa fa-arrow-left"></i>
-    </a>
-    <admin-documents-brief-view
-        class="col"
-        [record]="document"
-        [type]="'documents'" [detailUrl]="{
-          link: '/records/documents/detail/' + document.metadata.pid,
-          external: false
-        }"
-    ></admin-documents-brief-view>
+@if (holding.metadata._masked) {
+  <admin-record-masked [record]="holding" [withLabel]="true"></admin-record-masked>
+}
+@if (holding.metadata.document.pid | getRecord:'documents' | async; as document) {
+  <div class="card mb-3">
+    <div class="card-body row">
+      <a [routerLink]="['/records', 'documents', 'detail', $any(document).metadata.pid]" class="col-1">
+        <i class="fa fa-arrow-left"></i>
+      </a>
+      <admin-documents-brief-view
+          class="col"
+          [record]="document"
+          [type]="'documents'" [detailUrl]="{
+            link: '/records/documents/detail/' + $any(document).metadata.pid,
+            external: false
+          }"
+      ></admin-documents-brief-view>
+    </div>
   </div>
-</div>
-<div *ngIf="holding">
+}
+@if (holding) {
   <admin-holding-shared-view [holding]="holding" class="row col"></admin-holding-shared-view>
-</div>
+}
 
 <!-- TABS ================================================================= -->
 <!--    3 tabs will be displayed : Issues, Holdings details, Local fields -->
@@ -50,65 +54,67 @@
           <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i>
           {{ 'Show more' | translate }} &hellip;
         </button>
-        <button class="ml-auto btn btn-sm btn-outline-primary"
-                *ngIf="allowIssueCreation"
-                [routerLink]="['/records', 'items', 'new']"
-                [queryParams]="{
-                  'holding': holding.id,
-                  'irregular': true,
-                  'redirectTo': 'records/holdings/detail/' + holding.id
-                }"
-        >
-          <i class="fa fa-plus-square-o"></i>
-          {{ 'Add irregular issue' | translate }} &hellip;
-        </button>
+        @if (allowIssueCreation) {
+          <button class="ml-auto btn btn-sm btn-outline-primary"
+                  [routerLink]="['/records', 'items', 'new']"
+                  [queryParams]="{
+                    'holding': holding.id,
+                    'irregular': true,
+                    'redirectTo': 'records/holdings/detail/' + holding.id
+                  }"
+          >
+            <i class="fa fa-plus-square-o"></i>
+            {{ 'Add irregular issue' | translate }} &hellip;
+          </button>
+        }
       </div>
       <div class="issues">
         <!-- expected issues ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <admin-expected-issue
-          *ngFor="let prediction of predictionsItems; let last = last"
-          [issue]="prediction"
-        >
-          <ng-container actions *ngIf="last">
-            <button *ngIf="allowIssueCreation"
-                    type="button" class="btn btn-sm btn-outline-primary ml-1"
-                    title="{{ 'Quick receive' | translate }}"
-                    (click)="quickIssueReceive()">
-              <i class="fa fa-check-circle"></i>
-            </button>
-            <button *ngIf="allowIssueCreation"
-                    type="button" class="btn btn-sm btn-outline-primary ml-1"
-                    title="{{ 'Receive and edit this issue' | translate }}"
-                    [routerLink]="['/records', 'items', 'new']"
-                    [queryParams]="{
-                              'holding': holding.id,
-                              'redirectTo': 'records/holdings/detail/' + holding.id,
-                              'enumerationAndChronology': prediction.issue,
-                              'expected_date': prediction.expected_date
-                          }">
-              <i class="fa fa-plus"></i>
-            </button>
-          </ng-container>
-        </admin-expected-issue>
+        @for (prediction of predictionsItems; track prediction; let last = $last) {
+          <admin-expected-issue [issue]="prediction">
+            @if (last) {
+              <ng-container actions>
+                @if (allowIssueCreation) {
+                  <button type="button" class="btn btn-sm btn-outline-primary ml-1"
+                          title="{{ 'Quick receive' | translate }}"
+                          (click)="quickIssueReceive()">
+                    <i class="fa fa-check-circle"></i>
+                  </button>
+                }
+                @if (allowIssueCreation) {
+                  <button type="button" class="btn btn-sm btn-outline-primary ml-1"
+                          title="{{ 'Receive and edit this issue' | translate }}"
+                          [routerLink]="['/records', 'items', 'new']"
+                          [queryParams]="{
+                                    'holding': holding.id,
+                                    'redirectTo': 'records/holdings/detail/' + holding.id,
+                                    'enumerationAndChronology': prediction.issue,
+                                    'expected_date': prediction.expected_date
+                                }">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                }
+              </ng-container>
+            }
+          </admin-expected-issue>
+        }
         <!-- received issues ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <admin-received-issue
-          *ngFor="let item of receivedItems; let last = last"
-          [issue]="item"
-          [holding]="holding"
-          (delete)="deleteIssue($event)"
-        ></admin-received-issue>
+        @for (item of receivedItems; track item; let last = $last) {
+          <admin-received-issue [issue]="item" [holding]="holding" (delete)="deleteIssue($event)"></admin-received-issue>
+        }
       </div>
       <!-- SHOW MORE RECEIVED ISSUE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <div class="row mt-1" *ngIf="receivedItems.length < totalReceivedItems">
-        <div class="col">
-          <button [routerLink]="[]" (click)="showMore('received', 5)" class="btn btn-sm btn-outline-primary">
-            <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
-            {{ 'Show more' | translate }} ...
-          </button>
-          <span class="pl-3 small text-secondary">({{ showMoreIssuesCounter }})</span>
+      @if (receivedItems.length < totalReceivedItems) {
+        <div class="row mt-1">
+          <div class="col">
+            <button [routerLink]="[]" (click)="showMore('received', 5)" class="btn btn-sm btn-outline-primary">
+              <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
+              {{ 'Show more' | translate }} ...
+            </button>
+            <span class="pl-3 small text-secondary">({{ showMoreIssuesCounter }})</span>
+          </div>
         </div>
-      </div>
-
+      }
     </div>
   </tab>
   <!-- END OF ISSUES TAB ---------------------------------------------------->
@@ -125,20 +131,20 @@
   <!-- END OF DETAILS TAB ---------------------------------------------------->
 
   <!-- LOCAL FIELDS TAB ------------------------------------------------------------>
-  <tab *ngIf="displayLocalFieldsTab" id="holding-local-field-tab" tabOrder="3">
-    <ng-template tabHeading>
-      <i class="fa fa-list-ul mr-1"></i><span translate>Local fields</span>
-    </ng-template>
-    <div class="mt-2">
-      <admin-local-field [resourceType]="'holdings'" [resourcePid]="holding.metadata.pid"></admin-local-field>
-    </div>
-  </tab>
+  @if (displayLocalFieldsTab) {
+    <tab id="holding-local-field-tab" tabOrder="3">
+      <ng-template tabHeading>
+        <i class="fa fa-list-ul mr-1"></i><span translate>Local fields</span>
+      </ng-template>
+      <div class="mt-2">
+        <admin-local-field [resourceType]="'holdings'" [resourcePid]="holding.metadata.pid"></admin-local-field>
+      </div>
+    </tab>
+  }
   <!-- END OF LOCAL FIELDS TAB ---------------------------------------------------->
 </tabset>
 
 <!-- OPERATION LOGS-->
-<admin-operation-logs-dialog
-  *ngIf="isEnabledOperationLog"
-  resourceType="holdings"
-  [resourcePid]="holding.metadata.pid"
-></admin-operation-logs-dialog>
+@if (isEnabledOperationLog) {
+  <admin-operation-logs-dialog resourceType="holdings" [resourcePid]="holding.metadata.pid"></admin-operation-logs-dialog>
+}

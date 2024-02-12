@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,8 +16,8 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { ProvisionActivityType } from '@rero/shared';
 import { OperationLogsApiService } from '@app/admin/api/operation-logs-api.service';
+import { ProvisionActivityType } from '@rero/shared';
 
 @Component({
   selector: 'admin-history-log',
@@ -39,11 +39,9 @@ export class HistoryLogComponent {
 
   /**
    * Constructor
-   * @param _operationLogsApiService - OperationLogsApiService
+   * @param operationLogsApiService - OperationLogsApiService
    */
-  constructor(
-    private _operationLogsApiService: OperationLogsApiService
-  ) {}
+  constructor(private _operationLogsApiService: OperationLogsApiService) {}
 
   /** Load checkout */
   loadCheckout() {

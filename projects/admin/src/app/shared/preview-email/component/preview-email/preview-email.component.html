@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2023 RERO
+  Copyright (C) 2023-2024 RERO
   Copyright (C) 2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -25,29 +25,36 @@
 <div class="modal-body">
   <!-- PREVIEW TOP -->
   <ng-content select="[headerMessage]"></ng-content>
-  <ng-container *ngIf="previewPosition === 'top'">
+  @if (previewPosition === 'top') {
     <h5 translate>Message</h5>
     <ng-content select="[previewMessage]"></ng-content>
     <pre [innerHTML]="preview.trim() | nl2br"></pre>
-  </ng-container>
+  }
 
   <h5 translate>Who do you want to send the message to?</h5>
 
   <!-- SUGGESTED EMAILS -->
-  <div *ngIf="emails.length > 0" class="card">
-    <div class="card-header">
-      <ng-container *ngIf="emails.length < 2; else multipleEmails" translate>Suggested email address</ng-container>
-      <ng-template #multipleEmails translate>Suggested email addresses</ng-template>
-      <small class="ml-1">(<span class="font-italic" translate>Drag and drop</span>)</small>
+  @if (emails.length > 0) {
+    <div class="card">
+      <div class="card-header">
+        @if (emails.length < 2) {
+          {{ 'Suggested email address' | translate }}
+        } @else {
+          {{ 'Suggested email addresses' | translate }}
+        }
+        <small class="ml-1">(<span class="font-italic" translate>Drag and drop</span>)</small>
+      </div>
+      <div class="card-body py-2">
+        <ul class="list-inline mb-1">
+          @for (email of emails; track email) {
+            <li class="list-inline-item mt-2">
+              <p-tag pDraggable="emails" (onDragStart)="dragStart(email)" (onDragEnd)="dragEnd()" icon="pi pi-user" [value]="email"></p-tag>
+            </li>
+          }
+        </ul>
+      </div>
     </div>
-    <div class="card-body py-2">
-      <ul class="list-inline mb-1">
-        <li *ngFor="let email of emails" class="list-inline-item mt-2">
-          <p-tag pDraggable="emails" (onDragStart)="dragStart(email)" (onDragEnd)="dragEnd()" icon="pi pi-user" [value]="email"></p-tag>
-        </li>
-      </ul>
-    </div>
-  </div>
+  }
 
   <!-- RECIPIENTS -->
   <div class="card mt-2">
@@ -56,24 +63,24 @@
     </div>
     <div class="card-body py-2 container">
       <div class="row">
-        <ng-container *ngFor="let type of emailTypes">
+        @for (type of emailTypes; track type) {
           <div class="col-2 pt-3 label-title mb-2" [class.field-required]="mandatoryEmailTypes.includes(type)">
             {{ ('email_' + type) | translate }}
           </div>
           <div class="col-10 mb-2">
             <p-chips class="p-fluid" [inputId]="type" pDroppable="emails" (onDrop)="drop($event)" [(ngModel)]="recipients[type]" [addOnBlur]="true"></p-chips>
           </div>
-        </ng-container>
+        }
       </div>
     </div>
   </div>
 
   <!-- PREVIEW BOTTOM -->
-  <ng-container *ngIf="previewPosition === 'bottom'">
+  @if (previewPosition === 'bottom') {
     <h5 translate>Message</h5>
     <ng-content select="[previewBottomMessage]"></ng-content>
     <pre [innerHTML]="preview.trim() | nl2br"></pre>
-  </ng-container>
+  }
 </div>
 <div class="modal-footer">
   <button class="btn btn-outline-danger btn-sm" (click)="close()" aria-label="Close" translate>Cancel</button>

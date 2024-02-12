@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,13 +32,13 @@ export class CirculationStatsComponent implements OnInit {
 
   /**
    * Constructor
-   * @param _itemApiService - ItemApiService
+   * @param itemApiService - ItemApiService
    */
-  constructor(private _itemApiService: ItemApiService) { }
+  constructor(private itemApiService: ItemApiService) { }
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._itemApiService.getStatsByItemPid(this.itemPid)
+    this.itemApiService.getStatsByItemPid(this.itemPid)
       .subscribe((stats: any) => this.stats = stats)
   }
 }

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,17 +15,23 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div class="container">
-  <div [class]="i%2 === 0 ? 'bg-light':''" class="row" *ngFor="let field of entities | keyvalue; let i = index">
-    <div class="font-weight-bold col-3 py-1">
-      {{ field.key | translate |ucfirst }}
+  @for (field of entities | keyvalue; track field; let i = $index) {
+    <div [class]="i%2 === 0 ? 'bg-light':''" class="row">
+      <div class="font-weight-bold col-3 py-1">
+        {{ field.key | translate |ucfirst }}
+      </div>
+      <div class="col-9 py-1">
+        <ul class="list-unstyled mb-0">
+          @for (entity of field.value; track entity) {
+            <li>
+              <i title="{{ entity.type | translate }}" class="fa {{ entity.icon }} mr-2"></i>
+              <a [routerLink]="['/records', entity.resource_type + '_entities', 'detail', entity.pid]">
+                {{ entity.authorized_access_point }}
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
     </div>
-    <div class="col-9 py-1">
-      <ul class="list-unstyled mb-0">
-        <li *ngFor="let entity of field.value">
-          <i title="{{ entity.type | translate }}" class="fa {{ entity.icon }} mr-2"></i>
-          <a [routerLink]="['/records', entity.resource_type + '_entities', 'detail', entity.pid]">{{ entity.authorized_access_point }}</a>
-        </li>
-      </ul>
-    </div>
-  </div>
+  }
 </div>

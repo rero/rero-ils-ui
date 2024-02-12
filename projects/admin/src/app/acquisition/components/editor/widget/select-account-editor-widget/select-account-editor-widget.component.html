@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
   Copyright (C) 2021 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -27,31 +27,33 @@
       <span class="caret ml-auto"></span>
     </button>
     <div id="dropdown-basic" *dropdownMenu class="dropdown-menu w-100" role="menu" aria-labelledby="button-basic">
-      <ng-container *ngIf="accountList.length; else noResult">
-        <a *ngFor="let account of accountList"
-           href="#"
-           class="dropdown-item account d-flex"
-           (click)="$event.preventDefault(); selectAccount(account); dropdown.hide()"
-        >
-          <div class="pr-5">
-            {{ account.depth > 0 ? '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(account.depth) + ' ' : '' }}
-            {{ account.name }}
-          </div>
-          <div class="ml-auto pl-5 d-flex">
-            <div class="number" *ngIf="account.number">{{ account.number }}</div>
-            <div class="amount" [class]="{
-                'text-success': account.remaining_balance.self > 0,
-                'text-muted': account.remaining_balance.self === 0,
-                'text-warning': account.remaining_balance.self < 0
-            }">
-              {{ account.remaining_balance.self | currency: organisation.default_currency }}
+      @if (accountList.length) {
+        @for (account of accountList; track account) {
+          <a  href="#"
+              class="dropdown-item account d-flex"
+              (click)="$event.preventDefault(); selectAccount(account); dropdown.hide()"
+          >
+            <div class="pr-5">
+              {{ account.depth > 0 ? '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(account.depth) + ' ' : '' }}
+              {{ account.name }}
             </div>
-          </div>
-        </a>
-      </ng-container>
-      <ng-template #noResult>
+            <div class="ml-auto pl-5 d-flex">
+              @if (account.number) {
+                <div class="number">{{ account.number }}</div>
+              }
+              <div class="amount" [class]="{
+                  'text-success': account.remaining_balance.self > 0,
+                  'text-muted': account.remaining_balance.self === 0,
+                  'text-warning': account.remaining_balance.self < 0
+              }">
+                {{ account.remaining_balance.self | currency: organisation.default_currency }}
+              </div>
+            </div>
+          </a>
+        }
+      } @else {
         <p class="m-0 px-4 py-2 text-muted" translate>No result</p>
-      </ng-template>
+      }
     </div>
   </div>
   <div class="invalid-feedback" [ngClass]="{'d-block': formControl.invalid}" translate>

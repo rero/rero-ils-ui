@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
- * Copyright (C) 2020 UCLouvain
+ * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -38,7 +38,7 @@ export class IllRequestsBriefViewComponent  implements ResultItem, OnInit {
 
 
   // GETTER FUNCTIONS ==========================================================
-  /** get the bootsrap color to apply on the request status badge */
+  /** get the bootstrap color to apply on the request status badge */
   get badgeColor(): string {
     if (this.record) {
       switch (this.record.metadata.status) {
@@ -54,14 +54,14 @@ export class IllRequestsBriefViewComponent  implements ResultItem, OnInit {
   // CONSTRUCTOR & HOOKS =======================================================
   /**
    * Constructor
-   * @param _recordService - RecordService
+   * @param recordService - RecordService
    */
-  constructor(private _recordService: RecordService) {}
+  constructor(private recordService: RecordService) {}
 
   /** Init hook */
   ngOnInit() {
     if (this.record) {
-      this._recordService.getRecord('patrons', this.record.metadata.patron.pid).subscribe(
+      this.recordService.getRecord('patrons', this.record.metadata.patron.pid).subscribe(
         (patron) => this.requester = patron.metadata
       );
     }

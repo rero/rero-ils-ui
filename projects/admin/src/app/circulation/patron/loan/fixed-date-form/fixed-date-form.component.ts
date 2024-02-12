@@ -65,40 +65,40 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
   onSubmit = new EventEmitter();
 
   /** component subscriptions */
-  private _subscription = new Subscription();
+  private subscription = new Subscription();
 
 
   // CONSTRUCTOR & HOOKS =====================================
   /**
    * Constructor
-   * @param _localeService - BsLocaleService
-   * @param _bsModalRef - BsModalRef
-   * @param _translateService - TranslateService,
-   * @param _userService - UserService
-   * @param _recordService - RecordService
-   * @param _circulationService - CirculationService
+   * @param localeService - BsLocaleService
+   * @param bsModalRef - BsModalRef
+   * @param translateService - TranslateService,
+   * @param userService - UserService
+   * @param recordService - RecordService
+   * @param circulationService - CirculationService
    */
   constructor(
-    private _localeService: BsLocaleService,
-    protected _bsModalRef: BsModalRef,
-    private _translateService: TranslateService,
-    private _userService: UserService,
-    private _recordService: RecordService,
-    private _circulationService: CirculationService
+    private localeService: BsLocaleService,
+    protected bsModalRef: BsModalRef,
+    private translateService: TranslateService,
+    private userService: UserService,
+    private recordService: RecordService,
+    private circulationService: CirculationService
   ) { }
 
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._localeService.use(this._translateService.currentLang);
-    if (this._userService.user) {
-      this._recordService.getRecord('libraries', this._userService.user.currentLibrary, 1).subscribe(
+    this.localeService.use(this.translateService.currentLang);
+    if (this.userService.user) {
+      this.recordService.getRecord('libraries', this.userService.user.currentLibrary, 1).subscribe(
         (data: any) => {
           const library = new Library(data.metadata);
           this.bsConfig.daysDisabled = library.closedDays;
         }
       );
-      this._subscription.add(this._circulationService.currentLibraryClosedDates$.subscribe(
+      this.subscription.add(this.circulationService.currentLibraryClosedDates$.subscribe(
         data => this.bsConfig.datesDisabled = data
       ));
     }
@@ -107,7 +107,7 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
 
   /** OnDestroy hook */
   ngOnDestroy(): void {
-    this._subscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   // FUNCTIONS =================================================
@@ -117,12 +117,12 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
       action: 'submit',
       content: this.formGroup.value
     });
-    this._bsModalRef.hide();
+    this.bsModalRef.hide();
   }
 
   /** Close the modal dialog box */
   closeModal() {
-    this._bsModalRef.hide();
+    this.bsModalRef.hide();
   }
 
   /** Init value change on field */
@@ -133,7 +133,7 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
       if (isoDate != null) {
         try {
           const date = new Date(isoDate);
-          patchDate = formatDate(date, 'yyyy-MM-dd', this._translateService.currentLang);
+          patchDate = formatDate(date, 'yyyy-MM-dd', this.translateService.currentLang);
         } catch {
           patchDate = undefined;
         }

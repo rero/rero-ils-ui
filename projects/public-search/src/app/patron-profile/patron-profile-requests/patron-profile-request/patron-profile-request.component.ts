@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -45,46 +45,46 @@ export class PatronProfileRequestComponent {
 
   /** Get current viewcode */
   get viewcode(): string {
-    return this._patronProfileMenuService.currentPatron.organisation.code;
+    return this.patronProfileMenuService.currentPatron.organisation.code;
   }
 
   /**
    * Constructor
-   * @param _loanApiService - LoanApiService
-   * @param _translateService - TranslateService
-   * @param _toastService - ToastrService
-   * @param _patronProfileService - PatronProfileService
-   * @param _patronProfileMenuService - PatronProfileMenuService
+   * @param loanApiService - LoanApiService
+   * @param translateService - TranslateService
+   * @param toastService - ToastrService
+   * @param patronProfileService - PatronProfileService
+   * @param patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
-    private _loanApiService: LoanApiService,
-    private _translateService: TranslateService,
-    private _toastService: ToastrService,
-    private _patronProfileService: PatronProfileService,
-    private _patronProfileMenuService: PatronProfileMenuService
+    private loanApiService: LoanApiService,
+    private translateService: TranslateService,
+    private toastService: ToastrService,
+    private patronProfileService: PatronProfileService,
+    private patronProfileMenuService: PatronProfileMenuService
   ) {}
 
   /** Cancel a request */
   cancel(): void {
-    const patronPid = this._patronProfileMenuService.currentPatron.pid;
+    const patronPid = this.patronProfileMenuService.currentPatron.pid;
     this.cancelInProgress = true;
-    this._loanApiService.cancel({
+    this.loanApiService.cancel({
       pid: this.record.metadata.pid,
       transaction_location_pid: this.record.metadata.item.location.pid,
       transaction_user_pid: patronPid
     }).subscribe((cancelLoan: any) => {
       if (cancelLoan !== undefined) {
-        this._patronProfileService.cancelRequest(this.record.metadata.pid);
+        this.patronProfileService.cancelRequest(this.record.metadata.pid);
         this.actionDone = true;
-        this._toastService.success(
-          this._translateService.instant('The request has been cancelled.'),
-          this._translateService.instant('Success')
+        this.toastService.success(
+          this.translateService.instant('The request has been cancelled.'),
+          this.translateService.instant('Success')
         );
       } else {
         this.cancelInProgress = false;
-        this._toastService.error(
-          this._translateService.instant('Error during the cancellation of the request.'),
-          this._translateService.instant('Error')
+        this.toastService.error(
+          this.translateService.instant('Error during the cancellation of the request.'),
+          this.translateService.instant('Error')
         );
       }
     });

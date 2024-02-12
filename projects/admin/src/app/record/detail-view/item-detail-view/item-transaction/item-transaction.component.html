@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019 RERO
+  Copyright (C) 2019-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,26 +15,26 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<ng-container *ngIf="transaction">
-  <ng-container *ngIf="transaction.metadata.patron_pid | getRecord:'patrons' | async as patron">
-    <div id="{{patron.metadata.patron.barcode[0]}}" class="row mb-2">
+@if (transaction) {
+  @if (transaction.metadata.patron_pid | getRecord:'patrons' | async; as patron) {
+    <div id="{{ $any(patron).metadata.patron.barcode[0] }}" class="row mb-2">
       <div class="col-4">
-        <a name="loans" [routerLink]="['/circulation', 'patron', patron.metadata.patron.barcode[0]]">
-          {{ patron.metadata.last_name }} {{ patron.metadata.first_name }} ({{ patron.metadata.patron.barcode }})
+        <a name="loans" [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0]]">
+          {{ $any(patron).metadata.last_name }} {{ $any(patron).metadata.first_name }} ({{ $any(patron).metadata.patron.barcode }})
         </a>
       </div>
       <!-- LOANS (BORROW) -->
-      <ng-container *ngIf="type === 'loan_borrow'">
+      @if (type === 'loan_borrow') {
         <div class="col-4">
           {{ transaction.metadata.extension_count ?  transaction.metadata.extension_count : '-' }}
         </div>
         <div class="col-3">
           {{ transaction.metadata.end_date | dateTranslate:'longDate' }}
         </div>
-      </ng-container>
+      }
       <!-- REQUESTS -->
-      <ng-container *ngIf="type === 'loan_request' && pickupLocations && pickupLocations.length > 0">
-        <ng-container *ngIf="canUpdateRequestPickupLocation(); else pickupLocationName">
+      @if (type === 'loan_request' && pickupLocations && pickupLocations.length > 0) {
+        @if (canUpdateRequestPickupLocation()) {
           <div class="btn-group col-4" dropdown>
             <button class="btn btn-outline-secondary btn-block d-md-block dropdown-toggle  dropdown-toggle-split text-left" type="button"
                     dropdownToggle aria-controls="dropdown-animated" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
@@ -42,39 +42,41 @@
               {{ currentPickupLocation }}
             </button>
             <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="dropdown-animated">
-              <li role="menuitem" *ngFor="let pickup of pickupLocations; let i = index">
-                <a class="dropdown-item" (click)="emitUpdatePickupLocation(pickup.value)">{{ pickup.label }}</a>
-              </li>
+              @for (pickup of pickupLocations; track pickup; let i = $index) {
+                <li role="menuitem">
+                  <a class="dropdown-item" (click)="emitUpdatePickupLocation(pickup.value)">{{ pickup.label }}</a>
+                </li>
+              }
             </ul>
           </div>
-        </ng-container>
-        <ng-template #pickupLocationName>
+        } @else {
           <div name="location" class="col-4" title="{{'The pickup location cannot be modified' | translate }}">
             {{ transaction.metadata.pickup_location_pid | getRecord:'locations':'field':'pickup_name' | async }}
           </div>
-        </ng-template>
+        }
         <div class="col-3">
           {{ transaction.created | dateTranslate:'medium' }}
         </div>
         <div class="col-1 text-right">
-          <ng-container *ngIf="canCancelRequest(); else noCancel">
-            <button type="button"
-                    class="btn btn-outline-danger btn-sm"
-                    (click)="showCancelRequestDialog()"
-                    name="cancel">
-              <i class="fa fa-trash-o" aria-hidden="true"></i>
-            </button>
-          </ng-container>
-          <ng-template #noCancel>
+          @if (canCancelRequest()) {
             <button type="button" class="btn btn-outline-danger btn-sm"
-                    title="{{'The request cannot be cancelled' | translate }}"
-                    name="cancel"
-                    disabled>
+              (click)="showCancelRequestDialog()"
+              name="cancel"
+            >
               <i class="fa fa-trash-o" aria-hidden="true"></i>
             </button>
-          </ng-template>
+          } @else {
+            <button type="button" class="btn btn-outline-danger btn-sm"
+              title="{{'The request cannot be cancelled' | translate }}"
+              name="cancel"
+              disabled
+            >
+              <i class="fa fa-trash-o" aria-hidden="true"></i>
+            </button>
+          }
         </div>
-      </ng-container>
+      }
     </div>
-  </ng-container>
-</ng-container>
+  }
+}
+

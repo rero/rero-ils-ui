@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2019 RERO
+ Copyright (C) 2019-2024 RERO
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published by
@@ -14,74 +14,81 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="m-0" *ngIf="patron && patron.patron" [ngClass]="{'text-muted': !clearPatronButton}">
-  <div class="row">
-    <div class="col row">
-      <div class="col-md-2 user-icon">
-        <i class="fa fa-user fa-5x" aria-hidden="true"></i>
-      </div>
-      <div class="col-md-10">
-        <div class="row">
-          <div class="col-md-10">
-            <h3>
-              <a [routerLink]="patronLink">
-                <span id="patron-last-name">{{ patron.last_name }}</span>
-                <span id="patron-first-name" *ngIf="patron.first_name">, {{ patron.first_name }}</span>
-              </a>
-            </h3>
+@if (patron?.patron) {
+  <div class="m-0" [ngClass]="{'text-muted': !clearPatronButton}">
+    <div class="row">
+      <div class="col row">
+        <div class="col-md-2 user-icon">
+          <i class="fa fa-user fa-5x" aria-hidden="true"></i>
+        </div>
+        <div class="col-md-10">
+          <div class="row">
+            <div class="col-md-10">
+              <h3>
+                <a [routerLink]="patronLink">
+                  <span id="patron-last-name">{{ patron.last_name }}</span>
+                  @if (patron.first_name) {
+                    <span id="patron-first-name">, {{ patron.first_name }}</span>
+                  }
+                </a>
+              </h3>
+            </div>
+            @if (clearPatronButton) {
+              <div class="col-md-2">
+                <button id="clear-patron-button" type="button" class="btn btn-danger pull-right" (click)="clear()">
+                  <i class="fa fa-close" aria-hidden="true"></i>
+                </button>
+              </div>
+            }
           </div>
-          <div *ngIf="clearPatronButton" class="col-md-2">
-            <button id="clear-patron-button" type="button" class="btn btn-danger pull-right" (click)="clear()">
-              <i class="fa fa-close" aria-hidden="true"></i>
-            </button>
+          <div class="row">
+            <div class="col-md-6">
+              <div id="patron-birth-date">
+                @if (patron.birth_date) {
+                  {{ patron.birth_date | dateTranslate:'mediumDate' }}
+                  ({{ patronAge }} {{ 'years old' | translate }})
+                  @if (isBirthday) {
+                    &nbsp;
+                    <i class="fa fa-birthday-cake text-warning blink"></i>
+                  }
+                }
+              </div>
+              <div id="patron-city">{{ patron.city }}</div>
+            </div>
+            <div class="col-md-6">
+              @if (patron.patron.type.pid | getRecord: 'patron_types': 'string':'name' | async; as patronTypeName) {
+                <div id="patron-type">{{ patronTypeName }}</div>
+              }
+              <div id="patron-barcode">{{ barcode }}</div>
+            </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div id="patron-birth-date">
-              <ng-container *ngIf="patron && patron.birth_date">
-                {{ patron.birth_date | dateTranslate:'mediumDate' }}
-                ({{ patronAge }} {{ 'years old' | translate }})
-                <ng-container *ngIf="isBirthday">
-                  &nbsp;
-                  <i class="fa fa-birthday-cake text-warning blink"></i>
-                </ng-container>
-              </ng-container>
-            </div>
-            <div id="patron-city">{{ patron.city }}</div>
+        <!-- NOTES-->
+        @if (patron.notes) {
+          <div class="col mt-2 alert alert-warning" role="alert">
+            @for (note of patron.notes; track note) {
+              <strong class="alert-heading" translate>{{ note.type.toString() }}</strong>
+              <p class="mb-0 ml-3" [innerHTML]="note.content | nl2br"></p>
+            }
           </div>
-          <div class="col-md-6">
-            <div id="patron-type"
-                 *ngIf="patron.patron.type.pid | getRecord: 'patron_types': 'string':'name' | async as patronTypeName"
-            >
-              {{ patronTypeName }}
-            </div>
-            <div id="patron-barcode">{{ barcode }}</div>
-          </div>
-        </div>
+        }
       </div>
-      <!-- NOTES-->
-      <div *ngIf="patron.notes" class="col mt-2 alert alert-warning" role="alert">
-        <ng-container *ngFor="let note of patron.notes">
-          <strong class="alert-heading" translate>{{ note.type.toString() }}</strong>
-          <p class="mb-0 ml-3" [innerHTML]="note.content | nl2br"></p>
-        </ng-container>
-      </div>
+      <!-- Circulation message -->
+      @if (displayCirculationMessages) {
+        <ul class="col-6 list-group">
+          @if (patron.circulation_information) {
+            @for (message of patron.circulation_informations.messages; track message) {
+              <li class="list-group-item list-group-item-{{ getBootstrapColor(message.type) }}"
+                  [innerHTML]="message.content | nl2br"></li>
+            }
+          }
+          @for (message of circulationMessages; track message) {
+            <li class="list-group-item list-group-item-{{ getBootstrapColor(message.type) }}"
+                [innerHTML]="message.content | nl2br"
+            ></li>
+          }
+        </ul>
+      }
     </div>
-    <!-- Circulation message -->
-    <ng-container *ngIf="displayCirculationMessages">
-      <ul class="col-6 list-group">
-        <ng-container *ngIf="patron.circulation_information">
-          <li *ngFor="let message of patron.circulation_informations.messages"
-            class="list-group-item list-group-item-{{ getBootstrapColor(message.type) }}"
-           [innerHTML]="message.content | nl2br"
-          ></li>
-        </ng-container>
-        <li *ngFor="let message of circulationMessages"
-            class="list-group-item list-group-item-{{ getBootstrapColor(message.type) }}"
-            [innerHTML]="message.content | nl2br"
-        ></li>
-      </ul>
-    </ng-container>
   </div>
-</div>
+}

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,15 +35,13 @@ export class IllRequestItemComponent {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _illRequestService - IllRequestsService
+   * @param illRequestService - IllRequestsService
    */
-  constructor(
-    private _illRequestService: IllRequestsService,
-  ) {}
+  constructor(private illRequestService: IllRequestsService) {}
 
   // COMPONENT FUNCTIONS ======================================================
   /** get the bootstrap color to apply on the request status badge */
   badgeColor(status: string): string {
-    return this._illRequestService.badgeColor(status);
+    return this.illRequestService.badgeColor(status);
   }
 }

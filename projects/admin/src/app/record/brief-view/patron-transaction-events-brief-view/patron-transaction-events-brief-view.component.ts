@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -51,19 +51,19 @@ export class PatronTransactionEventsBriefViewComponent implements ResultItem, On
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _organisationService - OrganisationService
-   * @param _patronTransactionService - PatronTransactionsService
+   * @param organisationService - OrganisationService
+   * @param patronTransactionService - PatronTransactionsService
    */
   constructor(
-    private _organisationService: OrganisationService,
-    private _patronTransactionService: PatronTransactionsService
+    private organisationService: OrganisationService,
+    private patronTransactionService: PatronTransactionsService
   ) { }
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.organisation = this._organisationService.organisation;
+    this.organisation = this.organisationService.organisation;
     this.event = new PatronTransactionEvent(this.record.metadata);
-    this._patronTransactionService
+    this.patronTransactionService
       .getPatronTransaction(this.event.parent.pid)
       .subscribe((parent: PatronTransaction) => {
         this.parent = parent;

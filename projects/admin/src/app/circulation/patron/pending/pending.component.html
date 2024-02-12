@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2020-2023 RERO
+ Copyright (C) 2020-2024 RERO
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published by
@@ -15,25 +15,27 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <section class="content">
-  <div *ngIf="loans && loans.length > 0; else noRequested">
-    <!-- HEADER -->
-    <div class="row p-2 mb-1 bg-dark rounded text-light">
-      <div class="col-2" translate>Item</div>
-      <div class="col-5" translate>Title</div>
-      <div class="col-2" translate>Request date</div>
-      <div class="col-2" translate>Expected availability</div>
-      <div class="col-1" translate>&nbsp;</div>
+  @if (loans && loans.length > 0) {
+    <div>
+      <!-- HEADER -->
+      <div class="row p-2 mb-1 bg-dark rounded text-light">
+        <div class="col-2" translate>Item</div>
+        <div class="col-5" translate>Title</div>
+        <div class="col-2" translate>Request date</div>
+        <div class="col-2" translate>Expected availability</div>
+        <div class="col-1" translate>&nbsp;</div>
+      </div>
+      @for (loan of loans; track loan) {
+        <div>
+          <admin-pending-item
+            class="row p-2 mb-1 border rounded align-middle"
+            [loan]="loan"
+            (cancelRequestEvent)="cancelRequest($event)"
+          ></admin-pending-item>
+        </div>
+      }
     </div>
-    <div *ngFor="let loan of loans">
-      <admin-pending-item
-        class="row p-2 mb-1 border rounded align-middle"
-        [loan]="loan"
-        (cancelRequestEvent)="cancelRequest($event)"
-      ></admin-pending-item>
-    </div>
-  </div>
+  } @else {
+    {{ 'No items' | translate }}
+  }
 </section>
-
-<ng-template #noRequested>
-  {{ 'No items' | translate }}
-</ng-template>

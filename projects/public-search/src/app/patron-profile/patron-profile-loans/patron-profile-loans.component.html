@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,20 +15,22 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <!-- Due date dropdown menu -->
-<section class="container pt-1" *ngIf="paginator.getRecordsCount() > 0">
-  <div class="row">
-    <div class="col-xs-12 col-md-7 col-lg-9"></div>
-    <ng-core-sort-list
-      class="col-xs-12 col-md-5 col-lg-3 pr-0"
-      [options]="[
-        {value:'duedate', label:'Due date (earliest)' | translate, icon:'fa-sort-numeric-asc'},
-        {value:'-duedate', label:'Due date (latest)' | translate, icon:'fa-sort-numeric-desc'}
-      ]"
-      [useIcon]="true"
-      (selectChange)="selectingSortCriteria($event)">
-    </ng-core-sort-list>
-  </div>
-</section>
+@if (paginator.getRecordsCount() > 0) {
+  <section class="container pt-1">
+    <div class="row">
+      <div class="col-xs-12 col-md-7 col-lg-9"></div>
+      <ng-core-sort-list
+        class="col-xs-12 col-md-5 col-lg-3 pr-0"
+        [options]="[
+          {value:'duedate', label:'Due date (earliest)' | translate, icon:'fa-sort-numeric-asc'},
+          {value:'-duedate', label:'Due date (latest)' | translate, icon:'fa-sort-numeric-desc'}
+        ]"
+        [useIcon]="true"
+        (selectChange)="selectingSortCriteria($event)">
+      </ng-core-sort-list>
+    </div>
+  </section>
+}
 
 <!-- header -->
 <section id="loans-section" class="container my-2">
@@ -40,29 +42,28 @@
     </div>
   </div>
 
-  <ng-container *ngIf="!loaded; else display">
-    <div class="row">
-      <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
-    </div>
-  </ng-container>
-  <ng-template #display>
-    <ng-container *ngIf="paginator.getRecordsCount() > 0; else noRecord">
+  @defer (when loaded) {
+    @if (paginator.getRecordsCount() > 0) {
       <div class="row border">
         <div class="container-fluid">
-          <public-search-patron-profile-loan
-            *ngFor="let loan of records"
-            [record]="loan"
-            id="loan-{{ loan.metadata.pid }}"
-            class="row border-bottom">
-          </public-search-patron-profile-loan>
+          @for (loan of records; track loan) {
+            <public-search-patron-profile-loan
+              [record]="loan"
+              id="loan-{{ loan.metadata.pid }}"
+              class="row border-bottom">
+            </public-search-patron-profile-loan>
+          }
         </div>
       </div>
       <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator" class="row"></shared-search-show-more-pager>
-    </ng-container>
-    <ng-template #noRecord>
+    } @else {
       <div class="row">
         <div class="col mt-2 font-weight-bold" translate>No loan</div>
       </div>
-    </ng-template>
-  </ng-template>
+    }
+  } @placeholder {
+    <div class="row">
+      <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
+    </div>
+  }
 </section>

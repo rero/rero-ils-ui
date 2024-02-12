@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -49,24 +49,24 @@ export class ItemTransactionsComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _loanService - LoanService
-   * @param _modalService - BsModalService
-   * @param _toastrService - ToastrService
-   * @param _translateService - TranslateService
-   * @param _userService - UserService
+   * @param loanService - LoanService
+   * @param modalService - BsModalService
+   * @param toastrService - ToastrService
+   * @param translateService - TranslateService
+   * @param userService - UserService
    */
   constructor(
-    private _loanService: LoanService,
-    private _modalService: BsModalService,
-    private _toastrService: ToastrService,
-    private _translateService: TranslateService,
-    private _userService: UserService
+    private loanService: LoanService,
+    private modalService: BsModalService,
+    private toastrService: ToastrService,
+    private translateService: TranslateService,
+    private userService: UserService
   ) { }
 
   /** OnInit hook */
   ngOnInit() {
-    const borrowedBy$ = this._loanService.borrowedBy$(this.itemPid);
-    const requestedBy$ = this._loanService.requestedBy$(this.itemPid);
+    const borrowedBy$ = this.loanService.borrowedBy$(this.itemPid);
+    const requestedBy$ = this.loanService.requestedBy$(this.itemPid);
     forkJoin([borrowedBy$, requestedBy$])
       .subscribe(([borrowedLoan, requestedLoans]) => {
         this.borrowedBy = borrowedLoan;
@@ -79,7 +79,7 @@ export class ItemTransactionsComponent implements OnInit {
    * Add request on this item
    */
   addRequest(): void {
-    const modalRef = this._modalService.show(ItemRequestComponent, {
+    const modalRef = this.modalService.show(ItemRequestComponent, {
       initialState: { recordPid: this.itemPid, recordType: 'item' }
     });
     modalRef.content.onSubmit
@@ -95,13 +95,13 @@ export class ItemTransactionsComponent implements OnInit {
    * @param transaction - request to cancel
    */
   cancelRequest(transaction: any): void {
-    this._loanService
-      .cancelLoan(this.itemPid, transaction.metadata.pid, this._userService.user.currentLibrary)
+    this.loanService
+      .cancelLoan(this.itemPid, transaction.metadata.pid, this.userService.user.currentLibrary)
       .subscribe((itemData: any) => {
-        const status = this._translateService.instant(itemData.status);
-        this._toastrService.warning(
-          this._translateService.instant('The pending request has been cancelled.'),
-          this._translateService.instant('Request')
+        const status = this.translateService.instant(itemData.status);
+        this.toastrService.warning(
+          this.translateService.instant('The pending request has been cancelled.'),
+          this.translateService.instant('Request')
         );
         this.requestEvent.emit();
         this._refreshRequestList();
@@ -113,12 +113,12 @@ export class ItemTransactionsComponent implements OnInit {
    * @param data - pickup location pid to change
    */
   updateRequestPickupLocation(data: any): void {
-    this._loanService
+    this.loanService
       .updateLoanPickupLocation(data.transaction.metadata.pid, data.pickupLocationPid)
       .subscribe(_ => {
-        this._toastrService.success(
-          this._translateService.instant('The pickup location has been changed.'),
-          this._translateService.instant('Request')
+        this.toastrService.success(
+          this.translateService.instant('The pickup location has been changed.'),
+          this.translateService.instant('Request')
         );
         this._refreshRequestList();
       });
@@ -129,7 +129,7 @@ export class ItemTransactionsComponent implements OnInit {
    * Refresh the request list
    */
   private _refreshRequestList(): void {
-    this._loanService
+    this.loanService
       .requestedBy$(this.itemPid)
       .subscribe(requestedLoans =>
         this.requestedBy = requestedLoans

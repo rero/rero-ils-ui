@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,43 +15,49 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<article *ngIf="record" class="row">
-  <shared-thumbnail [record]="record" [isSmall]="true" class="col-sm-12 col-md-4 col-lg-2"></shared-thumbnail>
-  <div class="col-sm-12 col-md-8 col-lg-10">
-    <!-- document title -->
-    <h4 class="mb-1">
-      <a target="_self" [href]="detailUrl.link | safeUrl">{{ record.metadata.title | mainTitle }}</a>
-    </h4>
-    <!-- contributions -->
-    <shared-contribution [contributions]="record.metadata?.contribution" [view]="viewcode"></shared-contribution>
-    <!-- provision activity publications -->
-    <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
-      <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>
-    </ul>
-    <!-- explanation -->
-    <div *ngIf="record.explanation">
-      <a class="badge badge-info collapsed"
-         data-toggle="collapse" href="#{{ 'score' + record.metadata.pid }}"
-         aria-expanded="false">
-         score: {{ record.explanation.value }}
-      </a>
-      <pre class="collapse border border-secondary mt-1" id="{{ 'score' + record.metadata.pid }}">
-        {{ record.explanation | json }}
-      </pre>
+@if (record) {
+  <article class="row">
+    <shared-thumbnail [record]="record" [isSmall]="true" class="col-sm-12 col-md-4 col-lg-2"></shared-thumbnail>
+    <div class="col-sm-12 col-md-8 col-lg-10">
+      <!-- document title -->
+      <h4 class="mb-1">
+        <a target="_self" [href]="detailUrl.link | safeUrl">{{ record.metadata.title | mainTitle }}</a>
+      </h4>
+      <!-- contributions -->
+      <shared-contribution [contributions]="record.metadata?.contribution" [view]="viewcode"></shared-contribution>
+      <!-- provision activity publications -->
+      @if (provisionActivityPublications.length > 0) {
+        <ul class="list-unstyled">
+          @for (publication of provisionActivityPublications; track publication) {
+            <li>{{ publication.value }}</li>
+          }
+        </ul>
+      }
+      <!-- explanation -->
+      @if (record.explanation) {
+        <a class="badge badge-info collapsed"
+            data-toggle="collapse" href="#{{ 'score' + record.metadata.pid }}"
+            aria-expanded="false">
+            score: {{ record.explanation.value }}
+        </a>
+        <pre class="collapse border border-secondary mt-1" id="{{ 'score' + record.metadata.pid }}">
+          {{ record.explanation | json }}
+        </pre>
+      }
+      <!-- part of -->
+      <shared-part-of [record]="record" [viewcode]="viewcode" [isPublicView]="true"></shared-part-of>
+      <!-- edition statement -->
+      @if (record.metadata.editionStatement) {
+        <ul class="list-unstyled mb-0">
+          @for (edition of record.metadata.editionStatement; track edition) {
+            <li>{{ edition._text[0].value }}</li>
+          }
+        </ul>
+      }
+      <!-- availability -->
+      @if (record.metadata.type !== 'ebook') {
+        <shared-availability recordType="document" [record]="record" [apiService]="documentApiService"></shared-availability>
+      }
     </div>
-    <!-- part of -->
-    <shared-part-of [record]="record" [viewcode]="viewcode" [isPublicView]="true"></shared-part-of>
-    <!-- edition statement -->
-    <ul class="list-unstyled mb-0" *ngIf="record.metadata.editionStatement">
-      <li *ngFor="let edition of record.metadata.editionStatement">{{ edition._text[0].value }}</li>
-    </ul>
-    <!-- availability -->
-    <div *ngIf="record.metadata.type !== 'ebook'">
-      <shared-availability
-        recordType="document"
-        [record]="record"
-        [apiService]="documentApiService"
-      ></shared-availability>
-    </div>
-  </div>
-</article>
+  </article>
+}

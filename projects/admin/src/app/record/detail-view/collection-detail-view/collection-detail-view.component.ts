@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,15 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'admin-collection-detail-view',
   templateUrl: './collection-detail-view.component.html'
 })
-export class CollectionDetailViewComponent implements DetailRecord {
+export class CollectionDetailViewComponent implements DetailRecord, OnInit {
 
   /** The observable resolving record data */
   record$: Observable<any>;
@@ -33,4 +34,8 @@ export class CollectionDetailViewComponent implements DetailRecord {
 
   /** The record */
   record: any;
+
+  ngOnInit(): void {
+    this.record$.subscribe((record: any) => this.record = record);
+  }
 }

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -52,15 +52,15 @@ export class SerialHoldingDetailViewComponent implements OnInit {
   allowIssueCreation: boolean = false;
 
   /** received issue counter : number of received issue to load/display */
-  private _receivedIssueCounter = 5;
+  private receivedIssueCounter = 5;
   /** prediction issue counter : number of prediction issue to load/display */
-  private _predictionIssueCounter = 3;
+  private predictionIssueCounter = 3;
 
 
   // GETTER & SETTER ==========================================================
   /** Is operation log enabled. */
   get isEnabledOperationLog(): boolean {
-    return this._operationLogsService.isLogVisible('holdings');
+    return this.operationLogsService.isLogVisible('holdings');
   }
 
   /** Determine if the `Local fields` tab should be displayed or not. */
@@ -68,10 +68,10 @@ export class SerialHoldingDetailViewComponent implements OnInit {
     /* DEV NOTES :: Why not using the `[permissions]` directive:
          As the permissions directive is set on a <tab> element and this <tab> is
          also a directive ; the tab content if correctly removed but not the
-         related tabset entry that is not DOM related. Using `*ngIf` the <tab>
+         related tabset entry that is not DOM related. Using `@if` the <tab>
          directive code isn't called and not tabset entry is created.
      */
-    return this._permissionsService.canAccess([
+    return this.permissionsService.canAccess([
       PERMISSIONS.LOFI_SEARCH,
       PERMISSIONS.LOFI_CREATE
     ]);
@@ -84,8 +84,8 @@ export class SerialHoldingDetailViewComponent implements OnInit {
   get showMoreIssuesCounter() {
     const additionalIssueCounter = this.totalReceivedItems - this.receivedItems.length;
     return (additionalIssueCounter === 1)
-      ? this._translateService.instant('1 hidden issue')
-      : this._translateService.instant('{{ counter }} hidden issues',
+      ? this.translateService.instant('1 hidden issue')
+      : this.translateService.instant('{{ counter }} hidden issues',
         {counter: additionalIssueCounter});
   }
 
@@ -93,22 +93,22 @@ export class SerialHoldingDetailViewComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _holdingService: HoldingService
-   * @param _recordService: RecordService
-   * @param _translateService: TranslateService,
-   * @param _toastrService: ToastrService
-   * @param _operationLogsService: OperationLogsService
-   * @param _permissionsService: PermissionsService
-   * @param _userService: UserService
+   * @param holdingService: HoldingService
+   * @param recordService: RecordService
+   * @param translateService: TranslateService,
+   * @param toastrService: ToastrService
+   * @param operationLogsService: OperationLogsService
+   * @param permissionsService: PermissionsService
+   * @param userService: UserService
    */
   constructor(
-    private _holdingService: HoldingsService,
-    private _recordService: RecordService,
-    private _translateService: TranslateService,
-    private _toastrService: ToastrService,
-    private _operationLogsService: OperationLogsService,
-    private _permissionsService: PermissionsService,
-    private _userService: UserService
+    private holdingService: HoldingsService,
+    private recordService: RecordService,
+    private translateService: TranslateService,
+    private toastrService: ToastrService,
+    private operationLogsService: OperationLogsService,
+    private permissionsService: PermissionsService,
+    private userService: UserService
   ) {}
 
   /** OnInit hook */
@@ -127,11 +127,11 @@ export class SerialHoldingDetailViewComponent implements OnInit {
    */
   showMore(type: string, increment: number = 10) {
     if (type === 'received') {
-      this._receivedIssueCounter += increment;
+      this.receivedIssueCounter += increment;
       this._loadReceivedItems();
     }
     if (type === 'prediction') {
-      this._predictionIssueCounter += increment;
+      this.predictionIssueCounter += increment;
       this._loadPrediction();
     }
   }
@@ -149,9 +149,9 @@ export class SerialHoldingDetailViewComponent implements OnInit {
    * This function allow to receive the next predicted issue for a serial holding
    */
   quickIssueReceive() {
-    this._holdingService.quickReceivedIssue(this.holding).subscribe(
+    this.holdingService.quickReceivedIssue(this.holding).subscribe(
       (result) => {
-        this._toastrService.success(this._translateService.instant('New issue created.'));
+        this.toastrService.success(this.translateService.instant('New issue created.'));
         // change item structure to have same structure as received items
         const item = {
           id: result.issue.pid,
@@ -163,7 +163,7 @@ export class SerialHoldingDetailViewComponent implements OnInit {
       },
       (error) => {
         const message = `[${error.status}-${error.statusText}] ${error.error.message}`;
-        this._toastrService.error(message, this._translateService.instant('Issue creation failed!'));
+        this.toastrService.error(message, this.translateService.instant('Issue creation failed!'));
       }
     );
   }
@@ -176,30 +176,30 @@ export class SerialHoldingDetailViewComponent implements OnInit {
    *   the holding library owner
    */
   private _computePermissions(): void {
-    if (this._permissionsService.canAccess(PERMISSIONS.ITEM_CREATE)) {
-      this.allowIssueCreation = this._userService.user.currentLibrary === this.holding.metadata.library.pid;
+    if (this.permissionsService.canAccess(PERMISSIONS.ITEM_CREATE)) {
+      this.allowIssueCreation = this.userService.user.currentLibrary === this.holding.metadata.library.pid;
     }
   }
 
   /** Load prediction issues corresponding to the holding. */
   private _loadPrediction() {
-    this._holdingService
-      .getHoldingPatternPreview(this.holding.id, this._predictionIssueCounter)
+    this.holdingService
+      .getHoldingPatternPreview(this.holding.id, this.predictionIssueCounter)
       .subscribe(predictions => this.predictionsItems = predictions);
   }
 
   /** Load received items corresponding to the holding. */
   private _loadReceivedItems() {
-    this._recordService
+    this.recordService
       .getRecords(
         'items',
         `holding.pid:${this.holding.id} AND NOT type:provisional`,
         1,
-        this._receivedIssueCounter,
+        this.receivedIssueCounter,
         [], {}, null,
         '-issue_sort_date'
       ).subscribe((result: Record) => {
-        this.totalReceivedItems = this._recordService.totalHits(result.hits.total);
+        this.totalReceivedItems = this.recordService.totalHits(result.hits.total);
         this.receivedItems = result.hits.hits;
       });
   }

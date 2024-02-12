@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -39,14 +39,14 @@ export class RemoteEntitiesDetailViewComponent implements DetailRecord {
 
   /**
    * Constructor
-   * @param _translateService - TranslateService
-   * @param _router - Router
-   * @param _appSettingsService - AppSettingsService
+   * @param translateService - TranslateService
+   * @param router - Router
+   * @param appSettingsService - AppSettingsService
    */
   constructor(
-    private _translateService: TranslateService,
-    private _router: Router,
-    private _appSettingsService: AppSettingsService
+    private translateService: TranslateService,
+    private router: Router,
+    private appSettingsService: AppSettingsService
   ) { }
 
   /**
@@ -59,32 +59,32 @@ export class RemoteEntitiesDetailViewComponent implements DetailRecord {
       case EntityType.PERSON:
         return {
           class: EntityTypeIcon.PERSON,
-          title: this._translateService.instant(EntityType.PERSON)
+          title: this.translateService.instant(EntityType.PERSON)
         };
       case EntityType.ORGANISATION:
         return {
           class: EntityTypeIcon.ORGANISATION,
-          title: this._translateService.instant(EntityType.ORGANISATION)
+          title: this.translateService.instant(EntityType.ORGANISATION)
         };
       case EntityType.TOPIC:
         return {
           class: EntityTypeIcon.TOPIC,
-          title: this._translateService.instant(EntityType.TOPIC)
+          title: this.translateService.instant(EntityType.TOPIC)
         };
       case EntityType.PLACE:
         return {
           class: EntityTypeIcon.PLACE,
-          title: this._translateService.instant(EntityType.PLACE)
+          title: this.translateService.instant(EntityType.PLACE)
         };
       case EntityType.TEMPORAL:
         return {
           class: EntityTypeIcon.TEMPORAL,
-          title: this._translateService.instant(EntityType.TEMPORAL)
+          title: this.translateService.instant(EntityType.TEMPORAL)
         };
       default:
         return {
           class: 'fa-question',
-          title: this._translateService.instant('Missing type')
+          title: this.translateService.instant('Missing type')
         };
     }
   }
@@ -97,15 +97,15 @@ export class RemoteEntitiesDetailViewComponent implements DetailRecord {
   search(metadata: any): void {
     let catalogKey = undefined;
     let catalogPid = undefined;
-    const orderKey = this.findOrderKeyByLanguage(this._translateService.currentLang);
-    this._appSettingsService.settings.agentLabelOrder[orderKey].forEach((source: string) => {
+    const orderKey = this.findOrderKeyByLanguage(this.translateService.currentLang);
+    this.appSettingsService.settings.agentLabelOrder[orderKey].forEach((source: string) => {
       if (metadata.sources.includes(source) && !catalogKey && !catalogPid) {
         catalogKey = source;
         catalogPid = metadata[source].pid;
       }
     });
     if (catalogKey && catalogPid) {
-      this._router.navigate(
+      this.router.navigate(
         ['/records', 'documents'],
         {
           queryParams: { q: Entity.generateSearchQuery(metadata.type, catalogKey, catalogPid), simple: '0' },
@@ -121,9 +121,9 @@ export class RemoteEntitiesDetailViewComponent implements DetailRecord {
    * @returns The matched language code
    */
   private findOrderKeyByLanguage(language: string): string {
-    let orderKey = Object.keys(this._appSettingsService.settings.agentLabelOrder).find((key: string) => key === language);
+    let orderKey = Object.keys(this.appSettingsService.settings.agentLabelOrder).find((key: string) => key === language);
     if (!orderKey) {
-      orderKey = this._appSettingsService.settings.agentLabelOrder.fallback;
+      orderKey = this.appSettingsService.settings.agentLabelOrder.fallback;
     }
 
     return orderKey;

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -25,94 +25,95 @@
 <section id="personal-data" class="px-3 mt-4">
   <dl class="container row">
     <!-- GENDER -->
-    <ng-container *ngIf="user.gender">
+    @if (user.gender) {
       <dt class="col-lg-3 col-sm-6 label-title" translate>Gender</dt>
       <dd class="col-lg-9 col-sm-6">{{ user.gender | translate }}</dd>
-    </ng-container>
+    }
     <!-- USERNAME -->
-    <ng-container *ngIf="user.username">
+    @if (user.username) {
       <dt class="col-lg-3 col-sm-6 label-title" translate>Username</dt>
       <dd class="col-lg-9 col-sm-6">{{ user.username }}</dd>
-    </ng-container>
+    }
     <!-- PRIMARY ADDRESS -->
-    <ng-container *ngIf="user.street || user.city || user.country">
+    @if (user.street || user.city || user.country) {
       <dt class="col-lg-3 col-sm-6 label-title" translate>Primary address</dt>
       <dd class="col-lg-9 col-sm-6">
-        <ng-container *ngIf="user.street">
+        @if (user.street) {
           {{ user.street }}<br>
-        </ng-container>
-        <ng-container *ngIf="user.city">
+        }
+        @if (user.city) {
           {{ user.postal_code }} {{ user.city }}<br>
-        </ng-container>
-        <ng-container *ngIf="user.country">
+        }
+        @if (user.country) {
           {{ ('country_' + user.country) | translate }}
-        </ng-container>
+        }
       </dd>
-    </ng-container>
+    }
     <!-- SECONDARY ADDRESS -->
-    <ng-container *ngIf="patron.second_address">
+    @if (patron.second_address) {
       <dt class="col-lg-3 col-sm-6 label-title" translate>Secondary address</dt>
       <dd class="col-lg-9 col-sm-6">
-        <ng-container *ngIf="patron.second_address.street">
+        @if (patron.second_address.street) {
           {{ patron.second_address.street }}<br>
-        </ng-container>
-        <ng-container *ngIf="patron.second_address.city">
+        }
+        @if (patron.second_address.city) {
           {{ patron.second_address.postal_code }} {{ patron.second_address.city }}<br>
-        </ng-container>
-        <ng-container *ngIf="patron.second_address.country">
+        }
+        @if (patron.second_address.country) {
           {{ ('country_' + patron.second_address.country) | translate }}
-        </ng-container>
+        }
       </dd>
-    </ng-container>
+    }
     <!-- HOME PHONE -->
-    <ng-container *ngIf="user.home_phone">
+    @if (user.home_phone) {
       <dt class="col-lg-3 col-sm-6 label-title" translate>Home phone</dt>
       <dd class="col-lg-9 col-sm-6">{{ user.home_phone }}</dd>
-    </ng-container>
+    }
     <!-- BUSINESS PHONE -->
-    <ng-container *ngIf="user.business_phone">
+    @if (user.business_phone) {
       <dt class="col-lg-3 col-sm-6 label-title" translate>Business phone</dt>
       <dd class="col-lg-9 col-sm-6">{{ user.business_phone }}</dd>
-    </ng-container>
+    }
     <!-- MOBILE PHONE -->
-    <ng-container *ngIf="user.mobile_phone">
+    @if (user.mobile_phone) {
       <dt class="col-lg-3 col-sm-6 label-title" translate>Mobile phone</dt>
       <dd class="col-lg-9 col-sm-6">{{ user.mobile_phone }}</dd>
-    </ng-container>
+    }
     <!-- OTHER PHONE -->
-    <ng-container *ngIf="user.other_phone">
+    @if (user.other_phone) {
       <dt class="col-lg-3 col-sm-6 label-title" translate>Other phone</dt>
       <dd class="col-lg-9 col-sm-6">{{ user.other_phone }}</dd>
-    </ng-container>
+    }
     <!-- EMAIL -->
-    <ng-container *ngIf="user.email">
+    @if (user.email) {
       <dt class="col-lg-3 col-sm-6 label-title" translate>Email</dt>
       <dd class="col-lg-9 col-sm-6">{{ user.email }}</dd>
-    </ng-container>
+    }
     <!-- PATRON BARCODE -->
-    <ng-container *ngIf="patron.patron.barcode">
+    @if (patron.patron.barcode) {
       <dt class="col-lg-3 col-sm-6 label-title" translate>Patron number</dt>
       <dd class="col-lg-9 col-sm-6">{{ patron.patron.barcode | join : ', ' }}</dd>
-    </ng-container>
+    }
     <!-- PATRON BARCODE -->
-    <ng-container *ngIf="patron.patron.expiration_date">
+    @if (patron.patron.expiration_date) {
       <dt class="col-lg-3 col-sm-6 label-title" translate>Account expiration</dt>
       <dd class="col-lg-9 col-sm-6">{{ patron.patron.expiration_date | dateTranslate: 'shortDate' }}</dd>
-    </ng-container>
+    }
     <!-- KEEP HISTORY -->
     <dt class="col-lg-3 col-sm-6 label-title" translate>Keep history</dt>
     <dd class="col-lg-9 col-sm-6">
       <i class="fa fa-circle" [ngClass]="{'text-success': user.keep_history, 'text-danger': !user.keep_history}"></i>
-      <ng-container *ngIf="!user.keep_history; else keep">
-        {{ 'The loan history is not saved.' | translate }}
-      </ng-container>
-      <ng-template #keep>
+      @if (user.keep_history) {
         {{ 'The loan history is saved for a maximum of six months. It is visible to you and the library staff.' | translate }}
-      </ng-template>
+      } @else {
+        {{ 'The loan history is not saved.' | translate }}
+      }
     </dd>
   </dl>
-  <div *ngIf="diabledButtonOnReadyOnly" class="mt-3 pl-3">
-    <a id="profile-edit" class="btn btn-sm btn-primary" href="/{{ viewcode }}/user/profile" translate>Edit</a>
-    <a id="profile-password-change" class="btn btn-sm btn-primary ml-2" href="/{{ viewcode }}/user/password" translate>Change my password</a>
-  </div>
+  @if (disabledButtonOnReadyOnly) {
+    <div class="mt-3 pl-3">
+      <a id="profile-edit" class="btn btn-sm btn-primary" href="/{{ viewcode }}/user/profile" translate>Edit</a>
+      <a id="profile-password-change" class="btn btn-sm btn-primary ml-2" href="/{{ viewcode }}/user/password" translate>Change my password</a>
+    </div>
+  }
 </section>

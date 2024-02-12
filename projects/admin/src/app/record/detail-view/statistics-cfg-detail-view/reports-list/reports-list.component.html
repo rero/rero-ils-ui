@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2023 RERO
+  Copyright (C) 2023-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,23 +15,26 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<table *ngIf="reports?.length; else noResult" class="mt-4 table table-striped">
-  <tbody>
-      <tr *ngFor="let report of reports">
-        <th>
-            <a class="pl-2" target="_blank" [href]="getReportUrl(report.metadata.pid)">
-            {{ report.created | dateTranslate: 'longDate' }}
-            <i class="pl-1 fa fa-external-link"></i>
-          </a>
-        </th>
-        <td class="text-right">
-          <a class="btn btn-link btn-outline-primary" [href]="getReportUrl(report.metadata.pid)+'?format=csv'">
-            <i class="fa fa-download"></i>
-          </a>
-        </td>
-      </tr>
-  </tbody>
-</table>
-<ng-template #noResult>
+@if (reports?.length) {
+  <table class="mt-4 table table-striped">
+    <tbody>
+      @for (report of reports; track report) {
+        <tr>
+          <th>
+              <a class="pl-2" target="_blank" [href]="getReportUrl(report.metadata.pid)">
+              {{ report.created | dateTranslate: 'longDate' }}
+              <i class="pl-1 fa fa-external-link"></i>
+            </a>
+          </th>
+          <td class="text-right">
+            <a class="btn btn-link btn-outline-primary" [href]="getReportUrl(report.metadata.pid)+'?format=csv'">
+              <i class="fa fa-download"></i>
+            </a>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+} @else {
   <p class="m-0 px-4 py-2 text-muted" translate>No result</p>
-</ng-template>
+}

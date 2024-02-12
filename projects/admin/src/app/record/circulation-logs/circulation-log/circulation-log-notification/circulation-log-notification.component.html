@@ -1,7 +1,7 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2023 RERO
-  Copyright (C) 2023 UCLouvain
+  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -25,12 +25,11 @@
   <div collapsedContent class="row">
     <!-- Library -->
     <div class="col-8 transaction-library">
-      <ng-container *ngIf="record.metadata.notification.sender_library_pid; else noLibrary">
+      @if (record.metadata.notification.sender_library_pid) {
         {{ record.metadata.notification.sender_library_pid | getRecord : 'libraries'  : 'field' : 'name' | async }}
-      </ng-container>
-      <ng-template #noLibrary>
-        <span class="no-data">---</span>
-      </ng-template>
+      } @else {
+        ---
+      }
     </div>
     <!-- Type of notification -->
     <div class="col-4">
@@ -41,12 +40,11 @@
     <!-- Library -->
     <dt class="col-3 label-title font-weight-bold transaction-library" translate>Library</dt>
     <dd class="col-9">
-      <ng-container *ngIf="record.metadata.notification.sender_library_pid; else noLibrary">
+      @if (record.metadata.notification.sender_library_pid) {
         {{ record.metadata.notification.sender_library_pid | getRecord : 'libraries'  : 'field' : 'name' | async }}
-      </ng-container>
-      <ng-template #noLibrary>
-        <span class="no-data">---</span>
-      </ng-template>
+      } @else {
+        ---
+      }
     </dd>
 
     <!-- Type of notification -->
@@ -57,11 +55,13 @@
     <dt class="col-3 label-title font-weight-bold transaction-email" translate>Recipients</dt>
     <dd class="col-9">
       <ul class="list-unstyled mb-0">
-        <li *ngFor="let recipient of record.metadata.notification.recipients">{{ recipient }}</li>
+        @for (recipient of record.metadata.notification.recipients; track recipient) {
+          <li>{{ recipient }}</li>
+        }
       </ul>
     </dd>
 
-    <ng-container *ngIf="notificationRecord">
+    @if (notificationRecord) {
       <!-- Process date -->
       <dt class="col-3 label-title font-weight-bold transaction-date" translate>Process date</dt>
       <dd class="col-9">{{ notificationRecord.process_date  | dateTranslate :'medium' }}</dd>
@@ -69,13 +69,12 @@
       <!-- Status -->
       <dt class="col-3 label-title font-weight-bold transaction-status" translate>Status</dt>
       <dd class="col-9">
-        <ng-container *ngIf="notificationRecord.notification_sent; else notSend">
+        @if (notificationRecord.notification_sent) {
           <i class="fa fa-circle text-success"></i> {{ 'message sent' | translate }}
-        </ng-container>
-        <ng-template #notSend>
+        } @else {
           <i class="fa fa-circle text-danger"></i> {{ 'message not sent' | translate }}
-        </ng-template>
+        }
       </dd>
-    </ng-container>
+    }
   </dl>
 </admin-circulation-log>

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,7 +42,7 @@ export class VendorDetailViewComponent implements DetailRecord {
    * @return boolean
    */
   get isEnabledOperationLog(): boolean {
-    return this._operationLogsService.isLogVisible('vendors');
+    return this.operationLogsService.isLogVisible('vendors');
   }
 
   /**
@@ -50,17 +50,17 @@ export class VendorDetailViewComponent implements DetailRecord {
    * @return string - language
    */
   get currentLanguage() {
-    return this._translateService.currentLang;
+    return this.translateService.currentLang;
   }
 
   /**
    * Constructor
-   * @param _translateService - TranslateService
-   * @param _operationLogsService - OperationLogsService
+   * @param translateService - TranslateService
+   * @param operationLogsService - OperationLogsService
    */
   constructor(
-    private _translateService: TranslateService,
-    private _operationLogsService: OperationLogsService
+    private translateService: TranslateService,
+    private operationLogsService: OperationLogsService
   ) {}
 
     filterContact(contacts: any[], type: string): any {

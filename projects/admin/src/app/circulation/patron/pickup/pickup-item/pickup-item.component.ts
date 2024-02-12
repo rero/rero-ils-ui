@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -37,19 +37,19 @@ export class PickupItemComponent implements OnInit {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _recordService - RecordService,
-   * @param _itemService - ItemService
+   * @param recordService - RecordService,
+   * @param itemService - ItemService
    */
   constructor(
-    private _recordService: RecordService,
-    private _itemService: ItemsService
+    private recordService: RecordService,
+    private itemService: ItemsService
   ) { }
 
   /** OnInit hook */
   ngOnInit() {
     if (this.loan) {
-      const item$ = this._itemService.getItem(this.loan.metadata.item.barcode, this.loan.metadata.paton_pid);
-      const doc$ = this._recordService.getRecord('documents', this.loan.metadata.item.document.pid, 1, {Accept: 'application/rero+json'});
+      const item$ = this.itemService.getItem(this.loan.metadata.item.barcode, this.loan.metadata.paton_pid);
+      const doc$ = this.recordService.getRecord('documents', this.loan.metadata.item.document.pid, 1, {Accept: 'application/rero+json'});
       forkJoin([item$, doc$]).subscribe(
         ([itemData, documentData]) => {
           this.item = itemData;

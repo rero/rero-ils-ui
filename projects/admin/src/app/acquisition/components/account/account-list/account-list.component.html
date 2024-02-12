@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2022 RERO
+  Copyright (C) 2021-2024 RERO
   Copyright (C) 2021-2022 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,15 +15,15 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-container *ngIf="organisation">
+@if (organisation) {
   <header class="d-flex align-items-baseline">
     <h1 translate>Acquisition accounts</h1>
     <div class="ml-auto">
       <!-- ADD BUTTON -->
       <a [routerLink]="['/', 'records', 'acq_accounts', 'new']"
-         [queryParams]="{ budget: organisation.current_budget_pid }"
-         [permissions]="permissions.ACAC_CREATE"
-         class="btn btn-sm btn-primary"
+          [queryParams]="{ budget: organisation.current_budget_pid }"
+          [permissions]="permissions.ACAC_CREATE"
+          class="btn btn-sm btn-primary"
       >
         <i class="fa fa-plus"></i> {{ 'Add' | translate }}
       </a>
@@ -36,8 +36,8 @@
       <!-- END EXPORT BUTTON -->
       <!-- TRANSFER BUTTON -->
       <a [routerLink]="['/', 'acquisition', 'accounts', 'transfer']"
-         [permissions]="permissions.ACAC_TRANSFER"
-         class="btn btn-sm btn-outline-primary"
+          [permissions]="permissions.ACAC_TRANSFER"
+          class="btn btn-sm btn-outline-primary"
       >
         <i class="fa fa-exchange"></i> {{ 'Transfer funds' | translate }} &hellip;
       </a>
@@ -54,15 +54,17 @@
       <div class="col-1 text-right" translate>Expenditure</div>
       <div class="col-1 text-right" translate>Balance</div>
     </div>
-    <div *ngIf="rootAccounts.length > 0; else noAccount">
-      <admin-account-brief-view
-        *ngFor="let account of rootAccounts"
+    @if (rootAccounts.length > 0) {
+      @for (account of rootAccounts; track account) {
+        <admin-account-brief-view
         [account]="account"
         [loadChildren]="true"
         (deleteAccount)="accountDeleted($event)"
-      >
-      </admin-account-brief-view>
-    </div>
-    <ng-template #noAccount>{{ 'No account available' | translate }}</ng-template>
+      ></admin-account-brief-view>
+      }
+    } @else {
+      {{ 'No account available' | translate }}
+    }
   </section>
-</ng-container>
+}
+

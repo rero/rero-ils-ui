@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,122 +15,153 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="container item px-0 mt-1 mb-2" *ngIf="item">
-  <div class="row">
-    <!-- METADATA COLUMN -->
-    <div class="col-10">
-      <div class="row">
-        <!-- Barcode -->
-        <div class="col-4 pl-5 font-weight-bold label-title" translate>Barcode</div>
-        <div class="col-8">
-          <admin-record-masked *ngIf="item.metadata._masked" [record]="item"></admin-record-masked>
-          <!-- Remove link if not current organisation -->
-          <ng-container *ngIf="permissions; else barcodeOnly">
-            <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
+@if (item) {
+  <div class="container item px-0 mt-1 mb-2">
+    <div class="row">
+      <!-- METADATA COLUMN -->
+      <div class="col-10">
+        <div class="row">
+          <!-- Barcode -->
+          <div class="col-4 pl-5 font-weight-bold label-title" translate>Barcode</div>
+          <div class="col-8">
+            @if (item.metadata._masked) {
+              <admin-record-masked [record]="item"></admin-record-masked>
+            }
+            <!-- Remove link if not current organisation -->
+            @if (permissions) {
+              <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
+                {{ item.metadata.barcode }}
+              </a>
+            } @else {
               {{ item.metadata.barcode }}
-            </a>
-          </ng-container>
-          <ng-template #barcodeOnly>{{ item.metadata.barcode }}</ng-template>
-        </div>
-        <!-- Unit -->
-        <ng-container *ngIf="item.metadata.enumerationAndChronology">
-          <div class="col-4 pl-5 font-weight-bold label-title" translate>Unit</div>
-          <div class="col-8">
-            {{ item.metadata.enumerationAndChronology }}
+            }
           </div>
-        </ng-container>
-        <!-- Call numbers -->
-        <div class="col-4 pl-5 font-weight-bold label-title" translate>Call number</div>
-        <div class="col-8">
-          <shared-inherited-call-number [item]="item"></shared-inherited-call-number>
-        </div>
-        <!-- Status -->
-        <div class="col-4 pl-5 font-weight-bold label-title" translate>Status</div>
-        <div class="col-8">
-          <shared-availability
-            recordType="item"
-            [record]="item"
-            [apiService]="itemApiService"
-          ></shared-availability>
-        </div>
-        <!-- URL -->
-        <ng-container *ngIf="item.metadata.url">
-          <div class="col-4 pl-5 font-weight-bold label-title" translate>Online access</div>
-          <div class="col-8"><a target="_blank" [href]="item.metadata.url | safeUrl">{{ item.metadata.url }}</a></div>
-        </ng-container>
-        <!-- TEMPORARY LOCATION -->
-        <ng-container *ngIf="item.metadata.temporary_location">
-          <div class="col-4 pl-5 font-weight-bold label-title" translate>Temporary location</div>
-          <div class="col-8">{{ item.metadata.temporary_location.name }}</div>
-        </ng-container>
-        <!-- ITEM IN COLLECTION (hide if not current organisation) -->
-        <ng-container *ngIf="permissions && item.metadata.pid | itemInCollection | async as collections">
-          <div class="col-4 pl-5 font-weight-bold label-title" translate>Exhibition/course</div>
+          <!-- Unit -->
+          @if (item.metadata.enumerationAndChronology) {
+            <div class="col-4 pl-5 font-weight-bold label-title" translate>Unit</div>
+            <div class="col-8">{{ item.metadata.enumerationAndChronology }}</div>
+          }
+          <!-- Call numbers -->
+          @if (item | itemHoldingsCallNumber | async; as callNumber) {
+            @if ((callNumber | json) !== ({ first: {}, second: {} } | json)) {
+              <div class="col-4 pl-5 font-weight-bold label-title" translate>Call number</div>
+              <div class="col-8">
+                <shared-inherited-call-number [item]="item"></shared-inherited-call-number>
+              </div>
+            }
+          }
+          <!-- Status -->
+          <div class="col-4 pl-5 font-weight-bold label-title" translate>Status</div>
           <div class="col-8">
-            <ng-container *ngFor="let collection of collections; let last=last">
-              <a [routerLink]="['/records', 'collections', 'detail', collection.metadata.pid]">{{ collection.metadata.title }}</a>
-              {{ last ? '' : '; ' }}
-            </ng-container>
+            <shared-availability
+              recordType="item"
+              [record]="item"
+              [apiService]="itemApiService"
+            ></shared-availability>
           </div>
-        </ng-container>
+          <!-- URL -->
+          @if (item.metadata.url) {
+            <div class="col-4 pl-5 font-weight-bold label-title" translate>Online access</div>
+            <div class="col-8"><a target="_blank" [href]="item.metadata.url | safeUrl">{{ item.metadata.url }}</a></div>
+          }
+          <!-- TEMPORARY LOCATION -->
+          @if (item.metadata.temporary_location) {
+            <div class="col-4 pl-5 font-weight-bold label-title" translate>Temporary location</div>
+            <div class="col-8">{{ item.metadata.temporary_location.name }}</div>
+          }
+          <!-- ITEM IN COLLECTION (hide if not current organisation) -->
+          @if (permissions && item.metadata.pid | itemInCollection | async; as collections) {
+            <div class="col-4 pl-5 font-weight-bold label-title" translate>Exhibition/course</div>
+            <div class="col-8">
+              @for (collection of collections; track collection; let last=$last) {
+                <a [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]">
+                  {{ $any(collection).metadata.title }}
+                </a>{{ last ? '' : '; ' }}
+              }
+            </div>
+          }
+        </div>
+        <!-- (hide if not current organisation) -->
+        @if (permissions) {
+          @for (note of item.metadata.notes; track note) {
+            <admin-holding-item-note [note]="note"></admin-holding-item-note>
+          }
+          <admin-holding-item-temporary-item-type [record]="item"></admin-holding-item-temporary-item-type>
+        }
       </div>
-      <!-- (hide if not current organisation) -->
-      <ng-container *ngIf="permissions">
-        <admin-holding-item-note [note]="note" *ngFor="let note of item.metadata.notes"></admin-holding-item-note>
-        <admin-holding-item-temporary-item-type [record]="item"></admin-holding-item-temporary-item-type>
-      </ng-container>
-    </div>
-    <!-- ACTIONS BUTTONS -->
-    <div class="col-2 text-right" name="buttons">
-      <ng-container *ngIf="permissions; else noAction">
-        <button *ngIf="permissions?.canRequest?.can; else notRequest"
-                type="button" class="btn btn-sm btn-outline-primary "
-                (click)="addRequest(item.metadata.pid, 'item')"
+      <!-- ACTIONS BUTTONS -->
+      <div class="col-2 text-right" name="buttons">
+        @if (permissions) {
+          @if (permissions?.canRequest?.can) {
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-primary "
+              (click)="addRequest(item.metadata.pid, 'item')"
+              title="{{ 'Item request' | translate }}"
+              name="request"
+            >
+              <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+            </button>
+          } @else {
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-primary disabled"
                 title="{{ 'Item request' | translate }}"
-                name="request">
-          <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-        </button>
-        <ng-template #notRequest>
-          <button type="button" class="btn btn-sm btn-outline-primary disabled"
-                  title="{{ 'Item request' | translate }}"
-                  [popover]="tolTemplate" triggers="mouseenter:mouseleave"
-                  name="request">
-            <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-          </button>
-          <ng-template #tolTemplate><div [innerHtml]="cannotRequestInfoMessage | nl2br"></div></ng-template>
-        </ng-template>
-        <button *ngIf="permissions?.switchLocation?.can"
-                type="button" class="btn btn-sm btn-outline-primary ml-1"
-                title="{{ 'Switch location' | translate }}"
-                [routerLink]="['/records', 'items', 'switch_location', item.metadata.pid]"
-                name="switch location">
-          <i class="fa fa-random"></i>
-        </button>
-        <button *ngIf="permissions?.update?.can"
-                type="button" class="btn btn-sm btn-outline-primary ml-1"
-                title="{{ 'Edit' | translate }}"
-                [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
-                name="edit">
-          <i class="fa fa-pencil"></i>
-        </button>
-        <button *ngIf="permissions?.delete?.can; else deleteInfo"
-                type="button" class="btn btn-outline-danger btn-sm ml-1"
-                title="{{ 'Delete' | translate }}"
-                (click)="delete(item.metadata.pid)"
-                name="delete">
-          <i class="fa fa-trash"></i>
-        </button>
-        <ng-template #deleteInfo>
-          <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"
-                  title="{{ 'Delete' | translate }}"
-                  [popover]="tolTemplate" triggers="mouseenter:mouseleave"
-                  name="delete">
-            <i class="fa fa-trash"></i>
-          </button>
-          <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
-        </ng-template>
-      </ng-container>
-      <ng-template #noAction>&nbsp;</ng-template>
+                [popover]="tolTemplate"
+                triggers="mouseenter:mouseleave"
+                name="request"
+              >
+                <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+              </button>
+              <ng-template #tolTemplate><div [innerHtml]="cannotRequestInfoMessage | nl2br"></div></ng-template>
+          }
+          @if (permissions?.switchLocation?.can) {
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-primary ml-1"
+              title="{{ 'Switch location' | translate }}"
+              [routerLink]="['/records', 'items', 'switch_location', item.metadata.pid]"
+              name="switch location"
+            >
+              <i class="fa fa-random"></i>
+            </button>
+          }
+          @if (permissions?.update?.can) {
+            <button
+              type="button" class="btn btn-sm btn-outline-primary ml-1"
+              title="{{ 'Edit' | translate }}"
+              [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
+              name="edit"
+            >
+              <i class="fa fa-pencil"></i>
+            </button>
+          }
+          @if (permissions?.delete?.can) {
+            <button
+              type="button" class="btn btn-outline-danger btn-sm ml-1"
+              title="{{ 'Delete' | translate }}"
+              (click)="delete(item.metadata.pid)"
+              name="delete"
+            >
+              <i class="fa fa-trash"></i>
+            </button>
+          } @else {
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger ml-1 disabled"
+              title="{{ 'Delete' | translate }}"
+              [popover]="tolTemplate"
+              triggers="mouseenter:mouseleave"
+              name="delete"
+            >
+              <i class="fa fa-trash"></i>
+            </button>
+            <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
+          }
+        } @else {
+          &nbsp;
+        }
+      </div>
     </div>
   </div>
-</div>
+}

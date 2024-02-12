@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020 RERO
+  Copyright (C) 2020-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,70 +14,68 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<ng-container *ngIf="record$ | async as record">
-  <h1 id="collection-title" class="d-inline mr-2">{{ record.metadata.title }}</h1>
-  <section class="mt-2" id="subject" *ngIf="record.metadata.subjects">
-  <ng-container *ngFor="let subject of record.metadata.subjects">
-    <span class="badge badge-secondary mr-1 ng-star-inserted">
-      <i class="fa fa-tag"></i> {{ subject.name }}
-    </span>
-  </ng-container>
-  </section>
-  <section class="mt-2" id="collection">
-    <div *ngIf="record.metadata.description">
-      <span class="font-weight-bold" translate>Description</span>:
-      <span id="type" [innerHtml]="record.metadata.description | nl2br"></span>
-    </div>
-    <div *ngIf="record.metadata.teachers">
-      <span class="font-weight-bold" translate>Teachers</span>:
-      <span id="teacher" *ngIf="record.metadata.teachers">
-        <ng-container *ngFor="let teacher of record.metadata.teachers; let last = last">
-        {{ teacher.name }}
-        {{ last ? '' : ', ' }}
-        </ng-container>
-      </span>
-    </div>
-    <div *ngIf="record.metadata.collection_id">
-      <span class="font-weight-bold" translate>Collection ID</span>:
-      <span id="collection-id">{{ record.metadata.collection_id }}</span>
-    </div>
-    <div *ngIf="record.metadata.collection_type">
-      <span class="font-weight-bold" translate>Type</span>:
-      <span id="collection-type">{{ record.metadata.collection_type }}</span>
-    </div>
-    <div *ngIf="record.metadata.libraries">
-      <span class="font-weight-bold" translate>Libraries</span>:
-      <ng-container *ngIf="record.metadata.libraries">
-        <span
-          *ngFor="let library of record.metadata.libraries; let last=last"
-          id="library-{{ library.pid }}"
-        >
-          {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
-          {{ last ? '' : '; ' }}
+@if (record) {
+  <h1 id="collection-title" class="mb-3 mr-2">{{ record.metadata.title }}</h1>
+  @if (record.metadata.subjects) {
+    <section class="mt-2" id="subject">
+      @for(subject of record.metadata.subjects; track subject) {
+        <span class="badge badge-secondary mr-1 ng-star-inserted">
+          <i class="fa fa-tag"></i> {{ subject.name }}
         </span>
-      </ng-container>
-    </div>
-    <div>
-      <span class="font-weight-bold" translate>Date</span>:
-      <span id="start-end-date">
+      }
+    </section>
+  }
+  <section class="mt-2" id="collection">
+    <dl class="row">
+      @if (record.metadata.description) {
+        <dt class="col-3 py-0 label-title" translate>Description</dt>
+        <dd class="col-9 py-0 mb-0" [innerHtml]="record.metadata.description | nl2br"></dd>
+      }
+      @if (record.metadata.teachers) {
+        <dt class="col-3 py-0 label-title" translate>Teachers</dt>
+        <dd class="col-9 py-0 mb-0">
+          @for (teacher of record.metadata.teachers; track teacher; let last = $last) {
+            {{ teacher.name }} {{ last ? '' : ', ' }}
+          }
+        </dd>
+      }
+      @if (record.metadata.collection_id) {
+        <dt class="col-3 py-0 label-title" translate>Collection ID</dt>
+        <dd class="col-9 py-0 mb-0">{{ record.metadata.collection_id }}</dd>
+      }
+      @if (record.metadata.collection_type) {
+        <dt class="col-3 py-0 label-title" translate>Type</dt>
+        <dd class="col-9 py-0 mb-0">{{ record.metadata.collection_type }}</dd>
+      }
+      @if (record.metadata.libraries) {
+        <dt class="col-3 py-0 label-title" translate>Libraries</dt>
+        <dd class="col-9 py-0 mb-0">
+          <ul class="list-unstyled mb-0">
+            @for (library of record.metadata.libraries; track library; let last=$last) {
+              <li>{{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</li>
+            }
+          </ul>
+        </dd>
+      }
+      <dt class="col-3 py-0 label-title" translate>Date</dt>
+      <dd class="col-9 py-0 mb-0">
         {{ record.metadata.start_date | dateTranslate: 'mediumDate' }}
         - {{ record.metadata.end_date | dateTranslate: 'mediumDate' }}
-      </span>
-    </div>
-    <div>
-      <span class="font-weight-bold" translate>Status</span>:
-      <i class="fa fa-circle mr-1 text-{{ record.metadata.published ? 'success' : 'danger' }}" aria-hidden="true"></i>
-      <ng-container *ngIf="record.metadata.published; else unpublished">
-        <span translate>published</span>
-      </ng-container>
-      <ng-template #unpublished>
-        <span translate>unpublished</span>
-      </ng-template>
-    </div>
+      </dd>
+      <dt class="col-3 py-0 label-title" translate>Status</dt>
+      <dd class="col-9 py-0 mb-0">
+        <i class="fa fa-circle mr-1 text-{{ record.metadata.published ? 'success' : 'danger' }}" aria-hidden="true"></i>
+        @if (record.metadata.published) {
+          {{ 'published' | translate }}
+        } @else {
+          {{ 'unpublished' | translate }}
+        }
+      </dd>
+    </dl>
   </section>
 
   <section id="items">
     <admin-collection-items [items]="record.metadata.items"></admin-collection-items>
   </section>
-</ng-container>
+}
+

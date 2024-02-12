@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,19 +15,19 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<article *ngIf="record" class="card flex-row border-0">
-  <shared-thumbnail
-    class="col-sm-2"
-    [record]="record"
-    isSmall=true>
-  </shared-thumbnail>
-  <div class="card-body w-100 py-0">
-    <h5 class="mb-0 card-title">
-      <a [routerLink]="['/records', type.startsWith('import_') ? type: 'documents', 'detail', record.metadata.pid]">
-        {{ record.metadata.title | mainTitle }}
-      </a>
-    </h5>
-    <ng-container class="card-text">
+@if (record) {
+  <article class="card flex-row border-0">
+    <shared-thumbnail
+      class="col-sm-2"
+      [record]="record"
+      isSmall=true>
+    </shared-thumbnail>
+    <div class="card-body w-100 py-0">
+      <h5 class="mb-0 card-title">
+        <a [routerLink]="['/records', type.startsWith('import_') ? type: 'documents', 'detail', record.metadata.pid]">
+          {{ record.metadata.title | mainTitle }}
+        </a>
+      </h5>
       <!-- contribution -->
       <shared-contribution
         [contributions]="record.metadata?.contribution"
@@ -35,23 +35,31 @@
         [activateLink]="!type.startsWith('import_')"
       ></shared-contribution>
       <!-- provision activity publications -->
-      <ul class="list-unstyled" *ngIf="provisionActivityPublications.length > 0">
-        <li *ngFor="let publication of provisionActivityPublications">{{ publication.value }}</li>
-      </ul>
+      @if (provisionActivityPublications.length > 0) {
+        <ul class="list-unstyled">
+          @for (publication of provisionActivityPublications; track publication) {
+            <li>{{ publication.value }}</li>
+          }
+        </ul>
+      }
       <!-- shared part -->
       <shared-part-of [record]="record"></shared-part-of>
       <!-- edition statement -->
-      <ul class="list-unstyled mb-0" *ngIf="record.metadata.editionStatement">
-        <li *ngFor="let edition of record.metadata.editionStatement">{{ edition._text[0].value }}</li>
-      </ul>
+      @if (record.metadata.editionStatement) {
+        <ul class="list-unstyled mb-0">
+          @for (edition of record.metadata.editionStatement; track edition) {
+            <li>{{ edition._text[0].value }}</li>
+          }
+        </ul>
+      }
       <!-- availability -->
-      <ng-container *ngIf="!type.startsWith('import_') && record.metadata.type !== 'ebook'">
+      @if (!type.startsWith('import_') && record.metadata.type !== 'ebook') {
         <shared-availability
           recordType="document"
           [record]="record"
           [apiService]="documentApiService"
         ></shared-availability>
-      </ng-container>
-    </ng-container>
-  </div>
-</article>
+      }
+    </div>
+  </article>
+}

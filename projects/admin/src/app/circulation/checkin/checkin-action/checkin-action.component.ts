@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,9 +28,9 @@ export class CheckinActionComponent {
 
   /**
    * Constructor
-   * @param _modalService - BsModalService
+   * @param modalService - BsModalService
    */
-  constructor(private _modalService: BsModalService) { }
+  constructor(private modalService: BsModalService) { }
 
   /**
    * Set checkin action selected by user
@@ -49,6 +49,6 @@ export class CheckinActionComponent {
 
   /** Close modal box */
   closeModal() {
-    this._modalService.hide();
+    this.modalService.hide();
   }
 }

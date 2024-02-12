@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -47,13 +47,13 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   pickupLocations: any;
 
   /** Pickup default $ref */
-  private _pickupDefaultValue: string;
+  private pickupDefaultValue: string;
   /** Current user */
-  private _currentUser: any;
+  private currentUser: any;
   /** Pickup locations observable reference */
-  private _pickupLocations$: any;
+  private pickupLocations$: any;
   /** Authorized Transaction Type to load pickup locations */
-  private _authorizedTypeToLoadPickupLocations = [
+  private authorizedTypeToLoadPickupLocations = [
     'loan_request'
   ];
 
@@ -67,30 +67,30 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
     if (location != null) {
       return location.label;
     }
-    return this._translateService.instant('No pickup location');
+    return this.translateService.instant('No pickup location');
   }
 
 
   // CONSTRUCTOR & HOOKS ==================================================================
   /**
    * constructor
-   * @param _userService - User service
-   * @param _translateService - TranslateService
-   * @param _itemService - ItemsService
-   * @param _loanService - LoanService
+   * @param userService - User service
+   * @param translateService - TranslateService
+   * @param itemService - ItemsService
+   * @param loanService - LoanService
    */
   constructor(
-    private _userService: UserService,
-    private _translateService: TranslateService,
-    private _itemService: ItemsService,
-    private _loanService: LoanService
+    private userService: UserService,
+    private translateService: TranslateService,
+    private itemService: ItemsService,
+    private loanService: LoanService
   ) {}
 
   /** OnInit hook */
   ngOnInit() {
-    this._currentUser = this._userService.user;
-    if (this._authorizedTypeToLoadPickupLocations.includes(this.type)) {
-      this._pickupLocations$ = this.getPickupLocations().subscribe((pickups) => {
+    this.currentUser = this.userService.user;
+    if (this.authorizedTypeToLoadPickupLocations.includes(this.type)) {
+      this.pickupLocations$ = this.getPickupLocations().subscribe((pickups) => {
         this.pickupLocations = pickups;
       });
     }
@@ -98,8 +98,8 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
 
   /** OnDestroy hook */
   ngOnDestroy() {
-    if (this._authorizedTypeToLoadPickupLocations.includes(this.type)) {
-      this._pickupLocations$.unsubscribe();
+    if (this.authorizedTypeToLoadPickupLocations.includes(this.type)) {
+      this.pickupLocations$.unsubscribe();
     }
   }
 
@@ -110,7 +110,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
    * @returns true if it is possible to cancel a loan
    */
   canCancelRequest(): boolean {
-    return this._loanService.canCancelRequest(this.transaction);
+    return this.loanService.canCancelRequest(this.transaction);
   }
 
   /**
@@ -118,12 +118,12 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
    * @returns true if it is possible to update pickup location.
    */
   canUpdateRequestPickupLocation(): boolean {
-    return this._loanService.canUpdateRequestPickupLocation(this.transaction);
+    return this.loanService.canUpdateRequestPickupLocation(this.transaction);
   }
 
   /** Show a confirmation dialog box for cancel request. */
   showCancelRequestDialog(): void {
-    this._loanService.cancelRequestDialog().subscribe((confirm: boolean) => {
+    this.loanService.cancelRequestDialog().subscribe((confirm: boolean) => {
       if (confirm) {
         this.emitCancelRequest();
       }
@@ -146,11 +146,11 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
 
   /** Get pickups by organisation pid */
   private getPickupLocations(): Observable<{label: string, value: string}> {
-    const currentLibrary = this._currentUser.currentLibrary;
-    return this._itemService.getPickupLocations(this.itemPid).pipe(
+    const { currentLibrary } = this.currentUser;
+    return this.itemService.getPickupLocations(this.itemPid).pipe(
         map(locations => locations.map((loc: any) => {
-          if (this._pickupDefaultValue === undefined && loc.library.pid === currentLibrary) {
-            this._pickupDefaultValue = loc.pid;
+          if (this.pickupDefaultValue === undefined && loc.library.pid === currentLibrary) {
+            this.pickupDefaultValue = loc.pid;
           }
           return {
             label: loc.pickup_name || loc.name,

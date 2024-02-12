@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
- * Copyright (C) 2022 UCLouvain
+ * Copyright (C) 2022-2024 RERO
+ * Copyright (C) 2022-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -37,13 +37,13 @@ table {
   }
 
   .vertical-header {
-    text-align: center;
+    text-align: left;
   }
 
   .vertical-header span {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
-    text-align: center;
+    text-align: left;
     max-height: 200px;
   }
 

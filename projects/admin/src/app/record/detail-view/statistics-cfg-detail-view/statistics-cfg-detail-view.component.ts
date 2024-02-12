@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023 RERO
+ * Copyright (C) 2023-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,26 +41,26 @@ export class StatisticsCfgDetailViewComponent
   liveData: any = null;
 
   /** Subscription to (un)follow the record$ Observable */
-  private _subscriptions = new Subscription();
+  private subscriptions = new Subscription();
 
   /**
    * Constructor
    *
-   * @param _http - HttpClient
-   * @param _apiService = ApiService
+   * @param http - HttpClient
+   * @param apiService = ApiService
    */
-  constructor(private _http: HttpClient, private _apiService: ApiService) {}
+  constructor(private http: HttpClient, private apiService: ApiService) {}
 
   /** OnInit hook */
   ngOnInit() {
-    this._subscriptions = this.record$.subscribe((record) => {
+    this.subscriptions = this.record$.subscribe((record) => {
       this.record = record;
     });
   }
 
   /** onDestroy hook */
   ngOnDestroy(): void {
-    this._subscriptions.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   /** Preview values corresponding to the current configuration. */
@@ -69,9 +69,9 @@ export class StatisticsCfgDetailViewComponent
     if (this.liveData != null) {
       return;
     }
-    const pid = this.record.metadata.pid;
-    const baseUrl = this._apiService.endpointPrefix;
-    this._http
+    const { pid } = this.record.metadata;
+    const baseUrl = this.apiService.endpointPrefix;
+    this.http
       .get(`${baseUrl}/stats_cfg/live/${pid}`)
       .subscribe((res) => (this.liveData = res));
   }

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,25 +35,23 @@ export class HoldingDetailViewComponent implements OnInit , OnDestroy, DetailRec
   record: any;
 
   /** The observer to the record observable */
-  private _recordObs: Subscription;
+  private recordObs: Subscription;
 
   /**
    * Constructor
-   * @param _router: Router
+   * @param router: Router
    */
-  constructor(
-    private _router: Router
-  ) { }
+  constructor(private router: Router) {}
 
   /**
    * Init hook
    */
   ngOnInit() {
-    this._recordObs = this.record$.subscribe(record => {
+    this.recordObs = this.record$.subscribe(record => {
       this.record = record;
       // TODO : At this time, only 'serial' holding should be displayed. Then redirect user to the document detail view
       if (this.record.metadata.holdings_type !== 'serial') {
-        this._router.navigate(['/errors/403'], { skipLocationChange: true });
+        this.router.navigate(['/errors/403'], { skipLocationChange: true });
       }
     });
   }
@@ -62,7 +60,7 @@ export class HoldingDetailViewComponent implements OnInit , OnDestroy, DetailRec
    * Destroy hook
    */
   ngOnDestroy(): void {
-    this._recordObs.unsubscribe();
+    this.recordObs.unsubscribe();
   }
 
 }

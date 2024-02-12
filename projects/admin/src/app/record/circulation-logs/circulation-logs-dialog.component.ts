@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2022 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -52,9 +52,9 @@ export class CirculationLogsDialogComponent {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _modalService - BsModalService
+   * @param modalService - BsModalService
    */
-  constructor(private _modalService: BsModalService) {}
+  constructor(private modalService: BsModalService) {}
 
   // COMPONENT FUNCTIONS ======================================================
   /** Open operation logs dialog */
@@ -67,7 +67,7 @@ export class CirculationLogsDialogComponent {
         resourceType: this.resourceType
       }
     };
-    this.bsModalRef = this._modalService.show(CirculationLogsComponent, config);
+    this.bsModalRef = this.modalService.show(CirculationLogsComponent, config);
     this.bsModalRef.content.dialogClose$.subscribe((value: boolean) => {
       if (value) {
         this.bsModalRef.hide();

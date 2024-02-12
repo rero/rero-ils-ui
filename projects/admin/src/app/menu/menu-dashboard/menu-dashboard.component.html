@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020 RERO
+  Copyright (C) 2020-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,29 +14,35 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="row justify-content-center" *ngIf="menu">
-  <ng-container *ngFor="let item of menu.getChildren()">
-    <div class="col-lg-2">
-      <div class="card mb-2" [attr.id]="item.getAttribute('id') | idAttribute:{prefix: 'dashboard'}">
-        <div class="card-header bg-dark text-white text-wrap">
-          <i *ngIf="item.hasExtra('iconClass')" [ngClass]="item.getExtra('iconClass')"></i>
-          {{ item.getName() }}
-        </div>
-        <div class="list-group list-group-flush">
-          <ng-container *ngFor="let subItem of item.getChildren()">
-            <a
-              class="list-group-item list-group-item-action text-wrap border-bottom-0 my-0 py-2"
-              [attr.id]="subItem.getAttribute('id') | idAttribute:{prefix: 'dashboard'}"
-              [attr.target]="subItem.getAttribute('target')"
-              [routerLink]="subItem.getRouterLink()"
-              [queryParams]="subItem.getQueryParams() ? subItem.getQueryParams() : {}"
-            >
-              <i *ngIf="subItem.hasExtra('iconClass')" [ngClass]="subItem.getExtra('iconClass')"></i>
-              {{ subItem.getName() }}
-            </a>
-          </ng-container>
+@if (menu) {
+  <div class="row justify-content-center">
+    @for (item of menu.getChildren(); track item) {
+      <div class="col-lg-2">
+        <div class="card mb-2" [attr.id]="item.getAttribute('id') | idAttribute:{prefix: 'dashboard'}">
+          <div class="card-header bg-dark text-white text-wrap">
+            @if (item.hasExtra('iconClass')) {
+              <i [ngClass]="item.getExtra('iconClass')"></i>
+            }
+            {{ item.getName() }}
+          </div>
+          <div class="list-group list-group-flush">
+            @for (subItem of item.getChildren(); track subItem) {
+              <a
+                class="list-group-item list-group-item-action text-wrap border-bottom-0 my-0 py-2"
+                [attr.id]="subItem.getAttribute('id') | idAttribute:{prefix: 'dashboard'}"
+                [attr.target]="subItem.getAttribute('target')"
+                [routerLink]="subItem.getRouterLink()"
+                [queryParams]="subItem.getQueryParams() ? subItem.getQueryParams() : {}"
+              >
+                @if (subItem.hasExtra('iconClass')) {
+                  <i [ngClass]="subItem.getExtra('iconClass')"></i>
+                }
+                {{ subItem.getName() }}
+              </a>
+            }
+          </div>
         </div>
       </div>
-    </div>
-  </ng-container>
-</div>
+    }
+  </div>
+}

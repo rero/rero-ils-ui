@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -64,13 +64,13 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
    * @return boolean
    */
   get isEnabledOperationLog(): boolean {
-    return this._operationLogsService.isLogVisible('documents');
+    return this.operationLogsService.isLogVisible('documents');
   }
 
   /** External identifier for imported record. */
   get pid(): string | null {
-    if (this._activatedRouter.snapshot && this._activatedRouter.snapshot.params && this._activatedRouter.snapshot.params.pid !== null) {
-      return this._activatedRouter.snapshot.params.pid;
+    if (this.activatedRouter.snapshot && this.activatedRouter.snapshot.params && this.activatedRouter.snapshot.params.pid !== null) {
+      return this.activatedRouter.snapshot.params.pid;
     }
     return null;
   }
@@ -80,7 +80,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
    * @return string - language
    */
   get currentLanguage(): string {
-    return this._translateService.currentLang;
+    return this.translateService.currentLang;
   }
 
   /** return all available permissions for current user */
@@ -91,44 +91,44 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
    * @return boolean - if False, hide the local fields tab
    */
   get showHideLocalFieldsTab(): boolean {
-    return this._permissionsService.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE]);
+    return this.permissionsService.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE]);
   }
 
   /**
    * Constructor
-   * @param _translateService - TranslateService to translate some strings.
-   * @param _activatedRouter - ActivatedRoute to get url parameters.
-   * @param _recordService - RecordService to the MARC version for the record.
-   * @param _operationLogsService - OperationLogsService
-   * @param _documentApiService - DocumentApiService
-   * @param _permissionsService - PermissionsService
+   * @param translateService - TranslateService to translate some strings.
+   * @param activatedRouter - ActivatedRoute to get url parameters.
+   * @param recordService - RecordService to the MARC version for the record.
+   * @param operationLogsService - OperationLogsService
+   * @param documentApiService - DocumentApiService
+   * @param permissionsService - PermissionsService
    */
   constructor(
-    private _translateService: TranslateService,
-    private _activatedRouter: ActivatedRoute,
-    private _recordService: RecordService,
-    private _operationLogsService: OperationLogsService,
-    private _documentApiService: DocumentApiService,
-    private _permissionsService: PermissionsService
+    private translateService: TranslateService,
+    private activatedRouter: ActivatedRoute,
+    private recordService: RecordService,
+    private operationLogsService: OperationLogsService,
+    private documentApiService: DocumentApiService,
+    private permissionsService: PermissionsService
   ) { }
 
   /** On init hook */
   ngOnInit(): void {
-    this.activateLink = !this._activatedRouter.snapshot.params.type.startsWith('import_');
+    this.activateLink = !this.activatedRouter.snapshot.params.type.startsWith('import_');
     this._recordObs = this.record$.pipe(
       switchMap((record: any) => {
         this.record = record;
         this.relatedResources = this.processRelatedResources(record);
         if (record != null && record.metadata != null && this.record.metadata.pid == null) {
-          this.marc$ = this._recordService.getRecord(
-            this._activatedRouter.snapshot.params.type, this.pid, 0, {
+          this.marc$ = this.recordService.getRecord(
+            this.activatedRouter.snapshot.params.type, this.pid, 0, {
             Accept: 'application/marc+json, application/json'
           });
         } else {
           this.marc$ = of(null);
         }
         return this.pid
-          ? this._documentApiService.getLinkedDocumentsCount(this.pid)
+          ? this.documentApiService.getLinkedDocumentsCount(this.pid)
           : of(0);
       })
     ).subscribe((count: number) => {
@@ -162,15 +162,15 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
       numbering.push(num.year);
     }
     if (num.volume) {
-      const volume = [this._translateService.instant('vol'), num.volume];
+      const volume = [this.translateService.instant('vol'), num.volume];
       numbering.push(volume.join('. '));
     }
     if (num.issue) {
-      const issue = [this._translateService.instant('nr'), num.issue];
+      const issue = [this.translateService.instant('nr'), num.issue];
       numbering.push(issue.join('. '));
     }
     if (num.pages) {
-      const pages = [this._translateService.instant('p'), num.pages];
+      const pages = [this.translateService.instant('p'), num.pages];
       numbering.push(pages.join('. '));
     }
     return numbering.join(', ');
@@ -184,11 +184,11 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   getPartOfLabel(hostDocument: any) {
     switch (hostDocument.metadata.issuance.subtype) {
       case 'periodical':
-        return this._translateService.instant('Journal');
+        return this.translateService.instant('Journal');
       case 'monographicSeries':
-        return this._translateService.instant('Series');
+        return this.translateService.instant('Series');
       default:
-        return this._translateService.instant('Published in');
+        return this.translateService.instant('Published in');
     }
   }
 

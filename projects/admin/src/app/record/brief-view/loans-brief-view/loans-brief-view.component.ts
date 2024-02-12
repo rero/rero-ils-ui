@@ -1,7 +1,7 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
- * Copyright (C) 2022 UCLouvain
+ * Copyright (C) 2022-2024 RERO
+ * Copyright (C) 2022-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -55,18 +55,18 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
    * @returns True if the debug mode can be enabled and switched
    */
   get canUseDebugMode(): boolean {
-    return this._permissionsService.canAccessDebugMode();
+    return this.permissionsService.canAccessDebugMode();
   }
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _modalService - BsModalService
-   * @param _permissionsService - PermissionsService
+   * @param modalService - BsModalService
+   * @param permissionsService - PermissionsService
    */
   constructor(
-    private _modalService: BsModalService,
-    private _permissionsService: PermissionsService
+    private modalService: BsModalService,
+    private permissionsService: PermissionsService
   ){ }
 
   /** OnInit hook */
@@ -91,14 +91,13 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
         resourceType: 'loan'
       }
     };
-    this.bsModalRef = this._modalService.show(CirculationLogsComponent, config);
+    this.bsModalRef = this.modalService.show(CirculationLogsComponent, config);
     this.bsModalRef.content.dialogClose$.subscribe((value: boolean) => {
       if (value) {
         this.bsModalRef.hide();
       }
     });
   }
-
 
   // PRIVATE COMPONENT FUNCTIONS ==============================================
 
@@ -118,6 +117,4 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
         this.stateClass = 'badge-warning';
     }
   }
-
-
 }

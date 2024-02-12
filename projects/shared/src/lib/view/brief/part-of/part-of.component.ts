@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,23 +40,23 @@ export class PartOfComponent {
   ddCssClass = 'col-sm-6 col-md-8 mb-0';
 
   /** constructor
-   * @param _translateService - TranslateService to translate some strings.
+   * @param translateService - TranslateService to translate some strings.
    */
-  constructor(private _translateService: TranslateService) { }
+  constructor(private translateService: TranslateService) { }
 
   /**
    * Get "part of" label from host document type
    * @param hostDocument - host document
    * @return corresponding translated label
    */
-  getPartOfLabel(hostDocument: any) {
+  getPartOfLabel(hostDocument: any): string {
     switch (hostDocument.metadata.issuance.subtype) {
       case 'periodical':
-          return this._translateService.instant('Journal');
+          return this.translateService.instant('Journal');
       case 'monographicSeries':
-          return this._translateService.instant('Series');
+          return this.translateService.instant('Series');
       default:
-           return this._translateService.instant('Published in');
+           return this.translateService.instant('Published in');
     }
   }
 
@@ -66,21 +66,21 @@ export class PartOfComponent {
    * @param num: numbering to format
    * @return formatted numbering (example: 2020, vol. 2, nr. 3, p. 302)
    */
-  formatNumbering(num: any) {
+  formatNumbering(num: any): string {
     const numbering = [];
     if (num.year) {
       numbering.push(num.year);
     }
     if (num.volume) {
-      const volume = [this._translateService.instant('vol'), num.volume];
+      const volume = [this.translateService.instant('vol'), num.volume];
       numbering.push(volume.join('. '));
     }
     if (num.issue) {
-      const issue = [this._translateService.instant('nr'), num.issue];
+      const issue = [this.translateService.instant('nr'), num.issue];
       numbering.push(issue.join('. '));
     }
     if (num.pages) {
-      const pages = [this._translateService.instant('p'), num.pages];
+      const pages = [this.translateService.instant('p'), num.pages];
       numbering.push(pages.join('. '));
     }
     return numbering.join(', ');

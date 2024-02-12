@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,19 +30,19 @@ export class PickupComponent implements OnInit {
 
   /**
    * Constructor
-   * @param _patronService - PatronService
-   * @param _circulationService - CirculationService
+   * @param patronService - PatronService
+   * @param circulationService - CirculationService
    */
   constructor(
-    private _patronService: PatronService,
-    private _circulationService: CirculationService
+    private patronService: PatronService,
+    private circulationService: CirculationService
   ) { }
 
   /** OnInit hook */
   ngOnInit() {
-    this._patronService.currentPatron$.subscribe((patron: any) => {
+    this.patronService.currentPatron$.subscribe((patron: any) => {
       if (patron) {
-        this._patronService.getItemsPickup(patron.pid)
+        this.patronService.getItemsPickup(patron.pid)
         .subscribe(loans => {
           this.loans = loans;
         });
@@ -59,6 +59,6 @@ export class PickupComponent implements OnInit {
     const index = this.loans.findIndex((element: any) => element.id == loanId);
     this.loans.splice(index, 1);
     // Update count on tab
-    this._circulationService.circulationInformations.statistics['pickup'] -= 1;
+    this.circulationService.circulationInformations.statistics['pickup'] -= 1;
   }
 }

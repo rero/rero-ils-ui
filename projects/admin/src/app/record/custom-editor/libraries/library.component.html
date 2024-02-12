@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2023 RERO
+  Copyright (C) 2019-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,8 +14,8 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="container">
-  <ng-container *ngIf="libForm">
+@if (libForm) {
+  <div class="container">
     <h1 translate>Library</h1>
     <form [formGroup]="libForm" (ngSubmit)="onSubmit()">
 
@@ -30,29 +30,43 @@
               <label for="code" class="col-3 col-form-label required" translate>Code</label>
               <div class="col">
                 <input pInputText id="code" formControlName="code"
-                       class="w-100" [class.ng-invalid]="code.invalid"
-                       placeholder="{{ 'Please insert a code' | translate }}"
-                       required
+                        class="w-100" [class.ng-invalid]="code.invalid"
+                        placeholder="{{ 'Please insert a code' | translate }}"
+                        required
                 >
-                <div *ngIf="code.invalid && (code.dirty || code.touched)" class="error-messages">
-                  <span *ngIf="code.errors.alreadyTaken" translate>Code is already taken.</span>
-                  <span *ngIf="code.errors.required" translate>Code is required.</span>
-                  <span *ngIf="code.pending" translate>Validating…</span>
-                </div>
+                @if (code.invalid && (code.dirty || code.touched)) {
+                  <div class="error-messages">
+                    @if (code.errors.alreadyTaken) {
+                      <span translate>Code is already taken.</span>
+                    }
+                    @if (code.errors.required) {
+                      <span translate>Code is required.</span>
+                    }
+                    @if (code.pending) {
+                      <span translate>Validating…</span>
+                    }
+                  </div>
+                }
               </div>
             </div>
             <div class="form-group row">
               <label for="name" class="col-3 col-form-label required" translate>Name</label>
               <div class="col">
                 <input pInputText id="name" formControlName="name"
-                       class="w-100" [class.ng-invalid]="name.invalid"
-                       placeholder="{{ 'Please insert a name' | translate }}"
-                       required
+                        class="w-100" [class.ng-invalid]="name.invalid"
+                        placeholder="{{ 'Please insert a name' | translate }}"
+                        required
                 >
-                <div *ngIf="name.invalid && (name.dirty || name.touched)" class="error-messages">
-                  <span *ngIf="name.errors.required" translate>Name is required.</span>
-                  <span *ngIf="name.errors.minlength" translate>Name must be at least 4 characters long.</span>
-                </div>
+                @if (name.invalid && (name.dirty || name.touched)) {
+                  <div class="error-messages">
+                    @if (name.errors.required) {
+                      <span translate>Name is required.</span>
+                    }
+                    @if (name.errors.minlength) {
+                      <span translate>Name must be at least 4 characters long.</span>
+                    }
+                  </div>
+                }
               </div>
             </div>
             <div class="form-group row">
@@ -60,10 +74,14 @@
               <div class="col p-inputgroup">
                 <span class="p-inputgroup-addon"><i class="fa fa-home"></i></span>
                 <input pInputText id="address" formControlName="address"
-                       class="w-100" [class.ng-invalid]="address.invalid"/>
-                <div *ngIf="address.invalid && (address.dirty || address.touched)" class="error-messages">
-                  <span *ngIf="address.errors.minlength" translate>Address must be at least 4 characters long.</span>
-                </div>
+                        class="w-100" [class.ng-invalid]="address.invalid"/>
+                @if (address.invalid && (address.dirty || address.touched)) {
+                  <div class="error-messages">
+                    @if (address.errors.minlength) {
+                      <span translate>Address must be at least 4 characters long.</span>
+                    }
+                  </div>
+                }
               </div>
             </div>
             <div class="form-group row">
@@ -71,10 +89,14 @@
               <div class="col p-inputgroup">
                 <span class="p-inputgroup-addon"><i class="fa fa-at"></i></span>
                 <input pInputText id="email" formControlName="email"
-                       class="w-100" [class.ng-invalid]="email.invalid"/>
-                <div *ngIf="email.invalid && (email.dirty || email.touched)" class="error-messages">
-                  <span *ngIf="email.errors.email" translate>Email format is not correct.</span>
-                </div>
+                        class="w-100" [class.ng-invalid]="email.invalid"/>
+                @if (email.invalid && (email.dirty || email.touched)) {
+                  <div class="error-messages">
+                    @if (email.errors.email) {
+                      <span translate>Email format is not correct.</span>
+                    }
+                  </div>
+                }
               </div>
             </div>
             <div class="form-group row">
@@ -86,9 +108,13 @@
                             styleClass="w-100" scrollHeight="250px"
                 >
                 </p-dropdown>
-                <div *ngIf="communicationLanguage.invalid && (communicationLanguage.dirty || communicationLanguage.touched)" class="error-messages">
-                  <span *ngIf="communicationLanguage.errors.required" translate>Communication language is required.</span>
-                </div>
+                @if (communicationLanguage.invalid && (communicationLanguage.dirty || communicationLanguage.touched)) {
+                  <div class="error-messages">
+                    @if (communicationLanguage.errors.required) {
+                      <span translate>Communication language is required.</span>
+                    }
+                  </div>
+                }
               </div>
             </div>
           </ng-template>
@@ -99,81 +125,108 @@
             <div class="d-flex align-items-center w-100">
               <i class="fa fa-clock-o"></i>{{ 'Opening Hours' | translate }}
               <div class="ml-auto opening-days-summary">
-                <i class="fa" *ngFor="let day of openingHours.controls"
-                   [ngClass]="{
-                      'fa-times-circle-o text-danger': !day.value.is_open,
-                      'fa-circle text-success': day.value.is_open
-                   }"
-                ></i>
+                @for (day of openingHours.controls; track day) {
+                  <i class="fa" [ngClass]="{
+                        'fa-times-circle-o text-danger': !day.value.is_open,
+                        'fa-circle text-success': day.value.is_open
+                      }"
+                  ></i>
+                }
               </div>
             </div>
           </ng-template>
           <ng-template pTemplate="content">
-            <div class="mt-3" formArrayName="opening_hours" *ngFor="let day of openingHours.controls; let i=index">
-              <div [formGroupName]="i">
-                <div class="form-group row">
-                  <div class="col-2">
-                    <div class="d-flex align-items-center">
-                      <p-inputSwitch formControlName="is_open"
-                                     class="mr-2"
-                                     [id]="day.value.day"
-                                     [(ngModel)]="day.value.is_open"
-                      >
-                      </p-inputSwitch>
-                      <label [for]="day.value.day">{{ day.value.day | translate | titlecase }}</label>
-                    </div>
-                  </div>
-                  <div class="col-10">
-                    <ul class="list-unstyled mb-0" *ngIf="day.value.is_open">
-                      <li formArrayName="times" *ngFor="let time of day.controls.times.controls; let t=index; let last=last; let count=count">
-                        <div [formGroupName]="t" class="mb-1">
-                          <!-- inputs row. One row for each period -->
-                          <div class="form-row">
-                            <div class="col p-inputgroup">
-                              <span class="p-inputgroup-addon"><i class="fa fa-clock-o"></i></span>
-                              <input pInputText formControlName="start_time"
-                                     [(ngModel)]="time.value.start_time"/>
-                              <span class="p-inputgroup-addon"><i class="fa fa-long-arrow-right"></i></span>
-                              <input pInputText formControlName="end_time"
-                                     [(ngModel)]="time.value.end_time"/>
-                            </div>
-                            <div class="col-1 text-right">
-                              <button *ngIf="count > 1" (click)="deleteTime(i, t)" class="btn btn-sm btn-outline-danger">
-                                <i class="fa fa-trash-o" aria-hidden="true"></i>
-                              </button>
-                            </div>
-                            <div class="col-2">
-                              <button *ngIf="last" (click)="addTime(i)" class="btn btn-sm btn-outline-primary">
-                                <i class="fa fa-plus-square-o" aria-hidden="true"></i>
-                                {{ 'period' | translate }}
-                              </button>
-                            </div>
-                          </div>
-                          <div class="error-messages">
-                            <ng-container *ngIf="time.controls.start_time.invalid && (time.controls.start_time.dirty || time.controls.start_time.touched)">
-                              <div *ngIf="time.controls.start_time.errors.required" translate>Start time is required.</div>
-                              <div *ngIf="time.controls.start_time.errors.pattern" translate>Start time format is not correct.</div>
-                            </ng-container>
-                            <ng-container *ngIf="time.controls.end_time.invalid && (time.controls.end_time.dirty || time.controls.end_time.touched)">
-                              <div *ngIf="time.controls.end_time.errors.required" translate>End time is required.</div>
-                              <div *ngIf="time.controls.end_time.errors.pattern" translate>End time format is not correct.</div>
-                            </ng-container>
-                            <ng-container *ngIf="time.invalid && (time.dirty || time.touched)">
-                              <div *ngIf="time.errors && time.errors.lessThan" translate>End time is less than start time.</div>
-                            </ng-container>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                    <div *ngIf="day.invalid  && (day.dirty || day.touched)" class="text-danger pt-1">
-                      <div *ngIf="day.errors && day.errors.rangeLessThan" translate>
-                        The two periods are overlapping.
+            @for (day of openingHours.controls; track day; let i=$index) {
+              <div class="mt-3" formArrayName="opening_hours">
+                <div [formGroupName]="i">
+                  <div class="form-group row">
+                    <div class="col-2">
+                      <div class="d-flex align-items-center">
+                        <p-inputSwitch formControlName="is_open"
+                                        class="mr-2"
+                                        [id]="day.value.day"
+                                        [(ngModel)]="day.value.is_open"
+                        >
+                        </p-inputSwitch>
+                        <label [for]="day.value.day">{{ day.value.day | translate | titlecase }}</label>
                       </div>
+                    </div>
+                    <div class="col-10">
+                      @if (day.value.is_open) {
+                        <ul class="list-unstyled mb-0">
+                          @for (time of $any(day).controls.times.controls; track time; let t=$index; let last=$last; let count=$count) {
+                            <li formArrayName="times">
+                              <div [formGroupName]="t" class="mb-1">
+                                <!-- inputs row. One row for each period -->
+                                <div class="form-row">
+                                  <div class="col p-inputgroup">
+                                    <span class="p-inputgroup-addon"><i class="fa fa-clock-o"></i></span>
+                                    <input pInputText formControlName="start_time"
+                                            [(ngModel)]="time.value.start_time"/>
+                                    <span class="p-inputgroup-addon"><i class="fa fa-long-arrow-right"></i></span>
+                                    <input pInputText formControlName="end_time"
+                                            [(ngModel)]="time.value.end_time"/>
+                                  </div>
+                                  <div class="col-1 text-right">
+                                    @if (count > 1) {
+                                      <button (click)="deleteTime(i, t)" class="btn btn-sm btn-outline-danger">
+                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                      </button>
+                                    }
+                                  </div>
+                                  <div class="col-2">
+                                    @if (last) {
+                                      <button (click)="addTime(i)" class="btn btn-sm btn-outline-primary">
+                                        <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                                        {{ 'period' | translate }}
+                                      </button>
+                                    }
+                                  </div>
+                                </div>
+                                <div class="error-messages">
+                                  @if (time.controls.start_time.invalid && (time.controls.start_time.dirty || time.controls.start_time.touched)) {
+                                    @if (time.controls.start_time.errors.required) {
+                                      <div translate>Start time is required.</div>
+                                    }
+                                    @if (time.controls.start_time.errors.pattern) {
+                                      <div translate>Start time format is not correct.</div>
+                                    }
+                                  }
+                                  @if (time.controls.end_time.invalid && (time.controls.end_time.dirty || time.controls.end_time.touched)) {
+                                    @if (time.controls.end_time.errors.required) {
+                                      <div translate>End time is required.</div>
+                                    }
+                                    @if (time.controls.end_time.errors.pattern) {
+                                      <div translate>End time format is not correct.</div>
+                                    }
+                                  }
+                                  @if (time.invalid && (time.dirty || time.touched)) {
+                                    @if (time.errors && time.errors.lessThan) {
+                                      <div translate>End time is less than start time.</div>
+                                    }
+                                  }
+                                </div>
+                              </div>
+                            </li>
+
+                          }
+                        </ul>
+
+                      }
+                      @if (day.invalid  && (day.dirty || day.touched)) {
+                        <div class="text-danger pt-1">
+                          @if (day.errors && day.errors.rangeLessThan) {
+                            <div translate>
+                              The two periods are overlapping.
+                            </div>
+                          }
+                        </div>
+                      }
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            }
           </ng-template>
         </p-accordionTab>
         <!-- EXCEPTIONS DATES TAB ========================================= -->
@@ -186,8 +239,10 @@
             </div>
           </ng-template>
           <ng-template pTemplate="content">
-            <admin-libraries-exception-dates-list *ngIf="library" [exceptionDates]="library.exception_dates">
-            </admin-libraries-exception-dates-list>
+            @if (library) {
+              <admin-libraries-exception-dates-list [exceptionDates]="library.exception_dates">
+              </admin-libraries-exception-dates-list>
+            }
           </ng-template>
         </p-accordionTab>
         <!-- NOTIFICATIONS SETTING TAB ==================================== -->
@@ -199,27 +254,33 @@
           </ng-template>
           <ng-template pTemplate="content">
             <div class="container" formArrayName="notification_settings">
-              <div class="row mb-1" *ngFor="let setting of notificationSettings.controls; let i=index" [formGroupName]="i">
-                <div class="col-3">
-                  <span style="min-width: 25px" class="d-inline-block">&nbsp;
-                    <i *ngIf="setting.controls.type.value | notificationType:'patron'" class="text-info fa fa-info"></i>
-                  </span>
-                  <label class="font-weight-bold ml-2">{{ setting.controls.type.value | translate | ucfirst }}</label>
+              @for(setting of notificationSettings.controls; track setting; let i=$index) {
+                <div class="row mb-1" [formGroupName]="i">
+                  <div class="col-3">
+                    <span style="min-width: 25px" class="d-inline-block">&nbsp;
+                      @if ($any(setting).controls.type.value | notificationType:'patron') {
+                        <i class="text-info fa fa-info"></i>
+                      }
+                    </span>
+                    <label class="font-weight-bold ml-2">{{ $any(setting).controls.type.value | translate | ucfirst }}</label>
+                  </div>
+                  <div class="col p-inputgroup">
+                    <span class="p-inputgroup-addon"><i class="fa fa-at"></i></span>
+                    <input pInputText formControlName="email" [id]="$any(setting).controls.type.value + '-email'">
+                  </div>
+                  @if (delayedNotificationTypes.includes($any(setting).controls.type.value)) {
+                    <div class="col-3 p-inputgroup">
+                      <span class="p-inputgroup-addon"><i class="fa fa-clock-o"></i></span>
+                      <p-inputNumber
+                        formControlName="delay"
+                        [inputId]="$any(setting).controls.type.value + '-delay'"
+                        [min]="0"
+                        pTooltip="{{ 'Sending how many minutes after the item is available' | translate }}" showDelay="1000"
+                      ></p-inputNumber>
+                    </div>
+                  }
                 </div>
-                <div class="col p-inputgroup">
-                  <span class="p-inputgroup-addon"><i class="fa fa-at"></i></span>
-                  <input pInputText formControlName="email" [id]="setting.controls.type.value + '-email'">
-                </div>
-                <div class="col-3 p-inputgroup" *ngIf="delayedNotificationTypes.includes(setting.controls.type.value)">
-                  <span class="p-inputgroup-addon"><i class="fa fa-clock-o"></i></span>
-                  <p-inputNumber
-                    formControlName="delay"
-                    [inputId]="setting.controls.type.value + '-delay'"
-                    [min]="0"
-                    pTooltip="{{ 'Sending how many minutes after the item is available' | translate }}" showDelay="1000"
-                  ></p-inputNumber>
-                </div>
-              </div>
+              }
               <p-divider align="left">
                 <small translate>Legend</small>
               </p-divider>
@@ -242,42 +303,44 @@
             </div>
           </ng-template>
           <ng-template pTemplate="content">
-            <p-panel formGroupName="acquisition_settings" toggleable="true" collapsed="true">
-              <ng-template pTemplate="header">
-                <i class="fa fa-book mr-2"></i>
-                <span translate>Default acquisition settings</span>
-              </ng-template>
-              <ng-container [ngTemplateOutlet]="contact_block" [ngTemplateOutletContext]="{
-                'formGroup': this.libForm.get('acquisition_settings').get('shipping_informations'),
-                'icon': 'fa-truck',
-                'name': 'Shipping informations' | translate,
-                'fieldPrefix': 'shipping'
-              }"></ng-container>
-              <ng-container [ngTemplateOutlet]="contact_block" [ngTemplateOutletContext]="{
-                'formGroup': this.libForm.get('acquisition_settings').get('billing_informations'),
-                'icon': 'fa-money',
-                'name': 'Billing informations' | translate,
-                'fieldPrefix': 'billing'
-              }"></ng-container>
-            </p-panel>
-            <p-panel formGroupName="serial_acquisition_settings" toggleable="true" collapsed="true">
-              <ng-template pTemplate="header">
-                <i class="fa fa-newspaper-o mr-2"></i>
-                <span translate>Serial acquisition settings</span>
-              </ng-template>
-              <ng-container [ngTemplateOutlet]="contact_block" [ngTemplateOutletContext]="{
-                'formGroup': this.libForm.get('serial_acquisition_settings').get('shipping_informations'),
-                'icon': 'fa-truck',
-                'name': 'Shipping informations' | translate,
-                'fieldPrefix': 'shipping'
-              }"></ng-container>
-              <ng-container [ngTemplateOutlet]="contact_block" [ngTemplateOutletContext]="{
-                'formGroup': this.libForm.get('serial_acquisition_settings').get('billing_informations'),
-                'icon': 'fa-money',
-                'name': 'Billing informations' | translate,
-                'fieldPrefix': 'billing'
-              }"></ng-container>
-            </p-panel>
+            <p-tabView formGroupName="acquisition_settings">
+              <p-tabPanel>
+                <ng-template pTemplate="header">
+                  <i class="fa fa-book mr-2"></i>
+                  <span translate>Default acquisition settings</span>
+                </ng-template>
+                <ng-container [ngTemplateOutlet]="contact_block" [ngTemplateOutletContext]="{
+                  'formGroup': this.libForm.get('acquisition_settings').get('shipping_informations'),
+                  'icon': 'fa-truck',
+                  'name': 'Shipping informations' | translate,
+                  'fieldPrefix': 'shipping'
+                }"></ng-container>
+                <ng-container [ngTemplateOutlet]="contact_block" [ngTemplateOutletContext]="{
+                  'formGroup': this.libForm.get('acquisition_settings').get('billing_informations'),
+                  'icon': 'fa-money',
+                  'name': 'Billing informations' | translate,
+                  'fieldPrefix': 'billing'
+                }"></ng-container>
+              </p-tabPanel>
+              <p-tabPanel>
+                <ng-template pTemplate="header">
+                  <i class="fa fa-newspaper-o mr-2"></i>
+                  <span translate>Serial acquisition settings</span>
+                </ng-template>
+                <ng-container [ngTemplateOutlet]="contact_block" [ngTemplateOutletContext]="{
+                  'formGroup': this.libForm.get('serial_acquisition_settings').get('shipping_informations'),
+                  'icon': 'fa-truck',
+                  'name': 'Shipping informations' | translate,
+                  'fieldPrefix': 'shipping'
+                }"></ng-container>
+                <ng-container [ngTemplateOutlet]="contact_block" [ngTemplateOutletContext]="{
+                  'formGroup': this.libForm.get('serial_acquisition_settings').get('billing_informations'),
+                  'icon': 'fa-money',
+                  'name': 'Billing informations' | translate,
+                  'fieldPrefix': 'billing'
+                }"></ng-container>
+              </p-tabPanel>
+            </p-tabView>
           </ng-template>
         </p-accordionTab>
         <!-- ROLLOVER SETTINGS TAB ======================================== -->
@@ -288,10 +351,10 @@
               {{ 'Rollover settings' | translate }}
               <div class="ml-auto rollover-settings">
                 <i class="fa"
-                   [ngClass]="{
+                    [ngClass]="{
                         'fa-times text-danger': rolloverSettings.value.account_transfer === 'rollover_no_transfer',
                         'fa-check text-success': rolloverSettings.value.account_transfer === 'rollover_allocated_amount'
-                   }"
+                    }"
                 ></i>
               </div>
             </div>
@@ -323,8 +386,8 @@
         </div>
       </div>
     </form>
-  </ng-container>
-</div>
+  </div>
+}
 
 <ng-template #contact_block
              let-formGroup="formGroup"
@@ -332,12 +395,15 @@
              let-icon="icon"
              let-fieldPrefix="fieldPrefix"
 >
-  <p-panel [formGroup]="formGroup">
-
-    <!-- header -->
+  <p-card [formGroup]="formGroup" styleClass="mb-3">
+  <!-- header -->
     <ng-template pTemplate="header">
-      <ng-container *ngIf="icon"><i class="fa {{ icon }} mr-2"></i></ng-container>
-      <span>{{ name }}</span>
+      <h5 class="ml-2 pt-2">
+        @if (icon) {
+          <i class="fa {{ icon }} mr-2"></i>
+        }
+        <span>{{ name }}</span>
+      </h5>
     </ng-template>
 
     <!-- body -->
@@ -397,5 +463,5 @@
       </div>
     </div>
 
-  </p-panel>
+  </p-card>
 </ng-template>

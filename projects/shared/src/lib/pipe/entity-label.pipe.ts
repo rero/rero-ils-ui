@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AppSettingsService } from '../service/app-settings.service';
 
 /**
  * This pipe get the best possible label about a RERO `Entity` depending on the language used
@@ -50,7 +49,6 @@ import { AppSettingsService } from '../service/app-settings.service';
 })
 export class EntityLabelPipe implements PipeTransform {
 
-
   // PIPE ATTRIBUTES ==========================================================
   /** the basic key where to find the entity label */
   private _authorizedKey = 'authorized_access_point';
@@ -60,11 +58,9 @@ export class EntityLabelPipe implements PipeTransform {
   // PIPE CONSTRUCTOR =========================================================
   /**
    * Constructor
-   * @param _translateService - TranslateService
+   * @param translateService - TranslateService
    */
-  constructor(
-    private _translateService: TranslateService
-  ) { }
+  constructor(private translateService: TranslateService) {}
 
   // PIPE METHODS =============================================================
   /**
@@ -77,7 +73,7 @@ export class EntityLabelPipe implements PipeTransform {
    */
   transform(entity: any, partSeparator: string = this._defaultPartSeparator): string {
     const parts: Array<string> = []
-    const currentLangKey = `${this._authorizedKey}_${this._translateService.currentLang}`;
+    const currentLangKey = `${this._authorizedKey}_${this.translateService.currentLang}`;
     const fallbackLangKey = `${this._authorizedKey}_en`;
     parts.push(entity[currentLangKey] || entity[fallbackLangKey] || entity[this._authorizedKey]);
     if (entity?.subdivisions) {

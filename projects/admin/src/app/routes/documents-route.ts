@@ -92,6 +92,18 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
               record = this.removeKey(record, '_draft');
               return record;
             },
+            postprocessRecordEditor: (record: any) => {
+              // A linked entity must not have a type in the data.
+              // If it does, we delete it.
+              if (record.contribution) {
+                record.contribution.map((contribution: any) => {
+                  if (contribution.entity.$ref && contribution.entity.type) {
+                    delete(contribution.entity.type);
+                  }
+                });
+              }
+              return record;
+            },
             aggregations: (aggregations: any) => this._routeToolService
               .aggregationFilter(aggregations),
             aggregationsName: {

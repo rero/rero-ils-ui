@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,42 +23,42 @@ import { Observable, Subject } from 'rxjs';
 export class PatronProfileService {
 
   /** Tabs event */
-  private _tabsEvent = new Subject<ITabEvent>();
+  private tabsEvent = new Subject<ITabEvent>();
 
   /** Cancel event */
-  private _cancelRequestEvent = new Subject<string>();
+  private cancelRequestEvent = new Subject<string>();
 
   /** Fees event */
-  private _loanFeesEvent = new Subject<number>();
+  private loanFeesEvent = new Subject<number>();
 
   /** Get tab event observable */
   get tabsEvent$(): Observable<ITabEvent> {
-    return this._tabsEvent.asObservable();
+    return this.tabsEvent.asObservable();
   }
 
   /** Change tab */
   changeTab(tab: ITabEvent): void {
-    this._tabsEvent.next(tab);
+    this.tabsEvent.next(tab);
   }
 
   /** Cancel Request event observable */
   get cancelRequestEvent$(): Subject<string> {
-    return this._cancelRequestEvent;
+    return this.cancelRequestEvent;
   }
 
   /** @returns Observable of the loan fees event */
   get loanFeesEvent$(): Observable<number> {
-    return this._loanFeesEvent.asObservable();
+    return this.loanFeesEvent.asObservable();
   }
 
   /** Cancel request */
   cancelRequest(loanPid: string): void {
-    this._cancelRequestEvent.next(loanPid);
+    this.cancelRequestEvent.next(loanPid);
   }
 
   /** Emit the loan fees */
   loanFees(fees: number): void {
-    this._loanFeesEvent.next(fees);
+    this.loanFeesEvent.next(fees);
   }
 }
 

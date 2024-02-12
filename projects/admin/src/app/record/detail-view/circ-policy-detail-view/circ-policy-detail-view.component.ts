@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { OrganisationService } from '../../../service/organisation.service';
 
@@ -26,7 +26,7 @@ import { OrganisationService } from '../../../service/organisation.service';
 
 export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
 
-  // COMPONENT ATTIBUTES ======================================================
+  // COMPONENT ATTRIBUTES ======================================================
   /** The observable resolving record data */
   record$: Observable<any>;
   /** The resource type */
@@ -48,7 +48,7 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
   // GETTER & SETTER ==========================================================
   /** Organisation currency */
   get org_currency() {
-    return this._organisationService.organisation.default_currency;
+    return this.organisationService.organisation.default_currency;
   }
 
   /** checkout is allowed ? */
@@ -61,11 +61,9 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _organisationService - OrganisationService
+   * @param organisationService - OrganisationService
    */
-  constructor(
-    private _organisationService: OrganisationService
-  ) {}
+  constructor(private organisationService: OrganisationService) {}
 
   /** On init hook */
   ngOnInit() {

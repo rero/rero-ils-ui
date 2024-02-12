@@ -37,11 +37,11 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
   settings: any;
 
   /** Item types / Circulation category */
-  private _itemTypes = [];
+  private itemTypes = [];
   /** already known circulation policies */
-  private _circPolicies = [];
+  private circPolicies = [];
   /** previous appliedTo libraries */
-  private _prevSelectedLibraries = [];
+  private prevSelectedLibraries = [];
 
    // GETTER & SETTER ==========================================================
   /** Section title */
@@ -75,7 +75,7 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
   /** OnInit hook */
   ngOnInit() {
     const appliedLibraries = this.field.parent.model.libraries || [];
-    this._prevSelectedLibraries = this._getLibrariesRef(appliedLibraries);
+    this.prevSelectedLibraries = this._getLibrariesRef(appliedLibraries);
 
     forkJoin([
       this.patronTypeApiService.getAll(),
@@ -83,8 +83,8 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
       this.circulationPolicyApiService.getAll(this.field.parent.model.pid)
     ]).subscribe(([patronTypes, itemTypes, circPolicies]) => {
       this.patronTypes = patronTypes;
-      this._itemTypes = itemTypes;
-      this._circPolicies = circPolicies;
+      this.itemTypes = itemTypes;
+      this.circPolicies = circPolicies;
       this._loadSettings();
     });
 
@@ -92,8 +92,8 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
     // to rebuild the settings table according to selected libraries.
     this.form.valueChanges.subscribe((changes) => {
       const formLibraries = changes.hasOwnProperty('libraries') ? this._getLibrariesRef(changes.libraries) : [];
-      if (JSON.stringify(formLibraries) !== JSON.stringify(this._prevSelectedLibraries)) {
-        this._prevSelectedLibraries = formLibraries;
+      if (JSON.stringify(formLibraries) !== JSON.stringify(this.prevSelectedLibraries)) {
+        this.prevSelectedLibraries = formLibraries;
         this._loadSettings(); // Rebuild the settings
       }
     });
@@ -142,7 +142,7 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
     const settings = new Settings(this.apiService);
     this.settings = settings
       .setCirculationPolicy(this.form.value)
-      .createStructure(this._itemTypes, this.patronTypes, this._circPolicies, this._prevSelectedLibraries)
+      .createStructure(this.itemTypes, this.patronTypes, this.circPolicies, this.prevSelectedLibraries)
       .getStructure();
     this.ref.detectChanges();
   }

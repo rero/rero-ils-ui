@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  * Copyright (C) 2020 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslateService } from '@ngx-translate/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -29,27 +29,27 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 export class CustomShortcutHelpComponent {
 
   /** the title of the modal window */
-  @Input() title = this._translateService.instant('Available Shortcuts');
+  @Input() title = this.translateService.instant('Available Shortcuts');
   /** the list of implemented shortcuts */
-  hotkeys = this._hotKeysService.getShortcuts();
+  hotkeys = this.hotKeysService.getShortcuts();
 
   /**
    * Constructor
-   * @param _hotKeysService - HotkeysService
-   * @param _bsModalRef - BsModalRef
-   * @param _translateService - TranslateService
+   * @param hotKeysService - HotkeysService
+   * @param bsModalRef - BsModalRef
+   * @param translateService - TranslateService
    */
   constructor(
-    private _hotKeysService: HotkeysService,
-    protected _bsModalRef: BsModalRef,
-    private _translateService: TranslateService
+    private hotKeysService: HotkeysService,
+    protected bsModalRef: BsModalRef,
+    private translateService: TranslateService
   ) {}
 
   /**
    * Close the modal
    */
   closeModal() {
-    this._bsModalRef.hide();
+    this.bsModalRef.hide();
   }
 
 }

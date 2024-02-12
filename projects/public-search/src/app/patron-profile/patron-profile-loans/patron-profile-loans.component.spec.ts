@@ -97,7 +97,7 @@ describe('PatronProfileLoanComponent', () => {
     component.loaded = true;
     fixture.detectChanges();
     const loading = fixture.nativeElement.querySelectorAll('div')[6];
-    expect(loading.textContent).toContain('No loan');
+    expect(loading.textContent).toContain('Loading in progress');
   });
 
   it('should display the list of records', () => {

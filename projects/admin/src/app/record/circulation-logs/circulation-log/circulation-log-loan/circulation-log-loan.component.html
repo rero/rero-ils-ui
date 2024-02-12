@@ -24,41 +24,38 @@
   <div collapsedContent class="row">
     <!-- Location -->
     <div class="col-8 fa-icon-library">
-      <ng-container *ngIf="record.metadata.loan.transaction_location; else noLibrary">
-        <ng-container *ngIf="record.metadata.loan.transaction_location.pid | getRecord : 'locations' | async as location">
-          {{ location.metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
-        </ng-container>
-      </ng-container>
-      <ng-template #noLibrary>
-        <span class="no-data">---</span>
-      </ng-template>
+      @if (record.metadata.loan.transaction_location) {
+        @if (record.metadata.loan.transaction_location.pid | getRecord : 'locations' | async; as location) {
+          {{ $any(location).metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
+        }
+      } @else {
+        ---
+      }
     </div>
     <!-- Patron -->
     <div class="col-4 fa-icon-patron">
-      <ng-container *ngIf="record.metadata.loan.patron.pid; else anonymous">
-        <ng-container *ngIf="record.metadata.loan.patron.pid | getRecord : 'patrons' | async as patron">
-          <a [routerLink]="['/circulation', 'patron', patron.metadata.patron.barcode[0]]"  (click)="closeDialog()">
-            {{ patron.metadata.last_name }}, {{ patron.metadata.first_name }}
+      @if (record.metadata.loan.patron.pid) {
+        @if (record.metadata.loan.patron.pid | getRecord : 'patrons' | async; as patron) {
+          <a [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0]]"  (click)="closeDialog()">
+            {{ $any(patron).metadata.last_name }}, {{ $any(patron).metadata.first_name }}
           </a>
-        </ng-container>
-      </ng-container>
-      <ng-template #anonymous>
+        }
+      } @else {
         {{ 'Patron type' | translate }}: {{ record.metadata.loan.patron.type }}
-      </ng-template>
+      }
     </div>
   </div>
   <dl class="row" expandedContent>
     <!-- Library -->
     <dt class="col-4 label-title font-weight-bold fa-icon-library" translate>Library</dt>
     <dd class="col-8">
-      <ng-container *ngIf="record.metadata.loan.transaction_location; else noLibrary">
-        <ng-container *ngIf="record.metadata.loan.transaction_location.pid | getRecord : 'locations' | async as location">
-          {{ location.metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
-        </ng-container>
-      </ng-container>
-      <ng-template #noLibrary>
-        <span class="no-data">---</span>
-      </ng-template>
+      @if (record.metadata.loan.transaction_location) {
+        @if (record.metadata.loan.transaction_location.pid | getRecord : 'locations' | async; as location) {
+          {{ $any(location).metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
+        }
+      } @else {
+        ---
+      }
     </dd>
 
     <!-- Location -->
@@ -68,16 +65,15 @@
     <!-- Patron -->
     <dt class="col-4 label-title font-weight-bold fa-icon-patron" translate>Patron</dt>
     <dd class="col-8">
-      <ng-container *ngIf="record.metadata.loan.patron.pid; else anonymous">
-        <ng-container *ngIf="record.metadata.loan.patron.pid | getRecord : 'patrons' | async as patron">
-          <a [routerLink]="['/circulation', 'patron', patron.metadata.patron.barcode[0]]" (click)="closeDialog()">
-            {{ patron.metadata.last_name }}, {{ patron.metadata.first_name }}
+      @if (record.metadata.loan.patron.pid) {
+        @if (record.metadata.loan.patron.pid | getRecord : 'patrons' | async; as patron) {
+          <a [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0]]" (click)="closeDialog()">
+            {{ $any(patron).metadata.last_name }}, {{ $any(patron).metadata.first_name }}
           </a>
-        </ng-container>
-      </ng-container>
-      <ng-template #anonymous>
+        }
+      } @else {
         {{ 'Patron type' | translate }}: {{ record.metadata.loan.patron.type }}
-      </ng-template>
+      }
     </dd>
 
     <!-- Operator -->

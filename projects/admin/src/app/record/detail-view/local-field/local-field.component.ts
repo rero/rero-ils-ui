@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -53,34 +53,34 @@ export class LocalFieldComponent implements OnInit, OnDestroy {
     items: 'item'
   };
   /** all component subscription */
-  private _subscriptions = new Subscription();
+  private subscriptions = new Subscription();
 
   // CONSTRUCTOR & HOOKS ======================================================
   /**
    * Constructor
-   * @param _localFieldApiService - LocalFieldApiService
-   * @param _userService - UserService
-   * @param _recordPermissionService - RecordPermissionService
+   * @param localFieldApiService - LocalFieldApiService
+   * @param userService - UserService
+   * @param recordPermissionService - RecordPermissionService
    */
   constructor(
-    private _localFieldApiService: LocalFieldApiService,
-    private _userService: UserService,
-    private _recordPermissionService: RecordPermissionService
+    private localFieldApiService: LocalFieldApiService,
+    private userService: UserService,
+    private recordPermissionService: RecordPermissionService
   ) { }
 
   /** OnInit hook */
   ngOnInit() {
-    this._localFieldApiService
+    this.localFieldApiService
       .getByResourceTypeAndResourcePidAndOrganisationId(
         this._translateType(this.resourceType),
         this.resourcePid,
-        this._userService.user.currentOrganisation
+        this.userService.user.currentOrganisation
       )
       .subscribe((record: any) => {
         if (record?.metadata) {
           this.localFieldRecordPid = record.metadata.pid;
           if (record.metadata?.fields) {
-            const fields = record.metadata.fields;
+            const { fields } = record.metadata;
             // Sort local fields using numeric part of the field name.
             const sortKeys = Object.keys(fields).sort((k1, k2) => parseInt(k1.replace(/\D/g, '')) - parseInt(k2.replace(/\D/g, '')));
             for (const key of sortKeys) {
@@ -88,7 +88,7 @@ export class LocalFieldComponent implements OnInit, OnDestroy {
             }
           }
           // Permission loading
-          this._subscriptions.add(this._recordPermissionService
+          this.subscriptions.add(this.recordPermissionService
             .getPermission('local_fields', record.metadata.pid)
             .subscribe((permissions) => this.recordPermissions = permissions)
           );
@@ -99,13 +99,13 @@ export class LocalFieldComponent implements OnInit, OnDestroy {
 
   /** OnDestroy hook */
   ngOnDestroy() {
-    this._subscriptions.unsubscribe()
+    this.subscriptions.unsubscribe()
   }
 
   // PUBLIC FUNCTIONS =========================================================
   /** Delete the complete LocalField resource. */
   delete(): void {
-    this._localFieldApiService
+    this.localFieldApiService
       .delete(this.localFieldRecordPid)
       .subscribe((success: any) => {
         if (success) {

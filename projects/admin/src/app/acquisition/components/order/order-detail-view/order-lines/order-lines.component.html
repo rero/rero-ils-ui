@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021 RERO
+  Copyright (C) 2021-2024 RERO
   Copyright (C) 2021 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -19,38 +19,40 @@
   <div class="card-header px-0 row">
     <h5 class="col-8" translate>Order lines</h5>
     <div class="col-4 text-right">
-      <ng-container *ngIf="recordPermissions; else space">
-        <a *ngIf="recordPermissions.update.can; else createInfo"
-        class="btn btn-sm btn-outline-primary"
-        [routerLink]="['/', 'records', 'acq_order_lines', 'new']"
-        [queryParams]="{ order: order.pid }"
-        >
-          <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
-        </a>
-        <ng-template #createInfo>
+      @if (recordPermissions) {
+        @if (recordPermissions.update.can) {
+          <a class="btn btn-sm btn-outline-primary"
+            [routerLink]="['/', 'records', 'acq_order_lines', 'new']"
+            [queryParams]="{ order: order.pid }"
+          >
+            <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
+          </a>
+        } @else {
           <button type="button" class="btn btn-sm btn-outline-primary disabled"
                   [popover]="tolTemplate" triggers="mouseenter:mouseleave">
             <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
           </button>
           <ng-template #tolTemplate><div [innerHtml]="createInfoMessage | nl2br"></div></ng-template>
-        </ng-template>
-      </ng-container>
-      <ng-template #space>&nbsp;</ng-template>
+        }
+      } @else {
+        &nbsp;
+      }
     </div>
   </div>
   <div class="card-body p-0">
-    <ng-container *ngIf="orderLines; else loading">
-      <ng-container *ngIf="orderLines.length > 0; else noOrderLines">
-        <admin-order-line *ngFor="let orderLine of orderLines"
-                          [orderLine]="orderLine"
-                          [order]="order"
-                          [recordPermissions]="recordPermissions"
-        ></admin-order-line>
-      </ng-container>
-      <ng-template #noOrderLines>
+    @defer (when orderLines) {
+      @if (orderLines.length > 0) {
+        @for (orderLine of orderLines; track orderLine) {
+          <admin-order-line [orderLine]="orderLine"
+                            [order]="order"
+                            [recordPermissions]="recordPermissions"
+          ></admin-order-line>
+        }
+      } @else {
         <div class="py-3" translate>No order lines</div>
-      </ng-template>
-    </ng-container>
-    <ng-template #loading><i class="fa fa-spinner fa-spin"></i></ng-template>
+      }
+    } @placeholder {
+      <i class="fa fa-spinner fa-spin"></i>
+    }
   </div>
 </div>
