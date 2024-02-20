@@ -50,7 +50,7 @@ export class BucketNameService implements IBucketNameService {
       case 'language': return of(this.translateService.instant(`lang_${value}`));
       case 'library': return this.libraryApiService.getByPid(value).pipe(map(record => record.name));
       case 'organisation': return this.organisationApiService.getByPid(value).pipe(map(record => record.name));
-      default: return of(this.translateService.instant(value));
+      default: return of(value);
     }
   }
 }
