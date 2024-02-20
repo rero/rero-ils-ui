@@ -1,5 +1,11 @@
 # Changelog
 
+
+## [v14.7.1](https://github.com/rero/rero-ils-ui/tree/v14.7.1) (2024-02-20)
+
+**Fixes:**
+* fix(aggregation): don't translate default facet [\#1118](https://github.com/rero/rero-ils-ui/pull/1118) (by @Garfield-fr)
+
 ## [v14.7.0](https://github.com/rero/rero-ils-ui/tree/v14.7.0) (2024-02-15)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.6.0...v14.7.0)
