@@ -71,9 +71,9 @@ describe('BucketNameService', () => {
     });
   });
 
-  it('should return the translated default value', () => {
+  it('should return the default value', () => {
     service.transform('foo', 'bar').subscribe((name: string) => {
-      expect(name).toEqual('foo bar');
+      expect(name).toEqual('bar');
     });
   });
 });
