@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -51,7 +51,9 @@ describe('BucketNameService', () => {
     translateService.setTranslation('en', {
       bar: 'foo bar',
       lang_fre: 'french',
-      'Organisation name': 'Organisation name translated'
+      'Organisation name': 'Organisation name translated',
+      '{{count}} claim': '{{count}} claim',
+      '{{count}} claims': '{{count}} claims',
     });
   });
 
@@ -71,9 +73,18 @@ describe('BucketNameService', () => {
     });
   });
 
-  it('should return the default value', () => {
+  it('should return the translated default value', () => {
     service.transform('foo', 'bar').subscribe((name: string) => {
-      expect(name).toEqual('bar');
+      expect(name).toEqual('foo bar');
     });
   });
+
+  it('should return label for claims', () => {
+    service.transform('claims_count', '1').subscribe((name: string) => {
+      expect(name).toEqual('1 claim');
+    });
+    service.transform('claims_count', '2').subscribe((name: string) => {
+      expect(name).toEqual('2 claims');
+    });
+  })
 });

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { IBucketNameService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
@@ -47,10 +48,13 @@ export class BucketNameService implements IBucketNameService {
    */
   transform(aggregationKey: string, value: string): Observable<string> {
     switch (aggregationKey) {
+      case 'claims_count':
+        const label = Number(value) < 2 ? _('{{count}} claim') : _('{{count}} claims');
+        return of(this.translateService.instant(label, { count: value }));
       case 'language': return of(this.translateService.instant(`lang_${value}`));
       case 'library': return this.libraryApiService.getByPid(value).pipe(map(record => record.name));
       case 'organisation': return this.organisationApiService.getByPid(value).pipe(map(record => record.name));
-      default: return of(value);
+      default: return of(this.translateService.instant(value));
     }
   }
 }
