@@ -965,5 +965,7 @@
   "{{ counter }} hidden operation logs": "{{ counter }} operations cachées",
   "{{ total }} results of {{ remoteTotal }}": "{{ total }} résultats sur {{ remoteTotal }}",
   "{{ type }} creation failed!": "Échec de la création de {{ type }} !",
-  "{{ type }} registered": "{{ type }} enregistré"
+  "{{ type }} registered": "{{ type }} enregistré",
+  "{{count}} claim": "{{count}} réclamation",
+  "{{count}} claims": "{{count}} réclamations"
 }

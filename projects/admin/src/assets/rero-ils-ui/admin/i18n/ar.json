@@ -965,5 +965,7 @@
   "{{ counter }} hidden operation logs": "{{ counter }} hidden operation logs",
   "{{ total }} results of {{ remoteTotal }}": "{{ total }} results of {{ remoteTotal }}",
   "{{ type }} creation failed!": "{{ type }} حدث خطأ عن الانشاء",
-  "{{ type }} registered": "{{ type }} مسجل"
+  "{{ type }} registered": "{{ type }} مسجل",
+  "{{count}} claim": "{{count}} claim",
+  "{{count}} claims": "{{count}} claims"
 }

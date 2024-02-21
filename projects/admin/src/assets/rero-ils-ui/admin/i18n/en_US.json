@@ -965,5 +965,7 @@
   "{{ counter }} hidden operation logs": "{{ counter }} hidden operation logs",
   "{{ total }} results of {{ remoteTotal }}": "{{ total }} results of {{ remoteTotal }}",
   "{{ type }} creation failed!": "{{ type }} creation failed!",
-  "{{ type }} registered": "{{ type }} registered"
+  "{{ type }} registered": "{{ type }} registered",
+  "{{count}} claim": "{{count}} claim",
+  "{{count}} claims": "{{count}} claims"
 }
