@@ -1,7 +1,15 @@
 # Changelog
 
+## [v14.7.2](https://github.com/rero/rero-ils-ui/tree/v14.7.2) (2024-02-21)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.7.1...v14.7.2)
+
+**Fixes:**
+* fix(aggregation): add translate for claims count [\#1121](https://github.com/rero/rero-ils-ui/pull/1121) (by @Garfield-fr)
 
 ## [v14.7.1](https://github.com/rero/rero-ils-ui/tree/v14.7.1) (2024-02-20)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.7.0...v14.7.1)
 
 **Fixes:**
 * fix(aggregation): don't translate default facet [\#1118](https://github.com/rero/rero-ils-ui/pull/1118) (by @Garfield-fr)
