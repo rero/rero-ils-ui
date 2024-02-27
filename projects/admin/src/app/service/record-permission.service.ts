@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -36,12 +36,12 @@ export class RecordPermissionService {
 
   /**
    * Constructor
-   * @param _httpClient - HttpClient
-   * @param _translateService - TranslateService
+   * @param httpClient - HttpClient
+   * @param translateService - TranslateService
    */
   constructor(
-    private _httpClient: HttpClient,
-    private _translateService: TranslateService
+    private httpClient: HttpClient,
+    private translateService: TranslateService
   ) { }
 
   /**
@@ -54,7 +54,7 @@ export class RecordPermissionService {
     const url = (pid == null)
       ? `/api/permissions/${resource}`
       : `/api/permissions/${resource}/${pid}`;
-    return this._httpClient.get<RecordPermissions>(url, this._httpOptions);
+    return this.httpClient.get<RecordPermissions>(url, this._httpOptions);
   }
 
 
@@ -63,7 +63,7 @@ export class RecordPermissionService {
    * @return an observable on allowed roles management
    */
   getRolesManagementPermissions(): Observable<any> {
-    return this._httpClient.get('api/patrons/roles_management_permissions', this._httpOptions);
+    return this.httpClient.get('api/patrons/roles_management_permissions', this._httpOptions);
   }
 
   /**
@@ -75,7 +75,7 @@ export class RecordPermissionService {
   generateTooltipMessage(reasons: any, type?: string): string {
     const messageType = type || 'delete';
     const translatePlural = new I18nPluralPipe(new NgLocaleLocalization(
-      this._translateService.currentLang
+      this.translateService.currentLang
     ));
     const messages = [];
 
@@ -85,7 +85,7 @@ export class RecordPermissionService {
         const pluralDict = this.plurialLinksMessages();
         Object.keys(reasons.links).forEach(link => {
           const message = (link in pluralDict)
-            ? translatePlural.transform(reasons.links[link], pluralDict[link], this._translateService.currentLang)
+            ? translatePlural.transform(reasons.links[link], pluralDict[link], this.translateService.currentLang)
             : `${reasons.links[link][link]} ${link}`;
           messages.push('- ' + message);
         });
@@ -107,22 +107,22 @@ export class RecordPermissionService {
         case 'delete':
           messages.unshift(
             messages.length === 1
-              ? this._translateService.instant('You cannot delete the record for the following reason:')
-              : this._translateService.instant('You cannot delete the record for the following reasons:')
+              ? this.translateService.instant('You cannot delete the record for the following reason:')
+              : this.translateService.instant('You cannot delete the record for the following reasons:')
           );
           break;
         case 'request':
           messages.unshift(
             messages.length === 1
-              ? this._translateService.instant('You cannot request the record for the following reason:')
-              : this._translateService.instant('You cannot request the record for the following reasons:')
+              ? this.translateService.instant('You cannot request the record for the following reason:')
+              : this.translateService.instant('You cannot request the record for the following reasons:')
           );
           break;
         default:
           messages.unshift(
             messages.length === 1
-              ? this._translateService.instant('You cannot operate the record for the following reason:')
-              : this._translateService.instant('You cannot operate this record for the following reasons:')
+              ? this.translateService.instant('You cannot operate the record for the following reason:')
+              : this.translateService.instant('You cannot operate this record for the following reasons:')
           );
       }
     }
@@ -164,115 +164,95 @@ export class RecordPermissionService {
   private plurialLinksMessages() {
     return {
       acq_order_lines: {
-        "=1": this._translateService.instant(
-          "has 1 acquisition order line attached"
-        ),
-        other: this._translateService.instant(
-          "has # acquisition order lines attached"
-        ),
+        "=1": this.translateService.instant("has 1 acquisition order line attached"),
+        other: this.translateService.instant("has # acquisition order lines attached"),
       },
       acq_orders: {
-        "=1": this._translateService.instant(
-          "has 1 acquisition order attached"
-        ),
-        other: this._translateService.instant(
-          "has # acquisition orders attached"
-        ),
+        "=1": this.translateService.instant("has 1 acquisition order attached"),
+        other: this.translateService.instant("has # acquisition orders attached"),
       },
       acq_receipt_lines: {
-        "=1": this._translateService.instant(
-          "has 1 acquisition receipt line attached"
-        ),
-        other: this._translateService.instant(
-          "has # acquisition receipts lines attached"
-        ),
+        "=1": this.translateService.instant("has 1 acquisition receipt line attached"),
+        other: this.translateService.instant("has # acquisition receipts lines attached"),
       },
       acq_receipt: {
-        "=1": this._translateService.instant(
-          "has 1 acquisition receipt attached"
-        ),
-        other: this._translateService.instant(
-          "has # acquisition receipts attached"
-        ),
+        "=1": this.translateService.instant("has 1 acquisition receipt attached"),
+        other: this.translateService.instant("has # acquisition receipts attached"),
       },
       acq_accounts: {
-        "=1": this._translateService.instant(
-          "has 1 acquisition account attached"
-        ),
-        other: this._translateService.instant(
-          "has # acquisition accounts attached"
-        ),
+        "=1": this.translateService.instant("has 1 acquisition account attached"),
+        other: this.translateService.instant("has # acquisition accounts attached"),
       },
       budgets: {
-        "=1": this._translateService.instant("has 1 budget attached"),
-        other: this._translateService.instant("has # budgets attached"),
+        "=1": this.translateService.instant("has 1 budget attached"),
+        other: this.translateService.instant("has # budgets attached"),
       },
       circ_policies: {
-        "=1": this._translateService.instant(
-          "has 1 circulation policy attached"
-        ),
-        other: this._translateService.instant(
-          "has # circulation policies attached"
-        ),
+        "=1": this.translateService.instant("has 1 circulation policy attached"),
+        other: this.translateService.instant("has # circulation policies attached"),
+      },
+      collections: {
+        "=1": this.translateService.instant("has 1 exhibition/course attached"),
+        other: this.translateService.instant("has # exhibitions/courses attached"),
       },
       documents: {
-        "=1": this._translateService.instant("has 1 document attached"),
-        other: this._translateService.instant("has # documents attached"),
+        "=1": this.translateService.instant("has 1 document attached"),
+        other: this.translateService.instant("has # documents attached"),
       },
       fees: {
-        "=1": this._translateService.instant("has 1 fee attached"),
-        other: this._translateService.instant("has # fees attached"),
+        "=1": this.translateService.instant("has 1 fee attached"),
+        other: this.translateService.instant("has # fees attached"),
       },
       holdings: {
-        "=1": this._translateService.instant("has 1 holding attached"),
-        other: this._translateService.instant("has # holdings attached"),
+        "=1": this.translateService.instant("has 1 holding attached"),
+        other: this.translateService.instant("has # holdings attached"),
       },
       item_types: {
-        "=1": this._translateService.instant("has 1 item type attached"),
-        other: this._translateService.instant("has # item types attached"),
+        "=1": this.translateService.instant("has 1 item type attached"),
+        other: this.translateService.instant("has # item types attached"),
       },
       items: {
-        "=1": this._translateService.instant("has 1 item attached"),
-        other: this._translateService.instant("has # items attached"),
+        "=1": this.translateService.instant("has 1 item attached"),
+        other: this.translateService.instant("has # items attached"),
       },
       libraries: {
-        "=1": this._translateService.instant("has 1 library attached"),
-        other: this._translateService.instant("has # libraries attached"),
+        "=1": this.translateService.instant("has 1 library attached"),
+        other: this.translateService.instant("has # libraries attached"),
       },
       loans: {
-        "=1": this._translateService.instant("has 1 loan attached"),
-        other: this._translateService.instant("has # loans attached"),
+        "=1": this.translateService.instant("has 1 loan attached"),
+        other: this.translateService.instant("has # loans attached"),
       },
       locations: {
-        "=1": this._translateService.instant("has 1 location attached"),
-        other: this._translateService.instant("has # locations attached"),
+        "=1": this.translateService.instant("has 1 location attached"),
+        other: this.translateService.instant("has # locations attached"),
       },
       organisations: {
-        "=1": this._translateService.instant("has 1 organisation attached"),
-        other: this._translateService.instant("has # organisations attached"),
+        "=1": this.translateService.instant("has 1 organisation attached"),
+        other: this.translateService.instant("has # organisations attached"),
       },
       patron_types: {
-        "=1": this._translateService.instant("has 1 patron type attached"),
-        other: this._translateService.instant("has # patron types attached"),
+        "=1": this.translateService.instant("has 1 patron type attached"),
+        other: this.translateService.instant("has # patron types attached"),
       },
       patrons: {
-        "=1": this._translateService.instant("has 1 patron attached"),
-        other: this._translateService.instant("has # patrons attached"),
+        "=1": this.translateService.instant("has 1 patron attached"),
+        other: this.translateService.instant("has # patrons attached"),
       },
       reports: {
-        "=1": this._translateService.instant("has 1 report attached"),
-        other: this._translateService.instant("has # reports attached"),
+        "=1": this.translateService.instant("has 1 report attached"),
+        other: this.translateService.instant("has # reports attached"),
       },
       rolled_over: {
-        other: this._translateService.instant("Fiscal year closed"),
+        other: this.translateService.instant("Fiscal year closed"),
       },
       templates: {
-        "=1": this._translateService.instant("has 1 template attached"),
-        other: this._translateService.instant("has # templates attached"),
+        "=1": this.translateService.instant("has 1 template attached"),
+        other: this.translateService.instant("has # templates attached"),
       },
       transactions: {
-        "=1": this._translateService.instant("has 1 transaction attached"),
-        other: this._translateService.instant("has # transactions attached"),
+        "=1": this.translateService.instant("has 1 transaction attached"),
+        other: this.translateService.instant("has # transactions attached"),
       },
     };
   }
@@ -283,11 +263,11 @@ export class RecordPermissionService {
    */
   private othersMessages() {
     return {
-      is_default: this._translateService.instant('The default record cannot be deleted'),
-      has_settings: this._translateService.instant('The record contains settings'),
-      harvested: this._translateService.instant('The record has been harvested'),
-      regular_issue_cannot_be_deleted: this._translateService.instant('A regular issue cannot be deleted'),
-      record_not_in_current_library: this._translateService.instant('The record does not belong to the current library.')
+      is_default: this.translateService.instant('The default record cannot be deleted'),
+      has_settings: this.translateService.instant('The record contains settings'),
+      harvested: this.translateService.instant('The record has been harvested'),
+      regular_issue_cannot_be_deleted: this.translateService.instant('A regular issue cannot be deleted'),
+      record_not_in_current_library: this.translateService.instant('The record does not belong to the current library.')
     };
   }
 }
