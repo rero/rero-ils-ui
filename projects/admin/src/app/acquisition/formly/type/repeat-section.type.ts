@@ -25,7 +25,7 @@ import { FieldArrayType } from '@ngx-formly/core';
         @if (field.props.label || field.props.addButton) {
           <label class="col" [ngClass]="field.props.className">
             @if (field.props.label) {
-              <span>{{ field.props.label }}</span>
+              <span>{{ field.props.label|translate }}</span>
             }
             @if (field.props.addButton) {
               <button type="button"
@@ -33,6 +33,17 @@ import { FieldArrayType } from '@ngx-formly/core';
                       (click)="add()">
                 <i class="fa fa-clone"></i>
               </button>
+            }
+            @if (field.props.selectUnselect) {
+              <div class="ml-3 d-inline font-weight-normal">
+                <a class="mr-1" (click)="field.props.selectUnselect($event, 'select', field.fieldGroup)" translate>
+                  Select all
+                </a>
+                |
+                <a class="ml-1" (click)="field.props.selectUnselect($event, 'unselect', field.fieldGroup)" translate>
+                  Deselect all
+                </a>
+              </div>
             }
           </label>
         }
@@ -45,7 +56,7 @@ import { FieldArrayType } from '@ngx-formly/core';
                 @for (field of field.fieldGroup[0].fieldGroup; track field) {
                   @if (field.className) {
                     <div class="{{ field.props.headerClassName }}">
-                      {{ field.props.label }}
+                      {{ field.props.label|translate }}
                       @if (field.props.required) {
                         &nbsp;*
                       }

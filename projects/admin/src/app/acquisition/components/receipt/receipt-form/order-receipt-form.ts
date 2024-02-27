@@ -28,6 +28,15 @@ import { IAcqReceipt } from '../../../classes/receipt';
 import { orderAccountsAsTree } from '../../../utils/account';
 import { IAcqReceiptModel, OrderReceipt } from './order-receipt';
 
+/** Select/Deselect all checkbox */
+function lineAction($event: Event, action: string, fields: any): void {
+  $event.preventDefault();
+  fields.map((field: any) => {
+    const selected = field.fieldGroup.find(line => line.key === 'selected');
+    selected.formControl.setValue(action === 'select');
+  });
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -206,6 +215,7 @@ export class OrderReceiptForm {
           label: _('Order line(s)'),
           addButton: false,
           trashButton: false,
+          selectUnselect: lineAction,
           minLength: 0
         },
         fieldArray: {
