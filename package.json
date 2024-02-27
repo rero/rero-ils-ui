@@ -90,7 +90,7 @@
     "@ngx-translate/core": "^15.0.0",
     "@rero/ng-core": "^14.8.0",
     "@swimlane/ngx-charts": "^20.5.0",
-    "@vpoppy/ngx-translate-extract": "^8.0.0",
+    "@vpoppy/ngx-translate-extract": "^9.0.0",
     "bootstrap": "^4.6.2",
     "crypto-js": "^4.2.0",
     "easymde": "^2.18.0",
