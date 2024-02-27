@@ -155,6 +155,9 @@ export class ItemsService {
         if (data.action_applied[ItemAction.checkin]) {
           loan = data.action_applied[ItemAction.checkin];
         }
+        if (data.action_applied[ItemAction.receive]) {
+          loan = data.action_applied[ItemAction.receive];
+        }
         if (data.action_applied[ItemAction.validate]) {
           loan = data.action_applied[ItemAction.validate];
         }
