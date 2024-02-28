@@ -1,5 +1,12 @@
 # Changelog
 
+## [v14.7.3](https://github.com/rero/rero-ils-ui/tree/v14.7.3) (2024-02-28)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.7.2...v14.7.3)
+
+**Fixes:**
+* fix(circulation): no loan info on receive [\#1124](https://github.com/rero/rero-ils-ui/pull/1124) (by @jma & @PascalRepond)
+
 ## [v14.7.2](https://github.com/rero/rero-ils-ui/tree/v14.7.2) (2024-02-21)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.7.1...v14.7.2)
