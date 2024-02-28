@@ -24,7 +24,7 @@ import { Loan, LoanState } from '@app/admin/classes/loans';
 import { ItemsService } from '@app/admin/service/items.service';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { RecordService } from '@rero/ng-core';
-import { ItemStatus, PermissionsService } from '@rero/shared';
+import { ItemStatus, PermissionsService, UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -90,13 +90,15 @@ export class ItemComponent implements OnInit {
    * @param patronTransactionService - Patron transaction Service
    * @param itemService - Item Service
    * @param permissionsService - PermissionsService
+   * @param userService - UserService
    */
   constructor(
     private recordService: RecordService,
     private organisationService: OrganisationService,
     private patronTransactionService: PatronTransactionService,
     private itemService: ItemsService,
-    private permissionsService: PermissionsService
+    private permissionsService: PermissionsService,
+    private userService: UserService
   ) {  }
 
   /** OnInit hook */
@@ -158,7 +160,10 @@ export class ItemComponent implements OnInit {
    */
   getCirculationNoteForAction(): ItemNote[] {
     if (this.item.actionDone) {
-      if (this.item.actionDone === this.itemAction.checkin) {
+      if (
+        (this.item.actionDone === this.itemAction.checkin)
+        || (((this.item.actionDone === this.itemAction.receive) && this.item.library.pid === this.userService.user.currentLibrary))
+        ) {
         return [this.item.getNote(ItemNoteType.CHECKIN)];
       }
       if (this.item.actionDone === this.itemAction.checkout) {
