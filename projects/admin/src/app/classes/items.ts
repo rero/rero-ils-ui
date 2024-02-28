@@ -94,6 +94,8 @@ export class Item {
   pending_loans: Loan[];
   number_of_extensions: number;
   location: any;
+  library: any;
+  library_location_name: any;
   notes: ItemNote[];
   acquisition_date: Moment;
   enumerationAndChronology: string;
