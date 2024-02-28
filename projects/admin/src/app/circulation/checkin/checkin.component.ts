@@ -96,7 +96,7 @@ export class CheckinComponent implements OnInit {
     this.getPatronOrItem(this.searchText);
   }
 
-  /** Apply checkin and checkout automatically
+  /** Apply check-in and checkout automatically
    * @param itemBarcode: item barcode
    */
   checkin(itemBarcode: string) {
@@ -127,6 +127,7 @@ export class CheckinComponent implements OnInit {
             );
             break;
           case ItemAction.checkin:
+          case ItemAction.receive:
             this._displayCirculationNote(item, ItemNoteType.CHECKIN);
             if (item.action_applied && item.action_applied.checkin) {
               this.getPatronInfo(item.action_applied.checkin.patron.barcode);
