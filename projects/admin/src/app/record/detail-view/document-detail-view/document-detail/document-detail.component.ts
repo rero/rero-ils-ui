@@ -1,4 +1,3 @@
-
 /*
  * RERO ILS UI
  * Copyright (C) 2019-2024 RERO
@@ -16,13 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Location } from '@angular/common';
-import { Component, ComponentFactoryResolver } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
 import { OperationLogsService } from '@app/admin/service/operation-logs.service';
 import { TranslateService } from '@ngx-translate/core';
-import { DetailComponent, Record, RecordService, RecordUiService } from '@rero/ng-core';
-import { IPermissions, PERMISSIONS } from '@rero/shared';
+import {
+  DetailComponent,
+  Record,
+  RecordService,
+  RecordUiService,
+} from '@rero/ng-core';
+import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -31,10 +35,10 @@ import { DialogImportComponent } from '../dialog-import/dialog-import.component'
 
 @Component({
   selector: 'admin-document-detail',
-  templateUrl: './document-detail.component.html'
+  templateUrl: './document-detail.component.html',
 })
-export class DocumentDetailComponent extends DetailComponent {
-
+export class DocumentDetailComponent extends DetailComponent implements OnInit {
+  fileTitle: string = 'files';
   /** return all available permissions for current user */
   permissions: IPermissions = PERMISSIONS;
 
@@ -43,7 +47,7 @@ export class DocumentDetailComponent extends DetailComponent {
     'bf:Ean': 'bf:Isbn',
     'bf:Isbn': 'bf:Isbn',
     'bf:Issn': 'bf:IssnL',
-    'bf:IssnL': 'bf:Issn'
+    'bf:IssnL': 'bf:Issn',
   };
 
   /** Identifiers used to check for duplicates */
@@ -53,12 +57,29 @@ export class DocumentDetailComponent extends DetailComponent {
     IdentifierTypes.DOI,
     IdentifierTypes.LCCN,
     IdentifierTypes.L_ISSN,
-    IdentifierTypes.EAN
+    IdentifierTypes.EAN,
   ];
+
+  ngOnInit(): void {
+    const libPid = this.userService.user.currentLibrary;
+    if (libPid) {
+      this.recordService.getRecord('libraries', libPid).subscribe((library) => {
+        this.fileTitle = [
+          this.translate.instant('Files'),
+          library.metadata.name,
+        ].join(' - ');
+      });
+    }
+    super.ngOnInit();
+  }
 
   /** Source for imported record. */
   get source() {
-    if (this.route.snapshot && this.route.snapshot.params && this.route.snapshot.params.type !== null) {
+    if (
+      this.route.snapshot &&
+      this.route.snapshot.params &&
+      this.route.snapshot.params.type !== null
+    ) {
       return this.route.snapshot.params.type.replace('import_', '');
     }
     return null;
@@ -66,7 +87,11 @@ export class DocumentDetailComponent extends DetailComponent {
 
   /** External identifier for imported record. */
   get pid(): string | null {
-    if (this.route.snapshot && this.route.snapshot.params && this.route.snapshot.params.pid !== null) {
+    if (
+      this.route.snapshot &&
+      this.route.snapshot.params &&
+      this.route.snapshot.params.pid !== null
+    ) {
       return this.route.snapshot.params.pid;
     }
     return null;
@@ -106,9 +131,20 @@ export class DocumentDetailComponent extends DetailComponent {
     protected spinner: NgxSpinnerService,
     protected bsModalService: BsModalService,
     private operationLogsService: OperationLogsService,
+    protected userService: UserService
   ) {
-    super(route, router, location, componentFactoryResolver, recordService, recordUiService, toastrService, translate, spinner);
-   }
+    super(
+      route,
+      router,
+      location,
+      componentFactoryResolver,
+      recordService,
+      recordUiService,
+      toastrService,
+      translate,
+      spinner
+    );
+  }
 
   /**
    * Import document
@@ -116,7 +152,11 @@ export class DocumentDetailComponent extends DetailComponent {
    * @param record - the current record to import
    * @param data - The source information
    */
-   importDocument(event: Event, record: any, data: { source: string, pid: string }): void {
+  importDocument(
+    event: Event,
+    record: any,
+    data: { source: string; pid: string }
+  ): void {
     event.preventDefault();
     const rec = record.metadata;
     const route = ['/records', 'documents', 'new'];
@@ -125,7 +165,9 @@ export class DocumentDetailComponent extends DetailComponent {
     if (rec.identifiedBy) {
       // We select only a defined part of the identifier
       rec.identifiedBy
-        .filter((identifier: any) => this.identifiersList.includes(identifier.type))
+        .filter((identifier: any) =>
+          this.identifiersList.includes(identifier.type)
+        )
         .map((identifier: any) => {
           queryParams.push(this.extractAndFormatQueryParams(identifier));
           if (identifier.type in this.mappingTypes) {
@@ -141,7 +183,9 @@ export class DocumentDetailComponent extends DetailComponent {
     // https://github.com/rero/rero-ils/issues/2900 (Generalize to all resources)
     if (queryParams.length === 0 && rec.title) {
       // We extract the title
-      const titles = rec.title.filter((rtitle: any) => rtitle.type === 'bf:Title' && '_text' in rtitle);
+      const titles = rec.title.filter(
+        (rtitle: any) => rtitle.type === 'bf:Title' && '_text' in rtitle
+      );
       if (titles.length > 0) {
         // We clean the text string by deleting some characters
         const regex = /["\[\]]/gi;
@@ -197,5 +241,14 @@ export class DocumentDetailComponent extends DetailComponent {
       query.push(`identifiedBy.source:"${identifier.source}"`);
     }
     return `(${query.join(' AND ')})`;
+  }
+  /**
+   * Return the URL of the file.
+   *
+   * @param file File object.
+   * @returns URL of the file.
+   */
+  getFileUrl(file): string {
+    return file.links.content;
   }
 }
