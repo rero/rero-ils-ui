@@ -20,9 +20,6 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { IBucketNameService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { LibraryApiService } from '../api/library-api.service';
-import { OrganisationApiService } from '../api/organisation-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -32,13 +29,9 @@ export class BucketNameService implements IBucketNameService {
   /**
    * Constructor
    * @param translateService - TranslateService
-   * @param organisationApiService - OrganisationApiService
-   * @param libraryApiService - LibraryApiService
    */
   constructor(
-    private translateService: TranslateService,
-    private organisationApiService: OrganisationApiService,
-    private libraryApiService: LibraryApiService
+    private translateService: TranslateService
   ) { }
 
   /**
@@ -52,13 +45,6 @@ export class BucketNameService implements IBucketNameService {
       case 'fiction':
         const fiction_label = Boolean(value)? _('Fiction') : _('No fiction');
         return of(this.translateService.instant(fiction_label));
-      case 'claims_count':
-        const claims_label = Number(value) < 2 ? _('{{count}} claim') : _('{{count}} claims');
-        return of(this.translateService.instant(claims_label, { count: value }));
-      case 'language': return of(this.translateService.instant(`lang_${value}`));
-      case 'transaction_library':
-      case 'library': return this.libraryApiService.getByPid(value).pipe(map(record => record.name));
-      case 'organisation': return this.organisationApiService.getByPid(value).pipe(map(record => record.name));
       default: return of(this.translateService.instant(value));
     }
   }

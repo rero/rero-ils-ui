@@ -24,7 +24,7 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { CoreConfigService, RecordModule, TranslateLoader, TranslateService } from '@rero/ng-core';
+import { BucketNameService as CoreBucketNameService, CoreConfigService, RecordModule, TranslateLoader, TranslateService } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
@@ -39,6 +39,7 @@ import { ErrorPageComponent } from './error/error-page.component';
 import { CustomRequestInterceptor } from './interceptor/custom-request.interceptor';
 import { MainComponent } from './main/main.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
+import { BucketNameService } from './service/bucket-name.service';
 
 
 /** function to instantiate the application  */
@@ -82,7 +83,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         { provide: CoreConfigService, useClass: AppConfigService },
         { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.currentLanguage, deps: [TranslateService] },
         { provide: HTTP_INTERCEPTORS, useClass: CustomRequestInterceptor, multi: true },
-        BsLocaleService
+        BsLocaleService,
+        { provide: CoreBucketNameService, useClass: BucketNameService },
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     bootstrap: [AppComponent]
