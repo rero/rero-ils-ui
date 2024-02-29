@@ -32,6 +32,7 @@ import {
   BucketNameService as CoreBucketNameService,
   CoreConfigService,
   RecordHandleErrorService as CoreRecordHandleErrorService,
+  FilesService,
   LocalStorageService,
   RecordModule, RemoteTypeaheadService,
   TranslateLoader, TranslateService, TruncateTextPipe
@@ -208,6 +209,7 @@ import { AppInitializerService } from './service/app-initializer.service';
 import { BucketNameService } from './service/bucket-name.service';
 import { OrganisationService } from './service/organisation.service';
 import { RecordHandleErrorService } from './service/record.handle-error.service';
+import { ResourcesFilesService } from './service/resources-files.service';
 import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-factory.service';
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { PreviewEmailModule } from './shared/preview-email/preview-email.module';
@@ -472,7 +474,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     ItemHoldingsCallNumberPipe,
     CountryCodeTranslatePipe,
     { provide: CoreBucketNameService, useClass: BucketNameService },
-    { provide: CoreRecordHandleErrorService, useClass: RecordHandleErrorService }
+    { provide: CoreRecordHandleErrorService, useClass: RecordHandleErrorService },
+    { provide: FilesService, useClass: ResourcesFilesService },
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

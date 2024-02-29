@@ -57,6 +57,11 @@ export const PERMISSIONS = {
   'DOC_ACCESS': 'doc-access',
   'DOC_CREATE': 'doc-create',
   'DOC_SEARCH': 'doc-search',
+  // Documents
+  'FILE_ACCESS': 'file-access',
+  'FILE_CREATE': 'file-create',
+  'FILE_SEARCH': 'file-search',
+  // Entities
   // Entities
   'LOCENT_ACCESS': 'locent-access',
   'LOCENT_CREATE': 'locent-create',
