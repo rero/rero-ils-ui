@@ -18,7 +18,7 @@
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { ComponentCanDeactivateGuard, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { Observable, of } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
 import { PermissionGuard } from '../guard/permission.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
@@ -65,6 +65,33 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             },
             component: DocumentsBriefViewComponent,
             detailComponent: DocumentDetailViewComponent,
+            files: {
+              enabled: true,
+              orderList: (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime(),
+              canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.FILE_CREATE) }),
+              canRead: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.FILE_ACCESS) }),
+              canUpdate: (record) => this._routeToolService.permissions({metadata:{pid: record.id}}, 'records').pipe(
+                map((permissions: any) => {
+                  return {
+                  can: permissions?.canUpdate?.can || false,
+                  message: permissions?.canUpdate?.message || ''
+                  };
+                })),
+              canUpdateMetadata: (record) => this._routeToolService.permissions({metadata:{pid: record.id}}, 'records').pipe(
+                map((permissions: any) => {
+                  return {
+                  can: permissions?.canUpdate?.can || false,
+                  message: permissions?.canUpdate?.message || ''
+                  };
+                })),
+              canDelete: (record) => this._routeToolService.permissions({metadata:{pid: record.id}}, 'records').pipe(
+                map((permissions: any) => {
+                  return {
+                  can: permissions?.canDelete?.can || false,
+                  message: permissions?.canDelete?.message || ''
+                  };
+                }))
+            },
             searchFilters: [
               this.expertSearchFilter(),
               {

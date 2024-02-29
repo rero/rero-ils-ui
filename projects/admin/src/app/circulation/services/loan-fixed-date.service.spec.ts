@@ -85,9 +85,7 @@ describe('LoanFixedDateService', () => {
     const date = new Date();
     date.setTime(date.getTime() + 600000000);
     const dateString = date.toLocaleDateString('en');
-    console.log(dateString, service.hasValue());
     service.set(dateString);
-    console.log(service.hasValue(), service.get());
     expect(service.get()).toEqual(dateString);
     librarySwitchService.switch('1');
     expect(service.get()).toBeUndefined();

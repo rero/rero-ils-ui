@@ -235,12 +235,19 @@
     <tabset>
       <!-- GET TAB -->
       @if (record.metadata.pid) {
-        <tab id="documents-get-tab" tabOrder="1" [active]="true">
+        <tab #tabGet="tab" id="documents-get-tab" tabOrder="1" [active]="true">
           <ng-template tabHeading>
             <i class="fa fa-list-ul mr-1"></i>{{ 'Get' | translate }}
           </ng-template>
           <!-- FILES -->
-          <shared-doc-files class="mb-2" [documentPid]="record.metadata.pid"></shared-doc-files>
+          @if (tabGet.active) {
+            <div class="mt-2">
+              <!-- FILES -->
+              <shared-doc-files
+                [documentPid]="record.metadata.pid"
+              ></shared-doc-files>
+            </div>
+            }
           <div class="mt-2">
             <!-- HOLDINGS -->
             <admin-holding-organisation [document]="record"></admin-holding-organisation>
@@ -282,9 +289,23 @@
         </tab>
       }
       <!-- END OF LOCAL FIELDS TAB -->
+      <tab #tabFile="tab" id="documents-files-field-tab" tabOrder="5">
+        <ng-template tabHeading>
+          <i class="fa fa-file mr-1"></i> {{ "My files" | translate }}
+        </ng-template>
+        @if (tabFile.active) {
+        <div class="mt-2">
+          <ng-core-record-files
+            [title]="null"
+            [type]="type"
+            [pid]="record.id"
+          ></ng-core-record-files>
+        </div>
+        }
+      </tab>
       <!-- MARC TAB -->
       @if (marc$ | async; as marc) {
-        <tab id="documents-marc-tab" tabOrder="5">
+        <tab id="documents-marc-tab" tabOrder="6">
           <ng-template tabHeading>
             <i class="fa fa-list-ul mr-1"></i><span translate>Marc</span>
           </ng-template>
