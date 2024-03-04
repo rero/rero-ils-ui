@@ -24,9 +24,9 @@ import { PermissionGuard } from '../guard/permission.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentEditorComponent } from '../record/custom-editor/document-editor/document-editor.component';
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
+import { DocumentDetailComponent } from '../record/detail-view/document-detail-view/document-detail/document-detail.component';
 import { DocumentRecordSearchComponent } from '../record/search-view/document-record-search/document-record-search.component';
 import { BaseRoute } from './base-route';
-import { DocumentDetailComponent } from '../record/detail-view/document-detail-view/document-detail/document-detail.component';
 
 export class DocumentsRoute extends BaseRoute implements RouteInterface {
 

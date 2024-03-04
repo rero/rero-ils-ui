@@ -22,14 +22,18 @@ import { CirculationLogsComponent } from './circulation-logs.component';
 @Component({
   selector: 'admin-circulation-logs-dialog',
   template: `
-    <button
-      id="item-circulation-history"
-      class="btn btn-sm btn-light my-2 ml-2"
-      [permissions]="[permissions.CIRC_ADMIN, permissions.OPLG_SEARCH]"
-      [operator] = permissionOperator.AND
-      (click)="openDialog()"
-      translate
-    >Circulation history</button>
+    <div class="w-100 text-right">
+      <button
+        id="item-circulation-history"
+        class="btn btn-sm btn-outline-secondary my-1"
+        [permissions]="[permissions.CIRC_ADMIN, permissions.OPLG_SEARCH]"
+        [operator] = permissionOperator.AND
+        (click)="openDialog()"
+      >
+        <i class="fa fa-history"></i>
+        {{ 'Circulation history' | translate }}
+      </button>
+  </div>
   `
 })
 export class CirculationLogsDialogComponent {

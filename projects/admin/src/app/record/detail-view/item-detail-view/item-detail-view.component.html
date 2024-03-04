@@ -22,10 +22,12 @@
     </div>
   }
   @if (isIssue) {
-    <a [routerLink]="parentHoldingUrl">
-      <i class="fa fa-arrow-left mr-1"></i>
-      {{ 'Back to parent holding' | translate }}
-    </a>
+    <div class="mb-2">
+      <a [routerLink]="parentHoldingUrl">
+        <i class="fa fa-arrow-left"></i>
+        {{ 'Back to parent holding' | translate }}
+      </a>
+    </div>
   }
   <header>
     <h1>{{ 'Barcode' | translate }} {{ record.metadata.barcode }}</h1>
@@ -211,101 +213,112 @@
     </section>
   }
 
-  <!-- LEGACY -->
-  @if ((record.metadata | keyExists:'legacy_checkout_count') || (record.metadata | keyExists:'legacy_circulation_rules')) {
-    <section class="mb-4 mt-4">
-      <div class="card">
-        <div class="card-header" translate>Legacy circulation rules</div>
-        <div class="card-body">
-          <dl class="row mb-0">
-            <!-- LEGACY CHECKOUT COUNT -->
-            @if (record.metadata | keyExists:'legacy_checkout_count') {
-              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-                Checkout count
-              </dt>
-              <dd class="col-sm-7 col-md-8 mb-0">
-                {{ record.metadata.legacy_checkout_count }}
-              </dd>
-            }
-            <!-- LEGACY LOAN DURATION -->
-            @if (record.metadata.legacy_circulation_rules | keyExists:'loan_duration') {
-              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-                Loan duration
-              </dt>
-              <dd class="col-sm-7 col-md-8 mb-0">
-                {{ record.metadata.legacy_circulation_rules.loan_duration }}
-              </dd>
-            }
-            <!-- LEGACY USE ITEM SPECIFIC RULES -->
-            @if (record.metadata.legacy_circulation_rules | keyExists:'use_item_specific_rules') {
-              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-                Use item specific rules
-              </dt>
-              <dd class="col-sm-7 col-md-8 mb-0">
-                <i
-                  class="fa fa-circle"
-                  [ngClass]="{
-                    'text-danger': !record.metadata.legacy_circulation_rules.use_item_specific_rules,
-                    'text-success': !record.metadata.legacy_circulation_rules.use_item_specific_rules
-                  }"
-                  aria-hidden="true"
-                ></i>
-              </dd>
-            }
-            <!-- LEGACY ALLOW REQUEST -->
-            @if (record.metadata.legacy_circulation_rules | keyExists:'allow_request') {
-              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-                Allow request
-              </dt>
-              <dd class="col-sm-7 col-md-8 mb-0">
-                <i
-                  class="fa fa-circle"
-                  [ngClass]="{
-                    'text-danger': !record.metadata.legacy_circulation_rules.allow_request,
-                    'text-success': record.metadata.legacy_circulation_rules.allow_request }"
-                  aria-hidden="true"
-                ></i>
-              </dd>
-            }
-
-            <!-- LEGACY ALLOW REQUEST -->
-            @if (record.metadata.legacy_circulation_rules | keyExists:'floats') {
-              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-                Floats
-              </dt>
-              <dd class="col-sm-7 col-md-8 mb-0">
-                <i
-                  class="fa fa-circle"
-                  [ngClass]="{
-                    'text-danger': !record.metadata.legacy_circulation_rules.floats,
-                    'text-success': record.metadata.legacy_circulation_rules.floats
-                  }"
-                  aria-hidden="true"
-                ></i>
-              </dd>
-            }
-          </dl>
-        </div>
-      </div>
-    </section>
-  }
-
   <!-- TABS -->
   <section class="mt-3 mb-4">
     <tabset>
-      <!-- LOCAL FIELDS TAB ------------------------------------------------------------>
-      <tab id="documents-local-field-tab" tabOrder="1" [permissions]="permissions.LOFI_SEARCH">
+      <!-- CIRCULATION -->
+      <tab id="item-circulation" tabOrder="1">
         <ng-template tabHeading>
-          <i class="fa fa-list-ul mr-1"></i><span translate>Local fields</span>
+          <i class="fa fa-exchange mr-1"></i>
+          {{ 'Circulation' | translate }}
+        </ng-template>
+        <div class="mt-2">
+          <admin-circulation-logs-dialog [resourcePid]="record.metadata.pid" [resourceType]="'item'"></admin-circulation-logs-dialog>
+          <admin-item-transactions [itemPid]="record.metadata.pid" (requestEvent)="updateItemStatus()"></admin-item-transactions>
+          <!-- LEGACY -->
+          @if ((record.metadata | keyExists:'legacy_checkout_count') || (record.metadata | keyExists:'legacy_circulation_rules')) {
+            <section class="mb-4 mt-4">
+              <div class="card">
+                <div class="card-header" translate>Legacy circulation rules</div>
+                <div class="card-body">
+                  <dl class="row mb-0">
+                    <!-- LEGACY CHECKOUT COUNT -->
+                    @if (record.metadata | keyExists:'legacy_checkout_count') {
+                      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+                        Checkout count
+                      </dt>
+                      <dd class="col-sm-7 col-md-8 mb-0">
+                        {{ record.metadata.legacy_checkout_count }}
+                      </dd>
+                    }
+                    <!-- LEGACY LOAN DURATION -->
+                    @if (record.metadata.legacy_circulation_rules | keyExists:'loan_duration') {
+                      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+                        Loan duration
+                      </dt>
+                      <dd class="col-sm-7 col-md-8 mb-0">
+                        {{ record.metadata.legacy_circulation_rules.loan_duration }}
+                      </dd>
+                    }
+                    <!-- LEGACY USE ITEM SPECIFIC RULES -->
+                    @if (record.metadata.legacy_circulation_rules | keyExists:'use_item_specific_rules') {
+                      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+                        Use item specific rules
+                      </dt>
+                      <dd class="col-sm-7 col-md-8 mb-0">
+                        <i
+                          class="fa fa-circle"
+                          [ngClass]="{
+                            'text-danger': !record.metadata.legacy_circulation_rules.use_item_specific_rules,
+                            'text-success': !record.metadata.legacy_circulation_rules.use_item_specific_rules
+                          }"
+                          aria-hidden="true"
+                        ></i>
+                      </dd>
+                    }
+                    <!-- LEGACY ALLOW REQUEST -->
+                    @if (record.metadata.legacy_circulation_rules | keyExists:'allow_request') {
+                      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+                        Allow request
+                      </dt>
+                      <dd class="col-sm-7 col-md-8 mb-0">
+                        <i
+                          class="fa fa-circle"
+                          [ngClass]="{
+                            'text-danger': !record.metadata.legacy_circulation_rules.allow_request,
+                            'text-success': record.metadata.legacy_circulation_rules.allow_request }"
+                          aria-hidden="true"
+                        ></i>
+                      </dd>
+                    }
+
+                    <!-- LEGACY ALLOW REQUEST -->
+                    @if (record.metadata.legacy_circulation_rules | keyExists:'floats') {
+                      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+                        Floats
+                      </dt>
+                      <dd class="col-sm-7 col-md-8 mb-0">
+                        <i
+                          class="fa fa-circle"
+                          [ngClass]="{
+                            'text-danger': !record.metadata.legacy_circulation_rules.floats,
+                            'text-success': record.metadata.legacy_circulation_rules.floats
+                          }"
+                          aria-hidden="true"
+                        ></i>
+                      </dd>
+                    }
+                  </dl>
+                </div>
+              </div>
+            </section>
+          }
+        </div>
+      </tab>
+      <!-- LOCAL FIELDS TAB -->
+      <tab id="item-local-field-tab" tabOrder="1" [permissions]="permissions.LOFI_SEARCH">
+        <ng-template tabHeading>
+          <i class="fa fa-list-ul mr-1"></i>
+          {{ 'Local fields' | translate }}
         </ng-template>
         <div class="mt-2">
           <admin-local-field [resourceType]="'items'" [resourcePid]="record.metadata.pid"></admin-local-field>
         </div>
       </tab>
-      <!-- END OF LOCAL FIELDS TAB ---------------------------------------------------->
-      <!-- CLAIMS TAB ------------------------------------------------------------>
+      <!-- END OF LOCAL FIELDS TAB -->
+      <!-- CLAIMS TAB -->
       @if (record.metadata?.issue?.claims) {
-        <tab id="documents-claims-tab" tabOrder="2">
+        <tab id="item-claims-tab" tabOrder="2">
           <ng-template tabHeading>
             <i class="fa fa-gavel mr-1"></i>
               <span [ngPlural]="record.metadata.issue.claims.counter">
@@ -328,15 +341,4 @@
       }
     </tabset>
   </section>
-
-  <!-- TRANSACTIONS -->
-  <admin-item-transactions [itemPid]="record.metadata.pid" (requestEvent)="updateItemStatus()"></admin-item-transactions>
-
-  <!-- OPERATION LOGS-->
-  @if (isEnabledOperationLog) {
-    <admin-operation-logs-dialog [resourceType]="'items'" [resourcePid]="record.metadata.pid"></admin-operation-logs-dialog>
-  }
-
-  <!-- CIRCULATION LOGS -->
-  <admin-circulation-logs-dialog [resourcePid]="record.metadata.pid" [resourceType]="'item'"></admin-circulation-logs-dialog>
 }

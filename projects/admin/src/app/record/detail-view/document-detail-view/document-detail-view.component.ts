@@ -23,7 +23,6 @@ import { IPermissions, PERMISSIONS, PermissionsService } from '@rero/shared';
 import { Observable, of, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { DocumentApiService } from '../../../api/document-api.service';
-import { OperationLogsService } from '../../../service/operation-logs.service';
 
 @Component({
   selector: 'admin-document-detail-view',
@@ -59,14 +58,6 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   /** Enables or disables links */
   activateLink: boolean = true;
 
-  /**
-   * Is operation log enabled
-   * @return boolean
-   */
-  get isEnabledOperationLog(): boolean {
-    return this.operationLogsService.isLogVisible('documents');
-  }
-
   /** External identifier for imported record. */
   get pid(): string | null {
     if (this.activatedRouter.snapshot && this.activatedRouter.snapshot.params && this.activatedRouter.snapshot.params.pid !== null) {
@@ -99,7 +90,6 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
    * @param translateService - TranslateService to translate some strings.
    * @param activatedRouter - ActivatedRoute to get url parameters.
    * @param recordService - RecordService to the MARC version for the record.
-   * @param operationLogsService - OperationLogsService
    * @param documentApiService - DocumentApiService
    * @param permissionsService - PermissionsService
    */
@@ -107,7 +97,6 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
     private translateService: TranslateService,
     private activatedRouter: ActivatedRoute,
     private recordService: RecordService,
-    private operationLogsService: OperationLogsService,
     private documentApiService: DocumentApiService,
     private permissionsService: PermissionsService
   ) { }

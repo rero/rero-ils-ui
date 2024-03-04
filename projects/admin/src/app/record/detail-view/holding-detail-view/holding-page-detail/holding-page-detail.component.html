@@ -29,28 +29,7 @@
     <ng-container beforeButton>
       @if (record) {
         @if (isEnabledOperationLog && record.metadata.pid) {
-          <admin-operation-logs-dialog resourceType="documents" [resourcePid]="record.metadata.pid"></admin-operation-logs-dialog>
-        }
-        @if (!record.metadata.pid && source) {
-          <button
-            class="btn btn-sm btn-outline-primary ml-1"
-            [permissions]="permissions.DOC_CREATE"
-            (click)="importDocument($event, record, { source: source, pid: pid })"
-          >
-            <i class="fa fa-cloud-download"></i>
-            {{ 'Import' | translate }}
-          </button>
-        }
-        @if (record.metadata.pid) {
-          <button
-            class="btn btn-sm btn-outline-primary ml-1"
-            [permissions]="permissions.DOC_CREATE"
-            [routerLink]="['/records', 'documents', 'duplicate']"
-            [queryParams]="{type: 'documents', pid: record.metadata.pid}"
-          >
-            <i class="fa fa-files-o"></i>
-            {{ 'Duplicate' | translate }}
-          </button>
+          <admin-operation-logs-dialog resourceType="holdings" [resourcePid]="record.metadata.pid"></admin-operation-logs-dialog>
         }
       }
     </ng-container>
@@ -60,7 +39,4 @@
     <ng-core-error [error]="error"></ng-core-error>
   }
   <ng-template ngCoreRecordDetail></ng-template>
-  @if (record && filesEnabled && updateStatus && updateStatus.can) {
-    <ng-core-record-files [type]="type" [pid]="record.id"></ng-core-record-files>
-  }
 </div>
