@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,8 @@ export abstract class IAvailabilityService {
   /**
    * Get Availability of resource
    * @param pid - Resource pid
+   * @param viewcode = The current view code
    * @returns an Observable of Availability data
    */
-  abstract getAvailability(pid: string):  Observable<IAvailability>;
+  abstract getAvailability(pid: string, viewcode?: string):  Observable<IAvailability>;
 }
