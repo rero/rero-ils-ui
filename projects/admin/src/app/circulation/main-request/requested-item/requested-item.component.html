@@ -69,7 +69,13 @@
           <!-- item shelf location + destination -->
           <dt class="col-2 label-title text-right" translate>Location</dt>
           <dd  name="location" class="col-10">
-            {{ item.library.name }} {{ item.location.name }}
+            {{ item.library.name }} -
+            @if (item.temporary_location?.name) {
+              {{ item.temporary_location.name }}
+            } @else {
+              {{ item.location.name }}
+            }
+
           </dd>
           <dt class="col-2 label-title text-right" translate>Pick-up location</dt>
           <dd name="pickup-location" class="col-10">
