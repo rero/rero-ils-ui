@@ -16,9 +16,9 @@
 -->
 <div class="card mt-2" id="item-loans-requests" [permissions]="permissions.CIRC_ADMIN">
   <!-- Loan borrowed -->
-  <div class="card-header font-weight-bold" translate>Borrowed by</div>
   @defer (when borrowedBy) {
     @if (borrowedBy.length > 0) {
+      <div class="card-header font-weight-bold" translate>Borrowed by</div>
       <div class="card-body">
         <div class="row mb-2">
           <div class="col-4 font-weight-bold" translate>Patron</div>
@@ -27,11 +27,7 @@
         </div>
         <admin-item-transaction type="loan_borrow" [transaction]="borrowedBy[0]"></admin-item-transaction>
       </div>
-    } @else {
-      <div class="p-3" translate>No item borrowed</div>
     }
-  } @placeholder {
-    <i class="fa fa-spinner"></i> {{ 'loading in progress...' | translate }}
   }
 
   <!-- Loan requested -->

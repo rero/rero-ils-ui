@@ -16,13 +16,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record$ | async; as record) {
-    <div class="float-right mt-2 mb-4 mr-n4">
-      <a (click)="search($any(record).metadata)" class="btn btn-sm btn-primary">
-        <i class="fa fa-search" aria-hidden="true"></i>
-        {{ 'Search documents' | translate }}
-      </a>
-    </div>
-
     <h1 class="mb-0" *ngVar="icon($any(record).metadata.type) as icon">
       <i class="fa {{ icon.class }}" title="{{ icon.title }}" aria-hidden="true"></i>
       {{ $any(record).metadata | extractSourceField : 'authorized_access_point' }}</h1>

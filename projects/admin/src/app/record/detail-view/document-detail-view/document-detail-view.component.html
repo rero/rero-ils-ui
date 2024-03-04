@@ -308,10 +308,6 @@
       <!-- END OF MARC TAB -->
     </tabset>
   </div>
-  <!-- END OF TABS -->
-  @if (isEnabledOperationLog && record.metadata.pid) {
-    <admin-operation-logs-dialog resourceType="documents" [resourcePid]="record.metadata.pid"></admin-operation-logs-dialog>
-  }
 }
 
 <ng-template #entityLink let-entity="entity" let-class="class">

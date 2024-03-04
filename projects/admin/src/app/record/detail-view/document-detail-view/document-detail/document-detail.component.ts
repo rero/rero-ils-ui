@@ -1,7 +1,7 @@
 
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,6 +19,7 @@ import { Location } from '@angular/common';
 import { Component, ComponentFactoryResolver } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
+import { OperationLogsService } from '@app/admin/service/operation-logs.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DetailComponent, Record, RecordService, RecordUiService } from '@rero/ng-core';
 import { IPermissions, PERMISSIONS } from '@rero/shared';
@@ -72,6 +73,14 @@ export class DocumentDetailComponent extends DetailComponent {
   }
 
   /**
+   * Is operation log enabled
+   * @return boolean
+   */
+  get isEnabledOperationLog(): boolean {
+    return this.operationLogsService.isLogVisible('documents');
+  }
+
+  /**
    * Constructor
    * @param route - ActivatedRoute
    * @param router - Router
@@ -83,6 +92,7 @@ export class DocumentDetailComponent extends DetailComponent {
    * @param translate - TranslateService
    * @param spinner - NgxSpinnerService
    * @param bsModalService - BsModalService
+   * @param operationLogsService - OperationLogsService
    */
   constructor(
     protected route: ActivatedRoute,
@@ -94,7 +104,8 @@ export class DocumentDetailComponent extends DetailComponent {
     protected toastrService: ToastrService,
     protected translate: TranslateService,
     protected spinner: NgxSpinnerService,
-    protected bsModalService: BsModalService
+    protected bsModalService: BsModalService,
+    private operationLogsService: OperationLogsService,
   ) {
     super(route, router, location, componentFactoryResolver, recordService, recordUiService, toastrService, translate, spinner);
    }

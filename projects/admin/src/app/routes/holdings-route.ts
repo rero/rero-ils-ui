@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { ComponentCanDeactivateGuard, DetailComponent, JSONSchema7, Record, RecordService, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, JSONSchema7, Record, RecordService, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -23,6 +23,7 @@ import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
 import { PermissionGuard } from '../guard/permission.guard';
 import { HoldingEditorComponent } from '../record/custom-editor/holding-editor/holding-editor.component';
 import { HoldingDetailViewComponent } from '../record/detail-view/holding-detail-view/holding-detail-view.component';
+import { HoldingPageDetailComponent } from '../record/detail-view/holding-detail-view/holding-page-detail/holding-page-detail.component';
 import { BaseRoute } from './base-route';
 
 export class HoldingsRoute extends BaseRoute implements RouteInterface {
@@ -42,7 +43,7 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
+        { path: 'detail/:pid', component: HoldingPageDetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
         { path: 'edit/:pid', component: HoldingEditorComponent, canActivate: [ CanAccessGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
         { path: 'new', component: HoldingEditorComponent, canActivate: [ PermissionGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { permissions: [ PERMISSIONS.HOLD_CREATE ] } }
       ],

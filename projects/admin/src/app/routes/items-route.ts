@@ -19,7 +19,7 @@ import {
 } from '@app/admin/components/items/switch-location/item-switch-location-standalone/item-switch-location-standalone.component';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, EditorComponent, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
 import { IssueItemStatus, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -28,6 +28,7 @@ import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
 import { PermissionGuard } from '../guard/permission.guard';
 import { ItemsBriefViewComponent } from '../record/brief-view/items-brief-view/items-brief-view.component';
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
+import { ItemPageDetailComponent } from '../record/detail-view/item-detail-view/item-page-detail/item-page-detail.component';
 import { BaseRoute } from './base-route';
 
 export class ItemsRoute extends BaseRoute implements RouteInterface {
@@ -47,7 +48,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
         { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.ITEM_ACCESS, PERMISSIONS.ITEM_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
-        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
+        { path: 'detail/:pid', component: ItemPageDetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
         { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
         { path: 'switch_location/:pid', component: ItemSwitchLocationStandaloneComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
         { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { permissions: [ PERMISSIONS.HOLD_CREATE, PERMISSIONS.ITEM_CREATE ], permissionsOperator: PERMISSION_OPERATOR.AND } }

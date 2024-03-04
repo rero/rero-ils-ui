@@ -17,10 +17,9 @@
  */
 
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { AppSettingsService, Entity, EntityType, EntityTypeIcon } from '@rero/shared';
+import { EntityType, EntityTypeIcon } from '@rero/shared';
 
 @Component({
   selector: 'admin-remote-entities-remote-detail-view',
@@ -40,14 +39,8 @@ export class RemoteEntitiesDetailViewComponent implements DetailRecord {
   /**
    * Constructor
    * @param translateService - TranslateService
-   * @param router - Router
-   * @param appSettingsService - AppSettingsService
    */
-  constructor(
-    private translateService: TranslateService,
-    private router: Router,
-    private appSettingsService: AppSettingsService
-  ) { }
+  constructor(private translateService: TranslateService) {}
 
   /**
    * Icon
@@ -87,45 +80,5 @@ export class RemoteEntitiesDetailViewComponent implements DetailRecord {
           title: this.translateService.instant('Missing type')
         };
     }
-  }
-
-  /**
-   * Launch an expert search on the document view.
-   * @param metadata - the record metadata
-   * TODO: Modify query params.
-   */
-  search(metadata: any): void {
-    let catalogKey = undefined;
-    let catalogPid = undefined;
-    const orderKey = this.findOrderKeyByLanguage(this.translateService.currentLang);
-    this.appSettingsService.settings.agentLabelOrder[orderKey].forEach((source: string) => {
-      if (metadata.sources.includes(source) && !catalogKey && !catalogPid) {
-        catalogKey = source;
-        catalogPid = metadata[source].pid;
-      }
-    });
-    if (catalogKey && catalogPid) {
-      this.router.navigate(
-        ['/records', 'documents'],
-        {
-          queryParams: { q: Entity.generateSearchQuery(metadata.type, catalogKey, catalogPid), simple: '0' },
-          skipLocationChange: true
-        }
-      );
-    }
-  }
-
-  /**
-   * Find order key by language
-   * @param language - language code (Ex: fr, de, en, etc…)
-   * @returns The matched language code
-   */
-  private findOrderKeyByLanguage(language: string): string {
-    let orderKey = Object.keys(this.appSettingsService.settings.agentLabelOrder).find((key: string) => key === language);
-    if (!orderKey) {
-      orderKey = this.appSettingsService.settings.agentLabelOrder.fallback;
-    }
-
-    return orderKey;
   }
 }

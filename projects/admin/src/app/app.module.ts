@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -159,10 +159,12 @@ import { ReceivedIssueComponent } from './record/detail-view/holding-detail-view
 import {
   SerialHoldingDetailViewComponent
 } from './record/detail-view/holding-detail-view/serial-holding-detail-view/serial-holding-detail-view.component';
+import { HoldingPageDetailComponent } from './record/detail-view/holding-detail-view/holding-page-detail/holding-page-detail.component';
 import { IllRequestDetailViewComponent } from './record/detail-view/ill-request-detail-view/ill-request-detail-view.component';
 import { ItemDetailViewComponent } from './record/detail-view/item-detail-view/item-detail-view.component';
 import { ItemTransactionComponent } from './record/detail-view/item-detail-view/item-transaction/item-transaction.component';
 import { ItemTransactionsComponent } from './record/detail-view/item-detail-view/item-transactions/item-transactions.component';
+import { ItemPageDetailComponent } from './record/detail-view/item-detail-view/item-page-detail/item-page-detail.component';
 import { ItemTypeDetailViewComponent } from './record/detail-view/item-type-detail-view/item-type-detail-view.component';
 import { DayOpeningHoursComponent } from './record/detail-view/library-detail-view/day-opening-hours/day-opening-hours.component';
 import { ExceptionDateComponent } from './record/detail-view/library-detail-view/exception-date/exception-date.component';
@@ -210,6 +212,8 @@ import { PreviewEmailModule } from './shared/preview-email/preview-email.module'
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
+import { LocalPageDetailComponent } from './record/detail-view/entities-detail-view/local/local-page-detail/local-page-detail.component';
+import { RemotePageDetailComponent } from './record/detail-view/entities-detail-view/remote/remote-page-detail/remote-page-detail.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -351,7 +355,11 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     RepeatTypeComponent,
     FieldCustomInputTypeComponent,
     DocumentAdvancedSearchComponent,
-    DocumentDetailComponent
+    DocumentDetailComponent,
+    HoldingPageDetailComponent,
+    ItemPageDetailComponent,
+    LocalPageDetailComponent,
+    RemotePageDetailComponent
   ],
   imports: [
     AppRoutingModule,

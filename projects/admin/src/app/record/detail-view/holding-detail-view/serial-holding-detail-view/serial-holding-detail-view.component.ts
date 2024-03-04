@@ -58,11 +58,6 @@ export class SerialHoldingDetailViewComponent implements OnInit {
 
 
   // GETTER & SETTER ==========================================================
-  /** Is operation log enabled. */
-  get isEnabledOperationLog(): boolean {
-    return this.operationLogsService.isLogVisible('holdings');
-  }
-
   /** Determine if the `Local fields` tab should be displayed or not. */
   get displayLocalFieldsTab(): boolean {
     /* DEV NOTES :: Why not using the `[permissions]` directive:
@@ -97,7 +92,6 @@ export class SerialHoldingDetailViewComponent implements OnInit {
    * @param recordService: RecordService
    * @param translateService: TranslateService,
    * @param toastrService: ToastrService
-   * @param operationLogsService: OperationLogsService
    * @param permissionsService: PermissionsService
    * @param userService: UserService
    */
@@ -106,7 +100,6 @@ export class SerialHoldingDetailViewComponent implements OnInit {
     private recordService: RecordService,
     private translateService: TranslateService,
     private toastrService: ToastrService,
-    private operationLogsService: OperationLogsService,
     private permissionsService: PermissionsService,
     private userService: UserService
   ) {}
