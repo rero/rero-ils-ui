@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,6 +31,10 @@ describe('DocumentApiService', () => {
     available: true
   }
 
+  const availabilityView: IAvailability = {
+    available: false
+  }
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -51,5 +55,11 @@ describe('DocumentApiService', () => {
     httpClientSpy.get.and.returnValue(of(availability));
     service.getAvailability('1')
       .subscribe((response: IAvailability) => expect(response).toEqual(availability));
+  });
+
+  it('should return the availability of the document from current view', () => {
+    httpClientSpy.get.and.returnValue(of(availabilityView));
+    service.getAvailability('1', 'aoste')
+      .subscribe((response: IAvailability) => expect(response).toEqual(availabilityView));
   });
 });

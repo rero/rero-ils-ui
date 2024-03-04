@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,6 +35,9 @@ export class AvailabilityComponent implements OnInit, OnChanges {
   /** Resource api service */
   @Input() apiService: IAvailabilityService;
 
+  /** View code */
+  @Input() viewcode?: string = null;
+
   /** Availability data */
   availability: IAvailability;
 
@@ -55,7 +58,7 @@ export class AvailabilityComponent implements OnInit, OnChanges {
   /** OnChanges hook */
   ngOnChanges(): void {
     this.apiService
-    .getAvailability(this.record.metadata.pid)
+    .getAvailability(this.record.metadata.pid, this.viewcode)
     .subscribe((availability: IAvailability) => this.availability = availability);
   }
 }

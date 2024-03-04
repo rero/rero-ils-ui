@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -43,8 +43,11 @@ export class DocumentApiService extends BaseApi implements IAvailabilityService 
    * @param pid - document pid
    * @returns Observable of availability data
    */
-  getAvailability(pid: string): Observable<IAvailability> {
-    const url = `${this._appConfigService.apiEndpointPrefix}/document/${pid}/availability`;
+  getAvailability(pid: string, viewcode: string = null): Observable<IAvailability> {
+    let url = `${this._appConfigService.apiEndpointPrefix}/document/${pid}/availability`;
+    if (viewcode) {
+      url += `?view_code=${viewcode}`;
+    }
     return this._httpClient.get<IAvailability>(url);
   }
 }

@@ -56,7 +56,12 @@
       }
       <!-- availability -->
       @if (record.metadata.type !== 'ebook') {
-        <shared-availability recordType="document" [record]="record" [apiService]="documentApiService"></shared-availability>
+        <shared-availability
+          recordType="document"
+          [record]="record"
+          [apiService]="documentApiService"
+          [viewcode]="viewcode"
+        ></shared-availability>
       }
     </div>
   </article>
