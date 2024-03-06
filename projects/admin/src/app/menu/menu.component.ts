@@ -36,7 +36,7 @@ export class MenuComponent implements OnInit {
   /** Max length suggestion */
   maxLengthSuggestion = 100;
 
-  /** Autocomplte query params */
+  /** Autocomplete query params */
   autocompleteQueryParams: any = { page: '1', size: '10' };
 
   /** Is document url */
@@ -46,7 +46,7 @@ export class MenuComponent implements OnInit {
   private hideSearchResources = ['documents'];
 
   /**
-   * Get Typehead option limit
+   * Get Typeahead option limit
    * @return number
    */
   get typeaheadOptionsLimit(): number {

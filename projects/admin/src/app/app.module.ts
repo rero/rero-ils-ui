@@ -361,8 +361,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     BsDropdownModule.forRoot(),
     NgxChartsModule,
     CollapseModule.forRoot(),
-    FormlyPrimeNGModule,
-    FormlySelectModule,
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
@@ -372,10 +370,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     TooltipModule.forRoot(),
     PopoverModule.forRoot(),
     FormlyModule.forRoot({
-      extras: {
-        checkExpressionOn: 'changeDetectionCheck',
-        resetFieldOnHide: true
-      },
       types: [
         { name: "cipo-pt-it", component: CipoPatronTypeItemTypeComponent },
         { name: "account-select", component: SelectAccountEditorWidgetComponent },
