@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -46,7 +46,13 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'ILL requests',
         router_link: ['/', 'records', 'ill_requests'],
-        query_params: { library: '$currentLibrary' },
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10',
+          simple: '1',
+          library: '$currentLibrary'
+        },
         attributes: { id: 'ill-requests-menu' },
         extras: { iconClass: 'fa fa-truck' },
         access: {
@@ -56,6 +62,12 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'Users',
         router_link: ['/', 'records', 'patrons'],
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10',
+          simple: '1'
+        },
         attributes: { id: 'users-menu' },
         extras: { iconClass: 'fa fa-users' },
         access: {
@@ -65,7 +77,14 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'Exhibition/course',
         router_link: ['/', 'records', 'collections'],
-        query_params: { library: '$currentLibrary' },
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10',
+          sort: 'title',
+          simple: '1',
+          library: '$currentLibrary'
+        },
         attributes: { id: 'collections-menu' },
         extras: { iconClass: 'fa fa-graduation-cap' },
         access: {
@@ -75,7 +94,13 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'Current loans',
         router_link: ['/', 'records', 'loans'],
-        query_params: { owner_library: '$currentLibrary' },
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10',
+          simple: '1',
+          owner_library: '$currentLibrary'
+        },
         attributes: { id: 'current-loans-menu' },
         extras: { iconClass: 'fa fa-list-ul' },
         access: {
@@ -93,6 +118,13 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'Documents',
         router_link: ['/', 'records', 'documents'],
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10',
+          simple: '1',
+          organisation: '$currentOrganisation'
+        },
         attributes: { id: 'documents-menu' },
         extras: { iconClass: 'fa fa-file-o' },
         access: {
@@ -115,6 +147,11 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'Import from the web',
         router_link: ['/', 'records', 'import_bnf'],
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10'
+        },
         attributes: { id: 'import-menu' },
         extras: { iconClass: 'fa fa-cloud-download' },
         access: {
@@ -124,6 +161,11 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'Entities',
         router_link: ['/', 'records', 'entities'],
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10'
+        },
         attributes: { id: 'entities-menu' },
         extras: { iconClass: 'fa fa-cubes' }
       }
@@ -138,6 +180,13 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'Vendors',
         router_link: ['/', 'records', 'vendors'],
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10',
+          sort: 'name_asc',
+          simple: '1'
+        },
         attributes: { id: 'vendors-menu' },
         extras: { iconClass: 'fa fa-briefcase' },
         access: {
@@ -148,8 +197,12 @@ export const MENU_APP: IMenuParent[] = [
         name: 'Orders',
         router_link: ['/', 'records', 'acq_orders'],
         query_params: {
+          q: '',
+          page: '1',
+          size: '10',
           library: '$currentLibrary',
-          budget: '$currentBudget'
+          budget: '$currentBudget',
+          simple: '1',
         },
         attributes: { id: 'orders-menu' },
         extras: { iconClass: 'fa fa-shopping-cart' },
@@ -160,6 +213,12 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'Budgets',
         router_link: ['/', 'records', 'budgets'],
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10',
+          simple: '1',
+        },
         attributes: { id: 'budgets-menu' },
         extras: { iconClass: 'fa fa-money' },
         access: {
@@ -178,7 +237,13 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'Late issues',
         router_link: ['/', 'records', 'issues'],
-        query_params: { library: '$currentLibrary' },
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10',
+          library: '$currentLibrary',
+          simple: '1',
+        },
         attributes: { id: 'late-issues-menu' },
         extras: { iconClass: 'fa fa-envelope-open-o' },
         access: {
@@ -196,7 +261,13 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'Inventory list',
         router_link: ['/', 'records', 'items'],
-        query_params: { library: '$currentLibrary' },
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10',
+          library: '$currentLibrary',
+          simple: '1',
+        },
         attributes: { id: 'inventory-list-menu' },
         extras: { iconClass: 'fa fa-list' },
         access: {
@@ -207,8 +278,12 @@ export const MENU_APP: IMenuParent[] = [
         name: 'Fees',
         router_link: ['/', 'records', 'patron_transaction_events'],
         query_params: {
+          q: '',
+          page: '1',
+          size: '10',
           transaction_library: '$currentLibrary',
-          transaction_date: '$currentDayRange'
+          transaction_date: '$currentDayRange',
+          simple: '1'
         },
         attributes: { id: 'fees-list-menu' },
         extras: { iconClass: 'fa fa-money' },
@@ -222,8 +297,12 @@ export const MENU_APP: IMenuParent[] = [
         attributes: { id: "stats-cfg-menu" },
         extras: { iconClass: "fa fa-cog" },
         query_params: {
+          q: '',
+          page: '1',
+          size: '10',
           library: "$currentLibrary",
           active: "true",
+          simple: '1'
         },
         access: {
           permissions: [PERMISSIONS.STAT_CFG_ACCESS],
@@ -240,6 +319,13 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'Circulation policies',
         router_link: ['/', 'records', 'circ_policies'],
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10',
+          sort: 'name',
+          simple: '1',
+        },
         attributes: { id: 'circulation-policies-menu' },
         extras: { iconClass: 'fa fa-exchange' },
         access: {
@@ -249,6 +335,13 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'Item types',
         router_link: ['/', 'records', 'item_types'],
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10',
+          sort: 'name',
+          simple: '1',
+        },
         attributes: { id: 'item-types-menu' },
         extras: { iconClass: 'fa fa-file-o' },
         access: {
@@ -258,6 +351,13 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'Patron types',
         router_link: ['/', 'records', 'patron_types'],
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10',
+          sort: 'name',
+          simple: '1',
+        },
         attributes: { id: 'patron-types-menu' },
         extras: { iconClass: 'fa fa-users' },
         access: {
@@ -285,6 +385,13 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'Libraries',
         router_link: ['/', 'records', 'libraries'],
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10',
+          sort: 'name',
+          simple: '1',
+        },
         attributes: { id: 'libraries-menu' },
         extras: { iconClass: 'fa fa-users' },
         access: {
@@ -294,6 +401,13 @@ export const MENU_APP: IMenuParent[] = [
       {
         name: 'Templates',
         router_link: ['/', 'records', 'templates'],
+        query_params: {
+          q: '',
+          page: '1',
+          size: '10',
+          sort: 'name',
+          simple: '1',
+        },
         attributes: { id: 'templates-menu' },
         extras: { iconClass: 'fa fa-file-code-o' },
         access: {
