@@ -25,16 +25,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PrimengImportModule } from '@app/admin/shared/primeng-import/primeng-import.module';
 import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
 import { FormlyModule } from '@ngx-formly/core';
-import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
-import { FormlyFieldSelect, FormlySelectModule } from '@ngx-formly/primeng/select';
+import { FormlyFieldSelect } from '@ngx-formly/primeng/select';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import {
   BucketNameService as CoreBucketNameService,
   CoreConfigService,
   RecordHandleErrorService as CoreRecordHandleErrorService,
+  FilesService,
   LocalStorageService,
-  RecordModule, RemoteTypeaheadService, FilesService,
+  RecordModule, RemoteTypeaheadService,
   TranslateLoader, TranslateService, TruncateTextPipe
 } from '@rero/ng-core';
 import { ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
@@ -125,6 +125,7 @@ import {
 import { DocumentDetailViewComponent } from './record/detail-view/document-detail-view/document-detail-view.component';
 import { DocumentDetailComponent } from './record/detail-view/document-detail-view/document-detail/document-detail.component';
 import { EntitiesRelatedComponent } from './record/detail-view/document-detail-view/entities-related/entities-related.component';
+import { FilesCollectionsComponent } from './record/detail-view/document-detail-view/files-collections/files-collections.component';
 import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
 import {
   HoldingOrganisationComponent
@@ -145,26 +146,28 @@ import { RelatedResourceComponent } from './record/detail-view/document-detail-v
 import { EntitiesLocalDetailViewComponent } from './record/detail-view/entities-detail-view/local/entities-local-detail-view.component';
 import { EntitiesLocalGlobalComponent } from './record/detail-view/entities-detail-view/local/entities-local-global.component';
 import { LocalOrganisationDetailViewComponent } from './record/detail-view/entities-detail-view/local/local-organisation-detail-view/local-organisation-detail-view.component';
+import { LocalPageDetailComponent } from './record/detail-view/entities-detail-view/local/local-page-detail/local-page-detail.component';
 import { LocalPersonDetailViewComponent } from './record/detail-view/entities-detail-view/local/local-person-detail-view/local-person-detail-view.component';
 import { LocalPlaceDetailViewComponent } from './record/detail-view/entities-detail-view/local/local-place-detail-view/local-place-detail-view.component';
 import { LocalTopicDetailViewComponent } from './record/detail-view/entities-detail-view/local/local-topic-detail-view/local-topic-detail-view.component';
 import { LocalWorkDetailViewComponent } from './record/detail-view/entities-detail-view/local/local-work-detail-view/local-work-detail-view.component';
 import { RemoteEntitiesDetailViewComponent } from './record/detail-view/entities-detail-view/remote/entities-remote-detail-view.component';
 import { RemoteEntitiesOrganisationDetailViewComponent } from './record/detail-view/entities-detail-view/remote/remote-organisation-detail-view/remote-entities-organisation-detail-view.component';
+import { RemotePageDetailComponent } from './record/detail-view/entities-detail-view/remote/remote-page-detail/remote-page-detail.component';
 import { RemoteEntitiesPersonDetailViewComponent } from './record/detail-view/entities-detail-view/remote/remote-person-detail-view/remote-entities-person-detail-view.component';
 import { RemoteTopicDetailViewComponent } from './record/detail-view/entities-detail-view/remote/remote-topic-detail-view/remote-topic-detail-view.component';
 import { HoldingDetailViewComponent } from './record/detail-view/holding-detail-view/holding-detail-view.component';
+import { HoldingPageDetailComponent } from './record/detail-view/holding-detail-view/holding-page-detail/holding-page-detail.component';
 import { ExpectedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/expected-issue/expected-issue.component';
 import { ReceivedIssueComponent } from './record/detail-view/holding-detail-view/serial-holding-detail-view/received-issue/received-issue.component';
 import {
   SerialHoldingDetailViewComponent
 } from './record/detail-view/holding-detail-view/serial-holding-detail-view/serial-holding-detail-view.component';
-import { HoldingPageDetailComponent } from './record/detail-view/holding-detail-view/holding-page-detail/holding-page-detail.component';
 import { IllRequestDetailViewComponent } from './record/detail-view/ill-request-detail-view/ill-request-detail-view.component';
 import { ItemDetailViewComponent } from './record/detail-view/item-detail-view/item-detail-view.component';
+import { ItemPageDetailComponent } from './record/detail-view/item-detail-view/item-page-detail/item-page-detail.component';
 import { ItemTransactionComponent } from './record/detail-view/item-detail-view/item-transaction/item-transaction.component';
 import { ItemTransactionsComponent } from './record/detail-view/item-detail-view/item-transactions/item-transactions.component';
-import { ItemPageDetailComponent } from './record/detail-view/item-detail-view/item-page-detail/item-page-detail.component';
 import { ItemTypeDetailViewComponent } from './record/detail-view/item-type-detail-view/item-type-detail-view.component';
 import { DayOpeningHoursComponent } from './record/detail-view/library-detail-view/day-opening-hours/day-opening-hours.component';
 import { ExceptionDateComponent } from './record/detail-view/library-detail-view/exception-date/exception-date.component';
@@ -206,15 +209,13 @@ import { AppInitializerService } from './service/app-initializer.service';
 import { BucketNameService } from './service/bucket-name.service';
 import { OrganisationService } from './service/organisation.service';
 import { RecordHandleErrorService } from './service/record.handle-error.service';
+import { ResourcesFilesService } from './service/resources-files.service';
 import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-factory.service';
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { PreviewEmailModule } from './shared/preview-email/preview-email.module';
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { LocalPageDetailComponent } from './record/detail-view/entities-detail-view/local/local-page-detail/local-page-detail.component';
-import { RemotePageDetailComponent } from './record/detail-view/entities-detail-view/remote/remote-page-detail/remote-page-detail.component';
-import { ResourcesFilesService } from './service/resources-files.service';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -229,6 +230,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     DocumentsBriefViewComponent,
     ExceptionDatesEditComponent,
     ExceptionDatesListComponent,
+    FilesCollectionsComponent,
     FrontpageComponent,
     ItemTypesBriefViewComponent,
     ItemTypeDetailViewComponent,

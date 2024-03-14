@@ -21,7 +21,7 @@ import { UntypedFormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, File, Record, RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { Observable, map, of, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, map, of, switchMap, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -35,11 +35,17 @@ export class ResourcesFilesService {
   private apiService = inject(ApiService);
   // user service to retrieve the current library
   private userService = inject(UserService);
-
   // translate service
   private translateService = inject(TranslateService);
+
   //api base URL
   baseUrl: string;
+
+  // Current file parent record.
+  currentParentRecord = new BehaviorSubject(null);
+
+  // Current file parent record observable.
+  currentParentRecord$ = this.currentParentRecord.asObservable();
 
   /**
    * Constructor.
@@ -71,7 +77,8 @@ export class ResourcesFilesService {
             throw new Error('More than one parent record.');
           }
           return total === 0 ? null : result.hits.hits[0];
-        })
+        }),
+        tap((record) => this.currentParentRecord.next(record))
       );
   }
 
@@ -90,13 +97,26 @@ export class ResourcesFilesService {
     const libPid = this.userService.user.currentLibrary;
     // create the file record attached to the current library pid and the given
     // document
-    return this.httpService.post(`${this.baseUrl}`, {
-      metadata: {
-        collections: ['col1'],
-        links: [`doc_${pid}`],
-        owners: [`lib_${libPid}`],
-      },
-    }) as Observable<Record>;
+    return this.httpService
+      .post(`${this.baseUrl}`, {
+        metadata: {
+          links: [`doc_${pid}`],
+          owners: [`lib_${libPid}`],
+        },
+      })
+      .pipe(tap((record) => this.currentParentRecord.next(record))) as Observable<Record>;
+  }
+
+  /**
+   * Updates the parent record metadata.
+   *
+   * @param type Type of resource.
+   * @param pid PID of the record.
+   * @param metadata new metadata
+   * @returns the modified record
+   */
+  updateParentRecordMetadata(type: string, pid: string, metadata: any): Observable<Record> {
+    return this.httpService.put(`${this.baseUrl}/${pid}`, metadata) as Observable<Record>;
   }
 
   /**
@@ -220,7 +240,7 @@ export class ResourcesFilesService {
         .delete(`${this.baseUrl}/${parentRecord.id}/files/${file.key}`)
         .pipe(
           switchMap(() => this.httpService.get(`${this.baseUrl}/${parentRecord.id}/files`)),
-          map((res: any) => {
+          switchMap((res: any) => {
             if (
               keepParent === true ||
               res.entries.some((val) => !['thumbnail', 'fulltext'].includes(val?.metadata?.type))
@@ -228,7 +248,9 @@ export class ResourcesFilesService {
               return of(true);
             }
             // remove the file record
-            return this.httpService.delete(`${this.baseUrl}/${parentRecord.id}`);
+            return this.httpService
+              .delete(`${this.baseUrl}/${parentRecord.id}`)
+              .pipe(tap(() => this.currentParentRecord.next(null)));
           })
         )
     );

@@ -77,13 +77,15 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
                   message: permissions?.canUpdate?.message || ''
                   };
                 })),
-              canUpdateMetadata: (record) => this._routeToolService.permissions({metadata:{pid: record.id}}, 'records').pipe(
+                // canUpdateMetadata: (record) => of({can: true}),
+              canUpdateMetadata: (record) => {
+                return this._routeToolService.permissions({metadata:{pid: record.id}}, 'records').pipe(
                 map((permissions: any) => {
                   return {
                   can: permissions?.canUpdate?.can || false,
                   message: permissions?.canUpdate?.message || ''
                   };
-                })),
+                }));},
               canDelete: (record) => this._routeToolService.permissions({metadata:{pid: record.id}}, 'records').pipe(
                 map((permissions: any) => {
                   return {

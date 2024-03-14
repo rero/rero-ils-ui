@@ -246,10 +246,8 @@ export class RouteToolService {
    *      - canDelete permission
    */
   permissions( record: any, recordType: string, membership = false): Observable<any> {
-    return new Observable((observer: Subscriber<any>): void => {
-      const permissionService = this.recordPermissionService;
-      permissionService
-        .getPermission(recordType, record.metadata.pid)
+    return this.recordPermissionService
+      .getPermission(recordType, record.metadata.pid)
         .pipe(
           map((permission: RecordPermissions) => {
             const { user } = this.userService;
@@ -259,7 +257,7 @@ export class RouteToolService {
                 "$ref" in record.metadata.library
                   ? record.metadata.library.$ref.split("/").pop()
                   : record.metadata.library.pid;
-              permission = permissionService.membership(
+              permission = this.recordPermissionService.membership(
                 user,
                 libraryPid,
                 permission
@@ -272,17 +270,13 @@ export class RouteToolService {
                 can: permission.delete.can,
                 message: permission.delete.can
                   ? ""
-                  : permissionService.generateDeleteMessage(
+                  : this.recordPermissionService.generateDeleteMessage(
                       permission.delete.reasons
                     ),
               },
             };
           })
-        )
-        .subscribe((permission: any) => {
-          observer.next(permission);
-        });
-    });
+        );
   }
 
   /**

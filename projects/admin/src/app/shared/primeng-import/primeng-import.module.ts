@@ -29,6 +29,8 @@ import { PanelModule } from 'primeng/panel';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
 @NgModule({
   exports: [
@@ -40,6 +42,8 @@ import { TooltipModule } from 'primeng/tooltip';
     InputNumberModule,
     InputSwitchModule,
     InputTextModule,
+    InputGroupAddonModule,
+    InputGroupModule,
     PanelModule,
     SkeletonModule,
     TagModule,
