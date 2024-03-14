@@ -125,6 +125,7 @@ import {
 import { DocumentDetailViewComponent } from './record/detail-view/document-detail-view/document-detail-view.component';
 import { DocumentDetailComponent } from './record/detail-view/document-detail-view/document-detail/document-detail.component';
 import { EntitiesRelatedComponent } from './record/detail-view/document-detail-view/entities-related/entities-related.component';
+import { FilesCollectionsComponent } from './record/detail-view/document-detail-view/files-collections/files-collections.component';
 import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
 import {
   HoldingOrganisationComponent
@@ -230,6 +231,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     DocumentsBriefViewComponent,
     ExceptionDatesEditComponent,
     ExceptionDatesListComponent,
+    FilesCollectionsComponent,
     FrontpageComponent,
     ItemTypesBriefViewComponent,
     ItemTypeDetailViewComponent,
