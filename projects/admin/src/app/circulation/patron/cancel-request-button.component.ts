@@ -79,10 +79,16 @@ export class CancelRequestButtonComponent {
           this.loan.metadata.item.pid,
           this.loan.metadata.pid,
           this.userService.user.currentLibrary
-        ).subscribe(() => {
+        ).subscribe((item: any) => {
+          let message = this.translateService.instant("The request has been cancelled.");
+          if (item?.pending_loans?.length > 0) {
+            message += "<br>";
+            message += this.translateService.instant("The item contains requests.");
+          }
           this.toastrService.warning(
-            this.translateService.instant('The request has been cancelled.'),
-            this.translateService.instant('Request')
+            message,
+            this.translateService.instant('Request'),
+            { enableHtml: true }
           );
           this.cancelRequestEvent.emit(this.loan.id);
         });
