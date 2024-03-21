@@ -60,7 +60,5 @@
     <ng-core-error [error]="error"></ng-core-error>
   }
   <ng-template ngCoreRecordDetail></ng-template>
-  @if (record && filesEnabled && updateStatus && updateStatus.can) {
-    <ng-core-record-files [type]="type" [pid]="record.id"></ng-core-record-files>
-  }
+
 </div>

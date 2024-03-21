@@ -203,6 +203,10 @@ export class RecordPermissionService {
         "=1": this.translateService.instant("has 1 fee attached"),
         other: this.translateService.instant("has # fees attached"),
       },
+      files: {
+        "=1": this.translateService.instant("has 1 file attached"),
+        other: this.translateService.instant("has # files attached"),
+      },
       holdings: {
         "=1": this.translateService.instant("has 1 holding attached"),
         other: this.translateService.instant("has # holdings attached"),
