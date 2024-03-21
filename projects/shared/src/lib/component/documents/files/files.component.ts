@@ -114,7 +114,7 @@ export class FilesComponent implements OnInit {
         })
       )
       .subscribe((res: any[]) => {
-        this.files = [];
+        const files = [];
         res.map((rec: any) => {
           const data = {};
           // retrieve main files
@@ -134,8 +134,9 @@ export class FilesComponent implements OnInit {
               data[entry.metadata.thumbnail_for].thumbnail = `${baseUrl}/${rec.id}/files/${entry.key}/content`;
             }
           });
-          Object.values(data).map((d: File) => this.files.push(d));
+          Object.values(data).map((d: File) => files.push(d));
         });
+        this.files = files.sort((a, b) => a.label.localeCompare(b.label));
       });
   }
 

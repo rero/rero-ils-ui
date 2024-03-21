@@ -1,7 +1,6 @@
 /*
  * RERO ILS UI
  * Copyright (C) 2019-2024 RERO
- * Copyright (C) 2019-2024 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,22 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { NgModule } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
-import { CarouselModule } from 'primeng/carousel';
-import { SkeletonModule } from 'primeng/skeleton';
-import { TabViewModule } from 'primeng/tabview';
-import { TagModule } from 'primeng/tag';
-import { TimelineModule } from 'primeng/timeline';
+import { TestBed } from '@angular/core/testing';
 
-@NgModule({
-  exports: [
-    SkeletonModule,
-    TabViewModule,
-    TimelineModule,
-    CarouselModule,
-    TagModule,
-    ButtonModule
-  ]
-})
-export class PrimeNgImportModule { }
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { RecordModule } from '@rero/ng-core';
+import { ResourcesFilesService } from './resources-files.service';
+
+describe('ResourcesFilesService', () => {
+  let service: ResourcesFilesService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule, RecordModule, TranslateModule.forRoot()]
+    });
+    service = TestBed.inject(ResourcesFilesService);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});

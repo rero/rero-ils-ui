@@ -38,7 +38,6 @@ export class PatronProfileMenuComponent {
    * @return array
    */
   get menuOptions(): IMenu[] {
-    console.log('MENU');
     const menuSelected = this.patronProfileMenuService.menu
       .find((menu: any) => menu.value === this.patronPid);
     if (menuSelected) {
