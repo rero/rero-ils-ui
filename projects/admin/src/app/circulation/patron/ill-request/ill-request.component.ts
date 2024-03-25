@@ -48,7 +48,7 @@ export class IllRequestComponent implements OnInit {
       switchMap((patron: any) => {
         return (!patron)
           ? of(null)
-          : this.illRequestApiService.getByPatronPid(patron.pid)
+          : this.illRequestApiService.getByPatronPid(patron.pid, {remove_archived: '1'})
       }
     ));
   }
