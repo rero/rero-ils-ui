@@ -265,7 +265,6 @@ export const MENU_APP: IMenuParent[] = [
           q: '',
           page: '1',
           size: '10',
-          library: '$currentLibrary',
           simple: '1',
         },
         attributes: { id: 'inventory-list-menu' },
@@ -281,7 +280,7 @@ export const MENU_APP: IMenuParent[] = [
           q: '',
           page: '1',
           size: '10',
-          transaction_library: '$currentLibrary',
+          owning_library: '$currentLibrary',
           transaction_date: '$currentDayRange',
           simple: '1'
         },
