@@ -56,7 +56,8 @@ export class LoansRoute extends BaseRoute implements RouteInterface {
             aggregationsBucketSize: 10,
             aggregationsExpand: [
               'owner_library',
-              'patron_type',
+              'transaction_library',
+              'pickup_library',
               'misc_status',
               'status'
             ],
@@ -64,9 +65,9 @@ export class LoansRoute extends BaseRoute implements RouteInterface {
               'owner_library',
               'transaction_library',
               'pickup_library',
-              'patron_type',
               'status',
               'misc_status',
+              'patron_type',
               'end_date',
               'request_expire_date'
             ],

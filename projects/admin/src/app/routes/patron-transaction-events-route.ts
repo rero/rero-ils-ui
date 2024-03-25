@@ -65,21 +65,23 @@ export class PatronTransactionEventsRoute extends BaseRoute implements RouteInte
             canDelete: (record: any) => of({can: false}),
             aggregationsBucketSize: 10,
             aggregationsExpand: [
-              'owning_library',
-              'transaction_date',
               'type',
+              'category',
+              'transaction_date',
+              'patron_type',
+              'owning_library'
             ],
             aggregationsHide: [
               'total'
             ],
             aggregationsOrder: [
               'total',
-              'owning_library',
-              'transaction_library',
               'type',
               'category',
               'transaction_date',
-              'patron_type'
+              'patron_type',
+              'owning_library',
+              'transaction_library'
             ],
             allowEmptySearch: true,
             showSearchInput: false,
