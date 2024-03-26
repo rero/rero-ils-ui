@@ -24,7 +24,9 @@ import { ResultItem } from '@rero/ng-core';
   <h5 class="mb-0 card-title">
     <i class="fa fa-circle mr-1 text-{{ record.metadata.published ? 'success' : 'danger' }}" aria-hidden="true"></i>
     <a id="collection-link" [routerLink]="[detailUrl.link]">{{ record.metadata.title }}</a>
-    ({{ record.metadata.collection_id }})
+    @if (record.metadata.collection_id) {
+      ({{ record.metadata.collection_id }})
+    }
   </h5>
   <div class="card-text">
     @if (record.metadata.teachers) {
