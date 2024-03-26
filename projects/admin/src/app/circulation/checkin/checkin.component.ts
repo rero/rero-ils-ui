@@ -127,7 +127,7 @@ export class CheckinComponent implements OnInit {
             );
             break;
           case ItemAction.checkin:
-            this._displayCirculationNote(item, ItemNoteType.CHECKIN);
+            this.displayCirculationInformation(item, ItemNoteType.CHECKIN);
             if (item.action_applied && item.action_applied.checkin) {
               this.getPatronInfo(item.action_applied.checkin.patron.barcode);
             }
@@ -140,7 +140,7 @@ export class CheckinComponent implements OnInit {
             break;
           case ItemAction.receive:
             if (item.library.pid === this.userService.user.currentLibrary) {
-              this._displayCirculationNote(item, ItemNoteType.CHECKIN);
+              this.displayCirculationInformation(item, ItemNoteType.CHECKIN);
             }
             break;
         }
@@ -266,17 +266,32 @@ export class CheckinComponent implements OnInit {
     );
   }
 
-  /** display a circulation note about an item as a permanent toastr message
-   *
+  /** display a circulation infos about an item as a permanent toastr message
    * @param item: the item
    * @param noteType: the note type to display
    */
-  private _displayCirculationNote(item: Item, noteType: ItemNoteType): void {
+  private displayCirculationInformation(item: Item, noteType: ItemNoteType): void {
+    let message = [];
     const note = item.getNote(noteType);
     if (note != null) {
+      message.push(note.content);
+    }
+    // Show additional message only for the owning library
+    if (item.library.pid === this.userService.user.currentLibrary) {
+      const additionalMessage = this.displayCollectionsAndTemporaryLocation(item);
+      if (additionalMessage.length > 0) {
+        if (message.length > 0) {
+          message.push('<br />');
+        }
+        message.push(additionalMessage);
+      }
+    }
+    if (message.length > 0) {
       this.toastService.warning(
-        note.content, null,
+        message.join(),
+        this.translate.instant('Checkin'),
         {
+          enableHtml: true,
           closeButton: true,    // add a close button to the toastr message
           disableTimeOut: true, // permanent toastr message (until click on 'close' button)
           tapToDismiss: false   // toastr message only close when click on the 'close' button.
@@ -306,12 +321,40 @@ export class CheckinComponent implements OnInit {
     if (checkinNote) {
       message += `<br/>${this.translate.instant('Note')}: ${checkinNote.content}`
     }
+    // Show additional message only for the owning library
+    if (item.library.pid === this.userService.user.currentLibrary) {
+      const additionalMessage = this.displayCollectionsAndTemporaryLocation(item);
+      if (additionalMessage.length > 0) {
+        message += `<br />${additionalMessage}`;
+      }
+    }
     this.toastService.warning(
-      this.translate.instant(message),
+      message,
       this.translate.instant('Checkin'),
-      { enableHtml: true }
+      {
+        enableHtml: true,
+        closeButton: true,
+        disableTimeOut: true,
+        tapToDismiss: false
+      }
     );
     this._resetSearchInput();
+  }
+
+  private displayCollectionsAndTemporaryLocation(item: Item): string {
+    let message = [];
+    if (item.collections && item.collections.length > 0) {
+      message.push(`${this.translate.instant('This item is in exhibition/course')} "${item.collections[0]}"`);
+      if (item.collections.length > 1) {
+        message.push(` ${this.translate.instant('and {{ count }} other(s)', { count: item.collections.length - 1 })}`);
+      }
+      message.push('.');
+    }
+    if (item.temporary_location) {
+      message.push(`<br/>${this.translate.instant('This item is in temporary location')} "${item.temporary_location.name}".`);
+    }
+
+    return message.join('');
   }
 
   hasFees(event: boolean) {

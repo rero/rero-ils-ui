@@ -285,7 +285,7 @@ export class LoanComponent implements OnInit, OnDestroy {
         newItems.map((newItem: Item) => {
           switch (newItem.actionDone) {
             case ItemAction.checkin: {
-              this._displayCirculationNote(newItem, ItemNoteType.CHECKIN);
+              this.displayCirculationInformation(ItemAction.checkin, newItem, ItemNoteType.CHECKIN);
               this.checkedOutItems = this.checkedOutItems.filter(currItem => currItem.pid !== newItem.pid);
               this.checkedInItems.unshift(newItem);
               // display a toast message if the item goes in transit...
@@ -302,7 +302,7 @@ export class LoanComponent implements OnInit, OnDestroy {
             }
             case ItemAction.checkout: {
               this._displayTransactionEndDateChanged(newItem);
-              this._displayCirculationNote(newItem, ItemNoteType.CHECKOUT);
+              this.displayCirculationInformation(ItemAction.checkout, newItem, ItemNoteType.CHECKOUT);
               this.checkedOutItems.unshift(newItem);
               this.checkedInItems = this.checkedInItems.filter(currItem => currItem.pid !== newItem.pid);
               this.circulationService.incrementCirculationStatistic('loans');
@@ -357,21 +357,54 @@ export class LoanComponent implements OnInit, OnDestroy {
 
   /**
    * display a circulation note about an item as a permanent toastr message
+   * @param action: the current action
    * @param item: the item
    * @param noteType: the note type to display
    */
-  private _displayCirculationNote(item: Item, noteType: ItemNoteType): void {
+  private displayCirculationInformation(action: string, item: Item, noteType: ItemNoteType): void {
+    let message = [];
     const note = item.getNote(noteType);
     if (note != null) {
+      message.push(note.content);
+    }
+    // Show additional message only for the owning library
+    if (action === ItemAction.checkin && (item.library.pid === this.userService.user.currentLibrary)) {
+      const additionalMessage = this.displayCollectionsAndTemporaryLocation(item);
+      if (additionalMessage.length > 0) {
+        if (message.length > 0) {
+          message.push('<br />');
+        }
+        message.push(additionalMessage);
+      }
+    }
+    if (message.length > 0) {
       this.toastService.warning(
-        note.content, null,
+        message.join(),
+        this.translateService.instant('Checkin'),
         {
+          enableHtml: true,
           closeButton: true,    // add a close button to the toastr message
           disableTimeOut: true, // permanent toastr message (until click on 'close' button)
           tapToDismiss: false   // toastr message only close when click on the 'close' button.
         }
       );
     }
+  }
+
+  private displayCollectionsAndTemporaryLocation(item: Item): string {
+    let message = [];
+    if (item.collections && item.collections.length > 0) {
+      message.push(`${this.translateService.instant('This item is in exhibition/course')} "${item.collections[0]}"`);
+      if (item.collections.length > 1) {
+        message.push(` ${this.translateService.instant('and {{ count }} other(s)', {count: item.collections.length - 1 })}`);
+      }
+      message.push('.');
+    }
+    if (item.temporary_location) {
+      message.push(`<br/>${this.translateService.instant('This item is in temporary location')} "${item.temporary_location.name}".`);
+    }
+
+    return message.join('');
   }
 
   /**

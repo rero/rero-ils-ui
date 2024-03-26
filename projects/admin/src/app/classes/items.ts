@@ -81,6 +81,7 @@ export class Item {
   available: boolean;
   barcode: string;
   call_number: string;
+  collections?: string[];
   document: any;
   status: ItemStatus;
   organisation: Organisation;
@@ -99,6 +100,7 @@ export class Item {
   notes: ItemNote[];
   acquisition_date: Moment;
   enumerationAndChronology: string;
+  temporary_location?: any;
 
 
   constructor(obj?: any) {
