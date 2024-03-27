@@ -17,7 +17,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { Error, Record } from '@rero/ng-core';
-import { Paginator } from '@rero/shared';
+import { BaseApi, Paginator } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { IllRequestApiService } from '../../api/ill-request-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
@@ -106,6 +106,9 @@ export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
   private _illRequestQuery(page: number): Observable<Record | Error> {
     const patronPid = this.patronProfileMenuService.currentPatron.pid;
     return this.illRequestApiService
-      .getPublicIllRequest(patronPid, page, this.paginator.getRecordsPerPage());
+      .getPublicIllRequest(
+        patronPid, page, this.paginator.getRecordsPerPage(),
+        BaseApi.reroJsonheaders, '-created', {remove_archived: '1'}
+      );
   }
 }

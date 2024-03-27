@@ -64,9 +64,10 @@ export class IllRequestApiService extends BaseApi {
     page: number,
     itemsPerPage: number = 10,
     headers = BaseApi.reroJsonheaders,
-    sort: string = '-created'
+    sort: string = '-created',
+    filters?: {[key: string]: string}
   ): Observable<Record | Error> {
-    const query = `patron.pid:${patronPid} AND -status:denied AND -status:closed AND -loan_status:ITEM_RETURNED`;
-    return this._recordService.getRecords('ill_requests', query, page, itemsPerPage, undefined, undefined, headers, sort);
+    const query = `patron.pid:${patronPid}`;
+    return this._recordService.getRecords('ill_requests', query, page, itemsPerPage, undefined, filters, headers, sort);
   }
 }
