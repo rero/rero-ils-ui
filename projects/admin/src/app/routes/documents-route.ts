@@ -132,14 +132,14 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
               'acquisition',
               'status',
             ],
-            aggregationsExpand: () => {
-              const expand = ['document_type'];
-              const { queryParams } = this._routeToolService.activatedRoute.snapshot;
-              if (queryParams.location || queryParams.library) {
-                expand.push('organisation');
-              }
-              return expand;
-            },
+            aggregationsExpand: [
+              'document_type',
+              'organisation',
+              'language',
+              'year',
+              'author',
+              'subject',
+            ],
             aggregationsBucketSize: 10,
             itemHeaders: {
               Accept: 'application/rero+json, application/json'

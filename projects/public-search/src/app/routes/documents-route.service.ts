@@ -111,20 +111,15 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
               },
               showFacetsIfNoResults: true,
               aggregationsOrder: this.aggregations(viewcode),
-              aggregationsExpand: () => {
-                const expand = ['document_type'];
-                const queryParams = this._route.snapshot.queryParams;
-                if (this.appConfigService.globalViewName === viewcode) {
-                  if (queryParams.location || queryParams.library) {
-                    expand.push('organisation');
-                  }
-                } else {
-                  if (queryParams.location) {
-                    expand.push('library');
-                  }
-                }
-                return expand;
-              },
+              aggregationsExpand: [
+                'document_type',
+                'organisation',
+                'library',
+                'language',
+                'year',
+                'author',
+                'subject',
+              ],
               aggregationsBucketSize: 10,
               searchFilters: [
                 {
