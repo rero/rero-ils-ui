@@ -88,7 +88,7 @@
     "@ngx-loading-bar/http-client": "^6.0.0",
     "@ngx-loading-bar/router": "^6.0.0",
     "@ngx-translate/core": "^15.0.0",
-    "@rero/ng-core": "^17.0.0",
+    "@rero/ng-core": "^17.1.0",
     "@swimlane/ngx-charts": "^20.5.0",
     "@vpoppy/ngx-translate-extract": "^9.0.0",
     "bootstrap": "^4.6.2",

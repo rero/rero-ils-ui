@@ -21,7 +21,7 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService, orderedJsonSchema, removeEmptyValues } from '@rero/ng-core';
+import { RecordService, processJsonSchema, removeEmptyValues } from '@rero/ng-core';
 import { AppSettingsService, UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription, forkJoin, of } from 'rxjs';
@@ -88,7 +88,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
         if (schema) {
           const disabledFields = this.appSettingsService.settings.userProfile.readOnlyFields;
           this.fields = [
-            this.formlyJsonschema.toFieldConfig(orderedJsonSchema(schema.schema), {
+            this.formlyJsonschema.toFieldConfig(processJsonSchema(schema.schema), {
 
               // post process JSONSchema7 to FormlyFieldConfig conversion
               map: (field: FormlyFieldConfig, jsonSchema: any) => {

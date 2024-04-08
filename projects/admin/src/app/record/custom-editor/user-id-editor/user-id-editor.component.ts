@@ -20,7 +20,7 @@ import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { TranslateService } from '@ngx-translate/core';
-import { JSONSchema7, RecordService, orderedJsonSchema, processJsonSchema, removeEmptyValues } from '@rero/ng-core';
+import { JSONSchema7, RecordService, processJsonSchema, removeEmptyValues } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
@@ -88,7 +88,7 @@ export class UserIdEditorComponent implements OnInit {
           if (schema != null) {
             schema = processJsonSchema(schema.schema);
             this.fields = [
-              this.formlyJsonschema.toFieldConfig(orderedJsonSchema(schema), {
+              this.formlyJsonschema.toFieldConfig(schema, {
 
                 // post process JSONSchema7 to FormlyFieldConfig conversion
                 map: (field: FormlyFieldConfig, jsonSchema: JSONSchema7) => {
