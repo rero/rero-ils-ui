@@ -20,7 +20,7 @@ import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService, orderedJsonSchema, processJsonSchema } from '@rero/ng-core';
+import { RecordService, processJsonSchema } from '@rero/ng-core';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 
@@ -101,7 +101,7 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
       schema = schema.oneOf.find((element: any) => element.properties.type.const === this.translatedType(selectedType));
       // Deleting the oneOf key from the schema
       delete schema.oneOf;
-      this.fields = [this.formlyJsonschema.toFieldConfig(orderedJsonSchema(schema), {
+      this.fields = [this.formlyJsonschema.toFieldConfig(schema, {
         map: (field: FormlyFieldConfig) => {
           // Put the value typed by the user in the corresponding field
           if (this.populateFields.includes(String(field.key))) {
