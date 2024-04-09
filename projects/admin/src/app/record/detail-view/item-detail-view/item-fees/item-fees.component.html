@@ -1,0 +1,45 @@
+<!--
+  RERO ILS UI
+   Copyright (C) 2019-2024 RERO
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, version 3 of the License.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Affero General Public License for more details.
+
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+@if (fees.length > 0) {
+<div class="card" id="item-fees">
+  <div class="card-header">
+    <b translate>Fees</b>
+    <div class="float-right">
+      <span class="font-weight-bold mr-2" translate>Total</span>
+      <span class="badge badge-danger ml-1">{{ total | currency: organisation.default_currency }}</span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row mb-2">
+      <div class="col-10 font-weight-bold" translate>Patron</div>
+      <div class="col-2 font-weight-bold text-right" translate>Amount</div>
+    </div>
+    @for (fee of fees; track fee) {
+      @if (fee.metadata.patron.pid | getRecord:'patrons' | async; as patron) {
+        <div class="row mb-2">
+          <div class="col-10">
+            <a [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0], 'fees']" [queryParams]="{event: fee.metadata.pid}">
+              {{ $any(patron).metadata.last_name }} {{ $any(patron).metadata.first_name }} ({{ $any(patron).metadata.patron.barcode[0] }})
+            </a>
+          </div>
+          <div class="col-2 text-right">{{ fee.metadata.total_amount | currency: organisation.default_currency }}</div>
+        </div>
+      }
+    }
+  </div>
+</div>
+}

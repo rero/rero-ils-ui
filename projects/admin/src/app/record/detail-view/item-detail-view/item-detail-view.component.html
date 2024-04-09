@@ -225,6 +225,10 @@
         <div class="mt-2">
           <admin-circulation-logs-dialog [resourcePid]="record.metadata.pid" [resourceType]="'item'"></admin-circulation-logs-dialog>
           <admin-item-transactions [itemPid]="record.metadata.pid" (requestEvent)="updateItemStatus()"></admin-item-transactions>
+          <admin-item-fees
+            [itemPid]="record.metadata.pid"
+            [permissions]="permissions.PTTR_ACCESS"
+          ></admin-item-fees>
           <!-- LEGACY -->
           @if ((record.metadata | keyExists:'legacy_checkout_count') || (record.metadata | keyExists:'legacy_circulation_rules')) {
             <section class="mb-4 mt-4">

@@ -20,7 +20,7 @@ import { IssueService } from '@app/admin/service/issue.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { IPermissions, IssueItemStatus, PERMISSIONS, UserService } from '@rero/shared';
+import { IPermissions, IssueItemStatus, PERMISSIONS, PERMISSION_OPERATOR, UserService } from '@rero/shared';
 import moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -99,11 +99,9 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
       .sort((a: string, b: string) => new Date(b).getTime() - new Date(a).getTime());
   }
 
-  /**
-   * Permissions
-   * @return Object with all permissions
-   */
+  /** Permissions */
   permissions: IPermissions = PERMISSIONS;
+  permissionOperator = PERMISSION_OPERATOR;
 
   /**
    * Constructor
