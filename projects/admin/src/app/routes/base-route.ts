@@ -138,6 +138,20 @@ export class BaseRoute {
   }
 
   /**
+   * Can read record
+   * @param record - the record
+   * @returns Observable boolean
+   */
+  protected canRead(record: any) {
+    const organisationPid = this._routeToolService.userService.user
+      .currentOrganisation;
+    const recordOrganisationPid = ('organisation' in record.metadata)
+      ? record.metadata.organisation.pid
+      : false;
+    return of({ can: organisationPid === recordOrganisationPid, message: '' });
+  }
+
+  /**
    * Expert search link
    * @return string, link of help page
    */
@@ -153,3 +167,4 @@ export class BaseRoute {
       : defaultPath;
     }
  }
+

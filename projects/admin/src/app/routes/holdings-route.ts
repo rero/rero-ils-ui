@@ -61,6 +61,7 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
               }
             },
             detailComponent: HoldingDetailViewComponent,
+            canRead: (record: any) => this.canRead(record),
             canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.HOLD_CREATE) }),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
             preCreateRecord: (data: any) => {
