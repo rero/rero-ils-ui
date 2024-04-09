@@ -74,6 +74,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             preFilters: {
               organisation: null
             },
+            canRead: (record: any) => this.canRead(record),
             canAdd: () => of({can: false}),
             permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, false),
             preprocessRecordEditor: (record: any) => {
