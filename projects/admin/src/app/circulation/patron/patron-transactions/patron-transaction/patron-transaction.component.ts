@@ -16,6 +16,7 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -73,17 +74,22 @@ export class PatronTransactionComponent implements OnInit {
    * @param organisationService - OrganisationService
    * @param patronTransactionService - PatronTransactionService
    * @param modalService - BsModalService
-   * @param translateService - TranslateService
+   * @param router - ActivatedRoute
    */
   constructor(
     private organisationService: OrganisationService,
     private patronTransactionService: PatronTransactionService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private router: ActivatedRoute
   ) {}
 
   /** OnInit hook */
   ngOnInit() {
     if (this.transaction) {
+      // Open the current event if the url parameter match with transaction pid
+      if (this.router.snapshot.queryParams.event === this.transaction.pid) {
+        this.isCollapsed = false;
+      }
       this.patronTransactionService.loadTransactionHistory(this.transaction);
     }
   }

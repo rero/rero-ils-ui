@@ -37,7 +37,11 @@
     }
     <dt class="label-title col-3" translate>Patron</dt>
     <dd class="col-9">
-      <a [routerLink]="['/records', 'patrons', 'detail', parent.patron.pid]">{{ parent.patron.pid | patronName | async }}</a>
+      @if (parent.patron.barcode) {
+        <a [routerLink]="['/circulation', 'patron', parent.patron.barcode, 'fees']" [queryParams]="{event: parent.pid}">{{ parent.patron.pid | patronName | async }}</a>
+      } @else {
+        <a [routerLink]="['/records', 'patrons', 'detail', parent.patron.pid]">{{ parent.patron.pid | patronName | async }}</a>
+      }
     </dd>
   </dl>
 </div>
