@@ -124,7 +124,7 @@ export class PatronFeeComponent implements OnInit {
       props: {
         label: 'Type',
         required: true,
-        options: properties.type.form.options
+        options: properties.type.widget.formlyConfig.props.options
       }
     }, {
       key: 'total_amount',
