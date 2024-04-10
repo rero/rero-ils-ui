@@ -27,6 +27,9 @@ export class DialogImportComponent {
   /** Available record */
   records: any[];
 
+  /** Show warning message */
+  warning: boolean = false;
+
   /** Observable for action */
   confirmation$: Subject<boolean> = new Subject<boolean>();
 
