@@ -154,16 +154,23 @@ export class DocumentDetailComponent extends DetailComponent {
       this.router.navigate(route, { queryParams: data });
     } else {
       // Find documents(s) with query params
-      const query = queryParams.join(' OR ');
+      let warning = false;
+      let query = queryParams.join(' OR ');
+      // If the query exceeds the size of 1024 characters, we truncate it.
+      if (query.length > 1024) {
+        query = query.substring(0, query.substring(0, 1024).lastIndexOf('OR') - 1);
+        warning = true;
+      }
       this.recordService.getRecords(
         'documents', query, 1, undefined, undefined, undefined, { accept: 'application/rero+json' }
       ).subscribe((response: Record) => {
-        if (this.recordService.totalHits(response.hits.total) === 0) {
+        if (this.recordService.totalHits(response.hits.total) === 0 && !warning) {
           this.router.navigate(route, { queryParams: data });
         } else {
           const config = {
             initialState: {
-              records: response.hits.hits
+              records: response.hits.hits,
+              warning
             }
           };
           const bsModalRef = this.bsModalService.show(DialogImportComponent, config);
