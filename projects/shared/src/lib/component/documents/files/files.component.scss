@@ -32,5 +32,14 @@
   .p-carousel ul{
     margin-bottom: 0;
   }
+  .p-carousel-item {
+    align-self: flex-end;
+  }
 }
 
+.files-icon {
+  width: 80px;
+  height: 100px;
+  display: inline-flex;
+  align-items: self-end;
+}

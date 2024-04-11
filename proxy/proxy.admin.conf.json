@@ -11,6 +11,18 @@
       "Connection": "keep-alive"
     }
   },
+  "/records/preview/*": {
+    "target": "https://localhost:5000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/records": "https://localhost:5000/records"
+    },
+    "headers": {
+      "Connection": "keep-alive"
+    }
+  },
   "/schemas": {
     "target": "https://localhost:5000",
     "secure": false,
