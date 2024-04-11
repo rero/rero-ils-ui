@@ -16,9 +16,11 @@
  */
 
 import { HttpClient } from "@angular/common/http";
-import { Component, Input, OnInit, inject } from "@angular/core";
+import { Component, Input, OnInit, TemplateRef, ViewChild, inject } from "@angular/core";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { ApiService } from "@rero/ng-core";
 import { Record, RecordService } from "@rero/ng-core";
+import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { PrimeNGConfig } from "primeng/api";
 import { forkJoin, map, switchMap } from "rxjs";
 
@@ -30,6 +32,7 @@ export interface File {
   download: string;
   // thumbnail legend
   label: string;
+  preview: string;
 }
 
 @Component({
@@ -45,6 +48,15 @@ export class FilesComponent implements OnInit {
   // list of files
   files : File[] = [];
 
+  /** File to preview */
+  previewFile: {
+    label: string;
+    url: SafeUrl;
+  };
+  previewModalRef: BsModalRef;
+
+  @ViewChild('previewModal')
+  previewModalTemplate: TemplateRef<any>;
   // responsive option for primeng
   responsiveOptions = [
     {
@@ -72,6 +84,8 @@ export class FilesComponent implements OnInit {
   private recordService =  inject(RecordService);
   // ng-core api service
   private apiService = inject(ApiService);
+  private _sanitizer = inject(DomSanitizer);
+  private _modalService = inject(BsModalService);
 
   // contructor
   constructor() {
@@ -80,17 +94,13 @@ export class FilesComponent implements OnInit {
     this.ngConfigService.translation.aria.slideNumber = "{slideNumber}";
   }
 
-
-  /** OnInit hook */
-  ngOnInit() {
-    // default thumbnail
-    // TODO: change this according to the PO
-    const thumbnail =
-      "/static/thumbnails/icon_docmaintype_book.svg";
+   /** OnInit hook */
+   ngOnInit() {
     const baseUrl = this.apiService.getEndpointByType('records');
     // retrieve all records files linked to a given document pid
+    const query = `metadata.links:doc_${this.documentPid}`;
     this.httpService
-      .get(`${baseUrl}?q=metadata.links.keyword:doc_${this.documentPid}`)
+      .get(`${baseUrl}?q=${query}`)
       .pipe(
         map((result: Record) =>
           this.recordService.totalHits(result.hits.total) === 0
@@ -121,11 +131,15 @@ export class FilesComponent implements OnInit {
           rec.entries.map((entry) => {
             // main file (such as pdf)
             if (!["thumbnail", "fulltext"].includes(entry?.metadata?.type)) {
-              data[entry.key] = {
-                thumbnail: thumbnail,
-                label: entry.key,
-                download: `${baseUrl}/${rec.id}/files/${entry.key}/content`,
+              const dataFile: any = {
+                label: entry?.metadata?.label ? entry.metadata.label : entry.key,
+                mimetype: entry.mimetype,
+                download: new URL(entry.links.content).pathname,
               };
+              if (entry?.links.preview) {
+                dataFile.preview = new URL(entry.links.preview).pathname
+              }
+              data[entry.key] = dataFile;
             }
           });
           // retrieve thumbnails
@@ -136,7 +150,8 @@ export class FilesComponent implements OnInit {
           });
           Object.values(data).map((d: File) => files.push(d));
         });
-        this.files = files.sort((a, b) => a.label.localeCompare(b.label));
+        files.sort((a, b) => a.label.localeCompare(b.label));
+        this.files = files;
       });
   }
 
@@ -144,5 +159,14 @@ export class FilesComponent implements OnInit {
    *
    * TODO
    */
-  preview(file: File) {}
+
+  preview(file: File) {
+    this.previewModalRef = this._modalService.show(this.previewModalTemplate, {
+      class: 'modal-lg',
+    });
+    this.previewFile = {
+      label: file.label,
+      url: this._sanitizer.bypassSecurityTrustResourceUrl(file.preview),
+    };
+  }
 }

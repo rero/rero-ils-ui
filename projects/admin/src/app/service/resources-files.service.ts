@@ -69,7 +69,7 @@ export class ResourcesFilesService {
     const libPid = this.userService.user.currentLibrary;
     // retrieve the file record attached to the document and the current library
     return this.httpService
-      .get(`${this.baseUrl}?q=metadata.links.keyword:doc_${pid} AND metadata.owners.keyword:lib_${libPid}`)
+      .get(`${this.baseUrl}?q=metadata.links:doc_${pid} AND metadata.owners:lib_${libPid}`)
       .pipe(
         map((result: Record) => {
           const total = this.recordService.totalHits(result.hits.total);
@@ -157,6 +157,8 @@ export class ResourcesFilesService {
    * @returns the created file
    */
   create(type: string, pid: string, parentRecord: Record, fileKey: string, fileData: any): Observable<File> {
+    // Note: angular do not encode % into %25 and nginx does not support single %
+    fileKey = fileKey.replaceAll("%", "");
     // create the bucket
     return this.httpService.post(`${this.baseUrl}/${parentRecord.id}/files`, [{ key: fileKey }]).pipe(
       switchMap((res: any) =>
