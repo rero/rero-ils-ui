@@ -56,6 +56,7 @@ import { EntityLinkComponent } from './view/entity-link.component';
 import { DocumentBriefViewComponent } from './component/documents/document-brief-view/document-brief-view.component';
 import { IdentifiedByLabelPipe } from './pipe/identifiedby-label.pipe';
 import { FilesComponent } from './component/documents/files/files.component';
+import { FaIconClassPipe } from './pipe/fa-icon-class.pipe';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { FilesComponent } from './component/documents/files/files.component';
     PatronBlockedMessagePipe,
     ProvisionActivityPipe,
     UrlActivePipe,
+    FaIconClassPipe,
     ItemHoldingsCallNumberPipe,
     InheritedCallNumberComponent,
     ThumbnailComponent,
