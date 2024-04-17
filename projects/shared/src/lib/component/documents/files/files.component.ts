@@ -15,98 +15,140 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClient } from "@angular/common/http";
-import { Component, Input, OnInit, TemplateRef, ViewChild, inject } from "@angular/core";
-import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { ApiService } from "@rero/ng-core";
-import { Record, RecordService } from "@rero/ng-core";
-import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
-import { PrimeNGConfig } from "primeng/api";
-import { forkJoin, map, switchMap } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild, inject } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { TranslateService } from '@ngx-translate/core';
+import { ApiService, Record, RecordService } from '@rero/ng-core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { PrimeNGConfig } from 'primeng/api';
+import { Observable, Subscription, forkJoin, map, switchMap } from 'rxjs';
+
+import { BreakpointObserver, BreakpointState, Breakpoints } from '@angular/cdk/layout';
 
 // file interface
 export interface File {
   // thumbnail URL
-  thumbnail: string;
-  // downloand URL
+  thumbnail?: string;
+  // download URL
   download: string;
   // thumbnail legend
   label: string;
-  preview: string;
+  // preview URL
+  preview?: string;
 }
 
+// Component itself
 @Component({
-  selector: "shared-doc-files",
-  templateUrl: "./files.component.html",
-  styleUrl: "./files.component.scss",
+  selector: 'shared-doc-files',
+  templateUrl: './files.component.html',
+  styleUrl: './files.component.scss',
 })
-export class FilesComponent implements OnInit {
-
+export class FilesComponent implements OnInit, OnDestroy {
   // input document pid
   @Input() documentPid: string;
 
   // list of files
-  files : File[] = [];
+  files: File[] = [];
+  // filtered array of files
+  filteredFiles = [];
+  // input text filter
+  filterText = '';
+  // number of visible items in the carousel
+  numVisible = 5;
+  // current page for the carousel
+  page = 0;
 
-  /** File to preview */
+  // file to preview
   previewFile: {
     label: string;
     url: SafeUrl;
   };
+  // modal for the invenio previewer
   previewModalRef: BsModalRef;
 
+  // for modal
   @ViewChild('previewModal')
   previewModalTemplate: TemplateRef<any>;
-  // responsive option for primeng
-  responsiveOptions = [
-    {
-      breakpoint: "1024px",
-      numVisible: 5,
-      numScroll: 5,
-    },
-    {
-      breakpoint: "768px",
-      numVisible: 4,
-      numScroll: 4,
-    },
-    {
-      breakpoint: "560px",
-      numVisible: 2,
-      numScroll: 2,
-    },
-  ];
 
+  // -------- Services -------------
   // primeng configuration service
   private ngConfigService = inject(PrimeNGConfig);
   // http service
   private httpService = inject(HttpClient);
+  // translation service
+  private translateService = inject(TranslateService);
   // ng-core record service
-  private recordService =  inject(RecordService);
+  private recordService = inject(RecordService);
   // ng-core api service
   private apiService = inject(ApiService);
-  private _sanitizer = inject(DomSanitizer);
-  private _modalService = inject(BsModalService);
+  // url sanitizer service
+  private sanitizer = inject(DomSanitizer);
+  // modal service
+  private modalService = inject(BsModalService);
+  // service to detect responsive breakpoints
+  private breakpointObserver = inject(BreakpointObserver);
+
+  /** all component subscription */
+  private subscriptions = new Subscription();
 
   // contructor
   constructor() {
     // to avoid primeng error
     // TODO: remove this when primeng will be fixed
-    this.ngConfigService.translation.aria.slideNumber = "{slideNumber}";
+    this.ngConfigService.translation.aria.slideNumber = '{slideNumber}';
   }
 
-   /** OnInit hook */
-   ngOnInit() {
+  /** OnInit hook */
+  ngOnInit(): void {
+    this.getFiles();
+    this.changeNItemsOnCarousel();
+  }
+
+  /** OnDestroy hook */
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
+  /**
+   * Changes the number of items in the carousel.
+   *
+   * To be responsive.
+   */
+  changeNItemsOnCarousel(): void {
+    this.subscriptions.add(
+      this.breakpointObserver
+        .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
+        .subscribe((state: BreakpointState) => {
+          switch (true) {
+            case this.breakpointObserver.isMatched(Breakpoints.XSmall):
+              this.numVisible = 1;
+              break;
+            case this.breakpointObserver.isMatched(Breakpoints.Small):
+              this.numVisible = 2;
+              break;
+            case this.breakpointObserver.isMatched(Breakpoints.Medium):
+              this.numVisible = 4;
+              break;
+            case this.breakpointObserver.isMatched(Breakpoints.Large):
+              this.numVisible = 5;
+              break;
+          }
+        })
+    );
+  }
+
+  /**
+   * Retrieves the files information from the backend.
+   */
+  getFiles(): void {
     const baseUrl = this.apiService.getEndpointByType('records');
     // retrieve all records files linked to a given document pid
     const query = `metadata.links:doc_${this.documentPid}`;
     this.httpService
       .get(`${baseUrl}?q=${query}`)
       .pipe(
-        map((result: Record) =>
-          this.recordService.totalHits(result.hits.total) === 0
-            ? []
-            : result.hits.hits
-        ),
+        map((result: Record) => (this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits)),
         map((hits: any[]) => hits.map((hit: any) => hit.id)),
         // get all files attached to the given records
         switchMap((ids: any[]) => {
@@ -130,14 +172,14 @@ export class FilesComponent implements OnInit {
           // retrieve main files
           rec.entries.map((entry) => {
             // main file (such as pdf)
-            if (!["thumbnail", "fulltext"].includes(entry?.metadata?.type)) {
+            if (!['thumbnail', 'fulltext'].includes(entry?.metadata?.type)) {
               const dataFile: any = {
                 label: entry?.metadata?.label ? entry.metadata.label : entry.key,
                 mimetype: entry.mimetype,
                 download: new URL(entry.links.content).pathname,
               };
               if (entry?.links.preview) {
-                dataFile.preview = new URL(entry.links.preview).pathname
+                dataFile.preview = new URL(entry.links.preview).pathname;
               }
               data[entry.key] = dataFile;
             }
@@ -152,21 +194,92 @@ export class FilesComponent implements OnInit {
         });
         files.sort((a, b) => a.label.localeCompare(b.label));
         this.files = files;
+        this.filteredFiles = files;
       });
   }
-
-  /** invenio previewer
+  /**
+   * Fired when the text to filter the items changes.
    *
-   * TODO
+   * @param $event - standard event
+   */
+  onTextChange($event): void {
+    if (this.filterText.length > 0) {
+      this.filteredFiles = this.files.filter((value) => value.label.includes(this.filterText));
+    } else {
+      this.filteredFiles = this.files;
+    }
+  }
+
+  /**
+   * Get the string used to display the search result number.
+   * @param hits - list of hit results.
+   * @returns observable of the string representation of the number of results.
+   */
+  getResultsText(): Observable<string> {
+    const total = this.filteredFiles.length;
+    if (total == this.files.length) {
+      return this.translateService.stream('{{ total }} results', { total });
+    }
+    return total === 0
+      ? this.translateService.stream('no result')
+      : this.translateService.stream('{{ total }} results of {{ remoteTotal }}', {
+          total,
+          remoteTotal: this.files.length,
+        });
+  }
+
+  /**
+   * Fired when the page change in the paginator.
+   * @param $event - standard event.
+   */
+  onPageChange($event): void {
+    this.page = $event.page;
+  }
+
+  /**
+   * Get the font awsome class depending on the file mimetype.
+   *
+   * @param file
+   * @returns the css class of the icon
+   */
+  getIcon(file): string {
+    const mimetype = file.mimetype;
+    if (mimetype == null) {
+      return 'fa-file-o';
+    }
+    switch (true) {
+      case mimetype.startsWith('image/'):
+        return 'fa-file-image-o';
+      case mimetype.startsWith('audio/'):
+        return 'fa-file-audio-o';
+      case mimetype.startsWith('text/'):
+        return 'fa-file-text-o';
+      case mimetype.startsWith('video/'):
+        return 'fa-file-video-o';
+      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.presentationml'):
+        return 'fa-file-powerpoint-o';
+      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.wordprocessingml'):
+        return 'fa-file-word-o';
+      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml'):
+        return 'fa-file-excel-o';
+      case mimetype.startsWith('application/pdf'):
+        return 'fa-file-pdf-o';
+    }
+    return 'fa-file-o';
+  }
+
+  /** Open the file preview in a modal container.
+   *
+   * @param file - the file to preview.
    */
 
-  preview(file: File) {
-    this.previewModalRef = this._modalService.show(this.previewModalTemplate, {
+  preview(file: File): void {
+    this.previewModalRef = this.modalService.show(this.previewModalTemplate, {
       class: 'modal-lg',
     });
     this.previewFile = {
       label: file.label,
-      url: this._sanitizer.bypassSecurityTrustResourceUrl(file.preview),
+      url: this.sanitizer.bypassSecurityTrustResourceUrl(file.preview),
     };
   }
 }
