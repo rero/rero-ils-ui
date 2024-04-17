@@ -33,15 +33,9 @@ formly-field > input {
   width: 100%;
 }
 
-.p-inputgroup-addon,
-input {
-  padding: 0.5em;
-}
-
 label {
   align-items: baseline;
 }
-
 
 .toast-container .ngx-toastr {
   width: 450px !important; // override width for all toastr message

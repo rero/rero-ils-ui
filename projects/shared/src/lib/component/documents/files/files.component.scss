@@ -15,22 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+ .file-preview {
+  cursor: zoom-in;
+ }
+.item-icon {
+  width: 80px;
+  height: 100px;
+  display: inline-flex;
+  align-items: self-end;
+}
 :host ::ng-deep {
   img {
     max-width: 80px;
   }
-  .action button{
-    border-radius: 50%;
-    height: 2.357rem;
-  }
   a {
     color: #495057;
-  }
-  .p-highlight button {
-    background: #495057;
-  }
-  .p-carousel ul{
-    margin-bottom: 0;
   }
   .p-carousel-item {
     align-self: flex-end;
