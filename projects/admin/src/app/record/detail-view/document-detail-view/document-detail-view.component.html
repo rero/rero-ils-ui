@@ -329,21 +329,23 @@
     </tab>
     }
     <!-- END OF LOCAL FIELDS TAB -->
-    <tab #tabFile="tab" id="documents-files-field-tab" tabOrder="5">
-      <ng-template tabHeading>
-        <i class="fa fa-file mr-1"></i> {{ "Files" | translate }}
-      </ng-template>
-      @if (tabFile.active) {
-      <div class="mt-2">
-        <admin-files-collections></admin-files-collections>
-        <ng-core-record-files
-          [title]="'Files' | translate"
-          [type]="type"
-          [pid]="record.id"
-        ></ng-core-record-files>
-      </div>
-      }
-    </tab>
+    @if (!record.metadata.harvested && record.metadata.pid) {
+      <tab #tabFile="tab" id="documents-files-field-tab" tabOrder="5">
+        <ng-template tabHeading>
+          <i class="fa fa-file mr-1"></i> {{ "Files" | translate }}
+        </ng-template>
+        @if (tabFile.active) {
+        <div class="mt-2">
+          <admin-files-collections></admin-files-collections>
+          <ng-core-record-files
+            [title]="'Files' | translate"
+            [type]="type"
+            [pid]="record.id"
+          ></ng-core-record-files>
+        </div>
+        }
+      </tab>
+    }
     <!-- MARC TAB -->
     @if (marc$ | async; as marc) {
     <tab id="documents-marc-tab" tabOrder="6">

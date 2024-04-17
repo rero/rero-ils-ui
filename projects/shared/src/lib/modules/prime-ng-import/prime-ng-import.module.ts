@@ -19,6 +19,7 @@
 import { NgModule } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel';
+import { PaginatorModule } from 'primeng/paginator';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TabViewModule } from 'primeng/tabview';
 import { TagModule } from 'primeng/tag';
@@ -31,7 +32,8 @@ import { TimelineModule } from 'primeng/timeline';
     TimelineModule,
     CarouselModule,
     TagModule,
-    ButtonModule
+    ButtonModule,
+    PaginatorModule
   ]
 })
 export class PrimeNgImportModule { }
