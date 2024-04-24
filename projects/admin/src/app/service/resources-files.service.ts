@@ -17,8 +17,6 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
-import { TranslateService } from '@ngx-translate/core';
 import { ApiService, File, Record, RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { BehaviorSubject, Observable, map, of, switchMap, tap } from 'rxjs';
@@ -35,8 +33,6 @@ export class ResourcesFilesService {
   private apiService = inject(ApiService);
   // user service to retrieve the current library
   private userService = inject(UserService);
-  // translate service
-  private translateService = inject(TranslateService);
 
   //api base URL
   baseUrl: string;
@@ -64,12 +60,12 @@ export class ResourcesFilesService {
    * @param pid
    * @returns
    */
-  getParentRecord(type: string, pid: string): Observable<Record> {
+  getParentRecord(pid: string): Observable<Record> {
     // get the currend library pid
     const libPid = this.userService.user.currentLibrary;
     // retrieve the file record attached to the document and the current library
     return this.httpService
-      .get(`${this.baseUrl}?q=metadata.links:doc_${pid} AND metadata.owners:lib_${libPid}`)
+      .get(`${this.baseUrl}?q=metadata.document.pid:${pid} AND metadata.library.pid:${libPid}`)
       .pipe(
         map((result: Record) => {
           const total = this.recordService.totalHits(result.hits.total);
@@ -77,6 +73,17 @@ export class ResourcesFilesService {
             throw new Error('More than one parent record.');
           }
           return total === 0 ? null : result.hits.hits[0];
+        }),
+        map((esResult: Record) => {
+          if (esResult == null) {
+            return esResult;
+          }
+          const metadata = esResult['metadata'];
+          const docPid = metadata['document']['pid'];
+          metadata['document'] = { $ref: this.apiService.getRefEndpoint('documents', docPid) };
+          const libPid = metadata['library']['pid'];
+          metadata['library'] = { $ref: this.apiService.getRefEndpoint('libraries', libPid) };
+          return esResult;
         }),
         tap((record) => this.currentParentRecord.next(record))
       );
@@ -92,7 +99,7 @@ export class ResourcesFilesService {
    * @param type
    * @param pid
    */
-  createParentRecord(type: string, pid: string): Observable<Record> {
+  createParentRecord(docPid: string): Observable<Record> {
     // get the currend library pid
     const libPid = this.userService.user.currentLibrary;
     // create the file record attached to the current library pid and the given
@@ -100,8 +107,8 @@ export class ResourcesFilesService {
     return this.httpService
       .post(`${this.baseUrl}`, {
         metadata: {
-          links: [`doc_${pid}`],
-          owners: [`lib_${libPid}`],
+          document: { $ref: this.apiService.getRefEndpoint('documents', docPid) },
+          library: { $ref: this.apiService.getRefEndpoint('libraries', libPid) },
         },
       })
       .pipe(tap((record) => this.currentParentRecord.next(record))) as Observable<Record>;
@@ -115,7 +122,7 @@ export class ResourcesFilesService {
    * @param metadata new metadata
    * @returns the modified record
    */
-  updateParentRecordMetadata(type: string, pid: string, metadata: any): Observable<Record> {
+  updateParentRecordMetadata(pid: string, metadata: any): Observable<Record> {
     return this.httpService.put(`${this.baseUrl}/${pid}`, metadata) as Observable<Record>;
   }
 
@@ -126,11 +133,8 @@ export class ResourcesFilesService {
    * @param pid PID of the record.
    * @returns Observable resolving the list of files.
    */
-  list(type: string, pid: string, parentRecord: Record): Observable<Array<File>> {
-    if (parentRecord == null) {
-      return of([]);
-    }
-    return this.httpService.get(`${this.baseUrl}/${parentRecord.id}/files`).pipe(
+  list(parentRecordId: string): Observable<File[]> {
+    return this.httpService.get(`${this.baseUrl}/${parentRecordId}/files`).pipe(
       map((res: any) => {
         return res.entries.map((file) => {
           // set the head if is not a thumbnail nor a fulltext
@@ -156,25 +160,27 @@ export class ResourcesFilesService {
    * @param fileData File data.
    * @returns the created file
    */
-  create(type: string, pid: string, parentRecord: Record, fileKey: string, fileData: any): Observable<File> {
+  create(parentRecordId: string, fileKey: string, fileData: any): Observable<File> {
     // Note: angular do not encode % into %25 and nginx does not support single %
-    fileKey = fileKey.replaceAll("%", "");
+    fileKey = fileKey.replaceAll('%', '');
     // create the bucket
-    return this.httpService.post(`${this.baseUrl}/${parentRecord.id}/files`, [{ key: fileKey }]).pipe(
-      switchMap((res: any) =>
-        // set the file content
-        this.httpService.put(`${this.baseUrl}/${parentRecord.id}/files/${fileKey}/content`, fileData, {
-          headers: { 'content-type': 'application/octet-stream' },
+    return this.httpService
+      .post(`${this.baseUrl}/${parentRecordId}/files`, [{ key: fileKey, label: fileData.label }])
+      .pipe(
+        switchMap((res: any) =>
+          // set the file content
+          this.httpService.put(`${this.baseUrl}/${parentRecordId}/files/${fileKey}/content`, fileData, {
+            headers: { 'content-type': 'application/octet-stream' },
+          })
+        ),
+        switchMap((res: any) => {
+          // commit the file
+          return this.httpService.post(
+            `${this.baseUrl}/${parentRecordId}/files/${fileKey}/commit`,
+            {}
+          ) as Observable<File>;
         })
-      ),
-      switchMap((res: any) => {
-        // commit the file
-        return this.httpService.post(
-          `${this.baseUrl}/${parentRecord.id}/files/${fileKey}/commit`,
-          {}
-        ) as Observable<File>;
-      })
-    );
+      );
   }
 
   /**
@@ -190,40 +196,10 @@ export class ResourcesFilesService {
    * @param fileData File data.
    * @returns the updated file
    */
-  update(type: string, pid: string, parentRecord: Record, file: File, fileData: any): Observable<File> {
-    return this.delete(type, pid, parentRecord, file, true).pipe(
-      switchMap((res) => this.create(type, pid, parentRecord, file.key, fileData))
+  update(parentRecordId: string, file: File, fileData: any): Observable<File> {
+    return this.delete(parentRecordId, file.key, true).pipe(
+      switchMap((res) => this.create(parentRecordId, file.key, fileData))
     );
-  }
-
-  /**
-   * Create the form to change the file metadata.
-   *
-   * @param type Type of resource.
-   * @returns an object with the form, the model and the formly params.
-   */
-  getMetadataForm(type: string): Observable<any> {
-    // A simple label editor
-    const metadataForm: {
-      fields: Array<any>;
-      model: any;
-      form: any;
-    } = {
-      fields: [
-        {
-          key: 'label',
-          type: 'input',
-          props: {
-            label: this.translateService.instant('Label'),
-            minLength: 3,
-            placeholder: this.translateService.instant('File label'),
-          },
-        },
-      ],
-      model: null,
-      form: new UntypedFormGroup({}),
-    };
-    return of(metadataForm);
   }
 
   /**
@@ -235,13 +211,13 @@ export class ResourcesFilesService {
    * @param file File to delete.
    * @return Observable of the http response.
    */
-  delete(type: string, pid: string, parentRecord: Record, file: File, keepParent = false): Observable<any> {
+  delete(parentRecordId: string, fileKey: string, keepParent = false): Observable<any> {
     return (
       this.httpService
         // remove the file
-        .delete(`${this.baseUrl}/${parentRecord.id}/files/${file.key}`)
+        .delete(`${this.baseUrl}/${parentRecordId}/files/${fileKey}`)
         .pipe(
-          switchMap(() => this.httpService.get(`${this.baseUrl}/${parentRecord.id}/files`)),
+          switchMap(() => this.httpService.get(`${this.baseUrl}/${parentRecordId}/files`)),
           switchMap((res: any) => {
             if (
               keepParent === true ||
@@ -251,24 +227,11 @@ export class ResourcesFilesService {
             }
             // remove the file record
             return this.httpService
-              .delete(`${this.baseUrl}/${parentRecord.id}`)
+              .delete(`${this.baseUrl}/${parentRecordId}`)
               .pipe(tap(() => this.currentParentRecord.next(null)));
           })
         )
     );
-  }
-
-  /**
-   * Return the URL of the file.
-   *
-   * @param type Type of resource.
-   * @param pid Record PID.
-   * @param fileKey File key.
-   * @returns URL of the file.
-   */
-  getUrl(type: string, pid: string, file: File): string {
-    const url = new URL(file.links.content);
-    return url.href.replace(url.origin, '');
   }
 
   /**
@@ -280,7 +243,7 @@ export class ResourcesFilesService {
    * @param file File to delete.
    * @return Observable of the updated data.
    */
-  updateMetadata(type: string, pid: string, parentRecord: Record, file: File): Observable<any> {
-    return this.httpService.put(`${this.baseUrl}/${parentRecord.id}/files/${file.key}`, file.metadata);
+  updateMetadata(parentRecordId: string, fileKey: string, data: any): Observable<any> {
+    return this.httpService.put(`${this.baseUrl}/${parentRecordId}/files/${fileKey}`, data);
   }
 }

@@ -315,7 +315,7 @@
     <!-- END ENTITIES RELATED -->
     <!-- LOCAL FIELDS TAB -->
     @if (!record.metadata.harvested && record.metadata.pid &&
-    showHideLocalFieldsTab) {
+    showLocalFieldsTab) {
     <tab id="documents-local-field-tab" tabOrder="4">
       <ng-template tabHeading>
         <i class="fa fa-list-ul mr-1"></i> {{ "Local fields" | translate }}
@@ -329,19 +329,14 @@
     </tab>
     }
     <!-- END OF LOCAL FIELDS TAB -->
-    @if (!record.metadata.harvested && record.metadata.pid) {
+    @if (!record.metadata.harvested && record.metadata.pid && showFilesTab) {
       <tab #tabFile="tab" id="documents-files-field-tab" tabOrder="5">
         <ng-template tabHeading>
           <i class="fa fa-file mr-1"></i> {{ "Files" | translate }}
         </ng-template>
         @if (tabFile.active) {
         <div class="mt-2">
-          <admin-files-collections></admin-files-collections>
-          <ng-core-record-files
-            [title]="'Files' | translate"
-            [type]="type"
-            [pid]="record.id"
-          ></ng-core-record-files>
+          <admin-upload-files [pid]="record.metadata.pid"></admin-upload-files>
         </div>
         }
       </tab>

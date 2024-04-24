@@ -26,6 +26,7 @@ import { PrimengImportModule } from '@app/admin/shared/primeng-import/primeng-im
 import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldSelect } from '@ngx-formly/primeng/select';
+import { FileUploadModule } from 'primeng/fileupload';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import {
@@ -217,6 +218,7 @@ import { PreviewEmailModule } from './shared/preview-email/preview-email.module'
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
+import { UploadFilesComponent } from './record/detail-view/document-detail-view/files-collections/upload-files/upload-files.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -364,7 +366,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     ItemPageDetailComponent,
     LocalPageDetailComponent,
     RemotePageDetailComponent,
-    ItemFeesComponent
+    ItemFeesComponent,
+    UploadFilesComponent
   ],
   imports: [
     AppRoutingModule,
@@ -409,6 +412,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     LoadingBarHttpClientModule,
     PrimengImportModule,
     PreviewEmailModule,
+    FileUploadModule
   ],
   providers: [
     {

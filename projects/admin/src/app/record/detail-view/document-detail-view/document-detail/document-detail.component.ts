@@ -242,13 +242,4 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
     }
     return `(${query.join(' AND ')})`;
   }
-  /**
-   * Return the URL of the file.
-   *
-   * @param file File object.
-   * @returns URL of the file.
-   */
-  getFileUrl(file): string {
-    return file.links.content;
-  }
 }

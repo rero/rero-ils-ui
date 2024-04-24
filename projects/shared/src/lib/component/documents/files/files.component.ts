@@ -22,7 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ApiService, Record, RecordService } from '@rero/ng-core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { PrimeNGConfig } from 'primeng/api';
-import { Observable, Subscription, forkJoin, map, switchMap } from 'rxjs';
+import { Observable, Subscription, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
 import { BreakpointObserver, BreakpointState, Breakpoints } from '@angular/cdk/layout';
 
@@ -58,6 +58,7 @@ export class FilesComponent implements OnInit, OnDestroy {
   numVisible = 5;
   // current page for the carousel
   page = 0;
+  loading = false;
 
   // file to preview
   previewFile: {
@@ -144,7 +145,8 @@ export class FilesComponent implements OnInit, OnDestroy {
   getFiles(): void {
     const baseUrl = this.apiService.getEndpointByType('records');
     // retrieve all records files linked to a given document pid
-    const query = `metadata.links:doc_${this.documentPid}`;
+    const query = `metadata.document.pid:${this.documentPid}`;
+    this.loading = true;
     this.httpService
       .get(`${baseUrl}?q=${query}`)
       .pipe(
@@ -162,8 +164,12 @@ export class FilesComponent implements OnInit, OnDestroy {
               })
             );
           });
-          return forkJoin(obs);
-        })
+          if (obs.length > 0) {
+            return forkJoin(obs);
+          }
+          return of([]);
+        }),
+        tap(() => (this.loading = false))
       )
       .subscribe((res: any[]) => {
         const files = [];
@@ -178,23 +184,21 @@ export class FilesComponent implements OnInit, OnDestroy {
                 mimetype: entry.mimetype,
                 download: new URL(entry.links.content).pathname,
               };
-              if (entry?.links.preview) {
+              if (entry?.links?.preview) {
                 dataFile.preview = new URL(entry.links.preview).pathname;
+              }
+              if (entry?.links?.thumbnail) {
+                dataFile.thumbnail = new URL(entry.links.thumbnail).pathname;
               }
               data[entry.key] = dataFile;
             }
           });
-          // retrieve thumbnails
-          rec.entries.map((entry) => {
-            if (entry?.metadata?.thumbnail_for && data[entry?.metadata?.thumbnail_for]) {
-              data[entry.metadata.thumbnail_for].thumbnail = `${baseUrl}/${rec.id}/files/${entry.key}/content`;
-            }
-          });
           Object.values(data).map((d: File) => files.push(d));
         });
-        files.sort((a, b) => a.label.localeCompare(b.label));
+        files.sort((a, b) => a.label.localeCompare(b.label, 'en', { numeric: true }));
         this.files = files;
         this.filteredFiles = files;
+        this.loading = false;
       });
   }
   /**
@@ -204,7 +208,7 @@ export class FilesComponent implements OnInit, OnDestroy {
    */
   onTextChange($event): void {
     if (this.filterText.length > 0) {
-      this.filteredFiles = this.files.filter((value) => value.label.includes(this.filterText));
+      this.filteredFiles = this.files.filter((value) => value.label.toLowerCase().includes(this.filterText.toLowerCase()));
     } else {
       this.filteredFiles = this.files;
     }
