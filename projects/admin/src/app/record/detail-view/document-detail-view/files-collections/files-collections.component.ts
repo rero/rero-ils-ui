@@ -15,12 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { OrganisationService } from '@app/admin/service/organisation.service';
+import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
 import { TranslateService } from '@ngx-translate/core';
-import { FilesService } from '@rero/ng-core';
-import { AppSettingsService, UserService } from '@rero/shared';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 
@@ -30,7 +29,9 @@ import { Subscription } from 'rxjs';
   styleUrl: './files-collections.component.scss',
 })
 export class FilesCollectionsComponent implements OnInit, OnDestroy {
-  private resourcesFilesService = inject(FilesService);
+
+  //-------------- Services ------------------
+  private resourcesFilesService = inject(ResourcesFilesService);
   private toastrService = inject(ToastrService);
   private translateService = inject(TranslateService);
   private organisationService = inject(OrganisationService);
@@ -80,7 +81,7 @@ export class FilesCollectionsComponent implements OnInit, OnDestroy {
    */
   getCollectionLink(name): string {
     const viewcode = this.organisationService.organisation.code;
-    return `https://localhost:5000/${viewcode}/search/documents?q=files.collections.raw:${name}&simple=0`;
+    return `/${viewcode}/search/documents?q=files.collections.raw:(${name})&simple=0`;
   }
 
   /** Is the submit action is disabled? */
@@ -100,7 +101,7 @@ export class FilesCollectionsComponent implements OnInit, OnDestroy {
       delete metadata.collections;
     }
     this.resourcesFilesService
-      .updateParentRecordMetadata('records', this.record.id, { metadata: metadata })
+      .updateParentRecordMetadata(this.record.id, { metadata: metadata })
       .subscribe((record) => this.setRecord(record));
     this.collections.markAsPristine();
     this.toastrService.success(this.translateService.instant('Collections have been saved successfully.'));

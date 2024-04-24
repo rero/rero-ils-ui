@@ -1,5 +1,3 @@
-
-
 {
   "name": "@rero/rero-ils-ui",
   "version": "17.0.0",
@@ -106,7 +104,7 @@
     "ngx-toastr": "^18.0.0",
     "primeflex": "^3.3.1",
     "primeicons": "^6.0.1",
-    "primeng": "^17.5.0",
+    "primeng": "^17.14.1",
     "rxjs": "^7.8.1",
     "simple-isbn": "^1.1.5",
     "tslib": "^2.6.0",

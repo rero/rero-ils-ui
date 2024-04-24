@@ -14,7 +14,9 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
+@if (loading) {
+  <i class="fa fa-spinner fa-spin"></i>
+} @else {
 @if (files?.length > 0) {
   @if(files.length > numVisible) {
     <div class="flex flex-column gap-2">
@@ -98,7 +100,7 @@
     }
   }
 }
-
+}
 
 <ng-template #previewModal>
     @if (previewFile) {
