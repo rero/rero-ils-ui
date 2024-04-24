@@ -14,36 +14,42 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 @if (record) {
-<h5 translate>Digital collections</h5>
+<h5 class="mb-2" translate>Digital collections</h5>
 <div class="row align-items-center">
-  <p-inputGroup class="mt-2 col-6">
+  <div
+  [tooltip]="
+  'Comma-separated list of digital collection names. Digital collections allow the searching/grouping of related documents containing files.'
+    | translate
+" class="input-group col-md-6">
     <input
-      pInputText
-      tooltipPosition="top"
-      [pTooltip]="
-        'Comma-separated list of digital collection names. Digital collections allow the searching/grouping of related documents containing files.'
-          | translate
-      "
-      class="p-inputtext-sm"
-      id="collections"
-      aria-describedby="files-collections"
+      #inputLabel
       [formControl]="collections"
+      type="text"
+      id="collections"
+
+      (keyup.enter)="save()"
+      class="form-control"
+      aria-label="label"
     />
-    <button
-      (click)="$event.preventDefault(); save()"
-      type="button"
-      [disabled]="collections.pristine"
-      pButton
-      icon="pi pi-save"
-    ></button>
-  </p-inputGroup>
-  <div class="col-6">
+    <div class="input-group-append">
+      <button
+        [disabled]="collections.pristine"
+        (click)="save()"
+        class="btn btn-outline-primary"
+        type="button"
+      >
+        <i class="fa fa-save"></i>
+      </button>
+    </div>
+  </div>
+  <div class="col">
     @for(collection of record?.metadata?.collections || []; track collection) {
-    <a [href]="getCollectionLink(collection)" target="_collection"
-      >{{ collection }}
-      <i class="fa fa-external-link pr-2"></i>
+    <a
+      class="text-nowrap"
+      [href]="getCollectionLink(collection)"
+      target="_collection"
+      >{{ collection }}<i class="ml-1 fa fa-external-link pr-2"></i>
     </a>
     }
   </div>

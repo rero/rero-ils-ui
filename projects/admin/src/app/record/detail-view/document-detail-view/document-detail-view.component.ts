@@ -78,11 +78,19 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   permissions: IPermissions = PERMISSIONS;
 
   /**
-   * Show or hide local fields tab
+   * Show local fields tab
    * @return boolean - if False, hide the local fields tab
    */
-  get showHideLocalFieldsTab(): boolean {
+  get showLocalFieldsTab(): boolean {
     return this.permissionsService.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE]);
+  }
+
+  /**
+   * Show or hide files tab
+   * @return boolean - if False, hide the local fields tab
+   */
+  get showFilesTab(): boolean {
+    return this.permissionsService.canAccess(PERMISSIONS.CIRC_ADMIN);
   }
 
   /**

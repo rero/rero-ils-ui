@@ -1,0 +1,153 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2020-2024 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<admin-files-collections></admin-files-collections>
+<ngx-spinner name="file-upload" color="#fff" size="medium" type="ball-zig-zag" [fullScreen]="true">
+  <p class="text-white">
+    {{'Loading...' | translate }}
+    @if (fileUpload?.files?.length > 0) {
+      ({{ nUploadedFiles }} / {{ fileUpload.files.length }})
+    }
+  </p>
+</ngx-spinner>
+
+@if (files != null) {
+<div class="row mt-4">
+  <div class="col-12">
+    <h5 class="mb-2" translate>Upload Files</h5>
+    <p-fileUpload
+      [disabled]="reachMaxFileLimit"
+      #fileUpload
+      [auto]="true"
+      [multiple]="true"
+      name="uploadFiles"
+      [chooseLabel]="'Add file' | translate"
+      [customUpload]="true"
+      (uploadHandler)="uploadHandler($event, '')"
+      mode="advanced"
+      [maxFileSize]="500 * 1024 * 1024"
+      (onSelect)="onSelect($event, '')"
+    >
+      <ng-template pTemplate="toolbar">
+        <div></div>
+        <div class="mt-2">
+          <small translate>
+            By uploading a file, I declare that I am aware of the terms and
+            conditions of the copyright transfer agreement governing the
+            publication of the respective document, and that the deposit of its
+            full-text content in the current platform is compatible with those.
+          </small>
+        </div>
+      </ng-template>
+      <ng-template let-file pTemplate="file"> </ng-template>
+      <ng-template let-file pTemplate="content">
+        @if (reachMaxFileLimit) {
+        <div class="alert alert-danger" role="alert" translate>
+          The maximum number of files is reached. No additional upload is
+          allowed.
+        </div>
+        } @else {
+        <span translate>Drag and drop files.</span>
+        }
+      </ng-template>
+    </p-fileUpload>
+  </div>
+
+  @if (files.length > 0) {
+  <div class="col-12 mt-4">
+    <h5 class="mb-2" translate>Uploaded Files</h5>
+    <div>
+      <div class="p-input-icon-right">
+        <i class="fa fa-filter"></i>
+        <input
+          class="p-inputtext"
+          id="filter"
+          type="text"
+          pInputText
+          [placeholder]="'filter' | translate"
+          [(ngModel)]="filterText"
+          (keyup)="onTextChange($event)"
+        />
+      </div>
+    </div>
+    <small *ngVar="filteredFiles.length as total" id="filtered-results">
+      {{ getResultsText() | async }}
+    </small>
+  </div>
+
+  @if(filteredFiles.length > 0) {
+  <ul class="col-12 list-group list-group-flush">
+    @for (file of filteredFiles;track file.label) {
+    <li class="list-group-item">
+      <div class="row align-items-center">
+        <div class="col-sm-6">
+          <a
+            tabindex="-1"
+            [tooltip]="
+              (file.size | filesize) +
+              ' / ' +
+              (file.updated | dateTranslate : 'medium')
+            "
+            title="download"
+            [href]="toRelative(file.links.content)"
+            download
+            >{{ file.key }} <i class="fa fa-download"></i
+          ></a>
+        </div>
+        <div class="col">
+          <div class="input-group">
+            <input
+              #inputLabel
+              [value]="file.label"
+              (keyup)="(0)"
+              type="text"
+              class="form-control"
+              [placeholder]="'label' | translate"
+              aria-label="label"
+              (keyup.enter)="updateLabel(file, inputLabel.value)"
+            />
+            <div class="input-group-append">
+              <button
+                [disabled]="inputLabel.value.length === 0 || (inputLabel.value.trim() === file.label)"
+                (click)="updateLabel(file, inputLabel.value)"
+                class="btn btn-outline-primary"
+                type="button"
+              >
+                <i class="fa fa-save"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-1">
+          <button
+            tabindex="-1"
+            (click)="deleteFile(file)"
+            class="btn btn-sm btn-outline-danger"
+            title="{{ 'remove' | translate }}"
+          >
+            <i class="fa fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    </li>
+    }
+  </ul>
+  } }
+</div>
+} @else {
+  <i class="fa fa-spinner fa-spin"></i>
+}
