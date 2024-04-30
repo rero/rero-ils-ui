@@ -41,14 +41,14 @@
 
               </ul>
             } @else {
-              <div class="alert alert-danger" role="alert">
-                <strong translate>Template</strong> {{ serialPreviewError.status }}
+              <div class="alert alert-light" role="alert" translate>
+                No preview available
               </div>
             }
 
           } @else {
-            <div class="alert alert-light" role="alert">
-              No preview available
+            <div class="alert alert-danger" role="alert">
+              <strong translate>Template</strong> {{ serialPreviewError.status }}
             </div>
           }
         </div>
