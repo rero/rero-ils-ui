@@ -23,7 +23,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SuggestionMetadata } from '@rero/ng-core';
 import { PERMISSIONS, PermissionsService } from '@rero/shared';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, merge, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -108,14 +108,17 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
    );
 
    // get the template version of the formControl value
-   this.valueAsHTML$ = new Observable((observer: Observer<string>) => observer.next(this.formControl.value)).pipe(
-       switchMap((value: string) => {
-         const selectedEntityType = this.entityTypeFilters.find(entity => entity.selected) || this.entityTypeFilters[0];
-         const options = {filters: {selected: selectedEntityType.value}};
-         return this.remoteTypeahead.getValueAsHTML(options, value);
-       })
-     );
-
+   const obs = new Observable((observer: Observer<string>) => observer.next(this.formControl.value));
+   this.valueAsHTML$ = merge(obs, this.formControl.valueChanges).pipe(
+      switchMap((value: string) => {
+      if(value) {
+        const selectedEntityType = this.entityTypeFilters.find(entity => entity.selected) || this.entityTypeFilters[0];
+        const options = {filters: {selected: selectedEntityType.value}};
+        return this.remoteTypeahead.getValueAsHTML(options, value);
+      }
+      return of(null);
+      })
+    );
   }
 
   // PUBLIC COMPONENT FUNCTIONS ===============================================
@@ -144,7 +147,7 @@ export class EntityTypeaheadComponent extends FieldType implements OnInit {
   /** Clear current value */
   clear(): void {
     this.searchTerm = null;
-    this.formControl.reset();
+    this.formControl.reset(null);
     this.field.focus = true;
   }
 
