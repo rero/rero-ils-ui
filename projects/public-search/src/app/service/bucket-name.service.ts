@@ -44,9 +44,6 @@ export class BucketNameService implements IBucketNameService {
     switch (aggregationKey) {
       case 'language':
         return of(this.translateService.instant('lang_' + value));
-      case 'fiction':
-        const fiction_label = Boolean(value)? _('Fiction') : _('No fiction');
-        return of(this.translateService.instant(fiction_label));
       default: return of(this.translateService.instant(value));
     }
   }

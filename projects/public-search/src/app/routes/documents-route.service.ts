@@ -107,7 +107,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
                 acquisition: _('Acquisition date'),
                 year: _('Publication year'),
                 subject: _('Subject'),
-                fiction: _('Fiction'),
+                fiction_statement: _('Fiction statement'),
               },
               showFacetsIfNoResults: true,
               aggregationsOrder: this.aggregations(viewcode),
@@ -227,7 +227,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
         _('author'),
         _('subject'),
         _('genreForm'),
-        _('fiction'),
+        _('fiction_statement'),
         _('intendedAudience'),
         _('acquisition'),
         _('status')
@@ -241,7 +241,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
         _('author'),
         _('subject'),
         _('genreForm'),
-        _('fiction'),
+        _('fiction_statement'),
         _('intendedAudience'),
         _('acquisition'),
         _('status')

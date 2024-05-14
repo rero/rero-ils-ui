@@ -16,6 +16,18 @@
 -->
 
 <div class="container div-striped p-0">
+  <!-- FICTION STATEMENT -->
+  @if (record.metadata.fiction_statement) {
+    <div class="striped">
+      <admin-description-zone>
+        <ng-container label>{{ 'Fiction statement' | translate }}</ng-container>
+        <ng-container content>
+          {{ record.metadata.fiction_statement | translate }}
+        </ng-container>
+      </admin-description-zone>
+    </div>
+  }
+
   <!-- -------------- WORK / EXPRESSION -------------- -->
   <!-- SUPPLEMENT, RELATED TO -->
   @if (record.metadata.supplement) {
