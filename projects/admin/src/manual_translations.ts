@@ -248,3 +248,8 @@ _('n°. {{ number }}');
 
 // Circulation policies
 _('/ day');
+
+// Fiction statement
+_('fiction');
+_('non_fiction');
+_('unspecified');

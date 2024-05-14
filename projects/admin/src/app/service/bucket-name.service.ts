@@ -49,9 +49,6 @@ export class BucketNameService implements IBucketNameService {
    */
   transform(aggregationKey: string, value: string): Observable<string> {
     switch (aggregationKey) {
-      case 'fiction':
-        const fiction_label = Boolean(value)? _('Fiction') : _('No fiction');
-        return of(this.translateService.instant(fiction_label));
       case 'claims_count':
         const claims_label = Number(value) < 2 ? _('{{count}} claim') : _('{{count}} claims');
         return of(this.translateService.instant(claims_label, { count: value }));
