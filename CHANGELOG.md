@@ -1,5 +1,48 @@
 # Changelog
 
+## [v17.0.0](https://github.com/rero/rero-ils-ui/tree/v17.0.0) (2024-06-03)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.7.3...v17.0.0)
+
+**New features:**
+* aggregation: change for isFiction [\#1132](https://github.com/rero/rero-ils-ui/pull/1132) & [\#1167](https://github.com/rero/rero-ils-ui/pull/1167) (by @rerowep)
+* Us 2172 files [\#1168](https://github.com/rero/rero-ils-ui/pull/1168) (by @jma)
+* feat(item): add fees on item detail view [\#1151](https://github.com/rero/rero-ils-ui/pull/1151) (by @Garfield-fr)
+* feat(acquisition): select/deselect lines [\#1129](https://github.com/rero/rero-ils-ui/pull/1129) (by @Garfield-fr)
+
+**Enhancements:**
+* fix(items): restore legacy checkout count [\#1174](https://github.com/rero/rero-ils-ui/pull/1174) (by @PascalRepond)
+* feat(circulation): add informations message [\#1146](https://github.com/rero/rero-ils-ui/pull/1146) (by @Garfield-fr)
+* feat(circulation): add message on alert [\#1142](https://github.com/rero/rero-ils-ui/pull/1142) (by @Garfield-fr)
+* feat(circulation): add temporary location name [\#1133](https://github.com/rero/rero-ils-ui/pull/1133) (by @Garfield-fr)
+* feat(circulation): display check-in note [\#1130](https://github.com/rero/rero-ils-ui/pull/1130) (by @Garfield-fr)
+* chore(item): delete legacy fields [\#1165](https://github.com/rero/rero-ils-ui/pull/1165) (by @PascalRepond)
+* chore(permissions): item and holdings [\#1152](https://github.com/rero/rero-ils-ui/pull/1152) (by @Garfield-fr)
+* chore(menu): add query params on some routes [\#1136](https://github.com/rero/rero-ils-ui/pull/1136) (by @Garfield-fr)
+* feat: detail views enhancements [\#1135](https://github.com/rero/rero-ils-ui/pull/1135) (by @Garfield-fr)
+
+**Fixes:**
+* fix(patron profile): multi-organisation selector [\#1179](https://github.com/rero/rero-ils-ui/pull/1179) (by @PascalRepond)
+* fix(fiction): makes the facet higher and open [\#1178](https://github.com/rero/rero-ils-ui/pull/1178) (by @PascalRepond)
+* fix(patron): ill request count [\#1176](https://github.com/rero/rero-ils-ui/pull/1176) (by @PascalRepond)
+* fix(editor): item switch location [\#1173](https://github.com/rero/rero-ils-ui/pull/1174) (by @Garfield-fr)
+* fix(editor): entity typeahead clear value [\#1166](https://github.com/rero/rero-ils-ui/pull/1166) (by @Garfield-fr)
+* fix(document): import with many identifiers [\#1155](https://github.com/rero/rero-ils-ui/pull/1155) (by @Garfield-fr)
+* fix(editor): fix the new syntax of hodlings [\#1163](https://github.com/rero/rero-ils-ui/pull/1163) (by @Garfield-fr)
+* fix: incorrect wording in item component [\#1158](https://github.com/rero/rero-ils-ui/pull/1158) (by @PascalRepond)
+* fix(document): language facet translation [\#1149](https://github.com/rero/rero-ils-ui/pull/1149) (by @Garfield-fr)
+* fix(ill): add filter parameter [\#1145](https://github.com/rero/rero-ils-ui/pull/1145) (by @Garfield-fr)
+* fix(editor): use the new process json schema [\#1150](https://github.com/rero/rero-ils-ui/pull/1150) (by @Garfield-fr)
+* fix(filter): add a new key for translation [\#1154](https://github.com/rero/rero-ils-ui/pull/1154) (by @Garfield-fr)
+* fix(fee): form options on add manual fee [\#1153](https://github.com/rero/rero-ils-ui/pull/1153) (by @Garfield-fr)
+* fix(inventory list): remove default lib filter [\#1144](https://github.com/rero/rero-ils-ui/pull/1144) (by @PascalRepond)
+* fix(permission): missing collections message [\#1131](https://github.com/rero/rero-ils-ui/pull/1131) (by @Garfield-fr)
+* fix(document): availability [\#1134](https://github.com/rero/rero-ils-ui/pull/1134) (by @Garfield-fr)
+
+**Other changes:**
+* chore: update dependencies [\#1139](https://github.com/rero/rero-ils-ui/pull/1139) (by @Garfield-fr)
+* chore: upgrade Angular 17 and Formly v6 [\#1115](https://github.com/rero/rero-ils-ui/pull/1115) (by @Garfield-fr)
+
 ## [v14.7.3](https://github.com/rero/rero-ils-ui/tree/v14.7.3) (2024-02-28)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.7.2...v14.7.3)
