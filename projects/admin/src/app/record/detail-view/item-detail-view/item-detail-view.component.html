@@ -229,6 +229,23 @@
             [itemPid]="record.metadata.pid"
             [permissions]="permissions.PTTR_ACCESS"
           ></admin-item-fees>
+          <!-- LEGACY CHECKOUT COUNT -->
+          @if (record.metadata | keyExists:'legacy_checkout_count') {
+            <section class="mb-4 mt-4">
+              <div class="card">
+                <div class="card-body">
+                  <dl class="row mb-0">
+                      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+                        Legacy checkout count
+                      </dt>
+                      <dd class="col-sm-7 col-md-8 mb-0">
+                        {{ record.metadata.legacy_checkout_count }}
+                      </dd>
+                  </dl>
+                </div>
+              </div>
+            </section>
+          }
         </div>
       </tab>
       <!-- LOCAL FIELDS TAB -->
