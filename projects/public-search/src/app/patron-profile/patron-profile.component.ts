@@ -135,7 +135,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
           const requestQuery = this.loanApiService.getRequest(this._patronPid, 1, 1, undefined);
           const feeQuery = this.patronTransactionApiService.getFees(this._patronPid, 'open', 1, 1, undefined);
           const historyQuery = this.operationLogsApiService.getHistory(this._patronPid, 1, 1);
-          const illRequestQuery = this.illRequestApiService.getPublicIllRequest(this._patronPid, 1, 1, undefined);
+          const illRequestQuery = this.illRequestApiService.getPublicIllRequest(this._patronPid, 1, 1, undefined, '', {remove_archived: '1'});
           forkJoin([loanQuery, requestQuery, feeQuery, historyQuery, illRequestQuery])
             .subscribe((
               [loanResponse, requestResponse, feeResponse, historyResponse, illRequestResponse]:
