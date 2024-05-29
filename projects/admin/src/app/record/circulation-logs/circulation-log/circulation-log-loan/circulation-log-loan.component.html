@@ -77,7 +77,12 @@
     </dd>
 
     <!-- Operator -->
-    <dt class="col-4 label-title font-weight-bold fa-icon-operator"translate>Operator</dt>
-    <dd class="col-8">{{ record.metadata.user_name }}</dd>
+    <dt class="col-4 label-title font-weight-bold fa-icon-operator" translate>Operator</dt>
+    <dd class="col-8">
+      {{ record.metadata.user_name }}
+      @if (record.metadata.loan.auto_extend) {
+        ({{ 'automatic renewal' | translate }})
+      }
+    </dd>
   </dl>
 </admin-circulation-log>

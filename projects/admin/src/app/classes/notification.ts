@@ -30,7 +30,9 @@ export enum NotificationType {
   RECALL = 'recall',
   REQUEST = 'request',
   TRANSIT_NOTICE = 'transit_notice',
-  ACQUISITION_ORDER = 'acquisition_order'
+  ACQUISITION_ORDER = 'acquisition_order',
+  CLAIM_ISSUE = 'claim_issue',
+  AUTO_EXTEND = 'auto_extend'
 }
 
 export class Notification {
@@ -39,7 +41,8 @@ export class Notification {
       NotificationType.AVAILABILITY,
       NotificationType.DUE_SOON,
       NotificationType.OVERDUE,
-      NotificationType.RECALL
+      NotificationType.RECALL,
+      NotificationType.AUTO_EXTEND
     ],
     library: [
       NotificationType.AT_DESK,

@@ -112,16 +112,17 @@ export class LibraryFormService {
       this.rolloverAccountTransferOptions = libSchema.schema.properties.rollover_settings.properties.
         account_transfer.enum;
 
-      // DEV NOTES :: Why remove `acquisition_order`
+      // DEV NOTES :: Why remove `acquisition_order` an `claim_issue`
       //   `this.notificationTypes` is used to build the notification setting form ;
-      //   but we need to remove `acquisition_order` from this list because the email
+      //   but we need to remove `acquisition_order` and `claim_issue` from this list because the email
       //   used to send this kind of notification is selected by manager when it confirms
       //   and order. Then the email used is either :
       //      - related vendor email
-      //      - library acquisition setting email
+      //      - library (serial) acquisition setting email
       //      - custom email
       this.notificationTypes = notifSchema.schema.properties.notification_type.enum
-        .filter(type => type != NotificationType.ACQUISITION_ORDER);
+        .filter(type => type != NotificationType.ACQUISITION_ORDER)
+        .filter(type => type != NotificationType.CLAIM_ISSUE);
 
       this.build();
       this.buildEvent.next(true);
