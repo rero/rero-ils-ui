@@ -129,6 +129,7 @@ _('at_desk');
 _('booking');
 _('request');
 _('claim_issue');
+_('auto_extend');
 //  - loan state
 _('CREATED');
 _('PENDING');
