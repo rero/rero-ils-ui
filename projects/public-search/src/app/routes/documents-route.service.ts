@@ -112,7 +112,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
               showFacetsIfNoResults: true,
               aggregationsOrder: this.aggregations(viewcode),
               aggregationsExpand: () => {
-                const expand = ['document_type'];
+                const expand = ['document_type', 'fiction_statement'];
                 const queryParams = this._route.snapshot.queryParams;
                 if (this.appConfigService.globalViewName === viewcode) {
                   if (queryParams.location || queryParams.library) {
@@ -221,13 +221,13 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
     if (this.appConfigService.globalViewName === viewcode) {
       return [
         _('document_type'),
+        _('fiction_statement'),
         _('organisation'),
         _('language'),
         _('year'),
         _('author'),
         _('subject'),
         _('genreForm'),
-        _('fiction_statement'),
         _('intendedAudience'),
         _('acquisition'),
         _('status')
@@ -235,13 +235,13 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
     } else {
       return [
         _('document_type'),
+        _('fiction_statement'),
         _('library'),
         _('language'),
         _('year'),
         _('author'),
         _('subject'),
         _('genreForm'),
-        _('fiction_statement'),
         _('intendedAudience'),
         _('acquisition'),
         _('status')

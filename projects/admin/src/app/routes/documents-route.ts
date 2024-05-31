@@ -131,19 +131,19 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             allowEmptySearch: false,
             aggregationsOrder: [
               'document_type',
+              'fiction_statement',
               'organisation',
               'language',
               'year',
               'author',
               'subject',
               'genreForm',
-              'fiction_statement',
               'intendedAudience',
               'acquisition',
               'status',
             ],
             aggregationsExpand: () => {
-              const expand = ['document_type'];
+              const expand = ['document_type', 'fiction_statement'];
               const { queryParams } = this._routeToolService.activatedRoute.snapshot;
               if (queryParams.location || queryParams.library) {
                 expand.push('organisation');
