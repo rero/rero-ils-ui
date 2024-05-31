@@ -16,7 +16,6 @@
 -->
 @defer (when isVisible) {
   <form>
-    MENU: {{ menuOptions | json }}
       <select class="form-control form-select form-select-sm ml-1 col-6" (change)="onChange($event.target.value)">
         @for (option of menuOptions; track option) {
           <option class="form-control" [value]="option.value" [selected]="option.selected">
