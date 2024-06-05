@@ -122,6 +122,9 @@ export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
    */
   private _initializeObservableAsyncRecord(obs: Observable<any>): void {
     this.asyncRecord$ = obs.pipe(switchMap(([vValue, vType]) => {
+      if (vValue == null) {
+        return of(null);
+      }
       vValue = vValue.trim();
       if (!vValue) {
         return of(null);
