@@ -1,5 +1,10 @@
 # Changelog
 
+## [v17.0.1](https://github.com/rero/rero-ils-ui/tree/v17.0.1) (2024-06-06)
+
+**Fixes:**
+* chore: update ngx-formly to the version 6.3.2 [\#1180](https://github.com/rero/rero-ils-ui/pull/1180) (by @Garfield-fr)
+
 ## [v17.0.0](https://github.com/rero/rero-ils-ui/tree/v17.0.0) (2024-06-03)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v14.7.3...v17.0.0)
