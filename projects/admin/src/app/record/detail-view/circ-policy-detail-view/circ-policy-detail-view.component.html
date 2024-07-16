@@ -80,6 +80,14 @@
               {{ record.metadata.renewal_duration }}
               {{ record.metadata.renewal_duration | i18nPlural: {'=1': 'day', 'other': 'days'} | translate }}
             </dd>
+            <dt class="col-3 offset-4 label-title" translate>Automatic renewal</dt>
+            <dd id="cipo-auto-renewal" class="col-5 mb-0">
+              @if (record.metadata.automatic_renewal) {
+                <i class="fa fa-check text-success" aria-hidden="true"></i>
+              } @else {
+                <i class="fa fa-times text-danger" aria-hidden="true"></i>
+              }
+            </dd>
           } @else {
             <dd class="col-9">
               <i id="cipo-allow-checkout" class="fa fa-times text-danger" aria-hidden="true"></i>
