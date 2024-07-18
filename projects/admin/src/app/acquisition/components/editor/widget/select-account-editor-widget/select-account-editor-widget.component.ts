@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { getCurrencySymbol } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { FieldType } from '@ngx-formly/core';
@@ -61,7 +61,8 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
     private acqAccountApiService: AcqAccountApiService,
     private organisationService: OrganisationService,
     private apiService: ApiService,
-    private userService: UserService
+    private userService: UserService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     super();
   }
@@ -78,6 +79,7 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
         const currentAccount = this.accountList.find((account: IAcqAccount) => account.pid === currentPid);
         if (currentAccount !== undefined) {
           this.selectedAccount = currentAccount;
+          this.changeDetectorRef.markForCheck();
         }
       }
     });
@@ -92,5 +94,6 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
     const accountRef = this.apiService.getRefEndpoint('acq_accounts', account.pid);
     this.selectedAccount = account;
     this.formControl.patchValue(accountRef);
+    this.changeDetectorRef.markForCheck();
   }
 }
