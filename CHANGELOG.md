@@ -1,5 +1,18 @@
 # Changelog
 
+## [v17.1.0](https://github.com/rero/rero-ils-ui/tree/v17.1.0) (2024-08-12)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v17.0.1...v17.1.0)
+
+**New features:**
+* fix(detailed cipo): display automatic renewal [\#1184](https://github.com/rero/rero-ils-ui/pull/1184) (by @PascalRepond)
+* feat(circulation): automatic renewals [\#1177](https://github.com/rero/rero-ils-ui/pull/1177) (by @PascalRepond)
+
+**Fixes:**
+* fix(circ): error when no item note [\#1189](https://github.com/rero/rero-ils-ui/pull/1189) (by @PascalRepond)
+* acquisition editor: fix missing initial value in the account select [\#1186](https://github.com/rero/rero-ils-ui/pull/1186) (by @jma)
+* fix: update ngx-formly [\#1185](https://github.com/rero/rero-ils-ui/pull/1185) (by @PascalRepond)
+
 ## [v17.0.1](https://github.com/rero/rero-ils-ui/tree/v17.0.1) (2024-06-06)
 
 **Fixes:**
