@@ -172,7 +172,7 @@ _('Circulation policy disallows the operation.');
 _('No circulation action performed');
 _('Item returned at owning library');
 _('The item is {{ status }}');
-_('The item is in transit to [{{ destination }}]');
+_('The item is in transit to {{ destination }}');
 _('Checkout is not allowed by circulation policy');
 
 // item note

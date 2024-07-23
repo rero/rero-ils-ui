@@ -906,7 +906,7 @@
   "The item is already checked out or requested by this patron.": "El ejemplar ya está eb préstamo o reservado por el usuario.",
   "The item is already in the list.": "El ejemplar ya está en la lista.",
   "The item is in transit": "El ejemplar está en tránsito",
-  "The item is in transit to [{{ destination }}]": "El ejemplar está en tránsito a [{{ destination }}]",
+  "The item is in transit to {{ destination }}": "El ejemplar está en tránsito a {{ destination }}",
   "The item status does not allow requests.": "El estado del ejemplar no permite reservaciones.",
   "The maximum number of files is reached. No additional upload is allowed.": "The maximum number of files is reached. No additional upload is allowed.",
   "The notifications for patrons without e-mail are sent to this address.": "Las notificaciones para los usuarios sin correo electrónico se envían a esta dirección.",

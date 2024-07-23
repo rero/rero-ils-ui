@@ -132,8 +132,9 @@ export class CheckinComponent implements OnInit {
               this.getPatronInfo(item.action_applied.checkin.patron.barcode);
             }
             if (item.status === ItemStatus.IN_TRANSIT) {
+              const destination = item.loan.item_destination.library_name;
               this.toastService.warning(
-                this.translate.instant('The item is ' + ItemStatus.IN_TRANSIT),
+                this.translate.instant('The item is in transit to {{ destination }}', {destination}),
                 this.translate.instant('Checkin')
               );
             }

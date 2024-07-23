@@ -210,8 +210,9 @@ export class LoanComponent implements OnInit, OnDestroy {
         );
       }
       if (item.status === ItemStatus.IN_TRANSIT) {
+        const destination = item.loan.item_destination.library_name;
         this.toastService.warning(
-          this.translateService.instant('The item is in transit'),
+          this.translateService.instant('The item is in transit to {{ destination }}', {destination}),
           this.translateService.instant('Checkin')
         );
       }
@@ -292,7 +293,7 @@ export class LoanComponent implements OnInit, OnDestroy {
               if (newItem.status === ItemStatus.IN_TRANSIT) {
                 const destination = newItem.loan.item_destination.library_name;
                 this.toastService.warning(
-                  this.translateService.instant('The item is in transit to [{{ destination }}]', {destination}),
+                  this.translateService.instant('The item is in transit to {{ destination }}', {destination}),
                   this.translateService.instant('Checkin')
                 );
               }
