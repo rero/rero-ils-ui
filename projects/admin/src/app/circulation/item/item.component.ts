@@ -160,14 +160,17 @@ export class ItemComponent implements OnInit {
    */
   getCirculationNoteForAction(): ItemNote[] {
     if (this.item.actionDone) {
-      if (
-        (this.item.actionDone === this.itemAction.checkin)
-        || (((this.item.actionDone === this.itemAction.receive) && this.item.library.pid === this.userService.user.currentLibrary))
-        ) {
-        return [this.item.getNote(ItemNoteType.CHECKIN)];
+      const checkinNote = this.item.getNote(ItemNoteType.CHECKIN)
+      if (checkinNote && (
+        (this.item.actionDone === this.itemAction.checkin) || (
+          (((this.item.actionDone === this.itemAction.receive) && this.item.library.pid === this.userService.user.currentLibrary))
+        )
+      )) {
+        return [checkinNote];
       }
-      if (this.item.actionDone === this.itemAction.checkout) {
-        return [this.item.getNote(ItemNoteType.CHECKOUT)];
+      const checkoutNote = this.item.getNote(ItemNoteType.CHECKOUT)
+      if (checkoutNote && this.item.actionDone === this.itemAction.checkout) {
+        return [checkoutNote];
       }
     } else if (this.item.notes) {
       // Notes for item without loan.
