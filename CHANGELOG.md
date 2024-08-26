@@ -1,5 +1,12 @@
 # Changelog
 
+## [v17.1.1](https://github.com/rero/rero-ils-ui/tree/v17.1.1) (2024-08-26)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v17.1.0...v17.1.1)
+
+**Enhancements:**
+* production: add old browser support for the public interface [\#1190](https://github.com/rero/rero-ils-ui/pull/1190) (by @jma)
+
 ## [v17.1.0](https://github.com/rero/rero-ils-ui/tree/v17.1.0) (2024-08-12)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v17.0.1...v17.1.0)
