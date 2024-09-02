@@ -29,7 +29,11 @@
     @if (document.title | mainTitle; as title) {
       <a [routerLink]="['/records', 'documents', 'detail', document.pid]">
         {{ title }}
-      </a><br/>
+      </a>
+      @if (item.enumerationAndChronology) {
+        <span class="badge badge-info">{{ item.enumerationAndChronology }}</span>
+      }
+      <br/>
     }
     <shared-contribution [contributions]="document?.contribution"></shared-contribution>
   </div>

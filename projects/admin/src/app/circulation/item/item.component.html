@@ -71,6 +71,9 @@
           }
         }
       </a>
+      @if (item.enumerationAndChronology && isCollapsed) {
+        <span class="badge badge-info">{{ item.enumerationAndChronology }}</span>
+      }
       @if (document) {
         <shared-contribution [contributions]="document?.contribution"></shared-contribution>
       }
@@ -177,6 +180,12 @@
           <dd class="col-sm-8 col-md-9 col-lg-10">
             <shared-inherited-call-number [item]="item"></shared-inherited-call-number>
           </dd>
+          @if (item.enumerationAndChronology) {
+            <dt class="offset-1 col-sm-3 col-md-2 col-lg-1 label-title" translate>Unit</dt>
+            <dd class="col-sm-8 col-md-9 col-lg-10">
+              {{ item.enumerationAndChronology }}
+            </dd>
+          }
           @if (item.location.pid | getRecord: 'locations' | async; as location) {
             <dt class="offset-1 col-sm-3 col-md-2 col-lg-1 label-title" translate>Location</dt>
             <dd class="col-sm-8 col-md-9 col-lg-10">

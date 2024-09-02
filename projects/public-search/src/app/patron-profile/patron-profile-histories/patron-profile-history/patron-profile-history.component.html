@@ -27,6 +27,9 @@
         } @else {
         {{ record.metadata.loan.item.document.title }}
         }
+        @if (record.metadata.loan.item.enumerationAndChronology) {
+          <span class="badge badge-info">{{ record.metadata.loan.item.enumerationAndChronology }}</span>
+        }
         @if (document) {
           <shared-contribution [contributions]="document.metadata?.contribution" [view]="viewcode"></shared-contribution>
         }

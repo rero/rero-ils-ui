@@ -15,9 +15,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (document) {
-  <a href="/{{ viewcode }}/documents/{{ record.metadata.document.pid }}" class="d-block">
+  <a href="/{{ viewcode }}/documents/{{ record.metadata.document.pid }}" >
     {{ record.metadata.document.title | mainTitle }}
   </a>
+  @if (record.metadata.item.enumerationAndChronology && !showAdditionalInformation) {
+    <span class="badge badge-info">{{ record.metadata.item.enumerationAndChronology }}</span>
+  }
   <shared-contribution [contributions]="document?.contribution" [view]="viewcode" [limitRecord]="3"></shared-contribution>
   @if (record.metadata) {
     <div class="container mt-2 pl-0" [collapse]="!showAdditionalInformation" [isAnimated]="isAnimated">
