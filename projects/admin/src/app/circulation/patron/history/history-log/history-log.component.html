@@ -31,6 +31,9 @@
       } @else {
         {{ log.metadata.loan.item.document.title }}
       }
+      @if (log.metadata.loan.item.enumerationAndChronology) {
+        <span class="badge badge-info">{{ log.metadata.loan.item.enumerationAndChronology }}</span>
+      }
     </div>
     <div class="col-sm-4">
       @if (document?.metadata?.contribution && document.metadata.contribution.length > 0) {
