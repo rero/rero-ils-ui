@@ -16,44 +16,59 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record$ | async; as record) {
-    <h1 class="mb-0" *ngVar="icon($any(record).metadata.type) as icon">
-      <i class="fa {{ icon.class }}" title="{{ icon.title }}" aria-hidden="true"></i>
-      {{ $any(record).metadata | extractSourceField : 'authorized_access_point' }}</h1>
-    <small>
-      {{ 'MEF ID' | translate }}: {{ $any(record).metadata.pid }}
-    </small>
-    <span class="badge badge-warning" translate>Remote</span>
+  <h1 class="mb-0" *ngVar="icon($any(record).metadata.type) as icon">
+    <i class="fa {{ icon.class }}" title="{{ icon.title }}" aria-hidden="true"></i>
+    {{ $any(record).metadata | extractSourceField : 'authorized_access_point' }}</h1>
+  <small>
+    {{ 'MEF ID' | translate }}: {{ $any(record).metadata.pid }}
+  </small>
+  <span class="badge badge-warning" translate>Remote</span>
 
-    <!-- SOURCES -->
-    @for (source of $any(record).metadata.sources.sort(); track source) {
-      <article class="card my-2">
-        <header class="card-header">
-          <b class="card-title mb-0">
-            {{ source | translate | uppercase }}
-          </b>
-        </header>
-        <article id="contribution-{{ source }}" class="card-body collapse show">
+  <!-- SOURCES -->
+  @for (source of $any(record).metadata.sources.sort(); track source) {
+    <article class="card my-2">
+      <header class="card-header">
+        <b class="card-title mb-0">{{ source | translate | uppercase }}</b>
+      </header>
+      <article id="contribution-{{ source }}" class="card-body collapse show">
+        <dl class="entity-fields">
           @switch ($any(record).metadata.type) {
             @case (entityType.PERSON) {
-              <admin-remote-entities-person-detail-view [record]="$any(record).metadata[source]" [source]="source"></admin-remote-entities-person-detail-view>
+              <admin-remote-entities-person-detail-view [record]="$any(record).metadata[source]" [source]="source" />
             }
             @case (entityType.ORGANISATION) {
-              <admin-remote-entities-organisation-detail-view [record]="$any(record).metadata[source]" [source]="source"></admin-remote-entities-organisation-detail-view>
+              <admin-remote-entities-organisation-detail-view [record]="$any(record).metadata[source]" [source]="source" />
             }
             @case (entityType.TOPIC) {
-              <admin-remote-topic-detail-view [record]="$any(record).metadata[source]" [source]="source"></admin-remote-topic-detail-view>
+              <admin-remote-topic-detail-view [record]="$any(record).metadata[source]" [source]="source" />
             }
             @case (entityType.PLACE) {
-              <admin-remote-topic-detail-view [record]="$any(record).metadata[source]" [source]="source"></admin-remote-topic-detail-view>
+              <admin-remote-topic-detail-view [record]="$any(record).metadata[source]" [source]="source" />
             }
             @case (entityType.TEMPORAL) {
-              <admin-remote-topic-detail-view [record]="$any(record).metadata[source]" [source]="source"></admin-remote-topic-detail-view>
+              <admin-remote-topic-detail-view [record]="$any(record).metadata[source]" [source]="source" />
             }
             @default {
               {{ 'Missing template for this entity type:' | translate }} {{ $any(record).metadata.type }}
             }
           }
-        </article>
+          <!-- IDENTIFIED BY -->
+          @if (identifiedByFilter($any(record).metadata[source].identifiedBy).length > 0) {
+            <dt translate>Identified by</dt>
+            <dd>
+              <ul>
+                @for (identifiedBy of identifiedByFilter($any(record).metadata[source].identifiedBy); track identifiedBy) {
+                  <li>
+                    <a href="{{ identifiedBy.value }}" title="{{ identifiedBy.value }}" target="_blank">{{ identifiedBy.source }}</a>
+                  </li>
+                }
+              </ul>
+            </dd>
+          }
+          <dt translate>Id</dt>
+          <dd>{{ $any(record).metadata[source].pid }}</dd>
+        </dl>
       </article>
-    }
+    </article>
+  }
 }

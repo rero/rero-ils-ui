@@ -15,82 +15,63 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<dl class="entity-fields">
-  <!-- BNF TYPE -->
-  @if (record.bnf_type) {
-    <dt translate>Type</dt>
-    <dd>{{ record.bnf_type }}</dd>
-  }
-  <!-- VARIANT ACCESS POINT(S) -->
-  @if (record.variant_access_point) {
-    <dt translate>Variant access point(s)</dt>
-    <dd>
-      <ul>
-        @for (variant_access_point of record.variant_access_point; track variant_access_point) {
-          <li>{{ variant_access_point }}</li>
-        }
-      </ul>
-    </dd>
-  }
-  <!-- BROADER -->
-  @if (record.broader) {
-    <dt translate>Broader</dt>
-    <dd>
-      <ul>
-        @for (broader of record.broader; track broader) {
-          <li>{{ broader.authorized_access_point }}</li>
-        }
-      </ul>
-    </dd>
-  }
-  <!-- RELATED -->
-  @if (record.related) {
-    <dt translate>Related</dt>
-    <dd>
-      <ul>
-        @for (related of record.related; track related) {
-          <li>{{ related.authorized_access_point }}</li>
-        }
-      </ul>
-    </dd>
-  }
+<!-- BNF TYPE -->
+@if (record.bnf_type) {
+  <dt translate>Type</dt>
+  <dd>{{ record.bnf_type }}</dd>
+}
+<!-- VARIANT ACCESS POINT(S) -->
+@if (record.variant_access_point) {
+  <dt translate>Variant access point(s)</dt>
+  <dd>
+    <ul>
+      @for (variant_access_point of record.variant_access_point; track variant_access_point) {
+        <li>{{ variant_access_point }}</li>
+      }
+    </ul>
+  </dd>
+}
+<!-- BROADER -->
+@if (record.broader) {
+  <dt translate>Broader</dt>
+  <dd>
+    <ul>
+      @for (broader of record.broader; track broader) {
+        <li>{{ broader.authorized_access_point }}</li>
+      }
+    </ul>
+  </dd>
+}
+<!-- RELATED -->
+@if (record.related) {
+  <dt translate>Related</dt>
+  <dd>
+    <ul>
+      @for (related of record.related; track related) {
+        <li>{{ related.authorized_access_point }}</li>
+      }
+    </ul>
+  </dd>
+}
 
-  <!-- CLASSIFICATION(S) -->
-  @if (record.classification) {
-    <dt translate>Classification(s)</dt>
-    <dd>
-      <ul>
-        @for (classification of record.classification; track classification) {
-          <li>
-            @if (classification.classificationPortion) {
-              <span class="mr-1">{{ classification.classificationPortion }}</span>
-            }
-            @if (classification.name) {
-              <span class="mr-1">{{ classification.name }}</span>
-            }
-            @if (classification.type) {
-              <span class="badge badge-secondary">{{ classification.type | translate }}</span>
-            }
-          </li>
-        }
-      </ul>
-    </dd>
-  }
-  <!-- IDENTIFIED BY -->
-  @if (record.identifiedBy) {
-    <dt translate>Identified by</dt>
-    <dd>
-      <ul>
-        @for (identifiedBy of record.identifiedBy; track identifiedBy) {
-          @if (identifiedBy.type === 'uri') {
-            <li>
-              <a href="{{ identifiedBy.value }}">{{ identifiedBy.source }}</a>
-            </li>
+<!-- CLASSIFICATION(S) -->
+@if (record.classification) {
+  <dt translate>Classification(s)</dt>
+  <dd>
+    <ul>
+      @for (classification of record.classification; track classification) {
+        <li>
+          @if (classification.classificationPortion) {
+            <span class="mr-1">{{ classification.classificationPortion }}</span>
           }
-        }
-      </ul>
-    </dd>
-  }
-  <dt translate>Id</dt>
-  <dd>{{ record.pid }}</dd>
-</dl>
+          @if (classification.name) {
+            <span class="mr-1">{{ classification.name }}</span>
+          }
+          @if (classification.type) {
+            <span class="badge badge-secondary">{{ classification.type | translate }}</span>
+          }
+        </li>
+      }
+    </ul>
+  </dd>
+}

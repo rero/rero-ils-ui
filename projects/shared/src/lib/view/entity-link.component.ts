@@ -14,9 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Entity } from '../class/entity';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'shared-entity-link',
@@ -35,7 +36,7 @@ import { Entity } from '../class/entity';
     }
   `
 })
-export class EntityLinkComponent implements OnInit {
+export class EntityLinkComponent implements OnInit, OnDestroy {
 
   /** Entity field metadata */
   @Input() entity: any;
@@ -61,6 +62,8 @@ export class EntityLinkComponent implements OnInit {
   /** Query params */
   queryParams: object = {};
 
+  subscriptions: Subscription = new Subscription();
+
   /**
    * Constructor
    * @param translateService - TranslateService
@@ -69,7 +72,19 @@ export class EntityLinkComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    const lang = this.translateService.currentLang;
+    this.subscriptions.add(
+      this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
+        this.translateEntity(event.lang);
+      })
+    );
+    this.translateEntity(this.translateService.currentLang);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
+  private translateEntity(lang: string): void{
     this.linkName = `authorized_access_point_${lang}` in this.entity
       ? this.entity[`authorized_access_point_${lang}`]
       : this.entity.authorized_access_point;

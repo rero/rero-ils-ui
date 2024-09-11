@@ -15,68 +15,55 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<dl class="entity-fields">
-  <!-- DATE OF BIRTH -->
-  @if (record.date_of_birth) {
-    <dt translate>Birth date</dt>
-    <dd>{{ record.date_of_birth }}</dd>
-  }
-  <!-- DATE OF DEATH -->
-  @if (record.date_of_death) {
-    <dt translate>Death date</dt>
-    <dd>{{ record.date_of_death }}</dd>
-  }
-  <!-- LANGUAGE -->
-  @if (record.language) {
-    <dt translate>Language</dt>
-    <dd>
-      <ul>
-        @for (language of record.language; track language) {
-          <li>{{ ('lang_' + language) | translate }}</li>
-        }
-      </ul>
-    </dd>
-  }
-    <!-- GENDER -->
-  @if (record.Gender) {
-    <dt translate>Gender</dt>
-    <dd>{{ record.Gender }}</dd>
-  }
-  <!-- BIBLIOGRAPHICAL INFORMATION -->
-  @if (record.biographical_information) {
-    <dt translate>Biographical information</dt>
-    <dd [innerHtml]="record.biographical_information.join('\n') | urlActive | nl2br"></dd>
-  }
-  <!-- NAME -->
-  @if (record.name) {
-    <dt translate>Name</dt>
-    <dd>{{ record.name }}</dd>
-  }
-  <!-- VARIANT ACCESS POINT -->
-  @if (record.variant_access_point) {
-    <dt translate>Variant name</dt>
-    <dd>
-      <ul>
-        @for (variant_name of record.variant_access_point; track variant_name) {
-          <li>{{ variant_name }}</li>
-        }
-      </ul>
-    </dd>
-  }
-  <!-- AUTHORIZED ACCESS POINT -->
-  @if (record.authorized_access_point) {
-    <dt translate>Authorized access point</dt>
-    <dd>{{ record.authorized_access_point }}</dd>
-  }
-  <!-- ID -->
-  @if (record.identifier) {
-    <dt translate>Id</dt>
-    <dd>
-      @if (disabledLink(source)) {
-        <a href="{{ record.identifier }}">{{ record.pid }}</a>
-      } @else {
-        {{ record.pid }}
+<!-- DATE OF BIRTH -->
+@if (record.date_of_birth) {
+  <dt translate>Birth date</dt>
+  <dd>{{ record.date_of_birth }}</dd>
+}
+<!-- DATE OF DEATH -->
+@if (record.date_of_death) {
+  <dt translate>Death date</dt>
+  <dd>{{ record.date_of_death }}</dd>
+}
+<!-- LANGUAGE -->
+@if (record.language) {
+  <dt translate>Language</dt>
+  <dd>
+    <ul>
+      @for (language of record.language; track language) {
+        <li>{{ ('lang_' + language) | translate }}</li>
       }
-    </dd>
-  }
-</dl>
+    </ul>
+  </dd>
+}
+  <!-- GENDER -->
+@if (record.Gender) {
+  <dt translate>Gender</dt>
+  <dd>{{ record.Gender }}</dd>
+}
+<!-- BIBLIOGRAPHICAL INFORMATION -->
+@if (record.biographical_information) {
+  <dt translate>Biographical information</dt>
+  <dd [innerHtml]="record.biographical_information.join('\n') | urlActive | nl2br"></dd>
+}
+<!-- NAME -->
+@if (record.name) {
+  <dt translate>Name</dt>
+  <dd>{{ record.name }}</dd>
+}
+<!-- VARIANT ACCESS POINT -->
+@if (record.variant_access_point) {
+  <dt translate>Variant name</dt>
+  <dd>
+    <ul>
+      @for (variant_name of record.variant_access_point; track variant_name) {
+        <li>{{ variant_name }}</li>
+      }
+    </ul>
+  </dd>
+}
+<!-- AUTHORIZED ACCESS POINT -->
+@if (record.authorized_access_point) {
+  <dt translate>Authorized access point</dt>
+  <dd>{{ record.authorized_access_point }}</dd>
+}

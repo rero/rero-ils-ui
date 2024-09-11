@@ -411,17 +411,18 @@ pre {
 
 // ENTITIES ====================================================================
 .entity-fields {
-  @extend .row;
-  @extend .mb-0;
-
   dt {
     @extend .col-3;
     @extend .label-title;
+    display: block;
+    float: left;
   }
 
   dd {
     @extend .col-9;
     @extend .mb-0;
+    display: block;
+    float: left;
 
     ul {
       @extend .list-unstyled;
