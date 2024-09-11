@@ -81,4 +81,8 @@ export class RemoteEntitiesDetailViewComponent implements DetailRecord {
         };
     }
   }
+
+  identifiedByFilter(identifiedBy: any[]): any[] {
+    return identifiedBy.filter((el: any) => el.source !== 'RERO' && el.type === 'uri');
+  }
 }
