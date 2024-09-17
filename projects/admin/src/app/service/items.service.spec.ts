@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,25 +17,17 @@
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { BsModalRef, BsModalService, ModalModule } from 'ngx-bootstrap/modal';
-import { ToastrModule } from 'ngx-toastr';
 import { ItemsService } from './items.service';
+import { RouterModule } from '@angular/router';
 
 describe('ItemsService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       HttpClientTestingModule,
-      ModalModule.forRoot(),
-      ToastrModule.forRoot(),
       TranslateModule.forRoot({}),
-      RouterTestingModule,
+      RouterModule.forRoot([]),
     ],
-    providers: [
-      BsModalRef,
-      BsModalService
-    ]
   }));
 
   it('should be created', () => {

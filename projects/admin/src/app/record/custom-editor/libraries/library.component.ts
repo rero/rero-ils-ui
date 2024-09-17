@@ -17,14 +17,14 @@
  */
 
 import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CountryCodeTranslatePipe } from '@app/admin/pipe/country-code-translate.pipe';
 import { TranslateService } from '@ngx-translate/core';
-import { AbstractCanDeactivateComponent, ApiService, RecordService, UniqueValidator, cleanDictKeys, removeEmptyValues } from '@rero/ng-core';
+import { AbstractCanDeactivateComponent, ApiService, cleanDictKeys, RecordService, removeEmptyValues, UniqueValidator } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { ToastrService } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { Library } from '../../../classes/library';
 import { NotificationType } from '../../../classes/notification';
@@ -36,6 +36,8 @@ import { LibraryFormService } from './library-form.service';
   styleUrls: ['./library.component.scss']
 })
 export class LibraryComponent extends AbstractCanDeactivateComponent implements OnInit, OnDestroy {
+
+  private messageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** The current library. */
@@ -89,7 +91,6 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
    * @param router - angular Router
    * @param userService - ng-core UserService
    * @param apiService - ng-core ApiService
-   * @param toastService - ToastrService
    * @param translateService - ngx-translate TranslateService
    * @param location - angular Location
    * @param countryCodeTranslatePipe - CountryCodeTranslatePipe
@@ -101,7 +102,6 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
     private router: Router,
     private userService: UserService,
     private apiService: ApiService,
-    private toastService: ToastrService,
     private translateService: TranslateService,
     private location: Location,
     private countryCodeTranslatePipe: CountryCodeTranslatePipe
@@ -161,30 +161,40 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
     if (this.library.pid) {
       this.recordService
         .update('libraries', this.library.pid, cleanDictKeys(this.library))
-        .subscribe(
-          () => {
-            this.toastService.success(
-              this.translateService.instant('Record Updated!'),
-              this.translateService.instant('libraries')
-            );
+        .subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translateService.instant('libraries'),
+              detail: this.translateService.instant('Record Updated!')
+            });
             this.router.navigate(['records', 'libraries', 'detail', this.library.pid]);
           },
-          error => this.toastService.error(error.title, this.translateService.instant('libraries'))
-        );
+          error: (error) => this.messageService.add({
+            severity: 'error',
+            summary: this.translateService.instant('libraries'),
+            detail: error.title
+          })
+      });
     } else {
       this.library.organisation = { $ref: this.apiService.getRefEndpoint('organisations', this.organisationPid) };
       this.recordService
         .create('libraries', cleanDictKeys(this.library))
-        .subscribe(
-          record => {
-            this.toastService.success(
-              this.translateService.instant('Record created!'),
-              this.translateService.instant('libraries')
-            );
+        .subscribe({
+          next: (record) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translateService.instant('libraries'),
+              detail: this.translateService.instant('Record created!')
+            });
             this.router.navigate(['records', 'libraries', 'detail', record.metadata.pid]);
           },
-          error => this.toastService.error(error.title, this.translateService.instant('libraries'))
-        );
+          error: (error) => this.messageService.add({
+            severity: 'error',
+            summary: this.translateService.instant('libraries'),
+            detail: error.title
+          })
+      });
     }
   }
 

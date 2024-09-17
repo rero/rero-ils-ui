@@ -16,8 +16,8 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { DialogService, RecordService } from '@rero/ng-core';
+import { inject, Injectable } from '@angular/core';
+import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -25,11 +25,18 @@ import { CircPolicy } from '../classes/circ-policy';
 import { LoanState } from '../classes/loans';
 import { UserService } from '@rero/shared';
 import { TranslateService } from '@ngx-translate/core';
+import { Confirmation, ConfirmationService } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoanService {
+
+  recordService = inject(RecordService);
+  http = inject(HttpClient);
+  userService = inject(UserService);
+  translateService = inject(TranslateService);
+  confirmationService = inject(ConfirmationService);
 
   // SERVICE CONSTANTS ========================================================
   /** Statuses of a borrow loan */
@@ -43,22 +50,6 @@ export class LoanService {
     LoanState.PENDING,
     LoanState.ITEM_IN_TRANSIT_FOR_PICKUP
   ];
-
-  // CONSTRUCTOR ==============================================================
-  /**
-   * Constructor
-   * @param _recordService - RecordService
-   * @param _http - HttpClient
-   * @param _userService - UserService
-   * @param _translateService - TranslateService
-   */
-  constructor(
-    private _recordService: RecordService,
-    private _http: HttpClient,
-    private _userService: UserService,
-    private _translateService: TranslateService,
-    private _dialogService: DialogService
-  ) { }
 
   // SERVICES FUNCTIONS =======================================================
   /**
@@ -105,12 +96,12 @@ export class LoanService {
    */
   cancelLoan(itemPid: string, loanPid: string, transactionLibraryPid: string): Observable<any> {
     const url = '/api/item/cancel_item_request';
-    return this._http.post<any>(url, {
+    return this.http.post<any>(url, {
       item_pid: itemPid,
       pid: loanPid,
       transaction_library_pid: transactionLibraryPid,
       // TODO: Fix this with multiple patron
-      transaction_user_pid: this._userService.user.patrons[0].pid
+      transaction_user_pid: this.userService.user.patrons[0].pid
     }).pipe(
       map(data => {
         const itemData = data.metadata;
@@ -138,7 +129,7 @@ export class LoanService {
    */
   updateLoanPickupLocation(loanPid: string, pickupLocationPid: string): Observable<any> {
     const url = '/api/item/update_loan_pickup_location';
-    return this._http.post<any>(url, {
+    return this.http.post<any>(url, {
       pid: loanPid,
       pickup_location_pid: pickupLocationPid
     });
@@ -151,25 +142,28 @@ export class LoanService {
    */
   getCirculationPolicy(loanPid: string): Observable<CircPolicy> {
     const apiUrl = `/api/loan/${loanPid}/circulation_policy`;
-    return this._http.get<CircPolicy>(apiUrl);
+    return this.http.get<CircPolicy>(apiUrl);
   }
 
   /**
    * Cancel request dialog.
-   * @returns Observable (true if the user confirms the cancellation)
    */
-  cancelRequestDialog(): Observable<boolean> {
-    const config = {
-      ignoreBackdropClick: true,
-      initialState: {
-        title: this._translateService.instant('Cancel request'),
-        body: this._translateService.instant('Do you really want to cancel the request?'),
-        confirmButton: true,
-        cancelTitleButton: this._translateService.instant('No'),
-        confirmTitleButton: this._translateService.instant('Yes')
-      }
+  cancelRequestDialog(event: Event, accept?: Function, reject?: Function): void {
+    const confirmation: Confirmation = {
+      target: event.target as EventTarget,
+      header: this.translateService.instant('Cancel request'),
+      message: this.translateService.instant('Do you really want to cancel the request?'),
+      acceptLabel: this.translateService.instant('Yes'),
+      rejectLabel: this.translateService.instant('No'),
+      dismissableMask: true,
     };
-    return this._dialogService.show(config);
+    if (accept) {
+      confirmation.accept = accept;
+    }
+    if (reject) {
+      confirmation.reject = reject;
+    }
+    this.confirmationService.confirm(confirmation);
   }
 
   // PRIVATES SERVICE FUNCTIONS ===============================================
@@ -185,6 +179,6 @@ export class LoanService {
       const states = statuses.join(' OR state:');
       query +=  ` AND (state:${states})`;
     }
-    return this._recordService.getRecords('loans', query, 1, 100, [], undefined, undefined, 'created');
+    return this.recordService.getRecords('loans', query, 1, 100, [], undefined, undefined, 'created');
   }
 }

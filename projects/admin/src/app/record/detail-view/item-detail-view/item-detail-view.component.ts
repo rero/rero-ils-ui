@@ -16,19 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ItemApiService } from '@app/admin/api/item-api.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { IPermissions, IssueItemStatus, PERMISSIONS, PERMISSION_OPERATOR, UserService } from '@rero/shared';
 import moment from 'moment';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable, Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Item, ItemNote } from '../../../classes/items';
 import { HoldingsService } from '../../../service/holdings.service';
 import { OperationLogsService } from '../../../service/operation-logs.service';
 import { OrganisationService } from '../../../service/organisation.service';
-import { ItemApiService } from '@app/admin/api/item-api.service';
 
 @Component({
   selector: 'admin-item-detail-view',
@@ -54,7 +55,7 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
   recordPermissions: any;
 
   /** Record subscription */
-  private recordObs: Subscription;
+  private subscription: Subscription = new Subscription();
 
   /**
    * Is operation log enabled
@@ -127,25 +128,27 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.recordObs = this.record$.pipe(
-      switchMap((record: any) => {
-        return this.recordPermissionService.getPermission('items', record.metadata.pid).pipe(
-          map(permission => {
-            this.recordPermissions = this.recordPermissionService
-              .membership(this.userService.user, record.metadata.library.pid, permission);
-            return record;
-          })
-        )
+    this.subscription.add(
+      this.record$.pipe(
+        switchMap((record: any) => {
+          return this.recordPermissionService.getPermission('items', record.metadata.pid).pipe(
+            map(permission => {
+              this.recordPermissions = this.recordPermissionService
+                .membership(this.userService.user, record.metadata.library.pid, permission);
+              return record;
+            })
+          )
+        })
+      ).subscribe((record: any) => {
+        this.record = record;
+        this.recordService.getRecord('locations', record.metadata.location.pid, 1).subscribe(data => this.location = data);
       })
-    ).subscribe((record: any) => {
-      this.record = record;
-      this.recordService.getRecord('locations', record.metadata.location.pid, 1).subscribe(data => this.location = data);
-    });
+    );
   }
 
   /** OnDestroy hook */
   ngOnDestroy() {
-    this.recordObs.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   /**
@@ -185,8 +188,13 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
 
   /** Open claim dialog */
   openClaimEmailDialog(): void {
-    const bsModalRef = this.issueService.openClaimEmailDialog(this.record);
-    bsModalRef.content.recordChange.subscribe(() => this.record$
-      .subscribe((record: any) => this.record = record));
+    const ref: DynamicDialogRef = this.issueService.openClaimEmailDialog(this.record);
+    this.subscription.add(
+      ref.onClose.subscribe((record: any) => {
+        if (record) {
+          this.record$.subscribe((record: any) => this.record = record);
+        }
+      })
+    );
   }
 }

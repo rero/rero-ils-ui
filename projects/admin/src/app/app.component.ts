@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,13 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit } from '@angular/core';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { User, UserService } from '@rero/shared';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { KeyboardShortcutsService } from './service/keyboard-shortcuts.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
+import { DialogService } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'admin-root',
@@ -30,38 +29,26 @@ import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/cust
 })
 export class AppComponent implements OnInit, AfterViewInit {
 
+  /** Services injection */
+  private userService = inject(UserService);
+  private keyboardShortcutsService = inject(KeyboardShortcutsService);
+  private hotKeysService = inject(HotkeysService);
+  private dialogService = inject(DialogService);
+
   /** user */
   get user(): User {
-    return this._userService.user;
+    return this.userService.user;
   }
-
-  /**
-   * Constructor
-   * @param _userService - UserService
-   * @param _spinner - NgxSpinnerService
-   * @param _keyboardShortcutsService - KeyboardShortcutsService
-   * @param _hotKeysService - HotkeysService,
-   * @param _modalService - BsModalService
-   */
-  constructor(
-    private _userService: UserService,
-    private _spinner: NgxSpinnerService,
-    private _keyboardShortcutsService: KeyboardShortcutsService,
-    private _hotKeysService: HotkeysService,
-    private _modalService: BsModalService
-  ) {}
 
   /** Init hook */
   ngOnInit() {
-    this._spinner.show();
-    this._keyboardShortcutsService.initializeShortcuts();
-    this._spinner.hide();
+    this.keyboardShortcutsService.initializeShortcuts();
   }
 
   /** AfterViewInit hook */
   ngAfterViewInit() {
-    this._hotKeysService.registerHelpModal(() => {
-      this._modalService.show(CustomShortcutHelpComponent);
+    this.hotKeysService.registerHelpModal(() => {
+      this.dialogService.open(CustomShortcutHelpComponent, {})
     });
   }
 }

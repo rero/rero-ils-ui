@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 import { PermissionsService } from '@rero/shared';
 import moment from 'moment/moment';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { LoanState } from '../../../classes/loans';
 import { CirculationLogsComponent } from '../../circulation-logs/circulation-logs.component';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'admin-loans-brief-view',
@@ -29,6 +29,9 @@ import { CirculationLogsComponent } from '../../circulation-logs/circulation-log
   styleUrls: ['./loans-brief-view.component.scss']
 })
 export class LoansBriefViewComponent implements ResultItem, OnInit {
+
+  private dialogService: DialogService = inject(DialogService);
+  private permissionsService: PermissionsService = inject(PermissionsService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Information to build the URL on the record detail view. */
@@ -46,8 +49,6 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
   loanState = LoanState;
   /** is the current request is expired */
   isRequestExpired = false;
-  /** Modal ref */
-  bsModalRef: BsModalRef;
 
   // GETTER & SETTER =========================================================
   /**
@@ -58,17 +59,7 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
     return this.permissionsService.canAccessDebugMode();
   }
 
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param modalService - BsModalService
-   * @param permissionsService - PermissionsService
-   */
-  constructor(
-    private modalService: BsModalService,
-    private permissionsService: PermissionsService
-  ){ }
-
+  // HOOKS ======================================================
   /** OnInit hook */
   ngOnInit() {
     // State bullet color
@@ -83,18 +74,11 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
   // COMPONENT FUNCTIONS ======================================================
   /** Open transaction history logs dialog */
   openTransactionHistoryDialog(loanPid: string): void {
-    const config = {
-      ignoreBackdropClick: false,
-      keyboard: true,
-      initialState: {
+    this.dialogService.open(CirculationLogsComponent, {
+      dismissableMask: true,
+      data: {
         resourcePid: loanPid,
         resourceType: 'loan'
-      }
-    };
-    this.bsModalRef = this.modalService.show(CirculationLogsComponent, config);
-    this.bsModalRef.content.dialogClose$.subscribe((value: boolean) => {
-      if (value) {
-        this.bsModalRef.hide();
       }
     });
   }

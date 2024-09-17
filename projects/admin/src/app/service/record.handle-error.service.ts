@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordHandleErrorService as CoreRecordHandleErrorService } from '@rero/ng-core';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ToastrService } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
 import { NEVER, Observable } from 'rxjs';
 
 @Injectable({
@@ -27,15 +27,15 @@ import { NEVER, Observable } from 'rxjs';
 })
 export class RecordHandleErrorService extends CoreRecordHandleErrorService {
 
+  private messageService = inject(MessageService);
+
   /**
    * Constructor
    * @param translateService - TranslateService
-   * @param toastrService - ToastrService
    * @param spinner - NgxSpinnerService
    */
   constructor(
     protected translateService: TranslateService,
-    private toastrService: ToastrService,
     private spinner: NgxSpinnerService
   ) {
     super(translateService);
@@ -49,13 +49,14 @@ export class RecordHandleErrorService extends CoreRecordHandleErrorService {
    */
   handleError(error: HttpErrorResponse, resourceName?: string): Observable<never> {
     if (resourceName.startsWith('import_')) {
-      this.toastrService.error(
-        this.translateService.instant(
+      this.messageService.add({
+        severity: 'error',
+        summary: this.translateService.instant('Import from the web'),
+        detail: this.translateService.instant(
           'Your request to the external server has failed. Try again later ({{ statusCode }}).', {
             statusCode: error.status
-        }),
-        this.translateService.instant('Import from the web')
-      );
+        })
+      });
       this.spinner.hide();
       return NEVER;
     } else {

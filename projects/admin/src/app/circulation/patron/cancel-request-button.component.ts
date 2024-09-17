@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
-import { ToastrService } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'admin-cancel-request-button',
@@ -27,7 +27,7 @@ import { ToastrService } from 'ngx-toastr';
   @if (canCancelRequest()) {
     <button type="button"
             class="btn btn-outline-danger btn-sm"
-            (click)="showCancelRequestDialog()"
+            (click)="showCancelRequestDialog($event)"
             name="cancel">
       <i class="fa fa-trash-o" aria-hidden="true"></i>
     </button>
@@ -43,25 +43,16 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class CancelRequestButtonComponent {
 
+  loanService = inject(LoanService);
+  userService = inject(UserService);
+  translateService = inject(TranslateService);
+  messageService = inject(MessageService);
+
   /** Loan record */
   @Input() loan: any;
 
   /** Informs parent component to remove request when it is cancelled */
   @Output() cancelRequestEvent = new EventEmitter<any>();
-
-  /**
-   * Constructor
-   * @param loanService - LoanService
-   * @param userService - UserService
-   * @param translateService - TranslateService
-   * @param toastrService - ToastrService
-   */
-  public constructor(
-    private loanService: LoanService,
-    private userService: UserService,
-    private translateService: TranslateService,
-    private toastrService: ToastrService
-  ) {}
 
   /**
    * Can cancel a loan request
@@ -72,27 +63,25 @@ export class CancelRequestButtonComponent {
   }
 
   /** Show a confirmation dialog box for cancel request. */
-  showCancelRequestDialog(): void {
-    this.loanService.cancelRequestDialog().subscribe((confirm: boolean) => {
-      if (confirm) {
-        this.loanService.cancelLoan(
-          this.loan.metadata.item.pid,
-          this.loan.metadata.pid,
-          this.userService.user.currentLibrary
-        ).subscribe((item: any) => {
-          let message = this.translateService.instant("The request has been cancelled.");
-          if (item?.pending_loans?.length > 0) {
-            message += "<br>";
-            message += this.translateService.instant("The item contains requests.");
-          }
-          this.toastrService.warning(
-            message,
-            this.translateService.instant('Request'),
-            { enableHtml: true }
-          );
-          this.cancelRequestEvent.emit(this.loan.id);
+  showCancelRequestDialog(event: Event): void {
+    this.loanService.cancelRequestDialog(event, () => {
+      this.loanService.cancelLoan(
+        this.loan.metadata.item.pid,
+        this.loan.metadata.pid,
+        this.userService.user.currentLibrary
+      ).subscribe((item: any) => {
+        let message = this.translateService.instant("The request has been cancelled.");
+        if (item?.pending_loans?.length > 0) {
+          message += "<br>";
+          message += this.translateService.instant("The item contains requests.");
+        }
+        this.messageService.add({
+          severity: 'warn',
+          summary: this.translateService.instant('Request'),
+          detail: message
         });
-      }
+        this.cancelRequestEvent.emit(this.loan.id);
+      });
     });
   }
 }

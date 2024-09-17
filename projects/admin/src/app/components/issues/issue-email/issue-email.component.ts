@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023 RERO
+ * Copyright (C) 2023-2024 RERO
  * Copyright (C) 2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { ITypeEmail } from '@app/admin/shared/preview-email/IPreviewInterface';
 import { Tools } from '@app/admin/shared/preview-email/utils/tools';
-import { TranslateService } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
-import { ToastrService } from 'ngx-toastr';
+import { NgCoreTranslateService, RecordService } from '@rero/ng-core';
+import { MessageService } from 'primeng/api';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'admin-issue-email',
@@ -29,14 +29,14 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class IssueEmailComponent implements OnInit {
 
-  /** Item */
-  @Input() record: any;
+  private messageService = inject(MessageService);
+  private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
+  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
+  private itemApiService: ItemApiService = inject(ItemApiService);
+  private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
+  private recordService: RecordService = inject(RecordService);
 
-  /** Closing event for the modal dialog */
-  @Output() closeDialog = new EventEmitter<boolean>(false);
-
-  /** Reload data event to enable detection of data loading */
-  @Output() recordChange = new EventEmitter<any>();
+  record: any;
 
   /** Available recipient types */
   emailTypes = ['to', 'cc', 'bcc', 'reply_to'];
@@ -50,31 +50,20 @@ export class IssueEmailComponent implements OnInit {
   /** Previewing the message body for the email */
   response: any;
 
-  /**
-   * Constructor
-   * @param _itemApiService - ItemApiService
-   * @param _toastrService - ToastrService
-   * @param _translateService - TranslateService
-   * @param _recordService - RecordService
-   */
-  constructor(
-    private _itemApiService: ItemApiService,
-    private _toastrService: ToastrService,
-    private _translateService: TranslateService,
-    private _recordService: RecordService
-  ) { }
-
   /** OnInit hook */
   ngOnInit(): void {
-    this._itemApiService.getPreviewByItemPid(this.record.metadata.pid)
+    this.record = this.dynamicDialogConfig.data.record;
+    this.itemApiService.getPreviewByItemPid(this.record.metadata.pid)
       .subscribe((response: any) => {
         if (response.error) {
-          this._toastrService.error(
-            this._translateService.instant(`An error has occurred.<br><em>Error: ${response.error}</em>`),
-          this._translateService.instant('Claim'),
-          { enableHtml: true, disableTimeOut: true }
-          );
-          this.closeEmailDialog();
+          this.messageService.add({
+            severity: 'error',
+            summary: this.translateService.instant('Claim'),
+            detail: this.translateService.instant(`An error has occurred.<br><em>Error: ${response.error}</em>`),
+            sticky: true,
+            closable: true
+          });
+          this.closeDialog();
         } else {
           this.suggestions = Tools.processRecipientSuggestions(response.recipient_suggestions);
           this.response = response;
@@ -83,32 +72,29 @@ export class IssueEmailComponent implements OnInit {
   }
 
   confirmIssue(recipients: ITypeEmail[]): void {
-    this._itemApiService.addClaimIssue(this.record.metadata.pid, recipients).subscribe((result: boolean) => {
+    this.itemApiService.addClaimIssue(this.record.metadata.pid, recipients).subscribe((result: boolean) => {
       if (result) {
-        this._toastrService.success(
-          this._translateService.instant('A new claim has been created.'),
-          this._translateService.instant('Claim')
-        );
-        this.closeEmailDialog();
-        this._recordService
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translateService.instant('Claim'),
+          detail: this.translateService.instant('A new claim has been created.')
+        });
+        this.recordService
           .getRecord('items', this.record.metadata.pid, 1, {Accept: 'application/rero+json'})
-          .subscribe((record: any) => this.recordChange.emit(record));
+          .subscribe((record: any) => this.closeDialog(record));
       } else {
-        this._toastrService.error(
-          this._translateService.instant('An error has occurred. Please try again.'),
-          this._translateService.instant('Claim'),
-          { disableTimeOut: true }
-        );
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translateService.instant('Claim'),
+          detail: this.translateService.instant('An error has occurred. Please try again.'),
+          sticky: true,
+          closable: true
+        });
       }
     })
   }
 
-  /**
-   * Close email dialog
-   * Send the event to trigger the closing of the dialog
-   * from the child to the parent
-   */
-  closeEmailDialog(): void {
-    this.closeDialog.emit(true);
+  closeDialog(record?: any): void {
+    this.dynamicDialogRef.close(record);
   }
 }

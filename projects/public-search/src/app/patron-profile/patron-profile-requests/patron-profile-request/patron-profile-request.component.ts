@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { ToastrService } from 'ngx-toastr';
 import { LoanApiService } from '../../../api/loan-api.service';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 import { PatronProfileService } from '../../patron-profile.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'public-search-patron-profile-request',
@@ -27,6 +27,8 @@ import { PatronProfileService } from '../../patron-profile.service';
   styleUrls: ['./patron-profile-request.component.scss']
 })
 export class PatronProfileRequestComponent {
+
+  private messageService = inject(MessageService);
 
   /** Request record */
   @Input() record: any;
@@ -52,14 +54,12 @@ export class PatronProfileRequestComponent {
    * Constructor
    * @param loanApiService - LoanApiService
    * @param translateService - TranslateService
-   * @param toastService - ToastrService
    * @param patronProfileService - PatronProfileService
    * @param patronProfileMenuService - PatronProfileMenuService
    */
   constructor(
     private loanApiService: LoanApiService,
     private translateService: TranslateService,
-    private toastService: ToastrService,
     private patronProfileService: PatronProfileService,
     private patronProfileMenuService: PatronProfileMenuService
   ) {}
@@ -76,16 +76,18 @@ export class PatronProfileRequestComponent {
       if (cancelLoan !== undefined) {
         this.patronProfileService.cancelRequest(this.record.metadata.pid);
         this.actionDone = true;
-        this.toastService.success(
-          this.translateService.instant('The request has been cancelled.'),
-          this.translateService.instant('Success')
-        );
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translateService.instant('Success'),
+          detail: this.translateService.instant('The request has been cancelled.')
+        });
       } else {
         this.cancelInProgress = false;
-        this.toastService.error(
-          this.translateService.instant('Error during the cancellation of the request.'),
-          this.translateService.instant('Error')
-        );
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translateService.instant('Error'),
+          detail: this.translateService.instant('Error during the cancellation of the request.')
+        });
       }
     });
   }

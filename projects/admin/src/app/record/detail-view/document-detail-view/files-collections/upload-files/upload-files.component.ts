@@ -18,11 +18,11 @@
 import { Component, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
 import { TranslateService } from '@ngx-translate/core';
-import { DialogService, Record } from '@rero/ng-core';
+import { Record } from '@rero/ng-core';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ToastrService } from 'ngx-toastr';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
-import { Observable, catchError, concatMap, forkJoin, from, map, of, switchMap, tap, toArray } from 'rxjs';
+import { Observable, catchError, concatMap, from, map, of, switchMap, tap, toArray } from 'rxjs';
 
 @Component({
   selector: 'admin-upload-files',
@@ -31,9 +31,8 @@ import { Observable, catchError, concatMap, forkJoin, from, map, of, switchMap, 
 export class UploadFilesComponent implements OnInit {
 
   // linked resource pid such as document
-  @Input()
-  pid: string;
-  // List of files for the file ecord.
+  @Input() pid: string;
+  // List of files for the file record.
   files: Array<any> = undefined;
   // the maximum number of files by file record
   maxFiles = 500;
@@ -49,16 +48,16 @@ export class UploadFilesComponent implements OnInit {
   fileUpload: FileUpload;
 
   //------------- Services -------------
+  private messageService = inject(MessageService);
+
   // file service
   fileService = inject(ResourcesFilesService);
   // translate service
   translateService = inject(TranslateService);
-  // toaster service
-  toastrService = inject(ToastrService);
-  // dialog service
-  dialogService = inject(DialogService);
   // spinner service
   spinner = inject(NgxSpinnerService);
+  // Confirmation service
+  confirmationService = inject(ConfirmationService);
   //
   nUploadedFiles = 0;
 
@@ -99,12 +98,16 @@ export class UploadFilesComponent implements OnInit {
         const newLabel = res.metadata.label;
         file.label = newLabel;
         file.metadata.label = newLabel;
-        this.toastrService.success(this.translateService.instant('Metadata have been saved successfully.'));
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translateService.instant('File'),
+          detail: this.translateService.instant('Metadata have been saved successfully.')
+        });
       });
   }
 
 
- // True if the maxiumum number of files is reached.
+ // True if the maximum number of files is reached.
   get reachMaxFileLimit(): boolean {
     return this.files.length >= this.maxFiles;
   }
@@ -169,13 +172,21 @@ export class UploadFilesComponent implements OnInit {
             if (e.error.message) {
               msg = `${msg}: ${e.error.message}`;
             }
-            this.toastrService.error(msg);
+            this.messageService.add({
+              severity: 'error',
+              summary: this.translateService.instant('File'),
+              detail: msg
+            });
             return of([]);
           }),
           tap(() => {
             this.resetFilter();
             this.fileUpload.clear();
-            this.toastrService.success(this.translateService.instant('File uploaded successfully.'));
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translateService.instant('File'),
+              detail: this.translateService.instant('File uploaded successfully.')
+            });
             this.nUploadedFiles = 0;
           }),
         )
@@ -238,38 +249,30 @@ export class UploadFilesComponent implements OnInit {
    * @param file
    */
   deleteFile(file: any) {
-    // dialog confirmation
-    this.dialogService
-      .show({
-        ignoreBackdropClick: true,
-        initialState: {
-          title: this.translateService.instant('Confirmation'),
-          body: this.translateService.instant('Do you really want to remove this file?'),
-          confirmButton: true,
-          confirmTitleButton: this.translateService.instant('OK'),
-          cancelTitleButton: this.translateService.instant('Cancel'),
-        },
-      })
-      .pipe(
-        switchMap((confirm: boolean) => {
-          if (confirm === true) {
-            // remove the file
-            return this.fileService.delete(this.parentRecord.id, file.key).pipe(
-              map(() => {
-                this.files = this.files.filter((f) => f.key !== file.key);
-                if (this.files.length === 0) {
-                  this.parentRecord = null;
-                }
-                this.resetFilter();
-                this.toastrService.success(this.translateService.instant('File removed successfully.'));
-                return true;
-              })
-            );
-          }
-          return of(false);
-        })
-      )
-      .subscribe();
+    this.confirmationService.confirm({
+      header: this.translateService.instant('Confirmation'),
+      message: this.translateService.instant('Do you really want to remove this file?'),
+      acceptLabel: this.translateService.instant('OK'),
+      rejectLabel: this.translateService.instant('Cancel'),
+      dismissableMask: true,
+      accept: () => {
+        this.fileService.delete(this.parentRecord.id, file.key).pipe(
+          map(() => {
+            this.files = this.files.filter((f) => f.key !== file.key);
+            if (this.files.length === 0) {
+              this.parentRecord = null;
+            }
+            this.resetFilter();
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translateService.instant('File'),
+              detail: this.translateService.instant('File removed successfully.')
+            });
+            return true;
+          })
+        ).subscribe();
+      }
+    });
   }
 
   /**

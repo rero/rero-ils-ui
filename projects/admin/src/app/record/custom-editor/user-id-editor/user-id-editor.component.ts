@@ -15,15 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
-import { TranslateService } from '@ngx-translate/core';
-import { JSONSchema7, RecordService, processJsonSchema, removeEmptyValues } from '@rero/ng-core';
+import { JSONSchema7, NgCoreTranslateService, processJsonSchema, RecordService, removeEmptyValues } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { BsModalRef } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { of } from 'rxjs';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 
@@ -33,8 +32,15 @@ import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 })
 export class UserIdEditorComponent implements OnInit {
 
-  /** current query to import a user */
-  searchText: string = null;
+  private messageService = inject(MessageService);
+  private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
+  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
+  private recordService: RecordService = inject(RecordService);
+  private formlyJsonschema: FormlyJsonschema = inject(FormlyJsonschema);
+  private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
+  private userService: UserService = inject(UserService);
+
+  searchText: string | undefined;
 
   /** current User id in the invenio db */
   userID: string = null;
@@ -58,30 +64,11 @@ export class UserIdEditorComponent implements OnInit {
   passwordField: FormlyFieldConfig;
 
   /**
-   * Constructor
-   *
-   * @param recordService - ng-core RecordService
-   * @param bsModalRef - ngx-bootstrap BsModalRef
-   * @param formlyJsonschema - ngx-formly FormlyJsonschema
-   * @param toastService - ngx-toastr ToastrService
-   * @param translateService - ngx-translate TranslateService
-   * @param userService - rero/shared UserService
-   */
-  constructor(
-    private recordService: RecordService,
-    public bsModalRef: BsModalRef,
-    private formlyJsonschema: FormlyJsonschema,
-    private toastService: ToastrService,
-    private translateService: TranslateService,
-    private userService: UserService
-  ) {
-    this.form = new UntypedFormGroup({});
-  }
-
-  /**
    * Get the JSONSchema and add validators.
    */
   ngOnInit(): void {
+    this.form = new UntypedFormGroup({});
+    this.userID = this.dynamicDialogConfig?.data?.userID;
     this.recordService.getSchemaForm('users').pipe(
       tap(
         schema => {
@@ -157,9 +144,11 @@ export class UserIdEditorComponent implements OnInit {
     this.recordService.getRecords('users', query).pipe(
       map((res: any) => {
         if (res.hits.hits.length === 0) {
-          this.toastService.warning(
-            this.translateService.instant('User not found.')
-          );
+          this.messageService.add({
+            severity: 'warn',
+            summary: this.translateService.instant('User'),
+            detail: this.translateService.instant('User not found.')
+          })
           return null;
         }
 
@@ -177,21 +166,29 @@ export class UserIdEditorComponent implements OnInit {
           const patronAccount = patronAccounts.filter((ptrn: any) => ptrn.organisation.pid === currentOrgPid).pop();
           // user has already an account in the logged librarian organisation
           if (patronAccount != null) {
-            this.toastService.info(
-              this.translateService.instant('This person is already registered in your organisation.')
-            );
+            this.messageService.add({
+              severity: 'info',
+              summary: this.translateService.instant('User'),
+              detail: this.translateService.instant('This person is already registered in your organisation.')
+            });
             return of(null);
           }
         }
-        this.toastService.info(
-          this.translateService.instant('The personal data has been successfully linked to this patron.')
-        );
+        this.messageService.add({
+          severity: 'info',
+          summary: this.translateService.instant('User'),
+          detail: this.translateService.instant('The personal data has been successfully linked to this patron.')
+        });
         this.loadedUserID = model.id;
         this.passwordField.props.required = false;
         this.form.reset();
         return this.model = model.metadata || null;
       }),
     ).subscribe();
+  }
+
+  closeDialog(value?: string): void {
+    this.dynamicDialogRef.close(value);
   }
 
   /**
@@ -202,9 +199,11 @@ export class UserIdEditorComponent implements OnInit {
   submit(): void {
     this.form.updateValueAndValidity();
     if (this.form.valid === false) {
-      this.toastService.error(
-        this.translateService.instant('The form contains errors.')
-      );
+      this.messageService.add({
+        severity: 'error',
+        summary: this.translateService.instant('User'),
+        detail: this.translateService.instant('The form contains errors.')
+      });
       return;
     }
 
@@ -215,12 +214,12 @@ export class UserIdEditorComponent implements OnInit {
     if (this.userID != null) {
       data.pid = this.userID;
       this.recordService.update('users', data.pid, data).subscribe(() => {
-        this.bsModalRef.hide();
+        this.closeDialog(this.userID);
       });
     } else {
       this.recordService.create('users', data).subscribe((res) => {
         this.userID = res.id;
-        this.bsModalRef.hide();
+        this.closeDialog(this.userID);
       });
     }
   }
