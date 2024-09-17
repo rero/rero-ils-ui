@@ -15,12 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
-import { TranslateService } from '@ngx-translate/core';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { BsModalRef } from 'ngx-bootstrap/modal';
-import { Subject } from 'rxjs';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { LibraryExceptionFormService } from '../library-exception-form.service';
 
 @Component({
@@ -28,39 +25,36 @@ import { LibraryExceptionFormService } from '../library-exception-form.service';
   templateUrl: './exception-dates-edit.component.html',
   styles: []
 })
-export class ExceptionDatesEditComponent implements OnInit {
+export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
 
-  @Input() exceptionDate: any;
-  value = new Subject();
+  private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
+  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
+  private form: LibraryExceptionFormService = inject(LibraryExceptionFormService);
+
   public exceptionForm: UntypedFormGroup;
 
-  constructor(
-    public localeService: BsLocaleService,
-    public bsModalRef: BsModalRef,
-    public form: LibraryExceptionFormService,
-    private translate: TranslateService
-  ) {
+  ngOnInit() {
     this.form.build();
     this.exceptionForm = this.form.form;
-    this.localeService.use(this.translate.currentLang);
-  }
-
-  ngOnInit() {
-    if (this.exceptionDate) {
-      this.form.populate(this.exceptionDate);
+    const { exceptionDate } = this.dynamicDialogConfig.data;
+    if (exceptionDate) {
+      this.form.populate(exceptionDate);
     }
   }
 
+  ngOnDestroy(): void {
+    this.dynamicDialogRef.destroy();
+  }
+
   onSubmit() {
-    this.bsModalRef.hide();
-    this.value.next(this.form.getValue());
+    this.dynamicDialogRef.close(this.form.getValue());
   }
 
-  onCancel() {
-    this.bsModalRef.hide();
+  onCancel(): void {
+    this.dynamicDialogRef.close();
   }
 
-  onPeriodChange(event) {
+  onPeriodChange(event): void {
     const { target } = event;
     const value = target.value === 'true';
     this.form.is_period.setValue(value);
@@ -72,13 +66,13 @@ export class ExceptionDatesEditComponent implements OnInit {
     }
   }
 
-  onDateStatusChange(event) {
+  onDateStatusChange(event): void {
     const { target } = event;
     const value = target.value === 'true';
     this.form.is_open.setValue(value);
   }
 
-  onRepeatChange(repeat) {
+  onRepeatChange(repeat): void {
     if (repeat) {
       this.form.interval.setValue(1);
       this.form.interval.setValidators([

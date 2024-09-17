@@ -23,7 +23,7 @@
     [preview]="response.preview"
     [previewPosition]="'bottom'"
     [prePopulateRecipients]="suggestions.recipients"
-    (closeDialog)="closeEmailDialog()"
+    (closeDialog)="closeDialog()"
     (data)="confirmIssue($event)"
   >
     <ng-container title>{{ 'Claim' | translate }}</ng-container>

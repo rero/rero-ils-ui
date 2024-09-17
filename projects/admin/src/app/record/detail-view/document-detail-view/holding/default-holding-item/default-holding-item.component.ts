@@ -15,16 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { ItemsService } from '@app/admin/service/items.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { BsModalService } from 'ngx-bootstrap/modal';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
-import { first } from 'rxjs/operators';
 import { ItemRequestComponent } from '../../item-request/item-request.component';
 
 @Component({
@@ -32,6 +31,8 @@ import { ItemRequestComponent } from '../../item-request/item-request.component'
   templateUrl: './default-holding-item.component.html'
 })
 export class DefaultHoldingItemComponent implements OnInit {
+
+  private dialogService: DialogService = inject(DialogService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Holding record */
@@ -78,7 +79,6 @@ export class DefaultHoldingItemComponent implements OnInit {
    * @param recordUiService - RecordUiService
    * @param userService - UserService
    * @param recordPermissionService - RecordPermissionService
-   * @param modalService - BsModalService
    * @param itemService - ItemService
    * @param translateService - TranslateService
    * @param itemApiService - ItemApiService
@@ -87,7 +87,6 @@ export class DefaultHoldingItemComponent implements OnInit {
     protected recordUiService: RecordUiService,
     protected recordPermissionService: RecordPermissionService,
     protected userService: UserService,
-    protected modalService: BsModalService,
     protected itemService: ItemsService,
     protected translateService: TranslateService,
     public itemApiService: ItemApiService
@@ -108,14 +107,16 @@ export class DefaultHoldingItemComponent implements OnInit {
    * @param recordType - the record type (should be `item`)
    */
   addRequest(recordPid: string, recordType: string): void {
-    const modalRef = this.modalService.show(ItemRequestComponent, {
-      initialState: { recordPid, recordType }
-    });
-    modalRef.content.onSubmit.pipe(first()).subscribe(_ => {
-      this.itemService.getByPidFromEs(recordPid).subscribe(result => {
-        this.item = result;
-        this._getPermissions();
-      });
+    const ref: DynamicDialogRef = this.dialogService.open(ItemRequestComponent, {
+      data: { recordPid, recordType }
+    })
+    ref.onClose.subscribe((value: boolean) => {
+      if (value) {
+        this.itemService.getByPidFromEs(recordPid).subscribe(result => {
+          this.item = result;
+          this._getPermissions();
+        });
+      }
     });
   }
 

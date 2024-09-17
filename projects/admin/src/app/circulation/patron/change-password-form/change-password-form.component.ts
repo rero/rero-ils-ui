@@ -15,19 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { User, UserApiService } from '@rero/shared';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'admin-change-password-form',
   templateUrl: './change-password-form.component.html'
 })
 export class ChangePasswordFormComponent implements OnInit {
+
+  private messageService = inject(MessageService);
+  private dynamicDialogRef = inject(DynamicDialogRef);
+  private dynamicDialogConfig = inject(DynamicDialogConfig);
+  private translateService = inject(TranslateService);
+  private userApiService = inject(UserApiService);
 
   /** patron to change the password */
   patron: User;
@@ -41,65 +47,47 @@ export class ChangePasswordFormComponent implements OnInit {
   /** form fields */
   formFields: FormlyFieldConfig[];
 
-  /**
-   * Constructor
-   * @param modalService - BsModalService
-   * @param bsModalRef - BsModalRef
-   * @param translateService - TranslateService
-   * @param toastr - ToastrService
-   * @param userApiService - UserApiService
-   */
-  constructor(
-    private modalService: BsModalService,
-    private bsModalRef: BsModalRef,
-    private translateService: TranslateService,
-    private toastr: ToastrService,
-    private userApiService: UserApiService
-  ) { }
-
-  /**
-   * Component initialization.
-   */
   ngOnInit() {
-    const initialState: any = this.modalService.config.initialState;
-    if (!initialState.hasOwnProperty('patron')) {
+    this.patron = this.dynamicDialogConfig.data.patron;
+    if (!this.patron) {
       this.closeModal();
     }
-    this.patron = initialState.patron;
-    this._initForm();
+    this.initForm();
   }
 
   /**
    * Submit form
+   * @param patron - Object
    * @param model - Object
    */
-  submit(patron, model) {
-    this.userApiService.changePassword(patron.username, model.password).subscribe(
-      () => {
-        this.toastr.success(
-          this.translateService.instant('The patron password has been changed.'),
-        );
+  submit(patron: any, model: any) {
+    this.userApiService.changePassword(patron.username, model.password).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translateService.instant('Patron'),
+          detail: this.translateService.instant('The patron password has been changed.')
+        });
         this.closeModal();
       },
-      (resp) => {
+      error: (resp) => {
         let error = this.translateService.instant('An error has occurred.');
         if (resp.error && resp.error.message) {
           error = `${error}: (${resp.error.message})`;
         }
-        this.toastr.error(
-          error,
-          this.translateService.instant('Update Patron Password'),
-          { disableTimeOut: true }
-        );
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translateService.instant('Patron'),
+          detail: this.translateService.instant('Update Patron Password'),
+          sticky: true,
+          closable: true
+        });
         this.closeModal();
       }
-    );
+    });
   }
 
-  /**
-   * Initialize formly form.
-   */
-  private _initForm() {
+  private initForm() {
     if (this.patron) {
       this.formFields = [
         {
@@ -121,11 +109,7 @@ export class ChangePasswordFormComponent implements OnInit {
     }
   }
 
-  /**
-   * Close modal dialog
-   * @param event - Event
-   */
   closeModal() {
-    this.bsModalRef.hide();
+    this.dynamicDialogRef.close();
   }
 }

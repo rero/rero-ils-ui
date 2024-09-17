@@ -26,6 +26,17 @@
   </header>
   @if (user.hasAdminUiAccess) {
     <div class="container-fluid px-5">
+      <p-toast>
+        <ng-template let-message pTemplate="message">
+          <div class="flex flex-column align-items-start" style="flex: 1">
+            <div class="font-medium text-lg my-3 text-900">
+              {{ message.summary }}
+            </div>
+            <p [innerHtml]="message.detail"></p>
+          </div>
+        </ng-template>
+      </p-toast>
+      <p-confirmDialog />
       <router-outlet></router-outlet>
     </div>
   } @else {

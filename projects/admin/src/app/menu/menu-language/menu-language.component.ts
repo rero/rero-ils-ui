@@ -16,8 +16,9 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { MenuItem, MenuItemInterface, TranslateService } from '@rero/ng-core';
+import { MenuItem, MenuItemInterface } from '@rero/ng-core';
 import { MenuService } from '../service/menu.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-menu-language',
@@ -55,7 +56,7 @@ export class MenuLanguageComponent implements OnInit {
   changeLang(event: MenuItem) {
     const lang = event.getExtra('language');
     this._httpClient.post('/language', {lang}).subscribe(() =>
-      this._translateService.setLanguage(lang)
+      this._translateService.use(lang)
     );
   }
 }

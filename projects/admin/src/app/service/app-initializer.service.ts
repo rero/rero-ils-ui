@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { TranslateService } from '@rero/ng-core';
 import { AppSettingsService, User, UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
@@ -25,6 +24,7 @@ import { LibrarySwitchService } from '../menu/service/library-switch.service';
 import { AppConfigService } from './app-config.service';
 import { OrganisationService } from './organisation.service';
 import { TypeaheadFactoryService } from './typeahead-factory.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -87,6 +87,6 @@ export class AppInitializerService {
       language = browserLang.match(this._appConfigService.languages.join('|')) ?
         browserLang : this._appConfigService.defaultLanguage;
     }
-    return this._translateService.setLanguage(language);
+    return this._translateService.use(language);
   }
 }

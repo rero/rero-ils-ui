@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AbstractCanDeactivateComponent, RecordService } from '@rero/ng-core';
-import { ToastrService } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
 import { combineLatest } from 'rxjs';
 import { EditorService } from '../../../service/editor.service';
 
@@ -33,6 +33,8 @@ import { EditorService } from '../../../service/editor.service';
  */
 export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
 
+  private messageService = inject(MessageService);
+
   /** Can deactivate from editor component */
   canDeactivate: boolean = false;
 
@@ -42,14 +44,12 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
   /**
    * Constructor
    * @param editorService - EditorService
-   * @param toastrService - ToastrService
    * @param translateService - TranslateService
    * @param route - ActivatedRoute
    * @param recordService - RecordService
    */
   constructor(
     private editorService: EditorService,
-    private toastrService: ToastrService,
     private translateService: TranslateService,
     private route: ActivatedRoute,
     private recordService: RecordService
@@ -66,10 +66,11 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
         if (record) {
           this.model = record.metadata;
         } else {
-          this.toastrService.warning(
-            this.translateService.instant('Does not exists on the remote server!'),
-            this.translateService.instant('Import')
-          );
+          this.messageService.add({
+            severity: 'warn',
+            summary: this.translateService.instant('Import'),
+            detail: this.translateService.instant('Does not exists on the remote server!')
+          });
         }
       }
     );
@@ -87,12 +88,17 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
           delete (record.metadata.pid);
           delete (record.metadata.harvested);
           this.model = record.metadata;
-          this.toastrService.success('Document duplicated');
+          this.messageService.add({
+            severity: 'success',
+            summary: this.translateService.instant('Duplicate'),
+            detail: this.translateService.instant('Document duplicated')
+          });
         } else {
-          this.toastrService.warning(
-            this.translateService.instant('This document does not exists!'),
-            this.translateService.instant('Duplicate')
-          );
+          this.messageService.add({
+            severity: 'warn',
+            summary: this.translateService.instant('Duplicate'),
+            detail: this.translateService.instant('This document does not exists!')
+          });
         }
       }
     );

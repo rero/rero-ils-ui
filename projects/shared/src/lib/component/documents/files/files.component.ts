@@ -16,15 +16,15 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild, inject } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Type, ViewChild, inject } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, Record, RecordService } from '@rero/ng-core';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { PrimeNGConfig } from 'primeng/api';
 import { Observable, Subscription, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
 import { BreakpointObserver, BreakpointState, Breakpoints } from '@angular/cdk/layout';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 // file interface
 export interface File {
@@ -66,11 +66,10 @@ export class FilesComponent implements OnInit, OnDestroy {
     url: SafeUrl;
   };
   // modal for the invenio previewer
-  previewModalRef: BsModalRef;
+  previewModalRef: DynamicDialogRef;
 
   // for modal
-  @ViewChild('previewModal')
-  previewModalTemplate: TemplateRef<any>;
+  @ViewChild('previewModal') previewModalTemplate: Type<any>;
 
   // -------- Services -------------
   // primeng configuration service
@@ -85,15 +84,15 @@ export class FilesComponent implements OnInit, OnDestroy {
   private apiService = inject(ApiService);
   // url sanitizer service
   private sanitizer = inject(DomSanitizer);
-  // modal service
-  private modalService = inject(BsModalService);
   // service to detect responsive breakpoints
   private breakpointObserver = inject(BreakpointObserver);
+  // dialog service
+  private dialogService: DialogService = inject(DialogService);
 
   /** all component subscription */
   private subscriptions = new Subscription();
 
-  // contructor
+  // constructor
   constructor() {
     // to avoid primeng error
     // TODO: remove this when primeng will be fixed
@@ -247,7 +246,7 @@ export class FilesComponent implements OnInit, OnDestroy {
    * @returns the css class of the icon
    */
   getIcon(file): string {
-    const mimetype = file.mimetype;
+    const { mimetype } = file;
     if (mimetype == null) {
       return 'fa-file-o';
     }
@@ -278,8 +277,8 @@ export class FilesComponent implements OnInit, OnDestroy {
    */
 
   preview(file: File): void {
-    this.previewModalRef = this.modalService.show(this.previewModalTemplate, {
-      class: 'modal-lg',
+    this.previewModalRef = this.dialogService.open(this.previewModalTemplate, {
+      dismissableMask: true
     });
     this.previewFile = {
       label: file.label,

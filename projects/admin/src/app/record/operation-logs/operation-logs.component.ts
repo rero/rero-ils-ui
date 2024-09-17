@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { TranslateService } from '@ngx-translate/core';
-import { Record } from '@rero/ng-core';
-import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
+import { NgCoreTranslateService, Record } from '@rero/ng-core';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { forkJoin, Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 import { OperationLogsApiService } from '../../api/operation-logs-api.service';
 import { OperationLogsService } from '../../service/operation-logs.service';
@@ -31,12 +31,17 @@ import { OperationLogsService } from '../../service/operation-logs.service';
 })
 export class OperationLogsComponent implements OnInit {
 
+  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
+  private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
+  private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
+  private operationLogService: OperationLogsService = inject(OperationLogsService);
+  private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
+
   // COMPONENT ATTRIBUTES =====================================================
   /** Resource type */
-  @Input() resourceType: string;
+  resourceType: string;
   /** Resource pid */
-  @Input() resourcePid: string;
-
+  resourcePid: string;
   /** Resource key */
   resourceKey: string;
   /** Current page */
@@ -51,8 +56,6 @@ export class OperationLogsComponent implements OnInit {
   records = [];
   /** first loaded record */
   loadedRecord = false;
-  /** Event on dialog close */
-  dialogClose$ = new BehaviorSubject(false);
 
   // GETTER & SETTER ==========================================================
   /** Show more link is visible ? */
@@ -70,21 +73,11 @@ export class OperationLogsComponent implements OnInit {
     return this.translateService.instant(linkText, { counter: count });
   }
 
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param operationLogsApiService - OperationLogsApiService
-   * @param operationLogService - OperationLogsService
-   * @param translateService - TranslateService
-   */
-  constructor(
-    private operationLogsApiService: OperationLogsApiService,
-    private operationLogService: OperationLogsService,
-    private translateService: TranslateService
-  ) {}
-
+  // HOOKS ======================================================
   /** OnInit hook */
   ngOnInit(): void {
+    this.resourceType = this.dynamicDialogConfig?.data?.resourceType;
+    this.resourcePid = this.dynamicDialogConfig?.data?.resourcePid;
     this.resourceKey = this.operationLogService.getResourceKeyByResourceName(this.resourceType);
     forkJoin([this._operationLogsQuery(1, 'create'), this._operationLogsQuery(1, 'update')])
       .pipe(
@@ -102,7 +95,7 @@ export class OperationLogsComponent implements OnInit {
   // COMPONENT FUNCTIONS ======================================================
   /** Close operation log dialog */
   closeDialog(): void {
-    this.dialogClose$.next(true);
+    this.dynamicDialogRef.close();
   }
 
   /** show more */

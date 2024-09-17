@@ -15,21 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { LoanService } from '@app/admin/service/loan.service';
-import { forkJoin } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { NgCoreTranslateService } from '@rero/ng-core';
+import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
+import { MessageService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
+import { forkJoin, Subscription } from 'rxjs';
 import { ItemRequestComponent } from '../../document-detail-view/item-request/item-request.component';
 
 @Component({
   selector: 'admin-item-transactions',
   templateUrl: './item-transactions.component.html'
 })
-export class ItemTransactionsComponent implements OnInit {
+export class ItemTransactionsComponent implements OnInit, OnDestroy {
+
+  private messageService = inject(MessageService);
+  private dialogService: DialogService = inject(DialogService);
+  private loanService: LoanService = inject(LoanService);
+  private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
+  private userService: UserService = inject(UserService);
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** Item record */
@@ -46,22 +51,9 @@ export class ItemTransactionsComponent implements OnInit {
   /** return all permissions */
   permissions: IPermissions = PERMISSIONS;
 
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param loanService - LoanService
-   * @param modalService - BsModalService
-   * @param toastrService - ToastrService
-   * @param translateService - TranslateService
-   * @param userService - UserService
-   */
-  constructor(
-    private loanService: LoanService,
-    private modalService: BsModalService,
-    private toastrService: ToastrService,
-    private translateService: TranslateService,
-    private userService: UserService
-  ) { }
+  private subscription = new Subscription();
+
+  // HOOKS ======================================================
 
   /** OnInit hook */
   ngOnInit() {
@@ -74,20 +66,26 @@ export class ItemTransactionsComponent implements OnInit {
       });
   }
 
+  ngOnDestroy(): void {
+      this.subscription.unsubscribe();
+  }
+
   // COMPONENTS FUNCTIONS =====================================================
   /**
    * Add request on this item
    */
   addRequest(): void {
-    const modalRef = this.modalService.show(ItemRequestComponent, {
-      initialState: { recordPid: this.itemPid, recordType: 'item' }
+    const ref = this.dialogService.open(ItemRequestComponent, {
+      data: { recordPid: this.itemPid, recordType: 'item' }
     });
-    modalRef.content.onSubmit
-      .pipe(first())
-      .subscribe(_ => {
-        this.requestEvent.emit();
-        this._refreshRequestList();
-      });
+    this.subscription.add(
+      ref.onClose.subscribe((value: boolean) => {
+        if (value) {
+          this.requestEvent.emit();
+          this._refreshRequestList();
+        }
+      })
+    );
   }
 
   /**
@@ -98,11 +96,11 @@ export class ItemTransactionsComponent implements OnInit {
     this.loanService
       .cancelLoan(this.itemPid, transaction.metadata.pid, this.userService.user.currentLibrary)
       .subscribe((itemData: any) => {
-        const status = this.translateService.instant(itemData.status);
-        this.toastrService.warning(
-          this.translateService.instant('The pending request has been cancelled.'),
-          this.translateService.instant('Request')
-        );
+        this.messageService.add({
+          severity: 'warn',
+          summary: this.translateService.instant('Request'),
+          detail: this.translateService.instant('The pending request has been cancelled.')
+        });
         this.requestEvent.emit();
         this._refreshRequestList();
       });
@@ -116,10 +114,11 @@ export class ItemTransactionsComponent implements OnInit {
     this.loanService
       .updateLoanPickupLocation(data.transaction.metadata.pid, data.pickupLocationPid)
       .subscribe(_ => {
-        this.toastrService.success(
-          this.translateService.instant('The pickup location has been changed.'),
-          this.translateService.instant('Request')
-        );
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translateService.instant('Request'),
+          detail: this.translateService.instant('The pickup location has been changed.')
+        });
         this._refreshRequestList();
       });
   }

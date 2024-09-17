@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { getCurrencySymbol } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
+import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
+import { PatronTransaction } from '@app/admin/classes/patron-transaction';
+import { OrganisationService } from '@app/admin/service/organisation.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { OrganisationService } from '@app/admin/service/organisation.service';
-import { PatronTransaction } from '@app/admin/classes/patron-transaction';
-import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 
 @Component({
@@ -30,6 +30,12 @@ import { PatronTransactionService } from '@app/admin/circulation/services/patron
   templateUrl: './patron-transaction-event-form.component.html'
 })
 export class PatronTransactionEventFormComponent implements OnInit {
+
+  private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
+  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
+  private translateService: TranslateService = inject(TranslateService);
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
 
   /** the transactions to perform with this form */
   transactions: Array<PatronTransaction>;
@@ -49,19 +55,11 @@ export class PatronTransactionEventFormComponent implements OnInit {
   /** model of the form */
   model: FormModel;
 
-  constructor(
-    private modalService: BsModalService,
-    private translateService: TranslateService,
-    protected organisationService: OrganisationService,
-    protected bsModalRef: BsModalRef,
-    private patronTransactionService: PatronTransactionService
-  ) { }
-
   ngOnInit() {
-    const initialState: any = this.modalService.config.initialState;
-    this.transactions = initialState.transactions;
-    this.action = initialState.action;
-    this._mode = initialState.mode;
+    const data: any = this.dynamicDialogConfig.data;
+    this.transactions = data.transactions;
+    this.action = data.action;
+    this._mode = data.mode;
     this._initForm();
   }
 
@@ -171,7 +169,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
    * Allow to close the modal dialog box
    */
   closeModal() {
-    this.bsModalRef.hide();
+    this.dynamicDialogRef.close();
   }
 
   /** Get current organisation
@@ -211,7 +209,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
         this.patronTransactionService.cancelPatronTransaction(transaction, formValues.amount, formValues.comment);
       }
     }
-    this.bsModalRef.hide();
+    this.dynamicDialogRef.close();
   }
 }
 

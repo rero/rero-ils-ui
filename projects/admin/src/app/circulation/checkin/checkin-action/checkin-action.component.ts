@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap/modal';
+import { Component, inject } from '@angular/core';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'admin-checkin-action',
@@ -23,14 +23,10 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 })
 export class CheckinActionComponent {
 
+  private dynamicDialogRef = inject(DynamicDialogRef);
+
   /** Checkin action */
   public action: 'patron' | 'item';
-
-  /**
-   * Constructor
-   * @param modalService - BsModalService
-   */
-  constructor(private modalService: BsModalService) { }
 
   /**
    * Set checkin action selected by user
@@ -38,7 +34,7 @@ export class CheckinActionComponent {
    */
   setAction(action: 'patron' | 'item') {
     this.action = action;
-    this.closeModal();
+    this.dynamicDialogRef.close(action);
   }
 
   checkinItemOnEnterKey(event: any) {
@@ -49,6 +45,6 @@ export class CheckinActionComponent {
 
   /** Close modal box */
   closeModal() {
-    this.modalService.hide();
+    this.dynamicDialogRef.close();
   }
 }

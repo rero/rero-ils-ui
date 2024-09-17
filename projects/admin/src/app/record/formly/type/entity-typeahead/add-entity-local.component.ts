@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { ApiService, SuggestionMetadata } from '@rero/ng-core';
+import { Component, EventEmitter, inject, Input, OnDestroy, Output } from '@angular/core';
+import { ApiService, NgCoreTranslateService, SuggestionMetadata } from '@rero/ng-core';
 import { PERMISSIONS, PermissionsService } from '@rero/shared';
-import { BsModalService } from 'ngx-bootstrap/modal';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Subscription } from 'rxjs';
 import { AddEntityLocalFormComponent } from './add-entity-local-form/add-entity-local-form.component';
 import { EntityTypeFilter } from './entity-typeahead.interface';
 
@@ -35,7 +35,12 @@ import { EntityTypeFilter } from './entity-typeahead.interface';
   }
   `
 })
-export class AddEntityLocalComponent {
+export class AddEntityLocalComponent implements OnDestroy {
+
+  private dialogService: DialogService = inject(DialogService);
+  private permissionService: PermissionsService = inject(PermissionsService);
+  private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
+  private apiService: ApiService = inject(ApiService);
 
   /** Available types for typeahead select */
   @Input() entityTypeFilters: EntityTypeFilter[];
@@ -46,6 +51,8 @@ export class AddEntityLocalComponent {
   /** Event for record create */
   @Output() recordCreate: EventEmitter<any> = new EventEmitter();
 
+  private subscription = new Subscription();
+
   /**
    * Is the button available for adding a locale entity?
    * @returns boolean
@@ -54,40 +61,31 @@ export class AddEntityLocalComponent {
     return this.permissionService.canAccess(PERMISSIONS.LOCENT_CREATE);
   }
 
-  /**
-   * Constructor
-   * @param permissionService - PermissionsService
-   * @param modalService - BsModalService
-   * @param translateService - TranslateService
-   * @param apiService - ApiService
-   */
-  constructor(
-    private permissionService: PermissionsService,
-    private modalService: BsModalService,
-    private translateService: TranslateService,
-    private apiService: ApiService
-  ) {}
+  ngOnDestroy(): void {
+      this.subscription.unsubscribe();
+  }
 
   /** Open the dialog to add an entity */
   addEntity(): void {
-    const modalRef = this.modalService.show(AddEntityLocalFormComponent, {
-      ignoreBackdropClick: true,
-      keyboard: true,
-      class: 'modal-xl',
-      initialState: {
+    const ref: DynamicDialogRef = this.dialogService.open(AddEntityLocalFormComponent, {
+      dismissableMask: true,
+      data: {
         entityTypeFilters: this.entityTypeFilters,
         searchTerm: this.searchTerm
       }
     });
-    modalRef.content.closeDialog.subscribe(() => modalRef.hide());
-    modalRef.content.recordCreate.subscribe((record: any) => {
-      const item: SuggestionMetadata = {
-        label: record.metadata.name,
-        value: this.apiService.getRefEndpoint('local_entities', record.metadata.pid),
-        externalLink: `/records/local_entities/detail/${record.metadata.pid}`,
-        group: this.translateService.instant('link to local authority')
-      };
-      this.recordCreate.emit(new TypeaheadMatch(item, item.label))
-    });
+    this.subscription.add(
+      ref.onClose.subscribe((record?: any) => {
+        if (record) {
+          const item: SuggestionMetadata = {
+            label: record.metadata.name,
+            value: this.apiService.getRefEndpoint('local_entities', record.metadata.pid),
+            externalLink: `/records/local_entities/detail/${record.metadata.pid}`,
+            group: this.translateService.instant('link to local authority')
+          };
+          this.recordCreate.emit(new TypeaheadMatch(item, item.label))
+        }
+      })
+    );
   }
 }
