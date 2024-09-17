@@ -25,6 +25,10 @@ import { PermissionGuard } from './guard/permission.guard';
 
 const routes: Routes = [
   {
+    path: 'migrations',
+    loadChildren: () => import('./migration/migration.module').then(m => m.MigrationModule)
+  },
+  {
     path: '',
     component: FrontpageComponent
   }, {
