@@ -14,23 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Location } from '@angular/common';
-import { Component, ComponentFactoryResolver, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
 import { OperationLogsService } from '@app/admin/service/operation-logs.service';
-import { TranslateService } from '@ngx-translate/core';
 import {
   DetailComponent,
-  Record,
-  RecordService,
-  RecordUiService,
+  Record
 } from '@rero/ng-core';
 import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ToastrService } from 'ngx-toastr';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DialogImportComponent } from '../dialog-import/dialog-import.component';
 
 @Component({
@@ -38,6 +31,11 @@ import { DialogImportComponent } from '../dialog-import/dialog-import.component'
   templateUrl: './document-detail.component.html',
 })
 export class DocumentDetailComponent extends DetailComponent implements OnInit {
+
+  private dialogService: DialogService = inject(DialogService);
+  private operationLogsService: OperationLogsService = inject(OperationLogsService);
+  private userService: UserService = inject(UserService);
+
   fileTitle: string = 'files';
   /** return all available permissions for current user */
   permissions: IPermissions = PERMISSIONS;
@@ -106,47 +104,6 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
   }
 
   /**
-   * Constructor
-   * @param route - ActivatedRoute
-   * @param router - Router
-   * @param location - Location
-   * @param componentFactoryResolver - ComponentFactoryResolver
-   * @param recordService - RecordService
-   * @param recordUiService - RecordUiService
-   * @param toastrService - ToastrService
-   * @param translate - TranslateService
-   * @param spinner - NgxSpinnerService
-   * @param bsModalService - BsModalService
-   * @param operationLogsService - OperationLogsService
-   */
-  constructor(
-    protected route: ActivatedRoute,
-    protected router: Router,
-    protected location: Location,
-    protected componentFactoryResolver: ComponentFactoryResolver,
-    protected recordService: RecordService,
-    protected recordUiService: RecordUiService,
-    protected toastrService: ToastrService,
-    protected translate: TranslateService,
-    protected spinner: NgxSpinnerService,
-    protected bsModalService: BsModalService,
-    private operationLogsService: OperationLogsService,
-    protected userService: UserService
-  ) {
-    super(
-      route,
-      router,
-      location,
-      componentFactoryResolver,
-      recordService,
-      recordUiService,
-      toastrService,
-      translate,
-      spinner
-    );
-  }
-
-  /**
    * Import document
    * @param event - Event
    * @param record - the current record to import
@@ -211,14 +168,19 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
         if (this.recordService.totalHits(response.hits.total) === 0 && !warning) {
           this.router.navigate(route, { queryParams: data });
         } else {
-          const config = {
-            initialState: {
+          // const config = {
+          //   initialState: {
+          //     records: response.hits.hits,
+          //     warning
+          //   }
+          // };
+          const dynamicDialogRef: DynamicDialogRef = this.dialogService.open(DialogImportComponent, {
+            data: {
               records: response.hits.hits,
               warning
             }
-          };
-          const bsModalRef = this.bsModalService.show(DialogImportComponent, config);
-          bsModalRef.content.confirmation$.subscribe((confirmation: boolean) => {
+          });
+          dynamicDialogRef.onClose.subscribe((confirmation: boolean) => {
             if (confirmation) {
               this.router.navigate(route, { queryParams: data });
             }

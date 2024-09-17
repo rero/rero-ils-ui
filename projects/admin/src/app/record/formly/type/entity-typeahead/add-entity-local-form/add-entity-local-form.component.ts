@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
-import { TranslateService } from '@ngx-translate/core';
-import { RecordService, processJsonSchema } from '@rero/ng-core';
-import { ToastrService } from 'ngx-toastr';
+import { NgCoreTranslateService, processJsonSchema, RecordService } from '@rero/ng-core';
+import { MessageService } from 'primeng/api';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -30,17 +30,12 @@ import { Subscription } from 'rxjs';
 })
 export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
 
-  /** Available types on select typeahead */
-  @Input() entityTypeFilters: any;
-
-  /** Text searched by user */
-  @Input() searchTerm: string;
-
-  /** Event for close dialog */
-  @Output() closeDialog: EventEmitter<boolean> = new EventEmitter();
-
-  /** Event for record create */
-  @Output() recordCreate: EventEmitter<any> = new EventEmitter();
+  private messageService = inject(MessageService);
+  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
+  private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
+  private recordService: RecordService = inject(RecordService);
+  private formlyJsonschema: FormlyJsonschema = inject(FormlyJsonschema);
+  private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
 
   /** TODO: Find a better solution for next iteration */
   translatedTypes = {
@@ -68,32 +63,19 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
   /** all component subscription */
   private subscriptions = new Subscription();
 
-  /**
-   * Constructor
-   * @param recordService - RecordService
-   * @param formlyJsonschema - FormlyJsonschema
-   * @param translateService - TranslateService
-   * @param toastrService - ToastrService
-   */
-  constructor(
-    private recordService: RecordService,
-    private formlyJsonschema: FormlyJsonschema,
-    private translateService: TranslateService,
-    private toastrService: ToastrService
-  ) {}
-
   /** OnInit hook */
   ngOnInit(): void {
+    const { entityTypeFilters, searchTerm } = this.dynamicDialogConfig.data;
     this.form = new FormGroup({});
     let selectedType = undefined;
-    if (this.entityTypeFilters.length === 1) {
+    if (entityTypeFilters.length === 1) {
       // If there is only one possible choice, we take the first value.
-      selectedType = this.entityTypeFilters[0].value;
+      selectedType = entityTypeFilters[0].value;
     } else {
       // If the select menu has not been touched, all values of the selected key are set to false.
       // We take the first value.
-      const selected = this.entityTypeFilters.filter((element: any) => element.selected);
-      selectedType = (selected.length === 0) ? this.entityTypeFilters[0].value : selected[0].value;
+      const selected = entityTypeFilters.filter((element: any) => element.selected);
+      selectedType = (selected.length === 0) ? entityTypeFilters[0].value : selected[0].value;
     }
     this.subscriptions.add(this.recordService.getSchemaForm('local_entities').subscribe((schema) => {
       schema = processJsonSchema(schema.schema);
@@ -105,7 +87,7 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
         map: (field: FormlyFieldConfig) => {
           // Put the value typed by the user in the corresponding field
           if (this.populateFields.includes(String(field.key))) {
-            field.defaultValue = this.searchTerm;
+            field.defaultValue = searchTerm;
           }
           // If the type is concept-genreForm, we set the genreForm field flag
           if (field.key === 'genreForm' && selectedType === 'concepts-genreForm') {
@@ -126,22 +108,22 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
   /** Submit form */
   submit(): void {
     if (this.form.valid) {
-      this.subscriptions.add(this.recordService.create('local_entities', this.model).subscribe(
-        (response: any) => {
-          this.recordCreate.emit(response);
-          this.closeModal();
+      this.subscriptions.add(this.recordService.create('local_entities', this.model).subscribe({
+        next: (response: any) => {
+          this.closeDialog(response);
         },
-        () => this.toastrService.error(
-          this.translateService.instant('Data submission generated an error.'),
-          this.translateService.instant('Add local entity')
-        )
-      ));
+        error: () => this.messageService.add({
+          severity: 'error',
+          summary: this.translateService.instant('Add local entity'),
+          detail: this.translateService.instant('Data submission generated an error.')
+        })
+      }));
     }
   }
 
   /** Close the dialog */
-  closeModal(): void {
-    this.closeDialog.emit(true);
+  closeDialog(response?: any): void {
+    this.dynamicDialogRef.close(response);
   }
 
   /**

@@ -1,4 +1,3 @@
-
 /*
  * RERO ILS UI
  * Copyright (C) 2019-2024 RERO
@@ -15,15 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Location } from '@angular/common';
-import { Component, ComponentFactoryResolver } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, inject } from '@angular/core';
 import { OperationLogsService } from '@app/admin/service/operation-logs.service';
-import { TranslateService } from '@ngx-translate/core';
-import { DetailComponent, RecordService, RecordUiService } from '@rero/ng-core';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ToastrService } from 'ngx-toastr';
+import { DetailComponent } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-holding-page-detail',
@@ -31,41 +24,13 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class HoldingPageDetailComponent extends DetailComponent {
 
+  private operationLogsService: OperationLogsService = inject(OperationLogsService);
+
   /**
    * Is operation log enabled
    * @return boolean
    */
   get isEnabledOperationLog(): boolean {
     return this.operationLogsService.isLogVisible('holdings');
-  }
-
-  /**
-   *
-   * @param route - ActivatedRoute
-   * @param router - Router
-   * @param location - Location
-   * @param componentFactoryResolver - ComponentFactoryResolver
-   * @param recordService - RecordService
-   * @param recordUiService - RecordUiService
-   * @param toastrService - ToastrService
-   * @param translate - TranslateService
-   * @param spinner - NgxSpinnerService
-   * @param bsModalService - BsModalService
-   * @param operationLogsService - OperationLogsService
-   */
-  constructor(
-    protected route: ActivatedRoute,
-    protected router: Router,
-    protected location: Location,
-    protected componentFactoryResolver: ComponentFactoryResolver,
-    protected recordService: RecordService,
-    protected recordUiService: RecordUiService,
-    protected toastrService: ToastrService,
-    protected translate: TranslateService,
-    protected spinner: NgxSpinnerService,
-    protected bsModalService: BsModalService,
-    private operationLogsService: OperationLogsService,
-  ) {
-    super(route, router, location, componentFactoryResolver, recordService, recordUiService, toastrService, translate, spinner);
   }
 }

@@ -26,17 +26,15 @@ import { PrimengImportModule } from '@app/admin/shared/primeng-import/primeng-im
 import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldSelect } from '@ngx-formly/primeng/select';
-import { FileUploadModule } from 'primeng/fileupload';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
-import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   BucketNameService as CoreBucketNameService,
   CoreConfigService,
   RecordHandleErrorService as CoreRecordHandleErrorService,
-  FilesService,
   LocalStorageService,
   RecordModule, RemoteTypeaheadService,
-  TranslateLoader, TranslateService, TruncateTextPipe
+  TranslateLoader, TruncateTextPipe
 } from '@rero/ng-core';
 import { ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
@@ -47,6 +45,7 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { FileUploadModule } from 'primeng/fileupload';
 import { TableModule } from "primeng/table";
 import {
   SelectAccountEditorWidgetComponent
@@ -127,6 +126,7 @@ import { DocumentDetailViewComponent } from './record/detail-view/document-detai
 import { DocumentDetailComponent } from './record/detail-view/document-detail-view/document-detail/document-detail.component';
 import { EntitiesRelatedComponent } from './record/detail-view/document-detail-view/entities-related/entities-related.component';
 import { FilesCollectionsComponent } from './record/detail-view/document-detail-view/files-collections/files-collections.component';
+import { UploadFilesComponent } from './record/detail-view/document-detail-view/files-collections/upload-files/upload-files.component';
 import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
 import {
   HoldingOrganisationComponent
@@ -211,14 +211,12 @@ import { AppInitializerService } from './service/app-initializer.service';
 import { BucketNameService } from './service/bucket-name.service';
 import { OrganisationService } from './service/organisation.service';
 import { RecordHandleErrorService } from './service/record.handle-error.service';
-import { ResourcesFilesService } from './service/resources-files.service';
 import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-factory.service';
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { PreviewEmailModule } from './shared/preview-email/preview-email.module';
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { UploadFilesComponent } from './record/detail-view/document-detail-view/files-collections/upload-files/upload-files.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -427,7 +425,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         AppInitializerService,
         UserService,
         AppConfigService,
-        TranslateService,
         OrganisationService,
         LocalStorageService,
         LibrarySwitchService,
@@ -457,7 +454,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     },
     {
       provide: LOCALE_ID,
-      useFactory: (translate: TranslateService) => translate.currentLanguage,
+      useFactory: (translate: TranslateService) => translate.currentLang,
       deps: [TranslateService],
     },
     BsLocaleService,
@@ -481,7 +478,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     CountryCodeTranslatePipe,
     { provide: CoreBucketNameService, useClass: BucketNameService },
     { provide: CoreRecordHandleErrorService, useClass: RecordHandleErrorService },
-    { provide: FilesService, useClass: ResourcesFilesService },
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

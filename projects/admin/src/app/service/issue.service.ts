@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2023 RERO
+ * Copyright (C) 2022-2024 RERO
  * Copyright (C) 2022-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,19 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { IssueItemStatus } from '@rero/shared';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { IssueEmailComponent } from '../components/issues/issue-email/issue-email.component';
 
 @Injectable()
 export class IssueService {
 
-  /**
-   * Constructor
-   * @param _modalService - BsModalService
-   */
-  constructor(private _modalService: BsModalService) { }
+  private dialogService: DialogService = inject(DialogService);
 
   /**
    * Is Allow claim
@@ -44,17 +40,12 @@ export class IssueService {
   /**
    * Opens a claim dialog
    * @param record the item
-   * @returns BsModalRef
+   * @return DynamicDialogRef
    */
-  openClaimEmailDialog(record: any): BsModalRef {
-    const bsModalRef = this._modalService.show(IssueEmailComponent, {
-      ignoreBackdropClick: true,
-      keyboard: true,
-      class: 'modal-xl',
-      initialState: { record }
+  openClaimEmailDialog(record: any): DynamicDialogRef {
+    return this.dialogService.open(IssueEmailComponent, {
+      dismissableMask: true,
+      data: { record }
     });
-    // Event to allow the closing of the dialog
-    bsModalRef.content.closeDialog.subscribe((close: boolean) => bsModalRef.hide());
-    return bsModalRef;
   }
 }

@@ -20,7 +20,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
 import { TranslateModule } from '@ngx-translate/core';
-import { ToastrModule } from 'ngx-toastr';
 import { PatronProfilePasswordComponent, fieldPasswordMatchValidator } from './patron-profile-password.component';
 
 
@@ -33,7 +32,6 @@ describe('PatronProfilePasswordComponent', () => {
       declarations: [ PatronProfilePasswordComponent ],
       imports: [
         HttpClientTestingModule,
-        ToastrModule.forRoot(),
         TranslateModule.forRoot(),
         FormsModule,
         ReactiveFormsModule,

@@ -19,7 +19,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { LOCALE_ID } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
 import { AppModule } from '../../../../app.module';
 import { ExceptionDatesEditComponent } from './exception-dates-edit.component';
 
@@ -35,7 +34,6 @@ describe('ExceptionDatesEditComponent', () => {
         TranslateModule.forRoot()
       ],
       providers: [
-        BsModalRef,
         { provide: LOCALE_ID, useValue: 'en-US' }
       ]
     })

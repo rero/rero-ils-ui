@@ -14,25 +14,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Record, RecordService } from '@rero/ng-core';
-import { ToastrService } from 'ngx-toastr';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { UserService } from '@rero/shared';
-import { RouteToolService } from '@app/admin/routes/route-tool.service';
+import { inject, Injectable } from '@angular/core';
 import {
   PatronTransaction,
   PatronTransactionEvent,
   PatronTransactionEventType,
   PatronTransactionStatus
 } from '@app/admin/classes/patron-transaction';
+import { RouteToolService } from '@app/admin/routes/route-tool.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Record, RecordService } from '@rero/ng-core';
+import { UserService } from '@rero/shared';
+import { MessageService } from 'primeng/api';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PatronTransactionService {
+
+  private messageService = inject(MessageService);
 
   /** subject containing current loaded PatronTransactions */
   patronTransactionsSubject$: BehaviorSubject<Array<PatronTransaction>> = new BehaviorSubject([]);
@@ -43,7 +45,6 @@ export class PatronTransactionService {
     private _recordService: RecordService,
     private _userService: UserService,
     private _routeToolService: RouteToolService,
-    private _toastService: ToastrService,
     private _translateService: TranslateService
   ) { }
 
@@ -238,7 +239,11 @@ export class PatronTransactionService {
       () => {
         this.emitPatronTransactionByPatron(affectedPatron, undefined, 'open');
         const translateType = this._translateService.instant(record.type);
-        this._toastService.success(this._translateService.instant('{{ type }} registered', {type: translateType}));
+        this.messageService.add({
+          severity: 'success',
+          summary: this._translateService.instant('Patron'),
+          detail: this._translateService.instant('{{ type }} registered', {type: translateType})
+        });
       },
       (error) => {
         const errorMessage = (error.hasOwnProperty('message') && error.message().hasOwnProperty('message'))
@@ -246,11 +251,13 @@ export class PatronTransactionService {
           : 'Server error :: ' + (error.title || error.toString());
         const message = '[' + error.status + ' - ' + error.statusText + '] ' + errorMessage;
         const translateType = this._translateService.instant(record.type);
-        this._toastService.error(
-          message,
-          this._translateService.instant('{{ type }} creation failed!', { type: translateType }),
-          {disableTimeOut: true, closeButton: true, enableHtml: true}
-        );
+        this.messageService.add({
+          severity: 'error',
+          summary: this._translateService.instant('{{ type }} creation failed!', { type: translateType }),
+          detail: message,
+          sticky: true,
+          closable: true
+        });
       }
     );
   }

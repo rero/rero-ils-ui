@@ -15,14 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { Record } from '@rero/ng-core';
 import moment from 'moment';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OperationLogsApiService } from '../../api/operation-logs-api.service';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 
 @Component({
   selector: 'admin-circulation-logs',
@@ -31,12 +32,16 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 })
 export class CirculationLogsComponent implements OnInit {
 
+  private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
+  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
+  private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
+  private translateService: TranslateService = inject(TranslateService);
+
   // COMPONENT ATTRIBUTES =====================================================
   /** Resource pid */
-  @Input() resourcePid: string;
+  resourcePid: string;
   /** Resource type */
-  @Input() resourceType = 'item';
-
+  resourceType: string;
   /** Current page */
   page = 1;
   /** items per pages */
@@ -49,8 +54,6 @@ export class CirculationLogsComponent implements OnInit {
   records = [];
   /** first loaded record */
   loadedRecord = false;
-  /** Event on dialog close */
-  dialogClose$ = new BehaviorSubject(false);
   /** Types of operation history (field: record.type) */
   filterTypes = {
     'loan': true,
@@ -80,19 +83,12 @@ export class CirculationLogsComponent implements OnInit {
     return this.translateService.instant(linkText, { counter: count });
   }
 
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param operationLogsApiService - OperationLogsApiService
-   * @param translateService - TranslateService
-   */
-  constructor(
-    private operationLogsApiService: OperationLogsApiService,
-    private translateService: TranslateService
-  ) {}
-
+  // HOOKS ======================================================
   /** OnInit hook */
   ngOnInit(): void {
+    const { data } = this.dynamicDialogConfig;
+    this.resourcePid = data.resourcePid;
+    this.resourceType = data.resourceType || 'item';
     this._circulationLogsQuery(1).subscribe((response: any) => {
       this.recordTotals = response.total.value;
       this.records = response.hits;
@@ -103,7 +99,7 @@ export class CirculationLogsComponent implements OnInit {
   // PUBLIC FUNCTIONS =========================================================
   /** Close operation log dialog */
   closeDialog(): void {
-    this.dialogClose$.next(true);
+    this.dynamicDialogRef.close();
   }
 
   /** show more */

@@ -19,7 +19,6 @@
 @import 'bootstrap/scss/functions';
 @import 'bootstrap/scss/variables';
 @import 'bootstrap/scss/mixins';
-@import 'ngx-toastr/toastr-bs4-alert';
 
 // ADJUST BOOTSTRAP / PRIMENG -------------------
 .col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
@@ -35,10 +34,6 @@ formly-field > input {
 
 label {
   align-items: baseline;
-}
-
-.toast-container .ngx-toastr {
-  width: 450px !important; // override width for all toastr message
 }
 
 .label-title:after {

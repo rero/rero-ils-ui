@@ -15,37 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FieldWrapper } from '@ngx-formly/core';
 import { RecordService } from '@rero/ng-core';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Observable, of, Subscription } from 'rxjs';
 import { UserIdEditorComponent } from '../../../custom-editor/user-id-editor/user-id-editor.component';
 
 @Component({
   selector: 'admin-user-id',
   templateUrl: './user-id.component.html'
 })
-export class UserIdComponent extends FieldWrapper implements OnInit {
+export class UserIdComponent extends FieldWrapper implements OnInit, OnDestroy {
 
-  /** User component to open in a modal */
-  modalRef: BsModalRef;
+  private dialogService: DialogService = inject(DialogService);
+  private recordService: RecordService = inject(RecordService);
 
   /** current user */
   user$: Observable<any>;
 
-  /**
-   * constructor
-   * @param modalService - ngx-bootstrap BsModalService
-   * @param recordService - ng-core RecordService
-   */
-  constructor(
-    private modalService: BsModalService,
-    private recordService: RecordService
-  ) {
-    super();
-  }
+  private subscription = new Subscription();
 
   /**
    * Get the user personal information to display in the editor.
@@ -56,28 +45,29 @@ export class UserIdComponent extends FieldWrapper implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+      this.subscription.unsubscribe();
+  }
+
   /**
    * Open the modal with the User personal information editor.
    */
   openModal(): void {
-    // return;
-    this.modalRef = this.modalService.show(
-      UserIdEditorComponent,
-      {
-        class: 'modal-lg',
-        ignoreBackdropClick: true,
-        initialState: { userID: this.formControl.value }
-      });
-    this.user$ = this.modalRef.onHidden.pipe(
-      switchMap(() => {
-        const { userID } = this.modalRef.content;
-        if (userID != null) {
-          this.formControl.setValue(userID);
+
+    const ref: DynamicDialogRef = this.dialogService.open(UserIdEditorComponent, {
+      dismissableMask: true,
+      data: { userID: this.formControl.value }
+    });
+    this.subscription.add(
+      ref.onClose.subscribe((userId?: string) => {
+        if (userId) {
+          this.formControl.setValue(userId);
           // need to force the role validation as the user can be changed
           this.formControl.root.get('roles').updateValueAndValidity();
-          return this.recordService.getRecord('users', userID);
+          return this.recordService.getRecord('users', userId);
+        } else {
+          return of(null);
         }
-        return of(null);
       })
     );
   }

@@ -16,16 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { LocationService } from '@app/admin/service/location.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Error, extractIdOnRef } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { ToastrService } from 'ngx-toastr';
-import { SelectItem, SelectItemGroup } from 'primeng/api';
+import { MessageService, SelectItem, SelectItemGroup } from 'primeng/api';
 import { finalize, map } from 'rxjs/operators';
-import { extractIdOnRef, Error } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-item-switch-location',
@@ -33,6 +32,8 @@ import { extractIdOnRef, Error } from '@rero/ng-core';
   styleUrls: ['./item-switch-location.component.scss']
 })
 export class ItemSwitchLocationComponent implements OnInit {
+
+  private messageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the item to manage */
@@ -54,7 +55,6 @@ export class ItemSwitchLocationComponent implements OnInit {
    * @param _formBuilder - UntypedFormBuilder
    * @param _itemApiService - ItemApiService
    * @param _locationService - LocationService
-   * @param _toastrService - ToastrService
    * @param _translateService - TranslateService
    * @param _userService - UserService
    */
@@ -62,7 +62,6 @@ export class ItemSwitchLocationComponent implements OnInit {
     private _formBuilder: UntypedFormBuilder,
     private _itemApiService: ItemApiService,
     private _locationService: LocationService,
-    private _toastrService: ToastrService,
     private _translateService: TranslateService,
     private _userService: UserService,
   ) {
@@ -114,16 +113,18 @@ export class ItemSwitchLocationComponent implements OnInit {
       .pipe(
         finalize(() => this.itemChange.emit(this.item))
       )
-      .subscribe(
-        (item: any) => this.item = item.metadata,
-        (err: Error) => {
-          this._toastrService.error(
-            err.title, this._translateService.instant('Locations'),
-            { disableTimeOut: true, closeButton: true }
-          );
+      .subscribe({
+        next: (item: any) => this.item = item.metadata,
+        error: (err: Error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: this._translateService.instant('Locations'),
+            detail: err.title,
+            sticky: true,
+            closable: true
+          });
         }
-      );
-
+      });
   }
 
   /** Handle form cancel click

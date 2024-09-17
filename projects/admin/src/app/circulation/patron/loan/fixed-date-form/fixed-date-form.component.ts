@@ -17,7 +17,7 @@
  */
 
 import { formatDate } from '@angular/common';
-import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Library } from '@app/admin/classes/library';
 import { DateValidators } from '@app/admin/utils/validators';
@@ -25,8 +25,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import moment from 'moment';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { CirculationService } from '../../../services/circulation.service';
 
@@ -36,6 +35,12 @@ import { CirculationService } from '../../../services/circulation.service';
   templateUrl: './fixed-date-form.component.html'
 })
 export class FixedDateFormComponent implements OnInit, OnDestroy {
+
+  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
+  private translateService: TranslateService = inject(TranslateService);
+  private userService: UserService = inject(UserService);
+  private recordService: RecordService = inject(RecordService);
+  private circulationService: CirculationService = inject(CirculationService);
 
   /** the date format to used */
   static DATE_FORMAT = 'YYYY-MM-DD';
@@ -61,36 +66,12 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
     daysDisabled: [],
     datesDisabled: []
   };
-  /** fixed date emitter */
-  onSubmit = new EventEmitter();
 
   /** component subscriptions */
   private subscription = new Subscription();
 
-
-  // CONSTRUCTOR & HOOKS =====================================
-  /**
-   * Constructor
-   * @param localeService - BsLocaleService
-   * @param bsModalRef - BsModalRef
-   * @param translateService - TranslateService,
-   * @param userService - UserService
-   * @param recordService - RecordService
-   * @param circulationService - CirculationService
-   */
-  constructor(
-    private localeService: BsLocaleService,
-    protected bsModalRef: BsModalRef,
-    private translateService: TranslateService,
-    private userService: UserService,
-    private recordService: RecordService,
-    private circulationService: CirculationService
-  ) { }
-
-
   /** OnInit hook */
   ngOnInit(): void {
-    this.localeService.use(this.translateService.currentLang);
     if (this.userService.user) {
       this.recordService.getRecord('libraries', this.userService.user.currentLibrary, 1).subscribe(
         (data: any) => {
@@ -113,16 +94,15 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
   // FUNCTIONS =================================================
   /** Submit form hook */
   onSubmitForm() {
-    this.onSubmit.emit({
+    this.dynamicDialogRef.close({
       action: 'submit',
       content: this.formGroup.value
     });
-    this.bsModalRef.hide();
   }
 
   /** Close the modal dialog box */
   closeModal() {
-    this.bsModalRef.hide();
+    this.dynamicDialogRef.close();
   }
 
   /** Init value change on field */

@@ -16,15 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { UserService } from '@rero/shared';
-import { ToastrService } from 'ngx-toastr';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { IAcqAccount } from '../../../classes/account';
+import { TranslateService } from '@ngx-translate/core';
+import { UserService } from '@rero/shared';
+import { MessageService } from 'primeng/api';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
+import { IAcqAccount } from '../../../classes/account';
 
 @Component({
   selector: 'admin-account-brief-view',
@@ -32,6 +32,8 @@ import { AcqAccountApiService } from '../../../api/acq-account-api.service';
   styleUrls: ['../../../acquisition.scss']
 })
 export class AccountBriefViewComponent implements OnInit {
+
+  private messageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES ========================================================
   /** the account to display */
@@ -72,7 +74,6 @@ export class AccountBriefViewComponent implements OnInit {
    * @param recordPermissionService - RecordPermissionService
    * @param organisationService - OrganisationService
    * @param accountApiService - AcqAccountApiService
-   * @param toastrService - ToastrService
    * @param translateService - TranslateService
    * @param userService - UserService
    */
@@ -80,7 +81,6 @@ export class AccountBriefViewComponent implements OnInit {
     private recordPermissionService: RecordPermissionService,
     private organisationService: OrganisationService,
     private accountApiService: AcqAccountApiService,
-    private toastrService: ToastrService,
     private translateService: TranslateService,
     private userService: UserService
   ) { }
@@ -108,7 +108,11 @@ export class AccountBriefViewComponent implements OnInit {
     this.accountApiService
       .delete(this.account.pid)
       .subscribe(() => {
-        this.toastrService.success(this.translateService.instant('Account deleted'));
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translateService.instant('Account'),
+          detail: this.translateService.instant('Account deleted')
+        });
         this.deleteAccount.emit(this.account);
       });
   }

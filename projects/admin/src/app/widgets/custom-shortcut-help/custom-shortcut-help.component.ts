@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslateService } from '@ngx-translate/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'admin-custom-shortcut-help',
@@ -28,28 +28,18 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 })
 export class CustomShortcutHelpComponent {
 
+  private hotKeysService = inject(HotkeysService);
+  private translateService = inject(TranslateService);
+
+  private ref = inject(DynamicDialogRef);
+
   /** the title of the modal window */
   @Input() title = this.translateService.instant('Available Shortcuts');
+
   /** the list of implemented shortcuts */
   hotkeys = this.hotKeysService.getShortcuts();
 
-  /**
-   * Constructor
-   * @param hotKeysService - HotkeysService
-   * @param bsModalRef - BsModalRef
-   * @param translateService - TranslateService
-   */
-  constructor(
-    private hotKeysService: HotkeysService,
-    protected bsModalRef: BsModalRef,
-    private translateService: TranslateService
-  ) {}
-
-  /**
-   * Close the modal
-   */
   closeModal() {
-    this.bsModalRef.hide();
+    this.ref.close();
   }
-
 }
