@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap/modal';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { DialogService } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { PatronService } from '../../../service/patron.service';
 import { RecordPermissionService } from '../../../service/record-permission.service';
@@ -27,6 +27,10 @@ import { ChangePasswordFormComponent } from '../change-password-form/change-pass
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 
+  private dialogService = inject(DialogService);
+  private patronService = inject(PatronService);
+  private recordPermission = inject(RecordPermissionService);
+
   /** Current patron */
   currentPatron$: any;
 
@@ -35,19 +39,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   /** Patron permission */
   private permissions: any;
-
-  /**
-   * Constructor
-   * @param patronService - PatronService
-   * @param modalService - BsModalService
-   * @param recordPermission - RecordPermissionService
-   */
-  constructor(
-    private patronService: PatronService,
-    private modalService: BsModalService,
-    private recordPermission: RecordPermissionService
-  ) {
-  }
 
   /**
    * Component initialization.
@@ -85,9 +76,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * @param patron - Patron the patron to update the password.
    */
   updatePatronPassword(patron) {
-    const initialState = {
-      patron
-    };
-    this.modalService.show(ChangePasswordFormComponent, { initialState });
+    this.dialogService.open(ChangePasswordFormComponent, {
+      data: {
+        patron
+      }
+    })
   }
 }

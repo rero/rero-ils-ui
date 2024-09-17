@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Item, ItemAction, ItemNoteType } from '@app/admin/classes/items';
 import { ItemsService } from '@app/admin/service/items.service';
 import { PatronService } from '@app/admin/service/patron.service';
@@ -23,12 +23,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { DateTranslatePipe } from '@rero/ng-core';
 import { ItemStatus, UserService } from '@rero/shared';
 import moment from 'moment';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
-import { Subscription, forkJoin } from 'rxjs';
+import { MessageService } from 'primeng/api';
+import { forkJoin, Subscription } from 'rxjs';
 import { CirculationService } from '../../services/circulation.service';
 import { LoanFixedDateService } from '../../services/loan-fixed-date.service';
 import { FixedDateFormComponent } from './fixed-date-form/fixed-date-form.component';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 /** Interface to declare a special circulation settings */
 export interface CirculationSetting {
@@ -45,6 +45,11 @@ export interface CirculationSetting {
   providers: [ DateTranslatePipe, LoanFixedDateService ]
 })
 export class LoanComponent implements OnInit, OnDestroy {
+
+  private messageService = inject(MessageService);
+  private dialogService = inject(DialogService);
+
+  dialogRef: DynamicDialogRef | undefined;
 
   // COMPONENT ATTRIBUTES ============================================
   /** Search text (barcode) entered in search input */
@@ -68,8 +73,6 @@ export class LoanComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
   /** checkout list sort criteria */
   private sortCriteria = '-transaction_date';
-  /** modal reference */
-  private modalRef: BsModalRef;
   /** checkout circulation special settings */
   private checkoutCirculationSettings: CirculationSetting[] = [];
 
@@ -120,10 +123,8 @@ export class LoanComponent implements OnInit, OnDestroy {
    * Constructor
    * @param itemsService - Items Service
    * @param translateService - Translate Service
-   * @param toastService - Toastr Service
    * @param patronService - Patron Service
    * @param userService - UserService
-   * @param modalService - BsModalService
    * @param dateTranslatePipe - DateTranslatePipe
    * @param circulationService - CirculationService
    * @param loanFixedDateService - LoanFixedDateService
@@ -131,10 +132,8 @@ export class LoanComponent implements OnInit, OnDestroy {
   constructor(
     private itemsService: ItemsService,
     private translateService: TranslateService,
-    private toastService: ToastrService,
     private patronService: PatronService,
     private userService: UserService,
-    private modalService: BsModalService,
     private dateTranslatePipe: DateTranslatePipe,
     private circulationService: CirculationService,
     private loanFixedDateService: LoanFixedDateService
@@ -147,8 +146,8 @@ export class LoanComponent implements OnInit, OnDestroy {
       if (patron) {
         const loanedItems$ = this.patronService.getItems(patron.pid, this.sortCriteria);
         const pickupItems$ = this.patronService.getItemsPickup(patron.pid);
-        forkJoin([loanedItems$, pickupItems$]).subscribe(
-          ([loanedItems, pickupItems]) => {
+        forkJoin([loanedItems$, pickupItems$]).subscribe({
+          next: ([loanedItems, pickupItems]) => {
             // loanedItems is an array of brief item data (pid, barcode). For each one, we need to
             // call the detail item service to get full data about it
             loanedItems.map((item: any) => item.loading = true);
@@ -161,8 +160,9 @@ export class LoanComponent implements OnInit, OnDestroy {
             // we need to know which items are ready to pickup to decrement the counter if a checkout
             // operation is done on one of this items.
             this.pickupItems = pickupItems;
-          }, error => {}
-        );
+          },
+          error: error => {}
+        });
       }
     }));
     this.currentLibraryPid = this.userService.user.currentLibrary;
@@ -204,40 +204,45 @@ export class LoanComponent implements OnInit, OnDestroy {
       item.currentAction = ItemAction.checkin;
       this.applyItems([item]);
       if (item.pending_loans) {
-        this.toastService.warning(
-          this.translateService.instant('The item has a request'),
-          this.translateService.instant('Checkin')
-        );
+        this.messageService.add({
+          severity: 'warn',
+          summary: this.translateService.instant('Checkin'),
+          detail: this.translateService.instant('The item has a request')
+        });
       }
       if (item.status === ItemStatus.IN_TRANSIT) {
         const destination = item.loan.item_destination.library_name;
-        this.toastService.warning(
-          this.translateService.instant('The item is in transit to {{ destination }}', {destination}),
-          this.translateService.instant('Checkin')
-        );
+        this.messageService.add({
+          severity: 'warn',
+          summary: this.translateService.instant('Checkin'),
+          detail: this.translateService.instant('The item is in transit to {{ destination }}', {destination})
+        });
       }
     } else {
-      this.itemsService.getItem(barcode, this.patron.pid).subscribe(
-        newItem => {
+      this.itemsService.getItem(barcode, this.patron.pid).subscribe({
+        next: (newItem) => {
           if (newItem === null) {
-            this.toastService.error(
-              this.translateService.instant('Item not found'),
-              this.translateService.instant('Checkout')
-            );
+            this.messageService.add({
+              severity: 'error',
+              summary: this.translateService.instant('Checkout'),
+              detail: this.translateService.instant('Item not found')
+            });
             this._resetSearchInput();
           } else {
             if (newItem.status === ItemStatus.ON_LOAN) {
-              this.toastService.error(
-                this.translateService.instant('Checkout impossible: the item is already on loan for another patron'),
-                this.translateService.instant('Checkout')
-              );
+              this.messageService.add({
+                severity: 'error',
+                summary: this.translateService.instant('Checkout'),
+                detail: this.translateService.instant('Checkout impossible: the item is already on loan for another patron')
+              });
               this._resetSearchInput();
             } else {
               if (newItem.pending_loans && newItem.pending_loans[0].patron_pid !== this.patron.pid) {
-                this.toastService.error(
-                  this.translateService.instant('Checkout impossible: the item is requested by another patron'),
-                  this.translateService.instant('Checkout')
-                );
+                this.messageService.add({
+                  severity: 'error',
+                  summary: this.translateService.instant('Checkout'),
+                  detail: this.translateService.instant('Checkout impossible: the item is requested by another patron')
+                });
                 this._resetSearchInput();
               } else {
                 newItem.currentAction = ItemAction.checkout;
@@ -246,14 +251,15 @@ export class LoanComponent implements OnInit, OnDestroy {
             }
           }
         },
-        error => {
-          this.toastService.error(
-            this.translateService.instant(error.message),
-            this.translateService.instant('Checkout')
-          );
+        error: (error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: this.translateService.instant('Checkout'),
+            detail: this.translateService.instant(error.message)
+          });
           this._resetSearchInput();
         }
-      );
+      });
     }
   }
 
@@ -292,10 +298,11 @@ export class LoanComponent implements OnInit, OnDestroy {
               // display a toast message if the item goes in transit...
               if (newItem.status === ItemStatus.IN_TRANSIT) {
                 const destination = newItem.loan.item_destination.library_name;
-                this.toastService.warning(
-                  this.translateService.instant('The item is in transit to {{ destination }}', {destination}),
-                  this.translateService.instant('Checkin')
-                );
+                this.messageService.add({
+                  severity: 'warn',
+                  summary: this.translateService.instant('Checkin'),
+                  detail: this.translateService.instant('The item is in transit to {{ destination }}', {destination})
+                });
               }
               this.circulationService.decrementCirculationStatistic('loans');
               this.circulationService.incrementCirculationStatistic('history');
@@ -339,17 +346,19 @@ export class LoanComponent implements OnInit, OnDestroy {
             message = splittedData[1].trim();
             message = message.charAt(0).toUpperCase() + message.slice(1);
           }
-          this.toastService.error(
-            message,
-            title,
-            {disableTimeOut: true, closeButton: true, enableHtml: true}
-          );
+          this.messageService.add({
+            severity: 'error',
+            summary: title,
+            detail: message,
+            sticky: true,
+            closable: true
+          });
         } else {
-          this.toastService.error(
-            this.translateService.instant('An error occurred on the server: ') + errorMessage,
-            this.translateService.instant('Circulation'),
-            {disableTimeOut: true, closeButton: true, enableHtml: true}
-          );
+          this.messageService.add({
+            severity: 'error',
+            summary: this.translateService.instant('Circulation'),
+            detail: this.translateService.instant('An error occurred on the server: ') + errorMessage
+          });
         }
         this._resetSearchInput();
       }
@@ -357,7 +366,7 @@ export class LoanComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * display a circulation note about an item as a permanent toastr message
+   * display a circulation note about an item as a permanent toast message
    * @param action: the current action
    * @param item: the item
    * @param noteType: the note type to display
@@ -379,16 +388,13 @@ export class LoanComponent implements OnInit, OnDestroy {
       }
     }
     if (message.length > 0) {
-      this.toastService.warning(
-        message.join(),
-        this.translateService.instant('Checkin'),
-        {
-          enableHtml: true,
-          closeButton: true,    // add a close button to the toastr message
-          disableTimeOut: true, // permanent toastr message (until click on 'close' button)
-          tapToDismiss: false   // toastr message only close when click on the 'close' button.
-        }
-      );
+      this.messageService.add({
+        severity: 'warn',
+        summary: this.translateService.instant('Checkin'),
+        detail: message.join(),
+        sticky: true,
+        closable: true
+      });
     }
   }
 
@@ -409,7 +415,7 @@ export class LoanComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Display a warning toastr message if transaction end_date is not the same as the user selected end_date.
+   * Display a warning toast message if transaction end_date is not the same as the user selected end_date.
    * The backend will check if the selected end_date is an opening day ; if not then it will automatically
    * update the selected date to the next open day.
    * @param item: the item (with loan data included)
@@ -424,10 +430,11 @@ export class LoanComponent implements OnInit, OnDestroy {
         settingEndDate.getMonth() !== loanEndDate.getMonth() ||
         settingEndDate.getDate() !== loanEndDate.getDate()
       ) {
-        this.toastService.warning(
-          this.translateService.instant('The due date has been set to the next business day, since the selected day is closed.'),
-          this.translateService.instant('Checkout')
-        );
+        this.messageService.add({
+          severity: 'warn',
+          summary: this.translateService.instant('Checkout'),
+          detail: this.translateService.instant('The due date has been set to the next business day, since the selected day is closed.')
+        });
       }
     }
   }
@@ -438,10 +445,11 @@ export class LoanComponent implements OnInit, OnDestroy {
    */
   hasFees(event: boolean): void {
     if (event) {
-      this.toastService.error(
-        this.translateService.instant('The item has fees'),
-        this.translateService.instant('Checkin')
-      );
+      this.messageService.add({
+        severity: 'error',
+        summary: this.translateService.instant('Checkin'),
+        detail: this.translateService.instant('The item has fees')
+      });
     }
   }
 
@@ -477,12 +485,11 @@ export class LoanComponent implements OnInit, OnDestroy {
    * Subscribe to modal onHide event to get data entered by user and perform job if needed.
    */
   openFixedEndDateDialog(): void {
-    this.modalRef = this.modalService.show(FixedDateFormComponent, {
-        ignoreBackdropClick: true,
-        keyboard: true
+    this.dialogRef = this.dialogService.open(FixedDateFormComponent, {
+      dismissableMask: true
     });
-    this.modalRef.content.onSubmit.subscribe(result => {
-      if ('action' in result && result.action === 'submit') {
+    this.dialogRef.onClose.subscribe((result?: any) => {
+      if (result && 'action' in result && result.action === 'submit') {
         const date = this.setCheckoutDateSetting(result.content.endDate, result.content.remember);
         if (result.content.remember) {
           this.loanFixedDateService.set(date);

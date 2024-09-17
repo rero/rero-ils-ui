@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { LoanOverduePreview } from '@app/admin/classes/loans';
 import { TranslateService } from '@ngx-translate/core';
 import { IOrganisation } from '@rero/shared';
 import moment from 'moment';
-import { ToastrService } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
 import { finalize } from 'rxjs/operators';
 import { CanExtend, LoanApiService } from '../../../api/loan-api.service';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
@@ -31,6 +31,8 @@ import { PatronProfileService } from '../../patron-profile.service';
   styleUrls: ['./patron-profile-loan.component.scss']
 })
 export class PatronProfileLoanComponent implements OnInit {
+
+  private messageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Loan record */
@@ -74,14 +76,12 @@ export class PatronProfileLoanComponent implements OnInit {
    * Constructor
    * @param loanApiService - LoanApiService
    * @param translateService - TranslateService
-   * @param toastService - ToastrService
    * @param patronProfileMenuService - PatronProfileMenuService
    * @param patronProfileService - PatronProfileService
    */
   constructor(
     private loanApiService: LoanApiService,
     private translateService: TranslateService,
-    private toastService: ToastrService,
     private patronProfileMenuService: PatronProfileMenuService,
     private patronProfileService: PatronProfileService
   ) {}
@@ -122,15 +122,17 @@ export class PatronProfileLoanComponent implements OnInit {
         if ('overdue' in this.record.metadata) {
           delete this.record.metadata.overdue;
         }
-        this.toastService.success(
-          this.translateService.instant('The item has been renewed.'),
-          this.translateService.instant('Success')
-        );
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translateService.instant('Success'),
+          detail: this.translateService.instant('The item has been renewed.')
+        });
       } else {
-        this.toastService.error(
-          this.translateService.instant('Error during the renewal of the item.'),
-          this.translateService.instant('Error')
-        );
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translateService.instant('Error'),
+          detail: this.translateService.instant('Error during the renewal of the item.')
+        });
       }
     });
   }

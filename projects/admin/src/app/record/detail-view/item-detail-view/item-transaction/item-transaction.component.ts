@@ -20,6 +20,7 @@ import { ItemsService } from '@app/admin/service/items.service';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
+import { Confirmation } from 'primeng/api';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -122,11 +123,9 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   }
 
   /** Show a confirmation dialog box for cancel request. */
-  showCancelRequestDialog(): void {
-    this.loanService.cancelRequestDialog().subscribe((confirm: boolean) => {
-      if (confirm) {
-        this.emitCancelRequest();
-      }
+  showCancelRequestDialog(event: Event): void {
+    this.loanService.cancelRequestDialog(event, () => {
+      this.emitCancelRequest();
     });
   }
 

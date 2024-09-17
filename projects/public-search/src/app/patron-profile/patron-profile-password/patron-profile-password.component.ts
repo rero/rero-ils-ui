@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { DOCUMENT } from '@angular/common';
-import { Component, ElementRef, Inject, Input } from '@angular/core';
+import { Component, ElementRef, inject, Inject, Input } from '@angular/core';
 import { AbstractControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AppSettingsService } from '@rero/shared';
-import { ToastrService } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
 import { catchError, debounceTime, map } from 'rxjs/operators';
 import { UserApiService } from '../../api/user-api.service';
@@ -46,6 +46,8 @@ export function fieldPasswordMatchValidator(control: AbstractControl) {
   templateUrl: './patron-profile-password.component.html'
 })
 export class PatronProfilePasswordComponent {
+
+  private messageService = inject(MessageService);
 
   /** Request referer */
   @Input() referer: string | null;
@@ -115,14 +117,12 @@ export class PatronProfilePasswordComponent {
   /**
    * Constructor
    *
-   * @param toastrService - ToastrService
    * @param translateService - TranslateService
    * @param userApiService - UserApiService
    * @param appSettingsService - AppSettingsService
    * @param el - ElementRef
    */
   constructor(
-    private toastrService: ToastrService,
     private translateService: TranslateService,
     private userApiService: UserApiService,
     private appSettingsService: AppSettingsService,
@@ -134,9 +134,11 @@ export class PatronProfilePasswordComponent {
   submit() {
     this.form.updateValueAndValidity();
     if (this.form.valid === false) {
-      this.toastrService.error(
-        this.translateService.instant('The form contains errors.')
-      );
+      this.messageService.add({
+        severity: 'error',
+        summary: this.translateService.instant('Error'),
+        detail: this.translateService.instant('The form contains errors.')
+      });
       return;
     }
 
@@ -150,9 +152,11 @@ export class PatronProfilePasswordComponent {
       catchError((err: any) =>  of({ success: false, message: err.message, error: err.error.errors[0] }))
     ).subscribe((response: IPasswordResponse) => {
       if (!('success' in response)) {
-        this.toastrService.success(
-          this.translateService.instant(response.message)
-        );
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translateService.instant('Success'),
+          detail: this.translateService.instant(response.message)
+        });
         // Close password form and show personal data
         this._redirect();
       } else {

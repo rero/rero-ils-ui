@@ -15,11 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { LocalStorageService } from '@rero/ng-core';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BehaviorSubject } from 'rxjs';
 import { AdvancedSearchService } from './advanced-search.service';
 import { IFieldsData, IFieldsType, ISearchModel } from './i-advanced-search-config-interface';
@@ -30,15 +31,14 @@ import { IFieldsData, IFieldsType, ISearchModel } from './i-advanced-search-conf
 })
 export class DocumentAdvancedSearchFormComponent implements OnInit {
 
+  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
+  private route: ActivatedRoute = inject(ActivatedRoute);
+  private localeStorage: LocalStorageService = inject(LocalStorageService);
+  private advancedSearchService: AdvancedSearchService = inject(AdvancedSearchService);
+
   /** Locale storage parameters */
   private static LOCALE_STORAGE_NAME = 'advancedSearch';
   private static LOCALE_STORAGE_EXPIRED_IN_SECONDS = 600;
-
-  /** Closing event for the modal dialog */
-  @Output() searchModel = new EventEmitter<string>(false);
-
-  /** Hide dialog event */
-  @Output() hideDialog = new EventEmitter<boolean>();
 
   /** Configuration loaded from backend */
   configurationLoaded: boolean = false;
@@ -74,18 +74,6 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
     });
   }
 
-  /**
-   * Constructor
-   * @param route - ActivatedRoute
-   * @param localeStorage - LocalStorageService
-   * @param AdvancedSearchService - AdvancedSearchService
-   */
-  constructor(
-    private route: ActivatedRoute,
-    private localeStorage: LocalStorageService,
-    private advancedSearchService: AdvancedSearchService
-  ) {}
-
   /** OnInit hook */
   ngOnInit(): void {
     const {q} = this.route.snapshot.queryParams;
@@ -99,7 +87,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
 
   /** Event to notify dialog closure */
   close(): void {
-    this.hideDialog.emit(true);
+    this.dynamicDialogRef.close();
   }
 
   /** Clear the form and return it to its original state */
@@ -111,7 +99,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
   /** Submit */
   submit(): void {
     this.localeStorage.set(DocumentAdvancedSearchFormComponent.LOCALE_STORAGE_NAME, this.model);
-    this.searchModel.emit(this.generateQueryByModel(this.model));
+    this.dynamicDialogRef.close(this.generateQueryByModel(this.model))
   }
 
   /** Init formly model */

@@ -15,33 +15,43 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { ItemStatus, User, UserService } from '@rero/shared';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Item, ItemAction, ItemNoteType } from '../../classes/items';
 import { ItemsService } from '../../service/items.service';
 import { PatronService } from '../../service/patron.service';
 import { CheckinActionComponent } from './checkin-action/checkin-action.component';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'admin-circulation-checkout',
   templateUrl: './checkin.component.html'
 })
 export class CheckinComponent implements OnInit {
+
+  private messageService = inject(MessageService);
+  private dialogService = inject(DialogService);
+  private userService = inject(UserService);
+  private recordService = inject(RecordService);
+  private itemsService = inject(ItemsService);
+  private router = inject(Router);
+  private translate = inject(TranslateService);
+  private patronService = inject(PatronService);
+
   public placeholder = _('Please enter a patron card number or an item barcode.');
   public searchText = '';
   public patronInfo: User;
   public barcode: string;
   currentLibraryPid: string;
 
-  private _loggedUser: User;
+  private loggedUser: User;
 
   items = [];
 
@@ -54,33 +64,12 @@ export class CheckinComponent implements OnInit {
   /** current called item */
   private item: any;
 
-  /** Constructor
-   * @param userService: UserService
-   * @param recordService: RecordService
-   * @param itemsService: ItemsService
-   * @param router: Router
-   * @param translate: TranslateService
-   * @param toastService: ToastrService
-   * @param patronService: PatronService
-   * @param modalService: BsModalService
-   */
-  constructor(
-    private userService: UserService,
-    private recordService: RecordService,
-    private itemsService: ItemsService,
-    private router: Router,
-    private translate: TranslateService,
-    private toastService: ToastrService,
-    private patronService: PatronService,
-    private modalService: BsModalService
-  ) {}
-
   ngOnInit() {
-    this._loggedUser = this.userService.user;
+    this.loggedUser = this.userService.user;
     this.patronService.currentPatron$.subscribe(
       patron => this.patronInfo = patron
     );
-    this.currentLibraryPid = this._loggedUser.currentLibrary;
+    this.currentLibraryPid = this.loggedUser.currentLibrary;
     this.patronInfo = null;
     this.barcode = null;
   }
@@ -102,29 +91,32 @@ export class CheckinComponent implements OnInit {
   checkin(itemBarcode: string) {
     this.searchInputFocus = false;
     this.searchInputDisabled = true;
-    this.itemsService.checkin(itemBarcode, this._loggedUser.currentLibrary).subscribe(
-      item => {
+    this.itemsService.checkin(itemBarcode, this.loggedUser.currentLibrary).subscribe({
+      next: (item) => {
         // TODO: remove this when policy will be in place
-        if (item === null || item.location.organisation.pid !== this._loggedUser.currentOrganisation) {
-          this.toastService.error(
-            this.translate.instant('Item or patron not found!'),
-            this.translate.instant('Checkin')
-          );
+        if (item === null || item.location.organisation.pid !== this.loggedUser.currentOrganisation) {
+          this.messageService.add({
+            severity: 'error',
+            summary: this.translate.instant('Checkin'),
+            detail: this.translate.instant('Item or patron not found!')
+          });
           this._resetSearchInput();
           return;
         }
         if (item.hasRequests) {
-          this.toastService.warning(
-            this.translate.instant('The item contains requests'),
-            this.translate.instant('Checkin')
-          );
+          this.messageService.add({
+            severity: 'warn',
+            summary: this.translate.instant('Checkin'),
+            detail: this.translate.instant('The item contains requests')
+          });
         }
         switch (item.actionDone) {
           case ItemAction.return_missing:
-            this.toastService.warning(
-              this.translate.instant('The item has been returned from missing'),
-              this.translate.instant('Checkin')
-            );
+            this.messageService.add({
+              severity: 'warn',
+              summary: this.translate.instant('Checkin'),
+              detail: this.translate.instant('The item has been returned from missing')
+            });
             break;
           case ItemAction.checkin:
             this.displayCirculationInformation(item, ItemNoteType.CHECKIN);
@@ -133,10 +125,11 @@ export class CheckinComponent implements OnInit {
             }
             if (item.status === ItemStatus.IN_TRANSIT) {
               const destination = item.loan.item_destination.library_name;
-              this.toastService.warning(
-                this.translate.instant('The item is in transit to {{ destination }}', {destination}),
-                this.translate.instant('Checkin')
-              );
+              this.messageService.add({
+                severity: 'warn',
+                summary: this.translate.instant('Checkin'),
+                detail: this.translate.instant('The item is in transit to {{ destination }}', {destination})
+              });
             }
             break;
           case ItemAction.receive:
@@ -148,7 +141,7 @@ export class CheckinComponent implements OnInit {
         this.items.unshift(item);
         this._resetSearchInput();
       },
-      error => {
+      error: (error) => {
         if (this.item && this.items.findIndex(i => i.barcode === this.item.barcode) === -1) {
           // Reload item to have data up to date.
           this.itemsService.getItem(this.item.barcode).subscribe((item: any) => {
@@ -162,12 +155,12 @@ export class CheckinComponent implements OnInit {
             });
             this.items.unshift(item);
             // If no action could be done by the '/item/checkin' api, an error will be raised.
-            // catch this error to display it as a toastr message.
+            // catch this error to display it as a Toast message.
             this._checkinErrorManagement(error, item);
           });
         }
       }
-    );
+    });
   }
 
   /**
@@ -179,15 +172,13 @@ export class CheckinComponent implements OnInit {
       this.barcode = barcode;
       this.patronService
         .getPatron(barcode)
-        .subscribe(
-          () => {},
-          (error) => {
-            this.toastService.error(
-              error.message,
-              this.translate.instant('Checkin')
-            );
-          }
-        );
+        .subscribe({
+          error: (error) => this.messageService.add({
+            severity: 'error',
+            summary: this.translate.instant('Checkin'),
+            detail: error.message
+          })
+      });
     } else {
       this.patronInfo = null;
       this.barcode = null;
@@ -199,7 +190,7 @@ export class CheckinComponent implements OnInit {
    */
   getPatronOrItem(barcode: string) {
     this.item = undefined;
-    const loggerOrg = this._loggedUser.currentOrganisation;
+    const loggerOrg = this.loggedUser.currentOrganisation;
     const query = `patron.barcode:${barcode} AND organisation.pid:${loggerOrg}`;
     const patronQuery = this.recordService
       .getRecords('patrons', query, 1, 1, [])
@@ -208,66 +199,72 @@ export class CheckinComponent implements OnInit {
       .getRecords('items', `barcode:${barcode}`, 1, 1, [])
       .pipe(map((result: Record) => result.hits));
     forkJoin([patronQuery, itemQuery])
-    .subscribe(([patron, item]: any[]) => {
-      if (patron.total.value === 0 && item.total.value === 0) {
-        this.toastService.warning(
-          this.translate.instant('Patron not found!'),
-          this.translate.instant('Checkin')
-        );
-      }
-      if (patron.total.value > 1 && item.total.value === 0) {
-        this.toastService.warning(
-          this.translate.instant('Found more than one patron.'),
-          this.translate.instant('Checkin')
-        );
-      }
-      if (patron.total.value === 1 && item.total.value === 1) {
-        const modalRef: BsModalRef = this.modalService.show(CheckinActionComponent, {
-          ignoreBackdropClick: true,
-          keyboard: true
-        });
-        modalRef.onHidden.subscribe(() => {
-          switch (modalRef.content.action) {
-            case 'patron':
-              this.router.navigate(
-                ['/circulation', 'patron', barcode, 'loan']
-              );
-              break;
-            case 'item':
-              this.checkin(barcode);
-              break;
-            default:
+    .subscribe({
+      next: ([patron, item]: any[]) => {
+        if (patron.total.value === 0 && item.total.value === 0) {
+          this.messageService.add({
+            severity: 'warn',
+            summary: this.translate.instant('Checkin'),
+            detail: this.translate.instant('Patron not found!')
+          });
+        }
+        if (patron.total.value > 1 && item.total.value === 0) {
+          this.messageService.add({
+            severity: 'warn',
+            summary: this.translate.instant('Checkin'),
+            detail: this.translate.instant('Found more than one patron.')
+          });
+        }
+        if (patron.total.value === 1 && item.total.value === 1) {
+          const ref: DynamicDialogRef = this.dialogService.open(CheckinActionComponent, {
+            dismissableMask: true
+          })
+          ref.onClose.subscribe((action: string) => {
+            if (action) {
+              switch (action) {
+                case 'patron':
+                  this.router.navigate(
+                    ['/circulation', 'patron', barcode, 'loan']
+                  );
+                  break;
+                case 'item':
+                  this.checkin(barcode);
+                  break;
+                default:
+                  this._resetSearchInput();
+                  break;
+              }
+            }
+          });
+        } else if (item.total.value === 1) {
+            this.item = item.hits[0].metadata;
+            // Check if the item is already into the item list. If it happens,
+            // just notify the user and clear the form.
+            if (this.items.find(it => it.barcode === barcode)) {
+              this.messageService.add({
+                severity: 'warn',
+                summary: this.translate.instant('Checkin'),
+                detail: this.translate.instant('The item is already in the list.')
+              });
               this._resetSearchInput();
-              break;
-          }
-        });
-      } else if (item.total.value === 1) {
-          this.item = item.hits[0].metadata;
-          // Check if the item is already into the item list. If it happens,
-          // just notify the user and clear the form.
-          if (this.items.find(it => it.barcode === barcode)) {
-            this.toastService.warning(
-              this.translate.instant('The item is already in the list.'),
-              this.translate.instant('Checkin')
+            } else {
+              this.checkin(barcode);
+            }
+        } else if (patron.total.value === 1) {
+            this.router.navigate(
+              ['/circulation', 'patron', barcode, 'loan']
             );
-            this._resetSearchInput();
-          } else {
-            this.checkin(barcode);
-          }
-      } else if (patron.total.value === 1) {
-          this.router.navigate(
-            ['/circulation', 'patron', barcode, 'loan']
-          );
-      }
-    },
-    error => this.toastService.error(
-        error.message,
-        this.translate.instant('Checkin')
-      )
-    );
+        }
+      },
+      error: (error) => this.messageService.add({
+        severity: 'error',
+        summary: this.translate.instant('Checkin'),
+        detail: error.message
+      })
+    });
   }
 
-  /** display a circulation infos about an item as a permanent toastr message
+  /** display a circulation infos about an item as a permanent Toast message
    * @param item: the item
    * @param noteType: the note type to display
    */
@@ -288,27 +285,24 @@ export class CheckinComponent implements OnInit {
       }
     }
     if (message.length > 0) {
-      this.toastService.warning(
-        message.join(),
-        this.translate.instant('Checkin'),
-        {
-          enableHtml: true,
-          closeButton: true,    // add a close button to the toastr message
-          disableTimeOut: true, // permanent toastr message (until click on 'close' button)
-          tapToDismiss: false   // toastr message only close when click on the 'close' button.
-        }
-      );
+      this.messageService.add({
+        severity: 'warn',
+        summary: this.translate.instant('Checkin'),
+        detail: message.join(),
+        sticky: true,
+        closable: true,
+      });
     }
   }
 
 
-  /** create the most relevant message concerning a checkin operation error and display it as a toastr
+  /** create the most relevant message concerning a checkin operation error and display it as a Toast
    *
    * @param error: the raised error
    * @param item: the current item
    */
   private _checkinErrorManagement(error: any, item: Item) {
-    // get the error message from the raised error. This will be the toastr message core.
+    // get the error message from the raised error. This will be the Toast message core.
     let message = (error.hasOwnProperty('error') && error.error.hasOwnProperty('status'))
       ? error.error.status.replace(/^error:/, '').trim()
       : error.message;
@@ -329,16 +323,13 @@ export class CheckinComponent implements OnInit {
         message += `<br />${additionalMessage}`;
       }
     }
-    this.toastService.warning(
-      message,
-      this.translate.instant('Checkin'),
-      {
-        enableHtml: true,
-        closeButton: true,
-        disableTimeOut: true,
-        tapToDismiss: false
-      }
-    );
+    this.messageService.add({
+      severity: 'warn',
+      summary: this.translate.instant('Checkin'),
+      detail: message,
+      sticky: true,
+      closable: true
+    });
     this._resetSearchInput();
   }
 
@@ -360,10 +351,11 @@ export class CheckinComponent implements OnInit {
 
   hasFees(event: boolean) {
     if (event) {
-      this.toastService.error(
-        this.translate.instant('The item has fees'),
-        this.translate.instant('Checkin')
-      );
+      this.messageService.add({
+        severity: 'error',
+        summary: this.translate.instant('Checkin'),
+        detail: this.translate.instant('The item has fees')
+      })
     }
   }
 

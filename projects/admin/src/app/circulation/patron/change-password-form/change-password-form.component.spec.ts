@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
 import { CirculationModule } from '../../circulation.module';
 import { ChangePasswordFormComponent } from './change-password-form.component';
 
@@ -35,7 +34,6 @@ describe('ChangePasswordFormComponent', () => {
         CirculationModule
       ],
       providers: [
-        BsModalRef
       ]
     })
       .compileComponents();
