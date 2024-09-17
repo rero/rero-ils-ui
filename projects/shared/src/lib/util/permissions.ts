@@ -129,6 +129,9 @@ export const PERMISSIONS = {
   'VNDR_ACCESS': 'vndr-access',
   'VNDR_CREATE': 'vndr-create',
   'VNDR_SEARCH': 'vndr-search',
+  // Migrations
+  'MIG_ACCESS': 'mig-access',
+  'MIG_SEARCH': 'mig-search'
 };
 
 // User with permission service
