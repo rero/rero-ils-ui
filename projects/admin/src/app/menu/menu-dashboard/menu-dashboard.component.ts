@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2022 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { MenuItemInterface } from '@rero/ng-core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MenuService } from '../service/menu.service';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'admin-menu-dashboard',
@@ -25,20 +25,11 @@ import { MenuService } from '../service/menu.service';
 })
 export class MenuDashboardComponent implements OnInit {
 
-  /** Application menu */
-  menu: MenuItemInterface;
+  private menuService: MenuService = inject(MenuService);
 
-  /**
-   * Constructor
-   * @param _menuService - MenuService
-   */
-  constructor(private _menuService: MenuService) { }
+  items: MenuItem[] = [];
 
-  /** Init */
-  ngOnInit() {
-    this._menuService.appMenu$.subscribe((menu: MenuItemInterface) => this.menu = menu);
-    if (!this.menu) {
-      this._menuService.generateMenus();
-    }
+  ngOnInit(): void {
+    this.items = this.menuService.appMenuItems;
   }
 }

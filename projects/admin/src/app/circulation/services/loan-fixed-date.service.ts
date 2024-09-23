@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
-import { LibrarySwitchService } from '@app/admin/menu/service/library-switch.service';
+import { inject, Injectable } from '@angular/core';
+import { LibraryService } from '@app/admin/menu/service/library.service';
 import { MenuService } from '@app/admin/menu/service/menu.service';
 import { LocalStorageService } from '@rero/ng-core';
 
@@ -24,23 +24,17 @@ import { LocalStorageService } from '@rero/ng-core';
 })
 export class LoanFixedDateService {
 
+  private localeStorageService: LocalStorageService = inject(LocalStorageService);
+  private libraryService: LibraryService = inject(LibraryService);
+  private menuService: MenuService = inject(MenuService);
+
   /** The key to local Storage */
   private _dueDateKey: string = 'due_date_remember';
 
   /** Expiration 12 hours (definition in seconds) */
   private _keyExpiration: number = 43200;
 
-  /**
-   * Constructor
-   * @param _localeStorageService - LocalStorageService
-   * @param _librarySwitchService - LibrarySwitchService
-   * @param _menuService - MenuService
-   */
-  constructor(
-    private _localeStorageService: LocalStorageService,
-    private _librarySwitchService: LibrarySwitchService,
-    private _menuService: MenuService
-  ) {
+  constructor() {
     this.init();
   }
 
@@ -49,7 +43,7 @@ export class LoanFixedDateService {
    * @returns true if the value exists
    */
   hasValue(): boolean {
-    return this._localeStorageService.has(this._dueDateKey);
+    return this.localeStorageService.has(this._dueDateKey);
   }
 
   /**
@@ -57,7 +51,7 @@ export class LoanFixedDateService {
    * @param value - Date in string format
    */
   set(value: string): void {
-    this._localeStorageService.set(this._dueDateKey, value);
+    this.localeStorageService.set(this._dueDateKey, value);
   }
 
   /**
@@ -66,11 +60,11 @@ export class LoanFixedDateService {
    */
   get(): string | null {
     // We have a value in local storage
-    if (this._localeStorageService.has(this._dueDateKey)) {
-      if (this._localeStorageService.isExpired(this._dueDateKey, this._keyExpiration)) {
+    if (this.localeStorageService.has(this._dueDateKey)) {
+      if (this.localeStorageService.isExpired(this._dueDateKey, this._keyExpiration)) {
         this.remove();
       } else {
-        const endDate = this._localeStorageService.get(this._dueDateKey);
+        const endDate = this.localeStorageService.get(this._dueDateKey);
         // We compare the retrieved date with today's date
         const endDay = new Date(new Date(endDate).toDateString()).getTime();
         const now = new Date(new Date().toDateString()).getTime();
@@ -87,7 +81,7 @@ export class LoanFixedDateService {
    * Remove value in locale storage
    */
   remove(): void {
-    this._localeStorageService.remove(this._dueDateKey);
+    this.localeStorageService.remove(this._dueDateKey);
   }
 
   /**
@@ -96,8 +90,8 @@ export class LoanFixedDateService {
    */
   init(): void {
     // We delete the stored value if we change library
-    this._librarySwitchService.librarySwitch$.subscribe(() => this.remove());
+    this.libraryService.switch$.subscribe(() => this.remove());
     // Delete locale storage on logout
-    this._menuService.logout$.subscribe(() => this.remove());
+    this.menuService.logout$.subscribe(() => this.remove());
   }
 }
