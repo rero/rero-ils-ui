@@ -16,68 +16,80 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { PERMISSIONS, PERMISSION_OPERATOR } from "@rero/shared";
-import { IMenuParent } from "./menu-interface";
+import { MenuItem } from "primeng/api";
+import { MENU_IDS } from "./menu-ids";
 
-export const MENU_APP: IMenuParent[] = [
+export const MENU_APP: MenuItem[] = [
   /** USER MENU */
   {
     name: 'User services',
-    attributes: { id: 'user-services-menu' },
-    extras: { iconClass: 'fa fa-users' },
-    children: [
+    translateLabel: 'User services',
+    id: MENU_IDS.APP.USER.MENU,
+    icon: 'fa fa-users',
+    items: [
       {
         name: 'Checkout/checkin',
+        translateLabel: 'Checkout/checkin',
+        id: MENU_IDS.APP.USER.CIRCULATION,
+        icon: 'fa fa-exchange',
         router_link: ['/', 'circulation'],
-        attributes: { id: 'circulation-menu' },
-        extras: { iconClass: 'fa fa-exchange' },
+        shortcut: 'c',
         access: {
           permissions: [PERMISSIONS.CIRC_ADMIN]
         }
       },
       {
-        name: 'Requests',
-        router_link: ['/', 'circulation', 'requests'],
-        attributes: { id: 'requests-menu' },
-        extras: { iconClass: 'fa fa-shopping-basket' },
+        label: 'Requests',
+        translateLabel: 'Requests',
+        id: MENU_IDS.APP.USER.REQUEST,
+        icon: 'fa fa-shopping-basket',
+        routerLink: ['/', 'circulation', 'requests'],
+        shortcut: 'r',
         access: {
           permissions: [PERMISSIONS.CIRC_ADMIN]
         }
       },
       {
-        name: 'ILL requests',
-        router_link: ['/', 'records', 'ill_requests'],
-        query_params: {
+        label: 'ILL requests',
+        translateLabel: 'ILL requests',
+        id: MENU_IDS.APP.USER.ILL,
+        icon: 'fa fa-truck',
+        routerLink: ['/', 'records', 'ill_requests'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
           simple: '1',
           library: '$currentLibrary'
         },
-        attributes: { id: 'ill-requests-menu' },
-        extras: { iconClass: 'fa fa-truck' },
         access: {
           permissions: [PERMISSIONS.ILL_ACCESS]
         }
       },
       {
-        name: 'Users',
-        router_link: ['/', 'records', 'patrons'],
-        query_params: {
+        label: 'Users',
+        translateLabel: 'Users',
+        id: MENU_IDS.APP.USER.USERS,
+        icon: 'fa fa-users',
+        routerLink: ['/', 'records', 'patrons'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
           simple: '1'
         },
-        attributes: { id: 'users-menu' },
-        extras: { iconClass: 'fa fa-users' },
+        shortcut: 'p',
         access: {
           permissions: [PERMISSIONS.PTRN_ACCESS]
         }
       },
       {
-        name: 'Exhibition/course',
-        router_link: ['/', 'records', 'collections'],
-        query_params: {
+        label: 'Exhibition/course',
+        translateLabel: 'Exhibition/course',
+        id: MENU_IDS.APP.USER.COLLECTION,
+        icon: 'fa fa-graduation-cap',
+        routerLink: ['/', 'records', 'collections'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
@@ -85,24 +97,23 @@ export const MENU_APP: IMenuParent[] = [
           simple: '1',
           library: '$currentLibrary'
         },
-        attributes: { id: 'collections-menu' },
-        extras: { iconClass: 'fa fa-graduation-cap' },
         access: {
           permissions: [PERMISSIONS.COLL_ACCESS]
         }
       },
       {
-        name: 'Current loans',
-        router_link: ['/', 'records', 'loans'],
-        query_params: {
+        label: 'Current loans',
+        translateLabel: 'Current loans',
+        id: MENU_IDS.APP.USER.CURRENT_LOANS,
+        icon: 'fa fa-list-ul',
+        routerLink: ['/', 'records', 'loans'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
           simple: '1',
           owner_library: '$currentLibrary'
         },
-        attributes: { id: 'current-loans-menu' },
-        extras: { iconClass: 'fa fa-list-ul' },
         access: {
           permissions: [PERMISSIONS.CIRC_ADMIN]
         }
@@ -111,22 +122,24 @@ export const MENU_APP: IMenuParent[] = [
   },
   /** CATALOG MENU */
   {
-    name: 'Catalog',
-    attributes: { id: 'catalog-menu' },
-    extras: { iconClass: 'fa fa-book' },
-    children: [
+    label: 'Catalog',
+    translateLabel: 'Catalog',
+    id: MENU_IDS.APP.CATALOG.MENU,
+    icon: 'fa fa-book',
+    items: [
       {
-        name: 'Documents',
-        router_link: ['/', 'records', 'documents'],
-        query_params: {
+        label: 'Documents',
+        translateLabel: 'Documents',
+        id: MENU_IDS.APP.CATALOG.DOCUMENT,
+        icon: 'fa fa-file-o',
+        routerLink: ['/', 'records', 'documents'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
           simple: '1',
           organisation: '$currentOrganisation'
         },
-        attributes: { id: 'documents-menu' },
-        extras: { iconClass: 'fa fa-file-o' },
         access: {
           permissions: [
             PERMISSIONS.DOC_ACCESS,
@@ -136,67 +149,75 @@ export const MENU_APP: IMenuParent[] = [
         }
       },
       {
-        name: 'Create a bibliographic record',
-        router_link: ['/', 'records', 'documents', 'new'],
-        attributes: { id: 'create-bibliographic-record-menu' },
-        extras: { iconClass: 'fa fa-plus-square' },
+        label: 'Create a bibliographic record',
+        translateLabel: 'Create a bibliographic record',
+        id: MENU_IDS.APP.CATALOG.DOCUMENT_ADD,
+        icon: 'fa fa-plus-square',
+        routerLink: ['/', 'records', 'documents', 'new'],
         access: {
           permissions: [PERMISSIONS.DOC_CREATE]
         }
       },
       {
-        name: 'Import from the web',
-        router_link: ['/', 'records', 'import_bnf'],
-        query_params: {
+        label: 'Import from the web',
+        translateLabel: 'Import from the web',
+        id: MENU_IDS.APP.CATALOG.IMPORT,
+        icon: 'fa fa-cloud-download',
+        routerLink: ['/', 'records', 'import_bnf'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10'
         },
-        attributes: { id: 'import-menu' },
-        extras: { iconClass: 'fa fa-cloud-download' },
         access: {
           permissions: [PERMISSIONS.DOC_CREATE]
         }
       },
       {
-        name: 'Entities',
-        router_link: ['/', 'records', 'entities'],
-        query_params: {
+        label: 'Entities',
+        translateLabel: 'Entities',
+        id: MENU_IDS.APP.CATALOG.ENTITY,
+        icon: 'fa fa-cubes',
+        routerLink: ['/', 'records', 'entities'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10'
-        },
-        attributes: { id: 'entities-menu' },
-        extras: { iconClass: 'fa fa-cubes' }
+        }
       }
     ]
   },
   /** ACQUISITION MENU */
   {
-    name: 'Acquisitions',
-    attributes: { id: 'acquisitions-menu' },
-    extras: { iconClass: 'fa fa-university' },
-    children: [
+    label: 'Acquisitions',
+    translateLabel: 'Acquisitions',
+    id: MENU_IDS.APP.ACQUISITION.MENU,
+    icon: 'fa fa-university',
+    items: [
       {
-        name: 'Vendors',
-        router_link: ['/', 'records', 'vendors'],
-        query_params: {
+        label: 'Vendors',
+        translateLabel: 'Vendors',
+        id: MENU_IDS.APP.ACQUISITION.VENDOR,
+        icon: 'fa fa-briefcase',
+        routerLink: ['/', 'records', 'vendors'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
           sort: 'name_asc',
           simple: '1'
         },
-        attributes: { id: 'vendors-menu' },
-        extras: { iconClass: 'fa fa-briefcase' },
         access: {
           permissions: [PERMISSIONS.VNDR_ACCESS]
         }
       },
       {
-        name: 'Orders',
-        router_link: ['/', 'records', 'acq_orders'],
-        query_params: {
+        label: 'Orders',
+        translateLabel: 'Orders',
+        id: MENU_IDS.APP.ACQUISITION.ORDER,
+        icon: 'fa fa-shopping-cart',
+        routerLink: ['/', 'records', 'acq_orders'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
@@ -204,48 +225,49 @@ export const MENU_APP: IMenuParent[] = [
           budget: '$currentBudget',
           simple: '1',
         },
-        attributes: { id: 'orders-menu' },
-        extras: { iconClass: 'fa fa-shopping-cart' },
         access: {
           permissions: [PERMISSIONS.ACOR_ACCESS]
         }
       },
       {
-        name: 'Budgets',
-        router_link: ['/', 'records', 'budgets'],
-        query_params: {
+        label: 'Budgets',
+        translateLabel: 'Budgets',
+        id: MENU_IDS.APP.ACQUISITION.BUDGET,
+        icon: 'fa fa-money',
+        routerLink: ['/', 'records', 'budgets'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
           simple: '1',
         },
-        attributes: { id: 'budgets-menu' },
-        extras: { iconClass: 'fa fa-money' },
         access: {
           permissions: [PERMISSIONS.BUDG_ACCESS]
         }
       },
       {
-        name: 'Accounts',
-        router_link: ['/', 'acquisition', 'accounts'],
-        attributes: { id: 'accounts-menu' },
-        extras: { iconClass: 'fa fa-folder-open-o' },
+        label: 'Accounts',
+        translateLabel: 'Accounts',
+        id: MENU_IDS.APP.ACQUISITION.ACCOUNT,
+        icon: 'fa fa-folder-open-o',
+        routerLink: ['/', 'acquisition', 'accounts'],
         access: {
           permissions: [PERMISSIONS.ACAC_ACCESS]
         }
       },
       {
-        name: 'Late issues',
-        router_link: ['/', 'records', 'issues'],
-        query_params: {
+        label: 'Late issues',
+        translateLabel: 'Late issues',
+        id: MENU_IDS.APP.ACQUISITION.LATE_ISSUE,
+        icon: 'fa fa-envelope-open-o',
+        routerLink: ['/', 'records', 'issues'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
           library: '$currentLibrary',
           simple: '1',
         },
-        attributes: { id: 'late-issues-menu' },
-        extras: { iconClass: 'fa fa-envelope-open-o' },
         access: {
           permissions: [PERMISSIONS.ISSUE_MANAGEMENT]
         }
@@ -254,29 +276,35 @@ export const MENU_APP: IMenuParent[] = [
   },
   /** REPORT & MONITORING MENU */
   {
-    name: 'Reports & monitoring',
-    attributes: { id: 'report-monitoring-menu' },
-    extras: { iconClass: 'fa fa-bar-chart' },
-    children: [
+    label: 'Reports & monitoring',
+    translateLabel: 'Reports & monitoring',
+    id: MENU_IDS.APP.REPORT_MONITORING.MENU,
+    icon: 'fa fa-bar-chart',
+    items: [
       {
-        name: 'Inventory list',
-        router_link: ['/', 'records', 'items'],
-        query_params: {
+        label: 'Inventory list',
+        translateLabel: 'Inventory list',
+        id: MENU_IDS.APP.REPORT_MONITORING.INVENTORY,
+        icon: 'fa fa-list',
+        routerLink: ['/', 'records', 'items'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
           simple: '1',
         },
-        attributes: { id: 'inventory-list-menu' },
-        extras: { iconClass: 'fa fa-list' },
+        shortcut: 'i',
         access: {
           permissions: [PERMISSIONS.ITEM_ACCESS]
         }
       },
       {
-        name: 'Fees',
-        router_link: ['/', 'records', 'patron_transaction_events'],
-        query_params: {
+        label: 'Fees',
+        translateLabel: 'Fees',
+        id: MENU_IDS.APP.REPORT_MONITORING.FEE,
+        icon: 'fa fa-money',
+        routerLink: ['/', 'records', 'patron_transaction_events'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
@@ -284,18 +312,17 @@ export const MENU_APP: IMenuParent[] = [
           transaction_date: '$currentDayRange',
           simple: '1'
         },
-        attributes: { id: 'fees-list-menu' },
-        extras: { iconClass: 'fa fa-money' },
         access: {
           permissions: [PERMISSIONS.PTTR_ACCESS]
         }
       },
       {
-        name: "Report configuration",
-        router_link: ["/", "records", "stats_cfg"],
-        attributes: { id: "stats-cfg-menu" },
-        extras: { iconClass: "fa fa-cog" },
-        query_params: {
+        label: 'Report configuration',
+        translateLabel: 'Report configuration',
+        id: MENU_IDS.APP.REPORT_MONITORING.STAT_CONFIG,
+        icon: 'fa fa-cog',
+        routerLink: ['/', 'records', 'stats_cfg'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
@@ -306,118 +333,127 @@ export const MENU_APP: IMenuParent[] = [
         access: {
           permissions: [PERMISSIONS.STAT_CFG_ACCESS],
         },
-      }
+      },
     ]
   },
   /** ADMIN MENU */
   {
-    name: 'Admin',
-    attributes: { id: 'admin-and-monitoring-menu' },
-    extras: { iconClass: 'fa fa-cogs' },
-    children: [
+    label: 'Admin',
+    translateLabel: 'Admin',
+    id: MENU_IDS.APP.ADMIN.MENU,
+    icon: 'fa fa-cogs',
+    items: [
       {
-        name: 'Circulation policies',
-        router_link: ['/', 'records', 'circ_policies'],
-        query_params: {
+        label: 'Circulation policies',
+        translateLabel: 'Circulation policies',
+        id: MENU_IDS.APP.ADMIN.CIRCULATION_POLICY,
+        icon: 'fa fa-exchange',
+        routerLink: ['/', 'records', 'circ_policies'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
           sort: 'name',
           simple: '1',
         },
-        attributes: { id: 'circulation-policies-menu' },
-        extras: { iconClass: 'fa fa-exchange' },
         access: {
           permissions: [PERMISSIONS.CIPO_ACCESS]
         }
       },
       {
-        name: 'Item types',
-        router_link: ['/', 'records', 'item_types'],
-        query_params: {
+        label: 'Item types',
+        translateLabel: 'Item types',
+        id: MENU_IDS.APP.ADMIN.ITEM_TYPE,
+        icon: 'fa fa-file-o',
+        routerLink: ['/', 'records', 'item_types'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
           sort: 'name',
           simple: '1',
         },
-        attributes: { id: 'item-types-menu' },
-        extras: { iconClass: 'fa fa-file-o' },
         access: {
           permissions: [PERMISSIONS.ITTY_ACCESS]
         }
       },
       {
-        name: 'Patron types',
-        router_link: ['/', 'records', 'patron_types'],
-        query_params: {
+        label: 'Patron types',
+        translateLabel: 'Patron types',
+        id:MENU_IDS.APP.ADMIN.PATRON_TYPE,
+        icon: 'fa fa-users',
+        routerLink: ['/', 'records', 'patron_types'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
           sort: 'name',
           simple: '1',
         },
-        attributes: { id: 'patron-types-menu' },
-        extras: { iconClass: 'fa fa-users' },
         access: {
           permissions: [PERMISSIONS.PTTY_ACCESS]
         }
       },
       {
-        name: 'My organisation',
-        router_link: ['/', 'records', 'organisations', 'detail', '$currentOrganisation'],
-        attributes: { id: 'my-organisation-menu' },
-        extras: { iconClass: 'fa fa-university' },
+        label: 'My organisation',
+        translateLabel: 'My organisation',
+        id: MENU_IDS.APP.ADMIN.MY_ORGANISATION,
+        icon: 'fa fa-university',
+        routerLink: ['/', 'records', 'organisations', 'detail', '$currentOrganisation'],
         access: {
           permissions: [PERMISSIONS.ORG_ACCESS]
         }
       },
       {
-        name: 'My library',
-        router_link: ['/', 'records', 'libraries', 'detail', '$currentLibrary'],
-        attributes: { id: 'my-library-menu' },
-        extras: { iconClass: 'fa fa-university' },
+        label: 'My library',
+        translateLabel: 'My library',
+        id: MENU_IDS.APP.ADMIN.MY_LIBRARY,
+        icon: 'fa fa-university',
+        routerLink: ['/', 'records', 'libraries', 'detail', '$currentLibrary'],
         access: {
           permissions: [PERMISSIONS.LIB_ACCESS]
         }
       },
       {
-        name: 'Libraries',
-        router_link: ['/', 'records', 'libraries'],
-        query_params: {
+        label: 'Libraries',
+        translateLabel: 'Libraries',
+        id: MENU_IDS.APP.ADMIN.LIBRARY,
+        icon: 'fa fa-users',
+        routerLink: ['/', 'records', 'libraries'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
           sort: 'name',
           simple: '1',
         },
-        attributes: { id: 'libraries-menu' },
-        extras: { iconClass: 'fa fa-users' },
         access: {
           permissions: [PERMISSIONS.LIB_ACCESS]
         }
       },
       {
-        name: 'Templates',
-        router_link: ['/', 'records', 'templates'],
-        query_params: {
+        label: 'Templates',
+        translateLabel: 'Templates',
+        id: MENU_IDS.APP.ADMIN.TEMPLATE,
+        icon: 'fa fa-file-code-o',
+        routerLink: ['/', 'records', 'templates'],
+        queryParams: {
           q: '',
           page: '1',
           size: '10',
           sort: 'name',
           simple: '1',
         },
-        attributes: { id: 'templates-menu' },
-        extras: { iconClass: 'fa fa-file-code-o' },
         access: {
           permissions: [PERMISSIONS.TMPL_ACCESS]
         }
       },
       {
-        name: 'Permissions matrix',
-        router_link: ['/', 'permissions', 'matrix'],
-        attributes: { id: 'permissions-menu' },
-        extras: { iconClass: 'fa fa-check-square-o' },
+        label: 'Permissions matrix',
+        translateLabel: 'Permissions matrix',
+        id: MENU_IDS.APP.ADMIN.PERMISSION,
+        icon: 'fa fa-check-square-o',
+        routerLink: ['/', 'permissions', 'matrix'],
         access: {
           permissions: [PERMISSIONS.PERM_MANAGEMENT]
         }
