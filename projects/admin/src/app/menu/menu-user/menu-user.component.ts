@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,37 +14,80 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
-import { MenuItem, MenuItemInterface } from '@rero/ng-core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { NgCoreTranslateService } from '@rero/ng-core';
 import { MenuService } from '../service/menu.service';
+import { MenuTranslateService } from '../service/menu-translate.service';
+import { ISwitchLibrary, LibraryService } from '../service/library.service';
+import { Router } from '@angular/router';
+import { MenuItem } from 'primeng/api';
+import { Subscription } from 'rxjs';
+import { MENU_IDS } from '../menu-definition/menu-ids';
+import { MENU_USER } from '../menu-definition/menu-user';
 
 @Component({
   selector: 'admin-menu-user',
-  template: `
-    <ng-core-menu-widget [menu]="menu" (clickItem)="eventMenuClick($event)"></ng-core-menu-widget>
-  `
+  templateUrl: './menu-user.component.html'
 })
-export class MenuUserComponent implements OnInit {
+export class MenuUserComponent implements OnInit, OnDestroy {
 
-  /** User menu */
-  menu: MenuItemInterface;
-  /**
-   * Constructor
-   * @param _menuService - MenuService
-   */
-  constructor(
-    private _menuService: MenuService
-  ) { }
+  private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
+  private menuService: MenuService = inject(MenuService);
+  private menuTranslateService: MenuTranslateService = inject(MenuTranslateService);
+  private libraryService: LibraryService = inject(LibraryService);
+  private router: Router = inject(Router);
 
-  /** Init */
+  items: MenuItem[] = [];
+
+  subscription = new Subscription();
+
   ngOnInit(): void {
-    this._menuService.userMenu$.subscribe((menu: MenuItemInterface) => this.menu = menu);
+    this.generateMenu();
+    this.subscription.add(
+      this.translateService.onLangChange.subscribe(() => this.changeLanguage())
+    );
+    this.subscription.add(
+      this.menuService.generateMenuLibrary$().subscribe((menu: any) => {
+        this.items = [menu.menu, ...this.items];
+        this.libraryService.switch(menu.libraryActive);
+      })
+    );
+    this.subscription.add(
+      this.libraryService.switch$.subscribe((library: ISwitchLibrary) => this.updateLibraryMenuAndRedirect(library))
+    );
   }
 
-  eventMenuClick(event: MenuItem) {
-    // If the user logout, we delete the local storage
-    if (event.getAttribute('id') === 'logout-menu') {
-      this._menuService.logout();
-    }
+  ngOnDestroy(): void {
+      this.subscription.unsubscribe();
+  }
+
+  private generateMenu(): void {
+    MENU_USER
+      .find((item: MenuItem) => item.id === MENU_IDS.USER.MENU).items
+      .find((item: MenuItem) => item.id === MENU_IDS.USER.LANGUAGE).items = this.menuService.generateMenuLanguages();
+    this.items = this.menuTranslateService.process(MENU_USER);
+    const logout = this.items
+      .find((item: MenuItem) => item.id === MENU_IDS.USER.MENU).items
+      .find((item: MenuItem) => item.id === MENU_IDS.USER.LOGOUT);
+    logout['command'] = () => this.menuService.logout();
+  }
+
+  private changeLanguage(): void {
+    this.updateLanguageMenu();
+    this.items = this.menuTranslateService.process(this.items);
+  }
+
+  private updateLibraryMenuAndRedirect(library: ISwitchLibrary): void {
+    const element = this.items.find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU);
+    element.label = library.code;
+    element.items.map((item: MenuItem) => item.styleClass = item.pid === library.pid ? 'font-bold' : '');
+    this.router.navigate(['/']);
+  }
+
+  private updateLanguageMenu(): void {
+    this.items
+    .find((item: MenuItem) => item.id === MENU_IDS.USER.MENU).items
+    .find((item: MenuItem) => item.id === MENU_IDS.USER.LANGUAGE).items
+    .map((item: MenuItem) => item.styleClass = item.id === `lang-${this.translateService.currentLang}` ? 'font-bold' : '')
   }
 }

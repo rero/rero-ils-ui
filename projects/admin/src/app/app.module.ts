@@ -32,11 +32,11 @@ import {
   BucketNameService as CoreBucketNameService,
   CoreConfigService,
   RecordHandleErrorService as CoreRecordHandleErrorService,
-  LocalStorageService,
+  NgCoreTranslateService,
   RecordModule, RemoteTypeaheadService,
   TranslateLoader, TruncateTextPipe
 } from '@rero/ng-core';
-import { ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
+import { AppSettingsService, ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
@@ -46,6 +46,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { FileUploadModule } from 'primeng/fileupload';
+import { MenubarModule } from 'primeng/menubar';
 import { TableModule } from "primeng/table";
 import {
   SelectAccountEditorWidgetComponent
@@ -65,14 +66,6 @@ import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
 import { UserCurrentLibraryInterceptor } from './interceptor/user-current-library.interceptor';
 import { MenuDashboardComponent } from './menu/menu-dashboard/menu-dashboard.component';
-import { MenuLanguageComponent } from './menu/menu-language/menu-language.component';
-import { MenuMobileComponent } from './menu/menu-mobile/menu-mobile.component';
-import { SubMenuComponent } from './menu/menu-mobile/sub-menu/sub-menu.component';
-import { MenuSwitchLibraryComponent } from './menu/menu-switch-library/menu-switch-library.component';
-import { MenuUserServicesComponent } from './menu/menu-user-services/menu-user-services.component';
-import { MenuUserComponent } from './menu/menu-user/menu-user.component';
-import { MenuComponent } from './menu/menu.component';
-import { LibrarySwitchService } from './menu/service/library-switch.service';
 import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
 import { DocumentProvisionActivityPipe } from './pipe/document-provision-activity.pipe';
 import { ItemInCollectionPipe } from './pipe/item-in-collection.pipe';
@@ -211,16 +204,20 @@ import { AppInitializerService } from './service/app-initializer.service';
 import { BucketNameService } from './service/bucket-name.service';
 import { OrganisationService } from './service/organisation.service';
 import { RecordHandleErrorService } from './service/record.handle-error.service';
-import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-factory.service';
+import { typeaheadToken } from './service/typeahead-factory.service';
 import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { PreviewEmailModule } from './shared/preview-email/preview-email.module';
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
+import { MenuAppComponent } from './menu/menu-app/menu-app.component';
+import { MenuUserComponent } from './menu/menu-user/menu-user.component';
+import { MenuDisplayComponent } from './menu/menu-display/menu-display.component';
+import { Observable } from 'rxjs';
 
 /** Init application factory */
-export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
-  return () => appInitializerService.load().toPromise();
+export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
+  return () => appInitializerService.load();
 }
 
 @NgModule({
@@ -237,7 +234,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     ItemTypeDetailViewComponent,
     LibrariesBriefViewComponent,
     LibraryComponent,
-    MenuComponent,
     PatronsBriefViewComponent,
     PatronTypesBriefViewComponent,
     PatronTypesDetailViewComponent,
@@ -287,14 +283,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     IllRequestDetailViewComponent,
     CustomShortcutHelpComponent,
     HoldingItemNoteComponent,
-    MenuSwitchLibraryComponent,
     LocalFieldComponent,
-    MenuUserServicesComponent,
-    MenuLanguageComponent,
-    MenuUserComponent,
     MenuDashboardComponent,
-    MenuMobileComponent,
-    SubMenuComponent,
     HoldingItemTemporaryItemTypeComponent,
     OperationLogsComponent,
     HoldingSharedViewComponent,
@@ -365,7 +355,10 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     LocalPageDetailComponent,
     RemotePageDetailComponent,
     ItemFeesComponent,
-    UploadFilesComponent
+    UploadFilesComponent,
+    MenuAppComponent,
+    MenuUserComponent,
+    MenuDisplayComponent
   ],
   imports: [
     AppRoutingModule,
@@ -410,7 +403,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     LoadingBarHttpClientModule,
     PrimengImportModule,
     PreviewEmailModule,
-    FileUploadModule
+    FileUploadModule,
+    MenubarModule
   ],
   providers: [
     {
@@ -424,11 +418,10 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
       deps: [
         AppInitializerService,
         UserService,
-        AppConfigService,
         OrganisationService,
-        LocalStorageService,
-        LibrarySwitchService,
-        TypeaheadFactoryService,
+        AppSettingsService,
+        AppConfigService,
+        NgCoreTranslateService
       ],
       multi: true,
     },

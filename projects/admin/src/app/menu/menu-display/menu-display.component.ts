@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,26 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { Component, input } from '@angular/core';
+import { MenuItem } from 'primeng/api';
 
-export interface IMenuParent extends IMenu {
-  children: IMenu[]
-}
-
-export interface IMenu {
-  name: string;
-  uri?: string,
-  router_link?: string[],
-  query_params?: IMenuKeyValue,
-  attributes?: IMenuKeyValue,
-  extras?: IMenuKeyValue,
-  children?: IMenu[],
-  access?: {
-    permissions: string[],
-    operator?: string;
-  },
-  translate?: boolean
-}
-
-export interface IMenuKeyValue {
-  [key: string]: string;
+@Component({
+  selector: 'admin-menu-display',
+  templateUrl: './menu-display.component.html',
+})
+export class MenuDisplayComponent {
+  items = input<MenuItem>();
 }

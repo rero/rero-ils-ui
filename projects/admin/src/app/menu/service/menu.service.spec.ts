@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,162 +14,191 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { CoreConfigService, CoreModule, MenuItem, MenuItemInterface } from '@rero/ng-core';
-import { PERMISSIONS, PermissionsService, SharedModule, testUserLibrarianWithSettings, User, UserService } from '@rero/shared';
-import { LibrarySwitchService } from './library-switch.service';
-import { MenuFactoryService } from './menu-factory.service';
 
 import { MenuService } from './menu.service';
+import { of } from 'rxjs';
+import { PERMISSION_OPERATOR, PermissionsService, UserService } from '@rero/shared';
+import { LibraryApiService } from '../api/library-api.service';
+import { LibraryService } from './library.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LibrarySwitchStorageService } from './library-switch-storage.service';
+import { CoreConfigService, LocalStorageService } from '@rero/ng-core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { MenuItem } from 'primeng/api';
+
+
+@Injectable({
+  providedIn: 'root'
+})
+class PermissionServiceSpy extends PermissionsService {
+  canAccess(permission: string | string[], operator: string = PERMISSION_OPERATOR.OR): boolean {
+    return permission === 'enabled';
+  }
+}
 
 describe('MenuService', () => {
   let service: MenuService;
-  let translateService: TranslateService;
-  let configService: CoreConfigService;
-  let permissionsService: PermissionsService;
-  let librarySwitchService: LibrarySwitchService;
-  let userService: UserService;
+  let translate: TranslateService;
+
+  const librariesResponse = {
+    aggregations: {},
+    hits: {
+      hits: [
+        {
+          metadata: {
+            pid: '1',
+            name: 'Library 1',
+            code: 'lib-1'
+          }
+        },
+        {
+          metadata: {
+            pid: '2',
+            name: 'Library 2',
+            code: 'lib-2'
+          }
+        }
+      ],
+      total: {
+        value: 2
+      }
+    },
+    links: []
+  };
+
+  const appMenu = [
+    {
+      label: 'Menu 1',
+      items: [
+        {
+          label: 'Menu 1 - line 1',
+          access: {
+            permissions: 'enabled'
+          }
+        },
+        {
+          label: 'Menu 1 - line 2',
+          access: {
+            permissions: 'disabled'
+          }
+        },
+        ,
+        {
+          label: 'Menu 1 - line 3',
+          access: {
+            permissions: 'enabled'
+          }
+        }
+      ]
+    },
+    {
+      label: 'Menu 2',
+      items: [
+        {
+          label: 'Menu 2 - line 1'
+        }
+      ]
+    }
+  ];
+
+  const translations = {
+    'ui_language_de': 'Deutsch',
+    'ui_language_en': 'English',
+    'ui_language_fr': 'Français'
+  };
 
   const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  const user =  new User(testUserLibrarianWithSettings);
-  user.currentLibrary = '2';
-  user.currentOrganisation = '1';
-  userServiceSpy.user =user;
+  userServiceSpy.user = {
+    id: 1,
+    currentLibrary: '1',
+    patronLibrarian: {
+      libraries: [{ pid: '1' }, { pid: '2' }]
+    }
+  }
+
+  const libraryApiServiceSpy = jasmine.createSpyObj('libraryApiService', ['findByLibrariesPidAndOrderBy$']);
+  libraryApiServiceSpy.findByLibrariesPidAndOrderBy$.and.returnValue(of(librariesResponse));
+
+  const libraryServiceSpy = jasmine.createSpyObj('LibraryService', ['']);
+
+  const localStorageServiceSpy = jasmine.createSpyObj('LocalStorageService', ['has', 'set']);
+  localStorageServiceSpy.has.and.returnValue(false);
+
+  const librarySwitchDataStorageSpy = jasmine.createSpyObj('LibrarySwitchStorageService', ['has']);
+  librarySwitchDataStorageSpy.has.and.returnValue(false);
+
+  const configServiceSpy = jasmine.createSpyObj('configService', ['']);
+  configServiceSpy.languages = ['fr','en', 'de'];
+
+  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['post']);
+  httpClientSpy.post.and.returnValue(of({}));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        HttpClientTestingModule,
         TranslateModule.forRoot(),
-        CoreModule,
-        SharedModule
       ],
       providers: [
-        MenuFactoryService,
-        { provide: UserService, useValue: userServiceSpy }
+        { provide: UserService, useValue: userServiceSpy },
+        { provide: LibraryApiService, useValue: libraryApiServiceSpy },
+        { provide: LibraryService, useValue: libraryServiceSpy },
+        { provide: LocalStorageService, useValue: localStorageServiceSpy },
+        { provide: LibrarySwitchStorageService, use: librarySwitchDataStorageSpy },
+        { provide: CoreConfigService, useValue: configServiceSpy },
+        { provide: HttpClient, useValue: httpClientSpy },
+        { provide: PermissionsService, useClass: PermissionServiceSpy },
+        TranslateService
       ]
     });
     service = TestBed.inject(MenuService);
-
-    translateService = TestBed.inject(TranslateService);
-    translateService.setTranslation('fr', {
-      'Logout': 'Se déconnecter',
-      'My library': 'Ma bibliothèque',
-      'Public interface': 'Interface publique',
-      'ui_language_de': 'Allemand',
-      'ui_language_en': 'Anglais',
-      'ui_language_fr': 'Français'
-    });
-    translateService.setTranslation('en', {
-      'Logout': 'Logout',
-      'My library': 'My library',
-      'Public interface': 'Public interface',
-      'ui_language_de': 'German',
-      'ui_language_en': 'English',
-      'ui_language_fr': 'French'
-    });
-    translateService.use('fr');
-
-    configService = TestBed.inject(CoreConfigService);
-    configService.languages = ['fr', 'en', 'de'];
-
-    permissionsService = TestBed.inject(PermissionsService);
-    permissionsService.setPermissions(Object.values(PERMISSIONS));
-
-    librarySwitchService = TestBed.inject(LibrarySwitchService);
-    userService = TestBed.inject(UserService);
+    translate = TestBed.inject(TranslateService);
+    translate.setTranslation('fr', translations);
+    translate.use('fr');
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  /** ----- Application menu ----- */
-  it('should return the french application menu', () => {
-    userService.user.currentLibrary = '2';
-    service.appMenu$.subscribe((menu: MenuItemInterface) => {
-      expect(menu).toBeInstanceOf(MenuItem);
-      const appMenu = menu.getChildren();
-      expect(appMenu[0].getAttribute('id')).toEqual('user-services-menu');
-      expect(appMenu[1].getAttribute('id')).toEqual('catalog-menu');
-      expect(appMenu[2].getAttribute('id')).toEqual('acquisitions-menu');
-      expect(appMenu[3].getAttribute('id')).toEqual('report-monitoring-menu');
-      expect(appMenu[4].getAttribute('id')).toEqual('admin-and-monitoring-menu');
-      const adminMenu = appMenu[4].getChildren();
-      const myLibraryMenu = adminMenu[4];
-      expect(myLibraryMenu.getName()).toEqual('Ma bibliothèque');
-      expect(myLibraryMenu.getRouterLink()).toEqual(['/', 'records', 'libraries', 'detail', '2']);
-    });
-    service.generateAppMenu();
+  it('should return the language menu lines', () => {
+    const languages = service.generateMenuLanguages();
+    expect(languages[0].label).toEqual(translations.ui_language_de);
+    expect(languages[0].translateLabel).toEqual('ui_language_de');
+    expect(languages[0].id).toEqual('lang-de');
+    expect(typeof languages[0].command === 'function').toBeTrue();
+
+    expect(languages[1].label).toEqual(translations.ui_language_en);
+    expect(languages[2].label).toEqual(translations.ui_language_fr);
+    expect(languages[2].styleClass).toEqual('font-bold');
   });
 
-  it('should return the english application menu', () => {
-    userService.user.currentLibrary = '2';
-    service.appMenu$.subscribe((menu: MenuItemInterface) => {
-      const appMenu = menu.getChildren();
-      const adminMenu = appMenu[4].getChildren();
-      const myLibraryMenu = adminMenu[4];
-      expect(myLibraryMenu.getName()).toEqual('My library');
+  it('should return library menu lines', () => {
+    service.generateMenuLibrary$().subscribe((menu: MenuItem) => {
+      expect(menu.label).toEqual('lib-1');
+      expect(menu.id).toEqual('menu-library');
+      expect(menu.icon).not.toBeNull();
+      expect(menu.items.length).toEqual(2);
+      expect(menu.items[0].code).toEqual('lib-1');
+      expect(menu.items[0].label).toEqual('[lib-1] Library 1');
+      expect(menu.items[0].pid).toEqual('1');
+      expect(typeof menu.items[0].command === 'function').toBeTrue()
     });
-    translateService.use('en');
   });
 
-  it('should return the correct library code after the change', () => {
-    userService.user.currentLibrary = '2';
-    service.appMenu$.subscribe((menu: MenuItemInterface) => {
-      const appMenu = menu.getChildren();
-      const adminMenu = appMenu[4].getChildren();
-      const myLibraryMenu = adminMenu[4];
-      expect(myLibraryMenu.getRouterLink()).toEqual(['/', 'records', 'libraries', 'detail', '3']);
-    });
-    librarySwitchService.switch('3');
+  it('should return the application\'s menu lines', () => {
+    const menu = service.generateAppMenu(appMenu);
+    expect(menu[0].label).toEqual('Menu 1');
+    expect(menu[0].items.length).toEqual(2);
+    expect(menu[0].items[0].label).toEqual('Menu 1 - line 1');
+    expect(menu[0].items[1].label).toEqual('Menu 1 - line 3');
+    expect(menu[1].label).toEqual('Menu 2');
+    expect(menu[1].items.length).toEqual(1);
   });
 
-  /** ----- User menu ----- */
-  it('should return the french user menu', () => {
-    service.userMenu$.subscribe((menu: MenuItemInterface) => {
-      expect(menu).toBeInstanceOf(MenuItem);
-      const userMenu = menu.getChildren()[0].getChildren();
-      expect(userMenu[0].getName()).toEqual('Interface publique');
-      expect(userMenu[1].getName()).toEqual('Se déconnecter');
-    });
-    service.generateUserMenu();
+  it('should return true on the logout event', () => {
+    service.logout$.subscribe((event: boolean) => expect(event).toBeTrue());
+    service.logout();
   });
-
-  it('should return the english user menu', () => {
-    service.userMenu$.subscribe((menu: MenuItemInterface) => {
-      expect(menu).toBeInstanceOf(MenuItem);
-      const userMenu = menu.getChildren()[0].getChildren();
-      expect(userMenu[0].getName()).toEqual('Public interface');
-      expect(userMenu[1].getName()).toEqual('Logout');
-    });
-    translateService.use('en');
-  });
-
-  /** ----- Language menu ----- */
-  it('should return the french language menu', () => {
-    service.languageMenu$.subscribe((menu: MenuItemInterface) => {
-      expect(menu).toBeInstanceOf(MenuItem);
-      const languageMenu = menu.getChildren()[0].getChildren();
-      expect(languageMenu[0].getName()).toEqual('Allemand');
-      expect(languageMenu[0].getAttribute('id')).toEqual('language-menu-de');
-      expect(languageMenu[0].getExtra('language')).toEqual('de');
-      expect(languageMenu[1].getName()).toEqual('Anglais');
-      expect(languageMenu[2].getName()).toEqual('Français');
-    });
-    service.generateLanguageMenu();
-  });
-
-  it('should return the english language menu', () => {
-    service.languageMenu$.subscribe((menu: MenuItemInterface) => {
-      const languageMenu = menu.getChildren()[0].getChildren();
-      expect(languageMenu[0].getName()).toEqual('German');
-      expect(languageMenu[1].getName()).toEqual('English');
-      expect(languageMenu[2].getName()).toEqual('French');
-    });
-    translateService.use('en');
-  });
-
 });
