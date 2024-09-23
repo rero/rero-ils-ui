@@ -14,10 +14,8 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-@if (isVisible) {
-  <ng-core-menu-widget
-    [menu]="menuLibrariesSwitch"
-    (clickItem)="eventMenuClick($event)"
-  ></ng-core-menu-widget>
-}
+<p-menubar [model]="items">
+  <ng-template pTemplate="end">
+    <admin-menu-user />
+  </ng-template>
+</p-menubar>

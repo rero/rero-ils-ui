@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2023 RERO
+ * Copyright (C) 2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,134 +14,158 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { EventEmitter, Injectable, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { CoreConfigService, MenuFactory, MenuItemInterface } from '@rero/ng-core';
-import { cloneDeep } from 'lodash-es';
-import { Observable, Subject } from 'rxjs';
-import { MENU_APP } from '../menu-definition/menu-app';
-import { MENU_USER } from '../menu-definition/menu-user';
-import { LibrarySwitchService } from './library-switch.service';
-import { MenuFactoryService } from './menu-factory.service';
+import { CoreConfigService, Record } from '@rero/ng-core';
+import { PERMISSION_OPERATOR, PermissionsService, UserService } from '@rero/shared';
+import { MenuItem } from 'primeng/api';
+import { Observable, map, of } from 'rxjs';
+import { LibraryApiService } from '../api/library-api.service';
+import { MENU_IDS } from '../menu-definition/menu-ids';
+import { LibrarySwitchStorageService } from './library-switch-storage.service';
+import { ISwitchLibrary, LibraryService } from './library.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MenuService {
 
-  // SERVICE ATTRIBUTES =======================================================
+  private userService = inject(UserService);
+  private libraryApiService = inject(LibraryApiService);
+  private libraryService = inject(LibraryService);
+  private librarySwitchDataStorage = inject(LibrarySwitchStorageService);
+  private translateService = inject(TranslateService);
+  private configService = inject(CoreConfigService);
+  private httpClient = inject(HttpClient);
+  private permissionsService = inject(PermissionsService);
 
-  /** Application menu */
-  private _appMenu: Subject<MenuItemInterface> = new Subject();
-  /** User menu */
-  private _userMenu: Subject<MenuItemInterface> = new Subject();
-  /** Language menu */
-  private _languageMenu: Subject<MenuItemInterface> = new Subject();
-  /** Logout event */
-  private _logout: Subject<Boolean> = new Subject();
+  private logoutEvent = new EventEmitter<boolean>();
 
-  // GETTER & SETTER ==========================================================
-  /**
-   * Get the main application menu
-   * @return Observable on parent menuItem interface.
-   */
-  get appMenu$(): Observable<MenuItemInterface> {
-    return this._appMenu;
+  private onChange = new EventEmitter<MenuItem[]>();
+
+  private applicationMenuItems: MenuItem[] = [];
+
+  get logout$(): Observable<boolean> {
+    return this.logoutEvent.asObservable();
   }
 
-  /**
-   * Get the user application menu
-   * @return Observable on parent menuItem interface.
-   */
-  get userMenu$(): Observable<MenuItemInterface> {
-    return this._userMenu.asObservable();
+  get onChange$(): Observable<MenuItem[]> {
+    return this.onChange.asObservable();
   }
 
-  /**
-   * Get the language application menu
-   * @return Observable on parent menuItem interface.
-   */
-  get languageMenu$(): Observable<MenuItemInterface> {
-    return this._languageMenu.asObservable();
+  set appMenuItems(menuItems: MenuItem[]) {
+    this.applicationMenuItems = menuItems;
   }
 
-  /**
-   * Get the logout event
-   * @return Observable on logout
-   */
-  get logout$(): Observable<Boolean> {
-    return this._logout.asObservable();
+  get appMenuItems(): MenuItem[] {
+    return this.applicationMenuItems;
   }
 
-  // CONSTRUCTOR ==============================================================
-  /**
-   * Constructor
-   * @param _menuFactoryService - MenuFactoryService
-   * @param _translateService - TranslateService
-   * @param _librarySwitchService - LibrarySwitchService
-   * @param _configService - CoreConfigService
-   */
-  constructor(
-    private _menuFactoryService: MenuFactoryService,
-    private _translateService: TranslateService,
-    private _librarySwitchService: LibrarySwitchService,
-    private _configService: CoreConfigService
-  ) {
-    this._initializeObservable();
-  }
-
-  // SERVICE FUNCTIONS ========================================================
-  /** Generate application menu */
-  generateAppMenu(): void {
-    this._appMenu.next(this._menuFactoryService.create('UI Main menu', cloneDeep(MENU_APP)));
-  }
-
-  /** Generate User menu */
-  generateUserMenu(): void {
-    this._userMenu.next(this._menuFactoryService.create('UI User menu', cloneDeep(MENU_USER)))
-  }
-
-  generateLanguageMenu(): void {
-    this._languageMenu.next(this._languageMenuFactory());
-  }
-
-  /** Generate all menus */
-  generateMenus(): void {
-    this.generateAppMenu();
-    this.generateUserMenu();
-    this.generateLanguageMenu();
-  }
-
-  /** logout */
-  logout(): void {
-    this._logout.next(true);
-  }
-
-  // SERVICE PRIVATE FUNCTIONS ================================================
-  /** Language menu */
-  private _languageMenuFactory(): MenuItemInterface {
-    const factory = new MenuFactory();
-    const menu = factory.createItem('UI Languages menu');
-    const currentLang = this._translateService.currentLang;
-    const languageMenu = menu.addChild(`ui_language_${currentLang}`)
-      .setName(this._translateService.instant(`ui_language_${currentLang}`))
-      .setAttribute('class', 'dropdown-menu dropdown-menu-right')
-      .setAttribute('id', 'language-menu')
-      .setExtra('iconClass', 'fa fa-language');
-
-    this._configService.languages.sort().some(lang => {
-      languageMenu.addChild(`ui_language_${lang}`)
-        .setName(this._translateService.instant(`ui_language_${lang}`))
-        .setAttribute('id', `language-menu-${lang}`)
-        .setExtra('language', lang)
-        .setExtra('iconClass', 'fa fa-language');
+  public generateMenuLanguages(): MenuItem[] {
+    let languagesMenu = [];
+    const currentLanguage = this.translateService.currentLang;
+    this.configService.languages.map((language: string) => {
+      languagesMenu.push({
+        label: this.translateService.instant(`ui_language_${language}`),
+        translateLabel: `ui_language_${language}`,
+        id: `lang-${language}`,
+        styleClass: currentLanguage === language ? 'font-bold' : '',
+        command: () => this.httpClient
+          .post(`/language`, {lang: language})
+          .subscribe(() => this.translateService.use(language))
+      });
     });
-    return menu;
+    languagesMenu = languagesMenu.sort((a: any, b: any) => a.label.localeCompare(b.label));
+
+    return languagesMenu;
   }
 
-  /** Connect observables */
-  private _initializeObservable(): void {
-    this._librarySwitchService.librarySwitch$.subscribe(() => this.generateMenus());
-    this._translateService.onLangChange.subscribe(() => this.generateMenus());
+  public generateMenuLibrary$(): Observable<object|undefined> {
+    const { currentLibrary } = this.userService.user;
+    const librariesPid = this.userService.user.patronLibrarian.libraries.map((library: { pid: string }) => library.pid);
+    if (librariesPid.length === 0) {
+      return of(undefined);
+    }
+    return this.libraryApiService.findByLibrariesPidAndOrderBy$(librariesPid).pipe(
+      map((results: Record) => results.hits.total.value > 0 ? results.hits.hits : []),
+      map((libraries: any) => {
+        let libraryActive = undefined;
+        if (!this.librarySwitchDataStorage.has()) {
+          libraryActive = libraries.find((library: any) => library.metadata.pid === currentLibrary);
+        } else {
+          const data = this.librarySwitchDataStorage.get();
+          libraryActive = libraries.find((library: any) => library.metadata.pid === data.currentLibrary);
+          if (!libraryActive) {
+            libraryActive = libraries.find((library: any) => library.metadata.pid === currentLibrary);
+          }
+        }
+        const menu = {
+          label: libraryActive.metadata.code,
+          icon: 'fa fa-random',
+          id: MENU_IDS.LIBRARY_MENU,
+          items: []
+        };
+        libraries.sort((a: any, b:any) => a.metadata.code.localeCompare(b.metadata.code))
+        .map((library: any) => menu.items.push({
+          label: `[${library.metadata.code}] ${library.metadata.name}`,
+          code: library.metadata.code,
+          pid: library.metadata.pid,
+          styleClass: library.metadata.pid === libraryActive.metadata.pid ? 'font-bold' : '',
+          command: () => this.libraryService.switch({
+            pid: library.metadata.pid,
+            code: library.metadata.code,
+            name: library.metadata.name
+          })
+        }));
+
+        return { menu, libraryActive: {
+          pid: libraryActive.metadata.pid,
+          code: libraryActive.metadata.code,
+          name: libraryActive.metadata.name
+        } };
+      }));
+    ;
+  }
+
+  public generateAppMenu(menuItems: MenuItem[]): MenuItem[] {
+    const items = this.processMenuApp(menuItems).filter((item: any) => item);
+    this.appMenuItems = items;
+
+    return items;
+  }
+
+  public updateLibraryLink(library: ISwitchLibrary): void {
+    this.appMenuItems
+    .find((item: MenuItem) => item.id === MENU_IDS.APP.ADMIN.MENU).items
+    .find((item: MenuItem) => item.id === MENU_IDS.APP.ADMIN.MY_LIBRARY)
+    .routerLink = ['/', 'records', 'libraries', 'detail', library.pid];
+  }
+
+  public logout(): void {
+    this.logoutEvent.emit(true);
+  }
+
+  private processMenuApp(menuItems: MenuItem[]): MenuItem[] {
+    return menuItems.map((item: MenuItem) => {
+      let canAccess = true;
+      if (item.access) {
+        canAccess = this.permissionsService.canAccess(
+          item.access.permissions,
+          item.access.operator || PERMISSION_OPERATOR.OR
+        );
+      }
+      if (!canAccess) {
+        return;
+      }
+
+      delete item['access'];
+
+      if (!item.url && !item.routerLink && item.items) {
+        item.items = this.processMenuApp(item.items).filter((item: any) => item);
+      }
+
+      return item;
+    });
   }
 }
