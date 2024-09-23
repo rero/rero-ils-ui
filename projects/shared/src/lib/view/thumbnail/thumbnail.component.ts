@@ -81,14 +81,10 @@ export class ThumbnailComponent implements OnInit {
   ngOnInit() {
     if (this.record && this.record.metadata) {
       this.coverUrl = `/static/images/icon_${this.record.metadata.type[0].main_type}.svg`;
-      if (this.record.metadata.electronicLocator) {
-        for (const electronicLocator of this.record.metadata.electronicLocator) {
-          if (electronicLocator.content === 'coverImage' && electronicLocator.type === 'relatedResource') {
-            this.coverUrl = electronicLocator.url;
-            this.svgImage = false;
-            break;
-          }
-        }
+      const cover = this.record.metadata.electronicLocator?.filter((e: any) => e.content === 'coverImage' && e.type=== 'relatedResource');
+      if (this.record.metadata.electronicLocator && cover.length > 0) {
+        this.coverUrl = cover[0].url;
+        this.svgImage = false;
       } else if (this.record.metadata.identifiedBy) {
         for (const identifier of this.record.metadata.identifiedBy) {
           if (identifier.type === 'bf:Isbn') {
