@@ -33,9 +33,6 @@ export class AppInitializerService {
   private appConfigService: AppConfigService = inject(AppConfigService);
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
 
-  /**
-   * Function called when launching the application
-   */
   load(): Observable<any> {
     return this.userService.load().pipe(
       tap((user: User) => {
@@ -54,7 +51,6 @@ export class AppInitializerService {
     );
   }
 
-  /** Initialize Translate Service */
   private initTranslateService(): Observable<any> {
     let {language} = this.appSettingsService.settings;
     if (language == null) {
