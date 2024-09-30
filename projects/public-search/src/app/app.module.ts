@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,17 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, Injector, LOCALE_ID, NgModule } from '@angular/core';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { APP_INITIALIZER, ApplicationRef, CUSTOM_ELEMENTS_SCHEMA, DoBootstrap, inject, Injector, LOCALE_ID, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
-import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { BucketNameService as CoreBucketNameService, CoreConfigService, RecordModule, TranslateLoader, TranslateService } from '@rero/ng-core';
-import { SharedModule } from '@rero/shared';
+import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { BucketNameService as CoreBucketNameService, CoreConfigService, NgCoreTranslateService, RecordModule, TranslateLoader } from '@rero/ng-core';
+import { RemoteSearchComponent, SharedModule, UserService } from '@rero/shared';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { AppConfigService } from './app-config.service';
@@ -38,15 +38,13 @@ import { DocumentRecordSearchComponent } from './document-record-search/document
 import { ErrorPageComponent } from './error/error-page.component';
 import { CustomRequestInterceptor } from './interceptor/custom-request.interceptor';
 import { MainComponent } from './main/main.component';
-import { SearchBarComponent } from './search-bar/search-bar.component';
 import { BucketNameService } from './service/bucket-name.service';
-
+import { Observable } from 'rxjs';
 
 /** function to instantiate the application  */
-export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
-  return () => appInitializerService.load().toPromise();
+export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
+  return () => appInitializerService.load();
 }
-
 
 @NgModule({
     declarations: [
@@ -55,8 +53,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         MainComponent,
         CollectionBriefComponent,
         ErrorPageComponent,
-        DocumentRecordSearchComponent,
-        SearchBarComponent
+        DocumentRecordSearchComponent
     ],
     imports: [
         BrowserModule,
@@ -79,27 +76,25 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         LoadingBarModule
     ],
     providers: [
-        { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
+        { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService, UserService], multi: true },
         { provide: CoreConfigService, useClass: AppConfigService },
-        { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.currentLanguage, deps: [TranslateService] },
+        { provide: TranslateService, useClass: NgCoreTranslateService },
+        { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.currentLang, deps: [TranslateService] },
         { provide: HTTP_INTERCEPTORS, useClass: CustomRequestInterceptor, multi: true },
         BsLocaleService,
         { provide: CoreBucketNameService, useClass: BucketNameService },
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    bootstrap: [AppComponent]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class AppModule {
+export class AppModule implements DoBootstrap {
 
-  /**
-   * Constructor
-   * @param injector - Injector
-   */
-  constructor(private injector: Injector) {
+  private injector: Injector = inject(Injector);
+
+  ngDoBootstrap(appRef: ApplicationRef): void {
+    appRef.bootstrap(AppComponent);
     if (!customElements.get('main-search-bar')) {
-      const searchBar = createCustomElement(SearchBarComponent, { injector: this.injector });
+      const searchBar = createCustomElement(RemoteSearchComponent, { injector: this.injector });
       customElements.define('main-search-bar', searchBar);
     }
   }
-
 }

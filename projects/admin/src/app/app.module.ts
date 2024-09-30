@@ -48,6 +48,7 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MenubarModule } from 'primeng/menubar';
 import { TableModule } from "primeng/table";
+import { Observable } from 'rxjs';
 import {
   SelectAccountEditorWidgetComponent
 } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
@@ -65,7 +66,10 @@ import { TabOrderDirective } from './directives/tab-order.directive';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
 import { UserCurrentLibraryInterceptor } from './interceptor/user-current-library.interceptor';
+import { MenuAppComponent } from './menu/menu-app/menu-app.component';
 import { MenuDashboardComponent } from './menu/menu-dashboard/menu-dashboard.component';
+import { MenuDisplayComponent } from './menu/menu-display/menu-display.component';
+import { MenuUserComponent } from './menu/menu-user/menu-user.component';
 import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
 import { DocumentProvisionActivityPipe } from './pipe/document-provision-activity.pipe';
 import { ItemInCollectionPipe } from './pipe/item-in-collection.pipe';
@@ -210,10 +214,6 @@ import { PreviewEmailModule } from './shared/preview-email/preview-email.module'
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { MenuAppComponent } from './menu/menu-app/menu-app.component';
-import { MenuUserComponent } from './menu/menu-user/menu-user.component';
-import { MenuDisplayComponent } from './menu/menu-display/menu-display.component';
-import { Observable } from 'rxjs';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
@@ -358,7 +358,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     UploadFilesComponent,
     MenuAppComponent,
     MenuUserComponent,
-    MenuDisplayComponent
+    MenuDisplayComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -421,7 +421,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         OrganisationService,
         AppSettingsService,
         AppConfigService,
-        NgCoreTranslateService
+        TranslateService
       ],
       multi: true,
     },
@@ -435,6 +435,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
       useClass: UserCurrentLibraryInterceptor,
       multi: true,
     },
+    { provide: TranslateService, useClass: NgCoreTranslateService },
     { provide: RemoteTypeaheadService, useExisting: UiRemoteTypeaheadService },
     // Use the "multi" parameter to allow the recovery of several services in the injector.
     { provide: typeaheadToken, useExisting: DocumentsTypeahead, multi: true },

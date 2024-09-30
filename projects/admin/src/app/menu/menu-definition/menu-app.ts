@@ -32,7 +32,7 @@ export const MENU_APP: MenuItem[] = [
         translateLabel: 'Checkout/checkin',
         id: MENU_IDS.APP.USER.CIRCULATION,
         icon: 'fa fa-exchange',
-        router_link: ['/', 'circulation'],
+        routerLink: ['/', 'circulation'],
         shortcut: 'c',
         access: {
           permissions: [PERMISSIONS.CIRC_ADMIN]
