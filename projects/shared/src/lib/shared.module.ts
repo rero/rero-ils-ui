@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,9 +24,12 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ContributionComponent } from '../public-api';
 import { ActionButtonComponent } from './component/action-button/action-button.component';
 import { BriefViewComponent } from './component/core/brief-view/brief-view.component';
+import { DocumentBriefViewComponent } from './component/documents/document-brief-view/document-brief-view.component';
+import { FilesComponent } from './component/documents/files/files.component';
 import { EntityBriefViewComponent } from './component/entities/entity-brief-view/entity-brief-view.component';
 import { EntityBriefViewRemoteOrganisationComponent } from './component/entities/entity-brief-view/entity-brief-view.organisation';
 import { EntityBriefViewRemotePersonComponent } from './component/entities/entity-brief-view/entity-brief-view.person';
+import { RemoteSearchComponent } from './component/remote-search/remote-search.component';
 import { LinkPermissionsDirective } from './directive/link-permissions.directive';
 import { NoContentDirective } from './directive/no-content.directive';
 import { PermissionsDirective } from './directive/permissions.directive';
@@ -35,8 +38,10 @@ import { PrimeNgImportModule } from './modules/prime-ng-import/prime-ng-import.m
 import { ShowMorePagerComponent } from './paginator/show-more-pager/show-more-pager.component';
 import { EntityLabelPipe } from './pipe/entity-label.pipe';
 import { ExtractSourceFieldPipe } from './pipe/extract-source-field.pipe';
+import { FaIconClassPipe } from './pipe/fa-icon-class.pipe';
 import { GetTranslatedLabelPipe } from './pipe/get-translated-label.pipe';
 import { IdAttributePipe } from './pipe/id-attribute.pipe';
+import { IdentifiedByLabelPipe } from './pipe/identifiedby-label.pipe';
 import { IsArrayPipe } from './pipe/is-array.pipe';
 import { ItemHoldingsCallNumberPipe } from './pipe/item-holdings-call-number.pipe';
 import { JoinPipe } from './pipe/join.pipe';
@@ -47,16 +52,11 @@ import { PatronBlockedMessagePipe } from './pipe/patron-blocked-message.pipe';
 import { ProvisionActivityPipe } from './pipe/provision-activity.pipe';
 import { SafeUrlPipe } from './pipe/safe-url.pipe';
 import { UrlActivePipe } from './pipe/url-active.pipe';
-import { SearchBarConfigService } from './service/search-bar-config.service';
+import { AvailabilityComponent } from './view/availability/availability.component';
 import { PartOfComponent } from './view/brief/part-of/part-of.component';
+import { EntityLinkComponent } from './view/entity-link.component';
 import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
-import { AvailabilityComponent } from './view/availability/availability.component';
-import { EntityLinkComponent } from './view/entity-link.component';
-import { DocumentBriefViewComponent } from './component/documents/document-brief-view/document-brief-view.component';
-import { IdentifiedByLabelPipe } from './pipe/identifiedby-label.pipe';
-import { FilesComponent } from './component/documents/files/files.component';
-import { FaIconClassPipe } from './pipe/fa-icon-class.pipe';
 
 @NgModule({
   declarations: [
@@ -94,7 +94,8 @@ import { FaIconClassPipe } from './pipe/fa-icon-class.pipe';
     EntityLinkComponent,
     DocumentBriefViewComponent,
     IdentifiedByLabelPipe,
-    FilesComponent
+    FilesComponent,
+    RemoteSearchComponent
   ],
   exports: [
     CommonModule,
@@ -126,7 +127,8 @@ import { FaIconClassPipe } from './pipe/fa-icon-class.pipe';
     AvailabilityComponent,
     EntityLinkComponent,
     DocumentBriefViewComponent,
-    FilesComponent
+    FilesComponent,
+    RemoteSearchComponent
   ],
   imports: [
     CommonModule,
@@ -138,7 +140,6 @@ import { FaIconClassPipe } from './pipe/fa-icon-class.pipe';
     PrimeNgImportModule
   ],
   providers: [
-    SearchBarConfigService,
     DatePipe,
     MainTitlePipe,
     JoinPipe,
