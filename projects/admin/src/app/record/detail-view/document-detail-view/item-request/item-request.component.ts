@@ -22,7 +22,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { User, UserService } from '@rero/shared';
-import { BsModalRef } from 'ngx-bootstrap/modal';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable } from 'rxjs';

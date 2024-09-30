@@ -20,7 +20,6 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { BsModalRef, ModalModule } from 'ngx-bootstrap/modal';
 import { UserIdEditorComponent } from './user-id-editor.component';
 
 
@@ -33,13 +32,9 @@ describe('UserIdEditorComponent', () => {
       imports: [
         HttpClientModule,
         TranslateModule.forRoot({}),
-        ModalModule.forRoot(),
         ReactiveFormsModule,
       ],
       declarations: [ UserIdEditorComponent ],
-      providers: [
-        BsModalRef
-      ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
       ]

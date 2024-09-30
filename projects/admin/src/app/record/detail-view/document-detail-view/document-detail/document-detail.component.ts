@@ -168,13 +168,8 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
         if (this.recordService.totalHits(response.hits.total) === 0 && !warning) {
           this.router.navigate(route, { queryParams: data });
         } else {
-          // const config = {
-          //   initialState: {
-          //     records: response.hits.hits,
-          //     warning
-          //   }
-          // };
           const dynamicDialogRef: DynamicDialogRef = this.dialogService.open(DialogImportComponent, {
+            header: this.translate.instant('Import'),
             data: {
               records: response.hits.hits,
               warning
