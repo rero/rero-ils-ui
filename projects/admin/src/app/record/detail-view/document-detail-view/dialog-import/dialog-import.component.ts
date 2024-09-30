@@ -14,15 +14,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
-import { Subject } from 'rxjs';
+import { Component, inject, OnInit } from '@angular/core';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'admin-dialog-import',
   templateUrl: './dialog-import.component.html'
 })
-export class DialogImportComponent {
+export class DialogImportComponent implements OnInit {
+
+  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
+  private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
 
   /** Available record */
   records: any[];
@@ -30,29 +32,17 @@ export class DialogImportComponent {
   /** Show warning message */
   warning: boolean = false;
 
-  /** Observable for action */
-  confirmation$: Subject<boolean> = new Subject<boolean>();
-
-  /**
-   * Constructor
-   * @param bsModalRef - BsModalRef
-   */
-  constructor(private bsModalRef: BsModalRef) {}
-
-  /** Confirm action */
-  confirm() {
-    this.confirmation$.next(true);
-    this.close();
+  ngOnInit(): void {
+      this.records = this.dynamicDialogConfig?.data?.records || [];
+      // this.warning = this.dynamicDialogConfig?.data?.warning || false;
+      this.warning = true;
   }
 
-  /** Cancel action */
-  decline() {
-    this.confirmation$.next(false);
-    this.close();
+  confirm():void {
+    this.dynamicDialogRef.close(true);
   }
 
-  /** Close modal box */
-  close() {
-    this.bsModalRef.hide();
+  cancel(): void {
+    this.dynamicDialogRef.close();
   }
 }
