@@ -16,7 +16,7 @@
  */
 
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, DoBootstrap, Injector, NgModule } from '@angular/core';
+import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, DoBootstrap, inject, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -26,8 +26,8 @@ import { FormlyModule } from '@ngx-formly/core';
 import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
-import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { CoreConfigService, CoreModule, RecordModule, TranslateLoader } from '@rero/ng-core';
+import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { CoreConfigService, CoreModule, NgCoreTranslateService, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { HoldingComponent } from 'projects/public-search/src/app/document-detail/holdings/holding/holding.component';
@@ -38,12 +38,12 @@ import { PickupLocationComponent } from 'projects/public-search/src/app/document
 import { RequestComponent } from 'projects/public-search/src/app/document-detail/request/request.component';
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
+import { Observable } from 'rxjs';
 
 /** function to instantiate the application  */
-export function appInitFactory(appInitializerService: AppInitializerService) {
-  return () => appInitializerService.load().toPromise();
+export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
+  return () => appInitializerService.load();
 }
-
 
 @NgModule({
     declarations: [
@@ -79,6 +79,7 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
         LoadingBarModule
     ],
     providers: [
+        { provide: TranslateService, useClass: NgCoreTranslateService },
         { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
         { provide: CoreConfigService, useClass: AppConfigService }
     ],
@@ -88,10 +89,9 @@ export function appInitFactory(appInitializerService: AppInitializerService) {
 })
 export class AppModule implements DoBootstrap {
 
-  constructor(private injector: Injector) {
-  }
+  private injector: Injector = inject(Injector);
 
-  ngDoBootstrap() {
+  ngDoBootstrap(): void {
     if (!customElements.get('public-search-holdings')) {
       const searchBar = createCustomElement(HoldingsComponent, { injector: this.injector });
       customElements.define('public-search-holdings', searchBar);

@@ -1,6 +1,6 @@
 /*
 * RERO ILS UI
-* Copyright (C) 2020 RERO
+* Copyright (C) 2020-2024 RERO
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU Affero General Public License as published by
@@ -15,54 +15,41 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { Injectable } from '@angular/core';
-import { TranslateService } from '@rero/ng-core';
+import { inject, Injectable } from '@angular/core';
 import { AppSettingsService, UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { AppConfigService } from './app-config.service';
 import { RouteCollectionService } from './routes/route-collection.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppInitializerService {
 
-  /**
-   * Constructor
-   * @param _routeCollectionService - RouteCollectionService
-   * @param _userService - UserService
-   * @param _appSettingsService - AppSettingsService
-   * @param _translateService - TranslateService
-   * @param _appConfigService - AppConfigService
-   */
-  constructor(
-    private _routeCollectionService: RouteCollectionService,
-    private _userService: UserService,
-    private _appSettingsService: AppSettingsService,
-    private _translateService: TranslateService,
-    private _appConfigService: AppConfigService
+  private routeCollectionService: RouteCollectionService = inject(RouteCollectionService);
+  private userService: UserService = inject(UserService);
+  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  private translateService: TranslateService = inject(TranslateService);
+  private appConfigService: AppConfigService = inject(AppConfigService);
 
-  ) { }
-
-  /** load */
   load(): Observable<any> {
-    return this._userService.load().pipe(
+    return this.userService.load().pipe(
       tap(() => {
-        this._routeCollectionService.load();
+        this.routeCollectionService.load();
       }),
       switchMap(() => this.initTranslateService())
     );
   }
 
-  /** Initialize Translate Service */
   private initTranslateService(): Observable<any> {
-    let language = this._appSettingsService.settings.language;
+    let {language} = this.appSettingsService.settings;
     if (language == null) {
-      const browserLang = this._translateService.getBrowserLang();
-      language = browserLang.match(this._appConfigService.languages.join('|')) ?
-        browserLang : this._appConfigService.defaultLanguage;
+      const browserLang = this.translateService.getBrowserLang();
+      language = browserLang.match(this.appConfigService.languages.join('|')) ?
+        browserLang : this.appConfigService.defaultLanguage;
     }
-    return this._translateService.setLanguage(language);
+    return this.translateService.use(language);
   }
 }
