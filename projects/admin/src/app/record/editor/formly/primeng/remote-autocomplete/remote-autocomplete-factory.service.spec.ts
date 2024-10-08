@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,28 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Injector } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
-import { TypeaheadFactoryService } from './typeahead-factory.service';
-import { UiRemoteTypeaheadService } from './ui-remote-typeahead.service';
+import { RemoteAutocompleteFactoryService } from './remote-autocomplete-factory.service';
 
+describe('RemoteAutocompleteFactoryService', () => {
+  let service: RemoteAutocompleteFactoryService;
 
-describe('TypeaheadFactoryService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      HttpClientTestingModule,
-      TranslateModule.forRoot()
-    ],
-    providers: [
-      Injector,
-      UiRemoteTypeaheadService
-    ]
-  }));
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(RemoteAutocompleteFactoryService);
+  });
 
   it('should be created', () => {
-    const service: TypeaheadFactoryService = TestBed.inject(TypeaheadFactoryService);
     expect(service).toBeTruthy();
   });
 });

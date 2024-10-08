@@ -40,7 +40,7 @@ export class UserIdEditorComponent implements OnInit {
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
   private userService: UserService = inject(UserService);
 
-  searchText: string | undefined;
+  searchText: string = '';
 
   /** current User id in the invenio db */
   userID: string = null;

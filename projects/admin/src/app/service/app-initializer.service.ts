@@ -21,6 +21,7 @@ import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { AppConfigService } from './app-config.service';
 import { OrganisationService } from './organisation.service';
+import { RemoteAutocompleteFactoryService } from '../record/editor/formly/primeng/remote-autocomplete/remote-autocomplete-factory.service';
 
 @Injectable({
   providedIn: 'root'
@@ -32,12 +33,12 @@ export class AppInitializerService {
   private appSettingsService: AppSettingsService = inject(AppSettingsService);
   private appConfigService: AppConfigService = inject(AppConfigService);
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
+  private remoteAutocompleteFactoryService: RemoteAutocompleteFactoryService = inject(RemoteAutocompleteFactoryService);
 
   load(): Observable<any> {
     return this.userService.load().pipe(
       tap((user: User) => {
-        // TODO: Replace Typeahead with remote-autocomplete
-        //this._typeaheadFactoryService.init();
+        this.remoteAutocompleteFactoryService.init();
         if (user.hasAdminUiAccess) {
           // Set current library and organisation for librarian or system_librarian roles
           const library = user.patronLibrarian.libraries[0];
