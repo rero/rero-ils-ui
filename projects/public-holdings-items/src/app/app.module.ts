@@ -29,7 +29,6 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, CoreModule, NgCoreTranslateService, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
-import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { HoldingComponent } from 'projects/public-search/src/app/document-detail/holdings/holding/holding.component';
 import { HoldingsComponent } from 'projects/public-search/src/app/document-detail/holdings/holdings.component';
 import { ItemsComponent } from 'projects/public-search/src/app/document-detail/holdings/items/items.component';
@@ -73,7 +72,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
             },
             isolate: false
         }),
-        TypeaheadModule.forRoot(),
         SharedModule,
         LoadingBarHttpClientModule,
         LoadingBarModule

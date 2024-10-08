@@ -33,6 +33,9 @@
       ],
       "moment": [
         "node_modules/moment/min/moment.min.js"
+      ],
+      "@rero/prime/*": [
+        "node_modules/@rero/ng-core/lib/record/editor/formly/primeng/*"
       ]
     },
     "useDefineForClassFields": false
