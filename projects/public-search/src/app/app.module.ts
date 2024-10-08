@@ -27,7 +27,6 @@ import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateServi
 import { BucketNameService as CoreBucketNameService, CoreConfigService, NgCoreTranslateService, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { RemoteSearchComponent, SharedModule, UserService } from '@rero/shared';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { AppConfigService } from './app-config.service';
 import { AppInitializerService } from './app-initializer.service';
 import { AppRoutingModule } from './app-routing.module';
@@ -69,7 +68,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
             },
             isolate: false
         }),
-        TypeaheadModule.forRoot(),
         SharedModule,
         LoadingBarHttpClientModule,
         LoadingBarRouterModule,

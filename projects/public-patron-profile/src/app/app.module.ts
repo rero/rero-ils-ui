@@ -31,7 +31,6 @@ import { SharedModule } from '@rero/shared';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { PatronProfileDocumentComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-document/patron-profile-document.component';
 import { PatronProfileFeeComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-fees/patron-profile-fee/patron-profile-fee.component';
 import {
@@ -110,7 +109,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
       },
       isolate: false
     }),
-    TypeaheadModule.forRoot(),
     TabsModule.forRoot(),
     TooltipModule.forRoot(),
     CollapseModule.forRoot(),

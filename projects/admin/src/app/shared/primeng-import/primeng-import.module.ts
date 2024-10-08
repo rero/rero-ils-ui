@@ -17,11 +17,15 @@
  */
 
 import { NgModule } from '@angular/core';
+import { NgCoreFormlyRemoteAutocompleteModule } from '@rero/ng-core';
 import { AccordionModule } from 'primeng/accordion';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ChipsModule } from 'primeng/chips';
 import { DividerModule } from 'primeng/divider';
 import { DragDropModule } from 'primeng/dragdrop';
 import { DropdownModule } from 'primeng/dropdown';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
@@ -29,11 +33,10 @@ import { PanelModule } from 'primeng/panel';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
 @NgModule({
   exports: [
+    AutoCompleteModule,
     AccordionModule,
     ChipsModule,
     DividerModule,
@@ -47,7 +50,8 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
     PanelModule,
     SkeletonModule,
     TagModule,
-    TooltipModule
+    TooltipModule,
+    NgCoreFormlyRemoteAutocompleteModule
   ]
 })
 export class PrimengImportModule { }

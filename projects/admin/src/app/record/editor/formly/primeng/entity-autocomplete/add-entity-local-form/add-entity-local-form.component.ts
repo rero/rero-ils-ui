@@ -65,18 +65,8 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
 
   /** OnInit hook */
   ngOnInit(): void {
-    const { entityTypeFilters, searchTerm } = this.dynamicDialogConfig.data;
+    const { selectedType, searchTerm } = this.dynamicDialogConfig.data;
     this.form = new FormGroup({});
-    let selectedType = undefined;
-    if (entityTypeFilters.length === 1) {
-      // If there is only one possible choice, we take the first value.
-      selectedType = entityTypeFilters[0].value;
-    } else {
-      // If the select menu has not been touched, all values of the selected key are set to false.
-      // We take the first value.
-      const selected = entityTypeFilters.filter((element: any) => element.selected);
-      selectedType = (selected.length === 0) ? entityTypeFilters[0].value : selected[0].value;
-    }
     this.subscriptions.add(this.recordService.getSchemaForm('local_entities').subscribe((schema) => {
       schema = processJsonSchema(schema.schema);
       // Transfer the selected oneOf to the root schema
@@ -107,6 +97,7 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
 
   /** Submit form */
   submit(): void {
+    console.log('submit', this.form);
     if (this.form.valid) {
       this.subscriptions.add(this.recordService.create('local_entities', this.model).subscribe({
         next: (response: any) => {
