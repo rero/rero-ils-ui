@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
 import { OperationLogsService } from '../../../service/operation-logs.service';
@@ -24,6 +24,8 @@ import { OperationLogsService } from '../../../service/operation-logs.service';
   templateUrl: './organisation-detail-view.component.html'
 })
 export class OrganisationDetailViewComponent implements DetailRecord {
+
+  private operationLogsService: OperationLogsService = inject(OperationLogsService);
 
   /** Record observable */
   record$: Observable<any>;
@@ -41,9 +43,4 @@ export class OrganisationDetailViewComponent implements DetailRecord {
   get isEnabledOperationLog(): boolean {
     return this.operationLogsService.isLogVisible('organisations');
   }
-
-  /** Constructor
-   * @param operationLogsService - OperationLogsService
-   */
-  constructor(private operationLogsService: OperationLogsService) {}
 }

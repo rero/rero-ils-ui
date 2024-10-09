@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { LoanState } from '@app/admin/classes/loans';
 import { RecordService } from '@rero/ng-core';
 
@@ -25,6 +25,8 @@ import { RecordService } from '@rero/ng-core';
   styleUrls: ['./requested-item.component.scss']
 })
 export class RequestedItemComponent implements OnInit {
+
+  private recordService: RecordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES ====================================================
 
@@ -43,13 +45,6 @@ export class RequestedItemComponent implements OnInit {
   document;
   /** reference to LoanState class :: To use LoanState into template */
   LoanState = LoanState;
-
-  // CONSTRUCTOR & HOOKS ====================================================
-  /**
-   * Constructor
-   * @param recordService - RecordService
-   */
-  constructor(private recordService: RecordService) {}
 
   /** OnInit hook */
   ngOnInit() {

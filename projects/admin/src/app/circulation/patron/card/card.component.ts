@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import moment from 'moment';
 import { getBootstrapLevel } from '../../../utils/utils';
 import { CirculationService } from '../../services/circulation.service';
@@ -25,6 +25,8 @@ import { CirculationService } from '../../services/circulation.service';
   styleUrls: ['./card.component.scss']
 })
 export class CardComponent {
+
+  private circulationService: CirculationService = inject(CirculationService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the patron */
@@ -73,14 +75,6 @@ export class CardComponent {
       ? this.circulationService.circulationInformations.messages
       : [];
   }
-
-  // CONSTRUCTOR ==============================================================
-  /**
-   * constructor
-   * @param circulationService - CirculationService
-   */
-  constructor(private circulationService: CirculationService) {}
-
 
   // COMPONENT FUNCTIONS ======================================================
   /** Clear current patron */

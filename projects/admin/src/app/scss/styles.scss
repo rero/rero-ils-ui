@@ -19,7 +19,6 @@
 @import 'font-awesome/scss/font-awesome';
 @import 'variables';
 @import 'bootstrap/scss/bootstrap';
-@import 'ngx-toastr/toastr-bs4-alert';
 
 
 html [type=button] {
@@ -100,10 +99,6 @@ button.disabled {
   font-size: $font-size-very-small;
   vertical-align: top;
   content: " \f08e";
-}
-
-.toast-container .ngx-toastr {
-  width: 450px !important; // override width for all toastr message
 }
 
 span.no-data {

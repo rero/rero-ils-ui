@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,16 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { LocationService } from '@app/admin/service/location.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Error, extractIdOnRef } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { ToastrService } from 'ngx-toastr';
-import { SelectItem, SelectItemGroup } from 'primeng/api';
+import { MessageService, SelectItem, SelectItemGroup } from 'primeng/api';
 import { finalize, map } from 'rxjs/operators';
-import { extractIdOnRef, Error } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-item-switch-location',
@@ -33,6 +32,13 @@ import { extractIdOnRef, Error } from '@rero/ng-core';
   styleUrls: ['./item-switch-location.component.scss']
 })
 export class ItemSwitchLocationComponent implements OnInit {
+
+  private formBuilder: UntypedFormBuilder = inject(UntypedFormBuilder);
+  private itemApiService: ItemApiService = inject(ItemApiService);
+  private locationService: LocationService = inject(LocationService);
+  private translateService: TranslateService = inject(TranslateService);
+  private userService: UserService = inject(UserService);
+  private messageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the item to manage */
@@ -48,34 +54,16 @@ export class ItemSwitchLocationComponent implements OnInit {
   options: SelectItemGroup[] = [];
   initialLocation: SelectItem[] = [];
 
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param _formBuilder - UntypedFormBuilder
-   * @param _itemApiService - ItemApiService
-   * @param _locationService - LocationService
-   * @param _toastrService - ToastrService
-   * @param _translateService - TranslateService
-   * @param _userService - UserService
-   */
-  constructor(
-    private _formBuilder: UntypedFormBuilder,
-    private _itemApiService: ItemApiService,
-    private _locationService: LocationService,
-    private _toastrService: ToastrService,
-    private _translateService: TranslateService,
-    private _userService: UserService,
-  ) {
-    this.form = this._formBuilder.group({
+  constructor() {
+    this.form = this.formBuilder.group({
       target: [undefined, Validators.required],
     });
   }
 
-
   /** OnInit hook */
   ngOnInit(): void {
-    const libraryPids = this._userService.user.patronLibrarian.libraries.map(lib => lib.pid);
-    this._locationService
+    const libraryPids = this.userService.user.patronLibrarian.libraries.map(lib => lib.pid);
+    this.locationService
       .getLocationsByLibraries$(libraryPids)
       .pipe(
         map(locations => locations.map(loc => loc.metadata))
@@ -109,21 +97,23 @@ export class ItemSwitchLocationComponent implements OnInit {
    *    processed, emit the item with updated information.
    */
   submit(): void {
-    this._itemApiService
+    this.itemApiService
       .updateLocation(this.item, this.form.value.target)
       .pipe(
         finalize(() => this.itemChange.emit(this.item))
       )
-      .subscribe(
-        (item: any) => this.item = item.metadata,
-        (err: Error) => {
-          this._toastrService.error(
-            err.title, this._translateService.instant('Locations'),
-            { disableTimeOut: true, closeButton: true }
-          );
+      .subscribe({
+        next: (item: any) => this.item = item.metadata,
+        error: (err: Error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: this.translateService.instant('Locations'),
+            detail: err.title,
+            sticky: true,
+            closable: true
+          });
         }
-      );
-
+      });
   }
 
   /** Handle form cancel click

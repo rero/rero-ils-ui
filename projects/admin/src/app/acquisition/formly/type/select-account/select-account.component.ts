@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 import { FieldType } from '@ngx-formly/core';
 import { ApiService } from '@rero/ng-core';
@@ -27,23 +27,15 @@ import { ApiService } from '@rero/ng-core';
 })
 export class SelectAccountComponent extends FieldType implements OnInit {
 
+  private changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private apiService: ApiService = inject(ApiService);
+
   /** accounts list */
   accountList: IAcqAccount[] = [];
   /** the selected account */
   selectedAccount: IAcqAccount = null;
   /** currency */
   currency: string;
-
-  /**
-   * Constructor
-   * @param changeDetectorRef - ChangeDetectorRef
-   * @param apiService - ApiService
-   */
-  constructor(
-    private changeDetectorRef: ChangeDetectorRef,
-    private apiService: ApiService) {
-    super();
-  }
 
   /** OnInit Hook */
   ngOnInit() {

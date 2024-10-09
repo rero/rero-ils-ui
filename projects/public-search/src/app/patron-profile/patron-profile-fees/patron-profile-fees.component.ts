@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { Error, Record } from '@rero/ng-core';
 import { Paginator } from '@rero/shared';
@@ -28,6 +28,10 @@ import { ITabEvent, PatronProfileService } from '../patron-profile.service';
   templateUrl: './patron-profile-fees.component.html'
 })
 export class PatronProfileFeesComponent implements OnInit, OnDestroy {
+
+  private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
+  private patronProfileService: PatronProfileService = inject(PatronProfileService);
+  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
 
   /** Total of fees */
   @Input() feesTotal: number;
@@ -47,18 +51,6 @@ export class PatronProfileFeesComponent implements OnInit, OnDestroy {
   get currency() {
     return this.patronProfileMenuService.currentPatron.organisation.currency;
   }
-
-  /**
-   * Constructor
-   * @param patronTransactionApiService - PatronTransactionApiService
-   * @param patronProfileService - PatronProfileService
-   * @param patronProfileMenuService - PatronProfileMenuService
-   */
-  constructor(
-    private patronTransactionApiService: PatronTransactionApiService,
-    private patronProfileService: PatronProfileService,
-    private patronProfileMenuService: PatronProfileMenuService
-  ) {}
 
   /** OnInit hook */
   ngOnInit(): void {

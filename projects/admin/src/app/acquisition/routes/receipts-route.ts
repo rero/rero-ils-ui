@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -53,8 +53,8 @@ export class ReceiptsRoute extends BaseRoute implements RouteInterface {
               this.expertSearchFilter()
             ],
             preUpdateRecord: (data: any) => this._cleanRecord(data),
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
-            aggregations: (aggregations: any) => this._routeToolService.aggregationFilter(aggregations),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType, true),
+            aggregations: (aggregations: any) => this.routeToolService.aggregationFilter(aggregations),
             aggregationsBucketSize: 10,
             itemHeaders: {
               Accept: 'application/rero+json, application/json'

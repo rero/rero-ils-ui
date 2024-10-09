@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
 import { OrganisationService } from '../../../service/organisation.service';
@@ -25,16 +25,12 @@ import { OrganisationService } from '../../../service/organisation.service';
 })
 export class PatronTypesDetailViewComponent implements DetailRecord {
 
+  private organisationService: OrganisationService = inject(OrganisationService);
   /** Observable resolving record data */
   record$: Observable<any>;
 
   /** Resource type */
   type: string;
-
-  /** Constructor
-   * @param organisationService: OrganisationService
-   */
-  constructor(private organisationService: OrganisationService) { }
 
   /** Get current organisation
    *  @return: current organisation
@@ -42,5 +38,4 @@ export class PatronTypesDetailViewComponent implements DetailRecord {
   get organisation() {
     return this.organisationService.organisation;
   }
-
 }

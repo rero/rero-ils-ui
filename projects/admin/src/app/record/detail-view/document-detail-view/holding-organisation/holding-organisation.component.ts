@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { UserService } from '@rero/shared';
 import { HoldingsApiService } from '@app/admin/api/holdings-api.service';
 import { forkJoin } from 'rxjs';
@@ -25,6 +25,9 @@ import { forkJoin } from 'rxjs';
   styleUrls: ['./holding-organisation.component.scss']
 })
 export class HoldingOrganisationComponent implements OnInit {
+
+  private holdingsApiService: HoldingsApiService = inject(HoldingsApiService);
+  private userService: UserService = inject(UserService);
 
   /** Document record */
   @Input() document: any;
@@ -47,16 +50,6 @@ export class HoldingOrganisationComponent implements OnInit {
     }
     return 'standard';
   }
-
-  /**
-   * Constructor
-   * @param holdingsApiService - HoldingsApiService
-   * @param userService - UserService
-   */
-  constructor(
-    private holdingsApiService: HoldingsApiService,
-    private userService: UserService
-  ) {}
 
   /** On init hook */
   ngOnInit(): void {

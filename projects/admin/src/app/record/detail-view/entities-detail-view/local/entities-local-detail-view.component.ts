@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { OperationLogsService } from '@app/admin/service/operation-logs.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,6 +28,10 @@ import { Entity, EntityType, EntityTypeIcon } from '@rero/shared';
 })
 export class EntitiesLocalDetailViewComponent implements OnInit, DetailRecord {
 
+  private translateService: TranslateService = inject(TranslateService);
+  private router: Router = inject(Router);
+  private operationLogsService: OperationLogsService = inject(OperationLogsService);
+
   /** Observable resolving record data */
   record$: any;
 
@@ -39,18 +43,6 @@ export class EntitiesLocalDetailViewComponent implements OnInit, DetailRecord {
 
   /** Is operation log enabled */
   isEnabledOperationLog: boolean = false;
-
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   * @param router - Router
-   * @param operationLogsService - OperationLogsService
-   */
-  constructor(
-    private translateService: TranslateService,
-    private router: Router,
-    private operationLogsService: OperationLogsService
-  ) {}
 
   /** OnInit hook */
   ngOnInit(): void {

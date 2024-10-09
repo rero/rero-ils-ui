@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PatronService } from '../service/patron.service';
@@ -25,13 +25,7 @@ import { PatronService } from '../service/patron.service';
 })
 export class PatronNamePipe implements PipeTransform {
 
-  /**
-   * Constructor
-   * @param _patronService: PatronService
-   */
-  constructor(
-    private _patronService: PatronService
-  ) {}
+  private patronService: PatronService = inject(PatronService);
 
   /**
    * Build the usage name for a patron based on its PID
@@ -39,8 +33,8 @@ export class PatronNamePipe implements PipeTransform {
    * @returns an observable returning the patron name as string if patron exists.
    */
   transform(patronPid: string): Observable<undefined | string> {
-    return this._patronService.getPatronByPid(patronPid).pipe(
-      map((metadata: any) => this._patronService.getFormattedName(metadata))
+    return this.patronService.getPatronByPid(patronPid).pipe(
+      map((metadata: any) => this.patronService.getFormattedName(metadata))
     )
   }
 

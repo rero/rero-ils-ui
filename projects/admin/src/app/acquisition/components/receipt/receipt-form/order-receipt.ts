@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ApiService } from '@rero/ng-core';
 import moment from 'moment';
 import { IAcqNote } from '../../../classes/common';
@@ -73,9 +73,7 @@ export interface ICreateLineMessage {
 })
 export class OrderReceipt {
 
-  constructor(
-    private _apiService: ApiService
-  ) {}
+  private apiService: ApiService = inject(ApiService);
 
   /** Model */
   get model(): IAcqReceiptModel {
@@ -119,9 +117,9 @@ export class OrderReceipt {
     return {
       pid: record.pid,
       $schema: record.$schema,
-      acq_order: { $ref: this._apiService.getRefEndpoint('acq_orders', record.acq_order.pid) },
-      library: { $ref: this._apiService.getRefEndpoint('libraries', record.library.pid) },
-      organisation: { $ref: this._apiService.getRefEndpoint('organisation', record.organisation.pid) },
+      acq_order: { $ref: this.apiService.getRefEndpoint('acq_orders', record.acq_order.pid) },
+      library: { $ref: this.apiService.getRefEndpoint('libraries', record.library.pid) },
+      organisation: { $ref: this.apiService.getRefEndpoint('organisation', record.organisation.pid) },
       reference: record.reference,
       exchange_rate: record.exchange_rate,
       amount_adjustments: record.amount_adjustments,

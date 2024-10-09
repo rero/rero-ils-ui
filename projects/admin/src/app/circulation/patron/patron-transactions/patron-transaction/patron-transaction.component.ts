@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
 import {
   PatronTransactionEventFormComponent
 } from '../patron-transaction-event-form/patron-transaction-event-form.component';
+import { DialogService } from 'primeng/dynamicdialog';
 
 
 @Component({
@@ -31,6 +31,11 @@ import {
   templateUrl: './patron-transaction.component.html'
 })
 export class PatronTransactionComponent implements OnInit {
+
+  private dialogService: DialogService = inject(DialogService);
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
+  private router: ActivatedRoute = inject(ActivatedRoute);
 
   // COMPONENT ATTRIBUTES ============================================
   /** Patron transaction */
@@ -68,23 +73,9 @@ export class PatronTransactionComponent implements OnInit {
   get organisation() {
     return this.organisationService.organisation;
   }
-  // CONSTRUCTOR & HOOKS ============================================
-  /**
-   * Constructor
-   * @param organisationService - OrganisationService
-   * @param patronTransactionService - PatronTransactionService
-   * @param modalService - BsModalService
-   * @param router - ActivatedRoute
-   */
-  constructor(
-    private organisationService: OrganisationService,
-    private patronTransactionService: PatronTransactionService,
-    private modalService: BsModalService,
-    private router: ActivatedRoute
-  ) {}
-
+  // HOOKS ============================================
   /** OnInit hook */
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.transaction) {
       // Open the current event if the url parameter match with transaction pid
       if (this.router.snapshot.queryParams.event === this.transaction.pid) {
@@ -94,13 +85,12 @@ export class PatronTransactionComponent implements OnInit {
     }
   }
 
-
   // COMPONENT FUNCTIONS ========================================================
 
   /** Check if the transaction contains a 'dispute' linked event
    *  @return: True if transaction is still open and contains a 'dispute' event; False otherwise
    */
-  public isDisputed() {
+  public isDisputed(): boolean {
     return (this.transaction.status === PatronTransactionStatus.OPEN)
       ? this.transaction.events.some( e => e.type === PatronTransactionEventType.DISPUTE)
       : false;
@@ -111,12 +101,13 @@ export class PatronTransactionComponent implements OnInit {
    * @param action: the action to execute (pay, dispute, resolve)
    * @param model: if action == 'pay', if we pay a part or the total amount of the transaction ('part'|'full')
    */
-  patronTransactionAction(action: string, mode?: string) {
-    const initialState = {
-      action,
-      mode,
-      transactions: [this.transaction]
-    };
-    this.modalService.show(PatronTransactionEventFormComponent, {initialState});
+  patronTransactionAction(action: string, mode?: string): void {
+    this.dialogService.open(PatronTransactionEventFormComponent, {
+      data: {
+        action,
+        mode,
+        transactions: [this.transaction]
+      }
+    })
   }
 }

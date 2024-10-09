@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
-import { IPermissions, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Component, inject, Input } from '@angular/core';
+import { IPermissions, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
+import { DialogService } from 'primeng/dynamicdialog';
 import { CirculationLogsComponent } from './circulation-logs.component';
 
 @Component({
@@ -38,14 +38,13 @@ import { CirculationLogsComponent } from './circulation-logs.component';
 })
 export class CirculationLogsDialogComponent {
 
+  private dialogService: DialogService = inject(DialogService);
+
   // COMPONENT ATTRIBUTES =====================================================
   /** Resource pid */
   @Input() resourcePid: string;
   /** Resource type */
   @Input() resourceType: 'item'|'loan' = 'item';
-
-  /** Modal ref */
-  bsModalRef: BsModalRef;
 
   /** return all permissions */
   permissions: IPermissions = PERMISSIONS;
@@ -53,28 +52,14 @@ export class CirculationLogsDialogComponent {
   /** Available operators for permissions */
   permissionOperator = PERMISSION_OPERATOR;
 
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param modalService - BsModalService
-   */
-  constructor(private modalService: BsModalService) {}
-
   // COMPONENT FUNCTIONS ======================================================
   /** Open operation logs dialog */
   openDialog(): void {
-    const config = {
-      ignoreBackdropClick: false,
-      keyboard: true,
-      initialState: {
+    this.dialogService.open(CirculationLogsComponent, {
+      dismissableMask: true,
+      data: {
         resourcePid: this.resourcePid,
         resourceType: this.resourceType
-      }
-    };
-    this.bsModalRef = this.modalService.show(CirculationLogsComponent, config);
-    this.bsModalRef.content.dialogClose$.subscribe((value: boolean) => {
-      if (value) {
-        this.bsModalRef.hide();
       }
     });
   }

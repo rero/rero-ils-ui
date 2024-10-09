@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ApiService, RecordService } from '@rero/ng-core';
+import { BaseApi, ItemStatus, UserService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { BaseApi, ItemStatus, UserService } from '@rero/shared';
 import { Item, ItemAction, ItemNoteType } from '../classes/items';
 
 @Injectable({
@@ -27,19 +27,10 @@ import { Item, ItemAction, ItemNoteType } from '../classes/items';
 })
 export class ItemsService {
 
-  /**
-   * constructor
-   * @param _http - HttpClient
-   * @param _userService - UserService
-   * @param _recordService - RecordService
-   * @param _apiService - ApiService
-   */
-  constructor(
-    private _http: HttpClient,
-    private _userService: UserService,
-    private _recordService: RecordService,
-    private _apiService: ApiService
-  ) { }
+  private httpClient: HttpClient = inject(HttpClient);
+  private userService: UserService = inject(UserService);
+  private recordService: RecordService = inject(RecordService);
+  private apiService: ApiService = inject(ApiService);
 
   /**
    * Get item by pid from elasticsearch
@@ -47,7 +38,7 @@ export class ItemsService {
    * @returns Observable<any>
    */
   getByPidFromEs(pid: string): Observable<any> {
-    return this._recordService.getRecords(
+    return this.recordService.getRecords(
       'items', `pid:${pid}`, 1, 1, undefined, undefined, BaseApi.reroJsonheaders
     ).pipe(map((result: any) => result.hits.hits[0]));
   }
@@ -58,14 +49,14 @@ export class ItemsService {
    * @return Observable<any>
    */
   getRequestedLoans(libraryPid): Observable<any> {
-    const itemApiUrl = this._apiService.getEndpointByType('item');
+    const itemApiUrl = this.apiService.getEndpointByType('item');
     const url = `${itemApiUrl}/requested_loans/${libraryPid}`;
-    return this._http.get<any>(url).pipe(
+    return this.httpClient.get<any>(url).pipe(
       map(data => data.hits),
-      map(hits => this._recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
       map(hits => hits.map(
         data => {
-          const item = data.item;
+          const { item } = data;
           if (data.loan) {
             item.loan = data.loan;
           }
@@ -82,13 +73,13 @@ export class ItemsService {
    * @return Observable<any>
    */
   doValidateRequest(item, transactionLibraryPid): Observable<any> {
-    const itemApiUrl = this._apiService.getEndpointByType('item');
+    const itemApiUrl = this.apiService.getEndpointByType('item');
     const url = `${itemApiUrl}/validate_request`;
-    return this._http.post<any>(url, {
+    return this.httpClient.post<any>(url, {
       item_pid: item.pid,
       pid: item.loan.pid,
       transaction_library_pid: transactionLibraryPid,
-      transaction_user_pid: this._userService.user.patronLibrarian.pid
+      transaction_user_pid: this.userService.user.patronLibrarian.pid
     }).pipe(
       map(data => {
         const itemData = data.metadata;
@@ -105,12 +96,12 @@ export class ItemsService {
    * @return Observable<any>
    */
   getItem(barcode: string, patronPid?: string): Observable<any> {
-    const itemApiUrl = this._apiService.getEndpointByType('item');
+    const itemApiUrl = this.apiService.getEndpointByType('item');
     let url = `${itemApiUrl}/barcode/${barcode}`;
     if (patronPid) {
-      url = url + `?patron.patron_pid=${patronPid}`;
+      url += `?patron.patron_pid=${patronPid}`;
     }
-    return this._http.get<any>(url).pipe(
+    return this.httpClient.get<any>(url).pipe(
       map(data => {
         const item = new Item(data.metadata.item);
         if (data.metadata.loan) {
@@ -135,11 +126,11 @@ export class ItemsService {
    * @param transactionLibraryPid: transaction library
    */
   checkin(barcode: string, transactionLibraryPid: string) {
-    const itemApiUrl = this._apiService.getEndpointByType('item');
-    return this._http.post<any>(`${itemApiUrl}/checkin`, {
+    const itemApiUrl = this.apiService.getEndpointByType('item');
+    return this.httpClient.post<any>(`${itemApiUrl}/checkin`, {
       item_barcode: barcode,
       transaction_library_pid: transactionLibraryPid,
-      transaction_user_pid: this._userService.user.patronLibrarian.pid
+      transaction_user_pid: this.userService.user.patronLibrarian.pid
     }).pipe(
       map(data => {
         const item = new Item(data.metadata);
@@ -185,7 +176,7 @@ export class ItemsService {
    * @param additionalParams: additional parameters to send as query string arguments
    */
   doAction(item, transactionLibraryPid: string, userPid: string, patronPid?: string, additionalParams?: any) {
-    const itemApiUrl = this._apiService.getEndpointByType('item');
+    const itemApiUrl = this.apiService.getEndpointByType('item');
     const action = item.currentAction;
     const url = `${itemApiUrl}/${action}`;
 
@@ -214,7 +205,7 @@ export class ItemsService {
       queryParams[key] = true;
     }
 
-    return this._http.post<any>(url, data, {params: queryParams}).pipe(
+    return this.httpClient.post<any>(url, data, {params: queryParams}).pipe(
       map(itemData => {
         const newItem = new Item(itemData.metadata);
         newItem.actionDone = action;
@@ -231,9 +222,9 @@ export class ItemsService {
    * @return an observable on the API call response
    */
   getPickupLocations(itemPid): Observable<any> {
-    const itemApiUrl = this._apiService.getEndpointByType('item');
+    const itemApiUrl = this.apiService.getEndpointByType('item');
     const url = `${itemApiUrl}/${itemPid}/pickup_locations`;
-    return this._http.get<any>(url).pipe(
+    return this.httpClient.get<any>(url).pipe(
       map(data => data.locations),
       catchError(e => {
         if (e.status === 404) {
@@ -258,8 +249,8 @@ export class ItemsService {
     if (patronBarcode != null) {
       params = params.set('patron_barcode', patronBarcode);
     }
-    const itemApiUrl = this._apiService.getEndpointByType('item');
-    return this._http.get(`${itemApiUrl}/${itemPid}/can_request`, { params });
+    const itemApiUrl = this.apiService.getEndpointByType('item');
+    return this.httpClient.get(`${itemApiUrl}/${itemPid}/can_request`, { params });
   }
 
   /** Is a callout wrapper is required for this item.
@@ -267,7 +258,7 @@ export class ItemsService {
    * A callout wrapper is a visual css information to indicate to user than something happens
    * on an element
    *
-   * @param item: the item to analyse
+   * @param item: the item to analyze
    * @param type: the callout type (error, warning, info, ...)
    * @return true if the callout is required, false otherwise
    */

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { PatronService } from '../../../service/patron.service';
 import { CirculationService } from '../../services/circulation.service';
 
@@ -25,18 +25,11 @@ import { CirculationService } from '../../services/circulation.service';
 })
 export class PendingComponent implements OnInit {
 
+  private patronService: PatronService = inject(PatronService);
+  private circulationService: CirculationService = inject(CirculationService);
+
   /** Array of loans */
   loans: [];
-
-  /**
-   * Constructor
-   * @param patronService - PatronService
-   * @param circulationService - CirculationService
-   */
-  constructor(
-    private patronService: PatronService,
-    private circulationService: CirculationService
-  ) {}
 
   /**
    * Init

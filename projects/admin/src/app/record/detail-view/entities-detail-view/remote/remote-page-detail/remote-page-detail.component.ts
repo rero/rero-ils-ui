@@ -14,15 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Location } from '@angular/common';
-import { Component, ComponentFactoryResolver } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { DetailComponent, RecordService, RecordUiService } from '@rero/ng-core';
+import { Component, inject } from '@angular/core';
+import { DetailComponent } from '@rero/ng-core';
 import { AppSettingsService, Entity } from '@rero/shared';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'admin-remote-page-detail',
@@ -30,35 +24,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class RemotePageDetailComponent extends DetailComponent {
 
-  /**
-   * Constructor
-   * @param route - ActivatedRoute
-   * @param router - Router
-   * @param location - Location
-   * @param componentFactoryResolver - ComponentFactoryResolver
-   * @param recordService - RecordService
-   * @param recordUiService - RecordUiService
-   * @param toastrService - ToastrService
-   * @param translate - TranslateService
-   * @param spinner - NgxSpinnerService
-   * @param bsModalService - BsModalService
-   * @param appSettingsService - AppSettingsService
-   */
-  constructor(
-    protected route: ActivatedRoute,
-    protected router: Router,
-    protected location: Location,
-    protected componentFactoryResolver: ComponentFactoryResolver,
-    protected recordService: RecordService,
-    protected recordUiService: RecordUiService,
-    protected toastrService: ToastrService,
-    protected translate: TranslateService,
-    protected spinner: NgxSpinnerService,
-    protected bsModalService: BsModalService,
-    protected appSettingsService: AppSettingsService
-  ) {
-    super(route, router, location, componentFactoryResolver, recordService, recordUiService, toastrService, translate, spinner);
-  }
+  private appSettingsService: AppSettingsService = inject(AppSettingsService);
 
     /**
    * Launch an expert search on the document view.

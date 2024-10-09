@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { IPreview } from '@app/admin/shared/preview-email/IPreviewInterface';
 import { ApiService, Record, RecordService, RecordUiService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -31,12 +32,16 @@ import {
   IAcqOrder,
   IAcqOrderLine
 } from '../classes/order';
-import { IPreview } from '@app/admin/shared/preview-email/IPreviewInterface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AcqOrderApiService extends BaseApi {
+
+  private httpClient: HttpClient = inject(HttpClient);
+  private recordService: RecordService = inject(RecordService);
+  private recordUiService: RecordUiService = inject(RecordUiService);
+  private apiService: ApiService = inject(ApiService);
 
   // SERVICES ATTRIBUTES ======================================================
   /** Default values */
@@ -68,23 +73,6 @@ export class AcqOrderApiService extends BaseApi {
   /** expose _deletedOrderLineSubject$ in 'readonly' mode */
   get deletedOrderLineSubject$(): Observable<IAcqOrderLine> { return this._deletedOrderLineSubject$.asObservable(); }
 
-  // CONSTRUCTOR ==============================================================
-  /**
-   * Constructor
-   * @param _http - HttpClient
-   * @param _recordService - RecordService
-   * @param _recordUiService - RecordUiService
-   * @param _apiService - ApiService
-   */
-  constructor(
-    private _http: HttpClient,
-    private _recordService: RecordService,
-    private _recordUiService: RecordUiService,
-    private _apiService: ApiService
-  ) {
-    super();
-  }
-
   // SERVICE PUBLIC FUNCTIONS =================================================
   /**
    * Load an order from this pid
@@ -92,7 +80,7 @@ export class AcqOrderApiService extends BaseApi {
    * @return: the corresponding AcqOrder
    */
   getOrder(orderPid: string): Observable<IAcqOrder> {
-    return this._recordService.getRecord('acq_orders', orderPid, 0, BaseApi.reroJsonheaders).pipe(
+    return this.recordService.getRecord('acq_orders', orderPid, 0, BaseApi.reroJsonheaders).pipe(
         map(data => ({...this.orderDefaultData, ...data.metadata}) )
       );
   }
@@ -103,7 +91,7 @@ export class AcqOrderApiService extends BaseApi {
    */
   getOrderPreview(orderPid: string): Observable<IPreview> {
     const apiUrl = `/api/acq_order/${orderPid}/acquisition_order/preview`;
-    return this._http.get<any>(apiUrl);
+    return this.httpClient.get<any>(apiUrl);
   }
 
   /**
@@ -113,7 +101,7 @@ export class AcqOrderApiService extends BaseApi {
    */
   sendOrder(orderPid: string, emails: AcqAddressRecipient[]): Observable<Notification> {
     const apiUrl = `/api/acq_order/${orderPid}/send_order`;
-    return this._http.post<any>(apiUrl, {emails}).pipe(
+    return this.httpClient.post<any>(apiUrl, {emails}).pipe(
       map((data: any) => new Notification(data.data))
     );
   }
@@ -121,7 +109,7 @@ export class AcqOrderApiService extends BaseApi {
   getOrderHistory(orderPid: string) {
     // check if orderPid is already present into the previously loaded history items.
     // If YES :: not needed to reload the history, just update the `current` attribute of history items
-    const orderRef = new URL(this._apiService.getRefEndpoint('acq_orders', orderPid));
+    const orderRef = new URL(this.apiService.getRefEndpoint('acq_orders', orderPid));
     const idx = this._acqOrderHistory.findIndex(item => item.$ref === orderRef.toString());
     if (idx !== -1) {
       if (!this._acqOrderHistory[idx].current) {
@@ -132,7 +120,7 @@ export class AcqOrderApiService extends BaseApi {
     } else {
       // If NO :: Load the acquisition order history
       const apiUrl = `/api/acq_order/${orderPid}/history`;
-      this._http
+      this.httpClient
         .get<AcqOrderHistoryVersionResponseInterface[]>(apiUrl)
         .subscribe(versions => {
           versions.map(version => version.current = version.$ref === orderRef.toString());
@@ -153,10 +141,10 @@ export class AcqOrderApiService extends BaseApi {
     if (extraQuery) {
       query += ` ${extraQuery}`;
     }
-    return this._recordService
+    return this.recordService
       .getRecords('acq_order_lines', query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, 'priority')
       .pipe(
-        map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((result: Record) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map(hit => ({...this.orderDefaultData, ...hit.metadata}) ))
       );
   }
@@ -168,7 +156,7 @@ export class AcqOrderApiService extends BaseApi {
    * @param orderLine: the order line to delete
    */
   deleteOrderLine(orderLine: IAcqOrderLine): void {
-    this._recordUiService
+    this.recordUiService
       .deleteRecord('acq_order_lines', orderLine.pid)
       .subscribe((success: boolean) => {
           if (success) {

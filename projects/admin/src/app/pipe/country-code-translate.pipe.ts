@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Pipe({
@@ -23,11 +23,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class CountryCodeTranslatePipe implements PipeTransform {
 
-  /**
-   * Constructor
-   * @param _translateService - TranslateService
-   */
-  constructor(private _translateService: TranslateService) {}
+  private translateService: TranslateService = inject(TranslateService);
 
   /**
    * Get the translation for a country code
@@ -35,7 +31,7 @@ export class CountryCodeTranslatePipe implements PipeTransform {
    * @returns string the translated country code.
    */
   transform(countryCode: string): string {
-    return this._translateService.instant('country_' + countryCode);
+    return this.translateService.instant('country_' + countryCode);
   }
 
 }

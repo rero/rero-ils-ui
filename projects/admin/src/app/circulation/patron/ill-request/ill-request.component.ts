@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { IllRequestApiService } from '@app/admin/api/ill-request-api.service';
 import { PatronService } from '@app/admin/service/patron.service';
 import { Observable, of } from 'rxjs';
@@ -27,20 +27,12 @@ import { switchMap } from 'rxjs/operators';
 })
 export class IllRequestComponent implements OnInit {
 
+  private illRequestApiService: IllRequestApiService = inject(IllRequestApiService);
+  private patronService: PatronService = inject(PatronService);
+
   // COMPONENT ATTRIBUTES =====================================================
   /** Ill records observable */
   illRequests$: Observable<any>;
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param illRequestApiService - IllRequestApiService
-   * @param patronService - PatronService
-   */
-  constructor(
-    private illRequestApiService: IllRequestApiService,
-    private patronService: PatronService
-  ) { }
 
   /** OnInit hook */
   ngOnInit(): void {

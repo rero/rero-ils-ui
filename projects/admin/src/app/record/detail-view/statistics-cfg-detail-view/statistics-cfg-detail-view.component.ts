@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from "@angular/common/http";
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from "@rero/ng-core";
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable, Subscription } from 'rxjs';
@@ -24,9 +24,10 @@ import { Observable, Subscription } from 'rxjs';
   selector: "admin-statitics-cfg-view",
   templateUrl: "./statistics-cfg-detail-view.component.html",
 })
-export class StatisticsCfgDetailViewComponent
-  implements DetailRecord, OnInit, OnDestroy
-{
+export class StatisticsCfgDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+
+  private httpClient: HttpClient = inject(HttpClient);
+  private apiService: ApiService = inject(ApiService);
 
   /** Observable resolving record data */
   record$: Observable<any>;
@@ -42,14 +43,6 @@ export class StatisticsCfgDetailViewComponent
 
   /** Subscription to (un)follow the record$ Observable */
   private subscriptions = new Subscription();
-
-  /**
-   * Constructor
-   *
-   * @param http - HttpClient
-   * @param apiService = ApiService
-   */
-  constructor(private http: HttpClient, private apiService: ApiService) {}
 
   /** OnInit hook */
   ngOnInit() {
@@ -71,7 +64,7 @@ export class StatisticsCfgDetailViewComponent
     }
     const { pid } = this.record.metadata;
     const baseUrl = this.apiService.endpointPrefix;
-    this.http
+    this.httpClient
       .get(`${baseUrl}/stats_cfg/live/${pid}`)
       .subscribe((res) => (this.liveData = res));
   }

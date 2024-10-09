@@ -15,13 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
 import { IssueItemStatus, UserService } from '@rero/shared';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'admin-received-issue',
@@ -29,7 +31,14 @@ import { IssueItemStatus, UserService } from '@rero/shared';
   styleUrls: ['../serial-holding-detail-view.style.scss'],
   providers: [IssueService]
 })
-export class ReceivedIssueComponent implements OnInit {
+export class ReceivedIssueComponent implements OnInit, OnDestroy {
+
+  private holdingService: HoldingsService = inject(HoldingsService);
+  private translateService: TranslateService = inject(TranslateService);
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private recordUiService: RecordUiService = inject(RecordUiService);
+  private issueService: IssueService = inject(IssueService);
+  private userService: UserService = inject(UserService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the issue to display */
@@ -49,6 +58,8 @@ export class ReceivedIssueComponent implements OnInit {
   /** Record permissions */
   recordPermissions: any = {};
 
+  private subscription = new Subscription();
+
   // GETTER & SETTER ==========================================================
 
   /**
@@ -67,25 +78,6 @@ export class ReceivedIssueComponent implements OnInit {
       .sort((a: string, b: string) => new Date(b).getTime() - new Date(a).getTime())[0];
   }
 
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param holdingService - HoldingService
-   * @param translateService - TranslateService
-   * @param recordPermissionService - RecordPermissionService
-   * @param recordUiService: RecordUiService
-   * @param issueService: IssueService
-   * @param userService: UserService
-   */
-  constructor(
-    private holdingService: HoldingsService,
-    private translateService: TranslateService,
-    private recordPermissionService: RecordPermissionService,
-    private recordUiService: RecordUiService,
-    private issueService: IssueService,
-    private userService: UserService
-  ) { }
-
   // COMPONENT FUNCTIONS ======================================================
 
   /** OnInit hook */
@@ -98,6 +90,10 @@ export class ReceivedIssueComponent implements OnInit {
         permission
       ));
     this.isClaimAllowed = this.issueService.isClaimAllowed(this.issue.metadata.issue.status);
+  }
+
+  ngOnDestroy(): void {
+      this.subscription.unsubscribe();
   }
 
   /**
@@ -134,7 +130,9 @@ export class ReceivedIssueComponent implements OnInit {
 
   /** Open claim dialog */
   openClaimEmailDialog(): void {
-    const modalRef = this.issueService.openClaimEmailDialog(this.issue);
-    modalRef.content.recordChange.subscribe((record: any) => this.issue = record);
+    const ref: DynamicDialogRef = this.issueService.openClaimEmailDialog(this.issue);
+    this.subscription.add(
+      ref.onClose.subscribe((record: any) => this.issue = record)
+    );
   }
 }

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,28 +14,44 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IMenuParent } from "./menu-interface";
 
-export const MENU_USER: IMenuParent[] = [
+import { MenuItem } from "primeng/api";
+import { MENU_IDS } from "./menu-ids";
+
+export const MENU_USER: MenuItem[] = [
   {
-    name: '$symbolName',
-    attributes: {
-      id: 'my-account-menu',
-      class: 'dropdown-menu dropdown-menu-right'
-    },
-    extras: { iconClass: 'fa fa-user'},
-    children: [
+    label: 'Help',
+    translateLabel: 'Help',
+    icon: 'fa fa-info',
+    id: MENU_IDS.USER.HELP,
+    url: '/help',
+  },
+  {
+    label: '$symbolName',
+    translateLabel: '$symbolName',
+    id: MENU_IDS.USER.MENU,
+    icon: 'fa fa-user',
+    items: [
       {
-        name: 'Public interface',
-        uri: '/',
-        attributes: { id: 'libraries-menu' },
-        extras: { iconClass: 'fa fa-users' },
+        label: 'Language',
+        translateLabel: 'Language',
+        id: MENU_IDS.USER.LANGUAGE,
+        icon: 'fa fa-language',
+        items: [],
       },
       {
-        name: 'Logout',
+        label: 'Public interface',
+        translateLabel: 'Public interface',
+        id: MENU_IDS.USER.PUBLIC_INTERFACE,
+        icon: 'fa fa-users',
+        uri: '/',
+      },
+      {
+        label: 'Logout',
+        translateLabel: 'Logout',
+        id: MENU_IDS.USER.LOGOUT,
+        icon: 'fa fa-sign-out',
         uri: '/signout',
-        attributes: { id: 'logout-menu' },
-        extras: { iconClass: 'fa fa-sign-out' },
       }
     ]
   }

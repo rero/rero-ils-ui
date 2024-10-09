@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,7 +34,7 @@ export class DocumentProvisionActivityPipe implements PipeTransform {
     provisionActivity
       .filter((element: any) => '_text' in element && 'statement' in element)  // Keep only element with '_text'
       .map((element: any) => {
-        const type =  element.type;
+        const { type } = element;
         if (!(type in results)) {  // if type isn't yet init
           results[type] = [];
         }

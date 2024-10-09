@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Message, PatronApiService } from '../../api/patron-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
@@ -31,21 +31,14 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
 })
 export class PatronProfileMessageComponent implements OnInit, OnDestroy {
 
+  private patronApiService: PatronApiService = inject(PatronApiService);
+  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+
   /** Observable subscription */
   private _subscription = new Subscription();
 
   /** patron messages */
   messages: Message[] = [];
-
-  /**
-   * Constructor
-   * @param patronApiService - PatronApiService
-   * @param patronProfileMenuService - PatronProfileMenuService
-   */
-  constructor(
-    private patronApiService: PatronApiService,
-    private patronProfileMenuService: PatronProfileMenuService
-  ) {}
 
   /** OnInit hook */
   ngOnInit(): void {

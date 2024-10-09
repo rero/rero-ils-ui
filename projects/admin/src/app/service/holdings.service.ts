@@ -16,7 +16,7 @@
  */
 
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { IssueItemStatus } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -35,11 +35,7 @@ export interface PredictionIssue {
 })
 export class HoldingsService {
 
-  /**
-   * Constructor
-   * @param _http - HttpClient
-   */
-  constructor(private _http: HttpClient) { }
+  private httpClient: HttpClient = inject(HttpClient);
 
   /**
    * Get prediction preview for given serial patterns.
@@ -51,7 +47,7 @@ export class HoldingsService {
     const url = `/api/holding/${holdingPid}/patterns/preview`;
     let params = new HttpParams();
     params = params.set('size', size.toString());
-    return this._http.get<any>(url, { params }).pipe(
+    return this.httpClient.get<any>(url, { params }).pipe(
       map(data => data.issues.reverse())
     );
   }
@@ -76,7 +72,7 @@ export class HoldingsService {
         data.issue.received_date = receivedDate;
       }
     }
-    return this._http.post<any>(url, data);
+    return this.httpClient.post<any>(url, data);
   }
 
   /**
@@ -107,7 +103,7 @@ export class HoldingsService {
     if (patronBarcode != null) {
       params = params.set('patron_barcode', patronBarcode);
     }
-    return this._http.get(`/api/holding/${holdingPid}/can_request`, { params });
+    return this.httpClient.get(`/api/holding/${holdingPid}/can_request`, { params });
   }
 
   /**
@@ -117,7 +113,7 @@ export class HoldingsService {
    */
    getPickupLocations(holdingPid): Observable<any> {
     const url = `/api/holding/${holdingPid}/pickup_locations`;
-    return this._http.get<any>(url).pipe(
+    return this.httpClient.get<any>(url).pipe(
       map(data => data.locations),
       catchError(e => {
         if (e.status === 404) {

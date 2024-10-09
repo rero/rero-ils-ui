@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Record, RecordService, RecordUiService } from '@rero/ng-core';
+import { BaseApi } from '@rero/shared';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { BaseApi } from '@rero/shared';
 import { IAcqReceipt, IAcqReceiptLine } from '../classes/receipt';
 import { AcqResponseReceiptLineStatus, ICreateLineMessage, IResponseReceiptLine } from '../components/receipt/receipt-form/order-receipt';
 
@@ -29,6 +29,11 @@ import { AcqResponseReceiptLineStatus, ICreateLineMessage, IResponseReceiptLine 
   providedIn: 'root'
 })
 export class AcqReceiptApiService {
+
+  private apiService: RecordService = inject(RecordService);
+  private recordUiService: RecordUiService = inject(RecordUiService);
+  private httpClient: HttpClient = inject(HttpClient);
+  private translateService: TranslateService = inject(TranslateService);
 
   // SERVICES ATTRIBUTES ======================================================
   /** The resource name for an acquisition receipt */
@@ -63,21 +68,6 @@ export class AcqReceiptApiService {
   get deletedReceiptSubject$(): Observable<IAcqReceipt> { return this._deletedReceiptSubject$.asObservable(); }
   get deletedReceiptLineSubject$(): Observable<IAcqReceiptLine> { return this._deletedReceiptLineSubject$.asObservable(); }
 
-  // CONSTRUCTOR ==============================================================
-  /**
-   * Constructor
-   * @param _recordService - RecordService
-   * @param _recordUiService - RecordUiService
-   * @param _http - HttpClient
-   * @param _translateService - TranslateService
-   */
-  constructor(
-    private _recordService: RecordService,
-    private _recordUiService: RecordUiService,
-    private _http: HttpClient,
-    private _translateService: TranslateService
-  ) {}
-
   // READ/LIST FUNCTIONS ======================================================
   /**
    * Get acquisition receipt record.
@@ -85,7 +75,7 @@ export class AcqReceiptApiService {
    * @returns ElasticSearch response for this receipt or null if error occurred.
    */
   getReceipt(pid: string): Observable<IAcqReceipt> {
-    return this._recordService
+    return this.apiService
       .getRecord(this.resourceName, pid, 1, BaseApi.reroJsonheaders)
       .pipe(
         map(data => ({...this.receiptDefaultData, ...data.metadata}) )
@@ -103,10 +93,10 @@ export class AcqReceiptApiService {
     sort?: string
   }): Observable<IAcqReceipt[]> {
     options = {...this._defaultRecordOptions, ...options};  // add some default params
-    return this._recordService
+    return this.apiService
       .getRecords(this.resourceName, query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, options.headers, options.sort)
       .pipe(
-        map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((result: Record) => this.apiService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map(hit => ({...this.receiptDefaultData, ...hit.metadata}) ))
       );
   }
@@ -127,11 +117,11 @@ export class AcqReceiptApiService {
    */
   getReceiptLines(receiptPid: string): Observable<IAcqReceiptLine[]> {
     const query = `acq_receipt.pid:${receiptPid}`;
-    return this._recordService
+    return this.apiService
       .getRecords('acq_receipt_lines', query, 1, RecordService.MAX_REST_RESULTS_SIZE,
                   undefined, undefined, BaseApi.reroJsonheaders, 'receipt_date')
       .pipe(
-        map((result: Record) => this._recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((result: Record) => this.apiService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map(hit => ({...this.receiptLineDefaultData, ...hit.metadata}) ))
       );
   }
@@ -143,7 +133,7 @@ export class AcqReceiptApiService {
    * @returns created receipt data if success or null if failed
    */
   createReceipt(record: any): Observable<IAcqReceipt> {
-    return this._recordService
+    return this.apiService
       .create(this.resourceName, record)
       .pipe(
         map((data: any) => ({...this.receiptDefaultData, ...data.metadata}) )
@@ -157,9 +147,9 @@ export class AcqReceiptApiService {
    * @returns the list of performed data. Each line has a status to specify if the creation was well done.
    */
   createReceiptLines(receiptPid: string, lines: IAcqReceiptLine[]): Observable<ICreateLineMessage> {
-    const generalErrorMessage = this._translateService.instant('Error proceeding receipt lines creation');
+    const generalErrorMessage = this.translateService.instant('Error proceeding receipt lines creation');
     const url = `/api/acq_receipt/${receiptPid}/lines`;
-    return this._http
+    return this.httpClient
       .post<any>(url, lines)
       .pipe(
         map((response: IResponseReceiptLine) => response.response),
@@ -186,7 +176,7 @@ export class AcqReceiptApiService {
    * @returns the API response with receipt data or null if operation failed.
    */
   updateReceipt(receiptPid: string, record: any): Observable<any|null> {
-    return this._recordService
+    return this.apiService
       .update(this.resourceName, receiptPid, record)
       .pipe(
         map((response: any) => ({ ...this.receiptDefaultData, ...response.metadata}) )
@@ -200,7 +190,7 @@ export class AcqReceiptApiService {
    * @param receipt - the receipt to delete
    */
   delete(receipt: IAcqReceipt): void {
-    this._recordUiService
+    this.recordUiService
       .deleteRecord(this.resourceName, receipt.pid)
       .subscribe((success: boolean) => {
           if (success) {
@@ -216,7 +206,7 @@ export class AcqReceiptApiService {
    * @param receiptLine - the receipt line to delete
    */
   deleteReceiptLine(receiptLine: IAcqReceiptLine): void {
-    this._recordUiService
+    this.recordUiService
       .deleteRecord('acq_receipt_lines', receiptLine.pid)
       .subscribe((success: boolean) => {
         if (success) {

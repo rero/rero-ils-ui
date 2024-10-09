@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ItemsService } from '@app/admin/service/items.service';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,6 +27,11 @@ import { map } from 'rxjs/operators';
   templateUrl: './item-transaction.component.html'
 })
 export class ItemTransactionComponent implements OnInit, OnDestroy {
+
+  private userService: UserService = inject(UserService);
+  private translateService: TranslateService = inject(TranslateService);
+  private itemService: ItemsService = inject(ItemsService);
+  private loanService: LoanService = inject(LoanService);
 
   // COMPONENTS ATTRIBUTES ===============================================================
   /** Loan Record */
@@ -70,22 +74,6 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
     return this.translateService.instant('No pickup location');
   }
 
-
-  // CONSTRUCTOR & HOOKS ==================================================================
-  /**
-   * constructor
-   * @param userService - User service
-   * @param translateService - TranslateService
-   * @param itemService - ItemsService
-   * @param loanService - LoanService
-   */
-  constructor(
-    private userService: UserService,
-    private translateService: TranslateService,
-    private itemService: ItemsService,
-    private loanService: LoanService
-  ) {}
-
   /** OnInit hook */
   ngOnInit() {
     this.currentUser = this.userService.user;
@@ -122,11 +110,9 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   }
 
   /** Show a confirmation dialog box for cancel request. */
-  showCancelRequestDialog(): void {
-    this.loanService.cancelRequestDialog().subscribe((confirm: boolean) => {
-      if (confirm) {
-        this.emitCancelRequest();
-      }
+  showCancelRequestDialog(event: Event): void {
+    this.loanService.cancelRequestDialog(event, () => {
+      this.emitCancelRequest();
     });
   }
 

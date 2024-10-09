@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,6 @@
 
 import { Injectable } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { TranslateService } from '@ngx-translate/core';
 import { RecordSearchPageComponent } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { CollectionBriefComponent } from '../collection-brief/collection-brief.component';
@@ -34,14 +33,6 @@ export class CollectionsRouteService extends BaseRoute implements ResourceRouteI
   private availableConfig = [];
 
   /**
-   * Constructor
-   * @param translateService - TranslateService
-   */
-  constructor(translateService: TranslateService) {
-    super(translateService);
-  }
-
-  /**
    * Resource name of route(s)
    */
   getResources(): string[] {
@@ -51,7 +42,7 @@ export class CollectionsRouteService extends BaseRoute implements ResourceRouteI
   /**
    * Create route
    * @param viewcode - string
-   * @return dictionnary route configuration or null if loaded
+   * @return dictionary route configuration or null if loaded
    */
   create(viewcode: string): null | {} {
     if (!(this.availableConfig.some(v => v === viewcode))) {

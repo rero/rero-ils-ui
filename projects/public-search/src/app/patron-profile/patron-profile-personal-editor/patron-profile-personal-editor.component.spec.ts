@@ -21,7 +21,6 @@ import { FormlyModule } from '@ngx-formly/core';
 import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserService, testUserPatronWithSettings } from '@rero/shared';
-import { ToastrModule } from 'ngx-toastr';
 import { PatronProfilePersonalEditorComponent } from './patron-profile-personal-editor.component';
 
 
@@ -38,7 +37,6 @@ describe('PatronProfilePersonalEditorComponent', () => {
       imports: [
         HttpClientTestingModule,
         TranslateModule.forRoot(),
-        ToastrModule.forRoot(),
         FormsModule,
         ReactiveFormsModule,
         FormlyModule.forRoot(),

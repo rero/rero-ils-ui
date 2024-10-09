@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { getCurrencySymbol } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { DateTime } from 'luxon';
-import { BsModalRef } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PatronTransactionApiService } from 'projects/admin/src/app/api/patron-transaction-api.service';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
 
@@ -34,11 +34,17 @@ import { OrganisationService } from 'projects/admin/src/app/service/organisation
 })
 export class PatronFeeComponent implements OnInit {
 
+  private messageService = inject(MessageService);
+  private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
+  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
+  private recordService: RecordService = inject(RecordService);
+  private translateService: TranslateService = inject(TranslateService);
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private userService: UserService = inject(UserService);
+  private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
+  private apiService: ApiService = inject(ApiService);
+
   // COMPONENT ATTRIBUTES =====================================================
-  /** Patron pid */
-  @Input() patronPid: string;
-  /** Organisation pid */
-  @Input() organisationPid: string;
 
   /** form */
   form: FormGroup = new FormGroup({});
@@ -46,37 +52,20 @@ export class PatronFeeComponent implements OnInit {
   formFields: FormlyFieldConfig[];
   /** model */
   model: FeeFormModel;
-  /** On submit event */
-  onSubmit: EventEmitter<any> = new EventEmitter();
 
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param recordService - RecordService
-   * @param bsModalRef - BsModalRef
-   * @param toastr - ToastrService
-   * @param translateService - TranslateService
-   * @param organisationService - OrganisationService
-   * @param userService - UserService
-   * @param patronTransactionApiService - PatronTransactionApiService
-   * @param apiService - ApiService
-   */
-  constructor(
-    private recordService: RecordService,
-    private bsModalRef: BsModalRef,
-    private toastr: ToastrService,
-    private translateService: TranslateService,
-    private organisationService: OrganisationService,
-    private userService: UserService,
-    private patronTransactionApiService: PatronTransactionApiService,
-    private apiService: ApiService
-  ) { }
+  patronPid: string | undefined;
+  organisationPid: string | undefined;
 
+  // HOOKS ======================================================
   /** OnInit Hook */
   ngOnInit(): void {
-    if (!this.patronPid) {
+    const data: any = this.dynamicDialogConfig.data;
+    if (!data || !data.patronPid || data.organisationPid) {
       this.closeModal();
     }
+    this.patronPid = data.patronPid;
+    this.organisationPid = data.organisationPid;
+
     const librarySchema$ = this.recordService.getSchemaForm('patron_transactions');
     librarySchema$.subscribe((schema: any) => {
       this._initForm(schema.schema.properties);
@@ -92,28 +81,28 @@ export class PatronFeeComponent implements OnInit {
     if (model.creation_date instanceof Date) {
       model.creation_date = DateTime.fromObject(model.creation_date).toISO();
     }
-    this.patronTransactionApiService.addFee(model).subscribe(
-      () => {
-        this.onSubmit.next('submit');
+    this.patronTransactionApiService.addFee(model).subscribe({
+      next: () => {
         this.closeModal();
-        this.toastr.success(
-          this.translateService.instant('Added a new fee.'),
-          this.translateService.instant('Patron transaction')
-        );
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translateService.instant('Patron transaction'),
+          detail: this.translateService.instant('Added a new fee.')
+        });
       },
-      () => {
-        this.toastr.error(
-          this.translateService.instant('An error has occurred. Please try again.'),
-          this.translateService.instant('Patron transaction'),
-          { disableTimeOut: true }
-        );
-      }
-    );
+      error: () => this.messageService.add({
+        severity: 'error',
+        summary: this.translateService.instant('Patron transaction'),
+        detail: this.translateService.instant('An error has occurred. Please try again.'),
+        sticky: true,
+        closable: true
+      })
+    });
   }
 
   /** Close modal box */
   closeModal(): void {
-    this.bsModalRef.hide();
+    this.dynamicDialogRef.close();
   }
 
   /** Init form model */

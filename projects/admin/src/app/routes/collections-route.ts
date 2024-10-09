@@ -61,17 +61,17 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
             searchFilters: [
               this.expertSearchFilter()
             ],
-            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.COLL_CREATE) }),
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.COLL_CREATE) }),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
             aggregationsOrder: ['type', 'library', 'teacher', 'subject'],
             aggregationsExpand: ['type'],
             preprocessRecordEditor: (record: any) => {
-              const { user } = this._routeToolService.userService;
+              const { user } = this.routeToolService.userService;
               if (!record.pid) {
                 // set the user's default library at the time of creation
                 record.libraries = [];
                 record.libraries.push({
-                  $ref: this._routeToolService.apiService.getRefEndpoint(
+                  $ref: this.routeToolService.apiService.getRefEndpoint(
                     'libraries',
                     user.currentLibrary
                   )
@@ -80,9 +80,9 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
               return record;
             },
             preCreateRecord: (data: any) => {
-              const { user } = this._routeToolService.userService;
+              const { user } = this.routeToolService.userService;
               data.organisation = {
-                $ref: this._routeToolService.apiService.getRefEndpoint(
+                $ref: this.routeToolService.apiService.getRefEndpoint(
                   'organisations',
                   user.currentOrganisation
                 )
@@ -131,8 +131,8 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
     field.hooks = {
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
-        const { user } = this._routeToolService.userService;
-        const { apiService, recordService } = this._routeToolService;
+        const { user } = this.routeToolService.userService;
+        const { apiService, recordService } = this.routeToolService;
 
         // Extract libraries from patron > libraries
         const libraries = [];

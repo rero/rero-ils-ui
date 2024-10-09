@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BsModalService } from 'ngx-bootstrap/modal';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { DocumentAdvancedSearchFormComponent } from './document-advanced-search-form/document-advanced-search-form.component';
 
@@ -34,6 +34,9 @@ import { DocumentAdvancedSearchFormComponent } from './document-advanced-search-
 })
 export class DocumentAdvancedSearchComponent implements OnInit, OnDestroy {
 
+  private dialogService: DialogService = inject(DialogService);
+  private route: ActivatedRoute = inject(ActivatedRoute);
+
   /** Simple search */
   simple: boolean = true;
 
@@ -41,21 +44,11 @@ export class DocumentAdvancedSearchComponent implements OnInit, OnDestroy {
   @Output() queryString = new EventEmitter<string>();
 
   /** all component subscription */
-  private subscriptions = new Subscription();
-
-  /**
-   * Constructor
-   * @param route - ActivatedRoute
-   * @param modalService - BsModalService
-   */
-  constructor(
-    private route: ActivatedRoute,
-    private modalService: BsModalService,
-  ) { }
+  private subscription = new Subscription();
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.subscriptions.add(this.route.queryParams.subscribe((params: any) => {
+    this.subscription.add(this.route.queryParams.subscribe((params: any) => {
       if (params.simple) {
         if (Array.isArray(params.simple)) {
           this.simple =  params.simple.length > 0 ? ('1' === params.simple.pop()) : true;
@@ -70,20 +63,20 @@ export class DocumentAdvancedSearchComponent implements OnInit, OnDestroy {
 
   /** OnDestroy hook */
   ngOnDestroy(): void {
-      this.subscriptions.unsubscribe();
+      this.subscription.unsubscribe();
   }
 
   /** Opening the advanced search dialog */
   openModalBox(): void {
-    const modalRef = this.modalService.show(DocumentAdvancedSearchFormComponent, {
-      ignoreBackdropClick: true,
-      keyboard: true,
-      class: 'modal-xl',
+    const ref: DynamicDialogRef = this.dialogService.open(DocumentAdvancedSearchFormComponent, {
+      dismissableMask: true
     });
-    modalRef.content.hideDialog.subscribe(() => modalRef.hide());
-    modalRef.content.searchModel.subscribe((queryString: string) => {
-      this.queryString.emit(queryString);
-      modalRef.hide();
-    });
+    this.subscription.add(
+      ref.onClose.subscribe((queryString?: string) => {
+        if (queryString) {
+          this.queryString.emit(queryString);
+        }
+      })
+    );
   }
 }

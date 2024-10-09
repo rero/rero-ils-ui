@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { Error, Record } from '@rero/ng-core';
 import { Paginator } from '@rero/shared';
@@ -22,11 +22,16 @@ import { Observable, Subscription } from 'rxjs';
 import { LoanApiService } from '../../api/loan-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { ITabEvent, PatronProfileService } from '../patron-profile.service';
+
 @Component({
   selector: 'public-search-patron-profile-requests',
   templateUrl: './patron-profile-requests.component.html'
 })
 export class PatronProfileRequestsComponent implements OnInit, OnDestroy {
+
+  private loanApiService: LoanApiService = inject(LoanApiService);
+  private patronProfileService: PatronProfileService = inject(PatronProfileService);
+  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
 
   /** First call of get record */
   loaded = false;
@@ -39,18 +44,6 @@ export class PatronProfileRequestsComponent implements OnInit, OnDestroy {
 
   /** Observable subscription */
   private subscription = new Subscription();
-
-  /**
-   * Constructor
-   * @param loanApiService - LoanApiService
-   * @param patronProfileService - PatronProfileService
-   * @param patronProfileMenuService - PatronProfileMenuService
-   */
-  constructor(
-    private loanApiService: LoanApiService,
-    private patronProfileService: PatronProfileService,
-    private patronProfileMenuService: PatronProfileMenuService
-  ) {}
 
   /** OnInit hook */
   ngOnInit(): void {

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
 import { IPermissions, PERMISSION_OPERATOR, PERMISSIONS, UserService } from '@rero/shared';
@@ -28,6 +28,12 @@ import { RecordPermissionService } from '@app/admin/service/record-permission.se
   templateUrl: './holdings.component.html'
 })
 export class HoldingsComponent implements OnInit {
+
+  private userService: UserService = inject(UserService);
+  private holdingsApiService: HoldingsApiService = inject(HoldingsApiService);
+  private recordUiService: RecordUiService = inject(RecordUiService);
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private translateService: TranslateService
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Document */
@@ -84,23 +90,6 @@ export class HoldingsComponent implements OnInit {
   get organisationPid(): string {
     return this.userService.user.currentOrganisation;
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param userService - UserService
-   * @param holdingsApiService - HoldingsApiService
-   * @param recordUiService - RecordUiService
-   * @param recordPermissionService - RecordPermissionService
-   * @param translateService - TranslateService
-   */
-  constructor(
-    private userService: UserService,
-    private holdingsApiService: HoldingsApiService,
-    private recordUiService: RecordUiService,
-    private recordPermissionService: RecordPermissionService,
-    private translateService: TranslateService
-  ) { }
 
   /** onInit hook */
   ngOnInit() {

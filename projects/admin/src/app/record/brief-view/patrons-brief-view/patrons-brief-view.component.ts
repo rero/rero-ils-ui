@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 import { PERMISSIONS, PermissionsService } from '@rero/shared';
 import { roleBadgeColor } from '../../../utils/roles';
@@ -26,6 +26,8 @@ import { roleBadgeColor } from '../../../utils/roles';
   styleUrls: ['./patrons-brief-view.component.scss']
 })
 export class PatronsBriefViewComponent implements ResultItem {
+
+  private permissionsService: PermissionsService = inject(PermissionsService);
 
   /** the record to display */
   @Input() record: any;
@@ -41,12 +43,6 @@ export class PatronsBriefViewComponent implements ResultItem {
    get circulationAccess(): boolean {
     return this.permissionsService.canAccess(PERMISSIONS.CIRC_ADMIN);
   }
-
-  /**
-   * Constructor
-   * @param permissionsService - PermissionsService
-   */
-  constructor(private permissionsService: PermissionsService) {}
 
   /**
    * Get the color badge to apply for a specific role

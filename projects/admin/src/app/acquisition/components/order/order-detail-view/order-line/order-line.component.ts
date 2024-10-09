@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
 import { RecordService } from '@rero/ng-core';
-import { Subscription, forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqOrderLineStatus, IAcqOrderLine } from '../../../../classes/order';
@@ -32,6 +32,11 @@ import { AcqOrderLineStatus, IAcqOrderLine } from '../../../../classes/order';
   styleUrls: ['../../../../acquisition.scss', './order-line.component.scss']
 })
 export class OrderLineComponent implements OnInit, OnDestroy {
+
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private recordService: RecordService = inject(RecordService);
+  private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
+  private permissionValidator: CurrentLibraryPermissionValidator = inject(CurrentLibraryPermissionValidator);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** order line */
@@ -66,20 +71,6 @@ export class OrderLineComponent implements OnInit, OnDestroy {
       ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'update')
       : null;
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /** Constructor
-   * @param recordPermissionService - RecordPermissionService
-   * @param recordService - RecordService
-   * @param acqOrderApiService - AcqOrderApiService
-   * @param permissionValidator - CurrentLibraryPermissionValidator
-   */
-  constructor(
-    private recordPermissionService: RecordPermissionService,
-    private recordService: RecordService,
-    private acqOrderApiService: AcqOrderApiService,
-    private permissionValidator: CurrentLibraryPermissionValidator
-  ) { }
 
   /** OnInit hook */
   ngOnInit() {

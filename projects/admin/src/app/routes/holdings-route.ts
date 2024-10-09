@@ -39,7 +39,6 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
    * @return Object
    */
   getConfiguration() {
-
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
@@ -62,13 +61,13 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
             },
             detailComponent: HoldingDetailViewComponent,
             canRead: (record: any) => this.canRead(record),
-            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.HOLD_CREATE) }),
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
+            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.HOLD_CREATE) }),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType, true),
             preCreateRecord: (data: any) => {
               data.document = {
-                $ref: this._routeToolService.apiService.getRefEndpoint(
+                $ref: this.routeToolService.apiService.getRefEndpoint(
                   'documents',
-                  this._routeToolService.getRouteQueryParam('document')
+                  this.routeToolService.getRouteQueryParam('document')
                 )
               };
               return data;
@@ -80,8 +79,8 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
             },
             deleteMessage: (pid: string): Observable<string[]> => {
               return of([
-                this._routeToolService.translateService.instant('Do you really want to delete this record?'),
-                this._routeToolService.translateService.instant('This will also delete all items and issues of the holdings.')
+                this.routeToolService.translateService.instant('Do you really want to delete this record?'),
+                this.routeToolService.translateService.instant('This will also delete all items and issues of the holdings.')
               ]);
             },
             redirectUrl: (record: any, action: string) => {
@@ -114,8 +113,8 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
       field.hooks = {
         ...field.hooks,
         afterContentInit: (f: FormlyFieldConfig) => {
-          const { user } = this._routeToolService.userService;
-          const { apiService, recordService } = this._routeToolService;
+          const { user } = this.routeToolService.userService;
+          const { apiService, recordService } = this.routeToolService;
           const libraryPid = user.currentLibrary;
           const query = `library.pid:${libraryPid}`;
           f.props.options = recordService.getRecords(
@@ -127,7 +126,7 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
             undefined,
             'name'
           ).pipe(
-            map((result: Record) => this._routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+            map((result: Record) => this.routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
             map((hits: any) => {
               return hits.map((hit: any) => {
                 return {

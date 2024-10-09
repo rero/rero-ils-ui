@@ -17,13 +17,13 @@
  */
 
 import { getCurrencySymbol } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
-import { ToastrService } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { IAcqAccount } from '../../../classes/account';
 import { orderAccountsAsTree } from '../../../utils/account';
@@ -34,6 +34,14 @@ import { orderAccountsAsTree } from '../../../utils/account';
   styleUrls: ['../../../acquisition.scss']
 })
 export class AccountTransferComponent implements OnInit {
+
+  private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private formBuilder: UntypedFormBuilder = inject(UntypedFormBuilder);
+  private translateService: TranslateService = inject(TranslateService);
+  private router: Router = inject(Router);
+  private userService: UserService = inject(UserService);
+  private messageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =======================================================
   /** the accounts available for transfer */
@@ -60,25 +68,7 @@ export class AccountTransferComponent implements OnInit {
   }
 
   // CONSTRUCTOR & HOOKS ========================================================
-  /**
-   * Constructor
-   * @param acqAccountApiService - AcqAccountApiService
-   * @param organisationService - OrganisationService
-   * @param formBuilder - FormBuilder,
-   * @param toastrService - ToastrService,
-   * @param translateService - TranslateService
-   * @param router - Router
-   * @param userService - UserService
-   */
-  constructor(
-    private acqAccountApiService: AcqAccountApiService,
-    private organisationService: OrganisationService,
-    private formBuilder: UntypedFormBuilder,
-    private toastrService: ToastrService,
-    private translateService: TranslateService,
-    private router: Router,
-    private userService: UserService
-  ) {
+  constructor() {
     this.form = this.formBuilder.group({
       source: [undefined, Validators.required],
       target: [undefined, Validators.required],
@@ -123,13 +113,21 @@ export class AccountTransferComponent implements OnInit {
   submit(): void {
     this.acqAccountApiService
       .transferFunds(this.form.value.source.pid, this.form.value.target.pid, this.form.value.amount)
-      .subscribe(
-        () => {
-          this.toastrService.success(this.translateService.instant('Fund transfer successful!'));
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: this.translateService.instant('Account'),
+            detail: this.translateService.instant('Fund transfer successful!')
+          });
           this.router.navigate(['/', 'acquisition', 'accounts']);
         },
-        (err) => { this.toastrService.error(this.translateService.instant(err.error.message)); }
-      );
+        error: (err) => this.messageService.add({
+          severity: 'error',
+          summary: this.translateService.instant('Account'),
+          detail:this.translateService.instant(err.error.message)
+        }),
+    });
   }
 
   /**

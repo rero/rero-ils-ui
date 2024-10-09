@@ -14,17 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { UserService } from '@rero/shared';
-import { BsModalService } from 'ngx-bootstrap/modal';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
-import { first } from 'rxjs/operators';
 import { ItemRequestComponent } from '../item-request/item-request.component';
 
 @Component({
@@ -33,6 +31,14 @@ import { ItemRequestComponent } from '../item-request/item-request.component';
   styles: ['a.collapse-link i { min-width: 16px}']
 })
 export class HoldingComponent implements OnInit, OnDestroy {
+
+  protected userService: UserService = inject(UserService);
+  protected holdingService: HoldingsService = inject(HoldingsService);
+  private recordUiService: RecordUiService = inject(RecordUiService);
+  private recordService: RecordService = inject(RecordService);
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private translateService: TranslateService = inject(TranslateService);
+  private dialogService: DialogService = inject(DialogService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Holding record */
@@ -62,27 +68,6 @@ export class HoldingComponent implements OnInit, OnDestroy {
   get language() {
     return this.translateService.currentLang;
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param recordUiService - RecordUiService
-   * @param recordService - RecordService
-   * @param recordPermissionService - RecordPermissionService
-   * @param translateService - TranslateService
-   * @param userService - UserService
-   * @param holdingService: HoldingsService
-   * @param modalService - BsModalService
-   */
-  constructor(
-    private recordUiService: RecordUiService,
-    private recordService: RecordService,
-    private recordPermissionService: RecordPermissionService,
-    private translateService: TranslateService,
-    protected userService: UserService,
-    protected holdingService: HoldingsService,
-    protected modalService: BsModalService,
-  ) { }
 
   /** onInit hook */
   ngOnInit() {
@@ -123,12 +108,14 @@ export class HoldingComponent implements OnInit, OnDestroy {
    * @param recordPid - string
    */
   addRequest(recordPid: string, recordType: string): void {
-    const modalRef = this.modalService.show(ItemRequestComponent, {
-      initialState: { recordPid, recordType }
+    const ref: DynamicDialogRef = this.dialogService.open(ItemRequestComponent, {
+      data: { recordPid, recordType }
     });
-    modalRef.content.onSubmit.pipe(first()).subscribe(_ => {
-      this._getPermissions();
-      this._loadItems();
+    ref.onClose.subscribe((value?: boolean) => {
+      if (value) {
+        this._getPermissions();
+        this._loadItems();
+      }
     });
   }
 

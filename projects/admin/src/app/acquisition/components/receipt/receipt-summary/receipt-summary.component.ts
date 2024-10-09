@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
@@ -31,6 +31,12 @@ import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
   styleUrls: ['../../../acquisition.scss', './receipt-summary.component.scss']
 })
 export class ReceiptSummaryComponent implements OnInit {
+
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
+  private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
+  private currentLibraryPermissionValidator: CurrentLibraryPermissionValidator = inject(CurrentLibraryPermissionValidator);
+  private receivedOrderPermissionValidator: ReceivedOrderPermissionValidator = inject(ReceivedOrderPermissionValidator);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** The receipt pid to load */
@@ -65,23 +71,6 @@ export class ReceiptSummaryComponent implements OnInit {
       ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons, 'resume')
       : '';
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param recordPermissionService - RecordPermissionService
-   * @param acqReceiptApiService - AcqReceiptApiService
-   * @param acqOrderApiService - AcqOrderApiService
-   * @param currentLibraryPermissionValidator - CurrentLibraryPermissionValidator
-   * @param receivedOrderPermissionValidator - ReceivedOrderPermissionValidator
-   */
-  constructor(
-    private recordPermissionService: RecordPermissionService,
-    private acqReceiptApiService: AcqReceiptApiService,
-    private acqOrderApiService: AcqOrderApiService,
-    private currentLibraryPermissionValidator: CurrentLibraryPermissionValidator,
-    private receivedOrderPermissionValidator: ReceivedOrderPermissionValidator
-  ) { }
 
   /** OnInit hook */
   ngOnInit(): void {

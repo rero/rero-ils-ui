@@ -26,19 +26,17 @@ import { PrimengImportModule } from '@app/admin/shared/primeng-import/primeng-im
 import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldSelect } from '@ngx-formly/primeng/select';
-import { FileUploadModule } from 'primeng/fileupload';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
-import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   BucketNameService as CoreBucketNameService,
   CoreConfigService,
   RecordHandleErrorService as CoreRecordHandleErrorService,
-  FilesService,
-  LocalStorageService,
-  RecordModule, RemoteTypeaheadService,
-  TranslateLoader, TranslateService, TruncateTextPipe
+  NgCoreTranslateService,
+  RecordModule, RemoteAutocompleteService,
+  TranslateLoader, TruncateTextPipe
 } from '@rero/ng-core';
-import { ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
+import { AppSettingsService, ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
@@ -46,18 +44,16 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { FileUploadModule } from 'primeng/fileupload';
+import { MenubarModule } from 'primeng/menubar';
 import { TableModule } from "primeng/table";
+import { Observable } from 'rxjs';
 import {
   SelectAccountEditorWidgetComponent
 } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 import { ReceivedOrderPermissionValidator } from './acquisition/utils/permissions';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DocumentsTypeahead } from './classes/typeahead/documents-typeahead';
-import { ItemsTypeahead } from './classes/typeahead/items-typeahead';
-import { MefTypeahead } from './classes/typeahead/mef-typeahead';
-import { PatronsTypeahead } from './classes/typeahead/patrons-typeahead';
 import { IssueEmailComponent } from './components/issues/issue-email/issue-email.component';
 import { ItemSwitchLocationStandaloneComponent } from './components/items/switch-location/item-switch-location-standalone/item-switch-location-standalone.component';
 import { ItemSwitchLocationComponent } from './components/items/switch-location/item-switch-location/item-switch-location.component';
@@ -65,15 +61,10 @@ import { TabOrderDirective } from './directives/tab-order.directive';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
 import { UserCurrentLibraryInterceptor } from './interceptor/user-current-library.interceptor';
+import { MenuAppComponent } from './menu/menu-app/menu-app.component';
 import { MenuDashboardComponent } from './menu/menu-dashboard/menu-dashboard.component';
-import { MenuLanguageComponent } from './menu/menu-language/menu-language.component';
-import { MenuMobileComponent } from './menu/menu-mobile/menu-mobile.component';
-import { SubMenuComponent } from './menu/menu-mobile/sub-menu/sub-menu.component';
-import { MenuSwitchLibraryComponent } from './menu/menu-switch-library/menu-switch-library.component';
-import { MenuUserServicesComponent } from './menu/menu-user-services/menu-user-services.component';
+import { MenuDisplayComponent } from './menu/menu-display/menu-display.component';
 import { MenuUserComponent } from './menu/menu-user/menu-user.component';
-import { MenuComponent } from './menu/menu.component';
-import { LibrarySwitchService } from './menu/service/library-switch.service';
 import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
 import { DocumentProvisionActivityPipe } from './pipe/document-provision-activity.pipe';
 import { ItemInCollectionPipe } from './pipe/item-in-collection.pipe';
@@ -127,6 +118,7 @@ import { DocumentDetailViewComponent } from './record/detail-view/document-detai
 import { DocumentDetailComponent } from './record/detail-view/document-detail-view/document-detail/document-detail.component';
 import { EntitiesRelatedComponent } from './record/detail-view/document-detail-view/entities-related/entities-related.component';
 import { FilesCollectionsComponent } from './record/detail-view/document-detail-view/files-collections/files-collections.component';
+import { UploadFilesComponent } from './record/detail-view/document-detail-view/files-collections/upload-files/upload-files.component';
 import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
 import {
   HoldingOrganisationComponent
@@ -189,14 +181,17 @@ import { ReportsListComponent } from './record/detail-view/statistics-cfg-detail
 import { StatisticsCfgDetailViewComponent } from './record/detail-view/statistics-cfg-detail-view/statistics-cfg-detail-view.component';
 import { TemplateDetailViewComponent } from './record/detail-view/template-detail-view/template-detail-view.component';
 import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
+import { remoteAutocompleteToken } from './record/editor/formly/primeng/remote-autocomplete/remote-autocomplete-factory.service';
+import { DocumentsRemoteService } from './record/editor/formly/primeng/remote-autocomplete/remote/documents-remote.service';
+import { ItemsRemoteService } from './record/editor/formly/primeng/remote-autocomplete/remote/items-remote.service';
+import { MefRemoteService } from './record/editor/formly/primeng/remote-autocomplete/remote/mef-remote.service';
+import { PatronsRemoteService } from './record/editor/formly/primeng/remote-autocomplete/remote/patrons-remote.service';
 import { FieldCustomInputTypeComponent } from './record/editor/type/field-custom.type';
 import { RepeatTypeComponent } from './record/editor/type/repeat-section.type';
 import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
-import { UserIdComponent } from './record/editor/wrappers/user-id/user-id.component';
+import { UserIdComponent } from './record/editor/wrappers/user-id.component';
 import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patron-type-item-type/cipo-patron-type-item-type.component';
-import { AddEntityLocalFormComponent } from './record/formly/type/entity-typeahead/add-entity-local-form/add-entity-local-form.component';
-import { AddEntityLocalComponent } from './record/formly/type/entity-typeahead/add-entity-local.component';
-import { EntityTypeaheadComponent } from './record/formly/type/entity-typeahead/entity-typeahead.component';
+import { AddEntityLocalFormComponent } from './record/editor/formly/primeng/entity-autocomplete/add-entity-local-form/add-entity-local-form.component';
 import { OperationLogsDialogComponent } from './record/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
 import { OperationLogsComponent } from './record/operation-logs/operation-logs.component';
 import { DocumentAdvancedSearchFormComponent } from './record/search-view/document-advanced-search-form/document-advanced-search-form.component';
@@ -211,18 +206,17 @@ import { AppInitializerService } from './service/app-initializer.service';
 import { BucketNameService } from './service/bucket-name.service';
 import { OrganisationService } from './service/organisation.service';
 import { RecordHandleErrorService } from './service/record.handle-error.service';
-import { ResourcesFilesService } from './service/resources-files.service';
-import { TypeaheadFactoryService, typeaheadToken } from './service/typeahead-factory.service';
-import { UiRemoteTypeaheadService } from './service/ui-remote-typeahead.service';
 import { PreviewEmailModule } from './shared/preview-email/preview-email.module';
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { UploadFilesComponent } from './record/detail-view/document-detail-view/files-collections/upload-files/upload-files.component';
+
+import { RemoteAutocompleteService as UiRemoteAutocompleteService } from './record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.service';
+import { EntityAutocompleteComponent } from './record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
 
 /** Init application factory */
-export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
-  return () => appInitializerService.load().toPromise();
+export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
+  return () => appInitializerService.load();
 }
 
 @NgModule({
@@ -239,7 +233,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     ItemTypeDetailViewComponent,
     LibrariesBriefViewComponent,
     LibraryComponent,
-    MenuComponent,
     PatronsBriefViewComponent,
     PatronTypesBriefViewComponent,
     PatronTypesDetailViewComponent,
@@ -289,14 +282,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     IllRequestDetailViewComponent,
     CustomShortcutHelpComponent,
     HoldingItemNoteComponent,
-    MenuSwitchLibraryComponent,
     LocalFieldComponent,
-    MenuUserServicesComponent,
-    MenuLanguageComponent,
-    MenuUserComponent,
     MenuDashboardComponent,
-    MenuMobileComponent,
-    SubMenuComponent,
     HoldingItemTemporaryItemTypeComponent,
     OperationLogsComponent,
     HoldingSharedViewComponent,
@@ -339,7 +326,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     ItemSwitchLocationStandaloneComponent,
     ItemSwitchLocationComponent,
     IssueEmailComponent,
-    EntityTypeaheadComponent,
     RemoteEntitiesDetailViewComponent,
     RemoteEntitiesOrganisationDetailViewComponent,
     EntitiesLocalDetailViewComponent,
@@ -350,7 +336,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     LocalPlaceDetailViewComponent,
     LocalWorkDetailViewComponent,
     RemoteTopicDetailViewComponent,
-    AddEntityLocalComponent,
+    AddEntityLocalFormComponent,
     AddEntityLocalFormComponent,
     StatisticsCfgBriefViewComponent,
     StatisticsCfgDetailViewComponent,
@@ -367,7 +353,11 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     LocalPageDetailComponent,
     RemotePageDetailComponent,
     ItemFeesComponent,
-    UploadFilesComponent
+    UploadFilesComponent,
+    MenuAppComponent,
+    MenuUserComponent,
+    MenuDisplayComponent,
+    EntityAutocompleteComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -389,10 +379,10 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
       types: [
         { name: "cipo-pt-it", component: CipoPatronTypeItemTypeComponent },
         { name: "account-select", component: SelectAccountEditorWidgetComponent },
-        { name: "entityTypeahead", component: EntityTypeaheadComponent },
-        {name: 'repeat', component: RepeatTypeComponent},
-        {name: 'select-formly', component: FormlyFieldSelect },
-        {name: 'custom-field', component: FieldCustomInputTypeComponent }
+        { name: 'repeat', component: RepeatTypeComponent},
+        { name: 'select-formly', component: FormlyFieldSelect },
+        { name: 'custom-field', component: FieldCustomInputTypeComponent },
+        { name: 'entity-autocomplete', component: EntityAutocompleteComponent }
       ],
       wrappers: [
         { name: "user-id", component: UserIdComponent },
@@ -406,13 +396,13 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         deps: [CoreConfigService, HttpClient],
       },
     }),
-    TypeaheadModule,
     HotkeysModule,
     SharedModule,
     LoadingBarHttpClientModule,
     PrimengImportModule,
     PreviewEmailModule,
-    FileUploadModule
+    FileUploadModule,
+    MenubarModule
   ],
   providers: [
     {
@@ -426,12 +416,10 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
       deps: [
         AppInitializerService,
         UserService,
-        AppConfigService,
-        TranslateService,
         OrganisationService,
-        LocalStorageService,
-        LibrarySwitchService,
-        TypeaheadFactoryService,
+        AppSettingsService,
+        AppConfigService,
+        TranslateService
       ],
       multi: true,
     },
@@ -445,28 +433,24 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
       useClass: UserCurrentLibraryInterceptor,
       multi: true,
     },
-    { provide: RemoteTypeaheadService, useExisting: UiRemoteTypeaheadService },
-    // Use the "multi" parameter to allow the recovery of several services in the injector.
-    { provide: typeaheadToken, useExisting: DocumentsTypeahead, multi: true },
-    { provide: typeaheadToken, useExisting: ItemsTypeahead, multi: true },
-    { provide: typeaheadToken, useExisting: MefTypeahead, multi: true },
-    { provide: typeaheadToken, useExisting: PatronsTypeahead, multi: true },
+    { provide: TranslateService, useExisting: NgCoreTranslateService },
+
+    { provide: RemoteAutocompleteService, useExisting: UiRemoteAutocompleteService },
+    { provide: remoteAutocompleteToken, useExisting: DocumentsRemoteService, multi: true },
+    { provide: remoteAutocompleteToken, useExisting: ItemsRemoteService, multi: true },
+    { provide: remoteAutocompleteToken, useExisting: MefRemoteService, multi: true },
+    { provide: remoteAutocompleteToken, useExisting: PatronsRemoteService, multi: true },
     {
       provide: CoreConfigService,
       useClass: AppConfigService,
     },
     {
       provide: LOCALE_ID,
-      useFactory: (translate: TranslateService) => translate.currentLanguage,
+      useFactory: (translate: TranslateService) => translate.currentLang,
       deps: [TranslateService],
     },
     BsLocaleService,
-    MefTypeahead,
-    DocumentsTypeahead,
-    ItemsTypeahead,
-    PatronsTypeahead,
     MainTitlePipe,
-    MefTypeahead,
     TruncateTextPipe,
     CurrentLibraryPermissionValidator,
     ReceivedOrderPermissionValidator,
@@ -481,7 +465,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     CountryCodeTranslatePipe,
     { provide: CoreBucketNameService, useClass: BucketNameService },
     { provide: CoreRecordHandleErrorService, useClass: RecordHandleErrorService },
-    { provide: FilesService, useClass: ResourcesFilesService },
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

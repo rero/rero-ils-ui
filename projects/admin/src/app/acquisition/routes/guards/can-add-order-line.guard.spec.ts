@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,18 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule, RecordService } from '@rero/ng-core';
-import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
-
 import { cloneDeep } from 'lodash-es';
-import { CanAddOrderLineGuard } from './can-add-order-line.guard';
 import { of, throwError } from 'rxjs';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
+import { CanAddOrderLineGuard } from './can-add-order-line.guard';
 
 describe('CanAddOrderLineGuard', () => {
   let guard: CanAddOrderLineGuard;
@@ -61,7 +59,7 @@ describe('CanAddOrderLineGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule.withRoutes(routes),
+        RouterModule.forRoot(routes),
         HttpClientTestingModule,
         TranslateModule.forRoot(),
         CoreModule

@@ -85,17 +85,17 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
                 ]
               }
             ],
-            canAdd: () => of({ 'can': this._routeToolService.permissionsService.canAccess(PERMISSIONS.PTRN_CREATE) }),
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            canAdd: () => of({ 'can': this.routeToolService.permissionsService.canAccess(PERMISSIONS.PTRN_CREATE) }),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
+            canUpdate: (record: any) => this.routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: any) => this.routeToolService.canDelete(record, this.recordType),
             preprocessRecordEditor: (record: any) => {
               // set the patron expiration to now + 3 years if does not exists
               const defaultExpDate = new Date();
               defaultExpDate.setFullYear(defaultExpDate.getFullYear() + 3);
               record = {
                 patron: {
-                  expiration_date: this._routeToolService.datePipe.transform(defaultExpDate, 'yyyy-MM-dd')
+                  expiration_date: this.routeToolService.datePipe.transform(defaultExpDate, 'yyyy-MM-dd')
                 }
                 , ...record
               };
@@ -157,7 +157,7 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
     const formWidget = jsonSchema.widget;
     if (formWidget?.formlyConfig?.props?.fieldMap === 'roles') {
       const values = Object.assign([], field.props.options);  // create a clone of original values
-      field.props.options = this._routeToolService.recordPermissionService.getRolesManagementPermissions().pipe(
+      field.props.options = this.routeToolService.recordPermissionService.getRolesManagementPermissions().pipe(
         map((results: any) => {
           values.forEach((role: any) => role.disabled = !results.allowed_roles.includes(role.value));
           return values;
@@ -174,8 +174,8 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
       field.hooks = {
         ...field.hooks,
         afterContentInit: (f: FormlyFieldConfig) => {
-          const { user } = this._routeToolService.userService;
-          const { apiService, recordService } = this._routeToolService;
+          const { user } = this.routeToolService.userService;
+          const { apiService, recordService } = this.routeToolService;
 
           // Extract libraries from patron > libraries
           const libraries = [];
@@ -194,7 +194,7 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
             undefined,
             'name'
           ).pipe(
-            map((result: Record) => this._routeToolService
+            map((result: Record) => this.routeToolService
               .recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
             map((hits: any) => {
               return hits.map((hit: any) => {

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -28,18 +28,11 @@ import { PatronService } from '../../../service/patron.service';
 })
 export class HistoryComponent implements OnInit {
 
+  private patronService: PatronService = inject(PatronService);
+  private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
+
   /** History logs */
   historyLogs$: Observable<any>;
-
-  /**
-   * Constructor
-   * @param patronService - PatronService
-   * @param operationLogsApiService - OperationLogsApiService
-   */
-  constructor(
-    private patronService: PatronService,
-    private operationLogsApiService: OperationLogsApiService
-  ) {}
 
   /** OnInit hook */
   ngOnInit() {

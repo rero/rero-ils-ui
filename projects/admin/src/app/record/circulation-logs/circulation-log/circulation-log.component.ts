@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { PermissionsService } from '@rero/shared';
 
 @Component({
@@ -24,6 +24,8 @@ import { PermissionsService } from '@rero/shared';
   styleUrls: ['./circulation-log.component.scss']
 })
 export class CirculationLogComponent {
+
+  private permissionsService: PermissionsService = inject(PermissionsService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Operation log record */
@@ -53,15 +55,6 @@ export class CirculationLogComponent {
   get canUseDebugMode(): boolean {
     return this.permissionsService.canAccessDebugMode();
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param permissionsService - PermissionsService
-   */
-  constructor(
-    private permissionsService: PermissionsService
-  ) {  }
 
   // COMPONENT FUNCTIONS ======================================================
   /** Close dialog */

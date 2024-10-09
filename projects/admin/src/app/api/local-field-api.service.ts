@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Record, RecordService, RecordUiService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -25,14 +25,8 @@ import { map } from 'rxjs/operators';
 })
 export class LocalFieldApiService {
 
-  /**
-   * Constructor
-   * @param _recordService - RecordService
-   */
-  constructor(
-    private _recordService: RecordService,
-    private _recordUiService: RecordUiService
-  ) { }
+  private recordService: RecordService = inject(RecordService);
+  private recordUiService: RecordUiService = inject(RecordUiService);
 
   /**
    * Get Local field for current resource and organisation user
@@ -44,11 +38,11 @@ export class LocalFieldApiService {
   getByResourceTypeAndResourcePidAndOrganisationId(resourceType: string, resourcePid: string, organisationPid: string): Observable<any> {
     const query = `parent.type:${resourceType} AND parent.pid:${resourcePid} AND organisation.pid:${organisationPid}`;
 
-    return this._recordService
+    return this.recordService
       .getRecords('local_fields', query, 1, 1)
       .pipe(
         map((result: Record) => {
-          return this._recordService.totalHits(result.hits.total) === 0
+          return this.recordService.totalHits(result.hits.total) === 0
             ? {}
             : result.hits.hits[0];
         })
@@ -61,6 +55,6 @@ export class LocalFieldApiService {
    * @return Observable
    */
   delete(resourcePid: string) {
-    return this._recordUiService.deleteRecord('local_fields', resourcePid);
+    return this.recordUiService.deleteRecord('local_fields', resourcePid);
   }
 }

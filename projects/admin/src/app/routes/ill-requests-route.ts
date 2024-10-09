@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -55,9 +55,9 @@ export class IllRequestsRoute extends BaseRoute implements RouteInterface {
             searchFilters: [
               this.expertSearchFilter()
             ],
-            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.ILL_CREATE) }),
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ILL_CREATE) }),
+            canUpdate: (record: any) => this.routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: any) => this.routeToolService.canDelete(record, this.recordType),
             aggregationsExpand: ['request_status', 'loan_status', 'requester'],
             aggregationsOrder: ['request_status', 'loan_status', 'requester', 'library'],
             listHeaders: {

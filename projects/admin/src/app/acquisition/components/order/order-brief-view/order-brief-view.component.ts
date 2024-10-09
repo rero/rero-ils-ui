@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqNoteType } from '../../../classes/common';
@@ -28,6 +28,8 @@ import { AcqOrderStatus, IAcqOrder } from '../../../classes/order';
   styleUrls: ['./order-brief-view.component.scss']
 })
 export class OrderBriefViewComponent implements ResultItem, OnInit {
+
+  private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** the record to display */
@@ -78,13 +80,6 @@ export class OrderBriefViewComponent implements ResultItem, OnInit {
   get displayExpenditureAccountingData(): boolean {
     return (this.order.account_statement.expenditure.quantity > 0);
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * constructor
-   * @param acqOrderApiService - AcqOrderApiService
-   */
-  constructor(private acqOrderApiService: AcqOrderApiService) {}
 
   /** OnInit hook */
   ngOnInit(): void {

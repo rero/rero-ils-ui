@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { Subscription } from 'rxjs';
@@ -27,6 +27,9 @@ import { IAcqOrder, IAcqOrderLine } from '../../../../classes/order';
   templateUrl: './order-lines.component.html'
 })
 export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
+
+  private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** Acquisition order pid */
@@ -47,17 +50,6 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
   get createInfoMessage(): string {
     return this.recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'create');
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param acqOrderApiService - AcqOrderApiService
-   * @param recordPermissionService - RecordPermissionService
-   */
-  constructor(
-    private acqOrderApiService: AcqOrderApiService,
-    private recordPermissionService: RecordPermissionService
-  ) { }
 
   /** OnInit hook */
   ngOnInit(): void {

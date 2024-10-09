@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ApiService, Error, RecordService } from '@rero/ng-core';
 import { IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
@@ -29,31 +29,21 @@ import { ITypeEmail } from '../shared/preview-email/IPreviewInterface';
 })
 export class ItemApiService implements IAvailabilityService {
 
+  private appConfigService: AppConfigService = inject(AppConfigService);
+  private apiService: ApiService = inject(ApiService);
+  private recordService: RecordService = inject(RecordService);
+  private httpClient: HttpClient = inject(HttpClient);
+
   // SERVICE ATTRIBUTES =======================================================
   /** resource name */
   static readonly RESOURCE_NAME = 'items';
 
   /** http client options */
-  private _httpOptions = {
+  private httpClientOptions = {
     headers: new HttpHeaders({
       'Content-Type':  'application/json'
     })
   };
-
-  // CONSTRUCTOR ==============================================================
-  /**
-   * Constructor
-   * @param _appConfigService: AppConfigService
-   * @param _apiService - ApiService
-   * @param _recordService - RecordService
-   * @param _http - HttpClient
-   */
-  constructor(
-    private _appConfigService: AppConfigService,
-    private _apiService: ApiService,
-    private _recordService: RecordService,
-    private _http: HttpClient
-  ){ }
 
   // SERVICE FUNCTIONS ========================================================
   /**
@@ -63,7 +53,7 @@ export class ItemApiService implements IAvailabilityService {
    * @returns: an `Observable` on REST-API item metadata result
    */
   getItem(pid: string, resolve: boolean = false): Observable<any> {
-    return this._recordService
+    return this.recordService
       .getRecord(ItemApiService.RESOURCE_NAME, pid, resolve ? 1 : 0)
       .pipe(
         map((result: any) => result.metadata)
@@ -76,8 +66,8 @@ export class ItemApiService implements IAvailabilityService {
    * @param newLocationPid: the new owning location pid
    */
   updateLocation(item: any, newLocationPid: string): Observable<Object | Error> {
-    item.location.$ref = this._apiService.getRefEndpoint('locations', newLocationPid);
-    return this._recordService.update(ItemApiService.RESOURCE_NAME, item.pid, item);
+    item.location.$ref = this.apiService.getRefEndpoint('locations', newLocationPid);
+    return this.recordService.update(ItemApiService.RESOURCE_NAME, item.pid, item);
   }
 
   /**
@@ -86,7 +76,7 @@ export class ItemApiService implements IAvailabilityService {
    * @returns Observable of the stats of item
    */
   getStatsByItemPid(itemPid: string): Observable<any> {
-    return this._http.get<any>(`${this._appConfigService.apiEndpointPrefix}/item/${itemPid}/stats`);
+    return this.httpClient.get<any>(`${this.appConfigService.apiEndpointPrefix}/item/${itemPid}/stats`);
   }
 
   /**
@@ -95,9 +85,9 @@ export class ItemApiService implements IAvailabilityService {
    * @returns Observable of the Preview of a claim and suggested email addresses.
    */
   getPreviewByItemPid(itemPid: string): Observable<any> {
-    return this._http.get<any>(
-      `${this._appConfigService.apiEndpointPrefix}/item/${itemPid}/issue/claims/preview`,
-      this._httpOptions
+    return this.httpClient.get<any>(
+      `${this.appConfigService.apiEndpointPrefix}/item/${itemPid}/issue/claims/preview`,
+      this.httpClientOptions
     ).pipe(catchError((err: any) => of({ error: err.error.message })));
   }
 
@@ -108,8 +98,8 @@ export class ItemApiService implements IAvailabilityService {
    * @returns Observable with boolean
    */
   addClaimIssue(itemPid: string, recipients: ITypeEmail[]): Observable<boolean> {
-    const apiUrl = `${this._appConfigService.apiEndpointPrefix}/item/${itemPid}/issue/claims`;
-    return this._http.post(apiUrl, {recipients}).pipe(
+    const apiUrl = `${this.appConfigService.apiEndpointPrefix}/item/${itemPid}/issue/claims`;
+    return this.httpClient.post(apiUrl, {recipients}).pipe(
       map((_: unknown) => true),
       catchError(() => of(false))
     );
@@ -121,7 +111,7 @@ export class ItemApiService implements IAvailabilityService {
    * @returns Observable of availability data
    */
   getAvailability(pid: string): Observable<IAvailability> {
-    const url = `${this._appConfigService.apiEndpointPrefix}/item/${pid}/availability?more_info=1`;
-    return this._http.get<IAvailability>(url);
+    const url = `${this.appConfigService.apiEndpointPrefix}/item/${pid}/availability?more_info=1`;
+    return this.httpClient.get<IAvailability>(url);
   }
 }

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -68,12 +68,12 @@ export class EntitiesRoute extends BaseRoute implements RouteInterface {
             label: _('Entities'),
             component: EntityBriefViewComponent,
             canAdd: () => of({
-              can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.LOCENT_CREATE),
+              can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.LOCENT_CREATE),
               routerLink: ['/records', this.recordType, 'new']
             }),
             canUpdate: (record: any) => this._buildUpdatePermission(record),
             canDelete: (record: any) => this._buildDeletePermission(record),
-            aggregations: (aggregations: any) => this._routeToolService.aggregationFilter(aggregations),
+            aggregations: (aggregations: any) => this.routeToolService.aggregationFilter(aggregations),
             aggregationsName: {
               resource_type: _('Source'),
               type: _('Type'),
@@ -114,7 +114,7 @@ export class EntitiesRoute extends BaseRoute implements RouteInterface {
     if (record.metadata.resource_type !== 'local') {
       return of({can: false, message: ''});
     }
-    return this._routeToolService.permissions(record, this.recordType).pipe(
+    return this.routeToolService.permissions(record, this.recordType).pipe(
       map((permissions: any) => { return {
         can: permissions?.canUpdate?.can || false,
         message: permissions?.canUpdate?.message || '',
@@ -132,7 +132,7 @@ export class EntitiesRoute extends BaseRoute implements RouteInterface {
     if (record.metadata.resource_type !== 'local') {
       return of({can: false, message: ''});
     }
-    return this._routeToolService.permissions(record, this.recordType).pipe(
+    return this.routeToolService.permissions(record, this.recordType).pipe(
       map((permissions: any) => { return {
         can: permissions?.canDelete?.can || false,
         message: permissions?.canDelete?.message || '',
@@ -148,7 +148,7 @@ export class EntitiesRoute extends BaseRoute implements RouteInterface {
    */
   private _sortOptions() {
     const options = this._options;
-    this._routeToolService.translateService.onLangChange.subscribe((translate: any) => {
+    this.routeToolService.translateService.onLangChange.subscribe((translate: any) => {
       const key = options.findIndex((option: any) => option.label === 'Name');
       switch (translate.lang) {
         case 'de':

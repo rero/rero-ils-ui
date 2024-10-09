@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,10 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { HoldingsNoteType } from '@rero/shared';
-import { HoldingsApiService } from '../../../api/holdings-api.service';
 
 @Component({
   selector: 'public-search-holding',
@@ -26,6 +25,8 @@ import { HoldingsApiService } from '../../../api/holdings-api.service';
   styleUrls: ['./holding.component.scss']
 })
 export class HoldingComponent {
+
+  private translateService: TranslateService = inject(TranslateService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Holdings record */
@@ -48,15 +49,4 @@ export class HoldingComponent {
   get language() {
     return this.translateService.currentLang;
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   * @param holdingApiService: HoldingsApiService
-   */
-  constructor(
-    private translateService: TranslateService,
-    public holdingApiService: HoldingsApiService
-  ) {}
 }

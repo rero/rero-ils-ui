@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,28 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
+import { BaseApi } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ILLRequestStatus } from '../classes/ill-request';
-import { BaseApi } from '@rero/shared';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IllRequestApiService extends BaseApi {
 
+  private recordService: RecordService = inject(RecordService);
+
   /** Resource name */
   readonly RESOURCE_NAME = 'ill_requests';
-
-  /**
-   * Constructor
-   * @param _recordService - RecordService
-   */
-  constructor(private _recordService: RecordService) {
-    super();
-  }
 
   /**
    * Get ills requests with pending status by patron pid
@@ -50,7 +43,7 @@ export class IllRequestApiService extends BaseApi {
     sort: string = '-created'
   ): Observable<Record | Error> {
     const query = `patron.pid:${patronPid}`;
-    return this._recordService
+    return this.recordService
       .getRecords(this.RESOURCE_NAME, query , 1, RecordService.MAX_REST_RESULTS_SIZE,
                   undefined, filters, BaseApi.reroJsonheaders, sort)
       .pipe(map((result: Record) => result.hits.hits));

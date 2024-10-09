@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { EntityType, EntityTypeIcon } from '@rero/shared';
@@ -27,6 +26,8 @@ import { EntityType, EntityTypeIcon } from '@rero/shared';
 })
 export class RemoteEntitiesDetailViewComponent implements DetailRecord {
 
+  private translateService: TranslateService = inject(TranslateService);
+
   /** Observable resolving record data */
   record$: any;
 
@@ -35,12 +36,6 @@ export class RemoteEntitiesDetailViewComponent implements DetailRecord {
 
   /** Enum of type of Entity */
   entityType = EntityType;
-
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   */
-  constructor(private translateService: TranslateService) {}
 
   /**
    * Icon

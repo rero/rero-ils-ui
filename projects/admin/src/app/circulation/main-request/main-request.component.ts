@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
 import moment from 'moment';
-import { ToastrService } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
 import { interval, Subscription } from 'rxjs';
 import { ItemsService } from '../../service/items.service';
 
@@ -28,6 +28,11 @@ import { ItemsService } from '../../service/items.service';
   templateUrl: './main-request.component.html'
 })
 export class MainRequestComponent implements OnInit, OnDestroy {
+
+  private userService: UserService = inject(UserService);
+  private itemsService: ItemsService = inject(ItemsService);
+  private translateService: TranslateService = inject(TranslateService);
+  private messageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES ==================================================================
   /** options used for auto-refresh select box */
@@ -73,21 +78,6 @@ export class MainRequestComponent implements OnInit, OnDestroy {
   private intervalSubscription = new Subscription();
   /** the sort criteria used */
   private sortCriteria = this.sortingCriteria[1].value;
-
-
-  // COMPONENT CONSTRUCTOR ===========================================================
-  /** Constructor
-   * @param userService: User Service
-   * @param itemsService: Items Service
-   * @param translateService: Translate Service
-   * @param toastService: Toastr Service
-   */
-  constructor(
-    private userService: UserService,
-    private itemsService: ItemsService,
-    private translateService: TranslateService,
-    private toastService: ToastrService,
-  ) {}
 
   /** OnInit hook */
   ngOnInit() {
@@ -182,10 +172,11 @@ export class MainRequestComponent implements OnInit, OnDestroy {
     this.searchText = searchText;
     const item = this.items.find(currItem => currItem.barcode === searchText);
     if (item === undefined) {
-      this.toastService.warning(
-        this.translateService.instant('No request corresponding to the given item has been found.'),
-        this.translateService.instant('request')
-      );
+      this.messageService.add({
+        severity: 'warn',
+        summary: this.translateService.instant('request'),
+        detail: this.translateService.instant('No request corresponding to the given item has been found.')
+      });
       this._resetSearchInput();
     } else {
       /*const items = this.items;
@@ -193,10 +184,11 @@ export class MainRequestComponent implements OnInit, OnDestroy {
       this.itemsService.doValidateRequest(item, this.libraryPid).subscribe(
         newItem => {
           this._sortingRequestedLoans(this.items.map(currItem => (currItem.pid === newItem.pid) ? newItem : currItem));
-          this.toastService.warning(
-            this.translateService.instant('The item is ').concat(this.translateService.instant(newItem.status)),
-            this.translateService.instant('request')
-          );
+          this.messageService.add({
+            severity: 'warn',
+            summary: this.translateService.instant('request'),
+            detail: this.translateService.instant('The item is ').concat(this.translateService.instant(newItem.status))
+          });
           this._resetSearchInput();
         }
       );

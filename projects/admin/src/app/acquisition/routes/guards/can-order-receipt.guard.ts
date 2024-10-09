@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { extractIdOnRef } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { Observable, combineLatest, of } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AcqOrderApiService } from '../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../api/acq-receipt-api.service';
@@ -30,19 +30,10 @@ import { IAcqReceipt } from '../../classes/receipt';
 })
 export class CanOrderReceiptGuard  {
 
-  /**
-   * Constructor
-   * @param acqOrderApiService - AcqOrderApiService
-   * @param acqReceiptApiService - AcqReceiptApiService
-   * @param router - Router
-   * @param userService - UserService
-   */
-  constructor(
-    private acqOrderApiService: AcqOrderApiService,
-    private acqReceiptApiService: AcqReceiptApiService,
-    private router: Router,
-    private userService: UserService
-  ) {}
+  private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
+  private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
+  private router: Router = inject(Router);
+  private userService: UserService = inject(UserService);
 
   /**
    * Can activate

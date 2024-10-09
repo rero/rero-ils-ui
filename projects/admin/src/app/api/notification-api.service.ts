@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023 RERO
+ * Copyright (C) 2023-2024 RERO
  * Copyright (C) 2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { map } from 'rxjs/operators';
@@ -25,19 +25,13 @@ import { map } from 'rxjs/operators';
 })
 export class NotificationApiService extends BaseApi {
 
+  private recordService: RecordService = inject(RecordService);
+
   /** Resource name */
   readonly RESOURCE_NAME = 'notifications';
 
-  /**
-   * Constructor
-   * @param _recordService - RecordService
-   */
-  constructor(private _recordService: RecordService) {
-    super();
-  }
-
   getNotificationByPid(pid: string): any {
-    return this._recordService.getRecord(this.RESOURCE_NAME, pid).pipe(
+    return this.recordService.getRecord(this.RESOURCE_NAME, pid).pipe(
       map((result: any) => result.metadata)
     );
   }

@@ -18,7 +18,7 @@
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { ComponentCanDeactivateGuard, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { Observable, map, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
 import { PermissionGuard } from '../guard/permission.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
@@ -95,8 +95,8 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
                 ]
               },
             ],
-            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.DOC_CREATE) }),
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.DOC_CREATE) }),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
             preprocessRecordEditor: (record: any) => {
               record = this.removeKey(record, '_text');
               record = this.removeKey(record, '_draft');
@@ -114,7 +114,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
               }
               return record;
             },
-            aggregations: (aggregations: any) => this._routeToolService
+            aggregations: (aggregations: any) => this.routeToolService
               .aggregationFilter(aggregations),
             aggregationsName: {
               online: _('Online resources'),
@@ -144,7 +144,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             ],
             aggregationsExpand: () => {
               const expand = ['document_type', 'fiction_statement'];
-              const { queryParams } = this._routeToolService.activatedRoute.snapshot;
+              const { queryParams } = this.routeToolService.activatedRoute.snapshot;
               if (queryParams.location || queryParams.library) {
                 expand.push('organisation');
               }
@@ -182,8 +182,8 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             name: 'holdings',
             deleteMessage: (pid: string): Observable<string[]> => {
               return of([
-                this._routeToolService.translateService.instant('Do you really want to delete this record?'),
-                this._routeToolService.translateService.instant('This will also delete all items and issues of the holdings.')
+                this.routeToolService.translateService.instant('Do you really want to delete this record?'),
+                this.routeToolService.translateService.instant('This will also delete all items and issues of the holdings.')
               ]);
             },
             hideInTabs: true
@@ -192,7 +192,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
       }
     };
 
-    this._routeToolService.organisationService.onOrganisationLoaded$.subscribe((org) => {
+    this.routeToolService.organisationService.onOrganisationLoaded$.subscribe((org) => {
       config.data.types[0]['defaultSearchInputFilters'] = [{
         'key': 'organisation', 'values': [org.pid]
       }];

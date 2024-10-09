@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import moment from 'moment';
 import { Observable } from 'rxjs';
@@ -27,15 +27,8 @@ import { map } from 'rxjs/operators';
 })
 export class LibraryApiService {
 
-  /**
-   * constructor
-   * @param http - HttpClient
-   * @param recordService - RecordService
-   */
-  constructor(
-    private http: HttpClient,
-    private recordService: RecordService
-  ) { }
+  private http: HttpClient = inject(HttpClient);
+  private recordService: RecordService = inject(RecordService);
 
   /**
    * Get library by pid

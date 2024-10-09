@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoanState } from '@app/admin/classes/loans';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -32,6 +32,17 @@ import { PatronTransactionService } from '../../services/patron-transaction.serv
   templateUrl: './main.component.html'
 })
 export class MainComponent implements OnInit, OnDestroy {
+
+  private route: ActivatedRoute = inject(ActivatedRoute);
+  private router: Router = inject(Router);
+  private patronService: PatronService = inject(PatronService);
+  private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private hotKeysService: HotkeysService = inject(HotkeysService);
+  private translateService: TranslateService = inject(TranslateService);
+  private circulationService: CirculationService = inject(CirculationService);
+  private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
+  private recordService: RecordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES ====================================================
   /** shortcuts for patron tabs */
@@ -107,32 +118,6 @@ export class MainComponent implements OnInit, OnDestroy {
   get organisation() {
     return this.organisationService.organisation;
   }
-
-  // CONSTRUCTOR & HOOKS ====================================================
-  /**
-   * Constructor
-   * @param route - ActivatedRoute
-   * @param router - Router
-   * @param patronService - PatronService
-   * @param patronTransactionService - PatronTransactionService
-   * @param organisationService - OrganisationService
-   * @param hotKeysService - HotkeysService
-   * @param translateService - TranslateService
-   * @param circulationService - CirculationService
-   * @param recordService: RecordService
-   */
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private patronService: PatronService,
-    private patronTransactionService: PatronTransactionService,
-    private organisationService: OrganisationService,
-    private hotKeysService: HotkeysService,
-    private translateService: TranslateService,
-    private circulationService: CirculationService,
-    private operationLogsApiService: OperationLogsApiService,
-    private recordService: RecordService
-  ) { }
 
   /** OnInit hook */
   ngOnInit(): void {

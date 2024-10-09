@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -23,7 +23,7 @@ import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService, processJsonSchema, removeEmptyValues } from '@rero/ng-core';
 import { AppSettingsService, UserService } from '@rero/shared';
-import { ToastrService } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
 import { Subscription, forkJoin, of } from 'rxjs';
 import { debounceTime, map, tap } from 'rxjs/operators';
 
@@ -32,6 +32,14 @@ import { debounceTime, map, tap } from 'rxjs/operators';
   templateUrl: './patron-profile-personal-editor.component.html'
 })
 export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
+
+  private recordService: RecordService = inject(RecordService);
+  private formlyJsonschema: FormlyJsonschema = inject(FormlyJsonschema);
+  private translateService: TranslateService = inject(TranslateService);
+  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  private userService: UserService = inject(UserService);
+  private document: Document = inject(DOCUMENT);
+  private messageService: MessageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Request referer */
@@ -58,28 +66,6 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
     username: _('Username must start with a letter or a number, be at least three characters long and only contain alphanumeric characters, dashes and underscores.'),
     keep_history: _('If enabled the loan history is saved for a maximum of six months. It is visible to you and the library staff.')
   };
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   *
-   * @param recordService - RecordService
-   * @param formlyJsonschema - FormlyJsonschema
-   * @param toastrService - ToastrService
-   * @param translateService - TranslateService
-   * @param appSettingsService - AppSettingsService
-   * @param userService - UserService
-   * @param document - Document
-   */
-  constructor(
-    private recordService: RecordService,
-    private formlyJsonschema: FormlyJsonschema,
-    private toastrService: ToastrService,
-    private translateService: TranslateService,
-    private appSettingsService: AppSettingsService,
-    private userService: UserService,
-    @Inject(DOCUMENT) private document: Document
-  ) { }
 
   /** Init hook */
   ngOnInit(): void {
@@ -186,22 +172,28 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   submit() {
     this.form.updateValueAndValidity();
     if (this.form.valid === false) {
-      this.toastrService.error(
-        this.translateService.instant('The form contains errors.')
-      );
+      this.messageService.add({
+        severity: 'error',
+        summary: this.translateService.instant('Error'),
+        detail: this.translateService.instant('The form contains errors.')
+      });
       return;
     }
     const data = removeEmptyValues(this.form.value);
     // Update user record and reload logged user
     this.recordService
       .update('users', this.userService.user.id.toString(), data)
-      .subscribe(
-        () => {
-          this.toastrService.success(this.translateService.instant('Your personal data has been updated.'));
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: this.translateService.instant('Success'),
+            detail: this.translateService.instant('Your personal data has been updated.')
+          });
           this.redirect();
         },
-        (error) => this.formError = error.title
-      );
+        error: (error) => this.formError = error.title
+      });
   }
 
   // PRIVATE COMPONENT FUNCTIONS ==============================================

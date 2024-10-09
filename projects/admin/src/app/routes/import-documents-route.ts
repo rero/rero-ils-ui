@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,8 +27,11 @@ import { DocumentDetailViewComponent } from '../record/detail-view/document-deta
 import { DocumentDetailComponent } from '../record/detail-view/document-detail-view/document-detail/document-detail.component';
 import { BaseRoute } from './base-route';
 import { RouteToolService } from './route-tool.service';
+import { inject } from '@angular/core';
 
 export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
+
+  private translateService: TranslateService = inject(TranslateService);
 
   /** Route name */
   readonly name = 'import';
@@ -50,18 +53,6 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
   };
 
   /**
-   * Constructor
-   * @param _routeToolService - RouteToolService for the parent classes.
-   * @param _translateService - TranslateService to translate the number of results.
-   */
-  constructor(
-    protected _routeToolService: RouteToolService,
-    private _translateService: TranslateService
-  ) {
-    super(_routeToolService);
-  }
-
-  /**
    * Get Configuration
    * @returns the configuration to use for this route
    */
@@ -76,7 +67,7 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
         types: []
       }
     };
-    this._routeToolService.injector.get(ImportSourceApiService)
+    this.routeToolService.injector.get(ImportSourceApiService)
       .getSources()
       .subscribe((sources: Array<ExternalSourceSetting>) => {
         sources.forEach((source: ExternalSourceSetting) => {
@@ -93,10 +84,10 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
    * @returns observable of the string representation of the number of results.
    */
   getResultsText(hits: any): Observable<string> {
-    const total = this._routeToolService.recordService.totalHits(hits.total) || 0;
+    const total = this.routeToolService.recordService.totalHits(hits.total) || 0;
     return (total === 0)
-      ? this._translateService.stream('no result')
-      : this._translateService.stream('{{ total }} results of {{ remoteTotal }}', {
+      ? this.translateService.stream('no result')
+      : this.translateService.stream('{{ total }} results of {{ remoteTotal }}', {
           total, remoteTotal: hits.remote_total
         });
   }

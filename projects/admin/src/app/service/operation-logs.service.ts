@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { AppSettingsService } from '@rero/shared';
 
 @Injectable({
@@ -22,11 +22,7 @@ import { AppSettingsService } from '@rero/shared';
 })
 export class OperationLogsService {
 
-  /**
-   * Constructor
-   * @param _appSettingsService - AppSettingsService
-   */
-  constructor(private _appSettingsService: AppSettingsService) {}
+  private appSettingsService: AppSettingsService = inject(AppSettingsService);
 
   /**
    * Is operation logs is visible
@@ -54,6 +50,6 @@ export class OperationLogsService {
    * @return Object
    */
   private _setting(): any {
-    return this._appSettingsService.settings.operationLogs;
+    return this.appSettingsService.settings.operationLogs;
   }
 }

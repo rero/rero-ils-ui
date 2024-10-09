@@ -16,7 +16,7 @@
  */
 import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { AbstractType, Injectable, InjectionToken, Injector, Type } from '@angular/core';
+import { AbstractType, inject, Injectable, InjectionToken, Injector, Type } from '@angular/core';
 import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -31,6 +31,9 @@ import { RecordPermissionService } from '../service/record-permission.service';
   providedIn: "root",
 })
 export class RouteToolService {
+
+  injector: Injector = inject(Injector);
+
   /**
    * Proxy for permissions service
    * @return PermissionsService
@@ -44,14 +47,14 @@ export class RouteToolService {
    * @return TranslateService
    */
   get translateService() {
-    return this._injector.get(TranslateService);
+    return this.injector.get(TranslateService);
   }
 
   /** Proxy for organisation service
    *  @return OrganisationService
    */
   get organisationService() {
-    return this._injector.get(OrganisationService);
+    return this.injector.get(OrganisationService);
   }
 
   /**
@@ -59,7 +62,7 @@ export class RouteToolService {
    * @return UserService
    */
   get userService() {
-    return this._injector.get(UserService);
+    return this.injector.get(UserService);
   }
 
   /**
@@ -67,7 +70,7 @@ export class RouteToolService {
    * @return AppSettingsService
    */
   get settingsService() {
-    return this._injector.get(AppSettingsService);
+    return this.injector.get(AppSettingsService);
   }
 
   /**
@@ -75,7 +78,7 @@ export class RouteToolService {
    * @return ApiService
    */
   get apiService() {
-    return this._injector.get(ApiService);
+    return this.injector.get(ApiService);
   }
 
   /**
@@ -83,7 +86,7 @@ export class RouteToolService {
    * @return ActivatedRoute
    */
   get activatedRoute() {
-    return this._injector.get(ActivatedRoute);
+    return this.injector.get(ActivatedRoute);
   }
 
   /**
@@ -91,7 +94,7 @@ export class RouteToolService {
    * @return recordService
    */
   get recordService() {
-    return this._injector.get(RecordService);
+    return this.injector.get(RecordService);
   }
 
   /**
@@ -99,7 +102,7 @@ export class RouteToolService {
    * @return recordPermissionService
    */
   get recordPermissionService() {
-    return this._injector.get(RecordPermissionService);
+    return this.injector.get(RecordPermissionService);
   }
 
   /**
@@ -107,7 +110,7 @@ export class RouteToolService {
    * @return datePipe
    */
   get datePipe() {
-    return this._injector.get(DatePipe);
+    return this.injector.get(DatePipe);
   }
 
   /**
@@ -115,7 +118,7 @@ export class RouteToolService {
    * @return router
    */
   get router() {
-    return this._injector.get(Router);
+    return this.injector.get(Router);
   }
 
   /**
@@ -123,7 +126,7 @@ export class RouteToolService {
    * @return urlSerializer
    */
   get urlSerializer() {
-    return this._injector.get(UrlSerializer);
+    return this.injector.get(UrlSerializer);
   }
 
   /**
@@ -131,29 +134,15 @@ export class RouteToolService {
    * @return httpClient
    */
   get httpClient() {
-    return this._injector.get(HttpClient);
+    return this.injector.get(HttpClient);
   }
-
-  /**
-   * Proxy for injector
-   * @return Injector
-   */
-  get injector() {
-    return this._injector;
-  }
-
-  /**
-   * Constructor
-   * @param _injector - Injector
-   */
-  constructor(private _injector: Injector) {}
 
   /**
    * Get Token in injector
    * @param token - Token
    */
   getInjectorToken<T>(token: Type<T> | InjectionToken<T> | AbstractType<T>) {
-    return this._injector.get(token);
+    return this.injector.get(token);
   }
 
   /**

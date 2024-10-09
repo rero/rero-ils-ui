@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 
@@ -24,16 +24,10 @@ import { Observable } from 'rxjs';
 })
 export class AppInitializerService {
 
-  /**
-   * Constructor
-   * @param _userService - UserService
-   */
-  constructor(
-    private _userService: UserService
-  ) { }
+  private userService: UserService = inject(UserService);
 
     /** load */
     load(): Observable<any> {
-      return this._userService.load();
+      return this.userService.load();
     }
 }

@@ -15,15 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { PatronService } from '@app/admin/service/patron.service';
 import { UserService } from '@rero/shared';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
-import { first } from 'rxjs/operators';
 import { PatronTransactionService } from '../../services/patron-transaction.service';
 import { PatronFeeComponent } from './patron-fee/patron-fee.component';
 import { PatronTransactionEventFormComponent } from './patron-transaction-event-form/patron-transaction-event-form.component';
@@ -35,29 +34,35 @@ import { PatronTransactionEventFormComponent } from './patron-transaction-event-
 })
 export class PatronTransactionsComponent implements OnInit, OnDestroy {
 
+  private dialogService: DialogService = inject(DialogService);
+  private patronService: PatronService = inject(PatronService);
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
+  private userService: UserService = inject(UserService);
+
+  private dynamicDialogRef: DynamicDialogRef | undefined;
+
   // COMPONENTS ATTRIBUTES ===============================================================
   /** all tab reference array */
   tabs = {
     engagedFees: {
       isOpen: true,  // open by default
-      transactions: [] as Array<PatronTransaction>,
+      transactions: [] as PatronTransaction[],
       totalAmount: 0
     },
     overduePreviewFees: {
       isOpen: false,
-      transactions: [] as Array<{fees: LoanOverduePreview, loan: Loan}>,
+      transactions: [] as {fees: LoanOverduePreview, loan: Loan}[],
       totalAmount: 0
     },
     historyFees: {
       isOpen: false,
-      transactions: null as Array<PatronTransaction>
+      transactions: null as PatronTransaction[]
     }
   };
 
   /** Current patron */
   private patron: any = undefined;
-  /** Modal used for manual fee */
-  private modalRef: BsModalRef;
   /** Component subscriptions */
   private subscriptions = new Subscription();
 
@@ -67,7 +72,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
    * Get current organisation
    * @return current organisation
    */
-  get organisation() {
+  get organisation(): any {
     return this.organisationService.organisation;
   }
 
@@ -75,31 +80,15 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
    * Get engaged fees related to the current user library
    * @return the list of corresponding transactions.
    */
-  get myLibraryEngagedFees(): Array<PatronTransaction> {
+  get myLibraryEngagedFees(): PatronTransaction[] {
     const libraryPID = this.userService.user.currentLibrary;
     return this.tabs.engagedFees.transactions.filter(t => t.library != null && t.library.pid === libraryPID);
   }
 
 
   // CONSTRUCTOR & HOOKS ==================================================================
-  /**
-   * constructor
-   * @param patronService - PatronService
-   * @param organisationService - OrganisationService
-   * @param patronTransactionService - PatronTransactionService
-   * @param modalService - BsModalService
-   * @param userService - UserService
-   */
-  constructor(
-    private patronService: PatronService,
-    private organisationService: OrganisationService,
-    private patronTransactionService: PatronTransactionService,
-    private modalService: BsModalService,
-    private userService: UserService
-  ) {}
-
   /** OnInit hook */
-  ngOnInit() {
+  ngOnInit(): void {
     this.patronService.currentPatron$.subscribe((patron: any) => {
       if (patron) {
         this.patron = patron;
@@ -126,13 +115,13 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   }
 
   /** OnDestroy hook */
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
 
   // COMPONENT FUNCTIONS ==================================================================
   /** load all PatronTransactions for the patron without 'status' restriction */
-  loadFeesHistory() {
+  loadFeesHistory(): void {
     if (this.patron && this.tabs.historyFees.transactions === null) {
       this.patronTransactionService
         .patronTransactionsByPatron$(this.patron.pid, undefined, PatronTransactionStatus.CLOSED.toString())
@@ -143,23 +132,25 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   }
 
   /** Allow to pay the total of each pending patron transactions */
-  payAllTransactions() {
-    const initialState = {
-      action: 'pay',
-      mode: 'full',
-      transactions: this.tabs.engagedFees.transactions
-    };
-    this.modalService.show(PatronTransactionEventFormComponent, {initialState});
+  payAllTransactions(): void {
+    this.dialogService.open(PatronTransactionEventFormComponent, {
+      data: {
+        action: 'pay',
+        mode: 'full',
+        transactions: this.tabs.engagedFees.transactions
+      }
+    })
   }
 
   /** Allow to pay the total of each pending patron transactions */
-  payAllTransactionsInMyLibrary() {
-    const initialState = {
-      action: 'pay',
-      mode: 'full',
-      transactions: this.myLibraryEngagedFees
-    };
-    this.modalService.show(PatronTransactionEventFormComponent, {initialState});
+  payAllTransactionsInMyLibrary(): void {
+    this.dialogService.open(PatronTransactionEventFormComponent, {
+      data: {
+        action: 'pay',
+        mode: 'full',
+        transactions: this.myLibraryEngagedFees
+      }
+    })
   }
 
   /**
@@ -167,7 +158,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
    * All other tabs will be hidden.
    * @param tabToOpen: the tab to open
    */
-  openTab(tabToOpen): void {
+  openTab(tabToOpen: any): void {
     for (const entry of Object.values(this.tabs)) {
       entry.isOpen = tabToOpen === entry;
     }
@@ -175,18 +166,15 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
 
   /** Opening a modal to manually add a fee. */
   addFee(): void {
-    this.modalRef = this.modalService.show(PatronFeeComponent, {
-        ignoreBackdropClick: true,
-        initialState: {
-          patronPid: this.patron.pid,
-          organisationPid: this.patron.organisation.pid
-        }
+    this.dynamicDialogRef = this.dialogService.open(PatronFeeComponent, {
+      dismissableMask: true,
+      data: {
+        patronPid: this.patron.pid,
+        organisationPid: this.patron.organisation.pid
       }
-    );
+    })
     this.subscriptions.add(
-      this.modalRef.content.onSubmit
-        .pipe(first())
-        .subscribe(() => this.reloadEngagedFees())
+      this.dynamicDialogRef.onClose.subscribe(() => this.reloadEngagedFees())
     );
   }
 

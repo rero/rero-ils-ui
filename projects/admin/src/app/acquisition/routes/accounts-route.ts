@@ -57,7 +57,7 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             label: _('Acquisition account'),
             detailComponent: AccountDetailViewComponent,
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
             redirectUrl: () => of('/acquisition/accounts'),
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
@@ -79,12 +79,12 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
    * @return the enrich data
    */
   private _addDefaultInformation(data: any): any {
-    const { user } = this._routeToolService.userService;
+    const { user } = this.routeToolService.userService;
     data.library = {
-      $ref: this._routeToolService.apiService.getRefEndpoint('libraries', user.currentLibrary)
+      $ref: this.routeToolService.apiService.getRefEndpoint('libraries', user.currentLibrary)
     };
     data.budget = {
-      $ref: this._routeToolService.apiService.getRefEndpoint('budgets', this._routeToolService.getRouteQueryParam('budget'))
+      $ref: this.routeToolService.apiService.getRefEndpoint('budgets', this.routeToolService.getRouteQueryParam('budget'))
     };
     return data;
   }
@@ -95,7 +95,7 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
    * @return The updated configuration.
    */
   private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
-    const service = this._routeToolService.getInjectorToken(OrganisationService);
+    const service = this.routeToolService.getInjectorToken(OrganisationService);
     if (service.organisation) {
       field.props.addonLeft = [
         getCurrencySymbol(service.organisation.default_currency, 'wide')

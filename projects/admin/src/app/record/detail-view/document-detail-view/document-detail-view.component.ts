@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { DetailRecord, RecordService } from '@rero/ng-core';
@@ -30,6 +30,12 @@ import { DocumentApiService } from '../../../api/document-api.service';
   styleUrls: ['./document-detail-view.component.scss']
 })
 export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+
+  private translateService: TranslateService = inject(TranslateService);
+  private activatedRouter: ActivatedRoute = inject(ActivatedRoute);
+  private recordService: RecordService = inject(RecordService);
+  private documentApiService: DocumentApiService = inject(DocumentApiService);
+  private permissionsService: PermissionsService = inject(PermissionsService);
 
   /** Observable resolving record data */
   record$: Observable<any>;
@@ -92,22 +98,6 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   get showFilesTab(): boolean {
     return this.permissionsService.canAccess(PERMISSIONS.CIRC_ADMIN);
   }
-
-  /**
-   * Constructor
-   * @param translateService - TranslateService to translate some strings.
-   * @param activatedRouter - ActivatedRoute to get url parameters.
-   * @param recordService - RecordService to the MARC version for the record.
-   * @param documentApiService - DocumentApiService
-   * @param permissionsService - PermissionsService
-   */
-  constructor(
-    private translateService: TranslateService,
-    private activatedRouter: ActivatedRoute,
-    private recordService: RecordService,
-    private documentApiService: DocumentApiService,
-    private permissionsService: PermissionsService
-  ) { }
 
   /** On init hook */
   ngOnInit(): void {

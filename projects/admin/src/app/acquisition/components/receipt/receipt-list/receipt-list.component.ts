@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
-import { Subscription, of } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { IAcqOrder } from '../../../classes/order';
@@ -31,6 +31,11 @@ import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
   templateUrl: './receipt-list.component.html'
 })
 export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
+
+  private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private currentLibraryPermissionValidator: CurrentLibraryPermissionValidator = inject(CurrentLibraryPermissionValidator);
+  private receivedOrderPermissionValidator: ReceivedOrderPermissionValidator = inject(ReceivedOrderPermissionValidator);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the order for which we want to display receipts */
@@ -59,21 +64,6 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
   get numberOfReceipt(): number {
     return (this.receipts) ? this.receipts.length : 0;
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param acqReceiptApiService - AcqReceiptApiService
-   * @param recordPermissionService - RecordPermissionService
-   * @param currentLibraryPermissionValidator - CurrentLibraryPermissionValidator
-   * @param receivedOrderPermissionValidator - ReceivedOrderPermissionValidator
-   */
-  constructor(
-    private acqReceiptApiService: AcqReceiptApiService,
-    private recordPermissionService: RecordPermissionService,
-    private currentLibraryPermissionValidator: CurrentLibraryPermissionValidator,
-    private receivedOrderPermissionValidator: ReceivedOrderPermissionValidator
-  ) { }
 
   /** OnInit hook */
   ngOnInit(): void {

@@ -17,7 +17,7 @@
 
 import { I18nPluralPipe, NgLocaleLocalization } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { RecordPermissions } from '../classes/permissions';
@@ -27,22 +27,15 @@ import { RecordPermissions } from '../classes/permissions';
 })
 export class RecordPermissionService {
 
+  private httpClient: HttpClient = inject(HttpClient);
+  private translateService: TranslateService = inject(TranslateService);
+
   /** http client options */
-  private _httpOptions = {
+  private httpOptions = {
     headers: new HttpHeaders({
       'Content-Type':  'application/json'
     })
   };
-
-  /**
-   * Constructor
-   * @param httpClient - HttpClient
-   * @param translateService - TranslateService
-   */
-  constructor(
-    private httpClient: HttpClient,
-    private translateService: TranslateService
-  ) { }
 
   /**
    * Get Permission by resource with pid
@@ -54,7 +47,7 @@ export class RecordPermissionService {
     const url = (pid == null)
       ? `/api/permissions/${resource}`
       : `/api/permissions/${resource}/${pid}`;
-    return this.httpClient.get<RecordPermissions>(url, this._httpOptions);
+    return this.httpClient.get<RecordPermissions>(url, this.httpOptions);
   }
 
 
@@ -63,7 +56,7 @@ export class RecordPermissionService {
    * @return an observable on allowed roles management
    */
   getRolesManagementPermissions(): Observable<any> {
-    return this.httpClient.get('api/patrons/roles_management_permissions', this._httpOptions);
+    return this.httpClient.get('api/patrons/roles_management_permissions', this.httpOptions);
   }
 
   /**

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,38 +14,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Record, RecordService } from '@rero/ng-core';
-import { ToastrService } from 'ngx-toastr';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { UserService } from '@rero/shared';
-import { RouteToolService } from '@app/admin/routes/route-tool.service';
+import { inject, Injectable } from '@angular/core';
 import {
   PatronTransaction,
   PatronTransactionEvent,
   PatronTransactionEventType,
   PatronTransactionStatus
 } from '@app/admin/classes/patron-transaction';
+import { RouteToolService } from '@app/admin/routes/route-tool.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Record, RecordService } from '@rero/ng-core';
+import { UserService } from '@rero/shared';
+import { MessageService } from 'primeng/api';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PatronTransactionService {
 
+  private recordService: RecordService = inject(RecordService);
+  private userService: UserService = inject(UserService);
+  private routeToolService: RouteToolService = inject(RouteToolService);
+  private translateService: TranslateService = inject(TranslateService);
+  private messageService = inject(MessageService);
+
   /** subject containing current loaded PatronTransactions */
   patronTransactionsSubject$: BehaviorSubject<Array<PatronTransaction>> = new BehaviorSubject([]);
   /** subject emitting accounting transaction about patron fees */
   patronFeesOperationSubject$: Subject<number> = new Subject();
-
-  constructor(
-    private _recordService: RecordService,
-    private _userService: UserService,
-    private _routeToolService: RouteToolService,
-    private _toastService: ToastrService,
-    private _translateService: TranslateService
-  ) { }
 
   /**
    * Allow to build the query to send through the API to retrieve desired data
@@ -79,7 +77,7 @@ export class PatronTransactionService {
    * @returns an observable of `PatronTransaction` corresponding to criteria
    */
   private _loadPatronTransactions(query: string, sort: string = '-creation_date'): Observable<Array<PatronTransaction>> {
-    return this._recordService.getRecords(
+    return this.recordService.getRecords(
       'patron_transactions',
       query,
       1,
@@ -90,7 +88,7 @@ export class PatronTransactionService {
       sort
     ).pipe(
       map((data: Record) => data.hits),
-      map(hits => this._recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
       map(hits => hits.map( hit => new PatronTransaction(hit.metadata)))
     );
   }
@@ -104,9 +102,9 @@ export class PatronTransactionService {
    */
   patronTransactionsByLoan$(loanPid: string, type?: string, status?: string): Observable<Array<PatronTransaction>> {
     const query = this._buildQuery(undefined, loanPid, type, status);
-    return this._recordService.getRecords('patron_transactions', query, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
+    return this.recordService.getRecords('patron_transactions', query, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
       map((data: Record) => data.hits),
-      map(hits => this._recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
       map(hits => hits.map( hit => new PatronTransaction(hit.metadata)))
     );
   }
@@ -141,9 +139,9 @@ export class PatronTransactionService {
    */
   loadTransactionHistory(transaction: PatronTransaction) {
     const query = `parent.pid:${transaction.pid}`;
-    this._recordService.getRecords('patron_transaction_events', query, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
+    this.recordService.getRecords('patron_transaction_events', query, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
       map((data: Record) => data.hits),
-      map(hits => this._recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
       map(hits => hits.map(hit => new PatronTransactionEvent(hit.metadata)))
     ).subscribe(events => transaction.events = events);
   }
@@ -172,16 +170,16 @@ export class PatronTransactionService {
    * @returns An object with `parent`, `operator` and `library` fields fill with current context
    */
   private _buildTransactionEventsSkeleton(transaction: PatronTransaction): any {
-    const currentUser = this._userService.user;
+    const currentUser = this.userService.user;
     return {
       parent: {
-        $ref: this._routeToolService.apiService.getRefEndpoint('patron_transactions', transaction.pid)
+        $ref: this.routeToolService.apiService.getRefEndpoint('patron_transactions', transaction.pid)
       },
       operator: {
-        $ref: this._routeToolService.apiService.getRefEndpoint('patrons', currentUser.patronLibrarian.pid)
+        $ref: this.routeToolService.apiService.getRefEndpoint('patrons', currentUser.patronLibrarian.pid)
       },
       library: {
-        $ref: this._routeToolService.apiService.getRefEndpoint('libraries', currentUser.currentLibrary)
+        $ref: this.routeToolService.apiService.getRefEndpoint('libraries', currentUser.currentLibrary)
       }
     };
   }
@@ -234,23 +232,29 @@ export class PatronTransactionService {
    * @param affectedPatron - the user pid affected by this new transaction event
    */
   private _createTransactionEvent(record: any, affectedPatron: string) {
-    this._recordService.create('patron_transaction_events', record).subscribe(
+    this.recordService.create('patron_transaction_events', record).subscribe(
       () => {
         this.emitPatronTransactionByPatron(affectedPatron, undefined, 'open');
-        const translateType = this._translateService.instant(record.type);
-        this._toastService.success(this._translateService.instant('{{ type }} registered', {type: translateType}));
+        const translateType = this.translateService.instant(record.type);
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translateService.instant('Patron'),
+          detail: this.translateService.instant('{{ type }} registered', {type: translateType})
+        });
       },
       (error) => {
         const errorMessage = (error.hasOwnProperty('message') && error.message().hasOwnProperty('message'))
           ? error.message.message
           : 'Server error :: ' + (error.title || error.toString());
         const message = '[' + error.status + ' - ' + error.statusText + '] ' + errorMessage;
-        const translateType = this._translateService.instant(record.type);
-        this._toastService.error(
-          message,
-          this._translateService.instant('{{ type }} creation failed!', { type: translateType }),
-          {disableTimeOut: true, closeButton: true, enableHtml: true}
-        );
+        const translateType = this.translateService.instant(record.type);
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translateService.instant('{{ type }} creation failed!', { type: translateType }),
+          detail: message,
+          sticky: true,
+          closable: true
+        });
       }
     );
   }

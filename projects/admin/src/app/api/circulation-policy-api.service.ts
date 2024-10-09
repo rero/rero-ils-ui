@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -24,11 +24,7 @@ import { map } from 'rxjs/operators';
 })
 export class CirculationPolicyApiService {
 
-  /**
-   * Constructor
-   * @param _recordService - RecordService
-   */
-  constructor(private _recordService: RecordService) {}
+  private recordService: RecordService = inject(RecordService);
 
   /**
    * Get All
@@ -37,7 +33,7 @@ export class CirculationPolicyApiService {
    */
   getAll(excludedPid?: string): Observable<any[]> {
     const query = excludedPid ? `NOT pid:${excludedPid}` : '';
-    return this._recordService
+    return this.recordService
       .getRecords('circ_policies', query, 1, RecordService.MAX_REST_RESULTS_SIZE)
       .pipe(map((response: Record) => response.hits.hits));
   }
