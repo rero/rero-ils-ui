@@ -29,11 +29,11 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 })
 export class ChangePasswordFormComponent implements OnInit {
 
-  private messageService = inject(MessageService);
-  private dynamicDialogRef = inject(DynamicDialogRef);
-  private dynamicDialogConfig = inject(DynamicDialogConfig);
-  private translateService = inject(TranslateService);
-  private userApiService = inject(UserApiService);
+  private messageService: MessageService = inject(MessageService);
+  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
+  private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
+  private translateService: TranslateService = inject(TranslateService);
+  private userApiService: UserApiService = inject(UserApiService);
 
   /** patron to change the password */
   patron: User;

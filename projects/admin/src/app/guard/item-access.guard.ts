@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,21 +31,11 @@ import { MessageService } from 'primeng/api';
 })
 export class ItemAccessGuard implements CanActivate {
 
-  private messageService = inject(MessageService);
-
-  /**
-   * Constructor
-   * @param _router - Router
-   * @param _userService - UserService
-   * @param _recordService - RecordService
-   * @param _translateService - TranslateService
-   */
-  constructor(
-    private _router: Router,
-    private _userService: UserService,
-    private _recordService: RecordService,
-    private _translateService: TranslateService
-  ) {}
+  private router: Router = inject(Router);
+  private userService: UserService = inject(UserService);
+  private recordService: RecordService = inject(RecordService);
+  private translateService: TranslateService = inject(TranslateService);
+  private messageService: MessageService = inject(MessageService);
 
   /**
    * Item Access control
@@ -57,15 +47,15 @@ export class ItemAccessGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       const itemPid = next.params.pid;
-      this._recordService.getRecord('items', itemPid).pipe(
+      this.recordService.getRecord('items', itemPid).pipe(
         map((data: any) => data.metadata),
         map(data => extractIdOnRef(data.holding.$ref))
       )
       .subscribe({
         next: (holdingPid) => {
         const query = `pid:${holdingPid}`;
-        this._recordService.getRecords('holdings', query, 1, 1).pipe(
-          map((result: Record) => this._recordService.totalHits(result.hits.total) === 0
+        this.recordService.getRecords('holdings', query, 1, 1).pipe(
+          map((result: Record) => this.recordService.totalHits(result.hits.total) === 0
             ? null
             : result.hits.hits[0]
           ),
@@ -73,32 +63,32 @@ export class ItemAccessGuard implements CanActivate {
           if (null === data) {
             this.messageService.add({
               severity: 'warn',
-              summary: this._translateService.instant('item'),
-              detail: this._translateService.instant('Access denied')
+              summary: this.translateService.instant('item'),
+              detail: this.translateService.instant('Access denied')
             });
             // Redirect to homepage
-            this._router.navigate(['/']);
+            this.router.navigate(['/']);
           }
-          const userCurrentLibrary = this._userService.user.currentLibrary;
+          const userCurrentLibrary = this.userService.user.currentLibrary;
           if (userCurrentLibrary !== data.metadata.library.pid) {
             this.messageService.add({
               severity: 'warn',
-              summary: this._translateService.instant('item'),
-              detail: this._translateService.instant('Access denied')
+              summary: this.translateService.instant('item'),
+              detail: this.translateService.instant('Access denied')
             });
             // Redirect to homepage
-            this._router.navigate(['/']);
+            this.router.navigate(['/']);
           }
         });
       },
         error: () => {
           this.messageService.add({
             severity: 'warn',
-            summary: this._translateService.instant('item'),
-            detail: this._translateService.instant('Item not found')
+            summary: this.translateService.instant('item'),
+            detail: this.translateService.instant('Item not found')
           });
           // Redirect to homepage on error
-          this._router.navigate(['/']);
+          this.router.navigate(['/']);
         }
       });
 

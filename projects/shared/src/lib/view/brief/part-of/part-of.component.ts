@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -23,6 +22,8 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './part-of.component.html'
 })
 export class PartOfComponent {
+
+  protected translateService: TranslateService = inject(TranslateService);
 
   /** Document */
   @Input() record: any;
@@ -38,11 +39,6 @@ export class PartOfComponent {
 
   /** Css class for dd in template */
   ddCssClass = 'col-sm-6 col-md-8 mb-0';
-
-  /** constructor
-   * @param translateService - TranslateService to translate some strings.
-   */
-  constructor(private translateService: TranslateService) { }
 
   /**
    * Get "part of" label from host document type

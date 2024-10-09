@@ -24,8 +24,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class MenuTranslateService {
-  private translateService = inject(TranslateService);
-  private userService = inject(UserService);
+  private translateService: TranslateService = inject(TranslateService);
+  private userService: UserService = inject(UserService);
 
   private onProcess = new EventEmitter<MenuItem[]>();
 

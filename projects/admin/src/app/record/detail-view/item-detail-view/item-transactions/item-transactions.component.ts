@@ -17,7 +17,7 @@
  */
 import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { LoanService } from '@app/admin/service/loan.service';
-import { NgCoreTranslateService } from '@rero/ng-core';
+import { TranslateService } from '@ngx-translate/core';
 import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -30,10 +30,10 @@ import { ItemRequestComponent } from '../../document-detail-view/item-request/it
 })
 export class ItemTransactionsComponent implements OnInit, OnDestroy {
 
-  private messageService = inject(MessageService);
+  private messageService: MessageService = inject(MessageService);
   private dialogService: DialogService = inject(DialogService);
   private loanService: LoanService = inject(LoanService);
-  private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
+  private translateService: TranslateService = inject(TranslateService);
   private userService: UserService = inject(UserService);
 
   // COMPONENTS ATTRIBUTES ====================================================

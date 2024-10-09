@@ -35,6 +35,12 @@ import { orderAccountsAsTree } from '../../../utils/account';
 })
 export class AccountTransferComponent implements OnInit {
 
+  private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private formBuilder: UntypedFormBuilder = inject(UntypedFormBuilder);
+  private translateService: TranslateService = inject(TranslateService);
+  private router: Router = inject(Router);
+  private userService: UserService = inject(UserService);
   private messageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =======================================================
@@ -62,23 +68,7 @@ export class AccountTransferComponent implements OnInit {
   }
 
   // CONSTRUCTOR & HOOKS ========================================================
-  /**
-   * Constructor
-   * @param acqAccountApiService - AcqAccountApiService
-   * @param organisationService - OrganisationService
-   * @param formBuilder - FormBuilder,
-   * @param translateService - TranslateService
-   * @param router - Router
-   * @param userService - UserService
-   */
-  constructor(
-    private acqAccountApiService: AcqAccountApiService,
-    private organisationService: OrganisationService,
-    private formBuilder: UntypedFormBuilder,
-    private translateService: TranslateService,
-    private router: Router,
-    private userService: UserService
-  ) {
+  constructor() {
     this.form = this.formBuilder.group({
       source: [undefined, Validators.required],
       target: [undefined, Validators.required],

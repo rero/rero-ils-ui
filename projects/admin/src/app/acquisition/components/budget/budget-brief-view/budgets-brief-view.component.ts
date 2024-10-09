@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ResultItem } from '@rero/ng-core';
 
@@ -36,6 +36,8 @@ import { ResultItem } from '@rero/ng-core';
 })
 export class BudgetsBriefViewComponent implements ResultItem {
 
+  private translateService: TranslateService = inject(TranslateService);
+
   /** The record to display */
   @Input() record: any;
   /** The record type */
@@ -44,16 +46,10 @@ export class BudgetsBriefViewComponent implements ResultItem {
   @Input() detailUrl: { link: string, external: boolean };
 
   /**
-   * Constructor
-   * @param translateService - TranslateService
-   */
-  public constructor(private translateService: TranslateService) {}
-
-  /**
    * Status of the budget on bullet title
    * @returns string - status
    */
-  get title() {
+  get title(): string {
     return this.record.metadata.is_active
       ? this.translateService.instant('Active')
       : this.translateService.instant('Inactive');

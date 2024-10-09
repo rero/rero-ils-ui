@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { BaseApi, IAvailability, IAvailabilityService, IssueItemStatus } from '@rero/shared';
 import { Observable } from 'rxjs';
@@ -29,19 +29,9 @@ import { AppConfigService } from '../app-config.service';
 })
 export class ItemApiService extends BaseApi implements IAvailabilityService {
 
-  /**
-   * Constructor
-   * @param _recordService - RecordService
-   * @param _httpClient - HttpClient
-   * @param _appConfigService - AppConfigService
-   */
-  constructor(
-    private _recordService: RecordService,
-    private _httpClient: HttpClient,
-    private _appConfigService: AppConfigService
-  ) {
-    super();
-  }
+  private recordService: RecordService = inject(RecordService);
+  private httpClient: HttpClient = inject(HttpClient);
+  private appConfigService: AppConfigService = inject(AppConfigService);
 
   /**
    * Get items by holdings pid and viewcode
@@ -59,7 +49,7 @@ export class ItemApiService extends BaseApi implements IAvailabilityService {
     const query = (holdings.metadata.holdings_type === 'serial')
       ? `holding.pid:${holdings.metadata.pid} AND issue.status:${IssueItemStatus.RECEIVED}`
       : `holding.pid:${holdings.metadata.pid}`;
-    return this._recordService
+    return this.recordService
       .getRecords('items', query, page, itemsPerPage, undefined, { view: viewcode }, BaseApi.reroJsonheaders, sort)
       .pipe(map((response: Record) => response.hits));
   }
@@ -72,9 +62,9 @@ export class ItemApiService extends BaseApi implements IAvailabilityService {
    * @return Observable
    */
   canRequest(itemPid: string, libraryPid: string, patronBarcode: string): Observable<any> {
-    return this._httpClient
+    return this.httpClient
       .get<any>(
-        `${this._appConfigService.apiEndpointPrefix}/item/${itemPid}/can_request?library_pid=${libraryPid}&patron_barcode=${patronBarcode}`
+        `${this.appConfigService.apiEndpointPrefix}/item/${itemPid}/can_request?library_pid=${libraryPid}&patron_barcode=${patronBarcode}`
       );
   }
 
@@ -84,7 +74,7 @@ export class ItemApiService extends BaseApi implements IAvailabilityService {
    * @return Observable
    */
   request(data: { item_pid: string, pickup_location_pid: string }): Observable<any> {
-    return this._httpClient.post(`${this._appConfigService.apiEndpointPrefix}/item/patron_request`, data);
+    return this.httpClient.post(`${this.appConfigService.apiEndpointPrefix}/item/patron_request`, data);
   }
 
   /**
@@ -93,7 +83,7 @@ export class ItemApiService extends BaseApi implements IAvailabilityService {
    * @returns Observable of availability data
    */
   getAvailability(pid: string): Observable<IAvailability> {
-    const url = `${this._appConfigService.apiEndpointPrefix}/item/${pid}/availability?more_info=1`;
-    return this._httpClient.get<IAvailability>(url);
+    const url = `${this.appConfigService.apiEndpointPrefix}/item/${pid}/availability?more_info=1`;
+    return this.httpClient.get<IAvailability>(url);
   }
 }

@@ -15,15 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { ItemApiService } from '../../api/item-api.service';
 
 @Component({
   selector: 'public-search-item',
   templateUrl: './item.component.html'
 })
 export class ItemComponent {
+
+  private translateService: TranslateService = inject(TranslateService);
 
   /** Item record */
   private _item: any;
@@ -70,14 +71,4 @@ export class ItemComponent {
   get item() {
     return this._item;
   }
-
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   * @param itemApiService - ItemApiService
-   */
-  constructor(
-    private translateService: TranslateService,
-    public itemApiService: ItemApiService
-  ) {}
 }

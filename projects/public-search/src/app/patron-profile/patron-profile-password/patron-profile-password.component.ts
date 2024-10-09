@@ -47,7 +47,12 @@ export function fieldPasswordMatchValidator(control: AbstractControl) {
 })
 export class PatronProfilePasswordComponent {
 
-  private messageService = inject(MessageService);
+  private translateService: TranslateService = inject(TranslateService);
+  private userApiService: UserApiService = inject(UserApiService);
+  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  private el: ElementRef = inject(ElementRef);
+  private document: Document = inject(DOCUMENT);
+  private messageService: MessageService = inject(MessageService);
 
   /** Request referer */
   @Input() referer: string | null;
@@ -113,22 +118,6 @@ export class PatronProfilePasswordComponent {
 
   /** Error message for password validator */
   private validatePasswordMessage: string = '';
-
-  /**
-   * Constructor
-   *
-   * @param translateService - TranslateService
-   * @param userApiService - UserApiService
-   * @param appSettingsService - AppSettingsService
-   * @param el - ElementRef
-   */
-  constructor(
-    private translateService: TranslateService,
-    private userApiService: UserApiService,
-    private appSettingsService: AppSettingsService,
-    private el: ElementRef,
-    @Inject(DOCUMENT) private document: Document
-  ) { }
 
   /** Submit form */
   submit() {

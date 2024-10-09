@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ApiService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 
@@ -24,14 +24,8 @@ import { Observable } from 'rxjs';
 })
 export class UserApiService {
 
-  /**
-   * Constructor
-   * @param _httpClient - HttpClient
-   */
-  constructor(
-    private _httpClient: HttpClient,
-    private _apiService: ApiService
-  ) { }
+  private httpClient: HttpClient = inject(HttpClient);
+  private apiService: ApiService = inject(ApiService);
 
   /**
    * Update password
@@ -39,12 +33,12 @@ export class UserApiService {
    * @returns Observable
    */
   updatePassword(data: IPassword): Observable<any> {
-    return this._httpClient.post('/api/change-password', data);
+    return this.httpClient.post('/api/change-password', data);
   }
 
   validatePassword(password: string): Observable<any> {
-    return this._httpClient.post(
-      this._apiService.getEndpointByType('user/password/validate'),
+    return this.httpClient.post(
+      this.apiService.getEndpointByType('user/password/validate'),
       { 'password': password }
     );
   }

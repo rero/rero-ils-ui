@@ -23,7 +23,7 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 })
 export class CheckinActionComponent {
 
-  private dynamicDialogRef = inject(DynamicDialogRef);
+  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
 
   /** Checkin action */
   public action: 'patron' | 'item';

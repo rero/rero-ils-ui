@@ -28,7 +28,11 @@ import { MessageService } from 'primeng/api';
 })
 export class PatronProfileRequestComponent {
 
-  private messageService = inject(MessageService);
+  private loanApiService: LoanApiService = inject(LoanApiService);
+  private translateService: TranslateService = inject(TranslateService);
+  private patronProfileService: PatronProfileService = inject(PatronProfileService);
+  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private messageService: MessageService = inject(MessageService);
 
   /** Request record */
   @Input() record: any;
@@ -49,20 +53,6 @@ export class PatronProfileRequestComponent {
   get viewcode(): string {
     return this.patronProfileMenuService.currentPatron.organisation.code;
   }
-
-  /**
-   * Constructor
-   * @param loanApiService - LoanApiService
-   * @param translateService - TranslateService
-   * @param patronProfileService - PatronProfileService
-   * @param patronProfileMenuService - PatronProfileMenuService
-   */
-  constructor(
-    private loanApiService: LoanApiService,
-    private translateService: TranslateService,
-    private patronProfileService: PatronProfileService,
-    private patronProfileMenuService: PatronProfileMenuService
-  ) {}
 
   /** Cancel a request */
   cancel(): void {

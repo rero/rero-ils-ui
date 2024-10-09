@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  * Copyright (C) 2020 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 // Credit :: https://github.com/valor-software/ngx-bootstrap/issues/823#issuecomment-514976712
 
-import { Directive, Input, OnChanges } from '@angular/core';
+import { Directive, inject, Input, OnChanges } from '@angular/core';
 import { TabDirective } from 'ngx-bootstrap/tabs';
 
 @Directive({
@@ -27,18 +27,13 @@ import { TabDirective } from 'ngx-bootstrap/tabs';
 })
 export class TabOrderDirective implements OnChanges {
 
-  @Input() tabOrder = 0;
+  private tab: TabDirective = inject(TabDirective);
 
-  /** constructor
-   *  @param _tab: TabDirective
-   */
-  constructor(
-    private _tab: TabDirective
-  ) { }
+  @Input() tabOrder = 0;
 
   /** hook OnChanges */
   ngOnChanges() {
-    (this._tab as any).__tabOrder = +this.tabOrder;
-    this._tab.tabset.tabs.sort((a: any, b: any) => a.__tabOrder - b.__tabOrder);
+    (this.tab as any).__tabOrder = +this.tabOrder;
+    this.tab.tabset.tabs.sort((a: any, b: any) => a.__tabOrder - b.__tabOrder);
   }
 }

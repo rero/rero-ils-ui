@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2022 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -54,7 +54,7 @@ export class IssuesRoute extends BaseRoute implements RouteInterface {
             searchFilters: [
               this.expertSearchFilter()
             ],
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
             preFilters: {
                 or_issue_status: [IssueItemStatus.LATE]
               },
@@ -75,7 +75,7 @@ export class IssuesRoute extends BaseRoute implements RouteInterface {
               {
                 label: 'CSV',
                 format: 'csv',
-                endpoint: this._routeToolService.apiService.getEndpointByType('item/inventory'),
+                endpoint: this.routeToolService.apiService.getEndpointByType('item/inventory'),
                 disableMaxRestResultsSize: true,
               }
             ],

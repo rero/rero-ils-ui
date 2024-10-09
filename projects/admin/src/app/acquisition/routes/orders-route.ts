@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -53,11 +53,11 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
             searchFilters: [
               this.expertSearchFilter()
             ],
-            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.ACOR_CREATE) }),
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
+            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ACOR_CREATE) }),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType, true),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
             preUpdateRecord: (data: any) => this._cleanRecord(data),
-            aggregations: (aggregations: any) => this._routeToolService.aggregationFilter(aggregations),
+            aggregations: (aggregations: any) => this.routeToolService.aggregationFilter(aggregations),
             aggregationsExpand: [
               'library',
               'order_date',
@@ -112,7 +112,7 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
               {
                 label: 'CSV',
                 format: 'csv',
-                endpoint: this._routeToolService.apiService.getExportEndpointByType(this.recordType),
+                endpoint: this.routeToolService.apiService.getExportEndpointByType(this.recordType),
                 disableMaxRestResultsSize: true,
               },
             ],
@@ -128,12 +128,12 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
    * @return: the enrich data
    */
   private _addDefaultInformation(data: any): any {
-    const user = this._routeToolService.userService.user;
+    const user = this.routeToolService.userService.user;
     data.organisation = {
-      $ref: this._routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation)
+      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation)
     };
     data.library = {
-      $ref: this._routeToolService.apiService.getRefEndpoint('libraries', user.currentLibrary)
+      $ref: this.routeToolService.apiService.getRefEndpoint('libraries', user.currentLibrary)
     };
     return data;
   }

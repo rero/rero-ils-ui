@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Component, inject, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -32,7 +31,7 @@ import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 })
 export class UserIdEditorComponent implements OnInit {
 
-  private messageService = inject(MessageService);
+  private messageService: MessageService = inject(MessageService);
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   private recordService: RecordService = inject(RecordService);

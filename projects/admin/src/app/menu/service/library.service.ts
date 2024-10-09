@@ -30,8 +30,8 @@ export interface ISwitchLibrary {
 })
 export class LibraryService {
 
-  private userService = inject(UserService);
-  private librarySwitchStorageService = inject(LibrarySwitchStorageService);
+  private userService: UserService = inject(UserService);
+  private librarySwitchStorageService: LibrarySwitchStorageService = inject(LibrarySwitchStorageService);
 
   private switchEvent = new EventEmitter<ISwitchLibrary>();
 

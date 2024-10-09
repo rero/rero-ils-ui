@@ -36,11 +36,11 @@ import { OrderEmailFormComponent } from '../order-email-form/order-email-form.co
 })
 export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
 
-  private dialogService = inject(DialogService);
-  private scroller = inject(ViewportScroller);
-  private recordPermissionService = inject(RecordPermissionService);
-  private acqOrderService = inject(AcqOrderApiService);
-  private permissionValidator = inject(CurrentLibraryPermissionValidator);
+  private dialogService: DialogService = inject(DialogService);
+  private scroller: ViewportScroller = inject(ViewportScroller);
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private acqOrderService: AcqOrderApiService = inject(AcqOrderApiService);
+  private permissionValidator: CurrentLibraryPermissionValidator = inject(CurrentLibraryPermissionValidator);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Observable resolving record data */
@@ -77,7 +77,7 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
   }
 
   /** OnInit hook */
-  ngOnInit() {
+  ngOnInit(): void {
     this.subscriptions.add(this.record$.subscribe(
       (record: any) => {
         this.order = record.metadata;
@@ -122,7 +122,7 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
    * Open a modal dialog to allow user to validate the order.
    * If the user submit the form (and submitting is success), then update the order to get the updated data.
    */
-  placeOrderDialog() {
+  placeOrderDialog(): void {
     this.modalRef = this.dialogService.open(OrderEmailFormComponent, {
       dismissableMask: true,
       data: {

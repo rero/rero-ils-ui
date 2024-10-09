@@ -32,7 +32,12 @@ import { PatronProfileService } from '../../patron-profile.service';
 })
 export class PatronProfileLoanComponent implements OnInit {
 
-  private messageService = inject(MessageService);
+  private loanApiService: LoanApiService = inject(LoanApiService);
+  private translateService: TranslateService = inject(TranslateService);
+  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private patronProfileService: PatronProfileService
+
+  private messageService: MessageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Loan record */
@@ -70,21 +75,6 @@ export class PatronProfileLoanComponent implements OnInit {
       ? false
       : new moment(this.record.metadata.due_soon_date) <= moment();
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param loanApiService - LoanApiService
-   * @param translateService - TranslateService
-   * @param patronProfileMenuService - PatronProfileMenuService
-   * @param patronProfileService - PatronProfileService
-   */
-  constructor(
-    private loanApiService: LoanApiService,
-    private translateService: TranslateService,
-    private patronProfileMenuService: PatronProfileMenuService,
-    private patronProfileService: PatronProfileService
-  ) {}
 
   /** OnInit hook */
   ngOnInit(): void {

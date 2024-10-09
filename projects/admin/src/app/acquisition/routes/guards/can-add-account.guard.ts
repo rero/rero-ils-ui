@@ -15,8 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { RecordService } from '@rero/ng-core';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { AbstractCanAddGuard } from './abstract-can-add.guard';
 
@@ -24,18 +23,6 @@ import { AbstractCanAddGuard } from './abstract-can-add.guard';
   providedIn: 'root'
 })
 export class CanAddAccountGuard extends AbstractCanAddGuard  {
-
-  /**
-   * Constructor
-   * @param recordService - RecordService
-   * @param router - Router
-   */
-   constructor(
-    recordService: RecordService,
-    router: Router
-  ) {
-    super(recordService, router);
-  }
 
   /**
    * Allow the loading if the budget pid is present and check

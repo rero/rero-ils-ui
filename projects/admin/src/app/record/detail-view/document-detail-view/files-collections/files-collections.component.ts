@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -30,12 +29,10 @@ import { Subscription } from 'rxjs';
 })
 export class FilesCollectionsComponent implements OnInit, OnDestroy {
 
-  private messageService = inject(MessageService);
-
-  //-------------- Services ------------------
-  private resourcesFilesService = inject(ResourcesFilesService);
-  private translateService = inject(TranslateService);
-  private organisationService = inject(OrganisationService);
+  private messageService: MessageService = inject(MessageService);
+  private resourcesFilesService: ResourcesFilesService = inject(ResourcesFilesService);
+  private translateService: TranslateService = inject(TranslateService);
+  private organisationService: OrganisationService = inject(OrganisationService);
 
   // current record
   record: any;

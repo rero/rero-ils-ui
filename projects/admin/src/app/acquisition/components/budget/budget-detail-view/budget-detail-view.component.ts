@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable, Subscription } from 'rxjs';
@@ -27,6 +27,9 @@ import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';
   templateUrl: './budget-detail-view.component.html'
 })
 export class BudgetDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+
+  private budgetApiService: AcqBudgetApiService = inject(AcqBudgetApiService);
+  private organisationService: OrganisationService = inject(OrganisationService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Record observable */
@@ -44,17 +47,6 @@ export class BudgetDetailViewComponent implements DetailRecord, OnInit, OnDestro
   get currencyCode(): string {
     return this.organisationService.organisation.default_currency;
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param budgetApiService - AcqBudgetApiService
-   * @param organisationService - OrganisationService
-   */
-  constructor(
-    private budgetApiService: AcqBudgetApiService,
-    private organisationService: OrganisationService
-  ) {}
 
   /** OnInit hook */
   ngOnInit() {

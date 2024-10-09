@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { tap } from 'rxjs/operators';
-import { ItemApiService } from '../../../api/item-api.service';
 import { HoldingsApiService } from '../../../api/holdings-api.service';
+import { ItemApiService } from '../../../api/item-api.service';
 import { LocationApiService } from '../../../api/location-api.service';
 
 @Component({
@@ -28,6 +28,11 @@ import { LocationApiService } from '../../../api/location-api.service';
   templateUrl: './pickup-location.component.html'
 })
 export class PickupLocationComponent implements OnInit {
+
+  private locationApiService: LocationApiService = inject(LocationApiService);
+  private itemApiService: ItemApiService = inject(ItemApiService);
+  private holdingsApiService: HoldingsApiService = inject(HoldingsApiService);
+  private translateService: TranslateService = inject(TranslateService);
 
   /** Record: item or holding */
   @Input() record: any;
@@ -66,20 +71,6 @@ export class PickupLocationComponent implements OnInit {
     success: boolean,
     message: string
   };
-
-  /**
-   * Constructor
-   * @param locationApiService - LocationApiService
-   * @param itemApiService - ItemApiService
-   * @param holdingsApiService - HoldingsApiService
-   * @param translateService - TranslateService
-   */
-  constructor(
-    private locationApiService: LocationApiService,
-    private itemApiService: ItemApiService,
-    private holdingsApiService: HoldingsApiService,
-    private translateService: TranslateService
-  ) { }
 
   /** OnInit hook */
   ngOnInit(): void {

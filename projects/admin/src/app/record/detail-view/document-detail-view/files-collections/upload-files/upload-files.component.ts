@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Component, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -29,6 +28,12 @@ import { Observable, catchError, concatMap, from, map, of, switchMap, tap, toArr
   templateUrl: './upload-files.component.html'
 })
 export class UploadFilesComponent implements OnInit {
+
+  private messageService: MessageService = inject(MessageService);
+  fileService: ResourcesFilesService = inject(ResourcesFilesService);
+  translateService: TranslateService = inject(TranslateService);
+  spinner: NgxSpinnerService = inject(NgxSpinnerService);
+  confirmationService: ConfirmationService = inject(ConfirmationService);
 
   // linked resource pid such as document
   @Input() pid: string;
@@ -47,18 +52,6 @@ export class UploadFilesComponent implements OnInit {
   @ViewChild('fileUpload')
   fileUpload: FileUpload;
 
-  //------------- Services -------------
-  private messageService = inject(MessageService);
-
-  // file service
-  fileService = inject(ResourcesFilesService);
-  // translate service
-  translateService = inject(TranslateService);
-  // spinner service
-  spinner = inject(NgxSpinnerService);
-  // Confirmation service
-  confirmationService = inject(ConfirmationService);
-  //
   nUploadedFiles = 0;
 
   /**

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { map } from 'rxjs/operators';
@@ -25,29 +25,23 @@ import { map } from 'rxjs/operators';
 })
 export class LibraryService {
 
+  private recordService: RecordService = inject(RecordService);
+
   /** Resource name */
   static readonly resource = 'libraries';
-
-  /**
-   * Constructor
-   * @param _recordService - RecordService
-   */
-  constructor(
-    private _recordService: RecordService
-  ) { }
 
   /**
    * Library count
    * @return Observable
    */
   get count$() {
-    return this._recordService.getRecords(
+    return this.recordService.getRecords(
       LibraryService.resource,
       undefined,
       1,
       1
     ).pipe(
-      map((results: Record) => this._recordService.totalHits(results.hits.total))
+      map((results: Record) => this.recordService.totalHits(results.hits.total))
     );
   }
 
@@ -57,7 +51,7 @@ export class LibraryService {
    * @return Observable
    */
   get$(pid: string) {
-    return this._recordService.getRecord(LibraryService.resource, pid);
+    return this.recordService.getRecord(LibraryService.resource, pid);
   }
 
   /**
@@ -85,7 +79,7 @@ export class LibraryService {
    * @param order - string, order name
    */
   private _query(query: any, order: string = 'name') {
-    return this._recordService.getRecords(
+    return this.recordService.getRecords(
       LibraryService.resource, query, 1, RecordService.MAX_REST_RESULTS_SIZE,
       undefined, undefined, undefined, order
     );

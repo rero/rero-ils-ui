@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { getCurrencySymbol } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { FieldType } from '@ngx-formly/core';
@@ -31,6 +31,12 @@ import { orderAccountsAsTree } from '../../../../utils/account';
   styleUrls: ['../../../../acquisition.scss', './select-account-editor-widget.component.scss']
 })
 export class SelectAccountEditorWidgetComponent extends FieldType implements OnInit {
+
+  private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private apiService: ApiService = inject(ApiService);
+  private userService: UserService = inject(UserService);
+  private changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
 
   // COMPONENT ATTRIBUTES =======================================================
   /** accounts list */
@@ -47,24 +53,6 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
   /** Get the currency symbol for the organisation */
   get currencySymbol(): any {
     return getCurrencySymbol(this.organisation.default_currency, 'wide');
-  }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param acqAccountApiService - AcqAccountApiService
-   * @param organisationService - OrganisationService
-   * @param apiService - ApiService
-   * @param userService - UserService
-   */
-  constructor(
-    private acqAccountApiService: AcqAccountApiService,
-    private organisationService: OrganisationService,
-    private apiService: ApiService,
-    private userService: UserService,
-    private changeDetectorRef: ChangeDetectorRef
-  ) {
-    super();
   }
 
   /** OnInit hook */

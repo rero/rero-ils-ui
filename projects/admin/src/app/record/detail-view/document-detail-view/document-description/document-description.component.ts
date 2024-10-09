@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -23,6 +23,8 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './document-description.component.html'
 })
 export class DocumentDescriptionComponent implements OnInit {
+
+  public translateService: TranslateService = inject(TranslateService);
 
   /** Document record */
   @Input() record: any;
@@ -50,12 +52,6 @@ export class DocumentDescriptionComponent implements OnInit {
   get currentLanguage() {
     return this.translateService.currentLang;
   }
-
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   */
-  constructor(public translateService: TranslateService) {}
 
   /** On init hook */
   ngOnInit(): void {

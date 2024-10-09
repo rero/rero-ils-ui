@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { BaseApi } from '@rero/shared';
 import { map } from 'rxjs/operators';
 
@@ -24,15 +24,7 @@ import { map } from 'rxjs/operators';
 })
 export class LocationApiService extends BaseApi {
 
-  /**
-   * Constructor
-   * @param _httpClient - HttpClient
-   */
-  constructor(
-    private _httpClient: HttpClient
-  ) {
-    super();
-  }
+  private httpClient: HttpClient = inject(HttpClient);
 
   /**
    * Get pickup locations by viewcode
@@ -41,7 +33,7 @@ export class LocationApiService extends BaseApi {
    * @return Observable - locations pids and pickup_names for item or holding
    */
   getPickupLocationsByRecordId(recordType: string, recordPid: string) {
-    return this._httpClient
+    return this.httpClient
       .get<any>(`/api/${recordType}/${recordPid}/pickup_locations`)
       .pipe(map(result => {
         const locations = [];
@@ -49,7 +41,7 @@ export class LocationApiService extends BaseApi {
           result.locations.forEach((location: any) => {
             locations.push({
               pid: location.pid,
-              name: location.pickup_name ? location.pickup_name : location.name
+              name: location.pickup_name || location.name
             });
           });
         }

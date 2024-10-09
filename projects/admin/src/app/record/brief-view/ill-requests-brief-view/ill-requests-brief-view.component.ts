@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { RecordService, ResultItem } from '@rero/ng-core';
 import { ILLRequestStatus } from '../../../classes/ill-request';
 
@@ -24,6 +24,8 @@ import { ILLRequestStatus } from '../../../classes/ill-request';
   templateUrl: './ill-requests-brief-view.component.html'
 })
 export class IllRequestsBriefViewComponent  implements ResultItem, OnInit {
+
+  private recordService: RecordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES =======================================================
   /** Record */
@@ -35,7 +37,6 @@ export class IllRequestsBriefViewComponent  implements ResultItem, OnInit {
 
   /** the requester of the ILL request */
   requester = null;
-
 
   // GETTER FUNCTIONS ==========================================================
   /** get the bootstrap color to apply on the request status badge */
@@ -50,13 +51,6 @@ export class IllRequestsBriefViewComponent  implements ResultItem, OnInit {
     }
     return 'secondary';
   }
-
-  // CONSTRUCTOR & HOOKS =======================================================
-  /**
-   * Constructor
-   * @param recordService - RecordService
-   */
-  constructor(private recordService: RecordService) {}
 
   /** Init hook */
   ngOnInit() {

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { Organisation } from '@app/admin/classes/core';
 import { Item, ItemAction, ItemNote, ItemNoteType } from '@app/admin/classes/items';
@@ -34,6 +34,13 @@ import { map } from 'rxjs/operators';
   styleUrls: ['../circulation.scss']
 })
 export class ItemComponent implements OnInit {
+
+  private recordService: RecordService = inject(RecordService);
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
+  private itemService: ItemsService = inject(ItemsService);
+  private permissionsService: PermissionsService = inject(PermissionsService);
+  private userService: UserService = inject(UserService);
 
   NOTEAPI =  ItemNoteType.API;
 
@@ -80,26 +87,6 @@ export class ItemComponent implements OnInit {
   get canUseDebugMode(): boolean {
     return this.permissionsService.canAccessDebugMode();
   }
-
-
-  // CONSTRUCTOR & HOOKS ====================================================
-  /**
-   * Constructor
-   * @param recordService - Record Service
-   * @param organisationService - Organisation Service
-   * @param patronTransactionService - Patron transaction Service
-   * @param itemService - Item Service
-   * @param permissionsService - PermissionsService
-   * @param userService - UserService
-   */
-  constructor(
-    private recordService: RecordService,
-    private organisationService: OrganisationService,
-    private patronTransactionService: PatronTransactionService,
-    private itemService: ItemsService,
-    private permissionsService: PermissionsService,
-    private userService: UserService
-  ) {  }
 
   /** OnInit hook */
   ngOnInit() {

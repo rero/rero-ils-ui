@@ -14,15 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { RecordUiService } from '@rero/ng-core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
+import { RecordUiService } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-location',
   templateUrl: './location.component.html'
 })
 export class LocationComponent implements OnInit {
+
+  private recordUiService: RecordUiService = inject(RecordUiService);
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
 
   /** The location whose details are displayed */
   @Input() location: any;
@@ -35,16 +38,6 @@ export class LocationComponent implements OnInit {
 
   /** location record permission */
   permissions: any;
-
-  /**
-   * Constructor
-   * @param recordUiService: RecordUiService
-   * @param recordPermissionService: RecordPermissionService
-   */
-  constructor(
-    private recordUiService: RecordUiService,
-    private recordPermissionService: RecordPermissionService
-  ) { }
 
   /**
    * Init

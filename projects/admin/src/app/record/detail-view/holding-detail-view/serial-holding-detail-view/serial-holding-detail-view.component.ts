@@ -31,7 +31,12 @@ import { MessageService } from 'primeng/api';
 })
 export class SerialHoldingDetailViewComponent implements OnInit {
 
-  private messageService = inject(MessageService);
+  private holdingService: HoldingsService = inject(HoldingsService);
+  private recordService: RecordService = inject(RecordService);
+  private translateService: TranslateService = inject(TranslateService);
+  private permissionsService: PermissionsService = inject(PermissionsService);
+  private userService: UserService = inject(UserService);
+  private messageService: MessageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the holding record */
@@ -84,24 +89,6 @@ export class SerialHoldingDetailViewComponent implements OnInit {
       : this.translateService.instant('{{ counter }} hidden issues',
         {counter: additionalIssueCounter});
   }
-
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param holdingService: HoldingService
-   * @param recordService: RecordService
-   * @param translateService: TranslateService,
-   * @param permissionsService: PermissionsService
-   * @param userService: UserService
-   */
-  constructor(
-    private holdingService: HoldingsService,
-    private recordService: RecordService,
-    private translateService: TranslateService,
-    private permissionsService: PermissionsService,
-    private userService: UserService
-  ) {}
 
   /** OnInit hook */
   ngOnInit(): void {

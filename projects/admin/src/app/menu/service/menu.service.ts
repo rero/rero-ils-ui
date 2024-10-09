@@ -31,14 +31,14 @@ import { ISwitchLibrary, LibraryService } from './library.service';
 })
 export class MenuService {
 
-  private userService = inject(UserService);
-  private libraryApiService = inject(LibraryApiService);
-  private libraryService = inject(LibraryService);
-  private librarySwitchDataStorage = inject(LibrarySwitchStorageService);
-  private translateService = inject(TranslateService);
-  private configService = inject(CoreConfigService);
-  private httpClient = inject(HttpClient);
-  private permissionsService = inject(PermissionsService);
+  private userService: UserService = inject(UserService);
+  private libraryApiService: LibraryApiService = inject(LibraryApiService);
+  private libraryService: LibraryService = inject(LibraryService);
+  private librarySwitchDataStorage: LibrarySwitchStorageService = inject(LibrarySwitchStorageService);
+  private translateService: TranslateService = inject(TranslateService);
+  private configService: CoreConfigService = inject(CoreConfigService);
+  private httpClient: HttpClient = inject(HttpClient);
+  private permissionsService: PermissionsService = inject(PermissionsService);
 
   private logoutEvent = new EventEmitter<boolean>();
 

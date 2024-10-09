@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -46,10 +46,10 @@ export class LoansRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             label: _('Loans'),
             component: LoansBriefViewComponent,
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
             canAdd: (record: any) => of({can: false}),
-            canUpdate: (record: any) => this._routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this._routeToolService.canDelete(record, this.recordType),
+            canUpdate: (record: any) => this.routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: any) => this.routeToolService.canDelete(record, this.recordType),
             preFilters: {
               exclude_status: [LoanState.CANCELLED, LoanState.ITEM_RETURNED]
             },
@@ -79,7 +79,7 @@ export class LoansRoute extends BaseRoute implements RouteInterface {
             exportFormats: [{
               label: 'CSV',
               format: 'csv',
-              endpoint: this._routeToolService.apiService.getExportEndpointByType(this.recordType),
+              endpoint: this.routeToolService.apiService.getExportEndpointByType(this.recordType),
               disableMaxRestResultsSize: true,
             }],
             showFacetsIfNoResults: true

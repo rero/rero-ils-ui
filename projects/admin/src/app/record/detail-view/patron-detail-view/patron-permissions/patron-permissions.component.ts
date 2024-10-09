@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { IPatronPermission, PermissionApiService } from 'projects/admin/src/app/api/permission-api.service';
 
 @Component({
@@ -23,6 +23,8 @@ import { IPatronPermission, PermissionApiService } from 'projects/admin/src/app/
   templateUrl: './patron-permissions.component.html'
 })
 export class PatronPermissionsComponent implements OnChanges {
+
+  private permissionApiService: PermissionApiService = inject(PermissionApiService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Show or hide */
@@ -34,13 +36,6 @@ export class PatronPermissionsComponent implements OnChanges {
   permissions: IPatronPermission[] = [];
   /** User permissions filtered */
   filteredPermissions: IPatronPermission[] = [];
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param permissionApiService - PermissionApiService
-   */
-  constructor(private permissionApiService: PermissionApiService) {}
 
   /** OnChanges hook */
   ngOnChanges(changes: SimpleChanges): void {

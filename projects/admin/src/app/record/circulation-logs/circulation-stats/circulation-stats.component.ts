@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { ItemApiService } from '../../../api/item-api.service';
 
 @Component({
@@ -24,17 +24,13 @@ import { ItemApiService } from '../../../api/item-api.service';
 })
 export class CirculationStatsComponent implements OnInit {
 
+  private itemApiService: ItemApiService = inject(ItemApiService);
+
   /** Item record */
   @Input() itemPid: any;
 
   /** Computed stats for current item */
   stats: any;
-
-  /**
-   * Constructor
-   * @param itemApiService - ItemApiService
-   */
-  constructor(private itemApiService: ItemApiService) { }
 
   /** OnInit hook */
   ngOnInit(): void {

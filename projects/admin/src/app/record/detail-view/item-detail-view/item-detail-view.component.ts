@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -38,6 +38,15 @@ import { OrganisationService } from '../../../service/organisation.service';
   styles: ['dl * { margin-bottom: 0; }']
 })
 export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+
+  public itemApiService: ItemApiService = inject(ItemApiService);
+  private recordService: RecordService = inject(RecordService);
+  private holdingService: HoldingsService = inject(HoldingsService);
+  private operationLogsService: OperationLogsService= inject(OperationLogsService);
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private issueService: IssueService = inject(IssueService);
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private userService: UserService = inject(UserService);
 
   /** Observable resolving record data */
   record$: Observable<any>;
@@ -103,28 +112,6 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
   /** Permissions */
   permissions: IPermissions = PERMISSIONS;
   permissionOperator = PERMISSION_OPERATOR;
-
-  /**
-   * Constructor
-   * @param itemApiService - ItemApiService
-   * @param recordService - RecordService
-   * @param holdingService - HoldingsService
-   * @param operationLogsService - OperationLogsService
-   * @param organisationService - OrganisationService
-   * @param issueService - IssueService
-   * @param recordPermissionService - RecordPermissionService
-   * @param userService - UserService
-   */
-  constructor(
-    public itemApiService: ItemApiService,
-    private recordService: RecordService,
-    private holdingService: HoldingsService,
-    private operationLogsService: OperationLogsService,
-    private organisationService: OrganisationService,
-    private issueService: IssueService,
-    private recordPermissionService: RecordPermissionService,
-    private userService: UserService
-  ) {}
 
   /** OnInit hook */
   ngOnInit(): void {

@@ -25,10 +25,10 @@ import { Entity } from "../../class/entity";
 })
 export class RemoteSearchConfig {
 
-  private mainTitlePipe = inject(MainTitlePipe);
-  private truncatePipe: TruncateTextPipe = inject(TruncateTextPipe);
-  private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  protected mainTitlePipe: MainTitlePipe = inject(MainTitlePipe);
+  protected truncatePipe: TruncateTextPipe = inject(TruncateTextPipe);
+  protected translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
+  protected appSettingsService: AppSettingsService = inject(AppSettingsService);
 
   private isAdmin: boolean = false;
 
