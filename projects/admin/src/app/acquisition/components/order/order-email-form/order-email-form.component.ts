@@ -32,11 +32,11 @@ import { Subscription } from 'rxjs';
 })
 export class OrderEmailFormComponent implements OnInit, OnDestroy {
 
-  private messageService = inject(MessageService);
-  private dynamicDialogConfig = inject(DynamicDialogConfig);
-  private dynamicDialogRef = inject(DynamicDialogRef);
-  private acqOrderApiService = inject(AcqOrderApiService);
-  private translateService = inject(TranslateService);
+  private messageService: MessageService = inject(MessageService);
+  private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
+  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
+  private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
+  private translateService: TranslateService = inject(TranslateService);
 
   /** the related order */
   @Input() order: IAcqOrder;

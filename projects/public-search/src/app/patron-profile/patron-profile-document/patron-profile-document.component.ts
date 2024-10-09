@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
 
@@ -24,6 +24,9 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
   styleUrls: ['./patron-profile-document.component.scss']
 })
 export class PatronProfileDocumentComponent implements OnInit {
+
+  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private recordService: RecordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES =====================================================
   @Input() record: any;
@@ -46,17 +49,6 @@ export class PatronProfileDocumentComponent implements OnInit {
       this.record.metadata.item.second_call_number
     ).filter(Boolean).join(' | ');
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param patronProfileMenuService - PatronProfileMenuService
-   * @param recordService - RecordService
-   */
-  constructor(
-    private patronProfileMenuService: PatronProfileMenuService,
-    private recordService: RecordService
-  ) {}
 
   /** OnInit hook */
   ngOnInit(): void {

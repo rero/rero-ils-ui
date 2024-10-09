@@ -18,9 +18,9 @@
 import { AfterViewInit, Component, inject, OnInit } from '@angular/core';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { User, UserService } from '@rero/shared';
+import { DialogService } from 'primeng/dynamicdialog';
 import { KeyboardShortcutsService } from './service/keyboard-shortcuts.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
-import { DialogService } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'admin-root',
@@ -29,11 +29,10 @@ import { DialogService } from 'primeng/dynamicdialog';
 })
 export class AppComponent implements OnInit, AfterViewInit {
 
-  /** Services injection */
-  private userService = inject(UserService);
-  private keyboardShortcutsService = inject(KeyboardShortcutsService);
-  private hotKeysService = inject(HotkeysService);
-  private dialogService = inject(DialogService);
+  private userService: UserService = inject(UserService);
+  private keyboardShortcutsService: KeyboardShortcutsService = inject(KeyboardShortcutsService);
+  private hotKeysService: HotkeysService = inject(HotkeysService);
+  private dialogService: DialogService = inject(DialogService);
 
   /** user */
   get user(): User {

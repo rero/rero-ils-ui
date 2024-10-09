@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { Item } from '@app/admin/classes/items';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
 import { RecordService } from '@rero/ng-core';
@@ -27,16 +27,12 @@ import { map, mergeMap } from 'rxjs/operators';
 })
 export class OverdueTransactionDetailComponent implements OnInit {
 
+  private recordService: RecordService = inject(RecordService);
+
   /** Patron transaction */
   @Input() transaction: PatronTransaction;
   /** item linked to this transaction if transaction linked to a loan */
   item: Item;
-
-  /**
-   * constructor
-   * @param recordService - RecordService
-   */
-  constructor(private recordService: RecordService) { }
 
   /** Load item information's if the transaction is linked to a loan */
   ngOnInit(): void {

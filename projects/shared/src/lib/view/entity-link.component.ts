@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 import { Entity } from '../class/entity';
-import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'shared-entity-link',
@@ -37,6 +37,8 @@ import { Observable, Subscription } from 'rxjs';
   `
 })
 export class EntityLinkComponent implements OnInit, OnDestroy {
+
+  private translateService: TranslateService = inject(TranslateService);
 
   /** Entity field metadata */
   @Input() entity: any;
@@ -63,12 +65,6 @@ export class EntityLinkComponent implements OnInit, OnDestroy {
   queryParams: object = {};
 
   subscriptions: Subscription = new Subscription();
-
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   */
-  constructor(private translateService: TranslateService) {}
 
   /** OnInit hook */
   ngOnInit(): void {

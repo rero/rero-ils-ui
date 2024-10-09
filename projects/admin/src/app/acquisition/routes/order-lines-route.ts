@@ -52,8 +52,8 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
             editorSettings: {
               longMode: true,
             },
-            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.ACOL_CREATE) }),
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
+            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ACOL_CREATE) }),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType, true),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
             preUpdateRecord: (data: any) => this.fieldsToRemoved(data, ['is_current_budget']),
             redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_order, '/records/acq_orders/detail'),
@@ -77,7 +77,7 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
    */
   private _addDefaultInformation(data: any): any {
     data.acq_order = {
-      $ref: this._routeToolService.apiService.getRefEndpoint('acq_orders', this._routeToolService.getRouteQueryParam('order'))
+      $ref: this.routeToolService.apiService.getRefEndpoint('acq_orders', this.routeToolService.getRouteQueryParam('order'))
     };
     return data;
   }
@@ -90,7 +90,7 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
   private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
     // TODO :: This isn't the organisation currency that we need to use, it's the order related vendor currency
     //         But how to retrieve the order from here ??? and how get quickly currency to use into
-    const service = this._routeToolService.getInjectorToken(OrganisationService);
+    const service = this.routeToolService.getInjectorToken(OrganisationService);
     field.props.addonLeft = [
       getCurrencySymbol(service.organisation.default_currency, 'wide')
     ];

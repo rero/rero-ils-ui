@@ -20,11 +20,23 @@ import { FieldWrapper } from '@ngx-formly/core';
 import { RecordService } from '@rero/ng-core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable, of, Subscription } from 'rxjs';
-import { UserIdEditorComponent } from '../../../custom-editor/user-id-editor/user-id-editor.component';
+import { UserIdEditorComponent } from '../../custom-editor/user-id-editor/user-id-editor.component';
 
 @Component({
   selector: 'admin-user-id',
-  templateUrl: './user-id.component.html'
+  template: `
+  @if (user$ | async; as user) {
+    <strong>
+      {{ $any(user).metadata.last_name }}, {{ $any(user).metadata.first_name }}
+      @if (user.metadata.city) {
+        ({{ user.metadata.city }})
+      }
+    </strong>
+    <p-button [label]="'Edit' |translate" [outlined]="true" (onClick)="openModal()"></p-button>
+  } @else {
+    <p-button [label]="'Create' |translate" [outlined]="true" (onClick)="openModal()"></p-button>
+  }
+  `
 })
 export class UserIdComponent extends FieldWrapper implements OnInit, OnDestroy {
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { OrganisationService } from '../../../service/organisation.service';
 
@@ -25,6 +25,8 @@ import { OrganisationService } from '../../../service/organisation.service';
 })
 
 export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
+
+  private organisationService: OrganisationService = inject(OrganisationService);
 
   // COMPONENT ATTRIBUTES ======================================================
   /** The observable resolving record data */
@@ -55,15 +57,6 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
   get checkoutIsAllowed() {
     return this.record && this.record.metadata.hasOwnProperty('checkout_duration');
   }
-
-
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param organisationService - OrganisationService
-   */
-  constructor(private organisationService: OrganisationService) {}
 
   /** On init hook */
   ngOnInit() {

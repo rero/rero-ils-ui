@@ -24,11 +24,11 @@ import { DateTranslatePipe } from '@rero/ng-core';
 import { ItemStatus, UserService } from '@rero/shared';
 import moment from 'moment';
 import { MessageService } from 'primeng/api';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin, Subscription } from 'rxjs';
 import { CirculationService } from '../../services/circulation.service';
 import { LoanFixedDateService } from '../../services/loan-fixed-date.service';
 import { FixedDateFormComponent } from './fixed-date-form/fixed-date-form.component';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 /** Interface to declare a special circulation settings */
 export interface CirculationSetting {
@@ -46,8 +46,15 @@ export interface CirculationSetting {
 })
 export class LoanComponent implements OnInit, OnDestroy {
 
-  private messageService = inject(MessageService);
-  private dialogService = inject(DialogService);
+  private itemsService: ItemsService = inject(ItemsService);
+  private translateService: TranslateService = inject(TranslateService);
+  private patronService: PatronService = inject(PatronService);
+  private userService: UserService = inject(UserService);
+  private dateTranslatePipe: DateTranslatePipe = inject(DateTranslatePipe);
+  private circulationService: CirculationService = inject(CirculationService);
+  private loanFixedDateService: LoanFixedDateService = inject(LoanFixedDateService);
+  private messageService: MessageService = inject(MessageService);
+  private dialogService: DialogService = inject(DialogService);
 
   dialogRef: DynamicDialogRef | undefined;
 
@@ -117,27 +124,6 @@ export class LoanComponent implements OnInit, OnDestroy {
       return this.checkoutCirculationSettings.splice(idx, 1);
     }
   }
-
-  // CONSTRUCTOR & HOOKS ============================================
-  /**
-   * Constructor
-   * @param itemsService - Items Service
-   * @param translateService - Translate Service
-   * @param patronService - Patron Service
-   * @param userService - UserService
-   * @param dateTranslatePipe - DateTranslatePipe
-   * @param circulationService - CirculationService
-   * @param loanFixedDateService - LoanFixedDateService
-   */
-  constructor(
-    private itemsService: ItemsService,
-    private translateService: TranslateService,
-    private patronService: PatronService,
-    private userService: UserService,
-    private dateTranslatePipe: DateTranslatePipe,
-    private circulationService: CirculationService,
-    private loanFixedDateService: LoanFixedDateService
-  ) {}
 
   /** OnInit hook */
   ngOnInit(): void {

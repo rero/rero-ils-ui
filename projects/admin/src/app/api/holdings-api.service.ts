@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { Observable } from 'rxjs';
@@ -25,17 +25,13 @@ import { map } from 'rxjs/operators';
 })
 export class HoldingsApiService {
 
-  /** Ressource name */
+  private recordService: RecordService = inject(RecordService);
+
+  /** Resource name */
   readonly RESOURCE_NAME = 'holdings';
 
   /** Items per page */
   readonly ITEMS_PER_PAGE = 10;
-
-  /**
-   * Constructor
-   * @param _recordService - RecordService
-   */
-  constructor(private _recordService: RecordService) { }
 
   /**
    *
@@ -56,7 +52,7 @@ export class HoldingsApiService {
     order: string = 'organisation_library_location'
   ): Observable<any> {
     const query = this._queryOrganisation(documentPid, organisationPid, isCurrentOrganisation);
-    return this._recordService.getRecords(
+    return this.recordService.getRecords(
       this.RESOURCE_NAME, query, page, itemsPerPage, undefined, undefined, BaseApi.reroJsonheaders, order).pipe(
       map((result: Record) => result.hits.hits)
     );
@@ -71,8 +67,8 @@ export class HoldingsApiService {
    */
   getHoldingsCount(documentPid: string, organisationPid: string, isCurrentOrganisation: boolean = true): Observable<number> {
     const query = this._queryOrganisation(documentPid, organisationPid, isCurrentOrganisation);
-    return this._recordService.getRecords(this.RESOURCE_NAME, query, 1, 1).pipe(
-      map((result: Record) => this._recordService.totalHits(result.hits.total))
+    return this.recordService.getRecords(this.RESOURCE_NAME, query, 1, 1).pipe(
+      map((result: Record) => this.recordService.totalHits(result.hits.total))
     );
   }
 

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserApiService } from '../api/user-api.service';
@@ -27,6 +27,10 @@ import { PermissionsService } from './permissions.service';
   providedIn: 'root'
 })
 export class UserService {
+
+  protected userApiService: UserApiService = inject(UserApiService);
+  protected appSettingsService: AppSettingsService = inject(AppSettingsService);
+  protected permissionsService: PermissionsService = inject(PermissionsService);
 
   // SERVICES ATTRIBUTES ======================================================
   /** Loaded observable */
@@ -47,19 +51,6 @@ export class UserService {
   get user(): User {
     return this._user;
   }
-
-  // CONSTRUCTOR ==============================================================
-  /**
-   * Constructor
-   * @param userApiService - UserApiService
-   * @param appSettingsService - AppSettingsService
-   * @param permissionsService - PermissionsService
-   */
-  constructor(
-    private userApiService: UserApiService,
-    private appSettingsService: AppSettingsService,
-    private permissionsService: PermissionsService
-  ) { }
 
   /** load */
   load(): Observable<IUser> {

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,18 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subscriber } from 'rxjs';
 
 export class BaseRoute {
 
-  /**
-   * Constructor
-   * @param _translateService - TranslateService
-   */
-  protected constructor(
-    protected _translateService: TranslateService
-  ) {}
+  protected translateService: TranslateService = inject(TranslateService);
 
   /**
    * Filter aggregations
@@ -36,7 +31,7 @@ export class BaseRoute {
   protected aggFilter(aggregations: object): Observable<any> {
     const obs = new Observable((observer: Subscriber<any>): void => {
       observer.next(this.aggregationFilter(aggregations));
-      this._translateService.onLangChange.subscribe(() => {
+      this.translateService.onLangChange.subscribe(() => {
         observer.next(this.aggregationFilter(aggregations));
       });
     });
@@ -58,7 +53,7 @@ export class BaseRoute {
     Object.keys(aggregations).forEach(aggregation => {
       if (aggregation.indexOf('__') > -1) {
         const splitted = aggregation.split('__');
-        if (this._translateService.currentLang === splitted[1]) {
+        if (this.translateService.currentLang === splitted[1]) {
           aggs[aggregation] = aggregations[aggregation];
         }
       } else {

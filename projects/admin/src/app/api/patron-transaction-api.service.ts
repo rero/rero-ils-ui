@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2023 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ApiService, Record, RecordService } from '@rero/ng-core';
 import { Observable, map } from 'rxjs';
 import { FeeFormModel } from '../circulation/patron/patron-transactions/patron-fee/patron-fee.component';
@@ -25,22 +25,16 @@ import { FeeFormModel } from '../circulation/patron/patron-transactions/patron-f
 })
 export class PatronTransactionApiService {
 
-  /**
-   * Constructor
-   * @param _httpClient - HttpClient
-   */
-  constructor(
-    private _httpClient: HttpClient,
-    private _apiService: ApiService,
-    private recordService: RecordService
-  ) {}
+  private httpClient: HttpClient = inject(HttpClient);
+  private apiService: ApiService = inject(ApiService);
+  private recordService: RecordService = inject(RecordService);
 
   /**
    * Add fee
    * @return Observable, array of records
    */
   addFee(model: FeeFormModel): Observable<Object> {
-    return this._httpClient.post(this._apiService.getEndpointByType('patron_transactions/'), model);
+    return this.httpClient.post(this.apiService.getEndpointByType('patron_transactions/'), model);
   }
 
   getActiveFeesByItemPid(itemPid: string): any {

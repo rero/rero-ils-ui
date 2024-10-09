@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CirculationPolicyApiService } from '@app/admin/api/circulation-policy-api.service';
 import { ItemTypeApiService } from '@app/admin/api/item-type-api.service';
 import { PatronTypeApiService } from '@app/admin/api/patron-type-api.service';
@@ -29,6 +29,13 @@ import { Settings } from './class/settings';
   templateUrl: './cipo-patron-type-item-type.component.html'
 })
 export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements OnInit {
+
+  private patronTypeApiService: PatronTypeApiService = inject(PatronTypeApiService);
+  private itemTypeApiService: ItemTypeApiService = inject(ItemTypeApiService);
+  private circulationPolicyApiService: CirculationPolicyApiService = inject(CirculationPolicyApiService);
+  private translateService: TranslateService = inject(TranslateService);
+  private apiService: ApiService = inject(ApiService);
+  private ref: ChangeDetectorRef = inject(ChangeDetectorRef);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Patron types */
@@ -49,27 +56,6 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
     return 'label' in this.field.props
       ? this.field.props.label
       : this.translateService.instant('Item types / Patron types matching');
-  }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param patronTypeApiService - PatronTypeApiService
-   * @param itemTypeApiService - ItemTypeApiService
-   * @param circulationPolicyApiService - CirculationPolicyApiService
-   * @param translateService - TranslateService
-   * @param apiService - ApiService
-   * @param ref: ChangeDetectorRef
-   */
-  constructor(
-    private patronTypeApiService: PatronTypeApiService,
-    private itemTypeApiService: ItemTypeApiService,
-    private circulationPolicyApiService: CirculationPolicyApiService,
-    private translateService: TranslateService,
-    private apiService: ApiService,
-    private ref: ChangeDetectorRef
-  ) {
-    super();
   }
 
   /** OnInit hook */
@@ -139,7 +125,7 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
 
   /** Build and load the settings table */
   private _loadSettings(): void {
-    const settings = new Settings(this.apiService);
+    const settings = new Settings();
     this.settings = settings
       .setCirculationPolicy(this.form.value)
       .createStructure(this.itemTypes, this.patronTypes, this.circPolicies, this.prevSelectedLibraries)

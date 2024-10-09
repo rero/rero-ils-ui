@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AppSettingsService } from '../service/app-settings.service';
 
@@ -25,15 +24,8 @@ import { AppSettingsService } from '../service/app-settings.service';
 })
 export class ExtractSourceFieldPipe implements PipeTransform {
 
-  /**
-   * Constructor
-   * @param appSettingsService - AppSettingsService
-   * @param translateService - TranslateService
-   */
-  constructor(
-    private appSettingsService: AppSettingsService,
-    private translateService: TranslateService
-  ) {}
+  protected appSettingsService: AppSettingsService = inject(AppSettingsService);
+  protected translateService: TranslateService = inject(TranslateService);
 
   /**
    * Transform

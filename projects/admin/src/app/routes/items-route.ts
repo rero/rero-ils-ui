@@ -76,12 +76,12 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             },
             canRead: (record: any) => this.canRead(record),
             canAdd: () => of({can: false}),
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, false),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType, false),
             preprocessRecordEditor: (record: any) => {
               // If we found an `holding` parameter into the query string then we need to pre-populated
               // the form with the corresponding holding metadata (see '_populateItemFieldFromHolding' function
               // to know which fields will be filled.
-              const holdingPid = this._routeToolService.getRouteQueryParam('holding');
+              const holdingPid = this.routeToolService.getRouteQueryParam('holding');
               if (holdingPid !== null) {
                 this._populateItemFieldFromHolding(record, holdingPid);
               }
@@ -90,9 +90,9 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             preCreateRecord: (data: any) => {
               if (data.document == null) {
                 data.document = {
-                  $ref: this._routeToolService.apiService.getRefEndpoint(
+                  $ref: this.routeToolService.apiService.getRefEndpoint(
                     'documents',
-                    this._routeToolService.getRouteQueryParam('document')
+                    this.routeToolService.getRouteQueryParam('document')
                   )
                 };
               }
@@ -156,7 +156,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
               {
                 label: 'CSV',
                 format: 'csv',
-                endpoint: this._routeToolService.apiService.getEndpointByType('item/inventory'),
+                endpoint: this.routeToolService.apiService.getEndpointByType('item/inventory'),
                 disableMaxRestResultsSize: true,
               },
             ],
@@ -200,8 +200,8 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
       }
     };
     // TODO: Refactor this after the change of AppInitializer service with user.
-    this._routeToolService.userService.loaded$.subscribe(() => {
-      const { patronLibrarian } = this._routeToolService.userService.user;
+    this.routeToolService.userService.loaded$.subscribe(() => {
+      const { patronLibrarian } = this.routeToolService.userService.user;
       if (patronLibrarian) {
         config.data.types[0].preFilters.organisation = patronLibrarian.organisation.pid;
       }
@@ -218,7 +218,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
    * @return an observable on the url to redirect
    */
   private getUrl(record: any) {
-    const redirectTo = this._routeToolService.getRouteQueryParam('redirectTo');
+    const redirectTo = this.routeToolService.getRouteQueryParam('redirectTo');
     return redirectTo
         ? of(redirectTo)
         : this.redirectUrl(
@@ -241,14 +241,14 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
       field.hooks = {
         ...field.hooks,
         afterContentInit: (f: FormlyFieldConfig) => {
-          const { user } = this._routeToolService.userService;
-          const { apiService, recordService } = this._routeToolService;
+          const { user } = this.routeToolService.userService;
+          const { apiService, recordService } = this.routeToolService;
           const libraryPid = user.currentLibrary;
           const query = `library.pid:${libraryPid}`;
           f.props.options = recordService
             .getRecords('locations', query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, 'name')
             .pipe(
-              map((result: Record) => this._routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+              map((result: Record) => this.routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
               map((hits: Array<Record>) =>
                 hits.map((hit: any) => {
                   return {
@@ -282,23 +282,23 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
     // setting irregular issue from url parameter
     try {
       // NOTE : Using `Boolean(JSON.parse(...`, values [1, '1', 'true', 'True'] from url will be considered as True.
-      const isIrregular = Boolean(JSON.parse(this._routeToolService.getRouteQueryParam('irregular', 'false')));
+      const isIrregular = Boolean(JSON.parse(this.routeToolService.getRouteQueryParam('irregular', 'false')));
       if (isIrregular) {
         record.issue.regular = false;
       }
     } catch (e) { }
     // setting other issue attributes from url parameters
-    const today = this._routeToolService.datePipe.transform(Date.now(), 'yyyy-MM-dd');
-    record.enumerationAndChronology = this._routeToolService.getRouteQueryParam('enumerationAndChronology', '');
-    record.issue.expected_date = this._routeToolService.getRouteQueryParam('expected_date', today);
-    record.issue.received_date = this._routeToolService.getRouteQueryParam('received_date', today);
+    const today = this.routeToolService.datePipe.transform(Date.now(), 'yyyy-MM-dd');
+    record.enumerationAndChronology = this.routeToolService.getRouteQueryParam('enumerationAndChronology', '');
+    record.issue.expected_date = this.routeToolService.getRouteQueryParam('expected_date', today);
+    record.issue.received_date = this.routeToolService.getRouteQueryParam('received_date', today);
 
-    this._routeToolService.recordService.getRecord('holdings', holdingPid).subscribe(
+    this.routeToolService.recordService.getRecord('holdings', holdingPid).subscribe(
       (holdingData) => {
         record.item_type = holdingData.metadata.circulation_category;
         record.location = holdingData.metadata.location;
         record.document = holdingData.metadata.document;
-        record.holding = { $ref: this._routeToolService.apiService.getRefEndpoint('holdings', holdingPid) };
+        record.holding = { $ref: this.routeToolService.apiService.getRefEndpoint('holdings', holdingPid) };
         if (holdingData.metadata.patterns.frequency === 'rdafr:1016') {  // 'rdafr:1016 --> 'irregular frequency'
           record.issue.regular = false;
         }

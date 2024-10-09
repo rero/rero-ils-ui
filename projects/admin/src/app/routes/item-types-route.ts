@@ -55,12 +55,12 @@ export class ItemTypesRoute extends BaseRoute implements RouteInterface {
             searchFilters: [
               this.expertSearchFilter()
             ],
-            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.ITTY_CREATE) }),
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ITTY_CREATE) }),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => {
-              const { user } = this._routeToolService.userService;
+              const { user } = this.routeToolService.userService;
               data.organisation = {
-                $ref: this._routeToolService.apiService.getRefEndpoint(
+                $ref: this.routeToolService.apiService.getRefEndpoint(
                   'organisations',
                   user.currentOrganisation
                 )

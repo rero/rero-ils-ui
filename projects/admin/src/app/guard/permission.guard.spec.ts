@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,10 +16,9 @@
  */
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { PERMISSIONS, PermissionsService, PERMISSION_OPERATOR } from '@rero/shared';
+import { PERMISSION_OPERATOR, PERMISSIONS, PermissionsService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { ErrorPageComponent } from 'projects/admin/src/app/error/error-page/error-page.component';
 
@@ -43,7 +42,7 @@ describe('PermissionGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule.withRoutes(routes),
+        RouterModule.forRoot(routes),
         TranslateModule.forRoot(),
         HttpClientTestingModule
       ]

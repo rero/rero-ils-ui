@@ -22,7 +22,7 @@ import { RecordService } from '@rero/ng-core';
 })
 export class LibraryApiService {
 
-  private recordService = inject(RecordService);
+  private recordService: RecordService = inject(RecordService);
 
   /** Resource name */
   static readonly resource = 'libraries';

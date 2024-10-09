@@ -22,13 +22,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { ItemStatus, User, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Item, ItemAction, ItemNoteType } from '../../classes/items';
 import { ItemsService } from '../../service/items.service';
 import { PatronService } from '../../service/patron.service';
 import { CheckinActionComponent } from './checkin-action/checkin-action.component';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'admin-circulation-checkout',
@@ -36,14 +36,14 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 })
 export class CheckinComponent implements OnInit {
 
-  private messageService = inject(MessageService);
-  private dialogService = inject(DialogService);
-  private userService = inject(UserService);
-  private recordService = inject(RecordService);
-  private itemsService = inject(ItemsService);
-  private router = inject(Router);
-  private translate = inject(TranslateService);
-  private patronService = inject(PatronService);
+  private messageService: MessageService = inject(MessageService);
+  private dialogService: DialogService = inject(DialogService);
+  private userService: UserService = inject(UserService);
+  private recordService: RecordService = inject(RecordService);
+  private itemsService: ItemsService = inject(ItemsService);
+  private router: Router = inject(Router);
+  private translate: TranslateService = inject(TranslateService);
+  private patronService: PatronService = inject(PatronService);
 
   public placeholder = _('Please enter a patron card number or an item barcode.');
   public searchText = '';

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -50,17 +50,17 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             label: _('Locations'),
             detailComponent: LocationDetailViewComponent,
-            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.LOC_CREATE) }),
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.LOC_CREATE) }),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
             preprocessRecordEditor: (record: any) => {
               // Location resource use a asynchronous validator ('valueAlreadyExists').
               // This validator needs the library pid to work ; but in creation mode, the record.library.pid isn't yet known by system
               // so we use the 'library' query parameter to construct this data (only if the resource isn't already related to a library)
-              if (record.library == null && this._routeToolService.getRouteQueryParam('library') != null) {
+              if (record.library == null && this.routeToolService.getRouteQueryParam('library') != null) {
                 record.library = {
-                  $ref: this._routeToolService.apiService.getRefEndpoint(
+                  $ref: this.routeToolService.apiService.getRefEndpoint(
                     'libraries',
-                    this._routeToolService.getRouteQueryParam('library')
+                    this.routeToolService.getRouteQueryParam('library')
                   )
                 };
               }

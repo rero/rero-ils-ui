@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 
@@ -38,11 +37,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class GetTranslatedLabelPipe implements PipeTransform {
 
-  /**
-   * constructor
-   * @param translateService - TranslateService
-   */
-  constructor(private translateService: TranslateService) {}
+  protected translateService: TranslateService = inject(TranslateService);
 
   /**
    * get the best possible label

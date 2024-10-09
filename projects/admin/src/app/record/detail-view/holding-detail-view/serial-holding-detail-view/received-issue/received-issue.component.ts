@@ -22,7 +22,7 @@ import { RecordPermissionService } from '@app/admin/service/record-permission.se
 import { TranslateService } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
 import { IssueItemStatus, UserService } from '@rero/shared';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -33,7 +33,12 @@ import { Subscription } from 'rxjs';
 })
 export class ReceivedIssueComponent implements OnInit, OnDestroy {
 
-  private dialogService: DialogService = inject(DialogService);
+  private holdingService: HoldingsService = inject(HoldingsService);
+  private translateService: TranslateService = inject(TranslateService);
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private recordUiService: RecordUiService = inject(RecordUiService);
+  private issueService: IssueService = inject(IssueService);
+  private userService: UserService = inject(UserService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the issue to display */
@@ -72,25 +77,6 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
     return this.issue.metadata.issue.claims.dates
       .sort((a: string, b: string) => new Date(b).getTime() - new Date(a).getTime())[0];
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param holdingService - HoldingService
-   * @param translateService - TranslateService
-   * @param recordPermissionService - RecordPermissionService
-   * @param recordUiService: RecordUiService
-   * @param issueService: IssueService
-   * @param userService: UserService
-   */
-  constructor(
-    private holdingService: HoldingsService,
-    private translateService: TranslateService,
-    private recordPermissionService: RecordPermissionService,
-    private recordUiService: RecordUiService,
-    private issueService: IssueService,
-    private userService: UserService
-  ) { }
 
   // COMPONENT FUNCTIONS ======================================================
 

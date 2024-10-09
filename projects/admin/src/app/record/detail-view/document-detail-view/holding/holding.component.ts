@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -33,6 +32,12 @@ import { ItemRequestComponent } from '../item-request/item-request.component';
 })
 export class HoldingComponent implements OnInit, OnDestroy {
 
+  protected userService: UserService = inject(UserService);
+  protected holdingService: HoldingsService = inject(HoldingsService);
+  private recordUiService: RecordUiService = inject(RecordUiService);
+  private recordService: RecordService = inject(RecordService);
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private translateService: TranslateService = inject(TranslateService);
   private dialogService: DialogService = inject(DialogService);
 
   // COMPONENT ATTRIBUTES =====================================================
@@ -63,25 +68,6 @@ export class HoldingComponent implements OnInit, OnDestroy {
   get language() {
     return this.translateService.currentLang;
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param recordUiService - RecordUiService
-   * @param recordService - RecordService
-   * @param recordPermissionService - RecordPermissionService
-   * @param translateService - TranslateService
-   * @param userService - UserService
-   * @param holdingService: HoldingsService
-   */
-  constructor(
-    private recordUiService: RecordUiService,
-    private recordService: RecordService,
-    private recordPermissionService: RecordPermissionService,
-    private translateService: TranslateService,
-    protected userService: UserService,
-    protected holdingService: HoldingsService,
-  ) { }
 
   /** onInit hook */
   ngOnInit() {

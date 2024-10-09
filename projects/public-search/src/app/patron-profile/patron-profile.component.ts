@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { IPatron, UserService } from '@rero/shared';
 import { TabsetComponent } from 'ngx-bootstrap/tabs';
-import { Subscription, forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { IllRequestApiService } from '../api/ill-request-api.service';
 import { LoanApiService } from '../api/loan-api.service';
 import { OperationLogsApiService } from '../api/operation-logs-api.service';
@@ -31,6 +31,15 @@ import { PatronProfileService } from './patron-profile.service';
   templateUrl: './patron-profile.component.html'
 })
 export class PatronProfileComponent implements OnInit, OnDestroy {
+
+  private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
+  private recordService: RecordService = inject(RecordService);
+  private loanApiService: LoanApiService = inject(LoanApiService);
+  private illRequestApiService: IllRequestApiService = inject(IllRequestApiService);
+  private patronProfileService: PatronProfileService = inject(PatronProfileService);
+  private userService: UserService = inject(UserService);
+  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
 
   /** Available Tabs */
   @ViewChild('staticTabs', { static: false }) staticTabs: TabsetComponent;
@@ -88,28 +97,6 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   get patron(): IPatron {
     return this.patronProfileMenuService.currentPatron;
   }
-
-  /**
-   * Constructor
-   * @param patronTransactionApiService - PatronTransactionApiService
-   * @param recordService - RecordService
-   * @param loanApiService - LoanApiService
-   * @param illRequestApiService - IllRequestApiService
-   * @param patronProfileService - PatronProfileService
-   * @param userService - UserService
-   * @param patronProfileMenuService - PatronProfileMenuService
-   * @param operationLogsService - OperationLogsService
-   */
-  constructor(
-    private patronTransactionApiService: PatronTransactionApiService,
-    private recordService: RecordService,
-    private loanApiService: LoanApiService,
-    private illRequestApiService: IllRequestApiService,
-    private patronProfileService: PatronProfileService,
-    private userService: UserService,
-    private patronProfileMenuService: PatronProfileMenuService,
-    private operationLogsApiService: OperationLogsApiService
-  ) { }
 
   /** OnInit hook */
   ngOnInit(): void {

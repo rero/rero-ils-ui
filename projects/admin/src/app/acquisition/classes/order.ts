@@ -126,7 +126,7 @@ export class AcqOrderHistoryVersion {
    * Constructor
    * @param obj - the JSON parsed object to load.
    */
-  constructor(obj?: any){
+  constructor(obj?: any) {
     Object.assign(this, obj);
     this.active = obj.current;
     this.pid = extractIdOnRef(obj.$ref);
