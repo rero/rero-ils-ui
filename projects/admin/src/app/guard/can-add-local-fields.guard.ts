@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { UserService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
@@ -26,6 +26,11 @@ import { LocalFieldApiService } from '../api/local-field-api.service';
   providedIn: 'root'
 })
 export class CanAddLocalFieldsGuard  {
+
+  private userService: UserService = inject(UserService);
+  private localFieldsApiService: LocalFieldApiService = inject(LocalFieldApiService);
+  private router: Router = inject(Router);
+
   /**
    * This guards allows to control the existence of the resource
    * for the current organization. If a record exists, it blocks
@@ -40,18 +45,6 @@ export class CanAddLocalFieldsGuard  {
   };
 
   /**
-   * Constructor
-   * @param _userService - UserService
-   * @param _localFieldsApiService - LocalFieldApiService
-   * @param _router - Router
-   */
-  constructor(
-    private _userService: UserService,
-    private _localFieldsApiService: LocalFieldApiService,
-    private _router: Router
-  ) {}
-
-  /**
    * Can activate
    * @param next - ActivatedRouteSnapshot
    * @returns True if authorized access
@@ -61,16 +54,16 @@ export class CanAddLocalFieldsGuard  {
     const params = next.queryParams;
     if (params.type && params.ref) {
       const type = this._translateType(params.type);
-      return this._localFieldsApiService.getByResourceTypeAndResourcePidAndOrganisationId(
+      return this.localFieldsApiService.getByResourceTypeAndResourcePidAndOrganisationId(
         type,
         params.ref,
-        this._userService.user.currentOrganisation
+        this.userService.user.currentOrganisation
       ).pipe(map(record => {
         // False if the record metadata exists.
         return !!!(record.metadata);
       }));
     } else {
-      this._router.navigate(['/errors/400'], { skipLocationChange: true });
+      this.router.navigate(['/errors/400'], { skipLocationChange: true });
       return of(false);
     }
   }
@@ -85,6 +78,6 @@ export class CanAddLocalFieldsGuard  {
     if (type in this._types) {
       return this._types[type];
     }
-    this._router.navigate(['/errors/400'], { skipLocationChange: true });
+    this.router.navigate(['/errors/400'], { skipLocationChange: true });
   }
 }

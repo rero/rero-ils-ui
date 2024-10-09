@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2022 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -26,20 +26,13 @@ import { RecordPermissionService } from '../service/record-permission.service';
 })
 export class CanAccessGuard  {
 
+  private permissionService: RecordPermissionService = inject(RecordPermissionService);
+  private router: Router = inject(Router);
+
   private _mandatoryParams = [
     'type',
     'pid'
   ];
-
-  /**
-   * Constructor
-   * @param _permissionService - RecordPermissionService
-   * @param _router - Router
-   */
-  constructor(
-    private _permissionService: RecordPermissionService,
-    private _router: Router
-  ) { }
 
   /**
    * Can activate
@@ -53,14 +46,14 @@ export class CanAccessGuard  {
       || !(Object.values(CAN_ACCESS_ACTIONS).includes(route.data.action))
       || !(this._mandatoryParams.every((param: string) => param in route.params))
     ) {
-      this._router.navigate(['/errors/400'], { skipLocationChange: true });
+      this.router.navigate(['/errors/400'], { skipLocationChange: true });
       return of(false);
     }
 
-    return this._permissionService.getPermission(route.params.type, route.params.pid).pipe(
+    return this.permissionService.getPermission(route.params.type, route.params.pid).pipe(
       map((permission: RecordPermissions) => {
         if (!permission[route.data.action].can) {
-          this._router.navigate(['/errors/403'], { skipLocationChange: true });
+          this.router.navigate(['/errors/403'], { skipLocationChange: true });
           return false;
         }
         return true;

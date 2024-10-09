@@ -32,6 +32,12 @@ import { ItemRequestComponent } from '../../item-request/item-request.component'
 })
 export class DefaultHoldingItemComponent implements OnInit {
 
+  public itemApiService: ItemApiService = inject(ItemApiService);
+  protected recordUiService: RecordUiService = inject(RecordUiService);
+  protected recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  protected userService: UserService = inject(UserService);
+  protected itemService: ItemsService = inject(ItemsService);
+  protected translateService: TranslateService = inject(TranslateService);
   private dialogService: DialogService = inject(DialogService);
 
   // COMPONENT ATTRIBUTES =====================================================
@@ -72,25 +78,6 @@ export class DefaultHoldingItemComponent implements OnInit {
   get cannotRequestInfoMessage(): string {
     return this.recordPermissionService.generateTooltipMessage(this.permissions.canRequest.reasons, 'request');
   }
-
-  // CONSTRUCTOR & HOOKS ==============================================================
-  /**
-   * Constructor
-   * @param recordUiService - RecordUiService
-   * @param userService - UserService
-   * @param recordPermissionService - RecordPermissionService
-   * @param itemService - ItemService
-   * @param translateService - TranslateService
-   * @param itemApiService - ItemApiService
-   */
-  constructor(
-    protected recordUiService: RecordUiService,
-    protected recordPermissionService: RecordPermissionService,
-    protected userService: UserService,
-    protected itemService: ItemsService,
-    protected translateService: TranslateService,
-    public itemApiService: ItemApiService
-  ) { }
 
   /** OnInit hook */
   ngOnInit(): void {

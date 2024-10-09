@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -12,31 +12,32 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <httpClient://www.gnu.org/licenses/>.
  */
+
 
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
+import { UserService } from '@rero/shared';
+import { Confirmation, ConfirmationService } from 'primeng/api';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CircPolicy } from '../classes/circ-policy';
 import { LoanState } from '../classes/loans';
-import { UserService } from '@rero/shared';
-import { TranslateService } from '@ngx-translate/core';
-import { Confirmation, ConfirmationService } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoanService {
 
-  recordService = inject(RecordService);
-  http = inject(HttpClient);
-  userService = inject(UserService);
-  translateService = inject(TranslateService);
-  confirmationService = inject(ConfirmationService);
+  private recordService: RecordService = inject(RecordService);
+  private httpClient: HttpClient = inject(HttpClient);
+  private userService: UserService = inject(UserService);
+  private translateService: TranslateService = inject(TranslateService);
+  private confirmationService: ConfirmationService = inject(ConfirmationService);
 
   // SERVICE CONSTANTS ========================================================
   /** Statuses of a borrow loan */
@@ -96,7 +97,7 @@ export class LoanService {
    */
   cancelLoan(itemPid: string, loanPid: string, transactionLibraryPid: string): Observable<any> {
     const url = '/api/item/cancel_item_request';
-    return this.http.post<any>(url, {
+    return this.httpClient.post<any>(url, {
       item_pid: itemPid,
       pid: loanPid,
       transaction_library_pid: transactionLibraryPid,
@@ -129,7 +130,7 @@ export class LoanService {
    */
   updateLoanPickupLocation(loanPid: string, pickupLocationPid: string): Observable<any> {
     const url = '/api/item/update_loan_pickup_location';
-    return this.http.post<any>(url, {
+    return this.httpClient.post<any>(url, {
       pid: loanPid,
       pickup_location_pid: pickupLocationPid
     });
@@ -142,7 +143,7 @@ export class LoanService {
    */
   getCirculationPolicy(loanPid: string): Observable<CircPolicy> {
     const apiUrl = `/api/loan/${loanPid}/circulation_policy`;
-    return this.http.get<CircPolicy>(apiUrl);
+    return this.httpClient.get<CircPolicy>(apiUrl);
   }
 
   /**

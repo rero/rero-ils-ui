@@ -189,7 +189,7 @@ import { PatronsRemoteService } from './record/editor/formly/primeng/remote-auto
 import { FieldCustomInputTypeComponent } from './record/editor/type/field-custom.type';
 import { RepeatTypeComponent } from './record/editor/type/repeat-section.type';
 import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
-import { UserIdComponent } from './record/editor/wrappers/user-id/user-id.component';
+import { UserIdComponent } from './record/editor/wrappers/user-id.component';
 import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patron-type-item-type/cipo-patron-type-item-type.component';
 import { AddEntityLocalFormComponent } from './record/editor/formly/primeng/entity-autocomplete/add-entity-local-form/add-entity-local-form.component';
 import { OperationLogsDialogComponent } from './record/operation-logs/operation-logs-dialog/operation-logs-dialog.component';

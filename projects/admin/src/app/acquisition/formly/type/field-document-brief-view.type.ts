@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { RecordService } from '@rero/ng-core';
 
@@ -30,20 +30,11 @@ import { RecordService } from '@rero/ng-core';
 })
 export class FieldDocumentBriefViewTypeComponent extends FieldType implements OnInit {
 
+  private recordService: RecordService = inject(RecordService);
+  private changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
+
   /** record */
   record: any;
-
-  /**
-   * Constructor
-   * @param recordService - RecordService
-   * @param changeDetectorRef - ChangeDetectorRef
-   */
-  constructor(
-    private recordService: RecordService,
-    private changeDetectorRef: ChangeDetectorRef
-  ) {
-    super();
-  }
 
   /** OnInit hook */
   ngOnInit(): void {

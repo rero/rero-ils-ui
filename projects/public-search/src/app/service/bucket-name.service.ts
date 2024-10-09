@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { IBucketNameService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
@@ -26,13 +25,7 @@ import { Observable, of } from 'rxjs';
 })
 export class BucketNameService implements IBucketNameService {
 
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   */
-  constructor(
-    private translateService: TranslateService
-  ) { }
+  private translateService: TranslateService = inject(TranslateService);
 
   /**
    * Transform aggregation name

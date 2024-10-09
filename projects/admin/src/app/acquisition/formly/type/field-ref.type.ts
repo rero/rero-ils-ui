@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { RecordService } from '@rero/ng-core';
 
@@ -28,17 +28,11 @@ import { RecordService } from '@rero/ng-core';
 })
 export class FieldRefTypeComponent extends FieldType implements OnInit {
 
+  private recordService: RecordService = inject(RecordService);
+  private ref: ChangeDetectorRef = inject(ChangeDetectorRef);
+
   /** value */
   value: string;
-
-  /**
-   * Constructor
-   * @param recordService - RecordService
-   * @param ref - ChangeDetectorRef
-   */
-  constructor(private recordService: RecordService, private ref: ChangeDetectorRef) {
-    super();
-  }
 
   /** OnInit hook */
   ngOnInit(): void {

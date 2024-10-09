@@ -25,14 +25,11 @@ import { BehaviorSubject, Observable, map, of, switchMap, tap } from 'rxjs';
   providedIn: 'root',
 })
 export class ResourcesFilesService {
-  // http service
-  private httpService = inject(HttpClient);
-  // ng-core record service
-  private recordService = inject(RecordService);
-  // ng-core api service
-  private apiService = inject(ApiService);
-  // user service to retrieve the current library
-  private userService = inject(UserService);
+
+  private httpService: HttpClient = inject(HttpClient);
+  private recordService: RecordService = inject(RecordService);
+  private apiService: ApiService = inject(ApiService);
+  private userService: UserService = inject(UserService);
 
   //api base URL
   baseUrl: string;
@@ -61,7 +58,7 @@ export class ResourcesFilesService {
    * @returns
    */
   getParentRecord(pid: string): Observable<Record> {
-    // get the currend library pid
+    // get the current library pid
     const libPid = this.userService.user.currentLibrary;
     // retrieve the file record attached to the document and the current library
     return this.httpService
@@ -100,7 +97,7 @@ export class ResourcesFilesService {
    * @param pid
    */
   createParentRecord(docPid: string): Observable<Record> {
-    // get the currend library pid
+    // get the current library pid
     const libPid = this.userService.user.currentLibrary;
     // create the file record attached to the current library pid and the given
     // document
@@ -186,7 +183,7 @@ export class ResourcesFilesService {
   /**
    * Replace an existing file.
    *
-   * as it is not supported by invenio-records-resouces we remove the old version
+   * as it is not supported by invenio-records-resources we remove the old version
    * and create a new one
    *
    * @param type Type of resource.

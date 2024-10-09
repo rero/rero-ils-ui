@@ -36,6 +36,13 @@ import { LoanService } from '../../../../service/loan.service';
 })
 export class ItemRequestComponent implements OnInit {
 
+  private userService: UserService = inject(UserService);
+  private recordService: RecordService = inject(RecordService);
+  private httpClient: HttpClient = inject(HttpClient);
+  private loanService: LoanService = inject(LoanService);
+  private translateService: TranslateService = inject(TranslateService);
+  private itemService: ItemsService = inject(ItemsService);
+  private holdingService: HoldingsService = inject(HoldingsService);
   private messageService:MessageService = inject(MessageService);
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
@@ -70,27 +77,6 @@ export class ItemRequestComponent implements OnInit {
   private pickupDefaultValue: string;
   /** Current user */
   private currentUser: User;
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param userService - UserService
-   * @param recordService - RecordService
-   * @param http - HttpClient
-   * @param translateService - TranslateService
-   * @param loanService: LoanService
-   * @param itemService: ItemService
-   * @param holdingService: HoldingsService
-   */
-  constructor(
-    private userService: UserService,
-    private recordService: RecordService,
-    private http: HttpClient,
-    private loanService: LoanService,
-    private translateService: TranslateService,
-    private itemService: ItemsService,
-    private holdingService: HoldingsService,
-  ) { }
 
   /** OnInit hook */
   ngOnInit() {
@@ -130,7 +116,7 @@ export class ItemRequestComponent implements OnInit {
       key = 'description';
       body[key] = model.description;
     }
-    this.http.post(`/api/${this.recordType}/request`, body)
+    this.httpClient.post(`/api/${this.recordType}/request`, body)
       .pipe(tap(() => this.requestInProgress = false))
       .subscribe({
         next: (_: unknown) => {

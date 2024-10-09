@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { PatronTransactionApiService } from '@app/admin/api/patron-transaction-api.service';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { tap } from 'rxjs';
@@ -24,6 +24,9 @@ import { tap } from 'rxjs';
   templateUrl: './item-fees.component.html'
 })
 export class ItemFeesComponent implements OnInit {
+
+  private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
+  private organisationService: OrganisationService = inject(OrganisationService);
 
   /** Item pid */
   @Input() itemPid: string;
@@ -41,16 +44,6 @@ export class ItemFeesComponent implements OnInit {
   get organisation() {
     return this.organisationService.organisation;
   }
-
-  /**
-   * Constructor
-   * @param patronTransactionApiService - PatronTransactionApiService
-   * @param organisationService - OrganisationService
-   */
-  public constructor(
-    private patronTransactionApiService: PatronTransactionApiService,
-    private organisationService: OrganisationService
-  ) {}
 
   /** OnInit hook */
   ngOnInit(): void {

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ResultItem } from '@rero/ng-core';
 
@@ -43,6 +43,8 @@ import { ResultItem } from '@rero/ng-core';
   })
 export class StatisticsCfgBriefViewComponent implements ResultItem {
 
+  private translateService: TranslateService = inject(TranslateService);
+
   /** Record data */
   @Input() record: any;
 
@@ -51,12 +53,6 @@ export class StatisticsCfgBriefViewComponent implements ResultItem {
 
   /** Detail URL to navigate to detail view */
   @Input() detailUrl: { link: string, external: boolean };
-
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   */
-  public constructor(private translateService: TranslateService) {}
 
   /**
    * Status of the configuration on bullet title

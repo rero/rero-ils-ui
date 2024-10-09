@@ -29,6 +29,9 @@ import { ItemsService } from '../../service/items.service';
 })
 export class MainRequestComponent implements OnInit, OnDestroy {
 
+  private userService: UserService = inject(UserService);
+  private itemsService: ItemsService = inject(ItemsService);
+  private translateService: TranslateService = inject(TranslateService);
   private messageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES ==================================================================
@@ -75,19 +78,6 @@ export class MainRequestComponent implements OnInit, OnDestroy {
   private intervalSubscription = new Subscription();
   /** the sort criteria used */
   private sortCriteria = this.sortingCriteria[1].value;
-
-
-  // COMPONENT CONSTRUCTOR ===========================================================
-  /** Constructor
-   * @param userService: User Service
-   * @param itemsService: Items Service
-   * @param translateService: Translate Service
-   */
-  constructor(
-    private userService: UserService,
-    private itemsService: ItemsService,
-    private translateService: TranslateService,
-  ) {}
 
   /** OnInit hook */
   ngOnInit() {

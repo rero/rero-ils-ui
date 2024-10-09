@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { Error, Record } from '@rero/ng-core';
 import { Paginator } from '@rero/shared';
@@ -27,6 +27,9 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
   templateUrl: './patron-profile-loans.component.html'
 })
 export class PatronProfileLoansComponent implements OnInit, OnDestroy {
+
+  private loanApiService: LoanApiService = inject(LoanApiService);
+  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
 
   /** Observable subscription */
   private _subscription = new Subscription();
@@ -48,16 +51,6 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
 
   /** Records paginator */
   paginator: Paginator;
-
-  /**
-   * Constructor
-   * @param loanApiService - LoanApiService
-   * @param patronProfileMenuService - PatronProfileMenuService
-   */
-  constructor(
-    private loanApiService: LoanApiService,
-    private patronProfileMenuService: PatronProfileMenuService
-  ) {}
 
   /** OnInit hook */
   ngOnInit(): void {

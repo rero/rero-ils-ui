@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { AfterViewInit, Component, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, inject, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 import { Entity, EntityType } from '../../../class/entity';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
@@ -48,6 +48,8 @@ import { EntityBriefViewRemotePersonComponent } from './entity-brief-view.person
 })
 export class EntityBriefViewComponent implements ResultItem, OnInit, AfterViewInit {
 
+  protected extractedSourceFieldPipe: ExtractSourceFieldPipe = inject(ExtractSourceFieldPipe);
+
   // COMPONENT ATTRIBUTES =====================================================
   /** The entity record to display */
   @Input() record: any;
@@ -70,13 +72,6 @@ export class EntityBriefViewComponent implements ResultItem, OnInit, AfterViewIn
 
   /** The component to use to build the entity body content. */
   private contentComponent: any = null;
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param extractedSourceFieldPipe: ExtractSourceFieldPipe
-   */
-  constructor(private extractedSourceFieldPipe: ExtractSourceFieldPipe) { }
 
   /** OnInit hook */
   ngOnInit(): void {

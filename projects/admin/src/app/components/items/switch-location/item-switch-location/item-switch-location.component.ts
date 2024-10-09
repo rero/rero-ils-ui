@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,6 +33,11 @@ import { finalize, map } from 'rxjs/operators';
 })
 export class ItemSwitchLocationComponent implements OnInit {
 
+  private formBuilder: UntypedFormBuilder = inject(UntypedFormBuilder);
+  private itemApiService: ItemApiService = inject(ItemApiService);
+  private locationService: LocationService = inject(LocationService);
+  private translateService: TranslateService = inject(TranslateService);
+  private userService: UserService = inject(UserService);
   private messageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
@@ -49,32 +54,16 @@ export class ItemSwitchLocationComponent implements OnInit {
   options: SelectItemGroup[] = [];
   initialLocation: SelectItem[] = [];
 
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param _formBuilder - UntypedFormBuilder
-   * @param _itemApiService - ItemApiService
-   * @param _locationService - LocationService
-   * @param _translateService - TranslateService
-   * @param _userService - UserService
-   */
-  constructor(
-    private _formBuilder: UntypedFormBuilder,
-    private _itemApiService: ItemApiService,
-    private _locationService: LocationService,
-    private _translateService: TranslateService,
-    private _userService: UserService,
-  ) {
-    this.form = this._formBuilder.group({
+  constructor() {
+    this.form = this.formBuilder.group({
       target: [undefined, Validators.required],
     });
   }
 
-
   /** OnInit hook */
   ngOnInit(): void {
-    const libraryPids = this._userService.user.patronLibrarian.libraries.map(lib => lib.pid);
-    this._locationService
+    const libraryPids = this.userService.user.patronLibrarian.libraries.map(lib => lib.pid);
+    this.locationService
       .getLocationsByLibraries$(libraryPids)
       .pipe(
         map(locations => locations.map(loc => loc.metadata))
@@ -108,7 +97,7 @@ export class ItemSwitchLocationComponent implements OnInit {
    *    processed, emit the item with updated information.
    */
   submit(): void {
-    this._itemApiService
+    this.itemApiService
       .updateLocation(this.item, this.form.value.target)
       .pipe(
         finalize(() => this.itemChange.emit(this.item))
@@ -118,7 +107,7 @@ export class ItemSwitchLocationComponent implements OnInit {
         error: (err: Error) => {
           this.messageService.add({
             severity: 'error',
-            summary: this._translateService.instant('Locations'),
+            summary: this.translateService.instant('Locations'),
             detail: err.title,
             sticky: true,
             closable: true

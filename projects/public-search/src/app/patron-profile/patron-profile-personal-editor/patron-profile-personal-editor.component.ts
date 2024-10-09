@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -33,7 +33,13 @@ import { debounceTime, map, tap } from 'rxjs/operators';
 })
 export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
 
-  private messageService = inject(MessageService);
+  private recordService: RecordService = inject(RecordService);
+  private formlyJsonschema: FormlyJsonschema = inject(FormlyJsonschema);
+  private translateService: TranslateService = inject(TranslateService);
+  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  private userService: UserService = inject(UserService);
+  private document: Document = inject(DOCUMENT);
+  private messageService: MessageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Request referer */
@@ -60,26 +66,6 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
     username: _('Username must start with a letter or a number, be at least three characters long and only contain alphanumeric characters, dashes and underscores.'),
     keep_history: _('If enabled the loan history is saved for a maximum of six months. It is visible to you and the library staff.')
   };
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   *
-   * @param recordService - RecordService
-   * @param formlyJsonschema - FormlyJsonschema
-   * @param translateService - TranslateService
-   * @param appSettingsService - AppSettingsService
-   * @param userService - UserService
-   * @param document - Document
-   */
-  constructor(
-    private recordService: RecordService,
-    private formlyJsonschema: FormlyJsonschema,
-    private translateService: TranslateService,
-    private appSettingsService: AppSettingsService,
-    private userService: UserService,
-    @Inject(DOCUMENT) private document: Document
-  ) { }
 
   /** Init hook */
   ngOnInit(): void {

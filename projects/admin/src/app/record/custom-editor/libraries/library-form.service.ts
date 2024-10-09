@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { RecordService, TimeValidator } from '@rero/ng-core';
 import { forkJoin, Subject } from 'rxjs';
-import { AcquisitionInformations, Library, NotificationSettings, RolloverSettings } from '../../../classes/library';
+import { AcquisitionInformations, Library, RolloverSettings } from '../../../classes/library';
 import { NotificationType } from '../../../classes/notification';
 import { WeekDays } from '../../../classes/week-days';
 
@@ -27,6 +27,9 @@ import { WeekDays } from '../../../classes/week-days';
    providedIn: 'root'
 })
 export class LibraryFormService {
+
+  private fb: UntypedFormBuilder = inject(UntypedFormBuilder);
+  private recordService: RecordService = inject(RecordService);
 
   // SERVICE ATTRIBUTES =======================================================
   /** Angular form group */
@@ -58,37 +61,27 @@ export class LibraryFormService {
   get rollover_settings(): AbstractControl { return this.form.get('rollover_settings'); }
   get account_transfer_options() { return this.rolloverAccountTransferOptions; }
 
-  // SERVICE CONSTRUCTOR & HOOKS ==============================================
-  /** Constructor
-   * @param _fb - FormBuilder
-   * @param _recordService - RecordService
-   */
-  constructor(
-    private _fb: UntypedFormBuilder,
-    private _recordService: RecordService
-  ) { }
-
   // SERVICE FUNCTIONS ========================================================
   /** Build the form structure */
   build(): void {
-    this.form = this._fb.group({
+    this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4)]],
       address: ['', Validators.minLength(4)],
       email: ['', Validators.email],
       code: ['', [Validators.required]],
       communication_language: ['', Validators.required],
 
-      opening_hours: this._fb.array([]),
-      notification_settings: this._fb.array([]),
-      acquisition_settings: this._fb.group({
+      opening_hours: this.fb.array([]),
+      notification_settings: this.fb.array([]),
+      acquisition_settings: this.fb.group({
         shipping_informations: this._buildAcqInformation(),
         billing_informations: this._buildAcqInformation()
       }),
-      serial_acquisition_settings: this._fb.group({
+      serial_acquisition_settings: this.fb.group({
         shipping_informations: this._buildAcqInformation(),
         billing_informations: this._buildAcqInformation()
       }),
-      rollover_settings: this._fb.group({
+      rollover_settings: this.fb.group({
         account_transfer: [this.accountDefaultTransfertOption, [Validators.required]]
       })
     });
@@ -103,8 +96,8 @@ export class LibraryFormService {
 
   /** Method to create the form and get default available values */
   create() {
-    const notificationSchema$ = this._recordService.getSchemaForm('notifications');
-    const librarySchema$ = this._recordService.getSchemaForm('libraries');
+    const notificationSchema$ = this.recordService.getSchemaForm('notifications');
+    const librarySchema$ = this.recordService.getSchemaForm('libraries');
     forkJoin([librarySchema$, notificationSchema$]).subscribe(([libSchema, notifSchema]) => {
       this.availableCommunicationLanguages = libSchema.schema.properties.communication_language.enum;
       this.countryList = libSchema.schema.properties.acquisition_settings.properties.shipping_informations.
@@ -180,7 +173,7 @@ export class LibraryFormService {
     const days = Object.keys(WeekDays);
     const hours = this.form.get('opening_hours');
     for (let step = 0; step < 7; step++) {
-      hours.push(this._buildOpeningHours(false, days[step], this._fb.array([])));
+      hours.push(this._buildOpeningHours(false, days[step], this.fb.array([])));
     }
     this._setOpeningHours(openingHours);
   }
@@ -213,7 +206,7 @@ export class LibraryFormService {
    * @param times - times array
    */
   private _buildOpeningHours(isOpen: boolean, day, times): UntypedFormGroup {
-    return this._fb.group({
+    return this.fb.group({
       is_open: [isOpen],
       day: [day],
       times
@@ -229,7 +222,7 @@ export class LibraryFormService {
    */
   private _buildTimes(startTime = '00:01', endTime = '23:59'): UntypedFormGroup {
     const regex = '^(?!(0:00)|(00:00)$)([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$';
-    return this._fb.group({
+    return this.fb.group({
       start_time: [startTime, {
         validators: [
           Validators.required,
@@ -260,11 +253,11 @@ export class LibraryFormService {
 
   /** Build structure to store acquisition information into the form */
   private _buildAcqInformation(): UntypedFormGroup {
-    return this._fb.group({
+    return this.fb.group({
       name: ['', Validators.minLength(3)],
       email: ['', Validators.email],
       phone: ['', Validators.minLength(6)],
-      address: this._fb.group({
+      address: this.fb.group({
         street: ['', Validators.minLength(3)],
         zip_code: ['', Validators.minLength(3)],
         city: ['', Validators.minLength(2)],
@@ -332,7 +325,7 @@ export class LibraryFormService {
     if ([NotificationType.AVAILABILITY].includes(settingType)) {
       model.delay = ['',  Validators.max(720)];
     }
-    return this._fb.group(model);
+    return this.fb.group(model);
   }
 
   /**

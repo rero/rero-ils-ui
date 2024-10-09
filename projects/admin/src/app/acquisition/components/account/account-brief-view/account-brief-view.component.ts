@@ -33,6 +33,11 @@ import { IAcqAccount } from '../../../classes/account';
 })
 export class AccountBriefViewComponent implements OnInit {
 
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private accountApiService: AcqAccountApiService = inject(AcqAccountApiService);
+  private translateService: TranslateService = inject(TranslateService);
+  private userService: UserService = inject(UserService);
   private messageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES ========================================================
@@ -67,23 +72,6 @@ export class AccountBriefViewComponent implements OnInit {
   get deleteInfoMessage(): string {
     return this.recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
   }
-
-  // CONSTRUCTOR & HOOKS ========================================================
-  /**
-   * Constructor
-   * @param recordPermissionService - RecordPermissionService
-   * @param organisationService - OrganisationService
-   * @param accountApiService - AcqAccountApiService
-   * @param translateService - TranslateService
-   * @param userService - UserService
-   */
-  constructor(
-    private recordPermissionService: RecordPermissionService,
-    private organisationService: OrganisationService,
-    private accountApiService: AcqAccountApiService,
-    private translateService: TranslateService,
-    private userService: UserService
-  ) { }
 
   /** OnInit hook */
   ngOnInit(): void {

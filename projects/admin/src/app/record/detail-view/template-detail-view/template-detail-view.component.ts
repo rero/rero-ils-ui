@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RecordService } from '@rero/ng-core';
 import { Observable, of, Subscription } from 'rxjs';
@@ -24,6 +24,9 @@ import { Observable, of, Subscription } from 'rxjs';
   templateUrl: './template-detail-view.component.html'
 })
 export class TemplateDetailViewComponent implements OnInit, OnDestroy {
+
+  private router: ActivatedRoute = inject(ActivatedRoute);
+  private recordService: RecordService = inject(RecordService);
 
   /** Observable resolving record data */
   record$: Observable<any>;
@@ -50,15 +53,6 @@ export class TemplateDetailViewComponent implements OnInit, OnDestroy {
   get pid() {
     return this.router.snapshot.params.pid;
   }
-
-  /** constructor
-   * @param router - ActivatedRoute to get url parameters.
-   * @param recordService - RecordService to the MARC version for the record.
-   */
-  constructor(
-    private router: ActivatedRoute,
-    private recordService: RecordService
-  ) { }
 
   /** On init hook */
   ngOnInit(): void {

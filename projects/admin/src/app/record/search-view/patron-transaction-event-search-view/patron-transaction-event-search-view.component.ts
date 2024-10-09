@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Component, ViewChild } from '@angular/core';
 import { RecordSearchComponent, RecordSearchPageComponent, SearchResult } from '@rero/ng-core';
 import { PaymentData } from './interfaces';
@@ -57,7 +56,7 @@ export class PatronTransactionEventSearchViewComponent extends RecordSearchPageC
 
   // PRIVATE COMPONENT FUNCTIONS ==============================================
   /**
-   * Get an aggration from search result based on aggregation name.
+   * Get an aggregation from search result based on aggregation name.
    * @param aggName - string: the aggregation name
    * @return: the corresponding aggregation data or `null` if aggregation doesn't exist.
    */

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -27,6 +27,8 @@ import { catchError } from 'rxjs/operators';
   styleUrls: ['./thumbnail.component.scss']
 })
 export class ThumbnailComponent implements OnInit {
+
+  protected httpClient: HttpClient = inject(HttpClient);
 
   /** Cover url */
   coverUrl: string;
@@ -48,12 +50,6 @@ export class ThumbnailComponent implements OnInit {
 
   /** Should the thumbnail be small ? */
   @Input() isSmall = false;
-
-  /**
-   * Constructor
-   * @param httpClient - HttpClient
-   */
-  constructor(private httpClient: HttpClient) {}
 
   /**
    * Get cover url

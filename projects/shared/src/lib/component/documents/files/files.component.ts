@@ -15,16 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { BreakpointObserver, BreakpointState, Breakpoints } from '@angular/cdk/layout';
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnDestroy, OnInit, Type, ViewChild, inject } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, Record, RecordService } from '@rero/ng-core';
 import { PrimeNGConfig } from 'primeng/api';
-import { Observable, Subscription, forkJoin, map, of, switchMap, tap } from 'rxjs';
-
-import { BreakpointObserver, BreakpointState, Breakpoints } from '@angular/cdk/layout';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Observable, Subscription, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
 // file interface
 export interface File {
@@ -45,6 +44,16 @@ export interface File {
   styleUrl: './files.component.scss',
 })
 export class FilesComponent implements OnInit, OnDestroy {
+
+  protected ngConfigService: PrimeNGConfig = inject(PrimeNGConfig);
+  protected httpService: HttpClient = inject(HttpClient);
+  protected translateService: TranslateService = inject(TranslateService);
+  protected recordService: RecordService = inject(RecordService);
+  protected apiService: ApiService = inject(ApiService);
+  protected sanitizer: DomSanitizer = inject(DomSanitizer);
+  protected breakpointObserver: BreakpointObserver = inject(BreakpointObserver);
+  protected dialogService: DialogService = inject(DialogService);
+
   // input document pid
   @Input() documentPid: string;
 
@@ -70,24 +79,6 @@ export class FilesComponent implements OnInit, OnDestroy {
 
   // for modal
   @ViewChild('previewModal') previewModalTemplate: Type<any>;
-
-  // -------- Services -------------
-  // primeng configuration service
-  private ngConfigService = inject(PrimeNGConfig);
-  // http service
-  private httpService = inject(HttpClient);
-  // translation service
-  private translateService = inject(TranslateService);
-  // ng-core record service
-  private recordService = inject(RecordService);
-  // ng-core api service
-  private apiService = inject(ApiService);
-  // url sanitizer service
-  private sanitizer = inject(DomSanitizer);
-  // service to detect responsive breakpoints
-  private breakpointObserver = inject(BreakpointObserver);
-  // dialog service
-  private dialogService: DialogService = inject(DialogService);
 
   /** all component subscription */
   private subscriptions = new Subscription();
@@ -240,7 +231,7 @@ export class FilesComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get the font awsome class depending on the file mimetype.
+   * Get the font awesome class depending on the file mimetype.
    *
    * @param file
    * @returns the css class of the icon

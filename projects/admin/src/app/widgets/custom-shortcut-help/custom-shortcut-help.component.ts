@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Component, inject, Input } from '@angular/core';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,9 +27,8 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 })
 export class CustomShortcutHelpComponent {
 
-  private hotKeysService = inject(HotkeysService);
-  private translateService = inject(TranslateService);
-
+  private hotKeysService: HotkeysService = inject(HotkeysService);
+  private translateService: TranslateService = inject(TranslateService);
   private ref = inject(DynamicDialogRef);
 
   /** the title of the modal window */

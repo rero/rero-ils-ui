@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
@@ -25,6 +25,9 @@ import { PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/c
 })
 export class PatronTransactionEventComponent {
 
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private translateService: TranslateService = inject(TranslateService);
+
   /** the event ot display */
   @Input() event: PatronTransactionEvent;
 
@@ -33,16 +36,6 @@ export class PatronTransactionEventComponent {
 
   /** store a reference to enum to use in html template */
   patronTransactionEventType = PatronTransactionEventType;
-
-  /**
-   * Constructor
-   * @param organisationService - OrganisationService
-   * @param translateService - TranslateService
-   */
-  constructor(
-    private organisationService: OrganisationService,
-    private translateService: TranslateService
-  ) { }
 
   /** Get current organisation
    *  @return: current organisation

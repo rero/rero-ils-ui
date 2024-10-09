@@ -24,7 +24,7 @@ import { PERMISSIONS, PERMISSION_OPERATOR } from '../util/permissions';
 export class PermissionsService {
 
   /** Permissions set */
-  private permissions = new Set<string>();
+  protected permissions = new Set<string>();
 
   /**
    * Set all permissions in set

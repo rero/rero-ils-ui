@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { BaseApi, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { AppConfigService } from '../app-config.service';
@@ -26,17 +26,8 @@ import { AppConfigService } from '../app-config.service';
 })
 export class DocumentApiService extends BaseApi implements IAvailabilityService {
 
-  /**
-   * Constructor
-   * @param _httpClient - HttpClient
-   * @param _appConfigService - AppConfigService
-   */
-  constructor(
-    private _httpClient: HttpClient,
-    private _appConfigService: AppConfigService
-  ) {
-    super();
-  }
+  private httpClient: HttpClient = inject(HttpClient);
+  private appConfigService: AppConfigService = inject(AppConfigService);
 
   /**
    * Get availability by document pid
@@ -44,10 +35,10 @@ export class DocumentApiService extends BaseApi implements IAvailabilityService 
    * @returns Observable of availability data
    */
   getAvailability(pid: string, viewcode: string = null): Observable<IAvailability> {
-    let url = `${this._appConfigService.apiEndpointPrefix}/document/${pid}/availability`;
+    let url = `${this.appConfigService.apiEndpointPrefix}/document/${pid}/availability`;
     if (viewcode) {
       url += `?view_code=${viewcode}`;
     }
-    return this._httpClient.get<IAvailability>(url);
+    return this.httpClient.get<IAvailability>(url);
   }
 }

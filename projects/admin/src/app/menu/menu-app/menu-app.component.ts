@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { NgCoreTranslateService } from '@rero/ng-core';
-import { MenuService } from '../service/menu.service';
-import { MenuTranslateService } from '../service/menu-translate.service';
-import { ISwitchLibrary, LibraryService } from '../service/library.service';
+import { TranslateService } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { MENU_APP } from '../menu-definition/menu-app';
+import { ISwitchLibrary, LibraryService } from '../service/library.service';
+import { MenuTranslateService } from '../service/menu-translate.service';
+import { MenuService } from '../service/menu.service';
 
 @Component({
   selector: 'admin-menu-app',
@@ -29,7 +29,7 @@ import { MENU_APP } from '../menu-definition/menu-app';
 })
 export class MenuAppComponent implements OnInit, OnDestroy {
 
-  private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
+  private translateService: TranslateService = inject(TranslateService);
   private menuService: MenuService = inject(MenuService);
   private menuTranslateService: MenuTranslateService = inject(MenuTranslateService);
   private libraryService: LibraryService = inject(LibraryService);
