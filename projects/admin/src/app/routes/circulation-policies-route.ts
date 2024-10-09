@@ -17,7 +17,6 @@
 import { getCurrencySymbol } from '@angular/common';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
 import {
   ComponentCanDeactivateGuard,
   DetailComponent, EditorComponent, JSONSchema7, Record,
@@ -67,13 +66,13 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
             searchFilters: [
               this.expertSearchFilter()
             ],
-            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.CIPO_CREATE) }),
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.CIPO_CREATE) }),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => {
-              const user: User = this._routeToolService.userService.user;
+              const user: User = this.routeToolService.userService.user;
               if (data.parent == null) {
                 data.organisation = {
-                  $ref: this._routeToolService.apiService.getRefEndpoint(
+                  $ref: this.routeToolService.apiService.getRefEndpoint(
                     'organisations',
                     user.currentOrganisation
                   )
@@ -126,8 +125,8 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
     field.hooks = {
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
-        const {user} = this._routeToolService.userService;
-        const { apiService, recordService } = this._routeToolService;
+        const {user} = this.routeToolService.userService;
+        const { apiService, recordService } = this.routeToolService;
         const query = `organisation.pid:${user.currentOrganisation}`;
         f.props.options = recordService.getRecords(
           'libraries',
@@ -139,7 +138,7 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
           'name'
         ).pipe(
           map((result: Record) =>
-            this._routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+            this.routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
           map((hits: any) => {
             return hits.map((hit: any) => {
               return {
@@ -167,7 +166,7 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
     field.hooks = {
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
-        f.props.options = this._routeToolService.httpClient
+        f.props.options = this.routeToolService.httpClient
           .get('/api/notifications/templates/list')
           .pipe(
             map((response: any) => {
@@ -187,7 +186,7 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
    * @return FormlyFieldConfig
    */
   private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
-    const service = this._routeToolService.getInjectorToken(OrganisationService);
+    const service = this.routeToolService.getInjectorToken(OrganisationService);
     field.props.addonLeft = [
       getCurrencySymbol(service.organisation.default_currency, 'wide')
     ];

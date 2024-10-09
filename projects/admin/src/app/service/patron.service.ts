@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-204 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ApiService, RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { User } from '@rero/shared';
@@ -29,34 +29,26 @@ import { Loan, LoanOverduePreview, LoanState } from '../classes/loans';
 })
 export class PatronService {
 
-  /** Current patron */
-  private _currentPatron: BehaviorSubject<User> = new BehaviorSubject(undefined);
+  private httpClient: HttpClient = inject(HttpClient);
+  private apiService: ApiService = inject(ApiService);
+  private recordService: RecordService = inject(RecordService);
 
-  /**
-   * Constructor
-   * @param _http - HttpClient
-   * @param _apiService - ApiService
-   * @param _recordService - RecordService
-   */
-  constructor(
-    private _http: HttpClient,
-    private _apiService: ApiService,
-    private _recordService: RecordService
-  ) {}
+  /** Current patron */
+  private currentPatron: BehaviorSubject<User> = new BehaviorSubject(undefined);
 
   /**
    * Get Current Patron
    * @return Observable
    */
   get currentPatron$(): Observable<User> {
-    return this._currentPatron.asObservable();
+    return this.currentPatron.asObservable();
   }
 
   /**
    * Clear patron
    */
   clearPatron() {
-    this._currentPatron.next(undefined);
+    this.currentPatron.next(undefined);
   }
 
   /**
@@ -65,25 +57,25 @@ export class PatronService {
    * @return Observable
    */
   getPatron(barcode: string): Observable<any> {
-    return this._recordService
+    return this.recordService
       .getRecords('patrons', `barcode:${barcode}`, 1, 1)
       .pipe(
         switchMap((response: Record) => {
-          switch (this._recordService.totalHits(response.hits.total)) {
+          switch (this.recordService.totalHits(response.hits.total)) {
             case 0: {
               this.clearPatron();
               break;
             }
             case 1: {
               const patron = response.hits.hits[0].metadata;
-              this._currentPatron.next(patron);
+              this.currentPatron.next(patron);
               break;
             }
             default: {
               throw new Error('too much results');
             }
           }
-          return this._currentPatron.asObservable();
+          return this.currentPatron.asObservable();
         })
       );
   }
@@ -94,7 +86,7 @@ export class PatronService {
    * @return Observable on patron metadata.
    */
   getPatronByPid(pid: string): Observable<any> {
-    return this._recordService
+    return this.recordService
       .getRecord('patrons', pid)
       .pipe(map((data: any) => data.metadata))
   }
@@ -109,11 +101,11 @@ export class PatronService {
     if (sort === undefined) {
       sort = '-transaction_date';
     }
-    const itemApiUrl = this._apiService.getEndpointByType('item');
+    const itemApiUrl = this.apiService.getEndpointByType('item');
     const url = `${itemApiUrl}/loans/${patronPid}?sort=${sort}`;
-    return this._http.get<any>(url).pipe(
+    return this.httpClient.get<any>(url).pipe(
       map(data => data.hits),
-      map(hits => this._recordService.totalHits(hits.total === 0) ? [] : hits.hits),
+      map(hits => this.recordService.totalHits(hits.total === 0) ? [] : hits.hits),
       map(hits => hits.map((data: any) => this._buildItem(data)))
     );
   }
@@ -124,7 +116,7 @@ export class PatronService {
    * @return Observable
    */
   getItem(barcode: string) {
-    return this._http
+    return this.httpClient
       .get<any>(`/api/item/barcode/${barcode}`)
       .pipe(
         map(response => this._buildItem(response.metadata))
@@ -192,8 +184,8 @@ export class PatronService {
    * @return Observable
    */
   getCirculationInformations(patronPid: string): Observable<any> {
-    const url = [this._apiService.getEndpointByType('patrons'), patronPid, 'circulation_informations'].join('/');
-    return this._http.get(url);
+    const url = [this.apiService.getEndpointByType('patrons'), patronPid, 'circulation_informations'].join('/');
+    return this.httpClient.get(url);
   }
 
   /**
@@ -202,8 +194,8 @@ export class PatronService {
    * @return Observable
    */
   getOverduesPreview(patronPid: string): Observable<Array<{fees: LoanOverduePreview, loan: Loan}>> {
-    const url = [this._apiService.getEndpointByType('patrons'), patronPid, 'overdues', 'preview'].join('/');
-    return this._http.get(url).pipe(
+    const url = [this.apiService.getEndpointByType('patrons'), patronPid, 'overdues', 'preview'].join('/');
+    return this.httpClient.get(url).pipe(
       map((data: Array<any>) => data.map(record => {
         return {
           fees: record.fees as LoanOverduePreview,
@@ -220,11 +212,11 @@ export class PatronService {
    * @return Observable
    */
   private getLoans(query: string, sort?: string) {
-    return this._recordService.getRecords(
+    return this.recordService.getRecords(
       'loans', query, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, {Accept: 'application/rero+json'}, sort
     ).pipe(
       map((data: Record) => data.hits),
-      map(hits => this._recordService.totalHits(hits.total) === 0 ? [] : hits.hits)
+      map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits)
     );
   }
 

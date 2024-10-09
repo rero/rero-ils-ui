@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { AfterViewInit, Directive, ElementRef, Input, Renderer2 } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, inject, Input, Renderer2 } from '@angular/core';
 import { PermissionsService } from '../service/permissions.service';
 import { PERMISSION_OPERATOR } from '../util/permissions';
 
@@ -24,6 +24,10 @@ import { PERMISSION_OPERATOR } from '../util/permissions';
   selector: '[linkPermissions]',
 })
 export class LinkPermissionsDirective implements AfterViewInit {
+
+  protected el: ElementRef = inject(ElementRef);
+  protected renderer: Renderer2 = inject(Renderer2);
+  protected permissionsService: PermissionsService = inject(PermissionsService);
 
   // DIRECTIVE ATTRIBUTES =====================================================
   /** permissions */
@@ -44,19 +48,6 @@ export class LinkPermissionsDirective implements AfterViewInit {
   set linkPermissionsOperator(operator: PERMISSION_OPERATOR) {
     this._operator = operator;
   };
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param el - ElementRef
-   * @param renderer - Renderer2
-   * @param permissionsService - PermissionsService
-   */
-  constructor(
-    private el: ElementRef,
-    private renderer: Renderer2,
-    private permissionsService: PermissionsService,
-  ) { }
 
   /** AfterViewInit hook */
   ngAfterViewInit(): void {

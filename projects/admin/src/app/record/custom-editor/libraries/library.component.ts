@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Location } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
@@ -37,7 +36,16 @@ import { LibraryFormService } from './library-form.service';
 })
 export class LibraryComponent extends AbstractCanDeactivateComponent implements OnInit, OnDestroy {
 
-  private messageService = inject(MessageService);
+  private recordService: RecordService = inject(RecordService);
+  private libraryForm: LibraryFormService = inject(LibraryFormService);
+  private route: ActivatedRoute = inject(ActivatedRoute);
+  private router: Router = inject(Router);
+  private userService: UserService = inject(UserService);
+  private apiService: ApiService = inject(ApiService);
+  private translateService: TranslateService = inject(TranslateService);
+  private location: Location = inject(Location);
+  private countryCodeTranslatePipe: CountryCodeTranslatePipe = inject(CountryCodeTranslatePipe);
+  private messageService: MessageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** The current library. */
@@ -81,33 +89,6 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
   /** Rollover settings */
   get rolloverSettings() { return this.libraryForm.rollover_settings as UntypedFormGroup; }
 
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param recordService - ng-core eventForm
-   * @param libraryForm - LibraryFormService
-   * @param route - angular ActivatedRoute
-   * @param router - angular Router
-   * @param userService - ng-core UserService
-   * @param apiService - ng-core ApiService
-   * @param translateService - ngx-translate TranslateService
-   * @param location - angular Location
-   * @param countryCodeTranslatePipe - CountryCodeTranslatePipe
-   */
-  constructor(
-    private recordService: RecordService,
-    private libraryForm: LibraryFormService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private userService: UserService,
-    private apiService: ApiService,
-    private translateService: TranslateService,
-    private location: Location,
-    private countryCodeTranslatePipe: CountryCodeTranslatePipe
-  ) {
-    super();
-  }
 
   /** NgOnInit hook. */
   ngOnInit() {

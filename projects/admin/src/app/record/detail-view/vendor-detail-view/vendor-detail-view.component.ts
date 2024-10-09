@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
@@ -27,6 +26,9 @@ import { OperationLogsService } from '../../../service/operation-logs.service';
   styleUrls: []
 })
 export class VendorDetailViewComponent implements DetailRecord {
+
+  private translateService: TranslateService = inject(TranslateService);
+  private operationLogsService: OperationLogsService = inject(OperationLogsService);
 
   /** Observable resolving record data */
   record$: Observable<any>;
@@ -53,18 +55,8 @@ export class VendorDetailViewComponent implements DetailRecord {
     return this.translateService.currentLang;
   }
 
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   * @param operationLogsService - OperationLogsService
-   */
-  constructor(
-    private translateService: TranslateService,
-    private operationLogsService: OperationLogsService
-  ) {}
-
-    filterContact(contacts: any[], type: string): any {
-      const contact = contacts.filter((contact: any) => contact.type === type);
-      return contact.length === 0 ? undefined : contact[0];
-    }
+  filterContact(contacts: any[], type: string): any {
+    const contact = contacts.filter((contact: any) => contact.type === type);
+    return contact.length === 0 ? undefined : contact[0];
+  }
 }

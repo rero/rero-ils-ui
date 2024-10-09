@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { RecordService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
@@ -26,15 +26,8 @@ import { map } from 'rxjs/operators';
 })
 export class IsBudgetActiveGuard  {
 
-  /**
-   * Constructor
-   * @param recordService - RecordService
-   * @param router - Router
-   */
-  constructor(
-    private recordService: RecordService,
-    private router: Router
-  ) {}
+  private recordService: RecordService = inject(RecordService);
+  private router: Router = inject(Router);
 
   /**
    * Can activate

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ export class PatronTransactionEventsRoute extends BaseRoute implements RouteInte
             key: this.name,
             label: _('Fees'),
             component: PatronTransactionEventsBriefViewComponent,
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
             canAdd: (record: any) => of({can: false}),
             canUpdate: (record: any) => of({can: false}),
             canDelete: (record: any) => of({can: false}),
@@ -97,7 +97,7 @@ export class PatronTransactionEventsRoute extends BaseRoute implements RouteInte
             exportFormats: [{
               label: 'CSV',
               format: 'csv',
-              endpoint: this._routeToolService.apiService.getExportEndpointByType(this.recordType),
+              endpoint: this.routeToolService.apiService.getExportEndpointByType(this.recordType),
               disableMaxRestResultsSize: true,
             }],
             showFacetsIfNoResults: true

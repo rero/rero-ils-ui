@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { AppSettingsService } from '@rero/shared';
@@ -27,6 +27,10 @@ import { QueryResponse } from '../../record';
   templateUrl: './holdings.component.html'
 })
 export class HoldingsComponent implements OnInit {
+
+  private holdingsApiService: HoldingsApiService = inject(HoldingsApiService);
+  private translateService: TranslateService = inject(TranslateService);
+  private appSettingsService: AppSettingsService = inject(AppSettingsService);
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** View code */
@@ -67,19 +71,6 @@ export class HoldingsComponent implements OnInit {
       : _('{{ counter }} hidden holding');
     return this.translateService.instant(linkText, { counter: count });
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param holdingsApiService - HoldingsApiService
-   * @param translateService - TranslateService
-   * @param appSettingsService - AppSettingsService
-   */
-  constructor(
-    private holdingsApiService: HoldingsApiService,
-    private translateService: TranslateService,
-    private appSettingsService: AppSettingsService
-  ) { }
 
   /** OnInit hook */
   ngOnInit(): void {

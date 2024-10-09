@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { OrganisationService } from '../../../../../service/organisation.service';
 import { PaymentData } from '../../interfaces';
 
@@ -27,6 +26,8 @@ import { PaymentData } from '../../interfaces';
 })
 export class PaymentsDataTableComponent {
 
+  private organisationService: OrganisationService = inject(OrganisationService);
+
   // COMPONENT ATTRIBUTES =====================================================
   @Input() protected data: PaymentData;
 
@@ -35,8 +36,4 @@ export class PaymentsDataTableComponent {
   get org_currency() {
     return this.organisationService.organisation.default_currency;
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  constructor(private organisationService: OrganisationService) {}
-
 }

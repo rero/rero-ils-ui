@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { IBucketNameService } from '@rero/ng-core';
@@ -29,17 +29,9 @@ import { OrganisationApiService } from '../api/organisation-api.service';
 })
 export class BucketNameService implements IBucketNameService {
 
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   * @param organisationApiService - OrganisationApiService
-   * @param libraryApiService - LibraryApiService
-   */
-  constructor(
-    private translateService: TranslateService,
-    private organisationApiService: OrganisationApiService,
-    private libraryApiService: LibraryApiService
-  ) { }
+  private translateService: TranslateService = inject(TranslateService);
+  private organisationApiService: OrganisationApiService = inject(OrganisationApiService);
+  private libraryApiService: LibraryApiService = inject(LibraryApiService);
 
   /**
    * Transform aggregation name

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CircPolicy } from '../../classes/circ-policy';
 import { Loan } from '../../classes/loans';
@@ -26,13 +26,7 @@ import { LoanService } from '../../service/loan.service';
 })
 export class GetLoanCipoPipe implements PipeTransform {
 
-  /**
-   * Constructor
-   * @param _loanService - LoanService
-   */
-  constructor(
-    private _loanService: LoanService
-  ){ }
+  private loanService: LoanService = inject(LoanService);
 
   /**
    * Search an return the circulation policy related to a loan.
@@ -40,7 +34,7 @@ export class GetLoanCipoPipe implements PipeTransform {
    * @returns Observable on the related CircPolicy
    */
   transform(loan: Loan): Observable<CircPolicy> {
-    return this._loanService.getCirculationPolicy(loan.pid);
+    return this.loanService.getCirculationPolicy(loan.pid);
   }
 
 }

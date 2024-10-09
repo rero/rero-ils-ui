@@ -29,7 +29,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 })
 export class IssueEmailComponent implements OnInit {
 
-  private messageService = inject(MessageService);
+  private messageService: MessageService = inject(MessageService);
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   private itemApiService: ItemApiService = inject(ItemApiService);

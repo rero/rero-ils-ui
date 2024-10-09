@@ -33,6 +33,12 @@ import { OrderReceiptForm } from './order-receipt-form';
 })
 export class OrderReceiptViewComponent implements OnInit {
 
+  private route: ActivatedRoute = inject(ActivatedRoute);
+  private router: Router = inject(Router);
+  private orderReceipt: OrderReceipt = inject(OrderReceipt);
+  private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
+  private translateService: TranslateService = inject(TranslateService);
+  private orderReceiptForm: OrderReceiptForm = inject(OrderReceiptForm);
   private messageService = inject(MessageService);
 
   // COMPONENTS ATTRIBUTES ====================================================
@@ -69,25 +75,6 @@ export class OrderReceiptViewComponent implements OnInit {
     }
     return this._fields;
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param route - ActivatedRoute
-   * @param router - Router
-   * @param orderReceipt - OrderReceipt
-   * @param acqReceiptApiService - AcqReceiptApiService
-   * @param translateService - TranslateService
-   * @param orderReceiptForm - OrderReceiptForm
-   */
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private orderReceipt: OrderReceipt,
-    private acqReceiptApiService: AcqReceiptApiService,
-    private translateService: TranslateService,
-    private orderReceiptForm: OrderReceiptForm
-  ) {}
 
   /** OnInit hook */
   ngOnInit(): void {

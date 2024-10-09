@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -53,18 +53,18 @@ export class LocalFieldsRoute extends BaseRoute implements RouteInterface {
             canRead: (record: any) => this.canReadLocalFields(record),
             redirectUrl: (record: any) => this.getUrl(record),
             preCreateRecord: (data: any) => {
-              const user: User = this._routeToolService.userService.user;
+              const user: User = this.routeToolService.userService.user;
               if (data.parent == null) {
                 data.organisation = {
-                  $ref: this._routeToolService.apiService.getRefEndpoint(
+                  $ref: this.routeToolService.apiService.getRefEndpoint(
                     'organisations',
                     user.currentOrganisation
                   )
                 };
                 data.parent = {
-                  $ref: this._routeToolService.apiService.getRefEndpoint(
-                    this._routeToolService.getRouteQueryParam('type'),
-                    this._routeToolService.getRouteQueryParam('ref')
+                  $ref: this.routeToolService.apiService.getRefEndpoint(
+                    this.routeToolService.getRouteQueryParam('type'),
+                    this.routeToolService.getRouteQueryParam('ref')
                   )
                 };
               }
@@ -91,7 +91,7 @@ export class LocalFieldsRoute extends BaseRoute implements RouteInterface {
       const pid = regExpResult[2];
       return of(`/records/${type}/detail/${pid}`);
     } else {
-      this._routeToolService.router.navigate(['/errors/400'], { skipLocationChange: true });
+      this.routeToolService.router.navigate(['/errors/400'], { skipLocationChange: true });
     }
   }
 
@@ -101,7 +101,7 @@ export class LocalFieldsRoute extends BaseRoute implements RouteInterface {
    * @return Observable
    */
   private canReadLocalFields(record: any) {
-    const organisationPid = this._routeToolService.userService.user
+    const organisationPid = this.routeToolService.userService.user
       .currentOrganisation;
     const recordOrganisationPid = ('organisation' in record.metadata)
       ? record.metadata.organisation.pid

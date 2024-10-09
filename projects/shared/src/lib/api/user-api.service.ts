@@ -16,7 +16,7 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ApiService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { User } from '../class/user';
@@ -26,20 +26,8 @@ import { User } from '../class/user';
 })
 export class UserApiService {
 
-  /** API Prefix, i.e. /api. */
-  private _apiPrefix = '';
-
-  /**
-   * Constructor
-   * @param httpClient - HttpClient
-   * @param apiService - ApiService
-   */
-  constructor(
-    private httpClient: HttpClient,
-    private apiService: ApiService
-  ) {
-    this._apiPrefix = this.apiService.endpointPrefix;
-  }
+  protected httpClient: HttpClient = inject(HttpClient);
+  protected apiService: ApiService = inject(ApiService);
 
   /**
    * Get logged user
@@ -62,7 +50,7 @@ export class UserApiService {
       new_password: password,
       new_password_confirm: password
     };
-    const url = `${this._apiPrefix}/change-password`;
+    const url = `${this.apiService.endpointPrefix}/change-password`;
     return this.httpClient.post<any>(url, data);
   }
 }

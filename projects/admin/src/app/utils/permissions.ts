@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,17 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { UserService } from '@rero/shared';
 import { RecordPermission, RecordPermissions } from '../classes/permissions';
 
 @Injectable()
 export class CurrentLibraryPermissionValidator {
 
-  /** Constructor */
-  constructor(
-    private _userService: UserService
-  ){ }
+  private userService: UserService = inject(UserService);
 
   /**
    * Update the permissions analyzing the current library. If the library isn't
@@ -35,7 +32,7 @@ export class CurrentLibraryPermissionValidator {
    * @param ownerLibraryPid: the related object owner library pid.
    */
   validate(permissions: RecordPermissions, ownerLibraryPid: string){
-    if (this._userService.user.currentLibrary !== ownerLibraryPid) {
+    if (this.userService.user.currentLibrary !== ownerLibraryPid) {
       const disabledPermission: RecordPermission = {
         can: false,
         reasons: {

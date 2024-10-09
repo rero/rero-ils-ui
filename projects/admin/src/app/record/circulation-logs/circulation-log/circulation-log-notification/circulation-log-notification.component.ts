@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { NotificationApiService } from '@app/admin/api/notification-api.service';
 
 @Component({
@@ -24,6 +24,8 @@ import { NotificationApiService } from '@app/admin/api/notification-api.service'
   styleUrls: ['./circulation-log-notification.component.scss']
 })
 export class CirculationLogNotificationComponent {
+
+  private NotificationApiService: NotificationApiService = inject(NotificationApiService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Operation log record */
@@ -35,12 +37,6 @@ export class CirculationLogNotificationComponent {
 
   /** Notification record */
   notificationRecord: any;
-
-  /**
-   * Constructor
-   * @param NotificationApiService - NotificationApiService
-   */
-  constructor(private NotificationApiService: NotificationApiService) {}
 
   /**
    * Load notification record

@@ -28,7 +28,7 @@ export interface ILibrarySwitchDataStorage {
 })
 export class LibrarySwitchStorageService {
 
-  private localStorage = inject(LocalStorageService);
+  private localStorage: LocalStorageService = inject(LocalStorageService);
 
   static readonly STORAGE_KEY = 'menu_library';
 

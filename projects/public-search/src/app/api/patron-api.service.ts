@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { BaseApi } from '@rero/shared';
 import { Observable } from 'rxjs';
 
@@ -24,20 +24,14 @@ import { Observable } from 'rxjs';
 })
 export class PatronApiService extends BaseApi {
 
-  /**
-   * Constructor
-   * @param _httpClient - HttpClient
-   */
-  constructor(private _httpClient: HttpClient) {
-    super();
-  }
+  private httpClient: HttpClient = inject(HttpClient);
 
   /**
    * Get Messages
    * @return Observable
    */
   getMessages(patronPid: string): Observable<Message[]> {
-    return this._httpClient.get<Message[]>(`/api/patrons/${patronPid}/messages`);
+    return this.httpClient.get<Message[]>(`/api/patrons/${patronPid}/messages`);
   }
 }
 

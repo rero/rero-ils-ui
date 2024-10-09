@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { Error, Record } from '@rero/ng-core';
 import { BaseApi, Paginator } from '@rero/shared';
@@ -29,6 +29,10 @@ import { ITabEvent, PatronProfileService } from '../patron-profile.service';
 })
 export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
 
+  private illRequestApiService: IllRequestApiService = inject(IllRequestApiService);
+  private patronProfileService: PatronProfileService = inject(PatronProfileService);
+  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+
   /** First call of get record */
   loaded = false;
 
@@ -40,18 +44,6 @@ export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
 
   /** Observable subscription */
   private _subscription = new Subscription();
-
-  /**
-   * Constructor
-   * @param illRequestApiService - IllRequestApiService
-   * @param patronProfileService - PatronProfileService
-   * @param patronProfileMenuService - PatronProfileMenuService
-   */
-  constructor(
-    private illRequestApiService: IllRequestApiService,
-    private patronProfileService: PatronProfileService,
-    private patronProfileMenuService: PatronProfileMenuService
-  ) {}
 
   /** OnInit hook */
   ngOnInit(): void {

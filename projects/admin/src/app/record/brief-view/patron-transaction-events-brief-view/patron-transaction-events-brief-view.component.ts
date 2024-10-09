@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 import { PatronTransaction, PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -28,6 +28,9 @@ import { PatronTransactionsService } from '../../../service/patron-transactions.
   styleUrls: ['./patron-transaction-events-brief-view.component.scss']
 })
 export class PatronTransactionEventsBriefViewComponent implements ResultItem, OnInit {
+
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private patronTransactionService: PatronTransactionsService = inject(PatronTransactionsService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Information to build the URL on the record detail view. */
@@ -47,17 +50,6 @@ export class PatronTransactionEventsBriefViewComponent implements ResultItem, On
   organisation: Organisation;
   /** reference to PatronTransactionEventType */
   eventTypes = PatronTransactionEventType;
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param organisationService - OrganisationService
-   * @param patronTransactionService - PatronTransactionsService
-   */
-  constructor(
-    private organisationService: OrganisationService,
-    private patronTransactionService: PatronTransactionsService
-  ) { }
 
   /** OnInit hook */
   ngOnInit(): void {

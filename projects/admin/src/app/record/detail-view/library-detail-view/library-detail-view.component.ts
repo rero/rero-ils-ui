@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Record } from '@rero/ng-core/lib/record/record';
-import { Observable, Subscription } from 'rxjs';
 import { UserService } from '@rero/shared';
+import { Observable, Subscription } from 'rxjs';
 import { Library } from '../../../classes/library';
 
 @Component({
@@ -29,6 +29,9 @@ import { Library } from '../../../classes/library';
   styleUrls: ['./library-detail-view.component.scss']
 })
 export class LibraryDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+
+  private recordService: RecordService = inject(RecordService);
+  private userService: UserService = inject(UserService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Observable resolving record data */
@@ -46,17 +49,6 @@ export class LibraryDetailViewComponent implements DetailRecord, OnInit, OnDestr
 
   /** Record subscription */
   private recordObs: Subscription;
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param recordService - RecordService
-   * @param userService - UserService
-   */
-  constructor(
-    private recordService: RecordService,
-    private userService: UserService
-  ) { }
 
   /** OnInit hook */
   ngOnInit() {

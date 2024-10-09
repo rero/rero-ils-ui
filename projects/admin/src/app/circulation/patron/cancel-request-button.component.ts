@@ -43,10 +43,10 @@ import { MessageService } from 'primeng/api';
 })
 export class CancelRequestButtonComponent {
 
-  loanService = inject(LoanService);
-  userService = inject(UserService);
-  translateService = inject(TranslateService);
-  messageService = inject(MessageService);
+  loanService: LoanService = inject(LoanService);
+  userService: UserService = inject(UserService);
+  translateService: TranslateService = inject(TranslateService);
+  messageService: MessageService = inject(MessageService);
 
   /** Loan record */
   @Input() loan: any;

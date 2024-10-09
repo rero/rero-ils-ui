@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { IRolePermission, PermissionApiService } from '../../../api/permission-api.service';
 
 @Component({
@@ -24,6 +24,8 @@ import { IRolePermission, PermissionApiService } from '../../../api/permission-a
   styleUrls: ['./permission-detail-view.component.scss'],
 })
 export class PermissionDetailViewComponent implements OnInit {
+
+  private permissionApiService: PermissionApiService = inject(PermissionApiService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** All available roles */
@@ -34,15 +36,6 @@ export class PermissionDetailViewComponent implements OnInit {
   filteredPermissionNames: string[];
   /** All permissions regrouped by roles */
   globalPermissions: { [key: string]: any };
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param permissionApiService - PermissionApiService
-   */
-  constructor(
-    private permissionApiService: PermissionApiService
-  ) { }
 
   /** OnInit hook */
   ngOnInit(): void {

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2023 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { EntitiesRoute } from '@app/admin/routes/entities-route';
-import { TranslateService } from '@ngx-translate/core';
 import { RouteCollectionService } from '@rero/ng-core';
 import { AccountsRoute as AcqAccountsRoute } from '../acquisition/routes/accounts-route';
 import { BudgetsRoute as AcqBudgetsRoute } from '../acquisition/routes/budgets-route';
@@ -45,7 +44,6 @@ import { OrganisationsRoute } from './organisations-route';
 import { PatronTransactionEventsRoute } from './patron-transaction-events-route';
 import { PatronTypesRoute } from './patron-types-route';
 import { PatronsRoute } from './patrons-route';
-import { RouteToolService } from './route-tool.service';
 import { StatisticsCfgRoute } from './statistics-cfg-route';
 import { TemplatesRoute } from './templates-route';
 import { VendorsRoute } from './vendors-route';
@@ -55,61 +53,50 @@ import { VendorsRoute } from './vendors-route';
 })
 export class RouteService {
 
-  /**
-   * Constructor
-   * @param _routeCollectionService - RouteCollectionService
-   * @param _router - Router
-   * @param _routeToolService - RouteToolService
-   * @param _translateService - TranslateService used by children.
-   */
-  constructor(
-    private _routeCollectionService: RouteCollectionService,
-    private _router: Router,
-    private _routeToolService: RouteToolService,
-    private _translateService: TranslateService
-  ) { }
+  private routeCollectionService: RouteCollectionService = inject(RouteCollectionService);
+  private router: Router = inject(Router);
 
   /**
    * Initialize routes
    */
   initializeRoutes() {
-    this._routeCollectionService
-      .addRoute(new CirculationPoliciesRoute(this._routeToolService))
-      .addRoute(new DocumentsRoute(this._routeToolService))
-      .addRoute(new HoldingsRoute(this._routeToolService))
-      .addRoute(new ItemsRoute(this._routeToolService))
-      .addRoute(new IssuesRoute(this._routeToolService))
-      .addRoute(new ItemTypesRoute(this._routeToolService))
-      .addRoute(new LibrariesRoute(this._routeToolService))
-      .addRoute(new LocationsRoute(this._routeToolService))
-      .addRoute(new OrganisationsRoute(this._routeToolService))
-      .addRoute(new PatronsRoute(this._routeToolService))
-      .addRoute(new PatronTypesRoute(this._routeToolService))
-      .addRoute(new VendorsRoute(this._routeToolService))
-      .addRoute(new TemplatesRoute(this._routeToolService))
-      .addRoute(new CollectionsRoute(this._routeToolService))
-      .addRoute(new IllRequestsRoute(this._routeToolService))
-      .addRoute(new LocalFieldsRoute(this._routeToolService))
-      .addRoute(new LoansRoute(this._routeToolService))
-      .addRoute(new PatronTransactionEventsRoute(this._routeToolService))
-      .addRoute(new EntitiesRoute(this._routeToolService))
-      .addRoute(new EntitiesRemoteRoute(this._routeToolService))
-      .addRoute(new EntitiesLocalRoute(this._routeToolService))
-      .addRoute(new StatisticsCfgRoute(this._routeToolService))
+    this.routeCollectionService
+      .addRoute(new CirculationPoliciesRoute())
+      .addRoute(new DocumentsRoute())
+      .addRoute(new HoldingsRoute())
+      .addRoute(new ItemsRoute())
+      .addRoute(new IssuesRoute())
+      .addRoute(new ItemTypesRoute())
+      .addRoute(new LibrariesRoute())
+      .addRoute(new LocationsRoute())
+      .addRoute(new OrganisationsRoute())
+      .addRoute(new PatronsRoute())
+      .addRoute(new PatronTypesRoute())
+      .addRoute(new VendorsRoute())
+      .addRoute(new TemplatesRoute())
+      .addRoute(new CollectionsRoute())
+      .addRoute(new IllRequestsRoute())
+      .addRoute(new LocalFieldsRoute())
+      .addRoute(new LoansRoute())
+      .addRoute(new PatronTransactionEventsRoute())
+      .addRoute(new EntitiesRoute())
+      .addRoute(new EntitiesRemoteRoute())
+      .addRoute(new EntitiesLocalRoute())
+      .addRoute(new StatisticsCfgRoute())
       // Route from acquisition modules
-      .addRoute(new AcqBudgetsRoute(this._routeToolService))
-      .addRoute(new AcqAccountsRoute(this._routeToolService))
-      .addRoute(new AcqOrderLinesRoute(this._routeToolService))
-      .addRoute(new AcqOrdersRoute(this._routeToolService))
-      .addRoute(new ReceiptsRoute(this._routeToolService))
-      .addRoute(new ReceiptLinesRoute(this._routeToolService))
+      .addRoute(new AcqBudgetsRoute())
+      .addRoute(new AcqAccountsRoute())
+      .addRoute(new AcqOrderLinesRoute())
+      .addRoute(new AcqOrdersRoute())
+      .addRoute(new ReceiptsRoute())
+      .addRoute(new ReceiptLinesRoute())
       // should be at the last
-      .addRoute(new ImportDocumentsRoute(this._routeToolService, this._translateService))
+      .addRoute(new ImportDocumentsRoute())
     ;
-    this._routeCollectionService.getRoutes().map((route: any) => {
-      this._router.config.push(route);
+    this.routeCollectionService.getRoutes().map((route: any) => {
+      this.router.config.push(route);
     });
-    this._router.config.push(...[
+    this.router.config.push(...[
       {path: 'errors/:status_code', component: ErrorPageComponent},
       {path: '**', component: ErrorPageComponent}
     ]);

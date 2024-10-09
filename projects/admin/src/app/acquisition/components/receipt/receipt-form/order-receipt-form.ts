@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { ApiService, extractIdOnRef } from '@rero/ng-core';
@@ -42,6 +42,11 @@ function lineAction($event: Event, action: string, fields: any): void {
 })
 export class OrderReceiptForm {
 
+  private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
+  private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
+  private apiService: ApiService = inject(ApiService);
+  private orderReceipt: OrderReceipt = inject(OrderReceipt);
+
   /** Order Record */
   private orderRecord: any;
 
@@ -50,20 +55,6 @@ export class OrderReceiptForm {
 
   /** Form fields config */
   private config: any;
-
-  /**
-   * Constructor
-   * @param acqOrderApiService - AcqOrderApiService
-   * @param acqAccountApiService - AcqAccountApiService
-   * @param apiService - ApiService
-   * @param orderReceipt - OrderReceipt
-   */
-  constructor(
-    private acqOrderApiService: AcqOrderApiService,
-    private acqAccountApiService: AcqAccountApiService,
-    private apiService: ApiService,
-    private orderReceipt: OrderReceipt
-  ) {}
 
   /**
    * Set model

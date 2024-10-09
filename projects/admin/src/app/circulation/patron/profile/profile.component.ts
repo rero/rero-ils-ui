@@ -27,9 +27,9 @@ import { ChangePasswordFormComponent } from '../change-password-form/change-pass
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 
-  private dialogService = inject(DialogService);
-  private patronService = inject(PatronService);
-  private recordPermission = inject(RecordPermissionService);
+  private dialogService: DialogService = inject(DialogService);
+  private patronService: PatronService = inject(PatronService);
+  private recordPermission: RecordPermissionService = inject(RecordPermissionService);
 
   /** Current patron */
   currentPatron$: any;

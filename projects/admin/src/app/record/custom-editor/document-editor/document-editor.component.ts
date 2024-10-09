@@ -33,27 +33,17 @@ import { EditorService } from '../../../service/editor.service';
  */
 export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
 
-  private messageService = inject(MessageService);
+  private editorService: EditorService = inject(EditorService);
+  private translateService: TranslateService = inject(TranslateService);
+  private route: ActivatedRoute = inject(ActivatedRoute);
+  private recordService: RecordService = inject(RecordService);
+  private messageService: MessageService = inject(MessageService);
 
   /** Can deactivate from editor component */
   canDeactivate: boolean = false;
 
   // initial editor values
   model = {};
-
-  /**
-   * Constructor
-   * @param editorService - EditorService
-   * @param translateService - TranslateService
-   * @param route - ActivatedRoute
-   * @param recordService - RecordService
-   */
-  constructor(
-    private editorService: EditorService,
-    private translateService: TranslateService,
-    private route: ActivatedRoute,
-    private recordService: RecordService
-  ) { super() }
 
   /**
    * Retrieve information about an item regarding its EAN code using EditorService
