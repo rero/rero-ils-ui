@@ -422,6 +422,15 @@ export const MENU_APP: IMenuParent[] = [
           permissions: [PERMISSIONS.PERM_MANAGEMENT]
         }
       },
+      {
+        name: 'Migrations',
+        router_link: ['/', 'migrations', 'records', 'migrations'],
+        attributes: { id: 'permissions-menu' },
+        extras: { iconClass: 'fa fa-cloud-upload' },
+        access: {
+          permissions: [PERMISSIONS.MIG_ACCESS]
+        }
+      },
     ]
   }
 ]
