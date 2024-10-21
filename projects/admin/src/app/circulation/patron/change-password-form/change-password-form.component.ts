@@ -19,6 +19,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
+import { CONFIG } from '@rero/ng-core';
 import { User, UserApiService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -66,7 +67,8 @@ export class ChangePasswordFormComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Patron'),
-          detail: this.translateService.instant('The patron password has been changed.')
+          detail: this.translateService.instant('The patron password has been changed.'),
+          life: CONFIG.MESSAGE_LIFE
         });
         this.closeModal();
       },
@@ -78,7 +80,7 @@ export class ChangePasswordFormComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: this.translateService.instant('Patron'),
-          detail: this.translateService.instant('Update Patron Password'),
+          detail: `${this.translateService.instant('Update Patron Password')}.<br/>${error}`,
           sticky: true,
           closable: true
         });

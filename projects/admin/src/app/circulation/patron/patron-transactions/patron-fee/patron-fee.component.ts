@@ -19,7 +19,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
-import { ApiService, RecordService } from '@rero/ng-core';
+import { ApiService, CONFIG, RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
@@ -87,7 +87,8 @@ export class PatronFeeComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Patron transaction'),
-          detail: this.translateService.instant('Added a new fee.')
+          detail: this.translateService.instant('Added a new fee.'),
+          life: CONFIG.MESSAGE_LIFE
         });
       },
       error: () => this.messageService.add({

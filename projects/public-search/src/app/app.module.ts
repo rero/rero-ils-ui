@@ -26,7 +26,6 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BucketNameService as CoreBucketNameService, CoreConfigService, NgCoreTranslateService, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { RemoteSearchComponent, SharedModule, UserService } from '@rero/shared';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { AppConfigService } from './app-config.service';
 import { AppInitializerService } from './app-initializer.service';
 import { AppRoutingModule } from './app-routing.module';
@@ -79,7 +78,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         { provide: TranslateService, useClass: NgCoreTranslateService },
         { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.currentLang, deps: [TranslateService] },
         { provide: HTTP_INTERCEPTORS, useClass: CustomRequestInterceptor, multi: true },
-        BsLocaleService,
         { provide: CoreBucketNameService, useClass: BucketNameService },
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

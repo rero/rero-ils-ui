@@ -18,6 +18,7 @@ import { Component, inject, Input } from '@angular/core';
 import { IPermissions, PERMISSIONS } from '@rero/shared';
 import { DialogService } from 'primeng/dynamicdialog';
 import { OperationLogsComponent } from '../operation-logs.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-operation-logs-dialog',
@@ -26,6 +27,7 @@ import { OperationLogsComponent } from '../operation-logs.component';
 export class OperationLogsDialogComponent {
 
   private dialogService: DialogService = inject(DialogService);
+  private translateService: TranslateService = inject(TranslateService);
 
   /** Resource type */
   @Input() resourceType: string;
@@ -39,7 +41,9 @@ export class OperationLogsDialogComponent {
   /** Open operation logs dialog */
   openDialog(): void {
     this.dialogService.open(OperationLogsComponent, {
+      header: this.translateService.instant('Operation history'),
       dismissableMask: true,
+      width: '60vw',
       data: {
         resourceType: this.resourceType,
         resourcePid: this.resourcePid

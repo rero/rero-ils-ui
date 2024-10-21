@@ -22,6 +22,7 @@ import { Notification } from '@app/admin/classes/notification';
 import { IPreview, ITypeEmail } from '@app/admin/shared/preview-email/IPreviewInterface';
 import { Tools } from '@app/admin/shared/preview-email/utils/tools';
 import { TranslateService } from '@ngx-translate/core';
+import { CONFIG } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
@@ -86,15 +87,15 @@ export class OrderEmailFormComponent implements OnInit, OnDestroy {
             this.messageService.add({
               severity: 'success',
               summary: this.translateService.instant('Order sent'),
-              detail: this.translateService.instant('order has been sent')
+              detail: this.translateService.instant('order has been sent'),
+              life: CONFIG.MESSAGE_LIFE
             });
           } else {
             this.messageService.add({
               severity: 'warn',
               summary: this.translateService.instant('Order delayed'),
               detail:  this.translateService.instant('order not yet send'),
-              sticky: true,
-              closable: true
+              life: CONFIG.MESSAGE_LIFE
             });
           }
           this.acqOrderApiService

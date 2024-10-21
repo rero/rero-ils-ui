@@ -54,6 +54,7 @@ export class PendingComponent implements OnInit {
     const index = this.loans.findIndex((element: any) => element.id == loanId);
     this.loans.splice(index, 1);
     // Update count on tab
-    this.circulationService.circulationInformations.statistics['pending'] -= 1;
+    this.circulationService.statisticsDecrease('pending', 1);
+    //this.circulationService.circulationInformations.statistics['pending'] -= 1;
   }
 }

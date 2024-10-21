@@ -19,11 +19,13 @@ import { inject, Injectable } from '@angular/core';
 import { IssueItemStatus } from '@rero/shared';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { IssueEmailComponent } from '../components/issues/issue-email/issue-email.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class IssueService {
 
   private dialogService: DialogService = inject(DialogService);
+  private translateService: TranslateService = inject(TranslateService);
 
   /**
    * Is Allow claim
@@ -38,12 +40,14 @@ export class IssueService {
   }
 
   /**
-   * Opens a claim dialog
+   * Open a claim dialog
    * @param record the item
    * @return DynamicDialogRef
    */
   openClaimEmailDialog(record: any): DynamicDialogRef {
     return this.dialogService.open(IssueEmailComponent, {
+      header: this.translateService.instant('Claim'),
+      width: '60vw',
       dismissableMask: true,
       data: { record }
     });

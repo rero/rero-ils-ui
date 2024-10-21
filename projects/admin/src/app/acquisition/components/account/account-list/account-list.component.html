@@ -20,13 +20,13 @@
     <h1 translate>Acquisition accounts</h1>
     <div class="ml-auto">
       <!-- ADD BUTTON -->
-      <a [routerLink]="['/', 'records', 'acq_accounts', 'new']"
-          [queryParams]="{ budget: organisation.current_budget_pid }"
-          [permissions]="permissions.ACAC_CREATE"
-          class="btn btn-sm btn-primary"
-      >
-        <i class="fa fa-plus"></i> {{ 'Add' | translate }}
-      </a>
+      <p-button
+        icon="fa fa-plus"
+        [label]="'Add'|translate"
+        [routerLink]="['/', 'records', 'acq_accounts', 'new']"
+        [queryParams]="{ budget: organisation.current_budget_pid }"
+        [permissions]="permissions.ACAC_CREATE"
+      />
       <!-- END ADD BUTTON -->
       <!-- EXPORT BUTTON -->
       <ng-core-export-button
@@ -34,18 +34,19 @@
       />
       <!-- END EXPORT BUTTON -->
       <!-- TRANSFER BUTTON -->
-      <a [routerLink]="['/', 'acquisition', 'accounts', 'transfer']"
-          [permissions]="permissions.ACAC_TRANSFER"
-          class="btn btn-sm btn-outline-primary"
-      >
-        <i class="fa fa-exchange"></i> {{ 'Transfer funds' | translate }} &hellip;
-      </a>
+      <p-button
+        icon="fa fa-exchange"
+        [outlined]="true"
+        [label]="'Transfer funds'|translate"
+        [routerLink]="['/', 'acquisition', 'accounts', 'transfer']"
+        [permissions]="permissions.ACAC_TRANSFER"
+      />
       <!-- END TRANSFER BUTTON -->
     </div>
   </header>
 
   <section class="mt-3">
-    <div class="row p-1 mb-2 bg-dark rounded text-light">
+    <div class="grid p-1 mb-2 bg-blue-900 text-light">
       <div class="col-6"></div>
       <div class="col-1 text-right" translate>Amount</div>
       <div class="col-1 text-right" translate>Available</div>

@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ApiService } from '@rero/ng-core';
+import { CoreConfigService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { User } from '../class/user';
 
@@ -27,7 +26,7 @@ import { User } from '../class/user';
 export class UserApiService {
 
   protected httpClient: HttpClient = inject(HttpClient);
-  protected apiService: ApiService = inject(ApiService);
+  protected configService: CoreConfigService = inject(CoreConfigService);
 
   /**
    * Get logged user
@@ -50,7 +49,7 @@ export class UserApiService {
       new_password: password,
       new_password_confirm: password
     };
-    const url = `${this.apiService.endpointPrefix}/change-password`;
+    const url = `${this.configService.apiEndpointPrefix}/change-password`;
     return this.httpClient.post<any>(url, data);
   }
 }

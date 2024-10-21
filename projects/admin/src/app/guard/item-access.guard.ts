@@ -14,16 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { extractIdOnRef, RecordService } from '@rero/ng-core';
+import { CONFIG, extractIdOnRef, RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 
 @Injectable({
@@ -64,7 +63,8 @@ export class ItemAccessGuard implements CanActivate {
             this.messageService.add({
               severity: 'warn',
               summary: this.translateService.instant('item'),
-              detail: this.translateService.instant('Access denied')
+              detail: this.translateService.instant('Access denied'),
+              life: CONFIG.MESSAGE_LIFE
             });
             // Redirect to homepage
             this.router.navigate(['/']);
@@ -74,7 +74,8 @@ export class ItemAccessGuard implements CanActivate {
             this.messageService.add({
               severity: 'warn',
               summary: this.translateService.instant('item'),
-              detail: this.translateService.instant('Access denied')
+              detail: this.translateService.instant('Access denied'),
+              life: CONFIG.MESSAGE_LIFE
             });
             // Redirect to homepage
             this.router.navigate(['/']);
@@ -85,7 +86,8 @@ export class ItemAccessGuard implements CanActivate {
           this.messageService.add({
             severity: 'warn',
             summary: this.translateService.instant('item'),
-            detail: this.translateService.instant('Item not found')
+            detail: this.translateService.instant('Item not found'),
+            life: CONFIG.MESSAGE_LIFE
           });
           // Redirect to homepage on error
           this.router.navigate(['/']);

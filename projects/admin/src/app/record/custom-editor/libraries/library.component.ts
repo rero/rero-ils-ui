@@ -21,7 +21,7 @@ import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CountryCodeTranslatePipe } from '@app/admin/pipe/country-code-translate.pipe';
 import { TranslateService } from '@ngx-translate/core';
-import { AbstractCanDeactivateComponent, ApiService, cleanDictKeys, RecordService, removeEmptyValues, UniqueValidator } from '@rero/ng-core';
+import { AbstractCanDeactivateComponent, ApiService, cleanDictKeys, CONFIG, RecordService, removeEmptyValues, UniqueValidator } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -147,14 +147,17 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
             this.messageService.add({
               severity: 'success',
               summary: this.translateService.instant('libraries'),
-              detail: this.translateService.instant('Record Updated!')
+              detail: this.translateService.instant('Record Updated!'),
+              life: CONFIG.MESSAGE_LIFE
             });
             this.router.navigate(['records', 'libraries', 'detail', this.library.pid]);
           },
           error: (error) => this.messageService.add({
             severity: 'error',
             summary: this.translateService.instant('libraries'),
-            detail: error.title
+            detail: error.title,
+            sticky: true,
+            closable: true
           })
       });
     } else {
@@ -166,14 +169,17 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
             this.messageService.add({
               severity: 'success',
               summary: this.translateService.instant('libraries'),
-              detail: this.translateService.instant('Record created!')
+              detail: this.translateService.instant('Record created!'),
+              life: CONFIG.MESSAGE_LIFE
             });
             this.router.navigate(['records', 'libraries', 'detail', record.metadata.pid]);
           },
           error: (error) => this.messageService.add({
             severity: 'error',
             summary: this.translateService.instant('libraries'),
-            detail: error.title
+            detail: error.title,
+            sticky: true,
+            closable: true
           })
       });
     }

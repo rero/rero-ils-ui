@@ -15,79 +15,71 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="modal d-block" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-xl" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" translate>Circulation history</h5>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="closeDialog()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body overflow-auto overflow-max-size">
-        @if (resourceType === 'item') {
-          <admin-circulation-stats [itemPid]="this.resourcePid"></admin-circulation-stats>
-        }
-        <div class="mb-3">
-          <span class="float-left label-title mr-2 font-weight-bold" translate>Filter</span>
-          <ul class="list-inline mb-0">
-            @for (filter of filterTypes | keyvalue; track filter) {
-              <li class="list-inline-item mr-2">
-                <div class="custom-control custom-switch mb-0">
-                  <input type="checkbox" class="custom-control-input mt-1" [id]="filter.key" [checked]="filter.value" (click)="filterCheck(filter.key)">
-                  <label class="custom-control-label" [for]="filter.key">{{ ('op_filter_' + filter.key) | translate }}</label>
-                </div>
-              </li>
-            }
-          </ul>
-        </div>
-        @defer {
-          @if (recordTotals > 0) {
-            @for (record of records; track record; let isFirst = $first; let idx = $index) {
-              @if (isFirst || !isSamePeriod(record, records[idx-1])) {
-                <div class="transactionDate">
-                  {{ record.metadata.date | dateTranslate :'MMMM Y' | titlecase }}
-                </div>
-              }
-              @switch (getRecordType(record)) {
-                @case('notification') {
-                  <admin-circulation-log-notification
-                    [record]="record"
-                    [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
-                    [separator]="!isSamePeriod(record, records[idx-1], 'day')"
-                    (mouseenter)="mouseEventTransaction(record, $event)"
-                    (mouseleave)="highlightedLoanPid=null"
-                  ></admin-circulation-log-notification>
-                }
-                @case('circulation') {
-                  <admin-circulation-log-loan
-                    [record]="record"
-                    [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
-                    [separator]="!isSamePeriod(record, records[idx-1], 'day')"
-                    (closeDialogEvent)="closeDialog()"
-                    (mouseenter)="mouseEventTransaction(record, $event)"
-                    (mouseleave)="highlightedLoanPid=null"
-                  ></admin-circulation-log-loan>
-                }
-              }
-            }
-          } @else {
-            {{ 'No transaction found' | translate }}
-          }
-        } @loading {
-          {{ 'loading in progress' | translate }}
-        }
-      </div>
-      <div class="modal-footer py-1 justify-content-start">
-        @if (loadedRecord && isLinkShowMore) {
-          <button type="button" id="show-more-items-{{ resourcePid }}" class="btn btn-link pl-1" (click)="showMore()">
-            <i class="fa fa-arrow-circle-o-down"></i> {{ 'Show more' | translate }}
-          </button>
-          @if (isLinkShowMore) {
-            <small>({{ hiddenTransactionLabel }})</small>
-          }
-        }
-      </div>
-    </div>
+<div class="overflow-auto overflow-max-size">
+  @if (resourceType === 'item') {
+    <admin-circulation-stats [itemPid]="this.resourcePid"></admin-circulation-stats>
+  }
+  <div class="mb-3">
+    <span class="float-left label-title mr-2 font-weight-bold" translate>Filter</span>
+    <ul class="list-inline mb-0">
+      @for (filter of filterTypes | keyvalue; track filter) {
+        <li class="list-inline-item mr-2">
+          <div class="custom-control custom-switch mb-0">
+            <input type="checkbox" class="custom-control-input mt-1" [id]="filter.key" [checked]="filter.value" (click)="filterCheck(filter.key)">
+            <label class="custom-control-label" [for]="filter.key">{{ ('op_filter_' + filter.key) | translate }}</label>
+          </div>
+        </li>
+      }
+    </ul>
   </div>
+  @defer {
+    @if (recordTotals > 0) {
+      @for (record of records; track record; let isFirst = $first; let idx = $index) {
+        @if (isFirst || !isSamePeriod(record, records[idx-1])) {
+          <div class="transactionDate">
+            {{ record.metadata.date | dateTranslate :'MMMM Y' | titlecase }}
+          </div>
+        }
+        @switch (getRecordType(record)) {
+          @case('notification') {
+            <admin-circulation-log-notification
+              [record]="record"
+              [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
+              [separator]="!isSamePeriod(record, records[idx-1], 'day')"
+              (mouseenter)="mouseEventTransaction(record, $event)"
+              (mouseleave)="highlightedLoanPid=null"
+            ></admin-circulation-log-notification>
+          }
+          @case('circulation') {
+            <admin-circulation-log-loan
+              [record]="record"
+              [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
+              [separator]="!isSamePeriod(record, records[idx-1], 'day')"
+              (closeDialogEvent)="closeDialog()"
+              (mouseenter)="mouseEventTransaction(record, $event)"
+              (mouseleave)="highlightedLoanPid=null"
+            ></admin-circulation-log-loan>
+          }
+        }
+      }
+    } @else {
+      {{ 'No transaction found' | translate }}
+    }
+  } @loading {
+    {{ 'loading in progress' | translate }}
+  }
+</div>
+<div class="py-1 justify-content-start">
+  @if (loadedRecord && isLinkShowMore) {
+    <p-button
+      id="show-more-items-{{ resourcePid }}"
+      icon="fa fa-arrow-circle-o-down"
+      [label]="'Show more'|translate"
+      [text]="true"
+      (onClick)="showMore()"
+    />
+    @if (isLinkShowMore) {
+      <small>({{ hiddenTransactionLabel }})</small>
+    }
+  }
 </div>

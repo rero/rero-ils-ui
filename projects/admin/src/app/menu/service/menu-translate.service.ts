@@ -34,7 +34,7 @@ export class MenuTranslateService {
   }
 
   // Available variables for menu definitions.
-  private REPLACEMENT_VARIABLES = {
+  public REPLACEMENT_VARIABLES = {
     $currentLibrary: () => this.userService.user.currentLibrary,
     $currentOrganisation: () => this.userService.user.currentOrganisation,
     $symbolName: () => this.userService.user.symbolName,

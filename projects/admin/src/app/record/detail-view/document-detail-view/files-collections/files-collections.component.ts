@@ -19,6 +19,7 @@ import { FormControl } from '@angular/forms';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
 import { TranslateService } from '@ngx-translate/core';
+import { CONFIG } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 
@@ -105,7 +106,8 @@ export class FilesCollectionsComponent implements OnInit, OnDestroy {
     this.messageService.add({
       severity: 'success',
       summary: this.translateService.instant('File'),
-      detail: this.translateService.instant('Collections have been saved successfully.')
+      detail: this.translateService.instant('Collections have been saved successfully.'),
+      life: CONFIG.MESSAGE_LIFE
     });
   }
 }
