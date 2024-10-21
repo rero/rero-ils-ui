@@ -19,7 +19,7 @@ import { Component, EventEmitter, inject, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
+import { CONFIG, RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { User, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
@@ -81,12 +81,9 @@ export class ItemRequestComponent implements OnInit {
   /** OnInit hook */
   ngOnInit() {
     this.currentUser = this.userService.user;
-    const initialState: any = this.dynamicDialogConfig.data.initialState;
-    if (!Object.hasOwn(initialState, 'recordPid')) {
-      this.closeModal();
-    }
-    this.recordPid = initialState.recordPid;
-    this.recordType = initialState.recordType;
+    const data: any = this.dynamicDialogConfig.data;
+    this.recordPid = data.recordPid;
+    this.recordType = data.recordType;
     this.service = (this.recordType === 'item') ? this.itemService : this.holdingService;
     this.requestedBy$ = (this.recordType === 'item') ?  this.loanService.requestedBy$(this.recordPid) : null;
     this.initForm();
@@ -125,10 +122,11 @@ export class ItemRequestComponent implements OnInit {
           this.messageService.add({
             severity: 'success',
             summary: this.translateService.instant('Item request'),
-            detail: this.translateService.instant('Request registered.')
+            detail: this.translateService.instant('Request registered.'),
+            life: CONFIG.MESSAGE_LIFE
           });
         },
-        error: (error: unknown) => this.messageService.add({
+        error: () => this.messageService.add({
           severity: 'error',
           summary: this.translateService.instant('Item request'),
           detail: this.translateService.instant('An error has occurred. Please try again.'),

@@ -44,56 +44,56 @@
       <div class="col-sm-2 text-right" name="buttons">
         @if (permissions) {
           @if (permissions.canRequest && permissions.canRequest.can) {
-            <button
-              type="button" class="btn btn-sm btn-outline-primary " (click)="addRequest(item.metadata.pid, 'item')"
-              title="{{ 'Item request' | translate }}"
-              name="request"
-            >
-              <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-            </button>
+            <p-button
+              icon="fa fa-shopping-basket"
+              [title]="'Item request'|translate"
+              [outlined]="true"
+              (onClick)="addRequest(item.metadata.pid, 'item')"
+            />
           } @else {
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-primary disabled"
-              title="{{ 'Item request' | translate }}"
-              [popover]="tolTemplate" triggers="mouseenter:mouseleave"
-              name="request"
-            >
-              <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-            </button>
-            <ng-template #tolTemplate><div [innerHtml]="cannotRequestInfoMessage | nl2br"></div></ng-template>
+            <p-button
+              icon="fa fa-shopping-basket"
+              [title]="'Item request'|translate"
+              [outlined]="true"
+              [pTooltip]="cannotRequestTooltipContent"
+              tooltipPosition="top"
+              styleClass="text-blue-200"
+            />
+            <ng-template #cannotRequestTooltipContent>
+              <span [innerHTML]="cannotRequestInfoMessage | nl2br"></span>
+            </ng-template>
           }
           @if (permissions.update && permissions.update.can) {
-            <button
-              type="button" class="btn btn-sm btn-outline-primary ml-1"
-              title="{{ 'Edit' | translate }}"
+            <p-button
+              icon="fa fa-pencil"
+              [title]="'Edit'|translate"
+              [outlined]="true"
               [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
-              name="edit"
-            >
-              <i class="fa fa-pencil"></i>
-            </button>
+              styleClass="ml-1"
+            />
           }
           @if (permissions.delete && permissions.delete.can) {
-            <button
-              type="button" class="btn btn-outline-danger btn-sm ml-1"
-              title="{{ 'Delete' | translate }}"
-              (click)="delete(item.metadata.pid)"
-              name="delete"
-            >
-              <i class="fa fa-trash"></i>
-            </button>
+            <p-button
+              icon="fa fa-trash"
+              severity="danger"
+              [title]="'Delete'|translate"
+              [outlined]="true"
+              (onClick)="delete(item.metadata.pid)"
+              styleClass="ml-1"
+            />
           } @else {
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-danger ml-1 disabled"
-              title="{{ 'Delete' | translate }}"
-              [popover]="tolTemplate"
-              triggers="mouseenter:mouseleave"
-              name="delete"
-            >
-              <i class="fa fa-trash"></i>
-            </button>
-            <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
+            <p-button
+              icon="fa fa-trash"
+              severity="danger"
+              [title]="'Delete'|translate"
+              [outlined]="true"
+              [pTooltip]="deleteTooltipContent"
+              tooltipPosition="top"
+              styleClass="text-red-200 ml-1"
+            />
+            <ng-template #deleteTooltipContent>
+              <span [innerHTML]="deleteInfoMessage | nl2br"></span>
+            </ng-template>
           }
         } @else {
           &nbsp;

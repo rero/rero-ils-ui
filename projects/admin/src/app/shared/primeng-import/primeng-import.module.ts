@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,10 +29,16 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
+import { MessagesModule } from 'primeng/messages';
 import { PanelModule } from 'primeng/panel';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TabViewModule } from 'primeng/tabview';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
+import { CardModule } from 'primeng/card';
+import { TableModule } from 'primeng/table';
+import { FieldsetModule } from 'primeng/fieldset';
 
 @NgModule({
   exports: [
@@ -51,7 +57,13 @@ import { TooltipModule } from 'primeng/tooltip';
     SkeletonModule,
     TagModule,
     TooltipModule,
-    NgCoreFormlyRemoteAutocompleteModule
+    NgCoreFormlyRemoteAutocompleteModule,
+    RadioButtonModule,
+    MessagesModule,
+    TabViewModule,
+    CardModule,
+    TableModule,
+    FieldsetModule
   ]
 })
 export class PrimengImportModule { }

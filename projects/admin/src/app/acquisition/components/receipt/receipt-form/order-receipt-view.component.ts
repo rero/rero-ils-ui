@@ -19,6 +19,7 @@ import { UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
+import { CONFIG } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { finalize, tap } from 'rxjs/operators';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
@@ -156,7 +157,8 @@ export class OrderReceiptViewComponent implements OnInit {
             this.messageService.add({
               severity: 'success',
               summary: this.translateService.instant('Receipt'),
-              detail: this.translateService.instant('Receipt operations were successful')
+              detail: this.translateService.instant('Receipt operations were successful'),
+              life: CONFIG.MESSAGE_LIFE
             });
           } else {
             this.messageService.add({
@@ -173,7 +175,8 @@ export class OrderReceiptViewComponent implements OnInit {
       this.messageService.add({
         severity: 'success',
         summary: this.translateService.instant('Receipt'),
-        detail: this.translateService.instant('Receipt operations were successful')
+        detail: this.translateService.instant('Receipt operations were successful'),
+        life: CONFIG.MESSAGE_LIFE
       });
       this.redirectToOrder();
     }

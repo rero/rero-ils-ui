@@ -34,7 +34,12 @@
   <div class="container-fluid mt-2" [class.rollovered]="!order.is_current_budget">
     <!-- ROLLOVER INFO -->
     @if (!order.is_current_budget) {
-      <div class="fiscal-year-closed" translate>Fiscal year closed</div>
+      <p-messages
+        [value]="[{ severity: 'warn', detail:'Fiscal year closed'|translate }]"
+        [closable]="false"
+        [enableService]="false"
+        showTransitionOptions="0ms"
+      />
     }
 
     <h1 class="mb-3">{{ order.reference }}</h1>
@@ -52,9 +57,8 @@
       }
     </admin-order-summary>
 
-    <tabset #orderTabs>
-      <!-- ORDER DETAIL VIEW -->
-      <tab heading="{{ 'Order' | translate }}">
+    <p-tabView>
+      <p-tabPanel [header]="'Order'|translate">
         <!-- ORDER LINES -->
         @if (isPermissionsLoaded) {
           <admin-order-lines class="row" [order]="order" [recordPermissions]="recordPermissions"></admin-order-lines>
@@ -90,16 +94,14 @@
             </div>
           </div>
         }
-      </tab>
-      <!-- RECEIPTS DETAIL VIEW -->
-      <tab heading="{{ 'Reception' | translate }}" [disabled]="!canViewReceipts">
+      </p-tabPanel>
+      <p-tabPanel [header]="'Reception'|translate" [disabled]="!canViewReceipts">
         @if (isPermissionsLoaded) {
           <admin-receipt-list class="row" [order]="order" [recordPermissions]="recordPermissions"></admin-receipt-list>
         }
-      </tab>
-      <!-- HISTORY -->
+      </p-tabPanel>
       @if (historyVersions && historyVersions.length > 1) {
-        <tab heading="{{ 'History' | translate }}">
+        <p-tabPanel [header]="'History'|translate">
           <p-timeline [value]="historyVersions">
             <ng-template pTemplate="marker" let-event>
               <div [class.p-timeline-event-marker-current]="event.active" class="p-timeline-event-marker"></div>
@@ -109,8 +111,8 @@
               <small>{{ event.description }}</small>
             </ng-template>
           </p-timeline>
-        </tab>
+        </p-tabPanel>
       }
-    </tabset>
+    </p-tabView>
   </div>
 }

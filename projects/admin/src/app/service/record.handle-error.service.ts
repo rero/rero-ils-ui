@@ -43,7 +43,9 @@ export class RecordHandleErrorService extends CoreRecordHandleErrorService {
         detail: this.translateService.instant(
           'Your request to the external server has failed. Try again later ({{ statusCode }}).', {
             statusCode: error.status
-        })
+        }),
+        sticky: true,
+        closable: true
       });
       this.spinner.hide();
       return NEVER;

@@ -52,6 +52,6 @@ export class PickupComponent implements OnInit {
     const index = this.loans.findIndex((element: any) => element.id == loanId);
     this.loans.splice(index, 1);
     // Update count on tab
-    this.circulationService.circulationInformations.statistics['pickup'] -= 1;
+    this.circulationService.statisticsDecrease('pickup', 1);
   }
 }

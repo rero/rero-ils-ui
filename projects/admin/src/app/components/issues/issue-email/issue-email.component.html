@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (response) {
+@if (response?.error) {
   <admin-preview-email
     [emails]="suggestions.emails"
     [emailTypes]="emailTypes"
@@ -26,7 +26,6 @@
     (closeDialog)="closeDialog()"
     (data)="confirmIssue($event)"
   >
-    <ng-container title>{{ 'Claim' | translate }}</ng-container>
     <ng-container headerMessage>
       <p translate>You're about to send the claim.</p>
     </ng-container>

@@ -18,6 +18,7 @@ import { ChangeDetectorRef, Component, inject, Input } from '@angular/core';
 import { ExceptionDates, Library } from '@app/admin/classes/library';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ExceptionDatesEditComponent } from '../exception-dates-edit/exception-dates-edit.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-libraries-exception-dates-list',
@@ -27,6 +28,7 @@ export class ExceptionDatesListComponent {
 
   private dialogService: DialogService = inject(DialogService);
   private changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private translateService: TranslateService = inject(TranslateService);
 
   private dynamicDialogRef: DynamicDialogRef | undefined;
 
@@ -34,6 +36,8 @@ export class ExceptionDatesListComponent {
 
   addException(): void {
     this.dynamicDialogRef = this.dialogService.open(ExceptionDatesEditComponent, {
+      header: this.translateService.instant('Exception'),
+      width: '50vw',
       data: {
         exceptionDate: null
       }

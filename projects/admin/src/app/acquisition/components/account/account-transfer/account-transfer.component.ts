@@ -22,6 +22,7 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { Router } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService } from '@ngx-translate/core';
+import { CONFIG } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
@@ -118,14 +119,17 @@ export class AccountTransferComponent implements OnInit {
           this.messageService.add({
             severity: 'success',
             summary: this.translateService.instant('Account'),
-            detail: this.translateService.instant('Fund transfer successful!')
+            detail: this.translateService.instant('Fund transfer successful!'),
+            life: CONFIG.MESSAGE_LIFE
           });
           this.router.navigate(['/', 'acquisition', 'accounts']);
         },
         error: (err) => this.messageService.add({
           severity: 'error',
           summary: this.translateService.instant('Account'),
-          detail:this.translateService.instant(err.error.message)
+          detail:this.translateService.instant(err.error.message),
+          sticky: true,
+          closable: true
         }),
     });
   }

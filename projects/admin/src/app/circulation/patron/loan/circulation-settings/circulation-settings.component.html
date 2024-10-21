@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,16 +14,5 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div (window:keypress)="checkinItemOnEnterKey($event)">
-  <div class="font-weight-bold" translate>
-    One item and one patron were found.
-  </div>
-</div>
-<div>
-  <button id="action-patron" type="button" class="btn btn-outline-primary" (click)="setAction('patron')">
-    <i class="fa fa-user mr-1"></i> {{ 'Patron account' | translate }}
-  </button>
-  <button id="action-item" type="button" class="btn btn-primary" (click)="setAction('item')">
-    <i class="fa fa-file-o mr-1"></i> {{ 'Checkin the item' | translate }}
-  </button>
-</div>
+<p-menu #menu [model]="items" [popup]="true" />
+<p-button [outlined]="true" (onClick)="menu.toggle($event)" icon="fa fa-cog" styleClass="text-color-secondary" />

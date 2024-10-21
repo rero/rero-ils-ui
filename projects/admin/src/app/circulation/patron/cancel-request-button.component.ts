@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService } from '@ngx-translate/core';
+import { CONFIG } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 
@@ -78,7 +78,8 @@ export class CancelRequestButtonComponent {
         this.messageService.add({
           severity: 'warn',
           summary: this.translateService.instant('Request'),
-          detail: message
+          detail: message,
+          life: CONFIG.MESSAGE_LIFE
         });
         this.cancelRequestEvent.emit(this.loan.id);
       });

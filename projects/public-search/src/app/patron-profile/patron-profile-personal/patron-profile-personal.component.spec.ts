@@ -21,7 +21,6 @@ import { CoreModule, DateTranslatePipe } from '@rero/ng-core';
 import { AppSettingsService, testUserPatronWithSettings } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { SharedModule } from '@rero/shared';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { PatronProfilePersonalComponent } from './patron-profile-personal.component';
 
 describe('PatronProfilePersonalComponent', () => {
@@ -54,7 +53,6 @@ describe('PatronProfilePersonalComponent', () => {
         HttpClientTestingModule
       ],
       providers: [
-        BsLocaleService,
         { provide: AppSettingsService, useValue: appSettingsServiceSpy }
       ]
     })

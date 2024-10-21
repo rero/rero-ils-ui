@@ -14,30 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Item, ItemAction, ItemNoteType } from '@app/admin/classes/items';
 import { ItemsService } from '@app/admin/service/items.service';
 import { PatronService } from '@app/admin/service/patron.service';
 import { TranslateService } from '@ngx-translate/core';
-import { DateTranslatePipe } from '@rero/ng-core';
+import { CONFIG, DateTranslatePipe } from '@rero/ng-core';
 import { ItemStatus, UserService } from '@rero/shared';
-import moment from 'moment';
 import { MessageService } from 'primeng/api';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin, Subscription } from 'rxjs';
 import { CirculationService } from '../../services/circulation.service';
 import { LoanFixedDateService } from '../../services/loan-fixed-date.service';
-import { FixedDateFormComponent } from './fixed-date-form/fixed-date-form.component';
-
-/** Interface to declare a special circulation settings */
-export interface CirculationSetting {
-  key: string;    /** the setting internal key */
-  label: string;  /** the setting label to display to user */
-  value: any;     /** the setting value */
-  extra?: any;     /** extra element for customization */
-}
-
+import { CirculationSettingsService, ICirculationSetting } from './circulation-settings/circulation-settings.service';
 
 @Component({
   selector: 'admin-loan',
@@ -50,11 +39,9 @@ export class LoanComponent implements OnInit, OnDestroy {
   private translateService: TranslateService = inject(TranslateService);
   private patronService: PatronService = inject(PatronService);
   private userService: UserService = inject(UserService);
-  private dateTranslatePipe: DateTranslatePipe = inject(DateTranslatePipe);
   private circulationService: CirculationService = inject(CirculationService);
-  private loanFixedDateService: LoanFixedDateService = inject(LoanFixedDateService);
   private messageService: MessageService = inject(MessageService);
-  private dialogService: DialogService = inject(DialogService);
+  private circulationSettingsService: CirculationSettingsService = inject(CirculationSettingsService);
 
   dialogRef: DynamicDialogRef | undefined;
 
@@ -80,22 +67,11 @@ export class LoanComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
   /** checkout list sort criteria */
   private sortCriteria = '-transaction_date';
-  /** checkout circulation special settings */
-  private checkoutCirculationSettings: CirculationSetting[] = [];
 
   // GETTER & SETTER ================================================
   /** Return the circulation special settings */
-  get checkoutSettings(): CirculationSetting[] | null {
-    return this.checkoutCirculationSettings;
-  }
-
-  /**
-   *  Add/Replace a circulation special setting
-   *  @param setting: the circulation setting
-   */
-  private _setCheckoutSetting(setting: CirculationSetting) {
-    this.removeCheckoutSettings(setting.key);
-    this.checkoutCirculationSettings.push(setting);
+  get checkoutSettings(): ICirculationSetting[] | null {
+    return this.circulationSettingsService.getSettings();
   }
 
   /**
@@ -104,25 +80,14 @@ export class LoanComponent implements OnInit, OnDestroy {
    * @return the value of the setting. null if key isn't found
    */
   private _getCheckoutSetting(key: string): any | null {
-    const setting = this.checkoutCirculationSettings.find(element => element.key === key);
+    const setting = this.circulationSettingsService.getSettings().find(element => element.key === key);
     return (setting !== undefined)
       ? setting.value
       : null;
   }
 
-  /**
-   * Remove a circulation special setting
-   * @param key: the circulation setting key to remove
-   * @return the circulation setting removed or null if the setting is not found
-   */
-  removeCheckoutSettings(key: string): CirculationSetting | CirculationSetting[] | null {
-    const idx = this.checkoutCirculationSettings.findIndex(setting => setting.key === key);
-    if (idx >= 0) {
-      if (key === 'endDate' && this.checkoutCirculationSettings[idx].extra.remember) {
-        this.loanFixedDateService.remove();
-      }
-      return this.checkoutCirculationSettings.splice(idx, 1);
-    }
+  removeCheckoutSettings(key: string): void {
+    this.circulationSettingsService.remove(key);
   }
 
   /** OnInit hook */
@@ -153,11 +118,6 @@ export class LoanComponent implements OnInit, OnDestroy {
     }));
     this.currentLibraryPid = this.userService.user.currentLibrary;
     this.searchInputFocus = true;
-    // Assignment of end date if present in locale storage
-    const fixedDateValue = this.loanFixedDateService.get();
-    if (fixedDateValue) {
-      this.setCheckoutDateSetting(fixedDateValue, true);
-    }
   }
 
   /** OnDestroy hook */
@@ -193,7 +153,8 @@ export class LoanComponent implements OnInit, OnDestroy {
         this.messageService.add({
           severity: 'warn',
           summary: this.translateService.instant('Checkin'),
-          detail: this.translateService.instant('The item has a request')
+          detail: this.translateService.instant('The item has a request'),
+          life: CONFIG.MESSAGE_LIFE
         });
       }
       if (item.status === ItemStatus.IN_TRANSIT) {
@@ -201,7 +162,8 @@ export class LoanComponent implements OnInit, OnDestroy {
         this.messageService.add({
           severity: 'warn',
           summary: this.translateService.instant('Checkin'),
-          detail: this.translateService.instant('The item is in transit to {{ destination }}', {destination})
+          detail: this.translateService.instant('The item is in transit to {{ destination }}', {destination}),
+          life: CONFIG.MESSAGE_LIFE
         });
       }
     } else {
@@ -211,7 +173,9 @@ export class LoanComponent implements OnInit, OnDestroy {
             this.messageService.add({
               severity: 'error',
               summary: this.translateService.instant('Checkout'),
-              detail: this.translateService.instant('Item not found')
+              detail: this.translateService.instant('Item not found'),
+              sticky: true,
+              closable: true
             });
             this._resetSearchInput();
           } else {
@@ -219,7 +183,9 @@ export class LoanComponent implements OnInit, OnDestroy {
               this.messageService.add({
                 severity: 'error',
                 summary: this.translateService.instant('Checkout'),
-                detail: this.translateService.instant('Checkout impossible: the item is already on loan for another patron')
+                detail: this.translateService.instant('Checkout impossible: the item is already on loan for another patron'),
+                sticky: true,
+                closable: true
               });
               this._resetSearchInput();
             } else {
@@ -227,7 +193,9 @@ export class LoanComponent implements OnInit, OnDestroy {
                 this.messageService.add({
                   severity: 'error',
                   summary: this.translateService.instant('Checkout'),
-                  detail: this.translateService.instant('Checkout impossible: the item is requested by another patron')
+                  detail: this.translateService.instant('Checkout impossible: the item is requested by another patron'),
+                  sticky: true,
+                  closable: true
                 });
                 this._resetSearchInput();
               } else {
@@ -241,7 +209,9 @@ export class LoanComponent implements OnInit, OnDestroy {
           this.messageService.add({
             severity: 'error',
             summary: this.translateService.instant('Checkout'),
-            detail: this.translateService.instant(error.message)
+            detail: this.translateService.instant(error.message),
+            sticky: true,
+            closable: true
           });
           this._resetSearchInput();
         }
@@ -259,7 +229,7 @@ export class LoanComponent implements OnInit, OnDestroy {
       if (item.currentAction !== ItemAction.no) {
         const additionalParams = {};
         if (item.currentAction === ItemAction.checkout) {
-          this.checkoutCirculationSettings.map(setting => additionalParams[setting.key] = setting.value);
+          this.circulationSettingsService.getSettings().map(setting => additionalParams[setting.key] = setting.value);
         }
         observables.push(
           this.itemsService.doAction(
@@ -287,11 +257,12 @@ export class LoanComponent implements OnInit, OnDestroy {
                 this.messageService.add({
                   severity: 'warn',
                   summary: this.translateService.instant('Checkin'),
-                  detail: this.translateService.instant('The item is in transit to {{ destination }}', {destination})
+                  detail: this.translateService.instant('The item is in transit to {{ destination }}', {destination}),
+                  life: CONFIG.MESSAGE_LIFE
                 });
               }
-              this.circulationService.decrementCirculationStatistic('loans');
-              this.circulationService.incrementCirculationStatistic('history');
+              this.circulationService.statisticsDecrease('loans');
+              this.circulationService.statisticsIncrease('history');
               break;
             }
             case ItemAction.checkout: {
@@ -299,12 +270,12 @@ export class LoanComponent implements OnInit, OnDestroy {
               this.displayCirculationInformation(ItemAction.checkout, newItem, ItemNoteType.CHECKOUT);
               this.checkedOutItems.unshift(newItem);
               this.checkedInItems = this.checkedInItems.filter(currItem => currItem.pid !== newItem.pid);
-              this.circulationService.incrementCirculationStatistic('loans');
+              this.circulationService.statisticsIncrease('loans');
               // check if items was ready to pickup. if yes, then we need to decrement the counter
               const idx = this.pickupItems.findIndex(item => item.metadata.item.pid === newItem.pid);
               if (idx > -1) {
                 this.pickupItems.splice(idx, 1);
-                this.circulationService.decrementCirculationStatistic('pickup');
+                this.circulationService.statisticsIncrease('pickup');
               }
               break;
             }
@@ -343,7 +314,9 @@ export class LoanComponent implements OnInit, OnDestroy {
           this.messageService.add({
             severity: 'error',
             summary: this.translateService.instant('Circulation'),
-            detail: this.translateService.instant('An error occurred on the server: ') + errorMessage
+            detail: this.translateService.instant('An error occurred on the server: ') + errorMessage,
+            sticky: true,
+            closable: true
           });
         }
         this._resetSearchInput();
@@ -378,8 +351,7 @@ export class LoanComponent implements OnInit, OnDestroy {
         severity: 'warn',
         summary: this.translateService.instant('Checkin'),
         detail: message.join(),
-        sticky: true,
-        closable: true
+        life: CONFIG.MESSAGE_LIFE
       });
     }
   }
@@ -419,7 +391,8 @@ export class LoanComponent implements OnInit, OnDestroy {
         this.messageService.add({
           severity: 'warn',
           summary: this.translateService.instant('Checkout'),
-          detail: this.translateService.instant('The due date has been set to the next business day, since the selected day is closed.')
+          detail: this.translateService.instant('The due date has been set to the next business day, since the selected day is closed.'),
+          life: CONFIG.MESSAGE_LIFE
         });
       }
     }
@@ -434,7 +407,9 @@ export class LoanComponent implements OnInit, OnDestroy {
       this.messageService.add({
         severity: 'error',
         summary: this.translateService.instant('Checkin'),
-        detail: this.translateService.instant('The item has fees')
+        detail: this.translateService.instant('The item has fees'),
+        sticky: true,
+        closable: true
       });
     }
   }
@@ -464,59 +439,6 @@ export class LoanComponent implements OnInit, OnDestroy {
       default:
         this.checkedOutItems.sort((a, b) => b.loan.transaction_date.diff(a.loan.transaction_date));
     }
-  }
-
-  /**
-   * Open a modal dialog form allowing to user to choose a fixed end-date.
-   * Subscribe to modal onHide event to get data entered by user and perform job if needed.
-   */
-  openFixedEndDateDialog(): void {
-    this.dialogRef = this.dialogService.open(FixedDateFormComponent, {
-      dismissableMask: true
-    });
-    this.dialogRef.onClose.subscribe((result?: any) => {
-      if (result && 'action' in result && result.action === 'submit') {
-        const date = this.setCheckoutDateSetting(result.content.endDate, result.content.remember);
-        if (result.content.remember) {
-          this.loanFixedDateService.set(date);
-        }
-      }
-    });
-  }
-
-  /**
-   * Save setting for end date
-   * @param endDate - Date in string format
-   * @param remember - Hold value (Boolean format)
-   * @returns End date in string format
-   */
-  setCheckoutDateSetting(endDate: string, remember: boolean): string {
-    const checkoutEndDate = moment(endDate, FixedDateFormComponent.DATE_FORMAT).toDate().setHours(23, 59);
-    const formattedDate = this.dateTranslatePipe.transform(checkoutEndDate, 'shortDate');
-    const setting = {
-      key: 'endDate',
-      label: this.translateService.instant('Active chosen due date: {{ endDate }}', {endDate: formattedDate}),
-      value: new Date(checkoutEndDate).toISOString(),
-      extra: {
-        remember,
-        class: 'badge-' + (remember ? 'success' : 'warning')
-      }
-    };
-    this._setCheckoutSetting(setting);
-
-    return setting.value;
-  }
-
-  /**
-   * Allow to specify that all checkout circulation should be operate without taking
-   * care of any possible blocking restrictions (Cipo, PatronTypes restriction, patron blocking, ...)
-   */
-  overrideBlocking(): void {
-    this._setCheckoutSetting({
-      key: 'overrideBlocking',
-      label: this.translateService.instant('Override blockings'),
-      value: true
-    });
   }
 
   /** Reset search input */

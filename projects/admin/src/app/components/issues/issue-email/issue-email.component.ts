@@ -19,7 +19,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { ITypeEmail } from '@app/admin/shared/preview-email/IPreviewInterface';
 import { Tools } from '@app/admin/shared/preview-email/utils/tools';
-import { NgCoreTranslateService, RecordService } from '@rero/ng-core';
+import { CONFIG, NgCoreTranslateService, RecordService } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
@@ -54,20 +54,29 @@ export class IssueEmailComponent implements OnInit {
   ngOnInit(): void {
     this.record = this.dynamicDialogConfig.data.record;
     this.itemApiService.getPreviewByItemPid(this.record.metadata.pid)
-      .subscribe((response: any) => {
-        if (response.error) {
-          this.messageService.add({
-            severity: 'error',
-            summary: this.translateService.instant('Claim'),
-            detail: this.translateService.instant(`An error has occurred.<br><em>Error: ${response.error}</em>`),
-            sticky: true,
-            closable: true
-          });
-          this.closeDialog();
-        } else {
-          this.suggestions = Tools.processRecipientSuggestions(response.recipient_suggestions);
-          this.response = response;
-        }
+      .subscribe({
+        next: (response: any) => {
+          if (response.error) {
+            this.closeDialog(this.record);
+            this.messageService.add({
+              severity: 'error',
+              summary: this.translateService.instant('Claim'),
+              detail: this.translateService.instant(`An error has occurred.<br><em>Error: ${response.error}</em>`),
+              sticky: true,
+              closable: true
+            });
+          } else {
+            this.suggestions = Tools.processRecipientSuggestions(response.recipient_suggestions);
+            this.response = response;
+          }
+        },
+        error: () => this.messageService.add({
+          severity: 'error',
+          summary: this.translateService.instant('Claim'),
+          detail: this.translateService.instant('An error has occurred'),
+          sticky: true,
+          closable: true
+        })
       });
   }
 
@@ -77,7 +86,8 @@ export class IssueEmailComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Claim'),
-          detail: this.translateService.instant('A new claim has been created.')
+          detail: this.translateService.instant('A new claim has been created.'),
+          life: CONFIG.MESSAGE_LIFE
         });
         this.recordService
           .getRecord('items', this.record.metadata.pid, 1, {Accept: 'application/rero+json'})

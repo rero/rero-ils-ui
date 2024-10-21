@@ -23,7 +23,7 @@ import {
 } from '@app/admin/classes/patron-transaction';
 import { RouteToolService } from '@app/admin/routes/route-tool.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Record, RecordService } from '@rero/ng-core';
+import { CONFIG, Record, RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -239,7 +239,8 @@ export class PatronTransactionService {
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Patron'),
-          detail: this.translateService.instant('{{ type }} registered', {type: translateType})
+          detail: this.translateService.instant('{{ type }} registered', {type: translateType}),
+          life: CONFIG.MESSAGE_LIFE
         });
       },
       (error) => {

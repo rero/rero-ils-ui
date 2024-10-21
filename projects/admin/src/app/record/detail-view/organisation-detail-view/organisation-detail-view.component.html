@@ -16,26 +16,26 @@
 -->
 @if (record$ | async; as record) {
   <h1>{{ record.metadata.name }}</h1>
-  <dl class="row">
+  <dl class="grid">
     <!-- ADDRESS -->
     @if (record.metadata.address) {
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Address</dt>
-      <dd class="col-sm-7 col-md-8 mb-0" [innerHTML]="record.metadata.address | nl2br"></dd>
+      <dt class="col-3 label-title" translate>Address</dt>
+      <dd class="col-7 mb-0" [innerHTML]="record.metadata.address | nl2br"></dd>
     }
     <!-- CODE -->
     @if (record.metadata.code) {
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Code</dt>
-      <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.code }}</dd>
+      <dt class="col-3 label-title" translate>Code</dt>
+      <dd class="col-7 mb-0">{{ record.metadata.code }}</dd>
     }
     <!-- DEFAULT CURRENCY -->
     @if (record.metadata.default_currency) {
-      <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Default currency</dt>
-      <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.default_currency }}</dd>
+      <dt class="col-3 label-title" translate>Default currency</dt>
+      <dd class="col-7 mb-0">{{ record.metadata.default_currency }}</dd>
     }
   </dl>
 
   <!-- OPERATION LOGS-->
   @if (isEnabledOperationLog) {
-    <admin-operation-log resourceType="organisations" [resourcePid]="record.metadata.pid"></admin-operation-log>
+    <admin-operation-log resourceType="organisations" [resourcePid]="record.metadata.pid" />
   }
 }
