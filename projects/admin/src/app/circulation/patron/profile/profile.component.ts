@@ -20,6 +20,7 @@ import { Subscription } from 'rxjs';
 import { PatronService } from '../../../service/patron.service';
 import { RecordPermissionService } from '../../../service/record-permission.service';
 import { ChangePasswordFormComponent } from '../change-password-form/change-password-form.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-profile',
@@ -30,6 +31,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private dialogService: DialogService = inject(DialogService);
   private patronService: PatronService = inject(PatronService);
   private recordPermission: RecordPermissionService = inject(RecordPermissionService);
+  private translateService: TranslateService = inject(TranslateService);
 
   /** Current patron */
   currentPatron$: any;
@@ -77,6 +79,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
    */
   updatePatronPassword(patron) {
     this.dialogService.open(ChangePasswordFormComponent, {
+      header: this.translateService.instant('Update Patron Password'),
       data: {
         patron
       }

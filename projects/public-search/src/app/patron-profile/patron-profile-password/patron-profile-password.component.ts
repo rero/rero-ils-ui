@@ -15,11 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { DOCUMENT } from '@angular/common';
-import { Component, ElementRef, inject, Inject, Input } from '@angular/core';
+import { Component, ElementRef, inject, Input } from '@angular/core';
 import { AbstractControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
+import { CONFIG } from '@rero/ng-core';
 import { AppSettingsService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
@@ -126,7 +127,9 @@ export class PatronProfilePasswordComponent {
       this.messageService.add({
         severity: 'error',
         summary: this.translateService.instant('Error'),
-        detail: this.translateService.instant('The form contains errors.')
+        detail: this.translateService.instant('The form contains errors.'),
+        sticky: true,
+        closable: true
       });
       return;
     }
@@ -144,7 +147,8 @@ export class PatronProfilePasswordComponent {
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Success'),
-          detail: this.translateService.instant(response.message)
+          detail: this.translateService.instant(response.message),
+          life: CONFIG.MESSAGE_LIFE
         });
         // Close password form and show personal data
         this._redirect();

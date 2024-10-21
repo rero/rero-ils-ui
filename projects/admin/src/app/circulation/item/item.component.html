@@ -25,23 +25,21 @@
     <!-- ACTION BUTTONS -->
     <div class="actions">
       @if (patron) {
-        <button class="btn btn-sm btn-outline-secondary"
-                [disabled]="!item.actions.includes(itemAction.extend_loan)"
-                [attr.id]="item.barcode | idAttribute:{prefix: 'item', suffix: 'renew-button'}"
-                (click)="extendLoanClick($event)" >
-          <i class="fa fa-refresh pr-1"></i>
-          {{ 'Renew' | translate }}
-        </button>
+        <p-button
+          icon="fa fa-refresh pr-1"
+          [label]="'Renew'|translate"
+          severity="secondary"
+          [outlined]="true"
+          [disabled]="!item.actions.includes(itemAction.extend_loan)"
+          [id]="item.barcode | idAttribute:{prefix: 'item', suffix: 'renew-button'}"
+          (onClick)="extendLoanClick($event)"
+        />
       }
     </div>
     <!-- BARCODE -->
     <div name="barcode" class="col-2 d-flex">
       @if (!item.actions || item.loan || totalAmountOfFee || item.pending_loans || notifications$) {
-        <button type="button" class="btn-show-more"
-                [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
-                (click)="isCollapsed = !isCollapsed"
-                [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
-        </button>
+        <shared-open-close-button [collapsed]="isCollapsed" (status)="isCollapsed = $event" />
       }
       <div>
         <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
@@ -124,22 +122,22 @@
           <!-- RENEWALS, FEES, REQUESTS -->
           <li>
             @if (isCollapsed && item.loan && item.loan.extension_count && (!item.actionDone || item.actionDone !== itemAction.checkin)) {
-              <span title="{{ 'Renewals' | translate }}" class="badge badge-secondary font-weight-normal mr-1">
-                {{ item.loan.extension_count }} <i class="fa fa-refresh"></i>
-              </span>
+              <p-tag [title]="'Renewals'|translate" severity="secondary" styleClass="mr-1">
+                {{ item.loan.extension_count }} <i class="fa fa-refresh ml-1"></i>
+              </p-tag>
             }
             @if (isCollapsed && totalAmountOfFee > 0) {
-              <span title="{{ 'Fees' | translate }}" class="badge badge-warning font-weight-normal mr-1">
+              <p-tag [title]="'Fees'|translate" severity="warning" styleClass="mr-1">
                 {{ totalAmountOfFee | currency: organisation.default_currency }}
-              </span>
+              </p-tag>
             }
             @if (isCollapsed && item.pending_loans && item.pending_loans.length) {
-              <span title="{{ 'Requests' | translate }}" class="badge badge-secondary font-weight-normal mr-1">
+              <p-tag [title]="'Requests'|translate" severity="secondary" styleClass="mr-1">
                 <i class="fa fa-shopping-basket pr-1"></i>
                 <a class="text-white" [routerLink]="['/circulation', 'patron', item.pending_loans[0].patron.barcode, 'loan']">
                   {{ item.pending_loans[0].patron.name }}
                 </a>
-              </span>
+              </p-tag>
             }
           </li>
         </ul>
@@ -172,7 +170,7 @@
     <!-- COLLAPSED DETAILS -->
     @if (!isCollapsed) {
       <div name="collapsed-details" class="col-12 mt-2">
-        <dl class="row">
+        <dl class="grid">
           <dt class="offset-1 col-sm-3 col-md-2 col-lg-1 label-title" translate>Call number</dt>
           <dd class="col-sm-8 col-md-9 col-lg-10">
             <shared-inherited-call-number [item]="item"></shared-inherited-call-number>
@@ -199,10 +197,10 @@
           @if (item.loan && item.loan.extension_count) {
             <dt class="offset-1 col-sm-3 col-md-2 col-lg-1 label-title" translate>Renewals</dt>
             <dd name="renewals" class="col-sm-8 col-md-9 col-lg-10">
-              <span class="badge badge-secondary">
+              <p-tag severity="secondary" styleClass="mr-1">
                 {{ item.loan.extension_count }}
-                <i class="fa fa-refresh"></i>
-              </span>
+                <i class="fa fa-refresh ml-1"></i>
+              </p-tag>
             </dd>
           }
           @if (item.loan && item.actionDone === 'checkin' && item?.loan?.last_end_date) {
@@ -214,9 +212,9 @@
           @if (item.loan && totalAmountOfFee > 0) {
             <dt class="offset-1 col-sm-3 col-md-getTransitLocationPid2 col-lg-1 label-title" translate>Fees</dt>
             <dd name="fees" class="col-sm-8 col-md-9 col-lg-10">
-              <span class="badge badge-warning font-weight-normal">
+              <p-tag severity="warning" styleClass="mr-1">
                 {{ totalAmountOfFee | currency: organisation.default_currency }}
-              </span>
+              </p-tag>
             </dd>
           }
           @if (item.loan && notifications$ | async; as notifications) {
@@ -245,14 +243,16 @@
             <dt class="offset-1 col-sm-3 col-md-2 col-lg-1 label-title" translate>Requests</dt>
             <dd name="request-for"class="col-sm-8 col-md-9 col-lg-10">
               @if (item.pending_loans.length > 1) {
-                <span class="badge badge-info">{{ item.pending_loans.length }}</span>
+                <p-tag severity="info" styleClass="mr-1">
+                  {{ item.pending_loans.length }}
+                </p-tag>
                 <i class="fa fa-long-arrow-right px-2"></i>
               }
               @for (request of item.pending_loans; track request) {
-                <span class="badge badge-secondary font-weight-normal mr-2">
+                <p-tag severity="secondary" styleClass="mr-1">
                   <i class="fa fa-shopping-basket pr-1"></i>
                   <a class="text-white" [routerLink]="['/circulation', 'patron', request.patron.barcode, 'loan']">{{ request.patron.name }}</a>
-                </span>
+                </p-tag>
               }
             </dd>
           }

@@ -14,7 +14,6 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <section class="content">
   <div class="row mb-4">
     <div class="col-12 col-md-6">
@@ -29,32 +28,16 @@
           ></ng-core-search-input>
         </div>
         <div class="col-sm-2 col-md-1 align-self-end pl-1">
-          <!-- circulation special-settings -->
-          <div class="btn-group" dropdown>
-            <button id="circulation-settings-button" dropdownToggle type="button"
-                    class="btn btn-outline-secondary dropdown-toggle px-2"
-                    aria-controls="dropdown-basic">
-              <i class="fa fa-cog"></i> <span class="caret"></span>
-            </button>
-            <ul id="circulation-settings-dropdown" *dropdownMenu class="dropdown-menu"
-                role="menu" aria-labelledby="button-basic">
-              <li role="menuitem">
-                <a class="dropdown-item" (click)="openFixedEndDateDialog()" translate>Check-out for a fix date</a>
-                <a class="dropdown-item" (click)="overrideBlocking()" translate>Override blockings</a>
-              </li>
-            </ul>
-          </div>
+          <admin-circulation-settings />
         </div>
       </div>
       @if (checkoutSettings) {
         <div class="row col mt-1">
           @for (setting of checkoutSettings; track setting) {
-            <span class="badge px-2 py-0 mr-2" [ngClass]="setting.extra?.class || 'badge-warning'">
+            <p-tag [severity]="setting.extra?.severity || 'warning'">
               {{ setting.label }}
-              <button class="btn btn-small p-0 ml-1" (click)="removeCheckoutSettings(setting.key)">
-                <i class="fa fa-times-circle"></i>
-              </button>
-            </span>
+              <i class="fa fa-times-circle ml-2" (click)="removeCheckoutSettings(setting.key)"></i>
+            </p-tag>
           }
         </div>
       }

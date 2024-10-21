@@ -26,11 +26,10 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, CoreModule, NgCoreTranslateService, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { PatronProfilePersonalEditorComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-personal-editor/patron-profile-personal-editor.component';
+import { Observable } from 'rxjs';
 import { AppConfigService } from './app-config.service';
 import { AppInitializerService } from './app-initializer.service';
-import { Observable } from 'rxjs';
 
 /** function to instantiate the application  */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
@@ -61,7 +60,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     SharedModule,
     LoadingBarHttpClientModule,
     LoadingBarModule,
-    TooltipModule.forRoot(),
   ],
   providers: [
     { provide: TranslateService, useClass: NgCoreTranslateService },

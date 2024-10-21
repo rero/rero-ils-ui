@@ -81,7 +81,8 @@
           <button
             type="button"
             class="btn btn-sm btn-primary disabled"
-            tooltip="{{ canExtend.reasons | arrayTranslate | join:' / '}}"
+            pTooltip="{{ canExtend.reasons | arrayTranslate | join:' / '}}"
+            tooltipPosition="top"
             translate
           >Renew</button>
         }

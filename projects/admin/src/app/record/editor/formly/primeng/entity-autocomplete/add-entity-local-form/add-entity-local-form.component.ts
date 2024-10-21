@@ -106,7 +106,9 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
         error: () => this.messageService.add({
           severity: 'error',
           summary: this.translateService.instant('Add local entity'),
-          detail: this.translateService.instant('Data submission generated an error.')
+          detail: this.translateService.instant('Data submission generated an error.'),
+          sticky: true,
+          closable: true
         })
       }));
     }

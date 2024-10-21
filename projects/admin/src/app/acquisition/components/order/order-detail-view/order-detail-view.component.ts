@@ -28,6 +28,7 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqOrderHistoryVersion, AcqOrderHistoryVersionResponseInterface, AcqOrderStatus, IAcqOrder } from '../../../classes/order';
 import { OrderEmailFormComponent } from '../order-email-form/order-email-form.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-acquisition-order-detail-view',
@@ -41,6 +42,7 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
   private acqOrderService: AcqOrderApiService = inject(AcqOrderApiService);
   private permissionValidator: CurrentLibraryPermissionValidator = inject(CurrentLibraryPermissionValidator);
+  private translateService: TranslateService = inject(TranslateService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Observable resolving record data */
@@ -124,6 +126,8 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
    */
   placeOrderDialog(): void {
     this.modalRef = this.dialogService.open(OrderEmailFormComponent, {
+      header: this.translateService.instant('Place order'),
+      width: '60vw',
       dismissableMask: true,
       data: {
         order: this.order

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,17 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { RecordModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ButtonModule } from 'primeng/button';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { MenuModule } from 'primeng/menu';
+import { RippleModule } from 'primeng/ripple';
+import { TabMenuModule } from 'primeng/tabmenu';
+import { TagModule } from 'primeng/tag';
 import { JournalVolumePipe } from 'projects/public-search/src/app/pipe/journal-volume.pipe';
 import { CheckinActionComponent } from './checkin/checkin-action/checkin-action.component';
 import { CheckinComponent } from './checkin/checkin.component';
@@ -42,6 +43,7 @@ import { HistoryLogComponent } from './patron/history/history-log/history-log.co
 import { HistoryComponent } from './patron/history/history.component';
 import { IllRequestItemComponent } from './patron/ill-request/ill-request-item/ill-request-item.component';
 import { IllRequestComponent } from './patron/ill-request/ill-request.component';
+import { CirculationSettingsComponent } from './patron/loan/circulation-settings/circulation-settings.component';
 import { FixedDateFormComponent } from './patron/loan/fixed-date-form/fixed-date-form.component';
 import { LoanComponent } from './patron/loan/loan.component';
 import { MainComponent } from './patron/main/main.component';
@@ -102,19 +104,26 @@ import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
         CancelRequestButtonComponent,
         IllRequestComponent,
         IllRequestItemComponent,
-        JournalVolumePipe
+        JournalVolumePipe,
+        CirculationSettingsComponent
     ],
     imports: [
-        BsDropdownModule.forRoot(),
-        BsDatepickerModule.forRoot(),
         CirculationRoutingModule,
-        CollapseModule.forRoot(),
         CommonModule,
         FormsModule,
         FormlyModule,
         ReactiveFormsModule,
         RecordModule,
-        SharedModule
+        SharedModule,
+        MenuModule,
+        DynamicDialogModule,
+        TagModule,
+        ButtonModule,
+        TabMenuModule,
+        RippleModule
+    ],
+    providers: [
+      CurrencyPipe
     ]
 })
 export class CirculationModule { }

@@ -17,7 +17,7 @@
 import { Component, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Record } from '@rero/ng-core';
+import { CONFIG, Record } from '@rero/ng-core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
@@ -94,7 +94,8 @@ export class UploadFilesComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('File'),
-          detail: this.translateService.instant('Metadata have been saved successfully.')
+          detail: this.translateService.instant('Metadata have been saved successfully.'),
+          life: CONFIG.MESSAGE_LIFE
         });
       });
   }
@@ -168,7 +169,9 @@ export class UploadFilesComponent implements OnInit {
             this.messageService.add({
               severity: 'error',
               summary: this.translateService.instant('File'),
-              detail: msg
+              detail: msg,
+              sticky: true,
+              closable: true
             });
             return of([]);
           }),
@@ -178,7 +181,8 @@ export class UploadFilesComponent implements OnInit {
             this.messageService.add({
               severity: 'success',
               summary: this.translateService.instant('File'),
-              detail: this.translateService.instant('File uploaded successfully.')
+              detail: this.translateService.instant('File uploaded successfully.'),
+              life: CONFIG.MESSAGE_LIFE
             });
             this.nUploadedFiles = 0;
           }),
@@ -259,7 +263,8 @@ export class UploadFilesComponent implements OnInit {
             this.messageService.add({
               severity: 'success',
               summary: this.translateService.instant('File'),
-              detail: this.translateService.instant('File removed successfully.')
+              detail: this.translateService.instant('File removed successfully.'),
+              life: CONFIG.MESSAGE_LIFE
             });
             return true;
           })

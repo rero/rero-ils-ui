@@ -21,25 +21,22 @@
 }
 @if ((checkedOutItems && checkedOutItems.length > 0) || (checkedInItems && checkedInItems.length > 0)) {
   <!-- HEADER -->
-  <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded p-1">
+  <div class="grid mb-1 d-flex align-items-center bg-dark text-white rounded p-1">
     <div class="col-2" >
-      <button type="button" class="btn-show-more"
-              [ngClass]="{'btn-expanded': !allCollapsed, 'btn-collapsed': allCollapsed}"
-              (click)="allCollapsed = !allCollapsed"
-              [attr.aria-expanded]="!allCollapsed" aria-controls="collapse">
-      </button>
+      <shared-open-close-button (status)="allCollapsed = $event" />
       {{ 'Items' | translate }}
     </div>
     <div class="col-6" translate>Document</div>
     <div class="col-3" translate>Circulation info</div>
     <div class="col-1">
       @if (patron) {
-        <button class="btn btn-primary float-right btn-sm my-1"
-                (click)="extendAllLoansClick()"
-                [disabled]="loansToExtend.length < 1"
-                id="renew-all-button"
-                translate
-        >Renew all</button>
+        <p-button
+          id="renew-all-button"
+          [label]="'Renew all'|translate"
+          [disabled]="loansToExtend.length < 1"
+          styleClass="float-right my-1"
+          (onClick)="extendAllLoansClick()"
+        />
       }
     </div>
   </div>

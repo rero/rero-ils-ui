@@ -18,6 +18,7 @@ import { Component, inject, Input } from '@angular/core';
 import { IPermissions, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { DialogService } from 'primeng/dynamicdialog';
 import { CirculationLogsComponent } from './circulation-logs.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-circulation-logs-dialog',
@@ -39,6 +40,7 @@ import { CirculationLogsComponent } from './circulation-logs.component';
 export class CirculationLogsDialogComponent {
 
   private dialogService: DialogService = inject(DialogService);
+  private translateService: TranslateService = inject(TranslateService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Resource pid */
@@ -56,7 +58,9 @@ export class CirculationLogsDialogComponent {
   /** Open operation logs dialog */
   openDialog(): void {
     this.dialogService.open(CirculationLogsComponent, {
+      header: this.translateService.instant('Circulation history'),
       dismissableMask: true,
+      width: '60vw',
       data: {
         resourcePid: this.resourcePid,
         resourceType: this.resourceType

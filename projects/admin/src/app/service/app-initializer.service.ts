@@ -22,6 +22,7 @@ import { switchMap, tap } from 'rxjs/operators';
 import { AppConfigService } from './app-config.service';
 import { OrganisationService } from './organisation.service';
 import { RemoteAutocompleteFactoryService } from '../record/editor/formly/primeng/remote-autocomplete/remote-autocomplete-factory.service';
+import { LibrarySwitchStorageService } from '../menu/service/library-switch-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -34,15 +35,22 @@ export class AppInitializerService {
   private appConfigService: AppConfigService = inject(AppConfigService);
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
   private remoteAutocompleteFactoryService: RemoteAutocompleteFactoryService = inject(RemoteAutocompleteFactoryService);
+  private librarySwitchStorageService: LibrarySwitchStorageService = inject(LibrarySwitchStorageService);
 
   load(): Observable<any> {
     return this.userService.load().pipe(
       tap((user: User) => {
         this.remoteAutocompleteFactoryService.init();
         if (user.hasAdminUiAccess) {
-          // Set current library and organisation for librarian or system_librarian roles
-          const library = user.patronLibrarian.libraries[0];
-          user.currentLibrary = library.pid;
+          // Default user library
+          let library = user.patronLibrarian.libraries[0];
+          // If the cache exists, we retrieve the id of the selected library
+          if (this.librarySwitchStorageService.has()) {
+            user.currentLibrary = this.librarySwitchStorageService.get().currentLibrary;
+          } else {
+            user.currentLibrary = library.pid;
+          }
+
           user.currentOrganisation = user.patronLibrarian.organisation.pid;
           user.currentBudget = user.patronLibrarian.organisation.budget.pid;
           this.organisationService.loadOrganisationByPid(user.currentOrganisation);

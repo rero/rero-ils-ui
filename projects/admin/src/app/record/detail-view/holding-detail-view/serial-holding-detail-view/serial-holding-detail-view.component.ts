@@ -19,7 +19,7 @@ import { Component, inject, Input, OnInit } from '@angular/core';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { HoldingsService, PredictionIssue } from '@app/admin/service/holdings.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Record, RecordService } from '@rero/ng-core';
+import { CONFIG, Record, RecordService } from '@rero/ng-core';
 import { IPermissions, IssueItemStatus, PERMISSIONS, PermissionsService, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 
@@ -133,7 +133,8 @@ export class SerialHoldingDetailViewComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Issue'),
-          detail: this.translateService.instant('New issue created.')
+          detail: this.translateService.instant('New issue created.'),
+          life: CONFIG.MESSAGE_LIFE
         });
         // change item structure to have same structure as received items
         const item = {
@@ -148,7 +149,9 @@ export class SerialHoldingDetailViewComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: this.translateService.instant('Issue creation failed!'),
-          detail: `[${error.status}-${error.statusText}] ${error.error.message}`
+          detail: `[${error.status}-${error.statusText}] ${error.error.message}`,
+          sticky: true,
+          closable: true
         });
       }
     });

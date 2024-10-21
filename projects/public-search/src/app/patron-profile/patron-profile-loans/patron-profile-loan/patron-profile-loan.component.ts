@@ -17,6 +17,7 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { LoanOverduePreview } from '@app/admin/classes/loans';
 import { TranslateService } from '@ngx-translate/core';
+import { CONFIG } from '@rero/ng-core';
 import { IOrganisation } from '@rero/shared';
 import moment from 'moment';
 import { MessageService } from 'primeng/api';
@@ -115,13 +116,16 @@ export class PatronProfileLoanComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Success'),
-          detail: this.translateService.instant('The item has been renewed.')
+          detail: this.translateService.instant('The item has been renewed.'),
+          life: CONFIG.MESSAGE_LIFE
         });
       } else {
         this.messageService.add({
           severity: 'error',
           summary: this.translateService.instant('Error'),
-          detail: this.translateService.instant('Error during the renewal of the item.')
+          detail: this.translateService.instant('Error during the renewal of the item.'),
+          sticky: true,
+          closable: true
         });
       }
     });

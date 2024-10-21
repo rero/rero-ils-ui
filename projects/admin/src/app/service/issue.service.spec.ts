@@ -20,7 +20,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { IssueItemStatus } from '@rero/shared';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { IssueEmailComponent } from '../components/issues/issue-email/issue-email.component';
 import { PreviewEmailModule } from '../shared/preview-email/preview-email.module';
 import { IssueService } from './issue.service';
@@ -46,7 +45,6 @@ describe('IssueService', () => {
       providers: [
         PreviewEmailModule,
         CommonModule,
-        BsLocaleService,
         IssueService
       ]
     });

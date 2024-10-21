@@ -28,9 +28,6 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, CoreModule, NgCoreTranslateService, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { TabsModule } from 'ngx-bootstrap/tabs';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { PatronProfileDocumentComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-document/patron-profile-document.component';
 import { PatronProfileFeeComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-fees/patron-profile-fee/patron-profile-fee.component';
 import {
@@ -109,9 +106,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
       },
       isolate: false
     }),
-    TabsModule.forRoot(),
-    TooltipModule.forRoot(),
-    CollapseModule.forRoot(),
     SharedModule,
     LoadingBarHttpClientModule,
     LoadingBarModule

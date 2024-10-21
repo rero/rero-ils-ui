@@ -21,7 +21,7 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService, processJsonSchema, removeEmptyValues } from '@rero/ng-core';
+import { CONFIG, RecordService, processJsonSchema, removeEmptyValues } from '@rero/ng-core';
 import { AppSettingsService, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { Subscription, forkJoin, of } from 'rxjs';
@@ -175,7 +175,9 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
       this.messageService.add({
         severity: 'error',
         summary: this.translateService.instant('Error'),
-        detail: this.translateService.instant('The form contains errors.')
+        detail: this.translateService.instant('The form contains errors.'),
+        sticky: true,
+        closable: true
       });
       return;
     }
@@ -188,7 +190,8 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
           this.messageService.add({
             severity: 'success',
             summary: this.translateService.instant('Success'),
-            detail: this.translateService.instant('Your personal data has been updated.')
+            detail: this.translateService.instant('Your personal data has been updated.'),
+            life: CONFIG.MESSAGE_LIFE
           });
           this.redirect();
         },

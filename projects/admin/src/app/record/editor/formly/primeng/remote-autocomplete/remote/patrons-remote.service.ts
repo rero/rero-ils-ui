@@ -16,7 +16,7 @@
  */
 import { inject, Injectable } from '@angular/core';
 import { IRemoteAutocomplete } from './i-remote-autocomplete';
-import { ApiService, RecordService, SuggestionMetadata } from '@rero/ng-core';
+import { ApiService, RecordService } from '@rero/ng-core';
 import { IQueryOptions, ISuggestionItem } from '@rero/ng-core/lib/record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.interface';
 import { catchError, map, Observable, of } from 'rxjs';
 import { PatronService } from '@app/admin/service/patron.service';
@@ -74,7 +74,7 @@ export class PatronsRemoteService implements IRemoteAutocomplete {
       );
   }
 
-  private getPatronsRef(metadata: any, query: string): SuggestionMetadata {
+  private getPatronsRef(metadata: any, query: string): ISuggestionItem {
     return {
       label: this.patronService.getFormattedName(metadata),
       value: this.apiService.getRefEndpoint(this.getName(), metadata.pid)

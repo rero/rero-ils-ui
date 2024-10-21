@@ -22,32 +22,27 @@
   }
   <h1 class="mb-3">{{ account.name }}</h1>
   <!-- Account general information's -->
-  <div class="card my-2">
-    <h6 class="card-header" translate>Details</h6>
-    <div class="card-body">
-      <dl class="row">
-        <dt class="col-3 label-title" translate>Account number</dt>
-        <dd class="col-9">{{ account.number }}</dd>
-        <dt class="col-3 label-title" translate>Budget</dt>
-        <dd class="col-9">{{ account.budget.pid | getRecord: 'budgets': 'field': 'name' | async }}</dd>
-        <dt class="col-3 label-title" translate>Library</dt>
-        <dd class="col-9">{{ account.library.pid | getRecord: 'libraries': 'field': 'name' | async }}</dd>
-        @if (account.parent) {
-          <dt class="col-3 label-title" translate>Parent account</dt>
-          <dd class="col-9">
-            <a [routerLink]="['/', 'records', 'acq_accounts', 'detail', account.parent.pid]">
-              {{ account.parent.pid | getRecord: 'acq_accounts': 'field': 'name' | async }}
-            </a>
-          </dd>
-        }
-      </dl>
-    </div>
-  </div>
+  <p-card [header]="'Details'|translate" styleClass="mb-3">
+    <dl class="row">
+      <dt class="col-3 label-title" translate>Account number</dt>
+      <dd class="col-9">{{ account.number }}</dd>
+      <dt class="col-3 label-title" translate>Budget</dt>
+      <dd class="col-9">{{ account.budget.pid | getRecord: 'budgets': 'field': 'name' | async }}</dd>
+      <dt class="col-3 label-title" translate>Library</dt>
+      <dd class="col-9">{{ account.library.pid | getRecord: 'libraries': 'field': 'name' | async }}</dd>
+      @if (account.parent) {
+        <dt class="col-3 label-title" translate>Parent account</dt>
+        <dd class="col-9">
+          <a [routerLink]="['/', 'records', 'acq_accounts', 'detail', account.parent.pid]">
+            {{ account.parent.pid | getRecord: 'acq_accounts': 'field': 'name' | async }}
+          </a>
+        </dd>
+      }
+    </dl>
+  </p-card>
 
   <!-- Account accounting information's -->
-  <div class="card my-2 accounting-infos">
-    <h6 class="card-header" translate>Accounting informations</h6>
-    <div class="card-body">
+  <p-card class="accounting-infos" [header]="'Accounting informations'|translate">
       <table class="table table-sm">
         <tbody>
         <tr>
@@ -115,6 +110,5 @@
         </tr>
         </tbody>
       </table>
-    </div>
-  </div>
+  </p-card>
 }

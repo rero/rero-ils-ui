@@ -23,7 +23,7 @@ import { ResultItem } from '@rero/ng-core';
 @Component({
   selector: 'admin-budgets-brief-view',
   template: `
-  <h5 class="card-title mb-0 rero-ils-person">
+  <h5 class="mb-0">
     <i
       class="fa fa-circle mr-2"
       [title]="title"

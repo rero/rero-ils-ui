@@ -21,6 +21,7 @@ import { RecordPermissions } from '@app/admin/classes/permissions';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService } from '@ngx-translate/core';
+import { CONFIG } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
@@ -99,7 +100,8 @@ export class AccountBriefViewComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Account'),
-          detail: this.translateService.instant('Account deleted')
+          detail: this.translateService.instant('Account deleted'),
+          life: CONFIG.MESSAGE_LIFE
         });
         this.deleteAccount.emit(this.account);
       });

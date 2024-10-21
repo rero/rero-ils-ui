@@ -18,7 +18,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
-import { JSONSchema7, NgCoreTranslateService, processJsonSchema, RecordService, removeEmptyValues } from '@rero/ng-core';
+import { CONFIG, JSONSchema7, NgCoreTranslateService, processJsonSchema, RecordService, removeEmptyValues } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -146,7 +146,8 @@ export class UserIdEditorComponent implements OnInit {
           this.messageService.add({
             severity: 'warn',
             summary: this.translateService.instant('User'),
-            detail: this.translateService.instant('User not found.')
+            detail: this.translateService.instant('User not found.'),
+            life: CONFIG.MESSAGE_LIFE
           })
           return null;
         }
@@ -168,7 +169,8 @@ export class UserIdEditorComponent implements OnInit {
             this.messageService.add({
               severity: 'info',
               summary: this.translateService.instant('User'),
-              detail: this.translateService.instant('This person is already registered in your organisation.')
+              detail: this.translateService.instant('This person is already registered in your organisation.'),
+              life: CONFIG.MESSAGE_LIFE
             });
             return of(null);
           }
@@ -176,7 +178,8 @@ export class UserIdEditorComponent implements OnInit {
         this.messageService.add({
           severity: 'info',
           summary: this.translateService.instant('User'),
-          detail: this.translateService.instant('The personal data has been successfully linked to this patron.')
+          detail: this.translateService.instant('The personal data has been successfully linked to this patron.'),
+          life: CONFIG.MESSAGE_LIFE
         });
         this.loadedUserID = model.id;
         this.passwordField.props.required = false;
@@ -201,7 +204,9 @@ export class UserIdEditorComponent implements OnInit {
       this.messageService.add({
         severity: 'error',
         summary: this.translateService.instant('User'),
-        detail: this.translateService.instant('The form contains errors.')
+        detail: this.translateService.instant('The form contains errors.'),
+        sticky: true,
+        closable: true
       });
       return;
     }

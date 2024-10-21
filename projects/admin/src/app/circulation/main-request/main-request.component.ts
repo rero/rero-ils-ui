@@ -17,6 +17,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
+import { CONFIG } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import moment from 'moment';
 import { MessageService } from 'primeng/api';
@@ -175,7 +176,8 @@ export class MainRequestComponent implements OnInit, OnDestroy {
       this.messageService.add({
         severity: 'warn',
         summary: this.translateService.instant('request'),
-        detail: this.translateService.instant('No request corresponding to the given item has been found.')
+        detail: this.translateService.instant('No request corresponding to the given item has been found.'),
+        life: CONFIG.MESSAGE_LIFE
       });
       this._resetSearchInput();
     } else {
@@ -187,7 +189,8 @@ export class MainRequestComponent implements OnInit, OnDestroy {
           this.messageService.add({
             severity: 'warn',
             summary: this.translateService.instant('request'),
-            detail: this.translateService.instant('The item is ').concat(this.translateService.instant(newItem.status))
+            detail: this.translateService.instant('The item is ').concat(this.translateService.instant(newItem.status)),
+            life: CONFIG.MESSAGE_LIFE
           });
           this._resetSearchInput();
         }

@@ -17,13 +17,8 @@
 @if (item && document) {
   <!-- FIRST ROW : barcode, title, availability, action button -->
   <div class="col-2">
-    <button type="button" class="btn-show-more"
-            (click)="isCollapsed = !isCollapsed"
-            [attr.aria-expanded]="!isCollapsed"
-            aria-controls="collapse">
-      <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" class="fa" aria-hidden="true"></i>
-    </button>
-    <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
+    <shared-open-close-button (status)="isCollapsed = $event" />
+    <a class="ml-1" [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
   </div>
   <div class="col-5">
     @if (document.title | mainTitle; as title) {
@@ -41,11 +36,13 @@
   <!-- SECOND ROW: item detail -->
   @if (!isCollapsed) {
     <div class="col-12">
-      <dl class="row">
+      <dl class="grid">
         <!-- position into queue -->
         <dt class="offset-1 col-1 label-title" translate>Position</dt>
         <dd class="col-10">
-          <span class="badge badge-info">{{ loan.metadata.rank }} / {{ item.current_pending_requests }}</span>
+          <p-tag severity="info">
+            {{ loan.metadata.rank }} / {{ item.current_pending_requests }}
+          </p-tag>
         </dd>
         <!-- item location -->
         @if (item.location.pid | getRecord: 'locations' | async; as location) {

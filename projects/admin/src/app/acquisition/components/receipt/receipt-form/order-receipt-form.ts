@@ -185,7 +185,7 @@ export class OrderReceiptForm {
       },
       {
         key: 'receiptDate',
-        type: 'datepicker',
+        type: 'datePicker',
         props: {
           type: 'date',
           label: _('Reception date'),

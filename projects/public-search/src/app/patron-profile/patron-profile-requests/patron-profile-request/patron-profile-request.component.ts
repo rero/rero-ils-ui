@@ -16,10 +16,11 @@
  */
 import { Component, inject, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { CONFIG } from '@rero/ng-core';
+import { MessageService } from 'primeng/api';
 import { LoanApiService } from '../../../api/loan-api.service';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 import { PatronProfileService } from '../../patron-profile.service';
-import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'public-search-patron-profile-request',
@@ -69,14 +70,17 @@ export class PatronProfileRequestComponent {
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Success'),
-          detail: this.translateService.instant('The request has been cancelled.')
+          detail: this.translateService.instant('The request has been cancelled.'),
+          life: CONFIG.MESSAGE_LIFE
         });
       } else {
         this.cancelInProgress = false;
         this.messageService.add({
           severity: 'error',
           summary: this.translateService.instant('Error'),
-          detail: this.translateService.instant('Error during the cancellation of the request.')
+          detail: this.translateService.instant('Error during the cancellation of the request.'),
+          sticky: true,
+          closable: true
         });
       }
     });

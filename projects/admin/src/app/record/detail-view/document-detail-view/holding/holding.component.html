@@ -35,58 +35,64 @@
       <div class="col text-right">
         @if (permissions) {
           <!-- HOLDING VIEW -->
-          <button [routerLink]="['/', 'records', 'holdings', 'detail', holding.metadata.pid]"
-                  class="btn btn-outline-primary btn-sm ml-1"
-                  title="{{ 'Holdings detail' | translate }}">
-            <i class="fa fa-eye"></i>
-          </button>
+          <p-button
+            icon="fa fa-eye"
+            [title]="'Holdings detail'|translate"
+            [outlined]="true"
+            [routerLink]="['/', 'records', 'holdings', 'detail', holding.metadata.pid]"
+            styleClass="mr-1"
+          />
           <!-- REQUEST BUTTON -->
           @if (permissions && permissions.canRequest && permissions.canRequest.can) {
-            <button
-              type="button" class="btn btn-outline-primary btn-sm ml-1" (click)="addRequest(holding.metadata.pid, 'holding')"
-              title="{{ 'Holdings request' | translate }}"
-              name="request"
-            >
-              <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-            </button>
+            <p-button
+              icon="fa fa-shopping-basket"
+              [title]="'Holdings request'|translate"
+              [outlined]="true"
+              styleClass="mr-1"
+              (onClick)="addRequest(holding.metadata.pid, 'holding')"
+            />
           } @else {
-              <button type="button" class="btn btn-outline-primary btn-sm ml-1 disabled"
-                title="{{ 'Holdings request' | translate }}"
-                [popover]="tolTemplate" triggers="mouseenter:mouseleave"
-                name="request">
-              <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-              </button>
-              <ng-template #tolTemplate><div [innerHtml]="cannotRequestInfoMessage | nl2br"></div></ng-template>
+            <p-button
+              icon="fa fa-shopping-basket"
+              [outlined]="true"
+              [title]="'Holdings request'|translate"
+              [pTooltip]="cannotRequestTooltipContent"
+              tooltipPosition="top"
+              styleClass="text-red-100"
+            />
+            <ng-template #cannotRequestTooltipContent>
+              <span [innerHTML]="cannotRequestInfoMessage | nl2br"></span>
+            </ng-template>
           }
           <!-- EDIT BUTTON -->
           @if (permissions && permissions.update && permissions.update.can) {
-            <button
-              title="{{ 'Edit holdings' | translate }}"
+            <p-button
+              icon="fa fa-pencil"
+              [outlined]="true"
+              [title]="'Edit holdings'|translate"
               [routerLink]="['/', 'records', 'holdings', 'edit', holding.metadata.pid]"
-              class="btn btn-outline-primary btn-sm ml-1"
-            >
-              <i class="fa fa-pencil"></i>
-            </button>
+              styleClass="mr-1"
+            />
           }
           <!-- DELETE BUTTON -->
           @if (permissions && permissions.delete && permissions.delete.can) {
-            <button
-              type="button"
-              title="{{ 'Delete holdings' | translate }}"
-              class="btn btn-outline-danger btn-sm ml-1" (click)="delete()"
-            >
-              <i class="fa fa-trash"></i>
-            </button>
+            <p-button
+              icon="fa fa-trash"
+              [outlined]="true"
+              [title]="'Delete holdings'|translate"
+              (onClick)="delete()"
+            />
           } @else {
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-danger ml-1 disabled"
-              [popover]="tolTemplate"
-              triggers="mouseenter:mouseleave"
-            >
-              <i class="fa fa-trash"></i>
-            </button>
-            <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
+            <p-button
+              icon="fa fa-trash"
+              [outlined]="true"
+              [pTooltip]="tooltipContent"
+              tooltipPosition="top"
+              styleClass="text-red-100 mr-1"
+            ></p-button>
+            <ng-template #tooltipContent>
+              <span [innerHTML]="deleteInfoMessage | nl2br"></span>
+            </ng-template>
           }
         }
       </div>

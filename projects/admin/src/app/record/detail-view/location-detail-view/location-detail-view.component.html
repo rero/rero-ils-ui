@@ -20,26 +20,26 @@
       <!-- DETAILS -->
       <section class="m-2 p-2">
           <!-- LIBRARY -->
-          <dl class="row mb-0">
-              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Library</dt>
-              <dd class="col-sm-7 col-md-8 mb-0">
+          <dl class="grid mb-1">
+              <dt class="col-3 label-title" translate>Library</dt>
+              <dd class="col-7 mb-0">
                   {{ data.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
               </dd>
           </dl>
           <!-- NAME -->
-          <dl class="row mb-0">
-              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Name</dt>
-              <dd class="col-sm-7 col-md-8 mb-0">{{ data.name }}</dd>
+          <dl class="grid mb-1">
+              <dt class="col-3 label-title" translate>Name</dt>
+              <dd class="col-7 mb-0">{{ data.name }}</dd>
           </dl>
           <!-- CODE -->
-          <dl class="row mb-0">
-              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Code</dt>
-              <dd class="col-sm-7 col-md-8 mb-0">{{ data.code }}</dd>
+          <dl class="grid mb-1">
+              <dt class="col-3 label-title" translate>Code</dt>
+              <dd class="col-7 mb-0">{{ data.code }}</dd>
           </dl>
           <!-- IS ONLINE -->
-          <dl class="row mb-0">
-            <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Is online</dt>
-            <dd class="col-sm-7 col-md-8 mb-0">
+          <dl class="grid mb-1">
+            <dt class="col-3 label-title" translate>Is online</dt>
+            <dd class="col-7 mb-0">
               <i class="fa"
                   [ngClass]="(data.is_online) ? 'fa-check' : 'fa-times'"
                   [ngStyle]="{'color': (data.is_online) ? 'green' : 'red'}"
@@ -48,9 +48,9 @@
             </dd>
           </dl>
           <!-- IS PICKUP -->
-          <dl class="row mb-0">
-              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Is pickup</dt>
-              <dd class="col-sm-7 col-md-8 mb-0">
+          <dl class="grid mb-1">
+              <dt class="col-3 label-title" translate>Is pickup</dt>
+              <dd class="col-7 mb-0">
                 <i class="fa"
                     [ngClass]="(data.is_pickup) ? 'fa-check' : 'fa-times'"
                     [ngStyle]="{'color': (data.is_pickup) ? 'green' : 'red'}"
@@ -60,16 +60,16 @@
           </dl>
           <!-- PICKUP LOCATION NAME -->
           @if (data.pickup_name !== undefined && data.is_pickup) {
-            <dl class="row mb-0">
-                <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Pickup location name</dt>
-                <dd class="col-sm-7 col-md-8 mb-0">{{ data.pickup_name }}</dd>
+            <dl class="grid mb-1">
+                <dt class="col-3 label-title" translate>Pickup location name</dt>
+                <dd class="col-7 mb-0">{{ data.pickup_name }}</dd>
             </dl>
           }
           <h4 class="mt-4" translate>Restrictions</h4>
           <!-- ALLOW REQUEST -->
-          <dl class="row mb-0">
-            <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Allow request</dt>
-            <dd class="col-sm-7 col-md-8 mb-0">
+          <dl class="grid mb-1">
+            <dt class="col-3 label-title" translate>Allow request</dt>
+            <dd class="col-7 mb-0">
               <i class="fa"
                   [ngClass]="(data.allow_request) ? 'fa-check' : 'fa-times'"
                   [ngStyle]="{'color': (data.allow_request) ? 'green' : 'red'}"
@@ -79,9 +79,9 @@
           </dl>
           <!-- SEND NOTIFICATION -->
           @if (data.allow_request) {
-            <dl class="row mb-0">
-              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Send notification</dt>
-              <dd class="col-sm-7 col-md-8 mb-0">
+            <dl class="grid mb-1">
+              <dt class="col-3 label-title" translate>Send notification</dt>
+              <dd class="col-7 mb-0">
                 <i class="fa"
                     [ngClass]="(data.send_notification) ? 'fa-check' : 'fa-times'"
                     [ngStyle]="{'color': (data.send_notification) ? 'green' : 'red'}"
@@ -92,16 +92,16 @@
           }
           <!-- CONTACT EMAIL -->
           @if (data.send_notification && data.allow_request) {
-            <dl class="row mb-0">
-              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Contact email</dt>
-              <dd class="col-sm-7 col-md-8 mb-0">{{ data.notification_email }}</dd>
+            <dl class="grid mb-1">
+              <dt class="col-3 label-title" translate>Contact email</dt>
+              <dd class="col-7 mb-0">{{ data.notification_email }}</dd>
             </dl>
           }
           <!-- RESTRICT PICKUP TO -->
           @if (data.restrict_pickup_to && data.allow_request) {
-            <dl class="row mb-0">
-              <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Restrict pickup to</dt>
-              <dd class="col-sm-7 col-md-8 mb-0">
+            <dl class="grid mb-1">
+              <dt class="col-3 label-title" translate>Restrict pickup to</dt>
+              <dd class="col-7 mb-0">
                 <ul>
                   @for (location of data.restrict_pickup_to; track location) {
                     <li>
