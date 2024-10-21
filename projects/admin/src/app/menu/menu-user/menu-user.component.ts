@@ -49,12 +49,14 @@ export class MenuUserComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.menuService.generateMenuLibrary$().subscribe((menu: any) => {
         this.items = [menu.menu, ...this.items];
-        this.libraryService.switch(menu.libraryActive);
       })
     );
     this.subscription.add(
       this.libraryService.switch$.subscribe((library: ISwitchLibrary) => this.updateLibraryMenuAndRedirect(library))
     );
+    this.subscription.add(
+      this.libraryService.switch$.subscribe((library: ISwitchLibrary) => this.menuService.updateLibraryQueryParams(library))
+    )
   }
 
   ngOnDestroy(): void {

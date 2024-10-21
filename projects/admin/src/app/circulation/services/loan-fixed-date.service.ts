@@ -58,7 +58,7 @@ export class LoanFixedDateService {
    * Getting the date from locale storage
    * @returns The date in string format or null
    */
-  get(): string | null {
+  get(): Date | null {
     // We have a value in local storage
     if (this.localeStorageService.has(this._dueDateKey)) {
       if (this.localeStorageService.isExpired(this._dueDateKey, this._keyExpiration)) {

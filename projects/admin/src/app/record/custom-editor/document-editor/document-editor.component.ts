@@ -18,7 +18,7 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { AbstractCanDeactivateComponent, RecordService } from '@rero/ng-core';
+import { AbstractCanDeactivateComponent, CONFIG, RecordService } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { combineLatest } from 'rxjs';
 import { EditorService } from '../../../service/editor.service';
@@ -59,7 +59,8 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
           this.messageService.add({
             severity: 'warn',
             summary: this.translateService.instant('Import'),
-            detail: this.translateService.instant('Does not exists on the remote server!')
+            detail: this.translateService.instant('Does not exists on the remote server!'),
+            life: CONFIG.MESSAGE_LIFE
           });
         }
       }
@@ -81,13 +82,15 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
           this.messageService.add({
             severity: 'success',
             summary: this.translateService.instant('Duplicate'),
-            detail: this.translateService.instant('Document duplicated')
+            detail: this.translateService.instant('Document duplicated'),
+            life: CONFIG.MESSAGE_LIFE
           });
         } else {
           this.messageService.add({
             severity: 'warn',
             summary: this.translateService.instant('Duplicate'),
-            detail: this.translateService.instant('This document does not exists!')
+            detail: this.translateService.instant('This document does not exists!'),
+            life: CONFIG.MESSAGE_LIFE
           });
         }
       }

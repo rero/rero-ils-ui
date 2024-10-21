@@ -26,8 +26,7 @@ import { DocumentApiService } from '../../../api/document-api.service';
 
 @Component({
   selector: 'admin-document-detail-view',
-  templateUrl: './document-detail-view.component.html',
-  styleUrls: ['./document-detail-view.component.scss']
+  templateUrl: './document-detail-view.component.html'
 })
 export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
 
@@ -63,6 +62,8 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
 
   /** Enables or disables links */
   activateLink: boolean = true;
+
+  recordMessage: any[] = [];
 
   /** External identifier for imported record. */
   get pid(): string | null {
@@ -106,6 +107,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
       switchMap((record: any) => {
         this.record = record;
         this.relatedResources = this.processRelatedResources(record);
+        this.message(record);
         if (record != null && record.metadata != null && this.record.metadata.pid == null) {
           this.marc$ = this.recordService.getRecord(
             this.activatedRouter.snapshot.params.type, this.pid, 0, {
@@ -194,5 +196,19 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
     }
 
     return [];
+  }
+
+  private message(record: any): void {
+    if (record.metadata?.adminMetadata?.encodingLevel !== 'Full level' || record.metadata?.adminMetadata?.note) {
+      let message = [];
+      if (record.metadata?.adminMetadata?.encodingLevel) {
+        message.push(this.translateService.instant('Encoding level') + ': ');
+        message.push(this.translateService.instant(record.metadata.adminMetadata.encodingLevel) + '.')
+      }
+      if (record.metadata.adminMetadata.note) {
+        message.push(record.metadata.adminMetadata.note.join('. ') + '.')
+      }
+      this.recordMessage = [{ severity: 'warn', detail: message.join(' '), icon: null }];
+    }
   }
 }

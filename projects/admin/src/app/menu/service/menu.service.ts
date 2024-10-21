@@ -136,10 +136,16 @@ export class MenuService {
   }
 
   public updateLibraryLink(library: ISwitchLibrary): void {
-    this.appMenuItems
+    const item = this.appMenuItems
     .find((item: MenuItem) => item.id === MENU_IDS.APP.ADMIN.MENU).items
-    .find((item: MenuItem) => item.id === MENU_IDS.APP.ADMIN.MY_LIBRARY)
-    .routerLink = ['/', 'records', 'libraries', 'detail', library.pid];
+    .find((item: MenuItem) => item.id === MENU_IDS.APP.ADMIN.MY_LIBRARY);
+    const routerLink = [...item.routerLink];
+    routerLink[4] = library.pid;
+    item.routerLink = routerLink;
+  }
+
+  public updateLibraryQueryParams(library: ISwitchLibrary): void {
+    this.updateQueryParams(this.appMenuItems, library);
   }
 
   public logout(): void {
@@ -167,5 +173,26 @@ export class MenuService {
 
       return item;
     });
+  }
+
+  private updateQueryParams(menuItems: MenuItem[], library: ISwitchLibrary): MenuItem[] {
+    menuItems.map((item: MenuItem) => {
+      if (item.queryParams) {
+        item.queryParams = this.processQueryParams(item.queryParams, library);
+      }
+      if (item.items) {
+        item.items = this.updateQueryParams(item.items, library);
+      }
+    });
+
+    return menuItems;
+  }
+
+  private processQueryParams(queryParams: object, library: ISwitchLibrary): Object {
+    if ('library' in queryParams) {
+      return { ...queryParams, library: library.pid }
+    }
+
+    return queryParams;
   }
 }

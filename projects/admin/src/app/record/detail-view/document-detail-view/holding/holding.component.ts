@@ -109,6 +109,8 @@ export class HoldingComponent implements OnInit, OnDestroy {
    */
   addRequest(recordPid: string, recordType: string): void {
     const ref: DynamicDialogRef = this.dialogService.open(ItemRequestComponent, {
+      header: this.translateService.instant('Item Request'),
+      width: '30vw',
       data: { recordPid, recordType }
     });
     ref.onClose.subscribe((value?: boolean) => {

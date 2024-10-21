@@ -60,22 +60,27 @@
     <!-- ACTION BUTTONS -->
     <div class="col-1 pr-0 text-right">
       @if (permissions.update.can) {
-        <button type="button" class="btn btn-outline-primary btn-sm"
-                [routerLink]="['/records', 'acq_accounts', 'edit', account.pid]">
-          <i class="fa fa-pencil"></i>
-        </button>
+        <p-button
+          icon="fa fa-pencil"
+          [outlined]="true"
+          [routerLink]="['/records', 'acq_accounts', 'edit', account.pid]"
+        />
       }
       @if (permissions.delete.can) {
-        <button type="button" class="btn btn-outline-danger btn-sm ml-1" (click)="delete()">
-          <i class="fa fa-trash"></i>
-        </button>
+        <p-button icon="fa fa-trash" severity="danger" [outlined]="true" (onClick)="delete()" styleClass="ml-1" />
       } @else {
-        <button type="button" class="btn btn-sm btn-outline-danger disabled ml-1"
-                title="{{ 'Delete' | translate}}"
-                [popover]="tolTemplate" triggers="mouseenter:mouseleave">
-          <i class="fa fa-trash"></i>
-        </button>
-        <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
+        <p-button
+          icon="fa fa-trash"
+          severity="danger"
+          [outlined]="true"
+          [title]="'Delete' | translate"
+          [pTooltip]="tooltipContent"
+          tooltipPosition="top"
+          styleClass="text-red-200 ml-1"
+        />
+        <ng-template #tooltipContent>
+          <span [innerHTML]="deleteInfoMessage"></span>
+        </ng-template>
       }
     </div>
   </div>

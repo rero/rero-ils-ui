@@ -19,7 +19,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
-import { Record, RecordService } from '@rero/ng-core';
+import { CONFIG, Record, RecordService } from '@rero/ng-core';
 import { ItemStatus, User, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -98,7 +98,9 @@ export class CheckinComponent implements OnInit {
           this.messageService.add({
             severity: 'error',
             summary: this.translate.instant('Checkin'),
-            detail: this.translate.instant('Item or patron not found!')
+            detail: this.translate.instant('Item or patron not found!'),
+            sticky: true,
+            closable: true
           });
           this._resetSearchInput();
           return;
@@ -107,7 +109,8 @@ export class CheckinComponent implements OnInit {
           this.messageService.add({
             severity: 'warn',
             summary: this.translate.instant('Checkin'),
-            detail: this.translate.instant('The item contains requests')
+            detail: this.translate.instant('The item contains requests'),
+            life: CONFIG.MESSAGE_LIFE
           });
         }
         switch (item.actionDone) {
@@ -115,7 +118,8 @@ export class CheckinComponent implements OnInit {
             this.messageService.add({
               severity: 'warn',
               summary: this.translate.instant('Checkin'),
-              detail: this.translate.instant('The item has been returned from missing')
+              detail: this.translate.instant('The item has been returned from missing'),
+              life: CONFIG.MESSAGE_LIFE
             });
             break;
           case ItemAction.checkin:
@@ -128,7 +132,8 @@ export class CheckinComponent implements OnInit {
               this.messageService.add({
                 severity: 'warn',
                 summary: this.translate.instant('Checkin'),
-                detail: this.translate.instant('The item is in transit to {{ destination }}', {destination})
+                detail: this.translate.instant('The item is in transit to {{ destination }}', {destination}),
+                life: CONFIG.MESSAGE_LIFE
               });
             }
             break;
@@ -176,7 +181,9 @@ export class CheckinComponent implements OnInit {
           error: (error) => this.messageService.add({
             severity: 'error',
             summary: this.translate.instant('Checkin'),
-            detail: error.message
+            detail: error.message,
+            sticky: true,
+            closable: true
           })
       });
     } else {
@@ -205,19 +212,22 @@ export class CheckinComponent implements OnInit {
           this.messageService.add({
             severity: 'warn',
             summary: this.translate.instant('Checkin'),
-            detail: this.translate.instant('Patron not found!')
+            detail: this.translate.instant('Patron not found!'),
+            life: CONFIG.MESSAGE_LIFE
           });
         }
         if (patron.total.value > 1 && item.total.value === 0) {
           this.messageService.add({
             severity: 'warn',
             summary: this.translate.instant('Checkin'),
-            detail: this.translate.instant('Found more than one patron.')
+            detail: this.translate.instant('Found more than one patron.'),
+            life: CONFIG.MESSAGE_LIFE
           });
         }
         if (patron.total.value === 1 && item.total.value === 1) {
           const ref: DynamicDialogRef = this.dialogService.open(CheckinActionComponent, {
-            dismissableMask: true
+            header: this.translate.instant('Circulation action'),
+            width: '50vw',
           })
           ref.onClose.subscribe((action: string) => {
             if (action) {
@@ -244,7 +254,8 @@ export class CheckinComponent implements OnInit {
               this.messageService.add({
                 severity: 'warn',
                 summary: this.translate.instant('Checkin'),
-                detail: this.translate.instant('The item is already in the list.')
+                detail: this.translate.instant('The item is already in the list.'),
+                life: CONFIG.MESSAGE_LIFE
               });
               this._resetSearchInput();
             } else {
@@ -259,7 +270,9 @@ export class CheckinComponent implements OnInit {
       error: (error) => this.messageService.add({
         severity: 'error',
         summary: this.translate.instant('Checkin'),
-        detail: error.message
+        detail: error.message,
+        sticky: true,
+        closable: true
       })
     });
   }
@@ -289,8 +302,7 @@ export class CheckinComponent implements OnInit {
         severity: 'warn',
         summary: this.translate.instant('Checkin'),
         detail: message.join(),
-        sticky: true,
-        closable: true,
+        life: CONFIG.MESSAGE_LIFE
       });
     }
   }
@@ -327,8 +339,7 @@ export class CheckinComponent implements OnInit {
       severity: 'warn',
       summary: this.translate.instant('Checkin'),
       detail: message,
-      sticky: true,
-      closable: true
+      life: CONFIG.MESSAGE_LIFE
     });
     this._resetSearchInput();
   }
@@ -354,8 +365,10 @@ export class CheckinComponent implements OnInit {
       this.messageService.add({
         severity: 'error',
         summary: this.translate.instant('Checkin'),
-        detail: this.translate.instant('The item has fees')
-      })
+        detail: this.translate.instant('The item has fees'),
+        sticky: true,
+        closable: true
+      });
     }
   }
 

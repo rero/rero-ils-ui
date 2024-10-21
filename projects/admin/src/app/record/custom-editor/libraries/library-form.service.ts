@@ -46,7 +46,7 @@ export class LibraryFormService {
   /** Rollover account transfer */
   private rolloverAccountTransferOptions = [];
   /** Default account transfer */
-  private accountDefaultTransfertOption = 'rollover_no_transfer';
+  private accountDefaultTransferOption = 'rollover_no_transfer';
 
   // GETTER & SETTER ==========================================================
   get name(): AbstractControl { return this.form.get('name'); }
@@ -82,7 +82,7 @@ export class LibraryFormService {
         billing_informations: this._buildAcqInformation()
       }),
       rollover_settings: this.fb.group({
-        account_transfer: [this.accountDefaultTransfertOption, [Validators.required]]
+        account_transfer: [this.accountDefaultTransferOption, [Validators.required]]
       })
     });
     this._initializeOpeningHours();

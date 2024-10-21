@@ -356,25 +356,6 @@ pre {
   padding-left: map-get($spacers, 4);
 }
 
-// ACQUISITIONS ===============================================================
-.fiscal-year-closed {
-  @extend .alert;
-  @extend .alert-warning;
-  @extend .p-2;
-  @extend .mt-5;
-  @extend .mb-3;
-  display: flex;
-  align-items: center;
-
-  &:before {
-    font-family: 'FontAwesome';
-    font-size: 2rem;
-    content: " \f071";
-    @extend .ml-2;
-    @extend .mr-3;
-  }
-}
-
 // LIBRARY ====================================================================
 .exception-date {
 

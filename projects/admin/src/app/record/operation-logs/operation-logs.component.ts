@@ -66,7 +66,7 @@ export class OperationLogsComponent implements OnInit {
   /** Hidden operation logs counter */
   get hiddenOperationLogs(): string {
     let count = this.recordTotals - (this.page * this.itemsPerPage);
-    if (count < 0) { count = 0; }
+    count = Math.max(count, 0)
     const linkText = (count > 1)
       ? _('{{ counter }} hidden operation logs')
       : _('{{ counter }} hidden operation log');

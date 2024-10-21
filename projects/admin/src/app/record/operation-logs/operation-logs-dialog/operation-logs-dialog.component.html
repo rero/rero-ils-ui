@@ -14,12 +14,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<button
+<p-button
+  icon="fa fa-history"
   id="{{ resourceType }}-operation-history"
-  class="btn btn-sm btn-outline-secondary"
+  [label]="'Operation history'|translate"
+  [outlined]="true"
   [permissions]="permissions.OPLG_SEARCH"
-  (click)="openDialog()"
->
-  <i class="fa fa-history"></i>
-  {{ 'Operation history' | translate }}
-</button>
+  (onClick)="openDialog()"
+/>

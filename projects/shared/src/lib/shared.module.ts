@@ -19,8 +19,6 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CoreModule, NgVarDirective, Nl2brPipe, RecordModule, TruncateTextPipe } from '@rero/ng-core';
-import { PopoverModule } from 'ngx-bootstrap/popover';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ContributionComponent } from '../public-api';
 import { ActionButtonComponent } from './component/action-button/action-button.component';
 import { BriefViewComponent } from './component/core/brief-view/brief-view.component';
@@ -57,6 +55,7 @@ import { PartOfComponent } from './view/brief/part-of/part-of.component';
 import { EntityLinkComponent } from './view/entity-link.component';
 import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
+import { OpenCloseButtonComponent } from './component/open-close-button.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +94,8 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     DocumentBriefViewComponent,
     IdentifiedByLabelPipe,
     FilesComponent,
-    RemoteSearchComponent
+    RemoteSearchComponent,
+    OpenCloseButtonComponent
   ],
   exports: [
     CommonModule,
@@ -128,15 +128,14 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     EntityLinkComponent,
     DocumentBriefViewComponent,
     FilesComponent,
-    RemoteSearchComponent
+    RemoteSearchComponent,
+    OpenCloseButtonComponent
   ],
   imports: [
     CommonModule,
     CoreModule,
     RecordModule,
     RouterModule,
-    TooltipModule.forRoot(),
-    PopoverModule.forRoot(),
     PrimeNgImportModule
   ],
   providers: [

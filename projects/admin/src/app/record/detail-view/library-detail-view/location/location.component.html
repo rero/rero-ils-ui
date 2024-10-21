@@ -20,39 +20,49 @@
   </div>
   <div class="col-2 text-right">
     @if (location.metadata.is_pickup) {
-      <i class="fa fa-truck ml-2" title="{{ 'Pickup location' | translate }}"></i>
+      <i class="fa fa-truck ml-2" [title]="'Pickup location'|translate"></i>
     }
     @if (location.metadata.is_ill_pickup) {
-      <i class="fa fa-truck ml-2 text-primary" title="{{ 'ILL pickup location' | translate }}"></i>
+      <i class="fa fa-truck ml-2 text-primary" [title]="'ILL pickup location'|translate"></i>
     }
     @if (location.metadata.is_online) {
-      <i class="fa fa-globe ml-1" title="{{ 'Online location' | translate }}"></i>
+      <i class="fa fa-globe ml-1" [title]="'Online location'|translate"></i>
     }
   </div>
   <div class="col-lg-2 col-sm-3 col-2">
     <div class=" float-right ml-2">
       <!-- Edit button -->
       @if (permissions.update.can) {
-        <button type="button" class="btn btn-outline-primary btn-sm ml-1"
-                title="{{ 'Edit' | translate }}"
-                [routerLink]="['/records', 'locations', 'edit', location.metadata.pid]">
-          <i class="fa fa-pencil"></i>
-        </button>
+        <p-button
+          icon="fa fa-pencil"
+          [title]="'Edit'|translate"
+          [outlined]="true"
+          [routerLink]="['/records', 'locations', 'edit', location.metadata.pid]"
+        />
       }
       <!-- Delete button -->
       @if (permissions.delete.can) {
-        <button type="button" class="btn btn-outline-danger btn-sm ml-1"
-                title="{{ 'Delete' | translate }}"
-                (click)="delete(location.metadata.pid)">
-          <i class="fa fa-trash" ></i>
-        </button>
+        <p-button
+          icon="fa fa-trash"
+          severity="danger"
+          [title]="'Delete'|translate"
+          [outlined]="true"
+          (onClick)="delete(location.metadata.pid)"
+          styleClass="ml-1"
+        />
       } @else {
-        <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"
-                title="{{ 'Delete' | translate }}"
-                [popover]="tolTemplate" triggers="mouseenter:mouseleave">
-          <i class="fa fa-trash"></i>
-        </button>
-        <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage | nl2br"></div></ng-template>
+        <p-button
+          icon="fa fa-trash"
+          severity="danger"
+          [title]="'Delete'|translate"
+          [outlined]="true"
+          [pTooltip]="tooltipContent"
+          tooltipPosition="top"
+          styleClass="text-red-200 ml-1"
+        />
+        <ng-template #tooltipContent>
+          <span [innerHTML]="deleteInfoMessage"></span>
+        </ng-template>
       }
     </div>
   </div>

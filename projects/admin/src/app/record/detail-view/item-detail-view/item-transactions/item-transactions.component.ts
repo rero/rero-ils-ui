@@ -18,6 +18,7 @@
 import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService } from '@ngx-translate/core';
+import { CONFIG } from '@rero/ng-core';
 import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -76,6 +77,8 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
    */
   addRequest(): void {
     const ref = this.dialogService.open(ItemRequestComponent, {
+      header: this.translateService.instant('Item request'),
+      width: '40vw',
       data: { recordPid: this.itemPid, recordType: 'item' }
     });
     this.subscription.add(
@@ -99,7 +102,8 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
         this.messageService.add({
           severity: 'warn',
           summary: this.translateService.instant('Request'),
-          detail: this.translateService.instant('The pending request has been cancelled.')
+          detail: this.translateService.instant('The pending request has been cancelled.'),
+          life: CONFIG.MESSAGE_LIFE
         });
         this.requestEvent.emit();
         this._refreshRequestList();
@@ -117,7 +121,8 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Request'),
-          detail: this.translateService.instant('The pickup location has been changed.')
+          detail: this.translateService.instant('The pickup location has been changed.'),
+          life: CONFIG.MESSAGE_LIFE
         });
         this._refreshRequestList();
       });

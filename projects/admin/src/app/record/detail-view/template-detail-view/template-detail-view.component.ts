@@ -41,10 +41,10 @@ export class TemplateDetailViewComponent implements OnInit, OnDestroy {
   record: any;
 
   /** Css classes for dd in template */
-  ddCssClass = 'col-sm-9 mb-0';
+  ddCssClass = 'col-9 mb-0';
 
   /** Css classes for dt in template */
-  dtCssClass = 'col-sm-3';
+  dtCssClass = 'col-3';
 
   /** Record subscription */
   private recordSubscription: Subscription;
