@@ -15,12 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { IPermissions, JoinPipe, PERMISSIONS, UserService } from '@rero/shared';
-import { Subscription } from 'rxjs';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { LocalFieldApiService } from '@app/admin/api/local-field-api.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
+import { IPermissions, JoinPipe, PERMISSIONS, UserService } from '@rero/shared';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'admin-local-field',
@@ -28,6 +27,10 @@ import { RecordPermissionService } from '@app/admin/service/record-permission.se
   providers: [JoinPipe]
 })
 export class LocalFieldComponent implements OnInit, OnDestroy {
+
+  private localFieldApiService: LocalFieldApiService = inject(LocalFieldApiService);
+  private userService: UserService = inject(UserService);
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Resource Type */
@@ -54,19 +57,6 @@ export class LocalFieldComponent implements OnInit, OnDestroy {
   };
   /** all component subscription */
   private subscriptions = new Subscription();
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param localFieldApiService - LocalFieldApiService
-   * @param userService - UserService
-   * @param recordPermissionService - RecordPermissionService
-   */
-  constructor(
-    private localFieldApiService: LocalFieldApiService,
-    private userService: UserService,
-    private recordPermissionService: RecordPermissionService
-  ) { }
 
   /** OnInit hook */
   ngOnInit() {

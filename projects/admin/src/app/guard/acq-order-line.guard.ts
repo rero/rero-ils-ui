@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { extractIdOnRef } from '@rero/ng-core';
+import { extractIdOnRef, RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LibraryGuard } from './library.guard';
@@ -26,6 +26,8 @@ import { LibraryGuard } from './library.guard';
   providedIn: 'root'
 })
 export class AcqOrderLineGuard extends LibraryGuard {
+
+  private recordService: RecordService = inject(RecordService);
 
   /**
    * Return the library linked to an acquisition order number.
@@ -37,7 +39,7 @@ export class AcqOrderLineGuard extends LibraryGuard {
     if (orderPid === undefined) {
        orderPid = route.params.pid;
     }
-    return this._recordService.getRecord('acq_orders', orderPid).pipe(
+    return this.recordService.getRecord('acq_orders', orderPid).pipe(
       map(data => data.metadata || {}),
       map(metadata => metadata.library || {}),
       map(library => extractIdOnRef(library.$ref))

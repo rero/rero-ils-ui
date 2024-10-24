@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { IPatron, UserService } from '@rero/shared';
 import { Observable, Subject } from 'rxjs';
 
@@ -22,6 +22,8 @@ import { Observable, Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class PatronProfileMenuService {
+
+  private userService: UserService = inject(UserService);
 
   /** On change Observable */
   private _onChange: Subject<IMenu> = new Subject();
@@ -78,15 +80,9 @@ export class PatronProfileMenuService {
     return this._patrons.length > 1;
   }
 
-  /**
-   * Constructor
-   * @param _userService - UserService
-   */
-  constructor(private _userService: UserService) { }
-
   /** OnInit hook */
   init(): void {
-    const user = this._userService.user;
+    const { user } = this.userService;
     if (user.isAuthenticated) {
       this._patrons = user.patrons.filter((patron) => patron.roles.includes('patron'));
       this._currentPatron = this._patrons[0];

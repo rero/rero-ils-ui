@@ -48,16 +48,22 @@
     <!-- locations ======================================================== -->
     <p-accordionTab>
       <ng-template pTemplate="header">
-        <div class="w-100 d-flex align-items-center">
-          <i class="fa fa-map-marker mr-2"></i>
-          <span translate>Locations</span>
+        <div class="w-full flex">
+          <div class="flex w-full align-items-center">
+            <i class="fa fa-map-marker mr-2"></i>
+            <span translate>Locations</span>
+          </div>
           @if (isUserCanAddLocation && activeIndex === 0) {
-            <a
-              [routerLink]="['/', 'records', 'locations', 'new']"
-              [queryParams]="{ library: record.pid }"
-              class="ml-2 btn btn-sm btn-outline-primary ml-auto">
-              <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
-            </a>
+            <div class="flex w-full justify-content-end">
+              <p-button
+                icon="fa fa-plus-square-o"
+                [label]="'Add'|translate"
+                [outlined]="true"
+                [routerLink]="['/', 'records', 'locations', 'new']"
+                [queryParams]="{ library: record.pid }"
+                styleClass="ml-2 align-items-right"
+              />
+            </div>
           }
         </div>
       </ng-template>

@@ -16,18 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { ViewportScroller } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
+import { extractIdOnRef } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { BsModalService } from 'ngx-bootstrap/modal';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqOrderHistoryVersion, AcqOrderHistoryVersionResponseInterface, AcqOrderStatus, IAcqOrder } from '../../../classes/order';
 import { OrderEmailFormComponent } from '../order-email-form/order-email-form.component';
-import { extractIdOnRef } from '@rero/ng-core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-acquisition-order-detail-view',
@@ -35,6 +36,13 @@ import { extractIdOnRef } from '@rero/ng-core';
   styleUrls: ['../../../acquisition.scss', './order-detail-view.component.scss']
 })
 export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+
+  private dialogService: DialogService = inject(DialogService);
+  private scroller: ViewportScroller = inject(ViewportScroller);
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private acqOrderService: AcqOrderApiService = inject(AcqOrderApiService);
+  private permissionValidator: CurrentLibraryPermissionValidator = inject(CurrentLibraryPermissionValidator);
+  private translateService: TranslateService = inject(TranslateService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Observable resolving record data */
@@ -57,6 +65,8 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
   /** all component subscription */
   private subscriptions = new Subscription();
 
+  modalRef: DynamicDialogRef | undefined;
+
   // GETTER & SETTER ==========================================================
   /** Determine if the order could be "placed/ordered" */
   get canPlaceOrder(): boolean {
@@ -68,24 +78,8 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
     return this.order.status !== AcqOrderStatus.PENDING;
   }
 
-  // CONSTRUCTOR & HOOKS ======================================================
-  /** Constructor
-   * @param scroller - ViewportScroller
-   * @param modalService - BsModalService
-   * @param recordPermissionService - RecordPermissionService
-   * @param permissionValidator - CurrentLibraryPermissionValidator
-   * @param acqOrderService - AcqOrderApiService
-   */
-  constructor(
-    private scroller: ViewportScroller,
-    private modalService: BsModalService,
-    private recordPermissionService: RecordPermissionService,
-    private acqOrderService: AcqOrderApiService,
-    private permissionValidator: CurrentLibraryPermissionValidator
-  ) { }
-
   /** OnInit hook */
-  ngOnInit() {
+  ngOnInit(): void {
     this.subscriptions.add(this.record$.subscribe(
       (record: any) => {
         this.order = record.metadata;
@@ -130,19 +124,17 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
    * Open a modal dialog to allow user to validate the order.
    * If the user submit the form (and submitting is success), then update the order to get the updated data.
    */
-  placeOrderDialog() {
-    const modalRef = this.modalService.show(OrderEmailFormComponent, {
-      ignoreBackdropClick: true,
-      keyboard: true,
-      class: 'modal-xl',
-      initialState: {
+  placeOrderDialog(): void {
+    this.modalRef = this.dialogService.open(OrderEmailFormComponent, {
+      header: this.translateService.instant('Place order'),
+      width: '60vw',
+      dismissableMask: true,
+      data: {
         order: this.order
       }
     });
-    // Event to allow the closing of the dialog
-    modalRef.content.closeDialog.subscribe((close: boolean) => modalRef.hide());
-    modalRef.content.recordChange.subscribe((order: IAcqOrder) => {
-      if (this.order.pid === order.pid) {
+    this.modalRef.onClose.subscribe((order?: IAcqOrder) => {
+      if (order && this.order.pid === order.pid) {
         if (order.vendor.$ref) {
           order.vendor.pid = extractIdOnRef(order.vendor.$ref);
         }

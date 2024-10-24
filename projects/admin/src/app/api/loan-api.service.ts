@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LoanOverduePreview } from '../classes/loans';
 
@@ -24,14 +24,7 @@ import { LoanOverduePreview } from '../classes/loans';
 })
 export class LoanApiService {
 
-  /**
-   * Constructor
-   * @param _http - HttpClient
-   */
-  constructor(
-    private _http: HttpClient
-  ) {}
-
+  private httpClient: HttpClient = inject(HttpClient);
 
   /**
    * Get the preview overdue fees related to a specific loan
@@ -39,6 +32,6 @@ export class LoanApiService {
    */
   getPreviewOverdue(loanPid: string): Observable<LoanOverduePreview> {
     const url = `/api/loan/${loanPid}/overdue/preview`;
-    return this._http.get<LoanOverduePreview>(url);
+    return this.httpClient.get<LoanOverduePreview>(url);
   }
 }

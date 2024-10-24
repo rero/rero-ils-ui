@@ -19,12 +19,14 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FormlyModule, FORMLY_CONFIG } from '@ngx-formly/core';
+import { FORMLY_CONFIG, FormlyModule } from '@ngx-formly/core';
+import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, CoreModule, RecordModule } from '@rero/ng-core';
+import { SharedModule } from '@rero/shared';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { PopoverModule } from 'ngx-bootstrap/popover';
-import { TabsModule } from 'ngx-bootstrap/tabs';
+import { PreviewEmailModule } from '../shared/preview-email/preview-email.module';
+import { PrimengImportModule } from '../shared/primeng-import/primeng-import.module';
 import { AcquisitionRoutingModule } from './acquisition-routing.module';
 import { AcqAccountApiService } from './api/acq-account-api.service';
 import { AcqOrderApiService } from './api/acq-order-api.service';
@@ -39,29 +41,26 @@ import { OrderBriefViewComponent } from './components/order/order-brief-view/ord
 import { OrderDetailViewComponent } from './components/order/order-detail-view/order-detail-view.component';
 import { OrderLineComponent } from './components/order/order-detail-view/order-line/order-line.component';
 import { OrderLinesComponent } from './components/order/order-detail-view/order-lines/order-lines.component';
+import { OrderEmailFormComponent } from './components/order/order-email-form/order-email-form.component';
+import { OrderSummaryComponent } from './components/order/order-summary/order-summary.component';
+import { ReceiptDetailViewComponent } from './components/receipt/receipt-detail-view/receipt-detail-view.component';
 import { OrderReceipt } from './components/receipt/receipt-form/order-receipt';
 import { OrderReceiptForm } from './components/receipt/receipt-form/order-receipt-form';
 import { OrderReceiptViewComponent } from './components/receipt/receipt-form/order-receipt-view.component';
-import { OrderSummaryComponent } from './components/order/order-summary/order-summary.component';
 import { ReceiptListComponent } from './components/receipt/receipt-list/receipt-list.component';
+import { ReceiptSummaryComponent } from './components/receipt/receipt-summary/receipt-summary.component';
 import { registerFormlyExtension } from './formly/extension';
 import { FieldDocumentBriefViewTypeComponent } from './formly/type/field-document-brief-view.type';
 import { FieldRefTypeComponent } from './formly/type/field-ref.type';
 import { RepeatTypeComponent } from './formly/type/repeat-section.type';
 import { SelectAccountComponent } from './formly/type/select-account/select-account.component';
 import { InputNoLabelWrapperComponent } from './formly/wrapper/input-no-label.wrapper';
-import { NegativeAmountPipe } from './pipes/negative-amount.pipe';
-import { ReceiptSummaryComponent } from './components/receipt/receipt-summary/receipt-summary.component';
-import { ReceiptDetailViewComponent } from './components/receipt/receipt-detail-view/receipt-detail-view.component';
-import { NoteBadgeColorPipe } from './pipes/note-badge-color.pipe';
 import { AccountAvailableAmountPipe } from './pipes/account-available-amount.pipe';
-import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
+import { NegativeAmountPipe } from './pipes/negative-amount.pipe';
+import { NoteBadgeColorPipe } from './pipes/note-badge-color.pipe';
 import { PreviewContentPipe } from './pipes/preview-content.pipe';
 import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pipe';
-import { PermissionsService, SharedModule } from '@rero/shared';
-import { OrderEmailFormComponent } from './components/order/order-email-form/order-email-form.component';
-import { PreviewEmailModule } from '../shared/preview-email/preview-email.module';
-import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
+import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
 
 @NgModule({
   declarations: [
@@ -96,7 +95,6 @@ import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
   ],
   imports: [
     BsDropdownModule.forRoot(),
-    PopoverModule.forRoot(),
     CommonModule,
     AcquisitionRoutingModule,
     FormlyModule,
@@ -114,10 +112,10 @@ import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
       ]
     }),
     RecordModule,
-    TabsModule,
     CoreModule,
     SharedModule,
-    PreviewEmailModule
+    PreviewEmailModule,
+    PrimengImportModule
   ],
   providers: [
     { provide: FORMLY_CONFIG, multi: true, useFactory: registerFormlyExtension, deps: [TranslateService] },

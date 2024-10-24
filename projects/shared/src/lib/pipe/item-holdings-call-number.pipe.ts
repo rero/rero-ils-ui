@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
@@ -25,11 +24,7 @@ import { Observable, of } from 'rxjs';
 })
 export class ItemHoldingsCallNumberPipe implements PipeTransform {
 
-  /**
-   * Constructor
-   * @param recordService - RecordService
-   */
-  constructor(private recordService: RecordService) { }
+  protected recordService: RecordService = inject(RecordService);
 
   /**
    * Get item call numbers
@@ -51,7 +46,7 @@ export class ItemHoldingsCallNumberPipe implements PipeTransform {
         }
       });
     } else {
-      return this.recordService.getRecord('holdings', record.holding.pid, 1).pipe(map(data => {
+      return this.recordService.getRecord('holdings', record.holding.pid, 1).pipe(map((data: any) => {
         if (data && data.metadata && 'call_number' in data.metadata) {
           return {
             first: {
@@ -78,6 +73,4 @@ export class ItemHoldingsCallNumberPipe implements PipeTransform {
       }));
     }
   }
-
-
 }

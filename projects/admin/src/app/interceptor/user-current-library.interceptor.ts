@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023 RERO
+ * Copyright (C) 2023-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,18 +20,14 @@ import {
   HttpInterceptor,
   HttpRequest
 } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 
 @Injectable()
 export class UserCurrentLibraryInterceptor implements HttpInterceptor {
 
-  /**
-   * Constructor
-   * @param _userService - UserService
-   */
-  constructor(private _userService: UserService) {}
+  private userService: UserService = inject(UserService);
 
   /**
    * Intercept http request
@@ -41,10 +37,10 @@ export class UserCurrentLibraryInterceptor implements HttpInterceptor {
    * @returns Handle of request
    */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if (this._userService.user && this._userService.user.currentLibrary) {
+    if (this.userService.user && this.userService.user.currentLibrary) {
       request = request.clone({
         setParams: {
-          'current_library': String(this._userService.user.currentLibrary)
+          'current_library': String(this.userService.user.currentLibrary)
         }
       });
     }

@@ -15,21 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { CommonModule } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { IssueService } from './issue.service';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { TranslateModule } from '@ngx-translate/core';
 import { IssueItemStatus } from '@rero/shared';
 import { IssueEmailComponent } from '../components/issues/issue-email/issue-email.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
-import { ToastrModule, ToastrService } from 'ngx-toastr';
-import { CommonModule } from '@angular/common';
 import { PreviewEmailModule } from '../shared/preview-email/preview-email.module';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+import { IssueService } from './issue.service';
 
 describe('IssueService', () => {
   let service: IssueService;
-  let modalService: BsModalService;
 
   const record = {
     metadata: {
@@ -45,18 +41,14 @@ describe('IssueService', () => {
       imports: [
         HttpClientTestingModule,
         TranslateModule.forRoot(),
-        ToastrModule.forRoot()
       ],
       providers: [
         PreviewEmailModule,
         CommonModule,
-        BsModalService,
-        BsLocaleService,
         IssueService
       ]
     });
     service = TestBed.inject(IssueService);
-    modalService = TestBed.inject(BsModalService);
   });
 
   it('should be created', () => {
@@ -72,7 +64,5 @@ describe('IssueService', () => {
 
   it('should return the modal reference', () => {
     const modal = service.openClaimEmailDialog(record);
-    expect(modal).toBeInstanceOf(BsModalRef);
-    modalService.hide();
   });
 });

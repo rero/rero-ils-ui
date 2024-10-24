@@ -26,7 +26,7 @@
 </ngx-spinner>
 
 @if (files != null) {
-<div class="row mt-4">
+<div class="grid mt-4">
   <div class="col-12">
     <h5 class="mb-2" translate>Upload Files</h5>
     <p-fileUpload
@@ -97,11 +97,12 @@
         <div class="col-sm-6">
           <a
             tabindex="-1"
-            [tooltip]="
+            [pTooltip]="
               (file.size | filesize) +
               ' / ' +
               (file.updated | dateTranslate : 'medium')
             "
+            tooltipPosition="top"
             title="download"
             [href]="toRelative(file.links.content)"
             download

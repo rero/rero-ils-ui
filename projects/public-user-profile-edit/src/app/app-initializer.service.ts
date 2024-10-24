@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
-import { TranslateService } from '@rero/ng-core';
+import { inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { AppSettingsService, UserService } from '@rero/shared';
 import { AppConfigService } from 'projects/admin/src/app/service/app-config.service';
 import { Observable } from 'rxjs';
@@ -26,36 +26,26 @@ import { switchMap } from 'rxjs/operators';
 })
 export class AppInitializerService {
 
-  /**
-   * Constructor
-   * @param _userService - UserService
-   * @param _translateService - TranslateService
-   * @param _appSettingsService - AppSettingsService
-   * @param _appConfigService - AppConfigService
-   */
-  constructor(
-    private _userService: UserService,
-    private _translateService: TranslateService,
-    private _appSettingsService: AppSettingsService,
-    private _appConfigService: AppConfigService
-  ) { }
+  private userService: UserService = inject(UserService);
+  private translateService: TranslateService = inject(TranslateService);
+  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  private appConfigService: AppConfigService = inject(AppConfigService);
 
-    /** load */
     load(): Observable<any> {
-      return this._userService.load().pipe(
+      return this.userService.load().pipe(
         switchMap(() => this.initTranslateService())
       );
     }
-      /** Initialize Translate Service */
+
   private initTranslateService(): Observable<any> {
-    const language = this._appSettingsService.settings.language;
+    const {language} = this.appSettingsService.settings;
     if (language) {
-      return this._translateService.setLanguage(language);
+      return this.translateService.use(language);
     } else {
-      const browserLang = this._translateService.getBrowserLang();
-      return this._translateService.setLanguage(
-        browserLang.match(this._appConfigService.languages.join('|')) ?
-          browserLang : this._appConfigService.defaultLanguage
+      const browserLang = this.translateService.getBrowserLang();
+      return this.translateService.use(
+        browserLang.match(this.appConfigService.languages.join('|')) ?
+          browserLang : this.appConfigService.defaultLanguage
       );
     }
   }

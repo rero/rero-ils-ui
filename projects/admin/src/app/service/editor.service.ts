@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { PredictionIssue } from './holdings.service';
@@ -25,13 +25,8 @@ import { PredictionIssue } from './holdings.service';
   providedIn: 'root'
 })
 export class EditorService {
-  /**
-   * Constructor
-   * @param _http - HttpClient
-   */
-  constructor(
-    private _http: HttpClient
-  ) { }
+
+  private httpClient: HttpClient = inject(HttpClient);
 
   /**
    * Get record from rero-ils API
@@ -41,7 +36,7 @@ export class EditorService {
    * observable containing the record
    */
   getRecordFromExternal(source: string, pid: string): Observable<any> {
-    return this._http.get<any>(`/api/import_${source}/${pid}`).pipe(
+    return this.httpClient.get<any>(`/api/import_${source}/${pid}`).pipe(
       catchError(e => {
         if (e.status === 404) {
           return of(null);
@@ -57,7 +52,7 @@ export class EditorService {
    * @returns an object with an issues property containing the list of samples
    */
   getHoldingPatternPreview(data: any, size = 10): Observable<PredictionIssue[]> {
-    return this._http.post<any>(`/api/holding/pattern/preview`, {
+    return this.httpClient.post<any>(`/api/holding/pattern/preview`, {
       data: data.patterns,
       size
     }).pipe(

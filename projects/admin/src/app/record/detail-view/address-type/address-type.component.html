@@ -17,72 +17,72 @@
 <article>
   <section class="m-2 p-2">
     <div class="p-2">
-      <dl class="row mb-0">
+      <dl class="grid mb-0">
         <!-- CONTACT_PERSON -->
-        @if (addressType.contact_person) {
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+        @if (addressType().contact_person) {
+          <dt class="co-3 label-title" translate>
             Contact person
           </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ addressType.contact_person }}
+          <dd class="col-7 mb-0">
+            {{ addressType().contact_person }}
           </dd>
         }
         <!-- STREET -->
-        @if (addressType.street) {
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+        @if (addressType().street) {
+          <dt class="col-3 label-title" translate>
             Street
           </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ addressType.street }}
+          <dd class="col-7 mb-0">
+            {{ addressType().street }}
           </dd>
         }
         <!-- POSTAL_CODE -->
-        @if (addressType.postal_code) {
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+        @if (addressType().postal_code) {
+          <dt class="col-3 label-title" translate>
             Postal code
           </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ addressType.postal_code }}
+          <dd class="col-7 mb-0">
+            {{ addressType().postal_code }}
           </dd>
         }
         <!-- CITY -->
-        @if (addressType.city) {
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+        @if (addressType().city) {
+          <dt class="col-3 offset-md-0 label-title" translate>
             City
           </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ addressType.city }}
+          <dd class="col-7 mb-0">
+            {{ addressType().city }}
           </dd>
         }
         <!-- COUNTRY -->
-        @if (addressType.country) {
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+        @if (addressType().country) {
+          <dt class="col-3 label-title" translate>
             Country
           </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ addressType.country }}
+          <dd class="col-7 mb-0">
+            {{ addressType().country }}
           </dd>
         }
       </dl>
     </div>
     <div class="p-2">
-      <dl class="row mb-0">
+      <dl class="grid mb-0">
         <!-- PHONE -->
-        @if (addressType.phone) {
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+        @if (addressType().phone) {
+          <dt class="col-3 label-title" translate>
             Phone
           </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ addressType.phone }}
+          <dd class="col-7 mb-0">
+            {{ addressType().phone }}
           </dd>
         }
         <!-- EMAIL -->
-        @if (addressType.email) {
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
+        @if (addressType().email) {
+          <dt class="col-3 label-title" translate>
             Email
           </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ addressType.email }}
+          <dd class="col-7 mb-0">
+            {{ addressType().email }}
           </dd>
         }
       </dl>

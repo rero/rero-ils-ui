@@ -48,9 +48,9 @@ export class ReceiptLinesRoute extends BaseRoute implements RouteInterface {
             editorSettings: {
               longMode: true,
             },
-            canAdd: () => of({ can: this._routeToolService.permissionsService.canAccess(PERMISSIONS.ACRL_CREATE) }),
+            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ACRL_CREATE) }),
             preUpdateRecord: (data: any) => this.fieldsToRemoved(data, ['is_current_budget']),
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType, true),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType, true),
             redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_receipt, '/records/acq_receipts/detail'),
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
               const formWidget = jsonSchema.widget;
@@ -74,7 +74,7 @@ export class ReceiptLinesRoute extends BaseRoute implements RouteInterface {
   private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
     // TODO :: This isn't the organisation currency that we need to use, it's the order related vendor currency
     //         But how to retrieve the order from here ??? and how get quickly currency to use into
-    const service = this._routeToolService.getInjectorToken(OrganisationService);
+    const service = this.routeToolService.getInjectorToken(OrganisationService);
     field.props.addonLeft = [
       getCurrencySymbol(service.organisation.default_currency, 'wide')
     ];

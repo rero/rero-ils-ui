@@ -112,33 +112,31 @@
       <div class="col-2 actions-column pl-0 text-right">
         <!-- CONTINUE BUTTON -->
         <shared-action-button
+          icon="fa fa-forward"
+          [label]="'Resume' | translate"
           [title]="'Resume' | translate"
-          [class]="'btn-outline-primary mr-1'"
+          class="mr-1"
           [disabled]="!recordPermissions.create.can"
-          [url]="['/', 'acquisition', 'acq_orders', receipt.acq_order.pid, 'receive']"
+          [routerLink]="['/', 'acquisition', 'acq_orders', receipt.acq_order.pid, 'receive']"
           [queryParams]="{ receipt: receipt.pid }"
           [message]="resumeInfoMessage"
-        >
-          <i class="fa fa-forward"></i> {{ 'Resume' | translate }}
-        </shared-action-button>
+        />
         <shared-action-button
+          icon="fa fa-pencil"
           [title]="'Edit' | translate"
-          [class]="'btn-outline-primary mr-1'"
+          class="mr-1"
           [disabled]="!recordPermissions.update.can"
-          [url]="['/records', 'acq_receipts', 'edit', receipt.pid]"
+          [routerLink]="['/records', 'acq_receipts', 'edit', receipt.pid]"
           [message]="editInfoMessage"
-        >
-          <i class="fa fa-pencil"></i>
-        </shared-action-button>
+        />
         <shared-action-button
+          icon="fa fa-trash"
           [title]="'Delete' | translate"
-          [class]="'btn-outline-danger'"
+          severity="danger"
           [disabled]="!recordPermissions.delete.can"
           [message]="deleteInfoMessage"
           (btnClick)="deleteReceipt()"
-        >
-          <i class="fa fa-trash"></i>
-        </shared-action-button>
+        />
       </div>
     }
   } @else {

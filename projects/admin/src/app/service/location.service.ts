@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Record, Error, RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -25,6 +25,8 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class LocationService {
+
+  private recordService: RecordService = inject(RecordService);
 
   // SERVICE ATTRIBUTES =======================================================
   /** Resource name */
@@ -42,15 +44,6 @@ export class LocationService {
     }
   };
 
-  // SERVICE CONSTRUCTOR ======================================================
-  /**
-   * Constructor
-   * @param _recordService - RecordService
-   */
-  constructor(
-    private _recordService: RecordService
-  ) { }
-
   // SERVICE FUNCTIONS ========================================================
   /**
    * Get all locations related to some libraries
@@ -60,7 +53,7 @@ export class LocationService {
     const query = libraryPids.map(pid => `library.pid:${pid}`).join(' OR ');
     return this._query(query).pipe(
       map((data: Record) => data.hits),
-      map((hits: {hits: Array<any>, total:number}) => this._recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map((hits: {hits: Array<any>, total:number}) => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
     );
   }
 
@@ -72,7 +65,7 @@ export class LocationService {
    */
   private _query(query: string, options?: GetRecordsOptions): Observable<Record | Error> {
     options = {...LocationService.defaultOptions, ...options};
-    return this._recordService.getRecords(
+    return this.recordService.getRecords(
       LocationService.resource,
       query,
       options.page,

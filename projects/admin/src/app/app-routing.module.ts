@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2022 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,14 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { RouteService } from './routes/route.service';
-import { PermissionDetailViewComponent } from './record/detail-view/permission-detail-view/permission-detail-view.component';
 import { PERMISSIONS } from '@rero/shared';
 import { PermissionGuard } from './guard/permission.guard';
+import { PermissionDetailViewComponent } from './record/detail-view/permission-detail-view/permission-detail-view.component';
+import { RouteService } from './routes/route.service';
+import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 
 const routes: Routes = [
   {
@@ -47,11 +46,7 @@ const routes: Routes = [
 })
 export class AppRoutingModule {
 
-  /**
-   * Constructor
-   * @param _routeService - RouteService
-   */
-  constructor(private _routeService: RouteService) {
-    this._routeService.initializeRoutes();
+  constructor(private routeService: RouteService) {
+    this.routeService.initializeRoutes();
   }
 }

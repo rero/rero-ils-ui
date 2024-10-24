@@ -55,8 +55,8 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
             searchFilters: [
               this.expertSearchFilter()
             ],
-            canAdd: () => this._routeToolService.canNot(),
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            canAdd: () => this.routeToolService.canNot(),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
             canUse: (record: any) => this._canUse(record),
             preCreateRecord: (data: any) => this._addDefaultValuesForTemplate(data),
             redirectUrl: (record: any) => {
@@ -104,9 +104,9 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
     const usableTemplateTypes = ['documents', 'patrons'];
     return new Observable((observer: Subscriber<any>): void => {
       if (usableTemplateTypes.includes(record.metadata.template_type)) {
-        this._routeToolService.canRead(record, this.recordType).subscribe((actionStatus: ActionStatus) => {
+        this.routeToolService.canRead(record, this.recordType).subscribe((actionStatus: ActionStatus) => {
           if (actionStatus.can) {
-            const urlTree = this._routeToolService.router.createUrlTree(
+            const urlTree = this.routeToolService.router.createUrlTree(
               ['/', 'records', record.metadata.template_type, 'new'],
               {
                 queryParams: {
@@ -115,7 +115,7 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
                 }
               }
             );
-            const url = (this._routeToolService.urlSerializer.serialize(urlTree));
+            const url = (this.routeToolService.urlSerializer.serialize(urlTree));
             actionStatus.url = url;
             observer.next(actionStatus);
           }
@@ -129,15 +129,15 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
    * @param data: the initial data
    */
   private _addDefaultValuesForTemplate(data: any) {
-    const { user } = this._routeToolService.userService;
+    const { user } = this.routeToolService.userService;
     if (!data.hasOwnProperty('visibility')) {
       data.visibility = 'private';
     }
     data.organisation = {
-      $ref: this._routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation)
+      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation)
     };
     data.creator = {
-      $ref: this._routeToolService.apiService.getRefEndpoint('patrons', user.patronLibrarian.pid)
+      $ref: this.routeToolService.apiService.getRefEndpoint('patrons', user.patronLibrarian.pid)
     };
     return data;
   }

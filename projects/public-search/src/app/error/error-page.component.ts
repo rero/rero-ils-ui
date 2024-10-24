@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { map } from 'rxjs/operators';
@@ -39,6 +38,8 @@ export function _(str: string) {
 })
 
 export class ErrorPageComponent implements OnInit {
+
+  private route: ActivatedRoute = inject(ActivatedRoute);
 
   /** the status code to display. By default 404 : Page not found */
   statusCode = 404;
@@ -76,12 +77,6 @@ export class ErrorPageComponent implements OnInit {
       description: [_('Oops, Something went wrong !')]
     }
   };
-
-  /**
-   * Constructor
-   * @param _route - ActivatedRoute
-   */
-  constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.route.params.pipe(

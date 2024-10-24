@@ -16,9 +16,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (accountsToDisplay && organisation) {
-  <div class="container">
-    <h1 translate>Fund transfer</h1>
-    <form [formGroup]="form" (ngSubmit)="submit()">
+  <h1 translate>Fund transfer</h1>
+  <div class="grid">
+    <form class="w-full" [formGroup]="form" (ngSubmit)="submit()">
       @if (budgets.length > 1) {
         <select class="form-control" (change)="selectBudget($event)">
           @for (budgetPid of budgets; track budgetPid) {
@@ -28,6 +28,85 @@
           }
         </select>
       }
+        <div class="card-header row p-1 mb-2 bg-dark text-light">
+          <div class="col-1 text-center" translate>Source</div>
+          <div class="col-6"></div>
+          <div class="col-2 text-right" translate>Amount</div>
+          <div class="col-2 text-right" translate>Available</div>
+          <div class="col-1 text-center" translate>Target</div>
+        </div>
+        <div class="card-text mb-3">
+          @if (accountsToDisplay.length > 0) {
+            @for (account of accountsToDisplay; track account) {
+              <div class="row account my-2">
+                <div class="col-1 text-center">
+                  <input type="radio"
+                          name="source"
+                          value="{{ account.pid }}"
+                          (click)="selectAccount('source', account)"
+                          [disabled]="form.get('target').value && form.get('target').value.pid === account.pid"
+                  />
+                </div>
+                <div class="col-6 account-name depth-padding-{{ account.depth }}">
+                  <a [routerLink]="getDetailUrl(account)">{{ account.name }}</a>
+                </div>
+                <div class="col-2 amount">
+                  {{ account.allocated_amount | currency: organisation.default_currency }}
+                </div>
+                <div class="col-2 amount" [class]="{
+                  'text-success': account.remaining_balance.self > 0,
+                  'text-muted': account.remaining_balance.self === 0,
+                  'text-warning': account.remaining_balance.self < 0
+                }">
+                  {{ account.remaining_balance.self | currency: organisation.default_currency }}
+                </div>
+                <div class="col-1 text-center">
+                  <input type="radio" name="target"
+                          value="{{ account.pid }}"
+                          (click)="selectAccount('target', account)"
+                          [disabled]="form.get('source').value && form.get('source').value.pid === account.pid"
+                  />
+                </div>
+              </div>
+            }
+          } @else {
+            {{ 'No account available' | translate }}
+          }
+        </div>
+        <div class="card-footer row form-group mb-0">
+          <label for="amount" class="col-1 col-form-label">Amount</label>
+          <div class="input-group col-6">
+            <div class="input-group-prepend">
+              <div class="input-group-text">{{ currencySymbol }}</div>
+            </div>
+            <input type="number" class="form-control" id="amount" formControlName="amount"
+                   [class]="{'is-invalid': checkInput('amount')}"/>
+            @if (checkInput('amount')) {
+              <div class="ml-2 block pt-2">
+                @if (form.get('amount').hasError('required')) {
+                  <small class="text-danger" translate>
+                    This field is required.
+                  </small>
+                }
+                @if (form.get('amount').hasError('min')) {
+                  <small class="text-danger">
+                    {{ 'Minimum amount is' | translate }} {{ form.get('amount').errors.min.min }}.
+                  </small>
+                }
+                @if (form.get('amount').hasError('max')) {
+                  <small class="text-danger">
+                    {{ 'Maximum amount is' | translate }} {{ form.get('amount').errors.max.max }}.
+                  </small>
+                }
+              </div>
+            }
+          </div>
+          <div class="col text-right">
+            <p-button class="mr-2" type="reset" [label]="'Cancel'|translate" severity="danger" [outlined]="true" />
+            <p-button type="submit" [label]="'Transfer'|translate" [disabled]="form.invalid" />
+          </div>
+        </div>
+      <!--
       <div class="card container mt-3">
         <div class="card-header row p-1 mb-2 bg-dark text-light">
           <div class="col-1 text-center" translate>Source</div>
@@ -108,6 +187,7 @@
           </div>
         </div>
       </div>
+    -->
     </form>
   </div>
 }

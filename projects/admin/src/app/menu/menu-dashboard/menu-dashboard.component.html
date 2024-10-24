@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020-2024 RERO
+  Copyright (C) 2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,35 +14,44 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (menu) {
-  <div class="row justify-content-center">
-    @for (item of menu.getChildren(); track item) {
-      <div class="col-lg-2">
-        <div class="card mb-2" [attr.id]="item.getAttribute('id') | idAttribute:{prefix: 'dashboard'}">
-          <div class="card-header bg-dark text-white text-wrap">
-            @if (item.hasExtra('iconClass')) {
-              <i [ngClass]="item.getExtra('iconClass')"></i>
-            }
-            {{ item.getName() }}
-          </div>
-          <div class="list-group list-group-flush">
-            @for (subItem of item.getChildren(); track subItem) {
-              <a
-                class="list-group-item list-group-item-action text-wrap border-bottom-0 my-0 py-2"
-                [attr.id]="subItem.getAttribute('id') | idAttribute:{prefix: 'dashboard'}"
-                [attr.target]="subItem.getAttribute('target')"
-                [routerLink]="subItem.getRouterLink()"
-                [queryParams]="subItem.getQueryParams() ? subItem.getQueryParams() : {}"
-              >
-                @if (subItem.hasExtra('iconClass')) {
-                  <i [ngClass]="subItem.getExtra('iconClass')"></i>
-                }
-                {{ subItem.getName() }}
-              </a>
-            }
-          </div>
+<div class="grid justify-content-center mt-2">
+  @for (item of items; track item) {
+    <div class="col mx-1">
+      <p-card>
+        <div class="header mb-2">
+          @if (item.icon) {
+            <i class="mr-1" [class]="item.icon"></i>
+          }
+          <span class="text-xl text-color">{{ item.label }}</span>
         </div>
-      </div>
-    }
-  </div>
-}
+        @for (menuItem of item.items; track menuItem) {
+          <p-tieredMenu [model]="[menuItem]">
+            <ng-template pTemplate="item" let-item let-hasSubmenu="hasSubmenu">
+              <a
+                pRipple
+                class="flex align-items-center p-menuitem-link text-color"
+                [attr.id]="item.id"
+                [routerLink]="item.routerLink"
+                [href]="item.url"
+                [queryParams]="item.queryParams"
+              >
+                @if (item.icon) {
+                  <span [class]="item.icon" class="p-menuitem-icon"></span>
+                }
+                <span class="ml-1">{{ item.label }}</span>
+                @if (item.shortcut) {
+                  <span class="ml-auto border-1 surface-border border-round surface-100 text-xs p-1">
+                    {{ item.shortcut }}
+                </span>
+                }
+                @if (hasSubmenu) {
+                  <i *ngIf="hasSubmenu" class="pi pi-angle-right ml-auto text-primary"></i>
+                }
+              </a>
+            </ng-template>
+          </p-tieredMenu>
+        }
+      </p-card>
+    </div>
+  }
+</div>

@@ -22,8 +22,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
 import { SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { TabsModule } from 'ngx-bootstrap/tabs';
 import { of } from 'rxjs';
 import { IllRequestApiService } from '../api/ill-request-api.service';
 import { LoanApiService } from '../api/loan-api.service';
@@ -77,13 +75,11 @@ describe('PatronProfileComponent', () => {
       imports: [
         HttpClientTestingModule,
         TranslateModule.forRoot(),
-        TabsModule.forRoot(),
         CoreModule,
         SharedModule,
         LoadingBarModule
       ],
       providers: [
-        BsLocaleService,
         { provide: UserApiService, useValue: userApiServiceSpy },
         { provide: LoanApiService, useValue: loanApiServiceSpy },
         { provide: OperationLogsApiService, use: operationLogsApiServiceSpy },

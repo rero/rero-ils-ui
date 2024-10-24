@@ -21,7 +21,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
 import { MainTitlePipe, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { of } from 'rxjs';
 import { PatronTransactionEventApiService } from '../../../api/patron-transaction-event-api.service';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
@@ -95,7 +94,6 @@ describe('PatronProfileFeeComponent', () => {
         CoreModule
       ],
       providers: [
-        BsLocaleService,
         { provide: PatronTransactionEventApiService, useValue: patronTransactionEventsApiServiceSpy },
         { provide: UserApiService, useValue: userApiServiceSpy }
       ],

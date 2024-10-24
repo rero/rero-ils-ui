@@ -15,18 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from "@angular/common/http";
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ApiService } from "@rero/ng-core";
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { AppConfigService } from "@app/admin/service/app-config.service";
+import { TranslateService } from "@ngx-translate/core";
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { TabViewChangeEvent } from "primeng/tabview";
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
-  selector: "admin-statitics-cfg-view",
+  selector: "admin-statistics-cfg-view",
   templateUrl: "./statistics-cfg-detail-view.component.html",
 })
-export class StatisticsCfgDetailViewComponent
-  implements DetailRecord, OnInit, OnDestroy
-{
+export class StatisticsCfgDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+
+  private httpClient: HttpClient = inject(HttpClient);
+  private appConfigService: AppConfigService = inject(AppConfigService);
+  private translateService: TranslateService = inject(TranslateService);
 
   /** Observable resolving record data */
   record$: Observable<any>;
@@ -40,16 +44,11 @@ export class StatisticsCfgDetailViewComponent
   // the current preview values
   liveData: any = null;
 
+  // Error on data loading
+  liveDataError: string = undefined;
+
   /** Subscription to (un)follow the record$ Observable */
   private subscriptions = new Subscription();
-
-  /**
-   * Constructor
-   *
-   * @param http - HttpClient
-   * @param apiService = ApiService
-   */
-  constructor(private http: HttpClient, private apiService: ApiService) {}
 
   /** OnInit hook */
   ngOnInit() {
@@ -69,10 +68,28 @@ export class StatisticsCfgDetailViewComponent
     if (this.liveData != null) {
       return;
     }
+    this.liveDataError = undefined;
     const { pid } = this.record.metadata;
-    const baseUrl = this.apiService.endpointPrefix;
-    this.http
+    const baseUrl = this.appConfigService.apiEndpointPrefix;
+    this.httpClient
       .get(`${baseUrl}/stats_cfg/live/${pid}`)
-      .subscribe((res) => (this.liveData = res));
+      .subscribe({
+        next: (res) => (this.liveData = res),
+        error: () => this.liveDataError = this.translateService.instant('Data loading error')
+        });
+  }
+
+  /**
+   * Handles the TabView change event to update live values.
+   *
+   * This method is called when the active tab in the TabView changes. If the new tab index is 1,
+   * it triggers the `getLiveValues` method to refresh the data displayed in the application.
+   *
+   * @param {TabViewChangeEvent} event - The event object that contains details about the tab change.
+   */
+  tabViewChange(event: TabViewChangeEvent): void {
+    if (event.index == 1) {
+      this.getLiveValues();
+    }
   }
 }

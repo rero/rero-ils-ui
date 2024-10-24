@@ -18,11 +18,14 @@
 <div class="row order-line">
   @if (orderLine && account) {
     <div class="col-9 d-flex" [ngClass]="{'order-cancelled': orderLine.status === orderLineStatus.CANCELLED}">
-      <button type="button" class="btn-show-more"
-              [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
-              (click)="isCollapsed = !isCollapsed"
-              [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
-      </button>
+      <p-button
+        icon="fa {{ isCollapsed ? 'fa-angle-right' : 'fa-angle-down' }}"
+        [rounded]="true"
+        [outlined]="true"
+        (onClick)="isCollapsed = !isCollapsed"
+        [attr.aria-expanded]="!isCollapsed"
+        aria-controls="collapse"
+      />
       <div class="d-flex align-items-start flex-column w-100">
         <div class="d-flex w-100">
           <i class="fa status"
@@ -99,23 +102,21 @@
     <div class="col-1 pl-0 text-right">
       @if (recordPermissions) {
         <shared-action-button
-          [title]="'Edit' | translate"
-          [class]="'btn-outline-primary mr-1'"
+          icon="fa fa-pencil"
+          [title]="'Edit'|translate"
+          class="mr-1"
           [disabled]="!recordPermissions.update.can"
-          [url]="['/records', 'acq_order_lines', 'edit', orderLine.pid]"
+          [routerLink]="['/records', 'acq_order_lines', 'edit', orderLine.pid]"
           [message]="editInfoMessage"
-        >
-          <i class="fa fa-pencil"></i>
-        </shared-action-button>
+        />
         <shared-action-button
-          [title]="'Delete' | translate"
-          [class]="'btn-outline-danger'"
+          icon="fa fa-trash"
+          [title]="'Delete'|translate"
+          severity="danger"
           [disabled]="!recordPermissions.delete.can"
           [message]="deleteInfoMessage"
           (btnClick)="deleteOrderLine()"
-        >
-          <i class="fa fa-trash"></i>
-        </shared-action-button>
+        />
       } @else {
         &nbsp;
       }

@@ -18,16 +18,15 @@
 <h5 class="mb-2" translate>Digital collections</h5>
 <div class="row align-items-center">
   <div
-  [tooltip]="
-  'Comma-separated list of digital collection names. Digital collections allow the searching/grouping of related documents containing files.'
-    | translate
-" class="input-group col-md-6">
-    <input
+    [pTooltip]="'Comma-separated list of digital collection names. Digital collections allow the searching/grouping of related documents containing files.'|translate"
+    tooltipPosition="top"
+    class="input-group col-md-6"
+  >
+  <input
       #inputLabel
       [formControl]="collections"
       type="text"
       id="collections"
-
       (keyup.enter)="save()"
       class="form-control"
       aria-label="label"

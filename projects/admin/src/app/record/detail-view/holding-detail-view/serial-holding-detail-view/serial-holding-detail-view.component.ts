@@ -15,14 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { HoldingsService, PredictionIssue } from '@app/admin/service/holdings.service';
-import { OperationLogsService } from '@app/admin/service/operation-logs.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Record, RecordService } from '@rero/ng-core';
-import { IPermissions, IssueItemStatus, PERMISSIONS, PermissionsService, UserService} from '@rero/shared';
-import { ToastrService } from 'ngx-toastr';
+import { CONFIG, Record, RecordService } from '@rero/ng-core';
+import { IPermissions, IssueItemStatus, PERMISSIONS, PermissionsService, UserService } from '@rero/shared';
+import { MessageService } from 'primeng/api';
 
 
 @Component({
@@ -31,6 +30,13 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./serial-holding-detail-view.style.scss']
 })
 export class SerialHoldingDetailViewComponent implements OnInit {
+
+  private holdingService: HoldingsService = inject(HoldingsService);
+  private recordService: RecordService = inject(RecordService);
+  private translateService: TranslateService = inject(TranslateService);
+  private permissionsService: PermissionsService = inject(PermissionsService);
+  private userService: UserService = inject(UserService);
+  private messageService: MessageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the holding record */
@@ -84,26 +90,6 @@ export class SerialHoldingDetailViewComponent implements OnInit {
         {counter: additionalIssueCounter});
   }
 
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param holdingService: HoldingService
-   * @param recordService: RecordService
-   * @param translateService: TranslateService,
-   * @param toastrService: ToastrService
-   * @param permissionsService: PermissionsService
-   * @param userService: UserService
-   */
-  constructor(
-    private holdingService: HoldingsService,
-    private recordService: RecordService,
-    private translateService: TranslateService,
-    private toastrService: ToastrService,
-    private permissionsService: PermissionsService,
-    private userService: UserService
-  ) {}
-
   /** OnInit hook */
   ngOnInit(): void {
     this._loadPrediction();
@@ -142,9 +128,14 @@ export class SerialHoldingDetailViewComponent implements OnInit {
    * This function allow to receive the next predicted issue for a serial holding
    */
   quickIssueReceive() {
-    this.holdingService.quickReceivedIssue(this.holding).subscribe(
-      (result) => {
-        this.toastrService.success(this.translateService.instant('New issue created.'));
+    this.holdingService.quickReceivedIssue(this.holding).subscribe({
+      next: (result) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translateService.instant('Issue'),
+          detail: this.translateService.instant('New issue created.'),
+          life: CONFIG.MESSAGE_LIFE
+        });
         // change item structure to have same structure as received items
         const item = {
           id: result.issue.pid,
@@ -154,11 +145,16 @@ export class SerialHoldingDetailViewComponent implements OnInit {
         this.receivedItems.unshift(item);
         this._loadPrediction(); // as we received a predicted issue, we need to reload predictions
       },
-      (error) => {
-        const message = `[${error.status}-${error.statusText}] ${error.error.message}`;
-        this.toastrService.error(message, this.translateService.instant('Issue creation failed!'));
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translateService.instant('Issue creation failed!'),
+          detail: `[${error.status}-${error.statusText}] ${error.error.message}`,
+          sticky: true,
+          closable: true
+        });
       }
-    );
+    });
   }
 
   // COMPONENT PRIVATE FUNCTIONS ==============================================

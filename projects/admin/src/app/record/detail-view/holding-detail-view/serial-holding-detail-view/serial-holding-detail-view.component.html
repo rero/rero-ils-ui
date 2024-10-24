@@ -41,19 +41,23 @@
 
 <!-- TABS ================================================================= -->
 <!--    3 tabs will be displayed : Issues, Holdings details, Local fields -->
-<tabset class="my-3">
-  <!-- ISSUES TAB ------------------------------------------------------------>
-  <tab id="holding-issues-field-tab" tabOrder="1">
-    <ng-template tabHeading>
+
+
+<p-tabView styleClass="mt-2">
+  <p-tabPanel>
+    <ng-template pTemplate="header">
       <i class="fa fa-list-ul mr-1"></i>{{ 'Issues' | translate }}
     </ng-template>
-    <div class="tab-content">
       <!-- top actions bar ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       <div class="d-flex">
-        <button [routerLink]="[]" (click)="showMore('prediction', 3)" class="btn btn-sm btn-outline-primary">
-          <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i>
+        <p-button
+          [outlined]="true"
+          [routerLink]="[]"
+          (onClick)="showMore('prediction', 3)"
+        >
+          <i class="fa fa-arrow-circle-o-up mr-1" aria-hidden="true"></i>
           {{ 'Show more' | translate }} &hellip;
-        </button>
+        </p-button>
         @if (allowIssueCreation) {
           <button class="ml-auto btn btn-sm btn-outline-primary"
                   [routerLink]="['/records', 'items', 'new']"
@@ -75,24 +79,27 @@
             @if (last) {
               <ng-container actions>
                 @if (allowIssueCreation) {
-                  <button type="button" class="btn btn-sm btn-outline-primary ml-1"
-                          title="{{ 'Quick receive' | translate }}"
-                          (click)="quickIssueReceive()">
-                    <i class="fa fa-check-circle"></i>
-                  </button>
+                  <p-button
+                    icon="fa fa-check-circle"
+                    [title]="'Quick receive'|translate"
+                    [outlined]="true"
+                    (onClick)="quickIssueReceive()"
+                  />
                 }
                 @if (allowIssueCreation) {
-                  <button type="button" class="btn btn-sm btn-outline-primary ml-1"
-                          title="{{ 'Receive and edit this issue' | translate }}"
-                          [routerLink]="['/records', 'items', 'new']"
-                          [queryParams]="{
-                                    'holding': holding.id,
-                                    'redirectTo': 'records/holdings/detail/' + holding.id,
-                                    'enumerationAndChronology': prediction.issue,
-                                    'expected_date': prediction.expected_date
-                                }">
-                    <i class="fa fa-plus"></i>
-                  </button>
+                  <p-button
+                    icon="fa fa-plus"
+                    [title]="'Receive and edit this issue'|translate"
+                    [outlined]="true"
+                    [routerLink]="['/records', 'items', 'new']"
+                    [queryParams]="{
+                      'holding': holding.id,
+                      'redirectTo': 'records/holdings/detail/' + holding.id,
+                      'enumerationAndChronology': prediction.issue,
+                      'expected_date': prediction.expected_date
+                    }"
+                    styleClass="ml-1"
+                  />
                 }
               </ng-container>
             }
@@ -107,39 +114,32 @@
       @if (receivedItems.length < totalReceivedItems) {
         <div class="row mt-1">
           <div class="col">
-            <button [routerLink]="[]" (click)="showMore('received', 5)" class="btn btn-sm btn-outline-primary">
-              <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
-              {{ 'Show more' | translate }} ...
-            </button>
+            <p-button
+              [outlined]="true"
+              [routerLink]="[]"
+              (onClick)="showMore('received', 5)"
+            >
+              <i class="fa fa-arrow-circle-o-down mr-1" aria-hidden="true"></i>
+              {{ 'Show more' | translate }} &hellip;
+            </p-button>
             <span class="pl-3 small text-secondary">({{ showMoreIssuesCounter }})</span>
           </div>
         </div>
       }
-    </div>
-  </tab>
-  <!-- END OF ISSUES TAB ---------------------------------------------------->
+  </p-tabPanel>
 
-  <!-- DETAILS TAB ------------------------------------------------------------>
-  <tab id="holding-details-tab" tabOrder="2">
-    <ng-template tabHeading>
+  <p-tabPanel>
+    <ng-template pTemplate="header">
       <i class="fa fa-list-ul mr-1"></i><span translate>Details</span>
     </ng-template>
-    <div class="mt-3">
-      <admin-holding-detail context="holdings" [holding]="holding"></admin-holding-detail>
-    </div>
-  </tab>
-  <!-- END OF DETAILS TAB ---------------------------------------------------->
+    <admin-holding-detail context="holdings" [holding]="holding"></admin-holding-detail>
+  </p-tabPanel>
 
-  <!-- LOCAL FIELDS TAB ------------------------------------------------------------>
-  @if (displayLocalFieldsTab) {
-    <tab id="holding-local-field-tab" tabOrder="3">
-      <ng-template tabHeading>
-        <i class="fa fa-list-ul mr-1"></i><span translate>Local fields</span>
-      </ng-template>
-      <div class="mt-2">
-        <admin-local-field [resourceType]="'holdings'" [resourcePid]="holding.metadata.pid"></admin-local-field>
-      </div>
-    </tab>
-  }
-  <!-- END OF LOCAL FIELDS TAB ---------------------------------------------------->
-</tabset>
+  <p-tabPanel>
+    <ng-template pTemplate="header">
+      <i class="fa fa-list-ul mr-1"></i><span translate>Local fields</span>
+    </ng-template>
+    <admin-local-field [resourceType]="'holdings'" [resourcePid]="holding.metadata.pid"></admin-local-field>
+  </p-tabPanel>
+
+</p-tabView>

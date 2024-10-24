@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { DocumentApiService } from '@app/admin/api/document-api.service';
 import { ResultItem } from '@rero/ng-core';
 
@@ -25,6 +25,8 @@ import { ResultItem } from '@rero/ng-core';
   styles: []
 })
 export class DocumentsBriefViewComponent implements ResultItem {
+
+  public documentApiService: DocumentApiService = inject(DocumentApiService);
 
   /** Set record */
   @Input() set record(record) {
@@ -46,12 +48,6 @@ export class DocumentsBriefViewComponent implements ResultItem {
   get record(): any {
     return this._record;
   }
-
-  /**
-   * Constructor
-   * @param documentApiService - DocumentApiService
-   */
-  constructor(public documentApiService: DocumentApiService) {}
 
   /** process provision activity publications */
   private processProvisionActivityPublications() {

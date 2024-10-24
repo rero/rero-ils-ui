@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Entity } from '../class/entity';
 
@@ -36,6 +36,8 @@ import { Entity } from '../class/entity';
   `
 })
 export class EntityLinkComponent implements OnInit {
+
+  private translateService: TranslateService = inject(TranslateService);
 
   /** Entity field metadata */
   @Input() entity: any;
@@ -60,12 +62,6 @@ export class EntityLinkComponent implements OnInit {
 
   /** Query params */
   queryParams: object = {};
-
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   */
-  constructor(private translateService: TranslateService) {}
 
   /** OnInit hook */
   ngOnInit(): void {

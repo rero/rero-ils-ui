@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { IAvailability } from '../../interface/i-availability';
 import { IAvailabilityService } from '../../service/i-availability.service';
@@ -25,6 +25,8 @@ import { IAvailabilityService } from '../../service/i-availability.service';
   templateUrl: './availability.component.html'
 })
 export class AvailabilityComponent implements OnInit, OnChanges {
+
+  protected translateService: TranslateService = inject(TranslateService);
 
   /** Record Type */
   @Input() recordType: string;
@@ -43,12 +45,6 @@ export class AvailabilityComponent implements OnInit, OnChanges {
 
   /** Current language */
   language: string;
-
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   */
-  constructor(private translateService: TranslateService) {}
 
   /** OnInit hook */
   ngOnInit(): void {

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,34 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PermissionApiService {
-  /**
-   * Constructor
-   * @param _http - HttpClient
-   */
-  constructor(private _http: HttpClient) {}
+
+  private httpClient: HttpClient = inject(HttpClient);
 
   /**
    * Get All Permissions by role
    * @return Observable, array of IRolePermission
    */
    getAllPermissionsByRole(): Observable<IRolePermission> {
-    return this._http.get<IRolePermission>('/api/permissions/by_role');
+    return this.httpClient.get<IRolePermission>('/api/permissions/by_role');
   }
 
   /**
    *
-   * @param pid - Partron pid
+   * @param pid - Patron pid
    * @returns Observable, array of permissions
    */
   getUserPermissions(pid: string): Observable<IPatronPermission[]> {
-    return this._http.get<any>(`/api/permissions/by_patron/${pid}`);
+    return this.httpClient.get<any>(`/api/permissions/by_patron/${pid}`);
   }
 }
 

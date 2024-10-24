@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
+import { CONFIG, RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
 import { User, UserService } from '@rero/shared';
+import { MessageService } from 'primeng/api';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, tap } from 'rxjs/operators';
 import { HoldingsService } from '../../../../service/holdings.service';
@@ -35,6 +35,17 @@ import { LoanService } from '../../../../service/loan.service';
   templateUrl: './item-request.component.html'
 })
 export class ItemRequestComponent implements OnInit {
+
+  private userService: UserService = inject(UserService);
+  private recordService: RecordService = inject(RecordService);
+  private httpClient: HttpClient = inject(HttpClient);
+  private loanService: LoanService = inject(LoanService);
+  private translateService: TranslateService = inject(TranslateService);
+  private itemService: ItemsService = inject(ItemsService);
+  private holdingService: HoldingsService = inject(HoldingsService);
+  private messageService:MessageService = inject(MessageService);
+  private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
+  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** Record pid */
@@ -67,42 +78,12 @@ export class ItemRequestComponent implements OnInit {
   /** Current user */
   private currentUser: User;
 
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param modalService - BsModalService
-   * @param bsModalRef - BsModalRef
-   * @param userService - UserService
-   * @param recordService - RecordService
-   * @param http - HttpClient
-   * @param toastr - ToastrService
-   * @param translateService - TranslateService
-   * @param loanService: LoanService
-   * @param itemService: ItemService
-   * @param holdingService: HoldingsService
-   */
-  constructor(
-    private modalService: BsModalService,
-    private bsModalRef: BsModalRef,
-    private userService: UserService,
-    private recordService: RecordService,
-    private http: HttpClient,
-    private toastr: ToastrService,
-    private loanService: LoanService,
-    private translateService: TranslateService,
-    private itemService: ItemsService,
-    private holdingService: HoldingsService,
-  ) { }
-
   /** OnInit hook */
   ngOnInit() {
     this.currentUser = this.userService.user;
-    const initialState: any = this.modalService.config.initialState;
-    if (!Object.hasOwn(initialState, 'recordPid')) {
-      this.closeModal();
-    }
-    this.recordPid = initialState.recordPid;
-    this.recordType = initialState.recordType;
+    const data: any = this.dynamicDialogConfig.data;
+    this.recordPid = data.recordPid;
+    this.recordType = data.recordType;
     this.service = (this.recordType === 'item') ? this.itemService : this.holdingService;
     this.requestedBy$ = (this.recordType === 'item') ?  this.loanService.requestedBy$(this.recordPid) : null;
     this.initForm();
@@ -132,33 +113,35 @@ export class ItemRequestComponent implements OnInit {
       key = 'description';
       body[key] = model.description;
     }
-    this.http.post(`/api/${this.recordType}/request`, body)
+    this.httpClient.post(`/api/${this.recordType}/request`, body)
       .pipe(tap(() => this.requestInProgress = false))
-      .subscribe(
-        (_: unknown) => {
+      .subscribe({
+        next: (_: unknown) => {
           this.onSubmit.next(undefined);
-          this.closeModal();
-          this.toastr.success(
-            this.translateService.instant('Request registered.'),
-            this.translateService.instant('Item request')
-          );
+          this.closeModal(true);
+          this.messageService.add({
+            severity: 'success',
+            summary: this.translateService.instant('Item request'),
+            detail: this.translateService.instant('Request registered.'),
+            life: CONFIG.MESSAGE_LIFE
+          });
         },
-        (error: unknown) => {
-          this.toastr.error(
-            this.translateService.instant('An error has occurred. Please try again.'),
-            this.translateService.instant('Item request'),
-            { disableTimeOut: true }
-          );
-        }
-      );
+        error: () => this.messageService.add({
+          severity: 'error',
+          summary: this.translateService.instant('Item request'),
+          detail: this.translateService.instant('An error has occurred. Please try again.'),
+          sticky: true,
+          closable: true
+        })
+      });
   }
 
   /**
    * Close modal dialog
    * @param event - Event
    */
-  closeModal() {
-    this.bsModalRef.hide();
+  closeModal(value?: boolean) {
+    this.dynamicDialogRef.close(value);
   }
 
   /**

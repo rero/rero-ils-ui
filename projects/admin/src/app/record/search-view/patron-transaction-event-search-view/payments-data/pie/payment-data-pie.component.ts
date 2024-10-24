@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, inject, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LegendPosition } from '@swimlane/ngx-charts';
 import { OrganisationService } from '../../../../../service/organisation.service';
@@ -29,6 +28,9 @@ import { PaymentData } from '../../interfaces';
   encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class PaymentDataPieComponent implements OnInit {
+
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private translateService: TranslateService = inject(TranslateService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** The payment data to display. */
@@ -48,17 +50,6 @@ export class PaymentDataPieComponent implements OnInit {
   get org_currency() {
     return this.organisationService.organisation.default_currency;
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param organisationService: OrganisationService
-   * @param translateService: TranslateService
-   */
-  constructor(
-    private organisationService: OrganisationService,
-    private translateService: TranslateService
-  ) {}
 
   /** OnInit hook */
   ngOnInit() {

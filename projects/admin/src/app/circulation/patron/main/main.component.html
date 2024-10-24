@@ -25,100 +25,29 @@
   </div>
 
   <div class="col">
-    <ul class="nav nav-tabs">
-      <li class="nav-item" *ngVar="getCirculationStatistics('loans') as statLoan">
-        <a
-          id="checkin-checkout-tab"
-          class="nav-link"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', barcode, 'loan']">
-          {{ 'On loan' | translate }}
-          @if (statLoan > 0) {
-            <span class="badge badge-info font-weight-normal">{{ statLoan }}</span>
+    <p-tabMenu [model]="items" [activeItem]="activeItem" (activeItemChange)="onActiveItemChange($event)">
+      <ng-template pTemplate="item" let-item>
+        <a pRipple class="p-menuitem-link">
+          <span class="mr-2">{{ item.label }}</span>
+          @if (item.tag?.statistics && item.tag?.statistics()[item.id] && item.tag?.statistics()[item.id] > 0) {
+            <p-tag [severity]="item.tag.severity || 'info'" [value]="item.tag.statistics()[item.id] || 0"/>
           }
         </a>
-      </li>
-      <li class="nav-item" *ngVar="getCirculationStatistics('pickup') as statPickup">
-        <a
-          id="pick-up-tab"
-          class="nav-link"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', barcode, 'pickup']">
-          {{ 'To pick up' | translate }}
-          @if (statPickup > 0) {
-            <span class="badge badge-info font-weight-normal">{{ statPickup }}</span>
-          }
-        </a>
-      </li>
-      <li class="nav-item" *ngVar="getCirculationStatistics('pending') as statPending">
-        <a
-          id="pending-tab"
-          class="nav-link"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', barcode, 'pending']">
-          {{ 'Pending' | translate }}
-          @if (statPending > 0) {
-            <span class="badge badge-info font-weight-normal">{{ statPending }}</span>
-          }
-        </a>
-      </li>
-      <li class="nav-item" *ngVar="getCirculationStatistics('ill') as statIll">
-        <a
-          id="ill-tab"
-          class="nav-link"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', barcode, 'ill']">
-          {{ 'Interlibrary loan' | translate }}
-          @if (statIll > 0) {
-            <span class="badge badge-info font-weight-normal">{{ statIll }}</span>
-          }
-        </a>
-      </li>
-      <li class="nav-item">
-        <a
-          id="profile-tab"
-          class="nav-link"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', barcode, 'profile']"
-          translate
-        >Profile</a>
-      </li>
-      <li class="nav-item">
-        <a
-          id="fees-tab"
-          class="nav-link"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{exact: true}"
-          [routerLink]="['/circulation', 'patron', barcode, 'fees']">
-          {{ 'Fees' | translate }}
-          @if (feesTotalAmount > 0) {
-            <span class="badge badge-warning font-weight-normal">
-              {{ feesTotalAmount | currency: organisation.default_currency }}
-            </span>
-          }
-        </a>
-      </li>
-      @if (patron.keep_history) {
-        <li class="nav-item">
-          <a
-            id="history-tab"
-            class="nav-link"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{exact: true}"
-            [routerLink]="['/circulation', 'patron', barcode, 'history']">
-            {{ 'History' | translate }}
-            <span class="badge badge-info font-weight-normal">{{ historyCount }}</span>
-          </a>
-        </li>
-      }
-    </ul>
+      </ng-template>
+    </p-tabMenu>
     <div class="mt-4">
       <router-outlet></router-outlet>
     </div>
   </div>
+  <p-toast>
+    <ng-template let-message pTemplate="message">
+      <div class="flex flex-column align-items-start" style="flex: 1">
+        <div class="font-medium text-lg my-3 text-900">
+          {{ message.summary }}
+        </div>
+        <p [innerHtml]="message.detail"></p>
+      </div>
+    </ng-template>
+  </p-toast>
+  <p-confirmDialog />
 }

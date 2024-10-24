@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { DocumentApiService } from '@app/admin/api/document-api.service';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { Observable, of } from 'rxjs';
@@ -26,6 +26,8 @@ import { IAdvancedSearchConfig, IFieldsData, IFieldsType, ILabelValue, ILabelVal
   providedIn: 'root'
 })
 export class AdvancedSearchService {
+
+  private documentApiService: DocumentApiService = inject(DocumentApiService);
 
   /** Field search types */
   public static SEARCH_TYPE_CONTAINS = 'contains';
@@ -47,12 +49,6 @@ export class AdvancedSearchService {
 
   /** Fields searchType mapping */
   private fieldsSearchType: IFieldsType = {};
-
-  /**
-   * Constructor
-   * @param documentApiService - DocumentApiService
-   */
-  constructor(private documentApiService: DocumentApiService) { }
 
   /**
    * Load advanced search configuration

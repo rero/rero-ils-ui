@@ -21,18 +21,25 @@
     <div class="col-4 text-right">
       @if (recordPermissions) {
         @if (recordPermissions.update.can) {
-          <a class="btn btn-sm btn-outline-primary"
+          <p-button
+            icon="fa fa-plus-square-o"
+            [label]="'Add'|translate"
+            [outlined]="true"
             [routerLink]="['/', 'records', 'acq_order_lines', 'new']"
             [queryParams]="{ order: order.pid }"
-          >
-            <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
-          </a>
+          />
         } @else {
-          <button type="button" class="btn btn-sm btn-outline-primary disabled"
-                  [popover]="tolTemplate" triggers="mouseenter:mouseleave">
-            <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} &hellip;
-          </button>
-          <ng-template #tolTemplate><div [innerHtml]="createInfoMessage | nl2br"></div></ng-template>
+          <p-button
+            icon="fa fa-plus-square-o"
+            [label]="'Add'|translate"
+            [outlined]="true"
+            [pTooltip]="tooltipContent"
+            tooltipPosition="top"
+            styleClass="text-blue-200"
+          />
+          <ng-template #tooltipContent>
+            <span [innerHTML]="createInfoMessage | nl2br"></span>
+          </ng-template>
         }
       } @else {
         &nbsp;

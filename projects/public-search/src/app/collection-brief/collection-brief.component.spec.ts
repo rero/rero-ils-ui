@@ -19,7 +19,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { AppRoutingModule } from '../app-routing.module';
 import { ErrorPageComponent } from '../error/error-page.component';
 import { MainComponent } from '../main/main.component';
@@ -44,9 +43,6 @@ describe('CollectionBriefComponent', () => {
         TranslateModule.forRoot(),
         AppRoutingModule
       ],
-      providers: [
-        BsLocaleService
-      ]
     })
     .compileComponents();
   }));

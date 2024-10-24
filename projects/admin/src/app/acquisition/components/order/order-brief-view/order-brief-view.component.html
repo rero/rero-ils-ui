@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (order) {
-  <article class="row order-brief-view">
+  <article class="grid order-brief-view">
     <div class="col-9 pl-0">
       <h5 class="m-0"><a [routerLink]="[detailUrl.link]">{{ order.reference }}</a></h5>
       <ng-container *ngVar="order.notes | notesFilter: [noteType.STAFF_NOTE] as notes">

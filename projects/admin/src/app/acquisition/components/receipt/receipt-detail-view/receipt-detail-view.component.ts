@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable, Subscription, forkJoin } from 'rxjs';
+import { forkJoin, Observable, Subscription } from 'rxjs';
 import { RecordPermissions } from '../../../../classes/permissions';
 import { RecordPermissionService } from '../../../../service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '../../../../utils/permissions';
@@ -30,6 +30,10 @@ import { IAcqReceipt, IAcqReceiptLine } from '../../../classes/receipt';
   styleUrls: ['../../../acquisition.scss', './receipt-detail-view.component.scss']
 })
 export class ReceiptDetailViewComponent implements OnInit, OnDestroy, DetailRecord {
+
+  private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private currentLibraryPermissionValidator: CurrentLibraryPermissionValidator = inject(CurrentLibraryPermissionValidator);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Observable resolving record data */
@@ -62,19 +66,6 @@ export class ReceiptDetailViewComponent implements OnInit, OnDestroy, DetailReco
       return this.recordPermissionService.generateTooltipMessage(this.permissions.update.reasons, 'update');
     }
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param acqReceiptApiService - AcqReceiptApiService
-   * @param recordPermissionService - RecordPermissionService
-   * @param currentLibraryPermissionValidator - CurrentLibraryPermissionValidator
-   */
-  constructor(
-    private acqReceiptApiService: AcqReceiptApiService,
-    private recordPermissionService: RecordPermissionService,
-    private currentLibraryPermissionValidator: CurrentLibraryPermissionValidator
-  ) { }
 
   /** OnInit hook */
   ngOnInit() {

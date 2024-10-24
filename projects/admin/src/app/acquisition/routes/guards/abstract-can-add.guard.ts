@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { RecordService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
@@ -22,15 +23,8 @@ import { catchError, map } from 'rxjs/operators';
 
 export abstract class AbstractCanAddGuard {
 
-  /**
-   * Constructor
-   * @param recordService - RecordService
-   * @param router - Router
-   */
-   protected constructor(
-    protected recordService: RecordService,
-    protected router: Router
-  ) {}
+  protected recordService: RecordService = inject(RecordService);
+  protected router: Router = inject(Router);
 
   /**
    * Allow to access to the resource

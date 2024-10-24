@@ -23,7 +23,7 @@ import { FieldType, FieldTypeConfig } from '@ngx-formly/core';
     <div class="form-group m-0 d-flex align-items-start">
       <!-- label -->
       @if (props.label && props.hideLabel !== true) {
-        <label [attr.for]="id" class="mr-2 col-form-label" [tooltip]="props.description">
+        <label [attr.for]="id" class="mr-2 col-form-label" [pTooltip]="props.description" tooltipPosition="top">
           {{ props.label }}
           @if (props.required && props.hideRequiredMarker !== true) {
             &nbsp;*

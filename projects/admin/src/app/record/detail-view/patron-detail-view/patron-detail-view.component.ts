@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { IPermissions, PERMISSIONS, PermissionsService } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
@@ -34,6 +34,9 @@ interface PatronPhone {
   styleUrls: ['./patron-detail-view.component.scss'],
 })
 export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestroy {
+
+  private operationLogsService: OperationLogsService = inject(OperationLogsService);
+  private permissionsService: PermissionsService = inject(PermissionsService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Data from patron we received */
@@ -71,17 +74,6 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
   get canAccessDisplayPermissions(): boolean {
     return this.permissionsService.canAccess(PERMISSIONS.PERM_MANAGEMENT);
   }
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor.
-   * @param operationLogsService - OperationLogsService
-   * @param permissionsService - PermissionsService
-   */
-  constructor(
-    private operationLogsService: OperationLogsService,
-    private permissionsService: PermissionsService
-  ) {}
 
   /** OnInit hook */
   ngOnInit() {

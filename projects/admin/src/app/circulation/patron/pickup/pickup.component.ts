@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { PatronService } from '../../../service/patron.service';
 import { CirculationService } from '../../services/circulation.service';
 
@@ -25,18 +25,11 @@ import { CirculationService } from '../../services/circulation.service';
 })
 export class PickupComponent implements OnInit {
 
+  private patronService: PatronService = inject(PatronService);
+  private circulationService: CirculationService = inject(CirculationService);
+
   /** Loans */
   loans: [];
-
-  /**
-   * Constructor
-   * @param patronService - PatronService
-   * @param circulationService - CirculationService
-   */
-  constructor(
-    private patronService: PatronService,
-    private circulationService: CirculationService
-  ) { }
 
   /** OnInit hook */
   ngOnInit() {
@@ -59,6 +52,6 @@ export class PickupComponent implements OnInit {
     const index = this.loans.findIndex((element: any) => element.id == loanId);
     this.loans.splice(index, 1);
     // Update count on tab
-    this.circulationService.circulationInformations.statistics['pickup'] -= 1;
+    this.circulationService.statisticsDecrease('pickup', 1);
   }
 }

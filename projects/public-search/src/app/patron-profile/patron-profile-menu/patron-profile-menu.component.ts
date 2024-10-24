@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { IMenu, PatronProfileMenuService } from '../patron-profile-menu.service';
 
 @Component({
@@ -22,6 +22,8 @@ import { IMenu, PatronProfileMenuService } from '../patron-profile-menu.service'
   templateUrl: './patron-profile-menu.component.html'
 })
 export class PatronProfileMenuComponent {
+
+  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
 
   @Input() patronPid: string;
 
@@ -45,12 +47,6 @@ export class PatronProfileMenuComponent {
     }
     return this.patronProfileMenuService.menu;
   }
-
-  /**
-   * Constructor
-   * @param _patronProfileMenuService - PatronProfileMenuService
-   */
-  constructor(private patronProfileMenuService: PatronProfileMenuService) {}
 
   /** on change */
   onChange(patronPid: string): void {

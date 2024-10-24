@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
 import { ItemsService } from '../../../../service/items.service';
@@ -24,6 +24,9 @@ import { ItemsService } from '../../../../service/items.service';
   templateUrl: './pending-item.component.html'
 })
 export class PendingItemComponent implements OnInit {
+
+  private recordService: RecordService = inject(RecordService);
+  private itemService: ItemsService = inject(ItemsService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Loan */
@@ -35,18 +38,6 @@ export class PendingItemComponent implements OnInit {
   document = undefined;
   /** detail is collapsed */
   isCollapsed = true;
-
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param recordService - RecordService
-   * @param itemService - ItemService
-   */
-  constructor(
-    private recordService: RecordService,
-    private itemService: ItemsService
-  ) { }
 
   /** OnInit hook */
   ngOnInit() {

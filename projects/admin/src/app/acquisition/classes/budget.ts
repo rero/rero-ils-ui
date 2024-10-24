@@ -18,7 +18,6 @@
 
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
-
 import { ObjectReference } from '@rero/shared';
 
 /** Wrapping class to describe an AcqAccount */
@@ -35,7 +34,7 @@ export class AcqBudget {
    * Constructor
    * @param obj - the JSON parsed object to load.
    */
-  constructor(obj?: any){
+  constructor(obj?: any) {
     Object.assign(this, obj);
   }
 }

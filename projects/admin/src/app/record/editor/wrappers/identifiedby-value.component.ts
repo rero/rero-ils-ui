@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FieldWrapper } from '@ngx-formly/core';
 import { Record, RecordService } from '@rero/ng-core';
@@ -46,6 +46,8 @@ import { IdentifierTypes } from '../../../classes/identifiers';
 })
 export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
 
+  private recordService: RecordService = inject(RecordService);
+
   /** Message observable */
   message$: Observable<any>;
 
@@ -54,14 +56,6 @@ export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
 
   /** Record pid */
   recordPid: string | null;
-
-  /**
-   * Constructor
-   * @param recordService - RecordService
-   */
-  constructor(private recordService: RecordService) {
-    super();
-  }
 
   /** OnInit hook */
   ngOnInit(): void {

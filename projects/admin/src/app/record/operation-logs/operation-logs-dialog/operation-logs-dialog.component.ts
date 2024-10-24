@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2022 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,10 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { IPermissions, PERMISSIONS } from '@rero/shared';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { DialogService } from 'primeng/dynamicdialog';
 import { OperationLogsComponent } from '../operation-logs.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-operation-logs-dialog',
@@ -25,38 +26,27 @@ import { OperationLogsComponent } from '../operation-logs.component';
 })
 export class OperationLogsDialogComponent {
 
+  private dialogService: DialogService = inject(DialogService);
+  private translateService: TranslateService = inject(TranslateService);
+
   /** Resource type */
   @Input() resourceType: string;
 
   /** Resource pid */
   @Input() resourcePid: string;
 
-  /** Modal ref */
-  bsModalRef: BsModalRef;
-
   /** return all permissions */
   permissions: IPermissions = PERMISSIONS;
 
-  /**
-   * Constructor
-   * @param modalService - BsModalService
-   */
-  constructor(private modalService: BsModalService) {}
-
   /** Open operation logs dialog */
   openDialog(): void {
-    const config = {
-      ignoreBackdropClick: false,
-      keyboard: true,
-      initialState: {
+    this.dialogService.open(OperationLogsComponent, {
+      header: this.translateService.instant('Operation history'),
+      dismissableMask: true,
+      width: '60vw',
+      data: {
         resourceType: this.resourceType,
         resourcePid: this.resourcePid
-      }
-    };
-    this.bsModalRef = this.modalService.show(OperationLogsComponent, config);
-    this.bsModalRef.content.dialogClose$.subscribe((value: boolean) => {
-      if (value) {
-        this.bsModalRef.hide();
       }
     });
   }

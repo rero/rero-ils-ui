@@ -20,7 +20,6 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { ToastrModule } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 import { PatronProfileRequestComponent } from './patron-profile-request.component';
@@ -52,7 +51,6 @@ describe('PatronProfileRequestComponent', () => {
       imports: [
         HttpClientTestingModule,
         TranslateModule.forRoot(),
-        ToastrModule.forRoot(),
         SharedModule
       ],
       providers: [

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { LoanOverduePreview } from '@app/admin/classes/loans';
 import { ApiService, Error, Record, RecordService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
@@ -27,19 +27,9 @@ import { catchError, map } from 'rxjs/operators';
 })
 export class LoanApiService extends BaseApi {
 
-  /**
-   * Constructor
-   * @param _recordService - RecordService
-   * @param _httpClient - HttpClient
-   * @param _apiService - ApiService
-   */
-  constructor(
-    private _recordService: RecordService,
-    private _httpClient: HttpClient,
-    private _apiService: ApiService
-  ) {
-    super();
-  }
+  private recordService: RecordService = inject(RecordService);
+  private httpClient: HttpClient = inject(HttpClient);
+  private apiService: ApiService = inject(ApiService);
 
   /**
    * Get loan
@@ -55,7 +45,7 @@ export class LoanApiService extends BaseApi {
     sort?: string
   ): Observable<Record | Error> {
     const loanStates = ['ITEM_ON_LOAN'];
-    return this._recordService.getRecords(
+    return this.recordService.getRecords(
       'loans', this._patronStateQuery(patronPid, loanStates), page, itemsPerPage,
       undefined, undefined, headers, sort
     );
@@ -74,7 +64,7 @@ export class LoanApiService extends BaseApi {
     itemsPerPage: number = 10, headers = BaseApi.reroJsonheaders
   ): Observable<Record | Error> {
     const requestStates = ['PENDING', 'ITEM_AT_DESK', 'ITEM_IN_TRANSIT_FOR_PICKUP'];
-    return this._recordService.getRecords(
+    return this.recordService.getRecords(
       'loans', this._patronStateQuery(patronPid, requestStates), page, itemsPerPage,
       undefined, undefined, headers
     );
@@ -86,7 +76,7 @@ export class LoanApiService extends BaseApi {
    * @returns Observable
    */
   canExtend(loanPid: string): Observable<CanExtend> {
-    return this._httpClient.get(`/api/loan/${loanPid}/can_extend`)
+    return this.httpClient.get(`/api/loan/${loanPid}/can_extend`)
       .pipe(
         catchError(() => of(undefined)),
         map((response: any) => response)
@@ -99,7 +89,7 @@ export class LoanApiService extends BaseApi {
    * @return Observable
    */
   renew(data: { pid: string, item_pid: string, transaction_location_pid: string, transaction_user_pid: string }): Observable<any> {
-    return this._httpClient.post('/api/item/extend_loan', data)
+    return this.httpClient.post('/api/item/extend_loan', data)
       .pipe(
         catchError(() => of(undefined)),
         map((response: any) => {
@@ -116,7 +106,7 @@ export class LoanApiService extends BaseApi {
    * @return Observable
    */
   cancel(data: { pid: string, transaction_location_pid: string, transaction_user_pid: string }): Observable<any> {
-    return this._httpClient.post('/api/item/cancel_item_request', data)
+    return this.httpClient.post('/api/item/cancel_item_request', data)
       .pipe(
         catchError(() => of(undefined)),
         map((response: any) => {
@@ -133,9 +123,9 @@ export class LoanApiService extends BaseApi {
    * @return Observable of LoanOverduePreview
    */
   getPreviewOverdue(loanPid: string): Observable<LoanOverduePreview> {
-    const loanApiUrl = this._apiService.getEndpointByType('loan');
+    const loanApiUrl = this.apiService.getEndpointByType('loan');
     const url = `${loanApiUrl}/${loanPid}/overdue/preview`;
-    return this._httpClient.get<LoanOverduePreview>(url);
+    return this.httpClient.get<LoanOverduePreview>(url);
   }
 
   /**

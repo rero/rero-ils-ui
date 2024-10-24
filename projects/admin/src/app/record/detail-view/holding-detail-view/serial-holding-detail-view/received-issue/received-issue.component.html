@@ -95,36 +95,47 @@
       <!-- CLAIMS BUTTON -->
       @if (recordPermissions?.update?.can) {
         @if (isClaimAllowed) {
-          <button type="button"
-                  title="{{ 'Claim' | translate }}"
-                  class="btn btn-sm btn-outline-primary ml-1"
-                  (click)="openClaimEmailDialog()">
-            <i class="fa fa-gavel"></i>
-          </button>
+          <p-button
+            icon="fa fa-gavel"
+            [title]="'Claim'|translate"
+            [outlined]="true"
+            (onClick)="openClaimEmailDialog()"
+          />
         }
         <!-- EDIT BUTTON -->
-        <button type="button" class="btn btn-sm btn-outline-primary ml-1"
-                title="{{ 'Edit' | translate }}"
-                [routerLink]="['/records', 'items', 'edit', issue.metadata.pid]"
-                [queryParams]="{'redirectTo': 'records/holdings/detail/' + holding.id }">
-          <i class="fa fa-pencil"></i>
-        </button>
+        <p-button
+          icon="fa fa-pencil"
+          [title]="'Edit'|translate"
+          [outlined]="true"
+          [routerLink]="['/records', 'items', 'edit', issue.metadata.pid]"
+          [queryParams]="{'redirectTo': 'records/holdings/detail/' + holding.id }"
+          styleClass="ml-1"
+        />
       }
 
       <!-- DELETE BUTTON -->
       @if (recordPermissions?.delete?.can) {
-        <button type="button" class="btn btn-outline-danger btn-sm ml-1"
-                title="{{ 'Delete' | translate }}"
-                (click)="deleteIssue(issue)">
-          <i class="fa fa-trash" ></i>
-        </button>
+        <p-button
+          icon="fa fa-trash"
+          severity="danger"
+          [title]="'Delete'|translate"
+          [outlined]="true"
+          (onClick)="deleteIssue(issue)"
+          styleClass="ml-1"
+        />
       } @else {
-        <button type="button" class="btn btn-sm btn-outline-danger ml-1 disabled"
-                title="{{ 'Delete' | translate }}"
-                [popover]="tolTemplate" triggers="mouseenter:mouseleave">
-          <i class="fa fa-trash"></i>
-        </button>
-        <ng-template #tolTemplate><div [innerHtml]="deleteInfoMessage(issue) | nl2br"></div></ng-template>
+        <p-button
+          icon="fa fa-trash"
+          severity="danger"
+          [title]="'Delete'|translate"
+          [outlined]="true"
+          [pTooltip]="tooltipContent"
+          tooltipPosition="top"
+          styleClass="text-red-100 ml-1"
+        />
+        <ng-template #tooltipContent>
+          <span [innerHTML]="deleteInfoMessage(issue)"></span>
+        </ng-template>
       }
     </div>
   </div>

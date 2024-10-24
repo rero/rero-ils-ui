@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, inject, Input, OnInit } from "@angular/core";
 import { ApiService, Record, RecordService } from "@rero/ng-core";
 import { map } from "rxjs/operators";
 
@@ -24,21 +23,15 @@ import { map } from "rxjs/operators";
   templateUrl: "./reports-list.component.html",
 })
 export class ReportsListComponent implements OnInit {
+
+  private recordService: RecordService = inject(RecordService);
+  private apiService: ApiService = inject(ApiService);
+
   // persistent identifier of the current stat report configuration
   @Input() pid: any;
 
   // list of the corresponding reports from elasticsearch
   reports: Array<any>;
-
-  /**
-   * Constructor
-   * @param recordService - RecordService
-   * @param apiService - ApiService
-   */
-  constructor(
-    private recordService: RecordService,
-    private apiService: ApiService
-  ) {}
 
   /**
    * Get the report item URL

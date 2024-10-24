@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,36 +16,30 @@
  */
 
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { APP_INITIALIZER, DoBootstrap, Injector, NgModule } from '@angular/core';
+import { APP_INITIALIZER, DoBootstrap, inject, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule } from '@angular/router';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CoreConfigService, RecordModule, TranslateLoader } from '@rero/ng-core';
-import { SharedModule } from '@rero/shared';
-import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-import { SearchBarComponent } from 'projects/public-search/src/app/search-bar/search-bar.component';
+import { RemoteSearchComponent, SharedModule } from '@rero/shared';
 import { AppInitializerService } from './app-initializer.service';
+import { Observable } from 'rxjs';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 /** function to instantiate the application  */
-export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
-  return () => appInitializerService.load().toPromise();
+export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
+  return () => appInitializerService.load();
 }
 
 
 @NgModule({
-    declarations: [
-        SearchBarComponent
-    ],
+    declarations: [],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
-        RouterModule.forRoot([]),
         HttpClientModule,
-        FormsModule,
         RecordModule,
         ReactiveFormsModule,
         TranslateModule.forRoot({
@@ -56,7 +50,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
             },
             isolate: false
         }),
-        TypeaheadModule.forRoot(),
         SharedModule
     ],
     providers: [
@@ -67,12 +60,11 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
 })
 export class AppModule implements DoBootstrap {
 
-  constructor(private injector: Injector) {
-  }
+  private injector: Injector = inject(Injector);
 
-  ngDoBootstrap() {
+  ngDoBootstrap(): void {
     if (!customElements.get('main-search-bar')) {
-      const searchBar = createCustomElement(SearchBarComponent, { injector: this.injector });
+      const searchBar = createCustomElement(RemoteSearchComponent, { injector: this.injector });
       customElements.define('main-search-bar', searchBar);
     }
   }

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { PermissionsService, PERMISSION_OPERATOR } from '@rero/shared';
+import { PERMISSION_OPERATOR, PermissionsService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 
 /**
@@ -41,15 +41,8 @@ import { Observable, of } from 'rxjs';
 })
 export class PermissionGuard  {
 
-  /**
-   * Constructor
-   * @param _permissionService - PermissionsService
-   * @param _router - Router
-   */
-  constructor(
-    private _permissionService: PermissionsService,
-    private _router: Router,
-  ) { }
+  private permissionService: PermissionsService = inject(PermissionsService);
+  private router: Router = inject(Router);
 
   /**
    * Can activate
@@ -59,8 +52,8 @@ export class PermissionGuard  {
   canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
     const permissions = 'permissions' in route.data ? route.data.permissions : [];
     const operator = 'operator' in route.data ? route.data.operator : PERMISSION_OPERATOR.OR;
-    if (!this._permissionService.canAccess(permissions, operator)) {
-      this._router.navigate(['/errors/403'], { skipLocationChange: true });
+    if (!this.permissionService.canAccess(permissions, operator)) {
+      this.router.navigate(['/errors/403'], { skipLocationChange: true });
 
       return of(false);
     }

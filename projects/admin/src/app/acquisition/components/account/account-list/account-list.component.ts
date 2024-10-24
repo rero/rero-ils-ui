@@ -15,21 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
-import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
-import { OrganisationService } from '@app/admin/service/organisation.service';
-import { IAcqAccount } from '@app/admin/acquisition/classes/account';
-import { AcqAccountApiService } from '@app/admin/acquisition/api/acq-account-api.service';
-import { ApiService, RecordService } from '@rero/ng-core';
-import { TranslateService } from '@ngx-translate/core';
-import { exportFormats } from '@app/admin/acquisition/routes/accounts-route';
 import { HttpParams } from '@angular/common/http';
+import { Component, inject, OnInit } from '@angular/core';
+import { AcqAccountApiService } from '@app/admin/acquisition/api/acq-account-api.service';
+import { IAcqAccount } from '@app/admin/acquisition/classes/account';
+import { exportFormats } from '@app/admin/acquisition/routes/accounts-route';
+import { OrganisationService } from '@app/admin/service/organisation.service';
+import { TranslateService } from '@ngx-translate/core';
+import { ApiService, RecordService } from '@rero/ng-core';
+import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
 
 @Component({
   selector: 'admin-account-list',
   templateUrl: './account-list.component.html'
 })
 export class AccountListComponent implements OnInit {
+
+  private userService: UserService = inject(UserService);
+  private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private apiService: ApiService = inject(ApiService);
+  private translateService: TranslateService = inject(TranslateService);
 
   // COMPONENT ATTRIBUTES =======================================================
   /** Root account to display */
@@ -64,23 +70,6 @@ export class AccountListComponent implements OnInit {
         { max: RecordService.MAX_REST_RESULTS_SIZE }
       );
   }
-
-  // CONSTRUCTOR & HOOKS ========================================================
-  /**
-   * Constructor
-   * @param userService: UserService
-   * @param acqAccountApiService: AcqAccountApiService
-   * @param organisationService: OrganisationService
-   * @param apiService: ApiService
-   * @param translateService: TranslateService
-   */
-  constructor(
-    private userService: UserService,
-    private acqAccountApiService: AcqAccountApiService,
-    private organisationService: OrganisationService,
-    private apiService: ApiService,
-    private translateService: TranslateService,
-  ) { }
 
   /** OnInit hook */
   ngOnInit(): void {

@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractCanDeactivateComponent, removeEmptyValues } from '@rero/ng-core';
-import { BehaviorSubject, Subscription, of } from 'rxjs';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { EditorService } from '../../../service/editor.service';
 import { PredictionIssue } from '../../../service/holdings.service';
@@ -32,6 +31,8 @@ import { PredictionIssue } from '../../../service/holdings.service';
   styleUrls: ['./holding-editor.component.scss']
 })
 export class HoldingEditorComponent extends AbstractCanDeactivateComponent implements OnInit, OnDestroy {
+
+  private editorService: EditorService = inject(EditorService);
 
   /** Can deactivate from editor component */
   canDeactivate: boolean = false;
@@ -57,14 +58,6 @@ export class HoldingEditorComponent extends AbstractCanDeactivateComponent imple
 
   /** Observable subscription */
   private subscription = new Subscription();
-
-  /**
-   * Constructor.
-   * @param editorService - the local editor service
-   */
-  constructor(private editorService: EditorService) {
-    super();
-  }
 
   /** Component initialization. */
   ngOnInit() {

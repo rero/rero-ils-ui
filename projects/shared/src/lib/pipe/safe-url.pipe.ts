@@ -15,14 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Pipe({
   name: 'safeUrl'
 })
 export class SafeUrlPipe implements PipeTransform {
-  constructor(private domSanitizer: DomSanitizer) {}
+
+  protected domSanitizer: DomSanitizer = inject(DomSanitizer);
+
   transform(url: any) {
     return this.domSanitizer.bypassSecurityTrustResourceUrl(url);
   }

@@ -15,9 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { IllRequestsService } from '@app/admin/service/ill-requests.service';
-
 
 @Component({
   selector: 'admin-ill-request-item',
@@ -26,18 +25,13 @@ import { IllRequestsService } from '@app/admin/service/ill-requests.service';
 })
 export class IllRequestItemComponent {
 
+  private illRequestService: IllRequestsService = inject(IllRequestsService);
+
   // COMPONENT ATTRIBUTES =====================================================
   /** ILL record. */
   @Input() record: any;
   /** Is detail is collapsed. */
   isCollapsed: boolean = true;
-
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param illRequestService - IllRequestsService
-   */
-  constructor(private illRequestService: IllRequestsService) {}
 
   // COMPONENT FUNCTIONS ======================================================
   /** get the bootstrap color to apply on the request status badge */

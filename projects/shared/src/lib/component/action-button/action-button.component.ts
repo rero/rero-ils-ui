@@ -15,39 +15,70 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'shared-action-button',
   template: `
-    @if (!disabled) {
-      @if (url && url.length > 0) {
-        <button type="button" class="btn btn-sm {{ class }}" [title]="title" [routerLink]="url" [queryParams]="queryParams">
-          <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
-        </button>
+    @if (!disabled()) {
+      @if (routerLink()?.length > 0) {
+        <p-button
+          [label]="label()"
+          [icon]="icon()"
+          [title]="title()"
+          [severity]="severity()"
+          [styleClass]="class()"
+          [outlined]="outlined()"
+          size="small"
+          [routerLink]="routerLink()"
+          [queryParams]="queryParams()"
+        />
       } @else {
-        <button type="button" class="btn btn-sm {{ class }}" [title]="title" (click)="onClick($event)">
-          <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
-        </button>
+        <p-button
+          [label]="label()"
+          [icon]="icon()"
+          [title]="title()"
+          [severity]="severity()"
+          [class]="class()"
+          [outlined]="outlined()"
+          size="small"
+          (onClick)="onClick($event)"
+        />
       }
     } @else {
-      <button type="button" class="btn btn-sm disabled {{ class }}"
-              [title]="title" [popover]="tolTemplate" triggers="mouseenter:mouseleave">
-        <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
-      </button>
-      <ng-template #tolTemplate><div [innerHtml]="message | nl2br"></div></ng-template>
+      <p-button
+        [label]="label()"
+        [icon]="icon()"
+        [title]="title()"
+        [severity]="severity()"
+        [style]="disabled() ? { opacity: 0.5 } : { opacity: 1 }"
+        [ngClass]="class()"
+        [outlined]="outlined()"
+        [pTooltip]="tooltipContent"
+        tooltipPosition="top"
+        [tooltipDisabled]="message() ? false : true"
+        size="small"
+        (onClick)="onClick($event)"
+      />
+      <ng-template #tooltipContent>
+        <span [innerHTML]="message() | nl2br"></span>
+      </ng-template>
     }
-    <ng-template #contentTpl><ng-content></ng-content></ng-template>
   `
 })
 export class ActionButtonComponent {
-  @Input() title: string;
-  @Input() url?: string[];
-  @Input() queryParams?: any;
-  @Input() class?: string;
-  @Input() disabled = false;
-  @Input() message?: string;
-  @Output() btnClick = new EventEmitter();
+  label = input<string>();
+  icon = input<string>();
+  title = input.required<string>();
+  severity = input<string>('primary');
+  routerLink = input<string[]>();
+  queryParams = input<any>();
+  class = input<string>();
+  outlined = input<boolean>(true);
+  rounded = input<boolean>(false);
+  disabled = input<boolean>(false);
+  message = input<string>();
+  btnClick = output<Event>();
 
   onClick($event: Event): void {
     if (!this.disabled) {

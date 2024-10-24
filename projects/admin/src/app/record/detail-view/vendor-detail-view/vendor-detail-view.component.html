@@ -18,62 +18,59 @@
   <h1 class="mb-3">{{ record.metadata.name }}</h1>
   <article>
     <section class="m-2 p-2">
-      <dl class="row mb-0">
+      <dl class="grid mb-0">
         <!-- WEBSITE -->
         @if (record.metadata.website) {
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Website</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
+          <dt class="col-3 label-title" translate>Website</dt>
+          <dd class="col-7 mb-0">
             <a target="_blank" href="{{ record.metadata.website }}">{{ record.metadata.website }}</a>
           </dd>
         }
         <!-- COMMUNICATION_LANGUAGE -->
         @if (record.metadata.communication_language && record.metadata.communication_language.length > 0) {
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Communication language</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
+          <dt class="col-3 label-title" translate>Communication language</dt>
+          <dd class="col-7 mb-0">
             {{ record.metadata.communication_language | translateLanguage:currentLanguage }}
           </dd>
         }
         <!-- CURRENCY -->
         @if (record.metadata.currency) {
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Currency</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.currency }}</dd>
+          <dt class="col-3 label-title" translate>Currency</dt>
+          <dd class="col-7 mb-0">{{ record.metadata.currency }}</dd>
         }
         <!-- VAT RATE -->
         @if (record.metadata.tva_rate) {
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>VAT</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.tva_rate }}</dd>
+          <dt class="col-3 label-title" translate>VAT</dt>
+          <dd class="col-7 mb-0">{{ record.metadata.tva_rate }}</dd>
         }
         <!-- NOTE -->
         @if (record.metadata.note) {
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Note</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">{{ record.metadata.note }}</dd>
+          <dt class="col-3 label-title" translate>Note</dt>
+          <dd class="col-7 mb-0">{{ record.metadata.note }}</dd>
         }
       </dl>
     </section>
 
-    <section class="m-2 p-2">
-      <tabset>
+    <section class="m-2">
+      <p-tabView>
         <!-- DEFAULT CONTACT -->
         @if (filterContact(record.metadata.contacts, 'default'); as defaultContact) {
-          <tab heading="{{ 'Default contact details' | translate }}" id="default_address">
-            <admin-address-type [addressType]="defaultContact"></admin-address-type>
-          </tab>
+          <p-tabPanel id="default_address" [header]="'Default contact details'|translate">
+            <admin-address-type [addressType]="defaultContact" />
+          </p-tabPanel>
         }
         <!-- ORDER CONTACT -->
         @if (filterContact(record.metadata.contacts, 'order'); as orderContact) {
-          <tab heading="{{ 'Order contact details' | translate }}" id="order_address">
-            <admin-address-type [addressType]="orderContact"></admin-address-type>
-          </tab>
+          <p-tabPanel id="order_address" [header]="'Order contact details'|translate">
+            <admin-address-type [addressType]="orderContact" />
+          </p-tabPanel>
         }
-      </tabset>
+      </p-tabView>
     </section>
 
     <!-- OPERATION LOGS-->
     @if (isEnabledOperationLog) {
-      <admin-operation-logs
-        resourceType="vendors"
-        [resourcePid]="record.metadata.pid"
-      ></admin-operation-logs>
+      <admin-operation-logs resourceType="vendors" [resourcePid]="record.metadata.pid" />
     }
   </article>
 }

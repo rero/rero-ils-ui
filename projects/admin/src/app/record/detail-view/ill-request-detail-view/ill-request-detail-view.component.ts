@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
@@ -26,6 +26,9 @@ import { IllRequestsService } from '../../../service/ill-requests.service';
 })
 export class IllRequestDetailViewComponent implements DetailRecord, OnInit {
 
+  private recordService: RecordService = inject(RecordService);
+  private illRequestService: IllRequestsService = inject(IllRequestsService);
+
   // COMPONENT ATTRIBUTES =======================================================
   /** The observable resolving record data */
   record$: Observable<any>;
@@ -36,17 +39,6 @@ export class IllRequestDetailViewComponent implements DetailRecord, OnInit {
 
   /** the requester of the ILL request */
   requester = null;
-
-  // CONSTRUCTOR & HOOKS =======================================================
-  /**
-   * Constructor
-   * @param recordService - RecordService
-   * @param illRequestService - IllRequestsService
-   */
-  constructor(
-    private recordService: RecordService,
-    private illRequestService: IllRequestsService,
-  ) {}
 
   /** OnInit hook */
   ngOnInit(): void {

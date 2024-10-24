@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { BaseApi, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable } from 'rxjs';
@@ -30,19 +30,9 @@ import { AppConfigService } from '../app-config.service';
 })
 export class HoldingsApiService extends BaseApi implements IAvailabilityService {
 
-  /**
-   * Constructor
-   * @param _recordService - RecordService
-   * @param _httpClient - HttpClient
-   * @param _appConfigService - AppConfigService
-   */
-  constructor(
-    private _recordService: RecordService,
-    private _httpClient: HttpClient,
-    private _appConfigService: AppConfigService
-  ) {
-    super();
-  }
+  private recordService: RecordService = inject(RecordService);
+  private httpClient: HttpClient = inject(HttpClient);
+  private appConfigService: AppConfigService = inject(AppConfigService);
 
   /**
    * Get Holdings by document pid and viewcode
@@ -54,7 +44,7 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
     documentPid: string, viewcode: string, page: number, itemsPerPage: number = 5): Observable<QueryResponse> {
     const query = `document.pid:${documentPid}
     AND ((holdings_type:standard AND public_items_count:[1 TO *]) OR holdings_type:serial)`;
-    return this._recordService
+    return this.recordService
     .getRecords(
       'holdings', query, page, itemsPerPage, undefined, { view: viewcode },
       BaseApi.reroJsonheaders, 'organisation_library_location'
@@ -69,11 +59,11 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
    * @return Observable - Check holding can be requested
    */
   canRequest(holdingPid: string, libraryPid: string, patronBarcode: string): Observable<HoldingCanRequest> {
-    const url = `${this._appConfigService.apiEndpointPrefix}/holding/${holdingPid}/can_request`;
+    const url = `${this.appConfigService.apiEndpointPrefix}/holding/${holdingPid}/can_request`;
     const params = new HttpParams()
       .set('library_pid', libraryPid)
       .set('patron_barcode', patronBarcode);
-    return this._httpClient.get<HoldingCanRequest>(url, { params });
+    return this.httpClient.get<HoldingCanRequest>(url, { params });
   }
 
   /**
@@ -82,8 +72,8 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
    * @return Observable - Create provisional item
    */
   request(data: { holding_pid: string, pickup_location_pid: string, description: string }): Observable<HoldingPatronRequest> {
-    const url = `${this._appConfigService.apiEndpointPrefix}/holding/patron_request`;
-    return this._httpClient.post<HoldingPatronRequest>(url, data);
+    const url = `${this.appConfigService.apiEndpointPrefix}/holding/patron_request`;
+    return this.httpClient.post<HoldingPatronRequest>(url, data);
   }
 
   /**
@@ -92,7 +82,7 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
    * @returns Observable of availability data
    */
   getAvailability(pid: string): Observable<IAvailability> {
-    const url = `${this._appConfigService.apiEndpointPrefix}/holding/${pid}/availability`;
-    return this._httpClient.get<IAvailability>(url);
+    const url = `${this.appConfigService.apiEndpointPrefix}/holding/${pid}/availability`;
+    return this.httpClient.get<IAvailability>(url);
   }
 }

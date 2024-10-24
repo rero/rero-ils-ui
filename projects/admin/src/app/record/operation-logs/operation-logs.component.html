@@ -15,48 +15,36 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="modal d-block" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-xl" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" translate>Operation history</h5>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="closeDialog()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body container">
-        @if (loadedRecord) {
-          @if (createRecord || records.length > 0) {
-            @if (createRecord) {
-              <ng-container [ngTemplateOutlet]="operationLog"
-                            [ngTemplateOutletContext]="{data: createRecord.metadata}">
-              </ng-container>
-            }
-            @if (recordTotals > 0) {
-              @for (record of records; track record) {
-                <ng-container [ngTemplateOutlet]="operationLog"
-                              [ngTemplateOutletContext]="{data: record.metadata}">
-                </ng-container>
-              }
-              @if (isLinkShowMore) {
-                <button type="button" class="btn btn-link pl-1" (click)="showMore()">
-                  <i class="fa fa-arrow-circle-o-down"></i> {{ 'Show more' | translate }}
-                </button>
-                @if (isLinkShowMore) {
-                  <small>({{ hiddenOperationLogs }})</small>
-                }
-              }
-            }
-          } @else {
-            {{ 'No history for this item' | translate }}
-          }
-
-        } @else {
-          <i class="fa fa-spinner fa-pulse"></i>
+<div class="w-full">
+  @if (loadedRecord) {
+    @if (createRecord || records.length > 0) {
+      @if (createRecord) {
+        <ng-container [ngTemplateOutlet]="operationLog"
+                      [ngTemplateOutletContext]="{data: createRecord.metadata}">
+        </ng-container>
+      }
+      @if (recordTotals > 0) {
+        @for (record of records; track record) {
+          <ng-container [ngTemplateOutlet]="operationLog"
+                        [ngTemplateOutletContext]="{data: record.metadata}">
+          </ng-container>
         }
-      </div>
-    </div>
-  </div>
+        @if (isLinkShowMore) {
+          <button type="button" class="btn btn-link pl-1" (click)="showMore()">
+            <i class="fa fa-arrow-circle-o-down"></i> {{ 'Show more' | translate }}
+          </button>
+          @if (isLinkShowMore) {
+            <small>({{ hiddenOperationLogs }})</small>
+          }
+        }
+      }
+    } @else {
+      {{ 'No history for this item' | translate }}
+    }
+
+  } @else {
+    <i class="fa fa-spinner fa-pulse"></i>
+  }
 </div>
 
 <ng-template #operationLog let-metadata=data>

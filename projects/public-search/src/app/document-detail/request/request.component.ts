@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { IPatron, UserService } from '@rero/shared';
 import { ItemApiService } from '../../api/item-api.service';
 import { HoldingsApiService } from '../../api/holdings-api.service';
@@ -24,6 +24,10 @@ import { HoldingsApiService } from '../../api/holdings-api.service';
   templateUrl: './request.component.html'
 })
 export class RequestComponent implements OnInit {
+
+  private itemApiService: ItemApiService = inject(ItemApiService);
+  private holdingsApiService: HoldingsApiService = inject(HoldingsApiService);
+  private userService: UserService = inject(UserService);
 
   /** Record: item or holding */
   @Input() record: any;
@@ -56,18 +60,6 @@ export class RequestComponent implements OnInit {
   get patron() {
     return this._patron !== undefined;
   }
-
-  /**
-   * Constructor
-   * @param itemApiService - ItemApiService
-   * @param holdingsApiService: HoldingsApiService
-   * @param userService - UserService
-   */
-  constructor(
-    private itemApiService: ItemApiService,
-    private holdingsApiService: HoldingsApiService,
-    private userService: UserService,
-  ) { }
 
   /** OnInit hook */
   ngOnInit(): void {

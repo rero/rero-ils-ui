@@ -16,6 +16,7 @@
  */
 
 import { marker as _ } from "@biesbjerg/ngx-translate-extract-marker";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 import {
   DetailComponent,
   EditorComponent,
@@ -30,13 +31,12 @@ import {
   PERMISSION_OPERATOR,
 } from "@rero/shared";
 import { of } from "rxjs";
-import { CanAccessGuard, CAN_ACCESS_ACTIONS } from "../guard/can-access.guard";
+import { map } from "rxjs/operators";
+import { CAN_ACCESS_ACTIONS, CanAccessGuard } from "../guard/can-access.guard";
 import { PermissionGuard } from "../guard/permission.guard";
 import { StatisticsCfgBriefViewComponent } from "../record/brief-view/statistics-cfg-brief-view-component";
 import { StatisticsCfgDetailViewComponent } from "../record/detail-view/statistics-cfg-detail-view/statistics-cfg-detail-view.component";
 import { BaseRoute } from "./base-route";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { map } from "rxjs/operators";
 
 export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
   /** Route name */
@@ -107,12 +107,12 @@ export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
             },
             canAdd: () =>
               of({
-                can: this._routeToolService.permissionsService.canAccess(
+                can: this.routeToolService.permissionsService.canAccess(
                   PERMISSIONS.STAT_CFG_CREATE
                 ),
               }),
             permissions: (record: any) =>
-              this._routeToolService.permissions(record, this.recordType),
+              this.routeToolService.permissions(record, this.recordType),
             formFieldMap: (
               field: FormlyFieldConfig,
               jsonSchema: JSONSchema7
@@ -120,9 +120,9 @@ export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
               return this._populateLocationsByCurrentUserLibrary(field, jsonSchema);
             },
             preCreateRecord: (data: any) => {
-              const { user } = this._routeToolService.userService;
+              const { user } = this.routeToolService.userService;
               data.library = {
-                $ref: this._routeToolService.apiService.getRefEndpoint(
+                $ref: this.routeToolService.apiService.getRefEndpoint(
                   "libraries",
                   user.currentLibrary
                 ),
@@ -151,16 +151,16 @@ export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
       field.hooks = {
         ...field.hooks,
         onInit: (field: FormlyFieldConfig): void => {
-          const { user } = this._routeToolService.userService;
-          const { baseUrl } = this._routeToolService.settingsService;
-          const prefix = this._routeToolService.apiService.getEndpointByType('libraries');
+          const { user } = this.routeToolService.userService;
+          const { baseUrl } = this.routeToolService.settingsService;
+          const prefix = this.routeToolService.apiService.getEndpointByType('libraries');
           if (user.currentLibrary != null && field.formControl.value == null) {
             field.formControl.setValue(
               `${baseUrl}${prefix}/${user.currentLibrary}`);
           }
         },
         afterContentInit: (f: FormlyFieldConfig) => {
-          const { apiService, recordService } = this._routeToolService;
+          const { apiService, recordService } = this.routeToolService;
 
           f.props.options = recordService
             .getRecords(
@@ -175,7 +175,7 @@ export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
             )
             .pipe(
               map((result: Record) =>
-                this._routeToolService.recordService.totalHits(
+                this.routeToolService.recordService.totalHits(
                   result.hits.total
                 ) === 0
                   ? []

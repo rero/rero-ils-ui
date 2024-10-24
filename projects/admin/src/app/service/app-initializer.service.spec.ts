@@ -19,7 +19,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule, UserService } from '@rero/shared';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { AppInitializerService } from './app-initializer.service';
 
 describe('Service: AppInit', () => {
@@ -32,7 +31,6 @@ describe('Service: AppInit', () => {
       ],
       providers: [
         AppInitializerService,
-        BsLocaleService,
         UserService
       ]
     });

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { AppSettingsService, IPatron } from '@rero/shared';
 
 @Component({
@@ -23,6 +23,8 @@ import { AppSettingsService, IPatron } from '@rero/shared';
   styleUrls: ['./patron-profile-personal.component.scss']
 })
 export class PatronProfilePersonalComponent {
+
+  private appSettingsService: AppSettingsService = inject(AppSettingsService);
 
   /** User record */
   @Input() user: any;
@@ -41,11 +43,4 @@ export class PatronProfilePersonalComponent {
   get disabledButtonOnReadyOnly(): boolean {
     return !this.appSettingsService.settings.userProfile.readOnly;
   }
-
-  /**
-   * Constructor
-   *
-   * @param appSettingsService - AppSettingsService
-   */
-  constructor(private appSettingsService: AppSettingsService) {}
 }

@@ -54,7 +54,7 @@
               <div class="col">
                 <input pInputText id="name" formControlName="name"
                         class="w-100" [class.ng-invalid]="name.invalid"
-                        placeholder="{{ 'Please insert a name' | translate }}"
+                        [placeholder]="'Please insert a name'|translate"
                         required
                 >
                 @if (name.invalid && (name.dirty || name.touched)) {
@@ -275,7 +275,8 @@
                         formControlName="delay"
                         [inputId]="$any(setting).controls.type.value + '-delay'"
                         [min]="0"
-                        pTooltip="{{ 'Sending how many minutes after the item is available' | translate }}" showDelay="1000"
+                        pTooltip="{{ 'Sending how many minutes after the item is available' | translate }}"
+                        tooltipPosition="top"
                       ></p-inputNumber>
                     </div>
                   }

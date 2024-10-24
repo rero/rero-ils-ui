@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
 
 @Component({
@@ -32,16 +32,12 @@ import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe'
 })
 export class EntityBriefViewRemotePersonComponent implements OnInit {
 
+  protected pipe: ExtractSourceFieldPipe = inject(ExtractSourceFieldPipe);
+
   @Input() record: any;
 
   dates: Array<string> = [];
   bibliographicInformation: string = null;
-
-  /**
-   * Constructor
-   * @param pipe - ExtractSourceFieldPipe
-   */
-  constructor(private pipe: ExtractSourceFieldPipe) {}
 
   ngOnInit(): void {
     this.dates = [

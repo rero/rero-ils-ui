@@ -17,33 +17,14 @@
 @if (canAdd) {
   <div class="row">
     <div class="col">
-      <div class="btn-group pull-right" dropdown>
-        <button [permissions]="[permissions.HOLD_CREATE, permissions.ITEM_CREATE]"
-                id="document-add-actions"
-                dropdownToggle
-                type="button"
-                class="btn btn-sm btn-outline-primary dropdown-toggle"
-                aria-controls="dropdown-animated">
-          {{ 'Add' | translate }}
-          <span class="caret"></span>
-        </button>
-        <ul id="document-add-actions-animated"
-           *dropdownMenu class="dropdown-menu dropdown-menu-right"
-           role="menu"
-           aria-labelledby="document-add-actions">
-          <li class="text-right" role="menuitem" [permissions]="permissions.ITEM_CREATE">
-            <a class="dropdown-item"
-               [routerLink]="['/', 'records', 'items', 'new']"
-               [queryParams]="{ document: document.metadata.pid }"
-               translate>an item</a>
-          </li>
-          <li class="text-right" role="menuitem" [permissions]="permissions.HOLD_CREATE">
-            <a class="dropdown-item"
-               [routerLink]="['/', 'records', 'holdings', 'new']"
-               [queryParams]="{ document: document.metadata.pid }"
-               translate>a holdings</a>
-          </li>
-        </ul>
+      <div class="btn-group pull-right">
+        <p-dropdown
+          [permissions]="[permissions.HOLD_CREATE, permissions.ITEM_CREATE]"
+          [options]="options"
+          optionLabel="name"
+          [placeholder]="'Add'|translate"
+          (onChange)="dropdownAction($event)"
+        />
       </div>
     </div>
   </div>

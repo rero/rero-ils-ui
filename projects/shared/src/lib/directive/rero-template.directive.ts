@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Directive, Input, TemplateRef } from '@angular/core';
+import { Directive, inject, Input, TemplateRef } from '@angular/core';
 
 /** See: https://github.com/primefaces/primeng/blob/master/src/app/components/api/shared.ts */
 
@@ -26,20 +26,15 @@ import { Directive, Input, TemplateRef } from '@angular/core';
 })
 export class ReroTemplateDirective {
 
+  public template: TemplateRef<any> = inject(TemplateRef);
+
   /** the template type. */
   @Input() type: string | undefined;
   /** the template name. */
   @Input('rTemplate') name: string | undefined;
 
-  /**
-   * constructor
-   * @param template: TemplateRef
-   */
-  constructor(public template: TemplateRef<any>) {}
-
   /** get the type of template. */
   getType(): string {
     return this.name!;
   }
-
 }

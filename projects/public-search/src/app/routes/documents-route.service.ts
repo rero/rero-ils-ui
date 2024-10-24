@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { TranslateService } from '@ngx-translate/core';
 import { EntityBriefViewComponent } from '@rero/shared';
 import { of } from 'rxjs';
 import { AppConfigService } from '../app-config.service';
@@ -32,6 +31,9 @@ import { ResourceRouteInterface } from './resource-route-interface';
   providedIn: 'root'
 })
 export class DocumentsRouteService extends BaseRoute implements ResourceRouteInterface {
+
+  private appConfigService: AppConfigService = inject(AppConfigService);
+  private route: ActivatedRoute = inject(ActivatedRoute);
 
   /** loaded configuration (viewcode) */
   private availableConfig = [];
@@ -49,20 +51,6 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
       defaultNoQuery: true
     }
   ];
-
-  /**
-   * Constructor
-   * @param translateService - TranslateService
-   * @param appConfigService - AppConfigService
-   * @param _route - ActivatedRoute
-   */
-  constructor(
-    translateService: TranslateService,
-    private appConfigService: AppConfigService,
-    private _route: ActivatedRoute
-  ) {
-    super(translateService);
-  }
 
   /**
    * Resource name of routes
@@ -113,7 +101,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
               aggregationsOrder: this.aggregations(viewcode),
               aggregationsExpand: () => {
                 const expand = ['document_type', 'fiction_statement'];
-                const queryParams = this._route.snapshot.queryParams;
+                const queryParams = this.route.snapshot.queryParams;
                 if (this.appConfigService.globalViewName === viewcode) {
                   if (queryParams.location || queryParams.library) {
                     expand.push('organisation');
@@ -256,7 +244,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
    */
   private _sortOptions() {
     const options = this._options;
-    this._translateService.onLangChange.subscribe((translate: any) => {
+    this.translateService.onLangChange.subscribe((translate: any) => {
       const key = options.findIndex((option: any) => option.label === 'Name');
       switch (translate.lang) {
         case 'de':

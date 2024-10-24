@@ -18,13 +18,18 @@
 @if (record$ | async; as record) {
   <!-- ROLLOVER INFO -->
   @if (!record.metadata.is_active) {
-    <div class="fiscal-year-closed" translate>Fiscal year closed</div>
+    <p-messages
+      [value]="[{ severity: 'warn', detail:'Fiscal year closed'|translate }]"
+      [closable]="false"
+      [enableService]="false"
+      showTransitionOptions="0ms"
+    />
   }
-  <header>
+  <header class="mb-3">
     <h1>{{ record.metadata.name }}</h1>
   </header>
   <section>
-    <dl class="row">
+    <dl class="grid">
       <dt class="col-3 label-title">Total</dt>
       <dd class="col-9">{{ totalAmount | currency:currencyCode:'symbol' }}</dd>
     </dl>

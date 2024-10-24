@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoanState } from '@app/admin/classes/loans';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -26,12 +26,26 @@ import { Subscription } from 'rxjs';
 import { OperationLogsApiService } from '../../../api/operation-logs-api.service';
 import { CirculationService } from '../../services/circulation.service';
 import { PatronTransactionService } from '../../services/patron-transaction.service';
+import { MenuItem } from 'primeng/api';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'admin-main',
   templateUrl: './main.component.html'
 })
 export class MainComponent implements OnInit, OnDestroy {
+
+  private route: ActivatedRoute = inject(ActivatedRoute);
+  private router: Router = inject(Router);
+  private patronService: PatronService = inject(PatronService);
+  private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
+  private organisationService: OrganisationService = inject(OrganisationService);
+  private hotKeysService: HotkeysService = inject(HotkeysService);
+  private translateService: TranslateService = inject(TranslateService);
+  private circulationService: CirculationService = inject(CirculationService);
+  private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
+  private recordService: RecordService = inject(RecordService);
+  private currencyPipe: CurrencyPipe = inject(CurrencyPipe);
 
   // COMPONENT ATTRIBUTES ====================================================
   /** shortcuts for patron tabs */
@@ -98,6 +112,9 @@ export class MainComponent implements OnInit, OnDestroy {
 
   historyCount = 0;
 
+  items: MenuItem[] | undefined;
+
+  activeItem: MenuItem | undefined;
 
   // GETTER & SETTER ====================================================
   /**
@@ -108,32 +125,6 @@ export class MainComponent implements OnInit, OnDestroy {
     return this.organisationService.organisation;
   }
 
-  // CONSTRUCTOR & HOOKS ====================================================
-  /**
-   * Constructor
-   * @param route - ActivatedRoute
-   * @param router - Router
-   * @param patronService - PatronService
-   * @param patronTransactionService - PatronTransactionService
-   * @param organisationService - OrganisationService
-   * @param hotKeysService - HotkeysService
-   * @param translateService - TranslateService
-   * @param circulationService - CirculationService
-   * @param recordService: RecordService
-   */
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private patronService: PatronService,
-    private patronTransactionService: PatronTransactionService,
-    private organisationService: OrganisationService,
-    private hotKeysService: HotkeysService,
-    private translateService: TranslateService,
-    private circulationService: CirculationService,
-    private operationLogsApiService: OperationLogsApiService,
-    private recordService: RecordService
-  ) { }
-
   /** OnInit hook */
   ngOnInit(): void {
     /** load patron if the barcode changes */
@@ -142,6 +133,12 @@ export class MainComponent implements OnInit, OnDestroy {
         this.load(data.barcode);
       }
     });
+  }
+
+  onActiveItemChange(event: MenuItem): void {
+    if (event) {
+      this.router.navigate(event.routerLink);
+    }
   }
 
   /** OnDestroy hook */
@@ -187,6 +184,7 @@ export class MainComponent implements OnInit, OnDestroy {
               this.feesTotalAmount = (total > 0) ? total : 0;
             }
           );
+          this.initializeMenu();
         });
       }
     });
@@ -218,17 +216,6 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Find and return a circulation statistic.
-   * @param type: the type of circulation statistics to find.
-   */
-  getCirculationStatistics(type: string): number {
-    const stats = this.circulationService?.circulationInformations?.statistics;
-    return stats && type in stats
-      ? stats[type]
-      : 0;
-  }
-
-  /**
    * Parse statistics from API into corresponding tab statistic.
    * @param data: a dictionary of loan state/value
    */
@@ -237,23 +224,89 @@ export class MainComponent implements OnInit, OnDestroy {
       switch (key) {
         case LoanState[LoanState.PENDING]:
         case LoanState[LoanState.ITEM_IN_TRANSIT_FOR_PICKUP]:
-          this.circulationService.incrementCirculationStatistic('pending', Number(data[key]));
+          this.circulationService.statisticsIncrease('pending', Number(data[key]));
           break;
         case LoanState[LoanState.ITEM_AT_DESK]:
-          this.circulationService.incrementCirculationStatistic('pickup',  Number(data[key]));
+          this.circulationService.statisticsIncrease('pickup',  Number(data[key]));
           break;
         case LoanState[LoanState.ITEM_ON_LOAN]:
-          this.circulationService.incrementCirculationStatistic('loans',  Number(data[key]));
+          this.circulationService.statisticsIncrease('loan',  Number(data[key]));
           break;
         case LoanState[LoanState.CANCELLED]:
         case LoanState[LoanState.ITEM_IN_TRANSIT_TO_HOUSE]:
         case LoanState[LoanState.ITEM_RETURNED]:
-          this.circulationService.incrementCirculationStatistic('history',  Number(data[key]));
+          this.circulationService.statisticsIncrease('history',  Number(data[key]));
           break;
         case 'ill_requests':
-          this.circulationService.incrementCirculationStatistic('ill', Number(data[key]));
+          this.circulationService.statisticsIncrease('ill', Number(data[key]));
           break;
       }
     }
+  }
+
+  private initializeMenu(): void {
+    this.items = [
+      {
+        id: 'loan',
+        label: this.translateService.instant('On loan'),
+        routerLink: ['/circulation', 'patron', this.barcode, 'loan'],
+        tag: {
+          severity: 'info',
+          statistics: this.circulationService.statistics
+        }
+      },
+      {
+        id: 'pickup',
+        label: this.translateService.instant('To pick up'),
+        routerLink: ['/circulation', 'patron', this.barcode, 'pickup'],
+        tag: {
+          severity: 'info',
+          statistics: this.circulationService.statistics
+        }
+      },
+      {
+        id: 'pending',
+        label: this.translateService.instant('Pending'),
+        routerLink: ['/circulation', 'patron', this.barcode, 'pending'],
+        tag: {
+          severity: 'info',
+          statistics: this.circulationService.statistics
+        }
+      },
+      {
+        id: 'ill',
+        label: this.translateService.instant('Interlibrary loan'),
+        routerLink: ['/circulation', 'patron', this.barcode, 'ill'],
+        tag: {
+          severity: 'info',
+          statistics: this.circulationService.statistics
+        }
+      },
+      {
+        id: 'profile',
+        label: this.translateService.instant('Profile'),
+        routerLink: ['/circulation', 'patron', this.barcode, 'profile']
+      },
+      {
+        id: 'fees',
+        label: this.translateService.instant('Fees'),
+        routerLink: ['/circulation', 'patron', this.barcode, 'fees'],
+        tag: {
+          severity: 'info',
+          value: this.currencyPipe.transform(this.feesTotalAmount, this.organisation.default_currency)
+        }
+      }
+    ];
+    if (this.patron.keep_history) {
+      this.items.push({
+        id: 'history',
+        label: this.translateService.instant('History'),
+        routerLink: ['/circulation', 'patron', this.barcode, 'history']
+      });
+    }
+
+    // Active the active tab
+    const index = this.items.findIndex((item) => item.id === this.router.url.split('/').pop());
+    this.activeItem = this.items[index];
   }
 }

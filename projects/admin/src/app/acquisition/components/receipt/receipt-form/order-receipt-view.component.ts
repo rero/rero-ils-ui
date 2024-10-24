@@ -14,12 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
-import { ToastrService } from 'ngx-toastr';
+import { CONFIG } from '@rero/ng-core';
+import { MessageService } from 'primeng/api';
 import { finalize, tap } from 'rxjs/operators';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { IAcqReceipt } from '../../../classes/receipt';
@@ -32,6 +33,14 @@ import { OrderReceiptForm } from './order-receipt-form';
   styleUrls: ['../../../acquisition.scss']
 })
 export class OrderReceiptViewComponent implements OnInit {
+
+  private route: ActivatedRoute = inject(ActivatedRoute);
+  private router: Router = inject(Router);
+  private orderReceipt: OrderReceipt = inject(OrderReceipt);
+  private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
+  private translateService: TranslateService = inject(TranslateService);
+  private orderReceiptForm: OrderReceiptForm = inject(OrderReceiptForm);
+  private messageService = inject(MessageService);
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** order pid */
@@ -68,27 +77,6 @@ export class OrderReceiptViewComponent implements OnInit {
     return this._fields;
   }
 
-  // CONSTRUCTOR & HOOKS ======================================================
-  /**
-   * Constructor
-   * @param route - ActivatedRoute
-   * @param router - Router
-   * @param orderReceipt - OrderReceipt
-   * @param acqReceiptApiService - AcqReceiptApiService
-   * @param toastrService - ToastrService
-   * @param translateService - TranslateService
-   * @param orderReceiptForm - OrderReceiptForm
-   */
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private orderReceipt: OrderReceipt,
-    private acqReceiptApiService: AcqReceiptApiService,
-    private toastrService: ToastrService,
-    private translateService: TranslateService,
-    private orderReceiptForm: OrderReceiptForm
-  ) {}
-
   /** OnInit hook */
   ngOnInit(): void {
     this.orderPid = this.route.snapshot.paramMap.get('pid');
@@ -112,15 +100,16 @@ export class OrderReceiptViewComponent implements OnInit {
       : this.acqReceiptApiService.updateReceipt(record.pid, record);
     receiptApi$
       .pipe(finalize(() => this.orderSend = false))
-      .subscribe(
-        (receipt: IAcqReceipt) => this.createLinesAndMessage(model, receipt),
-        (err) => {
-          this.toastrService.error(
-            err.title, this.translateService.instant('Receipt'),
-            { disableTimeOut: true, closeButton: true }
-          );
-        }
-      );
+      .subscribe({
+        next: (receipt: IAcqReceipt) => this.createLinesAndMessage(model, receipt),
+        error: (err) => this.messageService.add({
+          severity: 'error',
+          summary: this.translateService.instant('Receipt'),
+          detail: err.title,
+          sticky: true,
+          closable: true
+        })
+      });
   }
 
   // COMPONENT PRIVATE FUNCTIONS ==============================================
@@ -165,24 +154,30 @@ export class OrderReceiptViewComponent implements OnInit {
         .createReceiptLines(model.pid, lines)
         .subscribe((result: ICreateLineMessage) => {
           if (result.success) {
-            this.toastrService.success(
-              this.translateService.instant('Receipt operations were successful'),
-              this.translateService.instant('Receipt')
-            );
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translateService.instant('Receipt'),
+              detail: this.translateService.instant('Receipt operations were successful'),
+              life: CONFIG.MESSAGE_LIFE
+            });
           } else {
-            this.toastrService.error(
-              this.translateService.instant(result.messages),
-              this.translateService.instant('Receipt'),
-              {disableTimeOut: true, closeButton: true}
-            );
+            this.messageService.add({
+              severity: 'error',
+              summary: this.translateService.instant('Receipt'),
+              detail: this.translateService.instant(result.messages),
+              sticky: true,
+              closable: true
+            });
           }
           this.redirectToOrder();
         });
     } else {
-      this.toastrService.success(
-        this.translateService.instant('Receipt operations were successful'),
-        this.translateService.instant('Receipt')
-      );
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translateService.instant('Receipt'),
+        detail: this.translateService.instant('Receipt operations were successful'),
+        life: CONFIG.MESSAGE_LIFE
+      });
       this.redirectToOrder();
     }
   }

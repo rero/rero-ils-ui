@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import moment from 'moment';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { getBootstrapLevel } from '../../../utils/utils';
 import { CirculationService } from '../../services/circulation.service';
+import { DateTime } from 'luxon';
 
 @Component({
   selector: 'admin-circulation-patron-detailed',
@@ -25,6 +25,8 @@ import { CirculationService } from '../../services/circulation.service';
   styleUrls: ['./card.component.scss']
 })
 export class CardComponent {
+
+  private circulationService: CirculationService = inject(CirculationService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the patron */
@@ -53,34 +55,25 @@ export class CardComponent {
   /** Get the patron age */
   get patronAge(): number {
     if (this.patron && this.patron.birth_date) {
-      return moment().diff(this.patron.birth_date, 'years');
+      const birthDate = DateTime.fromISO(this.patron.birth_date);
+      return Math.floor(DateTime.now().diff(birthDate, 'years').years);
     }
   }
 
   /** Defined if it's the birthday of the patron */
   get isBirthday(): boolean {
     if (this.patron && this.patron.birth_date) {
-      const today = moment().format('YYYY-MM-DD');
-      const age = moment(today).diff(this.patron.birth_date, 'years', true);
-      return age % 1 === 0;
+      const today = DateTime.fromISO(DateTime.now().toFormat('yyyy-M-d'));
+      const birthDate = DateTime.fromISO(this.patron.birth_date);
+      return today.diff(birthDate, 'years').years % 1 === 0;
     }
     return false;
   }
 
   /** Get the circulation messages about the loaded patron if exists */
   get circulationMessages(): Array<{type: string, content: string}> {
-    return (this.circulationService.hasOwnProperty('circulationInformations'))
-      ? this.circulationService.circulationInformations.messages
-      : [];
+    return this.circulationService.messages();
   }
-
-  // CONSTRUCTOR ==============================================================
-  /**
-   * constructor
-   * @param circulationService - CirculationService
-   */
-  constructor(private circulationService: CirculationService) {}
-
 
   // COMPONENT FUNCTIONS ======================================================
   /** Clear current patron */

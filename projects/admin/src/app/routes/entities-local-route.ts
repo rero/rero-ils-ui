@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ export class EntitiesLocalRoute extends BaseRoute implements RouteInterface {
             index: this.name,
             label: _('Local entities'),
             detailComponent: EntitiesLocalDetailViewComponent,
-            permissions: (record: any) => this._routeToolService.permissions(record, this.recordType),
+            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
             redirectUrl: (record: any, action: string) => action === 'delete'
               ? of('/records/entities')
               : of(`/records/${this.recordType}/detail/${record.metadata.pid}`)

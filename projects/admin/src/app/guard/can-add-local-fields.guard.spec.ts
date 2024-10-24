@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,13 +17,11 @@
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { BsModalService } from 'ngx-bootstrap/modal';
 import { userTestingService } from 'projects/admin/tests/utils';
 import { of } from 'rxjs';
 import { LocalFieldApiService } from '../api/local-field-api.service';
@@ -51,13 +49,12 @@ describe('CanAddLocalFieldsGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule.withRoutes(routes),
+        RouterModule.forRoot(routes),
         HttpClientTestingModule,
         TranslateModule.forRoot(),
         CoreModule
       ],
       providers: [
-        BsModalService,
         { provide: UserService, useValue: userTestingService }
       ]
     });

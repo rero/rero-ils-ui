@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { OperationLogsApiService } from '@app/admin/api/operation-logs-api.service';
 import { ProvisionActivityType } from '@rero/shared';
 
@@ -24,6 +24,8 @@ import { ProvisionActivityType } from '@rero/shared';
   templateUrl: './history-log.component.html'
 })
 export class HistoryLogComponent {
+
+  private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
 
   /** Log to display */
   @Input() log: any;
@@ -37,16 +39,10 @@ export class HistoryLogComponent {
   /** Checkout record operation logs */
   checkout: any = null;
 
-  /**
-   * Constructor
-   * @param operationLogsApiService - OperationLogsApiService
-   */
-  constructor(private _operationLogsApiService: OperationLogsApiService) {}
-
   /** Load checkout */
   loadCheckout() {
     if (this.checkout === null) {
-      this._operationLogsApiService
+      this.operationLogsApiService
         .getHistoryByLoanPid(this.log.metadata.loan.pid, 'checkout')
         .subscribe((log: any) => {
           this.checkout = log;

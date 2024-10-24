@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,9 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -27,33 +26,24 @@ import { catchError, map } from 'rxjs/operators';
 })
 export class LibraryGuard  {
 
-  /**
-   * Constructor
-   * @param _recordService - RecordService
-   * @param _userService - UserService
-   * @param _router - Router
-   */
-  constructor(
-    protected _recordService: RecordService,
-    protected _userService: UserService,
-    protected _router: Router
-  ) {}
+  protected userService: UserService = inject(UserService);
+  protected router: Router = inject(Router);
 
   /**
    * Check if the current logged user is linked to the same library than the desired resource.
    * If access is denied --> 403 : forbidden
-   * If error occcured --> 500 : Internal server error
+   * If error occurred --> 500 : Internal server error
    */
   canActivate(next: ActivatedRouteSnapshot): Observable<boolean> {
     return this.getOwningLibrary$(next).pipe(
       map((owningLibrary: string) => {
-        if (owningLibrary !== this._userService.user.currentLibrary) {
-          this._router.navigate(['/errors/403'], { skipLocationChange: true });
+        if (owningLibrary !== this.userService.user.currentLibrary) {
+          this.router.navigate(['/errors/403'], { skipLocationChange: true });
           return false;
         }
         return true;
       }),
-      catchError(() => this._router.navigate(['/errors/500'], { skipLocationChange: true }))
+      catchError(() => this.router.navigate(['/errors/500'], { skipLocationChange: true }))
     );
   }
 

@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
 import { TranslateService } from '@ngx-translate/core';
-import { ToastrService } from 'ngx-toastr';
+import { CONFIG } from '@rero/ng-core';
+import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -30,11 +30,10 @@ import { Subscription } from 'rxjs';
 })
 export class FilesCollectionsComponent implements OnInit, OnDestroy {
 
-  //-------------- Services ------------------
-  private resourcesFilesService = inject(ResourcesFilesService);
-  private toastrService = inject(ToastrService);
-  private translateService = inject(TranslateService);
-  private organisationService = inject(OrganisationService);
+  private messageService: MessageService = inject(MessageService);
+  private resourcesFilesService: ResourcesFilesService = inject(ResourcesFilesService);
+  private translateService: TranslateService = inject(TranslateService);
+  private organisationService: OrganisationService = inject(OrganisationService);
 
   // current record
   record: any;
@@ -104,6 +103,11 @@ export class FilesCollectionsComponent implements OnInit, OnDestroy {
       .updateParentRecordMetadata(this.record.id, { metadata: metadata })
       .subscribe((record) => this.setRecord(record));
     this.collections.markAsPristine();
-    this.toastrService.success(this.translateService.instant('Collections have been saved successfully.'));
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translateService.instant('File'),
+      detail: this.translateService.instant('Collections have been saved successfully.'),
+      life: CONFIG.MESSAGE_LIFE
+    });
   }
 }

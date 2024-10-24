@@ -66,23 +66,21 @@
               <div class="col-1 actions text-right">
                 @if (permissions) {
                   <shared-action-button
+                    icon="fa fa-pencil"
                     [title]="'Edit' | translate"
-                    [class]="'btn-outline-primary mr-1'"
+                    class="mr-1"
                     [disabled]="!permissions.update.can"
-                    [url]="['/records', 'acq_receipt_lines', 'edit', line.pid]"
+                    [routerLink]="['/records', 'acq_receipt_lines', 'edit', line.pid]"
                     [message]="editInfoMessage"
-                  >
-                    <i class="fa fa-pencil"></i>
-                  </shared-action-button>
+                  />
                   <shared-action-button
+                    icon="fa fa-trash"
                     [title]="'Delete' | translate"
-                    [class]="'btn-outline-danger'"
+                    severity="danger"
                     [disabled]="!permissions.delete.can"
                     [message]="deleteInfoMessage"
                     (btnClick)="deleteReceiptLine(line)"
-                  >
-                    <i class="fa fa-trash"></i>
-                  </shared-action-button>
+                  />
                 }
               </div>
             } @else {

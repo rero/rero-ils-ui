@@ -18,7 +18,7 @@
 @defer (when isLoading) {
   @if (localFields.length > 0) {
     <div class="container-fluid">
-      <dl class="row">
+      <dl class="grid">
         @for (field of localFields; track field) {
           <dt class="col-2 label-title" translate>{{ 'local_' + field.name }}</dt>
           <dd class="col-10">{{ field.value | join:'; ' }}</dd>
@@ -28,25 +28,25 @@
       <div class="mt-2">
         @if (recordPermissions) {
           @if (recordPermissions.update.can) {
-            <button
+            <p-button
+              icon="fa fa-pencil"
+              [label]="'Edit'|translate"
+              [outlined]="true"
               [routerLink]="['/records', 'local_fields', 'edit', localFieldRecordPid]"
               [queryParams]="{ type: resourceType, ref: resourcePid }"
-              class="btn btn-sm btn-outline-primary ml-1"
-              name="edit"
-              type="button"
-              title="{{ 'Edit' | translate }}"
-            >
-              <i class="fa fa-pencil"></i> {{ 'Edit' | translate }}
-            </button>
+              size="small"
+              styleClass="mr-1"
+            />
           }
           @if (recordPermissions.delete.can) {
-            <button
-              class="btn btn-sm btn-outline-danger ml-1"
-              title="{{ 'Delete' | translate }}"
-              (click)="delete()"
-            >
-              <i class="fa fa-trash"></i> {{ 'Delete' | translate }}
-            </button>
+            <p-button
+              icon="fa fa-trash"
+              [label]="'Delete'|translate"
+              severity="danger"
+              [outlined]="true"
+              size="small"
+              (onClick)="delete()"
+            />
           }
         } @else {
           &nbsp;
@@ -55,14 +55,13 @@
     </div>
   } @else {
     <div class="text-right">
-      <a
+      <p-button
+        icon="fa fa-plus-square-o"
+        [label]="'Add local fields'|translate"
+        [outlined]="true"
         [routerLink]="['/records', 'local_fields', 'new']"
         [queryParams]="{ type: resourceType, ref: resourcePid }"
-        class="btn btn-sm btn-outline-primary"
-        [permissions]="permissions.LOFI_CREATE"
-      >
-        <i class="fa fa-plus-square-o"></i> {{ 'Add local fields' | translate }}
-      </a>
+      />
     </div>
   }
 

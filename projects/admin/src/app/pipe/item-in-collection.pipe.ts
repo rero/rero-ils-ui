@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -25,11 +25,7 @@ import { map } from 'rxjs/operators';
 })
 export class ItemInCollectionPipe implements PipeTransform {
 
-  /**
-   * Constructor
-   * @param _recordService - RecordService
-   */
-  constructor(private _recordService: RecordService) {}
+  private recordService: RecordService = inject(RecordService);
 
   /**
    * Get Exhibition/course for current item
@@ -37,7 +33,7 @@ export class ItemInCollectionPipe implements PipeTransform {
    * @returns Observable
    */
   transform(itemPid: string): Observable<[] | null> {
-    return this._recordService.getRecords(
+    return this.recordService.getRecords(
       'collections',
       `items.pid:${itemPid} AND published:true`,
       1,
@@ -48,7 +44,7 @@ export class ItemInCollectionPipe implements PipeTransform {
       'title'
     ).pipe(
       map((result: any) => {
-        return (this._recordService.totalHits(result.hits.total) === 0)
+        return (this.recordService.totalHits(result.hits.total) === 0)
           ? null
           : result.hits.hits;
       })

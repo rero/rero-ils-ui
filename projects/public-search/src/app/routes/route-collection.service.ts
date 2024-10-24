@@ -1,6 +1,6 @@
 /*
 * RERO ILS UI
-* Copyright (C) 2020 RERO
+* Copyright (C) 2020-2024 RERO
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { Injectable, InjectionToken, Injector } from '@angular/core';
+import { inject, Injectable, InjectionToken, Injector } from '@angular/core';
 import { ResourceRouteInterface } from './resource-route-interface';
 
 // Pattern to find all route(s) service into the dependency injection
@@ -27,20 +27,16 @@ export const resourceRouteToken = new InjectionToken<ResourceRouteInterface[]>
 })
 export class RouteCollectionService {
 
+  private injector: Injector = inject(Injector);
+
   /** Available resources route config */
   private resourcesAvailable = {};
-
-  /**
-   * Constructor
-   * @param _injector - Injector
-   */
-  constructor(private _injector: Injector) { }
 
   /**
    * Get Route Service implemented with ResourceRouteInterface
    */
   load() {
-    const routes = this._injector.get(resourceRouteToken);
+    const routes = this.injector.get(resourceRouteToken);
     routes.map((route: ResourceRouteInterface) => {
       route.getResources().map((resource: string) => {
         this.resourcesAvailable[resource] = route;

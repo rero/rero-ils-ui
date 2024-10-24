@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,23 +17,32 @@
  */
 
 import { NgModule } from '@angular/core';
+import { NgCoreFormlyRemoteAutocompleteModule } from '@rero/ng-core';
 import { AccordionModule } from 'primeng/accordion';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ChipsModule } from 'primeng/chips';
 import { DividerModule } from 'primeng/divider';
 import { DragDropModule } from 'primeng/dragdrop';
 import { DropdownModule } from 'primeng/dropdown';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
+import { MessagesModule } from 'primeng/messages';
 import { PanelModule } from 'primeng/panel';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TabViewModule } from 'primeng/tabview';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { CardModule } from 'primeng/card';
+import { TableModule } from 'primeng/table';
+import { FieldsetModule } from 'primeng/fieldset';
 
 @NgModule({
   exports: [
+    AutoCompleteModule,
     AccordionModule,
     ChipsModule,
     DividerModule,
@@ -47,7 +56,14 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
     PanelModule,
     SkeletonModule,
     TagModule,
-    TooltipModule
+    TooltipModule,
+    NgCoreFormlyRemoteAutocompleteModule,
+    RadioButtonModule,
+    MessagesModule,
+    TabViewModule,
+    CardModule,
+    TableModule,
+    FieldsetModule
   ]
 })
 export class PrimengImportModule { }

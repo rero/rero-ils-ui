@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
@@ -30,6 +30,9 @@ import { IAcqReceipt } from '../../../classes/receipt';
 })
 export class OrderSummaryComponent implements OnInit, OnDestroy {
 
+  private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
+  private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
+
   // COMPONENTS ATTRIBUTES ====================================================
   @Input() order: IAcqOrder;
 
@@ -38,18 +41,6 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
 
   /** all component subscription */
   private subscriptions = new Subscription();
-
-  // CONSTRUCTOR & HOOKS ======================================================
-
-  /**
-   * Constructor
-   * @param acqOrderApiService - AcqOrderApiService
-   * @param acqReceiptApiService - AcqReceiptApiService
-   */
-  constructor(
-    private acqOrderApiService: AcqOrderApiService,
-    private acqReceiptApiService: AcqReceiptApiService
-  ) { }
 
   /** OnInit hook */
   ngOnInit(): void {

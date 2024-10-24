@@ -14,27 +14,24 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 @if (reports?.length) {
-  <table class="mt-4 table table-striped">
-    <tbody>
-      @for (report of reports; track report) {
-        <tr>
-          <th>
-              <a class="pl-2" target="_blank" [href]="getReportUrl(report.metadata.pid)">
-              {{ report.created | dateTranslate: 'longDate' }}
-              <i class="pl-1 fa fa-external-link"></i>
-            </a>
-          </th>
-          <td class="text-right">
-            <a class="btn btn-link btn-outline-primary" [href]="getReportUrl(report.metadata.pid)+'?format=csv'">
-              <i class="fa fa-download"></i>
-            </a>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
+  <p-table [value]="reports" styleClass="p-datatable-striped" >
+    <ng-template pTemplate="body" let-report>
+      <tr>
+        <td>
+            <a class="pl-2" target="_blank" [href]="getReportUrl(report.metadata.pid)">
+            {{ report.created | dateTranslate: 'longDate' }}
+            <i class="pl-1 fa fa-external-link"></i>
+          </a>
+        </td>
+        <td class="text-right">
+          <a class="btn btn-link btn-outline-primary" [href]="getReportUrl(report.metadata.pid)+'?format=csv'">
+            <i class="fa fa-download"></i>
+          </a>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 } @else {
   <p class="m-0 px-4 py-2 text-muted" translate>No result</p>
 }

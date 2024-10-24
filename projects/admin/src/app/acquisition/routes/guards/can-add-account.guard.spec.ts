@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022 RERO
+ * Copyright (C) 2022-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,11 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
 import { CanAddAccountGuard } from './can-add-account.guard';
@@ -40,7 +38,7 @@ describe('CanAddAccountGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule.withRoutes(routes),
+        RouterModule.forRoot(routes),
         HttpClientTestingModule,
         TranslateModule.forRoot()
       ]

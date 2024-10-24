@@ -1,5 +1,5 @@
 <!--
-  RERO angular core
+  RERO ILS UI
   Copyright (C) 2020-2024 RERO
   Copyright (C) 2020-2023 UCLouvain
 
@@ -15,50 +15,41 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <form [formGroup]="formGroup" (ngSubmit)="onSubmitForm()">
-  <div class="modal-header">
-    <h5 class="modal-title" translate>Choose a due date</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-      <span aria-hidden="true" data-dismiss="modal" (click)="closeModal()">&times;</span>
-    </button>
+  <div class="form-group">
+    <p-calendar
+      id="end-date"
+      formControlName="endDate"
+      [showIcon]="true"
+      [iconDisplay]="'input'"
+      firstDayOfWeek="1"
+      [ngClass]="{'is-invalid': formGroup.controls.endDate.touched && formGroup.controls.endDate.invalid}"
+      [readonlyInput]="true"
+      [disabledDays]="disabledDays"
+      [minDate]="today"
+    />
+    @if (formGroup.controls.endDate.valid || !formGroup.controls.endDate.touched) {
+      <small class="form-text text-warning">
+        <i class="fa fa-exclamation-triangle pr-1"></i>
+        {{ 'This date will override the circulation policy behavior' | translate }}
+      </small>
+    }
+    @if (formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('required')) {
+      <ng-container [ngTemplateOutlet]="errorMessage"
+                    [ngTemplateOutletContext]="{message: 'The field is required' | translate}">
+      </ng-container>
+    }
+    @if (formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('minimum-date')) {
+      <ng-container [ngTemplateOutlet]="errorMessage"
+                    [ngTemplateOutletContext]="{message: 'Selected date cannot be in the past.' | translate}">
+      </ng-container>
+    }
   </div>
-  <div class="modal-body">
-    <div class="form-group">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <i class="fa fa-calendar input-group-text"></i>
-        </div>
-        <input type="text" class="form-control"
-               [ngClass]="{'is-invalid': formGroup.controls.endDate.touched && formGroup.controls.endDate.invalid}"
-               id="end-date" formControlName="endDate" aria-describedby="endDateHelp"
-               bsDatepicker required autocomplete="off"
-               [bsConfig]="bsConfig"
-        >
-      </div>
-      @if (formGroup.controls.endDate.valid || !formGroup.controls.endDate.touched) {
-        <small class="form-text text-warning">
-          <i class="fa fa-exclamation-triangle pr-1"></i>
-          {{ 'This date will override the circulation policy behavior' | translate }}
-        </small>
-      }
-      @if (formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('required')) {
-        <ng-container [ngTemplateOutlet]="errorMessage"
-                      [ngTemplateOutletContext]="{message: 'The field is required' | translate}">
-        </ng-container>
-      }
-      @if (formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('minimum-date')) {
-        <ng-container [ngTemplateOutlet]="errorMessage"
-                      [ngTemplateOutletContext]="{message: 'Selected date cannot be in the past.' | translate}">
-        </ng-container>
-      }
-    </div>
-    <div class="form-group form-check">
-      <input type="checkbox" class="form-check-input" id="remember" formControlName="remember">
-      <label class="form-check-label" for="remember" translate>Remember this date in current session</label>
-    </div>
-    {{ formGroup.controls.endDate['errorMessages'] | json }}
+  <div class="form-group form-check">
+    <input type="checkbox" class="form-check-input" id="remember" formControlName="remember">
+    <label class="form-check-label" for="remember" translate>Remember this date in current session</label>
   </div>
+  {{ formGroup.controls.endDate['errorMessages'] | json }}
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-danger" (click)="closeModal()" translate>Cancel</button>
     <button type="submit" class="btn btn-primary" [disabled]="this.formGroup.invalid" translate>Apply</button>

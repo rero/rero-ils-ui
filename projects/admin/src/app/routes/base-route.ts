@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { inject } from '@angular/core';
 import { UrlSegment } from '@angular/router';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { ActionStatus, extractIdOnRef } from '@rero/ng-core';
@@ -22,19 +23,13 @@ import { RouteToolService } from './route-tool.service';
 
 export class BaseRoute {
 
+  protected routeToolService: RouteToolService = inject(RouteToolService);
+
   /** Disabled action */
   readonly DISABLED = (): Observable<ActionStatus> => of({
     can: false,
     message: ''
   })
-
-  /**
-   * Constructor
-   * @param _routeToolService - RouteToolService
-   */
-  constructor(
-    protected _routeToolService: RouteToolService
-  ) { }
 
   /**
    * Route matcher
@@ -132,7 +127,7 @@ export class BaseRoute {
       // url: {
       //   external: true,
       //   link: this._expertSearchLink(),
-      //   title: this._routeToolService.translateService.instant('Link to expert search help')
+      //   title: this.routeToolService.translateService.instant('Link to expert search help')
       // }
     };
   }
@@ -143,7 +138,7 @@ export class BaseRoute {
    * @returns Observable boolean
    */
   protected canRead(record: any) {
-    const organisationPid = this._routeToolService.userService.user
+    const organisationPid = this.routeToolService.userService.user
       .currentOrganisation;
     const recordOrganisationPid = ('organisation' in record.metadata)
       ? record.metadata.organisation.pid
@@ -162,8 +157,8 @@ export class BaseRoute {
       // TODO: Add other paths
     };
     const availableLanguages = Object.keys(searchPaths);
-    return (this._routeToolService.translateService.currentLang in availableLanguages)
-      ? searchPaths[this._routeToolService.translateService.currentLang]
+    return (this.routeToolService.translateService.currentLang in availableLanguages)
+      ? searchPaths[this.routeToolService.translateService.currentLang]
       : defaultPath;
     }
  }

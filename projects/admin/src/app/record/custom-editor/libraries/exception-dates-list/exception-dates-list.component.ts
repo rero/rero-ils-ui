@@ -14,12 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input } from '@angular/core';
 import { ExceptionDates, Library } from '@app/admin/classes/library';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ExceptionDatesEditComponent } from '../exception-dates-edit/exception-dates-edit.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-libraries-exception-dates-list',
@@ -27,43 +26,47 @@ import { ExceptionDatesEditComponent } from '../exception-dates-edit/exception-d
 })
 export class ExceptionDatesListComponent {
 
-  bsModalRef: BsModalRef;
+  private dialogService: DialogService = inject(DialogService);
+  private changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private translateService: TranslateService = inject(TranslateService);
 
-  @Input() exceptionDates;
+  private dynamicDialogRef: DynamicDialogRef | undefined;
 
-  constructor(
-    private modalService: BsModalService,
-    private ref: ChangeDetectorRef
-    ) { }
+  @Input() exceptionDates = [];
 
-  addException() {
-    this.bsModalRef = this.modalService.show(ExceptionDatesEditComponent, {
-      initialState: {exceptionDate: null},
-      class: 'modal-lg',
-      backdrop: 'static'
+  addException(): void {
+    this.dynamicDialogRef = this.dialogService.open(ExceptionDatesEditComponent, {
+      header: this.translateService.instant('Exception'),
+      width: '50vw',
+      data: {
+        exceptionDate: null
+      }
     });
-
-    this.bsModalRef.content.value.subscribe(value => {
-      this.exceptionDates.push(value);
-      // force ui update
-      this.ref.markForCheck();
-    });
-  }
-
-  editException(index) {
-    this.bsModalRef = this.modalService.show(ExceptionDatesEditComponent, {
-      initialState: {exceptionDate: this.exceptionDates[index]},
-      class: 'modal-lg',
-      backdrop: 'static'
-    });
-    this.bsModalRef.content.value.subscribe(value => {
-      this.exceptionDates[index] = value;
-      // force ui update
-      this.ref.markForCheck();
+    this.dynamicDialogRef.onClose.subscribe((value?: any) => {
+      if (value) {
+        this.exceptionDates.push(value);
+        // force ui update
+        this.changeDetectorRef.markForCheck();
+      }
     });
   }
 
-  deleteException(index) {
+  editException(index: number): void {
+    this.dynamicDialogRef = this.dialogService.open(ExceptionDatesEditComponent, {
+      data: {
+        exceptionDate: this.exceptionDates[index]
+      }
+    });
+    this.dynamicDialogRef.onClose.subscribe((value?: any) => {
+      if (value) {
+        this.exceptionDates[index] = value;
+        // force ui update
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+  }
+
+  deleteException(index: number): void {
     this.exceptionDates.splice(index, 1);
   }
 
