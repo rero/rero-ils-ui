@@ -1,5 +1,20 @@
 # Changelog
 
+## [v17.2.0](https://github.com/rero/rero-ils-ui/tree/v17.2.0) (2024-10-25)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v17.1.1...v17.2.0)
+
+**New features:**
+* migrations: create the migration module [\#1208](https://github.com/rero/rero-ils-ui/pull/1208) (by @jma)
+* feat(circulation): enhance enumeration and chronology display [\#1194](https://github.com/rero/rero-ils-ui/pull/1194) (by @PascalRepond)
+
+**Enhancements:**
+* refactor(entity): add identifiedBy on all ressources [\#1196](https://github.com/rero/rero-ils-ui/pull/1196) (by @Garfield-fr)
+
+**Fixes:**
+* fix(entities): add fields in pro detailed view [\#1195](https://github.com/rero/rero-ils-ui/pull/1195) (by @PascalRepond)
+* fix(thumbnail): display by isbn if no link [\#1205](https://github.com/rero/rero-ils-ui/pull/1205) (by @Garfield-fr)
+
 ## [v17.1.1](https://github.com/rero/rero-ils-ui/tree/v17.1.1) (2024-08-26)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v17.1.0...v17.1.1)
