@@ -58,6 +58,7 @@ import { StatusBadgePipe } from 'projects/public-search/src/app/pipe/status-badg
 import { Observable } from 'rxjs';
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
+import { TabViewModule } from 'primeng/tabview';
 
 /** function to instantiate the application  */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
@@ -98,6 +99,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     CoreModule,
     RecordModule,
     ReactiveFormsModule,
+    TabViewModule,
     TranslateModule.forRoot({
       loader: {
         provide: BaseTranslateLoader,

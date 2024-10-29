@@ -15,70 +15,66 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ngx-loading-bar [includeSpinner]="false" height="3px"></ngx-loading-bar>
-@if (user) {
-  @if (user.isAuthenticated && user.isPatron) {
-    <header>
-      <h3>{{ fullname }}</h3>
-    </header>
-    <section class="mt-2">
-      <public-search-patron-profile-menu patronPid="{{ patron.pid }}"></public-search-patron-profile-menu>
-    </section>
-    <section class="mt-3">
-      <public-search-patron-profile-message></public-search-patron-profile-message>
-    </section>
-    <section class="mt-3">
-      <tabset #staticTabs>
-        <tab id="profile-loans">
-          <ng-template tabHeading>
-            {{ 'Loans' | translate }}
-            <span class="badge badge-info">{{ tabs.loan.count }}</span>
-            @if (loansFeesTotal > 0) {
-              <span class="badge badge-warning font-weight-normal ml-1" title="{{ 'Fees to date' | translate }}">
-                {{ loansFeesTotal | currency:patron.organisation.currency:'symbol' }}
-              </span>
-            }
-          </ng-template>
-          <public-search-patron-profile-loans [count]="tabs.loan.count"></public-search-patron-profile-loans>
-        </tab>
-        <tab (selectTab)="selectTab('request')">
-          <ng-template tabHeading>
-            {{ 'Requests' | translate }}
-            <span class="badge badge-info">{{ tabs.request.count }}</span>
-          </ng-template>
-          <public-search-patron-profile-requests></public-search-patron-profile-requests>
-        </tab>
-        <tab (selectTab)="selectTab('fee')">
-          <ng-template tabHeading>
-            {{ 'Fees' | translate }}
-            <span class="badge badge-warning font-weight-normal">
-              {{ feeTotal | currency:patron.organisation.currency:'symbol' }}
-            </span>
-          </ng-template>
-          <public-search-patron-profile-fees [feesTotal]="feeTotal"></public-search-patron-profile-fees>
-        </tab>
-        <tab (selectTab)="selectTab('history')" [customClass]="showHideHistory">
-          <ng-template tabHeading>
-            {{ 'History' | translate }}
-            <span class="badge badge-info">{{ tabs.history.count }}</span>
-          </ng-template>
-          <public-search-patron-profile-histories></public-search-patron-profile-histories>
-        </tab>
-        <tab (selectTab)="selectTab('illRequest')">
-          <ng-template tabHeading>
-            {{ 'Interlibrary loan' | translate }}
-            <span class="badge badge-info">{{ tabs.illRequest.count }}</span>
-          </ng-template>
-          <public-search-patron-profile-ill-requests></public-search-patron-profile-ill-requests>
-        </tab>
-        <tab heading="{{ 'Personal details' | translate }}">
-          <public-search-patron-profile-personal [user]="user" [patron]="patron" [viewcode]="viewcode"></public-search-patron-profile-personal>
-        </tab>
-      </tabset>
-    </section>
-  } @else {
-    <div class="text-center">
-      <h3 class="mt-4 mb-4" translate>Access denied</h3>
-      {{ 'You are not identified as a patron.' | translate }}
-    </div>
-  }
+@if (user) { @if (user.isAuthenticated && user.isPatron) {
+<header>
+  <h3>{{ fullname }}</h3>
+</header>
+<section class="mt-2">
+  <public-search-patron-profile-menu
+    patronPid="{{ patron.pid }}"
+  ></public-search-patron-profile-menu>
+</section>
+<section class="mt-3">
+  <public-search-patron-profile-message></public-search-patron-profile-message>
+</section>
+@for (tab of tabs|keyvalue: sortTabs; track tab) {
+  {{tab.key}}
 }
+<section class="mt-3">
+  <p-tabView (onChange)="tabOnChange($event)">
+
+@for (tab of tabs|keyvalue: sortTabs; track tab.key) {
+  <p-tabPanel>
+    <ng-template pTemplate="header">
+    {{tab.value.title}}
+    @if (tab.value.count != null) {
+        <p-badge class="ml-1" [value]="tab.value.count" severity="info"/>
+    }
+    @if (tab.value.feeTotal != null) {
+        <p-badge class="ml-1" [value]="tab.value.feeTotal  | currency : patron.organisation.currency : 'symbol'" severity="warning"/>
+    }
+  </ng-template>
+  @switch(tab.key) {
+    @case ('loan') {
+      <public-search-patron-profile-loans [count]="tab.value.count" />
+    }
+    @case ('request') {
+      <public-search-patron-profile-requests />
+    }
+    @case ('fee') {
+      <public-search-patron-profile-fees [feesTotal]="tab.value.feeTotal" />
+    }
+    @case ('history') {
+      <public-search-patron-profile-histories />
+    }
+    @case ('illRequest') {
+      <public-search-patron-profile-ill-requests />
+    }
+    @case ('personalDetails') {
+      <public-search-patron-profile-personal
+        [user]="user"
+        [patron]="patron"
+        [viewcode]="viewcode"
+      />
+    }
+  }
+  </p-tabPanel>
+}
+  </p-tabView>
+</section>
+} @else {
+<div class="text-center">
+  <h3 class="mt-4 mb-4" translate>Access denied</h3>
+  {{ "You are not identified as a patron." | translate }}
+</div>
+} }

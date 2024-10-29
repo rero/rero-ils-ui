@@ -23,7 +23,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PrimengImportModule } from '@app/admin/shared/primeng-import/primeng-import.module';
-import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldSelect } from '@ngx-formly/primeng/select';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
@@ -38,7 +37,6 @@ import {
 } from '@rero/ng-core';
 import { AppSettingsService, ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MenubarModule } from 'primeng/menubar';
 import { TableModule } from "primeng/table";
@@ -52,7 +50,6 @@ import { AppComponent } from './app.component';
 import { IssueEmailComponent } from './components/issues/issue-email/issue-email.component';
 import { ItemSwitchLocationStandaloneComponent } from './components/items/switch-location/item-switch-location-standalone/item-switch-location-standalone.component';
 import { ItemSwitchLocationComponent } from './components/items/switch-location/item-switch-location/item-switch-location.component';
-import { TabOrderDirective } from './directives/tab-order.directive';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
 import { UserCurrentLibraryInterceptor } from './interceptor/user-current-library.interceptor';
@@ -208,6 +205,7 @@ import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 
 import { EntityAutocompleteComponent } from './record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
 import { RemoteAutocompleteService as UiRemoteAutocompleteService } from './record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.service';
+import { HotkeysShortcutPipe } from '@ngneat/hotkeys';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
@@ -264,7 +262,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     DefaultHoldingItemComponent,
     NotesFormatPipe,
     MarcPipe,
-    TabOrderDirective,
     TemplatesBriefViewComponent,
     TemplateDetailViewComponent,
     CollectionBriefViewComponent,
@@ -358,13 +355,13 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
-    BsDropdownModule.forRoot(),
     NgxChartsModule,
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
     RecordModule,
     TableModule,
+    HotkeysShortcutPipe,
     FormlyModule.forRoot({
       types: [
         { name: "cipo-pt-it", component: CipoPatronTypeItemTypeComponent },
@@ -386,7 +383,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         deps: [CoreConfigService, HttpClient],
       },
     }),
-    HotkeysModule,
     SharedModule,
     LoadingBarHttpClientModule,
     PrimengImportModule,
@@ -445,10 +441,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     ReceivedOrderPermissionValidator,
     // TODO: needed for production build, remove this after it is fixed in the
     // @ngneat/hotkeys library
-    {
-      provide: HotkeysService,
-      useClass: HotkeysService,
-    },
     MainTitlePipe,
     ItemHoldingsCallNumberPipe,
     CountryCodeTranslatePipe,

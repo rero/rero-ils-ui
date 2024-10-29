@@ -44,11 +44,11 @@ export class KeyboardShortcutsService {
     );
 
     this.hotKeys.addShortcut({
-      keys: 'shift./',
+      keys: 's',
       group: this.translateService.instant('Global shortcuts'),
       description: this.translateService.instant('Set focus on the header search input')
     }).subscribe(e => {
-      const autocompleteElement = document.getElementsByClassName('rero-ils-autocomplete')[0];
+      const autocompleteElement = document.getElementsByClassName('p-autocomplete')[0];
       const inputField = autocompleteElement.getElementsByTagName('input')[0];
       inputField.focus();
     });

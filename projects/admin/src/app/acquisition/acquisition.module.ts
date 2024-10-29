@@ -24,7 +24,6 @@ import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, CoreModule, RecordModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { PreviewEmailModule } from '../shared/preview-email/preview-email.module';
 import { PrimengImportModule } from '../shared/primeng-import/primeng-import.module';
 import { AcquisitionRoutingModule } from './acquisition-routing.module';
@@ -53,7 +52,6 @@ import { registerFormlyExtension } from './formly/extension';
 import { FieldDocumentBriefViewTypeComponent } from './formly/type/field-document-brief-view.type';
 import { FieldRefTypeComponent } from './formly/type/field-ref.type';
 import { RepeatTypeComponent } from './formly/type/repeat-section.type';
-import { SelectAccountComponent } from './formly/type/select-account/select-account.component';
 import { InputNoLabelWrapperComponent } from './formly/wrapper/input-no-label.wrapper';
 import { AccountAvailableAmountPipe } from './pipes/account-available-amount.pipe';
 import { NegativeAmountPipe } from './pipes/negative-amount.pipe';
@@ -81,7 +79,6 @@ import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
     OrderReceiptViewComponent,
     OrderSummaryComponent,
     RepeatTypeComponent,
-    SelectAccountComponent,
     SelectAccountEditorWidgetComponent,
     ReceiptListComponent,
     ReceiptSummaryComponent,
@@ -94,7 +91,6 @@ import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
     OrderEmailFormComponent
   ],
   imports: [
-    BsDropdownModule.forRoot(),
     CommonModule,
     AcquisitionRoutingModule,
     FormlyModule,
@@ -105,7 +101,7 @@ import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
         { name: 'repeat', component: RepeatTypeComponent },
         { name: 'field-document-brief-view', component: FieldDocumentBriefViewTypeComponent },
         { name: 'field-ref', component: FieldRefTypeComponent },
-        { name: 'select-account', component: SelectAccountComponent }
+        { name: 'account-select', component: SelectAccountEditorWidgetComponent }
       ],
       wrappers: [
         { name: 'input-no-label', component: InputNoLabelWrapperComponent }
