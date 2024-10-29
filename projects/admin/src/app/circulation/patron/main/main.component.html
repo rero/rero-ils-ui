@@ -30,7 +30,7 @@
         <a pRipple class="p-menuitem-link">
           <span class="mr-2">{{ item.label }}</span>
           @if (item.tag?.statistics && item.tag?.statistics()[item.id] && item.tag?.statistics()[item.id] > 0) {
-            <p-tag [severity]="item.tag.severity || 'info'" [value]="item.tag.statistics()[item.id] || 0"/>
+            <p-badge [severity]="item.tag.severity || 'info'" [value]="item.tag.statistics()[item.id] || 0" />
           }
         </a>
       </ng-template>
