@@ -44,9 +44,7 @@
         <!-- position into queue -->
         <dt class="offset-1 col-1 label-title" translate>Position</dt>
         <dd class="col-10">
-          <p-tag severity="info">
-            {{ loan.metadata.rank }} / {{ item.current_pending_requests }}
-          </p-tag>
+          <p-badge severity="info" value="{{ loan.metadata.rank }} / {{ item.current_pending_requests }}" />
         </dd>
         <!-- item location -->
         @if (item.location.pid | getRecord: 'locations' | async; as location) {
