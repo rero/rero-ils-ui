@@ -19,7 +19,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { Record } from '@rero/ng-core';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -118,11 +118,11 @@ export class CirculationLogsComponent implements OnInit {
    * @param period: the time period to use to compare both dates
    * @return True if dates are similar, False otherwise
    */
-  isSamePeriod(date1: any, date2: any, period: string = 'month'): boolean {
+  isSamePeriod(date1: any, date2: any, period: string = 'months'): boolean {
     if (date1 && date2) {
-      const transDate1 = moment(date1.metadata.date);
-      const transDate2 = moment(date2.metadata.date);
-      return transDate1.isSame(transDate2, period);
+      const transDate1 = DateTime.fromISO(date1.metadata.date);
+      const transDate2 = DateTime.fromISO(date2.metadata.date);
+      return transDate1.haSame(transDate2, period);
     }
     return true;
   }

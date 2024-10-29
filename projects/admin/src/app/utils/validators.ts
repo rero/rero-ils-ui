@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  * Copyright (C) 2020 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
  */
 
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 
 /** Custom date validators */
 export class DateValidators {
 
   /** Date format to check */
-  static FORMAT_DATE = 'YYYY-MM-DD';
+  static DATE_FORMAT = 'yyyy-LL-dd';
 
   /**
    * Allow to check if a date is valid and older than a specified date
@@ -35,18 +35,20 @@ export class DateValidators {
       if (control.value == null) {
         return null;
       }
-      const controlMoment = moment(control.value, DateValidators.FORMAT_DATE);
-      if (!controlMoment.isValid()) {
+
+      const date = DateTime.fromJSDate(control.value);
+      console.log(date, date.isValid);
+      if (!date.isValid) {
         return null;
       }
       const validationDate = minDate.setHours(0, 0, 0, 0);
-      const controlDate = controlMoment.toDate().setHours(0, 0, 0, 0);
-      return controlDate >= validationDate
+      date.set({ hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
+      return date >= validationDate
         ? null
         : {
           'minimum-date': {
-            'date-minimum': moment(validationDate).format(DateValidators.FORMAT_DATE),
-            actual: controlMoment.format(DateValidators.FORMAT_DATE)
+            'date-minimum': DateTime.fromISO(validationDate).toFormat(dateFormat),
+            actual: date.toFormat(dateFormat)
           }
         };
     };

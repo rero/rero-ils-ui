@@ -19,7 +19,7 @@ import { LoanOverduePreview } from '@app/admin/classes/loans';
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { IOrganisation } from '@rero/shared';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
 import { finalize } from 'rxjs/operators';
 import { CanExtend, LoanApiService } from '../../../api/loan-api.service';
@@ -74,7 +74,7 @@ export class PatronProfileLoanComponent implements OnInit {
   get isDueSoon(): boolean {
     return (this.record.metadata.is_late)
       ? false
-      : new moment(this.record.metadata.due_soon_date) <= moment();
+      : DateTime.fromISO(this.record.metadata.due_soon_date) <= DateTime.now();
   }
 
   /** OnInit hook */

@@ -45,7 +45,7 @@
             <admin-circulation-log-notification
               [record]="record"
               [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
-              [separator]="!isSamePeriod(record, records[idx-1], 'day')"
+              [separator]="!isSamePeriod(record, records[idx-1], 'days')"
               (mouseenter)="mouseEventTransaction(record, $event)"
               (mouseleave)="highlightedLoanPid=null"
             ></admin-circulation-log-notification>
@@ -54,7 +54,7 @@
             <admin-circulation-log-loan
               [record]="record"
               [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
-              [separator]="!isSamePeriod(record, records[idx-1], 'day')"
+              [separator]="!isSamePeriod(record, records[idx-1], 'days')"
               (closeDialogEvent)="closeDialog()"
               (mouseenter)="mouseEventTransaction(record, $event)"
               (mouseleave)="highlightedLoanPid=null"

@@ -167,9 +167,12 @@ export class MainComponent implements OnInit, OnDestroy {
         // null and this will cause error for navigation url construction
         this._unregisterShortcuts();
         this._registerShortcuts();
-        this.operationLogsApiService.getCheckInHistory(patron.pid, 1, 1).subscribe((result: any) => {
-          this.historyCount = this.recordService.totalHits(result.hits.total);
-        });
+        // Load count history only if the patron has keep history
+        if (patron.keep_history) {
+          this.operationLogsApiService.getCheckInHistory(patron.pid, 1, 1).subscribe((result: any) => {
+            this.historyCount = this.recordService.totalHits(result.hits.total);
+          });
+        }
         this.patronService.getCirculationInformations(patron.pid).subscribe((data) => {
           this.circulationService.clear();
           this.feesTotalAmount = data.fees.engaged + data.fees.preview;
