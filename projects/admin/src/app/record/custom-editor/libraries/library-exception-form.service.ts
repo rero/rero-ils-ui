@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import { TimeValidator } from '@rero/ng-core';
-import * as moment from 'moment';
+import { DateTime } from 'luxon';
 
 
 @Injectable({
@@ -32,11 +32,12 @@ export class LibraryExceptionFormService {
   }
 
   build() {
+    const now = DateTime.now().toJSDate();
     this.form = this.fb.group({
       title: ['', [ Validators.required ]],
-      date: [moment().toDate(), [ Validators.required ]],
+      date: [now, [ Validators.required ]],
       dates: [
-        [moment().toDate(), moment().toDate()],
+        [now, now],
         [ Validators.required ]
       ],
       is_period: [false, [ Validators.required ]],
@@ -85,11 +86,11 @@ export class LibraryExceptionFormService {
     if ('end_date' in exception) {
       this.is_period.setValue(true);
       this.dates.setValue([
-        moment(exception.start_date, 'YYYY-MM-DD').toDate(),
-        moment(exception.end_date, 'YYYY-MM-DD').toDate(),
+        DateTime.fromISO(exception.start_date).toJSDate(),
+        DateTime.fromISO(exception.end_date).toJSDate(),
       ]);
     } else {
-      this.date.setValue(moment(exception.start_date, 'YYYY-MM-DD').toDate());
+      this.date.setValue(DateTime.fromISO(exception.start_date).toJSDate());
     }
     this.is_open.setValue(exception.is_open);
     if ('times' in exception) {
@@ -117,10 +118,10 @@ export class LibraryExceptionFormService {
       is_open: data.is_open
     };
     if (data.is_period) {
-      dataException.start_date = moment(data.dates[0]).format('YYYY-MM-DD');
-      dataException.end_date = moment(data.dates[1]).format('YYYY-MM-DD');
+      dataException.start_date = DateTime.fromJSDate(data.dates[0]).toISODate();
+      dataException.end_date = DateTime.fromJSDate(data.dates[1]).toISODate();
     } else {
-      dataException.start_date = moment(data.date).format('YYYY-MM-DD');
+      dataException.start_date = DateTime.fromJSDate(data.date).toISODate();
     }
     if (data.times.length > 0) {
       dataException.times = data.times;

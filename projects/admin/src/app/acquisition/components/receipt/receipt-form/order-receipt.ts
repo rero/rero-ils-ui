@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,9 +17,9 @@
 
 import { inject, Injectable } from '@angular/core';
 import { ApiService } from '@rero/ng-core';
-import moment from 'moment';
 import { IAcqNote } from '../../../classes/common';
 import { AcqReceiptAmountAdjustment, IAcqReceipt, IAcqReceiptLine } from '../../../classes/receipt';
+import { DateTime } from 'luxon';
 
 /** Interface for Receipt data */
 export interface IAcqReceiptModel {
@@ -82,7 +82,7 @@ export class OrderReceipt {
       acqOrderRef: null,
       libraryRef: null,
       organisationRef: null,
-      receiptDate: moment().format(moment.HTML5_FMT.DATE),
+      receiptDate: DateTime.now().toISODate(),
       exchangeRate: 1,
       reference: null,
       amountAdjustments: [],

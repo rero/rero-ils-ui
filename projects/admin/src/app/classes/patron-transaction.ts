@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,7 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-import * as moment from 'moment';
+import { DateTime } from 'luxon';
 
 export enum PatronTransactionStatus {
   OPEN = 'open',
@@ -54,9 +54,9 @@ export class PatronTransaction {
    */
   get_events(): Array<PatronTransactionEvent> {
     return this.events.sort((e1, e2) => {
-      const e1_moment = moment(e1.creation_date);
-      const e2_moment = moment(e2.creation_date);
-      return e2_moment.diff(e1_moment);
+      const e1_date = DateTime.fromISO(e1.creation_date);
+      const e2_date = DateTime.fromISO(e2.creation_date);
+      return e2_date.diff(e1_date);
     });
   }
 }

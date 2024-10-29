@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2023 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,9 +19,9 @@
 // required as json properties is not lowerCamelCase
 
 import { WeekDay } from '@angular/common';
-import * as moment from 'moment';
 import { NotificationType } from './notification';
 import { WeekDays } from './week-days';
+import { DateTime } from 'luxon';
 
 
 export interface OpeningHours {
@@ -136,7 +136,7 @@ export class Library {
       }
       return exception;
     });
-    this.exception_dates = this.exception_dates.sort((a, b) => moment(a.start_date) - moment(b.start_date));
+    this.exception_dates = this.exception_dates.sort((a, b) => DateTime.fromISO(a.start_date) - DateTime.fromISO(b.start_date));
   }
 
   /**
@@ -165,8 +165,8 @@ export class Library {
     if (exception.repeat && checkRepeat) {
       return false;
     }
-    const checked_date = (exception.end_date) ? moment(exception.end_date) : moment(exception.start_date);
-    return checked_date < moment();
+    const checked_date = (exception.end_date) ? DateTime.fromISO(exception.end_date) : DateTime.fromISO(exception.start_date);
+    return checked_date < DateTime.now();
   }
 
   // PRIVATE METHODS ================================================
@@ -201,7 +201,7 @@ export class Library {
     this.opening_hours.forEach(opening => {
       if (opening.times.length > 1) {
         opening.times.sort((a, b) =>
-          moment(a.start_time, 'HH:mm').diff(moment(b.start_time, 'HH:mm')));
+          DateTime.fromFormat(a.start_time, 'HH:mm').diff(DateTime.fromFormat(b.start_time, 'HH:mm')));
       }
     });
   }
@@ -216,13 +216,13 @@ export class Library {
     if (!exception.repeat) {
       throw new Error('Unable to increment not repeatable exception date.');
     }
-    const momentJsUnitMapper = {daily: 'd', weekly: 'w', monthly: 'M', yearly: 'y'};
-    const unity = (momentJsUnitMapper.hasOwnProperty(exception.repeat.period))
-      ? momentJsUnitMapper[exception.repeat.period]
-      : 'd';
-    exception.start_date = moment(exception.start_date).add(exception.repeat.interval, unity).format('YYYY-MM-DD');
+    const jsUnitMapper = {daily: 'days', weekly: 'weeks', monthly: 'months', yearly: 'years'};
+    const unity = (jsUnitMapper.hasOwnProperty(exception.repeat.period))
+      ? jsUnitMapper[exception.repeat.period]
+      : 'days';
+    exception.start_date = DateTime.fromFormat(exception.start_date).plus({ [unity]: exception.repeat.interval }).format('yyyy-LL-dd');
     if (exception.end_date) {
-      exception.end_date = moment(exception.end_date).add(exception.repeat.interval, unity).format('YYYY-MM-DD');
+      exception.end_date = DateTime.fromFormat(exception.end_date).plus({ [unity]: exception.repeat.interval }).format('yyyy-LL-dd');
     }
     return exception;
   }
