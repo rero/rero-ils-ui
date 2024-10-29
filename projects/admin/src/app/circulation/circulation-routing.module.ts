@@ -29,6 +29,7 @@ import { PatronTransactionsComponent } from './patron/patron-transactions/patron
 import { PendingComponent } from './patron/pending/pending.component';
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
+import { keepHistoryGuard } from './guard/keep-history.guard';
 
 const routes: Routes = [
   {
@@ -78,7 +79,7 @@ const routes: Routes = [
       {
         path: 'history',
         component: HistoryComponent,
-        canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
+        canActivate: [ keepHistoryGuard, PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
       }
     ]
   }, {

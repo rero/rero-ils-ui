@@ -17,7 +17,7 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-import moment, { Moment } from 'moment';
+import { DateTime } from 'luxon';
 
 // ENUM ========================================================================
 /** All possible state about a loan */
@@ -54,13 +54,13 @@ export class LoanDestination {
 export class Loan {
   pid?: string;
   state: LoanState;
-  transaction_date?: Moment;
+  transaction_date?: DateTime;
   patron_pid?: string;
   document_pid?: string;
   item_pid?: {type: string, value: string};
-  start_date?: Moment;
-  end_date?: Moment;
-  request_expire_date?: Moment;
+  start_date?: DateTime;
+  end_date?: DateTime;
+  request_expire_date?: DateTime;
   pickup_location_pid?: string;
   item_destination?: LoanDestination;
   transaction_location_pid?: string;
@@ -71,24 +71,24 @@ export class Loan {
    */
   constructor(obj?: any) {
     Object.assign(this, obj);
-    this.request_expire_date = Loan._convertToMoment(this.request_expire_date);
-    this.start_date = Loan._convertToMoment(this.start_date);
-    this.end_date = Loan._convertToMoment(this.end_date);
-    this.transaction_date = Loan._convertToMoment(this.transaction_date);
+    this.request_expire_date = Loan._convertToDate(this.request_expire_date);
+    this.start_date = Loan._convertToDate(this.start_date);
+    this.end_date = Loan._convertToDate(this.end_date);
+    this.transaction_date = Loan._convertToDate(this.transaction_date);
   }
 
   /**
-   * Convert a string representation of a date to a `moment`
+   * Convert a string representation of a date to a `DateTime`
    * @param data: the date to parse
    */
-  private static _convertToMoment(data): moment|null {
+  private static _convertToDate(data?: string): DateTime|null {
     return (data)
-      ? moment(data)
+      ? DateTime.fromISO(data)
       : null;
   }
 
   /** Return the due date about the loan */
-  get dueDate(): moment {
+  get dueDate(): DateTime {
     switch (this.state) {
       case LoanState.PENDING: return this.request_expire_date;
       case LoanState.ITEM_ON_LOAN: return this.end_date;
@@ -99,7 +99,7 @@ export class Loan {
   /** Is the loan is expired or not ? */
   public get expired(): boolean {
     return (this.dueDate)
-      ? this.dueDate.isBefore(new Date())
+      ? this.dueDate < DateTime.now()
       : false;
   }
 }

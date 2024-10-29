@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,9 +18,9 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-import { Moment } from 'moment';
 import { ItemStatus, User } from '@rero/shared';
-import { Loan } from './loans'
+import { DateTime } from 'luxon';
+import { Loan } from './loans';
 
 export enum ItemNoteType {
   GENERAL = 'general_note',
@@ -98,7 +98,7 @@ export class Item {
   library: any;
   library_location_name: any;
   notes: ItemNote[];
-  acquisition_date: Moment;
+  acquisition_date: DateTime;
   enumerationAndChronology: string;
   temporary_location?: any;
 
