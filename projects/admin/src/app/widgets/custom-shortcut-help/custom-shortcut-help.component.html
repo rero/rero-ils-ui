@@ -15,34 +15,28 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (title) {
-  <div class="modal-header">
-    <h5 class="modal-title">{{ title }}</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-      <span aria-hidden="true" data-dismiss="modal" (click)="closeModal()">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    @for (hotkeyGroup of hotkeys; track hotkeyGroup) {
-      <table class="hotkeys-table-help" cellspacing="0" width="100%">
-        @if (hotkeyGroup.group) {
-          <thead>
-            <tr>
-              <th class="hotkeys-table-help-group" colspan="2">{{ hotkeyGroup.group }}</th>
-            </tr>
-          </thead>
-        }
-        <tbody>
-          @for (hotkey of hotkeyGroup.hotkeys; track hotkey) {
-            <tr class="hotkeys-table-help-shortcut">
-              <td class="hotkeys-table-help-shortcut-description" width="75%">{{ hotkey.description }}</td>
-              <td class="hotkeys-table-help-shortcut-keys" width="25%">
-                <kbd [innerHTML]="hotkey.keys | hotkeysShortcut"></kbd>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+@for (hotkeyGroup of hotkeys; track hotkeyGroup) {
+<table class="hotkeys-table-help" cellspacing="0" width="100%">
+  @if (hotkeyGroup.group) {
+  <thead>
+    <tr>
+      <th class="hotkeys-table-help-group" colspan="2">
+        {{ hotkeyGroup.group }}
+      </th>
+    </tr>
+  </thead>
+  }
+  <tbody>
+    @for (hotkey of hotkeyGroup.hotkeys; track hotkey) {
+    <tr class="hotkeys-table-help-shortcut">
+      <td class="hotkeys-table-help-shortcut-description" width="75%">
+        {{ hotkey.description }}
+      </td>
+      <td class="hotkeys-table-help-shortcut-keys" width="25%">
+        <kbd [innerHTML]="hotkey.keys | hotkeysShortcut"></kbd>
+      </td>
+    </tr>
     }
-  </div>
+  </tbody>
+</table>
 }

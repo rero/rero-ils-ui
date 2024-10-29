@@ -17,11 +17,7 @@
 
 @if (record) {
   <div class="d-flex container p-2" [ngClass]="{'callout callout-success': record.metadata.state === 'ITEM_AT_DESK' }">
-    <button type="button" class="btn-show-more"
-            [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
-            (click)="isCollapsed = !isCollapsed"
-            [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
-    </button>
+    <shared-open-close-button (status)="isCollapsed = $event" />
     <div class="container-fluid">
       <div class="row">
         <!-- DOCUMENT & ADDITIONAL DATA ===================================== -->

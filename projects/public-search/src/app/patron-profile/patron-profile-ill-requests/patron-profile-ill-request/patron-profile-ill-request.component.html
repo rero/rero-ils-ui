@@ -16,11 +16,7 @@
 -->
 
 <div class="d-flex container p-2" [ngClass]="{'callout callout-warning ':record.metadata.is_late}">
-  <button type="button" class="btn-show-more"
-          [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
-          (click)="isCollapsed = !isCollapsed"
-          [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
-  </button>
+  <shared-open-close-button (status)="isCollapsed = $event" />
   <div class="container-fluid">
     <!-- ILL DOCUMENT & STATUS -->
     <div class="row">
@@ -45,7 +41,8 @@
       </div>
     </div>
     <!-- ILL DETAIL -->
-    <section id="ill-detail-{{ record.metadata.pid }}" [collapse]="isCollapsed" [isAnimated]="true" class="col-12 p-0">
+     @if (!isCollapsed){
+    <section id="ill-detail-{{ record.metadata.pid }}" class="col-12 p-0">
       <dl class="row mt-2">
         <!-- PUBLISHER -->
         @if (record.metadata.document.publisher) {
@@ -111,5 +108,6 @@
         }
       </dl>
     </section>
+  }
   </div>
 </div>

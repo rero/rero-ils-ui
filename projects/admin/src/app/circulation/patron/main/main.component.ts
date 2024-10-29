@@ -49,42 +49,42 @@ export class MainComponent implements OnInit, OnDestroy {
   /** shortcuts for patron tabs */
   private _shortcuts = [
     {
-      keys: 'shift.1',
+      keys: '1',
       group: this.translateService.instant('Patron profile shortcuts'),
       description: this.translateService.instant('Go to "circulation" tab'),
       callback: ($event) => {
         this.router.navigate(['/circulation', 'patron', this.barcode, 'loan']);
       }
     }, {
-      keys: 'shift.2',
+      keys: '2',
       group: this.translateService.instant('Patron profile shortcuts'),
       description: this.translateService.instant('Go to "pickup" tab'),
       callback: ($event) => {
         this.router.navigate(['/circulation', 'patron', this.barcode, 'pickup']);
       }
     }, {
-      keys: 'shift.3',
+      keys: '3',
       group: this.translateService.instant('Patron profile shortcuts'),
       description: this.translateService.instant('Go to "pending" tab'),
       callback: ($event) => {
         this.router.navigate(['/circulation', 'patron', this.barcode, 'pending']);
       }
     }, {
-      keys: 'shift.4',
+      keys: '4',
       group: this.translateService.instant('Patron profile shortcuts'),
       description: this.translateService.instant('Go to "patron profile" tab'),
       callback: ($event) => {
         this.router.navigate(['/circulation', 'patron', this.barcode, 'profile']);
       }
     }, {
-      keys: 'shift.5',
+      keys: '5',
       group: this.translateService.instant('Patron profile shortcuts'),
       description: this.translateService.instant('Go to "fees" tab'),
       callback: ($event) => {
         this.router.navigate(['/circulation', 'patron', this.barcode, 'fees']);
       }
     }, {
-      keys: 'shift.6',
+      keys: '6',
       group: this.translateService.instant('Patron profile shortcuts'),
       description: this.translateService.instant('Go to "history" tab'),
       callback: ($event) => {

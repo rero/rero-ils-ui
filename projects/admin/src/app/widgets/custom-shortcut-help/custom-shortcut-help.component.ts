@@ -23,16 +23,12 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 @Component({
   selector: 'admin-custom-shortcut-help',
   templateUrl: './custom-shortcut-help.component.html',
-  styleUrls: ['./custom-shortcut-help.component.scss']
+  styleUrls: ['./custom-shortcut-help.component.scss'],
 })
 export class CustomShortcutHelpComponent {
 
   private hotKeysService: HotkeysService = inject(HotkeysService);
-  private translateService: TranslateService = inject(TranslateService);
   private ref = inject(DynamicDialogRef);
-
-  /** the title of the modal window */
-  @Input() title = this.translateService.instant('Available Shortcuts');
 
   /** the list of implemented shortcuts */
   hotkeys = this.hotKeysService.getShortcuts();
