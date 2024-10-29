@@ -15,48 +15,43 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="mt-2 mb-3">
-  <div class="btn-group w-100" dropdown #dropdown="bs-dropdown" [insideClick]="true" [isDisabled]="to.readonly">
-    <button id="button-basic" dropdownToggle type="button" aria-controls="dropdown-basic"
-            [ngClass]="{'is_invalid': formControl.invalid}"
-            class="btn btn-sm btn-block text-left dropdown-toggle py-2 px-3 d-flex align-items-center">
-      {{ selectedAccount
-           ? selectedAccount.name
-           : (to.placeholder | translate) || ('Select an option...' | translate)
-      }}
-      <span class="caret ml-auto"></span>
-    </button>
-    <div id="dropdown-basic" *dropdownMenu class="dropdown-menu w-100" role="menu" aria-labelledby="button-basic">
-      @if (accountList.length) {
-        @for (account of accountList; track account) {
-          <a  href="#"
-              class="dropdown-item account d-flex"
-              (click)="$event.preventDefault(); selectAccount(account); dropdown.hide()"
-          >
-            <div class="pr-5">
-              {{ account.depth > 0 ? '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(account.depth) + ' ' : '' }}
-              {{ account.name }}
-            </div>
-            <div class="ml-auto pl-5 d-flex">
-              @if (account.number) {
-                <div class="number">{{ account.number }}</div>
-              }
-              <div class="amount" [class]="{
-                  'text-success': account.remaining_balance.self > 0,
-                  'text-muted': account.remaining_balance.self === 0,
-                  'text-warning': account.remaining_balance.self < 0
-              }">
-                {{ account.remaining_balance.self | currency: organisation.default_currency }}
-              </div>
-            </div>
-          </a>
-        }
-      } @else {
-        <p class="m-0 px-4 py-2 text-muted" translate>No result</p>
+<p-dropdown
+  styleClass="w-full"
+  class="w-full"
+  [showClear]="true"
+  [options]="accountList"
+  [placeholder]="to.placeholder"
+  [(ngModel)]="selectedAccount"
+  (onChange)="selectAccount($event)"
+  [loading]="loading"
+>
+  <ng-template pTemplate="selectedItem">
+    {{ selectedAccount.name }}
+  </ng-template>
+  <ng-template let-account pTemplate="item">
+    <div class="flex">
+      <span
+        class="flex flex-grow-1"
+        [style.padding-left.px]="account.depth * 20"
+      >
+        {{ account.name }}
+      </span>
+      @if (account.number) {
+      <span class="flex">[{{ account.number }}]</span>
       }
+      <span
+        class="flex ml-4"
+        [class]="{
+          'text-success': account.remaining_balance.self > 0,
+          'text-muted': account.remaining_balance.self === 0,
+          'text-warning': account.remaining_balance.self < 0
+        }"
+      >
+        {{
+          account.remaining_balance.self
+            | currency : defaultCurrency
+        }}
+      </span>
     </div>
-  </div>
-  <div class="invalid-feedback" [ngClass]="{'d-block': formControl.invalid}" translate>
-    Please select an account.
-  </div>
-</div>
+  </ng-template>
+</p-dropdown>

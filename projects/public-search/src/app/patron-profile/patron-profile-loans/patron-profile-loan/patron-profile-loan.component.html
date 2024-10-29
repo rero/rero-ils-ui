@@ -16,11 +16,7 @@
 -->
 
 <div class="d-flex container p-2" [ngClass]="{'callout callout-warning ':record.metadata.is_late}">
-  <button type="button" class="btn-show-more"
-          [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
-          (click)="isCollapsed = !isCollapsed"
-          [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
-  </button>
+  <shared-open-close-button (status)="isCollapsed = $event" />
   <div class="container-fluid">
     <div class="row">
       <!-- DOCUMENT & ADDITIONAL DATA -->

@@ -36,7 +36,7 @@ export class PatronProfileLoanComponent implements OnInit {
   private loanApiService: LoanApiService = inject(LoanApiService);
   private translateService: TranslateService = inject(TranslateService);
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
-  private patronProfileService: PatronProfileService
+  private patronProfileService: PatronProfileService = inject(PatronProfileService);
 
   private messageService: MessageService = inject(MessageService);
 

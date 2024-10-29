@@ -21,6 +21,7 @@ import { User, UserService } from '@rero/shared';
 import { DialogService } from 'primeng/dynamicdialog';
 import { KeyboardShortcutsService } from './service/keyboard-shortcuts.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-root',
@@ -33,6 +34,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   private keyboardShortcutsService: KeyboardShortcutsService = inject(KeyboardShortcutsService);
   private hotKeysService: HotkeysService = inject(HotkeysService);
   private dialogService: DialogService = inject(DialogService);
+  private translateService: TranslateService = inject(TranslateService);
 
   /** user */
   get user(): User {
@@ -47,7 +49,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   /** AfterViewInit hook */
   ngAfterViewInit() {
     this.hotKeysService.registerHelpModal(() => {
-      this.dialogService.open(CustomShortcutHelpComponent, {})
+      this.dialogService.open(CustomShortcutHelpComponent, {
+        header: this.translateService.instant('Available Shortcuts')
+      })
     });
   }
 }

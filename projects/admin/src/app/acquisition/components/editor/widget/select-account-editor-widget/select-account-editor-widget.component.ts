@@ -15,27 +15,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { getCurrencySymbol } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { FieldType } from '@ngx-formly/core';
+import { TranslateService } from '@ngx-translate/core';
 import { ApiService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
+import { MessageService } from 'primeng/api';
 import { AcqAccountApiService } from '../../../../api/acq-account-api.service';
 import { orderAccountsAsTree } from '../../../../utils/account';
 
 @Component({
   selector: 'admin-select-account-editor-widget',
   templateUrl: './select-account-editor-widget.component.html',
-  styleUrls: ['../../../../acquisition.scss', './select-account-editor-widget.component.scss']
+  styleUrls: ['../../../../acquisition.scss', './select-account-editor-widget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class SelectAccountEditorWidgetComponent extends FieldType implements OnInit {
-
+  // services
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
   private organisationService: OrganisationService = inject(OrganisationService);
   private apiService: ApiService = inject(ApiService);
   private userService: UserService = inject(UserService);
+  private messageService = inject(MessageService);
+  private translateService: TranslateService = inject(TranslateService);
   private changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
 
   // COMPONENT ATTRIBUTES =======================================================
@@ -43,33 +47,40 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
   accountList: IAcqAccount[] = [];
   /** the selected account */
   selectedAccount: IAcqAccount = null;
+  // loading wheels
+  loading: boolean = false;
+  // currency
+  defaultCurrency: string;
 
-  // GETTER & SETTER ============================================================
-  /** Get the current organisation */
-  get organisation(): any {
-    return this.organisationService.organisation;
-  }
-
-  /** Get the currency symbol for the organisation */
-  get currencySymbol(): any {
-    return getCurrencySymbol(this.organisation.default_currency, 'wide');
-  }
-
-  /** OnInit hook */
   ngOnInit(): void {
+    this.loading = true;
     const libraryPid = this.userService.user.currentLibrary;
-    this.acqAccountApiService.getAccounts(libraryPid).subscribe((accounts: IAcqAccount[]) => {
-      accounts = orderAccountsAsTree(accounts);
-      this.accountList = accounts;
+    this.defaultCurrency = this.organisationService.organisation.default_currency;
+    this.acqAccountApiService.getAccounts(libraryPid).subscribe({
+      next: (accounts: IAcqAccount[]) => {
+        accounts = orderAccountsAsTree(accounts);
+        this.accountList = accounts;
 
-      if (this.formControl.value) {
-        const currentPid = this.formControl.value.substring(this.formControl.value.lastIndexOf('/') + 1);
-        const currentAccount = this.accountList.find((account: IAcqAccount) => account.pid === currentPid);
-        if (currentAccount !== undefined) {
-          this.selectedAccount = currentAccount;
-          this.changeDetectorRef.markForCheck();
+        if (this.formControl.value) {
+          const currentPid = this.formControl.value.substring(this.formControl.value.lastIndexOf('/') + 1);
+          const currentAccount = this.accountList.find((account: IAcqAccount) => account.pid === currentPid);
+          if (currentAccount !== undefined) {
+            this.selectedAccount = currentAccount;
+          }
         }
-      }
+      },
+      error: () =>
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translateService.instant('Acquisition accounts'),
+          detail: this.translateService.instant('An error has occurred. Please try again.'),
+          sticky: true,
+          closable: true,
+        }),
+      complete: () => {
+        this.loading = false;
+        this.changeDetectorRef.markForCheck();
+      },
     });
   }
 
@@ -78,10 +89,17 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
    * Store the selected option, when an option is clicked in the list
    * @param account - The selected account.
    */
-  selectAccount(account: IAcqAccount): void {
+  selectAccount(event): void {
+    const account: IAcqAccount = event.value;
+    if (account == null) {
+      // reset the form control value, default value cannot be used as it is already filled by ngx formly
+      this.formControl.reset(null);
+      // reset the validators but the required validator
+      const errors = this.formControl.errors;
+      this.formControl.setErrors(errors.required? {required: true}: null);
+      return;
+    }
     const accountRef = this.apiService.getRefEndpoint('acq_accounts', account.pid);
-    this.selectedAccount = account;
     this.formControl.patchValue(accountRef);
-    this.changeDetectorRef.markForCheck();
   }
 }

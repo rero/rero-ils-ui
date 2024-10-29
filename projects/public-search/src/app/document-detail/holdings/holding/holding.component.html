@@ -19,11 +19,7 @@
   <!-- MAIN ROW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <div class="row">
     <div id="holding-location-{{ holding.metadata.pid }}" class="col-sm-12 col-md-3 d-flex">
-      <button type="button" class="btn-show-more"
-              [ngClass]="{'btn-expanded': !collapsed, 'btn-collapsed': collapsed}"
-              (click)="collapsed = !collapsed"
-              [attr.aria-expanded]="!collapsed" aria-controls="collapse">
-      </button>
+      <shared-open-close-button (status)="isCollapsed = $event" />
       <span>{{ holding.metadata.library.name }}: {{ holding.metadata.location.name }}</span>
     </div>
     <div id="holding-category-name-{{ holding.metadata.pid }}" class="col-sm-12 col-md-2">

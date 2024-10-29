@@ -17,19 +17,16 @@
 
 @if (record) {
   <div class="d-flex container p-2">
-    <button type="button" class="btn-show-more"
-            [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
-            (click)="isCollapsed = !isCollapsed"
-            [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
-    </button>
+    <shared-open-close-button (status)="isCollapsed = $event" />
     <div class="container-fluid">
       <div class="row">
         <div class="col-3 pl-0">{{ record.metadata.creation_date | dateTranslate: 'short' }}</div>
         <div class="col-6">{{ record.metadata.type | translate }}</div>
         <div class="col-3 text-lg-right">{{ record.metadata.total_amount | currency:organisation.currency:'symbol' }}</div>
         <!-- FEE DETAILS & EVENTS =========================================== -->
+        @if (!isCollapsed) {
         <div id="fee-event-{{ record.metadata.pid }}" class="col-lg-12 pl-3"
-             [collapse]="isCollapsed" (expanded)="expanded(record.metadata.pid)" [isAnimated]="true">
+             (expanded)="expanded(record.metadata.pid)">
           <div class="mt-2">
             <!-- NOTE -->
             @if (record.metadata.note) {
@@ -111,6 +108,7 @@
             </section>
           </div>
         </div>
+      }
       </div>
     </div>
   </div>

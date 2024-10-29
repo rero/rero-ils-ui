@@ -45,7 +45,6 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeicons/primeicons.css",
               "node_modules/primeflex/primeflex.min.css",
-              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
               "node_modules/ngx-spinner/animations/ball-zig-zag.css",
               "projects/admin/src/app/scss/styles.scss",
               "projects/shared/src/scss/styles.scss"
@@ -282,7 +281,6 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeicons/primeicons.css",
               "node_modules/primeflex/primeflex.min.css",
-              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
               "projects/shared/src/scss/styles.scss"
             ],
             "scripts": [],
@@ -558,6 +556,10 @@
               }
             ],
             "styles": [
+              "node_modules/primeng/resources/themes/bootstrap4-light-blue/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeflex/primeflex.min.css",
               "projects/public-search/src/app/scss/styles.scss",
               "projects/shared/src/scss/styles.scss"
             ],
@@ -860,8 +862,6 @@
     }
   },
   "cli": {
-    "schematicCollections": [
-      "@angular-eslint/schematics"
-    ]
+    "schematicCollections": ["@angular-eslint/schematics"]
   }
 }

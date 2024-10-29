@@ -22,8 +22,8 @@
     <span class="badge badge-info">{{ record.metadata.item.enumerationAndChronology }}</span>
   }
   <shared-contribution [contributions]="document?.contribution" [view]="viewcode" [limitRecord]="3"></shared-contribution>
-  @if (record.metadata) {
-    <div class="container mt-2 pl-0" [collapse]="!showAdditionalInformation" [isAnimated]="isAnimated">
+  @if (record.metadata && showAdditionalInformation) {
+    <div class="container mt-2 pl-0">
       <dl class="row">
         <!-- CALL NUMBER -->
         @if (callNumbers; as formattedCallNumbers) {
