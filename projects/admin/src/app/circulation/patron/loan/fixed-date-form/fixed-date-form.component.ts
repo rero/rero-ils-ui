@@ -36,9 +36,6 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
   private userService: UserService = inject(UserService);
   private recordService: RecordService = inject(RecordService);
 
-  /** the date format to used */
-  static DATE_FORMAT = 'YYYY-MM-DD';
-
   // COMPONENT ATTRIBUTES ====================================
   /** form group */
   formGroup: FormGroup = new FormGroup({
@@ -46,7 +43,7 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
       Validators.required,
       DateValidators.minimumDateValidator(
         new Date(),
-        FixedDateFormComponent.DATE_FORMAT
+        DateValidators.DATE_FORMAT
       )
     ]),
     remember: new FormControl(false)

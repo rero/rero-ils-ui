@@ -21,8 +21,8 @@ import { IssueService } from '@app/admin/service/issue.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { IPermissions, IssueItemStatus, PERMISSIONS, PERMISSION_OPERATOR, UserService } from '@rero/shared';
-import moment from 'moment';
+import { IPermissions, IssueItemStatus, PERMISSION_OPERATOR, PERMISSIONS, UserService } from '@rero/shared';
+import { DateTime } from 'luxon';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable, Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -154,7 +154,7 @@ export class ItemDetailViewComponent implements DetailRecord, OnInit, OnDestroy 
   hasTemporaryItemType(): boolean {
     if ('temporary_item_type' in this.record.metadata) {
       const endDateValue = this.record.metadata.temporary_item_type.end_date || undefined;
-      return !(endDateValue && moment(endDateValue).isBefore(moment()));
+      return !(endDateValue && DateTime.fromISO(endDateValue) < DateTime.now());
     }
     return false;
   }

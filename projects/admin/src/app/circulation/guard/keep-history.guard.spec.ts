@@ -1,7 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
- * Copyright (C) 2021-2023 UCLouvain
+ * Copyright (C) 2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,25 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { inject, Injectable } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { TestBed } from '@angular/core/testing';
+import { CanActivateFn } from '@angular/router';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class LibraryApiService {
+import { keepHistoryGuard } from './keep-history.guard';
 
-  private recordService: RecordService = inject(RecordService);
+describe('keepHistoryGuard', () => {
+  const executeGuard: CanActivateFn = (...guardParameters) =>
+      TestBed.runInInjectionContext(() => keepHistoryGuard(...guardParameters));
 
-  /**
-   * Get library by pid
-   * @param pid - the library pid
-   * @returns the library metadata
-   */
-  getByPid(pid: string): Observable<any> {
-    return this.recordService.getRecord('libraries', pid)
-      .pipe(map(record => record.metadata));
-  }
-}
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+  });
+
+  it('should be created', () => {
+    expect(executeGuard).toBeTruthy();
+  });
+});

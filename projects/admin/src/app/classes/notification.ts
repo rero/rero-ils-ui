@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,8 +18,8 @@
 /* tslint:disable */
 // required as json properties is not lowerCamelCase
 
-import { Moment } from 'moment';
 import { ObjectReference } from '../../../../shared/src/lib/class/core';
+import { DateTime } from 'luxon';
 
 export enum NotificationType {
   AT_DESK = 'at_desk',
@@ -53,8 +53,8 @@ export class Notification {
   };
 
   pid: string;
-  creation_date: Moment;
-  process_date?: Moment;
+  creation_date: DateTime;
+  process_date?: DateTime;
   notification_sent = false;
   notification_type: NotificationType;
   context: {

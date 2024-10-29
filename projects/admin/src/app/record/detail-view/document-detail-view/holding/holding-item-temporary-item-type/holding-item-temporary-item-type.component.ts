@@ -16,7 +16,7 @@
  */
 
 import { Component, Input } from '@angular/core';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 
 @Component({
   selector: 'admin-holding-item-temporary-item-type',
@@ -49,7 +49,7 @@ export class HoldingItemTemporaryItemTypeComponent {
   hasTemporaryItemType(): boolean {
     if ('temporary_item_type' in this.record.metadata) {
       const endDateValue = this.record.metadata.temporary_item_type.end_date || undefined;
-      return !(endDateValue && moment(endDateValue).isBefore(moment()));
+      return !(endDateValue && DateTime.fromISO(endDateValue) < DateTime.now());
     }
     return false;
   }

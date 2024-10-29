@@ -18,7 +18,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Error, Record, RecordService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -40,7 +40,7 @@ export class OperationLogsApiService extends BaseApi {
     patronPid: string, page: number,
     itemsPerPage: number = 10
   ): Observable<Record | Error> {
-    const date = moment().subtract(6, 'months').utc().format('YYYY-MM-DDTHH:mm:ss');
+    const date = DateTime.now().minus({ months: 6 }).toISO();
     const query = `record.type:loan AND loan.patron.pid:${patronPid} AND loan.trigger:checkin AND date:[${date} TO *]`;
     return this.recordService.getRecords(
       'operation_logs', query, page, itemsPerPage,

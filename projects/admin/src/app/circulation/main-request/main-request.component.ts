@@ -19,7 +19,7 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
 import { interval, Subscription } from 'rxjs';
 import { ItemsService } from '../../service/items.service';
@@ -116,8 +116,8 @@ export class MainRequestComponent implements OnInit, OnDestroy {
    */
   private _sortingRequestedLoans(items: Array<any>) {
     this.items = items.sort((a, b) => {
-      const aTime = moment(a.loan.transaction_date);
-      const bTime = moment(b.loan.transaction_date);
+      const aTime = DateTime.fromISO(a.loan.transaction_date);
+      const bTime = DateTime.fromISO(b.loan.transaction_date);
       switch (this.sortCriteria) {
         case '-requestdate': return bTime.diff(aTime);
         case 'callnumber':
