@@ -27,7 +27,7 @@
         <span class="badge badge-info">{{ item.enumerationAndChronology }}</span>
       }<br/>
     }
-    <shared-contribution [contributions]="document?.contribution"></shared-contribution>
+    <shared-contribution [contributions]="document?.contribution" />
   </div>
   <div class="col-3">
     {{ loan.metadata.pickup_location_pid | getRecord: 'locations' : 'field' : 'pickup_name' | async }}
@@ -40,6 +40,6 @@
     }
   </div>
   <div class="col-1 text-right">
-    <admin-cancel-request-button [loan]="loan" (cancelRequestEvent)="cancelRequest($event)"></admin-cancel-request-button>
+    <admin-cancel-request-button [loan]="loan" (cancelRequestEvent)="cancelRequest($event)" />
   </div>
 }

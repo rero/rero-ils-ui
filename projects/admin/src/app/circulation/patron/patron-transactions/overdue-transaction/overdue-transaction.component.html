@@ -18,10 +18,7 @@
   <div class="col mr-1 p-2 border rounded">
     <div class="row">
       <div class="col-lg-2">
-        <button type="button" class="pl-0 pt-0 btn"aria-controls="collapse"
-                (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed">
-          <i [ngClass]="{ 'fa-caret-down pr-0': !isCollapsed, 'fa-caret-right pr-1': isCollapsed }" class="fa" aria-hidden="true"></i>
-        </button>
+        <shared-open-close-button (status)="isCollapsed = $event" />
         {{ transaction.loan.end_date.toDate() | dateTranslate :'shortDate' }}
       </div>
       <div class="col-lg-7 d-inline-block text-truncate">
@@ -67,7 +64,7 @@
             <admin-patron-transaction-event
               [event]="event"
               class="row pl-2 pr-2 align-items-start timeline-event"
-            ></admin-patron-transaction-event>
+            />
           }
         </div>
       </div>

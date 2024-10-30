@@ -24,6 +24,10 @@ import {
   PatronTransactionEventFormComponent
 } from '../patron-transaction-event-form/patron-transaction-event-form.component';
 import { DialogService } from 'primeng/dynamicdialog';
+import { TranslateService } from '@ngx-translate/core';
+import { MenuItem } from 'primeng/api';
+import { CurrencyPipe } from '@angular/common';
+import { DropdownChangeEvent } from 'primeng/dropdown';
 
 
 @Component({
@@ -36,6 +40,8 @@ export class PatronTransactionComponent implements OnInit {
   private organisationService: OrganisationService = inject(OrganisationService);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
   private router: ActivatedRoute = inject(ActivatedRoute);
+  private translateService: TranslateService = inject(TranslateService);
+  private currencyPipe: CurrencyPipe = inject(CurrencyPipe);
 
   // COMPONENT ATTRIBUTES ============================================
   /** Patron transaction */
@@ -44,6 +50,9 @@ export class PatronTransactionComponent implements OnInit {
   isCollapsed = true;
   /** reference to PatronTransactionStatus -- used in HTML template */
   patronTransactionStatus = PatronTransactionStatus;
+
+  menuItems: MenuItem[] = [];
+  menuSelectedAction = undefined;
 
   // GETTER & SETTER ================================================
   /** get the total amount for a patron transaction :
@@ -82,6 +91,7 @@ export class PatronTransactionComponent implements OnInit {
         this.isCollapsed = false;
       }
       this.patronTransactionService.loadTransactionHistory(this.transaction);
+      this.generateActionsMenu();
     }
   }
 
@@ -92,8 +102,13 @@ export class PatronTransactionComponent implements OnInit {
    */
   public isDisputed(): boolean {
     return (this.transaction.status === PatronTransactionStatus.OPEN)
-      ? this.transaction.events.some( e => e.type === PatronTransactionEventType.DISPUTE)
+      ? this.transaction.events.some(e => e.type === PatronTransactionEventType.DISPUTE)
       : false;
+  }
+
+  patronTransactionEvent(event: DropdownChangeEvent): void {
+    event.value.command();
+    this.menuSelectedAction = {};
   }
 
   /**
@@ -103,11 +118,37 @@ export class PatronTransactionComponent implements OnInit {
    */
   patronTransactionAction(action: string, mode?: string): void {
     this.dialogService.open(PatronTransactionEventFormComponent, {
+      header: this.translateService.instant(action),
+      width: '40vw',
       data: {
         action,
         mode,
         transactions: [this.transaction]
       }
-    })
+    });
+  }
+
+  private generateActionsMenu(): void {
+    this.menuItems = [
+      {
+        label: [
+          this.translateService.instant('Pay'),
+          this.currencyPipe.transform(this.transaction.total_amount, this.organisationService.organisation.default_currency)
+        ].join(' '),
+        command: () => this.patronTransactionAction('pay', 'full')
+      },
+      {
+        label: this.translateService.instant('Pay a part'),
+        command: () => this.patronTransactionAction('pay', 'part')
+      },
+      {
+        label: this.translateService.instant('Dispute'),
+        command: () => this.patronTransactionAction('dispute')
+      },
+      {
+        label: this.translateService.instant('Delete'),
+        command: () => this.patronTransactionAction('cancel')
+      }
+    ];
   }
 }

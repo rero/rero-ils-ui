@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  * Copyright (C) 2020 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,18 +17,17 @@
  */
 
 /** Convert a level string to boostrap level
- *  See : https://getbootstrap.com/docs/4.5/components/alerts/
  *  @param level - string: the level string to convert
- *  @return the bootstrap level corresponding (info by default)
+ *  @return the severity of message (info by default)
  */
-export function getBootstrapLevel(level: string) {
+export function getSeverity(level: string) {
   switch (level) {
     case 'error':
-      return 'danger';
+      return 'error';
     case 'warning':
-      return 'warning';
+      return 'warn';
     case 'debug':
-      return 'dark';
+      return 'secondary';
     default:
       return 'info';
   }

@@ -44,7 +44,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
   action: string;
 
   /** if action is 'pay', the payment mode : full/part */
-  private _mode: string;
+  private mode: string;
 
   /** form group */
   form: UntypedFormGroup = new UntypedFormGroup({});
@@ -59,7 +59,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
     const data: any = this.dynamicDialogConfig.data;
     this.transactions = data.transactions;
     this.action = data.action;
-    this._mode = data.mode;
+    this.mode = data.mode;
     this._initForm();
   }
 
@@ -71,7 +71,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
       this.formFields.push(this._amountFormFieldDefinition());
       this.formFields.push(this._methodFormFieldDefinition());
       this.model = {
-        amount: (this._mode === 'full') ? this._computeTotalAmount() : 0,
+        amount: (this.mode === 'full') ? this._computeTotalAmount() : 0,
         method: 'cash'
       };
     } else if (this.action === 'cancel') {

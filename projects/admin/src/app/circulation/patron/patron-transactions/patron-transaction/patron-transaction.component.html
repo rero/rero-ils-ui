@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2023 RERO
+  Copyright (C) 2021-2024 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -18,13 +18,7 @@
   <div [ngClass]="{ 'callout callout-warning': isDisputed(), 'border rounded': !isDisputed()}" class="col mr-1 p-2">
     <div class="row">
       <div class="col-lg-2">
-        <button type="button"
-                class="pl-0 pt-0 btn"
-                (click)="isCollapsed = !isCollapsed"
-                [attr.aria-expanded]="!isCollapsed"
-                aria-controls="collapse">
-          <i [ngClass]="{ 'fa-caret-down pr-0': !isCollapsed, 'fa-caret-right pr-1': isCollapsed }" class="fa" aria-hidden="true"></i>
-        </button>
+        <shared-open-close-button (status)="isCollapsed = $event" />
         {{ transaction.creation_date | dateTranslate :'shortDate' }}
       </div>
       <div class="col-lg-4 d-inline-block text-truncate">{{ transaction.type | translate }}</div>
@@ -36,24 +30,12 @@
       <div class="col-lg-2 text-lg-right">{{ transactionAmount | currency: organisation.default_currency }}</div>
       <div class="col-md-1 text-left pl-0 mb-2" dropdown>
         @if (transaction.status === patronTransactionStatus.OPEN) {
-          <div class="position-relative">
-            <button class="btn btn-outline-secondary btn-block d-md-block dropdown-toggle btn-sm" type="button" dropdownToggle aria-controls="dropdown-animated" translate>Action</button>
-            <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-animated">
-              <li role="menuitem">
-                <a class="dropdown-item" (click)="patronTransactionAction('pay', 'full')">{{ 'Pay' | translate }} {{ transaction.total_amount | currency: organisation.default_currency }}</a>
-              </li>
-              <li role="menuitem">
-                <a class="dropdown-item" (click)="patronTransactionAction('pay', 'part')" translate>Pay a part</a>
-              </li>
-              <li class="divider dropdown-divider"></li>
-              <li role="menuitem">
-                <a class="dropdown-item" (click)="patronTransactionAction('dispute')" translate>Dispute</a>
-              </li>
-              <li role="menuitem">
-                <a class="dropdown-item" (click)="patronTransactionAction('cancel')" translate>Delete</a>
-              </li>
-            </ul>
-          </div>
+          <p-dropdown
+            [placeholder]="'Action'|translate"
+            [options]="menuItems"
+            [(ngModel)]="menuSelectedAction"
+            (onChange)="patronTransactionEvent($event)"
+          />
         }
       </div>
     </div>
@@ -62,15 +44,14 @@
         <!-- Transaction detail -->
         <h6 translate>Details</h6>
         <section class="offset-md-1 mb-3" [ngSwitch]="transaction?.type">
-          <admin-overdue-transaction-detail [transaction]="transaction" *ngSwitchCase="'overdue'"></admin-overdue-transaction-detail>
-          <admin-default-transaction-detail [transaction]="transaction" *ngSwitchDefault></admin-default-transaction-detail>
+          <admin-overdue-transaction-detail [transaction]="transaction" *ngSwitchCase="'overdue'" />
+          <admin-default-transaction-detail [transaction]="transaction" *ngSwitchDefault />
         </section>
         <!-- Transaction history -->
         <h6 translate>Transaction history</h6>
         <div class="events-timeline">
           @for (event of transaction.get_events(); track event) {
-            <admin-patron-transaction-event [event]="event"
-              class="row pl-2 pr-2 align-items-start timeline-event"></admin-patron-transaction-event>
+            <admin-patron-transaction-event [event]="event" class="row pl-2 pr-2 align-items-start timeline-event" />
           }
         </div>
       </div>
