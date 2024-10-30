@@ -30,12 +30,12 @@
       }
       <br/>
     }
-    <shared-contribution [contributions]="document?.contribution"></shared-contribution>
+    <shared-contribution [contributions]="document?.contribution" />
   </div>
   <div class="col-2">{{ loan.created | dateTranslate: 'short' }}</div>
   <div class="col-2">-<!-- TODO :: display the computed expected_date --></div>
   <div class="col-1 text-right">
-    <admin-cancel-request-button [loan]="loan" (cancelRequestEvent)="cancelRequest($event)"></admin-cancel-request-button>
+    <admin-cancel-request-button [loan]="loan" (cancelRequestEvent)="cancelRequest($event)" />
   </div>
   <!-- SECOND ROW: item detail -->
   @if (!isCollapsed) {

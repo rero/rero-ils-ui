@@ -14,28 +14,22 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 @if (document) {
-  <div class="row p-2 mb-1 align-middle item" [ngClass]="getCallout()" id="request-{{item.barcode}}">
-
+  <div class="grid p-2 mb-1 align-middle item" [ngClass]="getCallout()" id="request-{{item.barcode}}">
     <div class="actions">
       @if (item.loan.state === LoanState.PENDING) {
-        <button class="btn btn-sm btn-outline-secondary"
-                [attr.id]="item.barcode | idAttribute:{prefix: 'item', suffix: 'validate-button'}"
-                (click)="validateRequest()"
-        >
-          <i class="fa fa-check pr-1"></i>
-          {{ 'Validate' | translate }}
-        </button>
+        <p-button
+          icon="fa fa-check"
+          [label]="'Validate'|translate"
+          [id]="item.barcode | idAttribute:{prefix: 'item', suffix: 'validate-button'}"
+          [outlined]="true"
+          (onClick)="validateRequest()"
+        />
       }
     </div>
     <!-- FIRST ROW :: item-barcode, document-title, requester-name, request-date -->
     <div class="col-2">
-      <button type="button" class="btn-show-more"
-              [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
-              (click)="isCollapsed = !isCollapsed"
-              [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
-      </button>
+      <shared-open-close-button (status)="isCollapsed = $event" />
       <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
     </div>
     <div name="title" class="col-lg-5">

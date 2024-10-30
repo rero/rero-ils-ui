@@ -14,33 +14,27 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="row mb-4">
-  <div class="col-12 col-md-6">
+<div class="grid mb-4">
+  <div class="col-6">
     <ng-core-search-input
       [placeholder]="placeholder | translate"
       [searchText]="searchText"
       (search)="searchValueUpdated($event)"
       [focus]="searchInputFocus"
       [disabled]="searchInputDisabled"
-    ></ng-core-search-input>
+    />
   </div>
   <!-- Sorting loans -->
-  <div class="col-md-6 d-flex align-items-end justify-content-end">
+  <div class="col-6 flex align-items-end justify-content-end">
     <!-- collapsed ? -->
-    <div class="custom-control custom-switch">
-      <input class="custom-control-input" type="checkbox" id="collapse-detail"
-        (click)="toggleDetailCollapsed($event.target.checked)"
-        [checked]="isDetailCollapsed"
-      >
-      <label class="custom-control-label pr-3" for="collapse-detail" translate>Collapse details</label>
+    <div>
+      <p-inputSwitch id="collapse-detail" [(ngModel)]="isDetailCollapsed" />
+      <label for="collapse-detail" translate>Collapse details</label>
     </div>
     <!-- auto refresh -->
-    <div class="custom-control custom-switch">
-      <input class="custom-control-input" type="checkbox" id="auto-refresh"
-        (click)="enableAutoRefresh($event.target.checked)"
-        [checked]="refreshInterval > 0"
-      >
-      <label class="custom-control-label" for="auto-refresh" translate>Auto refresh</label>
+    <div class="ml-2">
+      <p-inputSwitch id="auto-refresh" [ngModel]="refreshInterval > 0" (onChange)="enableAutoRefresh($event.checked)" />
+      <label for="auto-refresh" translate>Auto refresh</label>
     </div>
     @if (refreshInterval > 0) {
       <ng-core-sort-list
@@ -48,7 +42,7 @@
         [options]="refreshOptions"
         [useIcon]="true"
         (selectChange)="selectingIntervalTimer($event)"
-      ></ng-core-sort-list>
+      />
     }
     <!-- Sorting loans -->
     <ng-core-sort-list
@@ -56,17 +50,16 @@
       [options]="sortingCriteria"
       [useIcon]="true"
       (selectChange)="selectingSortCriteria($event)"
-    >
-    </ng-core-sort-list>
+    />
   </div>
 </div>
 
-<div class="row">
+<div class="grid">
   <div class="col">
     <admin-circulation-requested-items-list
       [items]="items"
       [isCollapsed]="isDetailCollapsed"
       (requestValidated)="searchValueUpdated($event)"
-    ></admin-circulation-requested-items-list>
+    />
   </div>
 </div>
