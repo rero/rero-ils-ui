@@ -20,10 +20,18 @@
   </div>
 </div>
 <div>
-  <button id="action-patron" type="button" class="btn btn-outline-primary" (click)="setAction('patron')">
-    <i class="fa fa-user mr-1"></i> {{ 'Patron account' | translate }}
-  </button>
-  <button id="action-item" type="button" class="btn btn-primary" (click)="setAction('item')">
-    <i class="fa fa-file-o mr-1"></i> {{ 'Checkin the item' | translate }}
-  </button>
+  <p-button
+    id="action-patron"
+    icon="fa fa-user"
+    [label]="'Patron account'|translate"
+    [outlined]="true"
+    (onClick)="setAction('patron')"
+  />
+  <p-button
+    id="action-item"
+    icon="fa fa-file-o"
+    [label]="'Checkin the item'|translate"
+    [outlined]="true"
+    (onClick)="setAction('item')"
+  />
 </div>

@@ -199,14 +199,6 @@ export class MainRequestComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function used when detail collapsed is clicked
-   * @param state: the toggle switch state
-   */
-  toggleDetailCollapsed(state: boolean): void {
-    this.isDetailCollapsed = state;
-  }
-
-  /**
    * Function used when auto-refresh is toggled
    * @param state: the toggle switch state
    */

@@ -18,11 +18,7 @@
 <div class="row item">
   <!-- MAIN ROW :: title, authors, status and action buttons ============== -->
   <div class="col-4 d-flex">
-    <button type="button" class="btn-show-more"
-            [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
-            (click)="isCollapsed = !isCollapsed"
-            [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
-    </button>
+    <shared-open-close-button (status)="isCollapsed = $event" />
     <div>
       {{ record.metadata.document.title }}
       <div class="small">{{ record.metadata.document.authors }}</div>
@@ -31,15 +27,15 @@
   <div class="col-3">{{ record.metadata.pickup_location.name }}</div>
   <div class="col-2">{{ record.created | dateTranslate:'medium'}}</div>
   <div class="col-2">
-    <span class="mr-3 badge badge-{{ badgeColor(record.metadata.loan_status) }}" translate>{{ record.metadata.loan_status }}</span>
+    <p-tag [severity]="badgeColor(record.metadata.loan_status)" [value]="record.metadata.loan_status|translate" />
   </div>
   <div class="col-1 text-right">
-    <a class="btn btn-sm btn-link btn-outline-primary"
-       title="{{ 'Details' | translate }}"
-       [routerLink]="['/', 'records', 'ill_requests', 'detail', record.metadata.pid]"
-    >
-      <i class="fa fa-eye" aria-hidden="true"></i>
-    </a>
+    <p-button
+      icon="fa fa-eye"
+      [outlined]="true"
+      [title]="'Details'|translate"
+      [routerLink]="['/', 'records', 'ill_requests', 'detail', record.metadata.pid]"
+    />
   </div>
   <!-- DETAIL ROWS :: collapsible detail information's -->
   @if (!isCollapsed) {
@@ -88,13 +84,13 @@
           <dt class="offset-1 col-1 label-title" translate>Found in</dt>
           <dd class="col-10 mb-0">
             <a href="{{ record.metadata.found_in.url }}">{{ record.metadata.found_in.url }}</a>
-            <span class="badge badge-light px-2 py-1 ml-2">{{ record.metadata.found_in.source }}</span>
+            <p-tag class="ml-2" severity="secondary" [value]="record.metadata.found_in.source" />
           </dd>
         }
         <!-- STATUS -->
         <dt class="offset-1 col-1 label-title" translate>Request status</dt>
         <dd class="col-10 mb-0">
-          <span class="badge badge-{{badgeColor(record.metadata.status)}}" translate>{{ record.metadata.status }}</span>
+          <p-tag [severity]="badgeColor(record.metadata.status)" [value]="record.metadata.status|translate" />
         </dd>
         <!-- NOTES -->
         @if (record.metadata.notes && record.metadata.notes.length > 0) {

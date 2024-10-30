@@ -22,8 +22,11 @@ import { RecordModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { InputSwitchModule } from 'primeng/inputswitch';
 import { MenuModule } from 'primeng/menu';
+import { MessagesModule } from 'primeng/messages';
 import { RippleModule } from 'primeng/ripple';
+import { SplitButtonModule } from 'primeng/splitbutton';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { TagModule } from 'primeng/tag';
 import { JournalVolumePipe } from 'projects/public-search/src/app/pipe/journal-volume.pipe';
@@ -38,7 +41,6 @@ import { RequestedItemsListComponent } from './main-request/requested-items-list
 import { CancelRequestButtonComponent } from './patron/cancel-request-button.component';
 import { CardComponent } from './patron/card/card.component';
 import { ChangePasswordFormComponent } from './patron/change-password-form/change-password-form.component';
-import { HistoryLogLibraryComponent } from './patron/history/history-log-library/history-log-library.component';
 import { HistoryLogComponent } from './patron/history/history-log/history-log.component';
 import { HistoryComponent } from './patron/history/history.component';
 import { IllRequestItemComponent } from './patron/ill-request/ill-request-item/ill-request-item.component';
@@ -97,7 +99,6 @@ import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
         FixedDateFormComponent,
         OverdueTransactionComponent,
         HistoryLogComponent,
-        HistoryLogLibraryComponent,
         GetLoanCipoPipe,
         CheckinActionComponent,
         PatronFeeComponent,
@@ -120,7 +121,10 @@ import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
         TagModule,
         ButtonModule,
         TabMenuModule,
-        RippleModule
+        RippleModule,
+        MessagesModule,
+        InputSwitchModule,
+        SplitButtonModule
     ],
     providers: [
       CurrencyPipe

@@ -22,12 +22,11 @@ import { PatronService } from '@app/admin/service/patron.service';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
+import { MenuItem } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { OperationLogsApiService } from '../../../api/operation-logs-api.service';
 import { CirculationService } from '../../services/circulation.service';
 import { PatronTransactionService } from '../../services/patron-transaction.service';
-import { MenuItem } from 'primeng/api';
-import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'admin-main',
@@ -45,7 +44,6 @@ export class MainComponent implements OnInit, OnDestroy {
   private circulationService: CirculationService = inject(CirculationService);
   private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
   private recordService: RecordService = inject(RecordService);
-  private currencyPipe: CurrencyPipe = inject(CurrencyPipe);
 
   // COMPONENT ATTRIBUTES ====================================================
   /** shortcuts for patron tabs */
@@ -100,9 +98,6 @@ export class MainComponent implements OnInit, OnDestroy {
 
   /** the current patron barcode */
   barcode: string;
-
-  /** the total amount of all fees related to the current patron */
-  feesTotalAmount = 0;
 
   /** Subscription to current patron */
   private _patronSubscription$: Subscription;
@@ -175,18 +170,11 @@ export class MainComponent implements OnInit, OnDestroy {
         }
         this.patronService.getCirculationInformations(patron.pid).subscribe((data) => {
           this.circulationService.clear();
-          this.feesTotalAmount = data.fees.engaged + data.fees.preview;
+          this.circulationService.statisticsIncrease('fees', data.fees.engaged + data.fees.preview);
           this._parseStatistics(data.statistics || {});
           for (const message of (data.messages || [])) {
             this.circulationService.addCirculationMessage(message as any);
           }
-          // subscribe to fees accounting operations for this patron
-          this._patronFeesOperationSubscription$ = this.patronTransactionService.patronFeesOperationSubject$.subscribe(
-            (amount) => {
-              const total = this.feesTotalAmount + amount;
-              this.feesTotalAmount = (total > 0) ? total : 0;
-            }
-          );
           this.initializeMenu();
         });
       }
@@ -295,8 +283,9 @@ export class MainComponent implements OnInit, OnDestroy {
         label: this.translateService.instant('Fees'),
         routerLink: ['/circulation', 'patron', this.barcode, 'fees'],
         tag: {
-          severity: 'info',
-          value: this.currencyPipe.transform(this.feesTotalAmount, this.organisation.default_currency)
+          severity: 'warning',
+          statistics: this.circulationService.statistics,
+          withCurrency: true,
         }
       }
     ];

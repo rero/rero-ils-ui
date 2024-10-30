@@ -28,6 +28,7 @@ import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CirculationService } from './circulation.service';
 
 @Injectable({
   providedIn: 'root'
@@ -39,11 +40,10 @@ export class PatronTransactionService {
   private routeToolService: RouteToolService = inject(RouteToolService);
   private translateService: TranslateService = inject(TranslateService);
   private messageService = inject(MessageService);
+  private circulationService: CirculationService = inject(CirculationService);
 
   /** subject containing current loaded PatronTransactions */
   patronTransactionsSubject$: BehaviorSubject<Array<PatronTransaction>> = new BehaviorSubject([]);
-  /** subject emitting accounting transaction about patron fees */
-  patronFeesOperationSubject$: Subject<number> = new Subject();
 
   /**
    * Allow to build the query to send through the API to retrieve desired data
@@ -89,7 +89,7 @@ export class PatronTransactionService {
     ).pipe(
       map((data: Record) => data.hits),
       map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
-      map(hits => hits.map( hit => new PatronTransaction(hit.metadata)))
+      map(hits => hits.map(hit => new PatronTransaction(hit.metadata)))
     );
   }
 
@@ -195,8 +195,7 @@ export class PatronTransactionService {
     record.type = PatronTransactionEventType.PAYMENT;
     record.subtype = paymentMethod;
     record.amount = amount;
-    this.patronFeesOperationSubject$.next(0 - amount);
-    this._createTransactionEvent(record, transaction.patron.pid);
+    this._createTransactionEvent(record, transaction.patron.pid, amount);
   }
 
   /**
@@ -222,8 +221,7 @@ export class PatronTransactionService {
     record.type = PatronTransactionEventType.CANCEL;
     record.amount = amount;
     record.note = reason;
-    this.patronFeesOperationSubject$.next(0 - amount);
-    this._createTransactionEvent(record, transaction.patron.pid);
+    this._createTransactionEvent(record, transaction.patron.pid, amount);
   }
 
   /**
@@ -231,24 +229,24 @@ export class PatronTransactionService {
    * @param record - data to send through the API
    * @param affectedPatron - the user pid affected by this new transaction event
    */
-  private _createTransactionEvent(record: any, affectedPatron: string) {
-    this.recordService.create('patron_transaction_events', record).subscribe(
-      () => {
+  private _createTransactionEvent(record: any, affectedPatron: string, amount: number = 0) {
+    const translateType = this.translateService.instant(record.type);
+    this.recordService.create('patron_transaction_events', record).subscribe({
+      next: () => {
+        this.circulationService.statisticsDecrease('fees', amount);
         this.emitPatronTransactionByPatron(affectedPatron, undefined, 'open');
-        const translateType = this.translateService.instant(record.type);
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Patron'),
-          detail: this.translateService.instant('{{ type }} registered', {type: translateType}),
+          detail: this.translateService.instant('{{ type }} registered', { type: translateType }),
           life: CONFIG.MESSAGE_LIFE
         });
       },
-      (error) => {
+      error: (error) => {
         const errorMessage = (error.hasOwnProperty('message') && error.message().hasOwnProperty('message'))
           ? error.message.message
           : 'Server error :: ' + (error.title || error.toString());
         const message = '[' + error.status + ' - ' + error.statusText + '] ' + errorMessage;
-        const translateType = this.translateService.instant(record.type);
         this.messageService.add({
           severity: 'error',
           summary: this.translateService.instant('{{ type }} creation failed!', { type: translateType }),
@@ -257,6 +255,6 @@ export class PatronTransactionService {
           closable: true
         });
       }
-    );
+    });
   }
 }

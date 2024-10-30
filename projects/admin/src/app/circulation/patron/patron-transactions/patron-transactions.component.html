@@ -15,112 +15,90 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <section class="content">
-  <div class="vertical-tabs-panes border row">
-    <!-- vertical tabs list -->
-    <div class="tabs-list col-lg-2 col-md-3 bg-light">
-      <ul>
-        <li [class.open-tab]="tabs.engagedFees.isOpen">
-          <button class="btn btn-link btn-block clearfix" (click)="openTab(tabs.engagedFees)">
-            <span translate>Engaged fees</span>
-            @if (tabs.engagedFees.totalAmount > 0) {
-              <span class="badge badge-warning float-right">
-                {{ tabs.engagedFees.totalAmount | currency: organisation.default_currency }}
-              </span>
-            }
-          </button>
-        </li>
-        <li [class.open-tab]="tabs.overduePreviewFees.isOpen">
-          <button class="btn btn-link btn-block clearfix" (click)="openTab(tabs.overduePreviewFees); loadFeesHistory()">
-            <span translate>Overdue preview fees</span>
-            @if (tabs.overduePreviewFees.totalAmount > 0) {
-              <span class="badge badge-secondary badge-opacity-30 float-right">
-                {{ tabs.overduePreviewFees.totalAmount | currency: organisation.default_currency }}
-              </span>
-            }
-          </button>
-        </li>
-        <li [class.open-tab]="tabs.historyFees.isOpen">
-          <button class="btn btn-link btn-block clearfix" (click)="openTab(tabs.historyFees); loadFeesHistory()">
-            <span translate>History</span>
-          </button>
-        </li>
-      </ul>
-    </div>
-    <!-- tabs content -->
-    <div class="tabs-content col">
-      <!-- engaged fees ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <div [hidden]="!tabs.engagedFees.isOpen">
-        <div class="text-right my-2">
-          <button class="btn btn-primary btn-sm mr-1" type="button" (click)="addFee()">
-            <i class="fa fa-plus mr-1" aria-hidden="true"></i>
-            {{ 'Add a fee' | translate }}
-          </button>
+  <p-tabView (onChange)="tabChange($event)">
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <span translate>Engaged fees</span>
+        @if (statistics()['fees'] > 0) {
+          <p-tag severity="warning" class="ml-2">
+            {{ statistics()['fees'] | currency: organisation.default_currency }}
+          </p-tag>
+        }
+      </ng-template>
+      <div class="text-right my-2">
+        <p-button
+          icon="fa fa-plus"
+          [label]="'Add a fee'|translate"
+          (onClick)="addFee()"
+        />
+      </div>
+      @if (tabs.engagedFees.transactions.length > 0) {
+        <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
+          <div class="col-2 pl-20" translate>Date</div>
+          <div class="col-4" translate>Category</div>
+          <div class="col-3" translate>Library</div>
+          <div class="col-2 text-right">
+            {{ 'Total amount' | translate }}: {{ statistics()['fees'] | currency: organisation.default_currency }}
+          </div>
+          <div class="col-1 pl-0">
+            <p-splitButton
+              [label]="'Pay all'|translate"
+              [disabled]="tabs.engagedFees.totalAmount <= 0"
+              [model]="actions"
+              (onClick)="payAllTransactions()"
+            />
+          </div>
         </div>
-        @if (tabs.engagedFees.transactions.length > 0) {
-          <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
-            <div class="col-2 pl-20" translate>Date</div>
-            <div class="col-4" translate>Category</div>
-            <div class="col-3" translate>Library</div>
-            <div class="col-2 text-right">
-              {{ 'Total amount' | translate }}: {{ tabs.engagedFees.totalAmount | currency: organisation.default_currency }}
-            </div>
-            <div class="col-1 pl-0">
-              <div class="btn-group" dropdown>
-                <button class="btn btn-primary btn-sm btn-block d-md-block float-right my-1"
-                (click)="payAllTransactions()" [disabled]="tabs.engagedFees.totalAmount <= 0"
-                translate
-                >Pay all</button>
-                <button id="fees-pay-all-my-library-btn" type="button" dropdownToggle class="btn btn-primary btn-sm my-1 dropdown-toggle dropdown-toggle-split"
-                        aria-controls="dropdown-split">
-                  <span class="caret"></span>
-                </button>
-                <div id="fees-pay-all-my-library-menu" *dropdownMenu class="dropdown-menu"
-                    role="menu" aria-labelledby="button-split">
-                  <a [ngClass]="{'disabled': myLibraryEngagedFees.length === 0}" class="dropdown-item" (click)="payAllTransactionsInMyLibrary()" translate>for my library</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          @for (t of tabs.engagedFees.transactions; track t) {
-            <admin-patron-transaction [transaction]="t" class="row mb-1"></admin-patron-transaction>
-          }
-        } @else {
-          {{ 'No pending fee for this patron' | translate }}
+        @for (t of tabs.engagedFees.transactions; track t) {
+          <admin-patron-transaction [transaction]="t" class="row mb-1" />
         }
-      </div>
-      <!-- OVERDUE PREVIEW FEES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <div [hidden]="!tabs.overduePreviewFees.isOpen">
-        @if (tabs.overduePreviewFees.transactions.length > 0) {
-          <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
-            <div class="col-2 pl-20 my-2" translate>Due date</div>
-            <div class="col-7" translate>Document</div>
-            <div class="col-2 text-right">
-              {{ 'Total amount' | translate }}: {{ tabs.overduePreviewFees.totalAmount | currency: organisation.default_currency }}
-            </div>
-            <div class="col-1"></div>
-          </div>
-          @for (t of tabs.overduePreviewFees.transactions; track t) {
-            <admin-overdue-transaction [transaction]="t" class="row mb-1"></admin-overdue-transaction>
-          }
-        } @else {
-          {{ 'No overdue fees for this patron' | translate }}
+      } @else {
+        {{ 'No pending fee for this patron' | translate }}
+      }
+    </p-tabPanel>
+
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <span translate>Overdue preview fees</span>
+        @if (tabs.overduePreviewFees.totalAmount > 0) {
+          <p-tag severity="secondary" class="ml-2">
+            {{ tabs.overduePreviewFees.totalAmount | currency: organisation.default_currency }}
+          </p-tag>
         }
-      </div>
-      <!-- fees history ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <div [hidden]="!tabs.historyFees.isOpen">
-        @if (tabs.historyFees.transactions !== null && tabs.historyFees.transactions.length > 0) {
-          <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
-            <div class="col-2 pl-20 my-2" translate>Date</div>
-            <div class="col-4" translate>Category</div>
-            <div class="col-5" translate>Library</div>
+      </ng-template>
+      @if (tabs.overduePreviewFees.transactions.length > 0) {
+        <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
+          <div class="col-2 pl-20 my-2" translate>Due date</div>
+          <div class="col-7" translate>Document</div>
+          <div class="col-2 text-right">
+            {{ 'Total amount' | translate }}: {{ tabs.overduePreviewFees.totalAmount | currency: organisation.default_currency }}
           </div>
-          @for (t of tabs.historyFees.transactions; track t) {
-            <admin-patron-transaction class="row mb-1 align-items-start" [transaction]="t"></admin-patron-transaction>
-          }
-        } @else {
-          {{ 'No fee history for this patron' | translate }}
+          <div class="col-1"></div>
+        </div>
+        @for (t of tabs.overduePreviewFees.transactions; track t) {
+          <admin-overdue-transaction [transaction]="t" class="row mb-1" />
         }
-      </div>
-    </div>
-  </div>
+      } @else {
+        {{ 'No overdue fees for this patron' | translate }}
+      }
+    </p-tabPanel>
+
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <span translate>History</span>
+      </ng-template>
+      @if (tabs.historyFees.transactions !== null && tabs.historyFees.transactions.length > 0) {
+        <div class="row mb-1 d-flex align-items-center bg-dark text-white rounded">
+          <div class="col-2 pl-20 my-2" translate>Date</div>
+          <div class="col-4" translate>Category</div>
+          <div class="col-5" translate>Library</div>
+        </div>
+        @for (t of tabs.historyFees.transactions; track t) {
+          <admin-patron-transaction class="row mb-1 align-items-start" [transaction]="t" />
+        }
+      } @else {
+        {{ 'No fee history for this patron' | translate }}
+      }
+    </p-tabPanel>
+  </p-tabView>
 </section>

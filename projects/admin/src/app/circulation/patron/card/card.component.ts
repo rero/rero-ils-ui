@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { getBootstrapLevel } from '../../../utils/utils';
-import { CirculationService } from '../../services/circulation.service';
 import { DateTime } from 'luxon';
+import { getSeverity } from '../../../utils/utils';
+import { CirculationService } from '../../services/circulation.service';
 
 @Component({
   selector: 'admin-circulation-patron-detailed',
@@ -84,12 +84,12 @@ export class CardComponent {
   }
 
   /**
-   * Get bootstrap color by level
+   * Get message severity
    * @param level - string
    * @return string
    */
-  getBootstrapColor(level: string): string {
-    return getBootstrapLevel(level);
+  getMessageSeverity(level: string): string {
+    return getSeverity(level);
   }
 
 }
