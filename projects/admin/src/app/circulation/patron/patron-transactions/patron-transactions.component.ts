@@ -20,9 +20,13 @@ import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { PatronService } from '@app/admin/service/patron.service';
+import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
+import { MenuItem } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { TabViewChangeEvent } from 'primeng/tabview';
 import { Subscription } from 'rxjs';
+import { CirculationService } from '../../services/circulation.service';
 import { PatronTransactionService } from '../../services/patron-transaction.service';
 import { PatronFeeComponent } from './patron-fee/patron-fee.component';
 import { PatronTransactionEventFormComponent } from './patron-transaction-event-form/patron-transaction-event-form.component';
@@ -39,6 +43,8 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   private organisationService: OrganisationService = inject(OrganisationService);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
   private userService: UserService = inject(UserService);
+  private translateService: TranslateService = inject(TranslateService);
+  private circulationService: CirculationService = inject(CirculationService);
 
   private dynamicDialogRef: DynamicDialogRef | undefined;
 
@@ -46,20 +52,19 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   /** all tab reference array */
   tabs = {
     engagedFees: {
-      isOpen: true,  // open by default
       transactions: [] as PatronTransaction[],
       totalAmount: 0
     },
     overduePreviewFees: {
-      isOpen: false,
       transactions: [] as {fees: LoanOverduePreview, loan: Loan}[],
       totalAmount: 0
     },
     historyFees: {
-      isOpen: false,
       transactions: null as PatronTransaction[]
     }
   };
+
+  actions: MenuItem[] | undefined;
 
   /** Current patron */
   private patron: any = undefined;
@@ -85,6 +90,9 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
     return this.tabs.engagedFees.transactions.filter(t => t.library != null && t.library.pid === libraryPID);
   }
 
+  get statistics() {
+    return this.circulationService.statistics;
+  }
 
   // CONSTRUCTOR & HOOKS ==================================================================
   /** OnInit hook */
@@ -99,6 +107,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
             .subscribe((transactions) => {
               this.tabs.engagedFees.transactions = transactions;
               this.tabs.engagedFees.totalAmount = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
+              this.generateActionsMenu();
             }
           )
         );
@@ -119,6 +128,22 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  generateActionsMenu(): void {
+    this.actions = [
+      {
+        label: this.translateService.instant('for my library'),
+        command: () => this.payAllTransactionsInMyLibrary(),
+        disabled: this.myLibraryEngagedFees.length === 0
+      }
+    ];
+  }
+
+  tabChange(event: TabViewChangeEvent) {
+    if (event.index !== 0) {
+      this.loadFeesHistory();
+    }
+  }
+
   // COMPONENT FUNCTIONS ==================================================================
   /** load all PatronTransactions for the patron without 'status' restriction */
   loadFeesHistory(): void {
@@ -134,45 +159,39 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   /** Allow to pay the total of each pending patron transactions */
   payAllTransactions(): void {
     this.dialogService.open(PatronTransactionEventFormComponent, {
+      header: this.translateService.instant('Pay'),
+      width: '50vw',
       data: {
         action: 'pay',
         mode: 'full',
         transactions: this.tabs.engagedFees.transactions
       }
-    })
+    });
   }
 
   /** Allow to pay the total of each pending patron transactions */
   payAllTransactionsInMyLibrary(): void {
     this.dialogService.open(PatronTransactionEventFormComponent, {
+      header: this.translateService.instant('Pay for my library'),
+      width: '50vw',
       data: {
         action: 'pay',
         mode: 'full',
         transactions: this.myLibraryEngagedFees
       }
-    })
-  }
-
-  /**
-   * Event handler when user click on a 'vertical tab'.
-   * All other tabs will be hidden.
-   * @param tabToOpen: the tab to open
-   */
-  openTab(tabToOpen: any): void {
-    for (const entry of Object.values(this.tabs)) {
-      entry.isOpen = tabToOpen === entry;
-    }
+    });
   }
 
   /** Opening a modal to manually add a fee. */
   addFee(): void {
     this.dynamicDialogRef = this.dialogService.open(PatronFeeComponent, {
-      dismissableMask: true,
+      header: this.translateService.instant('New fee'),
+      width: '30vw',
       data: {
         patronPid: this.patron.pid,
         organisationPid: this.patron.organisation.pid
       }
-    })
+    });
     this.subscriptions.add(
       this.dynamicDialogRef.onClose.subscribe(() => this.reloadEngagedFees())
     );

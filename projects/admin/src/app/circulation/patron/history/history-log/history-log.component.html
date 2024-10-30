@@ -18,12 +18,7 @@
   <!-- Basic loan information's -->
   <div class="row">
     <div class="col-sm-6 position-relative">
-      <button type="button" class="pl-0 pt-0 btn float-left"
-              (click)="isCollapsed = !isCollapsed; loadCheckout()"
-              [attr.aria-expanded]="!isCollapsed"
-              aria-controls="collapse">
-        <i [ngClass]="{ 'fa-caret-down': !isCollapsed, 'fa-caret-right': isCollapsed }" class="fa" aria-hidden="true"></i>
-      </button>
+      <shared-open-close-button (status)="isCollapsed = $event; loadCheckout()" />
       @if (document) {
         <a [routerLink]="['/records','documents','detail', log.metadata.loan.item.document.pid]">
            {{ log.metadata.loan.item.document.title }}
@@ -37,7 +32,7 @@
     </div>
     <div class="col-sm-4">
       @if (document?.metadata?.contribution && document.metadata.contribution.length > 0) {
-        <shared-contribution [contributions]="document.metadata.contribution" [limitRecord]="3"></shared-contribution>
+        <shared-contribution [contributions]="document.metadata.contribution" [limitRecord]="3" />
       } @else {
         &nbsp;
       }
@@ -81,7 +76,10 @@
                 {{ 'Checkin' | translate }}
               </div>
               <div class="col-9">
-                <admin-history-log-library [location]="log.metadata.loan.transaction_location"></admin-history-log-library>
+                <ng-container
+                  [ngTemplateOutlet]="logLibrary"
+                  [ngTemplateOutletContext]="{ $implicit: log.metadata.loan.transaction_location }"
+                />
               </div>
             </div>
           </div>
@@ -99,7 +97,10 @@
                   {{ 'Checkout' | translate }}
                 </div>
                 <div class="col-9">
-                  <admin-history-log-library [location]="checkout.metadata.loan.transaction_location"></admin-history-log-library>
+                  <ng-container
+                    [ngTemplateOutlet]="logLibrary"
+                    [ngTemplateOutletContext]="{ $implicit: checkout.metadata.loan.transaction_location }"
+                  />
                 </div>
               </div>
             </div>
@@ -109,3 +110,12 @@
     </div>
   }
 </div>
+
+<ng-template #logLibrary let-location>
+  <i class="fa fa-map-marker mr-1"></i>
+  @if (location.library) {
+    {{ location.library.name }}
+  } @else {
+    {{ location.name }}
+  }
+</ng-template>

@@ -117,9 +117,12 @@
         </dd>
       </dl>
       @if (canUpdate()) {
-        <button class="btn btn-sm btn-outline-primary mt-2" id="profile-change-password-button"
-          (click)="updatePatronPassword(patron)" title="Change Password">{{ 'Change Password' | translate }}
-        </button>
+        <p-button
+          id="profile-change-password-button"
+          [outlined]="true"
+          [label]="'Change Password'|translate"
+          (onClick)="updatePatronPassword(patron)"
+        />
       }
     </section>
 
@@ -232,10 +235,12 @@
     }
 
     @if (canUpdate()) {
-      <button [routerLink]="['/records','patrons','edit', $any(patron).pid]"
-        class="btn btn-sm btn-primary ml-3 ng-star-inserted" id="profile-edit-button" title="{{ 'Edit' | translate }}">
-        <i class="fa fa-pen mr-1"></i>{{ 'Edit' | translate }}
-      </button>
+      <p-button
+        id="profile-edit-button"
+        icon="fa fa-pencil"
+        [label]="'Edit' | translate"
+        [routerLink]="['/records','patrons','edit', $any(patron).pid]"
+      />
     }
 
   </article>

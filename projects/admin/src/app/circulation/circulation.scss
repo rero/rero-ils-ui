@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023 RERO
+ * Copyright (C) 2023-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,12 +17,6 @@
 
  @import 'bootstrap/scss/functions';
  @import 'bootstrap/scss/variables';
-
- .btn-hover {
-   color: $black;
-   background-color: $warning;
-   // could be better to use ``@extend .btn:hover`` but it doesn't work for hover property
- }
 
  .item {
    margin-bottom: map-get($spacers, 1) !important;

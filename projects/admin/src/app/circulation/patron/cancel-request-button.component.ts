@@ -25,19 +25,20 @@ import { MessageService } from 'primeng/api';
   selector: 'admin-cancel-request-button',
   template: `
   @if (canCancelRequest()) {
-    <button type="button"
-            class="btn btn-outline-danger btn-sm"
-            (click)="showCancelRequestDialog($event)"
-            name="cancel">
-      <i class="fa fa-trash-o" aria-hidden="true"></i>
-    </button>
+    <p-button
+      icon="fa fa-trash-o"
+      severity="danger"
+      [outlined]="true"
+      (onClick)="showCancelRequestDialog($event)"
+    />
   } @else {
-    <button type="button" class="btn btn-outline-danger btn-sm"
-            title="{{'The request cannot be cancelled' | translate }}"
-            name="cancel"
-            disabled>
-      <i class="fa fa-trash-o" aria-hidden="true"></i>
-    </button>
+    <p-button
+      icon="fa fa-trash-o"
+      severity="danger"
+      [title]="'The request cannot be cancelled'|translate"
+      [outlined]="true"
+      [disabled]="true"
+    />
   }
   `
 })

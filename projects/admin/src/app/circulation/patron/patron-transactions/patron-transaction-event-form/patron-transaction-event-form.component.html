@@ -16,40 +16,29 @@
 -->
 @if (transactions) {
   <form [formGroup]="form" (ngSubmit)="onSubmitForm()">
-    <div class="modal-header">
-    <h5 class="modal-title">{{ action | translate }}</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-      <span aria-hidden="true" data-dismiss="modal" (click)="closeModal()">&times;</span>
-    </button>
-  </div>
-    <div class="modal-body">
-      @for (transaction of transactions; track transaction) {
-        <div class="card mb-4">
-          <div class="card-body">
-            <h5 class="card-title">{{ transaction.type | translate }}</h5>
-            <div class="card-text">
-              @if (transaction.note) {
-                <div class="row">
-                  <label class="col-4 label-title" translate>Note</label>
-                  <span class="col-8">{{ transaction.note}}</span>
-                </div>
-              }
-              <div class="row">
-                <label class="col-4 label-title" translate>Creation date</label>
-                <span class="col-8">{{ transaction.creation_date | dateTranslate: 'shortDate'}}</span>
-              </div>
-              <div class="row">
-                <label class="col-4 label-title" translate>Total amount</label>
-                <span class="col-8">{{ transaction.total_amount | currency: organisation.default_currency }}</span>
-              </div>
+    @for (transaction of transactions; track transaction) {
+      <p-panel styleClass="mb-2" [header]="transaction.type|translate">
+        <div class="card-text">
+          @if (transaction.note) {
+            <div class="row">
+              <label class="col-4 label-title" translate>Note</label>
+              <span class="col-8">{{ transaction.note }}</span>
             </div>
+          }
+          <div class="row">
+            <label class="col-4 label-title" translate>Creation date</label>
+            <span class="col-8">{{ transaction.creation_date | dateTranslate: 'shortDate' }}</span>
+          </div>
+          <div class="row">
+            <label class="col-4 label-title" translate>Total amount</label>
+            <span class="col-8">{{ transaction.total_amount | currency: organisation.default_currency }}</span>
           </div>
         </div>
-      }
-      <formly-form [form]="form" [fields]="formFields" [model]="model"></formly-form>
-    </div>
-    <div class="modal-footer">
-      <button type="submit" class="btn btn-primary" [disabled]="this.form.status !== 'VALID'" translate>Save</button>
+      </p-panel>
+    }
+    <formly-form [form]="form" [fields]="formFields" [model]="model"></formly-form>
+    <div class="flex justify-content-end">
+      <p-button type="submit" [label]="'Save'|translate" [disabled]="this.form.status !== 'VALID'" />
     </div>
   </form>
 }

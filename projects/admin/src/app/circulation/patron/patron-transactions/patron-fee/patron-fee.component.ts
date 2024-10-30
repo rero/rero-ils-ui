@@ -17,6 +17,7 @@
 import { getCurrencySymbol } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { CirculationService } from '@app/admin/circulation/services/circulation.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, CONFIG, RecordService } from '@rero/ng-core';
@@ -43,8 +44,7 @@ export class PatronFeeComponent implements OnInit {
   private userService: UserService = inject(UserService);
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
   private apiService: ApiService = inject(ApiService);
-
-  // COMPONENT ATTRIBUTES =====================================================
+  private circulationService: CirculationService = inject(CirculationService);
 
   /** form */
   form: FormGroup = new FormGroup({});
@@ -56,13 +56,9 @@ export class PatronFeeComponent implements OnInit {
   patronPid: string | undefined;
   organisationPid: string | undefined;
 
-  // HOOKS ======================================================
-  /** OnInit Hook */
+  // /** OnInit Hook */
   ngOnInit(): void {
     const data: any = this.dynamicDialogConfig.data;
-    if (!data || !data.patronPid || data.organisationPid) {
-      this.closeModal();
-    }
     this.patronPid = data.patronPid;
     this.organisationPid = data.organisationPid;
 
@@ -72,17 +68,13 @@ export class PatronFeeComponent implements OnInit {
     });
   }
 
-  // COMPONENT FUNCTIONS ======================================================
-  /**
-   * Submit the form
-   * @param model - Fee model
-   */
   submit(model: FeeFormModel): void {
     if (model.creation_date instanceof Date) {
       model.creation_date = DateTime.fromObject(model.creation_date).toISO();
     }
     this.patronTransactionApiService.addFee(model).subscribe({
       next: () => {
+        this.circulationService.statisticsIncrease('fees', model.total_amount);
         this.closeModal();
         this.messageService.add({
           severity: 'success',
@@ -101,7 +93,7 @@ export class PatronFeeComponent implements OnInit {
     });
   }
 
-  /** Close modal box */
+  // /** Close modal box */
   closeModal(): void {
     this.dynamicDialogRef.close();
   }
@@ -110,7 +102,7 @@ export class PatronFeeComponent implements OnInit {
   private _initForm(properties: any): void {
     this.formFields = [{
       key: 'type',
-      type: 'selectWithSort',
+      type: 'select',
       props: {
         label: 'Type',
         required: true,
@@ -135,7 +127,7 @@ export class PatronFeeComponent implements OnInit {
       }
     }, {
       key: 'creation_date',
-      type: 'dateTimePicker',
+      type: 'datePicker',
       wrappers: ['form-field'],
       props: {
         label: 'Date',
