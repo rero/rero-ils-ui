@@ -54,7 +54,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
         types: [
           {
             key: this.name,
-            label: 'Documents',
+            label: _('Documents'),
             editorSettings: {
               longMode: true,
               template: {

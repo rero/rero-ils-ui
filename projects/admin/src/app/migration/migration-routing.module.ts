@@ -42,7 +42,7 @@ const routes: Routes = [
       types: [
         {
           key: 'migrations',
-          label: 'Migrations',
+          label: _('Migrations'),
           component: MigrationDetailComponent,
           canDelete: (record: any) => of(false),
           canAdd: (record: any) => of(false),
@@ -79,7 +79,7 @@ const routes: Routes = [
       types: [
         {
           key: 'migration_data',
-          label: 'Migrations Data Conversion',
+          label: _('Migrations Data Conversion'),
           component: ConversionMigrationDataComponent,
           canDelete: (record: any) => of(false),
           canAdd: (record: any) => of(false),
@@ -139,7 +139,7 @@ const routes: Routes = [
       types: [
         {
           key: 'migration_data',
-          label: 'Migrations Data Deduplication',
+          label: _('Migrations Data Deduplication'),
           component: MigrationDataDeduplicationBriefComponent,
           canDelete: (record: any) => of(false),
           canAdd: (record: any) => of(false),
