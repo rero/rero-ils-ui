@@ -15,10 +15,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ng-core-search-autocomplete
-  class="w-full"
-  scrollHeight="null"
   [placeholder]="placeholder | translate | ucfirst"
   [value]="value"
   [recordTypes]="recordTypes"
+  [inputStyleClass]="inputstyleclass"
+  scrollHeight="400px"
   [hidden]="hideSearchElement"
-  (onSelect)="onSelect($event)" />
+  (onSelect)="onSelect($event)"
+  (onSearch)="onSearch($event)" />

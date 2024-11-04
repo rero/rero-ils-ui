@@ -20,8 +20,7 @@ import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'shared-document-brief-view',
-  templateUrl: './document-brief-view.component.html',
-  styleUrls: ['./document-brief-view.component.scss']
+  templateUrl: './document-brief-view.component.html'
 })
 export class DocumentBriefViewComponent {
 

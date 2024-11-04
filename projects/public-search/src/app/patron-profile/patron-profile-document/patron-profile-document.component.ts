@@ -20,8 +20,7 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
 
 @Component({
   selector: 'public-search-patron-profile-document',
-  templateUrl: './patron-profile-document.component.html',
-  styleUrls: ['./patron-profile-document.component.scss']
+  templateUrl: './patron-profile-document.component.html'
 })
 export class PatronProfileDocumentComponent implements OnInit {
 

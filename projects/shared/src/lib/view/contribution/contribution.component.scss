@@ -16,14 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import 'bootstrap/scss/bootstrap';
 
-ul.contributor-list-inline {
-  @extend .list-unstyled;
-  @extend .mb-0;
+ul.contributor-list {
+  padding-inline-start: 0;
   li {
-    @extend .list-inline-item;
-    @extend .mr-0;
+    @extend .inline, .mr-0;
   }
   & > li + li::before {
     @extend .mx-1;
@@ -31,10 +28,7 @@ ul.contributor-list-inline {
   }
 
   ul.contributor-roles {
-    @extend .list-unstyled;
-    @extend .d-inline-block;
-    @extend .text-secondary;
-    @extend .ml-1;
+    @extend .list-none, .inline, .text-color-secondary, .ml-1;
     & > li + li::before {
       content: ", ";
     }

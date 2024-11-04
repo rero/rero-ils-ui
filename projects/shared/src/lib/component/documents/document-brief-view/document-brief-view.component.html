@@ -23,7 +23,7 @@
 }
 <!-- contribution -->
 @if (record?.contribution; as entities) {
-  <div class="small" name="document-contribution">
+  <div class="text-sm" name="document-contribution">
       <shared-contribution
         [contributions]="entities"
         [limitRecord]="3"
@@ -33,20 +33,20 @@
 }
 <!-- provision activity publications -->
 @if (provisionActivityPublications.length > 0) {
-  <div class="small" name="document-provision-activity">
+  <div class="text-sm" name="document-provision-activity">
     {{ provisionActivityPublications | join }}
   </div>
 }
 
 <!-- ISBN -->
 @if (record.identifiedBy | identifiedByLabel: ['bf:Isbn', 'bf:Ean']; as identifiedBy) {
-  <div class="small-content" name="document-identified-by">
+  <div class="text-sm font-bold text-color-secondary" name="document-identified-by">
     ISBN: {{ identifiedBy | truncateText: 3 }}
   </div>
 }
 <!-- ISSN -->
 @if (record.identifiedBy | identifiedByLabel: ['bf:Issn']; as identifiedBy) {
-  <div class="small-content" name="document-identified-by">
+  <div class="text-sm font-bold text-color-secondary" name="document-identified-by">
     ISSN: {{ identifiedBy | truncateText: 3 }}
   </div>
 }

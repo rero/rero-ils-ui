@@ -15,45 +15,54 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (fields.length > 0 && showForm) {
-  <div id="pickup-location-{{ record.metadata.pid }}" class="row pl-4" [ngClass]="{'mb-4': recordType === 'holding' }">
-    <div class="col-12 pl-0">
-      <dd class="mb-0 pl-0">
-        @if (recordType === 'holding' && itemCount > 0) {
-          <div class="alert alert-warning my-4" translate>Please make sure that your requested issue is not listed above.</div>
-
+  <div class="grid p-2" id="pickup-location-{{ record.metadata.pid }}">
+    @if (recordType === 'holding' && itemCount > 0) {
+      <p-messages
+      showTransitionOptions="0ms"
+      class="col-12"
+      [value]="[{severity: 'warn', detail:'Please make sure that your requested issue is not listed above.' | translate }]"
+      [enableService]="false"
+      [closable]="false" />
+    }
+    <form class="col-12" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="mb-2">
+        <formly-form [model]="model" [fields]="fields" [form]="form"/>
+      </div>
+      @if (!requestInProgress) {
+        <p-button
+          styleClass="mb-2 mr-2"
+          [label]="'Cancel' | translate"
+          id="pickup-location-{{ record.metadata.pid }}-cancel-button"
+          severity="danger"
+          [outlined]="true"
+          (onClick)="closeDialog()"
+        />
+      }
+      <p-button
+        id="pickup-location-{{ record.metadata.pid }}-confirm-button"
+        styleClass="mb-2"
+        type="submit"
+        [disabled]="!form.valid || requestInProgress"
+      >
+        @if (!requestInProgress) {
+          {{ 'Confirm your request' | translate }}
+        } @else {
+          <span class="spinner-border spinner-border-sm mr-1" role="status"></span>
+          {{ 'Request in progress' | translate }}
         }
-        <form class="my-2 w-100" [formGroup]="form" (ngSubmit)="submit()">
-          <formly-form [model]="model" [fields]="fields" [form]="form"></formly-form>
-          @if (!requestInProgress) {
-            <button
-              id="pickup-location-{{ record.metadata.pid }}-cancel-button"
-              class="btn btn-sm btn-outline-secondary mr-2"
-              (click)="closeDialog()"
-              translate
-            >Cancel</button>
-          }
-          <button id="pickup-location-{{ record.metadata.pid }}-confirm-button" type="submit" class="btn btn-sm btn-primary" [disabled]="!form.valid || requestInProgress">
-            @if (!requestInProgress) {
-              {{ 'Confirm your request' | translate }}
-            } @else {
-              <span class="spinner-border spinner-border-sm mr-1" role="status"></span>
-              {{ 'Request in progress' | translate }}
-            }
-          </button>
-        </form>
-      </dd>
-    </div>
+      </p-button>
+    </form>
   </div>
 }
 
 @if (requested && !showForm) {
-  <div class="row pl-4" [ngClass]="{'mb-4': recordType === 'holding' }">
-    <div class="col-12 mpl-0">
-      <dd class="mb-0 pl-0">
-        <div class="alert ml-0 mt-2" [ngClass]="{'alert-success': requestMessage.success, 'alert-danger': !requestMessage.success}" role="alert">
-          {{ requestMessage.message }}
-        </div>
-      </dd>
-    </div>
+  <div class="grid p-2">
+      <p-messages
+        showTransitionOptions="0ms"
+        class="col-12"
+        [value]="[{severity: requestMessage.success? 'success' : 'error', detail: requestMessage.message }]"
+        [enableService]="false"
+        [closable]="false"
+      />
   </div>
 }

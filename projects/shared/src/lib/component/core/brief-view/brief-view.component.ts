@@ -26,8 +26,7 @@ export interface BriefViewTag {
 
 @Component({
   selector: 'shared-brief-view',
-  templateUrl: './brief-view.component.html',
-  styleUrls: ['./brief-view.component.scss']
+  templateUrl: './brief-view.component.html'
 })
 export class BriefViewComponent implements AfterContentInit {
 

@@ -14,36 +14,34 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section id="ill-request-section" class="container my-2">
-  <div class="d-none d-lg-block">
-    <div class="row bg-dark rounded text-light p-2">
-      <div class="col-10 pl-5" translate>Document</div>
-      <div class="col-2 text-lg-right" translate>Status</div>
-    </div>
-  </div>
+<section id="ill-request-section" class="mt-2">
+    <p-card class="p-card-body-p-0">
+      <ng-template pTemplate="header">
+          <div class="hidden md:flex grid grid-nogutter bg-blue-900 text-white p-2 text-lg font-bold">
+            <div class="col-10" translate>Document</div>
+            <div class="col-2 justify-content-end flex"><span translate>Status</span></div>
+          </div>
+      </ng-template>
 
-  @defer (when loaded) {
-    @if (paginator.getRecordsCount() > 0) {
-      <div class="row border">
-        <div class="container-fluid">
-          @for (record of records; track record) {
-            <public-search-patron-profile-ill-request
-              [record]="record"
-              id="ill-request-{{ record.metadata.pid }}"
-              class="row border-bottom">
-            </public-search-patron-profile-ill-request>
-          }
-          <shared-search-show-more-pager id="show-more-ill-requests" [paginator]="paginator"></shared-search-show-more-pager>
+    @defer (when loaded) {
+      @if (paginator.getRecordsCount() > 0) {
+        <div class="alternate-color">
+            @for (record of records; track record) {
+              <div>
+              <public-search-patron-profile-ill-request
+                [record]="record"
+                id="ill-request-{{ record.metadata.pid }}"
+              />
+            </div>
+            }
+            <shared-search-show-more-pager id="show-more-ill-requests" [paginator]="paginator" />
         </div>
-      </div>
-    } @else {
-      <div class="row">
-        <div class="col mt-2 font-weight-bold" translate>No ill request</div>
-      </div>
+      } @else {
+        <div class="font-bold mx-2 my-4" translate>No ill request</div>
+      }
     }
-  } @placeholder {
-    <div class="row">
-      <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
-    </div>
-  }
+    @placeholder {
+      <div class="font-bold mx-2 my-4" translate>Loading in progress</div>
+    }
+  </p-card>
 </section>

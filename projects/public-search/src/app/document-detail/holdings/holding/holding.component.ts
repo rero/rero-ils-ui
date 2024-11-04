@@ -18,15 +18,16 @@
 import { Component, inject, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { HoldingsNoteType } from '@rero/shared';
+import { HoldingsApiService } from '../../../api/holdings-api.service';
 
 @Component({
-  selector: 'public-search-holding',
-  templateUrl: './holding.component.html',
-  styleUrls: ['./holding.component.scss']
+  selector: 'public-search-holding, [public-search-holding]',
+  templateUrl: './holding.component.html'
 })
 export class HoldingComponent {
 
   private translateService: TranslateService = inject(TranslateService);
+  public holdingApiService: HoldingsApiService = inject(HoldingsApiService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Holdings record */
@@ -34,9 +35,6 @@ export class HoldingComponent {
 
   /** View code */
   @Input() viewcode: string;
-
-  /** Is collapsed holdings */
-  @Input() collapsed = true;
 
   /** Authorized types of note */
   noteAuthorizedTypes: string[] = [HoldingsNoteType.GENERAL, HoldingsNoteType.ACCESS];

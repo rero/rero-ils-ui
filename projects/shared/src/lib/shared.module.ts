@@ -23,10 +23,14 @@ import { ContributionComponent } from '../public-api';
 import { ActionButtonComponent } from './component/action-button/action-button.component';
 import { BriefViewComponent } from './component/core/brief-view/brief-view.component';
 import { DocumentBriefViewComponent } from './component/documents/document-brief-view/document-brief-view.component';
+import { DescriptionZoneComponent } from './component/documents/document-description/description-zone/description-zone.component';
+import { DocumentDescriptionComponent } from './component/documents/document-description/document-description.component';
+import { OtherEditionComponent } from './component/documents/document-description/other-edition/other-edition.component';
 import { FilesComponent } from './component/documents/files/files.component';
 import { EntityBriefViewComponent } from './component/entities/entity-brief-view/entity-brief-view.component';
 import { EntityBriefViewRemoteOrganisationComponent } from './component/entities/entity-brief-view/entity-brief-view.organisation';
 import { EntityBriefViewRemotePersonComponent } from './component/entities/entity-brief-view/entity-brief-view.person';
+import { OpenCloseButtonComponent } from './component/open-close-button.component';
 import { RemoteSearchComponent } from './component/remote-search/remote-search.component';
 import { LinkPermissionsDirective } from './directive/link-permissions.directive';
 import { NoContentDirective } from './directive/no-content.directive';
@@ -55,7 +59,8 @@ import { PartOfComponent } from './view/brief/part-of/part-of.component';
 import { EntityLinkComponent } from './view/entity-link.component';
 import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
-import { OpenCloseButtonComponent } from './component/open-close-button.component';
+import { MainTitleRelationPipe } from './pipe/main-title-relation.pipe';
+import { DocumentProvisionActivityPipe } from './pipe/document-provision-activity.pipe';
 
 @NgModule({
   declarations: [
@@ -66,8 +71,10 @@ import { OpenCloseButtonComponent } from './component/open-close-button.componen
     PatronBlockedMessagePipe,
     ProvisionActivityPipe,
     UrlActivePipe,
+    DocumentProvisionActivityPipe,
     FaIconClassPipe,
     ItemHoldingsCallNumberPipe,
+    MainTitleRelationPipe,
     InheritedCallNumberComponent,
     ThumbnailComponent,
     PartOfComponent,
@@ -95,9 +102,16 @@ import { OpenCloseButtonComponent } from './component/open-close-button.componen
     IdentifiedByLabelPipe,
     FilesComponent,
     RemoteSearchComponent,
-    OpenCloseButtonComponent
+    OpenCloseButtonComponent,
+    DescriptionZoneComponent,
+    OtherEditionComponent,
+    DocumentDescriptionComponent
   ],
   exports: [
+    ProvisionActivityPipe,
+    DocumentDescriptionComponent,
+    MainTitlePipe,
+    DocumentProvisionActivityPipe,
     CommonModule,
     PrimeNgImportModule,
     ExtractSourceFieldPipe,

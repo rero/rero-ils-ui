@@ -24,7 +24,7 @@ import { OperationLogsApiService } from '../api/operation-logs-api.service';
 import { PatronTransactionApiService } from '../api/patron-transaction-api.service';
 import { IMenu, PatronProfileMenuService } from './patron-profile-menu.service';
 import { PatronProfileService } from './patron-profile.service';
-import { KeyValue } from '@angular/common';
+import { APP_BASE_HREF, DOCUMENT, KeyValue, Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 
 interface Tab {
@@ -58,18 +58,19 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
   private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
   private translateService: TranslateService = inject(TranslateService);
+  private baseHref = inject(APP_BASE_HREF);
 
-  /** Interface language */
-  @Input() language: string;
 
   /** View code */
-  @Input() viewcode: string;
+  viewcode: string = 'global';
 
   /** Observable subscription */
   private subscription = new Subscription();
 
   /** Current logged user */
   user: any;
+
+  activeIndex: number = 0;
 
   /** Tabs informations */
   tabs: Tabs;
@@ -103,7 +104,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
       illRequest: {
         loaded: false,
         count: 0,
-        title: this.translateService.instant('Interlibrary load'),
+        title: this.translateService.instant('Interlibrary loan'),
         order: 4,
       },
       personalDetails: {
@@ -136,9 +137,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
    *  - zero if `a` and `b` are considered equal in sort order.
    */
   sortTabs = (a: KeyValue<string, any>, b: KeyValue<string, any>): number => {
-    if (a.value.order < b.value.order) return 1;
-    if (b.value.order > a.value.order) return -1;
-    return 0;
+    return a.value.order - b.value.order;
   };
 
   tabOnChange(event) {
@@ -179,7 +178,10 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.selectTab(this.getTabKeyByIndex(0));
+    const pathParts = this.baseHref.split('/');
+    if( pathParts.length > 1) {
+      this.viewcode = pathParts[1];
+    }
     this.subscription.add(
       this.patronProfileService.loanFeesEvent$.subscribe((fees: number) => (this.tabs.loan.feeTotal = +fees.toFixed(2)))
     );
@@ -203,15 +205,15 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
               Record,
               Record
             ]) => {
-              this.tabs.loan = {
-                ...this.tabs.loan,
-                loaded: true,
-                count: this.recordService.totalHits(loanResponse.hits.total),
-              };
+              Object.values(this.tabs).map(tab => tab.loaded = false);
+              this.tabs.loan.count = this.recordService.totalHits(loanResponse.hits.total);
               this.tabs.fee.feeTotal = feeResponse.aggregations.total.value;
               this.tabs.request.count = this.recordService.totalHits(requestResponse.hits.total);
               this.tabs.history.count = this.recordService.totalHits(historyResponse.hits.total);
               this.tabs.illRequest.count = this.recordService.totalHits(illRequestResponse.hits.total);
+              // back to the loan tab if the organisation as been changed
+              this.activeIndex = 0;
+              this.selectTab(this.getTabKeyByIndex(this.activeIndex));
             }
           );
         })
@@ -244,6 +246,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
    * @param tabName - string, name of current selected tab
    */
   selectTab(name: string): void {
+    this.activeIndex = this.tabs[name].order;
     if (name in this.tabs && !this.tabs[name].loaded) {
       this.tabs[name].loaded = true;
       this.patronProfileService.changeTab({ name, count: this.tabs[name].count });

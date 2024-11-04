@@ -16,13 +16,13 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  <h5 class="mb-0 card-title">
+  <h4>
     <a id="collection-link" [href]="detailUrl.link">{{ record.metadata.title }}</a>
     @if (record.metadata.collection_id) {
       ({{ record.metadata.collection_id }})
     }
-  </h5>
-  <div class="card-text">
+  </h4>
+  <div>
     @if (record.metadata.teachers) {
       <div id="collection-teacher">
         @for (teacher of record.metadata.teachers; track teacher; let last = $last) {

@@ -37,18 +37,16 @@
       <label for="auto-refresh" translate>Auto refresh</label>
     </div>
     @if (refreshInterval > 0) {
-      <ng-core-sort-list
+      <ng-core-menu-sort
         class="pl-3"
-        [options]="refreshOptions"
-        [useIcon]="true"
+        [config]="sortingCriteria"
         (selectChange)="selectingIntervalTimer($event)"
       />
     }
     <!-- Sorting loans -->
-    <ng-core-sort-list
+    <ng-core-menu-sort
       class="pl-3"
-      [options]="sortingCriteria"
-      [useIcon]="true"
+      [config]="sortingCriteria"
       (selectChange)="selectingSortCriteria($event)"
     />
   </div>

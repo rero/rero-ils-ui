@@ -45,8 +45,8 @@
     <div class="col"></div>
     <!-- Sorting loans -->
     <div class="col-md-4 d-flex align-items-end justify-content-end">
-      <ng-core-sort-list
-        [options]="[
+      <ng-core-menu-sort
+        [config]="[
           {value:'-transactiondate', label:'Transaction date (desc)' | translate, icon:'fa-sort-numeric-desc'},
           {value:'transactiondate', label:'Transaction date' | translate, icon:'fa-sort-numeric-asc'},
           {value:'-duedate', label:'Due date (desc)' | translate, icon:'fa-sort-numeric-desc'},
@@ -54,7 +54,6 @@
           {value:'-location', label:'Location (desc)' | translate, icon: 'fa-sort-numeric-desc'},
           {value:'location', label:'Location' | translate, icon: 'fa-sort-numeric-asc'}
         ]"
-        [useIcon]="true"
         (selectChange)="selectingSortCriteria($event)"
       />
     </div>

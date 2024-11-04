@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router, UrlSegment } from '@angular/router';
+import { DOCUMENT } from '@angular/common';
+import { Component, Inject, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router, UrlSegment } from '@angular/router';
 import { IRecordType } from '@rero/ng-core';
 import { filter, Subscription } from 'rxjs';
 import { RemoteSearchConfig } from './remote-search-config.service';
@@ -28,7 +29,9 @@ import { RemoteSearchConfig } from './remote-search-config.service';
 export class RemoteSearchComponent implements OnInit, OnDestroy {
 
   private router: Router = inject(Router);
+  private route: ActivatedRoute = inject(ActivatedRoute);
   private remoteSearchBarConfig: RemoteSearchConfig = inject(RemoteSearchConfig);
+  private document: Document = inject(DOCUMENT);
 
   // You must use lowercase variable names for this to work in a web component.
   // Use @Input in this case, as the web component does not work with input (signal).
@@ -36,6 +39,8 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
   @Input() maxlengthsuggestion: number | string = 100;
   @Input() placeholder: string = 'search';
   @Input() viewcode: string | undefined;
+  @Input() inputstyleclass: string;
+  @Input() internalRouting = false;
 
   hideSearchElement: boolean = false;
   recordTypes: IRecordType[] = [];
@@ -48,6 +53,7 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.admin = this.boolean(this.admin);
+    this.subscription.add(this.route.queryParamMap.subscribe((params: any) => {this.value = params.get('q')}));
     this.recordTypes = this.remoteSearchBarConfig.getConfig(
       this.admin,
       this.viewcode,
@@ -64,12 +70,24 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
       this.subscription.unsubscribe();
   }
 
+  onSearch(query) {
+    if (this.internalRouting) {
+      // TODO: internal navigation for the professional interface
+    } else {
+      this.document.location.href = `/${this.viewcode}/search/documents?q=${query}&page=1&size=10&sort=bestmatch`;
+    }
+  }
+
   onSelect(element: any) {
     if (!('link' in element)) {
       throw new Error('Missing parameter link');
     }
     this.value = '';
-    this.router.navigateByUrl(element.link);
+    if(this.internalRouting === true) {
+      this.router.navigateByUrl(element.link);
+    } else {
+      this.document.location.href = element.link;
+    }
   }
 
   private hideSearchInput(): boolean {

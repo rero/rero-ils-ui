@@ -15,92 +15,97 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="card-header p-2">
-  <!-- MAIN ROW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <div class="row">
-    <div id="holding-location-{{ holding.metadata.pid }}" class="col-sm-12 col-md-3 d-flex">
-      <shared-open-close-button (status)="isCollapsed = $event" />
-      <span>{{ holding.metadata.library.name }}: {{ holding.metadata.location.name }}</span>
-    </div>
-    <div id="holding-category-name-{{ holding.metadata.pid }}" class="col-sm-12 col-md-2">
-      {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}
-    </div>
-    <div class="col-sm-12 col-md-2">
-      <span [hidden]="holding.metadata.public_items_count === 0">
-        {{ holding.metadata.public_items_count }}
-        {{ holding.metadata.public_items_count | i18nPlural: { '=0': 'item', '=1': 'item', 'other': 'items' } | translate }}
-      </span>
-    </div>
-    <div id="holding-available-{{ holding.metadata.pid }}" class="col-sm-12 col-md-3">
-      <span [hidden]="!collapsed">
-        @if (holding.metadata.holdings_type === 'serial') {
-            <i class="fa fa-circle text-warning"></i>
-            {{ 'see collections and items' | translate }}
-        } @else {
-          <shared-availability recordType="holding" [record]="holding" [apiService]="holdingApiService"></shared-availability>
+  <p-accordionTab>
+    <ng-template pTemplate="header">
+      <!-- MAIN ROW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+       <div class="w-full">
+      <div class="grid mb-3">
+        <div id="holding-location-{{ holding.metadata.pid }}" class="col-12 md:col-5">
+          {{ holding.metadata.library.name }}:&nbsp;{{ holding.metadata.location.name }}
+        </div>
+        <div id="holding-category-name-{{ holding.metadata.pid }}" class="col-12 md:col-2">
+          {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}
+        </div>
+        <div class="col-12 md:col-2">
+          @if (holding.metadata.public_items_count > 0) {
+            {{ holding.metadata.public_items_count }}
+            {{ holding.metadata.public_items_count | i18nPlural: { '=0': 'item', '=1': 'item', 'other': 'items' } | translate }}
         }
-      </span>
-    </div>
-  </div>
-  <!-- SERIAL HOLDING INFORMATION'S -->
-  @if (holding.metadata.holdings_type === 'serial') {
-    <dl class="row ml-1 pt-3">
-      <!-- CALL NUMBER -->
-      @if (holding.metadata.call_number) {
-        <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Call number</dt>
-        <dd id="holding-call-number-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">
-          {{ holding.metadata.call_number }}
-          @if (holding.metadata.second_call_number) {
-            | {{ holding.metadata.second_call_number }}
+        </div>
+        <div id="holding-available-{{ holding.metadata.pid }}" class="col-12 md:col-3">
+          @if (holding.metadata.holdings_type === 'serial') {
+              <i class="fa fa-circle text-warning"></i>
+              {{ 'see collections and items' | translate }}
+          } @else {
+            <shared-availability recordType="holding" [record]="holding" [apiService]="holdingApiService" />
           }
-        </dd>
+        </div>
+      </div>
+      <!-- SERIAL HOLDING INFORMATION'S -->
+      @if (holding.metadata.holdings_type === 'serial') {
+        <dl class="metadata">
+          <!-- CALL NUMBER -->
+          @if (holding.metadata.call_number) {
+            <dt translate>Call number</dt>
+            <dd id="holding-call-number-{{ holding.metadata.pid }}">
+              {{ holding.metadata.call_number }}
+              @if (holding.metadata.second_call_number) {
+                | {{ holding.metadata.second_call_number }}
+              }
+            </dd>
+          }
+          <!-- ENUMERATION AND CHRONOLOGY -->
+          @if (holding.metadata.enumerationAndChronology) {
+            <dt translate>Available collection</dt>
+            <dd id="holding-enum-chro-{{ holding.metadata.pid }}"
+                [innerHTML]="holding.metadata.enumerationAndChronology | nl2br">
+            </dd>
+          }
+          <!-- SUPPLEMENTARY CONTENT -->
+          @if (holding.metadata.supplementaryContent) {
+            <dt translate>Supplementary content</dt>
+            <dd id="holding-sup-content-{{ holding.metadata.pid }}">
+              {{ holding.metadata.supplementaryContent }}
+            </dd>
+          }
+          <!-- INDEX -->
+          @if (holding.metadata.index) {
+            <dt translate>Indexes</dt>
+            <dd id="holding-index-{{ holding.metadata.pid }}">
+              {{ holding.metadata.index }}
+            </dd>
+          }
+          <!-- MISSING ISSUES -->
+          @if (holding.metadata.missing_issues) {
+            <dt translate>Missing issues</dt>
+            <dd id="holding-missing-issues-{{ holding.metadata.pid }}">
+              {{ holding.metadata.missing_issues }}
+            </dd>
+          }
+          <!-- NOTE -->
+          @if (holding.metadata.notes) {
+            @for (note of holding.metadata.notes | notesFilter : noteAuthorizedTypes; track note) {
+              <dt>
+                <i class="fa fa-sticky-note-o pr-2"></i>
+                {{ note.type | translate }}
+              </dt>
+              <dd [innerHTML]="note.content | nl2br"></dd>
+            }
+          }
+        </dl>
       }
-      <!-- ENUMERATION AND CHRONOLOGY -->
-      @if (holding.metadata.enumerationAndChronology) {
-        <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Available collection</dt>
-        <dd id="holding-enum-chro-{{ holding.metadata.pid }}"
-            class="col-lg-9 col-sm-8 mb-0"
-            [innerHTML]="holding.metadata.enumerationAndChronology | nl2br">
-        </dd>
-      }
-      <!-- SUPPLEMENTARY CONTENT -->
-      @if (holding.metadata.supplementaryContent) {
-        <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Supplementary content</dt>
-        <dd id="holding-sup-content-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">{{ holding.metadata.supplementaryContent }}</dd>
-      }
-      <!-- INDEX -->
-      @if (holding.metadata.index) {
-        <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Indexes</dt>
-        <dd id="holding-index-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">{{ holding.metadata.index }}</dd>
-      }
-      <!-- MISSING ISSUES -->
-      @if (holding.metadata.missing_issues) {
-        <dt class="col-lg-3 col-sm-4 label-title mb-0" translate>Missing issues</dt>
-        <dd id="holding-missing-issues-{{ holding.metadata.pid }}" class="col-lg-9 col-sm-8 mb-0">{{ holding.metadata.missing_issues }}</dd>
-      }
-      <!-- NOTE -->
-      @if (holding.metadata.notes) {
-        @for (note of holding.metadata.notes | notesFilter : noteAuthorizedTypes; track note) {
-          <dt class="col-sm-4 col-lg-3 label-title mb-0">
-            <i class="fa fa-sticky-note-o pr-2"></i>
-            {{ note.type | translate }}
-          </dt>
-          <dd class="col-sm-8 col-lg-9 mb-0" [innerHTML]="note.content | nl2br"></dd>
-        }
-      }
-    </dl>
-  }
-</div>
-@if (!collapsed) {
+    </div>
+  </ng-template>
   @if (holding.metadata.public_items_count > 0) {
-    <public-search-items [holding]="holding" [viewcode]="viewcode"></public-search-items>
+    <public-search-items [holding]="holding" [viewcode]="viewcode" />
   }
   <public-search-request
     [record]="holding"
     recordType="holding"
     [viewcode]="viewcode"
     [holdingsItemsCount]="holding.metadata.public_items_count"
-    class="w-100"
+    class="w-full"
     [ngClass]="{'mt-2': holding.metadata.public_items_count === 0}"
-  ></public-search-request>
-}
+  />
+</p-accordionTab>
+

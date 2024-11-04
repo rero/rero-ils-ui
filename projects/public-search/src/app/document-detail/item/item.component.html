@@ -15,21 +15,18 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-detail'}"
-     class="mx-1"
-     [class]="{'bg-light': index % 2 === 0}">
-  <dl class="m-0 py-2 row">
+  <dl class="metadata p-2 mb-2">
     <!-- LIBRARY AND LOCATION -->
     @if (context === 'book') {
-      <dt class="mb-0 col-3 label-title" translate>Location</dt>
-      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location'}" class="mb-0 col-9">
+      <dt translate>Location</dt>
+      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location'}">
         {{ item.metadata.library.name }}: {{ item.metadata.location.name }}
       </dd>
     }
     <!-- CALL NUMBER -->
     @if (item.metadata.call_number) {
-      <dt class="mb-0 col-3 label-title" translate>Call number</dt>
-      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-call-number'}" class="mb-0 col-9">
+      <dt translate>Call number</dt>
+      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-call-number'}">
         {{ item.metadata.call_number }}
         @if (item.metadata.second_call_number) {
           | {{ item.metadata.second_call_number }}
@@ -38,8 +35,8 @@
     }
     <!-- ITEM IN COLLECTION -->
     @if (item.metadata.in_collection) {
-      <dt class="mb-0 col-3 label-title" translate>Temporary location</dt>
-      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location-temporary'}" class="mb-0 col-9">
+      <dt translate>Temporary location</dt>
+      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location-temporary'}">
         @for (collection of item.metadata.in_collection; track collection; let last = $last) {
           <a href="/{{ collection.viewcode }}/collections/{{ collection.pid }}">{{ collection.title }}</a>
           {{ last ? '' : '; ' }}
@@ -47,8 +44,8 @@
       </dd>
     } @else {
       @if (item.metadata.temporary_location) {
-        <dt class="mb-0 col-3 label-title" translate>Temporary location</dt>
-        <dd class="mb-0 col-9">
+        <dt translate>Temporary location</dt>
+        <dd>
           <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
           {{ item.metadata.temporary_location.name }}
         </dd>
@@ -56,45 +53,44 @@
     }
     <!-- ITEM CIRCULATION INFORMATION -->
     @if (circulationInformation) {
-      <dt class="mb-0 col-3 label-title" translate>Circulation information</dt>
-      <dd class="mb-0 col-9">
+      <dt translate>Circulation information</dt>
+      <dd>
         <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
         {{ circulationInformation }}
       </dd>
     }
     <!-- ENUMERATION AND CHRONOLOGY -->
     @if (item.metadata.enumerationAndChronology) {
-      <dt class="mb-0 col-3 label-title" translate>Unit</dt>
-      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-enum-chrono'}" class="mb-0 col-9">
+      <dt translate>Unit</dt>
+      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-enum-chrono'}">
         {{ item.metadata.enumerationAndChronology }}
       </dd>
     }
     <!-- BARCODE -->
-    <dt class="mb-0 col-3 label-title" translate>Barcode</dt>
-    <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-barcode'}" class="mb-0 col-9">
+    <dt translate>Barcode</dt>
+    <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-barcode'}">
       {{ item.metadata.barcode }}
     </dd>
     <!-- NOTES -->
     @if (item.metadata.notes && item.metadata.notes.length > 0) {
       @for (note of item.metadata.notes | notesFilter : noteAuthorizedTypes; track note) {
-        <dt class="mb-0 col-3 label-title">{{ note.type | translate }}</dt>
-        <dd class="mb-0 col-9" [innerHTML]="note.content | nl2br"></dd>
+        <dt>{{ note.type | translate }}</dt>
+        <dd [innerHTML]="note.content | nl2br"></dd>
       }
     }
     <!-- URL -->
     @if (item.metadata.url) {
-      <dt class="mb-0 col-3 label-title" translate>URL</dt>
-      <dd class="mb-0 col-9">
+      <dt translate>URL</dt>
+      <dd>
         <a target="_blank" [href]="item.metadata.url | safeUrl">{{ item.metadata.url }}</a>
       </dd>
     }
     <!-- STATUS -->
-    <dt class="mb-0 col-3 label-title" translate>Status</dt>
-    <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-status'}" class="mb-0 col-9">
-      <shared-availability recordType="item" [record]="item" [apiService]="itemApiService"></shared-availability>
+    <dt translate>Status</dt>
+    <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-status'}">
+      <shared-availability recordType="item" [record]="item" [apiService]="itemApiService" />
     </dd>
   </dl>
 
   <!-- REQUEST DIALOG -->
-  <public-search-request [record]="item" recordType="item" [viewcode]="viewcode" class="w-100 mb-2"></public-search-request>
-</div>
+  <public-search-request [record]="item" recordType="item" [viewcode]="viewcode" class="w-full mb-2" />

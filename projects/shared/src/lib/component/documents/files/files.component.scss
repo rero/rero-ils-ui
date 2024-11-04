@@ -15,30 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- .file-preview {
-  cursor: zoom-in;
- }
-.item-icon {
-  width: 80px;
-  height: 100px;
-  display: inline-flex;
-  align-items: self-end;
-}
-:host ::ng-deep {
-  img {
-    max-width: 80px;
-  }
-  a {
-    color: #495057;
-  }
+shared-doc-files {
   .p-carousel-item {
-    align-self: flex-end;
+    @extend .align-self-end;
   }
-}
-
-.files-icon {
-  width: 80px;
-  height: 100px;
-  display: inline-flex;
-  align-items: self-end;
+  .p-dialog {
+    transform: none;
+  }
 }

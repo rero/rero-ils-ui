@@ -15,17 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { APP_INITIALIZER, ApplicationRef, CUSTOM_ELEMENTS_SCHEMA, DoBootstrap, inject, Injector, LOCALE_ID, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BucketNameService as CoreBucketNameService, CoreConfigService, NgCoreTranslateService, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { RemoteSearchComponent, SharedModule, UserService } from '@rero/shared';
+import { DividerModule } from 'primeng/divider';
+import { Observable } from 'rxjs';
 import { AppConfigService } from './app-config.service';
 import { AppInitializerService } from './app-initializer.service';
 import { AppRoutingModule } from './app-routing.module';
@@ -37,7 +38,6 @@ import { ErrorPageComponent } from './error/error-page.component';
 import { CustomRequestInterceptor } from './interceptor/custom-request.interceptor';
 import { MainComponent } from './main/main.component';
 import { BucketNameService } from './service/bucket-name.service';
-import { Observable } from 'rxjs';
 
 /** function to instantiate the application  */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
@@ -47,18 +47,18 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
 @NgModule({
     declarations: [
         AppComponent,
-        DocumentBriefComponent,
         MainComponent,
-        CollectionBriefComponent,
         ErrorPageComponent,
-        DocumentRecordSearchComponent
+        DocumentRecordSearchComponent,
+        DocumentBriefComponent,
+        CollectionBriefComponent,
     ],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
         AppRoutingModule,
-        HttpClientModule,
         RecordModule,
+        DividerModule,
         TranslateModule.forRoot({
             loader: {
                 provide: BaseTranslateLoader,
@@ -69,8 +69,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         }),
         SharedModule,
         LoadingBarHttpClientModule,
-        LoadingBarRouterModule,
-        LoadingBarModule
+        LoadingBarRouterModule
     ],
     providers: [
         { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService, UserService], multi: true },

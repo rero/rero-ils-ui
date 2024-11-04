@@ -27,7 +27,6 @@ import { EntityBriefViewRemotePersonComponent } from './entity-brief-view.person
 @Component({
   selector: 'shared-entity-brief-view',
   providers: [ExtractSourceFieldPipe],
-  styleUrls: ['./entity-brief-view.component.scss'],
   template: `
     <shared-brief-view [title]="entityTitle" [link]="routerLink" [tags]="tags">
       <ng-template rTemplate="icon">
@@ -37,11 +36,11 @@ import { EntityBriefViewRemotePersonComponent } from './entity-brief-view.person
         <ng-container #contentTemplate></ng-container>
       </ng-template>
       <ng-template rTemplate="tags" let-tags>
-        <ul>
+        <div class="flex gap-1">
           @for (tag of tags; track tag) {
-            <li class="tag-{{ tag?.type }}">{{ tag.label }}</li>
+            <p-tag [severity]="tag.label === 'remote'? 'warning':'secondary'" [value]="tag.label"/>
           }
-        </ul>
+        </div>
       </ng-template>
     </shared-brief-view>
   `

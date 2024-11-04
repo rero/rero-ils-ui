@@ -29,15 +29,20 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, CoreModule, NgCoreTranslateService, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
+import { AccordionModule } from 'primeng/accordion';
+import { DividerModule } from 'primeng/divider';
+import { MenubarModule } from 'primeng/menubar';
+import { DocumentDetailViewComponent } from 'projects/public-search/src/app/document-detail/document-detail-view/document-detail-view.component';
+import { ElectronicHoldingsComponent } from 'projects/public-search/src/app/document-detail/document-detail-view/holdings/electronic-holdings/electronic-holdings.component';
 import { HoldingComponent } from 'projects/public-search/src/app/document-detail/holdings/holding/holding.component';
 import { HoldingsComponent } from 'projects/public-search/src/app/document-detail/holdings/holdings.component';
 import { ItemsComponent } from 'projects/public-search/src/app/document-detail/holdings/items/items.component';
 import { ItemComponent } from 'projects/public-search/src/app/document-detail/item/item.component';
 import { PickupLocationComponent } from 'projects/public-search/src/app/document-detail/request/pickup-location/pickup-location.component';
 import { RequestComponent } from 'projects/public-search/src/app/document-detail/request/request.component';
+import { Observable } from 'rxjs';
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
-import { Observable } from 'rxjs';
 
 /** function to instantiate the application  */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
@@ -45,54 +50,56 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
 }
 
 @NgModule({
-    declarations: [
-        HoldingComponent,
-        HoldingsComponent,
-        ItemComponent,
-        ItemsComponent,
-        PickupLocationComponent,
-        RequestComponent
-    ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        FormsModule,
-        FormlyModule.forRoot(),
-        FormlyPrimeNGModule,
-        CoreModule,
-        RecordModule,
-        ReactiveFormsModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: BaseTranslateLoader,
-                useClass: TranslateLoader,
-                deps: [CoreConfigService, HttpClient]
-            },
-            isolate: false
-        }),
-        SharedModule,
-        LoadingBarHttpClientModule,
-        LoadingBarModule
-    ],
-    providers: [
-        { provide: TranslateService, useClass: NgCoreTranslateService },
-        { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
-        { provide: CoreConfigService, useClass: AppConfigService }
-    ],
-    schemas: [
-        CUSTOM_ELEMENTS_SCHEMA
-    ]
+  declarations: [
+    HoldingComponent,
+    HoldingsComponent,
+    ItemComponent,
+    ItemsComponent,
+    PickupLocationComponent,
+    RequestComponent,
+    DocumentDetailViewComponent,
+    ElectronicHoldingsComponent,
+  ],
+  imports: [
+    AccordionModule,
+    MenubarModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    DividerModule,
+    RouterModule.forRoot([]),
+    HttpClientModule,
+    FormsModule,
+    FormlyModule.forRoot(),
+    FormlyPrimeNGModule,
+    CoreModule,
+    RecordModule,
+    ReactiveFormsModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: BaseTranslateLoader,
+        useClass: TranslateLoader,
+        deps: [CoreConfigService, HttpClient],
+      },
+      isolate: false,
+    }),
+    SharedModule,
+    LoadingBarHttpClientModule,
+    LoadingBarModule,
+  ],
+  providers: [
+    { provide: TranslateService, useClass: NgCoreTranslateService },
+    { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
+    { provide: CoreConfigService, useClass: AppConfigService },
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule implements DoBootstrap {
-
   private injector: Injector = inject(Injector);
 
   ngDoBootstrap(): void {
-    if (!customElements.get('public-search-holdings')) {
-      const searchBar = createCustomElement(HoldingsComponent, { injector: this.injector });
-      customElements.define('public-search-holdings', searchBar);
+    if (!customElements.get('public-search-document')) {
+      const searchBar = createCustomElement(DocumentDetailViewComponent, { injector: this.injector });
+      customElements.define('public-search-document', searchBar);
     }
   }
 }

@@ -23,8 +23,7 @@ import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'shared-thumbnail',
-  templateUrl: './thumbnail.component.html',
-  styleUrls: ['./thumbnail.component.scss']
+  templateUrl: './thumbnail.component.html'
 })
 export class ThumbnailComponent implements OnInit {
 
@@ -35,9 +34,6 @@ export class ThumbnailComponent implements OnInit {
 
   /** ISBN of the record */
   isbn: string;
-
-  /** Css classes for the image */
-  imageCssClass = 'img-thumbnail img-fluid border border-light';
 
   /** Style for image container */
   figureStyle = 'thumb-detail';

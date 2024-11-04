@@ -15,74 +15,72 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="d-flex container p-2" [ngClass]="{'callout callout-warning ':record.metadata.is_late}">
-  <shared-open-close-button (status)="isCollapsed = $event" />
-  <div class="container-fluid">
-    <div class="row">
+<div class="grid grid-nogutter p-2 pl-1" [ngClass]="{'border-left-3 border-warning':record.metadata.is_late}">
       <!-- DOCUMENT & ADDITIONAL DATA -->
-      <public-search-patron-profile-document
-          [record]="record"
-          [showAdditionalInformation]="!isCollapsed"
-          [isAnimated]="true"
-          class="col-lg-8 col-12 pl-0"
-        >
-        <dl class="row" additional-metadata>
-          <dt class="col-sm-6 col-md-4 col-lg-3 label-title">Library</dt>
-          <dd class="col-sm-6 col-md-8 col-lg-9">{{ record.metadata.library.name }}</dd>
+       <div class="md:col-8 col-12 flex gap-2">
+        <shared-open-close-button (status)="isCollapsed = $event" />
+        <div class="w-full">
+          <public-search-patron-profile-document
+            [record]="record"
+            [showAdditionalInformation]="!isCollapsed"
+            [isAnimated]="true"
+          >
+          <dl class="metadata" additional-metadata>
+            <dt translate>Library</dt>
+            <dd>{{ record.metadata.library.name }}</dd>
+          </dl>
+        </public-search-patron-profile-document>
+        <dl class="metadata md:hidden">
+          <dt translate>Due date</dt>
+          <dd [ngClass]="{ 'font-bold text-success': actionSuccess}">{{ record.metadata.end_date | dateTranslate :'shortDate' }}</dd>
         </dl>
-      </public-search-patron-profile-document>
+        <div class="md:hidden">
+          <ng-container [ngTemplateOutlet]="tags" />
+        </div>
+      </div>
+    </div>
       <!-- DUE DATE & BADGES -->
-      <div class="col-lg-2 col-md-6 col-sm-6 pl-0">
-        <div>
-          <span class="d-inline d-lg-none label-title font-weight-bold" translate>Due date</span>
-          <span [ngClass]="{ 'font-weight-bold text-success': actionSuccess}">
+      <div class="md:col-2 col-12 hidden md:block">
+        <div >
+          <span [ngClass]="{ 'font-bold text-success': actionSuccess}">
             {{ record.metadata.end_date | dateTranslate :'shortDate' }}
           </span>
         </div>
-        @if (record.metadata.extension_count && record.metadata.extension_count > 0) {
-          <div class="badge badge-secondary font-weight-normal">
-            {{ record.metadata.extension_count }}
-            {{ record.metadata.extension_count | i18nPlural: {'=1': 'renewal', 'other': 'renewals'} | translate }}
-          </div>
-        }
-        @if (record.metadata.overdue) {
-          <div>
-            <span class="badge badge-warning font-weight-normal" translate>overdue</span>
-            @if (fees > 0) {
-              <span title="{{ 'Fees to date' | translate }}">
-                {{ fees | currency:organisation.currency:'symbol' }}
-              </span>
-            }
-          </div>
-        }
-        @if (isDueSoon) {
-          <div class="badge badge-secondary font-weight-normal" translate>approaching due date</div>
-        }
+        <ng-container [ngTemplateOutlet]="tags" />
       </div>
       <!-- ACTION BUTTONS COLUMN -->
-      <div class="col-lg-2 col-md-6 col-sm-6 text-right pr-0">
-        @if (canExtend.can) {
-          <button
-            type="button"
-            class="btn btn-sm btn-primary"
-            (click)="renew()"
-            [disabled]="renewInProgress || actionDone"
-          >
-            @if (renewInProgress) {
-              <span class="spinner-border spinner-border-sm mr-1" role="status"></span>
-            }
-            {{ 'Renew' | translate }}
-          </button>
-        } @else {
-          <button
-            type="button"
-            class="btn btn-sm btn-primary disabled"
-            pTooltip="{{ canExtend.reasons | arrayTranslate | join:' / '}}"
+      <div class="md:col-2 col-12 flex justify-content-end">
+          <p-button
+            class="pointer-events-auto"
+            [pTooltip]="canExtend.reasons | arrayTranslate | join:' / '"
             tooltipPosition="top"
-            translate
-          >Renew</button>
-        }
-      </div>
-    </div>
+            [tooltipDisabled]="canExtend.can"
+            (onClick)="renew()"
+            [disabled]="renewInProgress || actionDone || !canExtend.can"
+            [label]="'Renew' | translate"
+            [icon]="renewInProgress? 'pi pi-spin pi-spinner': 'pi pi-refresh'"
+          />
   </div>
 </div>
+
+<ng-template #tags>
+  @if (record.metadata.extension_count && record.metadata.extension_count > 0) {
+    <p-tag  styleClass="mt-1" severity="secondary">
+      {{ record.metadata.extension_count }}
+      {{ record.metadata.extension_count | i18nPlural: {'=1': 'renewal', 'other': 'renewals'} | translate }}
+    </p-tag>
+  }
+  @if (record.metadata.overdue) {
+    <div class="mt-1">
+      <p-tag severity="warning" translate>overdue</p-tag>
+      @if (fees > 0) {
+        <span [title]="'Fees to date' | translate">
+          {{ fees | currency:organisation.currency:'symbol' }}
+        </span>
+      }
+    </div>
+  }
+  @if (isDueSoon) {
+    <p-tag styleClass="mt-1" severity="info" translate>approaching due date</p-tag>
+  }
+</ng-template>
