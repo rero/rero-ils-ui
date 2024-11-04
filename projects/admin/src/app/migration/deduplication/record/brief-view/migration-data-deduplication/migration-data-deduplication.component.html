@@ -18,64 +18,92 @@
 @if (record()) {
 <div class="flex w-100 justify-content-between mb-2">
   <div class="flex align-items-center justify-content-center">
-    <p-inplace #inplace [active]="isInplaceActive">
+    <p-inplace #inplace>
       <ng-template pTemplate="display">
-        <strong>ILS pid:</strong> {{ ilsPid }}&nbsp;<i
-          class="pi pi-pencil"
-        ></i>
+        <strong>ILS pid:</strong> {{ ilsPid }}&nbsp;<i class="pi pi-pencil"></i>
       </ng-template>
-      <ng-template #test pTemplate="content">
+      <ng-template pTemplate="content">
         <input
           [ngModel]="ilsPid"
           (keyup.enter)="saveIlsPid($event); inplace.deactivate()"
           (keydown.escape)="inplace.deactivate()"
           type="text"
           pInputText
-          autofocus
           onFocus="this.setSelectionRange(0, this.value.length)"
+          pAutoFocus
+          [autofocus]="true"
         />
       </ng-template>
     </p-inplace>
-    </div>
+  </div>
   <div class="flex align-items-center justify-content-center">
     <p-button
-      type="button"
       icon="pi pi-chevron-left"
       (click)="previousCandidate()"
       [disabled]="!hasPrevious()"
-      styleClass="p-button-text"
+      [text]="true"
     />
-    <small>{{currentCandidateIndex+1}}&nbsp;/&nbsp;{{candidates.length}}</small>
+    <small>
+      {{ currentCandidateIndex + 1 }}&nbsp;/&nbsp;{{
+        candidates.length
+      }}
+    </small
+    >
     <p-button
-      type="button"
       icon="pi pi-chevron-right"
       (click)="nextCandidate()"
       [disabled]="!hasNext()"
-      styleClass="p-button-text"
+      [text]="true"
     />
   </div>
-  <div class="flex align-items-center justify-content-center">
-    <p-button size="small" [label]="'Validate' | translate" (click)="save()" />
+  <div class="flex align-items-center gap-2 justify-content-center">
+    <p-button
+      size="small"
+      [outlined]="true"
+      [label]="'Validate' | translate"
+      (click)="save()"
+      icon="pi pi-check"
+    />
+    <p-button
+      [outlined]="true"
+      size="small"
+      [label]="'Reject' | translate"
+      (click)="reject()"
+      icon="pi pi-trash"
+      severity="danger"
+    />
   </div>
 </div>
 
 @if (messages) {
 <div>
-  <p-messages [value]="messages()" [escape]="false" [enableService]="false" [closable]="false" />
+  <p-messages
+    [value]="messages()"
+    [escape]="false"
+    [enableService]="false"
+    [closable]="false"
+  />
 </div>
 }
 
 <div class="flex justify-content-between mb-1">
   <div class="flex align-items-center justify-content-center">
     <p-tag
-      [severity]="status() === 'match' ? 'success': (status().endsWith('check') ? 'warning': 'secondary')"
+      [severity]="
+        status() === 'match'
+          ? 'success'
+          : status().endsWith('check')
+          ? 'warning'
+          : 'secondary'
+      "
       [value]="record().metadata.deduplication.status | translate"
     />
     @if (record()?.metadata?.deduplication?.modified_by) {
     <small class="ml-2"
       >({{ record()?.metadata?.deduplication?.modified_by }} /
       {{
-        record()?.metadata?.deduplication?.modified_at | dateTranslate : "medium"
+        record()?.metadata?.deduplication?.modified_at
+          | dateTranslate : "medium"
       }})</small
     >
     }

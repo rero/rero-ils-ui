@@ -16,6 +16,7 @@
  */
 
 import { NgModule } from '@angular/core';
+import { AutoFocusModule } from 'primeng/autofocus';
 
 import { RecordModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
@@ -57,6 +58,7 @@ import { MigrationDetailComponent } from './record/brief-view/migration/migratio
     InplaceModule,
     ToastModule,
     PaginationModule,
+    AutoFocusModule
   ],
   exports: [],
   providers: [MessageService],

@@ -38,9 +38,6 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
   // current ILS pid
   ilsPid = null;
 
-  // toggle in place edit ils pid
-  isInplaceActive = false;
-
   // current candidate
   currentCandidate = null;
 
@@ -54,11 +51,15 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
   ngOnInit(): void {
     let ilsPid = this.record()?.metadata?.deduplication?.ils_pid;
     // get value from the backend if it exists
-    if (ilsPid == null && this.candidates.length > 0) {
+    if (ilsPid == null && this.candidates.length > 0 && this.status() !== 'no match') {
       ilsPid = this.candidates[0].json.pid;
     }
     // display the current candidate if exists
     this.updateCurrentCandidate(ilsPid);
+    if (this.status() == 'no match') {
+      this.currentCandidateIndex = -1;
+      this.currentCandidate = null;
+    }
   }
 
   /**
@@ -189,6 +190,14 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
   saveIlsPid(event): void {
     const ilsPid = event.target.value != '' ? event.target.value : null;
     this.updateCurrentCandidate(ilsPid);
+  }
+
+  /**
+   * Reject the candidates and set the status to "no match".
+   */
+  reject() {
+    this.ilsPid = null;
+    this.save();
   }
 
   /**
