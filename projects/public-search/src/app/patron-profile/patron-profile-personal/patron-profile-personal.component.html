@@ -14,30 +14,23 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section id="personal-section" class="row px-3 mt-2 my-1">
-  <div class="col mr-1 d-none d-lg-block">
-    <div class="row p-2 bg-dark rounded text-light">
-      <div class="col-lg-12 pl-0" translate>Personal details</div>
-    </div>
-  </div>
-</section>
-
-<section id="personal-data" class="px-3 mt-4">
-  <dl class="container row">
+<section id="personal-section" class="mt-2">
+  <h4 translate>Personal details</h4>
+  <dl class="metadata">
     <!-- GENDER -->
     @if (user.gender) {
-      <dt class="col-lg-3 col-sm-6 label-title" translate>Gender</dt>
-      <dd class="col-lg-9 col-sm-6">{{ user.gender | translate }}</dd>
+      <dt translate>Gender</dt>
+      <dd>{{ user.gender | translate }}</dd>
     }
     <!-- USERNAME -->
     @if (user.username) {
-      <dt class="col-lg-3 col-sm-6 label-title" translate>Username</dt>
-      <dd class="col-lg-9 col-sm-6">{{ user.username }}</dd>
+      <dt translate>Username</dt>
+      <dd>{{ user.username }}</dd>
     }
     <!-- PRIMARY ADDRESS -->
     @if (user.street || user.city || user.country) {
-      <dt class="col-lg-3 col-sm-6 label-title" translate>Primary address</dt>
-      <dd class="col-lg-9 col-sm-6">
+      <dt translate>Primary address</dt>
+      <dd>
         @if (user.street) {
           {{ user.street }}<br>
         }
@@ -51,8 +44,8 @@
     }
     <!-- SECONDARY ADDRESS -->
     @if (patron.second_address) {
-      <dt class="col-lg-3 col-sm-6 label-title" translate>Secondary address</dt>
-      <dd class="col-lg-9 col-sm-6">
+      <dt translate>Secondary address</dt>
+      <dd>
         @if (patron.second_address.street) {
           {{ patron.second_address.street }}<br>
         }
@@ -66,42 +59,42 @@
     }
     <!-- HOME PHONE -->
     @if (user.home_phone) {
-      <dt class="col-lg-3 col-sm-6 label-title" translate>Home phone</dt>
-      <dd class="col-lg-9 col-sm-6">{{ user.home_phone }}</dd>
+      <dt translate>Home phone</dt>
+      <dd>{{ user.home_phone }}</dd>
     }
     <!-- BUSINESS PHONE -->
     @if (user.business_phone) {
-      <dt class="col-lg-3 col-sm-6 label-title" translate>Business phone</dt>
-      <dd class="col-lg-9 col-sm-6">{{ user.business_phone }}</dd>
+      <dt translate>Business phone</dt>
+      <dd>{{ user.business_phone }}</dd>
     }
     <!-- MOBILE PHONE -->
     @if (user.mobile_phone) {
-      <dt class="col-lg-3 col-sm-6 label-title" translate>Mobile phone</dt>
-      <dd class="col-lg-9 col-sm-6">{{ user.mobile_phone }}</dd>
+      <dt translate>Mobile phone</dt>
+      <dd>{{ user.mobile_phone }}</dd>
     }
     <!-- OTHER PHONE -->
     @if (user.other_phone) {
-      <dt class="col-lg-3 col-sm-6 label-title" translate>Other phone</dt>
-      <dd class="col-lg-9 col-sm-6">{{ user.other_phone }}</dd>
+      <dt translate>Other phone</dt>
+      <dd>{{ user.other_phone }}</dd>
     }
     <!-- EMAIL -->
     @if (user.email) {
-      <dt class="col-lg-3 col-sm-6 label-title" translate>Email</dt>
-      <dd class="col-lg-9 col-sm-6">{{ user.email }}</dd>
+      <dt translate>Email</dt>
+      <dd>{{ user.email }}</dd>
     }
     <!-- PATRON BARCODE -->
     @if (patron.patron.barcode) {
-      <dt class="col-lg-3 col-sm-6 label-title" translate>Patron number</dt>
-      <dd class="col-lg-9 col-sm-6">{{ patron.patron.barcode | join : ', ' }}</dd>
+      <dt translate>Patron number</dt>
+      <dd>{{ patron.patron.barcode | join : ', ' }}</dd>
     }
     <!-- PATRON BARCODE -->
     @if (patron.patron.expiration_date) {
-      <dt class="col-lg-3 col-sm-6 label-title" translate>Account expiration</dt>
-      <dd class="col-lg-9 col-sm-6">{{ patron.patron.expiration_date | dateTranslate: 'shortDate' }}</dd>
+      <dt translate>Account expiration</dt>
+      <dd>{{ patron.patron.expiration_date | dateTranslate: 'shortDate' }}</dd>
     }
     <!-- KEEP HISTORY -->
-    <dt class="col-lg-3 col-sm-6 label-title" translate>Keep history</dt>
-    <dd class="col-lg-9 col-sm-6">
+    <dt translate>Keep history</dt>
+    <dd>
       <i class="fa fa-circle" [ngClass]="{'text-success': user.keep_history, 'text-danger': !user.keep_history}"></i>
       @if (user.keep_history) {
         {{ 'The loan history is saved for a maximum of six months. It is visible to you and the library staff.' | translate }}
@@ -111,9 +104,9 @@
     </dd>
   </dl>
   @if (disabledButtonOnReadyOnly) {
-    <div class="mt-3 pl-3">
-      <a id="profile-edit" class="btn btn-sm btn-primary" href="/{{ viewcode }}/user/profile" translate>Edit</a>
-      <a id="profile-password-change" class="btn btn-sm btn-primary ml-2" href="/{{ viewcode }}/user/password" translate>Change my password</a>
+    <div class="flex gap-2 mt-3">
+      <a id="profile-edit" class="p-button" [routerLink]="['user', 'edit' ]" translate>Edit</a>
+      <a id="profile-password-change" class="p-button" [routerLink]="['password', 'edit']" translate>Change my password</a>
     </div>
   }
 </section>

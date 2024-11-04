@@ -1,0 +1,45 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2024 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+@if (holdings.length > 0) {
+<p-card class="p-card-body-p-0">
+  <ng-template pTemplate="header">
+      <div class="hidden md:flex grid grid-nogutter bg-blue-900 text-white p-2 text-lg font-bold">
+        <div class="col-6" translate>Library</div>
+        <div class="col-3" translate>Platform</div>
+      </div>
+  </ng-template>
+
+  <div class="alternate-color">
+  @for(holding of holdings; track holding) {
+    @for (location of holding.metadata.electronic_location; track location) {
+  <div class="grid grid-nogutter p-2">
+      <div class="col-6">
+      {{holding.metadata.library.name}}
+      </div>
+      <div class="col-3 capitalize">
+      {{location.source}}
+      </div>
+      <div class="col-3 flex justify-content-end align-items-start">
+      <a href="{{location.uri}}" class="p-button p-button-sm" target="_blank"><i class="fa fa-external-link pr-1" ></i>{{ 'Online access' | translate}}</a>
+      </div>
+  </div>
+    }
+  }
+</div>
+</p-card>
+}

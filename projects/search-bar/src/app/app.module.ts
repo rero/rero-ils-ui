@@ -20,27 +20,26 @@ import { APP_INITIALIZER, DoBootstrap, inject, Injector, NgModule } from '@angul
 import { createCustomElement } from '@angular/elements';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { CoreConfigService, RecordModule, TranslateLoader } from '@rero/ng-core';
-import { RemoteSearchComponent, SharedModule } from '@rero/shared';
-import { AppInitializerService } from './app-initializer.service';
-import { Observable } from 'rxjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { CoreConfigService, TranslateLoader } from '@rero/ng-core';
+import { RemoteSearchComponent, SharedModule } from '@rero/shared';
+import { Observable } from 'rxjs';
+import { AppInitializerService } from './app-initializer.service';
+import { RouterModule } from '@angular/router';
 
 /** function to instantiate the application  */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
   return () => appInitializerService.load();
 }
 
-
 @NgModule({
     declarations: [],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
-        RecordModule,
         ReactiveFormsModule,
         TranslateModule.forRoot({
             loader: {

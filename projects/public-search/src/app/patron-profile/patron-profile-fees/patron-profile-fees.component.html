@@ -15,42 +15,37 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <!-- header -->
-<section id="fees-section" class="container my-2">
-  <div class="d-none d-lg-block">
-    <div class="row bg-dark rounded text-light p-2">
-      <div class="col-3 pl-5" translate>Date</div>
-      <div class="col-6" translate>Category</div>
-      <div class="col-3 text-right">
-        {{ 'Total amount' | translate }}:
-        {{ feesTotal | currency:currency:'symbol' }}
-      </div>
-    </div>
-  </div>
+<section id="fees-section" class="container mt-2">
+  <p-card class="p-card-body-p-0">
+    <ng-template pTemplate="header">
+        <div class="hidden md:flex grid grid-nogutter bg-blue-900 text-white p-2 text-lg font-bold">
+          <div class="col-3" translate>Date</div>
+          <div class="col-6" translate>Category</div>
+          <div class="col-3 flex justify-content-end">
+            {{ 'Total amount' | translate }}:
+            {{ feesTotal | currency:currency:'symbol' }}
+          </div>
+        </div>
+    </ng-template>
 
-  @if (!loaded) {
-    <div class="row">
-      <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
-    </div>
-  } @else {
-    @if (paginator.getRecordsCount() > 0) {
-      <div class="row border">
-        <div class="container-fluid">
-          <div id="fees-data">
-            @for (record of records; track record) {
+    @defer (when loaded) {
+      @if (paginator.getRecordsCount() > 0) {
+        <div class="alternate-color">
+          @for (record of records; track record) {
+            <div>
               <public-search-patron-profile-fee
                 [record]="record"
                 id="fee-{{ record.metadata.pid }}"
-                class="row border-bottom">
-              </public-search-patron-profile-fee>
-            }
-            <shared-search-show-more-pager id="show-more-fees" [paginator]="paginator"></shared-search-show-more-pager>
-          </div>
+              />
+            </div>
+          }
+          <shared-search-show-more-pager id="show-more-fees" [paginator]="paginator" />
         </div>
-      </div>
-    } @else {
-      <div class="row">
-        <div class="col mt-2 font-weight-bold" translate>No fee</div>
-      </div>
+      } @else {
+        <div class="font-bold mx-2 my-4" translate>No fee</div>
+      }
+    } @placeholder {
+      <div class="font-bold mx-2 my-4" translate>Loading in progress</div>
     }
-  }
+  </p-card>
 </section>

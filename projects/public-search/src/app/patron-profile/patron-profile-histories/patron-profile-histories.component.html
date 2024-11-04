@@ -14,33 +14,33 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section id="histories-section" class="container my-2">
-  <div class="d-none d-lg-flex row p-2 bg-dark rounded text-light">
-    <div class="col-10" translate>Document</div>
-    <div class="col-2" translate>Return date</div>
-  </div>
+<section id="histories-section" class="container mt-2">
+  <p-card class="p-card-body-p-0">
+    <ng-template pTemplate="header">
+        <div class="hidden md:flex grid grid-nogutter bg-blue-900 text-white p-2 text-lg font-bold">
+          <div class="col-10" translate>Document</div>
+          <div class="col-2" translate>Return date</div>
+        </div>
+    </ng-template>
 
   @defer (when loaded) {
     @if (paginator.getRecordsCount() > 0) {
-      <div class="row border">
-        <div class="container">
+          <div class="alternate-color">
           @for (loan of records; track loan) {
+            <div>
             <public-search-patron-profile-history
               [record]="loan"
-              id="history-{{ loan.metadata.pid }}" class="row border-bottom">
-            </public-search-patron-profile-history>
+              id="history-{{ loan.metadata.pid }}"
+              />
+          </div>
           }
-        </div>
       </div>
-      <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator" class="row"></shared-search-show-more-pager>
+      <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator"/>
     } @else {
-      <div class="row">
-        <span class="col mt-2 font-weight-bold" translate>No history</span>
-      </div>
-    }
-  } @placeholder {
-    <div class="row">
-      <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
-    </div>
+      <div class="font-bold mx-2 my-4" translate>No loan</div>
   }
+} @placeholder {
+    <div class="font-bold mx-2 my-4" translate>Loading in progress</div>
+}
+  </p-card>
 </section>

@@ -16,100 +16,103 @@
 -->
 
 @if (record) {
-  <div class="d-flex container p-2">
-    <shared-open-close-button (status)="isCollapsed = $event" />
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-3 pl-0">{{ record.metadata.creation_date | dateTranslate: 'short' }}</div>
-        <div class="col-6">{{ record.metadata.type | translate }}</div>
-        <div class="col-3 text-lg-right">{{ record.metadata.total_amount | currency:organisation.currency:'symbol' }}</div>
-        <!-- FEE DETAILS & EVENTS =========================================== -->
-        @if (!isCollapsed) {
-        <div id="fee-event-{{ record.metadata.pid }}" class="col-lg-12 pl-3"
-             (expanded)="expanded(record.metadata.pid)">
-          <div class="mt-2">
-            <!-- NOTE -->
-            @if (record.metadata.note) {
-              <section id="fee-note-{{ record.metadata.pid }}">
-                <h5 class="mt-3" translate>Note</h5>
-                {{ record.metadata.note }}
-              </section>
-            }
-            <!-- DOCUMENT METADATA -->
-            @if (record.metadata.document; as document) {
-              <section id="fee-{{ record.metadata.pid }}-document">
-                <h5 class="mt-3" translate>Document</h5>
-                <dl class="container row">
-                  <!-- TITLE -->
-                  <dt class="col-2 label-title" translate>Title</dt>
-                  <dd class="col-10">
-                    <a href="/{{ organisation.code }}/documents/{{ document.pid }}">{{ document.title | mainTitle }}</a>
-                  </dd>
-                  <!-- CALL NUMBER -->
-                  @if (record.metadata.loan.item.call_number) {
-                    <dt class="col-2 label-title" translate>Call number</dt>
-                    <dd class="col-10">{{ record.metadata.loan.item.call_number }}</dd>
-                  }
-                  <!-- LOAN DATE -->
-                  <dt class="col-2 label-title" translate>Loan started at</dt>
-                  <dd class="col-10">{{ record.metadata.loan.transaction_date | dateTranslate: 'short' }}</dd>
-                </dl>
-              </section>
-            }
+  <div class="grid grid-nogutter p-2 pl-1">
+    <div class="col-1">
+      <shared-open-close-button (status)="isCollapsed = $event; expanded(record.metadata.pid)" />
+    </div>
+    <div class="col-2">{{ record.metadata.creation_date | dateTranslate: 'short' }}</div>
+    <div class="col-6">{{ record.metadata.type | translate }}</div>
+    <div class="col-3 flex justify-content-end">{{ record.metadata.total_amount | currency:organisation.currency:'symbol' }}</div>
+      <!-- FEE DETAILS & EVENTS =========================================== -->
+      @if (!isCollapsed) {
+      <div id="fee-event-{{ record.metadata.pid }}" class="col-11 col-offset-1">
+          <!-- NOTE -->
+          @if (record.metadata.note) {
+            <p-panel styleClass="mb-2 bg-transparent" [header]="'Note' | translate">
+              {{ record.metadata.note }}
+            </p-panel>
+          }
+          <!-- DOCUMENT METADATA -->
+          @if (record.metadata.document; as document) {
+            <p-panel styleClass="mb-2 bg-transparent" [header]="'Document' | translate" id="fee-{{ record.metadata.pid }}-document">
+              <dl class="metadata">
+                <!-- TITLE -->
+                <dt translate>Title</dt>
+                <dd>
+                  <a href="/{{ organisation.code }}/documents/{{ document.pid }}">{{ document.title | mainTitle }}</a>
+                </dd>
+                <!-- CALL NUMBER -->
+                @if (record.metadata.loan.item.call_number) {
+                  <dt translate>Call number</dt>
+                  <dd>{{ record.metadata.loan.item.call_number }}</dd>
+                }
+                <!-- LOAN DATE -->
+                <dt translate>Loan started at</dt>
+                <dd>{{ record.metadata.loan.transaction_date | dateTranslate: 'short' }}</dd>
+              </dl>
+            </p-panel>
+          }
 
-            <!-- TRANSACTIONS HISTORY -->
-            <h5 class="mt-3" translate>Transactions history</h5>
-            <section id="fee-{{ record.metadata.pid }}-transaction" class="row">
-              @for (event of events; track event) {
-                <div class="col-12 events-timeline">
-                  <div class="row pl-2 pr-2 align-items-start timeline-event">
-                    <div class="col-3 pr-4 event-timestamp">
-                      <i class="fa fa-calendar-o"></i>
-                      {{ event.metadata.creation_date | dateTranslate: 'shortDate' }}
-                      <i class="fa fa-clock-o pl-1"></i>
-                      {{ event.metadata.creation_date | dateTranslate: 'HH:mm' }}
+          <!-- TRANSACTIONS HISTORY -->
+          <p-panel styleClass="bg-transparent time-line-30" [header]="'Transactions history' | translate" id="fee-{{ record.metadata.pid }}-transaction">
+
+            <p-timeline [value]="events">
+              <ng-template pTemplate="content" let-event>
+                  <div class="grid grid-nogutter" [ngClass]="{ 'event-highlight': (event.metadata.type === 'dispute'), '': !(event.metadata.type === 'dispute') }">
+                    <div class="col-10">
+                      {{ event.metadata.type | translate }}
+                      @if (event.metadata.subtype) {
+                        [{{ event.metadata.subtype | translate }}]
+                      }
                     </div>
-                    <div class="col-9 event-content">
-                      <div class="row" [ngClass]="{ 'event-highlight': (event.metadata.type === 'dispute'), '': !(event.metadata.type === 'dispute') }">
-                        <div class="col-10 d-inline-block text-truncate label">
-                          {{ event.metadata.type | translate }}
-                          @if (event.metadata.subtype) {
-                            [{{ event.metadata.subtype | translate }}]
-                          }
-                        </div>
-                        <div class="col-2 amount">
-                          @if (event.metadata.amount) {
-                            <span class="badge" [ngClass]="{ 'badge-success': (event.type === 'payment'), 'badge-danger': (event.type !== 'payment') }">
-                              {{ event.metadata.amount | currency:organisation.currency:'symbol' }}
-                              </span>
-                          } @else {
-                            &nbsp;
-                          }
-                        </div>
-                        @if (event.metadata.note) {
-                          <div class="col-3 label-title mt-2">
-                            <i class="fa fa-comment-o pr-1" title="{{ 'Note' | translate }}"></i>
-                            {{ 'Note' | translate }}
-                          </div>
-                          <blockquote class="col-9 mt-2">{{ event.metadata.note }}</blockquote>
-                        }
-                        @if (event.metadata.library) {
-                          <div class="col-3 label-title mt-2">
-                            <i class="fa fa-map-marker pr-1" title="{{ 'Library' | translate }}"></i>
-                            {{ 'Library' | translate }}
-                          </div>
-                          <div class="col-9 mt-2">{{ event.metadata.library.name }}</div>
-                        }
-                      </div>
+                    <div class="col-2 flex justify-content-end amount">
+                      @if (event.metadata.amount) {
+                        <p-tag [severity]="event.metadata.type === 'payment'? 'success' : 'danger'">
+                          {{ event.metadata.amount | currency:organisation.currency:'symbol' }}
+                        </p-tag>
+                      }
                     </div>
                   </div>
+                    @if (event.metadata.note) {
+                      <dl class="metadata">
+                        <dt>
+                          <i class="fa fa-comment-o pr-1" title="{{ 'Note' | translate }}"></i>
+                          {{ 'Note' | translate }}
+                        </dt>
+                        <dd>{{ event.metadata.note }}</dd>
+                      </dl>
+                    }
+                    @if (event.metadata.library) {
+                      <dl class="metadata">
+                        <dt>
+                          <i class="fa fa-map-marker pr-1" title="{{ 'Library' | translate }}"></i>
+                          {{ 'Library' | translate }}
+                        </dt>
+                        <dd>
+                          {{ event.metadata.library.name }}
+                        </dd>
+                      </dl>
+                    }
+              </ng-template>
+              <ng-template pTemplate="opposite" let-event>
+                <div class="p-text-secondary text-sm">
+                  <i class="fa fa-calendar-o"></i>
+                  {{ event.metadata.creation_date | dateTranslate: 'shortDate' }}
+                  <i class="fa fa-clock-o pl-1"></i>
+                  {{ event.metadata.creation_date | dateTranslate: 'HH:mm' }}
                 </div>
-              }
-            </section>
-          </div>
+              </ng-template>
+              <ng-template pTemplate="marker" let-event>
+                <span
+                class="flex align-items-center justify-content-center text-white border-circle z-1 shadow-1"
+                [ngClass]="event.metadata.type === 'dispute'? 'background-warning': event.metadata.type === 'payment'? 'background-success': 'background-error'"
+                [style]="{'width': '1.5rem', 'height': '1.5rem'  }">
+                  <i class="fa" [ngClass]="event.metadata.type === 'dispute'? 'fa-exclamation' : 'fa-check' "></i>
+                </span>
+              </ng-template>
+          </p-timeline>
+          </p-panel>
         </div>
       }
-      </div>
-    </div>
   </div>
 }

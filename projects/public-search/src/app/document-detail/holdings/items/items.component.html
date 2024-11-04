@@ -15,23 +15,32 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="card-body p-2">
-  @if (items.length > 0) {
-    @for (item of items; track item; let index = $index) {
+<div>
+@if (items.length > 0) {
+
+  <div class="alternate-color">
+  @for (item of items; track item) {
+    <div>
       <public-search-item
         context="holding"
         [item]="item"
         [viewcode]="viewcode"
-        [index]="index"
-      ></public-search-item>
-    }
-    @if (isLinkShowMore) {
-      <button type="button" class="btn btn-link pr-1" (click)="showMore()">
-        <i class="fa fa-plus-square-o"></i> {{ 'Show more' | translate }}
-      </button>
-      <small>({{ hiddenItems }})</small>
-    }
-  } @else {
-    <div class="card-body pl-4" translate>No item received.</div>
+      />
+    </div>
   }
+  </div>
+  @if (isLinkShowMore) {
+    <p-button
+      severity="secondary"
+      [text]="true"
+      (onClick)="showMore()"
+    >
+    <div>
+      <i class="fa fa-plus-square-o"></i>&nbsp;{{'Show more' | translate}}&nbsp;<small>({{ hiddenItems }})</small>
+    </div>
+  </p-button>
+  }
+} @else {
+  <div translate>No item received.</div>
+}
 </div>

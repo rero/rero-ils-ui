@@ -19,24 +19,22 @@
     {{ record.metadata.document.title | mainTitle }}
   </a>
   @if (record.metadata.item.enumerationAndChronology && !showAdditionalInformation) {
-    <span class="badge badge-info">{{ record.metadata.item.enumerationAndChronology }}</span>
+    <p-tag [value]="record.metadata.item.enumerationAndChronology" severity="info" />
   }
-  <shared-contribution [contributions]="document?.contribution" [view]="viewcode" [limitRecord]="3"></shared-contribution>
+  <shared-contribution [contributions]="document?.contribution" [view]="viewcode" [limitRecord]="3" />
   @if (record.metadata && showAdditionalInformation) {
-    <div class="container mt-2 pl-0">
-      <dl class="row">
+      <dl class="metadata">
         <!-- CALL NUMBER -->
         @if (callNumbers; as formattedCallNumbers) {
-          <dt class="col-sm-6 col-md-4 col-lg-3 label-title" translate>Call number</dt>
-          <dd class="col-sm-6 col-md-8 col-lg-9">{{ formattedCallNumbers }}</dd>
+          <dt translate>Call number</dt>
+          <dd>{{ formattedCallNumbers }}</dd>
         }
         <!-- ENUMERATION AND CHRONOLOGY -->
         @if (record.metadata.item.enumerationAndChronology) {
-          <dt class="col-sm-6 col-md-4 col-lg-3 label-title" translate>Unit</dt>
-          <dd class="col-sm-6 col-md-8 col-lg-9">{{ record.metadata.item.enumerationAndChronology }}</dd>
+          <dt translate>Unit</dt>
+          <dd>{{ record.metadata.item.enumerationAndChronology }}</dd>
         }
       </dl>
-      <ng-content select="[additional-metadata]"></ng-content>
-    </div>
+      <ng-content select="[additional-metadata]" />
   }
 }

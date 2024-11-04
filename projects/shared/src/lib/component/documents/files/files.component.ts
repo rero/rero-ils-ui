@@ -17,12 +17,12 @@
 
 import { BreakpointObserver, BreakpointState, Breakpoints } from '@angular/cdk/layout';
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnDestroy, OnInit, Type, ViewChild, inject } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, Record, RecordService } from '@rero/ng-core';
 import { PrimeNGConfig } from 'primeng/api';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService } from 'primeng/dynamicdialog';
 import { Observable, Subscription, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
 // file interface
@@ -40,8 +40,7 @@ export interface File {
 // Component itself
 @Component({
   selector: 'shared-doc-files',
-  templateUrl: './files.component.html',
-  styleUrl: './files.component.scss',
+  templateUrl: './files.component.html'
 })
 export class FilesComponent implements OnInit, OnDestroy {
 
@@ -74,11 +73,7 @@ export class FilesComponent implements OnInit, OnDestroy {
     label: string;
     url: SafeUrl;
   };
-  // modal for the invenio previewer
-  previewModalRef: DynamicDialogRef;
-
-  // for modal
-  @ViewChild('previewModal') previewModalTemplate: Type<any>;
+  previewVisible = false;
 
   /** all component subscription */
   private subscriptions = new Subscription();
@@ -268,12 +263,10 @@ export class FilesComponent implements OnInit, OnDestroy {
    */
 
   preview(file: File): void {
-    this.previewModalRef = this.dialogService.open(this.previewModalTemplate, {
-      dismissableMask: true
-    });
     this.previewFile = {
       label: file.label,
       url: this.sanitizer.bypassSecurityTrustResourceUrl(file.preview),
     };
+    this.previewVisible = true;
   }
 }

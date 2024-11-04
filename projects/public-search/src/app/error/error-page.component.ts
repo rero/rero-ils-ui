@@ -26,14 +26,20 @@ export function _(str: string) {
 @Component({
   selector: 'public-search-error-page',
   template: `
-    <div class="alert alert-{{ messages[statusCode].level || 'danger' }}">
-      <h1 class="alert-heading mb-4">{{ statusCode }} - {{ messages[statusCode].title }}</h1>
-      @for (text of messages[statusCode].description || []; track text) {
-        <pre>{{ text }}</pre>
-      }
-      <hr>
-      <p>For any information please contact system administrator</p>
+    <p-messages
+      [severity]="messages[statusCode].severity"
+      [closable]="false"
+      [enableService]="false"
+      showTransitionOptions="0ms"
+    >
+      <ng-template pTemplate *ngVar="messages[statusCode] as msg">
+  <div class="w-full">
+        <h3>{{ msg.summary }}</h3>
+        <p>{{ msg.detail }}</p>
+        <em translate>For any information please contact system administrator.</em>
     </div>
+      </ng-template>
+    </p-messages>
   `
 })
 
@@ -47,34 +53,36 @@ export class ErrorPageComponent implements OnInit {
    *   - title : the error title
    *   - description : A human readable description of this error as Array<string>. Each array
    *                   element will be a separate line.
-   *   - level: the bootstrap alert look-and-feel level to use for the error. 'danger' by default.
+   *   - severity: the bootstrap alert look-and-feel level to use for the error. 'danger' by default.
    */
   messages = {
     401: {
-      title: _('Unauthorized'),
-      description: [_('Access denied due to invalid credentials.')],
-      level: 'warning'
+      summary: _('Unauthorized'),
+      detail: _('Access denied due to invalid credentials.'),
+      severity: 'warn'
     },
     403: {
-      title: _('Forbidden access'),
-      description: [_('You don\'t have permission to access this page.')],
-      level: 'warning'
+      summary: _('Forbidden access'),
+      detail: _('You don\'t have permission to access this page.'),
+      severity: 'warn'
     },
     404: {
-      title: _('Page not found'),
-      description: [_('Woops. Looks like this page doesn\'t exists')]
+      summary: _('Page not found'),
+      detail: _('Woops. Looks like this page doesn\'t exists'),
+      severity: 'info'
     },
     418: {
-      title: _('I\'m a teapot'),
-      description: [
+      summary: _('I\'m a teapot'),
+      detail: [
         _('The requested entity body is short and stout'),
         _('Tip me over and pour me out')
-      ],
-      level: 'success'
+      ].join(' '),
+      severity: 'success'
     },
     500: {
-      title: _('Internal server error'),
-      description: [_('Oops, Something went wrong !')]
+      summary: _('Internal server error'),
+      detail: _('Oops, Something went wrong !'),
+      severity: 'danger'
     }
   };
 

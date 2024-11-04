@@ -16,54 +16,45 @@
 -->
 <!-- Due date dropdown menu -->
 @if (paginator.getRecordsCount() > 0) {
-  <section class="container pt-1">
-    <div class="row">
-      <div class="col-xs-12 col-md-7 col-lg-9"></div>
-      <ng-core-sort-list
-        class="col-xs-12 col-md-5 col-lg-3 pr-0"
-        [options]="[
-          {value:'duedate', label:'Due date (earliest)' | translate, icon:'fa-sort-numeric-asc'},
-          {value:'-duedate', label:'Due date (latest)' | translate, icon:'fa-sort-numeric-desc'}
-        ]"
-        [useIcon]="true"
-        (selectChange)="selectingSortCriteria($event)">
-      </ng-core-sort-list>
-    </div>
+  <section class="flex justify-content-end">
+    <ng-core-menu-sort
+      [config]="[
+        {value:'duedate', label:'Due date (earliest)' | translate, icon:'fa fa-sort-numeric-asc'},
+        {value:'-duedate', label:'Due date (latest)' | translate, icon:'fa fa-sort-numeric-desc'}
+      ]"
+      selectedValue="duedate"
+      (onChange)="selectingSortCriteria($event)">
+    </ng-core-menu-sort>
   </section>
 }
 
 <!-- header -->
-<section id="loans-section" class="container my-2">
-  <div class="d-none d-lg-block">
-    <div class="row bg-dark rounded text-light p-2">
-      <div class="col-8 pl-5" translate>Document</div>
-      <div class="col-2" translate>Due date</div>
-      <div class="col-2">&nbsp;</div>
-    </div>
-  </div>
-
+<section id="loans-section" class="mt-2">
+  <p-card class="p-card-body-p-0">
+    <ng-template pTemplate="header">
+        <div class="hidden md:flex grid grid-nogutter bg-blue-900 text-white p-2 text-lg font-bold">
+          <div class="col-8" translate>Document</div>
+          <div class="col-2" translate>Due date</div>
+        </div>
+    </ng-template>
   @defer (when loaded) {
     @if (paginator.getRecordsCount() > 0) {
-      <div class="row border">
-        <div class="container-fluid">
+        <div class="alternate-color">
           @for (loan of records; track loan) {
+            <div>
             <public-search-patron-profile-loan
               [record]="loan"
               id="loan-{{ loan.metadata.pid }}"
-              class="row border-bottom">
-            </public-search-patron-profile-loan>
+              />
+            </div>
           }
         </div>
-      </div>
-      <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator" class="row"></shared-search-show-more-pager>
+      <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator" />
     } @else {
-      <div class="row">
-        <div class="col mt-2 font-weight-bold" translate>No loan</div>
-      </div>
+        <div class="font-bold mx-2 my-4" translate>No loan</div>
     }
   } @placeholder {
-    <div class="row">
-      <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
-    </div>
+      <div class="font-bold mx-2 my-4" translate>Loading in progress</div>
   }
+  </p-card>
 </section>

@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { DOCUMENT } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { TranslateService } from '@ngx-translate/core';
-import { CONFIG, RecordService, processJsonSchema, removeEmptyValues } from '@rero/ng-core';
+import { CONFIG, RecordService, processJsonSchema, removeEmptyValues, resolve$ref } from '@rero/ng-core';
 import { AppSettingsService, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { Subscription, forkJoin, of } from 'rxjs';
@@ -33,12 +33,12 @@ import { debounceTime, map, tap } from 'rxjs/operators';
 })
 export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
 
+  private location: Location = inject(Location);
   private recordService: RecordService = inject(RecordService);
   private formlyJsonschema: FormlyJsonschema = inject(FormlyJsonschema);
   private translateService: TranslateService = inject(TranslateService);
   private appSettingsService: AppSettingsService = inject(AppSettingsService);
   private userService: UserService = inject(UserService);
-  private document: Document = inject(DOCUMENT);
   private messageService: MessageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
@@ -59,7 +59,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   /** Additional style for a field */
   private _cssConfig = {
     keep_history: 'col-12 pl-0',
-    default: 'col-6 pl-0'
+    default: 'col-12 md:col-6 pl-0'
   };
   /** Description for some fields defined as key */
   private _fieldDescription = {
@@ -74,7 +74,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
         if (schema) {
           const disabledFields = this.appSettingsService.settings.userProfile.readOnlyFields;
           this.fields = [
-            this.formlyJsonschema.toFieldConfig(processJsonSchema(schema.schema), {
+            this.formlyJsonschema.toFieldConfig(processJsonSchema(resolve$ref(schema.schema, schema.schema.properties)), {
 
               // post process JSONSchema7 to FormlyFieldConfig conversion
               map: (field: FormlyFieldConfig, jsonSchema: any) => {
@@ -85,7 +85,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
                 }
                 // Add the "row" class to the main object
                 if (field.key == null) {
-                  field.props.containerCssClass = 'row';
+                  field.props.containerCssClass = 'grid';
                 }
                 const fkey = String(field.key);
                 // Add a class on each field
@@ -94,7 +94,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
                   : this._cssConfig.default;
                 // Deactivation of the fields if we have a patron record
                 if ((this.userService.user.roles.length > 0) && (field.key !== undefined && disabledFields.includes(fkey))) {
-                  field.props.readonly = true;
+                  field.props.disabled = true;
                 }
                 // Hide password field
                 if (fkey === 'password') {
@@ -176,12 +176,11 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
         severity: 'error',
         summary: this.translateService.instant('Error'),
         detail: this.translateService.instant('The form contains errors.'),
-        sticky: true,
         closable: true
       });
       return;
     }
-    const data = removeEmptyValues(this.form.value);
+    const data = removeEmptyValues(this.model);
     // Update user record and reload logged user
     this.recordService
       .update('users', this.userService.user.id.toString(), data)
@@ -195,7 +194,14 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
           });
           this.redirect();
         },
-        error: (error) => this.formError = error.title
+        error: (error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: this.translateService.instant('Error'),
+            detail: this.translateService.instant('An error occurred on the server: ') + error.title,
+            closable: true
+          });
+        }
       });
   }
 
@@ -207,9 +213,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
 
   /** Redirect to external project */
   private redirect(): void {
-    this.document.location.href = this.referer
-      ? this.referer
-      : this.appSettingsService.baseUrl;
+    this.location.back();
   }
 
   /**

@@ -14,23 +14,46 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ngx-loading-bar [includeSpinner]="false" height="3px"></ngx-loading-bar>
-
-<shared-doc-files [documentPid]="documentpid"></shared-doc-files>
 
 @if (holdings.length > 0) {
-  @for (holding of holdings; track holding) {
-    <public-search-holding [holding]="holding"
-                            [viewcode]="viewcode"
-                            [collapsed]="holdingsTotal > 1"
-                            [attr.id]="holding.metadata.pid | idAttribute : {prefix: 'holding'}"
-                            class="card mt-2 w-100">
-    </public-search-holding>
+  @if (!user.roles.includes('patron')) {
+    <p-messages
+      [value]="[
+        {
+          severity: 'warn',
+          detail: 'Log in to see request options' | translate
+        }
+      ]"
+      [closable]="false"
+      [enableService]="false"
+      showTransitionOptions="0ms"
+    />
   }
+  <p-accordion multiple="true" [activeIndex]="[0]">
+    @for (holding of holdings; track holding) {
+      <div
+        class="my-2 border-1 surface-border border-round"
+        public-search-holding
+        [holding]="holding"
+        [viewcode]="viewcode"
+        [attr.id]="holding.metadata.pid | idAttribute : { prefix: 'holding' }"
+      ></div>
+    }
+  </p-accordion>
   @if (isLinkShowMore) {
-    <button class="btn btn-link p-0 pr-1 show-more-holdings" (click)="showMore($event)">
-      <i class="fa fa-plus-square-o"></i> {{ 'Show more' | translate }}
-    </button>
-    <small>({{ hiddenHoldings }})</small>
+  <p-button severity="secondary" [text]="true" (onClick)="showMore($event)">
+    <div>
+      <i class="fa fa-plus-square-o"></i>&nbsp;{{
+        "Show more" | translate
+      }}&nbsp;<small>({{ hiddenHoldings }})</small>
+    </div>
+  </p-button>
+  }
+  @if(viewcode === 'global') {
+    <a
+      class="p-button  p-button-outlined"
+      href="/{{ viewcode }}/ill_requests/new?record_pid={{ documentPid }}"
+      ><i class="fa fa-truck"></i>&nbsp;{{ 'Interlibrary loan' | translate }}</a
+    >
   }
 }

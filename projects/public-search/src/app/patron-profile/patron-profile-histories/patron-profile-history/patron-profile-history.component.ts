@@ -19,8 +19,7 @@ import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 
 @Component({
   selector: 'public-search-patron-profile-history',
-  templateUrl: './patron-profile-history.component.html',
-  styleUrls: ['./patron-profile-history.component.scss']
+  templateUrl: './patron-profile-history.component.html'
 })
 export class PatronProfileHistoryComponent {
 

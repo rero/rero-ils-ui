@@ -19,8 +19,7 @@ import { AppSettingsService, IPatron } from '@rero/shared';
 
 @Component({
   selector: 'public-search-patron-profile-personal',
-  templateUrl: './patron-profile-personal.component.html',
-  styleUrls: ['./patron-profile-personal.component.scss']
+  templateUrl: './patron-profile-personal.component.html'
 })
 export class PatronProfilePersonalComponent {
 

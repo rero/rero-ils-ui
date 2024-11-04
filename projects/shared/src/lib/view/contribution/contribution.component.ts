@@ -19,7 +19,6 @@ import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'shared-contribution',
-  styleUrls: ['./contribution.component.scss'],
   templateUrl: './contribution.component.html'
 })
 export class ContributionComponent implements OnInit {

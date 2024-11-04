@@ -16,9 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+ :root {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.875rem;
+}
+
+@layer bootstrap, rero-ils-ui, primeng;
+@import '../../../../shared/src/scss/styles.scss';
 @import 'font-awesome/scss/font-awesome';
+@layer bootstrap {
 @import 'variables';
 @import 'bootstrap/scss/bootstrap';
+@import 'bootstrap/scss/_functions';
+@import 'bootstrap/scss/_mixins';
+@import 'bootstrap/scss/_variables';
 
 
 html [type=button] {
@@ -94,12 +108,6 @@ button.disabled {
   border-bottom: 0;
 }
 
-.rero-ils-external-link:after {
-  font-family: 'FontAwesome';
-  font-size: $font-size-very-small;
-  vertical-align: top;
-  content: " \f08e";
-}
 
 span.no-data {
   font-style: italic;
@@ -405,4 +413,5 @@ pre {
       @extend .mb-0
     }
   }
+}
 }

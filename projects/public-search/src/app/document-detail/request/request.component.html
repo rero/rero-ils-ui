@@ -17,45 +17,32 @@
 @if (patron) {
   @if (!requestDialog) {
     @if (canRequest && canRequest.can) {
-      <dl id="record-request-{{ record.metadata.pid }}" class="row" [ngClass]="{'row pl-4': recordType === 'item', 'mb-3': recordType === 'holding'}">
-        @if (recordType !== 'holding') {
-          <dt class="mt-2 mb-3 col-lg-2 col-sm-3">&nbsp;</dt>
+      <p-button
+        styleClass="m-2"
+        id="record-{{ record.metadata.pid }}-request-button"
+        outlined
+        (onClick)="showRequestDialog()"
+      >
+        <i class="fa fa-cart-arrow-down mr-2"></i>
+        @if (recordType === 'item') {
+          {{ 'Request' | translate }}
+        } @else {
+          @if (holdingsItemsCount > 0) {
+            {{ 'Request another issue' | translate }}
+          } @else {
+            {{ 'Request an issue' | translate }}
+          }
         }
-        <dd class="mt-2 mb-3 col-lg-9 col-sm-8">
-          <button
-            id="record-{{ record.metadata.pid }}-request-button"
-            class="btn btn-sm"
-            [ngClass]="{'btn-primary': recordType === 'item', 'btn-outline-primary': recordType === 'holding'}"
-            (click)="showRequestDialog()"
-          >
-            @if (recordType === 'item') {
-              {{ 'Request' | translate }}
-            } @else {
-              @if (holdingsItemsCount > 0) {
-                {{ 'Request another issue' | translate }}
-              } @else {
-                {{ 'Request an issue' | translate }}
-              }
-            }
-          </button>
-        </dd>
-      </dl>
+        </p-button>
     }
   } @else {
-    <dl class="m-0 ml-4 py-2 row">
-      @if (recordType !== 'holding') {
-        <dt class="my-2 col-lg-2 col-sm-3">&nbsp;</dt>
-      }
-      <dd class="pl-0 mt-0 mb-3" [ngClass]="{'col-lg-10 col-sm-9': recordType !== 'holding', 'col-lg-12': recordType === 'holding' }">
         <public-search-pickup-location
           [record]="record"
           [itemCount]="holdingsItemsCount"
           recordType="{{ recordType }}"
           [viewcode]="viewcode"
           (closeEvent)="closeDialog()"
-          class="w-100"
-        ></public-search-pickup-location>
-      </dd>
-    </dl>
+          class="w-full"
+        />
   }
 }

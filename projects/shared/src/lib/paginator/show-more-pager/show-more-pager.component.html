@@ -14,16 +14,17 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (paginator && paginator.getRecordsCount() > 0) {
-    @if (paginator.isShowMore()) {
-      <button type="button" [id]="id" class="btn btn-link pr-1 py-0" (click)="paginator.next()">
-        <i class="fa fa-plus-square-o"></i> {{ 'Show more' | translate }}
-      </button>
-      @if(paginator.getHiddenInfo()) {
-        <small
-          [translate]="paginator.getHiddenInfo()"
-          [translateParams]="{ count: paginator.getHiddenCount() }"
-        ></small>
-      }
-    }
+@if (paginator && paginator?.getRecordsCount() > 0 && paginator?.isShowMore()) {
+<div class="flex align-items-center">
+  <p-button
+    severity="secondary"
+    [text]="true"
+    (onClick)="paginator.next()"
+  >
+  <i class="fa fa-plus-square-o"></i>&nbsp;{{'Show more' | translate}}
+  @if(paginator.getHiddenInfo()) {
+    &nbsp;<small [translate]="paginator.getHiddenInfo()" [translateParams]="{ count: paginator.getHiddenCount() }"></small>
+  }
+  </p-button>
+</div>
 }

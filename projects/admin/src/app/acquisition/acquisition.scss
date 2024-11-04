@@ -19,13 +19,16 @@
 @import 'bootstrap/scss/functions';
 @import 'bootstrap/scss/variables';
 @import '../scss/variables';
+// @import "primeflex/primeflex";
+// @import "@rero/ng-core/assets/scss/ng-core";
 
 .account {
 
   $DEPTH-PADDING: 50px;
   $MAX-DEPTH: 10;
 
-  margin-bottom: map-get($spacers, 1);
+  // @extend .mb-1;
+
 
   &:hover{
     background-color: #F8F8F8;
@@ -53,7 +56,7 @@
 // ===========================================================================
 .receipt {
   .account-number {
-    font-size: $small-font-size;
+    // @extend .text-sm;
     color: $secondary;
     font-weight: bold;
     &:before {

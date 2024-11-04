@@ -15,32 +15,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// FIELDS FORMAT -----------------------
-ng-core-formly-field-primeng-input > input,
-formly-field > input {
-  width: 100%;
+@import "primeng/resources/primeng";
+@import "primeicons/primeicons.css";
+@import "primeng/resources/themes/aura-light-blue/theme.css";
+@import "easymde/dist/easymde.min";
+
+@layer rero-ils-ui {
+  .rero-ils-ui {
+    @import "primeflex/primeflex";
+    @import "node_modules/@rero/ng-core/assets/scss/ng-core";
+    @import "../lib/component/documents/files/files.component.scss";
+    @import "../lib/view/contribution/contribution.component.scss";
+    @import "../lib/view/thumbnail/thumbnail.component.scss";
+  }
 }
 
-ng-core-formly-field-primeng-input > input:read-only {
-  background: #e9ecef;
+@layer rero-ils-ui {
+  .rero-ils-ui {
+    .rero-ils-external-link:after {
+      font-family: "FontAwesome";
+      @extend .text-sm;
+      vertical-align: top;
+      content: " \f08e";
+    }
+    // THEME
+    .p-tag.p-tag-secondary {
+      background-color: var(--surface-300);
+      color: #475569;
+    }
+  }
 }
+// // FIELDS FORMAT -----------------------
+// ng-core-formly-field-primeng-input > input,
+// formly-field > input {
+//   @extend .w-full;
+// }
 
-label {
-  align-items: baseline;
-}
+// ng-core-formly-field-primeng-input > input:read-only {
+//   @extend .bg-blue-50;
+// }
 
-// ADJUST BOOTSTRAP / PRIMENG -------------------
-.col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-dt, dl, dd {
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-
-div.object .row {
-  margin-left: 4px !important;
-  margin-top: 0.4rem;
-}

@@ -16,20 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import 'bootstrap/scss/functions';
-@import 'bootstrap/scss/variables';
-
-a.collapse-link i {
-  min-width: 16px
-}
-
-.label-title:after {
-  content: ":"
-}
-
-dl.holdings-data {
-  margin-left: map-get($spacers, 4);
-  dd, dt {
-    margin: 0;
+public-search-holding, [public-search-holding] {
+  .p-accordion-header {
+    @extend .surface-100;
+    a.p-accordion-header-link {
+      background: none;
+    }
   }
 }

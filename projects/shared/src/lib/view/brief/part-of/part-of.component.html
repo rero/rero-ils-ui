@@ -16,7 +16,7 @@
 -->
 @if (record && record.metadata.partOf) {
   @for (partOf of record.metadata.partOf; track partOf; let i = $index) {
-    <div class="mb-0">
+    <div>
       <b>{{ getPartOfLabel(record) }}</b>:
       @if (isPublicView) {
         <a id="{{ 'doc-part-of-' + i }}" href="/{{ viewcode }}/documents/{{ partOf.document.pid }}">
@@ -31,7 +31,7 @@
           ;
           @for(numbering of partOf.numbering; track numbering; let i = $index; let isLast = $last) {
             @if (formatNumbering(numbering); as num) {
-              <span class="list-inline-item" id="{{ 'doc-part-of-numbering-' + i }}">
+              <span id="{{ 'doc-part-of-numbering-' + i }}">
                 {{ num }}
                 @if (!isLast) {
                   ,

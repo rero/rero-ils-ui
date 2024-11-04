@@ -17,10 +17,10 @@
 -->
 
 @if (contributions) {
-  <ul class="contributor-list-inline">
+  <ul class="list-none contributor-list mt-2 mb-0 p-0">
     @for (contributor of contributions; track contributor) {
       <li>
-        <ng-container [ngTemplateOutlet]="contributorTpl" [ngTemplateOutletContext]="{contributor}"></ng-container>
+        <ng-container [ngTemplateOutlet]="contributorTpl" [ngTemplateOutletContext]="{contributor}"/>
       </li>
       @if (limit) {
         …
@@ -30,9 +30,9 @@
 }
 
 <ng-template #contributorTpl let-contributor='contributor'>
-  <ng-container [ngTemplateOutlet]="entityTpl" [ngTemplateOutletContext]="{entity: contributor.entity}"></ng-container>
+  <ng-container [ngTemplateOutlet]="entityTpl" [ngTemplateOutletContext]="{entity: contributor.entity}" />
   @if (withRoles && contributor.role && contributor.role.length > 0) {
-    <ul class="contributor-roles">
+    <ul class="inline">
       @for (role of contributor.role; track role) {
         <li class="contributor-role">{{ role | translate }}</li>
       }
@@ -51,12 +51,12 @@
         [external]="true"
         [entity]="entity"
         [routerLinkParams]="['/', view, 'search', 'documents']"
-      ></shared-entity-link>
+      />
       } @else {
         <shared-entity-link
           resourceName="contribution"
           [entity]="entity"
-        ></shared-entity-link>
+        />
       }
     }
   } @else {

@@ -18,8 +18,7 @@ import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'public-search-patron-profile-ill-request',
-  templateUrl: './patron-profile-ill-request.component.html',
-  styleUrls: ['./patron-profile-ill-request.component.scss']
+  templateUrl: './patron-profile-ill-request.component.html'
 })
 export class PatronProfileIllRequestComponent {
 

@@ -14,37 +14,33 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section id="requests-section" class="container my-2">
-  <div class="d-none d-lg-block">
-    <div class="row bg-dark rounded text-light p-2">
-      <div class="col-8 pl-5" translate>Document</div>
-      <div class="col-2">Status</div>
-      <div class="col-2">&nbsp;</div>
-    </div>
-  </div>
+<section id="requests-section" class="mt-2">
+  <p-card class="p-card-body-p-0">
+    <ng-template pTemplate="header">
+        <div class="hidden md:flex grid grid-nogutter bg-blue-900 text-white p-2 text-lg font-bold">
+          <div class="col-8" translate>Document</div>
+          <div class="col-2" translate>Status</div>
+        </div>
+    </ng-template>
 
   @defer (when loaded) {
     @if (paginator.getRecordsCount() > 0) {
-      <div class="row border">
-        <div class="container-fluid">
+      <div class="alternate-color">
           @for (request of records; track request) {
-            <public-search-patron-profile-request
-              [record]="request"
-              id="request-{{ request.metadata.pid }}"
-              class="row border-bottom">
-            </public-search-patron-profile-request>
+            <div>
+              <public-search-patron-profile-request
+                [record]="request"
+                id="request-{{ request.metadata.pid }}"
+              />
+            </div>
           }
-          <shared-search-show-more-pager id="show-more-requests" [paginator]="paginator"></shared-search-show-more-pager>
-        </div>
+          <shared-search-show-more-pager id="show-more-requests" [paginator]="paginator" />
       </div>
     } @else {
-      <div class="row">
-        <div class="col mt-2 font-weight-bold" translate>No request</div>
-      </div>
+        <div class="font-bold mx-2 my-4" translate>No request</div>
     }
   } @placeholder {
-    <div class="row">
-      <div class="col mt-2 font-weight-bold" translate>Loading in progress</div>
-    </div>
+      <div class="font-bold mx-2 my-4" translate>Loading in progress</div>
   }
+  </p-card>
 </section>

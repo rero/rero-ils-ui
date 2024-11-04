@@ -1,7 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
 /*
- * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * RERO angular core
+ * Copyright (C) 2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,73 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-@import 'bootstrap/scss/functions';
-@import 'bootstrap/scss/variables';
-@import 'bootstrap/scss/mixins';
-
-// ADJUST BOOTSTRAP / PRIMENG -------------------
-.col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-// FIELDS FORMAT -----------------------
-ng-core-formly-field-primeng-input > input,
-formly-field > input {
-  width: 100%;
-}
-
-label {
-  align-items: baseline;
-}
-
-.label-title:after {
-  content: ":"
-}
-
-/* CALLOUT PANEL */
-// source: https://codepen.io/superjaberwocky/pen/AXdEWj
-.callout {
-  border-left: 5px solid $border-color;
-}
-@each $name,$color in (primary,$primary),(success,$success),(danger,$danger),(warning,$warning),(info,$info), (dark,$dark) {
-  .callout-#{$name} {
-    border-color: $color !important;
+@import "../../../../shared/src/scss/styles.scss";
+@layer rero-ils-ui {
+  .rero-ils-ui {
+    @import "../../../../public-search/src/app/document-detail/holdings/holding/holding.component.scss";
+    @import "../document-detail/document-detail-view/document-detail-view.component.scss";
   }
-  .callout-bg-#{$name} {
-    background-color: theme-color-level(#{$name}, -10) !important;
-    *[class*='btn-outline-']:not(:hover) {
-      background-color: white;
-    }
-  }
-}
-
-/* SHOW MORE BUTTON ====================================================== */
-.btn-show-more {
-  border: $border-width solid $border-color;
-  border-radius: 2rem;
-  height: 30px;
-  min-width: 30px;
-  background-color: $white;
-  margin-right: map-get($spacers, 3);
-  font-size: $font-size-base;
-  outline: none !important;
-
-  &.btn-expanded::before {
-    font-family: 'FontAwesome';
-    font-weight: 100;
-    content: " \f0d7";
-  }
-
-  &.btn-collapsed::before {
-    font-family: 'FontAwesome';
-    font-weight: 100;
-    content: " \f0da";
-  }
-}
-.card-header .btn-show-more {
-  border-color: $card-border-color;
-  font-size: $font-size-base;
-  margin-right: map-get($spacers, 2);
 }

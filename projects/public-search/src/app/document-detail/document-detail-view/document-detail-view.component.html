@@ -1,0 +1,49 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021-2024 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<ngx-loading-bar [includeSpinner]="false" height="3px" />
+
+@if (document) {
+<p-tabView [activeIndex]="0">
+  <p-tabPanel [header]="'Get' | translate">
+    <shared-doc-files [documentPid]="document.metadata.pid" />
+    <public-search-holdings [viewcode]="viewcode" [documentPid]="document.metadata.pid" />
+    <public-search-electronic-holdings [viewcode]="viewcode" [documentPid]="document.metadata.pid" />
+  </p-tabPanel>
+
+  <p-tabPanel [header]="'Description' | translate">
+    <shared-document-description [record]="document" />
+  </p-tabPanel>
+
+  @if (showinfo !== 'false') {
+  <p-tabPanel [header]="'More Info' | translate">
+    <ng-content select="more-info"></ng-content>
+  </p-tabPanel>
+  }
+</p-tabView>
+
+<p-divider />
+
+<p-menubar [model]="exportItems">
+  <ng-template pTemplate="item" let-item>
+      <a [href]="item.url" class="p-2 flex flex-column align-items-center justify-content-center w-6rem" download>
+      <i [ngClass]="[item.icon, 'fa-2x mb-1 text-color-secondary']"></i>
+      <span class="text-center text-xs text-color-secondary">{{item.label}}</span>
+      </a>
+  </ng-template>
+</p-menubar>
+}

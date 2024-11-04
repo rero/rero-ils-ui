@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
+import { DocumentApiService } from '../api/document-api.service';
 
 @Component({
   selector: 'public-search-document-brief',
@@ -26,6 +27,7 @@ export class DocumentBriefComponent {
 
   public coverUrl: string;
   private pathArray = window.location.pathname.split('/');
+  public documentApiService: DocumentApiService = inject(DocumentApiService);
   private _record: any;
 
   @Input() detailUrl: string;

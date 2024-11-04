@@ -17,6 +17,7 @@
  */
 import { Component, inject, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { ItemApiService } from '../../api/item-api.service';
 
 @Component({
   selector: 'public-search-item',
@@ -25,6 +26,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class ItemComponent {
 
   private translateService: TranslateService = inject(TranslateService);
+  public itemApiService: ItemApiService = inject(ItemApiService);
 
   /** Item record */
   private _item: any;
@@ -49,9 +51,6 @@ export class ItemComponent {
 
   /** context */
   @Input() context: string;
-
-  /** index */
-  @Input() index: number;
 
   /** Authorized types of note */
   noteAuthorizedTypes: string[] = [
