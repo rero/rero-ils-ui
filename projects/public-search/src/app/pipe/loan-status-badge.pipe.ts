@@ -29,13 +29,15 @@ export class LoanStatusBadgePipe implements PipeTransform {
   transform(status: string): string {
     switch (status) {
       case 'PENDING':
-        return 'badge-warning';
+        return 'warning';
       case 'ITEM_AT_DESK':
-        return 'badge-success';
+        return 'success';
       case 'ITEM_ON_LOAN':
-        return 'badge-info';
+        return 'info';
+      case 'CANCELLED':
+        return 'danger'
       default:
-        return 'badge-light';
+        return 'secondary';
     }
   }
 }

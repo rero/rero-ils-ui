@@ -41,13 +41,7 @@
               }
             ],
             "styles": [
-              "node_modules/primeng/resources/themes/bootstrap4-light-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/primeflex/primeflex.min.css",
-              "node_modules/ngx-spinner/animations/ball-zig-zag.css",
-              "projects/admin/src/app/scss/styles.scss",
-              "projects/shared/src/scss/styles.scss"
+              "projects/admin/src/app/scss/styles.scss"
             ],
             "scripts": [],
             "vendorChunk": true,
@@ -77,7 +71,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2.5mb",
-                  "maximumError": "7mb"
+                  "maximumError": "9mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -113,7 +107,6 @@
             "tsConfig": "projects/admin/tsconfig.spec.json",
             "karmaConfig": "projects/admin/karma.conf.js",
             "assets": [],
-            "styles": ["projects/admin/src/app/scss/styles.scss"],
             "scripts": []
           }
         },
@@ -169,15 +162,15 @@
               }
             ],
             "styles": [
-              "node_modules/primeng/resources/themes/bootstrap4-light-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/primeflex/primeflex.min.css",
-              "node_modules/ngx-spinner/animations/ball-zig-zag.css",
-              "projects/public-search/src/app/scss/styles.scss",
-              "projects/shared/src/scss/styles.scss"
+              "projects/public-search/src/app/scss/bootstrap_styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -194,6 +187,9 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "styles": [
+                "projects/public-search/src/app/scss/styles.scss"
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -277,11 +273,7 @@
               }
             ],
             "styles": [
-              "node_modules/primeng/resources/themes/bootstrap4-light-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/primeflex/primeflex.min.css",
-              "projects/shared/src/scss/styles.scss"
+              "projects/public-search/src/app/scss/bootstrap_styles.scss"
             ],
             "scripts": [],
             "vendorChunk": true,
@@ -298,6 +290,9 @@
                   "replace": "projects/public-search/src/environments/environment.ts",
                   "with": "projects/public-search/src/environments/environment.prod.ts"
                 }
+              ],
+              "styles": [
+                "projects/public-search/src/app/scss/styles.scss"
               ],
               "optimization": true,
               "outputHashing": "all",
@@ -405,10 +400,7 @@
               }
             ],
             "styles": [
-              "node_modules/primeng/resources/themes/bootstrap4-light-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/primeflex/primeflex.min.css"
+              "projects/public-search/src/app/scss/bootstrap_styles.scss"
             ],
             "scripts": [],
             "vendorChunk": true,
@@ -433,6 +425,9 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "styles": [
+                "projects/public-search/src/app/scss/styles.scss"
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -531,6 +526,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "baseHref": "/highlands/patrons/profile",
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
@@ -556,12 +552,7 @@
               }
             ],
             "styles": [
-              "node_modules/primeng/resources/themes/bootstrap4-light-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/primeflex/primeflex.min.css",
-              "projects/public-search/src/app/scss/styles.scss",
-              "projects/shared/src/scss/styles.scss"
+              "projects/public-search/src/app/scss/bootstrap_styles.scss"
             ],
             "scripts": [],
             "vendorChunk": true,
@@ -586,7 +577,11 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "styles": [
+                "projects/public-search/src/app/scss/styles.scss"
+              ],
               "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/public-patron-profile/",
+              "baseHref": "",
               "budgets": [
                 {
                   "type": "initial",
@@ -639,222 +634,6 @@
             "lintFilePatterns": [
               "projects/public-patron-profile/src/**/*.ts",
               "projects/public-patron-profile/src/**/*.html"
-            ]
-          }
-        }
-      }
-    },
-    "public-user-profile-edit": {
-      "projectType": "application",
-      "schematics": {},
-      "root": "projects/public-user-profile-edit",
-      "sourceRoot": "projects/public-user-profile-edit/src",
-      "prefix": "app",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "allowedCommonJsDependencies": ["crypto-js", "easymde", "moment"],
-            "outputPath": "build/dist/public-user-profile-edit",
-            "index": "projects/public-user-profile-edit/src/index.html",
-            "main": "projects/public-user-profile-edit/src/main.ts",
-            "polyfills": "projects/public-user-profile-edit/src/polyfills.ts",
-            "tsConfig": "projects/public-user-profile-edit/tsconfig.app.json",
-            "assets": [
-              {
-                "glob": "**/*.json",
-                "input": "projects/public-search/src/assets",
-                "output": "/assets/"
-              },
-              {
-                "glob": "**/*.json",
-                "input": "projects/shared/src/assets",
-                "output": "/assets/"
-              }
-            ],
-            "styles": [
-              "node_modules/primeng/resources/themes/bootstrap4-light-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/primeflex/primeflex.min.css",
-              "projects/shared/src/scss/styles.scss"
-            ],
-            "scripts": []
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/public-user-profile-edit/src/environments/environment.ts",
-                  "with": "projects/public-user-profile-edit/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "port": 4206,
-            "buildTarget": "public-user-profile-edit:build"
-          },
-          "configurations": {
-            "production": {
-              "buildTarget": "public-user-profile-edit:build:production"
-            }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "buildTarget": "public-user-profile-edit:build"
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/public-user-profile-edit/e2e/protractor.conf.js",
-            "devServerTarget": "public-user-profile-edit:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "public-user-profile-edit:serve:production"
-            }
-          }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": [
-              "projects/public-user-profile-edit/src/**/*.ts",
-              "projects/public-user-profile-edit/src/**/*.html"
-            ]
-          }
-        }
-      }
-    },
-    "public-user-password-change": {
-      "projectType": "application",
-      "schematics": {},
-      "root": "projects/public-user-password-change",
-      "sourceRoot": "projects/public-user-password-change/src",
-      "prefix": "app",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "allowedCommonJsDependencies": ["crypto-js", "easymde", "moment"],
-            "outputPath": "build/dist/public-user-password-change",
-            "index": "projects/public-user-password-change/src/index.html",
-            "main": "projects/public-user-password-change/src/main.ts",
-            "polyfills": "projects/public-user-password-change/src/polyfills.ts",
-            "tsConfig": "projects/public-user-password-change/tsconfig.app.json",
-            "assets": [
-              {
-                "glob": "**/*.json",
-                "input": "projects/public-search/src/assets",
-                "output": "/assets/"
-              },
-              {
-                "glob": "**/*.json",
-                "input": "projects/shared/src/assets",
-                "output": "/assets/"
-              }
-            ],
-            "styles": [
-              "node_modules/primeng/resources/themes/bootstrap4-light-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/primeflex/primeflex.min.css",
-              "projects/shared/src/scss/styles.scss"
-            ],
-            "scripts": []
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/public-user-password-change/src/environments/environment.ts",
-                  "with": "projects/public-user-password-change/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "port": 4205,
-            "buildTarget": "public-user-password-change:build"
-          },
-          "configurations": {
-            "production": {
-              "buildTarget": "public-user-password-change:build:production"
-            }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "buildTarget": "public-user-password-change:build"
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/public-user-password-change/e2e/protractor.conf.js",
-            "devServerTarget": "public-user-password-change:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "public-user-password-change:serve:production"
-            }
-          }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": [
-              "projects/public-user-password-change/src/**/*.ts",
-              "projects/public-user-password-change/src/**/*.html"
             ]
           }
         }

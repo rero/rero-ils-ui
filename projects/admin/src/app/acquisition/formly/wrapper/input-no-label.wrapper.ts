@@ -23,8 +23,8 @@ template: `
   <div class="my-2">
     <ng-container #fieldComponent></ng-container>
     @if (showError) {
-      <div class="invalid-feedback d-block">
-        <formly-validation-message [field]="field"></formly-validation-message>
+      <div class="text-error my-2">
+        <formly-validation-message [field]="field" />
       </div>
     }
   </div>

@@ -58,9 +58,7 @@ import { MenuDashboardComponent } from './menu/menu-dashboard/menu-dashboard.com
 import { MenuDisplayComponent } from './menu/menu-display/menu-display.component';
 import { MenuUserComponent } from './menu/menu-user/menu-user.component';
 import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
-import { DocumentProvisionActivityPipe } from './pipe/document-provision-activity.pipe';
 import { ItemInCollectionPipe } from './pipe/item-in-collection.pipe';
-import { MainTitleRelationPipe } from './pipe/main-title-relation.pipe';
 import { MarcPipe } from './pipe/marc.pipe';
 import { NotesFormatPipe } from './pipe/notes-format.pipe';
 import { PatronNamePipe } from './pipe/patron-name.pipe';
@@ -99,13 +97,6 @@ import { CircPolicyDetailViewComponent } from './record/detail-view/circ-policy-
 import { CollectionDetailViewComponent } from './record/detail-view/collection-detail-view/collection-detail-view.component';
 import { CollectionItemsComponent } from './record/detail-view/collection-detail-view/collection-items/collection-items.component';
 import { DialogImportComponent } from './record/detail-view/document-detail-view/dialog-import/dialog-import.component';
-import { DescriptionZoneComponent } from './record/detail-view/document-detail-view/document-description/description-zone/description-zone.component';
-import {
-  DocumentDescriptionComponent
-} from './record/detail-view/document-detail-view/document-description/document-description.component';
-import {
-  OtherEditionComponent
-} from './record/detail-view/document-detail-view/document-description/other-edition/other-edition.component';
 import { DocumentDetailViewComponent } from './record/detail-view/document-detail-view/document-detail-view.component';
 import { DocumentDetailComponent } from './record/detail-view/document-detail-view/document-detail/document-detail.component';
 import { EntitiesRelatedComponent } from './record/detail-view/document-detail-view/entities-related/entities-related.component';
@@ -203,9 +194,9 @@ import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 
+import { HotkeysShortcutPipe } from '@ngneat/hotkeys';
 import { EntityAutocompleteComponent } from './record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
 import { RemoteAutocompleteService as UiRemoteAutocompleteService } from './record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.service';
-import { HotkeysShortcutPipe } from '@ngneat/hotkeys';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
@@ -292,11 +283,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     CirculationLogComponent,
     ItemInCollectionPipe,
     CountryCodeTranslatePipe,
-    DocumentDescriptionComponent,
-    OtherEditionComponent,
-    DescriptionZoneComponent,
-    DocumentProvisionActivityPipe,
-    MainTitleRelationPipe,
     HoldingOrganisationComponent,
     ExpectedIssueComponent,
     ReceivedIssueComponent,

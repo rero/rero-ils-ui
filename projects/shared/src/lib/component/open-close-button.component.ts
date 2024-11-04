@@ -20,6 +20,7 @@ import { Component, input, OnChanges, output, SimpleChanges } from '@angular/cor
   selector: 'shared-open-close-button',
   template: `
   <p-button
+    styleClass="bg-white"
     [icon]="internalStatus ? 'fa fa-caret-right' : 'fa fa-caret-down'"
     [outlined]="true"
     [rounded]="true"

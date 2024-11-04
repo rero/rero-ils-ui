@@ -16,29 +16,32 @@
 -->
 
 @if (record) {
-  <div class="container p-2">
-    <div class="row">
+    <div class="grid grid-nogutter p-2">
       <!-- DOCUMENT & ADDITIONAL DATA -->
-      <div *ngVar="record.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document" class="col-sm-12 col-lg-10">
+      <div *ngVar="record.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document" class="md:col-10 col-12">
         @if (document) {
           <a href="/{{ viewcode }}/documents/{{ record.metadata.loan.item.document.pid }}">
             {{ record.metadata.loan.item.document.title }}
           </a>
         } @else {
-        {{ record.metadata.loan.item.document.title }}
+          {{ record.metadata.loan.item.document.title }}
         }
         @if (record.metadata.loan.item.enumerationAndChronology) {
-          <span class="badge badge-info">{{ record.metadata.loan.item.enumerationAndChronology }}</span>
+          <p-tag severity="info">
+            {{ record.metadata.loan.item.enumerationAndChronology }}
+          </p-tag>
         }
         @if (document) {
           <shared-contribution [contributions]="document.metadata?.contribution" [view]="viewcode"></shared-contribution>
         }
+          <dl class="metadata md:hidden">
+            <dt translate>Return date</dt>
+            <dd>{{ record.metadata.date | dateTranslate: 'shortDate' }}</dd>
+          </dl>
       </div>
       <!-- DUE DATE -->
-      <div class="col-sm-12 col-lg-2">
-        <span class="d-inline d-lg-none label-title font-weight-bold" translate>Return date</span>
-        {{ record.metadata.date | dateTranslate: 'shortDate' }}
+        <div class="md:col-2 col-12 hidden md:block">
+          {{ record.metadata.date | dateTranslate: 'shortDate' }}
       </div>
     </div>
-  </div>
 }

@@ -15,13 +15,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @defer (when isVisible) {
-  <form>
-      <select class="form-control form-select form-select-sm ml-1 col-6" (change)="onChange($event.target.value)">
-        @for (option of menuOptions; track option) {
-          <option class="form-control" [value]="option.value" [selected]="option.selected">
-            {{ option.name }}
-          </option>
-        }
-      </select>
-  </form>
+    <p-dropdown
+    [options]="organisations"
+    [ngModel]="selectedOrganisation"
+    optionLabel="name"
+    (onChange)="onChange($event.value.value)"
+    />
 }

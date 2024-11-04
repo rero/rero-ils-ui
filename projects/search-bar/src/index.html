@@ -4,19 +4,17 @@
     <meta charset="utf-8">
     <title>SearchBar</title>
     <base href="/">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <style>
+    @layer bootstrap, primeng, rero-ils-ui;
+  </style>
   </head>
-  <body class="d-flex flex-column">
-    <div class="m-4">
+  <body>
+    <div class="container">
       <h4>Search bar</h4>
-      <div class="mb-3">
-        <main-search-bar admin="false" placeholder="Search (Aoste view)" viewcode="aoste"></main-search-bar>
+      <div style="margin-bottom: 10px; width: 600px">
+        <main-search-bar admin="false" placeholder="Search (Aoste view)" viewcode="aoste" class="rero-ils-ui"/>
       </div>
-      <main-search-bar placeholder="Search (Admin view)"></main-search-bar>
+      <main-search-bar inputstyleclass="text-lg w-full" placeholder="Search (Admin view)" class="rero-ils-ui" internal />
     </div>
   </body>
 </html>

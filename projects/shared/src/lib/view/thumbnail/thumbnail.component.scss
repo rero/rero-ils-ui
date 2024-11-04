@@ -16,21 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-figure.thumb-detail {
-  height: auto;
-  max-height: 100%;
-  width: 100%;
-}
+shared-thumbnail {
+  figure.thumb-detail {
+    @extend .h-auto, .max-h-full, .w-full;
+  }
 
-figure.thumb-detail img.img-thumbnail {
-  max-width: 160px;
-}
+  figure.thumb-detail img.img-thumbnail {
+    @extend .max-w-10rem;
+  }
 
-figure.thumb-brief .svg-image {
-  min-width: 100px;
-  min-height: 100px;
-}
+  figure.thumb-brief .svg-image {
+    min-width: 6rem;
+    min-height: 6rem;
+  }
 
-figure.thumb-brief img.img-thumbnail {
-  max-width: 100px;
+  figure.thumb-brief img.img-thumbnail {
+    @extend .max-w-6rem;
+  }
 }

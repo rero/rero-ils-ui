@@ -24,8 +24,7 @@ import { PatronProfileService } from '../../patron-profile.service';
 
 @Component({
   selector: 'public-search-patron-profile-request',
-  templateUrl: './patron-profile-request.component.html',
-  styleUrls: ['./patron-profile-request.component.scss']
+  templateUrl: './patron-profile-request.component.html'
 })
 export class PatronProfileRequestComponent {
 
@@ -79,7 +78,6 @@ export class PatronProfileRequestComponent {
           severity: 'error',
           summary: this.translateService.instant('Error'),
           detail: this.translateService.instant('Error during the cancellation of the request.'),
-          sticky: true,
           closable: true
         });
       }

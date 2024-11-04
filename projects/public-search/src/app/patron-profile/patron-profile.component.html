@@ -14,7 +14,6 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ngx-loading-bar [includeSpinner]="false" height="3px"></ngx-loading-bar>
 @if (user) { @if (user.isAuthenticated && user.isPatron) {
 <header>
   <h3>{{ fullname }}</h3>
@@ -22,27 +21,27 @@
 <section class="mt-2">
   <public-search-patron-profile-menu
     patronPid="{{ patron.pid }}"
-  ></public-search-patron-profile-menu>
+  />
 </section>
 <section class="mt-3">
-  <public-search-patron-profile-message></public-search-patron-profile-message>
+  <p-messages />
+  <public-search-patron-profile-message/>
 </section>
-@for (tab of tabs|keyvalue: sortTabs; track tab) {
-  {{tab.key}}
-}
-<section class="mt-3">
-  <p-tabView (onChange)="tabOnChange($event)">
 
+<section class="mt-3">
+  <p-tabView  [activeIndex]="activeIndex" [scrollable]="true" (onChange)="tabOnChange($event)">
 @for (tab of tabs|keyvalue: sortTabs; track tab.key) {
   <p-tabPanel>
     <ng-template pTemplate="header">
-    {{tab.value.title}}
-    @if (tab.value.count != null) {
-        <p-badge class="ml-1" [value]="tab.value.count" severity="info"/>
-    }
-    @if (tab.value.feeTotal != null) {
-        <p-badge class="ml-1" [value]="tab.value.feeTotal  | currency : patron.organisation.currency : 'symbol'" severity="warning"/>
-    }
+      <div class="flex align-items-center gap-1">
+        <div>{{tab.value.title}}</div>
+        @if (tab.value.count != null) {
+            <p-badge [value]="tab.value.count" severity="info"/>
+        }
+        @if (tab.value.feeTotal != null) {
+            <p-badge [value]="tab.value.feeTotal  | currency : patron.organisation.currency : 'symbol'" severity="warning"/>
+        }
+      </div>
   </ng-template>
   @switch(tab.key) {
     @case ('loan') {

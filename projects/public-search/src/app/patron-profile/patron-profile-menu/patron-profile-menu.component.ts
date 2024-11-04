@@ -27,6 +27,8 @@ export class PatronProfileMenuComponent {
 
   @Input() patronPid: string;
 
+  selectedOrganisation: IMenu;
+
   /**
    * Is menu visible
    * @return boolean
@@ -39,11 +41,11 @@ export class PatronProfileMenuComponent {
    * Get menu lines (organisation)
    * @return array
    */
-  get menuOptions(): IMenu[] {
+  get organisations(): IMenu[] {
     const menuSelected = this.patronProfileMenuService.menu
       .find((menu: any) => menu.value === this.patronPid);
     if (menuSelected) {
-      menuSelected.selected = true;
+      this.selectedOrganisation = menuSelected;
     }
     return this.patronProfileMenuService.menu;
   }

@@ -153,7 +153,7 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
                   format: 'raw',
                 },
                 {
-                  label: 'RIS (Endnote, Zotero, ...)',
+                  label: 'RIS (Zotero...)',
                   format: 'ris',
                 },
               ],
@@ -161,20 +161,24 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
                 {
                   label: _('Relevance'),
                   value: 'bestmatch',
-                  defaultQuery: true
+                  defaultQuery: true,
+                  icon: 'fa fa-sort-amount-desc'
                 },
                 {
                   label: _('Date (newest)'),
-                  value: 'pub_date_new'
+                  value: 'pub_date_new',
+                  icon: 'fa fa-sort-amount-desc'
                 },
                 {
                   label: _('Date (oldest)'),
                   value: 'pub_date_old',
+                  icon: 'fa fa-sort-amount-asc'
                 },
                 {
                   label: _('Title'),
                   value: 'title',
-                  defaultNoQuery: true
+                  defaultNoQuery: true,
+                  icon: 'fa fa-sort-alpha-asc'
                 }
               ]
             },

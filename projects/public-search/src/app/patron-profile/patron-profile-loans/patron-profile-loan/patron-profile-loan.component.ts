@@ -28,8 +28,7 @@ import { PatronProfileService } from '../../patron-profile.service';
 
 @Component({
   selector: 'public-search-patron-profile-loan',
-  templateUrl: './patron-profile-loan.component.html',
-  styleUrls: ['./patron-profile-loan.component.scss']
+  templateUrl: './patron-profile-loan.component.html'
 })
 export class PatronProfileLoanComponent implements OnInit {
 
@@ -124,7 +123,6 @@ export class PatronProfileLoanComponent implements OnInit {
           severity: 'error',
           summary: this.translateService.instant('Error'),
           detail: this.translateService.instant('Error during the renewal of the item.'),
-          sticky: true,
           closable: true
         });
       }

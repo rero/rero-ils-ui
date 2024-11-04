@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, Location } from '@angular/common';
 import { Component, ElementRef, inject, Input } from '@angular/core';
 import { AbstractControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
@@ -48,11 +48,10 @@ export function fieldPasswordMatchValidator(control: AbstractControl) {
 })
 export class PatronProfilePasswordComponent {
 
+  private location: Location = inject(Location);
   private translateService: TranslateService = inject(TranslateService);
   private userApiService: UserApiService = inject(UserApiService);
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
   private el: ElementRef = inject(ElementRef);
-  private document: Document = inject(DOCUMENT);
   private messageService: MessageService = inject(MessageService);
 
   /** Request referer */
@@ -128,7 +127,6 @@ export class PatronProfilePasswordComponent {
         severity: 'error',
         summary: this.translateService.instant('Error'),
         detail: this.translateService.instant('The form contains errors.'),
-        sticky: true,
         closable: true
       });
       return;
@@ -141,7 +139,7 @@ export class PatronProfilePasswordComponent {
     };
 
     this.userApiService.updatePassword(data).pipe(
-      catchError((err: any) =>  of({ success: false, message: err.message, error: err.error.errors[0] }))
+      catchError((err: any) =>  of({ success: false, message: err.message, error: err.error?.errors[0] }))
     ).subscribe((response: IPasswordResponse) => {
       if (!('success' in response)) {
         this.messageService.add({
@@ -190,7 +188,7 @@ export class PatronProfilePasswordComponent {
 
   /** Redirect to external project */
   private _redirect(): void {
-    this.document.location.href = this.referer || this.appSettingsService.baseUrl;
+    this.location.back();
   }
 }
 

@@ -19,11 +19,9 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'public-search-main',
   template: `
-  <div class="jumbotron jumbotron-fluid mt-4">
-    <div class="container">
-        <h1 class="display-4 text-center">Public search</h1>
+    <div class="mt-2 p-8 surface-ground">
+        <h1 class="text-center" translate>Public search</h1>
     </div>
-  </div>
 `
 })
 export class MainComponent { }

@@ -24,6 +24,10 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { TabViewModule } from 'primeng/tabview';
 import { TagModule } from 'primeng/tag';
 import { TimelineModule } from 'primeng/timeline';
+import { DialogModule } from 'primeng/dialog';
+import { ToastModule } from 'primeng/toast';
+import { MessagesModule } from 'primeng/messages';
+
 
 @NgModule({
   exports: [
@@ -33,7 +37,10 @@ import { TimelineModule } from 'primeng/timeline';
     CarouselModule,
     TagModule,
     ButtonModule,
-    PaginatorModule
+    PaginatorModule,
+    DialogModule,
+    MessagesModule,
+    ToastModule
   ]
 })
 export class PrimeNgImportModule { }

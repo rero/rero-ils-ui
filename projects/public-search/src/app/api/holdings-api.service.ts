@@ -42,14 +42,29 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
    */
   getHoldingsByDocumentPidAndViewcode(
     documentPid: string, viewcode: string, page: number, itemsPerPage: number = 5): Observable<QueryResponse> {
-    const query = `document.pid:${documentPid}
-    AND ((holdings_type:standard AND public_items_count:[1 TO *]) OR holdings_type:serial)`;
+    const query = `document.pid:${documentPid} AND ((holdings_type:standard AND public_items_count:[1 TO *]) OR holdings_type:serial) NOT _masked:true`;
     return this.recordService
     .getRecords(
       'holdings', query, page, itemsPerPage, undefined, { view: viewcode },
       BaseApi.reroJsonheaders, 'organisation_library_location'
     ).pipe(map((response: Record) => response.hits));
   }
+
+  /**
+   * Get Electronic Holdings by document pid and viewcode
+   * @param documentPid - string
+   * @param viewcode - string
+   * @return Observable
+   */
+    getElectronicHoldingsByDocumentPidAndViewcode(
+      documentPid: string, viewcode: string, page: number, itemsPerPage: number = 5): Observable<QueryResponse> {
+      const query = `document.pid:${documentPid} AND  holdings_type:electronic NOT _masked:true`;
+      return this.recordService
+      .getRecords(
+        'holdings', query, page, itemsPerPage, undefined, { view: viewcode },
+        BaseApi.reroJsonheaders, 'organisation_library_location'
+      ).pipe(map((response: Record) => response.hits));
+    }
 
   /**
    * Holding Can request
