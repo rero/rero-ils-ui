@@ -94,11 +94,11 @@ const routes: Routes = [
               defaultQuery: true,
             },
             {
-              label: _('Recently updated'),
+              label: _('Modification date (newest)'),
               value: '-updated_at',
             },
             {
-              label: _('Last recently updated'),
+              label: _('Modification date (oldest)'),
               value: 'updated_at',
             },
             {
@@ -154,11 +154,11 @@ const routes: Routes = [
               defaultQuery: true,
             },
             {
-              label: _('Recently updated'),
+              label: _('Modification date (newest)'),
               value: '-updated_at',
             },
             {
-              label: _('Last recently updated'),
+              label: _('Modification date (oldest)'),
               value: 'updated_at',
             },
             {
