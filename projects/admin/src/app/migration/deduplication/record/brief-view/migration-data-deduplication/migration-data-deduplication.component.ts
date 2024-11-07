@@ -16,6 +16,7 @@
  */
 
 import { Component, computed, inject, input, OnInit, output } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 
@@ -28,6 +29,7 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
   // services
   protected toastService: MessageService = inject(MessageService);
   protected recordService: RecordService = inject(RecordService);
+  protected translateService: TranslateService = inject(TranslateService);
 
   // current record
   record = input<any>();
@@ -121,7 +123,7 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
             this.updateIlsPid();
           } else {
             // no document from the backend
-            this.toastService.add({ severity: 'warn', summary: 'Record not found.' });
+            this.toastService.add({ severity: 'warn', summary: this.translateService.instant('Record not found.') });
           }
         });
       }
@@ -213,8 +215,8 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
         this.refresh.emit(true);
         this.toastService.add({
           severity: 'success',
-          summary: `${record.id} has been sucessfully updated`,
-          detail: `the status is now: ${record.deduplication.status}`,
+          summary: `${record.id} ` + this.translateService.instant('has been sucessfully updated.'),
+          detail: this.translateService.instant('The status is now:') + ' ' + this.translateService.instant(record.deduplication.status),
         });
       });
   }
