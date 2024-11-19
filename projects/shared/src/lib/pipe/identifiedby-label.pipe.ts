@@ -35,7 +35,7 @@ export class IdentifiedByLabelPipe implements PipeTransform {
    * @return the entity label
    */
   transform(identifiedBy: any[], types: string[], separator: string = this._defaultSeparator): string | null {
-    const identifiers: Array<any> = types
+    const identifiers: Array<any> = (types && identifiedBy?.length)
       ? identifiedBy.filter(identifier => types.includes(identifier.type))
       : identifiedBy;
     return identifiers

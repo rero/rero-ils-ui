@@ -15,6 +15,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+<!-- AUTHORIZED ACCESS POINT(S) -->
+@if (record.authorized_access_point) {
+  <dt translate>Authorized access point</dt>
+  <dd>{{ record.authorized_access_point }}</dd>
+}
 <!-- BNF TYPE -->
 @if (record.bnf_type) {
   <dt translate>Type</dt>
@@ -86,29 +91,39 @@
     </ul>
   </dd>
 }
-<!-- CLOSE MATCH -->
-@if (record.closeMatch) {
-  <dt translate>Close match</dt>
-  <dd>
-    <ul>
-      @for (closeMatch of record.closeMatch; track closeMatch) {
-        <li>
-          {{ closeMatch.source }}: {{ closeMatch.authorized_access_point }}
-        </li>
-      }
-    </ul>
-  </dd>
-}
 <!-- EXACT MATCH -->
 @if (record.exactMatch) {
-  <dt translate>Exact match</dt>
+  <ng-container
+    [ngTemplateOutlet]="match"
+    [ngTemplateOutletContext]="{ item: {match: exactMatch, title: 'Exact match' | translate } }"
+  ></ng-container>
+}
+<!-- CLOSE MATCH -->
+@if (record.closeMatch) {
+  <ng-container
+    [ngTemplateOutlet]="match"
+    [ngTemplateOutletContext]="{ item: {match: closeMatch, title: 'Close match' | translate } }"
+  ></ng-container>
+}
+
+<ng-template #match let-item="item">
+  <dt translate>{{ item.title }}</dt>
   <dd>
     <ul>
-      @for (exactMatch of record.exactMatch; track exactMatch) {
-        <li>
-          {{ exactMatch.source }}: {{ exactMatch.authorized_access_point }}
-        </li>
+      @if (item.match) {
+        @for(match of item.match; track match) {
+          <li>
+            {{ match.source }}:
+            @if (match.uri) {
+              <a class="rero-ils-external-link" href="{{ match.uri }}" title="{{ match.uri }}" target="_blank">
+                {{ match.authorized_access_point }}
+              </a>
+            } @else {
+              {{ match.authorized_access_point }}
+            }
+          </li>
+        }
       }
     </ul>
   </dd>
-}
+</ng-template>
