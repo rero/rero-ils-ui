@@ -53,17 +53,19 @@
             }
           }
           <!-- IDENTIFIED BY -->
-          @if (identifiedByFilter($any(record).metadata[source].identifiedBy).length > 0) {
-            <dt translate>Identified by</dt>
-            <dd>
-              <ul>
-                @for (identifiedBy of identifiedByFilter($any(record).metadata[source].identifiedBy); track identifiedBy) {
-                  <li>
-                    <a href="{{ identifiedBy.value }}" title="{{ identifiedBy.value }}" target="_blank">{{ identifiedBy.source }}</a>
-                  </li>
-                }
-              </ul>
-            </dd>
+          @if ($any(record).metadata[source].identifiedBy?.length) {
+            @if (identifiedByFilter($any(record).metadata[source].identifiedBy).length > 0) {
+              <dt translate>Identified by</dt>
+              <dd>
+                <ul>
+                  @for (identifiedBy of identifiedByFilter($any(record).metadata[source].identifiedBy); track identifiedBy) {
+                    <li>
+                      <a class="rero-ils-external-link" href="{{ identifiedBy.value }}" title="{{ identifiedBy.value }}" target="_blank">{{ identifiedBy.source }}</a>
+                    </li>
+                  }
+                </ul>
+              </dd>
+            }
           }
           <dt translate>Id</dt>
           <dd>{{ $any(record).metadata[source].pid }}</dd>

@@ -16,17 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'admin-remote-topic-detail-view',
   templateUrl: './remote-topic-detail-view.component.html'
 })
-export class RemoteTopicDetailViewComponent {
+export class RemoteTopicDetailViewComponent implements OnInit{
 
   /** Record metadata */
   @Input() record: any;
 
   /** Record source */
   @Input() source: string;
+
+  exactMatch = [];
+  closeMatch = [];
+
+  ngOnInit(): void {
+    this.exactMatch = this.identifiedByUriFilter(this.record.exactMatch);
+    this.closeMatch = this.identifiedByUriFilter(this.record.closeMatch);
+  }
+  identifiedByUriFilter(match: any[]): any[] {
+    return match?.map((m: any) => {
+      const element = {
+        authorized_access_point: m.authorized_access_point,
+        source: m.source
+      };
+      const uris = m.identifiedBy?.filter((id: any) => id.type === 'uri') || [];
+      if (uris.length > 0) {
+        element['uri'] = uris.shift().value;
+      }
+
+      return element;
+    });
+  }
 }
