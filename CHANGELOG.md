@@ -1,5 +1,12 @@
 # Changelog
 
+## [v17.2.1](https://github.com/rero/rero-ils-ui/tree/v17.2.1) (2024-12-04)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v17.2.0...v17.2.1)
+
+**Other changes:**
+* various: fix some display problems [\#1220](https://github.com/rero/rero-ils-ui/pull/1220) (by @rerowep)
+
 ## [v17.2.0](https://github.com/rero/rero-ils-ui/tree/v17.2.0) (2024-10-25)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v17.1.1...v17.2.0)
