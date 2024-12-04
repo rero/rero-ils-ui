@@ -20,9 +20,9 @@ import { AutoFocusModule } from 'primeng/autofocus';
 
 import { RecordModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
-import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { MessageService } from 'primeng/api';
 import { BadgeModule } from 'primeng/badge';
+import { DataViewModule } from 'primeng/dataview';
 import { InplaceModule } from 'primeng/inplace';
 import { MessagesModule } from 'primeng/messages';
 import { TableModule } from 'primeng/table';
@@ -57,7 +57,7 @@ import { MigrationDetailComponent } from './record/brief-view/migration/migratio
     TableModule,
     InplaceModule,
     ToastModule,
-    PaginationModule,
+    DataViewModule,
     AutoFocusModule
   ],
   exports: [],
