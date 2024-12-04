@@ -15,6 +15,29 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <p-menubar [model]="items">
+  <ng-template pTemplate="item" let-item let-root="root">
+    <a
+      pRipple
+      class="flex p-element p-menuitem-link"
+      [attr.id]="item.id"
+      [routerLink]="item.routerLink"
+      [href]="item.url"
+      [queryParams]="item.queryParams"
+    >
+      @if (item.icon) {
+        <span [class]="item.icon" class="p-menuitem-icon"></span>
+      }
+      <span class="ml-1">{{ item.label }}</span>
+      @if (item.shortcut) {
+        <span class="ml-auto border-1 surface-border border-round surface-100 text-sm px-2 py-1">
+          {{ item.shortcut }}
+      </span>
+      }
+      @if (item.items) {
+        <i [ngClass]="['pi', root ? 'pi-angle-down ml-2' : 'pi-angle-right ml-auto']"></i>
+      }
+    </a>
+  </ng-template>
   <ng-template pTemplate="end">
     <admin-menu-user />
   </ng-template>

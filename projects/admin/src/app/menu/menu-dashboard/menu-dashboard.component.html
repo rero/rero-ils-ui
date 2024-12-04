@@ -14,22 +14,24 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="grid justify-content-center mt-2">
+<div class="flex flex-wrap justify-content-center mt-2">
   @for (item of items; track item) {
     <div class="col mx-1">
       <p-card>
-        <div class="header mb-2">
-          @if (item.icon) {
-            <i class="mr-1" [class]="item.icon"></i>
-          }
-          <span class="text-xl text-color">{{ item.label }}</span>
-        </div>
+        <ng-template pTemplate="header">
+          <div class="md:flex grid grid-nogutter bg-blue-900 text-white p-3 text-xl font-bold border-round-top">
+            @if (item.icon) {
+              <i class="mr-2" [class]="item.icon"></i>
+            }
+            {{ item.label }}
+          </div>
+        </ng-template>
         @for (menuItem of item.items; track menuItem) {
-          <p-tieredMenu [model]="[menuItem]">
-            <ng-template pTemplate="item" let-item let-hasSubmenu="hasSubmenu">
+          <p-tieredMenu [model]="[menuItem]" styleClass="w-full">
+            <ng-template pTemplate="item" let-item>
               <a
                 pRipple
-                class="flex align-items-center p-menuitem-link text-color"
+                class="flex align-items-center p-element p-menuitem-link"
                 [attr.id]="item.id"
                 [routerLink]="item.routerLink"
                 [href]="item.url"
@@ -40,12 +42,12 @@
                 }
                 <span class="ml-1">{{ item.label }}</span>
                 @if (item.shortcut) {
-                  <span class="ml-auto border-1 surface-border border-round surface-100 text-xs p-1">
+                  <span class="ml-auto border-1 surface-border border-round surface-100 text-sm px-2 py-1">
                     {{ item.shortcut }}
                 </span>
                 }
-                @if (hasSubmenu) {
-                  <i *ngIf="hasSubmenu" class="pi pi-angle-right ml-auto text-primary"></i>
+                @if (item.items) {
+                  <i class="pi pi-angle-right ml-auto text-primary"></i>
                 }
               </a>
             </ng-template>

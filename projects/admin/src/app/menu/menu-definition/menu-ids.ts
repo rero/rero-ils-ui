@@ -29,6 +29,7 @@ export const MENU_IDS = {
       CIRCULATION_POLICY: 'app-admin-circulation-policy',
       ITEM_TYPE: 'app-admin-item-type',
       LIBRARY: 'app-admin-library',
+      MIGRATION: 'app-admin-migration',
       MY_LIBRARY: 'app-admin-library',
       MY_ORGANISATION: 'app-admin-organisation',
       PATRON_TYPE: 'app-admin-patron-type',

@@ -460,9 +460,10 @@ export const MENU_APP: MenuItem[] = [
       },
       {
         name: 'Migrations',
-        router_link: ['/', 'migrations', 'records', 'migrations'],
-        attributes: { id: 'permissions-menu' },
-        extras: { iconClass: 'fa fa-cloud-upload' },
+        translateLabel: 'Migrations',
+        id: MENU_IDS.APP.ADMIN.MIGRATION,
+        icon: 'fa fa-cloud-upload',
+        routerLink: ['/', 'migrations', 'records', 'migrations'],
         access: {
           permissions: [PERMISSIONS.MIG_ACCESS]
         }
