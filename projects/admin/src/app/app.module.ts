@@ -55,7 +55,6 @@ import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.intercep
 import { UserCurrentLibraryInterceptor } from './interceptor/user-current-library.interceptor';
 import { MenuAppComponent } from './menu/menu-app/menu-app.component';
 import { MenuDashboardComponent } from './menu/menu-dashboard/menu-dashboard.component';
-import { MenuDisplayComponent } from './menu/menu-display/menu-display.component';
 import { MenuUserComponent } from './menu/menu-user/menu-user.component';
 import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
 import { ItemInCollectionPipe } from './pipe/item-in-collection.pipe';
@@ -334,7 +333,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     UploadFilesComponent,
     MenuAppComponent,
     MenuUserComponent,
-    MenuDisplayComponent,
     EntityAutocompleteComponent,
   ],
   imports: [

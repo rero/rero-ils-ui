@@ -14,4 +14,58 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<admin-menu-display [items]="items" />
+<p-menubar [model]="items" [autoHide]="true">
+  <ng-template pTemplate="item" let-item let-root="root">
+    @if (item.routerLink && !item.url) {
+      <span
+        pRipple
+        class="flex align-items-center p-element p-menuitem-link"
+        [id]="item.id"
+        [routerLink]="item.routerLink"
+        [queryParams]="item.queryParams"
+      >
+        @if (item.icon) {
+          <span [class]="item.icon" class="p-menuitem-icon"></span>
+        }
+        <span class="ml-2">{{ item.label }}</span>
+        @if (item.badge) {
+          <p-badge [ngClass]="{ 'ml-auto': !root, 'ml-2': root }" [value]="item.badge"></p-badge>
+        }
+        @if (item.shortcut) {
+          <span class="ml-auto border-1 surface-border border-round surface-100 text-sm px-2 py-1">{{ item.shortcut }}</span>
+        }
+      </span>
+    }
+    @if (item.url && !item.routerLink) {
+      <a
+        pRipple
+        class="flex align-items-center p-element p-menuitem-link"
+        [id]="item.id"
+        [href]="item.url"
+        [target]="item.target"
+      >
+        @if (item.icon) {
+          <span [class]="item.icon" class="p-menuitem-icon"></span>
+        }
+        <span class="ml-2">{{ item.label }}</span>
+        @if (item.badge) {
+          <p-badge [ngClass]="{ 'ml-auto': !root, 'ml-2': root }" [value]="item.badge"></p-badge>
+        }
+        @if (item.shortcut) {
+          <span class="ml-auto border-1 surface-border border-round surface-100 text-sm px-2 py-1">{{ item.shortcut }}</span>
+        }
+      </a>
+    }
+    @if (!item.url && !item.routerLink) {
+      <div class="p-menuitem-link">
+        @if (item.icon) {
+          <span [class]="item.icon" class="p-menuitem-icon"></span>
+        }
+        <span class="ml-2">{{ item.label }}</span>
+        @if (!item.disabled && item.items) {
+          <i [ngClass]="['pi pi-fw', root ? 'pi-angle-down ml-2' : 'pi-angle-right ml-auto']"></i>
+        }
+      </div>
+    }
+  </ng-template>
+</p-menubar>
