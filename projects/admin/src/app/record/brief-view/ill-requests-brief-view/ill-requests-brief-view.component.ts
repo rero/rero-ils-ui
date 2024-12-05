@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input, OnInit } from '@angular/core';
+import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
 import { RecordService, ResultItem } from '@rero/ng-core';
-import { ILLRequestStatus } from '../../../classes/ill-request';
 
 @Component({
   selector: 'admin-ill-requests-brief-view',
@@ -38,19 +38,7 @@ export class IllRequestsBriefViewComponent  implements ResultItem, OnInit {
   /** the requester of the ILL request */
   requester = null;
 
-  // GETTER FUNCTIONS ==========================================================
-  /** get the bootstrap color to apply on the request status badge */
-  get badgeColor(): string {
-    if (this.record) {
-      switch (this.record.metadata.status) {
-        case ILLRequestStatus.PENDING: return 'warning';
-        case ILLRequestStatus.VALIDATED: return 'success';
-        case ILLRequestStatus.DENIED: return 'danger';
-        default: return 'secondary';
-      }
-    }
-    return 'secondary';
-  }
+  tagSeverity: string;
 
   /** Init hook */
   ngOnInit() {
@@ -58,7 +46,7 @@ export class IllRequestsBriefViewComponent  implements ResultItem, OnInit {
       this.recordService.getRecord('patrons', this.record.metadata.patron.pid).subscribe(
         (patron) => this.requester = patron.metadata
       );
+      this.tagSeverity = getTagSeverityFromStatus(this.record.metadata.status);
     }
   }
-
 }
