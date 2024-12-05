@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="row py-2" [ngClass]="{'bg-light': (index % 2), 'bg-white': !(index %2) }">
+<div class="grid py-2">
   <div class="col-10">
     <i class="mr-1 fa"
        [ngClass]="{'fa-plus-square-o': isCollapsed === true, 'fa-minus-square-o': isCollapsed === false}"
@@ -24,19 +24,20 @@
     {{ permission.name }}
   </div>
   <div class="col-2 text-center">
-    <i class="fa fa-square" [ngClass]="{'text-success': permission.can, 'text-danger': !permission.can}"></i>
+    <i class="fa fa-square" [ngClass]="{'text-success': permission.can, 'text-error': !permission.can}"></i>
   </div>
-  <div id="reasons" class="col my-1 ml-5" [hidden]="isCollapsed">
-    <ul class="list-unstyled mb-0">
+  @if(!isCollapsed) {
+  <div id="reasons" class="col my-1 ml-5">
+    <ul class="list-none m-0 p-0">
       @for (role of permission.reasons | keyvalue; track role) {
         <li>
-          <div class="row">
+          <div class="grid">
             <div class="col-6">{{ role.key | translate }}</div>
             <div class="col">
               <i class="fa fa-square" [ngClass]="{
                  'text-success': role.value === true,
-                 'text-danger': role.value === false,
-                 'text-secondary': role.value === null
+                 'text-error': role.value === false,
+                 'text-color-secondary': role.value === null
               }"></i>
             </div>
           </div>
@@ -44,4 +45,5 @@
       }
     </ul>
   </div>
+}
 </div>

@@ -16,19 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export enum ROLES_BAGDE_COLOR {
-  patron = 'badge-primary',
-  pro_full_permissions = 'badge-danger',
-  pro_read_only = 'badge-secondary',
-  pro_catalog_manager = 'badge-success',
-  pro_circulation_manager = 'badge-warning',
-  pro_user_manager = 'badge-info',
-  pro_acquisition_manager = 'badge-light',
-  pro_library_administrator = 'badge-dark'
+export enum ROLES_TAG_SEVERITY {
+  patron = 'primary',
+  pro_full_permissions = 'danger',
+  pro_read_only = 'help',
+  pro_catalog_manager = 'success',
+  pro_circulation_manager = 'warning',
+  pro_user_manager = 'info',
+  pro_acquisition_manager = 'secondary',
+  pro_library_administrator = 'contrast'
 }
 
-export function roleBadgeColor(role: string): string {
-  return (role in ROLES_BAGDE_COLOR)
-    ? ROLES_BAGDE_COLOR[role]
-    : 'badge-light';
+export function roleTagSeverity(role: string): string {
+  return (role in ROLES_TAG_SEVERITY)
+    ? ROLES_TAG_SEVERITY[role]
+    : 'secondary';
 }
