@@ -16,22 +16,24 @@
 -->
 @if (record) {
   <h1>{{ 'ILL request' | translate }} #{{ record.metadata.pid }}</h1>
-  <div class="card mt-5">
-    <h6 class="card-header">
-      <i class="fa fa-book pr-2"></i>
-      {{ 'Document information' | translate }}
-    </h6>
+  <div class="flex flex-column gap-2">
     <!-- DOCUMENT INFORMATION'S -->
-    <div class="card-body">
+    <p-panel>
+      <ng-template pTemplate="header">
+        <h6>
+          <i class="fa fa-book"></i>&nbsp;
+          {{ 'Document information' | translate }}
+        </h6>
+      </ng-template>
       <h3>{{ record.metadata.document.title }}</h3>
-      <dl class="mt-2 row">
+      <dl class="metadata">
         @if (record.metadata.document.authors; as authors) {
-          <dt class="col-sm-5 col-md-3 col-lg-3 label-title" translate>Authors</dt>
-          <dd class="col-sm-6 col-md-8 col-lg-8 mb-1">{{ authors }}</dd>
+          <dt translate>Authors</dt>
+          <dd>{{ authors }}</dd>
         }
         @if (record.metadata.document.publisher || record.metadata.document.year) {
-          <dt class="col-sm-5 col-md-3 col-lg-3 label-title" translate>Edition</dt>
-          <dd class="col-sm-6 col-md-8 col-lg-8 mb-1">
+          <dt translate>Edition</dt>
+          <dd>
             @if (record.metadata.document.publisher; as publisher) {
               {{ publisher }}
             }
@@ -41,12 +43,12 @@
           </dd>
         }
         @if (record.metadata.document.identifier; as identifier) {
-          <dt class="col-sm-5 col-md-3 col-lg-3 label-title" translate>Identifiers</dt>
-          <dd class="col-sm-6 col-md-8 col-lg-8 mb-1">{{ identifier }}</dd>
+          <dt translate>Identifiers</dt>
+          <dd>{{ identifier }}</dd>
         }
         @if (record.metadata.document.source; as source) {
-          <dt class="col-sm-5 col-md-3 col-lg-3 offset-1 label-title" translate>Published in</dt>
-          <dd class="col-sm-6 col-md-8 col-lg-8 mb-1">
+          <dt translate>Published in</dt>
+          <dd>
             {{ source.journal_title }}
             @if (source.volume || source.number) {
               &nbsp;(@if (source.volume) { Vol.{{ source.volume }} }
@@ -56,82 +58,87 @@
           </dd>
         }
       </dl>
-    </div>
-  </div>
+  </p-panel>
 
   <!-- REQUEST ADDITIONAL DETAILS -->
-  <div class="card mt-3">
-    <h6 class="card-header">
-      <i class="fa fa-info-circle pr-2"></i>
-      {{ 'Request additional informations' | translate }}
-    </h6>
-    <div class="card-body">
-      <dl class="mt-2 row">
-        @if (record.metadata.found_in; as source) {
-          <dt class="col-sm-5 col-md-3 col-lg-3 label-title" translate>Found in</dt>
-          <dd class="col-sm-6 col-md-8 col-lg-8 mb-1">
-            {{ source.source }} &mdash; <a class="rero-ils-external-link" href="{{ source.url }}">{{ source.url }}</a>
-          </dd>
+  <p-panel>
+    <ng-template pTemplate="header">
+      <h6 class=>
+        <i class="fa fa-info-circle"></i>&nbsp;
+        {{ 'Request additional informations' | translate }}
+      </h6>
+    </ng-template>
+    <dl class="metadata">
+      @if (record.metadata.found_in; as source) {
+        <dt translate>Found in</dt>
+        <dd>
+          {{ source.source }} &mdash; <a class="rero-ils-external-link" href="{{ source.url }}">{{ source.url }}</a>
+        </dd>
+      }
+      <dt translate>Requester</dt>
+      <dd>
+        @if (requester && requester.patron && requester.patron.barcode[0]) {
+          <a [routerLink]="['/circulation', 'patron', requester.patron.barcode[0]]">
+            <span id="patron-last-name">{{ requester.last_name }}</span>
+            @if (requester.first_name; as firstName) {
+              <span id="patron-first-name">, {{ firstName }}</span>
+            }
+          </a>
         }
-        <dt class="col-sm-5 col-md-3 col-lg-3 label-title" translate>Requester</dt>
-        <dd class="col-sm-6 col-md-8 col-lg-8 mb-1">
-          @if (requester && requester.patron && requester.patron.barcode[0]) {
-            <a [routerLink]="['/circulation', 'patron', requester.patron.barcode[0]]">
-              <span id="patron-last-name">{{ requester.last_name }}</span>
-              @if (requester.first_name; as firstName) {
-                <span id="patron-first-name">, {{ firstName }}</span>
-              }
-            </a>
-          }
+      </dd>
+      <dt translate>Request date</dt>
+      <dd>{{ record.created | dateTranslate : 'medium' }}</dd>
+      <dt translate>Request status</dt>
+      <dd>
+        <p-tag [severity]="tagSeverity">
+          {{ record.metadata.status | translate }}
+        </p-tag>
+      </dd>
+      @if (record.metadata.loan_status) {
+        <dt translate>Loan status</dt>
+        <dd>
+          <p-tag [severity]="loanTagSeverity">
+            {{ record.metadata.loan_status | translate}}
+          </p-tag>
         </dd>
-        <dt class="col-sm-5 col-md-3 col-lg-3 label-title" translate>Request date</dt>
-        <dd class="col-sm-6 col-md-8 col-lg-8 mb-1">{{ record.created | dateTranslate : 'medium' }}</dd>
-        <dt class="col-sm-5 col-md-3 col-lg-3 label-title" translate>Request status</dt>
-        <dd class="col-sm-6 col-md-8 col-lg-8 mb-1">
-          <span class="badge badge-{{ badgeColor(record.metadata.status) }} px-2 py-1" translate>
-            {{ record.metadata.status }}
-          </span>
-        </dd>
-        <dt class="col-sm-5 col-md-3 col-lg-3 label-title" translate>Loan status</dt>
-        <dd class="col-sm-6 col-md-8 col-lg-8 mb-1">
-          <span class="badge badge-{{ badgeColor(record.metadata.loan_status) }} px-2 py-1" translate>
-            {{ record.metadata.loan_status || 'None' | translate }}
-          </span>
-        </dd>
-        <dt class="col-sm-5 col-md-3 col-lg-3 label-title" translate>Pickup location</dt>
-        <dd class="col-sm-6 col-md-8 col-lg-8 mb-1">
-          @if (record.metadata.pickup_location.pid | getRecord:'locations':'field':'ill_pickup_name' | async; as location_name) {
-            {{ location_name }}
-          }
-        </dd>
-        <dt class="col-sm-5 col-md-3 col-lg-3 label-title" translate>Scope</dt>
-        <dd class="col-sm-6 col-md-8 col-lg-8 mb-1">
-          @if (record.metadata.copy) {
-            <span translate>Copy</span>
-          } @else {
-            <span translate>Loan</span>
-          }
-        </dd>
+      }
+      <dt translate>Pickup location</dt>
+      <dd>
+        @if (record.metadata.pickup_location.pid | getRecord:'locations':'field':'ill_pickup_name' | async; as location_name) {
+          {{ location_name }}
+        }
+      </dd>
+      <dt translate>Scope</dt>
+      <dd>
         @if (record.metadata.copy) {
-          <dt class="col-sm-5 col-md-3 col-lg-3 label-title" translate>Pages</dt>
-          <dd class="col-sm-6 col-md-8 col-lg-8 mb-1">{{ record.metadata.pages }}</dd>
+          <span translate>Copy</span>
+        } @else {
+          <span translate>Loan</span>
         }
-      </dl>
-    </div>
-    <!-- NOTES :: public/staff -->
-    @if (record.metadata.notes) {
-      <div class="card-header">
-        <i class="fa fa-sticky-note-o pr-2"></i>
-        {{ 'Notes' | translate }}
-      </div>
-      <div class="card-body container">
-        <dl class="row mt-2">
+      </dd>
+      @if (record.metadata.copy) {
+        <dt translate>Pages</dt>
+        <dd>{{ record.metadata.pages }}</dd>
+      }
+    </dl>
+  </p-panel>
+
+  <!-- NOTES :: public/staff -->
+  @if (record.metadata.notes) {
+    <p-panel>
+      <ng-template pTemplate="header">
+        <h6 class=>
+          <i class="fa fa-sticky-note-o"></i>&nbsp;
+          {{ 'Notes' | translate }}
+        </h6>
+      </ng-template>
+        <dl class="metadata">
           @for (note of record.metadata.notes; track note) {
-            <dt class="col-sm-5 col-md-3 col-lg-3 label-title" translate>{{ note.type }}</dt>
-            <dd class="col-sm-6 col-md-8 col-lg-8 mb-1" [innerHTML]="note.content | nl2br"></dd>
+            <dt translate>{{ note.type }}</dt>
+            <dd [innerHTML]="note.content | nl2br"></dd>
           }
         </dl>
-      </div>
-    }
+    </p-panel>
+  }
   </div>
 }
