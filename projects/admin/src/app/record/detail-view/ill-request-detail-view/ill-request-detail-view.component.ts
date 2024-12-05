@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnInit } from '@angular/core';
+import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
 import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
-import { IllRequestsService } from '../../../service/ill-requests.service';
 
 @Component({
   selector: 'admin-ill-request-detail-view',
@@ -27,7 +27,6 @@ import { IllRequestsService } from '../../../service/ill-requests.service';
 export class IllRequestDetailViewComponent implements DetailRecord, OnInit {
 
   private recordService: RecordService = inject(RecordService);
-  private illRequestService: IllRequestsService = inject(IllRequestsService);
 
   // COMPONENT ATTRIBUTES =======================================================
   /** The observable resolving record data */
@@ -40,20 +39,18 @@ export class IllRequestDetailViewComponent implements DetailRecord, OnInit {
   /** the requester of the ILL request */
   requester = null;
 
+  tagSeverity: string;
+  loanTagSeverity: string;
+
   /** OnInit hook */
   ngOnInit(): void {
     this.record$.subscribe((record) => {
       this.record = record;
+      this.tagSeverity = getTagSeverityFromStatus(record.metadata.status);
+      this.loanTagSeverity = getTagSeverityFromStatus(record.metadata.loan_status);
       this.recordService.getRecord('patrons', this.record.metadata.patron.pid).subscribe(
         (patron) => this.requester = patron.metadata
       );
     });
   }
-
-  // FUNCTIONS =================================================================
-  /** get the bootstrap color to apply on the request status badge */
-  badgeColor(status: string): string {
-    return this.illRequestService.badgeColor(status);
-  }
-
 }

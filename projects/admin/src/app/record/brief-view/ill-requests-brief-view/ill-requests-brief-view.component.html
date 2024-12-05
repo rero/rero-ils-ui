@@ -16,18 +16,18 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record && requester) {
-  <span class="badge badge-{{ badgeColor }} float-right px-2 py-1" translate>{{ record.metadata.status }}</span>
-  <h5 class="mb-0">
+  <h5>
     <a [routerLink]="[detailUrl.link]">
       {{ record.metadata.document.title }}
     </a>
+    <p-tag [severity]="tagSeverity" [value]="record.metadata.status | translate" />
   </h5>
   @if (record.metadata.document.authors) {
-    <div class="small">{{ record.metadata.document.authors }}</div>
+    <div class="mb-2">{{ record.metadata.document.authors }}</div>
   }
-  <dl class="mt-2 row">
-    <dt class="col-sm-6 col-md-3 label-title" translate>Requested by</dt>
-    <dd class="col-sm-6 col-md-9 mb-0">
+  <dl class="metadata">
+    <dt translate>Requested by</dt>
+    <dd>
       @if (requester && requester.patron && requester.patron.barcode[0]) {
         <a [routerLink]="['/circulation', 'patron', requester.patron.barcode[0]]">
           <span id="patron-last-name">{{ requester.last_name }}</span>
@@ -37,7 +37,7 @@
         </a>
       }
     </dd>
-    <dt class="col-sm-6 col-md-3 label-title" translate>Request date</dt>
-    <dd class="col-sm-6 col-md-9 mb-0">{{ record.created | dateTranslate:'medium' }}</dd>
+    <dt translate>Request date</dt>
+    <dd>{{ record.created | dateTranslate:'medium' }}</dd>
   </dl>
 }

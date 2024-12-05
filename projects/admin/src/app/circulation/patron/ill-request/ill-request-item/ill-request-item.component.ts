@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
-import { IllRequestsService } from '@app/admin/service/ill-requests.service';
+import { Component, Input } from '@angular/core';
+import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
 
 @Component({
   selector: 'admin-ill-request-item',
@@ -24,8 +24,6 @@ import { IllRequestsService } from '@app/admin/service/ill-requests.service';
   styleUrls: ['../../../circulation.scss']
 })
 export class IllRequestItemComponent {
-
-  private illRequestService: IllRequestsService = inject(IllRequestsService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** ILL record. */
@@ -36,6 +34,6 @@ export class IllRequestItemComponent {
   // COMPONENT FUNCTIONS ======================================================
   /** get the bootstrap color to apply on the request status badge */
   badgeColor(status: string): string {
-    return this.illRequestService.badgeColor(status);
+    return getTagSeverityFromStatus(status) ;
   }
 }
