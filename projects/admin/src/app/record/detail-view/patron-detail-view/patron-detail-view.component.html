@@ -16,55 +16,61 @@
 -->
 
 @if (patron) {
+  <div class="py-2">
   <!-- BLOCKED OR NOT? -->
   @if (patron.patron && patron.patron.blocked) {
-    <div class="mt-3 alert alert-danger" role="alert">
-      <h4 class="alert-heading" translate>This patron is currently blocked</h4>
-      <hr/>
-      <p>{{ patron.patron.blocked_note }}</p>
-    </div>
+    <p-messages
+      [value]="[{ severity: 'error', summary: 'This patron is currently blocked' | translate, detail:  patron.patron.blocked_note}]"
+      [closable]="false"
+      [enableService]="false"
+      showTransitionOptions="0ms"
+    />
   }
 
-  <section id="contact-profile" class="container-fluid card p-0 mt-3">
+  <section id="contact-profile" class="flex flex-column gap-2">
     <!-- MAIN PROFILE SECTION ================================================== -->
-    <div class="card-body row">
-      <div class="col-2">
-        <div class="profile-image">
+    <div class="border-round border-1 surface-border flex gap-4 p-4">
+        <div class="surface-500 border-circle w-10rem h-10rem flex align-items-center justify-content-center">
           <i class="fa fa-user-o fa-4x text-white"></i>
         </div>
-      </div>
-      <div class="col-10">
+      <div class="flex-grow-1">
         <h1>
           {{ patron.last_name }} {{ patron.first_name }}
           @if (patron.patron) {
             <a
               [permissions]="permissions.CIRC_ADMIN"
               [routerLink]="['/circulation', 'patron', patron.patron.barcode[0]]"
-              class="btn-link btn btn-sm btn-outline-primary"
+              class="p-button p-button-outlined"
             >
-              <i class="fa fa-exchange mr-2"></i>
+              <i class="fa fa-exchange"></i>&nbsp;
               {{ 'Circulation' | translate }}
             </a>
           }
         </h1>
-        <dl class="row">
-          <dt class="col-1 text-right"><i class="fa fa-calendar-o"></i></dt>
-          <dt class="col-3" translate>Date of birth</dt>
-          <dd class="col-8">{{ patron.birth_date | dateTranslate:'mediumDate' }}</dd>
+        <dl class="metadata">
+          <dt>
+            <i class="fa fa-calendar-o"></i>&nbsp;
+            {{ 'Date of birth' | translate}}
+          </dt>
+          <dd>{{ patron.birth_date | dateTranslate:'mediumDate' }}</dd>
           @if (patron.email) {
-              <dt class="col-1 text-right"><i class="fa fa-envelope"></i></dt>
-              <dt class="col-3" translate>Email</dt>
-              <dd class="col-8">{{ patron.email }}</dd>
+              <dt>
+                <i class="fa fa-envelope"></i>&nbsp;
+                {{ 'Email' | translate }}
+              </dt>
+              <dd>{{ patron.email }}</dd>
           }
           @if (phones; as patronPhones) {
             @if (patronPhones.length > 0) {
-              <dt class="col-1 text-right"><i class="fa fa-phone"></i></dt>
-              <dt class="col-3" translate>{{ patronPhones.length | i18nPlural: {'=1': 'Phone', 'other': 'Phones'} }}</dt>
-              <dd class="col-8">
-                <ul class="list-unstyled m-0">
+              <dt>
+                <i class="fa fa-phone"></i>&nbsp;
+                {{ patronPhones.length | i18nPlural: {'=1': 'Phone' | translate, 'other': 'Phones' | translate} }}
+              </dt>
+              <dd>
+                <ul class="list-none m-0 p-0">
                   @for (phone of patronPhones; track phone) {
                     <li>
-                      {{ phone.value }} <span class="metadata" translate>{{ phone.type }}</span>
+                      {{ phone.value }} <span class="font-bold text-color-secondary lowercase" >({{ phone.type | translate }})</span>
                     </li>
                   }
                 </ul>
@@ -72,9 +78,11 @@
             }
           }
           @if (patron.street || patron.postal_code || patron.city || patron.country) {
-            <dt class="col-1 text-right"><i class="fa fa-home"></i></dt>
-            <dt class="col-3" translate>Address</dt>
-            <dd class="col-8">
+            <dt>
+              <i class="fa fa-home"></i>&nbsp;
+              {{ 'Address' | translate }}
+            </dt>
+            <dd>
               @if (patron.street) {
                 {{ patron.street }}<br/>
               }
@@ -89,81 +97,87 @@
         </dl>
       </div>
     </div>
-    <!-- NOTES ================================================================= -->
-    @if (patron.notes && patron.notes.length > 0) {
-      <div class="card-header">
-        <button type="button" class="btn-show-more"
-                [ngClass]="{'btn-expanded': !sectionCollapsed.notes, 'btn-collapsed': sectionCollapsed.notes}"
-                (click)="sectionCollapsed.notes = !sectionCollapsed.notes"
-                [attr.aria-expanded]="!sectionCollapsed.notes" aria-controls="collapse">
-        </button>
-        {{ patron.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} | translate }}
-        @if (sectionCollapsed.notes) {
-          <span class="badge badge-secondary ml-2">{{ patron.notes.length }}</span>
+
+    <div class="border-round border-1 surface-border flex gap-4 p-4">
+    <p-accordion class="flex-grow-1" [activeIndex]="[0, 1]" [multiple]="true">
+      <!-- NOTES ================================================================= -->
+      @if (patron.notes && patron.notes.length > 0) {
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <h5>
+            {{ patron.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} | translate }}
+          </h5>
+        </ng-template>
+          @for (note of patron.notes; track note) {
+            <dl class="metadata">
+              <dt translate>
+                {{ note.type }}
+              </dt>
+              <dd [innerHTML]="note.content | nl2br"></dd>
+            </dl>
+          }
+        </p-accordionTab>
         }
-      </div>
-      <div class="card-body py-2" [hidden]="sectionCollapsed.notes">
-        @for (note of patron.notes; track note) {
-          <div class="row note">
-            <div class="col-2"><span class="badge {{ getNoteBadgeColor(note.type) }}">{{ note.type | translate }}</span></div>
-            <blockquote class="col" [innerHTML]="note.content | nl2br"></blockquote>
-          </div>
-        }
-      </div>
-    }
-    <!-- USER INFORMATION'S SECTION ============================================= -->
-    <div class="card-header">
-      <button type="button" class="btn-show-more"
-              [ngClass]="{'btn-expanded': !sectionCollapsed.user, 'btn-collapsed': sectionCollapsed.user}"
-              (click)="sectionCollapsed.user = !sectionCollapsed.user"
-              [attr.aria-expanded]="!sectionCollapsed.user" aria-controls="collapse">
-      </button>
-      {{ 'User informations' | translate }}
-    </div>
-    <dl class="card-body row" [hidden]="sectionCollapsed.user">
-      <dt class="col-1 text-right"><i class="fa fa-user"></i></dt>
-      <dt class="col-3" translate>Username</dt>
-      <dd class="col-8">{{ patron.username }}</dd>
-      <dt class="col-1 text-right"><i class="fa fa-history"></i></dt>
-      <dt class="col-3" translate>Keep history</dt>
-      <dd class="col-8">
-        <i class="fa" [ngClass]="patron.keep_history ? 'fa-check text-success' : 'fa-times text-danger'" aria-hidden="true"></i>
-      </dd>
-      <dt class="col-3 offset-1" translate>{{ patron.roles | i18nPlural: {'=1': 'Role', 'other': 'Roles'} }}</dt>
-      <dd class="col-8">
-        @for (role of patron.roles; track role) {
-          <small class="badge mr-2" [class]="getRoleBadgeColor(role)">
-            {{ role | translate }}
-          </small>
-        }
-      </dd>
-      <dt class="col-3 offset-1" translate>Creation date</dt>
-      <dd class="col-8">{{ record.created | dateTranslate: 'mediumDate' }}</dd>
-    </dl>
+        <!-- USER INFORMATION'S SECTION ============================================= -->
+        <p-accordionTab>
+          <ng-template pTemplate="header">
+            <h4 translate>User informations</h4>
+          </ng-template>
+
+          <dl class="metadata">
+            <dt>
+              <i class="fa fa-user"></i>&nbsp;
+              {{ 'Username' | translate }}
+            </dt>
+            <dd>{{ patron.username }}</dd>
+            <dt>
+              <i class="fa fa-history"></i>&nbsp;
+              {{ 'Keep history' }}
+            </dt>
+            <dd>
+              <i class="fa" [ngClass]="patron.keep_history ? 'fa-check text-success' : 'fa-times text-error'"></i>
+            </dd>
+            <dt translate>{{ patron.roles | i18nPlural: {'=1': 'Role', 'other': 'Roles'} }}</dt>
+            <dd class="flex gap-2 flex-wrap">
+              @for (role of patron.roles; track role) {
+                <p-tag [severity]="getroleTagSeverity(role)">
+                  {{ role | translate }}
+                </p-tag>
+              }
+            </dd>
+            <dt translate>Creation date</dt>
+            <dd>{{ record.created | dateTranslate: 'mediumDate' }}</dd>
+          </dl>
+          </p-accordionTab>
+
     <!-- PATRON INFORMATION'S SECTION =========================================== -->
     @if (patron.patron) {
-      <div class="card-header">
-        <button type="button" class="btn-show-more"
-                [ngClass]="{'btn-expanded': !sectionCollapsed.patron, 'btn-collapsed': sectionCollapsed.patron}"
-                (click)="sectionCollapsed.patron = !sectionCollapsed.patron"
-                [attr.aria-expanded]="!sectionCollapsed.patron" aria-controls="collapse">
-        </button>
-        {{ 'Patron Information' | translate }}
-      </div>
-      <dl class="card-body row" [hidden]="sectionCollapsed.patron">
-        <dt class="col-1 text-right"><i class="fa fa-barcode"></i></dt>
-        <dt class="col-3" translate>Barcode</dt>
-        <dd class="col-8">
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <h4 translate>Patron information</h4>
+      </ng-template>
+      <dl class="metadata">
+        <dt>
+          <i class="fa fa-barcode"></i>&nbsp;
+          {{ 'Barcode' | translate }}
+        </dt>
+        <dd>
           <a [routerLink]="['/circulation', 'patron', patron.patron.barcode[0]]" [linkPermissions]="permissions.CIRC_ADMIN">{{ patron.patron.barcode | join: ', ' }}</a>
         </dd>
-        <dt class="col-3 offset-1" translate>Type</dt>
-        <dd class="col-8">{{ patron.patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}</dd>
-        <dt class="col-3 offset-1" translate>Account expiration</dt>
-        <dd class="col-8">{{ patron.patron.expiration_date | dateTranslate:'mediumDate' }}</dd>
+        <dt translate>Type</dt>
+        <dd>
+          {{ patron.patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
+        </dd>
+        <dt translate>Account expiration</dt>
+        <dd>
+          {{ patron.patron.expiration_date | dateTranslate:'mediumDate' }}
+        </dd>
         @if (patron.patron.libraries && patron.patron.libraries.length > 0) {
-          <dt class="col-1 text-right"><i class="fa fa-university"></i></dt>
-          <dt class="col-3" translate>Affiliation libraries</dt>
-          <ul class="col-8 list-unstyled">
+          <dt>
+            <i class="fa fa-university"></i>&nbsp;
+            {{ 'Affiliation libraries' | translate }}
+          </dt>
+          <ul class="list-none m-0 p-0">
             @for (library of patron.patron.libraries; track library) {
               <li>
                 {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
@@ -172,17 +186,19 @@
           </ul>
         }
         @if (patron.source) {
-          <dt class="col-3 offset-1" translate>Source</dt>
-          <dd class="col-8">{{ patron.source }}</dd>
+          <dt translate>Source</dt>
+          <dd>{{ patron.source }}</dd>
         }
         @if (patron.local_codes) {
-          <dt class="col-3 offset-1" translate>Local code</dt>
-          <dd class="col-8">{{ patron.local_codes | join: ',' }}</dd>
+          <dt translate>Local code</dt>
+          <dd>{{ patron.local_codes | join: ',' }}</dd>
         }
         @if (patron.second_address) {
-          <dt class="col-1 text-right"><i class="fa fa-home"></i> </dt>
-          <dt class="col-3" translate>Second address</dt>
-          <dd class="col-8">
+          <dt>
+            <i class="fa fa-home"></i>&nbsp;
+            {{ 'Second address' | translate }}
+          </dt>
+          <dd>
             @if (patron.second_address.street) {
               {{ patron.second_address.street }}<br/>
             }
@@ -195,48 +211,44 @@
           </dd>
         }
       </dl>
-    }
+    </p-accordionTab>
+  }
     <!-- LIBRARIAN INFORMATION'S SECTION ======================================== -->
+
     @if (patron.libraries?.length > 0) {
-      <div class="card-header">
-        <button type="button" class="btn-show-more"
-                [ngClass]="{'btn-expanded': !sectionCollapsed.librarian, 'btn-collapsed': sectionCollapsed.librarian}"
-                (click)="sectionCollapsed.librarian = !sectionCollapsed.librarian"
-                [attr.aria-expanded]="!sectionCollapsed.librarian" aria-controls="collapse">
-        </button>
-        {{ 'Librarian Information' | translate }}
-      </div>
-      <dl class="card-body row" [hidden]="sectionCollapsed.librarian">
-        <dt class="col-1 text-right"><i class="fa fa-university"></i></dt>
-        <dt class="col-3" translate>{{ patron.libraries.length | i18nPlural: {'=1': 'Library', 'other': 'Libraries'} }}</dt>
-        <ul class="col-8 list-unstyled">
-          @for (library of patron.libraries; track library) {
-            <li>
-              {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
-            </li>
-          }
-        </ul>
-      </dl>
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <h4 translate>Librarian information</h4>
+        </ng-template>
+        <dl class="metadata">
+          <dt>
+            <i class="fa fa-university"></i>&nbsp;
+            {{ patron.libraries.length | i18nPlural: {'=1': 'Library' | translate, 'other': 'Libraries' | translate} }}
+          </dt>
+          <dd>
+          <ul class="list-none p-0 m-0">
+            @for (library of patron.libraries; track library) {
+              <li>
+                {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+              </li>
+            }
+          </ul>
+        </dd>
+        </dl>
+      </p-accordionTab>
     }
 
     <!-- PERMISSIONS ======================================== -->
     @if (canAccessDisplayPermissions) {
-      <div class="card-header">
-        <button type="button" class="btn-show-more"
-                [ngClass]="{'btn-expanded': !sectionCollapsed.permissions, 'btn-collapsed': sectionCollapsed.permissions}"
-                (click)="sectionCollapsed.permissions = !sectionCollapsed.permissions"
-                [attr.aria-expanded]="!sectionCollapsed.permissions" aria-controls="collapse">
-        </button>
-        {{ 'Permissions' | translate }}
-      </div>
-      <div class="card-body" [hidden]="sectionCollapsed.permissions">
-        <admin-patron-permissions [hidden]="sectionCollapsed.permissions" [pid]="patron.pid"></admin-patron-permissions>
-      </div>
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <h4 translate>Permissions</h4>
+        </ng-template>
+        <admin-patron-permissions [hidden]="false" [pid]="patron.pid"></admin-patron-permissions>
+      </p-accordionTab>
     }
+    </p-accordion>
+    </div>
   </section>
-
-  <!-- OPERATION LOGS-->
-  @if (isEnabledOperationLog) {
-    <admin-operation-logs resourceType="patrons" [resourcePid]="patron.pid"></admin-operation-logs>
-  }
+  </div>
 }

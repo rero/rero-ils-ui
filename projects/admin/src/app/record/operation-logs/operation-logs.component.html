@@ -30,9 +30,9 @@
           </ng-container>
         }
         @if (isLinkShowMore) {
-          <button type="button" class="btn btn-link pl-1" (click)="showMore()">
+          <p-button [link]="true" (click)="showMore()">
             <i class="fa fa-arrow-circle-o-down"></i> {{ 'Show more' | translate }}
-          </button>
+          </p-button>
           @if (isLinkShowMore) {
             <small>({{ hiddenOperationLogs }})</small>
           }
