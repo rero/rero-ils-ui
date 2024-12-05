@@ -19,8 +19,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { IPermissions, PERMISSIONS, PermissionsService } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
-import { OperationLogsService } from '../../../service/operation-logs.service';
-import { roleBadgeColor } from '../../../utils/roles';
+import { roleTagSeverity } from '../../../utils/roles';
 
 interface PatronPhone {
   value: string;
@@ -30,12 +29,10 @@ interface PatronPhone {
 
 @Component({
   selector: 'admin-patron-detail-view',
-  templateUrl: './patron-detail-view.component.html',
-  styleUrls: ['./patron-detail-view.component.scss'],
+  templateUrl: './patron-detail-view.component.html'
 })
 export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestroy {
 
-  private operationLogsService: OperationLogsService = inject(OperationLogsService);
   private permissionsService: PermissionsService = inject(PermissionsService);
 
   // COMPONENT ATTRIBUTES =====================================================
@@ -62,12 +59,6 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
 
   /** Subscription to (un)follow the record$ Observable */
   private subscription$ = new Subscription();
-
-  // GETTER AND SETTER ========================================================
-  /** Is operation log enabled */
-  get isEnabledOperationLog(): boolean {
-    return this.operationLogsService.isLogVisible('patrons');
-  }
 
   permissions: IPermissions = PERMISSIONS;
 
@@ -96,8 +87,8 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
    * @param role: the role to check.
    * @return the bootstrap badge class to use for this role.
    */
-  getRoleBadgeColor(role: string): string {
-    return roleBadgeColor(role);
+  getroleTagSeverity(role: string): string {
+    return roleTagSeverity(role);
   }
 
   /** Get the badge color to use for a note type
@@ -105,9 +96,9 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
    */
   getNoteBadgeColor(noteType: string): string {
     switch (noteType) {
-      case 'public_note': return 'badge-info';
-      case 'staff_note': return 'badge-warning';
-      default: return 'badge-secondary';
+      case 'public_note': return 'info';
+      case 'staff_note': return 'warning';
+      default: return 'secondary';
     }
   }
 

@@ -27,8 +27,6 @@ export class PatronPermissionComponent {
   // COMPONENT ATTRIBUTES =====================================================
   /** User permission */
   @Input() permission: IPatronPermission;
-  /** Index of permission */
-  @Input() index: number;
   /** Hide reasons */
   isCollapsed: boolean = true;
 }

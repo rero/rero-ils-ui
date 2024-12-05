@@ -15,15 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 import { PERMISSIONS, PermissionsService } from '@rero/shared';
-import { roleBadgeColor } from '../../../utils/roles';
+import { roleTagSeverity } from '../../../utils/roles';
 
 @Component({
   selector: 'admin-patrons-brief-view',
-  templateUrl: './patrons-brief-view.component.html',
-  styleUrls: ['./patrons-brief-view.component.scss']
+  templateUrl: './patrons-brief-view.component.html'
 })
 export class PatronsBriefViewComponent implements ResultItem {
 
@@ -49,7 +48,7 @@ export class PatronsBriefViewComponent implements ResultItem {
    * @param role: the role to check.
    * @return the bootstrap badge class to use for this role.
    */
-  getRoleBadgeColor(role: string): string {
-    return roleBadgeColor(role);
+  getRoleTagSeverity(role: string): string {
+    return roleTagSeverity(role);
   }
 }

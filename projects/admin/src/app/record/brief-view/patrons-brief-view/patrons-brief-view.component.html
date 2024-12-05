@@ -16,38 +16,37 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  <div
-    [attr.id]="record.metadata.pid | idAttribute : {'prefix': 'patron', 'suffix': 'brief-view'}"
-    class="patron-brief brief-view"
-  >
-    <h5 class="card-title">
-      <a [routerLink]="[detailUrl.link]">
-        {{ record.metadata.last_name }}
-        @if (record.metadata.first_name) {
-          {{ record.metadata.first_name }}
-        }
-      </a>
+  <div class="flex flex-column gap-2">
+    <div class="flex">
+      <h5 class="flex-grow-1">
+        <a [routerLink]="[detailUrl.link]">
+          {{ record.metadata.last_name }}
+          @if (record.metadata.first_name) {
+            {{ record.metadata.first_name }}
+          }
+        </a>
+      </h5>
       @if (circulationAccess && record.metadata.patron) {
-        <div class="action-buttons">
-          <a
-            [routerLink]="['/circulation', 'patron', record.metadata.patron.barcode[0]]"
-            class="btn-link btn btn-sm btn-outline-primary"
-          >
-            <i class="fa fa-exchange mr-2"></i>
-            {{ 'Circulation' | translate }}
-          </a>
-        </div>
+        <a
+          [routerLink]="['/circulation', 'patron', record.metadata.patron.barcode[0]]"
+          class="p-button  p-button-outlined"
+        >
+          <i class="fa fa-exchange"></i>&nbsp;
+          {{ 'Circulation' | translate }}
+        </a>
       }
-    </h5>
-    <div class="card-text">
-    <p>
-      @for (role of record.metadata.roles; track role) {
-        <small class="badge badge-pill mr-1" [class]="getRoleBadgeColor(role)">
-          {{ role | translate }}
-        </small>
-      }
-    </p>
-    <p>{{ record.metadata.birth_date | dateTranslate:'mediumDate' }} &mdash; {{ record.metadata.city }}</p>
     </div>
+
+    <div class="flex gap-1 flex-wrap">
+      @for (role of record.metadata.roles; track role) {
+        <p-tag [severity]="getRoleTagSeverity(role)">
+          {{ role | translate }}
+        </p-tag>
+      }
+    </div>
+
+    <span>
+      {{ record.metadata.birth_date | dateTranslate:'mediumDate' }} &mdash; {{ record.metadata.city }}
+    </span>
   </div>
 }

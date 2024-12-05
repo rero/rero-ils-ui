@@ -16,18 +16,23 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @defer (when permissions.length > 0) {
-  <div class="my-2">
+  <div class="flex flex-column gap-2">
     <label for="filter" translate>Filter permission list</label>
-    <input id="filter" class="form-control" #search (keyup)="filterPermissions(search.value)" />
-    <small id="filterInfo" class="form-text text-muted" translate>Enter a part of the permission name to filter the list.</small>
+    <input
+        pInputText
+        #search
+        id="filter"
+        (keyup)="filterPermissions(search.value)"
+    />
+    <small id="filterInfo" class="form-text text-color-secondary" translate>Enter a part of the permission name to filter the list.</small>
   </div>
-  <div class="row mt-3 mb-2">
-    <div class="col-10 font-weight-bold text-uppercase" translate>Permission</div>
-    <div class="col-2 font-weight-bold text-center text-uppercase" translate>Access</div>
+  <div class="grid mt-3 mb-2">
+    <div class="col-10 font-bold uppercase" translate>Permission</div>
+    <div class="col-2 font-bold text-center uppercase" translate>Access</div>
   </div>
-  <div>
-    @for (permission of filteredPermissions; track permission; let index = $index) {
-      <admin-patron-permission [permission]="permission" [index]="index"></admin-patron-permission>
+  <div class="alternate-color">
+    @for (permission of filteredPermissions; track permission) {
+      <admin-patron-permission [permission]="permission" />
     }
   </div>
 } @placeholder {
