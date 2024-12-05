@@ -14,26 +14,31 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section class="content">
-  @if (loans && loans.length > 0) {
-    <div>
-      <!-- HEADER -->
-      <div class="row p-2 mb-1 bg-dark rounded text-light row">
+@defer(when loans) {
+  <p-card class="p-card-body-p-0">
+    <ng-template pTemplate="header">
+      <div class="grid grid-nogutter p-3 m-1 text-lg font-bold align-items-center border-bottom-1 surface-border">
         <div class="col-2" translate>Item</div>
         <div class="col-4" translate>Title</div>
         <div class="col-3" translate>Pickup location</div>
         <div class="col-2" translate>To pick-up until</div>
-        <div class="col-1">&nbsp;</div>
       </div>
-      @for (loan of loans; track loan) {
-        <admin-pickup-item
-          [loan]="loan"
-          class="row p-2 mb-1 border rounded align-middle"
-          (cancelRequestEvent)="cancelRequest($event)"
-        />
-      }
-    </div>
-  } @else {
-    {{ 'No items' | translate }}
-  }
-</section>
+    </ng-template>
+    @if (loans.length > 0) {
+      <div class="alternate-color">
+        @for (loan of loans; track loan) {
+          <admin-pickup-item
+            [loan]="loan"
+            (cancelRequestEvent)="cancelRequest($event)"
+          />
+        }
+      </div>
+    } @else {
+      <div class="mx-3 my-4 font-bold" translate>
+        No items
+      </div>
+    }
+  </p-card>
+} @placeholder {
+  <div class="font-bold mx-2 my-4" translate>Loading in progress</div>
+}

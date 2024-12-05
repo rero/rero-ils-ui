@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020-2024 RERO
+  Copyright (C) 2020-2025 RERO
   Copyright (C) 2020-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -16,50 +16,54 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <form [formGroup]="formGroup" (ngSubmit)="onSubmitForm()">
-  <div class="form-group">
+  <div class="flex flex-column gap-2">
     <p-calendar
+      appendTo="body"
       id="end-date"
       appendTo="body"
       formControlName="endDate"
+      styleClass="w-full"
       [showIcon]="true"
       [iconDisplay]="'input'"
       firstDayOfWeek="1"
-      [ngClass]="{'is-invalid': formGroup.controls.endDate.touched && formGroup.controls.endDate.invalid}"
+      [ngClass]="{'border-warning': formGroup.controls.endDate.touched && formGroup.controls.endDate.invalid}"
       [readonlyInput]="true"
       [disabledDays]="disabledDays"
       [minDate]="today"
     />
-    @if (formGroup.controls.endDate.valid || !formGroup.controls.endDate.touched) {
-      <small class="form-text text-warning">
-        <i class="fa fa-exclamation-triangle pr-1"></i>
-        {{ 'This date will override the circulation policy behavior' | translate }}
-      </small>
-    }
-    @if (formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('required')) {
-      <ng-container [ngTemplateOutlet]="errorMessage"
-                    [ngTemplateOutletContext]="{message: 'The field is required' | translate}">
-      </ng-container>
-    }
-    @if (formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('minimum-date')) {
-      <ng-container [ngTemplateOutlet]="errorMessage"
-                    [ngTemplateOutletContext]="{message: 'Selected date cannot be in the past.' | translate}">
-      </ng-container>
-    }
+    <div>
+      @if (formGroup.controls.endDate.valid || !formGroup.controls.endDate.touched) {
+        <span class="text-warning flex gap-1">
+          <i class="fa fa-exclamation-triangle"></i>
+          {{ 'This date will override the circulation policy behavior' | translate }}
+        </span>
+      }
+      @if (formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('required')) {
+        <ng-container [ngTemplateOutlet]="errorMessage"
+                      [ngTemplateOutletContext]="{message: 'The field is required' | translate}">
+        </ng-container>
+      }
+      @if (formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('minimum-date')) {
+        <ng-container [ngTemplateOutlet]="errorMessage"
+                      [ngTemplateOutletContext]="{message: 'Selected date cannot be in the past.' | translate}">
+        </ng-container>
+      }
+    </div>
+    <div class="flex gap-1">
+      <p-checkbox [binary]="true" inputId="remember" formControlName="remember" />
+      <label for="remember" translate>Remember this date in current session</label>
+    </div>
   </div>
-  <div class="form-group form-check">
-    <input type="checkbox" class="form-check-input" id="remember" formControlName="remember">
-    <label class="form-check-label" for="remember" translate>Remember this date in current session</label>
-  </div>
-  {{ formGroup.controls.endDate['errorMessages'] | json }}
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-danger" (click)="closeModal()" translate>Cancel</button>
-    <button type="submit" class="btn btn-primary" [disabled]="this.formGroup.invalid" translate>Apply</button>
+
+  <div class="mt-3 flex gap-1 justify-content-end">
+    <p-button [label]="'Cancel' |translate" severity="danger" outlined (onClick)="closeModal()" />
+    <p-button type="submit" [label]="'Apply' |translate" [disabled]="this.formGroup.invalid" />
   </div>
 </form>
 
 <ng-template #errorMessage let-message='message'>
-  <small class="form-text text-danger">
-    <i class="fa fa-times-circle pr-1"></i>
+  <span class="text-error flex gap-1">
+    <i class="fa fa-times-circle"></i>
     {{ message }}
-  </small>
+  </span>
 </ng-template>

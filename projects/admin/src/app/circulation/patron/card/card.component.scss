@@ -29,3 +29,7 @@
     visibility: hidden;
   }
 }
+
+.p-message {
+  @extend .mt-0;
+}

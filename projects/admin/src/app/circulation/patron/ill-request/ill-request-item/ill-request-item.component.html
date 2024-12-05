@@ -15,9 +15,9 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="row item">
+<div class="grid grid-nogutter p-2">
   <!-- MAIN ROW :: title, authors, status and action buttons ============== -->
-  <div class="col-4 d-flex">
+  <div class="col-4 flex gap-1">
     <shared-open-close-button (status)="isCollapsed = $event" />
     <div>
       {{ record.metadata.document.title }}
@@ -39,35 +39,35 @@
   </div>
   <!-- DETAIL ROWS :: collapsible detail information's -->
   @if (!isCollapsed) {
-    <div name="collapsed-details" class="col-12 mt-2">
-      <dl class="row">
+    <div class="col">
+      <dl class="metadata">
         <!-- PUBLISHER -->
         @if (record.metadata.document.publisher) {
-          <dt class="offset-1 col-1 label-title" translate>Publisher</dt>
-          <dd class="col-10 mb-0">{{ record.metadata.document.publisher }}</dd>
+          <dt translate>Publisher</dt>
+          <dd>{{ record.metadata.document.publisher }}</dd>
         }
         <!-- YEAR -->
         @if (record.metadata.document.year) {
-          <dt class="offset-1 col-1 label-title" translate>Year</dt>
-          <dd class="col-10 mb-0">{{ record.metadata.document.year }}</dd>
+          <dt translate>Year</dt>
+          <dd>{{ record.metadata.document.year }}</dd>
         }
         <!-- IDENTIFIER -->
         @if (record.metadata.document.identifier) {
-          <dt class="offset-1 col-1 label-title" translate>Identifier</dt>
-          <dd class="col-10 mb-0">{{ record.metadata.document.identifier }}</dd>
+          <dt translate>Identifier</dt>
+          <dd>{{ record.metadata.document.identifier }}</dd>
         }
         <!-- SOURCE -->
         @if (record.metadata.document.source) {
-          <dt class="offset-1 col-1 label-title" translate>Source</dt>
-          <dd class="col-10 mb-0">
+          <dt translate>Source</dt>
+          <dd>
             @if (record.metadata.document.source.volume || record.metadata.document.source.number) {
               {{ record.metadata.document.source | journalVolume }}
             }
           </dd>
         }
         <!-- SCOPE -->
-        <dt class="offset-1 col-1 label-title" translate>Scope</dt>
-        <dd class="col-10 mb-0">
+        <dt translate>Scope</dt>
+        <dd>
           @if (record.metadata.copy) {
             {{ 'Copy' | translate }}
           } @else {
@@ -76,33 +76,31 @@
         </dd>
         <!-- PAGES -->
         @if (record.metadata.copy && record.metadata.pages) {
-          <dt class="offset-1 col-1 label-title" translate>Pages</dt>
-          <dd class="col-10 mb-0">{{ record.metadata.pages }}</dd>
+          <dt translate>Pages</dt>
+          <dd>{{ record.metadata.pages }}</dd>
         }
         <!-- FOUND IN -->
         @if (record.metadata.found_in) {
-          <dt class="offset-1 col-1 label-title" translate>Found in</dt>
-          <dd class="col-10 mb-0">
+          <dt translate>Found in</dt>
+          <dd>
             <a href="{{ record.metadata.found_in.url }}">{{ record.metadata.found_in.url }}</a>
             <p-tag class="ml-2" severity="secondary" [value]="record.metadata.found_in.source" />
           </dd>
         }
         <!-- STATUS -->
-        <dt class="offset-1 col-1 label-title" translate>Request status</dt>
-        <dd class="col-10 mb-0">
+        <dt translate>Request status</dt>
+        <dd>
           <p-tag [severity]="badgeColor(record.metadata.status)" [value]="record.metadata.status|translate" />
         </dd>
         <!-- NOTES -->
         @if (record.metadata.notes && record.metadata.notes.length > 0) {
-          <dt class="offset-1 col-1 label-title" translate>Note</dt>
-          <dd class="col-10 mb-0">
-            <blockquote>
-              <ul class="list-unstyled">
-                @for (note of record.metadata.notes; track note) {
-                  <li [innerHTML]="note.content | nl2br"></li>
-                }
-              </ul>
-            </blockquote>
+          <dt translate>Note</dt>
+          <dd>
+            <ul class="list-none p-0 m-0">
+              @for (note of record.metadata.notes; track note) {
+                <li [innerHTML]="note.content | nl2br"></li>
+              }
+            </ul>
           </dd>
         }
       </dl>

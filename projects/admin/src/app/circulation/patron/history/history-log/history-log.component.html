@@ -14,10 +14,10 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="col" *ngVar="log.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document">
+<div *ngVar="log.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document">
   <!-- Basic loan information's -->
-  <div class="row">
-    <div class="col-sm-6 position-relative">
+  <div class="grid grid-nogutter p-2">
+    <div class="col-6 flex gap-2">
       <shared-open-close-button (status)="isCollapsed = $event; loadCheckout()" />
       @if (document) {
         <a [routerLink]="['/records','documents','detail', log.metadata.loan.item.document.pid]">
@@ -27,25 +27,23 @@
         {{ log.metadata.loan.item.document.title }}
       }
       @if (log.metadata.loan.item.enumerationAndChronology) {
-        <span class="badge badge-info">{{ log.metadata.loan.item.enumerationAndChronology }}</span>
+        <p-tag severity="info" [value]="log.metadata.loan.item.enumerationAndChronology" />
       }
     </div>
-    <div class="col-sm-4">
+    <div class="col-4">
       @if (document?.metadata?.contribution && document.metadata.contribution.length > 0) {
         <shared-contribution [contributions]="document.metadata.contribution" [limitRecord]="3" />
-      } @else {
-        &nbsp;
       }
     </div>
-    <div class="col-sm-2">
+    <div class="col-2">
       {{ log.metadata.date | dateTranslate: 'short' }}
     </div>
   </div>
   <!-- Transaction history check-in / checkout -->
   @if (!isCollapsed) {
-    <div class="mt-1">
+    <div class="m-2">
       @if (log.metadata.loan.item.pid | getRecord:'items' | async; as item) {
-        <div class="row">
+        <div class="grid">
           <div class="col-2 font-weight-bold" translate>Item</div>
           <div class="col-10">
             <a [routerLink]="['/records', 'items', 'detail', $any(item).metadata.pid]">
@@ -63,50 +61,44 @@
         </div>
       }
       <h6 class="mt-2" translate>Transaction history</h6>
-      <section class="col events-timeline">
-        <!-- check-in event -->
-        <div class="row pl-2 pr-2 align-items-start timeline-event">
-          <div class="col-lg-2 pr-4 text-right event-timestamp">
-            <i class="fa fa-calendar-o"></i> {{ log.metadata.date | dateTranslate: 'short' }}
-          </div>
-          <div class="col-lg-10 event-content">
-            <div class="row">
-              <div class="col-3 pl-3">
-                <i class="fa fa-angle-double-left text-success pr-2"></i>
-                {{ 'Checkin' | translate }}
-              </div>
-              <div class="col-9">
-                <ng-container
-                  [ngTemplateOutlet]="logLibrary"
-                  [ngTemplateOutletContext]="{ $implicit: log.metadata.loan.transaction_location }"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- checkout event -->
-        @if (checkout) {
-          <div class="row pl-2 pr-2 align-items-start timeline-event">
-            <div class="col-lg-2 pr-4 text-right event-timestamp">
-              <i class="fa fa-calendar-o"></i> {{ checkout.metadata.date | dateTranslate: 'short' }}
-            </div>
-            <div class="col-lg-10 event-content">
-              <div class="row">
-                <div class="col-3 pl-3">
-                  <i class="fa fa-angle-double-right text-danger pr-2"></i>
-                  {{ 'Checkout' | translate }}
-                </div>
-                <div class="col-9">
-                  <ng-container
-                    [ngTemplateOutlet]="logLibrary"
-                    [ngTemplateOutletContext]="{ $implicit: checkout.metadata.loan.transaction_location }"
-                  />
-                </div>
+      <p-timeline [value]="events">
+        <ng-template pTemplate="marker" let-event>
+          <span
+            class="flex w-1rem h-1rem align-items-center justify-content-center text-white border-circle z-1 shadow-1"
+            [ngClass]="{
+              'bg-green-200': event.type === 'Checkin',
+              'bg-red-200': event.type === 'Checkout'
+            }"
+          ></span>
+        </ng-template>
+        <ng-template pTemplate="content" let-event>
+          <div class="grid">
+            <div class="col-3">
+              <div class="flex gap-2">
+                <i class="fa" [ngClass]="{
+                  'fa-angle-double-left': event.type === 'Checkin',
+                  'fa-angle-double-right': event.type === 'Checkout',
+                }"></i>
+                <span>
+                  {{ event.type | translate }}
+                </span>
               </div>
             </div>
+            <div class="col-9">
+              <ng-container
+              [ngTemplateOutlet]="logLibrary"
+              [ngTemplateOutletContext]="{ $implicit: event.loan.transaction_location }"
+            />
+            </div>
           </div>
-        }
-      </section>
+        </ng-template>
+        <ng-template pTemplate="opposite" let-event>
+          <small class="p-text-secondary">
+            <i class="fa fa-calendar-o"></i> {{ event.date | dateTranslate: 'shortDate' }}
+            <i class="fa fa-clock-o pl-1"></i> {{ event.date | dateTranslate: 'HH:mm:ss' }}
+          </small>
+        </ng-template>
+      </p-timeline>
     </div>
   }
 </div>

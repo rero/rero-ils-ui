@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2023-2024 RERO
+ Copyright (C) 2023-2025 RERO
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published by
@@ -14,22 +14,29 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (illRequests$ | async; as illRequests) {
-  <section class="content">
-    @if (illRequests.length > 0) {
-      <!-- HEADER -->
-      <div class="row p-2 mb-1 bg-dark rounded text-light">
-        <div class="col-4" translate>Document</div>
+@if(illRequests$ | async; as illRequests) {
+  <p-card class="p-card-body-p-0">
+    <ng-template pTemplate="header">
+      <div class="grid grid-nogutter py-3 px-2 m-1 text-lg font-bold align-items-center border-bottom-1 surface-border">
+          <div class="col-4" translate>Document</div>
         <div class="col-3" translate>Pickup location</div>
         <div class="col-2" translate>Request date</div>
         <div class="col-2" translate>Loan status</div>
-        <div class="col-1" translate>&nbsp;</div>
+        <div class="col-1" translate></div>
       </div>
-      @for (record of illRequests; track record) {
-        <admin-ill-request-item [record]="record"></admin-ill-request-item>
-      }
+    </ng-template>
+    @if (illRequests.length > 0) {
+      <div class="alternate-color">
+        @for (record of illRequests; track record) {
+          <admin-ill-request-item [record]="record" />
+        }
+      </div>
     } @else {
-      {{ 'No ill request.' | translate }}
+      <div class="mx-3 my-4 font-bold" translate>
+        No ill request.
+      </div>
     }
-  </section>
+  </p-card>
+} @else {
+  <div class="font-bold mx-2 my-4" translate>Loading in progress</div>
 }

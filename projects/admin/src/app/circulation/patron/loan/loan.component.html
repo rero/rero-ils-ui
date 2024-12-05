@@ -15,10 +15,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <section class="content">
-  <div class="row mb-4">
-    <div class="col-12 col-md-6">
-      <div class="row d-flex">
-        <div class="col pr-0">
+  <div class="grid mb-4">
+    <div class="col-6">
+      <div class="flex gap-1">
+        <div class="flex-grow-1">
           <ng-core-search-input
             [placeholder]="'Checkout/checkin: please enter an item barcode.' | translate"
             [searchText]="searchText"
@@ -27,12 +27,12 @@
             [disabled]="searchInputDisabled"
           />
         </div>
-        <div class="col-sm-2 col-md-1 align-self-end pl-1">
+        <div class="align-self-end pl-1">
           <admin-circulation-settings />
         </div>
       </div>
       @if (checkoutSettings) {
-        <div class="row col mt-1">
+        <div class="flex gap-1 mt-2">
           @for (setting of checkoutSettings; track setting) {
             <p-tag [severity]="setting.extra?.severity || 'warning'">
               {{ setting.label }}
@@ -42,24 +42,36 @@
         </div>
       }
     </div>
-    <div class="col"></div>
     <!-- Sorting loans -->
-    <div class="col-md-4 d-flex align-items-end justify-content-end">
-      <ng-core-menu-sort
-        [config]="[
-          {value:'-transactiondate', label:'Transaction date (desc)' | translate, icon:'fa-sort-numeric-desc'},
-          {value:'transactiondate', label:'Transaction date' | translate, icon:'fa-sort-numeric-asc'},
-          {value:'-duedate', label:'Due date (desc)' | translate, icon:'fa-sort-numeric-desc'},
-          {value:'duedate', label:'Due date' | translate, icon:'fa-sort-numeric-asc'},
-          {value:'-location', label:'Location (desc)' | translate, icon: 'fa-sort-numeric-desc'},
-          {value:'location', label:'Location' | translate, icon: 'fa-sort-numeric-asc'}
+    <div class="col-6 flex align-items-start justify-content-end">
+      <p-dropdown
+        [options]="[
+          {value:'-transactiondate', label:'Transaction date (desc)' | translate, icon:'fa fa-sort-numeric-desc'},
+          {value:'transactiondate', label:'Transaction date' | translate, icon:'fa fa-sort-numeric-asc'},
+          {value:'-duedate', label:'Due date (desc)' | translate, icon:'fa fa-sort-numeric-desc'},
+          {value:'duedate', label:'Due date' | translate, icon:'fa fa-sort-numeric-asc'},
+          {value:'-location', label:'Location (desc)' | translate, icon: 'fa fa-sort-numeric-desc'},
+          {value:'location', label:'Location' | translate, icon: 'fa fa-sort-numeric-asc'}
         ]"
-        (selectChange)="selectingSortCriteria($event)"
-      />
+        (onChange)="selectingSortCriteria($event)"
+      >
+        <ng-template let-item pTemplate="selectedItem">
+          <div class="flex align-items-center gap-2">
+            <i [class]="item.icon"></i>
+            <div>{{ item.label }}</div>
+          </div>
+        </ng-template>
+        <ng-template let-item pTemplate="item">
+          <div class="flex align-items-center gap-2">
+            <i [class]="item.icon"></i>
+            <div>{{ item.label }}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-12">
+  <div class="grid">
+    <div class="col-12">
       <admin-circulation-items-list
         [checkedOutItems]="checkedOutItems"
         [checkedInItems]="checkedInItems"

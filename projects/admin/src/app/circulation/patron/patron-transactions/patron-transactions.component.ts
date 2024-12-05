@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,17 +24,16 @@ import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { TabViewChangeEvent } from 'primeng/tabview';
 import { Subscription } from 'rxjs';
 import { CirculationService } from '../../services/circulation.service';
 import { PatronTransactionService } from '../../services/patron-transaction.service';
 import { PatronFeeComponent } from './patron-fee/patron-fee.component';
 import { PatronTransactionEventFormComponent } from './patron-transaction-event-form/patron-transaction-event-form.component';
+import { AccordionTabOpenEvent } from 'primeng/accordion';
 
 @Component({
   selector: 'admin-patron-transactions',
-  templateUrl: './patron-transactions.component.html',
-  styleUrls: ['./patron-transactions.component.scss']
+  templateUrl: './patron-transactions.component.html'
 })
 export class PatronTransactionsComponent implements OnInit, OnDestroy {
 
@@ -138,8 +137,9 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
     ];
   }
 
-  tabChange(event: TabViewChangeEvent) {
-    if (event.index !== 0) {
+  accordionOpen(event: AccordionTabOpenEvent): void {
+    // 2 = Transaction history
+    if (event.index === 2) {
       this.loadFeesHistory();
     }
   }
@@ -160,6 +160,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   payAllTransactions(): void {
     this.dialogService.open(PatronTransactionEventFormComponent, {
       header: this.translateService.instant('Pay'),
+      focusOnShow: false,
       width: '50vw',
       data: {
         action: 'pay',
@@ -173,6 +174,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   payAllTransactionsInMyLibrary(): void {
     this.dialogService.open(PatronTransactionEventFormComponent, {
       header: this.translateService.instant('Pay for my library'),
+      focusOnShow: false,
       width: '50vw',
       data: {
         action: 'pay',
@@ -186,6 +188,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   addFee(): void {
     this.dynamicDialogRef = this.dialogService.open(PatronFeeComponent, {
       header: this.translateService.instant('New fee'),
+      focusOnShow: false,
       width: '30vw',
       data: {
         patronPid: this.patron.pid,

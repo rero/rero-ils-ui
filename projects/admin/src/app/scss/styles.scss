@@ -42,6 +42,7 @@
   @import '../record/detail-view/permission-detail-view/permission-detail-view.component.scss';
   @import '../migration/conversion/record/detail-view/migration-data/migration-data.component.scss';
   @import '../acquisition/components/account/account-detail-view/account-detail-view.component.scss';
+  @import '../circulation/patron/card/card.component.scss';
 }
 
 @layer rero-ils-ui {
@@ -67,4 +68,8 @@
   a {
     background: transparent;
   }
+}
+
+ng-core-editor-field-password-generator {
+  @extend .w-full;
 }

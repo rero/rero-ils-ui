@@ -95,12 +95,12 @@ export class ChangePasswordFormComponent implements OnInit {
         {
           key: 'password',
           type: 'passwordGenerator',
-          focus: true,
           props: {
+            class: 'surface-100',
             api: "/api/user/password/generate",
-            label: this.translateService.instant('New password'),
+            label: 'New password',
             required: true,
-            keydown: (field, event) => {
+            keydown: (_, event) => {
               if (event.key === 'Enter') {
                 event.preventDefault();
               }

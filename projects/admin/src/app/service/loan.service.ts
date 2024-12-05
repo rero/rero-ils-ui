@@ -152,11 +152,11 @@ export class LoanService {
   cancelRequestDialog(event: Event, accept?: Function, reject?: Function): void {
     const confirmation: Confirmation = {
       target: event.target as EventTarget,
+      icon: 'fa fa-exclamation-triangle',
       header: this.translateService.instant('Cancel request'),
       message: this.translateService.instant('Do you really want to cancel the request?'),
       acceptLabel: this.translateService.instant('Yes'),
-      rejectLabel: this.translateService.instant('No'),
-      dismissableMask: true,
+      rejectLabel: this.translateService.instant('No')
     };
     if (accept) {
       confirmation.accept = accept;

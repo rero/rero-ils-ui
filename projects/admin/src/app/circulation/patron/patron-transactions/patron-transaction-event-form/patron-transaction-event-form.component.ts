@@ -17,6 +17,8 @@
 import { getCurrencySymbol } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
+import { CirculationStatistics } from '@app/admin/circulation/circulationStatistics';
+import { CirculationService } from '@app/admin/circulation/services/circulation.service';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -36,6 +38,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
   private organisationService: OrganisationService = inject(OrganisationService);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
+  private circulationService: CirculationService = inject(CirculationService);
 
   /** the transactions to perform with this form */
   transactions: Array<PatronTransaction>;
@@ -191,6 +194,8 @@ export class PatronTransactionEventFormComponent implements OnInit {
           ? transaction.total_amount
           : residualAmount;
         this.patronTransactionService.payPatronTransaction(transaction, transactionAmount, formValues.method);
+        this.circulationService.statisticsDecrease(CirculationStatistics.FEES_ENGAGED, transactionAmount);
+        this.circulationService.statisticsDecrease(CirculationStatistics.FEES, transactionAmount);
         // DEV NOTES : We use the below syntax to avoid floating-number precision drift.
         //   on each iteration we 'round' the residual amount to a float with 2 decimals precision.
         //   --> with this syntax : (7.8 - 2 - 2 - 2) = 1.8
@@ -207,6 +212,8 @@ export class PatronTransactionEventFormComponent implements OnInit {
     } else if (this.action === 'cancel') {
       for (const transaction of this.transactions) {
         this.patronTransactionService.cancelPatronTransaction(transaction, formValues.amount, formValues.comment);
+        this.circulationService.statisticsDecrease(CirculationStatistics.FEES_ENGAGED, formValues.amount);
+        this.circulationService.statisticsDecrease(CirculationStatistics.FEES, formValues.amount);
       }
     }
     this.dynamicDialogRef.close();

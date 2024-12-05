@@ -14,17 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { DateTime } from 'luxon';
 import { getSeverity } from '../../../utils/utils';
 import { CirculationService } from '../../services/circulation.service';
 
 @Component({
   selector: 'admin-circulation-patron-detailed',
-  templateUrl: './card.component.html',
-  styleUrls: ['./card.component.scss']
+  templateUrl: './card.component.html'
 })
-export class CardComponent {
+export class CardComponent implements OnInit {
 
   private circulationService: CirculationService = inject(CirculationService);
 
@@ -42,40 +41,38 @@ export class CardComponent {
   /** event emitter when the close button are fired */
   @Output() clearPatron = new EventEmitter<any>();
 
-  // GETTER & SETTER ==========================================================
-  /** Build the link used on the patron name */
-  get patronLink(): string {
+  /** Link used on the patron name */
+  patronLink: string;
+  /** it's the birthday of the patron */
+  isBirthday: boolean = false;
+  /** Patron age */
+  patronAge: number;
+  /** circulation messages about the loaded patron if exists */
+  circulationMessages: {severity: string, detail: string}[] = [];
+
+  ngOnInit(): void {
     if (this.patron) {
-      return (this.linkMode === 'detail')
+      this.patronLink = (this.linkMode === 'detail')
         ? '/records/patrons/detail/' + this.patron.pid
         : '/circulation/patron/' + this.barcode + '/loan';
     }
-  }
 
-  /** Get the patron age */
-  get patronAge(): number {
+    if (this.patron && this.patron.birth_date) {
+      const today = DateTime.now().toFormat('M-dd');
+      const birthDate = DateTime.fromISO(this.patron.birth_date).toFormat('M-dd');
+      if (today === birthDate) {
+        this.isBirthday = true;
+      }
+    }
+
     if (this.patron && this.patron.birth_date) {
       const birthDate = DateTime.fromISO(this.patron.birth_date);
-      return Math.floor(DateTime.now().diff(birthDate, 'years').years);
+      this.patronAge = Math.floor(DateTime.now().diff(birthDate, 'years').years);
     }
+
+    this.circulationMessages = this.circulationService.messages();
   }
 
-  /** Defined if it's the birthday of the patron */
-  get isBirthday(): boolean {
-    if (this.patron && this.patron.birth_date) {
-      const today = DateTime.fromISO(DateTime.now().toFormat('yyyy-M-d'));
-      const birthDate = DateTime.fromISO(this.patron.birth_date);
-      return today.diff(birthDate, 'years').years % 1 === 0;
-    }
-    return false;
-  }
-
-  /** Get the circulation messages about the loaded patron if exists */
-  get circulationMessages(): Array<{type: string, content: string}> {
-    return this.circulationService.messages();
-  }
-
-  // COMPONENT FUNCTIONS ======================================================
   /** Clear current patron */
   clear(): void {
     if (this.patron) {
@@ -91,5 +88,4 @@ export class CardComponent {
   getMessageSeverity(level: string): string {
     return getSeverity(level);
   }
-
 }

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,20 +15,22 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (transaction !== undefined) {
-  <div [ngClass]="{ 'callout callout-warning': isDisputed(), 'border rounded': !isDisputed()}" class="col mr-1 p-2">
-    <div class="row">
-      <div class="col-lg-2">
+  <div [ngClass]="{ 'callout callout-warning': isDisputed(), 'border rounded': !isDisputed()}" class="mr-1 p-2">
+    <div class="grid grid-nogutter align-items-start">
+      <div class="col-2 flex gap-2">
         <shared-open-close-button (status)="isCollapsed = $event" />
-        {{ transaction.creation_date | dateTranslate :'shortDate' }}
+        <div>
+          {{ transaction.creation_date | dateTranslate :'shortDate' }}
+        </div>
       </div>
-      <div class="col-lg-4 d-inline-block text-truncate">{{ transaction.type | translate }}</div>
-      <div class="col-lg-3 d-inline-block text-truncate">
+      <div class="col-3">{{ transaction.type | translate }}</div>
+      <div class="col-3">
         @if (transaction.library) {
           <span>{{ transaction.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</span>
         }
       </div>
-      <div class="col-lg-2 text-lg-right">{{ transactionAmount | currency: organisation.default_currency }}</div>
-      <div class="col-md-1 text-left pl-0 mb-2" dropdown>
+      <div class="col-2 flex justify-content-end">{{ transactionAmount | currency: organisation.default_currency }}</div>
+      <div class="col-2 flex justify-content-end" dropdown>
         @if (transaction.status === patronTransactionStatus.OPEN) {
           <p-dropdown
             [placeholder]="'Action'|translate"
@@ -43,17 +45,13 @@
       <div class="mt-2">
         <!-- Transaction detail -->
         <h6 translate>Details</h6>
-        <section class="offset-md-1 mb-3" [ngSwitch]="transaction?.type">
+        <section class="mb-3" [ngSwitch]="transaction?.type">
           <admin-overdue-transaction-detail [transaction]="transaction" *ngSwitchCase="'overdue'" />
           <admin-default-transaction-detail [transaction]="transaction" *ngSwitchDefault />
         </section>
         <!-- Transaction history -->
         <h6 translate>Transaction history</h6>
-        <div class="events-timeline">
-          @for (event of transaction.get_events(); track event) {
-            <admin-patron-transaction-event [event]="event" class="row pl-2 pr-2 align-items-start timeline-event" />
-          }
-        </div>
+        <admin-patron-transaction-history [events]="transaction.get_events()" />
       </div>
     }
   </div>

@@ -21,44 +21,53 @@
 }
 @if ((checkedOutItems && checkedOutItems.length > 0) || (checkedInItems && checkedInItems.length > 0)) {
   <!-- HEADER -->
-  <div class="grid mb-1 d-flex align-items-center bg-dark text-white rounded p-1">
-    <div class="col-2" >
-      <shared-open-close-button (status)="allCollapsed = $event" />
-      {{ 'Items' | translate }}
-    </div>
-    <div class="col-6" translate>Document</div>
-    <div class="col-3" translate>Circulation info</div>
-    <div class="col-1">
-      @if (patron) {
-        <p-button
-          id="renew-all-button"
-          [label]="'Renew all'|translate"
-          [disabled]="loansToExtend.length < 1"
-          styleClass="float-right my-1"
-          (onClick)="extendAllLoansClick()"
+   <p-card class="p-card-body-p-0">
+    <ng-template pTemplate="header">
+        <div class="grid grid-nogutter py-3 px-2 m-1 text-lg font-bold align-items-center border-bottom-1 surface-border">
+          <div class="col-3 flex gap-2 align-items-center">
+            <div>
+              <shared-open-close-button (status)="allCollapsed = $event" />
+            </div>
+            <div translate>Item</div>
+          </div>
+          <div class="col-5" translate>Document</div>
+          <div class="col-2" translate>Circulation info</div>
+          <div class="col-2 flex justify-content-end">
+            @if (patron) {
+              <p-button
+                id="renew-all-button"
+                [label]="'Renew all'|translate"
+                [disabled]="loansToExtend.length < 1"
+                (onClick)="extendAllLoansClick()"
+              />
+            }
+          </div>
+        </div>
+    </ng-template>
+
+    <div class="alternate-color">
+      <!-- CHECKED OUT ITEMS -->
+      @for (item of checkedOutItems; track item) {
+        <admin-item
+          [patron]="patron"
+          [item]="item"
+          [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
+          [isCollapsed]="allCollapsed"
+          (extendLoanClicked)="extendLoanClick($event, item)"
+        />
+      }
+
+      <!-- CHECKED IN ITEMS -->
+      <!-- Callout border for [TRANSIT|REQUEST|FEE] -->
+      @for (item of checkedInItems; track item) {
+        <admin-item
+          [patron]="patron"
+          [item]="item"
+          [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
+          [isCollapsed]="allCollapsed"
+          (hasFeesEmitter)="hasFees($event)"
         />
       }
     </div>
-  </div>
-
-  <!-- CHECKED OUT ITEMS -->
-  @for (item of checkedOutItems; track item) {
-    <admin-item [patron]="patron"
-                [item]="item"
-                [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
-                [isCollapsed]="allCollapsed"
-                (extendLoanClicked)="extendLoanClick($event, item)">
-    </admin-item>
-  }
-
-  <!-- CHECKED IN ITEMS -->
-  <!--   Callout border for [TRANSIT|REQUEST|FEE] -->
-  @for (item of checkedInItems; track item) {
-    <admin-item [patron]="patron"
-                [item]="item"
-                [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
-                [isCollapsed]="allCollapsed"
-                (hasFeesEmitter)="hasFees($event)">
-    </admin-item>
-  }
+  </p-card>
 }
