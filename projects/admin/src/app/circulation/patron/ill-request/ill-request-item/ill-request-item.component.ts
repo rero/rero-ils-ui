@@ -20,8 +20,7 @@ import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
 
 @Component({
   selector: 'admin-ill-request-item',
-  templateUrl: './ill-request-item.component.html',
-  styleUrls: ['../../../circulation.scss']
+  templateUrl: './ill-request-item.component.html'
 })
 export class IllRequestItemComponent {
 

@@ -21,7 +21,7 @@ import { Injectable, signal, WritableSignal } from '@angular/core';
 })
 export class CirculationService {
 
-  messages: WritableSignal<{type: string, content: string}[]> = signal([]);
+  messages: WritableSignal<{severity: string, detail: string}[]> = signal([]);
   statistics: WritableSignal<{[key: string]: number}> = signal({});
 
   statisticsIncrease(type: string, increment: number = 1): void {
@@ -45,7 +45,7 @@ export class CirculationService {
     this.statistics.set(stats);
   }
 
-  addCirculationMessage(message: {type: string, content: string}): void {
+  addCirculationMessage(message: {severity: string, detail: string}): void {
     this.messages.set([...this.messages(), message]);
   }
 

@@ -17,6 +17,7 @@
 
 import { Component, inject, OnInit } from '@angular/core';
 import { PatronService } from '../../../service/patron.service';
+import { CirculationStatistics } from '../../circulationStatistics';
 import { CirculationService } from '../../services/circulation.service';
 
 @Component({
@@ -52,6 +53,6 @@ export class PickupComponent implements OnInit {
     const index = this.loans.findIndex((element: any) => element.id == loanId);
     this.loans.splice(index, 1);
     // Update count on tab
-    this.circulationService.statisticsDecrease('pickup', 1);
+    this.circulationService.statisticsDecrease(CirculationStatistics.PICKUP, 1);
   }
 }

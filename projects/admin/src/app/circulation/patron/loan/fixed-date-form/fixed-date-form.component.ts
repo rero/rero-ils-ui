@@ -19,7 +19,6 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Library } from '@app/admin/classes/library';
 import { DateValidators } from '@app/admin/utils/validators';
-import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -32,7 +31,6 @@ import { Subscription } from 'rxjs';
 export class FixedDateFormComponent implements OnInit, OnDestroy {
 
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
-  private translateService: TranslateService = inject(TranslateService);
   private userService: UserService = inject(UserService);
   private recordService: RecordService = inject(RecordService);
 
@@ -46,7 +44,7 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
         DateValidators.DATE_FORMAT
       )
     ]),
-    remember: new FormControl(false)
+    remember: new FormControl<boolean>(false)
   });
 
   disabledDays: number[] = [];

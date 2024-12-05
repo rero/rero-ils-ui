@@ -14,47 +14,31 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (patron) {
-  <div class="col mb-4">
-    <admin-circulation-patron-detailed
-      [patron]="patron"
-      [barcode]="barcode"
-      [displayCirculationMessages]="true"
-      (clearPatron)="clearPatron()"
-    ></admin-circulation-patron-detailed>
-  </div>
-
-  <div class="col">
-    <p-tabMenu [model]="items" [activeItem]="activeItem" (activeItemChange)="onActiveItemChange($event)">
-      <ng-template pTemplate="item" let-item>
-        <a pRipple class="p-menuitem-link">
-          <span class="mr-2">{{ item.label }}</span>
-          @if (item.tag?.statistics && item.tag?.statistics()[item.id] && item.tag?.statistics()[item.id] > 0) {
-            @if (item.tag.withCurrency) {
-              <p-badge
-                [severity]="item.tag.severity || 'info'"
-                [value]="item.tag.statistics()[item.id] | currency: organisation.default_currency"
-              />
-            } @else {
-              <p-badge [severity]="item.tag.severity || 'info'" [value]="item.tag.statistics()[item.id]" />
-            }
+@if (patron && items) {
+  <admin-circulation-patron-detailed
+    [patron]="patron"
+    [barcode]="barcode"
+    [displayCirculationMessages]="true"
+    (clearPatron)="clearPatron()"
+  />
+  <p-tabMenu [model]="items" [activeItem]="activeItem" (activeItemChange)="onActiveItemChange($event)">
+    <ng-template pTemplate="item" let-item>
+      <a pRipple class="p-menuitem-link flex gap-2">
+        <span>{{ item.label }}</span>
+        @if (item.tag?.statistics && item.tag?.statistics()[item.id] && item.tag?.statistics()[item.id] > 0) {
+          @if (item.tag.withCurrency) {
+            <p-badge
+              [severity]="item.tag.severity || 'info'"
+              [value]="item.tag.statistics()[item.id] | currency: organisation.default_currency"
+            />
+          } @else {
+            <p-badge [severity]="item.tag.severity || 'info'" [value]="item.tag.statistics()[item.id]" />
           }
-        </a>
-      </ng-template>
-    </p-tabMenu>
-    <div class="mt-4">
-      <router-outlet></router-outlet>
-    </div>
-  </div>
-  <p-toast>
-    <ng-template let-message pTemplate="message">
-      <div class="flex flex-column align-items-start" style="flex: 1">
-        <div class="font-medium text-lg text-900">
-          {{ message.summary }}
-        </div>
-        <p [innerHtml]="message.detail"></p>
-      </div>
+        }
+      </a>
     </ng-template>
-  </p-toast>
-  <p-confirmDialog />
+  </p-tabMenu>
+  <div class="mt-4">
+    <router-outlet />
+  </div>
 }

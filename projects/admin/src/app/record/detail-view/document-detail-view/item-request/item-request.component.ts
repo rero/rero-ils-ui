@@ -212,6 +212,7 @@ export class ItemRequestComponent implements OnInit {
             key: 'pickupPid',
             type: 'select',
             props: {
+              appendTo: 'body',
               label: this.translateService.instant('Pickup location'),
               required: true,
               placeholder: this.translateService.instant('Select…'),

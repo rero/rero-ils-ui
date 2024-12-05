@@ -155,7 +155,7 @@ export class CheckinComponent implements OnInit {
               item.notes = [];
             }
             item.notes.push({
-              content: error.error.status.replace(/^error:/, '').trim(),
+              content: this.processErrorMessage(error.error.status),
               type: ItemNoteType.API
             });
             this.items.unshift(item);
@@ -163,6 +163,14 @@ export class CheckinComponent implements OnInit {
             // catch this error to display it as a Toast message.
             this._checkinErrorManagement(error, item);
           });
+        } else if (error.error) {
+          this.messageService.add({
+            severity: 'warn',
+            summary: this.translate.instant('Checkin'),
+            detail: this.processErrorMessage(error.error.status),
+            life: CONFIG.MESSAGE_LIFE
+          });
+          this._resetSearchInput();
         }
       }
     });
@@ -227,7 +235,8 @@ export class CheckinComponent implements OnInit {
         if (patron.total.value === 1 && item.total.value === 1) {
           const ref: DynamicDialogRef = this.dialogService.open(CheckinActionComponent, {
             header: this.translate.instant('Circulation action'),
-            width: '50vw',
+            focusOnShow: false,
+            width: '25vw',
           })
           ref.onClose.subscribe((action: string) => {
             if (action) {
@@ -316,7 +325,7 @@ export class CheckinComponent implements OnInit {
   private _checkinErrorManagement(error: any, item: Item) {
     // get the error message from the raised error. This will be the Toast message core.
     let message = (error.hasOwnProperty('error') && error.error.hasOwnProperty('status'))
-      ? error.error.status.replace(/^error:/, '').trim()
+      ? this.processErrorMessage(error.error.status)
       : error.message;
     message = this.translate.instant(message);
     message += `<br/>${this.translate.instant('Status')}: ${this.translate.instant(item.status.toString())}`;
@@ -370,6 +379,10 @@ export class CheckinComponent implements OnInit {
         closable: true
       });
     }
+  }
+
+  private processErrorMessage(message: string): string {
+    return message.replace(/^error:/, '').trim();
   }
 
   /** Reset search input */

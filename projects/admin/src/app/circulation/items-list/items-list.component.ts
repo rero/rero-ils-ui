@@ -21,7 +21,6 @@ import { ItemAction } from '../../classes/items';
 
 @Component({
   selector: 'admin-circulation-items-list',
-  styleUrls: ['./items-list.component.scss'],
   templateUrl: './items-list.component.html'
 })
 export class ItemsListComponent implements OnInit{

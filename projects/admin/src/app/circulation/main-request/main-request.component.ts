@@ -38,24 +38,24 @@ export class MainRequestComponent implements OnInit, OnDestroy {
   // COMPONENT ATTRIBUTES ==================================================================
   /** options used for auto-refresh select box */
   public refreshOptions = [
-    {value: '15000', label: '15 s', icon: 'fa-clock-o'},
-    {value: '30000', label: '30 s', icon: 'fa-clock-o'},
-    {value: '60000', label: '1 m', icon: 'fa-clock-o'},
-    {value: '300000', label: '5 m', icon: 'fa-clock-o'},
-    {value: '600000', label: '10 m', icon: 'fa-clock-o'},
-    {value: '3000000', label: '30 m', icon: 'fa-clock-o'}
+    {value: '15000', label: '15 s', icon: 'fa fa-clock-o'},
+    {value: '30000', label: '30 s', icon: 'fa fa-clock-o'},
+    {value: '60000', label: '1 m', icon: 'fa fa-clock-o'},
+    {value: '300000', label: '5 m', icon: 'fa fa-clock-o'},
+    {value: '600000', label: '10 m', icon: 'fa fa-clock-o'},
+    {value: '3000000', label: '30 m', icon: 'fa fa-clock-o'}
   ];
 
   /** options used to sort requested items list */
   public sortingCriteria = [
-    {value: 'requestdate', label: this.translateService.instant('Request date'), icon: 'fa-sort-numeric-asc'},
-    {value: '-requestdate', label: this.translateService.instant('Request date (desc)'), icon: 'fa-sort-numeric-desc'},
-    {value: 'callnumber', label: this.translateService.instant('Call number'), icon: 'fa-sort-alpha-asc'},
-    {value: '-callnumber', label: this.translateService.instant('Call number (desc)'), icon: 'fa-sort-alpha-desc'},
-    {value: 'location', label: this.translateService.instant('Location'), icon: 'fa-sort-alpha-asc'},
-    {value: '-location', label: this.translateService.instant('Location (desc)'), icon: 'fa-sort-alpha-desc'},
-    {value: 'pickuplocation', label: this.translateService.instant('Pick-up location'), icon: 'fa-sort-alpha-asc'},
-    {value: '-pickuplocation', label: this.translateService.instant('Pick-up location (desc)'), icon: 'fa-sort-alpha-desc'},
+    {value: 'requestdate', label: this.translateService.instant('Request date'), icon: 'fa fa-sort-numeric-asc'},
+    {value: '-requestdate', label: this.translateService.instant('Request date (desc)'), icon: 'fa fa-sort-numeric-desc'},
+    {value: 'callnumber', label: this.translateService.instant('Call number'), icon: 'fa fa-sort-alpha-asc'},
+    {value: '-callnumber', label: this.translateService.instant('Call number (desc)'), icon: 'fa fa-sort-alpha-desc'},
+    {value: 'location', label: this.translateService.instant('Location'), icon: 'fa fa-sort-alpha-asc'},
+    {value: '-location', label: this.translateService.instant('Location (desc)'), icon: 'fa fa-sort-alpha-desc'},
+    {value: 'pickuplocation', label: this.translateService.instant('Pick-up location'), icon: 'fa fa-sort-alpha-asc'},
+    {value: '-pickuplocation', label: this.translateService.instant('Pick-up location (desc)'), icon: 'fa fa-sort-alpha-desc'},
   ];
 
   /** the placeholder string used on the */
@@ -66,8 +66,6 @@ export class MainRequestComponent implements OnInit, OnDestroy {
   public items = null;
   /** the interval (in millis) between 2 calls of requested items (0 = no refresh) */
   public refreshInterval = 0;
-  /** is the requested items detail should be collapsed or not */
-  public isDetailCollapsed = true;
   /** Focus attribute of the search input */
   public searchInputFocus = true;
   /** Disabled attribute of the search input */

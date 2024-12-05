@@ -20,6 +20,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { RecordModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
+import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { InputSwitchModule } from 'primeng/inputswitch';
@@ -32,6 +33,7 @@ import { TagModule } from 'primeng/tag';
 import { JournalVolumePipe } from 'projects/public-search/src/app/pipe/journal-volume.pipe';
 import { CheckinActionComponent } from './checkin/checkin-action/checkin-action.component';
 import { CheckinComponent } from './checkin/checkin.component';
+import { CirculationMainComponent } from './circulation-main.component';
 import { CirculationRoutingModule } from './circulation-routing.module';
 import { ItemComponent } from './item/item.component';
 import { ItemsListComponent } from './items-list/items-list.component';
@@ -54,7 +56,7 @@ import { PatronFeeComponent } from './patron/patron-transactions/patron-fee/patr
 import {
   PatronTransactionEventFormComponent
 } from './patron/patron-transactions/patron-transaction-event-form/patron-transaction-event-form.component';
-import { PatronTransactionEventComponent } from './patron/patron-transactions/patron-transaction-event/patron-transaction-event.component';
+import { PatronTransactionHistoryComponent } from './patron/patron-transactions/patron-transaction/patron-transaction-history/patron-transaction-history.component';
 import {
   DefaultTransactionDetailComponent
 } from './patron/patron-transactions/patron-transaction/default-transaction-detail/default-transaction-detail.component';
@@ -69,6 +71,7 @@ import { PickupItemComponent } from './patron/pickup/pickup-item/pickup-item.com
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
 import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
 
 @NgModule({
     declarations: [
@@ -87,7 +90,6 @@ import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
         PickupItemComponent,
         PatronTransactionsComponent,
         PatronTransactionComponent,
-        PatronTransactionEventComponent,
         PatronTransactionEventFormComponent,
         OverdueTransactionComponent,
         DefaultTransactionDetailComponent,
@@ -106,7 +108,9 @@ import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
         IllRequestComponent,
         IllRequestItemComponent,
         JournalVolumePipe,
-        CirculationSettingsComponent
+        CirculationSettingsComponent,
+        CirculationMainComponent,
+        PatronTransactionHistoryComponent
     ],
     imports: [
         CirculationRoutingModule,
@@ -124,8 +128,10 @@ import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
         RippleModule,
         MessagesModule,
         InputSwitchModule,
-        SplitButtonModule
-    ],
+        SplitButtonModule,
+        AccordionModule,
+        ScrollPanelModule
+      ],
     providers: [
       CurrencyPipe
     ]

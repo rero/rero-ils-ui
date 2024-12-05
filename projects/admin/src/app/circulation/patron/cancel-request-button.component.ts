@@ -24,22 +24,17 @@ import { MessageService } from 'primeng/api';
 @Component({
   selector: 'admin-cancel-request-button',
   template: `
-  @if (canCancelRequest()) {
     <p-button
-      icon="fa fa-trash-o"
+      class="pointer-events-auto"
+      icon="fa fa-trash"
       severity="danger"
       outlined
+      [pTooltip]="'The request cannot be cancelled'|translate"
+      tooltipPosition="top"
+      [disabled]="!canCancelRequest()"
+      [tooltipDisabled]="canCancelRequest()"
       (onClick)="showCancelRequestDialog($event)"
     />
-  } @else {
-    <p-button
-      icon="fa fa-trash-o"
-      severity="danger"
-      [title]="'The request cannot be cancelled'|translate"
-      outlined
-      [disabled]="true"
-    />
-  }
   `
 })
 export class CancelRequestButtonComponent {

@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,8 +15,26 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (document) {
-  <div class="grid p-2 mb-1 align-middle item" [ngClass]="getCallout()" id="request-{{item.barcode}}">
-    <div class="actions">
+  <div class="grid grid-nogutter p-2" [ngClass]="getCallout()" id="request-{{ item.barcode }}">
+    <div class="col-3">
+      <div class="flex align-items-start gap-2">
+        <shared-open-close-button [collapsed]="isCollapsed" (status)="isCollapsed = $event" />
+        <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+      </div>
+    </div>
+    <div name="title" class="col-4">
+      @if (document.title | mainTitle; as title) {
+        <a [routerLink]="['/records','documents','detail', document.pid]">
+          {{ title }}
+        </a><br/>
+      }
+      <shared-contribution [contributions]="document?.contribution" />
+    </div>
+    <div class="col-2">
+      <shared-inherited-call-number [item]="item" />
+    </div>
+    <div class="col-2">{{ item.loan.creation_date | dateTranslate :'medium' }}</div>
+    <div class="col-1 flex justify-content-end">
       @if (item.loan.state === LoanState.PENDING) {
         <p-button
           icon="fa fa-check"
@@ -27,62 +45,42 @@
         />
       }
     </div>
-    <!-- FIRST ROW :: item-barcode, document-title, requester-name, request-date -->
-    <div class="col-2">
-      <shared-open-close-button (status)="isCollapsed = $event" />
-      <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
-    </div>
-    <div name="title" class="col-lg-5">
-      @if (document.title | mainTitle; as title) {
-        <a [routerLink]="['/records','documents','detail', document.pid]">
-          {{ title }}
-        </a><br/>
+  @if (!isCollapsed) {
+    <dl class="metadata ml-1">
+      <!-- Unit -->
+      @if (item.enumerationAndChronology) {
+        <dt translate>Unit</dt>
+        <dd>{{ item.enumerationAndChronology }}</dd>
       }
-      <shared-contribution [contributions]="document?.contribution"></shared-contribution>
-    </div>
-    <div name="call-number" class="col-2">
-      <shared-inherited-call-number [item]="item"></shared-inherited-call-number>
-    </div>
-    <div name="transaction-date" class="col-2">{{ item.loan.creation_date | dateTranslate :'medium' }}</div>
-    <!-- NEXT-ROWS :: request detail -->
-    @if (!isCollapsed) {
-      <div class="col-12 mt-2">
-        <dl class="row">
-          <!-- Unit -->
-          @if (item.enumerationAndChronology) {
-            <dt class="col-2 label-title text-right" translate>Unit</dt>
-            <dd class="col-10">{{ item.enumerationAndChronology }}</dd>
-          }
-          <!-- Patron information -->
-          <dt class="col-2 label-title text-right" translate>Requested by</dt>
-          <dd class="col-10">
-            <a name="patron-name" [routerLink]="['/circulation', 'patron', item.loan.patron.barcode]">
-              {{ item.loan.patron.name }}
-            </a>
-          </dd>
-          <!-- item shelf location + destination -->
-          <dt class="col-2 label-title text-right" translate>Location</dt>
-          <dd  name="location" class="col-10">
-            {{ item.library.name }} -
-            @if (item.temporary_location?.name) {
-              {{ item.temporary_location.name }}
-            } @else {
-              {{ item.location.name }}
-            }
+      <!-- Patron information -->
+      <dt translate>Requested by</dt>
+      <dd>
+        <a name="patron-name" [routerLink]="['/circulation', 'patron', item.loan.patron.barcode]">
+          {{ item.loan.patron.name }}
+        </a>
+      </dd>
+      <!-- item shelf location + destination -->
+      <dt translate>Location</dt>
+      <dd>
+        {{ item.library.name }} -
+        @if (item.temporary_location?.name) {
+          {{ item.temporary_location.name }}
+        } @else {
+          {{ item.location.name }}
+        }
 
-          </dd>
-          <dt class="col-2 label-title text-right" translate>Pick-up location</dt>
-          <dd name="pickup-location" class="col-10">
-            <i class="fa fa-truck fa-flip-horizontal"></i>
-            <i class="fa fa-long-arrow-right mx-1"></i>
-            @if (item.loan.pickup_location.pickup_name) {
-              {{ item.loan.pickup_location.pickup_name }}
-            } @else {
-              {{ item.loan.pickup_location.library_name }}: {{ item.loan.pickup_location.name }}
-            }
-          </dd>
-        </dl>
-      </div>
-    }
+      </dd>
+      <dt translate>Pick-up location</dt>
+      <dd class="flex gap-1">
+        <i class="fa fa-truck fa-flip-horizontal"></i>
+        <i class="fa fa-long-arrow-right"></i>
+        @if (item.loan.pickup_location.pickup_name) {
+          {{ item.loan.pickup_location.pickup_name }}
+        } @else {
+          {{ item.loan.pickup_location.library_name }}: {{ item.loan.pickup_location.name }}
+        }
+      </dd>
+    </dl>
+  }
   </div>
 }

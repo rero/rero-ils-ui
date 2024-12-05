@@ -1,0 +1,118 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2019-2025 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<p-timeline [value]="events()">
+  <ng-template pTemplate="marker" let-event>
+    <span
+      class="flex w-1rem h-1rem align-items-center justify-content-center text-white border-circle z-1 shadow-1"
+      [ngClass]="{
+        'bg-orange-200': event.type === patronTransactionEventType.DISPUTE,
+        'bg-red-200': event.type === patronTransactionEventType.FEE,
+        'bg-green-200': event.type === patronTransactionEventType.PAYMENT,
+        'bg-blue-200': event.type === patronTransactionEventType.CANCEL
+      }"
+    >
+    </span>
+  </ng-template>
+  <ng-template pTemplate="content" let-event>
+    <div class="flex gap-2">
+      <div>{{ eventLabel(event) }}</div>
+        @if (event.type !== patronTransactionEventType.DISPUTE) {
+          <p-tag
+            [value]="event.amount | currency: organisation.default_currency"
+            [severity]="tagSeverity(event)"
+          />
+        }
+        @if (event.pid) {
+          <i
+            class="fa"
+            [ngClass]="{'fa-eye': hideShowEye('event-' + event.pid), 'fa-eye-slash': !hideShowEye('event-' + event.pid)}"
+            (click)="hideShowEvent('event-' + event.pid)"></i>
+        }
+      </div>
+      <div id="event-{{ event.pid }}" class="my-2" [hidden]="true">
+        @if (event.note) {
+          <div class="grid">
+            <div class="col-3">
+              <i class="fa fa-comment-o"></i>&nbsp;
+              {{ 'Note' | translate }}
+            </div>
+            <div class="col-8">{{ event.note }}</div>
+          </div>
+        }
+        @if (event.operator) {
+          @if (event.operator.pid | getRecord:'patrons' | async; as operator) {
+            <div class="grid">
+              <div class="col-3">
+                <i class="fa fa-user"></i>&nbsp;
+                {{ 'Operator' | translate }}
+              </div>
+              <div class="col-8">
+                @if ($any(operator).metadata.last_name) {
+                  {{ $any(operator).metadata.last_name }}
+                }
+                @if ($any(operator).metadata.last_name && $any(operator).metadata.first_name) {
+                  ,
+                }
+                @if ($any(operator).metadata.first_name) {
+                  {{ $any(operator).metadata.first_name }}
+                }
+              </div>
+            </div>
+          }
+        }
+        @if (event.library) {
+          @if (event.library.pid | getRecord:'libraries' | async; as library) {
+            <div class="grid">
+              <div class="col-3">
+                <i class="fa fa-map-marker"></i>&nbsp;
+                {{ 'Library' | translate }}
+              </div>
+              <div class="col-8">{{ $any(library).metadata.name }}</div>
+            </div>
+          }
+        }
+        @if (event.steps) {
+          @for (step of event.steps; track step; let first = $first) {
+            <div class="grid mb-1">
+              <div class="col-3" [class.label-title]="first">
+                @if (first) {
+                  <i class="fa fa-cubes"></i>&nbsp;
+                  {{ 'Steps' | translate }}
+                }
+              </div>
+              <div class="col-7">{{ step.timestamp | dateTranslate: 'shortDate' }}</div>
+              <div class="col-2">
+                @if (event.type !== patronTransactionEventType.DISPUTE) {
+                  <p-tag
+                    [value]="step.amount | currency: organisation.default_currency"
+                    [severity]="tagSeverity(event)"
+                  />
+                }
+              </div>
+            </div>
+          }
+        }
+      </div>
+  </ng-template>
+
+  <ng-template pTemplate="opposite" let-event>
+    <small class="p-text-secondary">
+      <i class="fa fa-calendar-o"></i> {{ event.creation_date | dateTranslate: 'shortDate' }}
+      <i class="fa fa-clock-o pl-1"></i> {{ event.creation_date | dateTranslate: 'HH:mm:ss' }}
+    </small>
+  </ng-template>
+</p-timeline>

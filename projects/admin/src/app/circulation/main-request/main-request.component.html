@@ -25,30 +25,49 @@
     />
   </div>
   <!-- Sorting loans -->
-  <div class="col-6 flex align-items-end justify-content-end">
-    <!-- collapsed ? -->
-    <div>
-      <p-inputSwitch id="collapse-detail" [(ngModel)]="isDetailCollapsed" />
-      <label for="collapse-detail" translate>Collapse details</label>
-    </div>
+  <div class="col-6">
     <!-- auto refresh -->
-    <div class="ml-2">
-      <p-inputSwitch id="auto-refresh" [ngModel]="refreshInterval > 0" (onChange)="enableAutoRefresh($event.checked)" />
-      <label for="auto-refresh" translate>Auto refresh</label>
+    <div class="flex gap-2 w-full align-items-center">
+      <div class="flex flex-grow-1 gap-2 justify-content-start">
+        <p-inputSwitch id="auto-refresh" [ngModel]="refreshInterval > 0" (onChange)="enableAutoRefresh($event.checked)" />
+        <label for="auto-refresh" translate>Auto refresh</label>
+      </div>
+      <div class="flex gap-2 justify-content-end">
+        @if (refreshInterval > 0) {
+          <p-dropdown [options]="refreshOptions" (onChange)="selectingIntervalTimer($event.value)">
+            <ng-template let-item pTemplate="selectedItem">
+              <div class="flex align-items-center gap-2">
+                <i [class]="item.icon"></i>
+                <div>{{ item.label }}</div>
+              </div>
+            </ng-template>
+            <ng-template let-item pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <i [class]="item.icon"></i>
+                <div>{{ item.label }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+
+        }
+        <!-- Sorting loans -->
+        <p-dropdown [options]="sortingCriteria" (onChange)="selectingSortCriteria($event)">
+          <ng-template let-item pTemplate="selectedItem">
+            <div class="flex align-items-center gap-2">
+              <i [class]="item.icon"></i>
+              <div>{{ item.label }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-item pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <i [class]="item.icon"></i>
+              <div>{{ item.label }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+
     </div>
-    @if (refreshInterval > 0) {
-      <ng-core-menu-sort
-        class="pl-3"
-        [config]="sortingCriteria"
-        (selectChange)="selectingIntervalTimer($event)"
-      />
-    }
-    <!-- Sorting loans -->
-    <ng-core-menu-sort
-      class="pl-3"
-      [config]="sortingCriteria"
-      (selectChange)="selectingSortCriteria($event)"
-    />
   </div>
 </div>
 
@@ -56,7 +75,6 @@
   <div class="col">
     <admin-circulation-requested-items-list
       [items]="items"
-      [isCollapsed]="isDetailCollapsed"
       (requestValidated)="searchValueUpdated($event)"
     />
   </div>

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -37,15 +37,23 @@ export class HistoryLogComponent {
   provisionActivityType = ProvisionActivityType;
 
   /** Checkout record operation logs */
-  checkout: any = null;
+  checkoutLoaded: boolean = false;
+
+  events: any[] = [];
 
   /** Load checkout */
   loadCheckout() {
-    if (this.checkout === null) {
+    if (!this.checkoutLoaded) {
       this.operationLogsApiService
         .getHistoryByLoanPid(this.log.metadata.loan.pid, 'checkout')
         .subscribe((log: any) => {
-          this.checkout = log;
+          this.checkoutLoaded = true;
+          this.log.metadata['type'] = 'Checkin';
+          this.events = [this.log.metadata];
+          if (log) {
+            log.metadata['type'] = 'Checkout';
+            this.events.push(log.metadata);
+          }
         });
     }
   }
