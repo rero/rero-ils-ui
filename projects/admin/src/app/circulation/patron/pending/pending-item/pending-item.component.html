@@ -15,45 +15,48 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (item && document) {
-  <!-- FIRST ROW : barcode, title, availability, action button -->
-  <div class="col-2">
-    <shared-open-close-button (status)="isCollapsed = $event" />
-    <a class="ml-1" [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
-  </div>
-  <div class="col-5">
-    @if (document.title | mainTitle; as title) {
-      <a [routerLink]="['/records', 'documents', 'detail', document.pid]">
-        {{ title }}
-      </a>
-      @if (item.enumerationAndChronology) {
-        <span class="badge badge-info">{{ item.enumerationAndChronology }}</span>
-      }
-      <br/>
-    }
-    <shared-contribution [contributions]="document?.contribution" />
-  </div>
-  <div class="col-2">{{ loan.created | dateTranslate: 'short' }}</div>
-  <div class="col-2">-<!-- TODO :: display the computed expected_date --></div>
-  <div class="col-1 text-right">
-    <admin-cancel-request-button [loan]="loan" (cancelRequestEvent)="cancelRequest($event)" />
-  </div>
-  <!-- SECOND ROW: item detail -->
-  @if (!isCollapsed) {
-    <div class="col-12">
-      <dl class="grid">
-        <!-- position into queue -->
-        <dt class="offset-1 col-1 label-title" translate>Position</dt>
-        <dd class="col-10">
-          <p-badge severity="info" value="{{ loan.metadata.rank }} / {{ item.current_pending_requests }}" />
-        </dd>
-        <!-- item location -->
-        @if (item.location.pid | getRecord: 'locations' | async; as location) {
-          <dt class="offset-1 col-1 label-title" translate>Location</dt>
-          <dd class="col-10">
-            {{ $any(location).metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}: {{ item.location.name }}
-          </dd>
-        }
-      </dl>
+  <div class="grid grid-nogutter p-2">
+    <!-- FIRST ROW : barcode, title, availability, action button -->
+    <div class="col-3 flex align-items-start gap-2">
+      <div>
+        <shared-open-close-button (status)="isCollapsed = $event" />
+      </div>
+      <div>
+        <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
+      </div>
     </div>
-  }
+    <div class="col-6">
+      @if (document.title | mainTitle; as title) {
+        <a [routerLink]="['/records', 'documents', 'detail', document.pid]">
+          {{ title }}
+        </a>
+        @if (item.enumerationAndChronology) {
+          <p-tag severity="info" [value]="item.enumerationAndChronology" />
+        }
+        <br/>
+      }
+      <shared-contribution [contributions]="document?.contribution" />
+
+      @if (!isCollapsed) {
+        <dl class="metadata pl-0">
+          <!-- position into queue -->
+          <dt translate>Position</dt>
+          <dd>
+            <p-badge severity="info" value="{{ loan.metadata.rank }} / {{ item.current_pending_requests }}" />
+          </dd>
+          <!-- item location -->
+          @if (item.location.pid | getRecord: 'locations' | async; as location) {
+            <dt translate>Location</dt>
+            <dd>
+              {{ $any(location).metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}: {{ item.location.name }}
+            </dd>
+          }
+        </dl>
+      }
+    </div>
+    <div class="col-2">{{ loan.created | dateTranslate: 'short' }}</div>
+    <div class="col-1 flex justify-content-end">
+      <admin-cancel-request-button [loan]="loan" (cancelRequestEvent)="cancelRequest($event)" />
+    </div>
+  </div>
 }

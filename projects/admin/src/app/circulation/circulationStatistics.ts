@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,24 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
- @import 'bootstrap/scss/functions';
- @import 'bootstrap/scss/variables';
-
- .item {
-   margin-bottom: map-get($spacers, 1) !important;
-   padding: map-get($spacers, 1) !important;
-   border: $border-width solid $border-color;
-   border-radius: $border-radius;
-   position: relative;
-
-   &:hover{
-     background-color: $light;
-   }
-
-   div.actions {
-     position: absolute;
-     top: map-get($spacers, 1);
-     right: 15px;
-   }
- }
+export class CirculationStatistics {
+  static FEES = 'fees';
+  static FEES_ENGAGED = 'fees_engaged';
+  static HISTORY = 'history';
+  static ILL = 'ill';
+  static LOAN = 'loan';
+  static PENDING = 'pending';
+  static PICKUP = 'pickup';
+}

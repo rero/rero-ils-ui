@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  */
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { DialogService } from 'primeng/dynamicdialog';
-import { Subscription } from 'rxjs';
+import { Subscription, switchMap, tap } from 'rxjs';
 import { PatronService } from '../../../service/patron.service';
 import { RecordPermissionService } from '../../../service/record-permission.service';
 import { ChangePasswordFormComponent } from '../change-password-form/change-password-form.component';
@@ -34,7 +34,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private translateService: TranslateService = inject(TranslateService);
 
   /** Current patron */
-  currentPatron$: any;
+  patron: any;
 
   /** Observable subscription */
   private subscription = new Subscription();
@@ -42,20 +42,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
   /** Patron permission */
   private permissions: any;
 
-  /**
-   * Component initialization.
-   */
   ngOnInit() {
-    this.currentPatron$ = this.patronService.currentPatron$;
-    this.subscription = this.currentPatron$.subscribe((patron: any) => {
-      if (patron && patron.pid) {
-        this.recordPermission.getPermission('patrons', patron.pid).subscribe(
-          perm => {
-            this.permissions = perm;
-          }
-        );
-      }
-    });
+    this.subscription.add(
+      this.patronService.currentPatron$.pipe(
+        tap((patron: any) => this.patron = patron),
+        switchMap((patron: any) => this.recordPermission.getPermission('patrons', patron.pid)),
+        tap(permissions => this.permissions = permissions),
+      ).subscribe()
+    );
   }
 
   /**
@@ -80,9 +74,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   updatePatronPassword(patron) {
     this.dialogService.open(ChangePasswordFormComponent, {
       header: this.translateService.instant('Update Patron Password'),
+      focusOnShow: false,
+      width: '30vw',
+      dismissableMask: true,
       data: {
         patron
       }
-    })
+    });
   }
 }

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2024 RERO
+ * Copyright (C) 2022-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,6 +17,7 @@
 import { getCurrencySymbol } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { CirculationStatistics } from '@app/admin/circulation/circulationStatistics';
 import { CirculationService } from '@app/admin/circulation/services/circulation.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -30,8 +31,7 @@ import { OrganisationService } from 'projects/admin/src/app/service/organisation
 
 @Component({
   selector: 'admin-patron-fee',
-  templateUrl: './patron-fee.component.html',
-  styles: ['.p-inputtext { width: 100%; padding: 0 }']
+  templateUrl: './patron-fee.component.html'
 })
 export class PatronFeeComponent implements OnInit {
 
@@ -74,7 +74,8 @@ export class PatronFeeComponent implements OnInit {
     }
     this.patronTransactionApiService.addFee(model).subscribe({
       next: () => {
-        this.circulationService.statisticsIncrease('fees', model.total_amount);
+        this.circulationService.statisticsIncrease(CirculationStatistics.FEES_ENGAGED, model.total_amount);
+        this.circulationService.statisticsIncrease(CirculationStatistics.FEES, model.total_amount);
         this.closeModal();
         this.messageService.add({
           severity: 'success',
@@ -100,6 +101,7 @@ export class PatronFeeComponent implements OnInit {
 
   /** Init form model */
   private _initForm(properties: any): void {
+    console.log(properties.type);
     this.formFields = [{
       key: 'type',
       type: 'select',
@@ -132,13 +134,17 @@ export class PatronFeeComponent implements OnInit {
       props: {
         label: 'Date',
         required: true,
-        dateFormat: 'yy-mm-dd',
+        dateFormat: 'yy-mm-dd'
       }
     }];
 
     // Default model value
     this.model = {
-      type: null,
+      type: {
+        label: this.translateService.instant(properties.type.default),
+        value: properties.type.default,
+        data: properties.type.default
+      },
       total_amount: null,
       creation_date: new Date(),
       patron: {
@@ -165,7 +171,11 @@ export class PatronFeeComponent implements OnInit {
 
 /** Interface to define fields on form */
 export interface FeeFormModel {
-  type: string;
+  type: {
+    label: string,
+    value: string,
+    data: string
+  };
   total_amount: number;
   note?: string;
   creation_date: any;

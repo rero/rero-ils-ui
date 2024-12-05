@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -53,6 +53,9 @@ export class PatronTransactionComponent implements OnInit {
 
   menuItems: MenuItem[] = [];
   menuSelectedAction = undefined;
+
+  /** store a reference to enum to use in html template */
+  patronTransactionEventType = PatronTransactionEventType;
 
   // GETTER & SETTER ================================================
   /** get the total amount for a patron transaction :
@@ -119,6 +122,7 @@ export class PatronTransactionComponent implements OnInit {
   patronTransactionAction(action: string, mode?: string): void {
     this.dialogService.open(PatronTransactionEventFormComponent, {
       header: this.translateService.instant(action),
+      focusOnShow: false,
       width: '40vw',
       data: {
         action,
@@ -150,5 +154,31 @@ export class PatronTransactionComponent implements OnInit {
         command: () => this.patronTransactionAction('cancel')
       }
     ];
+  }
+
+  eventLabel(event: any): string {
+    return (event.subtype)
+      ? `${this.translateService.instant(event.type.toString())} [${this.translateService.instant(event.subtype)}]`
+      : this.translateService.instant(event.type.toString());
+  }
+
+  tagSeverity(event: any) {
+    switch(event.type) {
+      case this.patronTransactionEventType.FEE:
+        return 'danger';
+      case this.patronTransactionEventType.PAYMENT:
+        return 'success';
+      case this.patronTransactionEventType.CANCEL:
+        return 'info';
+    }
+  }
+
+  hideShowEye(event: string): boolean {
+    return document.getElementById(event).hidden;
+  }
+
+  hideShowEvent(event: string): void {
+    const element = document.getElementById(event);
+    element.hidden = !element.hidden;
   }
 }

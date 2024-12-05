@@ -22,8 +22,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { CONFIG, DateTranslatePipe } from '@rero/ng-core';
 import { ItemStatus, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
+import { DropdownChangeEvent } from 'primeng/dropdown';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin, Subscription } from 'rxjs';
+import { CirculationStatistics } from '../../circulationStatistics';
 import { CirculationService } from '../../services/circulation.service';
 import { LoanFixedDateService } from '../../services/loan-fixed-date.service';
 import { CirculationSettingsService, ICirculationSetting } from './circulation-settings/circulation-settings.service';
@@ -261,8 +263,8 @@ export class LoanComponent implements OnInit, OnDestroy {
                   life: CONFIG.MESSAGE_LIFE
                 });
               }
-              this.circulationService.statisticsDecrease('loans');
-              this.circulationService.statisticsIncrease('history');
+              this.circulationService.statisticsDecrease(CirculationStatistics.LOAN);
+              this.circulationService.statisticsIncrease(CirculationStatistics.HISTORY);
               break;
             }
             case ItemAction.checkout: {
@@ -270,12 +272,12 @@ export class LoanComponent implements OnInit, OnDestroy {
               this.displayCirculationInformation(ItemAction.checkout, newItem, ItemNoteType.CHECKOUT);
               this.checkedOutItems.unshift(newItem);
               this.checkedInItems = this.checkedInItems.filter(currItem => currItem.pid !== newItem.pid);
-              this.circulationService.statisticsIncrease('loans');
+              this.circulationService.statisticsIncrease(CirculationStatistics.LOAN);
               // check if items was ready to pickup. if yes, then we need to decrement the counter
               const idx = this.pickupItems.findIndex(item => item.metadata.item.pid === newItem.pid);
               if (idx > -1) {
                 this.pickupItems.splice(idx, 1);
-                this.circulationService.statisticsIncrease('pickup');
+                this.circulationService.statisticsIncrease(CirculationStatistics.PICKUP);
               }
               break;
             }
@@ -418,9 +420,8 @@ export class LoanComponent implements OnInit, OnDestroy {
    * Allow to sort the checkout items list using a sort criteria
    * @param sortCriteria: the srt criteria to use for sorting the list
    */
-
-  selectingSortCriteria(sortCriteria: string): void {
-    switch (sortCriteria) {
+  selectingSortCriteria(sortCriteria: DropdownChangeEvent): void {
+    switch (sortCriteria.value) {
       case 'duedate':
         this.checkedOutItems.sort((a, b) => a.loan.end_date.diff(b.loan.end_date));
         break;

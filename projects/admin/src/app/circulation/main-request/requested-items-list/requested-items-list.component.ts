@@ -28,11 +28,12 @@ export class RequestedItemsListComponent implements OnChanges {
   // COMPONENT ATTRIBUTES ====================================================
   /** Item list */
   @Input() items: any[];
-  /** Is the item detail should be collapsed */
-  @Input() isCollapsed: boolean;
+
   /** event emit when a request is validated */
   @Output() requestValidated = new EventEmitter();
 
+  /** Is the item detail should be collapsed */
+  isCollapsed: boolean = true;
 
   /** the know item barcode list */
   private knownItemBarcodes: Array<string> = null;
@@ -68,5 +69,4 @@ export class RequestedItemsListComponent implements OnChanges {
   validateRequest(itemBarcode: string) {
     this.requestValidated.emit(itemBarcode);
   }
-
 }

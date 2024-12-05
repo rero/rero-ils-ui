@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,14 +19,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoanState } from '@app/admin/classes/loans';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { PatronService } from '@app/admin/service/patron.service';
+import { getSeverity } from '@app/admin/utils/utils';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { MenuItem } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { forkJoin, Subscription, switchMap, tap } from 'rxjs';
 import { OperationLogsApiService } from '../../../api/operation-logs-api.service';
+import { CirculationStatistics } from '../../circulationStatistics';
 import { CirculationService } from '../../services/circulation.service';
-import { PatronTransactionService } from '../../services/patron-transaction.service';
 
 @Component({
   selector: 'admin-main',
@@ -37,7 +38,6 @@ export class MainComponent implements OnInit, OnDestroy {
   private route: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
   private patronService: PatronService = inject(PatronService);
-  private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
   private organisationService: OrganisationService = inject(OrganisationService);
   private hotKeysService: HotkeysService = inject(HotkeysService);
   private translateService: TranslateService = inject(TranslateService);
@@ -99,17 +99,11 @@ export class MainComponent implements OnInit, OnDestroy {
   /** the current patron barcode */
   barcode: string;
 
-  /** Subscription to current patron */
-  private _patronSubscription$: Subscription;
-
-  /** Subscription to the fees accounting operation subject (allowing to know if some fees are paid, deleted, ...) */
-  private _patronFeesOperationSubscription$: Subscription;
-
-  historyCount = 0;
-
   items: MenuItem[] | undefined;
 
   activeItem: MenuItem | undefined;
+
+  subscription = new Subscription();
 
   // GETTER & SETTER ====================================================
   /**
@@ -139,12 +133,7 @@ export class MainComponent implements OnInit, OnDestroy {
   /** OnDestroy hook */
   ngOnDestroy(): void {
     this._unregisterShortcuts();
-    if (this._patronFeesOperationSubscription$) {
-      this._patronFeesOperationSubscription$.unsubscribe();
-    }
-    if (this._patronSubscription$) {
-      this._patronSubscription$.unsubscribe();
-    }
+    this.subscription.unsubscribe();
     this.patronService.clearPatron();
   }
 
@@ -155,30 +144,44 @@ export class MainComponent implements OnInit, OnDestroy {
    */
   load(barcode: string): void {
     this.barcode = barcode;
-    this._patronSubscription$ = this.patronService.getPatron(barcode).subscribe((patron: any) => {
-      if (patron) {
-        this.patron = patron;
-        // We need to unregister/register the shortcuts after the patron was loaded. Otherwise, the patron could be considered has
-        // null and this will cause error for navigation url construction
-        this._unregisterShortcuts();
-        this._registerShortcuts();
-        // Load count history only if the patron has keep history
-        if (patron.keep_history) {
-          this.operationLogsApiService.getCheckInHistory(patron.pid, 1, 1).subscribe((result: any) => {
-            this.historyCount = this.recordService.totalHits(result.hits.total);
-          });
-        }
-        this.patronService.getCirculationInformations(patron.pid).subscribe((data) => {
+
+    this.subscription.add(
+      this.patronService.getPatron(barcode)
+      .pipe(
+        tap((patron: any) => this.patron = patron),
+        tap(() => {
+          // We need to unregister/register the shortcuts after the patron was loaded.
+          // Otherwise, the patron could be considered has null and this will
+          // cause error for navigation url construction
+          this._unregisterShortcuts();
+          this._registerShortcuts();
+        }),
+        switchMap((patron: any) => {
+          const circulationInformations$ = this.patronService.getCirculationInformations(patron.pid);
+          const checkInHistory$ = this.operationLogsApiService.getCheckInHistory(patron.pid, 1, 1);
+          const overduesPreview$ = this.patronService.getOverduesPreview(this.patron.pid);
+          return forkJoin([circulationInformations$, checkInHistory$, overduesPreview$]);
+        }),
+        tap(([informations, checkInHistory, overduesPreview]: any) => {
           this.circulationService.clear();
-          this.circulationService.statisticsIncrease('fees', data.fees.engaged + data.fees.preview);
-          this._parseStatistics(data.statistics || {});
-          for (const message of (data.messages || [])) {
-            this.circulationService.addCirculationMessage(message as any);
+          this.circulationService.statisticsIncrease(CirculationStatistics.FEES_ENGAGED, informations.fees.engaged);
+          this.circulationService.statisticsIncrease(CirculationStatistics.FEES, informations.fees.engaged);
+          this._parseStatistics(informations.statistics || {});
+          for (const message of (informations.messages || [])) {
+            this.circulationService.addCirculationMessage({
+              severity: getSeverity(message.type),
+              detail: message.content
+            });
           }
-          this.initializeMenu();
-        });
-      }
-    });
+          overduesPreview.map((overdue: any) => this.circulationService.statisticsIncrease(CirculationStatistics.FEES, overdue.fees.total));
+          if (this.patron.keep_history) {
+            this.circulationService.statisticsIncrease(CirculationStatistics.HISTORY, this.recordService.totalHits(checkInHistory.hits.total));
+          }
+        }),
+        tap(() => this.initializeMenu(this.patron.keep_history))
+      )
+      .subscribe()
+    );
   }
 
   /** reset the patron currently viewed */
@@ -215,34 +218,28 @@ export class MainComponent implements OnInit, OnDestroy {
       switch (key) {
         case LoanState[LoanState.PENDING]:
         case LoanState[LoanState.ITEM_IN_TRANSIT_FOR_PICKUP]:
-          this.circulationService.statisticsIncrease('pending', Number(data[key]));
+          this.circulationService.statisticsIncrease(CirculationStatistics.PENDING, Number(data[key]));
           break;
         case LoanState[LoanState.ITEM_AT_DESK]:
-          this.circulationService.statisticsIncrease('pickup',  Number(data[key]));
+          this.circulationService.statisticsIncrease(CirculationStatistics.PICKUP,  Number(data[key]));
           break;
         case LoanState[LoanState.ITEM_ON_LOAN]:
-          this.circulationService.statisticsIncrease('loan',  Number(data[key]));
-          break;
-        case LoanState[LoanState.CANCELLED]:
-        case LoanState[LoanState.ITEM_IN_TRANSIT_TO_HOUSE]:
-        case LoanState[LoanState.ITEM_RETURNED]:
-          this.circulationService.statisticsIncrease('history',  Number(data[key]));
+          this.circulationService.statisticsIncrease(CirculationStatistics.LOAN,  Number(data[key]));
           break;
         case 'ill_requests':
-          this.circulationService.statisticsIncrease('ill', Number(data[key]));
+          this.circulationService.statisticsIncrease(CirculationStatistics.ILL, Number(data[key]));
           break;
       }
     }
   }
 
-  private initializeMenu(): void {
+  private initializeMenu(keepHistory: boolean): void {
     this.items = [
       {
         id: 'loan',
         label: this.translateService.instant('On loan'),
         routerLink: ['/circulation', 'patron', this.barcode, 'loan'],
         tag: {
-          severity: 'info',
           statistics: this.circulationService.statistics
         }
       },
@@ -251,7 +248,6 @@ export class MainComponent implements OnInit, OnDestroy {
         label: this.translateService.instant('To pick up'),
         routerLink: ['/circulation', 'patron', this.barcode, 'pickup'],
         tag: {
-          severity: 'info',
           statistics: this.circulationService.statistics
         }
       },
@@ -260,7 +256,6 @@ export class MainComponent implements OnInit, OnDestroy {
         label: this.translateService.instant('Pending'),
         routerLink: ['/circulation', 'patron', this.barcode, 'pending'],
         tag: {
-          severity: 'info',
           statistics: this.circulationService.statistics
         }
       },
@@ -269,7 +264,6 @@ export class MainComponent implements OnInit, OnDestroy {
         label: this.translateService.instant('Interlibrary loan'),
         routerLink: ['/circulation', 'patron', this.barcode, 'ill'],
         tag: {
-          severity: 'info',
           statistics: this.circulationService.statistics
         }
       },
@@ -289,11 +283,14 @@ export class MainComponent implements OnInit, OnDestroy {
         }
       }
     ];
-    if (this.patron.keep_history) {
+    if (keepHistory) {
       this.items.push({
         id: 'history',
         label: this.translateService.instant('History'),
-        routerLink: ['/circulation', 'patron', this.barcode, 'history']
+        routerLink: ['/circulation', 'patron', this.barcode, 'history'],
+        tag: {
+          statistics: this.circulationService.statistics
+        }
       });
     }
 

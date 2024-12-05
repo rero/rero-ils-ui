@@ -30,8 +30,7 @@ import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'admin-item',
-  templateUrl: './item.component.html',
-  styleUrls: ['../circulation.scss']
+  templateUrl: './item.component.html'
 })
 export class ItemComponent implements OnInit {
 

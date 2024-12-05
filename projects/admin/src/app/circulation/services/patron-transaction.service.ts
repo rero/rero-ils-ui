@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,7 +28,6 @@ import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CirculationService } from './circulation.service';
 
 @Injectable({
   providedIn: 'root'
@@ -39,11 +38,12 @@ export class PatronTransactionService {
   private userService: UserService = inject(UserService);
   private routeToolService: RouteToolService = inject(RouteToolService);
   private translateService: TranslateService = inject(TranslateService);
-  private messageService = inject(MessageService);
-  private circulationService: CirculationService = inject(CirculationService);
+  private messageService: MessageService = inject(MessageService);
 
   /** subject containing current loaded PatronTransactions */
   patronTransactionsSubject$: BehaviorSubject<Array<PatronTransaction>> = new BehaviorSubject([]);
+  /** subject emitting accounting transaction about patron fees */
+  patronFeesOperationSubject$: Subject<number> = new Subject();
 
   /**
    * Allow to build the query to send through the API to retrieve desired data
@@ -89,7 +89,7 @@ export class PatronTransactionService {
     ).pipe(
       map((data: Record) => data.hits),
       map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
-      map(hits => hits.map(hit => new PatronTransaction(hit.metadata)))
+      map(hits => hits.map( hit => new PatronTransaction(hit.metadata)))
     );
   }
 
@@ -105,7 +105,7 @@ export class PatronTransactionService {
     return this.recordService.getRecords('patron_transactions', query, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
       map((data: Record) => data.hits),
       map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
-      map(hits => hits.map( hit => new PatronTransaction(hit.metadata)))
+      map(hits => hits.map(hit => new PatronTransaction(hit.metadata)))
     );
   }
 
@@ -195,7 +195,8 @@ export class PatronTransactionService {
     record.type = PatronTransactionEventType.PAYMENT;
     record.subtype = paymentMethod;
     record.amount = amount;
-    this._createTransactionEvent(record, transaction.patron.pid, amount);
+    this.patronFeesOperationSubject$.next(0 - amount);
+    this._createTransactionEvent(record, transaction.patron.pid);
   }
 
   /**
@@ -221,7 +222,8 @@ export class PatronTransactionService {
     record.type = PatronTransactionEventType.CANCEL;
     record.amount = amount;
     record.note = reason;
-    this._createTransactionEvent(record, transaction.patron.pid, amount);
+    this.patronFeesOperationSubject$.next(0 - amount);
+    this._createTransactionEvent(record, transaction.patron.pid);
   }
 
   /**
@@ -229,12 +231,11 @@ export class PatronTransactionService {
    * @param record - data to send through the API
    * @param affectedPatron - the user pid affected by this new transaction event
    */
-  private _createTransactionEvent(record: any, affectedPatron: string, amount: number = 0) {
-    const translateType = this.translateService.instant(record.type);
+  private _createTransactionEvent(record: any, affectedPatron: string) {
     this.recordService.create('patron_transaction_events', record).subscribe({
       next: () => {
-        this.circulationService.statisticsDecrease('fees', amount);
         this.emitPatronTransactionByPatron(affectedPatron, undefined, 'open');
+        const translateType = this.translateService.instant(record.type);
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Patron'),
@@ -247,6 +248,7 @@ export class PatronTransactionService {
           ? error.message.message
           : 'Server error :: ' + (error.title || error.toString());
         const message = '[' + error.status + ' - ' + error.statusText + '] ' + errorMessage;
+        const translateType = this.translateService.instant(record.type);
         this.messageService.add({
           severity: 'error',
           summary: this.translateService.instant('{{ type }} creation failed!', { type: translateType }),
@@ -255,6 +257,6 @@ export class PatronTransactionService {
           closable: true
         });
       }
-    });
+  });
   }
 }

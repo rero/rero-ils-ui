@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,60 +15,53 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (transaction !== undefined && transaction.fees.total > 0) {
-  <div class="col mr-1 p-2 border rounded">
-    <div class="row">
-      <div class="col-lg-2">
-        <shared-open-close-button (status)="isCollapsed = $event" />
-        {{ transaction.loan.end_date.toDate() | dateTranslate :'shortDate' }}
-      </div>
-      <div class="col-lg-7 d-inline-block text-truncate">
-        @if (document && document.title | mainTitle; as title) {
-          <a [routerLink]="['/records','documents','detail', document.pid]">
-            {{ title | truncateText: 15 }}
-          </a>
-        }
-      </div>
-      <div class="col-lg-2 text-lg-right">{{ transaction.fees.total | currency: organisation.default_currency }}</div>
-      <div class="col-lg-1"></div>
+  <div class="mr-1 p-2">
+  <div class="grid grid-nogutter align-items-start">
+    <div class="col-2 flex gap-2">
+      <shared-open-close-button (status)="isCollapsed = $event" />
+      {{ transaction.loan.end_date | dateTranslate :'shortDate' }}
     </div>
-    @if (!isCollapsed) {
-      <div class="mt-2">
-        <!-- Transaction detail -->
-        <h6 translate>Details</h6>
-        <section class="offset-md-1 mb-3">
-          @if (item) {
-            <div class="row">
-              <div class="col-sm-2 label-title text-right" translate>Item</div>
-              <a class="col" [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
-            </div>
-            <div class="row">
-              <div class="col-sm-2 label-title text-right" translate>Call number</div>
-              <shared-inherited-call-number [item]="item" class="col"></shared-inherited-call-number>
-            </div>
-            <div class="row">
-              <div class="col-sm-2 label-title text-right" translate>Borrowed on</div>
-              <div class="col">{{ transaction.loan.start_date.toDate() | dateTranslate :'short' }}</div>
-            </div>
-            <div class="row" *ngVar="transaction.loan.transaction_location_pid | getRecord: 'locations' | async as location">
-              <div class="col-sm-2 label-title text-right" translate>Borrowed at</div>
-              <div class="col">
-                {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}: {{ location.metadata.name }}
-              </div>
-            </div>
-          }
-        </section>
-        <!-- Transaction history -->
-        <h6 translate>Transaction history</h6>
-        <div class="events-timeline">
-          @for (event of transaction.fees.steps; track event) {
-            <admin-patron-transaction-event
-              [event]="event"
-              class="row pl-2 pr-2 align-items-start timeline-event"
-            />
-          }
-        </div>
-      </div>
-    }
+    <div class="col-7">
+      @if (document && document.title | mainTitle; as title) {
+        <a [routerLink]="['/records','documents','detail', document.pid]">
+          {{ title | truncateText: 15 }}
+        </a>
+      }
+    </div>
+    <div class="col-2 flex justify-content-end">{{ transaction.fees.total | currency: organisation.default_currency }}</div>
   </div>
+  @if (!isCollapsed) {
+    <div class="mt-2">
+      <h6 translate>Details</h6>
+      <section class="mb-3">
+        @if (item) {
+          <div class="grid grid-nogutter">
+            <div class="col-2" translate>Item</div>
+            <div class="col-10">
+              <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+            </div>
+            <div class="col-2" translate>Call number</div>
+            <div class="col-10">
+              <shared-inherited-call-number [item]="item" />
+            </div>
+            <div class="col-2" translate>Borrowed on</div>
+            <div class="col-10">{{ transaction.loan.start_date | dateTranslate :'short' }}</div>
+            <ng-container *ngVar="transaction.loan.transaction_location_pid | getRecord: 'locations' | async as location">
+              @if (location) {
+                <div class="col-2" translate>Borrowed at</div>
+                <div class="col-10">
+                  {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}: {{ location.metadata.name }}
+                </div>
+              }
+            </ng-container>
+          </div>
+        }
+      </section>
+
+      <h6 translate>Transaction history</h6>
+      <admin-patron-transaction-history [events]="transaction.fees.steps" />
+    </div>
+  }
+</div>
 }
 

@@ -21,8 +21,7 @@ import { RecordService } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-requested-item',
-  templateUrl: './requested-item.component.html',
-  styleUrls: ['./requested-item.component.scss']
+  templateUrl: './requested-item.component.html'
 })
 export class RequestedItemComponent implements OnInit {
 
@@ -67,7 +66,6 @@ export class RequestedItemComponent implements OnInit {
   getCallout() {
     return (this.callout !== null)
       ? `callout ${this.callout}`
-      : 'border rounded';
+      : null;
   }
-
 }

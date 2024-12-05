@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020-2024 RERO
+  Copyright (C) 2020-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,234 +14,171 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (currentPatron$ | async; as patron) {
-  <article>
-    <section class="m-2 p-2">
-      <!-- USERNAME -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Username</dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ $any(patron).username }}
-        </dd>
-      </dl>
-      <!-- STREET -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Street</dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ $any(patron).street }}
-        </dd>
-      </dl>
-      <!-- CITY -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>City</dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          {{ $any(patron).postal_code }} {{ $any(patron).city }}
-        </dd>
-      </dl>
-      <!-- Country -->
-      @if ($any(patron).country) {
-        <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Country</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ 'country_' + $any(patron).country | translate }}
-          </dd>
-        </dl>
-      }
-      <!-- PHONE -->
-      @if ($any(patron).home_phone) {
-        <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Home phone number</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ $any(patron).home_phone }}
-          </dd>
-        </dl>
-      }
-      @if ($any(patron).business_phone) {
-        <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Business phone number</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ $any(patron).business_phone }}
-          </dd>
-        </dl>
-      }
-      @if ($any(patron).mobile_phone) {
-        <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Mobile phone</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ $any(patron).mobile_phone }}
-          </dd>
-        </dl>
-      }
-      @if ($any(patron).other_phone) {
-        <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Other phone</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ $any(patron).other_phone }}
-          </dd>
-        </dl>
-      }
-      <!-- EMAIL -->
-      @if ($any(patron).email) {
-        <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title">Email</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ $any(patron).email }}
-          </dd>
-        </dl>
-      }
-      <!-- SOURCE -->
-      @if ($any(patron).source) {
-        <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Source</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ $any(patron).source }}
-          </dd>
-        </dl>
-      }
-      <!-- Local Code -->
-      @if ($any(patron).local_code) {
-        <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Local code</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ $any(patron).local_code }}
-          </dd>
-        </dl>
-      }
-      <!-- Keep history -->
-      <dl class="row mb-0">
-        <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Keep history</dt>
-        <dd class="col-sm-7 col-md-8 mb-0">
-          <i class="fa" [ngClass]="$any(patron).keep_history ? 'fa-check text-success' : 'fa-times text-danger'"
-            aria-hidden="true">
-          </i>
-        </dd>
-      </dl>
-      @if (canUpdate()) {
-        <p-button
-          id="profile-change-password-button"
-          outlined
-          [label]="'Change Password'|translate"
-          (onClick)="updatePatronPassword(patron)"
-        />
-      }
-    </section>
-
-    @if ($any(patron).second_address) {
-      <section class="m-2 p-2">
-        <h5 class="mb-0" translate>Second address</h5>
-        <!-- STREET -->
-        @if ($any(patron).second_address.street) {
-          <dl class="row mb-0">
-            <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Street</dt>
-            <dd class="col-sm-7 col-md-8 mb-0">
-              {{ $any(patron).second_address.street }}
-            </dd>
-          </dl>
-        }
-        <!-- CITY -->
-        @if ($any(patron).second_address.postal_code ||  $any(patron).second_address.city) {
-          <dl class="row mb-0">
-            <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>City</dt>
-            <dd class="col-sm-7 col-md-8 mb-0">
-              @if ($any(patron).second_address.postal_code) {
-                {{ $any(patron).second_address.postal_code }}
-              }
-              @if ($any(patron).second_address.city) {
-                {{ $any(patron).second_address.city }}
-              }
-            </dd>
-          </dl>
-        }
-        <!-- Country -->
-        @if ($any(patron).second_address.country) {
-          <dl class="row mb-0">
-            <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Country</dt>
-            <dd class="col-sm-7 col-md-8 mb-0">
-              {{ 'country_' + $any(patron).second_address.country | translate }}
-            </dd>
-          </dl>
-        }
-      </section>
+@defer(when patron) {
+  <dl class="metadata">
+    <dt translate>Username</dt>
+    <dd>
+      {{ $any(patron).username }}
+    </dd>
+    <dt translate>Street</dt>
+    <dd>
+      {{ $any(patron).street }}
+    </dd>
+    <dt translate>City</dt>
+    <dd>
+      {{ $any(patron).postal_code }} {{ $any(patron).city }}
+    </dd>
+    @if ($any(patron).country) {
+      <dt translate>Country</dt>
+      <dd>
+        {{ 'country_' + $any(patron).country | translate }}
+      </dd>
     }
-
-    @if ($any(patron).isLibrarian) {
-      <section class="m-2 p-2">
-        <h5 class="mb-0" translate>Librarian Information</h5>
-        <!-- LIBRARY -->
-        <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-            Library
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ $any(patron).library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
-          </dd>
-        </dl>
-      </section>
+    @if ($any(patron).home_phone) {
+      <dt translate>Home phone number</dt>
+      <dd>
+        {{ $any(patron).home_phone }}
+      </dd>
     }
-    @if ($any(patron).patron) {
-      <section class="m-2 p-2">
-        <h5 class="mb-0" translate>Patron Information</h5>
-        <!-- ROLES -->
-        <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title">
-            <span [ngPlural]="$any(patron).roles.length">
-              <ng-template ngPluralCase="0" translate>Role</ng-template>
-              <ng-template ngPluralCase="=1" translate>Role</ng-template>
-              <ng-template ngPluralCase="other" translate>Roles</ng-template>
-            </span>
-          </dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            @for (role of $any(patron).roles; track role; let last=$last) {
-              {{ role | translate }}{{ last ? '' : ', ' }}
+    @if ($any(patron).business_phone) {
+      <dt translate>Business phone number</dt>
+      <dd>
+        {{ $any(patron).business_phone }}
+      </dd>
+    }
+    @if ($any(patron).mobile_phone) {
+      <dt translate>Mobile phone</dt>
+      <dd>
+        {{ $any(patron).mobile_phone }}
+      </dd>
+    }
+    @if ($any(patron).other_phone) {
+      <dt translate>Other phone</dt>
+      <dd>
+        {{ $any(patron).other_phone }}
+      </dd>
+    }
+    @if ($any(patron).email) {
+      <dt>Email</dt>
+      <dd>
+        {{ $any(patron).email }}
+      </dd>
+    }
+    @if ($any(patron).source) {
+      <dt translate>Source</dt>
+      <dd>
+        {{ $any(patron).source }}
+      </dd>
+    }
+    @if ($any(patron).local_code) {
+      <dt translate>Local code</dt>
+      <dd>
+        {{ $any(patron).local_code }}
+      </dd>
+    }
+    <dt translate>Keep history</dt>
+    <dd>
+      <i class="fa" [ngClass]="$any(patron).keep_history ? 'fa-check text-success' : 'fa-times text-error'"
+        aria-hidden="true">
+      </i>
+    </dd>
+  </dl>
+
+  @if ($any(patron).second_address) {
+    <h4 class="mt-3" translate>Second address</h4>
+    <dl class="metadata">
+      @if ($any(patron).second_address.street) {
+        <dt translate>Street</dt>
+        <dd>
+          {{ $any(patron).second_address.street }}
+        </dd>
+      }
+      @if ($any(patron).second_address.postal_code ||  $any(patron).second_address.city) {
+        <dt translate>City</dt>
+        <dd>
+          @if ($any(patron).second_address.postal_code) {
+            {{ $any(patron).second_address.postal_code }}
+          }
+          @if ($any(patron).second_address.city) {
+            {{ $any(patron).second_address.city }}
+          }
+        </dd>
+      }
+      @if ($any(patron).second_address.country) {
+        <dt translate>Country</dt>
+        <dd>
+          {{ 'country_' + $any(patron).second_address.country | translate }}
+        </dd>
+      }
+    </dl>
+  }
+
+  @if ($any(patron).isLibrarian) {
+    <h4 class="mt-3" translate>Librarian Information</h4>
+    <dl class="metadata">
+      <dt translate>Library</dt>
+      <dd>
+        {{ $any(patron).library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+      </dd>
+    </dl>
+  }
+  @if ($any(patron).patron) {
+    <h4 class="mt-3" translate>Patron Information</h4>
+    <dl class="metadata">
+      <dt>
+        <span [ngPlural]="$any(patron).roles.length">
+          <ng-template ngPluralCase="0" translate>Role</ng-template>
+          <ng-template ngPluralCase="=1" translate>Role</ng-template>
+          <ng-template ngPluralCase="other" translate>Roles</ng-template>
+        </span>
+      </dt>
+      <dd>
+        @for (role of $any(patron).roles; track role; let last=$last) {
+          {{ role | translate }}{{ last ? '' : ', ' }}
+        }
+      </dd>
+      <dt translate>Patron's barcodes or cards number</dt>
+      <dd>
+        <a [routerLink]="['/circulation', 'patron', $any(patron).patron.barcode[0]]">
+          {{ $any(patron).patron.barcode | join: ', '}}
+        </a>
+      </dd>
+      <dt translate>Type</dt>
+      <dd>
+        {{ $any(patron).patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
+      </dd>
+      <dt translate>Account expiration</dt>
+      <dd>
+        {{ $any(patron).patron.expiration_date | dateTranslate:'mediumDate' }}
+      </dd>
+      @if ($any(patron).libraries && $any(patron).libraries.length > 0) {
+        <dt translate>Affiliation libraries</dt>
+        <dd>
+          <ul class="list-none p-0 m-0">
+            @for (library of $any(patron).libraries; track library) {
+              <li>{{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</li>
             }
-          </dd>
-        </dl>
-        <!-- BARCODE -->
-        <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Patron's barcodes or cards number</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            <a [routerLink]="['/circulation', 'patron', $any(patron).patron.barcode[0]]">
-              {{ $any(patron).patron.barcode | join: ', '}}
-            </a>
-          </dd>
-        </dl>
-        <!-- TYPE -->
-        <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Type</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ $any(patron).patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
-          </dd>
-        </dl>
-        <!-- ACCOUNT EXPIRATION -->
-        <dl class="row mb-0">
-          <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Account expiration</dt>
-          <dd class="col-sm-7 col-md-8 mb-0">
-            {{ $any(patron).patron.expiration_date | dateTranslate:'mediumDate' }}
-          </dd>
-        </dl>
-        @if ($any(patron).libraries && $any(patron).libraries.length > 0) {
-          <dl class="row mb-0">
-            <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>Affiliation libraries</dt>
-            <dd class="col-sm-7 col-md-8 mb-0">
-              <ul class="list-unstyled">
-                @for (library of $any(patron).libraries; track library) {
-                  <li>{{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</li>
-                }
-              </ul>
-            </dd>
-          </dl>
-        }
-      </section>
-    }
+          </ul>
+        </dd>
+      }
+    </dl>
+  }
 
-    @if (canUpdate()) {
+  @if (canUpdate()) {
+    <div class="flex gap-2 mt-3">
+      <p-button
+        id="profile-change-password-button"
+        outlined
+        [label]="'Change Password'|translate"
+        (onClick)="updatePatronPassword(patron)"
+      />
       <p-button
         id="profile-edit-button"
-        icon="fa fa-pencil"
         [label]="'Edit' | translate"
         [routerLink]="['/records','patrons','edit', $any(patron).pid]"
       />
-    }
-
-  </article>
+    </div>
+  }
+} @placeholder {
+  <div class="font-bold mx-2 my-4" translate>Loading in progress</div>
 }

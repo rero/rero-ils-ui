@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2020-2024 RERO
+ Copyright (C) 2020-2025 RERO
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published by
@@ -14,28 +14,31 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section class="content">
-  @if (loans && loans.length > 0) {
-    <div>
-      <!-- HEADER -->
-      <div class="grid p-2 mb-1 bg-dark rounded text-light">
-        <div class="col-2" translate>Item</div>
-        <div class="col-5" translate>Title</div>
+@defer(when loans) {
+  <p-card class="p-card-body-p-0">
+    <ng-template pTemplate="header">
+      <div class="grid grid-nogutter py-3 px-2 m-1 text-lg font-bold align-items-center border-bottom-1 surface-border">
+        <div class="col-3" translate>Item</div>
+        <div class="col-6" translate>Title</div>
         <div class="col-2" translate>Request date</div>
-        <div class="col-2" translate>Expected availability</div>
-        <div class="col-1" translate>&nbsp;</div>
       </div>
-      @for (loan of loans; track loan) {
-        <div>
+    </ng-template>
+    @if (loans.length > 0) {
+      <div class="alternate-color">
+        @for (loan of loans; track loan) {
           <admin-pending-item
-            class="row p-2 mb-1 border rounded align-middle"
             [loan]="loan"
             (cancelRequestEvent)="cancelRequest($event)"
           />
-        </div>
-      }
-    </div>
-  } @else {
-    {{ 'No items' | translate }}
-  }
-</section>
+        }
+      </div>
+    } @else {
+      <div class="mx-3 my-4 font-bold" translate>
+        No items
+      </div>
+    }
+  </p-card>
+} @placeholder {
+  <div class="font-bold mx-2 my-4" translate>Loading in progress</div>
+}
+

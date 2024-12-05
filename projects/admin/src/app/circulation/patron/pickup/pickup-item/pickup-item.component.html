@@ -14,32 +14,34 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (item && loan) {
-  <div class="col-2">
-    <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
-  </div>
-  <div class="col-4">
-    @if (document.title | mainTitle; as title) {
-      <a [routerLink]="['/records', 'documents', 'detail', document.pid]">
-        {{ title }}
-      </a>
-      @if (item.enumerationAndChronology) {
-        <span class="badge badge-info">{{ item.enumerationAndChronology }}</span>
-      }<br/>
-    }
-    <shared-contribution [contributions]="document?.contribution" />
-  </div>
-  <div class="col-3">
-    {{ loan.metadata.pickup_location_pid | getRecord: 'locations' : 'field' : 'pickup_name' | async }}
-  </div>
-  <div class="col-2">
-    @if (loan.metadata.request_expire_date) {
-      {{ loan.metadata.request_expire_date | dateTranslate:'shortDate' }}
-    } @else {
-      {{ 'Unknown' | translate }}
-    }
-  </div>
-  <div class="col-1 text-right">
-    <admin-cancel-request-button [loan]="loan" (cancelRequestEvent)="cancelRequest($event)" />
+@if (item) {
+  <div class="grid grid-nogutter p-2">
+    <div class="col-2">
+      <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
+    </div>
+    <div class="col-4">
+      @if (document.title | mainTitle; as title) {
+        <a [routerLink]="['/records', 'documents', 'detail', document.pid]">
+          {{ title }}
+        </a>
+        @if (item.enumerationAndChronology) {
+          <p-tag severity="info" [value]="item.enumerationAndChronology" />
+        }<br/>
+      }
+      <shared-contribution [contributions]="document?.contribution" />
+    </div>
+    <div class="col-3">
+      {{ loan.metadata.pickup_location_pid | getRecord: 'locations' : 'field' : 'pickup_name' | async }}
+    </div>
+    <div class="col-2">
+      @if (loan.metadata.request_expire_date) {
+        {{ loan.metadata.request_expire_date | dateTranslate:'shortDate' }}
+      } @else {
+        {{ 'Unknown' | translate }}
+      }
+    </div>
+    <div class="col-1 flex justify-content-end">
+      <admin-cancel-request-button [loan]="loan" (cancelRequestEvent)="cancelRequest($event)" />
+    </div>
   </div>
 }
