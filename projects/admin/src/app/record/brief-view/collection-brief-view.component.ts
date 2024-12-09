@@ -21,30 +21,32 @@ import { ResultItem } from '@rero/ng-core';
 @Component({
   selector: 'admin-collection-brief',
   template: `
-  <h5 class="mb-0 card-title">
-    <i class="fa fa-circle mr-1 text-{{ record.metadata.published ? 'success' : 'danger' }}" aria-hidden="true"></i>
-    <a id="collection-link" [routerLink]="[detailUrl.link]">{{ record.metadata.title }}</a>
-    @if (record.metadata.collection_id) {
-      ({{ record.metadata.collection_id }})
-    }
-  </h5>
-  <div class="card-text">
-    @if (record.metadata.teachers) {
-      <div id="collection-teacher">
-        @for (teacher of record.metadata.teachers; track teacher; let last = $last) {
-          {{ teacher.name }} {{ last ? '' : ', ' }}
+    <div class="flex flex-column gap-1">
+      <h5>
+        <i class="fa fa-circle mr-1" [ngClass]="{'text-success': record.metadata.published, 'text-error': !record.metadata.published}" aria-hidden="true"></i>
+        <a id="collection-link" [routerLink]="[detailUrl.link]">{{ record.metadata.title }}</a>
+        @if (record.metadata.collection_id) {
+          ({{ record.metadata.collection_id }})
         }
-      </div>
-    }
-    @if (record.metadata.description) {
-      <div
-        id="collection-start-end-date"
-        [innerHtml]="record.metadata.description | nl2br"
-      ></div>
-    }
-    {{ record.metadata.start_date | dateTranslate: 'mediumDate' }}
-    - {{ record.metadata.end_date | dateTranslate: 'mediumDate' }}
-  </div>
+      </h5>
+        @if (record.metadata.teachers) {
+          <div id="collection-teacher">
+            @for (teacher of record.metadata.teachers; track teacher; let last = $last) {
+              {{ teacher.name }} {{ last ? '' : ', ' }}
+            }
+          </div>
+        }
+        @if (record.metadata.description) {
+          <div
+            id="collection-start-end-date"
+            [innerHtml]="record.metadata.description | nl2br"
+          ></div>
+        }
+        <div>
+        {{ record.metadata.start_date | dateTranslate: 'mediumDate' }}
+        - {{ record.metadata.end_date | dateTranslate: 'mediumDate' }}
+        </div>
+    </div>
   `
 })
 export class CollectionBriefViewComponent implements ResultItem {
