@@ -20,10 +20,11 @@
   [isHighlight]="isHighlight"
   [separator]="separator"
 >
-  <span badge class="badge badge-pill badge-primary">{{ record.metadata.loan.trigger | translate }}</span>
-  <div collapsedContent class="row">
+  <p-tag badge>{{ record.metadata.loan.trigger | translate }}</p-tag>
+  <div collapsedContent class="grid">
     <!-- Location -->
-    <div class="col-8 fa-icon-library">
+    <div class="col-8">
+      <i class="fa fa-globe"></i>&nbsp;
       @if (record.metadata.loan.transaction_location) {
         @if (record.metadata.loan.transaction_location.pid | getRecord : 'locations' | async; as location) {
           {{ $any(location).metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
@@ -33,7 +34,8 @@
       }
     </div>
     <!-- Patron -->
-    <div class="col-4 fa-icon-patron">
+    <div class="col-4">
+      <i class="fa fa-user"></i>&nbsp;
       @if (record.metadata.loan.patron.pid) {
         @if (record.metadata.loan.patron.pid | getRecord : 'patrons' | async; as patron) {
           <a [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0]]"  (click)="closeDialog()">
@@ -45,10 +47,10 @@
       }
     </div>
   </div>
-  <dl class="row" expandedContent>
+  <dl class="metadata" expandedContent>
     <!-- Library -->
-    <dt class="col-4 label-title font-weight-bold fa-icon-library" translate>Library</dt>
-    <dd class="col-8">
+    <dt><i class="fa fa-globe"></i>&nbsp;{{'Library' | translate}}</dt>
+    <dd>
       @if (record.metadata.loan.transaction_location) {
         @if (record.metadata.loan.transaction_location.pid | getRecord : 'locations' | async; as location) {
           {{ $any(location).metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
@@ -59,12 +61,12 @@
     </dd>
 
     <!-- Location -->
-    <dt class="col-4 label-title font-weight-bold fa-icon-pickup-location" translate>Pickup location</dt>
-    <dd class="col-8">{{ record.metadata.loan.pickup_location.name }}</dd>
+    <dt><i class="fa fa-map-marker"></i>&nbsp;{{'Pickup location' | translate}}</dt>
+    <dd>{{ record.metadata.loan.pickup_location.name }}</dd>
 
     <!-- Patron -->
-    <dt class="col-4 label-title font-weight-bold fa-icon-patron" translate>Patron</dt>
-    <dd class="col-8">
+    <dt><i class="fa fa-user"></i>&nbsp;{{ 'Patron' | translate }}</dt>
+    <dd>
       @if (record.metadata.loan.patron.pid) {
         @if (record.metadata.loan.patron.pid | getRecord : 'patrons' | async; as patron) {
           <a [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0]]" (click)="closeDialog()">
@@ -77,8 +79,8 @@
     </dd>
 
     <!-- Operator -->
-    <dt class="col-4 label-title font-weight-bold fa-icon-operator" translate>Operator</dt>
-    <dd class="col-8">
+    <dt><i class="fa fa-user-circle-o"></i>&nbsp;{{ 'Operator' | translate }}</dt>
+    <dd>
       {{ record.metadata.user_name }}
       @if (record.metadata.loan.auto_extend) {
         ({{ 'automatic renewal' | translate }})

@@ -15,65 +15,58 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section class="container-fluid">
+<div class="flex flex-column gap-2">
   <!-- LOAN METADATA -->
-  <div class="row">
-    <div class="col">
-      <h5 class="mb-0">{{ record.metadata.document.title | mainTitle }}</h5>
-      <div class="container">
-        <dl class="row m-0">
-          <dt class="label-title col-3" translate>Item</dt>
-          <dd class="col-9">
-            <shared-inherited-call-number [item]="record.metadata.item"></shared-inherited-call-number>
-            (<a [routerLink]="['/records', 'items', 'detail', record.metadata.item.pid]">{{ record.metadata.item.barcode }}</a>)
-          </dd>
-          <dt class="label-title col-3" translate>Patron</dt>
-          <dd class="col-9">
-            <a [routerLink]="['/records', 'patrons', 'detail', this.record.metadata.patron.pid]">
-              {{ record.metadata.patron.formatted_name }}
-            </a>
-          </dd>
-          <dt class="label-title col-3" translate>Status</dt>
-          <dd class="col-9">
-            <span class="badge" [class]="stateClass">{{ record.metadata.state | translate }}</span>
-            @switch(record.metadata.state) {
-              <!-- ITEM_ON_LOAN additional information -->
-              @case (loanState.ITEM_ON_LOAN) {
-                @if (record.metadata?.is_late) {
-                  <span class="badge badge-danger ml-1" translate>overdue</span>
-                  ({{ 'due date' | translate }}
-                  <span [ngClass]="{'text-danger font-weight-bold': record.metadata?.is_late}">
-                    {{record.metadata.end_date | date: 'shortDate' }}</span>)
-                }
-              }
-              <!-- REQUEST additional information -->
-              @case (loanState.ITEM_AT_DESK) {
-                ({{ 'request expire at' | translate }}
-                <span [ngClass]="{'text-danger': isRequestExpired}">{{ record.metadata.request_expire_date | date: 'shortDate' }}</span>)
-              }
-            }
-          </dd>
-        </dl>
+    <div class="flex gap-2">
+      <h5 class="flex-grow-1">{{ record.metadata.document.title | mainTitle }}</h5>
+          <!-- ACTIONS BUTTON -->
+      <div class="flex gap-1">
+        <p-button icon="fa fa-history" severity="secondary" [outlined]="true" size="small"  (onClick)="openTransactionHistoryDialog(record.metadata.pid)" />
+        @if (canUseDebugMode) {
+          <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" severity="warning" [outlined]="!debugMode" size="small"
+            (onClick)="debugMode=!debugMode"
+          >
+            <i class="mr-1 fa fa-bug" [ngClass]=""></i>
+          </p-button>
+        }
       </div>
     </div>
-    <!-- ACTIONS BUTTON -->
-    <div class="col-2 text-right">
-      <button class="btn btn-sm btn-outline-secondary" (click)="openTransactionHistoryDialog(record.metadata.pid)">
-        <i class="fa fa-history"></i>
-      </button>
-      @if (canUseDebugMode) {
-        <button class="debug-button btn btn-sm btn-outline-warning ml-1"
-          [class.btn-hover]="debugMode"
-          (click)="debugMode=!debugMode"
-        >
-          <i class="fa fa-bug pr-1"></i>
-          <i class="fa" [ngClass]="debugMode ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
-        </button>
-      }
-    </div>
+    <dl class="metadata">
+      <dt translate>Item</dt>
+      <dd>
+        <shared-inherited-call-number [item]="record.metadata.item" />
+        (<a [routerLink]="['/records', 'items', 'detail', record.metadata.item.pid]">{{ record.metadata.item.barcode }}</a>)
+      </dd>
+      <dt translate>Patron</dt>
+      <dd>
+        <a [routerLink]="['/records', 'patrons', 'detail', this.record.metadata.patron.pid]">
+          {{ record.metadata.patron.formatted_name }}
+        </a>
+      </dd>
+      <dt translate>Status</dt>
+      <dd>
+        <p-tag class="badge" [severity]="tagSeverity">{{ record.metadata.state | translate }}</p-tag>
+        @switch(record.metadata.state) {
+          <!-- ITEM_ON_LOAN additional information -->
+          @case (loanState.ITEM_ON_LOAN) {
+            @if (record.metadata?.is_late) {
+              <p-tag severity="danger" translate>overdue</p-tag>
+              ({{ 'due date' | translate }}
+              <span [ngClass]="{'text-danger font-bold': record.metadata?.is_late}">
+                {{record.metadata.end_date | date: 'shortDate' }}</span>)
+            }
+          }
+          <!-- REQUEST additional information -->
+          @case (loanState.ITEM_AT_DESK) {
+            ({{ 'request expire at' | translate }}
+            <span [ngClass]="{'text-danger': isRequestExpired}">{{ record.metadata.request_expire_date | date: 'shortDate' }}</span>)
+          }
+        }
+      </dd>
+    </dl>
+
     <!-- DEBUG PANEL -->
     @if (debugMode) {
-      <pre class="col-12 mt-2">{{ record.metadata | json }}</pre>
+        <pre style="text-wrap: auto" class="text-xs surface-100 p-2">{{ record.metadata | json }}</pre>
     }
   </div>
-</section>

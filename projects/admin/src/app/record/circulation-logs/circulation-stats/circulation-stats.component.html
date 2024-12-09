@@ -16,17 +16,17 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (stats) {
-  <div class="row mb-3">
+  <div class="grid mb-3">
     <div class="col-6">
-      <span class="font-weight-bold" translate>Past year (last 365 days)</span>
-      <ul class="list-unstyled mb-0">
+      <span class="font-bold" translate>Past year (last 365 days)</span>
+      <ul class="list-none m-0 p-0">
         <li>{{ 'checkout' | translate | ucfirst }}: {{ stats.total_year.checkout | default: 0 }}</li>
         <li>{{ 'renewal' | translate | ucfirst }}: {{ stats.total_year.extend | default: 0 }}</li>
       </ul>
     </div>
     <div class="col-6">
-      <span class="font-weight-bold" translate>Total</span>
-      <ul class="list-unstyled mb-0">
+      <span class="font-bold" translate>Total</span>
+      <ul class="list-none m-0 p-0">
         <li>{{ 'checkout' | translate | ucfirst }}: {{ stats.total.checkout | default: 0 }}</li>
         <li>{{ 'renewal' | translate| ucfirst }}: {{ stats.total.extend | default: 0 }}</li>
       </ul>

@@ -20,8 +20,7 @@ import { NotificationApiService } from '@app/admin/api/notification-api.service'
 
 @Component({
   selector: 'admin-circulation-log-notification',
-  templateUrl: './circulation-log-notification.component.html',
-  styleUrls: ['./circulation-log-notification.component.scss']
+  templateUrl: './circulation-log-notification.component.html'
 })
 export class CirculationLogNotificationComponent {
 
