@@ -15,56 +15,56 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  <h1 id="collection-title" class="mb-3 mr-2">{{ record.metadata.title }}</h1>
-  @if (record.metadata.subjects) {
-    <section class="mt-2" id="subject">
-      @for(subject of record.metadata.subjects; track subject) {
-        <span class="badge badge-secondary mr-1 ng-star-inserted">
-          <i class="fa fa-tag"></i> {{ subject.name }}
-        </span>
-      }
-    </section>
-  }
-  <section class="mt-2" id="collection">
-    <dl class="row">
+  <section class="flex flex-column py-2 gap-2">
+    <h1 id="collection-title">{{ record.metadata.title }}</h1>
+    @if (record.metadata.subjects) {
+      <div id="subject" class="flex gap-1">
+        @for(subject of record.metadata.subjects; track subject) {
+          <p-tag severity="secondary">
+            <i class="fa fa-tag"></i>&nbsp;{{ subject.name }}
+          </p-tag>
+        }
+      </div>
+    }
+    <dl class="metadata">
       @if (record.metadata.description) {
-        <dt class="col-3 py-0 label-title" translate>Description</dt>
-        <dd class="col-9 py-0 mb-0" [innerHtml]="record.metadata.description | nl2br"></dd>
+        <dt translate>Description</dt>
+        <dd [innerHtml]="record.metadata.description | nl2br"></dd>
       }
       @if (record.metadata.teachers) {
-        <dt class="col-3 py-0 label-title" translate>Teachers</dt>
-        <dd class="col-9 py-0 mb-0">
+        <dt translate>Teachers</dt>
+        <dd>
           @for (teacher of record.metadata.teachers; track teacher; let last = $last) {
             {{ teacher.name }} {{ last ? '' : ', ' }}
           }
         </dd>
       }
       @if (record.metadata.collection_id) {
-        <dt class="col-3 py-0 label-title" translate>Collection ID</dt>
-        <dd class="col-9 py-0 mb-0">{{ record.metadata.collection_id }}</dd>
+        <dt translate>Collection ID</dt>
+        <dd>{{ record.metadata.collection_id }}</dd>
       }
       @if (record.metadata.collection_type) {
-        <dt class="col-3 py-0 label-title" translate>Type</dt>
-        <dd class="col-9 py-0 mb-0">{{ record.metadata.collection_type }}</dd>
+        <dt translate>Type</dt>
+        <dd>{{ record.metadata.collection_type }}</dd>
       }
       @if (record.metadata.libraries) {
-        <dt class="col-3 py-0 label-title" translate>Libraries</dt>
-        <dd class="col-9 py-0 mb-0">
-          <ul class="list-unstyled mb-0">
+        <dt translate>Libraries</dt>
+        <dd>
+          <ul class="list-none m-0 p-0">
             @for (library of record.metadata.libraries; track library; let last=$last) {
               <li>{{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</li>
             }
           </ul>
         </dd>
       }
-      <dt class="col-3 py-0 label-title" translate>Date</dt>
-      <dd class="col-9 py-0 mb-0">
+      <dt translate>Date</dt>
+      <dd>
         {{ record.metadata.start_date | dateTranslate: 'mediumDate' }}
         - {{ record.metadata.end_date | dateTranslate: 'mediumDate' }}
       </dd>
-      <dt class="col-3 py-0 label-title" translate>Status</dt>
-      <dd class="col-9 py-0 mb-0">
-        <i class="fa fa-circle mr-1 text-{{ record.metadata.published ? 'success' : 'danger' }}" aria-hidden="true"></i>
+      <dt translate>Status</dt>
+      <dd>
+        <i class="fa fa-circle mr-1" aria-hidden="true" [ngClass]="{'text-success': record.metadata.published, 'text-error': !record.metadata.published}"></i>
         @if (record.metadata.published) {
           {{ 'published' | translate }}
         } @else {
@@ -72,10 +72,8 @@
         }
       </dd>
     </dl>
-  </section>
 
-  <section id="items">
-    <admin-collection-items [items]="record.metadata.items"></admin-collection-items>
+    <admin-collection-items [items]="record.metadata.items" />
   </section>
 }
 
