@@ -20,8 +20,7 @@ import { PermissionsService } from '@rero/shared';
 
 @Component({
   selector: 'admin-circulation-log',
-  templateUrl: './circulation-log.component.html',
-  styleUrls: ['./circulation-log.component.scss']
+  templateUrl: './circulation-log.component.html'
 })
 export class CirculationLogComponent {
 

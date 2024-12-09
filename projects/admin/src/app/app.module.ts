@@ -81,7 +81,6 @@ import { VendorBriefViewComponent } from './record/brief-view/vendor-brief-view.
 import { CirculationLogLoanComponent } from './record/circulation-logs/circulation-log/circulation-log-loan/circulation-log-loan.component';
 import { CirculationLogNotificationComponent } from './record/circulation-logs/circulation-log/circulation-log-notification/circulation-log-notification.component';
 import { CirculationLogComponent } from './record/circulation-logs/circulation-log/circulation-log.component';
-import { CirculationLogsDialogComponent } from './record/circulation-logs/circulation-logs-dialog.component';
 import { CirculationLogsComponent } from './record/circulation-logs/circulation-logs.component';
 import { CirculationStatsComponent } from './record/circulation-logs/circulation-stats/circulation-stats.component';
 import { DocumentEditorComponent } from './record/custom-editor/document-editor/document-editor.component';
@@ -278,7 +277,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     DialogImportComponent,
     NotificationTypePipe,
     CirculationLogsComponent,
-    CirculationLogsDialogComponent,
     CirculationLogComponent,
     ItemInCollectionPipe,
     CountryCodeTranslatePipe,

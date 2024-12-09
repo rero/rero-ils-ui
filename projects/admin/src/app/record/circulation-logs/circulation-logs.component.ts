@@ -15,22 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { Record } from '@rero/ng-core';
 import { DateTime } from 'luxon';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { OperationLogsApiService } from '../../api/operation-logs-api.service';
 
 @Component({
   selector: 'admin-circulation-logs',
-  templateUrl: './circulation-logs.component.html',
-  styleUrls: ['./circulation-logs.component.scss']
+  templateUrl: './circulation-logs.component.html'
 })
-export class CirculationLogsComponent implements OnInit {
+export class CirculationLogsComponent implements OnInit, OnDestroy {
 
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
@@ -54,11 +54,13 @@ export class CirculationLogsComponent implements OnInit {
   records = [];
   /** first loaded record */
   loadedRecord = false;
-  /** Types of operation history (field: record.type) */
-  filterTypes = {
-    'loan': true,
-    'notif': true
-  }
+
+  formGroup: FormGroup | undefined;
+
+  filterTypes = ['loan', 'notif'];
+
+  /** all component subscription */
+  private subscriptions = new Subscription();
 
   // GETTER & SETTER ==========================================================
   /**
@@ -88,12 +90,30 @@ export class CirculationLogsComponent implements OnInit {
   ngOnInit(): void {
     const { data } = this.dynamicDialogConfig;
     this.resourcePid = data.resourcePid;
+    this.formGroup = new FormGroup(
+      this.filterTypes.reduce((acc, elem) => {
+        acc[elem] =  new FormControl<boolean>(undefined);
+        return acc
+      }, {})
+    );
     this.resourceType = data.resourceType || 'item';
-    this._circulationLogsQuery(1).subscribe((response: any) => {
+    this.subscriptions.add(
+    this.formGroup.valueChanges.pipe(
+      switchMap(res => this.circulationLogsQuery(1))
+    ).subscribe((response: any) => {
       this.recordTotals = response.total.value;
       this.records = response.hits;
       this.loadedRecord = true;
-    });
+    }));
+
+    this.formGroup.setValue(this.filterTypes.reduce((acc, elem) => {
+      acc[elem] = true
+      return acc
+    }, {}));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   // PUBLIC FUNCTIONS =========================================================
@@ -105,7 +125,7 @@ export class CirculationLogsComponent implements OnInit {
   /** show more */
   showMore(): void {
     this.page++;
-    this._circulationLogsQuery(this.page)
+    this.circulationLogsQuery(this.page)
       .subscribe((response: any) => {
         this.records = this.records.concat(response.hits);
       });
@@ -122,7 +142,7 @@ export class CirculationLogsComponent implements OnInit {
     if (date1 && date2) {
       const transDate1 = DateTime.fromISO(date1.metadata.date);
       const transDate2 = DateTime.fromISO(date2.metadata.date);
-      return transDate1.haSame(transDate2, period);
+      return transDate1.hasSame(transDate2, period);
     }
     return true;
   }
@@ -155,29 +175,15 @@ export class CirculationLogsComponent implements OnInit {
     }
   }
 
-  /**
-   * Filter check
-   * Allows you to add filters for a selection of records.
-   * @param type - string (Filter key)
-   */
-  filterCheck(type: string): void {
-    this.filterTypes[type] = !this.filterTypes[type];
-    this._circulationLogsQuery(1).subscribe((response: any) => {
-      this.recordTotals = response.total.value;
-      this.records = response.hits;
-      this.loadedRecord = true;
-    });
-  }
-
   // PRIVATE FUNCTIONS ========================================================
   /**
    * Circulation logs query
    * @param page - number
    * @return Observable
    */
-  private _circulationLogsQuery(page: number): Observable<any> {
+  private circulationLogsQuery(page: number): Observable<any> {
     return this.operationLogsApiService
-      .getCirculationLogs(this.resourceType, this.resourcePid, page, this.itemsPerPage, this.filterTypes)
+      .getCirculationLogs(this.resourceType, this.resourcePid, page, this.itemsPerPage, this.formGroup.value)
       .pipe(map((response: Record) =>  response.hits));
   }
 }
