@@ -15,28 +15,25 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="overflow-auto overflow-max-size">
+<div class="overflow-auto">
   @if (resourceType === 'item') {
-    <admin-circulation-stats [itemPid]="this.resourcePid"></admin-circulation-stats>
+    <admin-circulation-stats [itemPid]="this.resourcePid" />
   }
-  <div class="mb-3">
-    <span class="float-left label-title mr-2 font-weight-bold" translate>Filter</span>
-    <ul class="list-inline mb-0">
-      @for (filter of filterTypes | keyvalue; track filter) {
-        <li class="list-inline-item mr-2">
-          <div class="custom-control custom-switch mb-0">
-            <input type="checkbox" class="custom-control-input mt-1" [id]="filter.key" [checked]="filter.value" (click)="filterCheck(filter.key)">
-            <label class="custom-control-label" [for]="filter.key">{{ ('op_filter_' + filter.key) | translate }}</label>
-          </div>
-        </li>
-      }
-    </ul>
-  </div>
+  <form [formGroup]="formGroup">
+    <div class="flex gap-2 py-2">
+      <span class="font-bold">{{ 'Filter' | translate}}:</span>
+        @for (filter of filterTypes; track filter) {
+            <p-inputSwitch [inputId]="filter" [formControlName]="filter" />
+            <label class="" [for]="filter">{{ ('op_filter_' + filter) | translate }}</label>
+        }
+    </div>
+  </form>
   @defer {
     @if (recordTotals > 0) {
       @for (record of records; track record; let isFirst = $first; let idx = $index) {
         @if (isFirst || !isSamePeriod(record, records[idx-1])) {
-          <div class="transactionDate">
+          <div class="surface-100 p-2 surface-border border-y-1">
+            <i class="fa fa-calendar"></i>&nbsp;
             {{ record.metadata.date | dateTranslate :'MMMM Y' | titlecase }}
           </div>
         }
@@ -48,7 +45,7 @@
               [separator]="!isSamePeriod(record, records[idx-1], 'days')"
               (mouseenter)="mouseEventTransaction(record, $event)"
               (mouseleave)="highlightedLoanPid=null"
-            ></admin-circulation-log-notification>
+            />
           }
           @case('circulation') {
             <admin-circulation-log-loan

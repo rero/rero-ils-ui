@@ -20,7 +20,7 @@ import { Component, input, OnChanges, output, SimpleChanges } from '@angular/cor
   selector: 'shared-open-close-button',
   template: `
   <p-button
-    styleClass="bg-white"
+    [styleClass]="styleClass()"
     [icon]="internalStatus ? 'fa fa-caret-right' : 'fa fa-caret-down'"
     [outlined]="true"
     [rounded]="true"
@@ -33,12 +33,16 @@ export class OpenCloseButtonComponent implements OnChanges {
 
   collapsed = input<boolean>(true);
 
+  styleClass = input<string>('bg-white');
+
   status = output<boolean>();
 
   internalStatus: boolean = true;
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.internalStatus = changes.collapsed.currentValue;
+    if (changes?.collapsed) {
+      this.internalStatus = changes.collapsed.currentValue;
+    }
   }
 
   updateStatus(): void {
