@@ -22,16 +22,17 @@ import { DateTime } from 'luxon';
 import { DialogService } from 'primeng/dynamicdialog';
 import { LoanState } from '../../../classes/loans';
 import { CirculationLogsComponent } from '../../circulation-logs/circulation-logs.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-loans-brief-view',
-  templateUrl: './loans-brief-view.component.html',
-  styleUrls: ['./loans-brief-view.component.scss']
+  templateUrl: './loans-brief-view.component.html'
 })
 export class LoansBriefViewComponent implements ResultItem, OnInit {
 
   private dialogService: DialogService = inject(DialogService);
   private permissionsService: PermissionsService = inject(PermissionsService);
+  private translateService: TranslateService = inject(TranslateService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Information to build the URL on the record detail view. */
@@ -44,7 +45,7 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
   /** debug mode toggle */
   debugMode = false;
   /** class to use for the state bullet */
-  stateClass: string = null;
+  tagSeverity: string = null;
   /** Reference on LoanState */
   loanState = LoanState;
   /** is the current request is expired */
@@ -63,7 +64,7 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
   /** OnInit hook */
   ngOnInit() {
     // State bullet color
-    this._getBadgeStyle();
+    this.setTagSeverity();
     // Is request is expired
     this.record.metadata.request_expire_date = "2024-10-28T08:58:59.979434+00:00";
     if ('request_expire_date' in this.record.metadata) {
@@ -76,6 +77,8 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
   /** Open transaction history logs dialog */
   openTransactionHistoryDialog(loanPid: string): void {
     this.dialogService.open(CirculationLogsComponent, {
+      header: this.translateService.instant("Circulation history"),
+      width: '60vw',
       dismissableMask: true,
       data: {
         resourcePid: loanPid,
@@ -87,19 +90,19 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
   // PRIVATE COMPONENT FUNCTIONS ==============================================
 
   /** Define the bullet color. */
-  private _getBadgeStyle(): void {
+  private setTagSeverity(): void {
     switch (this.record.metadata.state) {
       case LoanState.CREATED:
       case LoanState.PENDING:
       case LoanState.ITEM_AT_DESK:
-        this.stateClass = 'badge-info';
+        this.tagSeverity = 'info';
         break;
       case LoanState.ITEM_ON_LOAN:
-        this.stateClass = 'badge-success';
+        this.tagSeverity = 'success';
         break;
       case LoanState.ITEM_IN_TRANSIT_FOR_PICKUP:
       case LoanState.ITEM_IN_TRANSIT_TO_HOUSE:
-        this.stateClass = 'badge-warning';
+        this.tagSeverity = 'warning';
     }
   }
 }
