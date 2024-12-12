@@ -17,51 +17,50 @@
 <!-- CALL NUMBER -->
 @if (holding) {
   @if (holding.metadata.call_number || holding.metadata.second_call_number) {
-    <div class="col-sm-3 font-weight-bold" translate>
-      Call number
-    </div>
-    <div id="holding-call-number-{{ holding.metadata.pid }}" class="col-sm-9 pl-4">
-      @if (holding.metadata.call_number) {
-        {{ holding.metadata.call_number }}
-      }
-      @if (holding.metadata.call_number && holding.metadata.second_call_number) {
-        |
-      }
-      @if (holding.metadata.second_call_number) {
-        {{ holding.metadata.second_call_number }}
-      }
-    </div>
+    <dl class="metadata">
+      <dt translate>Call number</dt>
+      <dd id="holding-call-number-{{ holding.metadata.pid }}">
+        @if (holding.metadata.call_number) {
+          {{ holding.metadata.call_number }}
+        }
+        @if (holding.metadata.call_number && holding.metadata.second_call_number) {
+          |
+        }
+        @if (holding.metadata.second_call_number) {
+          {{ holding.metadata.second_call_number }}
+        }
+      </dd>
+    </dl>
   }
 
   <!-- AVAILABLE COLLECTION -->
   @if (holding.metadata.enumerationAndChronology) {
-    <div class="col-sm-3 font-weight-bold" translate>
-      Available collection
-    </div>
-    <div
-      id="holding-enum-chrono-{{ holding.metadata.pid }}"
-      class="col-sm-9 pl-4"
-      [innerHTML]="holding.metadata.enumerationAndChronology | nl2br">
-    </div>
+    <dl class="metadata">
+      <dt translate>Available collection</dt>
+      <dd
+        id="holding-enum-chrono-{{ holding.metadata.pid }}"
+        [innerHTML]="holding.metadata.enumerationAndChronology | nl2br">
+      </dd>
+    </dl>
   }
 
   <!-- SUPPLEMENTARY CONTENT -->
   @if (holding.metadata.supplementaryContent) {
-      <div class="col-sm-3 font-weight-bold" translate>
-        Supplementary content
-      </div>
-      <div id="holding-sup-content-{{ holding.metadata.pid }}" class="col-sm-9 pl-4">
+    <dl class="metadata">
+      <dt translate>Supplementary content</dt>
+      <dt id="holding-sup-content-{{ holding.metadata.pid }}">
         {{ holding.metadata.supplementaryContent }}
-      </div>
+      </dt>
+    </dl>
   }
 
   <!-- INDEXES -->
   @if (holding.metadata.index) {
-    <div class="col-sm-3 font-weight-bold" translate>
-      Indexes
-    </div>
-    <div id="holding-index-{{ holding.metadata.pid }}" class="col-sm-9 pl-4">
-      {{ holding.metadata.index }}
-    </div>
+    <dl class="metadata">
+      <dt translate>Indexes</dt>
+      <dd id="holding-index-{{ holding.metadata.pid }}">
+        {{ holding.metadata.index }}
+      </dd>
+    </dl>
   }
 }

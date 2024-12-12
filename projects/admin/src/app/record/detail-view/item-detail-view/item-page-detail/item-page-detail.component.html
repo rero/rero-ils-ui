@@ -28,15 +28,23 @@
   >
     <ng-container beforeButton>
       @if (record) {
+        @if (recordPermissions?.update?.can && isIssue && isClaimAllowed) {
+            <p-button
+              outlined
+              (click)="openClaimEmailDialog()"
+              translate
+              [label]="'Add a claim' | translate"
+            />
+        }
         @if (isEnabledOperationLog && record.metadata.pid) {
-          <admin-operation-logs-dialog resourceType="items" [resourcePid]="record.metadata.pid"></admin-operation-logs-dialog>
+          <admin-operation-logs-dialog resourceType="items" [resourcePid]="record.metadata.pid" />
         }
       }
     </ng-container>
   </ng-core-detail-button>
   }
+  <admin-item-detail-view ngCoreRecordDetail [record]="record" [recordPermissions]="recordPermissions" />
   @if (error) {
-    <ng-core-error [error]="error"></ng-core-error>
+    <ng-core-error [error]="error" />
   }
-  <ng-template ngCoreRecordDetail></ng-template>
 </div>

@@ -21,8 +21,7 @@ import { ITypeEmail } from '../../IPreviewInterface';
 
 @Component({
   selector: 'admin-preview-email',
-  templateUrl: './preview-email.component.html',
-  styleUrls: ['./preview-email.component.scss']
+  templateUrl: './preview-email.component.html'
 })
 export class PreviewEmailComponent {
 

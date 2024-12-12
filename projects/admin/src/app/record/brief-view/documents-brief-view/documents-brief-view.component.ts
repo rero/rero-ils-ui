@@ -21,8 +21,7 @@ import { ResultItem } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-documents-brief-view',
-  templateUrl: './documents-brief-view.component.html',
-  styles: []
+  templateUrl: './documents-brief-view.component.html'
 })
 export class DocumentsBriefViewComponent implements ResultItem {
 

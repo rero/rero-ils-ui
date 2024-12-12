@@ -57,9 +57,6 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   /** Linked documents count */
   linkedDocumentsCount = 0;
 
-  /** Css classes for dd in template */
-  ddCssClass = 'col-sm-6 col-md-8 mb-0';
-
   /** Enables or disables links */
   activateLink: boolean = true;
 

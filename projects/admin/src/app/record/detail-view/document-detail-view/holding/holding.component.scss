@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,12 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import 'bootstrap/scss/functions';
-@import 'bootstrap/scss/variables';
-
-.other {
-  margin-top: map-get($spacers, 4);
-  margin-bottom: map-get($spacers, 3);
-  padding-bottom: map-get($spacers, 1);
-  border-bottom: $border-width solid $border-color;
+admin-document-holding, [admin-document-holding] {
+  .p-accordion-header {
+    @extend .surface-100;
+    a.p-accordion-header-link {
+      background: none;
+    }
+  }
 }

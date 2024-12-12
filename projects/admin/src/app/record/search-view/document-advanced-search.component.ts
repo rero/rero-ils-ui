@@ -20,15 +20,19 @@ import { ActivatedRoute } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { DocumentAdvancedSearchFormComponent } from './document-advanced-search-form/document-advanced-search-form.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-document-advanced-search',
   template: `
     @if (!simple) {
-      <button type="button" class="btn btn-outline-primary" (click)="openModalBox()">
-        {{ 'Build advanced query' | translate }}
-        <i class="fa fa-search ml-1" aria-hidden="true"></i>
-      </button>
+      <p-button
+        [label]="'Build advanced query' | translate"
+        outlined
+        icon="fa fa-search"
+        iconPos="right"
+        (onClick)="openModalBox()"
+      />
     }
   `
 })
@@ -36,6 +40,7 @@ export class DocumentAdvancedSearchComponent implements OnInit, OnDestroy {
 
   private dialogService: DialogService = inject(DialogService);
   private route: ActivatedRoute = inject(ActivatedRoute);
+  private translateService: TranslateService = inject(TranslateService);
 
   /** Simple search */
   simple: boolean = true;
@@ -51,7 +56,7 @@ export class DocumentAdvancedSearchComponent implements OnInit, OnDestroy {
     this.subscription.add(this.route.queryParams.subscribe((params: any) => {
       if (params.simple) {
         if (Array.isArray(params.simple)) {
-          this.simple =  params.simple.length > 0 ? ('1' === params.simple.pop()) : true;
+          this.simple =  params.simple.length > 0 ? ('1' === params.simple[0]) : true;
         } else {
           this.simple = ('1' === params.simple);
         }
@@ -69,7 +74,9 @@ export class DocumentAdvancedSearchComponent implements OnInit, OnDestroy {
   /** Opening the advanced search dialog */
   openModalBox(): void {
     const ref: DynamicDialogRef = this.dialogService.open(DocumentAdvancedSearchFormComponent, {
-      dismissableMask: true
+      dismissableMask: true,
+      width: "90vw",
+      header: this.translateService.instant('Build advanced query'),
     });
     this.subscription.add(
       ref.onClose.subscribe((queryString?: string) => {

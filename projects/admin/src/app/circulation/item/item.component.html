@@ -29,7 +29,7 @@
           icon="fa fa-refresh pr-1"
           [label]="'Renew'|translate"
           severity="secondary"
-          [outlined]="true"
+          outlined
           [disabled]="!item.actions.includes(itemAction.extend_loan)"
           [id]="item.barcode | idAttribute:{prefix: 'item', suffix: 'renew-button'}"
           (onClick)="extendLoanClick($event)"

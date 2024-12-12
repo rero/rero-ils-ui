@@ -20,8 +20,7 @@ import { DocumentApiService } from '../api/document-api.service';
 
 @Component({
   selector: 'public-search-document-brief',
-  templateUrl: './document-brief.component.html',
-  styleUrls: ['./document-brief.component.scss']
+  templateUrl: './document-brief.component.html'
 })
 export class DocumentBriefComponent {
 

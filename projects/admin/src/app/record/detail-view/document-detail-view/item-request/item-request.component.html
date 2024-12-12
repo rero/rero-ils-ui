@@ -14,60 +14,72 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (form) {
+@defer(when formFields) {
+  <div class="flex gap-2 flex-column">
   @if (requestedBy$ | async; as requestedBy) {
-    <div class="card-body">
-      <div class="row card-text">
-        <div class="border border-warning rounded alert alert-warning  pt-2 pb-2 col-auto">
-          @if (requestedBy.length < 2) {
-            <i class="fa fa-exclamation-triangle pr-1" aria-hidden="true"></i>
-            {{ requestedBy.length }} {{ 'request in the queue' | translate }}
-          } @else {
-            <i class="fa fa-exclamation-triangle pr-1" aria-hidden="true"></i>
-            {{ requestedBy.length }} {{ 'requests in the queue' | translate }}
-          }
-        </div>
-        <div class="col-auto">
-          <button type="button" class="btn btn-outline-primary btn-link pt-2 pb-2"
+    @if (requestedBy.length > 0) {
+      <div class="flex gap-2 align-items-center">
+        <p-messages
+          class="flex-grow-1"
+          [value]="[
+            {
+              severity: 'warn',
+              detail: requestedBy.length < 2
+                ? requestedBy.length + ' ' + ('request in the queue' | translate)
+                : requestedBy.length + ' ' + ('requests in the queue' | translate)
+            }
+          ]"
+          [closable]="false"
+          [enableService]="false"
+          showTransitionOptions="0ms"
+        />
+        <p-button
+          outlined
           [routerLink]="['/records', 'items', 'detail', recordPid]"
-          (click)="closeModal()" translate>Edit queue</button>
-        </div>
+          (click)="closeModal()"
+          [label]="'Edit queue' | translate"
+        />
       </div>
-    </div>
+    }
   }
   @if (patron) {
-    <div class="card mb-2">
-      <div class="card-body">
-        <h5 class="card-title">{{ patron.last_name }}, {{ patron.first_name }}</h5>
-        <p class="card-text">
-          {{ patron.street }}<br>
-          {{ patron.postal_code }} {{ patron.city }}<br>
-          {{ patron.email }}
-        </p>
-        @if (patron | patronBlockedMessage; as message) {
-          <div class="alert alert-danger" role="alert">
-            {{ message }}
-          </div>
-        }
-      </div>
-    </div>
+    <p-card [header]="[patron.last_name, patron.first_name].join(', ')">
+      <p class="m-0">
+        {{ patron.street }}<br>
+        {{ patron.postal_code }} {{ patron.city }}<br>
+        {{ patron.email }}
+      </p>
+      @if (patron | patronBlockedMessage; as message) {
+        <p-messages
+          [value]="[{ severity: 'danger', detail: message}]"
+          [closable]="false"
+          [enableService]="false"
+          showTransitionOptions="0ms"
+        />
+      }
+    </p-card>
   }
   <form [formGroup]="form" (ngSubmit)="submit(model)">
-    <formly-form [form]="form" [fields]="formFields" [model]="model"></formly-form>
-    <div class="text-right">
-      <button
-        id="new-request-button"
-        type="submit"
-        class="btn btn-sm btn-primary"
-        [disabled]="!form.valid || requestInProgress"
-      >
-        @if (!requestInProgress) {
-          {{ 'New request' | translate }}
-        } @else {
-          <span class="spinner-border spinner-border-sm mr-1" role="status"></span>
-          {{ 'Request in progress' | translate }}
-        }
-      </button>
+    <div class="flex gap-2 flex-column">
+      <formly-form [form]="form" [fields]="formFields" [model]="model" />
+      <div class="flex justify-content-end">
+        <p-button
+          id="new-request-button"
+          type="submit"
+          size="small"
+          [disabled]="!form.valid || requestInProgress"
+        >
+          @if (!requestInProgress) {
+            {{ 'New request' | translate }}
+          } @else {
+            <i class="fa fa-spinner fa-spin"></i>&nbsp;
+            {{ 'Request in progress' | translate }}
+          }
+        </p-button>
+      </div>
     </div>
   </form>
+</div>
+} @placeholder {
+  <i class="fa fa-spin fa-spinner"></i>&nbsp;{{ 'loading in progress...' | translate }}
 }

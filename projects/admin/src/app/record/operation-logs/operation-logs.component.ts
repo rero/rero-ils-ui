@@ -26,8 +26,7 @@ import { OperationLogsService } from '../../service/operation-logs.service';
 
 @Component({
   selector: 'admin-operation-logs',
-  templateUrl: './operation-logs.component.html',
-  styleUrls: ['./operation-logs.component.scss']
+  templateUrl: './operation-logs.component.html'
 })
 export class OperationLogsComponent implements OnInit {
 
@@ -50,8 +49,6 @@ export class OperationLogsComponent implements OnInit {
   itemsPerPage = 5;
   /** Total of records */
   recordTotals = 0;
-  /** Create record */
-  createRecord: any;
   /** Array of records */
   records = [];
   /** first loaded record */
@@ -85,8 +82,8 @@ export class OperationLogsComponent implements OnInit {
       )
       .subscribe(
         ([createOpLogs, updateOpLogs]) => {
-          this.createRecord = createOpLogs.hits.shift();
           this.recordTotals = updateOpLogs.total.value;
+          this.records = this.records.concat(createOpLogs.hits);
           this.records = this.records.concat(updateOpLogs.hits);
         }
       );

@@ -17,19 +17,23 @@
 -->
 
 @if (configurationLoaded) {
-  <div class="card">
-    <div class="card-header">
-      {{ 'Build advanced query' | translate }}
-      <i class="fa fa-times float-right mt-1" aria-hidden="true" (click)="close()"></i>
-    </div>
-    <div class="card-body">
       <form [formGroup]="form" (ngSubmit)="submit()">
-        <formly-form [model]="model" [fields]="fieldsConfig" [options]="options" [form]="form"></formly-form>
-        <button type="submit" class="btn btn-sm btn-primary submit-button float-right" [disabled]="!form.valid" translate>
-          Search
-        </button>
-        <a class="btn btn-sm btn-outline-primary float-right mr-2" (click)="clear()" translate>Clear</a>
+        <formly-form
+          [model]="model"
+          [fields]="fieldsConfig"
+          [options]="options"
+          [form]="form"
+        />
+        <div class="flex gap-1 justify-content-end">
+          <p-button outlined
+          (onClick)="clear()"
+          [label]="'Clear' | translate"
+          />
+          <p-button
+            type="submit"
+            [disabled]="!form.valid"
+            [label]="'Search' | translate"
+          />
+        </div>
       </form>
-    </div>
-  </div>
 }

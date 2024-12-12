@@ -18,7 +18,7 @@
   <form [formGroup]="form" (ngSubmit)="submit(model)">
     <formly-form [form]="form" [fields]="formFields" [model]="model"></formly-form>
     <div class="text-right">
-      <p-button [label]="'Cancel'|translate" severity="danger" [outlined]="true" (onClick)="closeModal()" />
+      <p-button [label]="'Cancel'|translate" severity="danger" outlined (onClick)="closeModal()" />
       <p-button styleClass="ml-1" [label]="'Save'|translate" type="submit" [disabled]="!form.valid" />
     </div>
   </form>

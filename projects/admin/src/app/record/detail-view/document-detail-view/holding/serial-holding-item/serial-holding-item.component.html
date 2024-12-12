@@ -16,11 +16,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (item && ((item.metadata.issue && item.metadata.issue.status !== itemIssueStatus.DELETED) || item.metadata.type === 'provisional')) {
-  <div class="container px-0 mt-1 mb-2">
-    <div class="row">  <!-- First row :: item detail -->
-      <div class="col-sm-3">
+    <div class="grid grid-nogutter pt-2 flex-grow-1">  <!-- First row :: item detail -->
+      <div class="col-3">
         @if (item.metadata._masked) {
-          <admin-record-masked [record]="item"></admin-record-masked>
+          <admin-record-masked [record]="item" />
         }
         @if (permissions) {
           <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
@@ -30,109 +29,94 @@
           {{ item.metadata.barcode }}
         }
       </div>
-      <div class="col-sm-2" name="status">
+      <div class="col-3">
         <shared-availability
           recordType="item"
           [record]="item"
           [apiService]="itemApiService"
-        ></shared-availability>
+        />
       </div>
-      <div class="col-sm-3" name="issue">{{ item.metadata.enumerationAndChronology }}</div>
-      <div class="col-sm-2" name="call-number">
-        <shared-inherited-call-number [item]="item"></shared-inherited-call-number>
+      <div class="col-3">
+        {{ item.metadata.enumerationAndChronology }}
       </div>
-      <div class="col-sm-2 text-right" name="buttons">
+      <div class="col-3 flex">
+        <div class="flex-grow-1">
+        <shared-inherited-call-number class-="flex-grow-1" [item]="item" />
+        </div>
         @if (permissions) {
-          @if (permissions.canRequest && permissions.canRequest.can) {
+          <div class="flex gap-2 justify-content-end">
             <p-button
+              class="pointer-events-auto"
               icon="fa fa-shopping-basket"
+              size="small"
               [title]="'Item request'|translate"
-              [outlined]="true"
+              outlined
               (onClick)="addRequest(item.metadata.pid, 'item')"
-            />
-          } @else {
-            <p-button
-              icon="fa fa-shopping-basket"
-              [title]="'Item request'|translate"
-              [outlined]="true"
               [pTooltip]="cannotRequestTooltipContent"
               tooltipPosition="top"
-              styleClass="text-blue-200"
+              [disabled]="!permissions.canRequest?.can"
+              [tooltipDisabled]="permissions.canRequest?.can"
             />
             <ng-template #cannotRequestTooltipContent>
               <span [innerHTML]="cannotRequestInfoMessage | nl2br"></span>
             </ng-template>
-          }
-          @if (permissions.update && permissions.update.can) {
-            <p-button
-              icon="fa fa-pencil"
-              [title]="'Edit'|translate"
-              [outlined]="true"
-              [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
-              styleClass="ml-1"
-            />
-          }
-          @if (permissions.delete && permissions.delete.can) {
+            @if (permissions.update && permissions.update.can) {
+              <p-button
+                icon="fa fa-pencil"
+                size="small"
+                [title]="'Edit'|translate"
+                outlined
+                [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
+              />
+            }
             <p-button
               icon="fa fa-trash"
+              class="pointer-events-auto"
+              size="small"
               severity="danger"
               [title]="'Delete'|translate"
-              [outlined]="true"
-              (onClick)="delete(item.metadata.pid)"
-              styleClass="ml-1"
-            />
-          } @else {
-            <p-button
-              icon="fa fa-trash"
-              severity="danger"
-              [title]="'Delete'|translate"
-              [outlined]="true"
+              outlined
               [pTooltip]="deleteTooltipContent"
               tooltipPosition="top"
-              styleClass="text-red-200 ml-1"
+              [disabled]="!permissions.delete?.can"
+              [tooltipDisabled]="permissions.delete?.can"
+              (onClick)="delete(item.metadata.pid)"
             />
             <ng-template #deleteTooltipContent>
               <span [innerHTML]="deleteInfoMessage | nl2br"></span>
             </ng-template>
-          }
-        } @else {
-          &nbsp;
+          </div>
         }
       </div>
-    </div>
-    @if (permissions) {
-      @for (note of item.metadata.notes; track note) {
-        <admin-holding-item-note [note]="note"></admin-holding-item-note>
-      }
-      <admin-holding-item-temporary-item-type [record]="item"></admin-holding-item-temporary-item-type>
-    }
-    <!-- TEMPORARY LOCATION -->
-    @if (permissions && item.metadata.temporary_location) {
-      <div class="row pl-5">
-        <div class="col-3">
-          <i class="fa fa-long-arrow-right pr-1"></i>
-          <span class="label-title" translate>Temporary location</span>
-        </div>
-        <div class="col">
-          {{ item.metadata.temporary_location.pid | getRecord: 'locations' : 'field': 'name' | async }}
-        </div>
-      </div>
-    }
-    <!-- ITEM IN COLLECTION -->
-    @if (permissions && item.metadata.pid | itemInCollection | async; as collections) {
-      <div class="row pl-5">
-        <div class="col-3">
-          <i class="fa fa-long-arrow-right pr-1"></i>
-          <span class="label-title" translate>Exhibition/course</span>
-        </div>
-        <div class="col">
-          @for (collection of collections; track collection; let last=$last) {
-            <a [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]">
-              {{ $any(collection).metadata.title }}
-            </a>{{ last ? '' : '; ' }}
+      <div class="col-12 pt-0">
+        @if (permissions) {
+          @for (note of item.metadata.notes; track note) {
+            <admin-holding-item-note [note]="note" />
           }
-        </div>
+          <admin-holding-item-temporary-item-type [record]="item" />
+        }
+        <!-- TEMPORARY LOCATION -->
+        @if (permissions && item.metadata.temporary_location) {
+          <dl class="metadata">
+            <dt translate>Temporary location</dt>
+            <dd>
+              {{ item.metadata.temporary_location.pid | getRecord: 'locations' : 'field': 'name' | async }}
+            </dd>
+          </dl>
+        }
+        <!-- ITEM IN COLLECTION -->
+        @if (permissions && item.metadata.pid | itemInCollection | async; as collections) {
+          <dl class="metadata">
+            <dt translate>Exhibition/course</dt>
+            <dd>
+              @for (collection of collections; track collection; let last=$last) {
+                <a [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]">
+                  {{ $any(collection).metadata.title }}
+                </a>{{ last ? '' : '; ' }}
+              }
+            </dd>
+          </dl>
+        }
       </div>
-    }
   </div>
 }

@@ -21,10 +21,12 @@ import { RecordService } from '@rero/ng-core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable, of, Subscription } from 'rxjs';
 import { UserIdEditorComponent } from '../../custom-editor/user-id-editor/user-id-editor.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-user-id',
   template: `
+    <div class="flex gap-2 align-items-center mb-4">
   @if (user$ | async; as user) {
     <strong>
       {{ $any(user).metadata.last_name }}, {{ $any(user).metadata.first_name }}
@@ -32,16 +34,19 @@ import { UserIdEditorComponent } from '../../custom-editor/user-id-editor/user-i
         ({{ user.metadata.city }})
       }
     </strong>
-    <p-button [label]="'Edit' |translate" [outlined]="true" (onClick)="openModal()"></p-button>
+    <p-button size="small" [label]="'Edit' |translate" outlined (onClick)="openModal()"/>
   } @else {
-    <p-button [label]="'Create' |translate" [outlined]="true" (onClick)="openModal()"></p-button>
+    <span translate>Personal informations</span>*
+    <p-button size="small" [label]="'Create' |translate" outlined (onClick)="openModal()" />
   }
+    </div>
   `
 })
 export class UserIdComponent extends FieldWrapper implements OnInit, OnDestroy {
 
   private dialogService: DialogService = inject(DialogService);
   private recordService: RecordService = inject(RecordService);
+  private translateService: TranslateService = inject(TranslateService);
 
   /** current user */
   user$: Observable<any>;
@@ -68,6 +73,8 @@ export class UserIdComponent extends FieldWrapper implements OnInit, OnDestroy {
 
     const ref: DynamicDialogRef = this.dialogService.open(UserIdEditorComponent, {
       dismissableMask: true,
+      header: this.translateService.instant('Personal information'),
+      width: '60vw',
       data: { userID: this.formControl.value }
     });
     this.subscription.add(

@@ -15,31 +15,37 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (fees.length > 0) {
-<div class="card" id="item-fees">
-  <div class="card-header">
-    <b translate>Fees</b>
-    <div class="float-right">
-      <span class="font-weight-bold mr-2" translate>Total</span>
-      <span class="badge badge-danger ml-1">{{ total | currency: organisation.default_currency }}</span>
+<p-panel id="item-fees">
+  <ng-template pTemplate="header">
+    <div class="flex w-full align-items-center">
+      <div class="p-panel-title flex-grow-1" translate>
+        Fees
+      </div>
+      <div class="flex-order-2">
+        <span class="font-bold" translate>Total</span>&nbsp;
+        <p-tag severity="danger">{{ total | currency: organisation.default_currency }}</p-tag>
+      </div>
     </div>
-  </div>
-  <div class="card-body">
-    <div class="row mb-2">
-      <div class="col-10 font-weight-bold" translate>Patron</div>
-      <div class="col-2 font-weight-bold text-right" translate>Amount</div>
+  </ng-template>
+  <div class="flex gap-2 flex-column px-2">
+    <div class="flex">
+      <div class="flex-grow-1 font-bold" translate>Patron</div>
+      <div class="font-bold" translate>Amount</div>
     </div>
+    <div class="alternate-color">
     @for (fee of fees; track fee) {
       @if (fee.metadata.patron.pid | getRecord:'patrons' | async; as patron) {
-        <div class="row mb-2">
-          <div class="col-10">
+        <div class="flex">
+          <div class="flex-grow-1">
             <a [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0], 'fees']" [queryParams]="{event: fee.metadata.pid}">
               {{ $any(patron).metadata.last_name }} {{ $any(patron).metadata.first_name }} ({{ $any(patron).metadata.patron.barcode[0] }})
             </a>
           </div>
-          <div class="col-2 text-right">{{ fee.metadata.total_amount | currency: organisation.default_currency }}</div>
+          <div>{{ fee.metadata.total_amount | currency: organisation.default_currency }}</div>
         </div>
       }
     }
+    </div>
   </div>
-</div>
+</p-panel>
 }

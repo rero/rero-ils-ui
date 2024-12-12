@@ -14,65 +14,59 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<h1 class="mb-2" translate>Holdings</h1>
+<h1 translate>Holdings</h1>
 @if (holding.metadata._masked) {
   <admin-record-masked [record]="holding" [withLabel]="true"></admin-record-masked>
 }
 @if (holding.metadata.document.pid | getRecord:'documents' | async; as document) {
-  <div class="card mb-3">
-    <div class="card-body row">
-      <a [routerLink]="['/records', 'documents', 'detail', $any(document).metadata.pid]" class="col-1">
-        <i class="fa fa-arrow-left"></i>
-      </a>
+    <div class="border-1 border-round surface-border p-4">
       <admin-documents-brief-view
-          class="col"
           [record]="document"
           [type]="'documents'" [detailUrl]="{
             link: '/records/documents/detail/' + $any(document).metadata.pid,
             external: false
           }"
-      ></admin-documents-brief-view>
+      />
     </div>
-  </div>
 }
 @if (holding) {
-  <admin-holding-shared-view [holding]="holding" class="row col"></admin-holding-shared-view>
+  <admin-holding-shared-view [holding]="holding" />
 }
 
 <!-- TABS ================================================================= -->
 <!--    3 tabs will be displayed : Issues, Holdings details, Local fields -->
 
 
-<p-tabView styleClass="mt-2">
+<p-tabView>
   <p-tabPanel>
     <ng-template pTemplate="header">
-      <i class="fa fa-list-ul mr-1"></i>{{ 'Issues' | translate }}
+      <i class="fa fa-list-ul"></i>&nbsp;{{ 'Issues' | translate }}
     </ng-template>
+    <div class="flex flex-column gap-2">
       <!-- top actions bar ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <div class="d-flex">
+      <div class="flex">
         <p-button
-          [outlined]="true"
-          [routerLink]="[]"
+          class="flex-grow-1"
+          outlined
           (onClick)="showMore('prediction', 3)"
-        >
-          <i class="fa fa-arrow-circle-o-up mr-1" aria-hidden="true"></i>
-          {{ 'Show more' | translate }} &hellip;
-        </p-button>
+          icon="fa fa-arrow-circle-o-up"
+          size="small"
+          label="{{ 'Show more' | translate }} &hellip;"
+        />
         @if (allowIssueCreation) {
-          <button class="ml-auto btn btn-sm btn-outline-primary"
-                  [routerLink]="['/records', 'items', 'new']"
-                  [queryParams]="{
-                    'holding': holding.id,
-                    'irregular': true,
-                    'redirectTo': 'records/holdings/detail/' + holding.id
-                  }"
-          >
-            <i class="fa fa-plus-square-o"></i>
-            {{ 'Add irregular issue' | translate }} &hellip;
-          </button>
+          <p-button size="small" outlined
+              [routerLink]="['/records', 'items', 'new']"
+              [queryParams]="{
+                'holding': holding.id,
+                'irregular': true,
+                'redirectTo': 'records/holdings/detail/' + holding.id
+              }"
+              icon="fa fa-plus-square-o"
+              label="{{ 'Add irregular issue' | translate }} &hellip;"
+          />
         }
       </div>
-      <div class="issues">
+      <div class="flex flex-column">
         <!-- expected issues ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         @for (prediction of predictionsItems; track prediction; let last = $last) {
           <admin-expected-issue [issue]="prediction">
@@ -81,16 +75,18 @@
                 @if (allowIssueCreation) {
                   <p-button
                     icon="fa fa-check-circle"
+                    size="small"
                     [title]="'Quick receive'|translate"
-                    [outlined]="true"
+                    outlined
                     (onClick)="quickIssueReceive()"
                   />
                 }
                 @if (allowIssueCreation) {
                   <p-button
                     icon="fa fa-plus"
+                    size="small"
                     [title]="'Receive and edit this issue'|translate"
-                    [outlined]="true"
+                    outlined
                     [routerLink]="['/records', 'items', 'new']"
                     [queryParams]="{
                       'holding': holding.id,
@@ -107,37 +103,35 @@
         }
         <!-- received issues ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         @for (item of receivedItems; track item; let last = $last) {
-          <admin-received-issue [issue]="item" [holding]="holding" (delete)="deleteIssue($event)"></admin-received-issue>
+          <admin-received-issue [issue]="item" [holding]="holding" (delete)="deleteIssue($event)" />
         }
       </div>
       <!-- SHOW MORE RECEIVED ISSUE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       @if (receivedItems.length < totalReceivedItems) {
-        <div class="row mt-1">
-          <div class="col">
-            <p-button
-              [outlined]="true"
-              [routerLink]="[]"
-              (onClick)="showMore('received', 5)"
-            >
-              <i class="fa fa-arrow-circle-o-down mr-1" aria-hidden="true"></i>
-              {{ 'Show more' | translate }} &hellip;
-            </p-button>
-            <span class="pl-3 small text-secondary">({{ showMoreIssuesCounter }})</span>
-          </div>
-        </div>
+        <div class="flex align-items-center gap-2">
+        <p-button
+          outlined
+          size="small"
+          (onClick)="showMore('received', 5)"
+          icon="fa fa-arrow-circle-o-down"
+          label="{{ 'Show more' | translate }} &hellip;"
+          />
+        <small class="text-color-secondary">({{ showMoreIssuesCounter }})</small>
+      </div>
       }
+    </div>
   </p-tabPanel>
 
   <p-tabPanel>
     <ng-template pTemplate="header">
-      <i class="fa fa-list-ul mr-1"></i><span translate>Details</span>
+      <i class="fa fa-list-ul"></i>&nbsp;<span translate>Details</span>
     </ng-template>
     <admin-holding-detail context="holdings" [holding]="holding"></admin-holding-detail>
   </p-tabPanel>
 
   <p-tabPanel>
     <ng-template pTemplate="header">
-      <i class="fa fa-list-ul mr-1"></i><span translate>Local fields</span>
+      <i class="fa fa-list-ul"></i>&nbsp;<span translate>Local fields</span>
     </ng-template>
     <admin-local-field [resourceType]="'holdings'" [resourcePid]="holding.metadata.pid"></admin-local-field>
   </p-tabPanel>

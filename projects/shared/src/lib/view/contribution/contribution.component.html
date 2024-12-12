@@ -17,48 +17,40 @@
 -->
 
 @if (contributions) {
-  <ul class="list-none contributor-list mt-2 mb-0 p-0">
-    @for (contributor of contributions; track contributor) {
-      <li>
-        <ng-container [ngTemplateOutlet]="contributorTpl" [ngTemplateOutletContext]="{contributor}"/>
+  <ul class="list-none m-0 p-0">
+    @for (contributor of contributions; track contributor; let last=$last) {
+      <li class="inline">
+        @if (activateLink || withEntityLink) {
+          @if (withEntityLink && contributor.entity?.pid) {
+            <a [routerLink]="['/records/', contributor.entity.resource_type+'_entities', 'detail', contributor.entity.pid]">{{ contributor.entity | entityLabel }}</a>
+          } @else {
+            @if (view !== 'professional') {
+              <shared-entity-link
+              resourceName="contribution"
+              [external]="true"
+              [entity]="contributor.entity"
+              [routerLinkParams]="['/', view, 'search', 'documents']"
+            />
+            } @else {
+              <shared-entity-link
+                resourceName="contribution"
+                [entity]="contributor.entity"
+              />
+            }
+          }
+        } @else {
+          {{ contributor.entity | entityLabel }}
+        }
+        @if (withRoles && contributor.role && contributor.role.length > 0) {
+          <span class="ml-1 text-color-secondary">({{ contributor.role | arrayTranslate| join: ', '}})</span>
+        }
       </li>
+      @if (!last) {
+        ;
+      }
       @if (limit) {
         …
       }
     }
   </ul>
 }
-
-<ng-template #contributorTpl let-contributor='contributor'>
-  <ng-container [ngTemplateOutlet]="entityTpl" [ngTemplateOutletContext]="{entity: contributor.entity}" />
-  @if (withRoles && contributor.role && contributor.role.length > 0) {
-    <ul class="inline">
-      @for (role of contributor.role; track role) {
-        <li class="contributor-role">{{ role | translate }}</li>
-      }
-    </ul>
-  }
-</ng-template>
-
-<ng-template #entityTpl let-entity=entity>
-  @if (activateLink || withEntityLink) {
-    @if (withEntityLink && entity?.pid) {
-      <a [routerLink]="['/records/', entity.resource_type+'_entities', 'detail', entity.pid]">{{ entity | entityLabel }}</a>
-    } @else {
-      @if (view !== 'professional') {
-        <shared-entity-link
-        resourceName="contribution"
-        [external]="true"
-        [entity]="entity"
-        [routerLinkParams]="['/', view, 'search', 'documents']"
-      />
-      } @else {
-        <shared-entity-link
-          resourceName="contribution"
-          [entity]="entity"
-        />
-      }
-    }
-  } @else {
-    {{ entity | entityLabel }}
-  }

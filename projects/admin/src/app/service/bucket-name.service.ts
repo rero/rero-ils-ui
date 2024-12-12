@@ -46,7 +46,9 @@ export class BucketNameService implements IBucketNameService {
         return of(this.translateService.instant(claims_label, { count: value }));
       case 'language': return of(this.translateService.instant(`lang_${value}`));
       case 'owning_library':
+      case 'owner_library':
       case 'transaction_library':
+      case 'pickup_library':
       case 'library': return this.libraryApiService.getByPid(value).pipe(map(record => record.name));
       case 'organisation': return this.organisationApiService.getByPid(value).pipe(map(record => record.name));
       default: return of(this.translateService.instant(value));

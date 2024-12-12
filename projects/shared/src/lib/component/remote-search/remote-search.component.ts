@@ -35,13 +35,13 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
 
   // You must use lowercase variable names for this to work in a web component.
   // Use @Input in this case, as the web component does not work with input (signal).
-  @Input() admin: boolean | string = true;
   @Input() maxlengthsuggestion: number | string = 100;
   @Input() placeholder: string = 'search';
   @Input() viewcode: string | undefined;
   @Input() inputstyleclass: string;
-  @Input() internalRouting = false;
+  @Input() internalRoutingBaseURL: string | undefined;
 
+  admin: boolean;
   hideSearchElement: boolean = false;
   recordTypes: IRecordType[] = [];
   value: string | undefined;
@@ -52,7 +52,7 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
 
   ngOnInit(): void {
-    this.admin = this.boolean(this.admin);
+    this.admin = Boolean(this.internalRoutingBaseURL);
     this.subscription.add(this.route.queryParamMap.subscribe((params: any) => {this.value = params.get('q')}));
     this.recordTypes = this.remoteSearchBarConfig.getConfig(
       this.admin,
@@ -71,8 +71,13 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
   }
 
   onSearch(query) {
-    if (this.internalRouting) {
-      // TODO: internal navigation for the professional interface
+    if (this.internalRoutingBaseURL) {
+      this.router.navigate([this.internalRoutingBaseURL], {
+        queryParams: {
+          ...{ page: '1', size: '10' },
+          q: query
+        }
+      });
     } else {
       this.document.location.href = `/${this.viewcode}/search/documents?q=${query}&page=1&size=10&sort=bestmatch`;
     }
@@ -83,7 +88,7 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
       throw new Error('Missing parameter link');
     }
     this.value = '';
-    if(this.internalRouting === true) {
+    if(this.internalRoutingBaseURL) {
       this.router.navigateByUrl(element.link);
     } else {
       this.document.location.href = element.link;
@@ -104,13 +109,5 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
       const detailFlag = paths.includes('detail') || paths.includes('new');
       return !(resourceFlag && detailFlag);
     }
-  }
-
-  private boolean(value: string | boolean): boolean {
-    if (typeof value === 'string') {
-      return 'true' === value;
-    }
-
-    return value;
   }
 }

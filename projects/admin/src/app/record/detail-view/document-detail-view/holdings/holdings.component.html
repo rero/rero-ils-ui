@@ -15,36 +15,33 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (canAdd) {
-  <div class="row">
-    <div class="col">
-      <div class="btn-group pull-right">
-        <p-dropdown
-          [permissions]="[permissions.HOLD_CREATE, permissions.ITEM_CREATE]"
-          [options]="options"
-          optionLabel="name"
-          [placeholder]="'Add'|translate"
-          (onChange)="dropdownAction($event)"
-        />
-      </div>
-    </div>
+  <div class="flex justify-content-end" [permissions]="[permissions.HOLD_CREATE, permissions.ITEM_CREATE]">
+    <p-menu #menu [model]="options" [popup]="true" />
+    <p-button icon="fa fa-caret-down" iconPos="right" outlined (onClick)="menu.toggle($event)" [label]="'Add'|translate"/>
   </div>
 }
 
 @if (holdings) {
+  <p-accordion multiple="true" [activeIndex]="[0]">
   @for (holding of holdings; track holding) {
-    <admin-document-holding
+    <div
+      class="my-2 border-1 surface-border border-round"
+      admin-document-holding
       [holding]="holding"
       [isItemsCollapsed]="holdingsTotal > 1"
       [isCurrentOrganisation]="isCurrentOrganisation"
       (deleteHolding)="deleteHolding($event)"
     >
-    </admin-document-holding>
+  </div>
   }
+  </p-accordion>
   @if (isLinkShowMore) {
-    <button class="btn btn-link" (click)="showMore()">
-      <i class="fa fa-arrow-circle-o-down"></i>
-      {{ 'Show more' | translate }}
-    </button>
-    <small>({{ hiddenHoldings }})</small>
-  }
+    <p-button severity="secondary" [text]="true" (onClick)="showMore()">
+      <div>
+        <i class="fa fa-plus-square-o"></i>&nbsp;{{
+          "Show more" | translate
+        }}&nbsp;<small>({{ hiddenHoldings }})</small>
+      </div>
+    </p-button>
+    }
 }

@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { pairwise, Subscription } from 'rxjs';
 
 @Component({
   selector: 'admin-files-collections',
@@ -39,17 +39,20 @@ export class FilesCollectionsComponent implements OnInit, OnDestroy {
   record: any;
 
   // form control for the collection editor
-  collections = new FormControl('');
+  formGroup = new FormGroup({
+    collections: new FormControl<string[] | null>(null)
+  });
 
   // all component subscription
   private subscriptions = new Subscription();
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.subscriptions.add(
       this.resourcesFilesService.currentParentRecord$.subscribe((record) => {
-        this.setRecord(record);
+        this.setRecord(record, false);
       })
+    this.subscriptions.add(
+      this.formGroup.valueChanges.subscribe(() => this.save())
     );
   }
 
@@ -63,12 +66,12 @@ export class FilesCollectionsComponent implements OnInit, OnDestroy {
    *
    * @param record - the file record instance.
    */
-  setRecord(record): void {
+  setRecord(record, emitEvent=false): void {
     this.record = record;
     if (this.record?.metadata?.collections) {
-      this.collections.setValue(this.record.metadata.collections.join(', '));
+      this.formGroup.get('collections').setValue(this.record.metadata.collections, {emitEvent});
     } else {
-      this.collections.setValue('');
+      this.formGroup.get('collections').setValue(null, {emitEvent});
     }
   }
 
@@ -85,24 +88,24 @@ export class FilesCollectionsComponent implements OnInit, OnDestroy {
 
   /** Is the submit action is disabled? */
   disabled(): void {
-    this.collections.touched;
+    this.formGroup.touched;
   }
 
   /**
    * Save the form and put the new value on the backend.
    */
   save(): void {
-    const coll = this.collections.value;
+    const coll = this.formGroup.get('collections').value;
     const metadata = this.record.metadata;
     if (coll) {
-      metadata.collections = [...new Set(coll.split(',').map((val) => val.trim()))];
+      metadata.collections = coll;
     } else {
       delete metadata.collections;
     }
     this.resourcesFilesService
       .updateParentRecordMetadata(this.record.id, { metadata: metadata })
       .subscribe((record) => this.setRecord(record));
-    this.collections.markAsPristine();
+    this.formGroup.markAsPristine();
     this.messageService.add({
       severity: 'success',
       summary: this.translateService.instant('File'),

@@ -36,7 +36,7 @@
         <p-button
           icon="fa fa-pencil"
           [title]="'Edit'|translate"
-          [outlined]="true"
+          outlined
           [routerLink]="['/records', 'locations', 'edit', location.metadata.pid]"
         />
       }
@@ -46,7 +46,7 @@
           icon="fa fa-trash"
           severity="danger"
           [title]="'Delete'|translate"
-          [outlined]="true"
+          outlined
           (onClick)="delete(location.metadata.pid)"
           styleClass="ml-1"
         />
@@ -55,7 +55,7 @@
           icon="fa fa-trash"
           severity="danger"
           [title]="'Delete'|translate"
-          [outlined]="true"
+          outlined
           [pTooltip]="tooltipContent"
           tooltipPosition="top"
           styleClass="text-red-200 ml-1"

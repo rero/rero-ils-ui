@@ -35,17 +35,14 @@ export class ThumbnailComponent implements OnInit {
   /** ISBN of the record */
   isbn: string;
 
-  /** Style for image container */
-  figureStyle = 'thumb-detail';
-
   /** is a svg image */
   svgImage = true;
 
   /** Record to display */
   @Input() record: any;
 
-  /** Should the thumbnail be small ? */
-  @Input() isSmall = false;
+  /** Style for image container */
+  @Input() styleClass = 'w-6rem';
 
   /**
    * Get cover url
@@ -86,9 +83,6 @@ export class ThumbnailComponent implements OnInit {
         if (this.isbn) {
           this.getCoverUrl();
         }
-      }
-      if (this.isSmall) {
-        this.figureStyle = 'thumb-brief';
       }
     }
   }

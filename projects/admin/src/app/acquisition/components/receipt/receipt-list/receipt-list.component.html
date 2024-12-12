@@ -27,14 +27,14 @@
           <p-button
             icon="fa fa-plus-square-o"
             [label]="'Add'|translate"
-            [outlined]="true"
+            outlined
             [routerLink]="['/', 'acquisition', 'acq_orders', order.pid, 'receive']"
           />
         } @else {
           <p-button
             icon="fa fa-plus-square-o"
             [label]="'Add'|translate"
-            [outlined]="true"
+            outlined
             [pTooltip]="tooltipContent"
             tooltipPosition="top"
             styleClass="text-blue-200"

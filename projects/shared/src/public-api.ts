@@ -69,3 +69,5 @@ export * from './tests/user';
 export * from './lib/pipe/provision-activity.pipe';
 export * from './lib/pipe/main-title.pipe';
 export * from './lib/pipe/document-provision-activity.pipe';
+export * from './lib/pipe/array-translate.pipe';
+export * from './lib/component/documents/document-description/other-edition/other-edition.component';

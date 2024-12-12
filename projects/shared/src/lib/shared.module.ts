@@ -61,6 +61,7 @@ import { InheritedCallNumberComponent } from './view/inherited-call-number/inher
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
 import { MainTitleRelationPipe } from './pipe/main-title-relation.pipe';
 import { DocumentProvisionActivityPipe } from './pipe/document-provision-activity.pipe';
+import { ArrayTranslatePipe } from './pipe/array-translate.pipe';
 
 @NgModule({
   declarations: [
@@ -105,7 +106,8 @@ import { DocumentProvisionActivityPipe } from './pipe/document-provision-activit
     OpenCloseButtonComponent,
     DescriptionZoneComponent,
     OtherEditionComponent,
-    DocumentDescriptionComponent
+    DocumentDescriptionComponent,
+    ArrayTranslatePipe
   ],
   exports: [
     ProvisionActivityPipe,
@@ -143,7 +145,9 @@ import { DocumentProvisionActivityPipe } from './pipe/document-provision-activit
     DocumentBriefViewComponent,
     FilesComponent,
     RemoteSearchComponent,
-    OpenCloseButtonComponent
+    OpenCloseButtonComponent,
+    OtherEditionComponent,
+    ArrayTranslatePipe
   ],
   imports: [
     CommonModule,
