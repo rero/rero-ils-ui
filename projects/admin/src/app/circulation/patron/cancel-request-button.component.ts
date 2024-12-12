@@ -28,7 +28,7 @@ import { MessageService } from 'primeng/api';
     <p-button
       icon="fa fa-trash-o"
       severity="danger"
-      [outlined]="true"
+      outlined
       (onClick)="showCancelRequestDialog($event)"
     />
   } @else {
@@ -36,7 +36,7 @@ import { MessageService } from 'primeng/api';
       icon="fa fa-trash-o"
       severity="danger"
       [title]="'The request cannot be cancelled'|translate"
-      [outlined]="true"
+      outlined
       [disabled]="true"
     />
   }

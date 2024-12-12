@@ -15,11 +15,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="issue expected-issue container {{ class }}" >
-  <div class="row">
-    <div class="col">
-      <div class="row">
-        <span class="offset-1 col issue-title">{{ issue.issue }}</span>
+  <div class="grid surface-100 border-1 surface-border p-2 grid-nogutter align-items-center">
+    <div class="col-10">
+      <div class="grid p-2 grid-nogutter align-items-center">
+        <span class="col-offset-1 col-8">{{ issue.issue }}</span>
         <span class="col-3 text-right">
            {{'expected at' | translate }}
            {{ issue.expected_date | dateTranslate: 'shortDate' }}
@@ -30,4 +29,3 @@
       <ng-content select="[actions]"></ng-content>
     </div>
   </div>
-</div>

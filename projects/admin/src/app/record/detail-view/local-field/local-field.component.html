@@ -15,56 +15,50 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@defer (when isLoading) {
+@defer (when !isLoading) {
   @if (localFields.length > 0) {
-    <div class="container-fluid">
-      <dl class="grid">
-        @for (field of localFields; track field) {
-          <dt class="col-2 label-title" translate>{{ 'local_' + field.name }}</dt>
-          <dd class="col-10">{{ field.value | join:'; ' }}</dd>
-        }
-      </dl>
-
-      <div class="mt-2">
-        @if (recordPermissions) {
-          @if (recordPermissions.update.can) {
-            <p-button
-              icon="fa fa-pencil"
-              [label]="'Edit'|translate"
-              [outlined]="true"
-              [routerLink]="['/records', 'local_fields', 'edit', localFieldRecordPid]"
-              [queryParams]="{ type: resourceType, ref: resourcePid }"
-              size="small"
-              styleClass="mr-1"
-            />
-          }
-          @if (recordPermissions.delete.can) {
-            <p-button
-              icon="fa fa-trash"
-              [label]="'Delete'|translate"
-              severity="danger"
-              [outlined]="true"
-              size="small"
-              (onClick)="delete()"
-            />
-          }
-        } @else {
-          &nbsp;
-        }
-      </div>
+    <div class="py-2 alternate-color">
+      @for (field of localFields; track field) {
+        <dl class="metadata">
+          <dt translate>{{ 'local_' + field.name }}</dt>
+          <dd>{{ field.value | join:'; ' }}</dd>
+        </dl>
+      }
+    </div>
+    <div class="flex gap-1">
+      @if (recordPermissions.update?.can) {
+        <p-button
+          icon="fa fa-pencil"
+          [label]="'Edit'|translate"
+          outlined
+          [routerLink]="['/records', 'local_fields', 'edit', localFieldRecordPid]"
+          [queryParams]="{ type: resourceType, ref: resourcePid }"
+          size="small"
+        />
+      }
+      @if (recordPermissions.delete?.can) {
+        <p-button
+          icon="fa fa-trash"
+          [label]="'Delete'|translate"
+          severity="danger"
+          outlined
+          size="small"
+          (onClick)="delete()"
+        />
+      }
     </div>
   } @else {
-    <div class="text-right">
-      <p-button
-        icon="fa fa-plus-square-o"
-        [label]="'Add local fields'|translate"
-        [outlined]="true"
-        [routerLink]="['/records', 'local_fields', 'new']"
-        [queryParams]="{ type: resourceType, ref: resourcePid }"
-      />
-    </div>
-  }
+  <div class="flex justify-content-end">
+    <p-button
+      icon="fa fa-plus-square-o"
+      [label]="'Add local fields'|translate"
+      outlined
+      [routerLink]="['/records', 'local_fields', 'new']"
+      [queryParams]="{ type: resourceType, ref: resourcePid }"
+    />
+  </div>
+}
 
 } @placeholder {
-  <i class="fa fa-spinner"></i> {{ 'loading in progress...' | translate }}
+  <i class="fa fa-spin fa-spinner"></i>&nbsp;{{ 'loading in progress...' | translate }}
 }

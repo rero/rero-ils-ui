@@ -68,14 +68,10 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
             searchFilters: [
               this.expertSearchFilter(),
               {
-                filters:[
-                  {
-                    label: _('Search in full text'),
-                    filter: 'fulltext',
-                    value: 'true',
-                    showIfQuery: true
-                  }
-                ]
+                label: _('Search in full text'),
+                filter: 'fulltext',
+                value: 'true',
+                showIfQuery: true
               },
               {
                 label: _('Show only:'),

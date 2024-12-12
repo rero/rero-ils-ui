@@ -15,49 +15,35 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="w-full">
-  @if (loadedRecord) {
-    @if (createRecord || records.length > 0) {
-      @if (createRecord) {
-        <ng-container [ngTemplateOutlet]="operationLog"
-                      [ngTemplateOutletContext]="{data: createRecord.metadata}">
-        </ng-container>
-      }
-      @if (recordTotals > 0) {
-        @for (record of records; track record) {
-          <ng-container [ngTemplateOutlet]="operationLog"
-                        [ngTemplateOutletContext]="{data: record.metadata}">
-          </ng-container>
-        }
-        @if (isLinkShowMore) {
-          <p-button [link]="true" (click)="showMore()">
-            <i class="fa fa-arrow-circle-o-down"></i> {{ 'Show more' | translate }}
-          </p-button>
-          @if (isLinkShowMore) {
-            <small>({{ hiddenOperationLogs }})</small>
-          }
-        }
-      }
-    } @else {
-      {{ 'No history for this item' | translate }}
-    }
-
-  } @else {
-    <i class="fa fa-spinner fa-pulse"></i>
+@defer(when records.length > 0) {
+  <p-table [value]="records" styleClass="p-datatable-striped"  [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="body" let-record>
+      <tr>
+          <td class="text-color-secondary">
+            <i class="fa fa-calendar "></i>&nbsp;{{ record.metadata.date | dateTranslate :'shortDate' }} - {{ record.metadata.date | dateTranslate :'mediumTime' }}
+          </td>
+          <td class="font-bold uppercase">
+            {{ record.metadata.operation | translate }}
+          </td>
+          <td>
+            {{ record.metadata.user_name }}
+            @if (record.metadata.library) {
+              - {{ record.metadata.library.name }}
+            }
+          </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  @if (isLinkShowMore) {
+    <p-button severity="secondary" [text]="true" (onClick)="showMore()">
+      <div>
+        <i class="fa fa-plus-square-o"></i>&nbsp;{{
+          "Show more" | translate
+        }}&nbsp;<small>({{ hiddenOperationLogs }})</small>
+      </div>
+    </p-button>
   }
-</div>
 
-<ng-template #operationLog let-metadata=data>
-  <div class="row operation-log">
-    <div class="col-3 date">
-      {{ metadata.date | dateTranslate :'shortDate' }} - {{ metadata.date | dateTranslate :'mediumTime' }}
-    </div>
-    <div class="col-2 operation">{{ metadata.operation | translate }}</div>
-    <div class="col">
-      {{ metadata.user_name }}
-      @if (metadata.library) {
-        - {{ metadata.library.name }}
-      }
-    </div>
-  </div>
-</ng-template>
+} @placeholder {
+  <i class="fa fa-spinner fa-pulse"></i>
+}

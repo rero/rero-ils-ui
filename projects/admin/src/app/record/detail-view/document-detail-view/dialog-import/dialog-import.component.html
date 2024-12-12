@@ -15,36 +15,59 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (records.length > 0 || warning) {
-  <h5 translate>This document may already exist</h5>
+<h5 translate>This document may already exist</h5>
 }
 @if (records.length > 0) {
-  <ul class="list-unstyled mb-0">
-    @for (record of records; track record) {
-      <li>
-        <a [routerLink]="['/records', 'documents', 'detail', $any(record).metadata.pid]" (click)="cancel()">
-          @if ($any(record).metadata.ui_title_text_responsibility) {
-            {{ $any(record).metadata.ui_title_text_responsibility }}
-          } @else {
-            {{ 'Document' | translate }}
-          }
-        </a>
-      </li>
-    }
-  </ul>
+<ul class="list-none m-0 p-0">
+  @for (record of records; track record) {
+  <li>
+    <a
+      [routerLink]="[
+        '/records',
+        'documents',
+        'detail',
+        $any(record).metadata.pid
+      ]"
+      (click)="cancel()"
+    >
+      @if ($any(record).metadata.ui_title_text_responsibility) {
+      {{ $any(record).metadata.ui_title_text_responsibility }}
+      } @else {
+      {{ "Document" | translate }}
+      }
+    </a>
+  </li>
+  }
+</ul>
 }
 @if (warning) {
-  <div class="grid mt-3">
-    <div class="col-fixed" style="width:30px">
-      <i class="fa fa-exclamation-circle fa-2x text-danger" aria-hidden="true"></i>
+<p-messages
+  severity="warn"
+>
+  <ng-template pTemplate>
+    <div class="flex gap-2 align-items-start">
+      <i class="fa fa-exclamation-circle text-2xl"></i>
+      <div class="flex flex-column gap-2">
+        <div class="font-bold" translate>
+          Too many identifiers: not all identifiers have been verified.
+        </div>
+        <div class="font-bold" translate>
+          Please make sure that this document does not already exist before
+          importing.
+        </div>
+      </div>
     </div>
-    <div class="col">
-      <p class="mb-2 font-weight-bold" translate>Too many identifiers: not all identifiers have been verified.</p>
-      <p class="mb-2 font-weight-bold" translate>Please make sure that this document does not already exist before importing.</p>
-    </div>
-  </div>
+  </ng-template>
+</p-messages>
 }
-<div class="font-weight-bold mt-3" translate>Do you really want to import this document?</div>
-<div class="flex w-full justify-content-end">
-  <p-button class="mr-2" [label]="'Cancel'|translate" severity="secondary" (click)="cancel()" />
-  <p-button [label]="'Import'|translate" (click)="confirm()" />
+<div class="font-bold" translate>
+  Do you really want to import this document?
+</div>
+<div class="flex gap-1 justify-content-end mt-2">
+  <p-button
+    [label]="'Cancel' | translate"
+    severity="secondary"
+    (onClick)="cancel()"
+  />
+  <p-button [label]="'Import' | translate" (onClick)="confirm()" />
 </div>

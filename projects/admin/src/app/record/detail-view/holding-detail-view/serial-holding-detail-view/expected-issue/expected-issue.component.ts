@@ -20,12 +20,10 @@ import { PredictionIssue } from '@app/admin/service/holdings.service';
 
 @Component({
   selector: 'admin-expected-issue',
-  templateUrl: './expected-issue.component.html',
-  styleUrls: ['../serial-holding-detail-view.style.scss']
+  templateUrl: './expected-issue.component.html'
 })
 export class ExpectedIssueComponent {
 
   @Input() issue: PredictionIssue;
-  @Input() class: string;
 
 }

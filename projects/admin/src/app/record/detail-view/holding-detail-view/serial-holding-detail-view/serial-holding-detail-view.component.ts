@@ -26,8 +26,7 @@ import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'admin-serial-holding-detail-view',
-  templateUrl: './serial-holding-detail-view.component.html',
-  styleUrls: ['./serial-holding-detail-view.style.scss']
+  templateUrl: './serial-holding-detail-view.component.html'
 })
 export class SerialHoldingDetailViewComponent implements OnInit {
 

@@ -20,28 +20,17 @@ import { FieldType, FieldTypeConfig } from '@ngx-formly/core';
 @Component({
   selector: 'admin-field-custom-input',
   template: `
-    <div class="form-group m-0 d-flex align-items-start">
-      <!-- label -->
-      @if (props.label && props.hideLabel !== true) {
-        <label [attr.for]="id" class="mr-2 col-form-label" [pTooltip]="props.description" tooltipPosition="top">
-          {{ props.label }}
-          @if (props.required && props.hideRequiredMarker !== true) {
-            &nbsp;*
-          }
-        </label>
-      }
       <!-- field -->
-      <div class="flex-grow-1">
+      <div>
         @switch (field.type) {
           @case ('input') {
-            <formly-field [field]="field"></formly-field>
+            <formly-field [field]="field" />
           }
           @case ('select') {
-            <formly-field [field]="field"></formly-field>
+            <formly-field [field]="field" />
           }
         }
       </div>
-    </div>
   `,
 })
 export class FieldCustomInputTypeComponent extends FieldType<FieldTypeConfig> implements OnInit {

@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (response?.error) {
+@if (response) {
   <admin-preview-email
     [emails]="suggestions.emails"
     [emailTypes]="emailTypes"
@@ -27,7 +27,12 @@
     (data)="confirmIssue($event)"
   >
     <ng-container headerMessage>
-      <p translate>You're about to send the claim.</p>
+      <p-messages
+      [value]="[{ severity: 'warn', detail:'You\'re about to send the claim.'|translate }]"
+      [closable]="false"
+      [enableService]="false"
+      showTransitionOptions="0ms"
+    />
     </ng-container>
     <ng-container previewBottomMessage>
       <p translate>Below you can find the preview message that will be sent.</p>

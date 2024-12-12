@@ -14,51 +14,64 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="card mt-2" id="item-loans-requests" [permissions]="permissions.CIRC_ADMIN">
+<div class="flex flex-column gap-2">
   <!-- Loan borrowed -->
   @defer (when borrowedBy) {
     @if (borrowedBy.length > 0) {
-      <div class="card-header font-weight-bold" translate>Borrowed by</div>
-      <div class="card-body">
-        <div class="row mb-2">
-          <div class="col-4 font-weight-bold" translate>Patron</div>
-          <div class="col-4 font-weight-bold" translate>Renewal</div>
-          <div class="col-3 font-weight-bold" translate>Due date</div>
+      <p-panel [header]="'Borrowed by' | translate" id="item-loans-requests" [permissions]="permissions.CIRC_ADMIN">
+        <div class="grid px-2">
+          <div class="col-4 font-bold" translate>Patron</div>
+          <div class="col-4 font-bold" translate>Renewal</div>
+          <div class="col-3 font-bold" translate>Due date</div>
         </div>
-        <admin-item-transaction type="loan_borrow" [transaction]="borrowedBy[0]"></admin-item-transaction>
-      </div>
+        <div class="px-2">
+          <admin-item-transaction type="loan_borrow" [transaction]="borrowedBy[0]" />
+        </div>
+      </p-panel>
     }
   }
-
+  <p-panel>
   <!-- Loan requested -->
-  <div class="card-header">
-    <b translate>Requested by</b>
-    <button class="btn btn-outline-primary btn-link btn-sm ml-2 float-right" (click)="addRequest()">
-      <i class="fa fa-plus-square-o"></i> {{ 'Add' | translate }} …
-    </button>
-  </div>
-  @defer (when requestedBy) {
-    @if (requestedBy.length > 0) {
-      <div class="card-body">
-        <div class="row mb-2">
-          <div class="col-4 font-weight-bold" translate>Patron</div>
-          <div class="col-4 font-weight-bold" translate>Pick-up Location</div>
-          <div class="col-3 font-weight-bold" translate>Request date</div>
-        </div>
-        @for (request of requestedBy; track request) {
-          <admin-item-transaction
-            type="loan_request"
-            [transaction]="request"
-            [itemPid]="itemPid"
-            (cancelRequestEvent)="cancelRequest($event)"
-            (updatePickupLocationEvent)="updateRequestPickupLocation($event)"
-          ></admin-item-transaction>
-        }
+    <ng-template pTemplate="header">
+      <div class="flex w-full align-items-center">
+      <div class="p-panel-title flex-grow-1" translate>
+        Requested by
       </div>
-    } @else {
-      <div class="p-3" translate>No pending request</div>
+      <div class="flex-order-2">
+        <p-button
+          outlined size="small"
+          icon="fa fa-plus-square-o"
+          label="{{ 'Add' | translate }} …"
+          (onClick)="addRequest()"
+        />
+      </div>
+    </div>
+    </ng-template>
+    @defer (when requestedBy) {
+      @if (requestedBy.length > 0) {
+          <div class="grid px-2">
+            <div class="col-4 font-bold" translate>Patron</div>
+            <div class="col-4 font-bold" translate>Pick-up Location</div>
+            <div class="col-3 font-bold" translate>Request date</div>
+          </div>
+          <div class="alternate-color">
+          @for (request of requestedBy; track request) {
+            <div class="px-2">
+              <admin-item-transaction
+                type="loan_request"
+                [transaction]="request"
+                [itemPid]="itemPid"
+                (cancelRequestEvent)="cancelRequest($event)"
+                (updatePickupLocationEvent)="updateRequestPickupLocation($event)"
+              />
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="p-3" translate>No pending request</div>
+      }
+    } @placeholder {
+      <i class="fa fa-spin fa-spinner"></i>&nbsp;{{ 'loading in progress...' | translate }}
     }
-  } @placeholder {
-    <i class="fa fa-spinner"></i> {{ 'loading in progress...' | translate }}
-  }
+  </p-panel>
 </div>

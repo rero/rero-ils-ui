@@ -21,7 +21,7 @@
       <p-button
         icon="fa {{ isCollapsed ? 'fa-angle-right' : 'fa-angle-down' }}"
         [rounded]="true"
-        [outlined]="true"
+        outlined
         (onClick)="isCollapsed = !isCollapsed"
         [attr.aria-expanded]="!isCollapsed"
         aria-controls="collapse"

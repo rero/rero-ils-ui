@@ -170,6 +170,7 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
         } else {
           const dynamicDialogRef: DynamicDialogRef = this.dialogService.open(DialogImportComponent, {
             header: this.translate.instant('Import'),
+            width: '30vw',
             data: {
               records: response.hits.hits,
               warning

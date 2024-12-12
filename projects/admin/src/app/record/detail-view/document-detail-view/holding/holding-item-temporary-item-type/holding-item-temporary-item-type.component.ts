@@ -22,21 +22,20 @@ import { DateTime } from 'luxon';
   selector: 'admin-holding-item-temporary-item-type',
   template: `
     @if (hasTemporaryItemType()) {
-      <div class="row">
-        <div class="col-4 pl-5">
-          <i class="fa fa-long-arrow-right pr-1"></i>
-          <i class="fa fa-exclamation-triangle text-warning pr-1"></i>
-          <span class="label-title text-warning" translate>Temporary circulation category</span>
-        </div>
-        <div class="col-8">
+      <dl class="metadata">
+        <dt>
+          <span class="text-warning" translate>Temporary circulation category</span>&nbsp;
+          <i class="fa fa-exclamation-triangle text-warning"></i>
+        </dt>
+        <dd>
           {{ record.metadata.temporary_item_type.pid | getRecord:'item_types': 'field':'name' | async }}
           @if (record.metadata.temporary_item_type.end_date; as endDate) {
-            <span class="ml-1 small text-secondary">
+            &nbsp;<span class="small text-secondary">
               (<i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }})
             </span>
           }
-        </div>
-      </div>
+        </dd>
+      </dl>
     }
   `
 })

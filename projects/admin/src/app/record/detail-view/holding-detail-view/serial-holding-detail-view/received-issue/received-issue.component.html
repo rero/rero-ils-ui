@@ -15,33 +15,29 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="issue container" [ngClass]="{'deleted-status': issue.metadata.issue.status === 'deleted'}">
-  <div class="row">
-    <div class="col">
-      <div class="row">
-        <div class="col-1 pr-0">
-          <button type="button" class="btn-show-more mr-0"
-                  [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
-                  (click)="isCollapsed = !isCollapsed"
-                  [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
-          </button>
-          <div class="pull-right">
-            @if (isCollapsed) {
-              <i class="fa" [ngClass]="getIcon()" [title]="iconTitle"></i>
-            }
+@defer(when issue) {
+  <div class="grid  border-1 surface-border p-2 grid-nogutter align-items-center" [ngClass]="{'text-error': issue.metadata.issue.status === 'deleted'}">
+    <div class="col-10">
+      <div class="grid p-2 grid-nogutter align-items-center">
+        <div class="col-1 flex align-items-center">
+          <div class="flex-grow-1">
+            <shared-open-close-button (status)="isCollapsed = $event" />
           </div>
+            @if (isCollapsed) {
+              <i class="fa mr-2" [ngClass]="getIcon()" [title]="iconTitle"></i>
+            }
         </div>
         <div class="col-8">
           <a [routerLink]="['/records', 'items', 'detail', issue.metadata.pid]" class="issue-title">
             {{ issue.metadata.enumerationAndChronology }}
           </a>
           @if (issue.new_issue) {
-            <span class="badge badge-pill badge-info mx-2" translate>New</span>
+            <p-tag severtity="info" [value]="'New' | translate" />
           }
           @if (issue.metadata.notes) {
-            <i class="fa fa-sticky-note-o mx-2 text-warning"></i>
+            <i class="fa fa-sticky-note-o text-warning"></i>
           }
-          <shared-inherited-call-number class="call-numbers px-2" [item]="issue"></shared-inherited-call-number>
+          <shared-inherited-call-number class="call-numbers px-2" [item]="issue" />
           @if (issue.metadata?.issue?.claims?.counter > 0 && isCollapsed) {
             <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
           }
@@ -52,37 +48,38 @@
           </span>
         }
         @if (!isCollapsed) {
-          <dl class="col-12 row mb-1">
+          <dl class="metadata">
             @if (issue.metadata._masked) {
-              <dd class="offset-1 col-11 text-danger mb-0">
-                <i class="fa fa-eye-slash pr-1"></i>
+              <dt></dt>
+              <dd class="text-danger">
+                <i class="fa fa-eye-slash"></i>&nbsp;
                 {{ 'This issue has been marked as masked' | translate }}
               </dd>
             }
-            <dt class="offset-1 col-3 label-title" translate>Status</dt>
-            <dd class="col-8 mb-0">
-              <i class="fa pr-2" [class]="getIcon(true)"></i>
+            <dt translate>Status</dt>
+            <dd>
+              <i class="fa" [class]="getIcon(true)"></i>&nbsp;
               {{ issue.metadata.issue.status | translate }}
-              <span class="small pl-2 text-secondary">
+              <span class="text-sm text-color-secondary">
                 ({{ 'Assigned on' | translate }} {{ issue.metadata.issue.status_date | dateTranslate }})
               </span>
             </dd>
-            <dt class="offset-1 col-3 label-title" translate>Expected date</dt>
-            <dd class="col-8 mb-0">{{ issue.metadata.issue.expected_date | dateTranslate }}</dd>
+            <dt translate>Expected date</dt>
+            <dd>{{ issue.metadata.issue.expected_date | dateTranslate }}</dd>
             @if (issue.metadata.issue.status === issueItemStatusRef.RECEIVED) {
-              <dt class="offset-1 col-3 label-title" translate>Received date</dt>
-              <dd class="col-8 mb-0">{{ issue.metadata.issue.received_date | dateTranslate }}</dd>
+              <dt translate>Received date</dt>
+              <dd>{{ issue.metadata.issue.received_date | dateTranslate }}</dd>
             }
             @if (issue.metadata?.issue?.claims?.counter > 0) {
-              <dt class="offset-1 col-3 label-title" translate>
+              <dt translate>
                 <span [ngPlural]="issue.metadata.issue.claims.counter">
                   <ng-template ngPluralCase="=1">{{ 'Claim' | translate }}</ng-template>
                   <ng-template ngPluralCase="other">{{ 'Claims' | translate }}</ng-template>
                 </span>
               </dt>
-              <dd class="col-8 mb-0">
+              <dd>
                 {{ issue.metadata.issue.claims.counter }}
-                <span class="small pl-2 text-secondary">
+                <span class="text-sm text-color-secondary">
                   ({{ 'last claim' | translate }}: {{ claimLastDate | dateTranslate: 'short' }})
                 </span>
               </dd>
@@ -91,52 +88,46 @@
         }
       </div>
     </div>
-    <div class="col-2 text-right">
+    <div class="col-2 flex gap-1 justify-content-end">
       <!-- CLAIMS BUTTON -->
       @if (recordPermissions?.update?.can) {
         @if (isClaimAllowed) {
           <p-button
             icon="fa fa-gavel"
+            size="small"
             [title]="'Claim'|translate"
-            [outlined]="true"
+            outlined
             (onClick)="openClaimEmailDialog()"
           />
         }
         <!-- EDIT BUTTON -->
         <p-button
           icon="fa fa-pencil"
+          size="small"
           [title]="'Edit'|translate"
-          [outlined]="true"
+          outlined
           [routerLink]="['/records', 'items', 'edit', issue.metadata.pid]"
           [queryParams]="{'redirectTo': 'records/holdings/detail/' + holding.id }"
-          styleClass="ml-1"
         />
       }
 
       <!-- DELETE BUTTON -->
-      @if (recordPermissions?.delete?.can) {
-        <p-button
-          icon="fa fa-trash"
-          severity="danger"
-          [title]="'Delete'|translate"
-          [outlined]="true"
-          (onClick)="deleteIssue(issue)"
-          styleClass="ml-1"
-        />
-      } @else {
-        <p-button
-          icon="fa fa-trash"
-          severity="danger"
-          [title]="'Delete'|translate"
-          [outlined]="true"
-          [pTooltip]="tooltipContent"
-          tooltipPosition="top"
-          styleClass="text-red-100 ml-1"
-        />
-        <ng-template #tooltipContent>
-          <span [innerHTML]="deleteInfoMessage(issue)"></span>
-        </ng-template>
-      }
+      <p-button
+        class="pointer-events-auto"
+        size="small"
+        icon="fa fa-trash"
+        severity="danger"
+        [title]="'Delete'|translate"
+        outlined
+        [pTooltip]="tooltipContent"
+        tooltipPosition="top"
+        [disabled]="!recordPermissions.delete?.can"
+        [tooltipDisabled]="recordPermissions.delete?.can"
+        (onClick)="deleteIssue(issue)"
+      />
+      <ng-template #tooltipContent>
+        <span [innerHTML]="deleteInfoMessage(issue)"></span>
+      </ng-template>
     </div>
   </div>
-</div>
+}

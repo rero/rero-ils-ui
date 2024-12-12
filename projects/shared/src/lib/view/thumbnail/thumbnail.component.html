@@ -16,8 +16,8 @@
 -->
 @if (record) {
   <div class="align-self-start flex">
-    <figure class="m-0" [ngClass]="figureStyle">
-      <img class="img-thumbnail border-1 surface-border border-round p-2" [ngClass]="{'svg-image': svgImage}" [src]="coverUrl"/>
+    <figure class="m-0" [ngClass]="styleClass">
+      <img class="w-full h-auto border-1 surface-border border-round p-2" [src]="coverUrl"/>
       @for (type of record.metadata.type; track type) {
         <figcaption class="text-center font-bold text-sm text-color-secondary">
           {{ type.subtype? (type.subtype | translate): (type.main_type | translate) }}

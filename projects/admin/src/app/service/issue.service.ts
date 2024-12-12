@@ -21,7 +21,9 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { IssueEmailComponent } from '../components/issues/issue-email/issue-email.component';
 import { TranslateService } from '@ngx-translate/core';
 
-@Injectable()
+@Injectable({
+   providedIn: 'root'
+})
 export class IssueService {
 
   private dialogService: DialogService = inject(DialogService);
@@ -47,7 +49,7 @@ export class IssueService {
   openClaimEmailDialog(record: any): DynamicDialogRef {
     return this.dialogService.open(IssueEmailComponent, {
       header: this.translateService.instant('Claim'),
-      width: '60vw',
+      width: '90vw',
       dismissableMask: true,
       data: { record }
     });

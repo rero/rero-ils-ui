@@ -15,29 +15,29 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<ng-core-search-input [placeholder]="'username or email' | translate" [searchText]="searchText"
+  (search)="searchValueUpdated($event)" class="form-inline mr-3" [focus]="false" [displayLabel]="false">
+</ng-core-search-input>
+<p-divider></p-divider>
+<!-- ngx-formly -->
 <form [formGroup]="form" (ngSubmit)="submit()">
-  <div class="modal-header">
-    <h4 id="dialog-sizes-name2" class="modal-title pull-left" translate>Personal informations</h4>
-    <div class="d-flex">
-      <form>
-        <ng-core-search-input [placeholder]="'username or email' | translate" [searchText]="searchText"
-          (search)="searchValueUpdated($event)" class="form-inline mr-3" [focus]="false" [displayLabel]="false">
-        </ng-core-search-input>
-      </form>
-      <button type="button" id="user-editor-delete-button" class="btn btn-outline-danger btn-sm mr-1"
-        (click)="closeDialog()">
-        <i class="fa fa-times"></i>
-        {{ 'Cancel' | translate }}
-      </button>
-      <button type="submit" id="user-editor-save-button" class="btn btn-primary btn-sm">
-        <i class="fa fa-save"></i>
-        {{ 'Save' | translate }}
-      </button>
-    </div>
-  </div>
-
-  <div class="modal-body">
-    <!-- ngx-formly -->
-    <formly-form [model]="model" [fields]="fields" [form]="form"></formly-form>
-  </div>
+  <formly-form [model]="model" [fields]="fields" [form]="form" />
 </form>
+<div class="flex gap-1 justify-content-end">
+  <p-button
+    outlined
+    severity="danger"
+    size="small"
+    id="user-editor-delete-button"
+    (onClick)="closeDialog()"
+    icon="fa fa-times"
+    [label]="'Cancel' | translate"
+  />
+  <p-button
+    type="submit"
+    id="user-editor-save-button"
+    size="small"
+    icon="fa fa-save"
+    [label]="'Save' | translate"
+  />
+</div>

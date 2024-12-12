@@ -97,7 +97,6 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
 
   /** Submit form */
   submit(): void {
-    console.log('submit', this.form);
     if (this.form.valid) {
       this.subscriptions.add(this.recordService.create('local_entities', this.model).subscribe({
         next: (response: any) => {

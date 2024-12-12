@@ -195,6 +195,7 @@ import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 import { HotkeysShortcutPipe } from '@ngneat/hotkeys';
 import { EntityAutocompleteComponent } from './record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
 import { RemoteAutocompleteService as UiRemoteAutocompleteService } from './record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.service';
+import { CirculationLogsDialogComponent } from './record/circulation-logs/circulation-logs-dialog.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
@@ -205,6 +206,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
   declarations: [
     AppComponent,
     CircPoliciesBriefViewComponent,
+    CirculationLogsDialogComponent,
     DocumentEditorComponent,
     DocumentsBriefViewComponent,
     ExceptionDatesEditComponent,

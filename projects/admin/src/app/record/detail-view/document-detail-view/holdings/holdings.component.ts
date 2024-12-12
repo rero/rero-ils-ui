@@ -16,13 +16,11 @@
  */
 
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { HoldingsApiService } from '@app/admin/api/holdings-api.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
-import { IPermissions, PERMISSION_OPERATOR, PERMISSIONS, UserService } from '@rero/shared';
-import { DropdownChangeEvent } from 'primeng/dropdown';
+import { IPermissions, PERMISSION_OPERATOR, PERMISSIONS, PermissionsService, UserService } from '@rero/shared';
 import { forkJoin, Observable } from 'rxjs';
 
 @Component({
@@ -35,8 +33,8 @@ export class HoldingsComponent implements OnInit {
   private holdingsApiService: HoldingsApiService = inject(HoldingsApiService);
   private recordUiService: RecordUiService = inject(RecordUiService);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private permissionsService: PermissionsService = inject(PermissionsService);
   private translateService: TranslateService = inject(TranslateService);
-  private router: Router = inject(Router);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Document */
@@ -99,8 +97,18 @@ export class HoldingsComponent implements OnInit {
   /** onInit hook */
   ngOnInit() {
     this.options = [
-      { name: this.translateService.instant('an item'), code: 'items' },
-      { name: this.translateService.instant('a holdings'), code: 'holdings' }
+      {
+        label: this.translateService.instant('an item'),
+        routerLink: ['/', 'records', 'items', 'new'],
+        queryParams: { document: this.document.metadata.pid },
+        visible: this.permissionsService.canAccess(PERMISSIONS.ITEM_CREATE)
+      },
+      {
+        label: this.translateService.instant('a holdings'),
+        routerLink: ['/', 'records', 'holdings', 'new'],
+        queryParams: { document: this.document.metadata.pid },
+        visible: this.permissionsService.canAccess(PERMISSIONS.HOLD_CREATE)
+      }
     ];
     this.canAdd = this.isCurrentOrganisation && (!('harvested' in this.document.metadata));
     const holdingsRecords = this._holdingsQuery(this.documentPid, this.organisationPid, 1, this.isCurrentOrganisation);
@@ -156,12 +164,6 @@ export class HoldingsComponent implements OnInit {
     }
   }
 
-  dropdownAction(resource: DropdownChangeEvent): void {
-    this.router.navigate(
-      ['/', 'records', resource.value.code, 'new'],
-      { queryParams: { document: this.document.metadata.pid }
-    });
-  }
 
   /**
    * Holdings count

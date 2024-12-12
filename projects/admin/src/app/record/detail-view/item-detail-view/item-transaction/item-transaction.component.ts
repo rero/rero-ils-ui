@@ -19,6 +19,7 @@ import { ItemsService } from '@app/admin/service/items.service';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
+import { DropdownChangeEvent } from 'primeng/dropdown';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -60,19 +61,8 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   private authorizedTypeToLoadPickupLocations = [
     'loan_request'
   ];
+  currentPickupLocation: {value: string, label: string};
 
-  // GETTER & SETTER ======================================================================
-  /**
-   * Get current pickup location
-   * @return pickup location name
-   */
-  get currentPickupLocation(): string {
-    const location = this.pickupLocations.find(loc => loc.value === this.transaction.metadata.pickup_location_pid);
-    if (location != null) {
-      return location.label;
-    }
-    return this.translateService.instant('No pickup location');
-  }
 
   /** OnInit hook */
   ngOnInit() {
@@ -80,6 +70,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
     if (this.authorizedTypeToLoadPickupLocations.includes(this.type)) {
       this.pickupLocations$ = this.getPickupLocations().subscribe((pickups) => {
         this.pickupLocations = pickups;
+        this.currentPickupLocation = this.pickupLocations.find(loc => loc.value === this.transaction.metadata.pickup_location_pid);
       });
     }
   }
@@ -122,9 +113,9 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   }
 
   /** Inform parent to cancel the request. */
-  emitUpdatePickupLocation(pickupLocationPid: string): void {
+  emitUpdatePickupLocation(event:  DropdownChangeEvent): void {
     const data = {
-      pickupLocationPid,
+      pickupLocationPid: event.value,
       transaction: this.transaction
     };
     this.updatePickupLocationEvent.emit(data);

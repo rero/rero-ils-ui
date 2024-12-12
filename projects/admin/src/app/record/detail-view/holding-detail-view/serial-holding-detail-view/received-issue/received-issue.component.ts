@@ -28,7 +28,6 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'admin-received-issue',
   templateUrl: './received-issue.component.html',
-  styleUrls: ['../serial-holding-detail-view.style.scss'],
   providers: [IssueService]
 })
 export class ReceivedIssueComponent implements OnInit, OnDestroy {
@@ -132,7 +131,11 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
   openClaimEmailDialog(): void {
     const ref: DynamicDialogRef = this.issueService.openClaimEmailDialog(this.issue);
     this.subscription.add(
-      ref.onClose.subscribe((record: any) => this.issue = record)
+      ref.onClose.subscribe((record: any) => {
+        if(record) {
+          this.issue = record;
+        }
+      })
     );
   }
 }

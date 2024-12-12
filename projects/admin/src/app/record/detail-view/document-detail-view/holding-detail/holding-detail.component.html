@@ -15,74 +15,94 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (holding) {
-  <div class="row col">
+  <div class="alternate-color">
     @if (context === 'document') {
-      <admin-holding-shared-view [holding]="holding"  class="row col-12"></admin-holding-shared-view>
+      <admin-holding-shared-view [holding]="holding" />
     }
 
     <!-- MISSING ISSUES -->
     @if (holding.metadata.missing_issues) {
-      <div class="col-3 font-weight-bold" translate>Missing issues</div>
-      <div class="col-9">{{ holding.metadata.missing_issues }}</div>
+      <dl class="metadata">
+        <dt translate>Missing issues</dt>
+        <dd>{{ holding.metadata.missing_issues }}</dd>
+      </dl>
     }
 
     <!-- NOTES -->
     @for (note of holding.metadata.notes | notesFilter: noteAuthorizedTypes; track note) {
-      <div class="col-3 font-weight-bold" translate>{{ note.type }}</div>
-      <div class="col-9" [innerHtml]="note.content | nl2br"></div>
+      <dl class="metadata">
+        <dt translate>{{ note.type }}</dt>
+        <dd [innerHtml]="note.content | nl2br"></dd>
+      </dl>
     }
 
     @if (context === 'holdings') {
       <!-- VENDOR -->
       @if (holding.metadata.vendor) {
-        <div class="col-3 font-weight-bold" translate>Vendor</div>
-        <div class="col-9">
-          {{ holding.metadata.vendor.pid | getRecord: 'vendors' : 'field' : 'name' | async }}
-        </div>
+        <dl class="metadata">
+          <dt translate>Vendor</dt>
+          <dd>
+            {{ holding.metadata.vendor.pid | getRecord: 'vendors' : 'field' : 'name' | async }}
+          </dd>
+        </dl>
       }
 
       <!-- ISSUE BINDING -->
       @if (holding.metadata.issue_binding) {
-        <div class="col-3 font-weight-bold" translate>Issue binding</div>
-        <div class="col-9">{{ holding.metadata.issue_binding }}</div>
+        <dl class="metadata">
+          <dt translate>Issue binding</dt>
+          <dd>{{ holding.metadata.issue_binding }}</dd>
+        </dl>
       }
 
       <!-- ACQUISITION STATUS -->
       @if (holding.metadata.acquisition_status) {
-        <div class="col-3 font-weight-bold" translate>Acquisition status</div>
-        <div class="col-9">{{ holding.metadata.acquisition_status | translate }}</div>
+        <dl class="metadata">
+          <dt translate>Acquisition status</dt>
+          <dd>{{ holding.metadata.acquisition_status | translate }}</dd>
+        </dl>
       }
 
       <!-- ACQUISITION METHOD -->
       @if (holding.metadata.acquisition_method) {
-        <div class="col-3 font-weight-bold" translate>Acquisition method</div>
-        <div class="col-9">{{ holding.metadata.acquisition_method | translate }}</div>
+        <dl class="metadata">
+          <dt translate>Acquisition method</dt>
+          <dd>{{ holding.metadata.acquisition_method | translate }}</dd>
+        </dl>
       }
 
       <!-- ACQUISITION EXPECTED END DATE -->
       @if (holding.metadata.acquisition_expected_end_date) {
-        <div class="col-3 font-weight-bold" translate>Acquisition expected end date</div>
-        <div class="col-9">
-          {{ holding.metadata.acquisition_expected_end_date | dateTranslate :'shortDate' }}
-        </div>
+        <dl class="metadata">
+          <dt translate>Acquisition expected end date</dt>
+          <dd>
+            {{ holding.metadata.acquisition_expected_end_date | dateTranslate :'shortDate' }}
+          </dd>
+        </dl>
       }
 
       <!-- GENERAL RETENTION POLICY -->
       @if (holding.metadata.general_retention_policy) {
-        <div class="col-3 font-weight-bold" translate>General retention policy</div>
-        <div class="col-9">{{ holding.metadata.general_retention_policy | translate }}</div>
+        <dl class="metadata">
+          <dt translate>General retention policy</dt>
+          <dd>{{ holding.metadata.general_retention_policy | translate }}</dd>
+        </dl>
       }
 
       <!-- COMPLETENESS -->
       @if (holding.metadata.completeness) {
-        <div class="col-3 font-weight-bold" translate>Completeness</div>
-        <div class="col-9">{{ holding.metadata.completeness | translate }}</div>
+        <dl class="metadata">
+          <dt translate>Completeness</dt>
+          <dd>{{ holding.metadata.completeness | translate }}</dd>
+        </dl>
       }
 
       <!-- COMPOSITE COPY REPORT -->
       @if (holding.metadata.composite_copy_report) {
-        <div class="col-3 font-weight-bold" translate>Composite copy report</div>
-        <div class="col-9">{{ holding.metadata.composite_copy_report | translate }}</div>
+        <dl class="metadata">
+          <dt translate>Composite copy report</dt>
+          <dd>{{ holding.metadata.composite_copy_report | translate }}</dd>
+        </dl>
       }
     }
   </div>

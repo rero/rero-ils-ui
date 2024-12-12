@@ -14,12 +14,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<shared-description-zone>
-  <ng-container label>{{ fieldLabel }}</ng-container>
-  <ng-container content>
-    <ul class="list-none m-0 p-0">
-      @for (edition of field; track edition) {
-        <li>
+<div>
+  <b>{{ fieldLabel }}</b>:
+    <ul class="inline list-none m-0 p-0">
+      @for (edition of field; track edition; let last=$last) {
+        <li class="inline">
           @if (edition.label) {
             {{ edition.label }}
           } @else {
@@ -27,8 +26,8 @@
               <a [routerLink]="['/records', 'documents', 'detail', edition.pid]">{{ $any(documentTitle) | mainTitleRelation }}</a>
             }
           }
+          @if(!last){ ; }
         </li>
       }
     </ul>
-  </ng-container>
-</shared-description-zone>
+</div>

@@ -15,20 +15,25 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<admin-files-collections></admin-files-collections>
-<ngx-spinner name="file-upload" color="#fff" size="medium" type="ball-zig-zag" [fullScreen]="true">
+<ngx-spinner
+  name="file-upload"
+  color="#fff"
+  size="medium"
+  type="ball-zig-zag"
+  [fullScreen]="true"
+>
   <p class="text-white">
-    {{'Loading...' | translate }}
-    @if (fileUpload?.files?.length > 0) {
-      ({{ nUploadedFiles }} / {{ fileUpload.files.length }})
-    }
+    {{ "Loading..." | translate }}
+    @if (fileUpload?.files?.length > 0) { ({{ nUploadedFiles }} /
+    {{ fileUpload.files.length }}) }
   </p>
 </ngx-spinner>
 
 @if (files != null) {
-<div class="grid mt-4">
-  <div class="col-12">
-    <h5 class="mb-2" translate>Upload Files</h5>
+<div class="flex flex-column gap-2 py-2">
+  <admin-files-collections />
+  <div>
+    <h5 translate>Upload Files</h5>
     <p-fileUpload
       [disabled]="reachMaxFileLimit"
       #fileUpload
@@ -43,23 +48,31 @@
       (onSelect)="onSelect($event, '')"
     >
       <ng-template pTemplate="toolbar">
-        <div></div>
         <div class="mt-2">
-          <small translate>
+          <p class="text-warning" translate>
             By uploading a file, I declare that I am aware of the terms and
             conditions of the copyright transfer agreement governing the
             publication of the respective document, and that the deposit of its
             full-text content in the current platform is compatible with those.
-          </small>
+          </p>
         </div>
       </ng-template>
       <ng-template let-file pTemplate="file"> </ng-template>
       <ng-template let-file pTemplate="content">
         @if (reachMaxFileLimit) {
-        <div class="alert alert-danger" role="alert" translate>
-          The maximum number of files is reached. No additional upload is
-          allowed.
-        </div>
+        <p-messages
+          [value]="[
+            {
+              severity: 'error',
+              detail:
+                'The maximum number of files is reached. No additional upload is allowed.'
+                | translate
+            }
+          ]"
+          [closable]="false"
+          [enableService]="false"
+          showTransitionOptions="0ms"
+        />
         } @else {
         <span translate>Drag and drop files.</span>
         }
@@ -68,34 +81,35 @@
   </div>
 
   @if (files.length > 0) {
-  <div class="col-12 mt-4">
-    <h5 class="mb-2" translate>Uploaded Files</h5>
-    <div>
-      <div class="p-input-icon-right">
+  <div>
+    <h5 translate>Uploaded Files</h5>
+    <p-inputGroup>
+      <input
+        id="filter"
+        type="text"
+        pInputText
+        [placeholder]="'filter' | translate"
+        [(ngModel)]="filterText"
+        (keyup)="onTextChange($event)"
+      />
+      <p-inputGroupAddon>
         <i class="fa fa-filter"></i>
-        <input
-          class="p-inputtext"
-          id="filter"
-          type="text"
-          pInputText
-          [placeholder]="'filter' | translate"
-          [(ngModel)]="filterText"
-          (keyup)="onTextChange($event)"
-        />
-      </div>
-    </div>
+      </p-inputGroupAddon>
+    </p-inputGroup>
+
     <small *ngVar="filteredFiles.length as total" id="filtered-results">
       {{ getResultsText() | async }}
     </small>
   </div>
 
   @if(filteredFiles.length > 0) {
-  <ul class="col-12 list-group list-group-flush">
+  <ul class="list-none alternate-color border-1 surface-border border-round p-2 m-0">
     @for (file of filteredFiles;track file.label) {
-    <li class="list-group-item">
-      <div class="row align-items-center">
-        <div class="col-sm-6">
+    <li>
+      <div class="grid align-items-center">
+        <div class="col-6">
           <a
+            class="text-link"
             tabindex="-1"
             [pTooltip]="
               (file.size | filesize) +
@@ -109,39 +123,42 @@
             >{{ file.key }} <i class="fa fa-download"></i
           ></a>
         </div>
-        <div class="col">
+        <div class="col-5">
           <div class="input-group">
-            <input
-              #inputLabel
-              [value]="file.label"
-              (keyup)="(0)"
-              type="text"
-              class="form-control"
-              [placeholder]="'label' | translate"
-              aria-label="label"
-              (keyup.enter)="updateLabel(file, inputLabel.value)"
-            />
-            <div class="input-group-append">
+            <p-inputGroup>
+              <input
+                pInputText
+                #inputLabel
+                [value]="file.label"
+                type="text"
+                class="form-control"
+                [placeholder]="'label' | translate"
+                aria-label="label"
+                (keyup.enter)="updateLabel(file, inputLabel.value)"
+              />
               <button
-                [disabled]="inputLabel.value.length === 0 || (inputLabel.value.trim() === file.label)"
-                (click)="updateLabel(file, inputLabel.value)"
-                class="btn btn-outline-primary"
+                pButton
+                [disabled]="
+                  inputLabel.value.length === 0 ||
+                  inputLabel.value.trim() === file.label
+                "
+                (onClick)="updateLabel(file, inputLabel.value)"
+                outlined
                 type="button"
-              >
-                <i class="fa fa-save"></i>
-              </button>
-            </div>
+                icon="fa fa-save"
+              ></button>
+            </p-inputGroup>
           </div>
         </div>
-        <div class="col-1">
-          <button
+        <div class="col-1 flex justify-content-end">
+          <p-button
+            outlined
             tabindex="-1"
-            (click)="deleteFile(file)"
-            class="btn btn-sm btn-outline-danger"
+            severity="danger"
+            (onClick)="deleteFile(file)"
             title="{{ 'remove' | translate }}"
-          >
-            <i class="fa fa-trash"></i>
-          </button>
+            icon="fa fa-trash"
+          />
         </div>
       </div>
     </li>
@@ -150,5 +167,5 @@
   } }
 </div>
 } @else {
-  <i class="fa fa-spinner fa-spin"></i>
+<i class="fa fa-spinner fa-spin"></i>
 }

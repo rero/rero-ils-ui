@@ -62,17 +62,17 @@
       @if (permissions.update.can) {
         <p-button
           icon="fa fa-pencil"
-          [outlined]="true"
+          outlined
           [routerLink]="['/records', 'acq_accounts', 'edit', account.pid]"
         />
       }
       @if (permissions.delete.can) {
-        <p-button icon="fa fa-trash" severity="danger" [outlined]="true" (onClick)="delete()" styleClass="ml-1" />
+        <p-button icon="fa fa-trash" severity="danger" outlined (onClick)="delete()" styleClass="ml-1" />
       } @else {
         <p-button
           icon="fa fa-trash"
           severity="danger"
-          [outlined]="true"
+          outlined
           [title]="'Delete' | translate"
           [pTooltip]="tooltipContent"
           tooltipPosition="top"
@@ -85,7 +85,7 @@
     </div>
   </div>
 } @placeholder {
-  <i class="fa fa-spinner"></i>
+  <i class="fa fa-spin fa-spinner"></i>
 }
 
 @for (childAccount of children; track childAccount) {

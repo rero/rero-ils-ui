@@ -24,7 +24,7 @@
           <p-button
             icon="fa fa-plus-square-o"
             [label]="'Add'|translate"
-            [outlined]="true"
+            outlined
             [routerLink]="['/', 'records', 'acq_order_lines', 'new']"
             [queryParams]="{ order: order.pid }"
           />
@@ -32,7 +32,7 @@
           <p-button
             icon="fa fa-plus-square-o"
             [label]="'Add'|translate"
-            [outlined]="true"
+            outlined
             [pTooltip]="tooltipContent"
             tooltipPosition="top"
             styleClass="text-blue-200"

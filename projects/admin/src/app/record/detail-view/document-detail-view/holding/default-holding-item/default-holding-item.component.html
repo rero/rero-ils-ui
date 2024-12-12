@@ -16,16 +16,15 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (item) {
-  <div class="container item px-0 mt-1 mb-2">
-    <div class="row">
+  <div class="flex gap-2 pt-2">
+      <div class="flex-grow-1">  <!-- First row :: item detail -->
       <!-- METADATA COLUMN -->
-      <div class="col-10">
-        <div class="row">
-          <!-- Barcode -->
-          <div class="col-4 pl-5 font-weight-bold label-title" translate>Barcode</div>
-          <div class="col-8">
+       <dl class="metadata">
+        <!-- Barcode -->
+          <dt translate>Barcode</dt>
+          <dd>
             @if (item.metadata._masked) {
-              <admin-record-masked [record]="item"></admin-record-masked>
+              <admin-record-masked [record]="item" />
             }
             <!-- Remove link if not current organisation -->
             @if (permissions) {
@@ -35,126 +34,115 @@
             } @else {
               {{ item.metadata.barcode }}
             }
-          </div>
+          </dd>
           <!-- Unit -->
           @if (item.metadata.enumerationAndChronology) {
-            <div class="col-4 pl-5 font-weight-bold label-title" translate>Unit</div>
-            <div class="col-8">{{ item.metadata.enumerationAndChronology }}</div>
+            <dt translate>Unit</dt>
+            <dd>{{ item.metadata.enumerationAndChronology }}</dd>
           }
           <!-- Call numbers -->
           @if (item | itemHoldingsCallNumber | async; as callNumber) {
             @if ((callNumber | json) !== ({ first: {}, second: {} } | json)) {
-              <div class="col-4 pl-5 font-weight-bold label-title" translate>Call number</div>
-              <div class="col-8">
-                <shared-inherited-call-number [item]="item"></shared-inherited-call-number>
-              </div>
+              <dt translate>Call number</dt>
+              <dd>
+                <shared-inherited-call-number [item]="item" />
+              </dd>
             }
           }
           <!-- Status -->
-          <div class="col-4 pl-5 font-weight-bold label-title" translate>Status</div>
-          <div class="col-8">
+          <dt translate>Status</dt>
+          <dd>
             <shared-availability
               recordType="item"
               [record]="item"
               [apiService]="itemApiService"
             ></shared-availability>
-          </div>
+          </dd>
           <!-- URL -->
           @if (item.metadata.url) {
-            <div class="col-4 pl-5 font-weight-bold label-title" translate>Online access</div>
-            <div class="col-8"><a target="_blank" [href]="item.metadata.url | safeUrl">{{ item.metadata.url }}</a></div>
+            <dt translate>Online access</dt>
+            <dd><a target="_blank" [href]="item.metadata.url | safeUrl">{{ item.metadata.url }}</a></dd>
           }
           <!-- TEMPORARY LOCATION -->
           @if (item.metadata.temporary_location) {
-            <div class="col-4 pl-5 font-weight-bold label-title" translate>Temporary location</div>
-            <div class="col-8">{{ item.metadata.temporary_location.name }}</div>
+            <dt translate>Temporary location</dt>
+            <dd>{{ item.metadata.temporary_location.name }}</dd>
           }
           <!-- ITEM IN COLLECTION (hide if not current organisation) -->
           @if (permissions && item.metadata.pid | itemInCollection | async; as collections) {
-            <div class="col-4 pl-5 font-weight-bold label-title" translate>Exhibition/course</div>
-            <div class="col-8">
+            <dt translate>Exhibition/course</dt>
+            <dd>
               @for (collection of collections; track collection; let last=$last) {
                 <a [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]">
                   {{ $any(collection).metadata.title }}
                 </a>{{ last ? '' : '; ' }}
               }
-            </div>
+            </dd>
           }
-        </div>
+        </dl>
         <!-- (hide if not current organisation) -->
         @if (permissions) {
           @for (note of item.metadata.notes; track note) {
-            <admin-holding-item-note [note]="note"></admin-holding-item-note>
+            <admin-holding-item-note [note]="note" />
           }
-          <admin-holding-item-temporary-item-type [record]="item"></admin-holding-item-temporary-item-type>
+          <admin-holding-item-temporary-item-type [record]="item" />
         }
-      </div>
-      <!-- ACTIONS BUTTONS -->
-      <div class="col-2 text-right" name="buttons">
-        @if (permissions) {
-          @if (permissions?.canRequest?.can) {
-            <p-button
-              icon="fa fa-shopping-basket"
-              [title]="'Item request'|translate"
-              [outlined]="true"
-              (onClick)="addRequest(item.metadata.pid, 'item')"
-            />
-          } @else {
-              <p-button
-                icon="fa fa-shopping-basket"
-                [title]="'Item request'|translate"
-                [outlined]="true"
-                [pTooltip]="cannotRequestTooltipContent"
-                tooltipPosition="top"
-                styleClass="text-blue-200"
-              />
-              <ng-template #cannotRequestTooltipContent>
-                <span [innerHTML]="cannotRequestInfoMessage | nl2br"></span>
-              </ng-template>
-          }
-          @if (permissions?.switchLocation?.can) {
-            <p-button
-              icon="fa fa-random"
-              [title]="'Switch location'|translate"
-              [outlined]="true"
-              [routerLink]="['/records', 'items', 'switch_location', item.metadata.pid]"
-              styleClass="ml-1"
-            />
-          }
-          @if (permissions?.update?.can) {
-            <p-button
-              icon="fa fa-pencil"
-              [title]="'Edit'|translate"
-              [outlined]="true"
-              [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
-              styleClass="ml-1"
-            />
-          }
-          @if (permissions?.delete?.can) {
-            <p-button
-              icon="fa fa-trash"
-              severity="danger"
-              [title]="'Delete'|translate"
-              (onClick)="delete(item.metadata.pid)"
-              styleClass="ml-1"
-            />
-          } @else {
-            <p-button
-              icon="fa fa-trash"
-              [title]="'Delete' | translate"
-              [outlined]="true"
-              [pTooltip]="tooltipContent"
-              tooltipPosition="top"
-              styleClass="text-red-100"
-            />
-            <ng-template #tooltipContent>
-              <span [innerHTML]="deleteInfoMessage | nl2br"></span>
-            </ng-template>
-          }
-        } @else {
-          &nbsp;
-        }
-      </div>
+
     </div>
+    <!-- ACTIONS BUTTONS -->
+    @if (permissions) {
+      <div class="flex gap-1">
+        <p-button
+          icon="fa fa-shopping-basket"
+          class="pointer-events-auto"
+          size="small"
+          [title]="'Item request'|translate"
+          outlined
+          (onClick)="addRequest(item.metadata.pid, 'item')"
+          [pTooltip]="cannotRequestTooltipContent"
+          tooltipPosition="top"
+          [disabled]="!permissions.canRequest?.can"
+          [tooltipDisabled]="permissions.canRequest?.can"
+        />
+        <ng-template #cannotRequestTooltipContent>
+          <span [innerHTML]="cannotRequestInfoMessage | nl2br"></span>
+        </ng-template>
+
+        @if (permissions?.switchLocation?.can) {
+          <p-button
+            icon="fa fa-random"
+            size="small"
+            [title]="'Switch location'|translate"
+            outlined
+            [routerLink]="['/records', 'items', 'switch_location', item.metadata.pid]"
+          />
+        }
+        @if (permissions?.update?.can) {
+          <p-button
+            icon="fa fa-pencil"
+            size="small"
+            [title]="'Edit'|translate"
+            outlined
+            [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
+          />
+        }
+        <p-button
+          icon="fa fa-trash"
+          class="pointer-events-auto"
+          size="small"
+          outlined
+          severity="danger"
+          [title]="'Delete'|translate"
+          [pTooltip]="tooltipContent"
+          tooltipPosition="top"
+          [disabled]="!permissions.delete?.can"
+          [tooltipDisabled]="permissions.delete?.can"
+          (onClick)="delete(item.metadata.pid)"
+        />
+        <ng-template #tooltipContent>
+          <span [innerHTML]="deleteInfoMessage | nl2br"></span>
+        </ng-template>
+      </div>
+    }
   </div>
 }

@@ -20,8 +20,7 @@ import { ResultItem } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-inventory-brief-view',
-  templateUrl: './items-brief-view.component.html',
-  styles: []
+  templateUrl: './items-brief-view.component.html'
 })
 export class ItemsBriefViewComponent implements ResultItem {
 
