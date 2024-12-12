@@ -14,9 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-@import "../../../../shared/src/scss/styles.scss";
+@import "primeng/resources/primeng";
+@import "primeicons/primeicons.css";
+@import "primeng/resources/themes/aura-light-blue/theme.css";
+@import "easymde/dist/easymde.min";
+
 @layer rero-ils-ui {
   .rero-ils-ui {
+    @import "primeflex/primeflex";
+    @import "../../../../shared/src/scss/styles.scss";
     @import "../../../../public-search/src/app/document-detail/holdings/holding/holding.component.scss";
     @import "../document-detail/document-detail-view/document-detail-view.component.scss";
   }

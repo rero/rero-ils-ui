@@ -21,16 +21,27 @@ import { FieldArrayType } from '@ngx-formly/core';
   selector: 'admin-repeat-section',
   template: `
     @for (field of field.fieldGroup; track field; let i = $index) {
-      <div class="row">
+      <div class="grid">
         <div class="col-11">
           <formly-field [field]="field"></formly-field>
         </div>
-        <div class="col-1 my-0 pt-2 pl-0 d-flex">
+        <div class="col-1 flex gap-1">
           @if (field.parent.fieldGroup.length > props.minItems) {
-            <i (click)="remove(i)" class="mt-3 pl-3 fa fa-lg fa-trash text-danger" aria-hidden="true"></i>
+            <p-button
+              (onClick)="remove(i)"
+              severity="danger"
+              icon="fa fa-trash"
+              [rounded]="true"
+              [text]="true"
+            />
           }
           @if (field.parent.props.maxItems > field.parent.fieldGroup.length && field.parent.fieldGroup.length -1 === i) {
-            <i (click)="add()" class="mt-3 pl-3 fa fa-lg fa-plus-circle text-primary" aria-hidden="true"></i>
+            <p-button
+              (onClick)="add()"
+              icon="fa fa-plus-circle"
+              [rounded]="true"
+              [text]="true"
+            />
           }
         </div>
       </div>

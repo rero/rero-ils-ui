@@ -17,7 +17,7 @@
 
 @if (transaction) {
   @if (transaction.metadata.patron_pid | getRecord:'patrons' | async; as patron) {
-    <div id="{{ $any(patron).metadata.patron.barcode[0] }}" class="row mb-2">
+    <div id="{{ $any(patron).metadata.patron.barcode[0] }}" class="grid align-items-center">
       <div class="col-4">
         <a name="loans" [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0]]">
           {{ $any(patron).metadata.last_name }} {{ $any(patron).metadata.first_name }} ({{ $any(patron).metadata.patron.barcode }})
@@ -35,22 +35,15 @@
       <!-- REQUESTS -->
       @if (type === 'loan_request' && pickupLocations && pickupLocations.length > 0) {
         @if (canUpdateRequestPickupLocation()) {
-          <div class="btn-group col-4" dropdown>
-            <button class="btn btn-outline-secondary btn-block d-md-block dropdown-toggle  dropdown-toggle-split text-left" type="button"
-                    dropdownToggle aria-controls="dropdown-animated" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                    name="dropdown">
-              {{ currentPickupLocation }}
-            </button>
-            <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="dropdown-animated">
-              @for (pickup of pickupLocations; track pickup; let i = $index) {
-                <li role="menuitem">
-                  <a class="dropdown-item" (click)="emitUpdatePickupLocation(pickup.value)">{{ pickup.label }}</a>
-                </li>
-              }
-            </ul>
-          </div>
+          <p-dropdown
+          class="col-4"
+          optionLabel="label"
+          [options]="pickupLocations"
+          [(ngModel)]="currentPickupLocation"
+          (onChange)="emitUpdatePickupLocation($event)"/>
+
         } @else {
-          <div name="location" class="col-4" title="{{'The pickup location cannot be modified' | translate }}">
+          <div class="col-4" [title]="'The pickup location cannot be modified' | translate">
             {{ transaction.metadata.pickup_location_pid | getRecord:'locations':'field':'pickup_name' | async }}
           </div>
         }
@@ -58,22 +51,15 @@
           {{ transaction.created | dateTranslate:'medium' }}
         </div>
         <div class="col-1 text-right">
-          @if (canCancelRequest()) {
-            <button type="button" class="btn btn-outline-danger btn-sm"
-              (click)="showCancelRequestDialog($event)"
-              name="cancel"
-            >
-              <i class="fa fa-trash-o" aria-hidden="true"></i>
-            </button>
-          } @else {
-            <button type="button" class="btn btn-outline-danger btn-sm"
-              title="{{'The request cannot be cancelled' | translate }}"
-              name="cancel"
-              disabled
-            >
-              <i class="fa fa-trash-o" aria-hidden="true"></i>
-            </button>
-          }
+            <p-button outlined severity="danger" size="small"
+              (onClick)="showCancelRequestDialog($event)"
+              class="pointer-events-auto"
+              icon="fa fa-trash-o"
+              [disabled]="!canCancelRequest()"
+              [tooltipDisabled]="canCancelRequest()"
+              [pTooltip]="'The request cannot be cancelled' | translate"
+              tooltipPosition="top"
+            />
         </div>
       }
     </div>

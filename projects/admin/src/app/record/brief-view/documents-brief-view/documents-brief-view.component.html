@@ -16,57 +16,46 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  <article class="flex w-full border-0">
-    <div class="flex">
-      <shared-thumbnail class="col-sm-2" [record]="record" isSmall=true />
+  <article class="flex gap-4">
+    <div class="hidden md:block">
+      <shared-thumbnail [record]="record" />
     </div>
-    <div class="flex flex-wrap align-items-start py-0">
-      <h5 class="mb-0 w-full">
-        <a [routerLink]="['/records', type.startsWith('import_') ? type: 'documents', 'detail', record.metadata.pid]">
-          {{ record.metadata.title | mainTitle }}
-        </a>
-      </h5>
+    <div class="flex-grow-1">
+      <!-- document title -->
+      <h4 class="mb-1">
+        <a target="_self" [routerLink]="['/records', type.startsWith('import_') ? type: 'documents', 'detail', record.metadata.pid]">{{ record.metadata.title | mainTitle }}</a>
+      </h4>
       <!-- contribution -->
-      <div class="w-full">
-        <shared-contribution
-          [contributions]="record.metadata?.contribution"
-          [limitRecord]="3"
-          [activateLink]="!type.startsWith('import_')"
-        ></shared-contribution>
-      </div>
+      <shared-contribution
+        [contributions]="record.metadata?.contribution"
+        [limitRecord]="3"
+        [activateLink]="!type.startsWith('import_')"
+      />
       <!-- provision activity publications -->
       @if (provisionActivityPublications.length > 0) {
-        <div class="w-full">
-          <ul class="list-unstyled">
-            @for (publication of provisionActivityPublications; track publication) {
-              <li>{{ publication.value }}</li>
-            }
-          </ul>
-        </div>
+        <ul class="list-none mb-0 p-0">
+          @for (publication of provisionActivityPublications; track publication) {
+            <li>{{ publication.value }}</li>
+          }
+        </ul>
       }
       <!-- shared part -->
-      <div class="w-full">
-        <shared-part-of [record]="record"></shared-part-of>
-      </div>
+      <shared-part-of [record]="record" />
       <!-- edition statement -->
       @if (record.metadata.editionStatement) {
-        <div class="w-full">
-          <ul class="list-unstyled mb-0">
-            @for (edition of record.metadata.editionStatement; track edition) {
-              <li>{{ edition._text[0].value }}</li>
-            }
-          </ul>
-        </div>
+        <ul class="list-none mb-0 p-0">
+          @for (edition of record.metadata.editionStatement; track edition) {
+            <li>{{ edition._text[0].value }}</li>
+          }
+        </ul>
       }
       <!-- availability -->
       @if (!type.startsWith('import_') && record.metadata.type !== 'ebook') {
-        <div class="w-full">
-          <shared-availability
-            recordType="document"
-            [record]="record"
-            [apiService]="documentApiService"
-          ></shared-availability>
-        </div>
+        <shared-availability
+          recordType="document"
+          [record]="record"
+          [apiService]="documentApiService"
+        />
       }
     </div>
   </article>

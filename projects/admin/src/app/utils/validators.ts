@@ -37,7 +37,6 @@ export class DateValidators {
       }
 
       const date = DateTime.fromJSDate(control.value);
-      console.log(date, date.isValid);
       if (!date.isValid) {
         return null;
       }

@@ -19,14 +19,14 @@ import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { LocalFieldApiService } from '@app/admin/api/local-field-api.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { IPermissions, JoinPipe, PERMISSIONS, UserService } from '@rero/shared';
-import { Subscription } from 'rxjs';
+import { of, Subscription, switchMap } from 'rxjs';
 
 @Component({
   selector: 'admin-local-field',
   templateUrl: './local-field.component.html',
   providers: [JoinPipe]
 })
-export class LocalFieldComponent implements OnInit, OnDestroy {
+export class LocalFieldComponent implements OnInit {
 
   private localFieldApiService: LocalFieldApiService = inject(LocalFieldApiService);
   private userService: UserService = inject(UserService);
@@ -55,8 +55,6 @@ export class LocalFieldComponent implements OnInit, OnDestroy {
     holdings: 'hold',
     items: 'item'
   };
-  /** all component subscription */
-  private subscriptions = new Subscription();
 
   /** OnInit hook */
   ngOnInit() {
@@ -65,31 +63,29 @@ export class LocalFieldComponent implements OnInit, OnDestroy {
         this._translateType(this.resourceType),
         this.resourcePid,
         this.userService.user.currentOrganisation
-      )
-      .subscribe((record: any) => {
-        if (record?.metadata) {
-          this.localFieldRecordPid = record.metadata.pid;
-          if (record.metadata?.fields) {
-            const { fields } = record.metadata;
-            // Sort local fields using numeric part of the field name.
-            const sortKeys = Object.keys(fields).sort((k1, k2) => parseInt(k1.replace(/\D/g, '')) - parseInt(k2.replace(/\D/g, '')));
-            for (const key of sortKeys) {
-              this.localFields.push({name: key, value: fields[key]});
+      ).pipe(
+        switchMap((record: any) => {
+          if (record?.metadata) {
+            this.localFieldRecordPid = record.metadata.pid;
+            if (record.metadata?.fields) {
+              const { fields } = record.metadata;
+              // Sort local fields using numeric part of the field name.
+              const sortKeys = Object.keys(fields).sort((k1, k2) => parseInt(k1.replace(/\D/g, '')) - parseInt(k2.replace(/\D/g, '')));
+              for (const key of sortKeys) {
+                this.localFields.push({name: key, value: fields[key]});
+              }
             }
+            // Permission loading
+            return this.recordPermissionService
+                .getPermission('local_fields', record.metadata.pid);
+          } else {
+            return of({});
           }
-          // Permission loading
-          this.subscriptions.add(this.recordPermissionService
-            .getPermission('local_fields', record.metadata.pid)
-            .subscribe((permissions) => this.recordPermissions = permissions)
-          );
-        }
+        })
+      ).subscribe((permissions) => {
+        this.recordPermissions = permissions;
         this.isLoading = false;
       });
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy() {
-    this.subscriptions.unsubscribe()
   }
 
   // PUBLIC FUNCTIONS =========================================================

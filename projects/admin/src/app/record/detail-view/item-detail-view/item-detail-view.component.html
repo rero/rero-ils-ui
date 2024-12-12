@@ -16,89 +16,86 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  @if (recordPermissions?.update?.can && isIssue && isClaimAllowed) {
-    <div class="float-right mt-2 mr-n4 btn-additional-action">
-      <a class="btn btn-sm btn-outline-primary" (click)="openClaimEmailDialog()" translate>Add a claim</a>
-    </div>
-  }
-  @if (isIssue) {
-    <div class="mb-2">
-      <a [routerLink]="parentHoldingUrl">
-        <i class="fa fa-arrow-left"></i>
-        {{ 'Back to parent holding' | translate }}
-      </a>
-    </div>
+  @if (record.metadata.type === 'issue') {
+    <p-button
+      icon="fa fa-arrow-left"
+      [text]="true"
+      severity="secondary"
+      [routerLink]="['/records', 'holdings', 'detail', record.metadata.holding.pid]"
+      [label]="'Back to parent holding' | translate" />
   }
   <header>
     <h1>{{ 'Barcode' | translate }} {{ record.metadata.barcode }}</h1>
   </header>
-  <section class="mb-4">
+  <section>
     @if (record.metadata._masked) {
-      <admin-record-masked [record]="record" [withLabel]="true"></admin-record-masked>
+      <admin-record-masked [record]="record" [withLabel]="true" />
     }
-    <dl class="row mb-0">
+    <dl class="metadata">
       <!-- INHERITED CALL NUMBER -->
       @if (record | itemHoldingsCallNumber | async; as callNumber) {
         @if ((callNumber | json) !== ({ first: {}, second: {} } | json)) {
-          <dt class="col-3 label-title" translate>Call number</dt>
-          <dd class="col-9">
-            <shared-inherited-call-number [item]="record" context="first"></shared-inherited-call-number>
+          <dt translate>Call number</dt>
+          <dd>
+            <shared-inherited-call-number [item]="record" context="first" />
           </dd>
         }
       }
       <!-- SECOND CALL NUMBER -->
       @if (record.metadata.second_call_number) {
-        <dt class="col-3 label-title" translate>Second call number</dt>
-        <dd class="col-9">{{ record.metadata.second_call_number }}</dd>
+        <dt translate>Second call number</dt>
+        <dd>{{ record.metadata.second_call_number }}</dd>
       }
       <!-- ENUMERATION AND CHRONOLOGY / UNIT -->
       @if (record.metadata.enumerationAndChronology) {
-        <dt class="col-3 label-title" translate>Unit</dt>
-        <dd class="col-9">{{ record.metadata.enumerationAndChronology }}</dd>
+        <dt translate>Unit</dt>
+        <dd>{{ record.metadata.enumerationAndChronology }}</dd>
       }
       <!-- ITEM TYPE -->
-      <dt class="col-3 label-title" translate>Type</dt>
-      <dd class="col-9" *ngVar="record.metadata.item_type.pid | getRecord:'item_types': 'field':'name' | async as defaultItty">
+      <dt translate>Type</dt>
+      <dd *ngVar="record.metadata.item_type.pid | getRecord:'item_types': 'field':'name' | async as defaultItty">
         @if (hasTemporaryItemType()) {
-          <del class="text-muted mr-2">{{ defaultItty }}</del>
+          <del class="text-error">{{ defaultItty }}</del>
+          <span class="text-success">
           {{ record.metadata.temporary_item_type.pid | getRecord:'item_types': 'field':'name' | async }}
           @if (record.metadata.temporary_item_type.end_date; as endDate) {
-            <span class="ml-1 small text-secondary">
-              (<i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }})
+            <span class="text-sm">
+              <i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }}
             </span>
           }
+        </span>
         } @else {
           {{ defaultItty }}
         }
       </dd>
       <!-- DOCUMENT -->
-      <dt class="col-3 label-title" translate>Document</dt>
-      <dd class="col-9">
+      <dt translate>Document</dt>
+      <dd>
         <a [routerLink]="['/records', 'documents', 'detail', record.metadata.document.pid]">
           {{ record.metadata.document.pid | getRecord:'documents': 'field' :'title' | async | mainTitle }}
         </a>
       </dd>
       <!-- LIBRARY -->
       @if (location) {
-        <dt class="col-3 label-title" translate>Library</dt>
-        <dd class="col-9">
+        <dt translate>Library</dt>
+        <dd>
           {{ location.metadata.library.pid | getRecord: 'libraries': 'field': 'name' | async }}
         </dd>
       }
       <!-- LOCATION -->
       @if (location) {
-        <dt class="col-3 label-title" translate>Location</dt>
-        <dd class="col-9">{{ location.metadata.name }}</dd>
+        <dt translate>Location</dt>
+        <dd>{{ location.metadata.name }}</dd>
       }
       <!-- TEMPORARY LOCATION -->
       @if (record.metadata.temporary_location) {
-        <dt class="col-3 label-title" translate>Temporary location</dt>
-        <dd class="col-9">{{ record.metadata.temporary_location.pid | getRecord: 'locations' : 'field' : 'name' | async }}</dd>
+        <dt translate>Temporary location</dt>
+        <dd>{{ record.metadata.temporary_location.pid | getRecord: 'locations' : 'field' : 'name' | async }}</dd>
       }
       <!-- ITEM IN COLLECTION -->
       @if (record.metadata.pid | itemInCollection | async; as collections) {
-        <dt class="col-3 label-title" translate>Exhibition/course</dt>
-        <dd class="col-9">
+        <dt translate>Exhibition/course</dt>
+        <dd>
           @for (collection of collections; track collection; let last=$last) {
             <a
               [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]"
@@ -108,75 +105,75 @@
         </dd>
       }
       <!-- AVAILABILITY -->
-      <dt class="col-3 label-title" translate>Availability</dt>
-      <dd class="col-9">
+      <dt translate>Availability</dt>
+      <dd>
         <shared-availability
           recordType="item"
           [record]="record"
           [apiService]="itemApiService"
-        ></shared-availability>
+        />
       </dd>
       <!-- ACQUISITION -->
-      <dt class="col-3 label-title" translate>New acquisition</dt>
-      <dd class="col-9">
+      <dt translate>New acquisition</dt>
+      <dd>
         <i class="fa"
-            [ngClass]="(record.metadata.acquisition_date) ? 'fa-check text-success' : 'fa-times text-danger'"
-            aria-hidden="true">
+          [ngClass]="(record.metadata.acquisition_date) ? 'fa-check text-success' : 'fa-times text-danger'"
+          aria-hidden="true"
+        >
         </i>
         @if (record.metadata.acquisition_date) {
-          <span class="ml-1">
-            ({{ record.metadata.acquisition_date | dateTranslate : 'shortDate' }})
-          </span>
+          ({{ record.metadata.acquisition_date | dateTranslate : 'shortDate' }})
         }
       </dd>
       <!-- PRICE -->
       @if (record.metadata | keyExists:'price') {
-        <dt class="col-3 label-title" translate>Price</dt>
-        <dd class="col-9">{{ record.metadata.price | currency:organisationCurrency:'symbol' }}</dd>
+        <dt translate>Price</dt>
+        <dd>{{ record.metadata.price | currency:organisationCurrency:'symbol' }}</dd>
       }
       <!-- PAC CODE -->
       @if (record.metadata | keyExists:'pac_code') {
-        <dt class="col-3 label-title" translate>PAC code</dt>
-        <dd class="col-9">{{ record.metadata.pac_code | translate }}</dd>
+        <dt translate>PAC code</dt>
+        <dd>{{ record.metadata.pac_code | translate }}</dd>
       }
       <!-- URL -->
       @if (record.metadata | keyExists:'url') {
-        <dt class="col-3 label-title" translate>Online access</dt>
-        <dd class="col-9"><a [href]="record.metadata.url | safeUrl ">{{ record.metadata.url }}</a></dd>
+        <dt translate>Online access</dt>
+        <dd><a [href]="record.metadata.url | safeUrl ">{{ record.metadata.url }}</a></dd>
       }
     </dl>
   </section>
 
   <!-- ISSUE DATA -->
-  @if (isIssue) {
+  @if (record.metadata.type === 'issue') {
     <section>
       <header>
         <h3 translate>Issue data</h3>
       </header>
-      <dl class="row">
+      <dl class="metadata">
         <!-- is regular -->
-        <dt class="col-3 label-title" translate>Regular issue</dt>
-        <dd class="col-9">
+        <dt translate>Regular issue</dt>
+        <dd>
           <i class="fa"
-              [ngClass]="(record.metadata.issue.regular) ? 'fa-check text-success' : 'fa-times text-danger'"
-              aria-hidden="true">
+            [ngClass]="record.metadata.issue.regular ? 'fa-check text-success' : 'fa-times text-danger'"
+            aria-hidden="true"
+          >
           </i>
         </dd>
         <!-- expected date -->
-        <dt class="col-3 label-title" translate>Expected date</dt>
-        <dd class="col-9">{{ record.metadata.issue.expected_date | dateTranslate }}</dd>
+        <dt translate>Expected date</dt>
+        <dd>{{ record.metadata.issue.expected_date | dateTranslate }}</dd>
         <!-- received date -->
-        <dt class="col-3 label-title" translate>Received date</dt>
-        <dd class="col-9">
+        <dt translate>Received date</dt>
+        <dd>
           @if (record.metadata.issue.status === issueItemStatus.RECEIVED) {
             {{ record.metadata.issue.received_date | dateTranslate }}
           } @else {
-            <span class="no-data" translate>Not yet received</span>
+            <span class="text-color-secondary font-italic" translate>Not yet received</span>
           }
         </dd>
         <!-- issue status -->
-        <dt class="col-3 abel-title" translate>Status</dt>
-        <dd class="col-9">
+        <dt translate>Status</dt>
+        <dd>
           <i class="fa" [ngClass]="getIcon(record.metadata.issue.status)"></i>
           {{ record.metadata.issue.status | translate }} ({{ record.metadata.issue.status_date | dateTranslate }})
         </dd>
@@ -187,64 +184,58 @@
   <!-- NOTES -->
   @if (record.metadata.notes) {
     <section>
-      <div class="card item-notes">
-        <div class="card-header" translate>Notes</div>
-        <div class="card-body">
-          @for (note of record.metadata.notes; track note) {
-            <div class="row mb-1">
-              <dt class="col-3 label-title">
-                <i class="fa mr-4 small"
-                    [ngClass]="{
-                      'fa-eye text-success': isPublicNote(note),
-                      'fa-eye-slash text-secondary': !isPublicNote(note)
-                    }"
-                ></i>
-                <strong translate>{{ note.type }}</strong>
-              </dt>
-              <dd class="col-9 text-justify" [innerHTML]="note.content | nl2br"></dd>
-            </div>
-          }
-        </div>
-        <div class="card-footer text-muted small">
-          <i class="fa fa-eye text-success"></i> {{ 'Public notes' | translate }}
-          <i class="fa fa-eye-slash text-secondary ml-4"></i> {{ 'Staff notes' | translate }}
-        </div>
-      </div>
+      <h3 translate>Notes</h3>
+      <dl class="metadata">
+        @for (note of record.metadata.notes; track note) {
+            <dt>
+              <i class="fa text-sm"
+                [pTooltip]="isPublicNote(note)? ('Public notes' | translate): ('Staff notes' | translate)"
+                tooltipPosition="top"
+                [ngClass]="{
+                  'fa-eye text-success': isPublicNote(note),
+                  'fa-eye-slash text-secondary': !isPublicNote(note)
+                }"
+              ></i>
+              &nbsp;{{ note.type | translate }}
+            </dt>
+            <dd [innerHTML]="note.content | nl2br"></dd>
+        }
+      </dl>
     </section>
   }
 
   <!-- TABS -->
-  <section class="mt-3 mb-4">
+  <section>
     <p-tabView>
       <p-tabPanel>
         <ng-template pTemplate="header">
-          <i class="fa fa-exchange mr-1"></i>
+          <i class="fa fa-exchange"></i>&nbsp;
           {{ 'Circulation' | translate }}
         </ng-template>
-        <admin-circulation-logs-dialog [resourcePid]="record.metadata.pid" [resourceType]="'item'" />
+        <div class="flex flex-column gap-2">
+        <div class="flex justify-content-end">
+          <admin-circulation-logs-dialog [resourcePid]="record.metadata.pid" [resourceType]="'item'" />
+        </div>
         <admin-item-transactions [itemPid]="record.metadata.pid" (requestEvent)="updateItemStatus()" />
         <admin-item-fees [itemPid]="record.metadata.pid" [permissions]="permissions.PTTR_ACCESS" />
         @if (record.metadata | keyExists:'legacy_checkout_count') {
-          <section class="mb-4 mt-4">
-            <div class="card">
-              <div class="card-body">
-                <dl class="row mb-0">
-                    <dt class="col-sm-3 offset-sm-2 offset-md-0 label-title" translate>
-                      Legacy checkout count
-                    </dt>
-                    <dd class="col-sm-7 col-md-8 mb-0">
-                      {{ record.metadata.legacy_checkout_count }}
-                    </dd>
-                </dl>
-              </div>
-            </div>
+          <section class="border-1 border-round surface-border px-2">
+            <dl class="metadata">
+                <dt translate>
+                  Legacy checkout count
+                </dt>
+                <dd>
+                  {{ record.metadata.legacy_checkout_count }}
+                </dd>
+            </dl>
           </section>
         }
+      </div>
       </p-tabPanel>
 
       <p-tabPanel>
         <ng-template pTemplate="header">
-          <i class="fa fa-list-ul mr-1"></i>
+          <i class="fa fa-list-ul mr-1"></i>&nbsp;
           {{ 'Local fields' | translate }}
         </ng-template>
         <admin-local-field [resourceType]="'items'" [resourcePid]="record.metadata.pid" />
@@ -253,15 +244,15 @@
       @if (record.metadata?.issue?.claims) {
         <p-tabPanel>
           <ng-template pTemplate="header">
-            <i class="fa fa-gavel mr-1"></i>
+            <i class="fa fa-gavel"></i>&nbsp;
               <span [ngPlural]="record.metadata.issue.claims.counter">
                 <ng-template ngPluralCase="=0">{{ 'Claim' | translate }}</ng-template>
                 <ng-template ngPluralCase="=1">{{ 'Claim' | translate }}</ng-template>
                 <ng-template ngPluralCase="other">{{ 'Claims' | translate }}</ng-template>
               </span>
-              <span class="ml-2 badge badge-info font-weight-normal">{{ record.metadata.issue.claims.counter }}</span>
+              &nbsp;<p-badge severity="info" [value]="record.metadata.issue.claims.counter" />
           </ng-template>
-          <ul>
+          <ul class="p-0">
             @for (date of claimsDates; track date) {
               <li>
                 {{ date | dateTranslate: 'shortDate' }} - {{ date | dateTranslate: 'shortTime' }}

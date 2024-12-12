@@ -81,6 +81,7 @@
     <div class="grid">
       <ng-core-list-filters
         class="col-12"
+        [aggregations]="aggregations"
         [aggregationsFilters]="aggregationsFilters"
         [searchFilters]="searchFilters"
         (remove)="removeFilter($event)"

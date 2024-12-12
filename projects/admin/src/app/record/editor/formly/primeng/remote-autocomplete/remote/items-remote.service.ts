@@ -47,7 +47,6 @@ export class ItemsRemoteService implements IRemoteAutocomplete {
         map((doc: any) => doc.metadata)
       );
     };
-    console.log(query, queryOptions);
 
     return this.recordService.getRecords(
       queryOptions.type,
@@ -55,7 +54,6 @@ export class ItemsRemoteService implements IRemoteAutocomplete {
       1,
       queryOptions.maxOfResult
     ).pipe(
-      tap(result => console.log('result', result)),
       mergeMap((result: any) => {
         return from(result.hits.hits).pipe(
           mergeMap((item: any) =>

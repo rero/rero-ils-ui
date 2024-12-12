@@ -45,7 +45,6 @@ import { PatronProfilePersonalComponent } from 'projects/public-search/src/app/p
 import { PatronProfileRequestComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-requests/patron-profile-request/patron-profile-request.component';
 import { PatronProfileRequestsComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-requests/patron-profile-requests.component';
 import { PatronProfileComponent } from 'projects/public-search/src/app/patron-profile/patron-profile.component';
-import { ArrayTranslatePipe } from 'projects/public-search/src/app/pipe/array-translate.pipe';
 import { JournalVolumePipe } from 'projects/public-search/src/app/pipe/journal-volume.pipe';
 import { LoanStatusBadgePipe } from 'projects/public-search/src/app/pipe/loan-status-badge.pipe';
 import { Observable } from 'rxjs';
@@ -86,7 +85,6 @@ const routes: Routes = [
     PatronProfileIllRequestsComponent,
     PatronProfilePersonalEditorComponent,
     PatronProfileIllRequestComponent,
-    ArrayTranslatePipe,
     PatronProfileDocumentComponent,
     PatronProfileHistoryComponent,
     PatronProfileMenuComponent,

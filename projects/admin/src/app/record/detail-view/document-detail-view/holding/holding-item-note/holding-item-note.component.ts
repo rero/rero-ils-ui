@@ -21,10 +21,10 @@ import { ItemNote } from '@app/admin/classes/items';
   selector: 'admin-holding-item-note',
   template: `
     @if (note) {
-      <div class="row">
-        <div class="col-4 font-weight-bold label-title pl-5">{{ note.type.toString() | translate }}</div>
-        <div class="col-8" [innerHTML]="note.content"></div>
-      </div>
+      <dl class="metadata">
+        <dt>{{ note.type.toString() | translate }}</dt>
+        <dd [innerHTML]="note.content"></dd>
+      </dl>
     }
   `
 })

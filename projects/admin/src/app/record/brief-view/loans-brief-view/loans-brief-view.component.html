@@ -21,12 +21,12 @@
       <h5 class="flex-grow-1">{{ record.metadata.document.title | mainTitle }}</h5>
           <!-- ACTIONS BUTTON -->
       <div class="flex gap-1">
-        <p-button icon="fa fa-history" severity="secondary" [outlined]="true" size="small"  (onClick)="openTransactionHistoryDialog(record.metadata.pid)" />
+        <p-button icon="fa fa-history" severity="secondary" outlined size="small"  (onClick)="openTransactionHistoryDialog(record.metadata.pid)" />
         @if (canUseDebugMode) {
           <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" severity="warning" [outlined]="!debugMode" size="small"
             (onClick)="debugMode=!debugMode"
           >
-            <i class="mr-1 fa fa-bug" [ngClass]=""></i>
+            <i class="mr-1 fa fa-bug"></i>
           </p-button>
         }
       </div>

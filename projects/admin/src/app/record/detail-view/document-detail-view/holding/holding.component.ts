@@ -26,9 +26,8 @@ import { forkJoin } from 'rxjs';
 import { ItemRequestComponent } from '../item-request/item-request.component';
 
 @Component({
-  selector: 'admin-document-holding',
-  templateUrl: './holding.component.html',
-  styles: ['a.collapse-link i { min-width: 16px}']
+  selector: 'admin-document-holding, [admin-document-holding]',
+  templateUrl: './holding.component.html'
 })
 export class HoldingComponent implements OnInit, OnDestroy {
 
@@ -109,7 +108,7 @@ export class HoldingComponent implements OnInit, OnDestroy {
    */
   addRequest(recordPid: string, recordType: string): void {
     const ref: DynamicDialogRef = this.dialogService.open(ItemRequestComponent, {
-      header: this.translateService.instant('Item Request'),
+      header: this.translateService.instant('Holdings Request'),
       width: '30vw',
       data: { recordPid, recordType }
     });

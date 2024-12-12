@@ -15,60 +15,64 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div>
+<div class="flex flex-column gap-2">
   <!-- PREVIEW TOP -->
-  <ng-content select="[headerMessage]"></ng-content>
+  <ng-content select="[headerMessage]" />
   @if (previewPosition === 'top') {
-    <h5 translate>Message</h5>
-    <ng-content select="[previewMessage]"></ng-content>
-    <pre [innerHTML]="preview.trim() | nl2br"></pre>
+    <div>
+      <h5 translate>Message</h5>
+      <ng-content select="[previewMessage]" />
+      <pre [innerHTML]="preview.trim() | nl2br"></pre>
+    </div>
   }
 
   <h5 translate>Who do you want to send the message to?</h5>
 
   <!-- SUGGESTED EMAILS -->
   @if (emails.length > 0) {
-    <p-card>
+    <p-panel>
       <ng-template pTemplate="header">
+        <div class="p-panel-title">
         @if (emails.length < 2) {
           {{ 'Suggested email address' | translate }}
         } @else {
           {{ 'Suggested email addresses' | translate }}
         }
         <small class="ml-1">(<span class="font-italic" translate>Drag and drop</span>)</small>
+      </div>
       </ng-template>
-      <ul class="list-inline mb-1">
+      <div class="flex gap-1">
         @for (email of emails; track email) {
-          <li class="list-inline-item mt-2">
-            <p-tag pDraggable="emails" (onDragStart)="dragStart(email)" (onDragEnd)="dragEnd()" icon="pi pi-user" [value]="email"></p-tag>
-          </li>
+            <p-tag pDraggable="emails" [style]="{cursor: 'grab'}" (onDragStart)="dragStart(email)" (onDragEnd)="dragEnd()" icon="pi pi-user" [value]="email"></p-tag>
         }
-      </ul>
-    </p-card>
+      </div>
+    </p-panel>
   }
 
   <!-- RECIPIENTS -->
-  <p-card styleClass="mt-2" [header]="'Recipients' | translate">
+  <p-panel [header]="'Recipients' | translate">
     <div class="grid">
       @for (type of emailTypes; track type) {
-        <div class="col-2 pt-3 label-title mb-2" [class.field-required]="mandatoryEmailTypes.includes(type)">
-          {{ ('email_' + type) | translate }}
+        <div class="col-2" [class.field-required]="mandatoryEmailTypes.includes(type)">
+          {{ ('email_' + type) | translate }}&nbsp;:
         </div>
-        <div class="col-10 mb-2 drop-column">
-          <p-chips class="p-fluid" [inputId]="type" pDroppable="emails" (onDrop)="drop($event)" [(ngModel)]="recipients[type]" [addOnBlur]="true"></p-chips>
+        <div class="col-10">
+          <p-chips class="p-fluid" [inputId]="type" pDroppable="emails" (onDrop)="drop($event)" [(ngModel)]="recipients[type]" [addOnBlur]="true" />
         </div>
       }
     </div>
-  </p-card>
+  </p-panel>
 
   <!-- PREVIEW BOTTOM -->
   @if (previewPosition === 'bottom') {
-    <h5 translate>Message</h5>
-    <ng-content select="[previewBottomMessage]"></ng-content>
-    <pre [innerHTML]="preview.trim() | nl2br"></pre>
+    <div>
+      <h5 translate>Message</h5>
+      <ng-content select="[previewBottomMessage]" />
+      <pre class="max-h-25rem border-1 border-round text-sm surface-100 surface-border overflow-auto p-4 "[innerHTML]="preview.trim() | nl2br"></pre>
+    </div>
   }
 </div>
-<div class="flex justify-content-end mt-4">
-  <p-button class="mr-1" severity="danger" [outlined]="true" [label]="'Cancel'|translate" (onClick)="close()" aria-label="Close"/>
+<div class="flex justify-content-end">
+  <p-button class="mr-1" severity="danger" outlined [label]="'Cancel'|translate" (onClick)="close()" aria-label="Close"/>
   <p-button [label]="'Confirm'|translate" [disabled]="!formValid()" (onClick)="confirm()" />
 </div>

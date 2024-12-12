@@ -21,8 +21,7 @@ import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'admin-holding-organisation',
-  templateUrl: './holding-organisation.component.html',
-  styleUrls: ['./holding-organisation.component.scss']
+  templateUrl: './holding-organisation.component.html'
 })
 export class HoldingOrganisationComponent implements OnInit {
 

@@ -22,7 +22,7 @@
           icon="fa fa-check"
           [label]="'Validate'|translate"
           [id]="item.barcode | idAttribute:{prefix: 'item', suffix: 'validate-button'}"
-          [outlined]="true"
+          outlined
           (onClick)="validateRequest()"
         />
       }

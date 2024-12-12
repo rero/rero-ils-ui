@@ -18,12 +18,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { FormlyFieldConfig, FormlyFormBuilder, FormlyFormOptions } from '@ngx-formly/core';
 import { LocalStorageService } from '@rero/ng-core';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BehaviorSubject } from 'rxjs';
 import { AdvancedSearchService } from './advanced-search.service';
 import { IFieldsData, IFieldsType, ISearchModel } from './i-advanced-search-config-interface';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-document-advanced-search-form',
@@ -34,7 +35,9 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   private route: ActivatedRoute = inject(ActivatedRoute);
   private localeStorage: LocalStorageService = inject(LocalStorageService);
+  private translateService: TranslateService = inject(TranslateService);
   private advancedSearchService: AdvancedSearchService = inject(AdvancedSearchService);
+  private formBuilder: FormlyFormBuilder = inject(FormlyFormBuilder);
 
   /** Locale storage parameters */
   private static LOCALE_STORAGE_NAME = 'advancedSearch';
@@ -56,21 +59,19 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
   fieldsConfig: FormlyFieldConfig[] = [];
 
   fieldHook = function(field: any, selectName: string) {
-    const subject: BehaviorSubject<any> = new BehaviorSubject([]);
     const fieldControl = field.form.get(selectName);
-    this.initField(field, fieldControl.value, subject);
+    this.initField(field, fieldControl.value);
     fieldControl.valueChanges.subscribe((fieldKey: string) => {
-      this.initField(field, fieldKey, subject);
+      this.initField(field, fieldKey);
       field.formControl.setValue(null);
     });
   }
 
   fieldSearchTypeHook = function(field: any, selectName: string) {
-    const subject: BehaviorSubject<any> = new BehaviorSubject([]);
     const fieldControl = field.form.get(selectName);
-    this.initFieldSearchType(field, fieldControl.value, subject);
+    this.initFieldSearchType(field, fieldControl.value);
     fieldControl.valueChanges.subscribe((fieldKey: string) => {
-      this.initFieldSearchType(field, fieldKey, subject);
+      this.initFieldSearchType(field, fieldKey);
     });
   }
 
@@ -145,16 +146,27 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
    * @param fieldParentKey The key of parent field
    * @param subject - Behavior Event
    */
-  private initField(field: any, fieldParentKey: string, subject: BehaviorSubject<any>): void {
+  private initField(field: any, fieldParentKey: string): void {
     if (Object.keys(this.fieldDataConfig).some(key => key === fieldParentKey)) {
-      field.props.options = subject.asObservable();
+      field.props.group = false;
+      field.props.translated = false;
       field.props.minItemsToDisplaySearch = 10;
-      field.props.sort = false;
+      field.props.sort = true;
+      field.props.placeholder = this.translateService.instant("Select an option…");
+      field.props.sortOrder = "asc";
+      field.props.class = "w-full";
+      field.props.styleClass = "w-full";
+      field.props.filter = true,
       field.type = 'select';
-      subject.next(this.fieldDataConfig[fieldParentKey]);
+      field.props.options.next(this.fieldDataConfig[fieldParentKey]);
     } else {
       field.type = 'input';
+      field.props.translated = false;
+      field.props.placeholder = undefined;
+      field.props.class = undefined;
+      field.props.styleClass = undefined;
     }
+    this.formBuilder.build(field);
   }
 
   /**
@@ -163,12 +175,11 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
    * @param fieldParentKey The key of parent field
    * @param subject - Behavior Event
    */
-  private initFieldSearchType(field: any, fieldParentKey: string, subject: BehaviorSubject<any>): void {
+  private initFieldSearchType(field: any, fieldParentKey: string): void {
     if (Object.keys(this.fieldsSearchTypeConfig).some(key => key === fieldParentKey)) {
-      field.props.options = subject.asObservable();
       field.props.sort = false;
       field.props.readonly = this.fieldsSearchTypeConfig[fieldParentKey].length < 2;
-      subject.next(this.fieldsSearchTypeConfig[fieldParentKey]);
+      field.props.options.next(this.fieldsSearchTypeConfig[fieldParentKey]);
       const fieldSearchTypeValue = this.fieldsSearchTypeConfig[fieldParentKey][0].value;
       if (
         !field.formControl.value
@@ -194,17 +205,16 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
     this.fieldsSearchTypeConfig = this.advancedSearchService.getFieldsSearchType();
     this.fieldsConfig = [
       {
-        fieldGroupClassName: 'row',
+        fieldGroupClassName: 'grid',
         fieldGroup: [
           {
-            fieldGroupClassName: 'row',
+            fieldGroupClassName: 'grid',
             className: 'col-11',
             fieldGroup: [
               {
                 className: 'col-6',
                 type: 'select',
                 key: 'field',
-                defaultValue: 'title',
                 props: {
                   sort: false,
                   hideLabel: true,
@@ -212,6 +222,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                   required: true,
                   minItemsToDisplaySearch: 999,
                   options: this.advancedSearchService.getFieldsConfig(),
+                  appendTo: 'body'
                 },
               },
               {
@@ -221,7 +232,8 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                 defaultValue: false,
                 props: {
                   hideLabelSelectOption: true,
-                  options: []
+                  options: new BehaviorSubject([]),
+                  appendTo: 'body'
                 },
                 hooks: {
                   onInit: (field) => this.fieldSearchTypeHook(field, 'field')
@@ -232,8 +244,9 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                 type: 'custom-field',
                 key: 'term',
                 props: {
-                  hideLabel: true,
                   required: true,
+                  options: new BehaviorSubject([]),
+                  appendTo: 'body'
                 },
                 hooks: {
                   onInit: (field) => this.fieldHook(field, 'field')
@@ -253,7 +266,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
         fieldArray: {
           fieldGroup: [
             {
-              fieldGroupClassName: 'row',
+              fieldGroupClassName: 'grid',
               fieldGroup: [
                 {
                   className: 'col-2',
@@ -264,13 +277,13 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                     hideLabel: true,
                     required: true,
                     options: this.advancedSearchService.getOperators(),
+                    appendTo: 'body'
                   },
                 },
                 {
                   className: 'col-4',
                   type: 'select',
                   key: 'field',
-                  defaultValue: 'title',
                   props: {
                     sort: false,
                     hideLabel: true,
@@ -278,6 +291,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                     required: true,
                     minItemsToDisplaySearch: 999,
                     options: this.advancedSearchService.getFieldsConfig(),
+                    appendTo: 'body'
                   },
                 },
                 {
@@ -287,7 +301,8 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                   defaultValue: false,
                   props: {
                     hideLabelSelectOption: true,
-                    options: []
+                    options: new BehaviorSubject([]),
+                    appendTo: 'body'
                   },
                   hooks: {
                     onInit: (field) => this.fieldSearchTypeHook(field, 'field')
@@ -298,8 +313,8 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                   type: 'custom-field',
                   key: 'term',
                   props: {
-                    hideLabel: true,
-                    options: [],
+                    options: new BehaviorSubject([]),
+                    appendTo: 'body'
                   },
                   hooks: {
                     onInit: (field) => this.fieldHook(field, 'field')

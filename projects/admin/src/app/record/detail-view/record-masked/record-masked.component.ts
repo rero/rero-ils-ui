@@ -19,53 +19,28 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'admin-record-masked',
   template: `
-  @switch (context) {
-    @case ('eye') {
-      @if (record.metadata | keyExists:'_masked') {
-        <i
-          class="fa"
-          aria-hidden="true"
-          title="{{ (record.metadata._masked ? 'Masked' : 'No masked') | translate }}"
-          [ngClass]="{ 'fa-eye-slash text-danger': record.metadata._masked, 'fa-eye text-success': !record.metadata._masked }"
-        ></i>
-        @if (withLabel) {
-          <label class="ml-1">{{ (record.metadata._masked ? 'Masked' : 'No masked') | translate }}</label>
-        }
-      } @else {
-        <i class="fa fa-eye text-success" title="No masked" aria-hidden="true"></i>
-        @if (withLabel) {
-          <label class="ml-1" translate>No masked</label>
-        }
+    @if (record.metadata | keyExists:'_masked') {
+      <i
+        class="fa"
+        aria-hidden="true"
+        title="{{ (record.metadata._masked ? 'Masked' : 'No masked') | translate }}"
+        [ngClass]="{ 'fa-eye-slash text-error': record.metadata._masked, 'fa-eye text-success': !record.metadata._masked }"
+      ></i>
+      @if (withLabel) {
+        <label class="ml-1">{{ (record.metadata._masked ? 'Masked' : 'No masked') | translate }}</label>
+      }
+    } @else {
+      <i class="fa fa-eye text-success" title="No masked" aria-hidden="true"></i>
+      @if (withLabel) {
+        <label class="ml-1" translate>No masked</label>
       }
     }
-    @case ('bullet') {
-      @if (record.metadata | keyExists:'_masked') {
-        <i
-          class="fa fa-circle"
-          title="{{ (record.metadata._masked ? 'Masked' : 'No masked') | translate }}"
-          [ngClass]="{'text-danger': !record.metadata._masked, 'text-success': record.metadata._masked }"
-          aria-hidden="true"
-        ></i>
-        @if (withLabel) {
-          <label class="ml-1">{{ (record.metadata._masked ? 'Masked' : 'No masked') | translate }}</label>
-        }
-      } @else {
-        <i class="fa fa-circle text-danger mr-1" title="No masked" aria-hidden="true"></i>
-        @if (withLabel) {
-          <label class="ml-1" translate>No masked</label>
-        }
-      }
-    }
-  }
   `
 })
 export class RecordMaskedComponent {
 
   /** Record */
   @Input() record: any;
-
-  /** Context */
-  @Input() context: 'bullet' | 'eye' = 'eye';
 
   /** Label for bullet context */
   @Input() withLabel = false;
