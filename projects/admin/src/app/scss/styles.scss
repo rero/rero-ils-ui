@@ -21,7 +21,7 @@
     "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
     Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 @layer rero-ils-ui, primeng;
@@ -40,8 +40,15 @@
   @import '../record/detail-view/document-detail-view/holding/holding.component.scss';
 }
 
-@layer  rero-ils-ui {
+@layer rero-ils-ui {
   body {
     margin:0;
+  }
+}
+
+.p-accordion-header, .p-panel-header {
+  @extend .surface-100;
+  a {
+    background: transparent;
   }
 }

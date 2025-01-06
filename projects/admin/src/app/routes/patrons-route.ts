@@ -128,11 +128,14 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
               {
                 label: _('Relevance'),
                 value: 'bestmatch',
-                defaultQuery: true
+                defaultQuery: true,
+                defaultNoQuery: true,
+                icon: 'fa fa-sort-amount-desc'
               },
               {
                 label: _('Name'),
-                value: 'full_name'
+                value: 'full_name',
+                icon: 'fa fa-sort-alpha-asc'
               }
             ],
             showFacetsIfNoResults: true
