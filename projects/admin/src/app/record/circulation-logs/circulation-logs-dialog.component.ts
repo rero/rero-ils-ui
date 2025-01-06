@@ -28,6 +28,7 @@ import { CirculationLogsComponent } from './circulation-logs.component';
       id="{{ resourceType }}-circulation-history"
       [label]="'Circulation history'|translate"
       outlined
+      severity="secondary"
       [permissions]="[permissions.CIRC_ADMIN, permissions.OPLG_SEARCH]"
       [operator] = permissionOperator.AND
       (onClick)="openDialog()"
