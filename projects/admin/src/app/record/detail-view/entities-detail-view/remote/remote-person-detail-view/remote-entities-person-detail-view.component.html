@@ -15,6 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+<dl class="metadata">
 <!-- AUTHORIZED ACCESS POINT -->
 @if (record.authorized_access_point) {
   <dt translate>Authorized access point</dt>
@@ -34,7 +35,7 @@
 @if (record.language) {
   <dt translate>Language</dt>
   <dd>
-    <ul>
+    <ul class="list-none p-0 m-0">
       @for (language of record.language; track language) {
         <li>{{ ('lang_' + language) | translate }}</li>
       }
@@ -60,10 +61,11 @@
 @if (record.variant_access_point) {
   <dt translate>Variant name</dt>
   <dd>
-    <ul>
+    <ul class="list-none p-0 m-0">
       @for (variant_name of record.variant_access_point; track variant_name) {
         <li>{{ variant_name }}</li>
       }
     </ul>
   </dd>
 }
+</dl>

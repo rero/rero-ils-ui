@@ -27,11 +27,11 @@
       @if (item.icon) {
         <span [class]="item.icon" class="p-menuitem-icon"></span>
       }
-      <span class="ml-1">{{ item.label }}</span>
+      <span>{{ item.label }}</span>
       @if (item.shortcut) {
         <span class="ml-auto border-1 surface-border border-round surface-100 text-sm px-2 py-1">
           {{ item.shortcut }}
-      </span>
+        </span>
       }
       @if (item.items) {
         <i [ngClass]="['pi', root ? 'pi-angle-down ml-2' : 'pi-angle-right ml-auto']"></i>
