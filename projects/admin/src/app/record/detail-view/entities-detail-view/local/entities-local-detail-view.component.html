@@ -16,43 +16,45 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record$ | async; as record) {
-    <h1 class="mb-0" *ngVar="icon($any(record).metadata.type) as icon">
-      <i class="fa {{ icon.class }}" title="{{ icon.title }}" aria-hidden="true"></i>
+    <h1 *ngVar="icon($any(record).metadata.type) as icon">
+      <i class="fa {{ icon.class }}" [title]="icon.title" aria-hidden="true"></i>
       {{ $any(record).metadata.authorized_access_point }}</h1>
     <small>
       {{ 'Local ID' | translate }}: {{ $any(record).metadata.pid }}
     </small>
-    <span class="badge badge-info" translate>Local</span>
+    <p-tag severity="info" [value]="'Local' | translate" />
 
-    <article class="card my-2">
-      <header class="card-header">
-        <b class="card-title mb-0">{{ 'local' | translate | uppercase }}</b>
-      </header>
-      <article class="card-body collapse show">
+    <p-accordion styleClass="mt-2" [multiple]="true">
+    <p-accordionTab [selected]="true">
+      <ng-template pTemplate="header">
+        <h5>{{ 'local' | translate | uppercase }}</h5>
+      </ng-template>
+      <div class="pt-2">
         @switch ($any(record).metadata.type) {
           @case (entityType.ORGANISATION) {
-            <admin-local-organisation-detail-view [record]="$any(record).metadata"></admin-local-organisation-detail-view>
+            <admin-local-organisation-detail-view [record]="$any(record).metadata" />
           }
           @case (entityType.PERSON) {
-            <admin-local-person-detail-view [record]="$any(record).metadata"></admin-local-person-detail-view>
+            <admin-local-person-detail-view [record]="$any(record).metadata" />
           }
           @case (entityType.PLACE) {
-            <admin-local-place-detail-view [record]="$any(record).metadata"></admin-local-place-detail-view>
+            <admin-local-place-detail-view [record]="$any(record).metadata" />
           }
           @case (entityType.TEMPORAL) {
-            <admin-local-place-detail-view [record]="$any(record).metadata"></admin-local-place-detail-view>
+            <admin-local-place-detail-view [record]="$any(record).metadata" />
           }
           @case (entityType.TOPIC) {
-            <admin-local-topic-detail-view [record]="$any(record).metadata"></admin-local-topic-detail-view>
+            <admin-local-topic-detail-view [record]="$any(record).metadata" />
           }
           @case (entityType.WORK) {
-            <admin-local-work-detail-view [record]="$any(record).metadata"></admin-local-work-detail-view>
+            <admin-local-work-detail-view [record]="$any(record).metadata" />
           }
           @default {
             {{ 'Missing template for this entity type:' | translate }} {{ $any(record).metadata.type }}
           }
         }
-      </article>
-    </article>
+      </div>
+    </p-accordionTab>
+  </p-accordion>
 }
 

@@ -27,9 +27,9 @@
   @if (record.genreForm) {
     <dt translate>Genre form</dt>
     <dd>
-      <i class="fa mr-2" [ngClass]="{
+      <i class="fa" [ngClass]="{
         'fa-check text-success': record.conference,
-        'fa-times text-danger': !record.conference
+        'fa-times text-error': !record.conference
       }"></i>
     </dd>
   }
@@ -38,7 +38,7 @@
     <ng-container>
       <dt translate>Alternative names</dt>
       <dd>
-        <ul>
+        <ul class="list-none p-0 m-0">
           @for (name of record.alternative_names; track name) {
             <li>{{ name }}</li>
           }

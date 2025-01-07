@@ -26,7 +26,7 @@
   @if (record.subordinate_unit) {
     <dt translate>Subordinate unit</dt>
     <dd>
-      <ul>
+      <ul class="list-none p-0 m-0">
         @for (name of record.subordinate_unit; track name) {
           <li>{{ name }}</li>
         }
@@ -72,7 +72,7 @@
   @if (record.alternative_names && record.alternative_names.length > 0) {
     <dt translate>Alternative names</dt>
     <dd>
-      <ul>
+      <ul class="list-none p-0 m-0">
         @for (name of record.alternative_names; track name) {
           <li>{{ name }}</li>
         }

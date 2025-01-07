@@ -20,7 +20,7 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'admin-entities-local-global',
   template: `
-  <dl class="entity-fields">
+  <dl class="metadata">
     <ng-content></ng-content>
     @if (record.source_catalog) {
         <dt translate>Source catalog</dt>

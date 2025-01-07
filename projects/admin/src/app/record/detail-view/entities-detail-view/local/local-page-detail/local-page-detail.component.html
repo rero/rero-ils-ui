@@ -14,9 +14,8 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="main-content">
-  @if (record) {
-    <ng-core-detail-button
+@if (record) {
+  <ng-core-detail-button
     [record]="record"
     [type]="type"
     [adminMode]="adminMode"
@@ -27,20 +26,24 @@
     (deleteMessageEvent)="showDeleteMessage($event)"
   >
     <ng-container beforeButton>
-      <button (click)="search(record)" class="btn btn-sm btn-outline-primary mr-1">
-        <i class="fa fa-search" aria-hidden="true"></i>
-        {{ 'Search documents' | translate }}
-      </button>
-      @if (record) {
-        @if (isEnabledOperationLog && record.metadata.pid) {
-          <admin-operation-logs-dialog resourceType="local_entities" [resourcePid]="record.metadata.pid"></admin-operation-logs-dialog>
-        }
+      <p-button
+        (onClick)="search(record)"
+        outlined
+        icon="fa fa-search"
+        [label]="'Search documents' | translate"
+      />
+      @if (isEnabledOperationLog && record.metadata.pid) {
+        <admin-operation-logs-dialog
+          resourceType="local_entities"
+          [resourcePid]="record.metadata.pid"
+        />
       }
     </ng-container>
   </ng-core-detail-button>
-  }
-  @if (error) {
-    <ng-core-error [error]="error"></ng-core-error>
-  }
-  <ng-template ngCoreRecordDetail></ng-template>
-</div>
+}
+
+@if (error) {
+  <ng-core-error [error]="error" />
+}
+
+<ng-template ngCoreRecordDetail />
