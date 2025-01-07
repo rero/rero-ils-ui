@@ -118,8 +118,10 @@ export class EntityBriefViewComponent implements ResultItem, OnInit, AfterViewIn
       this.routerLink = ['/records', 'local_entities', 'detail', this.record.metadata.pid];
       this.tags = [
         {label: this.record.metadata.resource_type, type: 'local'},
-        {label: this.record.metadata?.source_catalog}
       ];
+      if (this.record.metadata.source_catalog) {
+        this.tags.push({label: this.record.metadata.source_catalog});
+      }
     }
     this.entityTitle = this.record.metadata.authorized_access_point;
   }

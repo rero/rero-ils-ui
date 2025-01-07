@@ -38,11 +38,16 @@
   @import '../menu/menu-dashboard/menu-dashboard.component.scss';
   @import '../menu/menu-app/menu-app.component.scss';
   @import '../record/detail-view/document-detail-view/holding/holding.component.scss';
+  @import '../record/detail-view/entities-detail-view/remote/entities-remote-detail-view.component.scss';
 }
 
 @layer rero-ils-ui {
   body {
     margin:0;
+  }
+  .container {
+    max-width: 1440px;
+    margin: auto;
   }
 }
 

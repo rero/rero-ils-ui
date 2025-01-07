@@ -15,6 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+<dl class="metadata">
 <!-- AUTHORIZED ACCESS POINT(S) -->
 @if (record.authorized_access_point) {
   <dt translate>Authorized access point</dt>
@@ -29,7 +30,7 @@
 @if (record.variant_access_point) {
   <dt translate>Variant access point</dt>
   <dd>
-    <ul>
+    <ul class="list-none p-0 m-0">
       @for (variant_access_point of record.variant_access_point; track variant_access_point) {
         <li>{{ variant_access_point }}</li>
       }
@@ -40,7 +41,7 @@
 @if (record.broader) {
   <dt translate>Broader</dt>
   <dd>
-    <ul>
+    <ul class="list-none p-0 m-0">
       @for (broader of record.broader; track broader) {
         <li>{{ broader.authorized_access_point }}</li>
       }
@@ -51,7 +52,7 @@
 @if (record.narrower) {
   <dt translate>Narrower</dt>
   <dd>
-    <ul>
+    <ul class="list-none p-0 m-0">
       @for (narrower of record.narrower; track narrower) {
         <li>{{ narrower.authorized_access_point }}</li>
       }
@@ -62,7 +63,7 @@
 @if (record.related) {
   <dt translate>Related</dt>
   <dd>
-    <ul>
+    <ul class="list-none p-0 m-0">
       @for (related of record.related; track related) {
         <li>{{ related.authorized_access_point }}</li>
       }
@@ -74,17 +75,17 @@
 @if (record.classification) {
   <dt translate>Classification</dt>
   <dd>
-    <ul>
+    <ul class="list-none p-0 m-0">
       @for (classification of record.classification; track classification) {
-        <li>
+        <li class="mb-1 flex gap-1 align-items-center">
           @if (classification.classificationPortion) {
-            <span class="mr-1">{{ classification.classificationPortion }}</span>
+            <span>{{ classification.classificationPortion }}</span>
           }
           @if (classification.name) {
-            <span class="mr-1">{{ classification.name }}</span>
+            <span>{{ classification.name }}</span>
           }
           @if (classification.type) {
-            <span class="badge badge-secondary">{{ classification.type | translate }}</span>
+            <p-tag severity="secondary" [value]="classification.type | translate" />
           }
         </li>
       }
@@ -105,11 +106,12 @@
     [ngTemplateOutletContext]="{ item: {match: closeMatch, title: 'Close match' | translate } }"
   ></ng-container>
 }
+</dl>
 
 <ng-template #match let-item="item">
   <dt translate>{{ item.title }}</dt>
   <dd>
-    <ul>
+    <ul  class="list-none p-0 m-0">
       @if (item.match) {
         @for(match of item.match; track match) {
           <li>

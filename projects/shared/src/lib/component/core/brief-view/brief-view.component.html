@@ -18,14 +18,17 @@
 <div class="flex align-content-start">
   @if (iconTemplate) {
     <div class="text-center">
-      <ng-container *ngTemplateOutlet="iconTemplate"></ng-container>
+      <ng-container [ngTemplateOutlet]="iconTemplate" />
     </div>
   }
 
   <div class="mx-3">
     <div>
       @if (titleTemplate) {
-        <ng-container *ngTemplateOutlet="titleTemplate; context: { title:title, link:link }"></ng-container>
+        <ng-container
+          [ngTemplateOutlet]="titleTemplate"
+          [ngTemplateOutletContext]="{ title:title, link:link }"
+        />
       } @else {
         <h5>
           @if (link) {
@@ -42,16 +45,19 @@
     </div>
     @if (contentTemplate) {
       <div class="font-italic">
-        <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+        <ng-container [ngTemplateOutlet]="contentTemplate" />
       </div>
     }
     <div>
       @if (tagsTemplate) {
-        <ng-container *ngTemplateOutlet="tagsTemplate; context: { $implicit: tags }"></ng-container>
+        <ng-container
+          [ngTemplateOutlet]="tagsTemplate"
+          [ngTemplateOutletContext]="{ $implicit: tags }"
+        />
       } @else {
         @if (tags) {
             @for (tag of tags; track tag) {
-              <p-tag severity="success" value="tag.label"/>
+              <p-tag severity="success" [value]="tag.label"/>
             }
         }
       }
