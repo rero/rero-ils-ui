@@ -15,28 +15,27 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="description container pl-0">
-  <h5 class="mb-0">
+  <h5>
     @if (parent.document) {
       {{ parent.document.title | mainTitle }}
     } @else if (parent.note) {
       [{{ 'Note' | translate }}: {{ parent.note }}]
     }
   </h5>
-  <dl class="row ml-3 mb-0">
+  <dl class="metadata">
     @if (parent.loan) {
-      <dt class="label-title col-3" translate>Call number</dt>
-      <dd class="col-9">
+      <dt translate>Call number</dt>
+      <dd>
         @if (parent.loan.item) {
-          <shared-inherited-call-number [item]="parent.loan?.item"></shared-inherited-call-number>
+          <shared-inherited-call-number [item]="parent.loan?.item" />
           (<a [routerLink]="['/records', 'items', 'detail', parent.loan.item.pid]">{{ parent.loan.item.barcode }}</a>)
         } @else {
-          <span class="no-data raw-data">item_pid:{{ parent.loan.item_pid.value }}</span>
+          <span class="text-secondary font-italic">[item_pid:{{ parent.loan.item_pid.value }}]</span>
         }
       </dd>
     }
-    <dt class="label-title col-3" translate>Patron</dt>
-    <dd class="col-9">
+    <dt translate>Patron</dt>
+    <dd>
       @if (parent.patron.barcode) {
         <a [routerLink]="['/circulation', 'patron', parent.patron.barcode, 'fees']" [queryParams]="{event: parent.pid}">{{ parent.patron.pid | patronName | async }}</a>
       } @else {
@@ -44,4 +43,3 @@
       }
     </dd>
   </dl>
-</div>

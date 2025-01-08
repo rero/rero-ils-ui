@@ -15,23 +15,9 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="chart-container">
-  <div class="payment-pie-chart">
-    <ngx-charts-pie-chart
-      [view]="view"
-      [results]="values"
-      [doughnut]="true"
-      [arcWidth]="0.7"
-      [animations]="animation"
-      [legend]="legendDisplay"
-      [legendPosition]="legendPosition"
-      [legendTitle]="legendTitle"
-    >
-      <ng-template #tooltipTemplate let-model="model">
-        <span class="tooltip-label">{{ model.label }}</span>
-        <span class="tooltip-val">{{ model.value | currency: org_currency : 'symbol' }}</span>
-      </ng-template>
-    </ngx-charts-pie-chart>
+@if (values) {
+  <div class="flex justify-content-center">
+    <p-chart type="doughnut" [data]="values" [options]="options" />
   </div>
-</div>
+}
 

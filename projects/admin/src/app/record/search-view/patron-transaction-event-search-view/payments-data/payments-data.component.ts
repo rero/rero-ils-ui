@@ -20,8 +20,7 @@ import { PaymentData } from '../interfaces';
 
 @Component({
   selector: 'admin-payments-data',
-  templateUrl: './payments-data.component.html',
-  styleUrls: ['./payment-data.scss']
+  templateUrl: './payments-data.component.html'
 })
 export class PaymentsDataComponent {
 

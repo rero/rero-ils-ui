@@ -39,6 +39,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { FieldsetModule } from 'primeng/fieldset';
+import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   exports: [
@@ -63,7 +64,8 @@ import { FieldsetModule } from 'primeng/fieldset';
     TabViewModule,
     CardModule,
     TableModule,
-    FieldsetModule
+    FieldsetModule,
+    ChartModule
   ]
 })
 export class PrimengImportModule { }

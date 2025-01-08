@@ -16,23 +16,21 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (data.total > 0) {
-  <div class="card mb-2">
-    <div class="card-header p-0 d-flex">
-      <h5 class="mb-0 btn btn-link text-decoration-none" translate>Amount received</h5>
-      <button class="btn btn-link ml-auto" (click)="updateMode($event)">
-        <i class="fa" [ngClass]="{'fa-list': mode === 'pie', 'fa-pie-chart': mode === 'table'}"></i>
-      </button>
-    </div>
-    <div class="card-body p-0">
-      @switch (mode) {
-        @case ('table') {
-          <admin-payments-data-table [data]="data"></admin-payments-data-table>
-        }
-        @case ('pie') {
-          <admin-payments-data-pie [data]="data" class="text-center"></admin-payments-data-pie>
-        }
+  <p-fieldset>
+    <ng-template pTemplate="header">
+      <div class="flex align-items-center">
+        <span>Amount received</span>
+        <p-button severity="secondary" text size="small" [icon]="mode === 'pie'? 'fa fa-list': 'fa fa-pie-chart'" (onClick)="updateMode($event)" />
+      </div>
+    </ng-template>
+    @switch (mode) {
+      @case ('table') {
+        <admin-payments-data-table [data]="data" />
       }
-    </div>
-  </div>
+      @case ('pie') {
+        <admin-payments-data-pie [data]="data" />
+      }
+    }
+  </p-fieldset>
 }
 

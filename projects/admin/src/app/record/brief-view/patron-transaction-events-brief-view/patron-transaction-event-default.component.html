@@ -15,16 +15,14 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="description container pl-0">
-  @if (parent.note) {
-    <h5 class="mb-0">
-      [{{ 'Note' | translate }}: {{ parent.note }}]
-    </h5>
-  }
-  <dl class="row ml-3 mb-0">
-    <dt class="label-title col-3" translate>Patron</dt>
-    <dd class="col-9">
-      <a [routerLink]="['/records', 'patrons', 'detail', parent.patron.pid]">{{ parent.patron.pid | patronName | async }}</a>
-    </dd>
-  </dl>
-</div>
+@if (parent.note) {
+  <h5>
+    [{{ 'Note' | translate }}: {{ parent.note }}]
+  </h5>
+}
+<dl class="metadata">
+  <dt translate>Patron</dt>
+  <dd>
+    <a [routerLink]="['/records', 'patrons', 'detail', parent.patron.pid]">{{ parent.patron.pid | patronName | async }}</a>
+  </dd>
+</dl>
