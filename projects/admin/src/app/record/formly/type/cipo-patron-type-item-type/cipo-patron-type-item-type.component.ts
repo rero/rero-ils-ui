@@ -125,7 +125,7 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
 
   /** Build and load the settings table */
   private _loadSettings(): void {
-    const settings = new Settings();
+    const settings = new Settings(this.apiService);
     this.settings = settings
       .setCirculationPolicy(this.form.value)
       .createStructure(this.itemTypes, this.patronTypes, this.circPolicies, this.prevSelectedLibraries)

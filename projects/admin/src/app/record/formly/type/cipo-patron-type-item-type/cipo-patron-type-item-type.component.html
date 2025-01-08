@@ -15,21 +15,19 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (settings) {
-  <div class="table-responsive-sm">
-    <table class="table table-sm table-striped table-hover">
-      <thead>
+    <p-table styleClass="p-datatable-striped" [value]="settings">
+      <ng-template pTemplate="header">
         <tr>
-          <th>&nbsp;</th>
-          @for (patronType of patronTypes; track patronType) {
-            <th class="text-center" scope="col">
-              {{ patronType.metadata.name }}
-            </th>
-          }
+            <th>&nbsp;</th>
+            @for (patronType of patronTypes; track patronType) {
+              <th class="text-center">
+                {{ patronType.metadata.name }}
+              </th>
+            }
         </tr>
-      </thead>
-      <tbody>
-        @for (itemType of settings; track itemType; let index = $index) {
-          <tr scope="row">
+        </ng-template>
+        <ng-template pTemplate="body" let-itemType>
+          <tr>
             <td>{{ itemType.label }}</td>
             @for (patronType of itemType.patronTypes; track patronType) {
               <td class="text-center">
@@ -43,8 +41,6 @@
               </td>
             }
           </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+        </ng-template>
+    </p-table>
 }

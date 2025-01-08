@@ -21,25 +21,20 @@ import { ResultItem } from '@rero/ng-core';
 @Component({
   selector: 'admin-circ-policies-brief-view',
   template: `
-  <h5 class="mb-0 card-title">
-    <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
-    <span class="badge badge-light ml-2 align-top">
-      <small>
+  <h5>
+    <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>&nbsp;
+    <p-tag class="vertical-align-bottom" severity="secondary">
       @if (record.metadata.policy_library_level) {
         {{ 'Library' | translate }}
       } @else {
         {{ 'Organisation' | translate }}
       }
-    </small>
-    </span>
+    </p-tag>
   </h5>
-  <div class="card-text">
-    @if (record.metadata.description) {
-      {{ record.metadata.description }}
-    }
-  </div>
-  `,
-  styles: []
+  @if (record.metadata.description) {
+    <span [innerHtml]="record.metadata.description | nl2br"></span>
+  }
+  `
 })
 export class CircPoliciesBriefViewComponent implements ResultItem {
 
