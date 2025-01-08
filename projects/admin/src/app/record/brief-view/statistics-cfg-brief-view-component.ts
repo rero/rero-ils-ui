@@ -25,7 +25,7 @@ import { ResultItem } from '@rero/ng-core';
     <i
       class="fa fa-circle"
       [title]="activeLabel"
-      [ngClass]="{'text-success': record.metadata.is_active, 'text-danger': !record.metadata.is_active}"
+      [ngClass]="{'text-success': record.metadata.is_active, 'text-error': !record.metadata.is_active}"
     ></i>&nbsp;<a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a></h5>
   <div>
     @if (record.metadata.description) {

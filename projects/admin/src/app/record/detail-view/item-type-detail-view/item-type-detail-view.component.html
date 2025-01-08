@@ -15,34 +15,34 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record$ | async; as record) {
-  <h1 class="mb-5">{{ record.metadata.name }}</h1>
-  <dl class="row">
+  <h1>{{ record.metadata.name }}</h1>
+  <dl class="metadata">
     <!-- DESCRIPTION -->
     @if (record.metadata.description) {
-      <dt class="col-3 label-title" translate>Description</dt>
-      <dd class="col-9">{{ record.metadata.description }}</dd>
+      <dt translate>Description</dt>
+      <dd>{{ record.metadata.description }}</dd>
     }
     <!-- TYPE -->
-    <dt class="col-3 label-title" translate>Type</dt>
-    <dd class="col-9">{{ record.metadata.type }}</dd>
+    <dt translate>Type</dt>
+    <dd>{{ record.metadata.type }}</dd>
     <!-- ITEM AVAILABILITY -->
-    <dt class="col-3 label-title" translate>Items availability</dt>
-    <dd class="col-9">
+    <dt translate>Items availability</dt>
+    <dd>
       <i class="fa" aria-hidden="true" [ngClass]="{
         'fa-check text-success': !record.metadata.negative_availability,
-        'fa-times text-danger': record.metadata.negative_availability
+        'fa-times text-error': record.metadata.negative_availability
       }"></i>
     </dd>
     <!-- DISPLAYED status -->
     @if (record.metadata.displayed_status) {
-      <dt class="col-3 label-title" translate>Displayed status</dt>
-      <dd class="col-9">
-        <ul class="list-unstyled m-0 p-0">
+      <dt translate>Displayed status</dt>
+      <dd>
+        <ul class="list-none m-0 p-0">
           @for (status of record.metadata.displayed_status; track status) {
             <li>
-              <span class="small font-weight-bold text-info language-statement">
-                <i class="fa fa-language"></i> ({{ status.language }})
-              </span>
+              <div class="font-bold w-5rem inline-block">
+                <i class="fa fa-language"></i>&nbsp;({{ status.language }})
+              </div>
               {{ status.label }}
             </li>
           }
@@ -51,14 +51,14 @@
     }
     <!-- CIRCULATION INFORMATION'S -->
     @if (record.metadata.circulation_information) {
-      <dt class="col-3 label-title" translate>Circulation information</dt>
-      <dd class="col-9">
-        <ul class="list-unstyled m-0 p-0">
+      <dt translate>Circulation information</dt>
+      <dd>
+        <ul class="list-none m-0 p-0">
           @for (circulation of record.metadata.circulation_information; track circulation) {
             <li>
-              <span class="small font-weight-bold text-info language-statement">
+              <div class="font-bold w-5rem inline-block">
                 <i class="fa fa-language"></i> ({{ circulation.language }})
-              </span>
+              </div>
               {{ circulation.label }}
             </li>
           }
