@@ -16,18 +16,19 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<ul class="list-unstyled m-0">
+<ul class="list-none m-0 p-0 text-sm">
   @for (subtype of data.subtypes; track subtype) {
     <li>
-      <div class="d-flex justify-content-between">
-        <span>{{ subtype.name | translate }}</span>
-        <span class="ml-auto amount">{{ subtype.total | currency: org_currency: 'symbol' }}</span>
+      <div class="flex">
+        <span class="flex-grow-1">{{ subtype.name | translate }}</span>
+        <span>{{ subtype.total | currency: org_currency: 'symbol' }}</span>
       </div>
     </li>
   }
-  <li class="d-flex justify-content-between total">
-    <span translate>Total</span>
-    <span class="ml-auto amount">{{ data.total | currency: org_currency: 'symbol' }}</span>
+    <p-divider></p-divider>
+  <li class="flex font-bold">
+    <span class="flex-grow-1" translate>Total</span>
+    <span>{{ data.total | currency: org_currency: 'symbol' }}</span>
   </li>
 </ul>
 

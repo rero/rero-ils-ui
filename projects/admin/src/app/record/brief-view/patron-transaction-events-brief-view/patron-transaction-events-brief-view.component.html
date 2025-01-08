@@ -17,51 +17,47 @@
 -->
 
 @defer(when loaded) {
-  <div class="content">
-    @switch (parent.type) {
-      @case ('overdue') {
-        <admin-patron-transaction-event-overdue [parent]="parent" [event]="event">
-        </admin-patron-transaction-event-overdue>
+  <div class="flex gap-2">
+    <div class="flex-grow-1">
+      @switch (parent.type) {
+        @case ('overdue') {
+          <admin-patron-transaction-event-overdue [parent]="parent" [event]="event" />
+        }
+        @default {
+          <admin-patron-transaction-event-default [parent]="parent" [event]="event" />
+        }
       }
-      @default {
-        <admin-patron-transaction-event-default [parent]="parent" [event]="event">
-        </admin-patron-transaction-event-default>
-      }
-    }
-    <span class="badge badge-{{ event.type }}">
-      @if (event.type !== eventTypes.DISPUTE) {
-        {{ event.amount | currency : organisation.default_currency }}
+    </div>
+    <p-tag [severity]="severity()">
+      @if (event().type !== eventTypes.DISPUTE) {
+        {{ event().amount | currency : organisation.default_currency }}
       } @else {
         {{ 'dispute' | translate }}
       }
-    </span>
+    </p-tag>
   </div>
-  <div class="meta">
-    @if (event.operator) {
-      <span class="operator">{{ event.operator.name }}</span>
-    }
-    @if (event.library) {
-      <span class="library ml-2">{{ event.library.name }}</span>
-    }
-    <span class="transaction-type ml-2">{{ parent.type | translate }}</span>
-    <span class="creation-date">{{ event.creation_date | date : 'short' }}</span>
-  </div>
-} @loading {
-  <div class="d-flex">
-    <div class="w-100 container p-0">
-      <p-skeleton styleClass="mb-1"></p-skeleton>
-      <div class="row ml-3">
-        <p-skeleton class="col-3" styleClass="mb-1"></p-skeleton>
-        <p-skeleton class="col-9" styleClass="mb-1"></p-skeleton>
-        <p-skeleton class="col-3" styleClass="mb-1"></p-skeleton>
-        <p-skeleton class="col-9" styleClass="mb-1"></p-skeleton>
-      </div>
+  <div class="flex gap-2 flex-wrap">
+    <div class="flex flex-grow-1 flex-wrap gap-2">
+      @if (event().operator) {
+        <p-tag severity="secondary">
+          <i class="fa fa-user-circle-o"></i>&nbsp;{{ event().operator.name }}
+        </p-tag>
+      }
+      @if (event().library) {
+        <p-tag severity="secondary">
+          <i class="fa fa-university"></i>&nbsp;{{ event().library.name }}
+        </p-tag>
+      }
+      <p-tag severity="secondary">
+        <i class="fa fa-exchange"></i>&nbsp;{{ parent.type | translate }}
+      </p-tag>
     </div>
-    <p-skeleton width="50px" styleClass="ml-2"></p-skeleton>
+
+    <p-tag severity="secondary">
+      <i class="fa fa-clock-o"></i>&nbsp;{{ event().creation_date | date : 'short' }}
+    </p-tag>
   </div>
-  <div class="d-flex mt-3">
-    <p-skeleton width="100px" height="1.5rem"></p-skeleton>
-    <p-skeleton width="200px" height="1.5rem" styleClass="ml-1"></p-skeleton>
-    <p-skeleton width="100px" height="1.5rem" class="ml-auto"></p-skeleton>
-  </div>
+}
+@placeholder {
+  <i class="fa fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}
 }
