@@ -21,8 +21,7 @@ import { PatronTransactionEventDefaultComponent } from './patron-transaction-eve
 
 @Component({
   selector: 'admin-patron-transaction-event-overdue',
-  templateUrl: './patron-transaction-event-overdue.component.html',
-  styleUrls: ['./patron-transaction-events-brief-view.component.scss']
+  templateUrl: './patron-transaction-event-overdue.component.html'
 })
 export class PatronTransactionEventOverdueComponent extends PatronTransactionEventDefaultComponent {
 

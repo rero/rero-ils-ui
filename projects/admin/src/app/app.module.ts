@@ -36,7 +36,6 @@ import {
   TranslateLoader, TruncateTextPipe
 } from '@rero/ng-core';
 import { AppSettingsService, ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MenubarModule } from 'primeng/menubar';
 import { TableModule } from "primeng/table";
@@ -339,7 +338,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
-    NgxChartsModule,
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,

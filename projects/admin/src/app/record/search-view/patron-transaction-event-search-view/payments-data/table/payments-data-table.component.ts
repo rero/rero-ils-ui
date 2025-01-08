@@ -21,8 +21,7 @@ import { PaymentData } from '../../interfaces';
 
 @Component({
   selector: 'admin-payments-data-table',
-  templateUrl: './payments-data-table.component.html',
-  styleUrls: ['./payments-data-table.component.scss']
+  templateUrl: './payments-data-table.component.html'
 })
 export class PaymentsDataTableComponent {
 

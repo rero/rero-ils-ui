@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, computed, inject, Input, OnInit, signal, WritableSignal } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 import { PatronTransaction, PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -24,8 +24,7 @@ import { PatronTransactionsService } from '../../../service/patron-transactions.
 
 @Component({
   selector: 'admin-patron-transaction-events-brief-view',
-  templateUrl: './patron-transaction-events-brief-view.component.html',
-  styleUrls: ['./patron-transaction-events-brief-view.component.scss']
+  templateUrl: './patron-transaction-events-brief-view.component.html'
 })
 export class PatronTransactionEventsBriefViewComponent implements ResultItem, OnInit {
 
@@ -43,20 +42,32 @@ export class PatronTransactionEventsBriefViewComponent implements ResultItem, On
   /** is all data are loaded */
   loaded = false;
   /** transaction object representation from record */
-  event: PatronTransactionEvent;
+  event: WritableSignal<PatronTransactionEvent> = signal(null);
   /** Parent parent transaction */
   parent: PatronTransaction;
   /** current organisation */
   organisation: Organisation;
   /** reference to PatronTransactionEventType */
   eventTypes = PatronTransactionEventType;
+  severity = computed(() => {
+    switch(this.event().type) {
+      case 'fee':
+        return 'danger';
+      case 'payment':
+        return 'success';
+      case 'dispute':
+        return 'warning';
+      default:
+        return 'contrast';
+    }
+  });
 
   /** OnInit hook */
   ngOnInit(): void {
     this.organisation = this.organisationService.organisation;
-    this.event = new PatronTransactionEvent(this.record.metadata);
+    this.event.set(new PatronTransactionEvent(this.record.metadata));
     this.patronTransactionService
-      .getPatronTransaction(this.event.parent.pid)
+      .getPatronTransaction(this.event().parent.pid)
       .subscribe((parent: PatronTransaction) => {
         this.parent = parent;
         this.loaded = true;

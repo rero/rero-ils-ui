@@ -21,8 +21,7 @@ import { PatronTransaction, PatronTransactionEvent } from '../../../classes/patr
 
 @Component({
   selector: 'admin-patron-transaction-event-default',
-  templateUrl: './patron-transaction-event-default.component.html',
-  styleUrls: ['./patron-transaction-events-brief-view.component.scss']
+  templateUrl: './patron-transaction-event-default.component.html'
 })
 export class PatronTransactionEventDefaultComponent {
 
