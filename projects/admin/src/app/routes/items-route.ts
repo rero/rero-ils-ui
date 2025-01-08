@@ -164,35 +164,43 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
               {
                 label: _('Relevance'),
                 value: 'bestmatch',
-                defaultQuery: true
+                defaultQuery: true,
+                icon: 'fa fa-sort-amount-desc'
               },
               {
                 label: _('Barcode'),
-                value: 'barcode'
+                value: 'barcode',
+                 icon: 'fa fa-sort-alpha-asc'
               },
               {
                 label: _('Barcode (desc)'),
-                value: '-barcode'
+                value: '-barcode',
+                icon: 'fa fa-sort-alpha-desc'
               },
               {
                 label: _('Call number'),
-                value: 'call_number'
+                value: 'call_number',
+                icon: 'fa fa-sort-alpha-asc'
               },
               {
                 label: _('Call number (desc)'),
-                value: '-call_number'
+                value: '-call_number',
+                icon: 'fa fa-sort-alpha-desc'
               },
               {
                 label: _('Second call number'),
-                value: 'second_call_number'
+                value: 'second_call_number',
+                icon: 'fa fa-sort-alpha-asc'
               },
               {
                 label: _('Second call number (desc)'),
-                value: '-second_call_number'
+                value: '-second_call_number',
+                icon: 'fa fa-sort-alpha-desc'
               },
               {
                 label: _('Current requests'),
-                value: 'current_requests'
+                value: 'current_requests',
+                icon: 'fa fa-sort-amount-desc'
               }
             ]
           }
