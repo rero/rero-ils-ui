@@ -20,7 +20,7 @@ import { ResultItem } from '@rero/ng-core';
 import { IssueItemStatus } from '@rero/shared';
 
 @Component({
-  selector: 'admin-inventory-brief-view',
+  selector: 'admin-issues-brief-view',
   templateUrl: './issues-brief-view.component.html',
 })
 export class IssuesBriefViewComponent implements ResultItem, OnInit {
