@@ -14,12 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { inject } from '@angular/core';
 import { ApiService } from '@rero/ng-core';
 
 export class Settings {
-
-  private apiService: ApiService = inject(ApiService);
 
   /** Current circulation policy  */
   private circulationPolicy: any;
@@ -33,6 +30,7 @@ export class Settings {
   /** Settings */
   private settings = [];
 
+  constructor(private apiService: ApiService) {}
   /**
    * Set Circulation policy
    * @param circulationPolicy - Current Circulation Policy
