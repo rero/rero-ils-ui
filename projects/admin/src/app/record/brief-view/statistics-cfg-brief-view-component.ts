@@ -21,23 +21,23 @@ import { ResultItem } from '@rero/ng-core';
 @Component({
   selector: 'admin-statistics-cfg-brief-view',
   template: `
-  <h5 class="mb-0 card-title">
+  <h5>
     <i
-      class="fa fa-circle mr-2"
+      class="fa fa-circle"
       [title]="activeLabel"
       [ngClass]="{'text-success': record.metadata.is_active, 'text-danger': !record.metadata.is_active}"
-    ></i>
-  <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a></h5>
-  <div class="card-text">
+    ></i>&nbsp;<a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a></h5>
+  <div>
     @if (record.metadata.description) {
       <div [innerHTML]="record.metadata.description | truncateText: 30"></div>
     }
-    <div>
-      <b translate>Category</b>: {{ record.metadata.category.type | translate }}
-    </div>
-    <div>
-      <b translate>Indicator</b>: {{ record.metadata.category.indicator.type | translate }}
-    </div>
+    <dl class="metadata">
+      <dt translate>Category</dt>
+      <dd>{{ record.metadata.category.type | translate }}</dd>
+
+      <dt translate>Indicator</dt>
+      <dd>{{ record.metadata.category.indicator.type | translate }}</dd>
+    </dl>
   </div>
   `
   })
