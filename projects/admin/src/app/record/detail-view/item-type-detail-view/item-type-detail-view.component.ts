@@ -20,8 +20,7 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'admin-item-type-detail-view',
-  templateUrl: './item-type-detail-view.component.html',
-  styles: ['.language-statement { width: 4rem; display: inline-block; }']
+  templateUrl: './item-type-detail-view.component.html'
 })
 export class ItemTypeDetailViewComponent implements DetailRecord {
 
