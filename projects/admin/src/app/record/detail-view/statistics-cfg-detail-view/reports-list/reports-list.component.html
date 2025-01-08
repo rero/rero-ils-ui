@@ -25,7 +25,7 @@
           </a>
         </td>
         <td class="text-right">
-          <a class="btn btn-link btn-outline-primary" [href]="getReportUrl(report.metadata.pid)+'?format=csv'">
+          <a pButton text [href]="getReportUrl(report.metadata.pid)+'?format=csv'">
             <i class="fa fa-download"></i>
           </a>
         </td>
@@ -33,5 +33,5 @@
     </ng-template>
   </p-table>
 } @else {
-  <p class="m-0 px-4 py-2 text-muted" translate>No result</p>
+  <p class="m-0 px-4 py-2 text-color-secondary" translate>No result</p>
 }

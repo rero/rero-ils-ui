@@ -15,28 +15,28 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  <header class="mb-2">
+  <header>
     <h1>{{ record.metadata.name }}</h1>
     <span [innerHTML]="record.metadata.description | nl2br"></span>
   </header>
-  <section class="my-4">
-    <dl class="grid mb-0">
-      <dt class="col-3 label-title" translate>Library</dt>
-      <dd class="col-9">{{ record.metadata.library.$ref | getRecord: 'libraries' : 'field' : 'name' | async }}</dd>
+  <section>
+    <dl class="metadata">
+      <dt translate>Library</dt>
+      <dd>{{ record.metadata.library.$ref | getRecord: 'libraries' : 'field' : 'name' | async }}</dd>
 
-      <dt class="col-3 label-title" translate>Is active</dt>
-      <dd class="col-9">
+      <dt translate>Is active</dt>
+      <dd>
         <i
           class="fa fa-circle"
           [ngClass]="{'text-success': record.metadata.is_active, 'text-danger': !record.metadata.is_active}"
         ></i>
       </dd>
-      <dt class="col-3 label-title" translate>Frequency</dt>
-      <dd class="col-9">{{ record.metadata.frequency | translate }}</dd>
+      <dt translate>Frequency</dt>
+      <dd>{{ record.metadata.frequency | translate }}</dd>
       @if (record.metadata.filter_by_libraries?.length > 0) {
-        <dt class="col-3 label-title" translate>Filter numbers by libraries</dt>
-        <dd class="col-9">
-          <ul class="list-unstyled">
+        <dt translate>Filter numbers by libraries</dt>
+        <dd>
+          <ul class="list-none m-0 p-0">
             @for (lib of record.metadata.filter_by_libraries; track lib) {
               <li>
                 {{ lib.$ref| getRecord: 'libraries' : 'field' : 'name' | async }}
@@ -48,52 +48,51 @@
     </dl>
 
     <p-fieldset styleClass="mt-3" [legend]="'Configuration'|translate">
-      <dl class="grid mb-0">
+      <dl class="metadata">
 
-        <dt class="col-3 label-title" translate>Category</dt>
-        <dd class="col-9">{{ record.metadata.category.type | translate }}</dd>
+        <dt translate>Category</dt>
+        <dd>{{ record.metadata.category.type | translate }}</dd>
 
-        <dt class="col-3 label-title" translate>Indicator</dt>
-        <dd class="col-9">{{ record.metadata.category.indicator.type | translate }}</dd>
+        <dt translate>Indicator</dt>
+        <dd>{{ record.metadata.category.indicator.type | translate }}</dd>
 
         @if (record.metadata.category.indicator.period) {
-          <dt class="col-3 label-title" translate>Period</dt>
-          <dd class="col-9">{{ record.metadata.category.indicator.period | translate }}</dd>
+          <dt translate>Period</dt>
+          <dd>{{ record.metadata.category.indicator.period | translate }}</dd>
         }
 
         @if (record.metadata.category.indicator.distributions) {
-          <dt class="col-3 label-title" translate>Distributions</dt>
-          <dd class="col-9">
-            <ul class="list-inline mb-0">
+          <dt translate>Distributions</dt>
+          <dd>
+            <ul class="list-none m-0 p-0">
               @for (dist of record.metadata.category.indicator.distributions; track dist; let last = $last) {
-                <li class="list-inline-item">{{ dist | translate }}{{ last ? '' : ' / ' }}</li>
+                <li class="inline">{{ dist | translate }}{{ last ? '' : ' / ' }}</li>
               }
             </ul>
           </dd>
         }
-
         @if (record.metadata.category.indicator.filter) {
-          <dt class="col-3 label-title" translate>Filter</dt>
-          <dd class="col-9">{{ record.metadata.category.indicator.filter }}</dd>
+          <dt translate>Filter</dt>
+          <dd>{{ record.metadata.category.indicator.filter }}</dd>
         }
         @if (record.created) {
-          <dt class="col-3 label-title" translate>Created at</dt>
-          <dd class="col-9">{{ record.created | dateTranslate: 'medium' }}</dd>
+          <dt translate>Created at</dt>
+          <dd>{{ record.created | dateTranslate: 'medium' }}</dd>
         }
         @if (record.updated) {
-          <dt class="col-3 label-title" translate>Updated at</dt>
-          <dd class="col-9">{{ record.updated | dateTranslate: 'medium' }}</dd>
+          <dt translate>Updated at</dt>
+          <dd>{{ record.updated | dateTranslate: 'medium' }}</dd>
         }
       </dl>
     </p-fieldset>
   </section>
   <p-tabView (onChange)="tabViewChange($event)">
     <p-tabPanel [header]="'Reports'|translate">
-      <admin-reports-list [pid]="record.metadata.pid"></admin-reports-list>
+      <admin-reports-list [pid]="record.metadata.pid" />
     </p-tabPanel>
     <p-tabPanel [header]="'Live Values'|translate">
       @if (liveData) {
-        <admin-report-data [data]="liveData"></admin-report-data>
+        <admin-report-data [data]="liveData" />
       }
       @if (liveDataError) {
         <p-messages
