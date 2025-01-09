@@ -15,41 +15,29 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  <h2 id="template-name" class="pl-0">
+  <h2 id="template-name">
     {{ record.metadata.name }}
     @if (record.metadata.visibility && record.metadata.visibility === 'private') {
       <i class="fa fa-lock text-secondary ml-2" aria-hidden="true"></i>
     }
   </h2>
-  <dl class="grid mt-2 mb-0">
+  <dl class="metadata">
     <!-- DESCRIPTION -->
     @if (record.metadata.description) {
-      <dt [ngClass]="dtCssClass">
-        <span class="label-title" translate>
-          Description
-        </span>
-      </dt>
-      <dd id="template-description" [ngClass]="ddCssClass" [innerHTML]="record.metadata.description | nl2br"></dd>
+      <dt translate>Description</dt>
+      <dd id="template-description" [innerHTML]="record.metadata.description | nl2br"></dd>
     }
     <!-- CREATOR -->
     @if (record.metadata.creator.pid | getRecord: 'patrons' | async; as creator) {
-      <dt [ngClass]="dtCssClass">
-        <span class="label-title" translate>
-          Creator
-        </span>
-      </dt>
-      <dd id="template-creator" [ngClass]="ddCssClass">
+      <dt translate>Creator</dt>
+      <dd>
         {{ $any(creator).metadata.first_name }} {{ $any(creator).metadata.last_name }}
       </dd>
     }
     <!-- TYPE -->
     @if (record.metadata.template_type) {
-      <dt [ngClass]="dtCssClass">
-        <span class="label-title" translate>
-          Type
-        </span>
-      </dt>
-      <dd id="template-type" [ngClass]="ddCssClass">
+      <dt translate>Type</dt>
+      <dd id="template-type">
         {{ record.metadata.template_type }}
       </dd>
     }
