@@ -17,7 +17,7 @@
 @if (record()) {
   <h5>
     {{ record().id }}
-    &nbsp;<p-badge
+    &nbsp;<p-tag
       [severity]="status() === 'complete'? 'success': status().endsWith('error') ? 'danger': 'secondary'"
       [value]="record().conversion.status | translate"
     />

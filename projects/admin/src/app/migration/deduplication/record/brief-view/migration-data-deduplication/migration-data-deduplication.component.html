@@ -16,7 +16,7 @@
 -->
 
 @if (record()) {
-<div class="flex w-100 justify-content-between mb-2">
+<div class="flex justify-content-between mb-2">
   <div class="flex align-items-center justify-content-center">
     <p-inplace #inplace>
       <ng-template pTemplate="display">
@@ -76,14 +76,13 @@
 </div>
 
 @if (messages) {
-<div>
   <p-messages
     [value]="messages()"
     [escape]="false"
     [enableService]="false"
     [closable]="false"
+    showTransitionOptions="0ms"
   />
-</div>
 }
 
 <div class="flex justify-content-between mb-1">

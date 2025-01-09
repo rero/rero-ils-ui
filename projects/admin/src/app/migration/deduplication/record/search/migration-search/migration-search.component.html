@@ -25,34 +25,35 @@
     <h5>{{ availableTypes[0].label | translate }}</h5>
     }
     <ng-content select="[header]"></ng-content>
-    <div class="mt-3">
+    <div class="mt-3 flex gap-2">
       @if (showSearchInput) {
       <ng-core-search-input
-        class="pt-0"
+        class="flex-grow-1"
         [placeholder]="'search' | translate | ucfirst"
         [searchText]="q"
         [displayLabel]="false"
         (search)="searchByQuery($event)"
         [focus]="true"
-      ></ng-core-search-input>
+      />
       }
       <ng-content select="[afterInputSearch]"/>
     </div>
-    @if (loaded && total < 1) {
-    <p-messages
-      class="my-4"
-      [value]="[{ severity: 'info', detail: emptyRecordMessage }]"
-      [enableService]="false"
-      [closable]="false"
-    />
-    @if (adminMode.can && addStatus.can) {
-    <p-button
-      id="search-add-button"
-      [label]="'Add' | translate"
-      icon="fa fa-plus"
-      [routerLink]="addStatus.routerLink || ['new']"
-    />
-    } } @else {
+    @if (loaded && hasNoRecord) {
+      <p-messages
+        class="my-4"
+        [value]="[{ severity: 'info', detail: emptyRecordMessage }]"
+        [enableService]="false"
+        [closable]="false"
+      />
+      @if (adminMode.can && addStatus.can) {
+      <p-button
+        id="search-add-button"
+        [label]="'Add' | translate"
+        icon="fa fa-plus"
+        [routerLink]="addStatus.routerLink || ['new']"
+      />
+      }
+    } @else {
     <div class="flex align-items-stretch w-full my-3">
       @if (resultsText$ | async; as resultsText) {
       <div class="flex align-items-center w-full">
@@ -80,8 +81,8 @@
     <ng-content select="[beforeResult]"></ng-content>
     <div class="grid">
       <ng-core-list-filters
-        class="col-12"
         [aggregations]="aggregations"
+        class="col-12"
         [aggregationsFilters]="aggregationsFilters"
         [searchFilters]="searchFilters"
         (remove)="removeFilter($event)"
@@ -140,7 +141,6 @@
             <ul class="p-0 m-0">
               @for (record of records; track record ; let first = $first) {
               <li class="list-none py-2" [ngClass]="{ 'border-top-1 surface-border': !first }">
-                <!-- different to the parent: inject a specific component -->
                 <admin-migration-data-deduplication
                   (refresh)="refresh($event)"
                   [record]="record"
