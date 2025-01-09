@@ -20,8 +20,7 @@ import { IRolePermission, PermissionApiService } from '../../../api/permission-a
 
 @Component({
   selector: 'admin-permission-detail-view',
-  templateUrl: './permission-detail-view.component.html',
-  styleUrls: ['./permission-detail-view.component.scss'],
+  templateUrl: './permission-detail-view.component.html'
 })
 export class PermissionDetailViewComponent implements OnInit {
 

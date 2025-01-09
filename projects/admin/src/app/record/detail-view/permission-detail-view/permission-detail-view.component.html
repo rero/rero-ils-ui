@@ -16,20 +16,28 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (globalPermissions) {
-  <div class="container">
     <h1 translate>Permissions matrix</h1>
-      <div class="my-3">
-        <label for="filter" translate>Filter permission list</label>
-        <input id="filter" class="form-control" #search (keyup)="filterPermissions(search.value)" />
-        <small class="form-text text-muted" translate>Enter a part of the permission name to filter the list.</small>
-      </div>
+    <div class="flex flex-column gap-2">
+      <label for="filter" translate>Filter permission list</label>
+      <input
+          pInputText
+          id="filter"
+          aria-describedby="filter-help"
+          #search
+          (keyup)="filterPermissions(search.value)"
+      />
+      <small id="filter-help" class="text-color-secondary" translate>
+        Enter a part of the permission name to filter the list.
+      </small>
+    </div>
+
       @if (filteredPermissionNames.length >0) {
-        <table class="table table-header-rotated table-striped">
+        <table>
           <thead>
             <tr>
-              <th class="vertical-header">&nbsp;</th>
+              <th>&nbsp;</th>
               @for (role of roles; track role) {
-                <th class="vertical-header" [ngClass]="'type-'+role.type.replace('_', '-')">
+                <th [ngClass]="'type-'+role.type.replace('_', '-')">
                   <span>{{ role.name | translate }}</span>
                 </th>
               }
@@ -38,16 +46,16 @@
           <tbody>
             @for (permissionName of filteredPermissionNames; track permissionName) {
               <tr>
-                <td class="permission">{{ permissionName }}</td>
+                <td>{{ permissionName }}</td>
                 @for (role of roles; track role) {
-                  <td class="access text-center" [ngClass]="'type-'+role.type.replace('_', '-')">
+                  <td [ngClass]="'type-'+role.type.replace('_', '-')">
                     <span title="{{ role.name | translate }}">
                       <i
                         class="fa fa-square"
                         [ngClass]="{
                           'text-success': true === globalPermissions[role.name].actions[permissionName],
-                          'text-danger': false === globalPermissions[role.name].actions[permissionName],
-                          'text-secondary': null === globalPermissions[role.name].actions[permissionName]
+                          'text-error': false === globalPermissions[role.name].actions[permissionName],
+                          'text-color-secondary': null === globalPermissions[role.name].actions[permissionName]
                         }">
                       </i>
                     </span>
@@ -58,7 +66,6 @@
           </tbody>
         </table>
       } @else {
-        <h4 class="text-center text-uppercase font-weight-bold mt-4" translate>No Result</h4>
+        <p class="mt-3" translate>No result</p>
       }
-  </div>
 }

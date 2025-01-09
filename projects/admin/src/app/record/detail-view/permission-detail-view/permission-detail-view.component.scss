@@ -16,42 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import 'node_modules/bootstrap/scss/_functions';
-@import 'node_modules/bootstrap/scss/_variables';
-
-table {
-  position: relative;
-
-  tr td:nth-child(2),
-  td.type-system-role + td.type-role {
-    border-left: $border-width*2 solid $border-color;
-  }
-  th.type-system-role {
-    background-color: #f4f4f4;
-  }
-
-  th {
-    position: sticky;
-    top: 0;
-    background: $white;
-  }
-
-  .vertical-header {
-    text-align: left;
-  }
-
-  .vertical-header span {
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    text-align: left;
-    max-height: 200px;
-  }
-
-  .permission {
-    width: 200px;
-  }
-
-  .access {
-    width: 30px;
+admin-permission-detail-view {
+  table {
+    @extend .relative, .w-full, .mt-3;
+    border-spacing: 0;
+    thead tr {
+      @extend .bg-white, .sticky, .top-0, .vertical-align-bottom;
+      th span {
+        @extend .text-left, .max-h-13rem, .text-sm, .p-2;
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+      }
+      th.type-system-role {
+        @extend .surface-100;
+      }
+    }
+    tbody {
+      tr:nth-of-type(odd) {
+        @extend .surface-100;
+      }
+      td {
+        @extend .p-3, .w-13rem, .text-center, .w-2rem;
+      }
+      td:nth-child(2),
+      td.type-system-role + td.type-role {
+        @extend .surface-border, .border-left-2;
+      }
+    }
   }
 }
