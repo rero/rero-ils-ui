@@ -15,68 +15,66 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record$ | async; as record) {
-  <h1 class="mb-3">{{ record.metadata.name }}</h1>
-  <dl class="grid">
+  <h1>{{ record.metadata.name }}</h1>
+  <dl class="metadata">
     <!-- CODE -->
     @if (record.metadata.code) {
-      <dt class="col-3 label-title" translate>Code</dt>
-      <dd class="col-7 mb-0">{{ record.metadata.code }}</dd>
+      <dt translate>Code</dt>
+      <dd>{{ record.metadata.code }}</dd>
     }
     <!-- DESCRIPTION -->
     @if (record.metadata.description) {
-      <dt class="col-3 label-title" translate>Description</dt>
-      <dd class="col-7 mb-0">{{ record.metadata.description }}</dd>
+      <dt translate>Description</dt>
+      <dd>{{ record.metadata.description }}</dd>
     }
     <!-- YEARLY SUBSCRIPTION -->
-    <dt class="col-3 label-title" translate>Yearly subscription</dt>
-    <dd class="col-7 mb-0">
+    <dt translate>Yearly subscription</dt>
+    <dd>
       <i class="fa" [ngClass]="{
-        'fa-check text-green-500': record.metadata.subscription_amount > 0,
-        'fa-times text-red-500': !(record.metadata.subscription_amount > 0)
+        'fa-check text-success': record.metadata.subscription_amount > 0,
+        'fa-times text-error': !(record.metadata.subscription_amount > 0)
       }" aria-hidden="true"></i>
     </dd>
     <!-- SUBSCRIPTION AMOUNT -->
     @if (record.metadata.subscription_amount) {
-      <dt class="col-3 label-title" translate>Subscription amount</dt>
-      <dd class="col-7 mb-0">{{ record.metadata.subscription_amount | currency: organisation.default_currency }}</dd>
+      <dt translate>Subscription amount</dt>
+      <dd>{{ record.metadata.subscription_amount | currency: organisation.default_currency }}</dd>
     }
-
+  </dl>
     <!-- Limits -->
     @if (record.metadata.limits) {
-      <section class="container">
-        <h2 class="mt-4" translate>Limits</h2>
+      <section class="flex flex-column gap-2">
+        <h2 translate>Limits</h2>
         <!-- Checkout limits -->
-        <p-fieldset>
+        <p-panel [collapsed]="!record?.metadata?.limits?.checkout_limits">
           <ng-template pTemplate="header">
             <div class="flex align-items-center gap-2 px-2">
               <i class="fa" [ngClass]="{
                 'fa-circle text-success': record.metadata.limits.checkout_limits,
                 'fa-circle-thin': !record.metadata.limits.checkout_limits
               }"></i>
-              <span class="pl-3" translate>Limit by checkouts</span>
+              <span translate>Limit by checkouts</span>
             </div>
           </ng-template>
-          @if (record.metadata.limits.checkout_limits) {
-            <dl class="grid m-0">
-              <dt class="col-3 label-title" translate>General limit</dt>
-              <dd class="col">{{ record.metadata.limits.checkout_limits.global_limit }}</dd>
-              <dd class="w-100 m-0"></dd>
+          @if (record?.metadata?.limits?.checkout_limits) {
+            <dl class="metadata">
+              <dt translate>General limit</dt>
+              <dd>{{ record.metadata.limits.checkout_limits.global_limit }}</dd>
               @if (record.metadata.limits.checkout_limits.library_limit) {
-                <dt class="col-3 label-title" translate>Library limit</dt>
-                <dd class="col">{{ record.metadata.limits.checkout_limits.library_limit }}</dd>
-                <dd class="w-100 m-0"></dd>
+                <dt translate>Library limit</dt>
+                <dd>{{ record.metadata.limits.checkout_limits.library_limit }}</dd>
               }
               @if (record.metadata.limits.checkout_limits.library_exceptions) {
-                <dt class="col-3 label-title" translate>Exceptions</dt>
+                <dt translate>Exceptions</dt>
                 <dd class="col">
-                  <ul class="list-unstyled">
+                  <ul class="list-none m-0 p-0">
                     @for (exception of record.metadata.limits.checkout_limits.library_exceptions; track exception) {
-                      <li class="row">
+                      <li class="grid grid-nogutter">
                         <div class="col-10">
-                          <i class="fa fa-university pr-2"></i>
+                          <i class="fa fa-university"></i>&nbsp;
                           {{ exception.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
                         </div>
-                        <dd class="col-2">{{ exception.value }}</dd>
+                        <div class="col-2">{{ exception.value }}</div>
                       </li>
                     }
                   </ul>
@@ -84,60 +82,55 @@
               }
             </dl>
           }
-        </p-fieldset>
+        </p-panel>
 
-        <p-fieldset>
+        <p-panel [collapsed]="!record?.metadata?.limits?.fee_amount_limits">
           <ng-template pTemplate="header">
             <div class="flex align-items-center gap-2 px-2">
               <i class="fa" [ngClass]="{
                 'fa-circle text-success': record.metadata.limits.fee_amount_limits,
                 'fa-circle-thin': !record.metadata.limits.fee_amount_limits
               }"></i>
-              <span class="pl-3" translate>Limit by fee amount</span>
+              <span translate>Limit by fee amount</span>
             </div>
           </ng-template>
           @if (record.metadata.limits.fee_amount_limits) {
-            <div class="card-body">
-              <dl class="row m-0">
-                <dt class="col-lg-3 col-sm-4 label-title" translate>Limit</dt>
-                <dd class="col">{{ record.metadata.limits.fee_amount_limits.default_value | currency: organisation.default_currency }}</dd>
-              </dl>
-            </div>
+            <dl class="metadata">
+              <dt translate>Limit</dt>
+              <dd>{{ record.metadata.limits.fee_amount_limits.default_value | currency: organisation.default_currency }}</dd>
+            </dl>
           }
-        </p-fieldset>
+        </p-panel>
 
-        <p-fieldset>
+        <p-panel [collapsed]="!record?.metadata?.limits?.overdue_items_limits">
           <ng-template pTemplate="header">
             <div class="flex align-items-center gap-2 px-2">
               <i class="fa" [ngClass]="{
                 'fa-circle text-success': record.metadata.limits.overdue_items_limits,
                 'fa-circle-thin': !record.metadata.limits.overdue_items_limits
               }"></i>
-              <span class="pl-3" translate>Limit by overdue items</span>
+              <span translate>Limit by overdue items</span>
             </div>
           </ng-template>
           @if (record.metadata.limits.overdue_items_limits) {
-            <div class="card-body">
-              <dl class="row m-0">
-                <dt class="col-lg-3 col-sm-4 label-title" translate>Limit</dt>
-                <dd class="col">{{ record.metadata.limits.overdue_items_limits.default_value }}</dd>
-              </dl>
-            </div>
+            <dl class="metadata">
+              <dt translate>Limit</dt>
+              <dd>{{ record.metadata.limits.overdue_items_limits.default_value }}</dd>
+            </dl>
           }
-        </p-fieldset>
+        </p-panel>
 
-        <p-fieldset>
+        <p-panel collapsed>
           <ng-template pTemplate="header">
             <div class="flex align-items-center gap-2 px-2">
               <i class="fa" [ngClass]="{
                 'fa-circle text-success': record.metadata.limits.unpaid_subscription,
                 'fa-circle-thin': !record.metadata.limits.unpaid_subscription
               }"></i>
-              <span class="pl-3" translate>Limit to unpaid subscription</span>
+              <span translate>Limit to unpaid subscription</span>
             </div>
           </ng-template>
-        </p-fieldset>
+        </p-panel>
       </section>
     }
-  </dl>
 }
