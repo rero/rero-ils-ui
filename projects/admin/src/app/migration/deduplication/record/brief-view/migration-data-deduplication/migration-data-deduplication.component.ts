@@ -22,8 +22,7 @@ import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'admin-migration-data-deduplication',
-  templateUrl: './migration-data-deduplication.component.html',
-  styleUrl: './migration-data-deduplication.component.scss',
+  templateUrl: './migration-data-deduplication.component.html'
 })
 export class MigrationDataDeduplicationBriefComponent implements OnInit {
   // services

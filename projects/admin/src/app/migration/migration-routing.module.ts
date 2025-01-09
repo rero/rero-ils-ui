@@ -89,21 +89,25 @@ const routes: Routes = [
           aggregationsBucketSize: 10,
           sortOptions: [
             {
-              label: _('Default'),
-              value: '',
+              label: _('Relevance'),
+              value: '_score',
+              icon: 'fa fa-sort-amount-desc',
               defaultQuery: true,
             },
             {
               label: _('Modification date (newest)'),
               value: '-updated_at',
+              icon: 'fa fa-sort-amount-desc'
             },
             {
               label: _('Modification date (oldest)'),
               value: 'updated_at',
+              icon: 'fa fa-sort-amount-asc',
             },
             {
               label: _('Identifier'),
               value: '-_id',
+              icon: 'fa fa-sort-alpha-asc'
             },
           ],
         },
@@ -149,21 +153,26 @@ const routes: Routes = [
           aggregationsBucketSize: 10,
           sortOptions: [
             {
-              label: _('Default'),
-              value: '',
+              label: _('Relevance'),
+              value: '_score',
+              icon: 'fa fa-sort-amount-desc',
               defaultQuery: true,
             },
             {
               label: _('Modification date (newest)'),
               value: '-updated_at',
+              icon: 'fa fa-sort-amount-desc'
             },
             {
               label: _('Modification date (oldest)'),
               value: 'updated_at',
+              icon: 'fa fa-sort-amount-asc',
             },
             {
               label: _('Score'),
               value: '-deduplication.candidates.score',
+              icon: 'fa fa-sort-amount-desc',
+              defaultNoQuery: true,
             },
           ],
         },

@@ -24,8 +24,7 @@ import { of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'admin-migration-data',
-  templateUrl: './migration-data.component.html',
-  styleUrl: './migration-data.component.scss',
+  templateUrl: './migration-data.component.html'
 })
 export class MigrationDataDetailComponent {
 

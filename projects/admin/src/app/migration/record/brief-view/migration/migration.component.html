@@ -16,10 +16,10 @@
 -->
 
 @if (record) {
-<div class="flex w-100 justify-content-between">
+<div class="flex justify-content-between">
   <div>
     <h5>
-      {{ record.metadata.name }} <p-badge [value]="record.metadata.status" />
+      {{ record.metadata.name }}&nbsp;<p-tag [value]="record.metadata.status" />
     </h5>
     @if(record.metadata?.description) {
     <div>
@@ -29,21 +29,21 @@
     </div>
     }
   </div>
-  <div>
-    <a
+  <div class="flex gap-1">
+    <p-button
       [routerLink]="['..', 'format', 'migration_data']"
       [queryParams]="{ migration: record.id }"
-      class="p-button p-button-sm mr-2"
-      translate
-      >Data conversion</a
-    >
-    <a
+      outlined
+      size="small"
+      [label]="'Data conversion' | translate"
+    />
+    <p-button
       [routerLink]="['..', 'deduplication', 'migration_data']"
       [queryParams]="{ migration: record.id }"
-      class="p-button p-button-sm"
-      translate
-      >Deduplication</a
-    >
+      outlined
+      size="small"
+      [label]="'Deduplication' | translate"
+    />
   </div>
 </div>
 }
