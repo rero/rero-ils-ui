@@ -21,8 +21,7 @@ import { MainTitlePipe } from '@rero/shared';
 
 @Component({
   selector: 'admin-migration-metadata',
-  templateUrl: './migration-metadata.component.html',
-  styleUrl: './migration-metadata.component.scss',
+  templateUrl: './migration-metadata.component.html'
 })
 export class MigrationMetadataBriefComponent {
   // services

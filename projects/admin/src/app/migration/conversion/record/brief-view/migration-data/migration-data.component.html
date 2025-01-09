@@ -21,7 +21,7 @@
     [queryParams]="{ migration: record.metadata.migration_id }"
     >{{ record.id }}
     {{status}}
-    &nbsp;<p-badge
+    &nbsp;<p-tag
       [severity]="status === 'complete'? 'success': status.endsWith('error') ? 'danger': 'secondary'"
       [value]="record.metadata.conversion.status | translate"
   /></a>

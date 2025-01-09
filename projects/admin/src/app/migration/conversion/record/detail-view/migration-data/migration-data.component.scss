@@ -15,23 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-::ng-deep {
-  .markdown td,
-  .markdown th {
-    padding: 0 10px;
-    vertical-align: top;
+admin-migration-data {
+  .markdown {
+    table {
+      border-spacing: 0;
+      th {
+        @extend .text-left;
+      }
+      td,
+      th {
+        @extend .vertical-align-top, .py-2, .px-3;
+      }
+      tbody tr:nth-of-type(odd) {
+        @extend .surface-100;
+      }
+    }
   }
-  tbody tr:nth-child(odd) {
-    background-color: #f8fafc;
-  }
-}
-
-.data {
-  .col {
-    max-height: 600px;
-    overflow: auto;
-  }
-  .json {
-    border-left: 1px solid gray;
+  .data {
+    .col {
+      @extend .overflow-auto;
+      max-height: 600px;
+    }
+    .json {
+      @extend .surface-border, .border-left-1;
+    }
   }
 }
