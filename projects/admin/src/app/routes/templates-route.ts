@@ -62,7 +62,7 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
             redirectUrl: (record: any) => {
               return this.redirectUrl(
                 record.metadata,
-                '/records/templates/detail/'
+                '/records/templates/detail'
               );
             },
             aggregationsOrder: [
@@ -77,11 +77,13 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
               {
                 label: _('Relevance'),
                 value: 'bestmatch',
+                icon: 'fa fa-sort-amount-desc',
                 defaultQuery: true
               },
               {
                 label: _('Name'),
                 value: 'name',
+                icon: 'fa fa-sort-alpha-asc',
                 defaultNoQuery: true
               }
             ],

@@ -19,16 +19,15 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'admin-templates-brief-view',
   template: `
-  <h5 class="mb-0 card-title">
+  <h5>
     <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }} </a>
     @if (record.metadata.visibility === 'private') {
       <small>
-        <i class="fa fa-lock text-secondary" aria-hidden="true"></i>
+        <i class="fa fa-lock text-color-secondary" aria-hidden="true"></i>
       </small>
     }
   </h5>
-  <div class="card-text">
-    <ul class="list-inline mb-0">
+    <ul class="list-none m-0 p-0">
       @if (record.metadata.description) {
         <li>
           {{ record.metadata.description | truncateText: 8 }}
@@ -45,7 +44,6 @@ import { Component, Input } from '@angular/core';
         </li>
       }
     </ul>
-  </div>
   `
   })
 export class TemplatesBriefViewComponent {
