@@ -48,8 +48,8 @@ export interface Organisation {
 export interface ExceptionDates {
   title: string;
   is_open: boolean;
-  start_date: string;
-  end_date?: string;
+  start_date: string | DateTime;
+  end_date?: string | DateTime;
   times?: Array<Hours>;
   repeat?: Repeat;
 }
@@ -220,10 +220,18 @@ export class Library {
     const unity = (jsUnitMapper.hasOwnProperty(exception.repeat.period))
       ? jsUnitMapper[exception.repeat.period]
       : 'days';
-    exception.start_date = DateTime.fromFormat(exception.start_date).plus({ [unity]: exception.repeat.interval }).format('yyyy-LL-dd');
-    if (exception.end_date) {
-      exception.end_date = DateTime.fromFormat(exception.end_date).plus({ [unity]: exception.repeat.interval }).format('yyyy-LL-dd');
+    if (typeof exception.start_date === 'string') {
+      exception.start_date = DateTime.fromFormat(exception.start_date, 'yyyy-LL-dd');
     }
+    exception.start_date = exception.start_date.plus({ [unity]: exception.repeat.interval });
+
+    if (exception.end_date) {
+        if (typeof exception.end_date === 'string') {
+          exception.end_date = DateTime.fromFormat(exception.end_date, 'yyyy-LL-dd');
+        }
+        exception.end_date = exception.end_date.plus({ [unity]: exception.repeat.interval });
+      }
+
     return exception;
   }
 

@@ -15,31 +15,29 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (exception) {
-  <div class="row exception-date py-2" [ngClass]="{'over-exception': isOver(exception)}">
-    <div class="status col-1">
-      <i class="fa" aria-hidden="true" [ngClass]="{
+  <div class="grid m-2" [ngClass]="{'text-color-secondary line-through': isOver(exception)}">
+      <i class="fa col-1" aria-hidden="true" [ngClass]="{
         'fa-circle text-success': exception.is_open,
-        'fa-ban text-danger': !exception.is_open
+        'fa-ban text-error': !exception.is_open
       }"></i>
-    </div>
-    <span class="col-3">
-      {{ exception.start_date }}
+    <div class="col-3">
+      {{ exception.start_date | dateTranslate:'longDate'}}
       @if (exception.end_date) {
-        <i class="fa fa-long-arrow-right"></i> {{ exception.end_date }}
+        <i class="fa fa-long-arrow-right"></i>&nbsp;{{ exception.end_date | dateTranslate:'longDate' }}
       }
-    </span>
+    </div>
     <div class="col-2">
       @if (exception.times) {
         @for (time of exception.times; track time) {
-          <div class="time">{{ time.start_time }} - {{ time.end_time }}</div>
+          <div>{{ time.start_time }} - {{ time.end_time }}</div>
         }
       }
       @if (exception.repeat) {
-        <i class="fa fa-repeat pr-1"></i>
+        <i class="fa fa-repeat"></i>&nbsp;
         {{ exception.repeat.period | translate }}={{ exception.repeat.interval }}
       }
     </div>
     <span class="col">{{ exception.title }}</span>
-    <pre [hidden]="true" class="col-12">{{ exception | json }}</pre>
+    <ng-content></ng-content>
   </div>
 }
