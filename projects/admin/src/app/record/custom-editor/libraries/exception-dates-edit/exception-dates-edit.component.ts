@@ -18,6 +18,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { LibraryExceptionFormService } from '../library-exception-form.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-libraries-exception-dates-edit',
@@ -29,8 +30,11 @@ export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   private form: LibraryExceptionFormService = inject(LibraryExceptionFormService);
+  private translateService: TranslateService = inject(TranslateService);
 
   public exceptionForm: UntypedFormGroup;
+
+  periods: any[];
 
   ngOnInit() {
     this.form.build();
@@ -39,6 +43,20 @@ export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
     if (exceptionDate) {
       this.form.populate(exceptionDate);
     }
+    this.periods = [
+      {
+        label: this.translateService.instant('week'),
+        value: 'weekly'
+      },
+      {
+        label: this.translateService.instant('month'),
+        value: 'monthly'
+      },
+      {
+        label: this.translateService.instant('year'),
+        value: 'yearly'
+      }
+    ];
   }
 
   ngOnDestroy(): void {
@@ -47,10 +65,6 @@ export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.dynamicDialogRef.close(this.form.getValue());
-  }
-
-  onCancel(): void {
-    this.dynamicDialogRef.close();
   }
 
   onPeriodChange(event): void {

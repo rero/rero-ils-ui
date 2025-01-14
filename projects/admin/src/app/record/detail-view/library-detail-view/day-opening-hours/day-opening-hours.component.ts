@@ -20,21 +20,19 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'admin-day-opening-hours',
   template: `
-    <dl class="row my-0">
-      <dt class="col-2">{{ day.day | translate }}</dt>
-      <dd class="col-1 text-center">
-        <i class="fa" [ngClass]="{
-          'fa-times-circle-o text-danger': !day.is_open,
+    <dl class="metadata">
+      <dt>{{ day.day | translate }}</dt>
+      <dd>
+        <i class="fa mr-4" [ngClass]="{
+          'fa-times-circle-o text-error': !day.is_open,
           'fa-circle text-success': day.is_open
         }"></i>
-      </dd>
-      <dd class="col">
         @if (day.is_open) {
           @for (time of day.times; track time) {
-            <span class="period">{{ time.start_time }} - {{ time.end_time }}</span>
+            <span>{{ time.start_time }} - {{ time.end_time }}</span>
           }
         } @else {
-          <span class="text-danger" translate>Closed</span>
+          <span class="text-error" translate>Closed</span>
         }
       </dd>
     </dl>
