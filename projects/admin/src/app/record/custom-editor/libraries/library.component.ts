@@ -28,11 +28,12 @@ import { Subscription } from 'rxjs';
 import { Library } from '../../../classes/library';
 import { NotificationType } from '../../../classes/notification';
 import { LibraryFormService } from './library-form.service';
+import { ExceptionDatesEditComponent } from './exception-dates-edit/exception-dates-edit.component';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'admin-libraries-library',
-  templateUrl: './library.component.html',
-  styleUrls: ['./library.component.scss']
+  templateUrl: './library.component.html'
 })
 export class LibraryComponent extends AbstractCanDeactivateComponent implements OnInit, OnDestroy {
 
@@ -46,6 +47,10 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
   private location: Location = inject(Location);
   private countryCodeTranslatePipe: CountryCodeTranslatePipe = inject(CountryCodeTranslatePipe);
   private messageService: MessageService = inject(MessageService);
+  private dialogService: DialogService = inject(DialogService);
+  // private changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
+
+  private dynamicDialogRef: DynamicDialogRef | undefined;
 
   // COMPONENT ATTRIBUTES =====================================================
   /** The current library. */
@@ -113,6 +118,21 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
         }
         this._buildOptions();
       });
+    });
+  }
+
+  addException(): void {
+    this.dynamicDialogRef = this.dialogService.open(ExceptionDatesEditComponent, {
+      header: this.translateService.instant('Exception'),
+      width: '50vw',
+      data: {
+        exceptionDate: null
+      }
+    });
+    this.dynamicDialogRef.onClose.subscribe((value?: any) => {
+      if (value) {
+        this.library.exception_dates.push(value);
+      }
     });
   }
 

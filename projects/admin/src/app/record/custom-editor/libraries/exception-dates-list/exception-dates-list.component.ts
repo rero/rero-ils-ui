@@ -14,11 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectorRef, Component, inject, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { ExceptionDates, Library } from '@app/admin/classes/library';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ExceptionDatesEditComponent } from '../exception-dates-edit/exception-dates-edit.component';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-libraries-exception-dates-list',
@@ -27,29 +26,10 @@ import { TranslateService } from '@ngx-translate/core';
 export class ExceptionDatesListComponent {
 
   private dialogService: DialogService = inject(DialogService);
-  private changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
-  private translateService: TranslateService = inject(TranslateService);
 
   private dynamicDialogRef: DynamicDialogRef | undefined;
 
   @Input() exceptionDates = [];
-
-  addException(): void {
-    this.dynamicDialogRef = this.dialogService.open(ExceptionDatesEditComponent, {
-      header: this.translateService.instant('Exception'),
-      width: '50vw',
-      data: {
-        exceptionDate: null
-      }
-    });
-    this.dynamicDialogRef.onClose.subscribe((value?: any) => {
-      if (value) {
-        this.exceptionDates.push(value);
-        // force ui update
-        this.changeDetectorRef.markForCheck();
-      }
-    });
-  }
 
   editException(index: number): void {
     this.dynamicDialogRef = this.dialogService.open(ExceptionDatesEditComponent, {
@@ -60,8 +40,6 @@ export class ExceptionDatesListComponent {
     this.dynamicDialogRef.onClose.subscribe((value?: any) => {
       if (value) {
         this.exceptionDates[index] = value;
-        // force ui update
-        this.changeDetectorRef.markForCheck();
       }
     });
   }

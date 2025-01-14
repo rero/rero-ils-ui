@@ -25,8 +25,7 @@ import { Library } from '../../../classes/library';
 
 @Component({
   selector: 'admin-library-detail-view',
-  templateUrl: './library-detail-view.component.html',
-  styleUrls: ['./library-detail-view.component.scss']
+  templateUrl: './library-detail-view.component.html'
 })
 export class LibraryDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
 
@@ -44,8 +43,6 @@ export class LibraryDetailViewComponent implements DetailRecord, OnInit, OnDestr
   locations = [];
   /** Is the current logged user can add locations */
   isUserCanAddLocation = false;
-  /** active accordion index */
-  activeIndex = 0;
 
   /** Record subscription */
   private recordObs: Subscription;
