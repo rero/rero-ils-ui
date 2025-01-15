@@ -21,7 +21,7 @@ import { ResultItem } from '@rero/ng-core';
 @Component({
   selector: 'admin-vendor-brief-view',
   template: `
-    <h5 class="mb-0 card-title">
+    <h5>
       <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
     </h5>
     @if (address) {

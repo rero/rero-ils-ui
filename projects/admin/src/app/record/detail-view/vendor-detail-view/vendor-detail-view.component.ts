@@ -22,8 +22,7 @@ import { OperationLogsService } from '../../../service/operation-logs.service';
 
 @Component({
   selector: 'admin-vendor-detail-view',
-  templateUrl: './vendor-detail-view.component.html',
-  styleUrls: []
+  templateUrl: './vendor-detail-view.component.html'
 })
 export class VendorDetailViewComponent implements DetailRecord {
 
