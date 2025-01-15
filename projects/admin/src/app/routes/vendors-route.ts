@@ -71,16 +71,19 @@ export class VendorsRoute extends BaseRoute implements RouteInterface {
               {
                 label: _('Relevance'),
                 value: 'bestmatch',
-                defaultQuery: true
+                defaultQuery: true,
+                icon: 'fa fa-sort-amount-desc'
               },
               {
                 label: _('Name (asc)'),
                 value: 'name_asc',
-                defaultNoQuery: true
+                defaultNoQuery: true,
+                icon: 'fa fa-sort-alpha-asc'
               },
               {
                 label: _('Name (desc)'),
-                value: 'name_desc'
+                value: 'name_desc',
+                icon: 'fa fa-sort-alpha-desc'
               }
             ],
             showFacetsIfNoResults: true
