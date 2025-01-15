@@ -25,13 +25,13 @@
       showTransitionOptions="0ms"
     />
   }
-  <header class="mb-3">
+  <header>
     <h1>{{ record.metadata.name }}</h1>
   </header>
   <section>
-    <dl class="grid">
-      <dt class="col-3 label-title">Total</dt>
-      <dd class="col-9">{{ totalAmount | currency:currencyCode:'symbol' }}</dd>
+    <dl class="metadata">
+      <dt translate>Total</dt>
+      <dd>{{ totalAmount | currency:currencyCode:'symbol' }}</dd>
     </dl>
   </section>
 }

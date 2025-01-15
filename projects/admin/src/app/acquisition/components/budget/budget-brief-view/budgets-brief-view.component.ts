@@ -23,13 +23,13 @@ import { ResultItem } from '@rero/ng-core';
 @Component({
   selector: 'admin-budgets-brief-view',
   template: `
-  <h5 class="mb-0">
+  <h5>
     <i
       class="fa fa-circle mr-2"
       [title]="title"
-      [ngClass]="{'text-success': record.metadata.is_active, 'text-danger': !record.metadata.is_active}"
-    ></i>
-    <a [routerLink]="[detailUrl.link]" class="pr-1">{{ record.metadata.name }}</a>
+      [ngClass]="{'text-success': record.metadata.is_active, 'text-error': !record.metadata.is_active}"
+    ></i>&nbsp;
+    <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
   </h5>
   `,
   styles: []
