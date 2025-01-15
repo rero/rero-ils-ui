@@ -15,43 +15,43 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record$ | async; as record) {
-  <h1 class="mb-3">{{ record.metadata.name }}</h1>
+  <h1>{{ record.metadata.name }}</h1>
   <article>
-    <section class="m-2 p-2">
-      <dl class="grid mb-0">
+    <section>
+      <dl class="metadata">
         <!-- WEBSITE -->
         @if (record.metadata.website) {
-          <dt class="col-3 label-title" translate>Website</dt>
-          <dd class="col-7 mb-0">
+          <dt translate>Website</dt>
+          <dd>
             <a target="_blank" href="{{ record.metadata.website }}">{{ record.metadata.website }}</a>
           </dd>
         }
         <!-- COMMUNICATION_LANGUAGE -->
         @if (record.metadata.communication_language && record.metadata.communication_language.length > 0) {
-          <dt class="col-3 label-title" translate>Communication language</dt>
-          <dd class="col-7 mb-0">
+          <dt translate>Communication language</dt>
+          <dd>
             {{ record.metadata.communication_language | translateLanguage:currentLanguage }}
           </dd>
         }
         <!-- CURRENCY -->
         @if (record.metadata.currency) {
-          <dt class="col-3 label-title" translate>Currency</dt>
-          <dd class="col-7 mb-0">{{ record.metadata.currency }}</dd>
+          <dt translate>Currency</dt>
+          <dd>{{ record.metadata.currency }}</dd>
         }
         <!-- VAT RATE -->
         @if (record.metadata.tva_rate) {
-          <dt class="col-3 label-title" translate>VAT</dt>
-          <dd class="col-7 mb-0">{{ record.metadata.tva_rate }}</dd>
+          <dt translate>VAT</dt>
+          <dd>{{ record.metadata.tva_rate }}</dd>
         }
         <!-- NOTE -->
         @if (record.metadata.note) {
-          <dt class="col-3 label-title" translate>Note</dt>
-          <dd class="col-7 mb-0">{{ record.metadata.note }}</dd>
+          <dt translate>Note</dt>
+          <dd>{{ record.metadata.note }}</dd>
         }
       </dl>
     </section>
 
-    <section class="m-2">
+    <section>
       <p-tabView>
         <!-- DEFAULT CONTACT -->
         @if (filterContact(record.metadata.contacts, 'default'); as defaultContact) {
@@ -63,6 +63,12 @@
         @if (filterContact(record.metadata.contacts, 'order'); as orderContact) {
           <p-tabPanel id="order_address" [header]="'Order contact details'|translate">
             <admin-address-type [addressType]="orderContact" />
+          </p-tabPanel>
+        }
+        <!-- SERIAL CONTACT -->
+        @if (filterContact(record.metadata.contacts, 'serial'); as serialContact) {
+          <p-tabPanel id="serial_address" [header]="'Serial contact details'|translate">
+            <admin-address-type [addressType]="serialContact" />
           </p-tabPanel>
         }
       </p-tabView>
