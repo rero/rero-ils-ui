@@ -1,0 +1,13 @@
+<dl class="metadata">
+  @for (note of notes(); track note) {
+    <dt>
+      <p-tag [value]="note.type | translate" [severity]="note | noteBadgeColor" />
+    </dt>
+    <dd>
+      <blockquote
+        class="p-0 m-0"
+        [innerHTML]="note.content | nl2br"
+      ></blockquote>
+    </dd>
+  }
+</dl>

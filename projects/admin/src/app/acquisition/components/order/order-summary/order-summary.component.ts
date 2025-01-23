@@ -25,8 +25,7 @@ import { IAcqReceipt } from '../../../classes/receipt';
 
 @Component({
   selector: 'admin-order-summary',
-  templateUrl: './order-summary.component.html',
-  styleUrls: ['./order-summary.component.scss']
+  templateUrl: './order-summary.component.html'
 })
 export class OrderSummaryComponent implements OnInit, OnDestroy {
 

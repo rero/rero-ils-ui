@@ -20,39 +20,40 @@ import { FieldArrayType } from '@ngx-formly/core';
 @Component({
   selector: 'admin-formly-repeat-section',
   template: `
-    <p-card>
+    <p-panel styleClass="mb-2">
       <ng-template pTemplate="header">
         @if (field.props.label || field.props.addButton) {
-          <label class="col" [ngClass]="field.props.className">
-            @if (field.props.label) {
-              <span>{{ field.props.label|translate }}</span>
-            }
-            @if (field.props.addButton) {
-              <button type="button"
-                      class="btn btn-link text-secondary btn-sm ng-star-inserted"
-                      (click)="add()">
-                <i class="fa fa-clone"></i>
-              </button>
-            }
-            @if (field.props.selectUnselect) {
-              <div class="ml-3 d-inline font-weight-normal">
-                <a class="mr-1" (click)="field.props.selectUnselect($event, 'select', field.fieldGroup)" translate>
-                  Select all
-                </a>
-                |
-                <a class="ml-1" (click)="field.props.selectUnselect($event, 'unselect', field.fieldGroup)" translate>
-                  Deselect all
-                </a>
-              </div>
-            }
-          </label>
+            <label class="flex align-items-center" [ngClass]="field.props.className">
+              @if (field.props.label) {
+                <span>{{ field.props.label|translate }}</span>
+              }
+              @if (field.props.addButton) {
+                <p-button
+                  text
+                  (onClick)="add()"
+                  icon="fa fa-clone"
+                />
+              }
+              @if (field.props.selectUnselect) {
+                  <p-button
+                    text
+                    (onClick)="field.props.selectUnselect($event, 'select', field.fieldGroup)"
+                    [label]="'Select all' | translate"
+                  />
+                  <p-button
+                    text
+                    (onClick)="field.props.selectUnselect($event, 'unselect', field.fieldGroup)"
+                    translate
+                    [label]="'Deselect all' | translate"
+                    />
+              }
+            </label>
         }
       </ng-template>
       @if (field.fieldGroup.length > 0) {
-        <div class="card-body">
-          <div class="row">
-            <div [ngClass]="field.props.trashButton ? 'col-11': 'col-12'">
-              <div class="row">
+          <div class="grid grid-nogutter">
+            <div [ngClass]="field.props.trashButton ? 'col-11 col-offset-1': 'col-12'">
+              <div class="grid mt-2">
                 @for (field of field.fieldGroup[0].fieldGroup; track field) {
                   @if (field.className) {
                     <div class="{{ field.props.headerClassName }}">
@@ -65,97 +66,28 @@ import { FieldArrayType } from '@ngx-formly/core';
                 }
               </div>
             </div>
-          </div>
-          @for (f of field.fieldGroup; track f; let i = $index) {
-            <div class="row" [ngClass]="{ 'bg-light': i % 2 }">
+            @for (f of field.fieldGroup; track f; let i = $index) {
               @if (f.fieldGroup.length > 0) {
-                <formly-field class="col" [field]="f"></formly-field>
+                <formly-field [ngClass]="field.props.trashButton ? 'col-11': 'col-12'" [field]="f" />
                 @if (field.props.trashButton) {
-                  <div class="col-1 d-flex align-items-center">
+                  <div class="col-1 flex align-items-center justify-content-end">
                     @if (showTrash) {
-                      <button class="btn btn-link text-secondary btn-sm" type="button" (click)="remove(i)">
-                        <i class="fa fa-trash"></i>
-                      </button>
+                      <p-button
+                        size="small"
+                        severity="secondary"
+                        (onClick)="remove(i)"
+                        icon="fa fa-trash"
+                      />
                     } @else {
                       &nbsp;
                     }
                   </div>
                 }
               }
-            </div>
-          }
+            }
         </div>
       }
-    </p-card>
-    <!--
-    <div class="card my-2">
-      <div class="card-header">
-        @if (field.props.label || field.props.addButton) {
-          <label class="col" [ngClass]="field.props.className">
-            @if (field.props.label) {
-              <span>{{ field.props.label|translate }}</span>
-            }
-            @if (field.props.addButton) {
-              <button type="button"
-                      class="btn btn-link text-secondary btn-sm ng-star-inserted"
-                      (click)="add()">
-                <i class="fa fa-clone"></i>
-              </button>
-            }
-            @if (field.props.selectUnselect) {
-              <div class="ml-3 d-inline font-weight-normal">
-                <a class="mr-1" (click)="field.props.selectUnselect($event, 'select', field.fieldGroup)" translate>
-                  Select all
-                </a>
-                |
-                <a class="ml-1" (click)="field.props.selectUnselect($event, 'unselect', field.fieldGroup)" translate>
-                  Deselect all
-                </a>
-              </div>
-            }
-          </label>
-        }
-      </div>
-      @if (field.fieldGroup.length > 0) {
-        <div class="card-body">
-          <div class="row">
-            <div [ngClass]="field.props.trashButton ? 'col-11': 'col-12'">
-              <div class="row">
-                @for (field of field.fieldGroup[0].fieldGroup; track field) {
-                  @if (field.className) {
-                    <div class="{{ field.props.headerClassName }}">
-                      {{ field.props.label|translate }}
-                      @if (field.props.required) {
-                        &nbsp;*
-                      }
-                    </div>
-                  }
-                }
-              </div>
-            </div>
-          </div>
-          @for (f of field.fieldGroup; track f; let i = $index) {
-            <div class="row" [ngClass]="{ 'bg-light': i % 2 }">
-              @if (f.fieldGroup.length > 0) {
-                <formly-field class="col" [field]="f"></formly-field>
-                @if (field.props.trashButton) {
-                  <div class="col-1 d-flex align-items-center">
-                    @if (showTrash) {
-                      <button class="btn btn-link text-secondary btn-sm" type="button" (click)="remove(i)">
-                        <i class="fa fa-trash"></i>
-                      </button>
-                    } @else {
-                      &nbsp;
-                    }
-                  </div>
-                }
-              }
-            </div>
-          }
-        </div>
-      }
-    </div>
-    -->
+    </p-panel>
   `
 })
 export class RepeatTypeComponent extends FieldArrayType {

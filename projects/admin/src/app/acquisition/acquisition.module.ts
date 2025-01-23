@@ -25,7 +25,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { ApiService, CoreModule, RecordModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { PreviewEmailModule } from '../shared/preview-email/preview-email.module';
-import { PrimengImportModule } from '../shared/primeng-import/primeng-import.module';
 import { AcquisitionRoutingModule } from './acquisition-routing.module';
 import { AcqAccountApiService } from './api/acq-account-api.service';
 import { AcqOrderApiService } from './api/acq-order-api.service';
@@ -42,7 +41,6 @@ import { OrderLineComponent } from './components/order/order-detail-view/order-l
 import { OrderLinesComponent } from './components/order/order-detail-view/order-lines/order-lines.component';
 import { OrderEmailFormComponent } from './components/order/order-email-form/order-email-form.component';
 import { OrderSummaryComponent } from './components/order/order-summary/order-summary.component';
-import { ReceiptDetailViewComponent } from './components/receipt/receipt-detail-view/receipt-detail-view.component';
 import { OrderReceipt } from './components/receipt/receipt-form/order-receipt';
 import { OrderReceiptForm } from './components/receipt/receipt-form/order-receipt-form';
 import { OrderReceiptViewComponent } from './components/receipt/receipt-form/order-receipt-view.component';
@@ -59,6 +57,9 @@ import { NoteBadgeColorPipe } from './pipes/note-badge-color.pipe';
 import { PreviewContentPipe } from './pipes/preview-content.pipe';
 import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pipe';
 import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
+import { ChipsModule } from 'primeng/chips';
+import { PrimengImportModule } from '../shared/primeng-import/primeng-import.module';
+import { NotesComponent } from './components/notes/notes.component';
 
 @NgModule({
   declarations: [
@@ -82,13 +83,13 @@ import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
     SelectAccountEditorWidgetComponent,
     ReceiptListComponent,
     ReceiptSummaryComponent,
-    ReceiptDetailViewComponent,
     NoteBadgeColorPipe,
     AccountAvailableAmountPipe,
     ReceptionDatesPipe,
     PreviewContentPipe,
     ReceiptLineTotalAmountPipe,
-    OrderEmailFormComponent
+    OrderEmailFormComponent,
+    NotesComponent
   ],
   imports: [
     CommonModule,

@@ -42,15 +42,6 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
   /** all component subscription */
   private subscriptions = new Subscription();
 
-  // GETTER & SETTER ==========================================================
-  /**
-   * Get a message containing the reasons why the order line cannot be deleted
-   * @return the message to display into the tooltip box
-   */
-  get createInfoMessage(): string {
-    return this.recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'create');
-  }
-
   /** OnInit hook */
   ngOnInit(): void {
     this.loadOrderLines();

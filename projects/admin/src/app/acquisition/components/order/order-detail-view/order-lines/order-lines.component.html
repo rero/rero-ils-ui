@@ -15,12 +15,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="card container">
-  <div class="card-header px-0 row">
-    <h5 class="col-8" translate>Order lines</h5>
-    <div class="col-4 text-right">
-      @if (recordPermissions) {
-        @if (recordPermissions.update.can) {
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="w-full flex flex-wrap justify-content-between gap-2">
+      <h5 translate>Order lines</h5>
+      @if (recordPermissions?.update?.can) {
           <p-button
             icon="fa fa-plus-square-o"
             [label]="'Add'|translate"
@@ -28,38 +27,24 @@
             [routerLink]="['/', 'records', 'acq_order_lines', 'new']"
             [queryParams]="{ order: order.pid }"
           />
-        } @else {
-          <p-button
-            icon="fa fa-plus-square-o"
-            [label]="'Add'|translate"
-            outlined
-            [pTooltip]="tooltipContent"
-            tooltipPosition="top"
-            styleClass="text-blue-200"
-          />
-          <ng-template #tooltipContent>
-            <span [innerHTML]="createInfoMessage | nl2br"></span>
-          </ng-template>
-        }
-      } @else {
-        &nbsp;
       }
     </div>
-  </div>
-  <div class="card-body p-0">
+    </ng-template>
+
     @defer (when orderLines) {
       @if (orderLines.length > 0) {
         @for (orderLine of orderLines; track orderLine) {
+          <div class="pt-2 border-bottom-1 surface-border">
           <admin-order-line [orderLine]="orderLine"
                             [order]="order"
                             [recordPermissions]="recordPermissions"
-          ></admin-order-line>
+          />
+        </div>
         }
       } @else {
-        <div class="py-3" translate>No order lines</div>
+        <div translate>No order lines</div>
       }
     } @placeholder {
-      <i class="fa fa-spinner fa-spin"></i>
+      <i class="fa fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}
     }
-  </div>
-</div>
+</p-panel>

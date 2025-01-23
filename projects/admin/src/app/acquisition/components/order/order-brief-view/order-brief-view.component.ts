@@ -24,8 +24,7 @@ import { AcqOrderStatus, IAcqOrder } from '../../../classes/order';
 
 @Component({
   selector: 'admin-acquisition-order-brief-view',
-  templateUrl: './order-brief-view.component.html',
-  styleUrls: ['./order-brief-view.component.scss']
+  templateUrl: './order-brief-view.component.html'
 })
 export class OrderBriefViewComponent implements ResultItem, OnInit {
 
@@ -46,16 +45,7 @@ export class OrderBriefViewComponent implements ResultItem, OnInit {
   /** order note type reference */
   noteType = AcqNoteType;
 
-  // GETTER & SETTER ==========================================================
-  /** get order date (based on orderLine order date) */
-  get orderDate(): string | null {
-    return this.order.order_lines
-      .filter(line => line.hasOwnProperty('order_date'))
-      .map(line => line.order_date.toString())
-      .shift();
-  }
-
-  /** get reception date (based on orderLine reception date) */
+  /** get reception date (based on receiptLine reception date) */
   get receptionDate(): string | null {
     return this.record.metadata.receipts
       .filter(line => line.hasOwnProperty('receipt_date') && Array.isArray(line.receipt_date) && line.receipt_date.length > 0)

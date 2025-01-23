@@ -16,19 +16,20 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (order) {
-  <article class="grid order-brief-view">
-    <div class="col-9 pl-0">
-      <h5 class="m-0"><a [routerLink]="[detailUrl.link]">{{ order.reference }}</a></h5>
+  <article class="grid align-items-top">
+    <div class="col-9">
+      <h5><a [routerLink]="[detailUrl.link]">{{ order.reference }}</a></h5>
       <ng-container *ngVar="order.notes | notesFilter: [noteType.STAFF_NOTE] as notes">
         @if (notes.length > 0) {
-          <div class="description" [innerHTML]="notes[0].content | nl2br"></div>
+          <div class="font-italic" [innerHTML]="notes[0].content | nl2br"></div>
         }
       </ng-container>
-      <div class="metadata">
+      <span class="font-bold text-color-secondary text-sm">
+        [
         {{ order.status | translate }}
         @switch (order.status) {
           @case (orderStatus.ORDERED) {
-            - {{ orderDate | dateTranslate: 'shortDate' }}
+            - {{ order.order_date| dateTranslate: 'shortDate' }}
           }
           @case (orderStatus.RECEIVED) {
             - {{ receptionDate | dateTranslate: 'shortDate' }}
@@ -40,19 +41,20 @@
         <ng-container *ngVar="order.vendor.pid | getRecord: 'vendors': 'field': 'name' | async as vendor">
           - {{ vendor | truncateText : 10 : '…'}}
         </ng-container>
-      </div>
+        ]
+      </span>
     </div>
-    <div class="col-3 ordinal-infos">
+    <div class="col-3 flex flex-column gap-1">
       @if (displayProvisionalAccountingData) {
-        <div class="accounting-infos">
-          <label class="total-amount">{{ order.account_statement.provisional.total_amount | currency : order.currency }}</label>
-          <span class="counter ordered-counter border-left">{{ order.account_statement.provisional.quantity }}</span>
+        <div class="flex">
+          <label class="w-8 text-center surface-border border-1 p-2 surface-100 border-round-left font-bold">{{ order.account_statement.provisional.total_amount | currency : order.currency }}</label>
+          <span class="w-4 surface-border border-1 p-2 surface-100 border-round-right text-color-secondary text-right"><i class="fa fa-shopping-cart"></i>&nbsp;{{ order.account_statement.provisional.quantity }}</span>
         </div>
       }
       @if (displayExpenditureAccountingData) {
-        <div class="accounting-infos">
-          <label class="total-amount">{{ order.account_statement.expenditure.total_amount | currency : order.currency }}</label>
-          <span class="counter received-counter border-left">{{ order.account_statement.expenditure.quantity }}</span>
+        <div class="flex">
+          <label class="w-8 text-center surface-border border-1 p-2 surface-100 border-round-left font-bold">{{ order.account_statement.expenditure.total_amount | currency : order.currency }}</label>
+          <span class="w-4 surface-border border-1 p-2 surface-100 border-round-right text-color-secondary text-right"><i class="fa fa-sign-in"></i>&nbsp;{{ order.account_statement.expenditure.quantity }}</span>
         </div>
       }
     </div>

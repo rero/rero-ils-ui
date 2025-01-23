@@ -16,47 +16,73 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (order) {
-  <section class="my-3 grid border rounded bg-white">
-    <div class="col-8">
-      <dl class="row my-2">
-        <!-- VENDOR -->
-        @if (order.vendor) {
-          <dt class="col-6 label-title" translate>Vendor</dt>
-          <dd class="col-6">{{ order.vendor.pid | getRecord: 'vendors' : 'field' : 'name' | async }}</dd>
-        }
-        <!-- ORDER TYPE -->
-        <dt class="col-6 label-title" translate>Order type</dt>
-        <dd class="col-6">{{ order.type | translate }}</dd>
-        <!-- ORDER STATUS -->
-        <dt class="col-6 label-title" translate>Order status</dt>
-        <dd class="col-6">{{ order.status | translate }}</dd>
-        <!-- ORDER DATE -->
-        @if (order.order_date) {
-          <dt class="col-6 label-title" translate>Order date</dt>
-          <dd class="col-6">{{ order.order_date | dateTranslate :'shortDate' }}</dd>
-        }
-        <!-- NOTES (optional) -->
-        <ng-content select="[notes]"></ng-content>
-      </dl>
-    </div>
-    <!-- ORDER TOTAL AMOUNT -->
-    <div class="col-4 py-2 d-flex flex-column">
-      <div class="accounting-infos">
-        <span class="counter ordered-counter">{{ order.account_statement.provisional.quantity }}</span>
-        <div>
-          <span class="amount">{{ order.account_statement.provisional.total_amount | currency:order.currency:'symbol' }}</span>
-          <label translate>Ordered</label>
-        </div>
-      </div>
-      @if (order.account_statement.expenditure.quantity > 0) {
-        <div class="accounting-infos">
-          <span class="counter received-counter">{{ order.account_statement.expenditure.quantity }}</span>
-          <div>
-            <span class="amount">{{ order.account_statement.expenditure.total_amount | currency:order.currency:'symbol' }}</span>
-            <label translate>Received</label>
-          </div>
-        </div>
+<section class="grid">
+  <div class="md:col-8">
+    <dl class="metadata">
+      <!-- VENDOR -->
+      @if (order.vendor) {
+      <dt translate>Vendor</dt>
+      <dd>
+        {{
+          order.vendor.pid | getRecord : "vendors" : "field" : "name" | async
+        }}
+      </dd>
       }
-    </div>
-  </section>
+      <!-- ORDER STATUS -->
+      <dt translate>Order status</dt>
+      <dd>{{ order.status | translate }}</dd>
+      <!-- ORDER DATE -->
+      @if (order.order_date) {
+      <dt translate>Order date</dt>
+      <dd>{{ order.order_date | dateTranslate : "shortDate" }}</dd>
+      }
+      <!-- NOTES (optional) -->
+      <ng-content select="[notes]"></ng-content>
+    </dl>
+  </div>
+  <!-- ORDER TOTAL AMOUNT -->
+  <div class="md:col-4 flex flex-column gap-2">
+    <ng-container
+      [ngTemplateOutlet]="totalAmount"
+      [ngTemplateOutletContext]="{
+        quantity: order.account_statement.provisional.quantity,
+        total: order.account_statement.provisional.total_amount,
+        label: 'Ordered' | translate
+      }"
+    />
+    @if (order.account_statement.expenditure.quantity > 0) {
+    <ng-container
+      [ngTemplateOutlet]="totalAmount"
+      [ngTemplateOutletContext]="{
+        quantity: order.account_statement.expenditure.quantity,
+        total: order.account_statement.expenditure.total_amount,
+        label: 'Received' | translate
+      }"
+    />
+    }
+  </div>
+</section>
 }
+<ng-template
+  #totalAmount
+  let-quantity="quantity"
+  let-total="total"
+  let-label="label"
+>
+  <div
+    class="surface-100 py-5 px-8 border-1 border-round surface-border relative"
+  >
+    <div
+      style="border-bottom-left-radius: var(--border-radius)"
+      class="absolute text-color-secondary border-left-1 border-bottom-1 surface-border py-2 px-4 top-0 right-0"
+    >
+      <i class="fa fa-shopping-cart"></i>&nbsp;{{ quantity }}
+    </div>
+    <div class="text-center">
+      <span class="text-xl font-bold">{{
+        total | currency : order.currency : "symbol"
+      }}</span>
+      <label class="text-sm text-color-secondary">{{ label }}</label>
+    </div>
+  </div>
+</ng-template>

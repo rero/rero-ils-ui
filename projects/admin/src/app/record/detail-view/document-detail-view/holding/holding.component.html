@@ -45,11 +45,11 @@
                 <!-- REQUEST BUTTON -->
                 <p-button
                   icon="fa fa-shopping-basket"
-                  class="pointer-events-auto"
                   [title]="'Holdings request'|translate"
                   outlined
                   size="small"
                   (onClick)="addRequest(holding.metadata.pid, 'holding')"
+                  class="pointer-events-auto"
                   [pTooltip]="cannotRequestTooltipContent"
                   tooltipPosition="top"
                   [disabled]="!permissions.canRequest?.can"

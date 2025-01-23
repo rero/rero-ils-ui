@@ -99,7 +99,7 @@ export class OrderEmailFormComponent implements OnInit, OnDestroy {
             });
           }
           this.acqOrderApiService
-            .getOrder(this.order.pid)
+            .getOrder(this.order.pid, 1)
             .subscribe((order: IAcqOrder) => this.closeDialog(order));
         },
         error: (error: any) => {

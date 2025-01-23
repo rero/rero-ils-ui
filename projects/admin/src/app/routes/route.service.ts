@@ -22,8 +22,6 @@ import { AccountsRoute as AcqAccountsRoute } from '../acquisition/routes/account
 import { BudgetsRoute as AcqBudgetsRoute } from '../acquisition/routes/budgets-route';
 import { OrderLinesRoute as AcqOrderLinesRoute } from '../acquisition/routes/order-lines-route';
 import { OrdersRoute as AcqOrdersRoute } from '../acquisition/routes/orders-route';
-import { ReceiptLinesRoute } from '../acquisition/routes/receipt-lines-route';
-import { ReceiptsRoute } from '../acquisition/routes/receipts-route';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
 import { CirculationPoliciesRoute } from './circulation-policies-route';
 import { CollectionsRoute } from './collections-route';
@@ -88,8 +86,6 @@ export class RouteService {
       .addRoute(new AcqAccountsRoute())
       .addRoute(new AcqOrderLinesRoute())
       .addRoute(new AcqOrdersRoute())
-      .addRoute(new ReceiptsRoute())
-      .addRoute(new ReceiptLinesRoute())
       // should be at the last
       .addRoute(new ImportDocumentsRoute())
     ;

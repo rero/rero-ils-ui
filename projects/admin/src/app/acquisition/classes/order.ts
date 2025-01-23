@@ -37,16 +37,6 @@ export enum AcqOrderStatus {
   RECEIVED = 'received',
 }
 
-/** Enumeration about order type */
-export enum AcqOrderType {
-  MONOGRAPH = 'monograph',
-  SERIAL = 'serial',
-  STANDING_ORDER = 'standing_order',
-  MONOGRAPHIC_SET = 'monographic_set',
-  PLANNED_ORDER = 'planned_order',
-  MULTI_VOLUME = 'multi_volume'
-}
-
 /** interface to describe an accounting information section for an AcqOrder */
 export interface IAcqOrderAccountingInformation {
   total_amount: number;
@@ -57,7 +47,6 @@ export interface IAcqOrderAccountingInformation {
 export interface IAcqOrder extends IAcqBaseResource, IAcqResourceWithNotes {
   reference: string;
   priority: number;
-  type: AcqOrderType;
   status: AcqOrderStatus;
   currency: string;
   order_date: Date;
@@ -65,10 +54,7 @@ export interface IAcqOrder extends IAcqBaseResource, IAcqResourceWithNotes {
     provisional: IAcqOrderAccountingInformation,
     expenditure: IAcqOrderAccountingInformation
   }
-  order_lines?: {
-    order_date: Date,
-    receipt_date: Date,
-  }[];
+  order_lines?: {}[];
   vendor: IObjectReference;
   is_current_budget: boolean;
 }
@@ -92,9 +78,6 @@ export interface IAcqOrderLine extends IAcqBaseResource, IAcqResourceWithNotes {
   amount: number;
   discount_amount: number;
   total_amount: number;
-  exchange_rate: number;
-  order_date: Date;
-  receipt_date: Date;
   acq_account: IObjectReference;
   acq_order: IObjectReference;
   document: IObjectReference|{
