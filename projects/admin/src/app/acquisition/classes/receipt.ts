@@ -32,7 +32,6 @@ export class AcqReceiptAmountAdjustment {
 export interface IAcqReceipt extends IAcqBaseResource, IAcqResourceWithNotes {
   acq_order: IObjectReference;
   reference?: string;
-  exchange_rate: number;
   amount_adjustments: AcqReceiptAmountAdjustment[];
   currency?: string;
   quantity?: number;

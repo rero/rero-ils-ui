@@ -27,8 +27,7 @@ import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
 
 @Component({
   selector: 'admin-receipt-summary',
-  templateUrl: './receipt-summary.component.html',
-  styleUrls: ['../../../acquisition.scss', './receipt-summary.component.scss']
+  templateUrl: './receipt-summary.component.html'
 })
 export class ReceiptSummaryComponent implements OnInit {
 
@@ -64,11 +63,6 @@ export class ReceiptSummaryComponent implements OnInit {
   get editInfoMessage(): string {
     return (!this.recordPermissions.update.can)
       ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'update')
-      : '';
-  }
-  get resumeInfoMessage(): string {
-    return (!this.recordPermissions.create.can)
-      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons, 'resume')
       : '';
   }
 

@@ -15,104 +15,119 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<!-- Place order button -->
-@if (order?.is_current_budget && order?.pid) {
-  <section class="float-right mt-2 mr-n4 btn-additional-action">
-    @if (recordPermissions && recordPermissions.update.can && order.status === acqOrderStatus.PENDING) {
-      <a (click)="placeOrderDialog()"
-         class="btn btn-sm btn-primary"
-         [ngClass]="{'disabled': !canPlaceOrder}"
-      >
-        <i class="fa fa-shopping-cart"></i>
-        {{ 'Place order' | translate }}
-      </a>
-    }
-  </section>
-}
 
 @if (order && order.pid) {
-  <div class="container-fluid mt-2" [class.rollovered]="!order.is_current_budget">
-    <!-- ROLLOVER INFO -->
-    @if (!order.is_current_budget) {
-      <p-messages
-        [value]="[{ severity: 'warn', detail:'Fiscal year closed'|translate }]"
-        [closable]="false"
-        [enableService]="false"
-        showTransitionOptions="0ms"
+<div [ngClass]="{ 'opacity-50': !order.is_current_budget }">
+  <!-- ROLLOVER INFO -->
+  @if (!order.is_current_budget) {
+  <p-messages
+    [value]="[{ severity: 'warn', detail: 'Fiscal year closed' | translate }]"
+    [closable]="false"
+    [enableService]="false"
+    showTransitionOptions="0ms"
+  />
+  }
+
+  <!-- Place order button -->
+  <div class="flex gap-2 justify-content-between flex-wrap">
+    <h1>{{ order.reference }}</h1>
+    @if (order?.is_current_budget && order?.pid) { @if (recordPermissions &&
+    recordPermissions.update.can && order.status === acqOrderStatus.PENDING) {
+    <section class="flex justify-content-end">
+      <p-button
+        (onClick)="placeOrderDialog()"
+        severity="primary"
+        [disabled]="!canPlaceOrder"
+        icon="fa fa-shopping-cart"
+        [label]="'Place order' | translate"
       />
-    }
-
-    <h1 class="mb-3">{{ order.reference }}</h1>
-    <!-- ORDER SUMMARY -->
-    <admin-order-summary [order]="order">
-      @if (order.notes && order.notes.length > 0) {
-        <dt class="col-6 label-title" translate>Notes</dt>
-        <dd class="col-6">
-          @for (note of order.notes; track note) {
-            <a href (click)="scrollTo($event, 'notes'); notesCollapsed = false;">
-              <span class="badge badge-{{ note | noteBadgeColor }} mr-2">{{ note.type | translate }}</span>
-            </a>
-          }
-        </dd>
+    </section>
+    } }
+  </div>
+  <!-- ORDER SUMMARY -->
+  <admin-order-summary [order]="order">
+    @if (order.notes && order.notes.length > 0) {
+    <dt translate>Notes</dt>
+    <dd>
+      @for (note of order.notes; track note) {
+      <a href (click)="scrollTo($event, 'notes'); notesCollapsed = false">
+        <p-tag severity="{{ note | noteBadgeColor }}">{{
+          note.type | translate
+        }}</p-tag>
+      </a>
       }
-    </admin-order-summary>
+    </dd>
+    }
+  </admin-order-summary>
 
-    <p-tabView>
-      <p-tabPanel [header]="'Order'|translate">
-        <!-- ORDER LINES -->
-        @if (isPermissionsLoaded) {
-          <admin-order-lines class="row" [order]="order" [recordPermissions]="recordPermissions"></admin-order-lines>
-        }
-        <!-- ORDER NOTES -->
-        @if (order.notes && order.notes.length > 0) {
-          <div class="row mt-3">
-            <a id="notes"></a>
-            <div class="card container notes">
-              <div class="card-header row">
+  <p-tabView [activeIndex]="tabActiveIndex" (activeIndexChange)="addTabToUrl($event)">
+    <p-tabPanel [header]="'Order' | translate" #orderPanel>
+      @if(orderPanel.selected) {
+        <div class="flex flex-column gap-2">
+          <!-- ORDER LINES -->
+          @if (isPermissionsLoaded) {
+          <admin-order-lines
+            [order]="order"
+            [recordPermissions]="recordPermissions"
+          />
+          }
+          <!-- ORDER NOTES -->
+          @if (order.notes && order.notes.length > 0) {
+          <p-panel>
+            <ng-template pTemplate="header">
+              <div class="flex gap-2 align-items-center">
+                <shared-open-close-button (status)="notesCollapsed = $event" />
                 <h5 class="m-0">
-                  <button type="button" class="btn-show-more"
-                          [ngClass]="{'btn-expanded': !notesCollapsed, 'btn-collapsed': notesCollapsed}"
-                          (click)="notesCollapsed = !notesCollapsed"
-                          [attr.aria-expanded]="!notesCollapsed" aria-controls="collapse">
-                  </button>
-                  {{ order.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} | translate }}
-                  @if (notesCollapsed) {
-                    <span class="badge badge-secondary ml-2">{{ order.notes.length }}</span>
-                  }
+                  {{
+                    order.notes.length
+                      | i18nPlural : { "=1": "Note", other: "Notes" }
+                      | translate
+                  }}&nbsp;
+                  <p-badge [value]="order.notes.length" />
                 </h5>
               </div>
-              @if (!notesCollapsed) {
-                <div class="card-body py-2">
-                  @for (note of order.notes; track note) {
-                    <div class="row note">
-                      <div class="col-2"><span class="badge badge-{{ note | noteBadgeColor }}">{{ note.type | translate }}</span></div>
-                      <blockquote class="col" [innerHTML]="note.content | nl2br"></blockquote>
-                    </div>
-                  }
-                </div>
-              }
-            </div>
-          </div>
-        }
-      </p-tabPanel>
-      <p-tabPanel [header]="'Reception'|translate" [disabled]="!canViewReceipts">
-        @if (isPermissionsLoaded) {
-          <admin-receipt-list class="row" [order]="order" [recordPermissions]="recordPermissions"></admin-receipt-list>
-        }
-      </p-tabPanel>
-      @if (historyVersions && historyVersions.length > 1) {
-        <p-tabPanel [header]="'History'|translate">
-          <p-timeline [value]="historyVersions">
-            <ng-template pTemplate="marker" let-event>
-              <div [class.p-timeline-event-marker-current]="event.active" class="p-timeline-event-marker"></div>
             </ng-template>
-            <ng-template pTemplate="content" let-event>
-              <a [routerLink]="['/records', 'acq_orders', 'detail', event.pid]">{{ event.label }}</a>
-              <small>{{ event.description }}</small>
-            </ng-template>
-          </p-timeline>
-        </p-tabPanel>
+
+            @if (!notesCollapsed) {
+            <admin-notes [notes]="order.notes" />
+            }
+          </p-panel>
+          }
+        </div>
       }
-    </p-tabView>
-  </div>
+    </p-tabPanel>
+    <p-tabPanel
+      id="receipt"
+      [header]="'Reception' | translate"
+      [disabled]="!canViewReceipts"
+      #receiptPanel
+    >
+      @if (receiptPanel.selected && isPermissionsLoaded) {
+      <admin-receipt-list
+        class="row"
+        [order]="order"
+        [recordPermissions]="recordPermissions"
+      />
+      }
+    </p-tabPanel>
+    @if (historyVersions && historyVersions.length > 1) {
+    <p-tabPanel [header]="'History' | translate">
+      <p-timeline [value]="historyVersions">
+        <ng-template pTemplate="marker" let-event>
+          <div
+            [class.p-timeline-event-marker-current]="event.active"
+            class="p-timeline-event-marker"
+          ></div>
+        </ng-template>
+        <ng-template pTemplate="content" let-event>
+          <a [routerLink]="['/records', 'acq_orders', 'detail', event.pid]">{{
+            event.label
+          }}</a>
+          <small>{{ event.description }}</small>
+        </ng-template>
+      </p-timeline>
+    </p-tabPanel>
+    }
+  </p-tabView>
+</div>
 }

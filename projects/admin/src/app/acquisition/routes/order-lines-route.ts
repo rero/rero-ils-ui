@@ -49,9 +49,6 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
           {
             key: this.name,
             label: _('Order lines'),
-            editorSettings: {
-              longMode: true,
-            },
             canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ACOL_CREATE) }),
             permissions: (record: any) => this.routeToolService.permissions(record, this.recordType, true),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),

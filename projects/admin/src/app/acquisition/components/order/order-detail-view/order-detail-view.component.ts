@@ -15,12 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ViewportScroller } from '@angular/common';
+import { APP_BASE_HREF, Location, ViewportScroller } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
+import { TranslateService } from '@ngx-translate/core';
 import { extractIdOnRef } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -28,12 +30,10 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqOrderHistoryVersion, AcqOrderHistoryVersionResponseInterface, AcqOrderStatus, IAcqOrder } from '../../../classes/order';
 import { OrderEmailFormComponent } from '../order-email-form/order-email-form.component';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-acquisition-order-detail-view',
-  templateUrl: './order-detail-view.component.html',
-  styleUrls: ['../../../acquisition.scss', './order-detail-view.component.scss']
+  templateUrl: './order-detail-view.component.html'
 })
 export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
 
@@ -43,6 +43,10 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
   private acqOrderService: AcqOrderApiService = inject(AcqOrderApiService);
   private permissionValidator: CurrentLibraryPermissionValidator = inject(CurrentLibraryPermissionValidator);
   private translateService: TranslateService = inject(TranslateService);
+  private route: ActivatedRoute = inject(ActivatedRoute);
+  private location: Location = inject(Location);
+  private baseHref = inject(APP_BASE_HREF);
+
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Observable resolving record data */
@@ -67,6 +71,8 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
 
   modalRef: DynamicDialogRef | undefined;
 
+  tabActiveIndex = 0;
+
   // GETTER & SETTER ==========================================================
   /** Determine if the order could be "placed/ordered" */
   get canPlaceOrder(): boolean {
@@ -78,8 +84,13 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
     return this.order.status !== AcqOrderStatus.PENDING;
   }
 
+  addTabToUrl(event) {
+    this.location.replaceState(location.pathname.replace(this.baseHref, ""), `tab=${event}`);
+  }
+
   /** OnInit hook */
   ngOnInit(): void {
+    this.tabActiveIndex = +this.route.snapshot.queryParamMap.get('tab') || 0;
     this.subscriptions.add(this.record$.subscribe(
       (record: any) => {
         this.order = record.metadata;

@@ -15,53 +15,55 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (loaded) {
-  <form [formGroup]="form" (ngSubmit)="onSubmit(model)" class="container">
+<form
+  class="flex flex-column gap-2"
+  [formGroup]="form"
+  (ngSubmit)="onSubmit(model)"
+>
+  <!-- FORM HEADER :: title and action buttons -->
+  <section class="flex gap-2 justify-content-between align-items-center">
+    <h1 translate>Receipt of an order</h1>
+    <div class="flex gap-1">
+      <p-button
+        outlined
+        severity="danger"
+        size="small"
+        (onClick)="redirectToOrder()"
+        icon="fa fa-times"
+        [label]="'Cancel' | translate"
+      />
+      <p-button
+        type="submit"
+        size="small"
+        [disabled]="!form.valid || orderSend"
+        [icon]="orderSend ? 'fa fa-spinner fa-pulse' : 'fa fa-save'"
+        [label]="'Save' | translate"
+      />
+    </div>
+  </section>
 
-      <!-- FORM HEADER :: title and action buttons -->
-      <section class="d-flex mb-3" >
-        <h1 translate>Receipt of an order</h1>
-        <div class="ml-auto">
-          <button type="reset" class="btn btn-outline-danger btn-sm" [routerLink]="['/', 'records', 'acq_orders', 'detail', orderRecord.pid]">
-            <i class="fa fa-times"></i>
-            {{ 'Cancel' | translate }}
-          </button>
-          <button type="submit" class="btn btn-primary btn-sm ml-1" [disabled]="!form.valid || orderSend">
-            <i class="fa" [ngClass]="{'fa-save': !orderSend, 'fa-spinner fa-pulse': orderSend}"></i>
-            {{ 'Save' | translate }}
-          </button>
-        </div>
-      </section>
+  <!-- KNOWN ORDER/RECEIPT DATA -->
+  <p-panel toggleable collapsed [header]="'Order overview' | translate">
+    <div class="p-2">
+      <admin-order-summary [order]="orderRecord" />
+      @if (receiptRecord) {
+        <p-panel [header]="'Already in this receipt' | translate">
+          <admin-receipt-summary
+            [receiptPid]="receiptRecord.pid"
+            [collapsable]="false"
+            [allowActions]="false"
+            class="container"
+          />
+        </p-panel>
+      }
+    </div>
+  </p-panel>
 
-      <!-- KNOWN ORDER/RECEIPT DATA -->
-      <div class="row card known-data">
-        <div class="card-header">
-          <button type="button" class="btn-show-more"
-                  [ngClass]="{'btn-expanded': !knownDataCollapsed, 'btn-collapsed': knownDataCollapsed}"
-                  (click)="knownDataCollapsed = !knownDataCollapsed"
-                  [attr.aria-expanded]="!knownDataCollapsed" aria-controls="collapse">
-          </button>
-          <h5 class="d-inline-block" translate>Order overview</h5>
-        </div>
-        <div class="card-body callout callout-info callout-bg-info pt-0" [hidden]="knownDataCollapsed">
-          <admin-order-summary [order]="orderRecord"></admin-order-summary>
-          @if (receiptRecord) {
-            <div class="card w-100 pt-0">
-              <div class="card-header"><h5 translate>Already in this receipt</h5></div>
-              <div class="card-body p-0">
-                <admin-receipt-summary [receiptPid]="receiptRecord.pid" [collapsable]="false" [allowActions]="false" class="container">
-                </admin-receipt-summary>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-
-      <!-- FORMLY FORM -->
-      <div class="row card p-0 my-3">
-        <div class="card-header">
-          <h5 translate>Receipt new data</h5>
-        </div>
-        <formly-form class="card-body" [form]="form" [fields]="fields" [model]="model"></formly-form>
-      </div>
-  </form>
+  <!-- FORMLY FORM -->
+  <p-panel [header]="'Receipt new data' | translate">
+    <div class="p-2">
+      <formly-form [form]="form" [fields]="fields" [model]="model" />
+    </div>
+  </p-panel>
+</form>
 }

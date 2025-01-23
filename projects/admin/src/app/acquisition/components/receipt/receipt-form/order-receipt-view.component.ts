@@ -19,18 +19,17 @@ import { UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
-import { CONFIG } from '@rero/ng-core';
+import { ApiService, CONFIG } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { finalize, tap } from 'rxjs/operators';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
-import { IAcqReceipt } from '../../../classes/receipt';
+import { AcqReceiptAmountAdjustment, IAcqReceipt } from '../../../classes/receipt';
 import { IAcqReceiptModel, ICreateLineMessage, OrderReceipt } from './order-receipt';
 import { OrderReceiptForm } from './order-receipt-form';
 
 @Component({
   selector: 'admin-order-receipt-view',
-  templateUrl: './order-receipt-view.component.html',
-  styleUrls: ['../../../acquisition.scss']
+  templateUrl: './order-receipt-view.component.html'
 })
 export class OrderReceiptViewComponent implements OnInit {
 
@@ -41,6 +40,7 @@ export class OrderReceiptViewComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
   private orderReceiptForm: OrderReceiptForm = inject(OrderReceiptForm);
   private messageService = inject(MessageService);
+  private apiService:ApiService = inject(ApiService);
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** order pid */
@@ -128,6 +128,17 @@ export class OrderReceiptViewComponent implements OnInit {
           this.receiptRecord = receipt;
           this.model.pid = receiptPid;
           this.model.reference = receipt.reference;
+          this.model.notes = receipt.notes;
+          if (receipt.amount_adjustments) {
+            this.model.amountAdjustments =
+              receipt.amount_adjustments.map((adj:AcqReceiptAmountAdjustment) => {
+                return {
+                  label: adj.label,
+                  amount: adj.amount,
+                  acqAccount: this.apiService.getRefEndpoint('acq_accounts', adj.acq_account.pid)
+                };
+            });
+          }
         });
     }
     this.orderReceiptForm
@@ -183,7 +194,7 @@ export class OrderReceiptViewComponent implements OnInit {
   }
 
   /** Redirect to order detail view */
-  private redirectToOrder(): void {
-    this.router.navigate(['/', 'records', 'acq_orders', 'detail', this.orderPid]);
+  redirectToOrder(): void {
+    this.router.navigate(['/', 'records', 'acq_orders', 'detail', this.orderPid], { queryParams: {tab: 1}});
   }
 }

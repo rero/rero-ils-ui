@@ -61,7 +61,7 @@ export class CustomRequestInterceptor implements HttpInterceptor {
       // Prevent caching in IE, in particular IE11.
       // See: https://support.microsoft.com/en-us/help/234067/how-to-prevent-caching-in-internet-explorer
       setHeaders: {
-        'Cache-Control': 'no-cache',
+        'Cache-Control': 'no-store',
         Pragma: 'no-cache'
       }
     });

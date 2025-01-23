@@ -162,8 +162,8 @@ export class OrderReceiptForm {
       record.notes = [];
     }
     // Update the record with model data
-    record.amount_adjustments = [...record.amount_adjustments, ...this.orderReceipt.processAdjustments(model)];
-    record.notes = [...record.notes, ...model.notes || []];
+    record.amount_adjustments = [...this.orderReceipt.processAdjustments(model) || []];
+    record.notes = [...model.notes || []];
     if (model.reference && model.reference.length > 0) {
       record.reference = model.reference;
     }
@@ -193,16 +193,10 @@ export class OrderReceiptForm {
         }
       },
       {
-        key: 'exchangeRate',
-        type: 'input',
-        defaultValue: 1,
-        hideExpression: true
-      },
-      {
         key: 'receiveLines',
         type: 'repeat',
         props: {
-          className: 'pl-0 my-0 font-weight-bold',
+          className: 'font-bold',
           label: _('Order line(s)'),
           addButton: false,
           trashButton: false,
@@ -210,7 +204,7 @@ export class OrderReceiptForm {
           minLength: 0
         },
         fieldArray: {
-          fieldGroupClassName: 'row',
+          fieldGroupClassName: 'grid',
           validators: {
             validation: [
               { name: 'receiveQuantityMax', options: { errorPath: 'quantity' } }
@@ -229,7 +223,7 @@ export class OrderReceiptForm {
               wrappers: ['input-no-label'],
               props: {
                 hideLabel: true,
-                headerClassName: 'col-1 font-weight-bold mb-2',
+                headerClassName: 'col-1',
               }
             },
             {
@@ -238,7 +232,7 @@ export class OrderReceiptForm {
               className: 'col-5',
               wrappers: ['input-no-label'],
               props: {
-                headerClassName: 'col-5 font-weight-bold mb-2',
+                headerClassName: 'col-5 font-bold',
                 label: _('Document'),
                 resource: 'documents',
                 resourceKey: 'document',
@@ -260,7 +254,8 @@ export class OrderReceiptForm {
               className: 'col-2',
               wrappers: ['input-no-label'],
               props: {
-                headerClassName: 'col-2 font-weight-bold mb-2',
+                headerClassName: 'col-2 font-bold',
+                styleClass: "w-full",
                 type: 'number',
                 label: _('Qty'),
                 required: true,
@@ -273,7 +268,7 @@ export class OrderReceiptForm {
               className: 'col-2',
               wrappers: ['input-no-label'],
               props: {
-                headerClassName: 'col-2 font-weight-bold mb-2',
+                headerClassName: 'col-2 font-bold',
                 type: 'number',
                 label: _('Amount'),
                 required: true,
@@ -286,7 +281,7 @@ export class OrderReceiptForm {
               className: 'col-2',
               wrappers: ['input-no-label'],
               props: {
-                headerClassName: 'col-2 font-weight-bold mb-2',
+                headerClassName: 'col-2 font-bold',
                 type: 'number',
                 label: _('Vat Rate'),
                 min: 0,
@@ -303,7 +298,7 @@ export class OrderReceiptForm {
         key: 'amountAdjustments',
         type: 'repeat',
         props: {
-          className: 'pl-0 my-0 font-weight-bold',
+          className: 'pl-0 my-0 font-bold',
           label: _('Fees, discounts and other adjustments'),
           addButton: true,
           trashButton: true
@@ -338,7 +333,8 @@ export class OrderReceiptForm {
                 placeholder: _('Select an account'),
                 label: _('Account'),
                 required: true,
-                options: []
+                options: [
+                ]
               }
             }
           ]
@@ -348,7 +344,7 @@ export class OrderReceiptForm {
         key: 'notes',
         type: 'repeat',
         props: {
-          className: 'pl-0 my-0 font-weight-bold',
+          className: 'pl-0 my-0 font-bold',
           label: _('Notes'),
           addButton: true,
           trashButton: true

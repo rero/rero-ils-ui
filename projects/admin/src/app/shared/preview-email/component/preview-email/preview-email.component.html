@@ -41,7 +41,7 @@
         <small class="ml-1">(<span class="font-italic" translate>Drag and drop</span>)</small>
       </div>
       </ng-template>
-      <div class="flex gap-1">
+      <div class="flex gap-1 mt-2">
         @for (email of emails; track email) {
             <p-tag pDraggable="emails" [style]="{cursor: 'grab'}" (onDragStart)="dragStart(email)" (onDragEnd)="dragEnd()" icon="pi pi-user" [value]="email"></p-tag>
         }
@@ -51,7 +51,7 @@
 
   <!-- RECIPIENTS -->
   <p-panel [header]="'Recipients' | translate">
-    <div class="grid">
+    <div class="grid mt-2">
       @for (type of emailTypes; track type) {
         <div class="col-2" [class.field-required]="mandatoryEmailTypes.includes(type)">
           {{ ('email_' + type) | translate }}&nbsp;:

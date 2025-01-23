@@ -84,28 +84,34 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
               {
                 label: _('Relevance'),
                 value: 'bestmatch',
-                defaultQuery: true
+                defaultQuery: true,
+                 icon: 'fa fa-sort-amount-desc'
               },
               {
                 label: _('Receipt date (newest)'),
                 value: 'receipt_date',
+                 icon: 'fa fa-sort-amount-desc'
               },
               {
                 label: _('Reference (asc)'),
                 value: 'reference_asc',
+                icon: 'fa fa-sort-alpha-asc'
               },
               {
                 label: _('Reference (desc)'),
-                value: 'reference_desc'
+                value: 'reference_desc',
+                icon: 'fa fa-sort-alpha-desc'
               },
 
               {
                 label: _('Order date (newest)'),
-                value: 'order_date_new'
+                value: 'order_date_new',
+                 icon: 'fa fa-sort-amount-desc'
               },
               {
                 label: _('Order date (oldest)'),
                 value: 'order_date_old',
+                 icon: 'fa fa-sort-amount-asc'
               }
             ],
             exportFormats: [
@@ -146,7 +152,7 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
    */
   private _cleanRecord(data: any): any {
     // remove dynamic fields
-    const fieldsToRemoved = ['is_current_budget', 'status', 'order_date', 'account_statement'];
+    const fieldsToRemoved = ['is_current_budget', 'status', 'account_statement'];
     return this.fieldsToRemoved(data, fieldsToRemoved);
   }
 }

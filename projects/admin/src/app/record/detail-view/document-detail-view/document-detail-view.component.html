@@ -259,13 +259,15 @@
   <p-tabView>
     <!-- GET TAB -->
     @if (record.metadata.pid) {
-      <p-tabPanel>
+      <p-tabPanel #tabGet>
         <ng-template pTemplate="header">
           <i class="fa fa-list-ulx"></i>&nbsp;{{ "Get" | translate }}
         </ng-template>
-        <div class="mb-2">
-          <shared-doc-files [documentPid]="record.metadata.pid" />
-        </div>
+        @if(tabGet.selected) {
+          <div class="mb-2">
+            <shared-doc-files [documentPid]="record.metadata.pid" />
+          </div>
+        }
         <admin-holding-organisation [document]="record" />
       </p-tabPanel>
     }

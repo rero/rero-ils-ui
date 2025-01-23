@@ -15,96 +15,70 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="row order-line">
+<div class="grid">
   @if (orderLine && account) {
-    <div class="col-9 d-flex" [ngClass]="{'order-cancelled': orderLine.status === orderLineStatus.CANCELLED}">
-      <p-button
-        icon="fa {{ isCollapsed ? 'fa-angle-right' : 'fa-angle-down' }}"
-        [rounded]="true"
-        outlined
-        (onClick)="isCollapsed = !isCollapsed"
-        [attr.aria-expanded]="!isCollapsed"
-        aria-controls="collapse"
-      />
-      <div class="d-flex align-items-start flex-column w-100">
-        <div class="d-flex w-100">
+    <div class="col-8 flex gap-3">
+      <shared-open-close-button (status)="isCollapsed = $event" />
           <i class="fa status"
               title="{{ orderLine.status | translate }}"
               [ngClass]="{
             'fa-envelope-open-o': orderLine.status === orderLineStatus.APPROVED,
             'fa-envelope-o': orderLine.status === orderLineStatus.ORDERED,
-            'text-muted': orderLine.status === orderLineStatus.APPROVED || orderLine.status === orderLineStatus.ORDERED,
+            'text-text-color-secondary': orderLine.status === orderLineStatus.APPROVED || orderLine.status === orderLineStatus.ORDERED,
             'fa-sign-in': orderLine.status === orderLineStatus.RECEIVED || orderLine.status === orderLineStatus.PARTIALLY_RECEIVED,
             'text-success': orderLine.status === orderLineStatus.RECEIVED,
             'text-warning': orderLine.status === orderLineStatus.PARTIALLY_RECEIVED,
-            'fa-window-close-o text-danger': orderLine.status === orderLineStatus.CANCELLED
+            'fa-window-close-o text-error': orderLine.status === orderLineStatus.CANCELLED
           }"></i>
-          <div class="d-flex flex-grow-1 mb-1">
+      <div class="flex align-items-start flex-column w-full">
+        <div class="flex w-full justify-content-between">
+          <div class="flex">
             @if (orderLine.document.pid | getRecord: 'documents' | async; as document) {
-              <shared-document-brief-view [record]="$any(document).metadata"></shared-document-brief-view>
+              <shared-document-brief-view [record]="$any(document).metadata" />
             }
           </div>
-          @if (orderLine.notes.length > 0 && isCollapsed) {
-            <span class="bullet-notes">
+          @if (orderLine.notes.length > 0) {
+            <div class="flex gap-1">
               @for (note of orderLine.notes; track note) {
-                <i class="fa fa-circle fa-bullet bullet-{{ note | noteBadgeColor }}" aria-hidden="true" title="{{ note.type | translate }}"></i>
+                <i class="fa fa-circle fa-bullet text-{{ note | noteBadgeColor }}" title="{{ note.type | translate }}"></i>
               }
-            </span>
+            </div>
           }
         </div>
-        <div class="account-number order-line-content" [hidden]="!isCollapsed">{{ account.metadata.number }}</div>
-        <div class="order-line-content mt-2" [hidden]="isCollapsed">
-          <dl class="row ml-0">
-            <dt class="col-3 label-title" translate>Account</dt>
-            <dd class="col-9">
+        <div [hidden]="!isCollapsed">{{ account.metadata.number }}</div>
+        <div class="mt-2" [hidden]="isCollapsed">
+          <dl class="metadata">
+            <dt translate>Account</dt>
+            <dd>
               {{ account.metadata.name }}
-              <span class="ml-4 account-number">{{ account.metadata.number }}</span>
+              <span>{{ account.metadata.number }}</span>
             </dd>
-            <dt class="col-3 label-title" translate>Status</dt>
-            <dd class="col-9">{{ orderLine.status | translate }}</dd>
-            @if (orderLine.exchange_rate) {
-              <dt class="col-3 label-title" translate>Exchange rate</dt>
-              <dd class="col-9">{{ orderLine.exchange_rate }}</dd>
-            }
-            @if (orderLine.order_date) {
-              <dt class="col-3 label-title" translate>Order date</dt>
-              <dd class="col-9">{{ orderLine.order_date | dateTranslate: 'shortDate' }}</dd>
-            }
-            @if (orderLine.receipt_date) {
-              <dt class="col-3 label-title" translate>Reception date</dt>
-              <dd class="col-9">{{ orderLine.receipt_date | dateTranslate: 'shortDate' }}</dd>
-            }
-            @for (note of orderLine.notes; track note; let isFirst=$first) {
-              @if (isFirst) {
-                <div class="col-12 note-spacer"></div>
-              }
-              <dt class="col-3">
-                <span class="badge badge-{{ note | noteBadgeColor }}">{{ note.type | translate }}</span>
-              </dt>
-              <dd class="col-9 note-content" [innerHTML]="note.content | nl2br"></dd>
+            <dt translate>Status</dt>
+            <dd>{{ orderLine.status | translate }}</dd>
+            @if (orderLine.priority > 0) {
+              <dt translate>priority</dt>
+              <dd>{{ orderLine.priority }}</dd>
             }
           </dl>
+
+          <admin-notes [notes]="orderLine.notes" />
         </div>
       </div>
-      @if (orderLine.priority > 0) {
-        <div class="ml-auto priority priority-{{ orderLine.priority }}" title="{{ 'priority' | translate }}"></div>
-      }
     </div>
-    <div class="col-2 amount">
-      <div class="total-amount">{{ orderLine.total_amount | currency:order.currency:'symbol' }}</div>
-      <div class="computation d-inline-block">
-        ({{ orderLine.quantity}} x {{ orderLine.amount | currency:order.currency:'symbol' }}
+    <div class="col-2 flex align-items-end gap-2 flex-column  border-x-1 surface-border">
+      <div class="text-xl font-bold">{{ orderLine.total_amount | currency:order.currency:'symbol' }}</div>
+      <div class="text-color-secondary text-sm">
+        {{ orderLine.quantity}} x {{ orderLine.amount | currency:order.currency:'symbol' }}
         @if (orderLine.discount_amount > 0) {
           - {{ orderLine.discount_amount | currency:order.currency:'symbol' }}
-        })
+        }
       </div>
     </div>
-    <div class="col-1 pl-0 text-right">
+    <div class="col-2 flex gap-1 justify-content-end">
       @if (recordPermissions) {
         <shared-action-button
           icon="fa fa-pencil"
           [title]="'Edit'|translate"
-          class="mr-1"
           [disabled]="!recordPermissions.update.can"
           [routerLink]="['/records', 'acq_order_lines', 'edit', orderLine.pid]"
           [message]="editInfoMessage"
@@ -117,8 +91,6 @@
           [message]="deleteInfoMessage"
           (btnClick)="deleteOrderLine()"
         />
-      } @else {
-        &nbsp;
       }
     </div>
   } @else {

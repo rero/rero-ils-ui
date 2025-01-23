@@ -15,118 +15,98 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="row receipt">
+<div class="grid grid-nogutter border-bottom-1 surface-border pt-2">
   @if (receipt) {
     <!-- RECEIPT INFORMATION COLUMN -->
-    <div class="col container">
-      <div class="row">
+    <div class="col">
+      <div class="grid">
         <!-- FIRST ROW :: receipt detail (always visible) -->
-        <div class="col-9 d-flex">
+        <div class="col-9 flex flex-wrap gap-2 align-items-center border-bottom-1 surface-border">
           @if (collapsable) {
-            <button type="button" class="btn-show-more"
-                    [ngClass]="{'btn-expanded': !isCollapsed, 'btn-collapsed': isCollapsed}"
-                    (click)="isCollapsed = !isCollapsed"
-                    [attr.aria-expanded]="!isCollapsed" aria-controls="collapse">
-            </button>
+            <shared-open-close-button (status)="isCollapsed = $event" />
           }
+          <div class="flex-grow-1 flex gap-2 align-items-center">
           <label>
-            @if (recordPermissions) {
-              <a [routerLink]="['/records', 'acq_receipts', 'detail', receipt.pid]">{{ receipt.reference }}</a>
-
-            } @else {
-              {{ receipt.reference }}
-            }
+            {{ receipt.reference }}
             @if (receipt | receptionDates; as reception_dates) {
-              <span class="reception-dates">
+              <span class="font-italic text-sm">
                 ({{ reception_dates.join(', ') }})
               </span>
             }
           </label>
           @if (receipt.notes.length > 0 && isCollapsed) {
-            <span class="bullet-notes">
+            <span class="flex gap-1">
               @for (note of receipt.notes; track note) {
-                <i class="fa fa-circle fa-bullet bullet-{{ note | noteBadgeColor }}" aria-hidden="true" title="{{ note.type | translate }}"></i>
+                <i class="fa fa-circle fa-bullet text-{{ note | noteBadgeColor }}" aria-hidden="true" title="{{ note.type | translate }}"></i>
               }
             </span>
           }
+        </div>
           @if (receipt.quantity) {
-            <div class="ml-auto">
-              <div class="badge badge-info small">
-                <i class="fa fa-sign-in mr-1"></i>
+              <p-tag severity="info">
+                <i class="fa fa-sign-in"></i>&nbsp;
                 {{ receipt.quantity }}
                 {{ receipt.quantity | i18nPlural: {'=1': 'item', 'other': 'items'} | translate }}
-              </div>
-            </div>
+              </p-tag>
           }
         </div>
-        <div class="col-3 amount">
-          <div class="total-amount">{{ receipt.total_amount | currency:receipt.currency:'symbol' }}</div>
+        <div class="col-3 flex border-left-1 border-bottom-1 surface-border font-bold justify-content-end align-items-center" [class.border-right-1]="recordPermissions && allowActions">
+          {{ receipt.total_amount | currency:receipt.currency:'symbol' }}
         </div>
-        @if (!isCollapsed) {
+        @if (!collapsable || !isCollapsed) {
           <!-- RECEPTION LINES ROWS :: One line for each reception line -->
-          @for (line of receipt.receipt_lines; track line; let first = $first) {
-            <div class="col-9 detail label d-inline-flex" [class.separator]="first">
-              <strong>{{ line.quantity }}</strong><span class="mx-2">x</span>
+          @for (line of receipt.receipt_lines; track line) {
+            <div class="col-9 flex gap-2 flex-wrap">
+              <strong>{{ line.quantity }}</strong>&nbsp;x
               <div>
                 @if (line.document.pid | getRecord: 'documents' | async; as document) {
-                  <shared-document-brief-view [record]="$any(document).metadata"></shared-document-brief-view>
+                  <shared-document-brief-view [record]="$any(document).metadata" />
                 }
                 @if ($any(line).acq_account.pid | getRecord: 'acq_accounts' | async; as account) {
-                  <span class="account-number">{{ $any(account).metadata.number }}</span>
+                  <span class="font-bold text-color-secondary text-sm">[{{ $any(account).metadata.number }}]</span>
                 }
               </div>
             </div>
-            <div class="col-3 detail amount d-flex" [class.separator]="first">
-              <div class="computation">
-                ({{ line.quantity }} x {{ line.amount | currency:receipt.currency:'symbol' }}
+            <div class="col-3 flex flex-column gap-2 align-items-end border-left-1 surface-border" [class.border-right-1]="recordPermissions && allowActions">
+              <div class="font-bold">{{ line | receiptLineTotalAmount | currency:receipt.currency:'symbol' }}</div>
+              <div class="text-sm text-color-secondary">
+                {{ line.quantity }} x {{ line.amount | currency:receipt.currency:'symbol' }}
                 @if (line.vat_rate) {
                   + {{ line.vat_rate }}%
-                })
+                }
               </div>
-              <div class="total-amount ml-auto">{{ line | receiptLineTotalAmount | currency:receipt.currency:'symbol' }}</div>
             </div>
           }
           <!-- RECEIPT ADJUSTMENTS :: One line for each adjustment -->
           @for (adjustment of receipt.amount_adjustments; track adjustment) {
-            <div class="col-9 detail label">
+            <div class="col-9">
               <i class="fa fa-long-arrow-right mr-3"></i>
               {{ adjustment.label }}
             </div>
-            <div class="col-3 detail amount">
-              <div class="total-amount">{{ adjustment.amount | currency:receipt.currency:'symbol' }}</div>
+            <div class="col-3 flex-column font-bold flex align-items-end border-left-1 surface-border" [class.border-right-1]="recordPermissions && allowActions">
+              <div>
+                {{ adjustment.amount | currency:receipt.currency:'symbol' }}
+              </div>
             </div>
           }
           <!-- RECEIPT NOTES -->
-          @for (note of receipt.notes; track note) {
-            <div class="col-9 detail label">
-              <span class="mr-3 badge badge-{{ note | noteBadgeColor }}">{{ note.type | translate }}</span>
-              <span [innerHTML]="note.content | nl2br"></span>
-            </div>
-            <div class="col-3 detail amount">&nbsp;</div>
-          }
+           <div class="col-9">
+           <admin-notes [notes]="receipt.notes" />
+          </div>
+          <div class="col-3 border-left-1 surface-border" [class.border-right-1]="recordPermissions && allowActions">&nbsp;</div>
         }
       </div>
     </div>
     <!-- ACTION BUTTON COLUMN -->
     @if (recordPermissions && allowActions) {
-      <div class="col-2 actions-column pl-0 text-right">
+      <div class="col-3 flex flex-wrap gap-1 justify-content-end">
         <!-- CONTINUE BUTTON -->
-        <shared-action-button
-          icon="fa fa-forward"
-          [label]="'Resume' | translate"
-          [title]="'Resume' | translate"
-          class="mr-1"
-          [disabled]="!recordPermissions.create.can"
-          [routerLink]="['/', 'acquisition', 'acq_orders', receipt.acq_order.pid, 'receive']"
-          [queryParams]="{ receipt: receipt.pid }"
-          [message]="resumeInfoMessage"
-        />
         <shared-action-button
           icon="fa fa-pencil"
           [title]="'Edit' | translate"
-          class="mr-1"
           [disabled]="!recordPermissions.update.can"
-          [routerLink]="['/records', 'acq_receipts', 'edit', receipt.pid]"
+          [routerLink]="['/', 'acquisition', 'acq_orders', receipt.acq_order.pid, 'receive']"
+          [queryParams]="{ receipt: receipt.pid }"
           [message]="editInfoMessage"
         />
         <shared-action-button
@@ -140,6 +120,6 @@
       </div>
     }
   } @else {
-    <i class="fa fa-spinner fa-pulse py-2"></i>
+    <i class="fa fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}
   }
 </div>
