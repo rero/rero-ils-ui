@@ -17,58 +17,58 @@
 -->
 
 @if (record) {
-  <h5 class="card-title mb-0">
-    <a [routerLink]="[parentUrl.link]">{{ record.metadata.ui_title_text }}</a>
+  <h5>
+      <a [routerLink]="[parentUrl.link]">{{ record.metadata.ui_title_text }}</a>
   </h5>
-  <dl class="row ml-1 card-text brief-view">
+  <dl class="metadata">
     <!-- INHERITED CALL NUMBER -->
     @if (record | itemHoldingsCallNumber | async; as callNumber) {
       @if ((callNumber.first | json) !== '{}' || (callNumber.second | json) !== '{}') {
-        <dt class="col-3 label-title" translate>Call number</dt>
-      <dd class="col-9">
-        <shared-inherited-call-number [item]="record" context="first"></shared-inherited-call-number>
-      </dd>
+        <dt translate>Call number</dt>
+        <dd>
+          <shared-inherited-call-number [item]="record" context="first"></shared-inherited-call-number>
+        </dd>
       }
     }
     <!-- BARCODE -->
     @if (record.metadata.barcode) {
-      <dt class="col-3 label-title" translate>Barcode</dt>
-      <dd class="col-9">
+      <dt translate>Barcode</dt>
+      <dd>
         <a [routerLink]="[detailUrl.link]">{{ record.metadata.barcode }}</a>
       </dd>
     }
     <!-- ENUMERATION AND CHRONOLOGY -->
     @if (record.metadata.enumerationAndChronology) {
-      <dt class="col-3 label-title" translate>Numbering</dt>
-      <dd class="col-9">
+      <dt translate>Numbering</dt>
+      <dd>
         {{ record.metadata.enumerationAndChronology }}
       </dd>
     }
     <!-- VENDOR -->
     @if (record.metadata.vendor) {
-      <dt class="col-3 label-title" translate>Vendor</dt>
-      <dd class="col-9">
+      <dt translate>Vendor</dt>
+      <dd>
         {{ record.metadata.vendor.pid | getRecord: 'vendors': 'field': 'name' | async }}
       </dd>
     }
     <!-- EXPECTED DATE -->
     @if (record.metadata.issue.expected_date) {
-      <dt class="col-3 label-title" translate>Expected date</dt>
-      <dd class="col-9">
+      <dt translate>Expected date</dt>
+      <dd>
         {{ record.metadata.issue.expected_date | dateTranslate }}
       </dd>
     }
     <!-- CLAIMS -->
     @if (record.metadata?.issue?.claims?.counter > 0) {
-      <dt class="col-3 label-title" translate>
+      <dt>
         <span [ngPlural]="record.metadata.issue.claims.counter">
           <ng-template ngPluralCase="=1">{{ 'Claim' | translate }}</ng-template>
           <ng-template ngPluralCase="other">{{ 'Claims' | translate }}</ng-template>
         </span>
       </dt>
-      <dd class="col-9">
-        {{ record.metadata.issue.claims.counter }}
-        <span class="small pl-2 text-secondary">
+      <dd>
+        {{ record.metadata.issue.claims.counter }}&nbsp;
+        <span class="text-sm text-color-secondary">
           ({{ 'last claim' | translate }}: {{ claimLastDate | dateTranslate: 'short' }})
         </span>
         {{ record.metadata.issue.claims_count }}
@@ -76,8 +76,8 @@
     }
     <!-- ISSUE STATUS AND DATE-->
     @if (record.metadata.issue.status; as status) {
-      <dt class="col-3 label-title" translate>Issue status</dt>
-      <dd class="col-9">
+      <dt translate>Issue status</dt>
+      <dd>
         <i class="fa text-warning" [ngClass]="{
           'fa-envelope': status === issueItemStatus.EXPECTED,
           'fa-envelope-open-o': status === issueItemStatus.LATE

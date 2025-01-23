@@ -34,7 +34,7 @@ export class IssuesRoute extends BaseRoute implements RouteInterface {
    * @return Object
    */
   getConfiguration() {
-    return {
+    const config = {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
         { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.ISSUE_MANAGEMENT ] } }
@@ -56,7 +56,8 @@ export class IssuesRoute extends BaseRoute implements RouteInterface {
             ],
             permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
             preFilters: {
-                or_issue_status: [IssueItemStatus.LATE]
+                or_issue_status: [IssueItemStatus.LATE],
+                organisation: null
               },
             aggregationsBucketSize: 10,
             aggregationsOrder: [
@@ -84,5 +85,14 @@ export class IssuesRoute extends BaseRoute implements RouteInterface {
         ],
       }
     };
+    // TODO: Refactor this after the change of AppInitializer service with user.
+    this.routeToolService.userService.loaded$.subscribe(() => {
+      const { patronLibrarian } = this.routeToolService.userService.user;
+      if (patronLibrarian) {
+        config.data.types[0].preFilters.organisation = patronLibrarian.organisation.pid;
+      }
+    });
+
+    return config;
   }
 }

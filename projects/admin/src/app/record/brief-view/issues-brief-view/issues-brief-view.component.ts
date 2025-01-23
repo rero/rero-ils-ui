@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
+import { Component, inject, Input, OnInit } from '@angular/core';
+import { RecordUiService, ResultItem } from '@rero/ng-core';
 import { IssueItemStatus } from '@rero/shared';
 
 @Component({
@@ -24,6 +24,8 @@ import { IssueItemStatus } from '@rero/shared';
   templateUrl: './issues-brief-view.component.html',
 })
 export class IssuesBriefViewComponent implements ResultItem, OnInit {
+
+  protected recordUiService: RecordUiService = inject(RecordUiService);
 
   /** Record */
   @Input() record: any;
