@@ -28,8 +28,7 @@ import { AcqOrderLineStatus, IAcqOrderLine } from '../../../../classes/order';
 
 @Component({
   selector: 'admin-order-line',
-  templateUrl: './order-line.component.html',
-  styleUrls: ['../../../../acquisition.scss', './order-line.component.scss']
+  templateUrl: './order-line.component.html'
 })
 export class OrderLineComponent implements OnInit, OnDestroy {
 

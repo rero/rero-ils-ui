@@ -29,7 +29,6 @@ export interface IAcqReceiptModel {
   organisationRef: string;
   receiptDate: string;
   reference: string;
-  exchangeRate: number;
   amountAdjustments: Array<{
     label: string;
     amount: number;
@@ -83,7 +82,6 @@ export class OrderReceipt {
       libraryRef: null,
       organisationRef: null,
       receiptDate: DateTime.now().toISODate(),
-      exchangeRate: 1,
       reference: null,
       amountAdjustments: [],
       notes: [],
@@ -107,7 +105,6 @@ export class OrderReceipt {
       organisation: {
         $ref: model.organisationRef
       },
-      exchange_rate: model.exchangeRate,
       amount_adjustments: [],
       notes: []
     };
@@ -121,7 +118,6 @@ export class OrderReceipt {
       library: { $ref: this.apiService.getRefEndpoint('libraries', record.library.pid) },
       organisation: { $ref: this.apiService.getRefEndpoint('organisation', record.organisation.pid) },
       reference: record.reference,
-      exchange_rate: record.exchange_rate,
       amount_adjustments: record.amount_adjustments,
       notes: record.notes
     };

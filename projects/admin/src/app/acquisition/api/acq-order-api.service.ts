@@ -28,7 +28,6 @@ import {
   AcqOrderHistoryVersionResponseInterface,
   AcqOrderLineStatus,
   AcqOrderStatus,
-  AcqOrderType,
   IAcqOrder,
   IAcqOrderLine
 } from '../classes/order';
@@ -47,7 +46,6 @@ export class AcqOrderApiService extends BaseApi {
   /** Default values */
   public readonly orderDefaultData = {
     priority: 0,
-    type: AcqOrderType.MONOGRAPH,
     status: AcqOrderStatus.PENDING,
     notes: []
   };
@@ -58,7 +56,6 @@ export class AcqOrderApiService extends BaseApi {
     received_quantity: 0,
     amount: 0,
     total_amount: 0,
-    exchange_rate: 0,
     notes: []
   };
 
@@ -79,8 +76,8 @@ export class AcqOrderApiService extends BaseApi {
    * @param orderPid: the order pid
    * @return: the corresponding AcqOrder
    */
-  getOrder(orderPid: string): Observable<IAcqOrder> {
-    return this.recordService.getRecord('acq_orders', orderPid, 0, BaseApi.reroJsonheaders).pipe(
+  getOrder(orderPid: string, resolve=0): Observable<IAcqOrder> {
+    return this.recordService.getRecord('acq_orders', orderPid, resolve, BaseApi.reroJsonheaders).pipe(
         map(data => ({...this.orderDefaultData, ...data.metadata}) )
       );
   }

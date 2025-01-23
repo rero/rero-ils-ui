@@ -29,7 +29,6 @@ import { orderAccountsAsTree } from '../../../../utils/account';
 @Component({
   selector: 'admin-select-account-editor-widget',
   templateUrl: './select-account-editor-widget.component.html',
-  styleUrls: ['../../../../acquisition.scss', './select-account-editor-widget.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class SelectAccountEditorWidgetComponent extends FieldType implements OnInit {

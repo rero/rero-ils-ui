@@ -41,7 +41,6 @@ export class AcqReceiptApiService {
 
   /** Default value for an AcqReceipt */
   public readonly receiptDefaultData = {
-    exchange_rate: 0,
     amount_adjustments: [],
     quantity: 0,
     total_amount: 0,

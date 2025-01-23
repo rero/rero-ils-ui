@@ -21,6 +21,7 @@ import { NgCoreFormlyRemoteAutocompleteModule } from '@rero/ng-core';
 import { AccordionModule } from 'primeng/accordion';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ChipsModule } from 'primeng/chips';
+import { ChipModule } from 'primeng/chip';
 import { DividerModule } from 'primeng/divider';
 import { DragDropModule } from 'primeng/dragdrop';
 import { DropdownModule } from 'primeng/dropdown';
@@ -40,12 +41,16 @@ import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { FieldsetModule } from 'primeng/fieldset';
 import { ChartModule } from 'primeng/chart';
+import { AvatarModule } from 'primeng/avatar';
+
 
 @NgModule({
   exports: [
     AutoCompleteModule,
     AccordionModule,
+    AvatarModule,
     ChipsModule,
+    ChipModule,
     DividerModule,
     DragDropModule,
     DropdownModule,

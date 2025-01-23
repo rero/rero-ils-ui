@@ -15,53 +15,39 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="card mb-3 container">
-  <div class="card-header px-0 row">
-    <h5 class="col-8 m-0">
-      {{ numberOfReceipt | i18nPlural: {'=1': 'Receipt', 'other': 'Receipts'} | translate }}
-      <span class="badge badge-secondary ml-2">{{ numberOfReceipt }}</span>
-    </h5>
-    <div class="col-4 text-right">
-      @if (recordPermissions) {
-        @if (recordPermissions.create.can) {
-          <p-button
-            icon="fa fa-plus-square-o"
-            [label]="'Add'|translate"
-            outlined
-            [routerLink]="['/', 'acquisition', 'acq_orders', order.pid, 'receive']"
-          />
-        } @else {
-          <p-button
-            icon="fa fa-plus-square-o"
-            [label]="'Add'|translate"
-            outlined
-            [pTooltip]="tooltipContent"
-            tooltipPosition="top"
-            styleClass="text-blue-200"
-          />
-          <ng-template #tooltipContent>
-            <span [innerHTML]="createInfoMessage | nl2br"></span>
-          </ng-template>
-        }
-      } @else {
-        &nbsp;
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="w-full flex flex-wrap justify-content-between gap-2">
+      <h5>
+        {{
+          numberOfReceipt
+            | i18nPlural : { "=1": "Receipt", other: "Receipts" }
+            | translate
+        }}
+        <p-tag severity="secondary" [value]="numberOfReceipt" />
+      </h5>
+      @if (recordPermissions?.create?.can) {
+      <p-button
+        icon="fa fa-plus-square-o"
+        [label]="'Add' | translate"
+        outlined
+        [routerLink]="['/', 'acquisition', 'acq_orders', order.pid, 'receive']"
+      />
       }
     </div>
-  </div>
-  <div class="card-body p-0">
-    @if (receipts) {
-      @if (receipts.length > 0) {
-        @for (receipt of receipts; track receipt) {
-          <admin-receipt-summary [receiptPid]="receipt.pid"
-            [allowActions]="true"
-            [recordPermissions]="recordPermissions"
-          ></admin-receipt-summary>
-        }
-      } @else {
-        <div class="py-3" translate>No receipt</div>
-      }
-    } @else {
-      <i class="fa fa-spinner fa-spin"></i>
+  </ng-template>
+    @if (receipts) { @if (receipts.length > 0) { @for (receipt of receipts;
+    track receipt) {
+    <admin-receipt-summary
+      [receiptPid]="receipt.pid"
+      [allowActions]="true"
+      [recordPermissions]="recordPermissions"
+    />
+    } } @else {
+    <div translate>No receipt</div>
+    } } @else {
+    <i class="fa fa-spin fa-spinner"></i>&nbsp;{{
+      "Loading in progress…" | translate
+    }}
     }
-  </div>
-</div>
+</p-panel>
