@@ -15,179 +15,139 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
 @if (accountsToDisplay && organisation) {
-  <h1 translate>Fund transfer</h1>
-  <div class="grid">
-    <form class="w-full" [formGroup]="form" (ngSubmit)="submit()">
-      @if (budgets.length > 1) {
-        <select class="form-control" (change)="selectBudget($event)">
-          @for (budgetPid of budgets; track budgetPid) {
-            <option [value]="budgetPid">
-              {{ budgetPid | getRecord: 'budgets': 'field': 'name' | async }}
-            </option>
-          }
-        </select>
-      }
-        <div class="card-header row p-1 mb-2 bg-dark text-light">
-          <div class="col-1 text-center" translate>Source</div>
-          <div class="col-6"></div>
-          <div class="col-2 text-right" translate>Amount</div>
-          <div class="col-2 text-right" translate>Available</div>
-          <div class="col-1 text-center" translate>Target</div>
-        </div>
-        <div class="card-text mb-3">
-          @if (accountsToDisplay.length > 0) {
-            @for (account of accountsToDisplay; track account) {
-              <div class="row account my-2">
-                <div class="col-1 text-center">
-                  <input type="radio"
-                          name="source"
-                          value="{{ account.pid }}"
-                          (click)="selectAccount('source', account)"
-                          [disabled]="form.get('target').value && form.get('target').value.pid === account.pid"
-                  />
-                </div>
-                <div class="col-6 account-name depth-padding-{{ account.depth }}">
-                  <a [routerLink]="getDetailUrl(account)">{{ account.name }}</a>
-                </div>
-                <div class="col-2 amount">
-                  {{ account.allocated_amount | currency: organisation.default_currency }}
-                </div>
-                <div class="col-2 amount" [class]="{
-                  'text-success': account.remaining_balance.self > 0,
-                  'text-muted': account.remaining_balance.self === 0,
-                  'text-warning': account.remaining_balance.self < 0
-                }">
-                  {{ account.remaining_balance.self | currency: organisation.default_currency }}
-                </div>
-                <div class="col-1 text-center">
-                  <input type="radio" name="target"
-                          value="{{ account.pid }}"
-                          (click)="selectAccount('target', account)"
-                          [disabled]="form.get('source').value && form.get('source').value.pid === account.pid"
-                  />
-                </div>
-              </div>
-            }
-          } @else {
-            {{ 'No account available' | translate }}
-          }
-        </div>
-        <div class="card-footer row form-group mb-0">
-          <label for="amount" class="col-1 col-form-label">Amount</label>
-          <div class="input-group col-6">
-            <div class="input-group-prepend">
-              <div class="input-group-text">{{ currencySymbol }}</div>
-            </div>
-            <input type="number" class="form-control" id="amount" formControlName="amount"
-                   [class]="{'is-invalid': checkInput('amount')}"/>
-            @if (checkInput('amount')) {
-              <div class="ml-2 block pt-2">
-                @if (form.get('amount').hasError('required')) {
-                  <small class="text-danger" translate>
-                    This field is required.
-                  </small>
-                }
-                @if (form.get('amount').hasError('min')) {
-                  <small class="text-danger">
-                    {{ 'Minimum amount is' | translate }} {{ form.get('amount').errors.min.min }}.
-                  </small>
-                }
-                @if (form.get('amount').hasError('max')) {
-                  <small class="text-danger">
-                    {{ 'Maximum amount is' | translate }} {{ form.get('amount').errors.max.max }}.
-                  </small>
-                }
-              </div>
-            }
-          </div>
-          <div class="col text-right">
-            <p-button class="mr-2" type="reset" [label]="'Cancel'|translate" severity="danger" outlined />
-            <p-button type="submit" [label]="'Transfer'|translate" [disabled]="form.invalid" />
-          </div>
-        </div>
-      <!--
-      <div class="card container mt-3">
-        <div class="card-header row p-1 mb-2 bg-dark text-light">
-          <div class="col-1 text-center" translate>Source</div>
-          <div class="col-6"></div>
-          <div class="col-2 text-right" translate>Amount</div>
-          <div class="col-2 text-right" translate>Available</div>
-          <div class="col-1 text-center" translate>Target</div>
-        </div>
-        <div class="card-text mb-3">
-          @if (accountsToDisplay.length > 0) {
-            @for (account of accountsToDisplay; track account) {
-              <div class="row account my-2">
-                <div class="col-1 text-center">
-                  <input type="radio"
-                          name="source"
-                          value="{{ account.pid }}"
-                          (click)="selectAccount('source', account)"
-                          [disabled]="form.get('target').value && form.get('target').value.pid === account.pid"
-                  />
-                </div>
-                <div class="col-6 account-name depth-padding-{{ account.depth }}">
-                  <a [routerLink]="getDetailUrl(account)">{{ account.name }}</a>
-                </div>
-                <div class="col-2 amount">
-                  {{ account.allocated_amount | currency: organisation.default_currency }}
-                </div>
-                <div class="col-2 amount" [class]="{
-                  'text-success': account.remaining_balance.self > 0,
-                  'text-muted': account.remaining_balance.self === 0,
-                  'text-warning': account.remaining_balance.self < 0
-                }">
-                  {{ account.remaining_balance.self | currency: organisation.default_currency }}
-                </div>
-                <div class="col-1 text-center">
-                  <input type="radio" name="target"
-                          value="{{ account.pid }}"
-                          (click)="selectAccount('target', account)"
-                          [disabled]="form.get('source').value && form.get('source').value.pid === account.pid"
-                  />
-                </div>
-              </div>
-            }
-          } @else {
-            {{ 'No account available' | translate }}
-          }
-        </div>
-        <div class="card-footer row form-group mb-0">
-          <label for="amount" class="col-1 col-form-label">Amount</label>
-          <div class="input-group col-6">
-            <div class="input-group-prepend">
-              <div class="input-group-text">{{ currencySymbol }}</div>
-            </div>
-            <input type="number" class="form-control" id="amount" formControlName="amount"
-                   [class]="{'is-invalid': checkInput('amount')}"/>
-            @if (checkInput('amount')) {
-              <div class="ml-2 block pt-2">
-                @if (form.get('amount').hasError('required')) {
-                  <small class="text-danger" translate>
-                    This field is required.
-                  </small>
-                }
-                @if (form.get('amount').hasError('min')) {
-                  <small class="text-danger">
-                    {{ 'Minimum amount is' | translate }} {{ form.get('amount').errors.min.min }}.
-                  </small>
-                }
-                @if (form.get('amount').hasError('max')) {
-                  <small class="text-danger">
-                    {{ 'Maximum amount is' | translate }} {{ form.get('amount').errors.max.max }}.
-                  </small>
-                }
-              </div>
-            }
-          </div>
-          <div class="col text-right">
-            <button type="reset" class="btn btn-outline-danger mr-2">Cancel</button>
-            <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Transfer</button>
-          </div>
-        </div>
-      </div>
-    -->
-    </form>
+  <div class="flex flex-wrap gap-2 justify-content-between">
+    <h1 translate>Fund transfer</h1>
+    @if (budgets.length > 1) {
+      <p-dropdown
+        (onChange)="selectBudget($event)"
+        [ngModel]="selectedBudget"
+        [options]="budgets"
+      >
+        <ng-template pTemplate="selectedItem">
+          {{
+            selectedBudget.code | getRecord : "budgets" : "field" : "name" | async
+          }}
+        </ng-template>
+        <ng-template let-budget pTemplate="item">
+          {{ budget.code | getRecord : "budgets" : "field" : "name" | async }}
+        </ng-template>
+      </p-dropdown>
+    }
   </div>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <p-card class="p-card-body-p-0">
+      <ng-template pTemplate="header">
+      <div class="hidden md:flex grid grid-nogutter bg-blue-900 text-white p-2 text-lg font-bold">
+        <div class="col-1 text-center" translate>Source</div>
+        <div class="col-offset-6 col-2 text-right" translate>Amount</div>
+        <div class="col-2 text-right" translate>Available</div>
+        <div class="col-1 text-center" translate>Target</div>
+      </div>
+    </ng-template>
+      <div class="mt-3">
+        @if (accountsToDisplay.length > 0) {
+          @for (account of accountsToDisplay; track account) {
+            <div class="grid grid-nogutter-x">
+              <div class="col-1 text-center">
+                @if (!(form.get('target').value &&
+                    form.get('target').value.pid === account.pid)) {
+                  <p-radioButton
+                    name="source"
+                    formControlName="source"
+                    [value]="account"
+                  />
+                }
+              </div>
+              <div class="col-6 ">
+                <a class="depth-padding-{{ account.depth }}" [routerLink]="['/', 'records', 'acq_accounts', 'detail', account.pid]">{{ account.name }}</a>
+              </div>
+              <div class="col-2 text-right">
+                {{
+                  account.allocated_amount | currency : organisation.default_currency
+                }}
+              </div>
+              <div
+                class="col-2 text-right"
+                [class]="{
+                  'text-success': account.remaining_balance.self > 0,
+                  'text-color-secondary': account.remaining_balance.self === 0,
+                  'text-warning': account.remaining_balance.self < 0
+                }"
+              >
+                {{
+                  account.remaining_balance.self
+                    | currency : organisation.default_currency
+                }}
+              </div>
+              <div class="col-1 text-center">
+                @if(!(form.get('source').value &&
+                    form.get('source').value.pid === account.pid)) {
+                <p-radioButton
+                  name="target"
+                  formControlName="target"
+                  [value]="account"
+                />
+                }
+            </div>
+          </div>
+        }
+        } @else {
+          {{ "No account available" | translate }}
+        }
+      </div>
+      <ng-template pTemplate="footer">
+        <p-divider />
+        <div class="flex flex-column gap-2 px-4 pb-4">
+          <label for="amount" translate>Amount</label>
+          <div class="flex flex-wrap gap-2 justify-content-between">
+            <div>
+              <p-inputGroup>
+                <p-inputGroupAddon>{{ currencySymbol }}</p-inputGroupAddon>
+                <input
+                  pInputText
+                  type="number"
+                  id="amount"
+                  formControlName="amount"
+                  [class]="{ 'ng-invalid ng-dirty': checkInput('amount') }"
+                />
+              </p-inputGroup>
+            </div>
+            <div class="flex flex-wrap gap-1 justify-content-end">
+              <p-button
+                type="cancel"
+                [label]="'Cancel' | translate"
+                severity="danger"
+                [routerLink]="['/acquisition', 'accounts']"
+                outlined
+              />
+              <p-button
+                type="submit"
+                [label]="'Transfer' | translate"
+                [disabled]="form.invalid"
+              />
+            </div>
+          </div>
+          @if (checkInput('amount')) {
+            @if (form.get('amount').hasError('required')) {
+              <small class="text-error" translate>This field is required.</small>
+            }
+            @if (form.get('amount').hasError('min')) {
+              <small class="text-error">
+                {{ "Minimum amount is" | translate }}
+                {{ form.get("amount").errors.min.min }}.
+              </small>
+            }
+            @if (form.get('amount').hasError('max')) {
+              <small class="text-error">
+                {{ "Maximum amount is" | translate }}
+                {{ form.get("amount").errors.max.max }}.
+              </small>
+            }
+          }
+        </div>
+      </ng-template>
+    </p-card>
+  </form>
 }

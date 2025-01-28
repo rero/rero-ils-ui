@@ -17,7 +17,7 @@
  */
 
 import { getCurrencySymbol } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -28,14 +28,14 @@ import { MessageService } from 'primeng/api';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { IAcqAccount } from '../../../classes/account';
 import { orderAccountsAsTree } from '../../../utils/account';
+import { DropdownChangeEvent } from 'primeng/dropdown';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'admin-account-transfer',
-  templateUrl: './account-transfer.component.html',
-  styleUrls: ['../../../acquisition.scss']
+  templateUrl: './account-transfer.component.html'
 })
-export class AccountTransferComponent implements OnInit {
-
+export class AccountTransferComponent implements OnInit, OnDestroy {
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
   private organisationService: OrganisationService = inject(OrganisationService);
   private formBuilder: UntypedFormBuilder = inject(UntypedFormBuilder);
@@ -48,14 +48,16 @@ export class AccountTransferComponent implements OnInit {
   /** the accounts available for transfer */
   accountsToDisplay: IAcqAccount[] = [];
   /** active budgets */
-  budgets: string[] = [];
+  budgets: any[] = [];
   /** the transfer form group */
   form: UntypedFormGroup;
 
   /** the accounts available for transfer */
   private accountsTree: IAcqAccount[] = [];
   /** store the selected budgets */
-  private selectedBudgetPid: string = undefined;
+  selectedBudget = undefined;
+
+  private subscriptions = new Subscription();
 
   // GETTER & SETTER ============================================================
   /** Get the current organisation */
@@ -73,31 +75,30 @@ export class AccountTransferComponent implements OnInit {
     this.form = this.formBuilder.group({
       source: [undefined, Validators.required],
       target: [undefined, Validators.required],
-      amount: [0, Validators.min(0.01)]
+      amount: [0, Validators.min(0.01)],
     });
   }
 
   /** OnInit hook */
   ngOnInit(): void {
     this._loadData();
-    this.form.controls.source.valueChanges.subscribe((account: IAcqAccount) => {
-      const maxTransferAmount = account.remaining_balance.self;
-      this.form.controls.amount.setValidators([
-        Validators.min(0.01),
-        Validators.max(maxTransferAmount)
-      ]);
-    });
+    this.subscriptions.add(
+      this.form.controls.source.valueChanges.subscribe((account: IAcqAccount) => {
+        const maxTransferAmount = account.remaining_balance.self;
+        this.form.controls.amount.setValidators([Validators.min(0.01), Validators.max(maxTransferAmount)]);
+      })
+    );
+  }
+
+  /** onDestroy hook */
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   // PUBLIC FUNCTIONS =========================================================
-  /** get the URL to access account detail view */
-  getDetailUrl(account: IAcqAccount): string[] {
-    return ['/', 'records', 'acq_accounts', 'detail', account.pid];
-  }
-
   /** Handle event when a budget is selected */
-  selectBudget(event: any): void {
-    this.selectedBudgetPid = event.target.value;
+  selectBudget(event: DropdownChangeEvent): void {
+    this.selectedBudget = event.value;
     this._filterAccountToDisplay();
   }
 
@@ -120,18 +121,19 @@ export class AccountTransferComponent implements OnInit {
             severity: 'success',
             summary: this.translateService.instant('Account'),
             detail: this.translateService.instant('Fund transfer successful!'),
-            life: CONFIG.MESSAGE_LIFE
+            life: CONFIG.MESSAGE_LIFE,
           });
           this.router.navigate(['/', 'acquisition', 'accounts']);
         },
-        error: (err) => this.messageService.add({
-          severity: 'error',
-          summary: this.translateService.instant('Account'),
-          detail:this.translateService.instant(err.error.message),
-          sticky: true,
-          closable: true
-        }),
-    });
+        error: (err) =>
+          this.messageService.add({
+            severity: 'error',
+            summary: this.translateService.instant('Account'),
+            detail: this.translateService.instant(err.error.message),
+            sticky: true,
+            closable: true,
+          }),
+      });
   }
 
   /**
@@ -142,9 +144,11 @@ export class AccountTransferComponent implements OnInit {
     if (this.form.get(fieldName) === undefined) {
       return true;
     }
-    return this.form.get(fieldName).invalid
-        && this.form.get(fieldName).errors
-        && (this.form.get(fieldName).dirty || this.form.get(fieldName).touched);
+    return (
+      this.form.get(fieldName).invalid &&
+      this.form.get(fieldName).errors &&
+      (this.form.get(fieldName).dirty || this.form.get(fieldName).touched)
+    );
   }
 
   // PRIVATE FUNCTIONS ========================================================
@@ -152,17 +156,23 @@ export class AccountTransferComponent implements OnInit {
   private _loadData(): void {
     const libraryPid = this.userService.user.currentLibrary;
     this.acqAccountApiService
-      .getAccounts(libraryPid, undefined, {sort: 'depth'})
+      .getAccounts(libraryPid, undefined, { sort: 'depth' })
       .subscribe((accounts: IAcqAccount[]) => {
         this.accountsTree = orderAccountsAsTree(accounts);
-        this.budgets = Array.from(new Set(this.accountsTree.map((account: IAcqAccount) => account.budget.pid)));
-        this.selectedBudgetPid = this.budgets.find(Boolean);  // get the first element
+        this.budgets = Array.from(new Set(this.accountsTree.map((account: IAcqAccount) => account.budget.pid))).map(
+          (val) => {
+            return { code: val };
+          }
+        );
+        this.selectedBudget = this.budgets.find(Boolean); // get the first element
         this._filterAccountToDisplay();
       });
   }
 
   /** Allow to filter loaded accounts by the selected budget */
   private _filterAccountToDisplay(): void {
-    this.accountsToDisplay = this.accountsTree.filter((acc: IAcqAccount) => acc.budget.pid === this.selectedBudgetPid);
+    this.accountsToDisplay = this.accountsTree.filter(
+      (acc: IAcqAccount) => acc.budget.pid === this.selectedBudget.code
+    );
   }
 }

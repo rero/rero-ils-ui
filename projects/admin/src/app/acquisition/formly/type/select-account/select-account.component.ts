@@ -22,8 +22,7 @@ import { ApiService } from '@rero/ng-core';
 
 @Component({
   selector: 'admin-select-account',
-  templateUrl: './select-account.component.html',
-  styleUrls: ['../../../acquisition.scss', './select-account.component.scss']
+  templateUrl: './select-account.component.html'
 })
 export class SelectAccountComponent extends FieldType implements OnInit {
 

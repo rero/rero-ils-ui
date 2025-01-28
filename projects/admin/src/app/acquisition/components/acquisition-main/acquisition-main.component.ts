@@ -1,7 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
- * Copyright (C) 2021 UCLouvain
+ * Copyright (C) 2022-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,30 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import 'bootstrap/scss/functions';
-@import 'bootstrap/scss/variables';
+import { Component } from '@angular/core';
 
-.dropdown-toggle.btn {
-  border: $input-border-width solid $input-border-color;
-}
-.number {
-  font-size: $font-size-sm;
-  font-weight: bold;
-  color: $secondary;
-  text-align: right;
-  &:before {
-    content: '[';
-  }
-  &:after {
-    content: ']';
-  }
-}
-.amount {
-  min-width: 10rem;
-  font-family: Arial;
-}
+@Component({
+  selector: 'admin-acquisition-main',
+  template: `
+    <router-outlet></router-outlet>
+    <p-toast>
+      <ng-template let-message pTemplate="message">
+        <div class="flex flex-column align-items-start" style="flex: 1">
+          <div class="font-medium text-lg text-900">
+            {{ message.summary }}
+          </div>
+          <p [innerHtml]="message.detail"></p>
+        </div>
+      </ng-template>
+    </p-toast>
+    <p-confirmDialog />
+  `,
+  styles: ``
+})
+export class AcquisitionMainComponent {
 
-.is_invalid {
-  border: $border-width solid $danger !important;
-  color: $danger;
 }

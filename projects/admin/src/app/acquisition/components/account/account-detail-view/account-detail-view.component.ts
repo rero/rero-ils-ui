@@ -25,8 +25,7 @@ import { IAcqAccount } from '../../../classes/account';
 
 @Component({
   selector: 'admin-acquisition-account-detail-view',
-  templateUrl: './account-detail-view.component.html',
-  styleUrls: ['./account-detail-view.component.scss']
+  templateUrl: './account-detail-view.component.html'
 })
 export class AccountDetailViewComponent implements OnInit, DetailRecord {
 

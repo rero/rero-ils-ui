@@ -24,16 +24,33 @@ import { AccountListComponent } from './components/account/account-list/account-
 import { AccountTransferComponent } from './components/account/account-transfer/account-transfer.component';
 import { OrderReceiptViewComponent } from './components/receipt/receipt-form/order-receipt-view.component';
 import { CanOrderReceiptGuard } from './routes/guards/can-order-receipt.guard';
+import { AcquisitionMainComponent } from './components/acquisition-main/acquisition-main.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'accounts', pathMatch: 'full' },
-  { path: 'accounts/transfer', component: AccountTransferComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.ACAC_TRANSFER ] } },
-  { path: 'accounts', component: AccountListComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.ACAC_ACCESS, PERMISSIONS.ACAC_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
-  { path: 'acq_orders/:pid/receive', component: OrderReceiptViewComponent, canActivate: [ CanOrderReceiptGuard ] }
+  {
+    path: '',
+    component: AcquisitionMainComponent,
+    children: [
+      { path: '', redirectTo: 'accounts', pathMatch: 'full' },
+      {
+        path: 'accounts/transfer',
+        component: AccountTransferComponent,
+        canActivate: [PermissionGuard],
+        data: { permissions: [PERMISSIONS.ACAC_TRANSFER] },
+      },
+      {
+        path: 'accounts',
+        component: AccountListComponent,
+        canActivate: [PermissionGuard],
+        data: { permissions: [PERMISSIONS.ACAC_ACCESS, PERMISSIONS.ACAC_SEARCH], operator: PERMISSION_OPERATOR.AND },
+      },
+      { path: 'acq_orders/:pid/receive', component: OrderReceiptViewComponent, canActivate: [CanOrderReceiptGuard] },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AcquisitionRoutingModule { }
+export class AcquisitionRoutingModule {}
