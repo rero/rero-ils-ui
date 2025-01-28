@@ -28,7 +28,6 @@ import { PreviewEmailModule } from '../shared/preview-email/preview-email.module
 import { AcquisitionRoutingModule } from './acquisition-routing.module';
 import { AcqAccountApiService } from './api/acq-account-api.service';
 import { AcqOrderApiService } from './api/acq-order-api.service';
-import { AccountBriefViewComponent } from './components/account/account-brief-view/account-brief-view.component';
 import { AccountDetailViewComponent } from './components/account/account-detail-view/account-detail-view.component';
 import { AccountListComponent } from './components/account/account-list/account-list.component';
 import { AccountTransferComponent } from './components/account/account-transfer/account-transfer.component';
@@ -57,14 +56,13 @@ import { NoteBadgeColorPipe } from './pipes/note-badge-color.pipe';
 import { PreviewContentPipe } from './pipes/preview-content.pipe';
 import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pipe';
 import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
-import { ChipsModule } from 'primeng/chips';
 import { PrimengImportModule } from '../shared/primeng-import/primeng-import.module';
 import { NotesComponent } from './components/notes/notes.component';
+import { AcquisitionMainComponent } from './components/acquisition-main/acquisition-main.component';
 
 @NgModule({
   declarations: [
     AccountListComponent,
-    AccountBriefViewComponent,
     AccountTransferComponent,
     AccountDetailViewComponent,
     BudgetsBriefViewComponent,
@@ -89,7 +87,8 @@ import { NotesComponent } from './components/notes/notes.component';
     PreviewContentPipe,
     ReceiptLineTotalAmountPipe,
     OrderEmailFormComponent,
-    NotesComponent
+    NotesComponent,
+    AcquisitionMainComponent
   ],
   imports: [
     CommonModule,

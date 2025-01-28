@@ -19,11 +19,15 @@ import { HttpParams } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
 import { AcqAccountApiService } from '@app/admin/acquisition/api/acq-account-api.service';
 import { IAcqAccount } from '@app/admin/acquisition/classes/account';
+import { CONFIG } from '@rero/ng-core';
 import { exportFormats } from '@app/admin/acquisition/routes/accounts-route';
 import { OrganisationService } from '@app/admin/service/organisation.service';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, RecordService } from '@rero/ng-core';
 import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
+import { MessageService } from 'primeng/api';
+import { forkJoin, map, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'admin-account-list',
@@ -36,10 +40,12 @@ export class AccountListComponent implements OnInit {
   private organisationService: OrganisationService = inject(OrganisationService);
   private apiService: ApiService = inject(ApiService);
   private translateService: TranslateService = inject(TranslateService);
+  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private messageService: MessageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =======================================================
   /** Root account to display */
-  rootAccounts: IAcqAccount[] = [];
+  rootAccounts: any[] = [];
 
   /** Export options configuration. */
   exportOptions: {
@@ -74,17 +80,90 @@ export class AccountListComponent implements OnInit {
   /** OnInit hook */
   ngOnInit(): void {
     this._libraryPid = this.userService.user.currentLibrary;
-    this.acqAccountApiService.getAccounts(this._libraryPid, null).subscribe(
-      accounts => {
-        this.rootAccounts = accounts;
+    let localAccounts = [];
+    this.acqAccountApiService.getAccounts(this._libraryPid, null).pipe(
+      map(accounts => this.processAccount(accounts)),
+      tap(accounts => localAccounts = accounts),
+      switchMap(accounts => {
+        const obs = accounts.map(account => this.recordPermissionService
+          .getPermission('acq_accounts', account.data.pid))
+        return forkJoin(obs);
+      }),
+      map((permissions: any) => {
+        permissions.forEach((permission, i) => {
+          localAccounts[i].data.permissions = permission;
+        });
+      })
+    ).subscribe(
+      () => {
+        this.rootAccounts = localAccounts;
         this.exportOptions = this._exportFormats();
       });
   }
 
+  processAccount(accounts) {
+    return accounts.map(account => {
+      return {
+        data: account,
+        label: account.name,
+        leaf: !(account?.number_of_children > 0)
+      };
+    });
+  }
   // COMPONENT FUNCTIONS ========================================================
   /** Operations to do when an account is deleted */
-  accountDeleted(account: IAcqAccount): void {
-    this.rootAccounts = this.rootAccounts.filter(item => item.pid !== account.pid);
+  accountDelete(node): void {
+    console.log(node);
+    this.acqAccountApiService
+      .delete(node.node.data.pid)
+      .pipe(
+        tap(() => {
+          if (node.parent) {
+            node.parent.children = node.parent.children.filter(account => account.data.pid !== node.node.data.pid);
+            node.parent.leaf = !(node.parent.children.length > 0);
+          } else {
+            this.rootAccounts = this.rootAccounts.filter(account => account.data.pid !== node.node.data.pid);
+          }
+          this.rootAccounts = [...this.rootAccounts];
+        })
+      )
+      .subscribe(() => {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translateService.instant('Account'),
+          detail: this.translateService.instant('Account deleted'),
+          life: CONFIG.MESSAGE_LIFE
+        });
+      });
+  }
+
+  deleteInfoMessage(permissions): string {
+    return this.recordPermissionService.generateDeleteMessage(permissions.delete.reasons);
+  }
+
+  onNodeExpand(event: any) {
+    if (!event.node.children) {
+      let localAccounts = [];
+      this.acqAccountApiService.getAccounts(this._libraryPid, event.node.data.pid).pipe(
+        map(accounts => this.processAccount(accounts)),
+        tap(accounts => localAccounts = accounts),
+        switchMap(accounts => {
+          const obs = accounts.map(account => this.recordPermissionService
+            .getPermission('acq_accounts', account.data.pid))
+          return forkJoin(obs);
+        }),
+        map((permissions: any) => {
+          permissions.forEach((permission, i) => {
+            localAccounts[i].data.permissions = permission;
+          });
+        })
+      ).subscribe(
+        () => {
+          event.node.children = localAccounts;
+          this.rootAccounts = [...this.rootAccounts];
+        }
+      );
+    }
   }
 
   /**

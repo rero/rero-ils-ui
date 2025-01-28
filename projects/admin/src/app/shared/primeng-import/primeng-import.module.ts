@@ -42,6 +42,8 @@ import { TableModule } from 'primeng/table';
 import { FieldsetModule } from 'primeng/fieldset';
 import { ChartModule } from 'primeng/chart';
 import { AvatarModule } from 'primeng/avatar';
+import { TreeModule } from 'primeng/tree';
+import { TreeTableModule } from 'primeng/treetable';
 
 
 @NgModule({
@@ -70,7 +72,9 @@ import { AvatarModule } from 'primeng/avatar';
     CardModule,
     TableModule,
     FieldsetModule,
-    ChartModule
+    ChartModule,
+    TreeModule,
+    TreeTableModule
   ]
 })
 export class PrimengImportModule { }

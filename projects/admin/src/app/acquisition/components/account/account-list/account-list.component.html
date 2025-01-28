@@ -16,9 +16,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (organisation) {
-  <header class="d-flex align-items-baseline">
+  <header class="flex align-items-baseline justify-content-between">
     <h1 translate>Acquisition accounts</h1>
-    <div class="ml-auto">
+    <div class="flex gap-2 flex-wrap">
       <!-- ADD BUTTON -->
       <p-button
         icon="fa fa-plus"
@@ -45,23 +45,101 @@
     </div>
   </header>
 
-  <section class="mt-3">
-    <div class="grid p-1 mb-2 bg-blue-900 text-light">
-      <div class="col-6"></div>
-      <div class="col-1 text-right" translate>Amount</div>
-      <div class="col-1 text-right" translate>Available</div>
-      <div class="col-1 text-right" translate>Engagement</div>
-      <div class="col-1 text-right" translate>Expenditure</div>
-      <div class="col-1 text-right" translate>Balance</div>
-    </div>
+  <section>
     @if (rootAccounts.length > 0) {
-      @for (account of rootAccounts; track account) {
-        <admin-account-brief-view
-        [account]="account"
-        [loadChildren]="true"
-        (deleteAccount)="accountDeleted($event)"
-      ></admin-account-brief-view>
-      }
+    <p-treeTable
+      autoLayout
+      styleClass="p-treetable-sm"
+      (onNodeExpand)="onNodeExpand($event)"
+      [value]="rootAccounts"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th translate>Name</th>
+          <th class="text-right" translate>Amount</th>
+          <th class="text-right" translate>Available</th>
+          <th class="text-right" translate>Engagement</th>
+          <th class="text-right" translate>Expenditure</th>
+          <th class="text-right" translate>Balance</th>
+          <th></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+      <tr>
+          <td>
+              <p-treeTableToggler [rowNode]="rowNode" />
+              <a [title]="rowData.number" [routerLink]="['/records', 'acq_accounts', 'detail', rowData.pid]">{{ rowData.name }}</a>
+          </td>
+          <td  class="text-right">
+            {{ rowData.allocated_amount | currency: organisation.default_currency }}
+          </td>
+          <td class="text-right">
+            <ng-container *ngVar="rowData | accountAvailableAmount as available_amount">
+              <span [class]="{
+                'text-success': available_amount > 0,
+                'text-color-secondary': available_amount === 0,
+                'text-warning': available_amount < 0
+              }">
+                {{ available_amount | currency: organisation.default_currency }}
+              </span>
+            </ng-container>
+          </td>
+          <td class="text-right" [class]="{
+            'text-error': rowData.encumbrance_amount.self > 0,
+            'text-color-secondary': rowData.encumbrance_amount.self <= 0
+          }">
+              {{ rowData.encumbrance_amount.self | currency: organisation.default_currency }}
+          </td>
+          <td class="text-right" [class]="{
+            'text-error': rowData.expenditure_amount.self > 0,
+            'text-color-secondary': rowData.expenditure_amount.self <= 0
+          }">
+          {{ rowData.expenditure_amount.self | currency: organisation.default_currency}}
+          </td>
+          <td
+          class="text-right"
+          [class]="{
+          'text-color-secondary': rowData.remaining_balance.self === 0,
+          'text-warning': rowData.remaining_balance.self < 0
+        }">
+        {{ rowData.remaining_balance.self | currency: organisation.default_currency }}
+          </td>
+          <td>
+            <div class="flex gap-1 justify-content-end flex-wrap">
+             <!-- EDIT BUTTON -->
+             @if (rowData.permissions && rowData.permissions?.update && rowData?.permissions?.update?.can) {
+              <p-button
+                icon="fa fa-pencil"
+                outlined
+                size="small"
+                [title]="'Edit account'|translate"
+                [routerLink]="['/', 'records', 'acq_accounts', 'edit', rowData.pid]"
+              />
+            }
+            <!-- DELETE BUTTON -->
+            <p-button
+              icon="fa fa-trash"
+              class="pointer-events-auto"
+              severity="danger"
+              outlined
+              size="small"
+              (onClick)="accountDelete(rowNode)"
+              [title]="'Delete account'|translate"
+              [pTooltip]="tooltipContent"
+              tooltipPosition="top"
+              [disabled]="!rowData.permissions?.delete?.can"
+              [tooltipDisabled]="rowData.permissions?.delete?.can"
+            />
+            <ng-template #tooltipContent>
+              <span [innerHTML]="deleteInfoMessage(rowData.permissions) | nl2br"></span>
+            </ng-template>
+          </div>
+          </td>
+      </tr>
+  </ng-template>
+
+    </p-treeTable>
+
     } @else {
       {{ 'No account available' | translate }}
     }
