@@ -49,4 +49,5 @@ export interface IAcqAccount extends IAcqBaseResource {
   distribution: number;
   budget: IObjectReference;
   parent: IObjectReference;
+  number_of_children?: number;
 }

@@ -96,7 +96,7 @@ export class AcqAccountApiService {
     const query = defaultQueryParams.join(' AND ');
     options = { ...{sort: 'name'}, ...options };  // add some default params
     return this.recordService
-      .getRecords(this.resourceName, query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, options.sort)
+      .getRecords(this.resourceName, query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, {'Accept': 'application/rero+json'}, options.sort)
       .pipe(
         map((result: Record) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map(hit => ({...this.accountDefaultData, ...hit.metadata}) ))

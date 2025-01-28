@@ -41,6 +41,7 @@
   @import '../record/detail-view/entities-detail-view/remote/entities-remote-detail-view.component.scss';
   @import '../record/detail-view/permission-detail-view/permission-detail-view.component.scss';
   @import '../migration/conversion/record/detail-view/migration-data/migration-data.component.scss';
+  @import '../acquisition/components/account/account-detail-view/account-detail-view.component.scss';
 }
 
 @layer rero-ils-ui {
@@ -50,6 +51,14 @@
   .container {
     max-width: 1440px;
     margin: auto;
+  }
+  $DEPTH-PADDING: 10px;
+  $MAX-DEPTH: 10;
+
+  @for $level from 1 to $MAX-DEPTH {
+    .depth-padding-#{$level} {
+      padding-left: calc(#{$DEPTH-PADDING} * #{$level});
+    }
   }
 }
 

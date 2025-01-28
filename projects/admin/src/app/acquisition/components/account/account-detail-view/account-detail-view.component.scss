@@ -16,53 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import 'bootstrap/scss/functions';
-@import 'bootstrap/scss/variables';
-@import '../../../../scss/variables';
-
-.accounting-infos {
-
-  .card-body {
-    padding: 0;
+admin-acquisition-account-detail-view {
+table td {
+    @extend .px-2, .py-1;
   }
-
-  .table {
-    margin-bottom: 0;
-
-    th, td {
-      border-top: none;
-    }
-    tr *:first-child {
-      padding-left: map-get($spacers, 5);
-    }
-    tr *:last-child {
-      padding-right: map-get($spacers, 3);
-    }
-    tr:first-child * {
-      padding-top: map-get($spacers, 4);
-    }
-    tr:last-child * {
-      padding-bottom: map-get($spacers, 4);
-    }
-
-    .percentage {
-      text-align: center !important;
-    }
-
-    .amount {
-      font-family: Arial;
-      text-align: right;
-      border-left: $border-width solid $border-color;
-      flex: 0 0 15%;
-      max-width: 15%;
-    }
-
-    .result {
-      border-top: $border-width solid $border-color;
-      border-bottom: $border-width solid $border-color;
-      background-color: $light;
-    }
-
-  }
-
 }
