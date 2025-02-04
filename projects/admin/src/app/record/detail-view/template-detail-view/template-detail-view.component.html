@@ -15,12 +15,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  <h2 id="template-name">
+  <h1 id="template-name">
     {{ record.metadata.name }}
     @if (record.metadata.visibility && record.metadata.visibility === 'private') {
       <i class="fa fa-lock text-secondary ml-2" aria-hidden="true"></i>
     }
-  </h2>
+  </h1>
   <dl class="metadata">
     <!-- DESCRIPTION -->
     @if (record.metadata.description) {

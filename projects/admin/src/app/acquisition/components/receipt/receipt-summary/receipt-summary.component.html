@@ -101,14 +101,14 @@
     @if (recordPermissions && allowActions) {
       <div class="col-3 flex flex-wrap gap-1 justify-content-end">
         <!-- CONTINUE BUTTON -->
-        <shared-action-button
-          icon="fa fa-pencil"
-          [title]="'Edit' | translate"
-          [disabled]="!recordPermissions.update.can"
-          [routerLink]="['/', 'acquisition', 'acq_orders', receipt.acq_order.pid, 'receive']"
-          [queryParams]="{ receipt: receipt.pid }"
-          [message]="editInfoMessage"
-        />
+         @if (canEdit) {
+          <shared-action-button
+            icon="fa fa-pencil"
+            [title]="'Edit' | translate"
+            [routerLink]="['/', 'acquisition', 'acq_orders', receipt.acq_order.pid, 'receive']"
+            [queryParams]="{ receipt: receipt.pid }"
+          />
+         }
         <shared-action-button
           icon="fa fa-trash"
           [title]="'Delete' | translate"

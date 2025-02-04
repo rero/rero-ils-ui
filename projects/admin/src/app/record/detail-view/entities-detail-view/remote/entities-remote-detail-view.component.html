@@ -25,13 +25,13 @@
   <p-tag severity="warning" [value]="'Remote' | translate" />
 
   <!-- SOURCES -->
-   <p-accordion styleClass="mt-2" [multiple]="true">
+   <div class="mt-2 flex flex-column gap-2">
     @for (source of $any(record).metadata.sources.sort(); track source) {
-      <p-accordionTab [selected]="true">
+      <p-panel>
         <ng-template pTemplate="header">
-          <h5>{{ source | translate | uppercase }}</h5>
+          <h5 class="p-0">{{ source | translate | uppercase }}</h5>
         </ng-template>
-        <div class="pt-2">
+        <div>
             @switch ($any(record).metadata.type) {
               @case (entityType.PERSON) {
                 <admin-remote-entities-person-detail-view [record]="$any(record).metadata[source]" [source]="source" />
@@ -74,7 +74,7 @@
             <dd>{{ $any(record).metadata[source].pid }}</dd>
           </dl>
         </div>
-      </p-accordionTab>
+    </p-panel>
     }
-  </p-accordion>
+  </div>
 }

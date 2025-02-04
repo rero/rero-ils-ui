@@ -33,7 +33,7 @@
     <div class="flex-grow-1 flex flex-column gap-1">
       <!-- TITLE -->
       @if (record.metadata.title && record.metadata.title | mainTitle; as title) {
-      <h2 id="doc-title">
+      <h1 id="doc-title">
         <ng-core-text-read-more
           [text]="title"
           [unit]="'character'"
@@ -41,7 +41,7 @@
           [showMoreLabel]="'Show more' | translate"
           [showLessLabel]="'Show less' | translate"
         />
-      </h2>
+      </h1>
       }
 
       <!-- TITLE ALTERNATIVE GRAPHICS -->

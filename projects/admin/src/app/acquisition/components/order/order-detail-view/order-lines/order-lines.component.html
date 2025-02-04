@@ -19,7 +19,7 @@
   <ng-template pTemplate="header">
     <div class="w-full flex flex-wrap justify-content-between gap-2">
       <h5 translate>Order lines</h5>
-      @if (recordPermissions?.update?.can) {
+      @if (canAdd()) {
           <p-button
             icon="fa fa-plus-square-o"
             [label]="'Add'|translate"
@@ -37,7 +37,6 @@
           <div class="pt-2 border-bottom-1 surface-border">
           <admin-order-line [orderLine]="orderLine"
                             [order]="order"
-                            [recordPermissions]="recordPermissions"
           />
         </div>
         }

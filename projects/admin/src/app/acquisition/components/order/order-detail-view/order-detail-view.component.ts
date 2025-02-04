@@ -17,8 +17,9 @@
  */
 import { APP_BASE_HREF, Location, ViewportScroller } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
+import { AcqReceiptApiService } from '@app/admin/acquisition/api/acq-receipt-api.service';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
@@ -26,17 +27,20 @@ import { TranslateService } from '@ngx-translate/core';
 import { extractIdOnRef } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AcqOrderHistoryVersion, AcqOrderHistoryVersionResponseInterface, AcqOrderStatus, IAcqOrder } from '../../../classes/order';
+import { forkJoin, Observable, Subscription } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
+import {
+  AcqOrderHistoryVersion,
+  AcqOrderStatus,
+  IAcqOrder
+} from '../../../classes/order';
 import { OrderEmailFormComponent } from '../order-email-form/order-email-form.component';
 
 @Component({
   selector: 'admin-acquisition-order-detail-view',
-  templateUrl: './order-detail-view.component.html'
+  templateUrl: './order-detail-view.component.html',
 })
 export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
-
   private dialogService: DialogService = inject(DialogService);
   private scroller: ViewportScroller = inject(ViewportScroller);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
@@ -46,7 +50,7 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
   private route: ActivatedRoute = inject(ActivatedRoute);
   private location: Location = inject(Location);
   private baseHref = inject(APP_BASE_HREF);
-
+  private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Observable resolving record data */
@@ -61,8 +65,7 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
   acqOrderStatus = AcqOrderStatus;
   /** order permissions */
   recordPermissions?: RecordPermissions;
-  /** Is permissions loaded */
-  isPermissionsLoaded = false;
+
   /** history versions of this order */
   historyVersions: AcqOrderHistoryVersion[] = [];
 
@@ -80,44 +83,47 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
   }
 
   /** Is this order could manage reception */
-  get canViewReceipts(): boolean {
-    return this.order.status !== AcqOrderStatus.PENDING;
+  get disabledReceipts(): boolean {
+    return [AcqOrderStatus.PENDING, AcqOrderStatus.CANCELLED].some((status) => status === this.order.status);
   }
 
   addTabToUrl(event) {
-    this.location.replaceState(location.pathname.replace(this.baseHref, ""), `tab=${event}`);
+    this.location.replaceState(location.pathname.replace(this.baseHref, ''), `tab=${event}`);
   }
 
   /** OnInit hook */
   ngOnInit(): void {
     this.tabActiveIndex = +this.route.snapshot.queryParamMap.get('tab') || 0;
-    this.subscriptions.add(this.record$.subscribe(
-      (record: any) => {
-        this.order = record.metadata;
-        if (this.order.is_current_budget) {
-          this.subscriptions.add(this.recordPermissionService.getPermission('acq_orders', this.order.pid)
-          .pipe(map((permissions) => this.permissionValidator.validate(permissions, this.order.library.pid)))
-          .subscribe((permissions) => {
-            this.recordPermissions = permissions;
-            this.isPermissionsLoaded = true;
-          }));
-        } else {
-          this.isPermissionsLoaded = true;
-        }
-
-        // Ask for order history
-        this.acqOrderService.getOrderHistory(this.order.pid);
-      }
-    ));
-    this.subscriptions.add(this.acqOrderService.acqOrderHistorySubject.subscribe(
-      (versions: AcqOrderHistoryVersionResponseInterface[]) => {
-        this.historyVersions = versions.map(version => new AcqOrderHistoryVersion(version));
-      }));
+    this.subscriptions.add(
+      this.record$.pipe(
+        tap((record: any) => this.order = record.metadata),
+        switchMap(() => {
+          const obs = [
+            // history
+            this.acqOrderService.getOrderHistory(this.order.pid).pipe(
+              map((versions) => this.historyVersions = versions.map((version) => new AcqOrderHistoryVersion(version)))
+            ),
+            // permissions
+            this.recordPermissionService.getPermission('acq_orders', this.order.pid).pipe(
+              map((permissions) => this.permissionValidator.validate(permissions, this.order.library.pid)),
+              map((permissions) => this.recordPermissions = permissions)
+            )
+          ];
+          return forkJoin(obs);
+        }),
+        switchMap(() =>
+          // reload order if an order line has been deleted
+          this.acqReceiptApiService.deletedReceiptSubject$
+        ),
+        switchMap(() => this.acqOrderService.getOrder(this.order.pid, 1)),
+        tap(order => this.order = order)
+      ).subscribe()
+    );
   }
 
   /** OnDestroy hook */
   ngOnDestroy(): void {
-      this.subscriptions.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   // COMPONENT FUNCTIONS =======================================================
@@ -141,8 +147,8 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
       width: '60vw',
       dismissableMask: true,
       data: {
-        order: this.order
-      }
+        order: this.order,
+      },
     });
     this.modalRef.onClose.subscribe((order?: IAcqOrder) => {
       if (order && this.order.pid === order.pid) {
