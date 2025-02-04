@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { RecordPermissions } from '@app/admin/classes/permissions';
-import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { Subscription } from 'rxjs';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
-import { IAcqOrder, IAcqOrderLine } from '../../../../classes/order';
+import { AcqOrderStatus, IAcqOrder, IAcqOrderLine } from '../../../../classes/order';
+import { UserService } from '@rero/shared';
 
 @Component({
   selector: 'admin-order-lines',
@@ -29,13 +28,11 @@ import { IAcqOrder, IAcqOrderLine } from '../../../../classes/order';
 export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
 
   private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
-  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private userService : UserService = inject(UserService);
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** Acquisition order pid */
   @Input() order: IAcqOrder;
-  /** record permissions */
-  @Input() recordPermissions?: RecordPermissions;
   /** Acquisition order lines to display */
   orderLines: IAcqOrderLine[] = undefined;
 
@@ -52,6 +49,19 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
           (orderLine: IAcqOrderLine) => this.orderLines = this.orderLines.filter((line: IAcqOrderLine) => line.pid !== orderLine.pid)
         )
     );
+  }
+
+  canAdd(): boolean {
+    // rollover
+    if (!this.order.is_current_budget) {
+      return false;
+    }
+    // owning library
+    if (this.userService.user.currentLibrary !== this.order.library.pid) {
+      return false;
+    }
+    // order status
+    return [AcqOrderStatus.PENDING, AcqOrderStatus.CANCELLED].some(status => status == this.order.status);
   }
 
   /** OnChanges hook */

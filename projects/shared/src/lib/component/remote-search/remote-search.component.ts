@@ -39,6 +39,7 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
   @Input() placeholder: string = 'search';
   @Input() viewcode: string | undefined;
   @Input() inputstyleclass: string;
+  @Input() styleclass: string;
   @Input() internalRoutingBaseURL: string | undefined;
 
   admin: boolean;

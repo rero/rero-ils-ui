@@ -22,7 +22,7 @@ import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions'
 import { of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
-import { IAcqOrder } from '../../../classes/order';
+import { AcqOrderStatus, IAcqOrder } from '../../../classes/order';
 import { IAcqReceipt } from '../../../classes/receipt';
 import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
 
@@ -41,7 +41,7 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
   /** the order for which we want to display receipts */
   @Input() order: IAcqOrder;
   /** the permissions about the related order */
-  @Input() recordPermissions?: RecordPermissions = null;
+  recordPermissions?: RecordPermissions = null;
   /** AcqReceipt to display */
   receipts: IAcqReceipt[] = undefined;
 
@@ -55,6 +55,10 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
    */
   get createInfoMessage(): string {
     return this.recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons, 'create');
+  }
+
+  canAdd(): boolean {
+    return [AcqOrderStatus.PARTIALLY_RECEIVED, AcqOrderStatus.ORDERED].some(status => status == this.order.status);
   }
 
   /**

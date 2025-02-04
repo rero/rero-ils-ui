@@ -75,14 +75,14 @@
       </div>
     </div>
     <div class="col-2 flex gap-1 justify-content-end">
-      @if (recordPermissions) {
+      @if (recordPermissions?.update?.can) {
         <shared-action-button
           icon="fa fa-pencil"
           [title]="'Edit'|translate"
-          [disabled]="!recordPermissions.update.can"
           [routerLink]="['/records', 'acq_order_lines', 'edit', orderLine.pid]"
-          [message]="editInfoMessage"
         />
+      }
+      @if (recordPermissions) {
         <shared-action-button
           icon="fa fa-trash"
           [title]="'Delete'|translate"

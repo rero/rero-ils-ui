@@ -43,13 +43,13 @@
 
   <p-accordion multiple [activeIndex]="[0]">
     <!-- locations ======================================================== -->
-    <p-accordionTab>
+    <p-accordionTab #locTab>
       <ng-template pTemplate="header">
         <div class="flex w-full align-items-center justify-content-between mr-2">
           <div>
             <i class="fa fa-map-marker"></i>&nbsp;<span translate>Locations</span>
           </div>
-          @if (isUserCanAddLocation) {
+          @if (isUserCanAddLocation && locTab.selected) {
               <p-button
                 icon="fa fa-plus-square-o"
                 [label]="'Add'|translate"

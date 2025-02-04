@@ -25,13 +25,11 @@ import { map } from 'rxjs/operators';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqOrderLineStatus, IAcqOrderLine } from '../../../../classes/order';
 
-
 @Component({
   selector: 'admin-order-line',
-  templateUrl: './order-line.component.html'
+  templateUrl: './order-line.component.html',
 })
 export class OrderLineComponent implements OnInit, OnDestroy {
-
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
   private recordService: RecordService = inject(RecordService);
   private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
@@ -42,8 +40,6 @@ export class OrderLineComponent implements OnInit, OnDestroy {
   @Input() orderLine: IAcqOrderLine;
   /** parent order */
   @Input() order: any;
-  /** order line permission */
-  @Input() recordPermissions?: RecordPermissions;
 
   /** order line relate account */
   account: any;
@@ -51,6 +47,7 @@ export class OrderLineComponent implements OnInit, OnDestroy {
   isCollapsed = true;
   /** reference to AcqOrderLineStatus */
   orderLineStatus = AcqOrderLineStatus;
+  recordPermissions?: RecordPermissions;
 
   /** all component subscription */
   private subscriptions = new Subscription();
@@ -61,32 +58,21 @@ export class OrderLineComponent implements OnInit, OnDestroy {
    * @return the message to display into the tooltip box
    */
   get deleteInfoMessage(): string {
-    return (!this.recordPermissions.delete.can)
+    return !this.recordPermissions.delete.can
       ? this.recordPermissionService.generateDeleteMessage(this.recordPermissions.delete.reasons)
-      : null;
-  }
-  get editInfoMessage(): string {
-    return (!this.recordPermissions.update.can)
-      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'update')
       : null;
   }
 
   /** OnInit hook */
   ngOnInit() {
     const account$ = this.recordService.getRecord('acq_accounts', this.orderLine.acq_account.pid);
-    if (this.recordPermissions) {
-      const permissions$ = this.recordPermissionService.getPermission('acq_order_lines', this.orderLine.pid).pipe(
-        map((permissions) => this.permissionValidator.validate(permissions, this.order.library.pid))
-      );
-      forkJoin([permissions$, account$]).subscribe(
-        ([permissions, account]) => {
-          this.recordPermissions = permissions;
-          this.account = account;
-        }
-      );
-    } else {
-      this.subscriptions.add(account$.subscribe(account => this.account = account));
-    }
+    const permissions$ = this.recordPermissionService
+      .getPermission('acq_order_lines', this.orderLine.pid)
+      .pipe(map((permissions) => this.permissionValidator.validate(permissions, this.order.library.pid)));
+    forkJoin([permissions$, account$]).subscribe(([permissions, account]) => {
+      this.recordPermissions = permissions;
+      this.account = account;
+    });
   }
 
   /** onDestroy hook */

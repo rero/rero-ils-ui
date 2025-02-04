@@ -36,8 +36,6 @@ export class ReceiptsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.ACRE_ACCESS, PERMISSIONS.ACRE_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
-        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard, IsBudgetActiveGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
         { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard, IsBudgetActiveGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
       ],
       data: {
@@ -45,23 +43,13 @@ export class ReceiptsRoute extends BaseRoute implements RouteInterface {
           {
             key: this.name,
             label: _('Receipts'),
-            detailComponent: ReceiptDetailViewComponent,
             editorSettings: {
               longMode: true,
             },
             searchFilters: [
               this.expertSearchFilter()
             ],
-            preUpdateRecord: (data: any) => this._cleanRecord(data),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType, true),
-            aggregations: (aggregations: any) => this.routeToolService.aggregationFilter(aggregations),
-            aggregationsBucketSize: 10,
-            itemHeaders: {
-              Accept: 'application/rero+json, application/json'
-            },
-            listHeaders: {
-              Accept: 'application/rero+json'
-            }
+            preUpdateRecord: (data: any) => this._cleanRecord(data)
           }
         ]
       }
