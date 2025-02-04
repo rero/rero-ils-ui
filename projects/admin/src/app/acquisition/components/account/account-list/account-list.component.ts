@@ -113,7 +113,6 @@ export class AccountListComponent implements OnInit {
   // COMPONENT FUNCTIONS ========================================================
   /** Operations to do when an account is deleted */
   accountDelete(node): void {
-    console.log(node);
     this.acqAccountApiService
       .delete(node.node.data.pid)
       .pipe(

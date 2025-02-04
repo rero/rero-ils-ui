@@ -26,7 +26,7 @@
         }}
         <p-tag severity="secondary" [value]="numberOfReceipt" />
       </h5>
-      @if (recordPermissions?.create?.can) {
+      @if (canAdd()) {
       <p-button
         icon="fa fa-plus-square-o"
         [label]="'Add' | translate"
@@ -41,7 +41,7 @@
     <admin-receipt-summary
       [receiptPid]="receipt.pid"
       [allowActions]="true"
-      [recordPermissions]="recordPermissions"
+      [order]="order"
     />
     } } @else {
     <div translate>No receipt</div>

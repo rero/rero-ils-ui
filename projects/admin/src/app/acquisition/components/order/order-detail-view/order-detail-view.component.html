@@ -20,29 +20,30 @@
 <div [ngClass]="{ 'opacity-50': !order.is_current_budget }">
   <!-- ROLLOVER INFO -->
   @if (!order.is_current_budget) {
-  <p-messages
-    [value]="[{ severity: 'warn', detail: 'Fiscal year closed' | translate }]"
-    [closable]="false"
-    [enableService]="false"
-    showTransitionOptions="0ms"
-  />
+    <p-messages
+      [value]="[{ severity: 'warn', detail: 'Fiscal year closed' | translate }]"
+      [closable]="false"
+      [enableService]="false"
+      showTransitionOptions="0ms"
+    />
   }
 
   <!-- Place order button -->
   <div class="flex gap-2 justify-content-between flex-wrap">
     <h1>{{ order.reference }}</h1>
-    @if (order?.is_current_budget && order?.pid) { @if (recordPermissions &&
-    recordPermissions.update.can && order.status === acqOrderStatus.PENDING) {
-    <section class="flex justify-content-end">
-      <p-button
-        (onClick)="placeOrderDialog()"
-        severity="primary"
-        [disabled]="!canPlaceOrder"
-        icon="fa fa-shopping-cart"
-        [label]="'Place order' | translate"
-      />
-    </section>
-    } }
+    @if (order?.is_current_budget && order?.pid) {
+      @if (recordPermissions && recordPermissions.update.can && order.status === acqOrderStatus.PENDING) {
+        <section class="flex justify-content-end">
+          <p-button
+            (onClick)="placeOrderDialog()"
+            severity="primary"
+            [disabled]="!canPlaceOrder"
+            icon="fa fa-shopping-cart"
+            [label]="'Place order' | translate"
+          />
+        </section>
+      }
+    }
   </div>
   <!-- ORDER SUMMARY -->
   <admin-order-summary [order]="order">
@@ -61,37 +62,35 @@
   </admin-order-summary>
 
   <p-tabView [activeIndex]="tabActiveIndex" (activeIndexChange)="addTabToUrl($event)">
-    <p-tabPanel [header]="'Order' | translate" #orderPanel>
+    <p-tabPanel #orderPanel [header]="'Order' | translate">
+      <!--- TODO: change this for the next primeng version (19)-->
       @if(orderPanel.selected) {
         <div class="flex flex-column gap-2">
           <!-- ORDER LINES -->
-          @if (isPermissionsLoaded) {
           <admin-order-lines
             [order]="order"
-            [recordPermissions]="recordPermissions"
           />
-          }
           <!-- ORDER NOTES -->
-          @if (order.notes && order.notes.length > 0) {
-          <p-panel>
-            <ng-template pTemplate="header">
-              <div class="flex gap-2 align-items-center">
-                <shared-open-close-button (status)="notesCollapsed = $event" />
-                <h5 class="m-0">
-                  {{
-                    order.notes.length
-                      | i18nPlural : { "=1": "Note", other: "Notes" }
-                      | translate
-                  }}&nbsp;
-                  <p-badge [value]="order.notes.length" />
-                </h5>
-              </div>
-            </ng-template>
+          @if(order.notes && order.notes.length > 0) {
+            <p-panel>
+              <ng-template pTemplate="header">
+                <div class="flex gap-2 align-items-center">
+                  <shared-open-close-button (status)="notesCollapsed = $event" />
+                  <h5 class="m-0">
+                    {{
+                      order.notes.length
+                        | i18nPlural : { "=1": "Note", other: "Notes" }
+                        | translate
+                    }}&nbsp;
+                    <p-badge [value]="order.notes.length" />
+                  </h5>
+                </div>
+              </ng-template>
 
-            @if (!notesCollapsed) {
-            <admin-notes [notes]="order.notes" />
-            }
-          </p-panel>
+              @if (!notesCollapsed) {
+              <admin-notes [notes]="order.notes" />
+              }
+            </p-panel>
           }
         </div>
       }
@@ -99,34 +98,28 @@
     <p-tabPanel
       id="receipt"
       [header]="'Reception' | translate"
-      [disabled]="!canViewReceipts"
+      [disabled]="disabledReceipts"
       #receiptPanel
     >
-      @if (receiptPanel.selected && isPermissionsLoaded) {
-      <admin-receipt-list
-        class="row"
-        [order]="order"
-        [recordPermissions]="recordPermissions"
-      />
+      @if (receiptPanel.selected) {
+        <admin-receipt-list
+          [order]="order"
+        />
       }
     </p-tabPanel>
     @if (historyVersions && historyVersions.length > 1) {
-    <p-tabPanel [header]="'History' | translate">
-      <p-timeline [value]="historyVersions">
-        <ng-template pTemplate="marker" let-event>
-          <div
-            [class.p-timeline-event-marker-current]="event.active"
-            class="p-timeline-event-marker"
-          ></div>
-        </ng-template>
-        <ng-template pTemplate="content" let-event>
-          <a [routerLink]="['/records', 'acq_orders', 'detail', event.pid]">{{
-            event.label
-          }}</a>
-          <small>{{ event.description }}</small>
-        </ng-template>
-      </p-timeline>
-    </p-tabPanel>
+      <p-tabPanel [header]="'History' | translate">
+        <p-timeline [value]="historyVersions">
+          <ng-template pTemplate="opposite" let-event>
+            <a [routerLink]="['/records', 'acq_orders', 'detail', event.pid]">{{
+              event.label
+            }}</a>
+          </ng-template>
+          <ng-template pTemplate="content" let-event>
+            <small>{{ event.description }}</small>
+          </ng-template>
+        </p-timeline>
+      </p-tabPanel>
     }
   </p-tabView>
 </div>

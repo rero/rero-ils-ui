@@ -50,7 +50,6 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             label: _('Order lines'),
             canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ACOL_CREATE) }),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType, true),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
             preUpdateRecord: (data: any) => this.fieldsToRemoved(data, ['is_current_budget']),
             redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_order, '/records/acq_orders/detail'),

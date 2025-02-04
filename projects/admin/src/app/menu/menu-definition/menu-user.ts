@@ -44,14 +44,14 @@ export const MENU_USER: MenuItem[] = [
         translateLabel: 'Public interface',
         id: MENU_IDS.USER.PUBLIC_INTERFACE,
         icon: 'fa fa-users',
-        uri: '/',
+        url: '/',
       },
       {
         label: 'Logout',
         translateLabel: 'Logout',
         id: MENU_IDS.USER.LOGOUT,
         icon: 'fa fa-sign-out',
-        uri: '/signout',
+        url: '/signout',
       }
     ]
   }

@@ -17,7 +17,7 @@
 -->
 @if (organisation && esRecord$ | async; as account) {
   <!-- ROLLOVER INFO -->
-  @if (account.is_active) {
+  @if (!account.is_active) {
     <p-messages
     [value]="[{ severity: 'warn', detail: 'Fiscal year closed' | translate }]"
     [closable]="false"

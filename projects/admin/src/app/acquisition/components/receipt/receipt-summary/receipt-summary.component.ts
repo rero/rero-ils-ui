@@ -24,6 +24,8 @@ import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { IAcqReceipt } from '../../../classes/receipt';
 import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
+import { AcqOrderStatus } from '@app/admin/acquisition/classes/order';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'admin-receipt-summary',
@@ -32,6 +34,7 @@ import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
 export class ReceiptSummaryComponent implements OnInit {
 
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private translateService: TranslateService = inject(TranslateService);
   private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
   private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
   private currentLibraryPermissionValidator: CurrentLibraryPermissionValidator = inject(CurrentLibraryPermissionValidator);
@@ -40,15 +43,18 @@ export class ReceiptSummaryComponent implements OnInit {
   // COMPONENT ATTRIBUTES =====================================================
   /** The receipt pid to load */
   @Input() receiptPid: string;
+  /** The receipt pid to load */
+  @Input() order;
   /** Is action button must be displayed */
   @Input() allowActions = false;
   /** Collapse detail configuration */
   @Input() collapsable = true;
   @Input() isCollapsed = true;
   /** Record permissions */
-  @Input() recordPermissions?: RecordPermissions;
+  recordPermissions?: RecordPermissions;
   /** Receipt object */
   receipt: IAcqReceipt = undefined;
+  validStatuses = [AcqOrderStatus.ORDERED, AcqOrderStatus.PARTIALLY_RECEIVED];
 
   // GETTER & SETTER ==========================================================
   /**
@@ -61,19 +67,23 @@ export class ReceiptSummaryComponent implements OnInit {
       : '';
   }
   get editInfoMessage(): string {
+    var msg = '';
+    if (!this.validStatuses.some((key: string) => key === this.order.status)) {
+      msg = this.translateService.instant('The order status should be ordered or partially received.');
+    }
     return (!this.recordPermissions.update.can)
       ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'update')
-      : '';
+      : msg;
+  }
+
+  get canEdit(): boolean {
+    return this.recordPermissions.update.can && this.validStatuses.some((key: string) => key === this.order.status);
   }
 
   /** OnInit hook */
   ngOnInit(): void {
     if (!this.collapsable){
       this.isCollapsed = false;
-    }
-    // Disable actions if we don't have permissions.
-    if (!this.recordPermissions) {
-      this.allowActions = false;
     }
     this.acqReceiptApiService
       .getReceipt(this.receiptPid)
