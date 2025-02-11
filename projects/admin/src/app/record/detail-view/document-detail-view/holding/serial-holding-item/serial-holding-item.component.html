@@ -16,8 +16,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (item && ((item.metadata.issue && item.metadata.issue.status !== itemIssueStatus.DELETED) || item.metadata.type === 'provisional')) {
-    <div class="grid grid-nogutter pt-2 flex-grow-1">  <!-- First row :: item detail -->
-      <div class="col-3">
+    <div class="grid grid-nogutter py-2 px-1 flex-grow-1">  <!-- First row :: item detail -->
+      <div class="col-3 flex align-items-center">
         @if (item.metadata._masked) {
           <admin-record-masked [record]="item" />
         }
@@ -29,22 +29,22 @@
           {{ item.metadata.barcode }}
         }
       </div>
-      <div class="col-3">
+      <div class="col-3 flex align-items-center">
         <shared-availability
           recordType="item"
           [record]="item"
           [apiService]="itemApiService"
         />
       </div>
-      <div class="col-3">
+      <div class="col-3 flex align-items-center">
         {{ item.metadata.enumerationAndChronology }}
       </div>
-      <div class="col-3 flex">
+      <div class="col-3 flex align-items-center">
         <div class="flex-grow-1">
         <shared-inherited-call-number class-="flex-grow-1" [item]="item" />
         </div>
         @if (permissions) {
-          <div class="flex gap-2 justify-content-end">
+          <div class="flex gap-1 justify-content-end">
             <p-button
               class="pointer-events-auto"
               icon="fa fa-shopping-basket"

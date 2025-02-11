@@ -18,7 +18,7 @@
   <p-accordion [activeIndex]="0" (onOpen)="accordionOpen($event)">
     <p-accordionTab>
       <ng-template pTemplate="header">
-        <div class="flex w-full">
+        <div class="flex align-items-center w-full">
           <h6 class="flex flex-grow-1" translate>Engaged fees</h6>
           @if (statistics()['fees_engaged'] > 0) {
             <p-tag severity="warning" class="mr-2">
@@ -62,7 +62,7 @@
 
     <p-accordionTab>
       <ng-template pTemplate="header">
-        <div class="flex w-full">
+        <div class="flex align-items-center w-full">
           <h6 class="flex flex-grow-1" translate>Overdue preview fees</h6>
           @if (tabs.overduePreviewFees.totalAmount > 0) {
             <p-tag severity="secondary" class="mr-2">

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,7 @@
   <ng-template pTemplate="header">
     <!-- MAIN ROW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <div class="w-full">
-      <div class="grid">
+      <div class="grid align-items-center">
         <div id="holding-location-{{ holding.metadata.pid }}" class="col-6">
           @if (holding.metadata._masked) {
             <admin-record-masked [record]="holding"></admin-record-masked>
@@ -33,7 +33,7 @@
         @if (holdingType === 'serial') {
           <div class="col-4 justify-content-end flex">
             @if (permissions) {
-              <div class="flex gap-1">
+              <div class="flex gap-1 mr-3">
                 <!-- HOLDING VIEW -->
                 <p-button
                   icon="fa fa-eye"
@@ -72,6 +72,7 @@
                 <p-button
                   icon="fa fa-trash"
                   class="pointer-events-auto"
+                  severity="danger"
                   outlined
                   size="small"
                   [title]="'Delete holdings'|translate"
@@ -106,7 +107,7 @@
         <!-- SERIAL HOLDING -->
         @case ('serial') {
           @if (items) {
-            <div class="grid grid-nogutter p-2 font-bold">
+            <div class="grid grid-nogutter py-2 px-1 font-bold">
               <div class="col-3" translate>Barcode</div>
               <div class="col-3" translate>Status</div>
               <div class="col-3" translate>Unit</div>
