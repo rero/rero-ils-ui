@@ -70,16 +70,12 @@
       </p-dropdown>
     </div>
   </div>
-  <div class="grid">
-    <div class="col-12">
-      <admin-circulation-items-list
-        [checkedOutItems]="checkedOutItems"
-        [checkedInItems]="checkedInItems"
-        [patron]="patron"
-        (extendLoanClicked)="applyItems([$event])"
-        (extendAllLoansClicked)="applyItems($event)"
-        (hasFeesEmitter)="hasFees($event)"
-      />
-    </div>
-  </div>
+  <admin-circulation-items-list
+    [checkedOutItems]="checkedOutItems"
+    [checkedInItems]="checkedInItems"
+    [patron]="patron"
+    (extendLoanClicked)="applyItems([$event])"
+    (extendAllLoansClicked)="applyItems($event)"
+    (hasFeesEmitter)="hasFees($event)"
+  />
 </section>

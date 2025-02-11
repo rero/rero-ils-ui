@@ -31,11 +31,11 @@
         <p-button size="small" icon="fa fa-plus" [label]="'Add a fee'|translate" (onClick)="addFee()" />
       </div>
       @if (tabs.engagedFees.transactions.length > 0) {
-        <div class="grid grid-nogutter p-3 m-1 text-lg font-bold align-items-center border-top-1 border-bottom-1 surface-border">
+        <div class="grid grid-nogutter py-3 px-2 my-1 text-lg font-bold align-items-center border-top-1 border-bottom-1 surface-border">
           <div class="col-2" translate>Date</div>
           <div class="col-3" translate>Category</div>
           <div class="col-3" translate>Library</div>
-          <div class="col-2 text-right pr-2">
+          <div class="col-2 text-right">
             {{ 'Total amount' | translate }}: {{ statistics()['fees_engaged'] | currency: organisation.default_currency }}
           </div>
           <div class="col-2 flex justify-content-end">
@@ -72,7 +72,7 @@
         </div>
       </ng-template>
       @if (tabs.overduePreviewFees.transactions.length > 0) {
-        <div class="grid grid-nogutter p-3 m-1 text-lg font-bold align-items-center border-top-1 border-bottom-1 surface-border">
+        <div class="grid grid-nogutter py-3 px-2 my-1 text-lg font-bold align-items-center border-top-1 border-bottom-1 surface-border">
           <div class="col-2" translate>Due date</div>
           <div class="col-7" translate>Document</div>
           <div class="col-2 text-right">
@@ -97,7 +97,7 @@
         <h6 translate>History</h6>
       </ng-template>
       @if (tabs.historyFees.transactions !== null && tabs.historyFees.transactions.length > 0) {
-        <div class="grid grid-nogutter p-3 m-1 text-lg font-bold align-items-center border-top-1 border-bottom-1 surface-border">
+        <div class="grid grid-nogutter py-3 my-1 text-lg font-bold align-items-center border-top-1 border-bottom-1 surface-border">
           <div class="col-2" translate>Date</div>
           <div class="col-3" translate>Category</div>
           <div class="col-3" translate>Library</div>

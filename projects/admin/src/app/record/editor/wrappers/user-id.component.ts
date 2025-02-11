@@ -19,7 +19,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FieldWrapper } from '@ngx-formly/core';
 import { RecordService } from '@rero/ng-core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, of, Subscription, switchMap } from 'rxjs';
 import { UserIdEditorComponent } from '../../custom-editor/user-id-editor/user-id-editor.component';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -63,22 +63,21 @@ export class UserIdComponent extends FieldWrapper implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-      this.subscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   /**
    * Open the modal with the User personal information editor.
    */
   openModal(): void {
-
     const ref: DynamicDialogRef = this.dialogService.open(UserIdEditorComponent, {
-      dismissableMask: true,
-      header: this.translateService.instant('Personal information'),
+      header: this.translateService.instant('Personal informations'),
+      focusOnShow: false,
       width: '60vw',
       data: { userID: this.formControl.value }
     });
-    this.subscription.add(
-      ref.onClose.subscribe((userId?: string) => {
+    this.user$ = ref.onClose.pipe(
+      switchMap((userId?: string) => {
         if (userId) {
           this.formControl.setValue(userId);
           // need to force the role validation as the user can be changed
