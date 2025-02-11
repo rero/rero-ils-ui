@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, inject, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG, RecordService } from '@rero/ng-core';
@@ -24,8 +24,8 @@ import { Record } from '@rero/ng-core/lib/record/record';
 import { User, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Observable } from 'rxjs';
-import { debounceTime, map, shareReplay, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, debounceTime, map, shareReplay, tap } from 'rxjs/operators';
 import { HoldingsService } from '../../../../service/holdings.service';
 import { ItemsService } from '../../../../service/items.service';
 import { LoanService } from '../../../../service/loan.service';
@@ -47,7 +47,6 @@ export class ItemRequestComponent implements OnInit {
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
 
-  // COMPONENTS ATTRIBUTES ====================================================
   /** Record pid */
   recordPid: string;
   /** Record description */
@@ -89,7 +88,6 @@ export class ItemRequestComponent implements OnInit {
     this.initForm();
   }
 
-  // COMPONENTS FUNCTIONS =====================================================
   /**
    * Submit form
    * @param model - Object
@@ -99,7 +97,7 @@ export class ItemRequestComponent implements OnInit {
     let body = {};
     let key;
     body = {
-      pickup_location_pid: model.pickupPid,
+      pickup_location_pid: model.pickup,
       patron_pid: this.patron.pid,
       transaction_library_pid: this.currentUser.currentLibrary,
       transaction_user_pid: this.currentUser.patronLibrarian.pid
@@ -158,7 +156,7 @@ export class ItemRequestComponent implements OnInit {
             props: {
               label: this.translateService.instant('Patron barcode'),
               required: true,
-              keydown: (field, event) => {
+              keydown: (_, event) => {
                 if (event.key === 'Enter') {
                   event.preventDefault();
                 }
@@ -166,50 +164,40 @@ export class ItemRequestComponent implements OnInit {
             },
             asyncValidators: {
               userExist: {
-                expression: (fc: UntypedFormControl) =>  {
-                  return new Promise((resolve) => {
-                    const { value } = fc;
-                    if (value.length > 2) {
-                      this.getPatron(fc.value).subscribe((result: any) => {
-                        this.patron = (result.length === 1)
-                          ? this.patron = result[0].metadata
-                          : null;
-                        resolve(result.length === 1);
-                      });
-                    }
-                  });
-                },
-                message: this.translateService.instant('Patron not found.')
-              },
-              can_request: {
-                expression: (fc: UntypedFormControl) => {
-                  return new Promise((resolve) => {
-                    const { value } = fc;
-                    if (value.length > 2) {
-                      this.service.canRequest(
-                        this.recordPid,
-                        this.currentUser.currentLibrary,
-                        value
-                      ).subscribe((result: any) => {
-                        if (!result.can) {
-                          const reasons = result.reasons.others || {'Not defined error': true};
-                          this.canRequestMessage = Object.keys(reasons)[0];
-                        }
-                        resolve(result.can);
-                      });
-                    }
-                  });
-                },
-                message: () => {
-                  return this.translateService.instant(
-                    this.canRequestMessage
+                expression: (fc: AbstractControl) =>  {
+                  return  this.getPatron(fc.value).pipe(
+                    map((result: any) => {
+                      this.patron = (result.length === 1)
+                        ? result[0].metadata
+                        : null;
+                      fc.markAsTouched();
+                      return result.length === 1;
+                    })
                   );
-                }
+                },
+                message: () => this.translateService.instant('Patron not found.')
+              },
+              cas_request: {
+                expression: (fc: AbstractControl) =>  {
+                  return this.service.canRequest(this.recordPid, this.currentUser.currentLibrary, fc.value).pipe(
+                    catchError((error) => of({ can: false, reasons: { others: error.message } })),
+                    map((result: any) => {
+                      if (!result.can) {
+                        this.patron = null;
+                        const reasons = result.reasons.others || {'Not defined error': true};
+                        this.canRequestMessage = Object.keys(reasons)[0];
+                      }
+                      fc.markAsTouched();
+                      return result.can;
+                    })
+                  )
+                },
+                message: () => this.translateService.instant(this.canRequestMessage)
               }
             }
           },
           {
-            key: 'pickupPid',
+            key: 'pickup',
             type: 'select',
             props: {
               appendTo: 'body',
@@ -234,7 +222,7 @@ export class ItemRequestComponent implements OnInit {
         }
         this.model = {
           patronBarcode: null,
-          pickupPid: this.pickupDefaultValue,
+          pickup: this.pickupDefaultValue,
           description: null,
         };
       });
@@ -242,15 +230,16 @@ export class ItemRequestComponent implements OnInit {
   }
 
 
-  /** Get pickup location available for the item
-   *  @return observable with pickup locations informations (name and pid)
+  /**
+   * Get pickup location available for the item
+   * @return observable with pickup locations information (name and pid)
    */
-
   private getPickupLocations(): Observable<Array<any>> {
     const { currentLibrary } = this.currentUser;
     return this.service.getPickupLocations(this.recordPid).pipe(
       map((locations: any) => locations.map((loc: any) => {
-        if (this.pickupDefaultValue === undefined && loc.library.pid === currentLibrary) {
+        const libraryPid = loc.library.$ref.split('/').pop();
+        if (this.pickupDefaultValue === undefined && libraryPid === currentLibrary) {
           this.pickupDefaultValue = loc.pid;
         }
         return {
@@ -266,7 +255,7 @@ export class ItemRequestComponent implements OnInit {
    * @param barcode - string
    * @return observable
    */
-  private getPatron(barcode: string) {
+  private getPatron(barcode: string): Observable<Record | Error> {
     const query = `barcode:${barcode}`;
     return this.recordService.getRecords('patrons', query, 1, 1).pipe(
       debounceTime(500),
@@ -281,6 +270,6 @@ export class ItemRequestComponent implements OnInit {
  */
 interface FormModel {
   patronBarcode: string;
-  pickupPid: string;
+  pickup: string;
   description?: string;
 }

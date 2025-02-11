@@ -17,18 +17,16 @@
 @defer (when items) {
   <p-card class="p-card-body-p-0">
     <ng-template pTemplate="header">
-      <div class="hidden md:flex bg-blue-900 text-white p-2 text-lg font-bold border-round-top">
-        <div class="grid grid-nogutter bg-dark rounded text-light w-full align-items-center">
-          <div class="col-3">
-            <div class="flex gap-2 align-items-center">
-              <shared-open-close-button (status)="isCollapsed = $event" />
-              <span translate>Item</span>
-            </div>
+      <div class="grid grid-nogutter py-3 m-2 text-lg font-bold align-items-center border-top-1 border-bottom-1 surface-border">
+        <div class="col-3">
+          <div class="flex gap-2 align-items-center">
+            <shared-open-close-button (status)="isCollapsed = $event" />
+            <span translate>Item</span>
           </div>
-          <div class="col-4" translate>Document</div>
-          <div class="col-2" translate>Call number</div>
-          <div class="col-2" translate>Request date</div>
         </div>
+        <div class="col-4" translate>Document</div>
+        <div class="col-2" translate>Call number</div>
+        <div class="col-2" translate>Request date</div>
       </div>
     </ng-template>
     @if (items.length > 0) {
