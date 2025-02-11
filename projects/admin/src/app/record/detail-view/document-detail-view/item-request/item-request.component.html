@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020-2024 RERO
+  Copyright (C) 2020-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,7 @@
   <div class="flex gap-2 flex-column">
   @if (requestedBy$ | async; as requestedBy) {
     @if (requestedBy.length > 0) {
-      <div class="flex gap-2 align-items-center">
+      <div class="flex gap-2 align-items-start">
         <p-messages
           class="flex-grow-1"
           [value]="[
@@ -43,7 +43,7 @@
     }
   }
   @if (patron) {
-    <p-card [header]="[patron.last_name, patron.first_name].join(', ')">
+    <p-card [header]="[patron.last_name, patron.first_name].join(', ')" styleClass="surface-100 ">
       <p class="m-0">
         {{ patron.street }}<br>
         {{ patron.postal_code }} {{ patron.city }}<br>

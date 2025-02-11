@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -200,7 +200,7 @@ export class UserIdEditorComponent implements OnInit {
    */
   submit(): void {
     this.form.updateValueAndValidity();
-    if (this.form.valid === false) {
+    if (!this.form.valid) {
       this.messageService.add({
         severity: 'error',
         summary: this.translateService.instant('User'),

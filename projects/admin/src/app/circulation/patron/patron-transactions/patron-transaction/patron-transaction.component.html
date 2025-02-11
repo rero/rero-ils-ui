@@ -15,7 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (transaction !== undefined) {
-  <div [ngClass]="{ 'callout callout-warning': isDisputed(), 'border rounded': !isDisputed()}" class="mr-1 p-2">
+  <div [ngClass]="{ 'callout callout-warning': isDisputed(), 'border rounded': !isDisputed()}" class="p-2">
     <div class="grid grid-nogutter align-items-start">
       <div class="col-2 flex gap-2">
         <shared-open-close-button (status)="isCollapsed = $event" />

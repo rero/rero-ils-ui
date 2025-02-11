@@ -22,22 +22,22 @@
 <!-- ngx-formly -->
 <form [formGroup]="form" (ngSubmit)="submit()">
   <formly-form [model]="model" [fields]="fields" [form]="form" />
+  <div class="flex gap-1 justify-content-end mt-2">
+    <p-button
+      outlined
+      severity="danger"
+      size="small"
+      id="user-editor-delete-button"
+      (onClick)="closeDialog()"
+      icon="fa fa-times"
+      [label]="'Cancel' | translate"
+    />
+    <p-button
+      type="submit"
+      id="user-editor-save-button"
+      size="small"
+      icon="fa fa-save"
+      [label]="'Save' | translate"
+    />
+  </div>
 </form>
-<div class="flex gap-1 justify-content-end">
-  <p-button
-    outlined
-    severity="danger"
-    size="small"
-    id="user-editor-delete-button"
-    (onClick)="closeDialog()"
-    icon="fa fa-times"
-    [label]="'Cancel' | translate"
-  />
-  <p-button
-    type="submit"
-    id="user-editor-save-button"
-    size="small"
-    icon="fa fa-save"
-    [label]="'Save' | translate"
-  />
-</div>
