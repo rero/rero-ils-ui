@@ -152,7 +152,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
       field.props.translated = false;
       field.props.minItemsToDisplaySearch = 10;
       field.props.sort = true;
-      field.props.placeholder = this.translateService.instant("Select an option…");
+      field.props.placeholder = this.translateService.instant("Select…");
       field.props.sortOrder = "asc";
       field.props.class = "w-full";
       field.props.styleClass = "w-full";

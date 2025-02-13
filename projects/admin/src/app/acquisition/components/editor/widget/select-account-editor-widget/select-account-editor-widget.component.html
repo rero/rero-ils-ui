@@ -19,7 +19,7 @@
   styleClass="w-full"
   [showClear]="true"
   [options]="accountList"
-  [placeholder]="to.placeholder"
+  [placeholder]="'Select…' | translate"
   [(ngModel)]="selectedAccount"
   (onChange)="selectAccount($event)"
   [loading]="loading"

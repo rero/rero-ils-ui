@@ -330,7 +330,7 @@ export class OrderReceiptForm {
               type: 'account-select',
               wrappers: ['form-field'],
               props: {
-                placeholder: _('Select an account'),
+                placeholder: _('Select…'),
                 label: _('Account'),
                 required: true,
                 options: [

@@ -47,10 +47,13 @@
 
   <section>
     @if (rootAccounts.length > 0) {
+      <div class="flex flex-wrap gap-1 my-3">
+        <p-button size="small" outlined icon="fa fa-plus" [label]="'Expand all' | translate" (onClick)="expandAll()" />
+        <p-button size="small" outlined icon="fa fa-minus" [label]="'Collapse all' | translate" (onClick)="collapseAll()" />
+    </div>
     <p-treeTable
       autoLayout
       styleClass="p-treetable-sm"
-      (onNodeExpand)="onNodeExpand($event)"
       [value]="rootAccounts"
     >
       <ng-template pTemplate="header">
