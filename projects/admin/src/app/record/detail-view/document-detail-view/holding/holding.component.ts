@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, ElementRef, ViewChild } from '@angular/core';
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -24,12 +24,13 @@ import { UserService } from '@rero/shared';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
 import { ItemRequestComponent } from '../item-request/item-request.component';
+import { AccordionTab } from 'primeng/accordion';
 
 @Component({
   selector: 'admin-document-holding, [admin-document-holding]',
   templateUrl: './holding.component.html'
 })
-export class HoldingComponent implements OnInit, OnDestroy {
+export class HoldingComponent implements OnInit, OnDestroy, AfterViewInit {
 
   protected userService: UserService = inject(UserService);
   protected holdingService: HoldingsService = inject(HoldingsService);
@@ -49,6 +50,8 @@ export class HoldingComponent implements OnInit, OnDestroy {
   /** Restrict the functionality of interface */
   @Input() isCurrentOrganisation = true;
 
+  @Input() selected = false;
+
   /** shortcut for holding type */
   holdingType: 'electronic' | 'serial' | 'standard';
   /** Items */
@@ -61,6 +64,8 @@ export class HoldingComponent implements OnInit, OnDestroy {
   totalItemsCounter = 0;
   /** number of item to load/display */
   displayItemsCounter = 10;
+
+  @ViewChild(AccordionTab) tab: AccordionTab;
 
   // GETTER & SETTER ==========================================================
   /** Current interface language */
@@ -77,6 +82,10 @@ export class HoldingComponent implements OnInit, OnDestroy {
     if (this.isCurrentOrganisation) {
       this._getPermissions();
     }
+  }
+
+  ngAfterViewInit() {
+    this.tab.selected = this.selected;
   }
 
   /** onDestroy hook */

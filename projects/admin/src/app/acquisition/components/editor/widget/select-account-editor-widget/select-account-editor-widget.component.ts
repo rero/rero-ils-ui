@@ -59,8 +59,8 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
       next: (accounts: IAcqAccount[]) => {
         accounts = orderAccountsAsTree(accounts);
         // filter me and my children to avoid backend recursion errors
-        let accountPid = this.field.props.editorConfig.pid;
-        if(accountPid) {
+        const accountPid = this.field.props?.editorConfig?.pid;
+        if(this.field.props?.filterChildren && accountPid) {
           let newAccounts = [];
           let removed = [];
           accounts.map(account => {
