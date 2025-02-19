@@ -168,7 +168,7 @@ export class RecordPermissionService {
         "=1": this.translateService.instant("has 1 acquisition receipt line attached"),
         other: this.translateService.instant("has # acquisition receipts lines attached"),
       },
-      acq_receipt: {
+      acq_receipts: {
         "=1": this.translateService.instant("has 1 acquisition receipt attached"),
         other: this.translateService.instant("has # acquisition receipts attached"),
       },

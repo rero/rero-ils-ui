@@ -223,15 +223,14 @@ export class Library {
     if (typeof exception.start_date === 'string') {
       exception.start_date = DateTime.fromFormat(exception.start_date, 'yyyy-LL-dd');
     }
-    exception.start_date = exception.start_date.plus({ [unity]: exception.repeat.interval });
+    exception.start_date = exception.start_date.plus({ [unity]: exception.repeat.interval }).toISODate();
 
     if (exception.end_date) {
         if (typeof exception.end_date === 'string') {
           exception.end_date = DateTime.fromFormat(exception.end_date, 'yyyy-LL-dd');
         }
-        exception.end_date = exception.end_date.plus({ [unity]: exception.repeat.interval });
+        exception.end_date = exception.end_date.plus({ [unity]: exception.repeat.interval }).toISODate();
       }
-
     return exception;
   }
 

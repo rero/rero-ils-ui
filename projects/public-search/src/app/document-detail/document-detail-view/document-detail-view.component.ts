@@ -41,7 +41,7 @@ export class DocumentDetailViewComponent implements OnInit {
   ngOnInit(): void {
     // Set view code to app settings
     this.appSettingsService.currentViewCode = this.viewcode;
-    this.recordService.getRecord('documents', this.documentpid).subscribe((doc) => (this.document = doc));
+    this.recordService.getRecord('documents', this.documentpid, 1).subscribe(doc => this.document = doc);
     this.exportItems = [
       {
         icon: "fa fa-file-code-o",
