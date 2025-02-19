@@ -51,7 +51,7 @@
 
         }
         <!-- Sorting loans -->
-        <p-dropdown [options]="sortingCriteria" (onChange)="selectingSortCriteria($event)">
+        <p-dropdown [options]="sortingCriteria" (onChange)="selectingSortCriteria($event.value)">
           <ng-template let-item pTemplate="selectedItem">
             <div class="flex align-items-center gap-2">
               <i [class]="item.icon"></i>
