@@ -113,7 +113,7 @@ describe('MaskedComponent', () => {
     const icon = fixture.nativeElement.querySelector('i');
     expect(icon.attributes.title.textContent).toContain('No masked');
     expect(icon.attributes.class.textContent).toContain('fa-circle');
-    expect(icon.attributes.class.textContent).toContain('text-danger');
+    expect(icon.attributes.class.textContent).toContain('text-error');
   });
 
   it('should return a bullet red icon with label (record with flag _masked true)', () => {

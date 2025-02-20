@@ -117,7 +117,7 @@
       <dt translate>New acquisition</dt>
       <dd>
         <i class="fa"
-          [ngClass]="(record.metadata.acquisition_date) ? 'fa-check text-success' : 'fa-times text-danger'"
+          [ngClass]="(record.metadata.acquisition_date) ? 'fa-check text-success' : 'fa-times text-error'"
           aria-hidden="true"
         >
         </i>
@@ -154,7 +154,7 @@
         <dt translate>Regular issue</dt>
         <dd>
           <i class="fa"
-            [ngClass]="record.metadata.issue.regular ? 'fa-check text-success' : 'fa-times text-danger'"
+            [ngClass]="record.metadata.issue.regular ? 'fa-check text-success' : 'fa-times text-error'"
             aria-hidden="true"
           >
           </i>

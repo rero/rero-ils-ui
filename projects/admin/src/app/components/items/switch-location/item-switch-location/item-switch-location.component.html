@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,41 +15,30 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (initialLocation.length > 0 && options.length > 0) {
+<h1>{{'Switch item location' | translate}}: {{ initialLocationName }} ({{ item.barcode }})</h1>
+
+@if (initialLocationName && options.length > 0) {
   <form [formGroup]="form" (ngSubmit)="submit()">
-    <div class="card container mt-3">
-      <dl class="card-text row my-2">
-        <dt class="col-2 label-title my-auto">Source</dt>
-        <dd class="col-10">
-          <p-dropdown
-            [options]="initialLocation"
-            [styleClass]="'w-100'"
-            [disabled]="true"
-          ></p-dropdown>
-        </dd>
-        <dd class="offset-2 col-10 text-center my-2">
-          <i class="fa fa-exchange fa-rotate-90 fa-lg"></i>
-        </dd>
-        <dt class="col-2 label-title my-auto">Target</dt>
-        <dd class="col-10">
+    <p-card>
+      <div class="flex flex-column gap-1">
+        <label for="target">{{ 'Target' | translate }}&nbsp;*</label>
         <p-dropdown
+          inputId="target"
           formControlName="target"
           [options]="options"
           [group]="true"
           [placeholder]="'Select…' | translate"
-          [styleClass]="'w-100'"
-          [scrollHeight]="'40vh'"
+          styleClass="w-full"
           [filter]="isFilterActive()"
           filterBy="label"
-        ></p-dropdown>
-        </dd>
-      </dl>
-      <div class="card-footer row form-group mb-0">
-        <div class="col text-right">
-          <button type="reset" class="btn btn-outline-danger mr-2" (click)="cancel()" translate>Cancel</button>
-          <button type="submit" class="btn btn-primary" [disabled]="form.invalid" translate>Save</button>
-        </div>
+        />
       </div>
-    </div>
+      <ng-template pTemplate="footer">
+        <div class="flex gap-2 justify-content-end">
+          <p-button outlined severity="danger" (onClick)="cancel()" translate>Cancel</p-button>
+          <p-button type="submit" [disabled]="form.invalid" translate>Save</p-button>
+        </div>
+      </ng-template>
+    </p-card>
   </form>
 }

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractCanDeactivateComponent, removeEmptyValues } from '@rero/ng-core';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { EditorService } from '../../../service/editor.service';
 import { PredictionIssue } from '../../../service/holdings.service';
 
@@ -98,14 +98,13 @@ export class HoldingEditorComponent extends AbstractCanDeactivateComponent imple
    */
   modelChanged(modelValue) {
     modelValue = removeEmptyValues(modelValue);
-    if (
-      modelValue.patterns
-      && modelValue.patterns.template
-    ) {
+    if (modelValue.patterns && modelValue.patterns.template) {
       this.serialPatternsTemplate = modelValue.patterns.template;
       this.serialPreviewError = null;
+      this.serialPreviewExamples = [];
       this.predictionModel$.next(modelValue);
     } else {
+      this.serialPreviewExamples = [];
       this.serialPatternsTemplate = null;
     }
   }

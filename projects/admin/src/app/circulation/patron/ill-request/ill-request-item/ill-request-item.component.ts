@@ -31,7 +31,7 @@ export class IllRequestItemComponent {
   isCollapsed: boolean = true;
 
   // COMPONENT FUNCTIONS ======================================================
-  /** get the bootstrap color to apply on the request status badge */
+  /** get the primeng color to apply on the request status badge */
   badgeColor(status: string): string {
     return getTagSeverityFromStatus(status) ;
   }

@@ -102,7 +102,7 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
    */
   getIcon(realState: boolean = false): string {
     return (this.issue.metadata._masked && !realState)
-      ? 'fa-eye-slash text-danger'
+      ? 'fa-eye-slash text-error'
       : this.holdingService.getIcon(this.issue.metadata.issue.status);
   }
 

@@ -15,44 +15,42 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="row">
-  <div [ngClass]="{'col-md-9 col-xl-8': serialPatternsTemplate != null, 'col-12': serialPatternsTemplate == null}" role="main">
+<div class="grid">
+  <div class="md:col-9 col-8">
     <ng-core-editor [model]="model" (modelChange)="modelChanged($event)" (canDeactivateChange)="canDeactivateChanged($event)"></ng-core-editor>
   </div>
-  @if (serialPatternsTemplate != null) {
-    <div class="col-md-3 col-xl-4 bd-sidebar">
-      <div class="card">
-        <div class="card-header">
-          <h5 translate>Examples (preview)</h5>
-        </div>
-        <div class="card-body">
-          @if (!serialPreviewError) {
-            @if (serialPreviewExamples && serialPreviewExamples.length > 0) {
-              <ul class="list-unstyled">
-                @for (issue of serialPreviewExamples | slice:0:10; track issue) {
-                  <li>{{ issue.issue }}</li>
-                }
-              </ul>
-              ...
-              <ul class="list-unstyled">
-                @for (issue of serialPreviewExamples | slice:97:100; track issue) {
-                  <li>{{ issue.issue }}</li>
-                }
-
-              </ul>
-            } @else {
-              <div class="alert alert-light" role="alert" translate>
-                No preview available
-              </div>
+  <div class="col">
+    <p-fieldset [legend]="'Predictions' | translate">
+      @if (!serialPreviewError) {
+        @if (serialPreviewExamples && serialPreviewExamples.length > 0) {
+          <ul class="list-none p-0 m-0">
+            @for (issue of serialPreviewExamples | slice:0:10; track issue) {
+              <li>{{ issue.issue }}</li>
             }
+          </ul>
+          …
+          <ul class="list-none p-0 m-0">
+            @for (issue of serialPreviewExamples | slice:97:100; track issue) {
+              <li>{{ issue.issue }}</li>
+            }
+          </ul>
+        } @else {
+          <p-messages
+            [value]="[{ severity: 'info', detail: 'No preview available' | translate }]"
+            [closable]="false"
+            [enableService]="false"
+            showTransitionOptions="0ms"
+          />
+        }
 
-          } @else {
-            <div class="alert alert-danger" role="alert">
-              <strong translate>Template</strong> {{ serialPreviewError.status }}
-            </div>
-          }
-        </div>
-      </div>
-    </div>
-  }
+      } @else {
+        <p-messages
+          [value]="[{ severity: 'error', detail: ('Template' | translate) + '&nbsp;' + serialPreviewError.status }]"
+          [closable]="false"
+          [enableService]="false"
+          showTransitionOptions="0ms"
+        />
+      }
+    </p-fieldset>
+  </div>
 </div>

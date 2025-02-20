@@ -85,7 +85,7 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
   /**
    * Get the color badge to apply for a specific role
    * @param role: the role to check.
-   * @return the bootstrap badge class to use for this role.
+   * @return the primeng badge class to use for this role.
    */
   getroleTagSeverity(role: string): string {
     return roleTagSeverity(role);

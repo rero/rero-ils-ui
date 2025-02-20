@@ -58,7 +58,7 @@
             @if (record.metadata.is_default) {
               <i id="cipo-is-default" class="fa fa-check  text-success" aria-hidden="true"></i>
             } @else {
-              <i id="cipo-is-default" class="fa fa-times text-danger" aria-hidden="true"></i>
+              <i id="cipo-is-default" class="fa fa-times text-error" aria-hidden="true"></i>
             }
           </dd>
           <!-- CHECKOUT SETTINGS-->
@@ -86,14 +86,14 @@
               @if (record.metadata.automatic_renewal) {
                 <i class="fa fa-check text-success" aria-hidden="true"></i>
               } @else {
-                <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                <i class="fa fa-times text-error" aria-hidden="true"></i>
               }
             </dd>
             </dl>
             </dd>
           } @else {
             <dd>
-              <i id="cipo-allow-checkout" class="fa fa-times text-danger" aria-hidden="true"></i>
+              <i id="cipo-allow-checkout" class="fa fa-times text-error" aria-hidden="true"></i>
             </dd>
           }
           <dt translate>Allow requests</dt>
@@ -101,7 +101,7 @@
             @if (record.metadata.allow_requests) {
               <i id="cipo-allow-request" class="fa fa-check  text-success" aria-hidden="true"></i>
             } @else {
-              <i id="cipo-allow-request" class="fa fa-times text-danger" aria-hidden="true"></i>
+              <i id="cipo-allow-request" class="fa fa-times text-error" aria-hidden="true"></i>
             }
           </dd>
         </dl>

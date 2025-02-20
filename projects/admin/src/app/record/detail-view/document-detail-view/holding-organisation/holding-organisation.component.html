@@ -21,7 +21,7 @@
   <!-- other organisations -->
   @if (otherOrganisationCount > 0) {
     <h5 class="other" translate>Other organisations</h5>
-    <admin-holdings [holdingType]="holdingType" [document]="document" [isCurrentOrganisation]="false"></admin-holdings>
+    <admin-holdings [holdingType]="holdingType" [document]="document" [isCurrentOrganisation]="false" />
   }
 } @loading {
   <span class="spinner-grow spinner-grow-sm" role="status"></span>
