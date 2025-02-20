@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -16,8 +16,5 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (item) {
-  <div class="main-content">
-    <h1>{{ 'Barcode' | translate }} {{ item.barcode }}</h1>
-    <admin-item-switch-location [item]="item" (itemChange)="updatedItem($event)"></admin-item-switch-location>
-  </div>
+  <admin-item-switch-location [item]="item" (itemChange)="updatedItem($event)" />
 }

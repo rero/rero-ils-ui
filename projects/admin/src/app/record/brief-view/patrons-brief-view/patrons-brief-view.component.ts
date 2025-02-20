@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 import { PERMISSIONS, PermissionsService } from '@rero/shared';
 import { roleTagSeverity } from '../../../utils/roles';
@@ -46,7 +46,7 @@ export class PatronsBriefViewComponent implements ResultItem {
   /**
    * Get the color badge to apply for a specific role
    * @param role: the role to check.
-   * @return the bootstrap badge class to use for this role.
+   * @return the primeng badge class to use for this role.
    */
   getRoleTagSeverity(role: string): string {
     return roleTagSeverity(role);

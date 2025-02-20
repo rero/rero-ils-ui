@@ -30,7 +30,7 @@ import { DateTime } from 'luxon';
         <dd>
           {{ record.metadata.temporary_item_type.pid | getRecord:'item_types': 'field':'name' | async }}
           @if (record.metadata.temporary_item_type.end_date; as endDate) {
-            &nbsp;<span class="small text-secondary">
+            &nbsp;<span class="text-sm text-secondary">
               (<i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }})
             </span>
           }

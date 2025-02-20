@@ -52,14 +52,14 @@
             @if (record.metadata?.is_late) {
               <p-tag severity="danger" translate>overdue</p-tag>
               ({{ 'due date' | translate }}
-              <span [ngClass]="{'text-danger font-bold': record.metadata?.is_late}">
+              <span [ngClass]="{'text-error font-bold': record.metadata?.is_late}">
                 {{record.metadata.end_date | date: 'shortDate' }}</span>)
             }
           }
           <!-- REQUEST additional information -->
           @case (loanState.ITEM_AT_DESK) {
             ({{ 'request expire at' | translate }}
-            <span [ngClass]="{'text-danger': isRequestExpired}">{{ record.metadata.request_expire_date | date: 'shortDate' }}</span>)
+            <span [ngClass]="{'text-error': isRequestExpired}">{{ record.metadata.request_expire_date | date: 'shortDate' }}</span>)
           }
         }
       </dd>

@@ -80,7 +80,7 @@ export class HoldingsService {
    */
   getIcon(status: IssueItemStatus): string {
     switch (status) {
-      case IssueItemStatus.DELETED: return 'fa-circle text-danger';
+      case IssueItemStatus.DELETED: return 'fa-circle text-error';
       case IssueItemStatus.RECEIVED: return 'fa-circle text-success';
       case IssueItemStatus.LATE: return 'fa-envelope-open-o text-warning';
       case IssueItemStatus.EXPECTED: return 'fa-circle text-secondary';

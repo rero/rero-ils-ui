@@ -26,7 +26,7 @@
       @if ((callNumber.first | json) !== '{}' || (callNumber.second | json) !== '{}') {
         <dt translate>Call number</dt>
         <dd>
-          <shared-inherited-call-number [item]="record" context="first"></shared-inherited-call-number>
+          <shared-inherited-call-number [item]="record" context="first" />
         </dd>
       }
     }
