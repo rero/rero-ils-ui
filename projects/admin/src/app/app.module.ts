@@ -149,7 +149,6 @@ import { LibraryDetailViewComponent } from './record/detail-view/library-detail-
 import { LocationComponent } from './record/detail-view/library-detail-view/location/location.component';
 import { LocalFieldComponent } from './record/detail-view/local-field/local-field.component';
 import { LocationDetailViewComponent } from './record/detail-view/location-detail-view/location-detail-view.component';
-import { OrganisationDetailViewComponent } from './record/detail-view/organisation-detail-view/organisation-detail-view.component';
 import { PatronDetailViewComponent } from './record/detail-view/patron-detail-view/patron-detail-view.component';
 import { PatronPermissionComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permission/patron-permission.component';
 import { PatronPermissionsComponent } from './record/detail-view/patron-detail-view/patron-permissions/patron-permissions.component';
@@ -242,7 +241,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     VendorDetailViewComponent,
     VendorBriefViewComponent,
     AddressTypeComponent,
-    OrganisationDetailViewComponent,
     RelatedResourceComponent,
     ItemRequestComponent,
     ErrorPageComponent,

@@ -38,7 +38,6 @@ import { LibrariesRoute } from './libraries-route';
 import { LoansRoute } from './loans-route';
 import { LocalFieldsRoute } from './local-fields-route';
 import { LocationsRoute } from './locations-route';
-import { OrganisationsRoute } from './organisations-route';
 import { PatronTransactionEventsRoute } from './patron-transaction-events-route';
 import { PatronTypesRoute } from './patron-types-route';
 import { PatronsRoute } from './patrons-route';
@@ -67,7 +66,6 @@ export class RouteService {
       .addRoute(new ItemTypesRoute())
       .addRoute(new LibrariesRoute())
       .addRoute(new LocationsRoute())
-      .addRoute(new OrganisationsRoute())
       .addRoute(new PatronsRoute())
       .addRoute(new PatronTypesRoute())
       .addRoute(new VendorsRoute())

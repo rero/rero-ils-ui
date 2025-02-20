@@ -29,7 +29,7 @@
       <div class="flex flex-column gap-2">
         <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
         @if (isCollapsed) {
-          <shared-inherited-call-number class="d-block small" [item]="item" />
+          <shared-inherited-call-number class="block text-sm" [item]="item" />
         }
       </div>
       @if (item.actionDone) {

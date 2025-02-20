@@ -23,7 +23,7 @@ import { LocationService } from '@app/admin/service/location.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Error, extractIdOnRef } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { MessageService, SelectItem, SelectItemGroup } from 'primeng/api';
+import { MessageService, SelectItemGroup } from 'primeng/api';
 import { finalize, map } from 'rxjs/operators';
 
 @Component({
@@ -52,7 +52,7 @@ export class ItemSwitchLocationComponent implements OnInit {
   form: UntypedFormGroup;
   /** options of the dropdown menu */
   options: SelectItemGroup[] = [];
-  initialLocation: SelectItem[] = [];
+  initialLocationName = '';
 
   constructor() {
     this.form = this.formBuilder.group({
@@ -70,14 +70,9 @@ export class ItemSwitchLocationComponent implements OnInit {
       )
       .subscribe(locations => {
         this._buildOptions(locations);
-        const filteredLocations = locations.filter(loc => loc.pid === extractIdOnRef(this.item.location.$ref));
-        if (filteredLocations) {
-          const currentLocation = filteredLocations.pop();
-          this.initialLocation = [{
-            label: currentLocation.name,
-            value: currentLocation.pid
-          }];
-        }
+        this.initialLocationName = locations
+        .filter(loc => loc.pid === extractIdOnRef(this.item.location.$ref))
+        .pop().name;
       });
   }
 

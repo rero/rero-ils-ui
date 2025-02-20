@@ -29,12 +29,12 @@ import { IdentifierTypes } from '../../../classes/identifiers';
   template: `
     <ng-container #fieldComponent></ng-container>
     @if (message$ | async; as message) {
-      <div class="invalid-feedback text-danger d-block">
+      <div class="text-error block">
         {{ message | translate }}
       </div>
     }
     @if (asyncRecord$ | async; as record) {
-      <div class="invalid-feedback text-info d-block">
+      <div class="text-info block">
         {{ 'A document already exists under this reference' | translate }}:
         <a [routerLink]="['/records', 'documents', 'detail', $any(record).pid]" target="_blank">
           {{ 'Show' | translate }}
