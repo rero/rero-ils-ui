@@ -32,8 +32,9 @@ import { TranslateService } from '@ngx-translate/core';
  */
 
 @Pipe({
-  name: 'getTranslatedLabel',
-  pure: true
+    name: 'getTranslatedLabel',
+    pure: true,
+    standalone: false
 })
 export class GetTranslatedLabelPipe implements PipeTransform {
 

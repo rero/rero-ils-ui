@@ -29,8 +29,9 @@ import { MessageService, TreeNode, TreeTableNode } from 'primeng/api';
 import { forkJoin, switchMap, tap } from 'rxjs';
 
 @Component({
-  selector: 'admin-account-list',
-  templateUrl: './account-list.component.html',
+    selector: 'admin-account-list',
+    templateUrl: './account-list.component.html',
+    standalone: false
 })
 export class AccountListComponent implements OnInit {
   private userService: UserService = inject(UserService);

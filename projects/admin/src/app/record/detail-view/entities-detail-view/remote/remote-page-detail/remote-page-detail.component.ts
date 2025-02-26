@@ -19,8 +19,9 @@ import { DetailComponent } from '@rero/ng-core';
 import { AppSettingsService, Entity } from '@rero/shared';
 
 @Component({
-  selector: 'admin-remote-page-detail',
-  templateUrl: './remote-page-detail.component.html'
+    selector: 'admin-remote-page-detail',
+    templateUrl: './remote-page-detail.component.html',
+    standalone: false
 })
 export class RemotePageDetailComponent extends DetailComponent {
 

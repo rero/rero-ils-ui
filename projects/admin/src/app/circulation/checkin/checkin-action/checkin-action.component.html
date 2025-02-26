@@ -14,14 +14,14 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="font-bold mb-3" translate>
+<div class="font-bold mb-4" translate>
     One item and one patron were found.
 </div>
 <div class="flex gap-2" (keyup.enter)="checkinItemOnEnterKey($event)">
   <p-button
     id="action-patron"
     icon="fa fa-user"
-    styleClass="outline-none"
+    styleClass="outline-0"
     [label]="'Patron account'|translate"
     outlined
     (onClick)="setAction('patron')"
@@ -29,7 +29,7 @@
   <p-button
     id="action-item"
     icon="fa fa-file-o"
-    styleClass="outline-none"
+    styleClass="outline-0"
     [label]="'Checkin the item'|translate"
     outlined
     (onClick)="setAction('item')"

@@ -19,8 +19,9 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'admin-remote-entities-person-detail-view',
-  templateUrl: './remote-entities-person-detail-view.component.html'
+    selector: 'admin-remote-entities-person-detail-view',
+    templateUrl: './remote-entities-person-detail-view.component.html',
+    standalone: false
 })
 export class RemoteEntitiesPersonDetailViewComponent {
 

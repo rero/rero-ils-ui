@@ -29,7 +29,7 @@
     <ng-container beforeButton>
       @if (record) {
         @if (isEnabledOperationLog && record.metadata.pid) {
-          <admin-operation-logs-dialog resourceType="documents" [resourcePid]="record.metadata.pid" />
+          <shared-operation-logs-dialog resourceType="documents" [resourcePid]="record.metadata.pid" />
         }
         @if (!record.metadata.pid && source) {
           <p-button

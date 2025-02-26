@@ -21,8 +21,9 @@ import { PERMISSIONS, PermissionsService } from '@rero/shared';
 import { roleTagSeverity } from '../../../utils/roles';
 
 @Component({
-  selector: 'admin-patrons-brief-view',
-  templateUrl: './patrons-brief-view.component.html'
+    selector: 'admin-patrons-brief-view',
+    templateUrl: './patrons-brief-view.component.html',
+    standalone: false
 })
 export class PatronsBriefViewComponent implements ResultItem {
 

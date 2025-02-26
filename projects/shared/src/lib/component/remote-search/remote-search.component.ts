@@ -22,9 +22,10 @@ import { filter, Subscription } from 'rxjs';
 import { RemoteSearchConfig } from './remote-search-config.service';
 
 @Component({
-  selector: 'shared-remote-search',
-  templateUrl: './remote-search.component.html',
-  providers: [RemoteSearchConfig]
+    selector: 'shared-remote-search',
+    templateUrl: './remote-search.component.html',
+    providers: [RemoteSearchConfig],
+    standalone: false
 })
 export class RemoteSearchComponent implements OnInit, OnDestroy {
 

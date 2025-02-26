@@ -22,8 +22,9 @@ import { AppSettingsService } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
 
 @Component({
-  selector: 'public-search-document-detail-vew',
-  templateUrl: './document-detail-view.component.html',
+    selector: 'public-search-document-detail-vew',
+    templateUrl: './document-detail-view.component.html',
+    standalone: false
 })
 export class DocumentDetailViewComponent implements OnInit {
   private appSettingsService: AppSettingsService = inject(AppSettingsService);

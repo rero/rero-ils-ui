@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -19,44 +19,41 @@
   <div class="py-2">
   <!-- BLOCKED OR NOT? -->
   @if (patron.patron && patron.patron.blocked) {
-    <p-messages
-      [value]="[{ severity: 'error', summary: 'This patron is currently blocked' | translate, detail:  patron.patron.blocked_note}]"
-      [closable]="false"
-      [enableService]="false"
-      showTransitionOptions="0ms"
-    />
+    <p-message severity="error" showTransitionOptions="0ms">
+      {{ 'This patron is currently blocked' | translate }}<br>
+      {{ patron.patron.blocked_note }}
+    </p-message>
   }
 
-  <section id="contact-profile" class="flex flex-column gap-2">
+  <section id="contact-profile" class="flex flex-col gap-2">
     <!-- MAIN PROFILE SECTION ================================================== -->
-    <div class="border-round border-1 surface-border flex gap-4 p-4">
-        <div class="surface-500 border-circle w-10rem h-10rem flex align-items-center justify-content-center">
+    <div class="rounded-border border border-surface flex gap-6 p-6">
+        <div class="bg-surface-500 dark:bg-surface-300 rounded-full w-40 h-40 flex items-center justify-center">
           <i class="fa fa-user-o fa-4x text-white"></i>
         </div>
-      <div class="flex-grow-1">
-        <h1>
-          {{ patron.last_name }} {{ patron.first_name }}
+      <div class="grow">
+        <div class="flex items-center gap-4 mb-2">
+          <span class="text-4xl">{{ patron.last_name }} {{ patron.first_name }}</span>
+
           @if (patron.patron) {
             <a
               [permissions]="permissions.CIRC_ADMIN"
               [routerLink]="['/circulation', 'patron', patron.patron.barcode[0]]"
               class="p-button p-button-outlined"
             >
-              <i class="fa fa-exchange"></i>&nbsp;
-              {{ 'Circulation' | translate }}
+              <i class="fa fa-exchange"></i>&nbsp;{{ 'Circulation' | translate }}
             </a>
           }
-        </h1>
+        </div>
         <dl class="metadata">
           <dt>
             <i class="fa fa-calendar-o"></i>&nbsp;
-            {{ 'Date of birth' | translate}}
+            {{ 'Date of birth' | translate }}
           </dt>
           <dd>{{ patron.birth_date | dateTranslate:'mediumDate' }}</dd>
           @if (patron.email) {
               <dt>
-                <i class="fa fa-envelope"></i>&nbsp;
-                {{ 'Email' | translate }}
+                <i class="fa fa-envelope"></i>&nbsp;{{ 'Email' | translate }}
               </dt>
               <dd>{{ patron.email }}</dd>
           }
@@ -67,10 +64,11 @@
                 {{ patronPhones.length | i18nPlural: {'=1': 'Phone' | translate, 'other': 'Phones' | translate} }}
               </dt>
               <dd>
-                <ul class="list-none m-0 p-0">
+                <ul class="list-none">
                   @for (phone of patronPhones; track phone) {
                     <li>
-                      {{ phone.value }} <span class="font-bold text-color-secondary lowercase" >({{ phone.type | translate }})</span>
+                      {{ phone.value }}&nbsp;
+                      <span class="italic text-muted-color lowercase" >({{ phone.type | translate }})</span>
                     </li>
                   }
                 </ul>
@@ -98,154 +96,173 @@
       </div>
     </div>
 
-    <div class="border-round border-1 surface-border flex gap-4 p-4">
-    <p-accordion class="flex-grow-1" [activeIndex]="[0, 1]" [multiple]="true">
+    <div class="rounded-border border border-surface flex gap-6 p-6">
+    <p-accordion [multiple]="true" class="grow" [value]="['0', '1']">
       <!-- NOTES ================================================================= -->
       @if (patron.notes && patron.notes.length > 0) {
-      <p-accordionTab>
-        <ng-template pTemplate="header">
-          <h5>
+      <p-accordion-panel value="0">
+        <p-accordion-header>
+          <span class="text-bold text-xl">
             {{ patron.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} | translate }}
-          </h5>
-        </ng-template>
+          </span>
+        </p-accordion-header>
+        <p-accordion-content>
           @for (note of patron.notes; track note) {
-            <dl class="metadata">
-              <dt translate>
-                {{ note.type }}
-              </dt>
-              <dd [innerHTML]="note.content | nl2br"></dd>
-            </dl>
+            <div class="mt-2">
+              <dl class="metadata">
+                <dt translate>
+                  {{ note.type }}
+                </dt>
+                <dd [innerHTML]="note.content | nl2br"></dd>
+              </dl>
+            </div>
           }
-        </p-accordionTab>
+        </p-accordion-content>
+        </p-accordion-panel>
         }
         <!-- USER INFORMATION'S SECTION ============================================= -->
-        <p-accordionTab>
-          <ng-template pTemplate="header">
-            <h4 translate>User informations</h4>
-          </ng-template>
-
-          <dl class="metadata">
-            <dt>
-              <i class="fa fa-user"></i>&nbsp;
-              {{ 'Username' | translate }}
-            </dt>
-            <dd>{{ patron.username }}</dd>
-            <dt>
-              <i class="fa fa-history"></i>&nbsp;
-              {{ 'Keep history' }}
-            </dt>
-            <dd>
-              <i class="fa" [ngClass]="patron.keep_history ? 'fa-check text-success' : 'fa-times text-error'"></i>
-            </dd>
-            <dt translate>{{ patron.roles | i18nPlural: {'=1': 'Role', 'other': 'Roles'} }}</dt>
-            <dd class="flex gap-2 flex-wrap">
-              @for (role of patron.roles; track role) {
-                <p-tag [severity]="getroleTagSeverity(role)">
-                  {{ role | translate }}
-                </p-tag>
-              }
-            </dd>
-            <dt translate>Creation date</dt>
-            <dd>{{ record.created | dateTranslate: 'mediumDate' }}</dd>
-          </dl>
-          </p-accordionTab>
+        <p-accordion-panel value="1">
+          <p-accordion-header>
+            <span class="text-bold text-xl" translate>User informations</span>
+          </p-accordion-header>
+          <p-accordion-content>
+            <div class="mt-2">
+              <dl class="metadata">
+                <dt>
+                  <i class="fa fa-user"></i>&nbsp;
+                  {{ 'Username' | translate }}
+                </dt>
+                <dd>{{ patron.username }}</dd>
+                <dt>
+                  <i class="fa fa-history"></i>&nbsp;
+                  {{ 'Keep history' }}
+                </dt>
+                <dd>
+                  <i class="fa" [ngClass]="patron.keep_history ? 'fa-check text-success' : 'fa-times text-error'"></i>
+                </dd>
+                <dt translate>{{ patron.roles | i18nPlural: {'=1': 'Role', 'other': 'Roles'} }}</dt>
+                <dd class="flex gap-2 flex-wrap">
+                  @for (role of patron.roles; track role) {
+                    <p-tag [severity]="getroleTagSeverity(role)">
+                      {{ role | translate }}
+                    </p-tag>
+                  }
+                </dd>
+                <dt translate>Creation date</dt>
+                <dd>{{ record.created | dateTranslate: 'mediumDate' }}</dd>
+              </dl>
+            </div>
+          </p-accordion-content>
+        </p-accordion-panel>
 
     <!-- PATRON INFORMATION'S SECTION =========================================== -->
     @if (patron.patron) {
-    <p-accordionTab>
-      <ng-template pTemplate="header">
-        <h4 translate>Patron information</h4>
-      </ng-template>
-      <dl class="metadata">
-        <dt>
-          <i class="fa fa-barcode"></i>&nbsp;
-          {{ 'Barcode' | translate }}
-        </dt>
-        <dd>
-          <a [routerLink]="['/circulation', 'patron', patron.patron.barcode[0]]" [linkPermissions]="permissions.CIRC_ADMIN">{{ patron.patron.barcode | join: ', ' }}</a>
-        </dd>
-        <dt translate>Type</dt>
-        <dd>
-          {{ patron.patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
-        </dd>
-        <dt translate>Account expiration</dt>
-        <dd>
-          {{ patron.patron.expiration_date | dateTranslate:'mediumDate' }}
-        </dd>
-        @if (patron.patron.libraries && patron.patron.libraries.length > 0) {
-          <dt>
-            <i class="fa fa-university"></i>&nbsp;
-            {{ 'Affiliation libraries' | translate }}
-          </dt>
-          <ul class="list-none m-0 p-0">
-            @for (library of patron.patron.libraries; track library) {
-              <li>
-                {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
-              </li>
+    <p-accordion-panel value="3">
+      <p-accordion-header>
+        <span class="text-bold text-xl" translate>Patron information</span>
+      </p-accordion-header>
+      <p-accordion-content>
+        <div class="mt-2">
+          <dl class="metadata">
+            <dt>
+              <i class="fa fa-barcode"></i>&nbsp;
+              {{ 'Barcode' | translate }}
+            </dt>
+            <dd>
+              <a [routerLink]="['/circulation', 'patron', patron.patron.barcode[0]]" [linkPermissions]="permissions.CIRC_ADMIN">{{ patron.patron.barcode | join: ', ' }}</a>
+            </dd>
+            <dt translate>Type</dt>
+            <dd>
+              {{ patron.patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
+            </dd>
+            <dt translate>Account expiration</dt>
+            <dd>
+              {{ patron.patron.expiration_date | dateTranslate:'mediumDate' }}
+            </dd>
+            @if (patron.patron.libraries && patron.patron.libraries.length > 0) {
+              <dt>
+                <i class="fa fa-university"></i>&nbsp;
+                {{ 'Affiliation libraries' | translate }}
+              </dt>
+              <ul class="list-none">
+                @for (library of patron.patron.libraries; track library) {
+                  <li>
+                    {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+                  </li>
+                }
+              </ul>
             }
-          </ul>
-        }
-        @if (patron.source) {
-          <dt translate>Source</dt>
-          <dd>{{ patron.source }}</dd>
-        }
-        @if (patron.local_codes) {
-          <dt translate>Local code</dt>
-          <dd>{{ patron.local_codes | join: ',' }}</dd>
-        }
-        @if (patron.second_address) {
-          <dt>
-            <i class="fa fa-home"></i>&nbsp;
-            {{ 'Second address' | translate }}
-          </dt>
-          <dd>
-            @if (patron.second_address.street) {
-              {{ patron.second_address.street }}<br/>
+            @if (patron.source) {
+              <dt translate>Source</dt>
+              <dd>{{ patron.source }}</dd>
             }
-            @if (patron.second_address.postal_code || patron.second_address.city) {
-              {{ patron.second_address.postal_code }} {{ patron.second_address.city }}<br/>
+            @if (patron.local_codes) {
+              <dt translate>Local code</dt>
+              <dd>{{ patron.local_codes | join: ',' }}</dd>
             }
-            @if (patron.second_address.country) {
-              {{ 'country_' + patron.second_address.country | translate }}
+            @if (patron.second_address) {
+              <dt>
+                <i class="fa fa-home"></i>&nbsp;
+                {{ 'Second address' | translate }}
+              </dt>
+              <dd>
+                @if (patron.second_address.street) {
+                  {{ patron.second_address.street }}<br/>
+                }
+                @if (patron.second_address.postal_code || patron.second_address.city) {
+                  {{ patron.second_address.postal_code }} {{ patron.second_address.city }}<br/>
+                }
+                @if (patron.second_address.country) {
+                  {{ 'country_' + patron.second_address.country | translate }}
+                }
+              </dd>
             }
-          </dd>
-        }
-      </dl>
-    </p-accordionTab>
+          </dl>
+        </div>
+      </p-accordion-content>
+    </p-accordion-panel>
   }
     <!-- LIBRARIAN INFORMATION'S SECTION ======================================== -->
 
     @if (patron.libraries?.length > 0) {
-      <p-accordionTab>
-        <ng-template pTemplate="header">
-          <h4 translate>Librarian information</h4>
-        </ng-template>
-        <dl class="metadata">
-          <dt>
-            <i class="fa fa-university"></i>&nbsp;
-            {{ patron.libraries.length | i18nPlural: {'=1': 'Library' | translate, 'other': 'Libraries' | translate} }}
-          </dt>
-          <dd>
-          <ul class="list-none p-0 m-0">
-            @for (library of patron.libraries; track library) {
-              <li>
-                {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
-              </li>
-            }
-          </ul>
-        </dd>
-        </dl>
-      </p-accordionTab>
+      <p-accordion-panel value="4">
+        <p-accordion-header>
+          <span class="text-bold text-xl" translate>Librarian information</span>
+        </p-accordion-header>
+        <p-accordion-content>
+          <div class="mt-2">
+            <dl class="metadata">
+              <dt>
+                <i class="fa fa-university"></i>&nbsp;
+                {{ patron.libraries.length | i18nPlural: {'=1': 'Library' | translate, 'other': 'Libraries' | translate} }}
+              </dt>
+              <dd>
+                <ul class="list-none p-0 m-0">
+                  @for (library of patron.libraries; track library) {
+                    <li>
+                      {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+                    </li>
+                  }
+                </ul>
+              </dd>
+            </dl>
+          </div>
+        </p-accordion-content>
+      </p-accordion-panel>
     }
 
     <!-- PERMISSIONS ======================================== -->
     @if (canAccessDisplayPermissions) {
-      <p-accordionTab>
-        <ng-template pTemplate="header">
-          <h4 translate>Permissions</h4>
-        </ng-template>
-        <admin-patron-permissions [hidden]="false" [pid]="patron.pid"></admin-patron-permissions>
-      </p-accordionTab>
+      <p-accordion-panel value="5">
+        <p-accordion-header>
+          <span class="text-bold text-xl" translate>Permissions</span>
+        </p-accordion-header>
+        <p-accordion-content>
+          <div class="mt-2">
+            <admin-patron-permissions [hidden]="false" [pid]="patron.pid"></admin-patron-permissions>
+          </div>
+        </p-accordion-content>
+      </p-accordion-panel>
     }
     </p-accordion>
     </div>

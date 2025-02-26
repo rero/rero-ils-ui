@@ -18,8 +18,9 @@ import { Component, inject, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'shared-part-of',
-  templateUrl: './part-of.component.html'
+    selector: 'shared-part-of',
+    templateUrl: './part-of.component.html',
+    standalone: false
 })
 export class PartOfComponent {
 

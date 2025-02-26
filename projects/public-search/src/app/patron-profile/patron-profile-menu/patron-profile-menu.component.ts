@@ -18,8 +18,9 @@ import { Component, inject, Input } from '@angular/core';
 import { IMenu, PatronProfileMenuService } from '../patron-profile-menu.service';
 
 @Component({
-  selector: 'public-search-patron-profile-menu',
-  templateUrl: './patron-profile-menu.component.html'
+    selector: 'public-search-patron-profile-menu',
+    templateUrl: './patron-profile-menu.component.html',
+    standalone: false
 })
 export class PatronProfileMenuComponent {
 

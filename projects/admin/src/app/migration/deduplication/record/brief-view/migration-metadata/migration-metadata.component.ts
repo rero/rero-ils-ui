@@ -20,8 +20,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { MainTitlePipe } from '@rero/shared';
 
 @Component({
-  selector: 'admin-migration-metadata',
-  templateUrl: './migration-metadata.component.html'
+    selector: 'admin-migration-metadata',
+    templateUrl: './migration-metadata.component.html',
+    standalone: false
 })
 export class MigrationMetadataBriefComponent {
   // services

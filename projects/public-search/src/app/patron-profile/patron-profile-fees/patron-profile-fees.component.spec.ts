@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
@@ -26,6 +26,7 @@ import { PatronTransactionApiService } from '../../api/patron-transaction-api.se
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { PatronProfileService } from '../patron-profile.service';
 import { PatronProfileFeesComponent } from './patron-profile-fees.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PatronProfileFeeComponent', () => {
   let component: PatronProfileFeesComponent;
@@ -60,18 +61,17 @@ describe('PatronProfileFeeComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ PatronProfileFeesComponent ],
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
-        CoreModule
-      ],
-      providers: [
+    declarations: [PatronProfileFeesComponent],
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [TranslateModule.forRoot(),
+        CoreModule],
+    providers: [
         { provide: UserApiService, useValue: userApiServiceSpy },
-        { provide: PatronTransactionApiService, useValue: patronTransactionApiServiceSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    })
+        { provide: PatronTransactionApiService, useValue: patronTransactionApiServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   });
 

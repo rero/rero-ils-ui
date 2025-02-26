@@ -19,8 +19,8 @@ import { Component, Input } from '@angular/core';
 import { DateTime } from 'luxon';
 
 @Component({
-  selector: 'admin-holding-item-temporary-item-type',
-  template: `
+    selector: 'admin-holding-item-temporary-item-type',
+    template: `
     @if (hasTemporaryItemType()) {
       <dl class="metadata">
         <dt>
@@ -37,7 +37,8 @@ import { DateTime } from 'luxon';
         </dd>
       </dl>
     }
-  `
+  `,
+    standalone: false
 })
 export class HoldingItemTemporaryItemTypeComponent {
 

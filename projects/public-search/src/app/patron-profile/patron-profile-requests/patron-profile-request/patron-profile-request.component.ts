@@ -23,8 +23,9 @@ import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 import { PatronProfileService } from '../../patron-profile.service';
 
 @Component({
-  selector: 'public-search-patron-profile-request',
-  templateUrl: './patron-profile-request.component.html'
+    selector: 'public-search-patron-profile-request',
+    templateUrl: './patron-profile-request.component.html',
+    standalone: false
 })
 export class PatronProfileRequestComponent {
 

@@ -28,8 +28,9 @@ import { IAcqReceiptModel, ICreateLineMessage, OrderReceipt } from './order-rece
 import { OrderReceiptForm } from './order-receipt-form';
 
 @Component({
-  selector: 'admin-order-receipt-view',
-  templateUrl: './order-receipt-view.component.html'
+    selector: 'admin-order-receipt-view',
+    templateUrl: './order-receipt-view.component.html',
+    standalone: false
 })
 export class OrderReceiptViewComponent implements OnInit {
 
@@ -195,6 +196,6 @@ export class OrderReceiptViewComponent implements OnInit {
 
   /** Redirect to order detail view */
   redirectToOrder(): void {
-    this.router.navigate(['/', 'records', 'acq_orders', 'detail', this.orderPid], { queryParams: {tab: 1}});
+    this.router.navigate(['/acquisition', 'records', 'acq_orders', 'detail', this.orderPid], { queryParams: {tab: 'reception'}});
   }
 }

@@ -15,10 +15,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="p-2 surface-border hover:surface-100"  [class.border-top-1]="separator">
-    <div class="grid">
+<div class="p-2 border-surface hover:bg-surface-100 dark:hover:bg-surface-700"  [class.border-top-1]="separator">
+    <div class="grid grid-cols-12 gap-4">
       <!-- transaction date -->
-      <div class="col-2 text-sm">
+      <div class="col-span-2 text-sm">
         <div class="flex gap-2">
         <shared-open-close-button [styleClass]="isHighlight? 'bg-blue-100': 'bg-white'" (status)="isCollapsed = $event" />
         <div>
@@ -28,16 +28,16 @@
       </div>
       </div>
       <!-- transaction badge -->
-      <div class="col-2">
+      <div class="col-span-2">
         <ng-content select="[badge]" />
       </div>
       <!-- content -->
-      <div class="col-8">
+      <div class="col-span-8">
         @if (isCollapsed) {
           <ng-content select="[collapsedContent]" />
         } @else {
           <div class="flex gap-2 pr-2">
-          <ng-content class="flex-grow-1" select="[expandedContent]" />
+          <ng-content class="grow" select="[expandedContent]" />
           <!-- debug mode button -->
           @if (canUseDebugMode) {
             <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" severity="warning" [outlined]="!debugMode" size="small"
@@ -51,6 +51,6 @@
       </div>
     </div>
       <!-- debug information -->
-      <pre style="text-wrap: auto" class="text-xs surface-100 p-2" [hidden]="!debugMode || isCollapsed">{{ record | json }}</pre>
+      <pre style="text-wrap: auto" class="text-xs bg-surface-100 dark:bg-surface-700 p-2" [hidden]="!debugMode || isCollapsed">{{ record | json }}</pre>
 </div>
 

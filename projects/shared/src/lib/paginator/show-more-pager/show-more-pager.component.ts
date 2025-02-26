@@ -18,8 +18,9 @@ import { Component, Input } from '@angular/core';
 import { Paginator } from '../paginator';
 
 @Component({
-  selector: 'shared-search-show-more-pager',
-  templateUrl: './show-more-pager.component.html'
+    selector: 'shared-search-show-more-pager',
+    templateUrl: './show-more-pager.component.html',
+    standalone: false
 })
 export class ShowMorePagerComponent {
 

@@ -43,7 +43,6 @@ import { PatronTypesRoute } from './patron-types-route';
 import { PatronsRoute } from './patrons-route';
 import { StatisticsCfgRoute } from './statistics-cfg-route';
 import { TemplatesRoute } from './templates-route';
-import { VendorsRoute } from './vendors-route';
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +67,6 @@ export class RouteService {
       .addRoute(new LocationsRoute())
       .addRoute(new PatronsRoute())
       .addRoute(new PatronTypesRoute())
-      .addRoute(new VendorsRoute())
       .addRoute(new TemplatesRoute())
       .addRoute(new CollectionsRoute())
       .addRoute(new IllRequestsRoute())
@@ -79,11 +77,6 @@ export class RouteService {
       .addRoute(new EntitiesRemoteRoute())
       .addRoute(new EntitiesLocalRoute())
       .addRoute(new StatisticsCfgRoute())
-      // Route from acquisition modules
-      .addRoute(new AcqBudgetsRoute())
-      .addRoute(new AcqAccountsRoute())
-      .addRoute(new AcqOrderLinesRoute())
-      .addRoute(new AcqOrdersRoute())
       // should be at the last
       .addRoute(new ImportDocumentsRoute())
     ;

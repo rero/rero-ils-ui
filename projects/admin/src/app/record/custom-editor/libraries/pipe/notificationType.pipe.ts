@@ -18,7 +18,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Notification } from '../../../../classes/notification';
 
 @Pipe({
-  name: 'notificationType'
+    name: 'notificationType',
+    standalone: false
 })
 export class NotificationTypePipe implements PipeTransform {
 

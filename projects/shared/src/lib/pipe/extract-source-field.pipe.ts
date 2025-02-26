@@ -19,8 +19,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { AppSettingsService } from '../service/app-settings.service';
 
 @Pipe({
-  name: 'extractSourceField',
-  pure: false
+    name: 'extractSourceField',
+    pure: false,
+    standalone: false
 })
 export class ExtractSourceFieldPipe implements PipeTransform {
 

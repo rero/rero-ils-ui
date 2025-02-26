@@ -16,11 +16,12 @@
  */
 import { TestBed } from '@angular/core/testing';
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordModule, RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { IllRequestApiService } from './ill-request-api.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('IllRequestApiService', () => {
   let service: IllRequestApiService;
@@ -101,15 +102,14 @@ describe('IllRequestApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RecordModule,
-        TranslateModule.forRoot()
-      ],
-      providers: [
+    imports: [RecordModule,
+        TranslateModule.forRoot()],
+    providers: [
         { provide: RecordService, useValue: recordServiceSpy },
-      ]
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
     service = TestBed.inject(IllRequestApiService);
   });
 

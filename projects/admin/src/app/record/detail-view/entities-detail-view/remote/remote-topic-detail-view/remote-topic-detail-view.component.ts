@@ -19,8 +19,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'admin-remote-topic-detail-view',
-  templateUrl: './remote-topic-detail-view.component.html'
+    selector: 'admin-remote-topic-detail-view',
+    templateUrl: './remote-topic-detail-view.component.html',
+    standalone: false
 })
 export class RemoteTopicDetailViewComponent implements OnInit{
 

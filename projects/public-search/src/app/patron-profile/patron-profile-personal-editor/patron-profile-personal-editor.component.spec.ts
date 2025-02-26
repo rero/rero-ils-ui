@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
@@ -22,6 +22,7 @@ import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserService, testUserPatronWithSettings } from '@rero/shared';
 import { PatronProfilePersonalEditorComponent } from './patron-profile-personal-editor.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('PatronProfilePersonalEditorComponent', () => {
@@ -33,19 +34,18 @@ describe('PatronProfilePersonalEditorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PatronProfilePersonalEditorComponent ],
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
+    declarations: [PatronProfilePersonalEditorComponent],
+    imports: [TranslateModule.forRoot(),
         FormsModule,
         ReactiveFormsModule,
         FormlyModule.forRoot(),
-        FormlyPrimeNGModule
-      ],
-      providers: [
+        FormlyPrimeNGModule],
+    providers: [
         { provide: UserService, useValue: userServiceSpy },
-      ]
-    })
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+})
     .compileComponents();
   });
 

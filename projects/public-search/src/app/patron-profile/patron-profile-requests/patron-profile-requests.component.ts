@@ -24,8 +24,9 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { ITabEvent, PatronProfileService } from '../patron-profile.service';
 
 @Component({
-  selector: 'public-search-patron-profile-requests',
-  templateUrl: './patron-profile-requests.component.html'
+    selector: 'public-search-patron-profile-requests',
+    templateUrl: './patron-profile-requests.component.html',
+    standalone: false
 })
 export class PatronProfileRequestsComponent implements OnInit, OnDestroy {
 

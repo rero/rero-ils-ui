@@ -15,22 +15,15 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @defer(when formFields) {
-  <div class="flex gap-2 flex-column">
+  <div class="flex gap-2 flex-col">
   @if (requestedBy$ | async; as requestedBy) {
     @if (requestedBy.length > 0) {
-      <div class="flex gap-2 align-items-start">
-        <p-messages
-          class="flex-grow-1"
-          [value]="[
-            {
-              severity: 'warn',
-              detail: requestedBy.length < 2
-                ? requestedBy.length + ' ' + ('request in the queue' | translate)
-                : requestedBy.length + ' ' + ('requests in the queue' | translate)
-            }
-          ]"
-          [closable]="false"
-          [enableService]="false"
+      <div class="flex gap-2 items-start">
+        <p-message
+          class="grow"
+          [text]="requestedBy.length < 2
+              ? requestedBy.length + ' ' + ('request in the queue' | translate)
+              : requestedBy.length + ' ' + ('requests in the queue' | translate)"
           showTransitionOptions="0ms"
         />
         <p-button
@@ -43,26 +36,25 @@
     }
   }
   @if (patron) {
-    <p-card [header]="[patron.last_name, patron.first_name].join(', ')" styleClass="surface-100 ">
+    <p-card [header]="[patron.last_name, patron.first_name].join(', ')" styleClass="bg-surface-100 dark:bg-surface-700 ">
       <p class="m-0">
         {{ patron.street }}<br>
         {{ patron.postal_code }} {{ patron.city }}<br>
         {{ patron.email }}
       </p>
       @if (patron | patronBlockedMessage; as message) {
-        <p-messages
-          [value]="[{ severity: 'danger', detail: message}]"
-          [closable]="false"
-          [enableService]="false"
+        <p-message
+          [text]="message"
+          severity="danger"
           showTransitionOptions="0ms"
         />
       }
     </p-card>
   }
   <form [formGroup]="form" (ngSubmit)="submit(model)">
-    <div class="flex gap-2 flex-column">
+    <div class="flex gap-2 flex-col">
       <formly-form [form]="form" [fields]="formFields" [model]="model" />
-      <div class="flex justify-content-end">
+      <div class="flex justify-end">
         <p-button
           id="new-request-button"
           type="submit"

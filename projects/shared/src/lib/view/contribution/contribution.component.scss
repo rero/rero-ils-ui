@@ -20,15 +20,16 @@
 ul.contributor-list {
   padding-inline-start: 0;
   li {
-    @extend .inline, .mr-0;
+    @apply inline mr-0;
   }
   & > li + li::before {
-    @extend .mx-1;
+    @apply mx-1;
     content: ";";
   }
 
   ul.contributor-roles {
-    @extend .list-none, .inline, .text-color-secondary, .ml-1;
+    @apply list-none inline ml-1;
+    color: var(--p-text-muted-color);
     & > li + li::before {
       content: ", ";
     }

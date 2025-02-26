@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { CommonModule } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -24,24 +24,23 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { SharedModule } from '@rero/shared';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        CommonModule,
+    declarations: [
+        AppComponent,
+        MenuComponent
+    ],
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [CommonModule,
         NgxSpinnerModule,
         RouterTestingModule,
         TranslateModule.forRoot(),
-        HttpClientTestingModule,
-        SharedModule
-      ],
-      declarations: [
-        AppComponent,
-        MenuComponent
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents();
+        SharedModule],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
   }));
 
   it('should create the app', () => {

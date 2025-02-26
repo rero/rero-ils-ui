@@ -18,7 +18,8 @@ import { inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Pipe({
-  name: 'arrayTranslate'
+    name: 'arrayTranslate',
+    standalone: false
 })
 export class ArrayTranslatePipe implements PipeTransform {
 

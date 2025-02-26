@@ -14,12 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule, RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { PatronTransactionEventApiService } from './patron-transaction-event-api.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('PatronTransactionEventApiService', () => {
@@ -52,15 +53,14 @@ describe('PatronTransactionEventApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
-        CoreModule
-      ],
-      providers: [
-        { provide: RecordService, useValue: recordServiceSpy }
-      ]
-    });
+    imports: [TranslateModule.forRoot(),
+        CoreModule],
+    providers: [
+        { provide: RecordService, useValue: recordServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     service = TestBed.inject(PatronTransactionEventApiService);
   });
 

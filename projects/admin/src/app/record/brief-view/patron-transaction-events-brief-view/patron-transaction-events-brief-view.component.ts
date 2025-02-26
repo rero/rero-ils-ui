@@ -23,8 +23,9 @@ import { Organisation } from '@app/admin/classes/core';
 import { PatronTransactionsService } from '../../../service/patron-transactions.service';
 
 @Component({
-  selector: 'admin-patron-transaction-events-brief-view',
-  templateUrl: './patron-transaction-events-brief-view.component.html'
+    selector: 'admin-patron-transaction-events-brief-view',
+    templateUrl: './patron-transaction-events-brief-view.component.html',
+    standalone: false
 })
 export class PatronTransactionEventsBriefViewComponent implements ResultItem, OnInit {
 

@@ -1,9 +1,10 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CirculationModule } from '../../circulation.module';
 import { PatronTransactionsComponent } from './patron-transactions.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PatronTransactionsComponent', () => {
   let component: PatronTransactionsComponent;
@@ -11,13 +12,11 @@ describe('PatronTransactionsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot(),
+    imports: [TranslateModule.forRoot(),
         RouterTestingModule,
-        HttpClientTestingModule,
-        CirculationModule
-      ]
-    })
+        CirculationModule],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
   }));
 

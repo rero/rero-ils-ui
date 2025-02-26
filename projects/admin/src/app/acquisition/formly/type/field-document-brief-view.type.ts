@@ -21,12 +21,13 @@ import { FieldType } from '@ngx-formly/core';
 import { RecordService } from '@rero/ng-core';
 
 @Component({
-  selector: 'admin-formly-field-type',
-  template: `
+    selector: 'admin-formly-field-type',
+    template: `
     @if (record) {
       <shared-document-brief-view [record]="record"></shared-document-brief-view>
     }
-  `
+  `,
+    standalone: false
 })
 export class FieldDocumentBriefViewTypeComponent extends FieldType implements OnInit {
 

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2024 RERO
+  Copyright (C) 2024-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,55 +15,55 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <p-menubar [model]="items" [autoDisplay]="false">
-  <ng-template pTemplate="item" let-item let-root="root">
+  <ng-template #item let-item let-root="root">
     @if (item.routerLink && !item.url) {
       <span
         pRipple
-        class="flex align-items-center p-element p-menuitem-link"
+        class="flex items-center p-menubar-item-link"
         [id]="item.id"
         [routerLink]="item.routerLink"
         [queryParams]="item.queryParams"
       >
         @if (item.icon) {
-          <span [class]="item.icon" class="p-menuitem-icon"></span>
+          <span [class]="item.icon" class="p-menubar-item-icon"></span>
         }
-        <span class="ml-2">{{ item.label }}</span>
+        <span>{{ item.label }}</span>
         @if (item.badge) {
           <p-badge [ngClass]="{ 'ml-auto': !root, 'ml-2': root }" [value]="item.badge"></p-badge>
         }
         @if (item.shortcut) {
-          <span class="ml-auto border-1 surface-border border-round surface-100 text-sm px-2 py-1">{{ item.shortcut }}</span>
+          <span class="ml-auto border border-surface rounded bg-surface-100 bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
         }
       </span>
     }
     @if (item.url && !item.routerLink) {
       <a
         pRipple
-        class="flex align-items-center p-element p-menuitem-link"
+        class="flex items-center p-menubar-item-link"
         [id]="item.id"
         [href]="item.url"
         [target]="item.target"
       >
         @if (item.icon) {
-          <span [class]="item.icon" class="p-menuitem-icon"></span>
+          <span [class]="item.icon" class="p-menubar-item-icon"></span>
         }
-        <span class="ml-2">{{ item.label }}</span>
+        <span>{{ item.label }}</span>
         @if (item.badge) {
           <p-badge [ngClass]="{ 'ml-auto': !root, 'ml-2': root }" [value]="item.badge"></p-badge>
         }
         @if (item.shortcut) {
-          <span class="ml-auto border-1 surface-border border-round surface-100 text-sm px-2 py-1">{{ item.shortcut }}</span>
+          <span class="ml-auto border border-surface rounded bg-surface-100 bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
         }
       </a>
     }
     @if (!item.url && !item.routerLink) {
-      <div class="p-menuitem-link">
+      <div class="flex items-center p-menubar-item-link">
         @if (item.icon) {
-          <span [class]="item.icon" class="p-menuitem-icon"></span>
+          <span [class]="item.icon" class="p-menubar-item-icon"></span>
         }
-        <span class="ml-2">{{ item.label }}</span>
+        <span>{{ item.label }}</span>
         @if (!item.disabled && item.items) {
-          <i [ngClass]="['pi pi-fw', root ? 'pi-angle-down ml-2' : 'pi-angle-right ml-auto']"></i>
+          <i [ngClass]="['ml-auto pi pi-fw', root ? 'pi-angle-down ml-2' : 'pi-angle-right']"></i>
         }
       </div>
     }

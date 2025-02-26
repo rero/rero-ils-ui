@@ -19,8 +19,9 @@ import { Component, Input } from '@angular/core';
 import { HoldingsNoteType } from '@rero/shared';
 
 @Component({
-  selector: 'admin-holding-detail',
-  templateUrl: './holding-detail.component.html'
+    selector: 'admin-holding-detail',
+    templateUrl: './holding-detail.component.html',
+    standalone: false
 })
 export class HoldingDetailComponent {
 

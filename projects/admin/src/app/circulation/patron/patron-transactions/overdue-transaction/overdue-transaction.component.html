@@ -15,53 +15,53 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (transaction !== undefined && transaction.fees.total > 0) {
-  <div class="mr-1 p-2">
-  <div class="grid grid-nogutter align-items-start">
-    <div class="col-2 flex gap-2">
-      <shared-open-close-button (status)="isCollapsed = $event" />
-      {{ transaction.loan.end_date | dateTranslate :'shortDate' }}
-    </div>
-    <div class="col-7">
-      @if (document && document.title | mainTitle; as title) {
-        <a [routerLink]="['/records','documents','detail', document.pid]">
-          {{ title | truncateText: 15 }}
-        </a>
-      }
-    </div>
-    <div class="col-2 flex justify-content-end">{{ transaction.fees.total | currency: organisation.default_currency }}</div>
-  </div>
-  @if (!isCollapsed) {
-    <div class="mt-2">
-      <h6 translate>Details</h6>
-      <section class="mb-3">
-        @if (item) {
-          <div class="grid grid-nogutter">
-            <div class="col-2" translate>Item</div>
-            <div class="col-10">
-              <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
-            </div>
-            <div class="col-2" translate>Call number</div>
-            <div class="col-10">
-              <shared-inherited-call-number [item]="item" />
-            </div>
-            <div class="col-2" translate>Borrowed on</div>
-            <div class="col-10">{{ transaction.loan.start_date | dateTranslate :'short' }}</div>
-            <ng-container *ngVar="transaction.loan.transaction_location_pid | getRecord: 'locations' | async as location">
-              @if (location) {
-                <div class="col-2" translate>Borrowed at</div>
-                <div class="col-10">
-                  {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}: {{ location.metadata.name }}
-                </div>
-              }
-            </ng-container>
-          </div>
+  <div class="p-2 border rounded border-gray-200">
+    <div class="grid grid-cols-12 gap-4 grid-nogutter items-start">
+      <div class="col-span-2 flex gap-2">
+        <shared-open-close-button (status)="isCollapsed = $event" />
+        {{ transaction.loan.end_date | dateTranslate :'shortDate' }}
+      </div>
+      <div class="col-span-7">
+        @if (document && document.title | mainTitle; as title) {
+          <a [routerLink]="['/records','documents','detail', document.pid]">
+            {{ title | truncateText: 15 }}
+          </a>
         }
-      </section>
-
-      <h6 translate>Transaction history</h6>
-      <admin-patron-transaction-history [events]="transaction.fees.steps" />
+      </div>
+      <div class="col-span-2 flex justify-end">{{ transaction.fees.total | currency: organisation.default_currency }}</div>
     </div>
-  }
-</div>
+    @if (!isCollapsed) {
+      <div class="mt-2">
+        <h6 translate>Details</h6>
+        <section class="mb-4">
+          @if (item) {
+            <div class="grid grid-cols-12 grid-nogutter">
+              <div class="col-span-2" translate>Item</div>
+              <div class="col-span-10">
+                <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+              </div>
+              <div class="col-span-2" translate>Call number</div>
+              <div class="col-span-10">
+                <shared-inherited-call-number [item]="item" />
+              </div>
+              <div class="col-span-2" translate>Borrowed on</div>
+              <div class="col-span-10">{{ transaction.loan.start_date | dateTranslate :'short' }}</div>
+              <ng-container *ngVar="transaction.loan.transaction_location_pid | getRecord: 'locations' | async as location">
+                @if (location) {
+                  <div class="col-span-2" translate>Borrowed at</div>
+                  <div class="col-span-10">
+                    {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}: {{ location.metadata.name }}
+                  </div>
+                }
+              </ng-container>
+            </div>
+          }
+        </section>
+
+        <h6 translate>Transaction history</h6>
+        <admin-patron-transaction-history [events]="transaction.fees.steps" />
+      </div>
+    }
+  </div>
 }
 

@@ -23,8 +23,9 @@ import { ApiService, Record } from '@rero/ng-core';
 import { of, switchMap } from 'rxjs';
 
 @Component({
-  selector: 'admin-migration-data',
-  templateUrl: './migration-data.component.html'
+    selector: 'admin-migration-data',
+    templateUrl: './migration-data.component.html',
+    standalone: false
 })
 export class MigrationDataDetailComponent {
 

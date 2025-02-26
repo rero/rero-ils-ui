@@ -19,8 +19,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { ResultItem } from '@rero/ng-core';
 
 @Component({
-  selector: 'admin-statistics-cfg-brief-view',
-  template: `
+    selector: 'admin-statistics-cfg-brief-view',
+    template: `
   <h5>
     <i
       class="fa fa-circle"
@@ -39,8 +39,9 @@ import { ResultItem } from '@rero/ng-core';
       <dd>{{ record.metadata.category.indicator.type | translate }}</dd>
     </dl>
   </div>
-  `
-  })
+  `,
+    standalone: false
+})
 export class StatisticsCfgBriefViewComponent implements ResultItem {
 
   private translateService: TranslateService = inject(TranslateService);

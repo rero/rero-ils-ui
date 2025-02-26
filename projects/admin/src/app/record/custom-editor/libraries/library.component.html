@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -17,128 +17,134 @@
 @if (libForm) {
 <h1 translate>Library</h1>
 <form [formGroup]="libForm" (ngSubmit)="onSubmit()">
-  <p-accordion [activeIndex]="[0]" multiple>
+  <p-accordion [value]="[0]" multiple>
     <!-- DESCRIPTIVE METADATA TAB ===================================== -->
-    <p-accordionTab>
-      <ng-template pTemplate="header">
+    <p-accordion-panel value="0">
+      <p-accordion-header>
         <div>
           <i class="fa fa-bars"></i>&nbsp;{{ "Descriptive data" | translate }}
         </div>
-      </ng-template>
-      <div class="grid align-items-center">
-        <label for="code" class="col-3"
-          ><span translate>Code</span>&nbsp;*</label
-        >
-        <div class="col-9">
-          <input
-            pInputText
-            id="code"
-            formControlName="code"
-            class="w-full"
-            [class.ng-invalid]="code.invalid"
-            placeholder="{{ 'Please insert a code' | translate }}"
-            required
-          />
-          @if (code.invalid && (code.dirty || code.touched)) {
-          <div class="text-error">
-            @if (code.errors.alreadyTaken) {
-            <span translate>Code is already taken.</span>
-            } @if (code.errors.required) {
-            <span translate>Code is required.</span>
-            } @if (code.pending) {
-            <span translate>Validating…</span>
+      </p-accordion-header>
+      <p-accordion-content>
+        <div class="grid grid-cols-12 gap-4 items-center">
+          <label for="code" class="col-span-3"
+            ><span translate>Code</span>&nbsp;*</label
+          >
+          <div class="col-span-9">
+            <input
+              pInputText
+              id="code"
+              formControlName="code"
+              class="w-full"
+              [class.ng-invalid]="code.invalid"
+              placeholder="{{ 'Please insert a code' | translate }}"
+              required
+            />
+            @if (code.invalid && (code.dirty || code.touched)) {
+            <div class="text-error">
+              @if (code.errors.alreadyTaken) {
+              <span translate>Code is already taken.</span>
+              } @if (code.errors.required) {
+              <span translate>Code is required.</span>
+              } @if (code.pending) {
+              <span translate>Validating…</span>
+              }
+            </div>
             }
           </div>
-          }
-        </div>
-        <label for="name" class="col-3"
-          ><span translate>Name</span>&nbsp;*</label
-        >
-        <div class="col-9">
-          <input
-            pInputText
-            id="name"
-            formControlName="name"
-            class="w-full"
-            [class.ng-invalid]="name.invalid"
-            [placeholder]="'Please insert a name' | translate"
-            required
-          />
-          @if (name.invalid && (name.dirty || name.touched)) {
-          <div class="text-error">
-            @if (name.errors.required) {
-            <span translate>Name is required.</span>
-            } @if (name.errors.minlength) {
-            <span translate>Name must be at least 4 characters long.</span>
+          <label for="name" class="col-span-3"
+            ><span translate>Name</span>&nbsp;*</label
+          >
+          <div class="col-span-9">
+            <input
+              pInputText
+              id="name"
+              formControlName="name"
+              class="w-full"
+              [class.ng-invalid]="name.invalid"
+              [placeholder]="'Please insert a name' | translate"
+              required
+            />
+            @if (name.invalid && (name.dirty || name.touched)) {
+            <div class="text-error">
+              @if (name.errors.required) {
+              <span translate>Name is required.</span>
+              } @if (name.errors.minlength) {
+              <span translate>Name must be at least 4 characters long.</span>
+              }
+            </div>
             }
           </div>
-          }
-        </div>
-        <label for="address" class="col-3 col-form-label" translate
-          >Address</label
-        >
-        <div class="col-9 p-inputgroup">
-          <span class="p-inputgroup-addon"><i class="fa fa-home"></i></span>
-          <input
-            pInputText
-            id="address"
-            formControlName="address"
-            class="w-full"
-            [class.ng-invalid]="address.invalid"
-          />
-          @if (address.invalid && (address.dirty || address.touched)) {
-          <div class="text-error">
-            @if (address.errors.minlength) {
-            <span translate>Address must be at least 4 characters long.</span>
+          <label for="address" class="col-span-3 col-form-label" translate>Address</label>
+          <div class="col-span-9">
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="fa fa-home"></i>
+              </p-inputgroup-addon>
+              <input
+                pInputText
+                id="address"
+                formControlName="address"
+                class="w-full"
+                [class.ng-invalid]="address.invalid"
+              />
+              @if (address.invalid && (address.dirty || address.touched)) {
+              <div class="text-error">
+                @if (address.errors.minlength) {
+                <span translate>Address must be at least 4 characters long.</span>
+                }
+              </div>
+              }
+            </p-inputgroup>
+          </div>
+          <label for="email" class="col-span-3" translate>Email</label>
+          <div class="col-span-9">
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="fa fa-at"></i>
+              </p-inputgroup-addon>
+              <input
+                pInputText
+                id="email"
+                formControlName="email"
+                class="w-full"
+                [class.ng-invalid]="email.invalid"
+              />
+              @if (email.invalid && (email.dirty || email.touched)) {
+              <div class="text-error">
+                @if (email.errors.email) {
+                <span translate>Email format is not correct.</span>
+                }
+              </div>
+              }
+            </p-inputgroup>
+          </div>
+          <label for="communication_language" class="col-span-3"
+            ><span translate>Communication language</span>&nbsp;*</label
+          >
+          <div class="col-span-9">
+            <p-select
+              [options]="availableCommunicationLanguagesOptions"
+              id="communication_language"
+              formControlName="communication_language"
+              styleClass="w-full"
+            />
+            @if (communicationLanguage.invalid && (communicationLanguage.dirty ||
+            communicationLanguage.touched)) {
+            <div class="text-error">
+              @if (communicationLanguage.errors.required) {
+              <span translate>Communication language is required.</span>
+              }
+            </div>
             }
           </div>
-          }
         </div>
-        <label for="email" class="col-3" translate>Email</label>
-        <div class="col-9 p-inputgroup">
-          <span class="p-inputgroup-addon"><i class="fa fa-at"></i></span>
-          <input
-            pInputText
-            id="email"
-            formControlName="email"
-            class="w-full"
-            [class.ng-invalid]="email.invalid"
-          />
-          @if (email.invalid && (email.dirty || email.touched)) {
-          <div class="text-error">
-            @if (email.errors.email) {
-            <span translate>Email format is not correct.</span>
-            }
-          </div>
-          }
-        </div>
-        <label for="communication_language" class="col-3"
-          ><span translate>Communication language</span>&nbsp;*</label
-        >
-        <div class="col-9">
-          <p-dropdown
-            [options]="availableCommunicationLanguagesOptions"
-            id="communication_language"
-            formControlName="communication_language"
-            styleClass="w-full"
-          />
-          @if (communicationLanguage.invalid && (communicationLanguage.dirty ||
-          communicationLanguage.touched)) {
-          <div class="text-error">
-            @if (communicationLanguage.errors.required) {
-            <span translate>Communication language is required.</span>
-            }
-          </div>
-          }
-        </div>
-      </div>
-    </p-accordionTab>
+      </p-accordion-content>
+    </p-accordion-panel>
     <!-- OPENING HOURS TAB ============================================ -->
-    <p-accordionTab>
-      <ng-template pTemplate="header">
-        <div
-          class="flex w-full align-items-center justify-content-between mr-2"
-        >
+    <p-accordion-panel value="1">
+      <p-accordion-header>
+        <div class="flex w-full items-center justify-between mr-2">
           <div>
             <i class="fa fa-clock-o"></i>&nbsp;
             <span translate>Opening Hours</span>
@@ -155,73 +161,71 @@
             }
           </div>
         </div>
-      </ng-template>
-      <ng-template pTemplate="content">
+      </p-accordion-header>
+      <p-accordion-content>
         @for (day of openingHours.controls; track day; let i=$index) {
-        <div formArrayName="opening_hours">
+        <div class="mt-3" formArrayName="opening_hours">
           <div [formGroupName]="i">
-            <div class="grid align-items-top">
-              <div class="col-2">
-                <div class="flex align-items-center gap-1">
-                  <p-inputSwitch
+            <div class="grid grid-cols-12 gap-4 align-items-top">
+              <div class="col-span-2 pt-3">
+                <div class="flex items-start gap-1">
+                  <p-toggleswitch
                     formControlName="is_open"
                     [id]="day.value.day"
                     [(ngModel)]="day.value.is_open"
                   />
-                  <label [for]="day.value.day">{{
-                    day.value.day | translate | titlecase
-                  }}</label>
+                  <label [for]="day.value.day">{{ day.value.day | translate | titlecase }}</label>
                 </div>
               </div>
-              <div class="col-10">
+              <div class="col-span-10">
                 @if (day.value.is_open) {
-                <ul class="list-none m-0 p-0">
+                <ul class="list-none">
                   @for (time of $any(day).controls.times.controls; track time;
                   let t=$index; let last=$last; let count=$count) {
                   <li formArrayName="times">
                     <div [formGroupName]="t">
                       <!-- inputs row. One row for each period -->
-                      <div class="grid">
-                        <div class="col-9 p-inputgroup">
-                          <span class="p-inputgroup-addon"
-                            ><i class="fa fa-clock-o"></i
-                          ></span>
-                          <input
-                            pInputText
-                            formControlName="start_time"
-                            [(ngModel)]="time.value.start_time"
-                          />
-                          <span class="p-inputgroup-addon"
-                            ><i class="fa fa-long-arrow-right"></i
-                          ></span>
-                          <input
-                            pInputText
-                            formControlName="end_time"
-                            [(ngModel)]="time.value.end_time"
-                          />
+                      <div class="grid grid-cols-12 gap-4">
+                        <div class="col-span-10 flex gap-2 my-1">
+                          <p-inputgroup>
+                            <p-inputgroup-addon>
+                              <i class="fa fa-clock-o"></i>
+                            </p-inputgroup-addon>
+                            <input
+                              pInputText
+                              formControlName="start_time"
+                              [(ngModel)]="time.value.start_time"
+                            />
+                          </p-inputgroup>
+                          <p-inputgroup>
+                            <p-inputgroup-addon>
+                              <i class="fa fa-long-arrow-right"></i>
+                            </p-inputgroup-addon>
+                            <input
+                              pInputText
+                              formControlName="end_time"
+                              [(ngModel)]="time.value.end_time"
+                            />
+                          </p-inputgroup>
                         </div>
-                        <div class="col-1 flex justify-content-end">
+                        <div class="col-span-2 flex gap-2 justify-end">
                           @if (count > 1) {
-                          <p-button
-                            (onClick)="deleteTime(i, t)"
-                            size="small"
-                            outlined
-                            severity="danger"
-                            class="btn btn-sm btn-outline-danger"
-                            icon="fa fa-trash-o"
-                          />
+                            <p-button
+                              (onClick)="deleteTime(i, t)"
+                              outlined
+                              severity="danger"
+                              class="btn btn-sm btn-outline-danger"
+                              icon="fa fa-trash-o"
+                            />
                           }
-                        </div>
-                        <div class="col-2 justify-content-start">
                           @if (last) {
-                          <p-button
-                            (onClick)="addTime(i)"
-                            size="small"
-                            outlined
-                            icon="fa fa-plus-square-o"
-                            [label]="'period' | translate"
-                          />
-                          }
+                            <p-button
+                              (onClick)="addTime(i)"
+                              outlined
+                              icon="fa fa-plus-square-o"
+                              [label]="'period' | translate"
+                            />
+                            }
                         </div>
                       </div>
                       <div class="text-error">
@@ -261,22 +265,20 @@
           </div>
         </div>
         }
-      </ng-template>
-    </p-accordionTab>
+      </p-accordion-content>
+    </p-accordion-panel>
     <!-- EXCEPTIONS DATES TAB ========================================= -->
-    <p-accordionTab #test>
-      <ng-template pTemplate="header">
-        <div
-          class="flex w-full align-items-center justify-content-between mr-2"
-        >
+    <p-accordion-panel value="2" #exceptionsPanel>
+      <p-accordion-header>
+        <div class="flex w-full items-center justify-between mr-2">
           <div>
             <i class="fa fa-exclamation-triangle"></i>&nbsp;
             <span translate>Exceptions (holidays, etc.)</span>
           </div>
 
-          <div class="flex gap-2 align-items-center">
+          <div class="flex gap-2 items-center">
             <p-button
-              [hidden]="!test.selected"
+              [hidden]="!exceptionsPanel.active()"
               size="small"
               outlined
               (onClick)="$event.stopPropagation(); addException()"
@@ -286,161 +288,159 @@
             <p-badge [value]="library?.exception_dates?.length || '0'" />
           </div>
         </div>
-      </ng-template>
-      <ng-template pTemplate="content">
+      </p-accordion-header>
+      <p-accordion-content>
         @if (library) {
-        <admin-libraries-exception-dates-list
-          [exceptionDates]="library.exception_dates"
-        />
+          <admin-libraries-exception-dates-list [exceptionDates]="library.exception_dates" />
         }
-      </ng-template>
-    </p-accordionTab>
+      </p-accordion-content>
+    </p-accordion-panel>
     <!-- NOTIFICATIONS SETTING TAB ==================================== -->
-    <p-accordionTab>
-      <ng-template pTemplate="header">
+    <p-accordion-panel value="3">
+      <p-accordion-header>
         <div>
           <i class="fa fa-envelope-o"></i>&nbsp;
           <span translate>Notification settings</span>
         </div>
-      </ng-template>
-      <ng-template pTemplate="content">
+      </p-accordion-header>
+      <p-accordion-content>
         <div formArrayName="notification_settings">
-          @for(setting of notificationSettings.controls; track setting; let
-          i=$index) {
-          <div class="grid" [formGroupName]="i">
-            <div class="col-3 flex gap-1">
-              <span style="min-width: 25px" class="inline-block"
-                >&nbsp; @if ($any(setting).controls.type.value |
-                notificationType:'patron') {
+          @for(setting of notificationSettings.controls; track setting; let i=$index) {
+          <div class="grid grid-cols-12 mt-1" [formGroupName]="i">
+            <div class="col-span-3 flex gap-3 items-center">
+              @if ($any(setting).controls.type.value | notificationType:'patron') {
                 <i class="text-info fa fa-info"></i>
-                }
-              </span>
-              <label class="font-bold">{{
-                $any(setting).controls.type.value | translate | ucfirst
-              }}</label>
+              }
+              <label class="font-bold">
+                {{ $any(setting).controls.type.value | translate | ucfirst }}
+              </label>
             </div>
-            <p-inputGroup class="col">
-              <p-inputGroupAddon>
-                <i class="fa fa-at"></i>
-              </p-inputGroupAddon>
-              <input
-                pInputText
-                formControlName="email"
-                [id]="$any(setting).controls.type.value + '-email'"
-              />
-            </p-inputGroup>
-            @if
-            (delayedNotificationTypes.includes($any(setting).controls.type.value))
-            {
-            <p-inputGroup class="col-3">
-              <p-inputGroupAddon>
-                <i class="fa fa-clock-o"></i>
-              </p-inputGroupAddon>
-              <p-inputNumber
-                inputStyleClass="border-noround-left"
-                formControlName="delay"
-                [inputId]="$any(setting).controls.type.value + '-delay'"
-                [min]="0"
-                pTooltip="{{
-                  'Sending how many minutes after the item is available'
-                    | translate
-                }}"
-                tooltipPosition="top"
-              />
-            </p-inputGroup>
-            }
+            <div class="col-span-9 flex gap-3">
+              <p-inputGroup>
+                <p-inputGroupAddon>
+                  <i class="fa fa-at"></i>
+                </p-inputGroupAddon>
+                <input
+                  pInputText
+                  formControlName="email"
+                  [id]="$any(setting).controls.type.value + '-email'"
+                />
+              </p-inputGroup>
+              @if (delayedNotificationTypes.includes($any(setting).controls.type.value)) {
+                <p-inputGroup>
+                  <p-inputGroupAddon>
+                    <i class="fa fa-clock-o"></i>
+                  </p-inputGroupAddon>
+                  <p-inputNumber
+                    inputStyleClass="rounded-l-none"
+                    formControlName="delay"
+                    [inputId]="$any(setting).controls.type.value + '-delay'"
+                    [min]="0"
+                    pTooltip="{{
+                      'Sending how many minutes after the item is available'
+                        | translate
+                    }}"
+                    tooltipPosition="top"
+                  />
+                </p-inputGroup>
+              }
+            </div>
           </div>
           }
           <p-divider align="left">
             <small translate>Legend</small>
           </p-divider>
-          <div class="grid">
-            <small class="col-1 text-warning font-bold" translate>Note</small>
-            <small class="col-11 text-secondary font-italic" translate
-              >No notification is sent if the field is empty.</small
-            >
-            <i class="fa fa-info text-info col-1"></i>
-            <small class="col-11 text-secondary font-italic" translate>
+          <div class="grid grid-cols-12 gap-4">
+            <small class="col-span-1 text-warning font-bold" translate>Note</small>
+            <small class="col-span-11 text-secondary italic" translate>
+              No notification is sent if the field is empty.
+            </small>
+            <i class="fa fa-info text-info col-span-1"></i>
+            <small class="col-span-11 text-secondary italic" translate>
               The notifications for patrons without e-mail are sent to this
               address.
             </small>
           </div>
         </div>
-      </ng-template>
-    </p-accordionTab>
+      </p-accordion-content>
+    </p-accordion-panel>
     <!-- ACQUISITION SETTINGS TAB ===================================== -->
-    <p-accordionTab>
-      <ng-template pTemplate="header">
+    <p-accordion-panel value="4">
+      <p-accordion-header>
         <div>
           <i class="fa fa-university mr-2"></i>&nbsp;
           <span translate>Acquisition settings</span>
         </div>
-      </ng-template>
-      <ng-template pTemplate="content">
-        <p-tabView formGroupName="acquisition_settings">
-          <p-tabPanel>
-            <ng-template pTemplate="header">
+      </p-accordion-header>
+      <p-accordion-content>
+        <p-tabs value="0" formGroupName="acquisition_settings">
+          <p-tablist>
+            <p-tab value="0" translate>
               <i class="fa fa-book"></i>&nbsp;
-              <span translate>Default acquisition settings</span>
-            </ng-template>
-            <ng-container
-              [ngTemplateOutlet]="contact_block"
-              [ngTemplateOutletContext]="{
-                formGroup: this.libForm
-                  .get('acquisition_settings')
-                  .get('shipping_informations'),
-                icon: 'fa-truck',
-                name: 'Shipping informations' | translate,
-                fieldPrefix: 'shipping'
-              }"
-            />
-            <ng-container
-              [ngTemplateOutlet]="contact_block"
-              [ngTemplateOutletContext]="{
-                formGroup: this.libForm
-                  .get('acquisition_settings')
-                  .get('billing_informations'),
-                icon: 'fa-money',
-                name: 'Billing informations' | translate,
-                fieldPrefix: 'billing'
-              }"
-            />
-          </p-tabPanel>
-          <p-tabPanel>
-            <ng-template pTemplate="header">
+              Default acquisition settings
+            </p-tab>
+            <p-tab value="1" translate>
               <i class="fa fa-newspaper-o"></i>&nbsp;
-              <span translate>Serial acquisition settings</span>
-            </ng-template>
-            <ng-container
-              [ngTemplateOutlet]="contact_block"
-              [ngTemplateOutletContext]="{
-                formGroup: this.libForm
-                  .get('serial_acquisition_settings')
-                  .get('shipping_informations'),
-                icon: 'fa-truck',
-                name: 'Shipping informations' | translate,
-                fieldPrefix: 'shipping'
-              }"
-            />
-            <ng-container
-              [ngTemplateOutlet]="contact_block"
-              [ngTemplateOutletContext]="{
-                formGroup: this.libForm
-                  .get('serial_acquisition_settings')
-                  .get('billing_informations'),
-                icon: 'fa-money',
-                name: 'Billing informations' | translate,
-                fieldPrefix: 'billing'
-              }"
-            />
-          </p-tabPanel>
-        </p-tabView>
-      </ng-template>
-    </p-accordionTab>
+              Serial acquisition settings
+            </p-tab>
+          </p-tablist>
+          <p-tabpanels>
+            <p-tabpanel value="0">
+              <ng-container
+                [ngTemplateOutlet]="contact_block"
+                [ngTemplateOutletContext]="{
+                  formGroup: this.libForm
+                    .get('acquisition_settings')
+                    .get('shipping_informations'),
+                  icon: 'fa-truck',
+                  name: 'Shipping informations' | translate,
+                  fieldPrefix: 'shipping'
+                }"
+              />
+              <ng-container
+                [ngTemplateOutlet]="contact_block"
+                [ngTemplateOutletContext]="{
+                  formGroup: this.libForm
+                    .get('acquisition_settings')
+                    .get('billing_informations'),
+                  icon: 'fa-money',
+                  name: 'Billing informations' | translate,
+                  fieldPrefix: 'billing'
+                }"
+              />
+            </p-tabpanel>
+            <p-tabpanel value="1">
+              <ng-container
+                [ngTemplateOutlet]="contact_block"
+                [ngTemplateOutletContext]="{
+                  formGroup: this.libForm
+                    .get('serial_acquisition_settings')
+                    .get('shipping_informations'),
+                  icon: 'fa-truck',
+                  name: 'Shipping informations' | translate,
+                  fieldPrefix: 'shipping'
+                }"
+              />
+              <ng-container
+                [ngTemplateOutlet]="contact_block"
+                [ngTemplateOutletContext]="{
+                  formGroup: this.libForm
+                    .get('serial_acquisition_settings')
+                    .get('billing_informations'),
+                  icon: 'fa-money',
+                  name: 'Billing informations' | translate,
+                  fieldPrefix: 'billing'
+                }"
+              />
+            </p-tabpanel>
+          </p-tabpanels>
+        </p-tabs>
+      </p-accordion-content>
+    </p-accordion-panel>
     <!-- ROLLOVER SETTINGS TAB ======================================== -->
-    <p-accordionTab>
-      <ng-template pTemplate="header">
-        <div class="flex w-full align-items-center justify-content-between mr-2">
+    <p-accordion-panel value="5">
+      <p-accordion-header>
+        <div class="flex w-full items-center justify-between mr-2">
           <div>
             <i class="fa fa-wrench mr-2"></i>&nbsp;
             <span translate>Rollover settings</span>
@@ -452,43 +452,41 @@
               }"
           ></i>
         </div>
-      </ng-template>
-      <ng-template pTemplate="content">
-          <div formGroupName="rollover_settings" class="grid align-items-center">
-            <label for="account-transfer" class="col-3 col-form-label" translate
-              >Account transfer</label
-            >
-            <div class="col-9">
-              <p-dropdown
-                [options]="rolloverAccountTransferOptions"
-                id="account-transfer"
-                formControlName="account_transfer"
-                styleClass="w-full"
-              ></p-dropdown>
-            </div>
+      </p-accordion-header>
+      <p-accordion-content>
+        <div formGroupName="rollover_settings" class="grid grid-cols-12 gap-4 items-center mt-2">
+          <label for="account-transfer" class="col-span-3 col-form-label" translate>Account transfer</label>
+          <div class="col-span-9">
+            <p-select
+              [options]="rolloverAccountTransferOptions"
+              id="account-transfer"
+              formControlName="account_transfer"
+              styleClass="w-full"
+            ></p-select>
           </div>
-      </ng-template>
-    </p-accordionTab>
+        </div>
+      </p-accordion-content>
+    </p-accordion-panel>
   </p-accordion>
 
-    <div class="flex justify-content-end gap-1 mt-4">
-      <p-button
+  <div class="flex justify-end gap-1 mt-6">
+    <p-button
       outlined
       severity="danger"
       size="small"
-        (onClick)="onCancel($event)"
-        icon="fa fa-times"
-        [label]="'Cancel' | translate"
-      />
-      <p-button
-        type="submit"
-        size="small"
-        severity="primary"
-        [disabled]="libForm.invalid"
-        icon="fa fa-save"
-        [label]="'Save' | translate"
-      />
-    </div>
+      (onClick)="onCancel($event)"
+      icon="fa fa-times"
+      [label]="'Cancel' | translate"
+    />
+    <p-button
+      type="submit"
+      size="small"
+      severity="primary"
+      [disabled]="libForm.invalid"
+      icon="fa fa-save"
+      [label]="'Save' | translate"
+    />
+  </div>
 </form>
 }
 
@@ -499,121 +497,116 @@
   let-icon="icon"
   let-fieldPrefix="fieldPrefix"
 >
-  <p-fieldset [formGroup]="formGroup">
-    <!-- header -->
-    <ng-template pTemplate="header">
-      <p-tag class="mx-2">
-        @if (icon) {
-          <i class="fa {{ icon }}"></i>&nbsp;
-        }
-        {{ name }}
-      </p-tag>
-    </ng-template>
+  <div class="mb-2">
+    <p-fieldset [formGroup]="formGroup">
+      <!-- header -->
+      <ng-template #header>
+        <p-tag class="mx-2">
+          @if (icon) {
+            <i class="fa {{ icon }}"></i>&nbsp;
+          }
+          {{ name }}
+        </p-tag>
+      </ng-template>
 
-    <!-- body -->
-    <div class="grid">
-      <label [for]="fieldPrefix + '_name'" class="col-3" translate
-        >Contact name</label
-      >
-      <p-inputGroup class="col-9">
-        <p-inputGroupAddon>
-          <i class="fa fa-user"></i>
-        </p-inputGroupAddon>
-        <input
-          pInputText
-          formControlName="name"
-          [id]="fieldPrefix + '_name'"
-          class="w-full"
-        />
-      </p-inputGroup>
-      <label [for]="fieldPrefix + '_email'" class="col-3" translate
-        >Contact email</label
-      >
-      <p-inputGroup class="col-9">
-        <p-inputGroupAddon>
-          <i class="fa fa-at"></i>
-        </p-inputGroupAddon>
-        <input
-          pInputText
-          formControlName="email"
-          [id]="fieldPrefix + '_email'"
-          class="w-full"
-        />
-      </p-inputGroup>
-      <label [for]="fieldPrefix + '_phone'" class="col-3" translate
-        >Contact phone</label
-      >
-      <p-inputGroup class="col-9">
-        <p-inputGroupAddon>
-          <i class="fa fa-phone"></i>
-        </p-inputGroupAddon>
-        <input
-          pInputText
-          formControlName="phone"
-          [id]="fieldPrefix + '_phone'"
-          class="w-full"
-        />
-      </p-inputGroup>
-    </div>
-    <div class="grid" formGroupName="address">
-      <label [for]="fieldPrefix + '_street'" class="col-3" translate
-        >Address</label>
-      <div class="col-9">
-      <input
-        pInputText
-        class="w-full"
-        formControlName="street"
-        [id]="fieldPrefix + '_street'"
-        placeholder="{{ 'Street' | translate }}"
-      />
-    </div>
-      <div class="col-3 col-offset-3">
-        <input
-          pInputText
-          formControlName="zip_code"
-          class="w-full"
-          [id]="fieldPrefix + '_zip-code'"
-          placeholder="{{ 'Zip code' | translate }}"
-        />
+      <!-- body -->
+      <div class="grid grid-cols-12 gap-4">
+        <label [for]="fieldPrefix + '_name'" class="col-span-3" translate>Contact name</label>
+        <p-inputGroup class="col-span-9">
+          <p-inputGroupAddon>
+            <i class="fa fa-user"></i>
+          </p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="name"
+            [id]="fieldPrefix + '_name'"
+            class="w-full"
+          />
+        </p-inputGroup>
+        <label [for]="fieldPrefix + '_email'" class="col-span-3" translate>Contact email</label>
+        <p-inputGroup class="col-span-9">
+          <p-inputGroupAddon>
+            <i class="fa fa-at"></i>
+          </p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="email"
+            [id]="fieldPrefix + '_email'"
+            class="w-full"
+          />
+        </p-inputGroup>
+        <label [for]="fieldPrefix + '_phone'" class="col-span-3" translate
+          >Contact phone</label
+        >
+        <p-inputGroup class="col-span-9">
+          <p-inputGroupAddon>
+            <i class="fa fa-phone"></i>
+          </p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="phone"
+            [id]="fieldPrefix + '_phone'"
+            class="w-full"
+          />
+        </p-inputGroup>
       </div>
-      <div class="col-6">
-        <input
-          pInputText
-          formControlName="city"
-          class="w-full"
-          [id]="fieldPrefix + '_city'"
-          placeholder="{{ 'City' | translate }}"
-        />
+      <div class="grid grid-cols-12 gap-4 mt-4" formGroupName="address">
+        <label [for]="fieldPrefix + '_street'" class="col-span-3" translate>Address</label>
+        <div class="col-span-9">
+          <input
+            pInputText
+            class="w-full"
+            formControlName="street"
+            [id]="fieldPrefix + '_street'"
+            placeholder="{{ 'Street' | translate }}"
+          />
+        </div>
+        <div class="col-span-3 col-start-4">
+          <input
+            pInputText
+            formControlName="zip_code"
+            class="w-full"
+            [id]="fieldPrefix + '_zip-code'"
+            placeholder="{{ 'Zip code' | translate }}"
+          />
+        </div>
+        <div class="col-span-6">
+          <input
+            pInputText
+            formControlName="city"
+            class="w-full"
+            [id]="fieldPrefix + '_city'"
+            placeholder="{{ 'City' | translate }}"
+          />
+        </div>
+        <div class="col-span-9 col-start-4">
+          <p-select
+            formControlName="country"
+            appendTo="body"
+            [id]="fieldPrefix + '_country'"
+            [options]="countryIsoCodesOptions"
+            styleClass="w-full"
+            [filter]="true"
+            [showClear]="true"
+            [placeholder]="'Select a country' | translate"
+          ></p-select>
+        </div>
       </div>
-      <div class="col-9 col-offset-3">
-        <p-dropdown
-          formControlName="country"
-          appendTo="body"
-          [id]="fieldPrefix + '_country'"
-          [options]="countryIsoCodesOptions"
-          styleClass="w-full"
-          [filter]="true"
-          [showClear]="true"
-          [placeholder]="'Select a country' | translate"
-        ></p-dropdown>
+      <!-- extra field -->
+      <div class="grid grid-cols-12 gap-4 mt-4">
+        <label [for]="fieldPrefix + '_extra'" class="col-span-3" translate>Extra information</label>
+        <p-inputGroup class="col-span-9">
+          <p-inputGroupAddon>
+            <i class="fa fa-sticky-note-o"></i>
+          </p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="extra"
+            [id]="fieldPrefix + '_extra'"
+            class="w-full"
+          />
+        </p-inputGroup>
       </div>
-    </div>
-    <!-- extra field -->
-    <div class="grid">
-      <label [for]="fieldPrefix + '_extra'" class="col-3" translate
-        >Extra information</label
-      >
-      <p-inputGroup class="col-9">
-        <p-inputGroupAddon>
-          <i class="fa fa-sticky-note-o"></i>
-        </p-inputGroupAddon>
-        <input
-          pInputText
-          formControlName="extra"
-          [id]="fieldPrefix + '_extra'"
-          class="w-full"
-        />
-      </p-inputGroup>
-    </div>
-  </p-fieldset>
+    </p-fieldset>
+  </div>
 </ng-template>

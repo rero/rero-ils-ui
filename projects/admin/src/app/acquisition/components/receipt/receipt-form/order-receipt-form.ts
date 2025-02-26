@@ -204,7 +204,7 @@ export class OrderReceiptForm {
           minLength: 0
         },
         fieldArray: {
-          fieldGroupClassName: 'grid',
+          fieldGroupClassName: 'grid grid-cols-12 gap-4',
           validators: {
             validation: [
               { name: 'receiveQuantityMax', options: { errorPath: 'quantity' } }
@@ -219,20 +219,20 @@ export class OrderReceiptForm {
             {
               key: 'selected',
               type: 'checkbox',
-              className: 'col-1',
+              className: 'col-span-1',
               wrappers: ['input-no-label'],
               props: {
                 hideLabel: true,
-                headerClassName: 'col-1',
+                headerClassName: 'col-span-1',
               }
             },
             {
               key: 'document',
               type: 'field-document-brief-view',
-              className: 'col-5',
+              className: 'col-span-5',
               wrappers: ['input-no-label'],
               props: {
-                headerClassName: 'col-5 font-bold',
+                headerClassName: 'col-span-5 font-bold',
                 label: _('Document'),
                 resource: 'documents',
                 resourceKey: 'document',
@@ -251,10 +251,10 @@ export class OrderReceiptForm {
             {
               key: 'quantity',
               type: 'input',
-              className: 'col-2',
+              className: 'col-span-2',
               wrappers: ['input-no-label'],
               props: {
-                headerClassName: 'col-2 font-bold',
+                headerClassName: 'col-span-2 font-bold',
                 styleClass: "w-full",
                 type: 'number',
                 label: _('Qty'),
@@ -265,10 +265,10 @@ export class OrderReceiptForm {
             {
               key: 'amount',
               type: 'input',
-              className: 'col-2',
+              className: 'col-span-2',
               wrappers: ['input-no-label'],
               props: {
-                headerClassName: 'col-2 font-bold',
+                headerClassName: 'col-span-2 font-bold',
                 type: 'number',
                 label: _('Amount'),
                 required: true,
@@ -278,10 +278,10 @@ export class OrderReceiptForm {
             {
               key: 'vatRate',
               type: 'input',
-              className: 'col-2',
+              className: 'col-span-2',
               wrappers: ['input-no-label'],
               props: {
-                headerClassName: 'col-2 font-bold',
+                headerClassName: 'col-span-2 font-bold',
                 type: 'number',
                 label: _('Vat Rate'),
                 min: 0,

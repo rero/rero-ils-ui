@@ -18,12 +18,12 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'admin-day-opening-hours',
-  template: `
+    selector: 'admin-day-opening-hours',
+    template: `
     <dl class="metadata">
       <dt>{{ day.day | translate }}</dt>
       <dd>
-        <i class="fa mr-4" [ngClass]="{
+        <i class="fa mr-6" [ngClass]="{
           'fa-times-circle-o text-error': !day.is_open,
           'fa-circle text-success': day.is_open
         }"></i>
@@ -37,7 +37,7 @@ import { Component, Input } from '@angular/core';
       </dd>
     </dl>
   `,
-  styleUrls: ['./day-opening-hours.component.scss']
+    standalone: false
 })
 export class DayOpeningHoursComponent {
   @Input() day: any;

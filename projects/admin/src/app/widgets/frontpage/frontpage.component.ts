@@ -17,9 +17,10 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'admin-frontpage',
-  templateUrl: './frontpage.component.html',
-  styles: []
+    selector: 'admin-frontpage',
+    templateUrl: './frontpage.component.html',
+    styles: [],
+    standalone: false
 })
 export class FrontpageComponent {
 }

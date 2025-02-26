@@ -24,11 +24,12 @@ import { DateTime } from 'luxon';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable, Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { OperationLogsApiService } from '../../api/operation-logs-api.service';
+import { OperationLogsApiService } from '@rero/shared';
 
 @Component({
-  selector: 'admin-circulation-logs',
-  templateUrl: './circulation-logs.component.html'
+    selector: 'admin-circulation-logs',
+    templateUrl: './circulation-logs.component.html',
+    standalone: false
 })
 export class CirculationLogsComponent implements OnInit, OnDestroy {
 

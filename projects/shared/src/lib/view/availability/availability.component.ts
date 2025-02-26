@@ -21,8 +21,9 @@ import { IAvailability } from '../../interface/i-availability';
 import { IAvailabilityService } from '../../service/i-availability.service';
 
 @Component({
-  selector: 'shared-availability',
-  templateUrl: './availability.component.html'
+    selector: 'shared-availability',
+    templateUrl: './availability.component.html',
+    standalone: false
 })
 export class AvailabilityComponent implements OnInit, OnChanges {
 

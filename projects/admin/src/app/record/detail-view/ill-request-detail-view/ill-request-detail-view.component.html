@@ -16,17 +16,18 @@
 -->
 @if (record) {
   <h1>{{ 'ILL request' | translate }} #{{ record.metadata.pid }}</h1>
-  <div class="flex flex-column gap-2">
+  <div class="flex flex-col gap-3 mt-5">
     <!-- DOCUMENT INFORMATION'S -->
     <p-panel>
-      <ng-template pTemplate="header">
-        <h6>
+      <ng-template #header>
+        <span class="text-xl">
           <i class="fa fa-book"></i>&nbsp;
           {{ 'Document information' | translate }}
-        </h6>
+        </span>
       </ng-template>
-      <h3>{{ record.metadata.document.title }}</h3>
-      <dl class="metadata">
+      <dl class="metadata mt-3">
+        <dt translate>Title</dt>
+        <dd>{{ record.metadata.document.title }}</dd>
         @if (record.metadata.document.authors; as authors) {
           <dt translate>Authors</dt>
           <dd>{{ authors }}</dd>
@@ -62,13 +63,13 @@
 
   <!-- REQUEST ADDITIONAL DETAILS -->
   <p-panel>
-    <ng-template pTemplate="header">
-      <h6 class=>
+    <ng-template #header>
+      <span class="text-xl">
         <i class="fa fa-info-circle"></i>&nbsp;
         {{ 'Request additional informations' | translate }}
-      </h6>
+      </span>
     </ng-template>
-    <dl class="metadata">
+    <dl class="metadata mt-3">
       @if (record.metadata.found_in; as source) {
         <dt translate>Found in</dt>
         <dd>
@@ -126,18 +127,18 @@
   <!-- NOTES :: public/staff -->
   @if (record.metadata.notes) {
     <p-panel>
-      <ng-template pTemplate="header">
-        <h6 class=>
+      <ng-template #header>
+        <span class="text-xl">
           <i class="fa fa-sticky-note-o"></i>&nbsp;
           {{ 'Notes' | translate }}
-        </h6>
+        </span>
       </ng-template>
-        <dl class="metadata">
-          @for (note of record.metadata.notes; track note) {
-            <dt translate>{{ note.type }}</dt>
-            <dd [innerHTML]="note.content | nl2br"></dd>
-          }
-        </dl>
+      <dl class="metadata mt-3">
+        @for (note of record.metadata.notes; track note) {
+          <dt translate>{{ note.type }}</dt>
+          <dd [innerHTML]="note.content | nl2br"></dd>
+        }
+      </dl>
     </p-panel>
   }
   </div>

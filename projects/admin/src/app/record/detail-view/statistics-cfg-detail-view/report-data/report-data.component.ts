@@ -18,8 +18,9 @@
 import { Component, Input } from "@angular/core";
 
 @Component({
-  selector: "admin-report-data",
-  templateUrl: "./report-data.component.html",
+    selector: "admin-report-data",
+    templateUrl: "./report-data.component.html",
+    standalone: false
 })
 export class ReportDataComponent {
 

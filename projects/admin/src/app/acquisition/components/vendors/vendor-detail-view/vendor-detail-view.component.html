@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
 @if (record$ | async; as record) {
   <h1>{{ record.metadata.name }}</h1>
   <article>
-    <section>
+    <section class="mt-4">
       <dl class="metadata">
         <!-- WEBSITE -->
         @if (record.metadata.website) {
@@ -51,32 +51,40 @@
       </dl>
     </section>
 
-    <section>
-      <p-tabView>
-        <!-- DEFAULT CONTACT -->
-        @if (filterContact(record.metadata.contacts, 'default'); as defaultContact) {
-          <p-tabPanel id="default_address" [header]="'Default contact details'|translate">
-            <admin-address-type [addressType]="defaultContact" />
-          </p-tabPanel>
-        }
-        <!-- ORDER CONTACT -->
-        @if (filterContact(record.metadata.contacts, 'order'); as orderContact) {
-          <p-tabPanel id="order_address" [header]="'Order contact details'|translate">
-            <admin-address-type [addressType]="orderContact" />
-          </p-tabPanel>
-        }
-        <!-- SERIAL CONTACT -->
-        @if (filterContact(record.metadata.contacts, 'serial'); as serialContact) {
-          <p-tabPanel id="serial_address" [header]="'Serial contact details'|translate">
-            <admin-address-type [addressType]="serialContact" />
-          </p-tabPanel>
-        }
-      </p-tabView>
+    <section class="mt-4">
+      @let defaultContact = filterContact(record.metadata.contacts, 'default');
+      @let orderContact = filterContact(record.metadata.contacts, 'order');
+      @let serialContact = filterContact(record.metadata.contacts, 'serial');
+      <p-tabs [value]="tabSelected(record.metadata)">
+        <p-tablist>
+          @if (defaultContact) {
+            <p-tab value="default" translate>Default contact details</p-tab>
+          }
+          @if (orderContact) {
+            <p-tab value="order" translate>Order contact details</p-tab>
+          }
+          @if (serialContact) {
+            <p-tab value="serial" translate>Serial contact details</p-tab>
+          }
+        </p-tablist>
+        <p-tabpanels>
+          @if (defaultContact) {
+            <p-tabpanel value="default">
+              <admin-address-type [addressType]="defaultContact" />
+            </p-tabpanel>
+          }
+          @if (orderContact) {
+            <p-tabpanel value="order">
+              <admin-address-type [addressType]="orderContact" />
+            </p-tabpanel>
+          }
+          @if (serialContact) {
+            <p-tabpanel value="serial">
+              <admin-address-type [addressType]="serialContact" />
+            </p-tabpanel>
+          }
+        </p-tabpanels>
+      </p-tabs>
     </section>
-
-    <!-- OPERATION LOGS-->
-    @if (isEnabledOperationLog) {
-      <admin-operation-logs resourceType="vendors" [resourcePid]="record.metadata.pid" />
-    }
   </article>
 }

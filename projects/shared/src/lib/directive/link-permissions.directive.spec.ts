@@ -20,10 +20,11 @@ import { PermissionsService } from '../service/permissions.service';
 import { LinkPermissionsDirective } from './link-permissions.directive';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'link-permissions-testing-component',
-  template: `
-  <a href="#" id="link-perm" [linkPermissions]="linkPermissions">Link text</a>`
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'link-permissions-testing-component',
+    template: `
+  <a href="#" id="link-perm" [linkPermissions]="linkPermissions">Link text</a>`,
+    standalone: false
 })
 class LinkPermissionsTestingComponent {
   @Input() linkPermissions: string[] | string = [];

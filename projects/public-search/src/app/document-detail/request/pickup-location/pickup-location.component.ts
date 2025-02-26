@@ -24,8 +24,9 @@ import { ItemApiService } from '../../../api/item-api.service';
 import { LocationApiService } from '../../../api/location-api.service';
 
 @Component({
-  selector: 'public-search-pickup-location',
-  templateUrl: './pickup-location.component.html'
+    selector: 'public-search-pickup-location',
+    templateUrl: './pickup-location.component.html',
+    standalone: false
 })
 export class PickupLocationComponent implements OnInit {
 

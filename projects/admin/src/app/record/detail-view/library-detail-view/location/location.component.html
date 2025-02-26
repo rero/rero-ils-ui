@@ -15,12 +15,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (permissions) {
-  <div class="flex justify-content-between align-items-center gap-2">
+  <div class="flex justify-between items-center gap-2">
   <div>
     <a [routerLink]="['/records/locations/detail', location.metadata.pid]">{{ location.metadata.name }}</a>
   </div>
-  <div class="flex gap-4">
-  <div class="flex gap-1 align-items-center">
+  <div class="flex gap-6">
+  <div class="flex gap-1 items-center">
     @if (location.metadata.is_pickup) {
       <i class="fa fa-truck" [title]="'Pickup location'|translate"></i>
     }

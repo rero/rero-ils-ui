@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  <section id="library-profile" class="flex flex-column gap-2">
-    <div class="border-round border-1 surface-border flex gap-4 p-4">
-      <div class="surface-500 border-circle w-10rem h-10rem flex align-items-center justify-content-center">
+  <section id="library-profile" class="flex flex-col gap-2">
+    <div class="rounded-border border border-surface flex gap-6 p-6">
+      <div class="bg-surface-500 dark:bg-surface-300 rounded-full w-40 h-40 flex items-center justify-center">
         <i class="fa fa-university fa-4x text-white"></i>
       </div>
-    <div class="flex-grow-1">
+    <div class="grow">
         <h1>{{ record.name }}</h1>
         <dl class="metadata">
           <dt><i class="fa fa-code"></i>&nbsp;<span translate>Code</span></dt>
@@ -41,42 +41,44 @@
     </div>
   </section>
 
-  <p-accordion multiple [activeIndex]="[0]">
+  <p-accordion multiple [value]="[0]">
     <!-- locations ======================================================== -->
-    <p-accordionTab #locTab>
-      <ng-template pTemplate="header">
-        <div class="flex w-full align-items-center justify-content-between mr-2">
+    <p-accordion-panel value="0" #locTab>
+      <p-accordion-header>
+        <div class="flex w-full items-center justify-between mr-2">
           <div>
             <i class="fa fa-map-marker"></i>&nbsp;<span translate>Locations</span>
           </div>
-          @if (isUserCanAddLocation && locTab.selected) {
-              <p-button
-                icon="fa fa-plus-square-o"
-                [label]="'Add'|translate"
-                outlined
-                [routerLink]="['/', 'records', 'locations', 'new']"
-                [queryParams]="{ library: record.pid }"
-                styleClass="ml-2 align-items-right"
-              />
-          }
+          <p-button
+            [hidden]="!(isUserCanAddLocation && locTab.active())"
+            icon="fa fa-plus-square-o"
+            [label]="'Add'|translate"
+            outlined
+            [routerLink]="['/', 'records', 'locations', 'new']"
+            [queryParams]="{ library: record.pid }"
+            styleClass="ml-2 align-items-right"
+          />
+
         </div>
-      </ng-template>
-      @if (locations) {
-        <ul class="list-none p-0 m-0">
-          @for (location of locations; track location; let last=$last) {
-            <li [ngClass]="{'border-bottom-1': !last}" class="py-2 surface-border">
-              <admin-location [location]="location" [library]="record" (deleteLocation)="deleteLocation($event)" />
-            </li>
-          }
-        </ul>
-      } @else {
-        <p translate>no location</p>
-      }
-    </p-accordionTab>
+      </p-accordion-header>
+      <p-accordion-content>
+        @if (locations) {
+          <ul class="list-none alternate-color">
+            @for (location of locations; track location; let last=$last) {
+              <li class="my-2">
+                <admin-location [location]="location" [library]="record" (deleteLocation)="deleteLocation($event)" />
+              </li>
+            }
+          </ul>
+        } @else {
+          <p translate>no location</p>
+        }
+      </p-accordion-content>
+    </p-accordion-panel>
     <!-- opening hours ==================================================== -->
-    <p-accordionTab>
-      <ng-template pTemplate="header">
-        <div class="flex w-full align-items-center justify-content-between mr-2">
+    <p-accordion-panel value="1">
+      <p-accordion-header>
+        <div class="flex w-full items-center justify-between mr-2">
           <div>
             <i class="fa fa-clock-o"></i>&nbsp;
             <span translate>Opening Hours</span>
@@ -87,107 +89,121 @@
             }
           </div>
       </div>
-      </ng-template>
-      @for (day of record.opening_hours; track day) {
-        <admin-day-opening-hours [day]="day" />
-      }
-    </p-accordionTab>
+      </p-accordion-header>
+      <p-accordion-content>
+        <div class="mt-2">
+          @for (day of record.opening_hours; track day) {
+            <admin-day-opening-hours [day]="day" />
+          }
+        </div>
+      </p-accordion-content>
+    </p-accordion-panel>
     <!-- exception dates ================================================== -->
     @if (record.exception_dates) {
-      <p-accordionTab>
-        <ng-template pTemplate="header">
-          <div class="flex w-full align-items-center justify-content-between mr-2">
+      <p-accordion-panel value="2">
+        <p-accordion-header>
+          <div class="flex w-full items-center justify-between mr-2">
             <div>
             <i class="fa fa-exclamation-triangle"></i>&nbsp;
             <span translate>Exceptions (holidays, etc.)</span>
           </div>
             <p-badge [value]="record.exception_dates.length" />
         </div>
-        </ng-template>
-        <div class="alternate-color mt-4">
-        @for (exception of record.exception_dates; track exception) {
-          <admin-exception-date [exception]="exception" />
-        }
-      </div>
-      </p-accordionTab>
+        </p-accordion-header>
+        <p-accordion-content>
+          <div class="alternate-color mt-2">
+            @for (exception of record.exception_dates; track exception) {
+              <admin-exception-date [exception]="exception" />
+            }
+          </div>
+        </p-accordion-content>
+      </p-accordion-panel>
     }
     <!-- notification settings ============================================ -->
-    <p-accordionTab>
-      <ng-template pTemplate="header">
+    <p-accordion-panel value="3">
+      <p-accordion-header>
         <div>
         <i class="fa fa-envelope-o"></i>&nbsp;
         <span translate>Notification settings</span>
       </div>
-      </ng-template>
-      @if (record.notification_settings; as notificationSettings) {
-        <dl class="metadata">
-          @for (setting of notificationSettings; track setting) {
-            <dt>{{ setting.type | translate | ucfirst }}</dt>
-            <dd>
-              {{ setting.email }}
-              @if (setting.delay) {
-                ; {{ 'Delay' | translate }}: {{ setting.delay }}
-                {{ setting.delay > 1 ? ('minutes' | translate) : ('minute' | translate) }}
+      </p-accordion-header>
+      <p-accordion-content>
+        <div class="mt-2">
+          @if (record.notification_settings; as notificationSettings) {
+            <dl class="metadata">
+              @for (setting of notificationSettings; track setting) {
+                <dt>{{ setting.type | translate | ucfirst }}</dt>
+                <dd>
+                  {{ setting.email }}
+                  @if (setting.delay) {
+                    ; {{ 'Delay' | translate }}: {{ setting.delay }}
+                    {{ setting.delay > 1 ? ('minutes' | translate) : ('minute' | translate) }}
+                  }
+                </dd>
               }
-            </dd>
+            </dl>
           }
-        </dl>
-      }
-    </p-accordionTab>
+        </div>
+      </p-accordion-content>
+    </p-accordion-panel>
     <!-- acquisition settings ============================================= -->
-    <p-accordionTab>
-      <ng-template pTemplate="header">
+    <p-accordion-panel value="4">
+      <p-accordion-header>
         <div>
         <i class="fa fa-university mr-2"></i>&nbsp;
         <span translate>Acquisition settings</span>
       </div>
-      </ng-template>
-      @if (record.acquisition_settings; as acquisitionSettings) {
-        <p-divider align="left">
-          <div>
-            <i class="fa fa-book"></i>&nbsp;
-            <span translate>Default acquisition settings</span>
-          </div>
-        </p-divider>
-        <div class="grid">
-          @if (acquisitionSettings.shipping_informations; as acqInfos) {
-            <ng-container [ngTemplateOutlet]="address_block"
-                          [ngTemplateOutletContext]="{ label: 'Shipping informations' | translate, data: acqInfos, icon: 'fa-truck'}"
-            />
+      </p-accordion-header>
+      <p-accordion-content>
+        <div class="mt-2">
+          @if (record.acquisition_settings; as acquisitionSettings) {
+            <p-divider align="left">
+              <div>
+                <i class="fa fa-book"></i>&nbsp;
+                <span translate>Default acquisition settings</span>
+              </div>
+            </p-divider>
+            <div class="grid grid-cols-12 gap-4">
+              @if (acquisitionSettings.shipping_informations; as acqInfos) {
+                <ng-container [ngTemplateOutlet]="address_block"
+                              [ngTemplateOutletContext]="{ label: 'Shipping informations' | translate, data: acqInfos, icon: 'fa-truck'}"
+                />
+              }
+              @if (acquisitionSettings.billing_informations; as acqInfos) {
+                <ng-container [ngTemplateOutlet]="address_block"
+                              [ngTemplateOutletContext]="{ label: 'Billing informations' | translate, data: acqInfos, icon: 'fa-money'}"
+                />
+              }
+            </div>
           }
-          @if (acquisitionSettings.billing_informations; as acqInfos) {
-            <ng-container [ngTemplateOutlet]="address_block"
-                          [ngTemplateOutletContext]="{ label: 'Billing informations' | translate, data: acqInfos, icon: 'fa-money'}"
-            />
+          @if (record.serial_acquisition_settings; as acquisitionSettings) {
+            <p-divider align="left">
+              <div>
+                <i class="fa fa-newspaper-o"></i>&nbsp;
+                <span translate>Serial acquisition settings</span>
+              </div>
+            </p-divider>
+            <div class="grid grid-cols-12 gap-4 justify-start">
+              @if (acquisitionSettings.shipping_informations; as acqInfos) {
+                <ng-container [ngTemplateOutlet]="address_block"
+                              [ngTemplateOutletContext]="{ label: 'Shipping informations' | translate, data: acqInfos, icon: 'fa-truck'}"
+                />
+              }
+              @if (acquisitionSettings.billing_informations; as acqInfos) {
+                <ng-container [ngTemplateOutlet]="address_block"
+                              [ngTemplateOutletContext]="{ label: 'Billing informations' | translate, data: acqInfos, icon: 'fa-money'}"
+                />
+              }
+            </div>
           }
         </div>
-      }
-      @if (record.serial_acquisition_settings; as acquisitionSettings) {
-        <p-divider align="left">
-          <div>
-            <i class="fa fa-newspaper-o"></i>&nbsp;
-            <span translate>Serial acquisition settings</span>
-          </div>
-        </p-divider>
-        <div class="grid justify-content-start">
-          @if (acquisitionSettings.shipping_informations; as acqInfos) {
-            <ng-container [ngTemplateOutlet]="address_block"
-                          [ngTemplateOutletContext]="{ label: 'Shipping informations' | translate, data: acqInfos, icon: 'fa-truck'}"
-            />
-          }
-          @if (acquisitionSettings.billing_informations; as acqInfos) {
-            <ng-container [ngTemplateOutlet]="address_block"
-                          [ngTemplateOutletContext]="{ label: 'Billing informations' | translate, data: acqInfos, icon: 'fa-money'}"
-            />
-          }
-        </div>
-      }
-    </p-accordionTab>
+      </p-accordion-content>
+    </p-accordion-panel>
     <!-- rollover settings ================================================ -->
     @if (record.rollover_settings) {
-      <p-accordionTab>
-        <ng-template pTemplate="header">
-          <div class="flex w-full align-items-center justify-content-between mr-2">
+      <p-accordion-panel value="5">
+        <p-accordion-header>
+          <div class="flex w-full items-center justify-between mr-2">
             <div>
               <i class="fa fa-wrench mr-2"></i>&nbsp;
               <span translate>Rollover settings</span>
@@ -199,18 +215,22 @@
                 }"
             ></i>
           </div>
-        </ng-template>
-        <dl class="metadata">
-          <dt translate>Account transfer</dt>
-          <dd>{{ record.rollover_settings.account_transfer | translate }}</dd>
-        </dl>
-      </p-accordionTab>
+        </p-accordion-header>
+        <p-accordion-content>
+          <div class="mt-2">
+            <dl class="metadata">
+              <dt translate>Account transfer</dt>
+              <dd>{{ record.rollover_settings.account_transfer | translate }}</dd>
+            </dl>
+          </div>
+        </p-accordion-content>
+      </p-accordion-panel>
     }
   </p-accordion>
 
   <ng-template #address_block let-label="label" let-icon="icon" let-data="data">
-    <p-fieldset class="col-6">
-      <ng-template pTemplate="header">
+    <p-fieldset class="col-span-6">
+      <ng-template #header>
         <p-tag class="mx-2">
           @if (icon) {
             <i class="fa {{ icon }}"></i>&nbsp;
@@ -218,7 +238,7 @@
           {{ label }}
         </p-tag>
       </ng-template>
-      <div class="flex gap-2 flex-column">
+      <div class="flex gap-2 flex-col">
         <div class="flex gap-2">
           <i class="fa fa-home"></i>
           <div>
@@ -246,19 +266,19 @@
           </div>
         </div>
         @if (data.email) {
-          <div class="flex gap-2 align-items-center">
+          <div class="flex gap-2 items-center">
             <i class="fa fa-at"></i>
             <span>{{ data.email }}</span>
           </div>
         }
         @if (data.phone) {
-          <div class="flex gap-2 align-items-center">
+          <div class="flex gap-2 items-center">
             <i class="fa fa-phone-square"></i>
             <span>{{ data.phone }}</span>
           </div>
         }
         @if (data.extra) {
-          <div class="flex gap-2 align-items-center">
+          <div class="flex gap-2 items-center">
             <i class="fa fa-sticky-note-o"></i>
             <span>{{ data.extra }}</span>
           </div>

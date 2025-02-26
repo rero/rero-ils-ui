@@ -25,8 +25,9 @@ import { CirculationLogsComponent } from '../../circulation-logs/circulation-log
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'admin-loans-brief-view',
-  templateUrl: './loans-brief-view.component.html'
+    selector: 'admin-loans-brief-view',
+    templateUrl: './loans-brief-view.component.html',
+    standalone: false
 })
 export class LoansBriefViewComponent implements ResultItem, OnInit {
 
@@ -79,6 +80,7 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
     this.dialogService.open(CirculationLogsComponent, {
       header: this.translateService.instant("Circulation history"),
       width: '60vw',
+      closable: true,
       dismissableMask: true,
       data: {
         resourcePid: loanPid,

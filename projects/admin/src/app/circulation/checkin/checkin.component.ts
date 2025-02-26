@@ -31,8 +31,9 @@ import { PatronService } from '../../service/patron.service';
 import { CheckinActionComponent } from './checkin-action/checkin-action.component';
 
 @Component({
-  selector: 'admin-circulation-checkout',
-  templateUrl: './checkin.component.html'
+    selector: 'admin-circulation-checkout',
+    templateUrl: './checkin.component.html',
+    standalone: false
 })
 export class CheckinComponent implements OnInit {
 
@@ -236,6 +237,7 @@ export class CheckinComponent implements OnInit {
           const ref: DynamicDialogRef = this.dialogService.open(CheckinActionComponent, {
             header: this.translate.instant('Circulation action'),
             focusOnShow: false,
+            closable: true,
             width: '25vw',
           })
           ref.onClose.subscribe((action: string) => {

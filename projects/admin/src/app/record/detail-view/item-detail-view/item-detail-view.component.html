@@ -27,7 +27,7 @@
   <header>
     <h1>{{ 'Barcode' | translate }} {{ record.metadata.barcode }}</h1>
   </header>
-  <section>
+  <section class="mt-4">
     @if (record.metadata._masked) {
       <admin-record-masked [record]="record" [withLabel]="true" />
     }
@@ -107,11 +107,7 @@
       <!-- AVAILABILITY -->
       <dt translate>Availability</dt>
       <dd>
-        <shared-availability
-          recordType="item"
-          [record]="record"
-          [apiService]="itemApiService"
-        />
+        <shared-availability recordType="item" [record]="record" [apiService]="itemApiService" />
       </dd>
       <!-- ACQUISITION -->
       <dt translate>New acquisition</dt>
@@ -145,7 +141,7 @@
 
   <!-- ISSUE DATA -->
   @if (record.metadata.type === 'issue') {
-    <section>
+    <section class="mt-4">
       <header>
         <h3 translate>Issue data</h3>
       </header>
@@ -168,7 +164,7 @@
           @if (record.metadata.issue.status === issueItemStatus.RECEIVED) {
             {{ record.metadata.issue.received_date | dateTranslate }}
           } @else {
-            <span class="text-color-secondary font-italic" translate>Not yet received</span>
+            <span class="text-muted-color italic" translate>Not yet received</span>
           }
         </dd>
         <!-- issue status -->
@@ -183,7 +179,7 @@
 
   <!-- NOTES -->
   @if (record.metadata.notes) {
-    <section>
+    <section class="mt-4">
       <h3 translate>Notes</h3>
       <dl class="metadata">
         @for (note of record.metadata.notes; track note) {
@@ -204,63 +200,66 @@
     </section>
   }
 
-  <!-- TABS -->
-  <section>
-    <p-tabView>
-      <p-tabPanel>
-        <ng-template pTemplate="header">
+  <section class="mt-4">
+    <p-tabs value="circulation">
+      <p-tablist>
+        <p-tab value="circulation">
           <i class="fa fa-exchange"></i>&nbsp;
           {{ 'Circulation' | translate }}
-        </ng-template>
-        <div class="flex flex-column gap-2">
-        <div class="flex justify-content-end">
-          <admin-circulation-logs-dialog [resourcePid]="record.metadata.pid" [resourceType]="'item'" />
-        </div>
-        <admin-item-transactions [itemPid]="record.metadata.pid" (requestEvent)="updateItemStatus()" />
-        <admin-item-fees [itemPid]="record.metadata.pid" [permissions]="permissions.PTTR_ACCESS" />
-        @if (record.metadata | keyExists:'legacy_checkout_count') {
-          <section class="border-1 border-round surface-border px-2">
-            <dl class="metadata">
-                <dt translate>
-                  Legacy checkout count
-                </dt>
-                <dd>
-                  {{ record.metadata.legacy_checkout_count }}
-                </dd>
-            </dl>
-          </section>
-        }
-      </div>
-      </p-tabPanel>
-
-      <p-tabPanel>
-        <ng-template pTemplate="header">
+        </p-tab>
+        <p-tab value="field">
           <i class="fa fa-list-ul mr-1"></i>&nbsp;
           {{ 'Local fields' | translate }}
-        </ng-template>
-        <admin-local-field [resourceType]="'items'" [resourcePid]="record.metadata.pid" />
-      </p-tabPanel>
-
-      @if (record.metadata?.issue?.claims) {
-        <p-tabPanel>
-          <ng-template pTemplate="header">
+        </p-tab>
+        @if (record.metadata?.issue?.claims) {
+          <p-tab value="claim">
             <i class="fa fa-gavel"></i>&nbsp;
-              <span [ngPlural]="record.metadata.issue.claims.counter">
-                <ng-template ngPluralCase="=0">{{ 'Claim' | translate }}</ng-template>
-                <ng-template ngPluralCase="=1">{{ 'Claim' | translate }}</ng-template>
-                <ng-template ngPluralCase="other">{{ 'Claims' | translate }}</ng-template>
-              </span>
-              &nbsp;<p-badge severity="info" [value]="record.metadata.issue.claims.counter" />
-          </ng-template>
-          <ul class="p-0">
-            @for (date of claimsDates; track date) {
-              <li>
-                {{ date | dateTranslate: 'shortDate' }} - {{ date | dateTranslate: 'shortTime' }}
-              </li>
+            <span [ngPlural]="record.metadata.issue.claims.counter">
+              <ng-template ngPluralCase="=0">{{ 'Claim' | translate }}</ng-template>
+              <ng-template ngPluralCase="=1">{{ 'Claim' | translate }}</ng-template>
+              <ng-template ngPluralCase="other">{{ 'Claims' | translate }}</ng-template>
+            </span>
+            &nbsp;<p-badge severity="info" [value]="record.metadata.issue.claims.counter" />
+          </p-tab>
+        }
+      </p-tablist>
+      <p-tabpanels>
+        <p-tabpanel value="circulation">
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-end">
+              <admin-circulation-logs-dialog [resourcePid]="record.metadata.pid" [resourceType]="'item'" />
+            </div>
+            <admin-item-transactions [itemPid]="record.metadata.pid" (requestEvent)="updateItemStatus()" />
+            <admin-item-fees [itemPid]="record.metadata.pid" [permissions]="permissions.PTTR_ACCESS" />
+            @if (record.metadata | keyExists:'legacy_checkout_count') {
+              <section class="border rounded-border border-surface px-2">
+                <dl class="metadata">
+                    <dt translate>
+                      Legacy checkout count
+                    </dt>
+                    <dd>
+                      {{ record.metadata.legacy_checkout_count }}
+                    </dd>
+                </dl>
+              </section>
             }
-          </ul>
-        </p-tabPanel>
-      }
-    </p-tabView>
+          </div>
+        </p-tabpanel>
+        <p-tabpanel value="field">
+          <admin-local-field [resourceType]="'items'" [resourcePid]="record.metadata.pid" />
+        </p-tabpanel>
+        @if (record.metadata?.issue?.claims) {
+          <p-tabpanel value="claim">
+            <ul class="list-none">
+              @for (date of claimsDates; track date) {
+                <li>
+                  {{ date | dateTranslate: 'shortDate' }} - {{ date | dateTranslate: 'shortTime' }}
+                </li>
+              }
+            </ul>
+          </p-tabpanel>
+        }
+      </p-tabpanels>
+    </p-tabs>
   </section>
 }

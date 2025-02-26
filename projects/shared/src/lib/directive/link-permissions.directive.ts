@@ -20,8 +20,9 @@ import { PermissionsService } from '../service/permissions.service';
 import { PERMISSION_OPERATOR } from '../util/permissions';
 
 @Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[linkPermissions]',
+    // eslint-disable-next-line @angular-eslint/directive-selector
+    selector: '[linkPermissions]',
+    standalone: false
 })
 export class LinkPermissionsDirective implements AfterViewInit {
 

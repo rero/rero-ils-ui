@@ -15,12 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { LocalFieldApiService } from './local-field-api.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('Service: LocalFieldApi', () => {
 
@@ -47,16 +48,15 @@ describe('Service: LocalFieldApi', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule
-      ],
-      providers: [
+    imports: [RouterTestingModule],
+    providers: [
         LocalFieldApiService,
         { provide: RecordService, useValue: recordServiceSpy },
         { provide: RecordUiService, useValue: recordUiServiceSpy },
-      ]
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
     localFieldApiService = TestBed.inject(LocalFieldApiService);
   });
 

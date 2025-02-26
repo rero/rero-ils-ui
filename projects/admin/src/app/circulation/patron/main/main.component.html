@@ -1,6 +1,6 @@
 <!--
  RERO ILS UI
- Copyright (C) 2019-2024 RERO
+ Copyright (C) 2019-2025 RERO
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published by
@@ -21,24 +21,28 @@
     [displayCirculationMessages]="true"
     (clearPatron)="clearPatron()"
   />
-  <p-tabMenu [model]="items" [activeItem]="activeItem" (activeItemChange)="onActiveItemChange($event)">
-    <ng-template pTemplate="item" let-item>
-      <a pRipple class="p-menuitem-link flex gap-2">
-        <span>{{ item.label }}</span>
-        @if (item.tag?.statistics && item.tag?.statistics()[item.id] && item.tag?.statistics()[item.id] > 0) {
-          @if (item.tag.withCurrency) {
-            <p-badge
-              [severity]="item.tag.severity || 'info'"
-              [value]="item.tag.statistics()[item.id] | currency: organisation.default_currency"
-            />
-          } @else {
-            <p-badge [severity]="item.tag.severity || 'info'" [value]="item.tag.statistics()[item.id]" />
-          }
-        }
-      </a>
-    </ng-template>
-  </p-tabMenu>
-  <div class="mt-4">
+  <p-tabs [value]="activeTab">
+    <p-tablist>
+      @for(item of items; track item) {
+        <p-tab [value]="item.id">
+          <a pRipple class="flex gap-2" [routerLink]="item.routerLink">
+            <span>{{ item.label | translate }}</span>
+            @if (item.tag?.statistics && item.tag?.statistics()[item.id] && item.tag?.statistics()[item.id] > 0) {
+              @if (item.tag.withCurrency) {
+                <p-badge
+                  [severity]="item.tag.severity || 'info'"
+                  [value]="item.tag.statistics()[item.id] | currency: organisation.default_currency"
+                />
+              } @else {
+                <p-badge [severity]="item.tag.severity || 'info'" [value]="item.tag.statistics()[item.id]" />
+              }
+            }
+          </a>
+        </p-tab>
+      }
+    </p-tablist>
+  </p-tabs>
+  <div class="mt-6">
     <router-outlet />
   </div>
 }

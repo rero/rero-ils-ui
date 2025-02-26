@@ -16,7 +16,7 @@
  */
 import { Component, inject, OnInit } from '@angular/core';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
-import { OperationLogsService } from '@app/admin/service/operation-logs.service';
+import { OperationLogsService } from '@rero/shared';
 import {
   DetailComponent,
   Record
@@ -27,8 +27,9 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DialogImportComponent } from '../dialog-import/dialog-import.component';
 
 @Component({
-  selector: 'admin-document-detail',
-  templateUrl: './document-detail.component.html',
+    selector: 'admin-document-detail',
+    templateUrl: './document-detail.component.html',
+    standalone: false
 })
 export class DocumentDetailComponent extends DetailComponent implements OnInit {
 
@@ -170,6 +171,7 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
         } else {
           const dynamicDialogRef: DynamicDialogRef = this.dialogService.open(DialogImportComponent, {
             header: this.translate.instant('Import'),
+            closable: true,
             width: '30vw',
             data: {
               records: response.hits.hits,

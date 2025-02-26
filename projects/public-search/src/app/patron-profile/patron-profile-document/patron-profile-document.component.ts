@@ -19,8 +19,9 @@ import { RecordService } from '@rero/ng-core';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
 
 @Component({
-  selector: 'public-search-patron-profile-document',
-  templateUrl: './patron-profile-document.component.html'
+    selector: 'public-search-patron-profile-document',
+    templateUrl: './patron-profile-document.component.html',
+    standalone: false
 })
 export class PatronProfileDocumentComponent implements OnInit {
 

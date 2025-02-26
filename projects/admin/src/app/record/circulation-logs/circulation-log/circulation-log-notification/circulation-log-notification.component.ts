@@ -19,8 +19,9 @@ import { Component, inject, Input } from '@angular/core';
 import { NotificationApiService } from '@app/admin/api/notification-api.service';
 
 @Component({
-  selector: 'admin-circulation-log-notification',
-  templateUrl: './circulation-log-notification.component.html'
+    selector: 'admin-circulation-log-notification',
+    templateUrl: './circulation-log-notification.component.html',
+    standalone: false
 })
 export class CirculationLogNotificationComponent {
 

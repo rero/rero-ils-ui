@@ -17,14 +17,20 @@
  */
 
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { PERMISSIONS, PermissionsService, PERMISSION_OPERATOR } from '@rero/shared';
+import { Router, RouterModule, ROUTES, Routes } from '@angular/router';
+import { PERMISSIONS, PermissionsService, PERMISSION_OPERATOR, AppSettingsService } from '@rero/shared';
 import { PermissionGuard } from '../guard/permission.guard';
 import { AccountListComponent } from './components/account/account-list/account-list.component';
 import { AccountTransferComponent } from './components/account/account-transfer/account-transfer.component';
 import { OrderReceiptViewComponent } from './components/receipt/receipt-form/order-receipt-view.component';
 import { CanOrderReceiptGuard } from './routes/guards/can-order-receipt.guard';
 import { AcquisitionMainComponent } from './components/acquisition-main/acquisition-main.component';
+import { AccountsRoute } from './routes/accounts-route';
+import { BudgetsRoute } from './routes/budgets-route';
+import { OrderLinesRoute } from './routes/order-lines-route';
+import { OrdersRoute } from './routes/orders-route';
+import { VendorsRoute } from './routes/vendors-route';
+import { RouteToolService } from '../routes/route-tool.service';
 
 const routes: Routes = [
   {
@@ -45,6 +51,7 @@ const routes: Routes = [
         data: { permissions: [PERMISSIONS.ACAC_ACCESS, PERMISSIONS.ACAC_SEARCH], operator: PERMISSION_OPERATOR.AND },
       },
       { path: 'acq_orders/:pid/receive', component: OrderReceiptViewComponent, canActivate: [CanOrderReceiptGuard] },
+      // new AccountsRoute().getConfiguration()
     ],
   },
 ];
@@ -52,5 +59,24 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
+  providers: [
+    {
+      provide: ROUTES,
+      useFactory: () => {
+        const routes: Routes = [
+          new AccountsRoute().getConfiguration(),
+          new BudgetsRoute().getConfiguration(),
+          new OrderLinesRoute().getConfiguration(),
+          new OrdersRoute().getConfiguration(),
+          new VendorsRoute().getConfiguration()
+        ];
+        return routes;
+      },
+      deps: [
+        RouteToolService
+      ],
+      multi: true
+    }
+  ]
 })
 export class AcquisitionRoutingModule {}

@@ -22,7 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CONFIG, DateTranslatePipe } from '@rero/ng-core';
 import { ItemStatus, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
-import { DropdownChangeEvent } from 'primeng/dropdown';
+import { SelectChangeEvent } from 'primeng/select';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin, Subscription } from 'rxjs';
 import { CirculationStatistics } from '../../circulationStatistics';
@@ -31,9 +31,10 @@ import { LoanFixedDateService } from '../../services/loan-fixed-date.service';
 import { CirculationSettingsService, ICirculationSetting } from './circulation-settings/circulation-settings.service';
 
 @Component({
-  selector: 'admin-loan',
-  templateUrl: './loan.component.html',
-  providers: [ DateTranslatePipe, LoanFixedDateService ]
+    selector: 'admin-loan',
+    templateUrl: './loan.component.html',
+    providers: [DateTranslatePipe, LoanFixedDateService],
+    standalone: false
 })
 export class LoanComponent implements OnInit, OnDestroy {
 
@@ -420,7 +421,7 @@ export class LoanComponent implements OnInit, OnDestroy {
    * Allow to sort the checkout items list using a sort criteria
    * @param sortCriteria: the srt criteria to use for sorting the list
    */
-  selectingSortCriteria(sortCriteria: DropdownChangeEvent): void {
+  selectingSortCriteria(sortCriteria: SelectChangeEvent): void {
     switch (sortCriteria.value) {
       case 'duedate':
         this.checkedOutItems.sort((a, b) => a.loan.end_date.diff(b.loan.end_date));

@@ -19,8 +19,9 @@ import { Component, inject, Input, OnInit } from '@angular/core';
 import { ItemApiService } from '../../../api/item-api.service';
 
 @Component({
-  selector: 'admin-circulation-stats',
-  templateUrl: './circulation-stats.component.html'
+    selector: 'admin-circulation-stats',
+    templateUrl: './circulation-stats.component.html',
+    standalone: false
 })
 export class CirculationStatsComponent implements OnInit {
 

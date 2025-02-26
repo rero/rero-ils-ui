@@ -20,8 +20,9 @@ import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
 import { RecordService, ResultItem } from '@rero/ng-core';
 
 @Component({
-  selector: 'admin-ill-requests-brief-view',
-  templateUrl: './ill-requests-brief-view.component.html'
+    selector: 'admin-ill-requests-brief-view',
+    templateUrl: './ill-requests-brief-view.component.html',
+    standalone: false
 })
 export class IllRequestsBriefViewComponent  implements ResultItem, OnInit {
 

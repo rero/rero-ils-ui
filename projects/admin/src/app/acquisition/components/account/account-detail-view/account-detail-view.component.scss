@@ -18,6 +18,6 @@
 
 admin-acquisition-account-detail-view {
 table td {
-    @extend .px-2, .py-1;
+    @apply px-2 py-1;
   }
 }

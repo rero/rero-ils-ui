@@ -19,8 +19,9 @@ import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { OrganisationApiService } from './organisation-api.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('OrganisationApiService', () => {
   let service: OrganisationApiService;
@@ -35,14 +36,13 @@ describe('OrganisationApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot()
-      ],
-      providers: [
-        { provide: RecordService, useValue: recordServiceSpy }
-      ]
-    });
+    imports: [TranslateModule.forRoot()],
+    providers: [
+        { provide: RecordService, useValue: recordServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     service = TestBed.inject(OrganisationApiService);
   });
 

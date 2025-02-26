@@ -16,13 +16,14 @@
  */
 import { TestBed } from '@angular/core/testing';
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { LibrarySwitchService } from '@app/admin/menu/service/library-switch.service';
 import { MenuService } from '@app/admin/menu/service/menu.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule, LocalStorageService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { LoanFixedDateService } from './loan-fixed-date.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('LoanFixedDateService', () => {
   let service: LoanFixedDateService;
@@ -41,18 +42,17 @@ describe('LoanFixedDateService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
-        CoreModule
-      ],
-      providers: [
+    imports: [TranslateModule.forRoot(),
+        CoreModule],
+    providers: [
         LibrarySwitchService,
         LocalStorageService,
         MenuService,
-        { provide: UserService, useValue: userServiceSpy }
-      ]
-    });
+        { provide: UserService, useValue: userServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     service = TestBed.inject(LoanFixedDateService);
     librarySwitchService = TestBed.inject(LibrarySwitchService);
   });

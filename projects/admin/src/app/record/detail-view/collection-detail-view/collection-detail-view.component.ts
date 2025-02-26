@@ -21,8 +21,9 @@ import { Observable } from 'rxjs';
 
 
 @Component({
-  selector: 'admin-collection-detail-view',
-  templateUrl: './collection-detail-view.component.html'
+    selector: 'admin-collection-detail-view',
+    templateUrl: './collection-detail-view.component.html',
+    standalone: false
 })
 export class CollectionDetailViewComponent implements DetailRecord, OnInit {
 

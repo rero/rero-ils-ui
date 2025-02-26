@@ -17,15 +17,17 @@
 @if (record) {
 <h5 translate>Digital collections</h5>
   <form [formGroup]="formGroup">
-    <p-chips
+    <p-autocomplete
+      multiple
+      [typeahead]="false"
       [pTooltip]="'Comma-separated list of digital collection names. Digital collections allow the searching/grouping of related documents containing files.'|translate"
       tooltipPosition="top"
       formControlName="collections"
       [allowDuplicate]="false"
     >
-      <ng-template let-collection pTemplate="item">
+      <ng-template let-collection #item>
         <a [href]="getCollectionLink(collection)">{{collection}}&nbsp;<i class="fa fa-external-link"></i></a>
      </ng-template>
-    </p-chips>
+    </p-autocomplete>
 </form>
 }

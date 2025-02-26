@@ -18,13 +18,13 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'admin-acquisition-main',
-  template: `
+    selector: 'admin-acquisition-main',
+    template: `
     <router-outlet></router-outlet>
     <p-toast>
-      <ng-template let-message pTemplate="message">
-        <div class="flex flex-column align-items-start" style="flex: 1">
-          <div class="font-medium text-lg text-900">
+      <ng-template #message let-message>
+        <div class="flex flex-col items-start" style="flex: 1">
+          <div class="font-medium text-lg text-surface-900 dark:text-surface-0">
             {{ message.summary }}
           </div>
           <p [innerHtml]="message.detail"></p>
@@ -33,7 +33,7 @@ import { Component } from '@angular/core';
     </p-toast>
     <p-confirmDialog />
   `,
-  styles: ``
+    standalone: false
 })
 export class AcquisitionMainComponent {
 

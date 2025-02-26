@@ -17,7 +17,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'documentProvisionActivity'
+    name: 'documentProvisionActivity',
+    standalone: false
 })
 export class DocumentProvisionActivityPipe implements PipeTransform {
 

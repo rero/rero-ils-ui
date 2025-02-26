@@ -18,8 +18,9 @@ import { Component, inject, OnInit } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
-  selector: 'admin-dialog-import',
-  templateUrl: './dialog-import.component.html'
+    selector: 'admin-dialog-import',
+    templateUrl: './dialog-import.component.html',
+    standalone: false
 })
 export class DialogImportComponent implements OnInit {
 

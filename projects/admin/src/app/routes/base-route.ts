@@ -62,7 +62,7 @@ export class BaseRoute {
    * Matched url
    * @param url - UrlSegment
    */
-  private matchedUrl(url: UrlSegment[]) {
+  protected matchedUrl(url: UrlSegment[]) {
     const segments = [
       new UrlSegment(url[0].path, {}),
       new UrlSegment(url[1].path, {})

@@ -17,40 +17,40 @@
 
 @if (transaction) {
   @if (transaction.metadata.patron_pid | getRecord:'patrons' | async; as patron) {
-    <div id="{{ $any(patron).metadata.patron.barcode[0] }}" class="grid align-items-center">
-      <div class="col-4">
+    <div id="{{ $any(patron).metadata.patron.barcode[0] }}" class="grid grid-cols-12 gap-4 items-center">
+      <div class="col-span-4">
         <a name="loans" [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0]]">
           {{ $any(patron).metadata.last_name }} {{ $any(patron).metadata.first_name }} ({{ $any(patron).metadata.patron.barcode }})
         </a>
       </div>
       <!-- LOANS (BORROW) -->
       @if (type === 'loan_borrow') {
-        <div class="col-4">
+        <div class="col-span-4">
           {{ transaction.metadata.extension_count ?  transaction.metadata.extension_count : '-' }}
         </div>
-        <div class="col-3">
+        <div class="col-span-3">
           {{ transaction.metadata.end_date | dateTranslate:'longDate' }}
         </div>
       }
       <!-- REQUESTS -->
       @if (type === 'loan_request' && pickupLocations && pickupLocations.length > 0) {
         @if (canUpdateRequestPickupLocation()) {
-          <p-dropdown
-          class="col-4"
+          <p-select
+          class="col-span-4"
           optionLabel="label"
           [options]="pickupLocations"
           [(ngModel)]="currentPickupLocation"
           (onChange)="emitUpdatePickupLocation($event)"/>
 
         } @else {
-          <div class="col-4" [title]="'The pickup location cannot be modified' | translate">
+          <div class="col-span-4" [title]="'The pickup location cannot be modified' | translate">
             {{ transaction.metadata.pickup_location_pid | getRecord:'locations':'field':'pickup_name' | async }}
           </div>
         }
-        <div class="col-3">
+        <div class="col-span-3">
           {{ transaction.created | dateTranslate:'medium' }}
         </div>
-        <div class="col-1 text-right">
+        <div class="col-span-1 text-right">
             <p-button outlined severity="danger" size="small"
               (onClick)="showCancelRequestDialog($event)"
               class="pointer-events-auto"

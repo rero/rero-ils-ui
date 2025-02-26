@@ -25,8 +25,9 @@ import { forkJoin } from 'rxjs';
 import { Settings } from './class/settings';
 
 @Component({
-  selector: 'admin-cipo-patron-type-item-type',
-  templateUrl: './cipo-patron-type-item-type.component.html'
+    selector: 'admin-cipo-patron-type-item-type',
+    templateUrl: './cipo-patron-type-item-type.component.html',
+    standalone: false
 })
 export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements OnInit {
 

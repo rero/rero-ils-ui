@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
@@ -23,6 +23,7 @@ import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 import { PatronProfileRequestComponent } from './patron-profile-request.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PatronProfileRequestComponent', () => {
   let component: PatronProfileRequestComponent;
@@ -47,17 +48,16 @@ describe('PatronProfileRequestComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ PatronProfileRequestComponent ],
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
-        SharedModule
-      ],
-      providers: [
-        { provide: UserApiService, useValue: userApiServiceSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    })
+    declarations: [PatronProfileRequestComponent],
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [TranslateModule.forRoot(),
+        SharedModule],
+    providers: [
+        { provide: UserApiService, useValue: userApiServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   });
 

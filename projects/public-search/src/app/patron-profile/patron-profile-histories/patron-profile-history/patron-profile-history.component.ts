@@ -18,8 +18,9 @@ import { Component, inject, Input } from '@angular/core';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 
 @Component({
-  selector: 'public-search-patron-profile-history',
-  templateUrl: './patron-profile-history.component.html'
+    selector: 'public-search-patron-profile-history',
+    templateUrl: './patron-profile-history.component.html',
+    standalone: false
 })
 export class PatronProfileHistoryComponent {
 

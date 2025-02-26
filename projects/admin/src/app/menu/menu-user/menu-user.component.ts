@@ -26,8 +26,9 @@ import { MENU_IDS } from '../menu-definition/menu-ids';
 import { MENU_USER } from '../menu-definition/menu-user';
 
 @Component({
-  selector: 'admin-menu-user',
-  templateUrl: './menu-user.component.html'
+    selector: 'admin-menu-user',
+    templateUrl: './menu-user.component.html',
+    standalone: false
 })
 export class MenuUserComponent implements OnInit, OnDestroy {
 

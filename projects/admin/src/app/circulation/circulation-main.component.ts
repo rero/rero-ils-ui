@@ -17,13 +17,13 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'admin-circulation-main',
-  template: `
+    selector: 'admin-circulation-main',
+    template: `
     <router-outlet></router-outlet>
     <p-toast>
-      <ng-template let-message pTemplate="message">
-        <div class="flex flex-column align-items-start flex-grow-1">
-          <div class="font-medium text-lg text-900">
+      <ng-template #message let-message>
+        <div class="flex flex-col items-start grow">
+          <div class="font-medium text-lg text-surface-900 dark:text-surface-0">
             {{ message.summary }}
           </div>
           <p [innerHtml]="message.detail"></p>
@@ -31,7 +31,8 @@ import { Component } from '@angular/core';
       </ng-template>
     </p-toast>
     <p-confirmDialog />
-  `
+  `,
+    standalone: false
 })
 export class CirculationMainComponent {
 }

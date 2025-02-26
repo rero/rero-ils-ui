@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClient } from '@angular/common/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ApiService } from '@rero/ng-core';
 import { of } from 'rxjs';
@@ -40,15 +40,15 @@ describe('Service: UserApi', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
-      providers: [
+    imports: [],
+    providers: [
         UserApiService,
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: ApiService, useValue: apiServiceSpy }
-      ]
-    });
+        { provide: ApiService, useValue: apiServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     userApiService = TestBed.inject(UserApiService);
   });
 

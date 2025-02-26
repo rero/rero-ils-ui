@@ -16,24 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FORMLY_CONFIG, FormlyModule } from '@ngx-formly/core';
 import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ApiService, CoreModule, RecordModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { PreviewEmailModule } from '../shared/preview-email/preview-email.module';
+import { PrimengImportModule } from '../shared/primeng-import/primeng-import.module';
 import { AcquisitionRoutingModule } from './acquisition-routing.module';
 import { AcqAccountApiService } from './api/acq-account-api.service';
 import { AcqOrderApiService } from './api/acq-order-api.service';
 import { AccountDetailViewComponent } from './components/account/account-detail-view/account-detail-view.component';
 import { AccountListComponent } from './components/account/account-list/account-list.component';
 import { AccountTransferComponent } from './components/account/account-transfer/account-transfer.component';
+import { AcquisitionMainComponent } from './components/acquisition-main/acquisition-main.component';
 import { BudgetsBriefViewComponent } from './components/budget/budget-brief-view/budgets-brief-view.component';
 import { BudgetDetailViewComponent } from './components/budget/budget-detail-view/budget-detail-view.component';
 import { SelectAccountEditorWidgetComponent } from './components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
+import { NotesComponent } from './components/notes/notes.component';
 import { OrderBriefViewComponent } from './components/order/order-brief-view/order-brief-view.component';
 import { OrderDetailViewComponent } from './components/order/order-detail-view/order-detail-view.component';
 import { OrderLineComponent } from './components/order/order-detail-view/order-line/order-line.component';
@@ -56,46 +59,48 @@ import { NoteBadgeColorPipe } from './pipes/note-badge-color.pipe';
 import { PreviewContentPipe } from './pipes/preview-content.pipe';
 import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pipe';
 import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
-import { PrimengImportModule } from '../shared/primeng-import/primeng-import.module';
-import { NotesComponent } from './components/notes/notes.component';
-import { AcquisitionMainComponent } from './components/acquisition-main/acquisition-main.component';
+import { VendorBriefViewComponent } from './components/vendors/vendor-brief-view.component';
+import { VendorDetailViewComponent } from './components/vendors/vendor-detail-view/vendor-detail-view.component';
+import { AddressTypeComponent } from './components/address-type/address-type.component';
+import { TreeTableModule } from 'primeng/treetable';
+import { TimelineModule } from 'primeng/timeline';
 
 @NgModule({
   declarations: [
+    AccountAvailableAmountPipe,
+    AccountDetailViewComponent,
     AccountListComponent,
     AccountTransferComponent,
-    AccountDetailViewComponent,
-    BudgetsBriefViewComponent,
+    AcquisitionMainComponent,
+    AddressTypeComponent,
     BudgetDetailViewComponent,
+    BudgetsBriefViewComponent,
     FieldDocumentBriefViewTypeComponent,
     FieldRefTypeComponent,
     InputNoLabelWrapperComponent,
     NegativeAmountPipe,
+    NoteBadgeColorPipe,
+    NotesComponent,
     OrderBriefViewComponent,
     OrderDetailViewComponent,
-    OrderLinesComponent,
+    OrderEmailFormComponent,
     OrderLineComponent,
+    OrderLinesComponent,
     OrderReceiptViewComponent,
     OrderSummaryComponent,
-    RepeatTypeComponent,
-    SelectAccountEditorWidgetComponent,
-    ReceiptListComponent,
-    ReceiptSummaryComponent,
-    NoteBadgeColorPipe,
-    AccountAvailableAmountPipe,
-    ReceptionDatesPipe,
     PreviewContentPipe,
     ReceiptLineTotalAmountPipe,
-    OrderEmailFormComponent,
-    NotesComponent,
-    AcquisitionMainComponent
+    ReceiptListComponent,
+    ReceiptSummaryComponent,
+    ReceptionDatesPipe,
+    RepeatTypeComponent,
+    SelectAccountEditorWidgetComponent,
+    VendorBriefViewComponent,
+    VendorDetailViewComponent,
   ],
   imports: [
-    CommonModule,
     AcquisitionRoutingModule,
-    FormlyModule,
-    ReactiveFormsModule,
-    FormlyPrimeNGModule,
+    CommonModule,
     FormlyModule.forChild({
       types: [
         { name: 'repeat', component: RepeatTypeComponent },
@@ -107,11 +112,14 @@ import { AcquisitionMainComponent } from './components/acquisition-main/acquisit
         { name: 'input-no-label', component: InputNoLabelWrapperComponent }
       ]
     }),
-    RecordModule,
-    CoreModule,
-    SharedModule,
+    FormsModule,
     PreviewEmailModule,
-    PrimengImportModule
+    ReactiveFormsModule,
+    RecordModule,
+    SharedModule,
+    TimelineModule,
+    TranslateModule,
+    TreeTableModule,
   ],
   providers: [
     { provide: FORMLY_CONFIG, multi: true, useFactory: registerFormlyExtension, deps: [TranslateService] },

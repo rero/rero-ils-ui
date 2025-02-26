@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2023-2024 RERO
+  Copyright (C) 2023-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -19,7 +19,7 @@
     <h1>{{ record.metadata.name }}</h1>
     <span [innerHTML]="record.metadata.description | nl2br"></span>
   </header>
-  <section>
+  <section class="mt-4">
     <dl class="metadata">
       <dt translate>Library</dt>
       <dd>{{ record.metadata.library.$ref | getRecord: 'libraries' : 'field' : 'name' | async }}</dd>
@@ -36,7 +36,7 @@
       @if (record.metadata.filter_by_libraries?.length > 0) {
         <dt translate>Filter numbers by libraries</dt>
         <dd>
-          <ul class="list-none m-0 p-0">
+          <ul class="list-none">
             @for (lib of record.metadata.filter_by_libraries; track lib) {
               <li>
                 {{ lib.$ref| getRecord: 'libraries' : 'field' : 'name' | async }}
@@ -46,8 +46,10 @@
         </dd>
       }
     </dl>
+  </section>
 
-    <p-fieldset styleClass="mt-3" [legend]="'Configuration'|translate">
+  <section class="mt-4">
+    <p-fieldset [legend]="'Configuration'|translate">
       <dl class="metadata">
 
         <dt translate>Category</dt>
@@ -64,7 +66,7 @@
         @if (record.metadata.category.indicator.distributions) {
           <dt translate>Distributions</dt>
           <dd>
-            <ul class="list-none m-0 p-0">
+            <ul class="list-none">
               @for (dist of record.metadata.category.indicator.distributions; track dist; let last = $last) {
                 <li class="inline">{{ dist | translate }}{{ last ? '' : ' / ' }}</li>
               }
@@ -86,22 +88,26 @@
       </dl>
     </p-fieldset>
   </section>
-  <p-tabView (onChange)="tabViewChange($event)">
-    <p-tabPanel [header]="'Reports'|translate">
-      <admin-reports-list [pid]="record.metadata.pid" />
-    </p-tabPanel>
-    <p-tabPanel [header]="'Live Values'|translate">
-      @if (liveData) {
-        <admin-report-data [data]="liveData" />
-      }
-      @if (liveDataError) {
-        <p-messages
-          [value]="[{ severity: 'error', detail: liveDataError }]"
-          [closable]="false"
-          [enableService]="false"
-          showTransitionOptions="0ms"
-        />
-      }
-    </p-tabPanel>
-  </p-tabView>
-  }
+
+  <section class="mt-4">
+    <p-tabs value="report">
+      <p-tablist>
+        <p-tab value="report" translate>Reports</p-tab>
+        <p-tab value="live" translate (click)="getLiveValues()">Live Values</p-tab>
+      </p-tablist>
+      <p-tabpanels>
+        <p-tabpanel value="report">
+          <admin-reports-list [pid]="record.metadata.pid" />
+        </p-tabpanel>
+        <p-tabpanel value="live">
+          @if (liveData) {
+            <admin-report-data [data]="liveData" />
+          }
+          @if (liveDataError) {
+            <p-message [text]="liveDataError" severity="error" showTransitionOptions="0ms" />
+          }
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  </section>
+}

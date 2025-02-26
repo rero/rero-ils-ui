@@ -19,13 +19,14 @@ import { Component, inject, Input, OnInit } from '@angular/core';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
 
 @Component({
-  selector: 'shared-remote-organisation-entity-brief-view',
-  template: `
+    selector: 'shared-remote-organisation-entity-brief-view',
+    template: `
     @if (dates) {
       <p>{{ dates | join : ' - ' }}</p>
     }
   `,
-  providers: [ExtractSourceFieldPipe],
+    providers: [ExtractSourceFieldPipe],
+    standalone: false
 })
 export class EntityBriefViewRemoteOrganisationComponent implements OnInit {
 

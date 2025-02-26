@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (organisation) {
-  <header class="flex align-items-baseline justify-content-between">
+  <header class="flex items-baseline justify-between">
     <h1 translate>Acquisition accounts</h1>
     <div class="flex gap-2 flex-wrap">
       <!-- ADD BUTTON -->
@@ -47,7 +47,7 @@
 
   <section>
     @if (rootAccounts.length > 0) {
-      <div class="flex flex-wrap gap-1 my-3">
+      <div class="flex flex-wrap gap-1 my-4">
         <p-button size="small" outlined icon="fa fa-plus" [label]="'Expand all' | translate" (onClick)="expandAll()" />
         <p-button size="small" outlined icon="fa fa-minus" [label]="'Collapse all' | translate" (onClick)="collapseAll()" />
     </div>
@@ -56,7 +56,7 @@
       styleClass="p-treetable-sm"
       [value]="rootAccounts"
     >
-      <ng-template pTemplate="header">
+      <ng-template #header>
         <tr>
           <th translate>Name</th>
           <th class="text-right" translate>Amount</th>
@@ -67,7 +67,7 @@
           <th></th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+    <ng-template #body let-rowNode let-rowData="rowData">
       <tr>
           <td>
               <p-treeTableToggler [rowNode]="rowNode" />
@@ -80,7 +80,7 @@
             <ng-container *ngVar="rowData | accountAvailableAmount as available_amount">
               <span [class]="{
                 'text-success': available_amount > 0,
-                'text-color-secondary': available_amount === 0,
+                'text-muted-color': available_amount === 0,
                 'text-warning': available_amount < 0
               }">
                 {{ available_amount | currency: organisation.default_currency }}
@@ -89,26 +89,26 @@
           </td>
           <td class="text-right" [class]="{
             'text-error': rowData.encumbrance_amount.self > 0,
-            'text-color-secondary': rowData.encumbrance_amount.self <= 0
+            'text-muted-color': rowData.encumbrance_amount.self <= 0
           }">
               {{ rowData.encumbrance_amount.self | currency: organisation.default_currency }}
           </td>
           <td class="text-right" [class]="{
             'text-error': rowData.expenditure_amount.self > 0,
-            'text-color-secondary': rowData.expenditure_amount.self <= 0
+            'text-muted-color': rowData.expenditure_amount.self <= 0
           }">
           {{ rowData.expenditure_amount.self | currency: organisation.default_currency}}
           </td>
           <td
           class="text-right"
           [class]="{
-          'text-color-secondary': rowData.remaining_balance.self === 0,
+          'text-muted-color': rowData.remaining_balance.self === 0,
           'text-warning': rowData.remaining_balance.self < 0
         }">
         {{ rowData.remaining_balance.self | currency: organisation.default_currency }}
           </td>
           <td>
-            <div class="flex gap-1 justify-content-end flex-wrap">
+            <div class="flex gap-1 justify-end flex-wrap">
              <!-- EDIT BUTTON -->
              @if (rowData.permissions && rowData.permissions?.update && rowData?.permissions?.update?.can) {
               <p-button

@@ -23,8 +23,9 @@ import { LoanApiService } from '../../api/loan-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
 
 @Component({
-  selector: 'public-search-patron-profile-loans',
-  templateUrl: './patron-profile-loans.component.html'
+    selector: 'public-search-patron-profile-loans',
+    templateUrl: './patron-profile-loans.component.html',
+    standalone: false
 })
 export class PatronProfileLoansComponent implements OnInit, OnDestroy {
 

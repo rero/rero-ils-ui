@@ -25,50 +25,50 @@
   <p-tag severity="warning" [value]="'Remote' | translate" />
 
   <!-- SOURCES -->
-   <div class="mt-2 flex flex-column gap-2">
+   <div class="mt-2 flex flex-col gap-2">
     @for (source of $any(record).metadata.sources.sort(); track source) {
       <p-panel>
-        <ng-template pTemplate="header">
-          <h5 class="p-0">{{ source | translate | uppercase }}</h5>
+        <ng-template #header>
+          <span class="font-medium text-lg">{{ source | translate | uppercase }}</span>
         </ng-template>
-        <div>
-            @switch ($any(record).metadata.type) {
-              @case (entityType.PERSON) {
-                <admin-remote-entities-person-detail-view [record]="$any(record).metadata[source]" [source]="source" />
-              }
-              @case (entityType.ORGANISATION) {
-                <admin-remote-entities-organisation-detail-view [record]="$any(record).metadata[source]" [source]="source" />
-              }
-              @case (entityType.TOPIC) {
-                <admin-remote-topic-detail-view [record]="$any(record).metadata[source]" [source]="source" />
-              }
-              @case (entityType.PLACE) {
-                <admin-remote-topic-detail-view [record]="$any(record).metadata[source]" [source]="source" />
-              }
-              @case (entityType.TEMPORAL) {
-                <admin-remote-topic-detail-view [record]="$any(record).metadata[source]" [source]="source" />
-              }
-              @default {
-                {{ 'Missing template for this entity type:' | translate }} {{ $any(record).metadata.type }}
-              }
+        <div class="mt-3">
+          @switch ($any(record).metadata.type) {
+            @case (entityType.PERSON) {
+              <admin-remote-entities-person-detail-view [record]="$any(record).metadata[source]" [source]="source" />
             }
-            <!-- IDENTIFIED BY -->
-            @if ($any(record).metadata[source].identifiedBy?.length) {
-              @if (identifiedByFilter($any(record).metadata[source].identifiedBy).length > 0) {
-              <dl class="metadata">
-                <dt translate>Identified by</dt>
-                <dd>
-                  <ul class="list-none p-0 m-0">
-                    @for (identifiedBy of identifiedByFilter($any(record).metadata[source].identifiedBy); track identifiedBy) {
-                      <li>
-                        <a class="rero-ils-external-link" href="{{ identifiedBy.value }}" title="{{ identifiedBy.value }}" target="_blank">{{ identifiedBy.source }}</a>
-                      </li>
-                    }
-                  </ul>
-                </dd>
-                </dl>
-              }
+            @case (entityType.ORGANISATION) {
+              <admin-remote-entities-organisation-detail-view [record]="$any(record).metadata[source]" [source]="source" />
             }
+            @case (entityType.TOPIC) {
+              <admin-remote-topic-detail-view [record]="$any(record).metadata[source]" [source]="source" />
+            }
+            @case (entityType.PLACE) {
+              <admin-remote-topic-detail-view [record]="$any(record).metadata[source]" [source]="source" />
+            }
+            @case (entityType.TEMPORAL) {
+              <admin-remote-topic-detail-view [record]="$any(record).metadata[source]" [source]="source" />
+            }
+            @default {
+              {{ 'Missing template for this entity type:' | translate }} {{ $any(record).metadata.type }}
+            }
+          }
+          <!-- IDENTIFIED BY -->
+          @if ($any(record).metadata[source].identifiedBy?.length) {
+            @if (identifiedByFilter($any(record).metadata[source].identifiedBy).length > 0) {
+            <dl class="metadata">
+              <dt translate>Identified by</dt>
+              <dd>
+                <ul class="list-none p-0 m-0">
+                  @for (identifiedBy of identifiedByFilter($any(record).metadata[source].identifiedBy); track identifiedBy) {
+                    <li>
+                      <a class="rero-ils-external-link" href="{{ identifiedBy.value }}" title="{{ identifiedBy.value }}" target="_blank">{{ identifiedBy.source }}</a>
+                    </li>
+                  }
+                </ul>
+              </dd>
+              </dl>
+            }
+          }
           <dl class="metadata">
             <dt translate>Id</dt>
             <dd>{{ $any(record).metadata[source].pid }}</dd>

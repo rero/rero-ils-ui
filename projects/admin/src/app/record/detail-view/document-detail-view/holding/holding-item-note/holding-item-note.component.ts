@@ -18,15 +18,16 @@ import { Component, Input } from '@angular/core';
 import { ItemNote } from '@app/admin/classes/items';
 
 @Component({
-  selector: 'admin-holding-item-note',
-  template: `
+    selector: 'admin-holding-item-note',
+    template: `
     @if (note) {
       <dl class="metadata">
         <dt>{{ note.type.toString() | translate }}</dt>
         <dd [innerHTML]="note.content"></dd>
       </dl>
     }
-  `
+  `,
+    standalone: false
 })
 export class HoldingItemNoteComponent {
   /** the item note */

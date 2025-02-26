@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
@@ -24,6 +24,7 @@ import { of } from 'rxjs';
 import { ItemApiService } from '../../api/item-api.service';
 import { HoldingsApiService } from '../../api/holdings-api.service';
 import { RequestComponent } from './request.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('RequestComponentItem', () => {
   let component: RequestComponent;
@@ -49,19 +50,18 @@ describe('RequestComponentItem', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot()
-      ],
-      declarations: [ RequestComponent ],
-      providers: [
-        { provide: UserApiService, useValue: userApiServiceSpy },
-        { provide: ItemApiService, useValue: itemApiServiceSpy }
-      ],
-      schemas: [
+    declarations: [RequestComponent],
+    schemas: [
         CUSTOM_ELEMENTS_SCHEMA
-      ]
-    })
+    ],
+    imports: [TranslateModule.forRoot()],
+    providers: [
+        { provide: UserApiService, useValue: userApiServiceSpy },
+        { provide: ItemApiService, useValue: itemApiServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   });
 
@@ -111,19 +111,18 @@ describe('RequestComponentHolding', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot()
-      ],
-      declarations: [ RequestComponent ],
-      providers: [
-        { provide: UserApiService, useValue: userApiServiceSpy },
-        { provide: HoldingsApiService, useValue: holdingApiServiceSpy }
-      ],
-      schemas: [
+    declarations: [RequestComponent],
+    schemas: [
         CUSTOM_ELEMENTS_SCHEMA
-      ]
-    })
+    ],
+    imports: [TranslateModule.forRoot()],
+    providers: [
+        { provide: UserApiService, useValue: userApiServiceSpy },
+        { provide: HoldingsApiService, useValue: holdingApiServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   });
 

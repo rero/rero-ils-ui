@@ -28,8 +28,9 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 
 @Component({
-  selector: 'admin-patron-transaction-form',
-  templateUrl: './patron-transaction-event-form.component.html'
+    selector: 'admin-patron-transaction-form',
+    templateUrl: './patron-transaction-event-form.component.html',
+    standalone: false
 })
 export class PatronTransactionEventFormComponent implements OnInit {
 

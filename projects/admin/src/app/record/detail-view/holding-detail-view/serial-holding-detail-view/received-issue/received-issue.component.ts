@@ -26,9 +26,10 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'admin-received-issue',
-  templateUrl: './received-issue.component.html',
-  providers: [IssueService]
+    selector: 'admin-received-issue',
+    templateUrl: './received-issue.component.html',
+    providers: [IssueService],
+    standalone: false
 })
 export class ReceivedIssueComponent implements OnInit, OnDestroy {
 

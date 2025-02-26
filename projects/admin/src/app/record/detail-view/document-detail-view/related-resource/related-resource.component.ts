@@ -18,8 +18,9 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'admin-related-resource',
-  templateUrl: './related-resource.component.html'
+    selector: 'admin-related-resource',
+    templateUrl: './related-resource.component.html',
+    standalone: false
 })
 export class RelatedResourceComponent {
 

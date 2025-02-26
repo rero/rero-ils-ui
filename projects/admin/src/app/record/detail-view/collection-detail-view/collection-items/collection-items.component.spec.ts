@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { GetRecordPipe, RecordModule } from '@rero/ng-core';
@@ -24,6 +24,7 @@ import { AppRoutingModule } from '@app/admin/app-routing.module';
 import { SharedModule } from '@rero/shared';
 import { FrontpageComponent } from '../../../../widgets/frontpage/frontpage.component';
 import { CollectionItemsComponent } from './collection-items.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CollectionItemsComponent', () => {
   let component: CollectionItemsComponent;
@@ -31,21 +32,20 @@ describe('CollectionItemsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         CollectionItemsComponent,
         FrontpageComponent
-      ],
-      imports: [
-        AppRoutingModule,
+    ],
+    imports: [AppRoutingModule,
         RecordModule,
         TranslateModule.forRoot(),
-        HttpClientTestingModule,
-        SharedModule
-      ],
-      providers: [
-        GetRecordPipe
-      ]
-    })
+        SharedModule],
+    providers: [
+        GetRecordPipe,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   }));
 

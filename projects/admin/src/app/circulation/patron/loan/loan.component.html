@@ -15,10 +15,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <section class="content">
-  <div class="grid mb-4">
-    <div class="col-6">
+  <div class="grid grid-cols-12 gap-4 mb-6">
+    <div class="col-span-6">
       <div class="flex gap-1">
-        <div class="flex-grow-1">
+        <div class="grow">
           <ng-core-search-input
             [placeholder]="'Checkout/checkin: please enter an item barcode.' | translate"
             [searchText]="searchText"
@@ -27,7 +27,7 @@
             [disabled]="searchInputDisabled"
           />
         </div>
-        <div class="align-self-end pl-1">
+        <div class="self-end pl-1">
           <admin-circulation-settings />
         </div>
       </div>
@@ -43,8 +43,8 @@
       }
     </div>
     <!-- Sorting loans -->
-    <div class="col-6 flex align-items-start justify-content-end">
-      <p-dropdown
+    <div class="col-span-6 flex items-start justify-end">
+      <p-select
         [options]="[
           {value:'-transactiondate', label:'Transaction date (desc)' | translate, icon:'fa fa-sort-numeric-desc'},
           {value:'transactiondate', label:'Transaction date' | translate, icon:'fa fa-sort-numeric-asc'},
@@ -55,19 +55,19 @@
         ]"
         (onChange)="selectingSortCriteria($event)"
       >
-        <ng-template let-item pTemplate="selectedItem">
-          <div class="flex align-items-center gap-2">
+        <ng-template #selectedItem let-item>
+          <div class="flex items-center gap-2">
             <i [class]="item.icon"></i>
             <div>{{ item.label }}</div>
           </div>
         </ng-template>
-        <ng-template let-item pTemplate="item">
-          <div class="flex align-items-center gap-2">
+        <ng-template #item let-item>
+          <div class="flex items-center gap-2">
             <i [class]="item.icon"></i>
             <div>{{ item.label }}</div>
           </div>
         </ng-template>
-      </p-dropdown>
+      </p-select>
     </div>
   </div>
   <admin-circulation-items-list

@@ -17,8 +17,9 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'shared-other-edition',
-  templateUrl: './other-edition.component.html'
+    selector: 'shared-other-edition',
+    templateUrl: './other-edition.component.html',
+    standalone: false
 })
 export class OtherEditionComponent {
 
