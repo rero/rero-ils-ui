@@ -25,8 +25,9 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'admin-fixed-date-form',
-  templateUrl: './fixed-date-form.component.html'
+    selector: 'admin-fixed-date-form',
+    templateUrl: './fixed-date-form.component.html',
+    standalone: false
 })
 export class FixedDateFormComponent implements OnInit, OnDestroy {
 

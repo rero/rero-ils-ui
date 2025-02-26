@@ -26,21 +26,20 @@
       </a>
     </div>
     @if (user?.hasAdminUiAccess) {
-      <div class="flex w-full align-items-center">
+      <div class="flex w-full items-center">
         <shared-remote-search internalRoutingBaseURL="/records/documents" class="w-full" styleclass="w-full" />
       </div>
     }
   </div>
 </header>
+<div class="container pb-6">
 @if (user?.hasAdminUiAccess) {
-  <div class="container">
-    <admin-menu-app />
-  </div>
-  <div class="container px-5">
+  <admin-menu-app />
+  <div class="px-8">
     <p-toast>
-      <ng-template let-message pTemplate="message">
-        <div class="flex flex-column align-items-start" style="flex: 1">
-          <div class="font-medium text-lg text-900">
+      <ng-template #message let-message>
+        <div class="flex flex-col items-start" style="flex: 1">
+          <div class="font-medium text-lg text-surface-900 dark:text-surface-0">
             {{ message.summary }}
           </div>
           <p [innerHtml]="message.detail"></p>
@@ -52,12 +51,13 @@
   </div>
 } @else {
   <div class="text-center">
-    <h3 class="mt-4 mb-4" translate>Permission required</h3>
+    <h3 class="mt-6 mb-6" translate>Permission required</h3>
     {{ 'You do not have sufficient permissions to view this page' | translate }}
   </div>
 }
+</div>
 
-<footer class="container px-5 flex border-top-1 surface-border justify-content-center align-items-center mt-4 py-4">
+<footer class="container px-8 flex border-t border-surface justify-center items-center mt-6 py-6">
   <p class="text-secondary mb-0">
     {{ 'Powered by' | translate }} <a href="https://github.com/rero/rero-ils" target="_blank">RERO ILS</a> & <a href="https://inveniosoftware.org/" target="_blank">Invenio</a> |
     <a href="https://www.rero.ch/" target="_blank">RERO+</a>

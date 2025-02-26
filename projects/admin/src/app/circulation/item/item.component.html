@@ -16,17 +16,17 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (item && !(item.loading || false)) {
-  <div class="grid grid-nogutter align-items-start p-2" [ngClass]="{
+  <div class="grid grid-cols-12 gap-4 grid-nogutter items-start p-2" [ngClass]="{
       'callout callout-warning': needCallout(item, 'warning') || (item.actionDone === itemAction.checkin && totalAmountOfFee > 0) || !item.loan,
-      'text-color-secondary': item.status !== ItemStatus.ON_LOAN
+      'text-muted-color': item.status !== ItemStatus.ON_LOAN
     }"
   >
     <!-- BARCODE -->
-    <div name="barcode" class="col-3 flex gap-2">
+    <div name="barcode" class="col-span-3 flex gap-2">
       @if (!item.actions || item.loan || totalAmountOfFee || item.pending_loans || notifications$) {
         <shared-open-close-button [collapsed]="isCollapsed" (status)="isCollapsed = $event" />
       }
-      <div class="flex flex-column gap-2">
+      <div class="flex flex-col gap-2">
         <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
         @if (isCollapsed) {
           <shared-inherited-call-number class="block text-sm" [item]="item" />
@@ -44,7 +44,7 @@
       }
     </div>
     <!-- TITLE -->
-    <div name="title" class="col-5">
+    <div name="title" class="col-span-5">
       <a [routerLink]="['/records','documents','detail', item.document.pid]">
         @if (item.document?.title) {
           {{ isCollapsed ? (item.document.title | mainTitle | truncateText: 12) : item.document.title | mainTitle }}
@@ -121,10 +121,10 @@
             @if (notifications.length > 0) {
               <dt translate>Notifications</dt>
               <dd>
-                <ul class="list-none m-0 p-0">
+                <ul class="list-none">
                   @for (notification of notifications; track notification) {
                     <li>
-                      <span class="text-color-secondary small">
+                      <span class="text-muted-color small">
                         {{ notification.metadata.process_date
                             ? (notification.metadata.process_date | dateTranslate :'short')
                             : (notification.metadata.creation_date | dateTranslate : 'shortDate')
@@ -172,9 +172,9 @@
     }
     </div>
     <!-- CIRCULATION INFO -->
-    <div name="circ-info" class="col-2">
+    <div name="circ-info" class="col-span-2">
       @if (item.loan) {
-        <ul class="list-none m-0 p-0">
+        <ul class="list-none">
           @switch (item.status) {
             @case ('on_loan') {
               <li>
@@ -231,10 +231,12 @@
             }
             @if (isCollapsed && item.pending_loans && item.pending_loans.length) {
               <p-tag [title]="'Requests'|translate" severity="secondary" styleClass="mr-1">
-                <i class="fa fa-shopping-basket"></i>&nbsp;
-                <a class="text-white" [routerLink]="['/circulation', 'patron', item.pending_loans[0].patron.barcode, 'loan']">
-                  {{ item.pending_loans[0].patron.name }}
-                </a>
+                <div class="flex items-start gap-1">
+                  <i class="fa fa-shopping-basket mt-1"></i>&nbsp;
+                  <a class="text-white" [routerLink]="['/circulation', 'patron', item.pending_loans[0].patron.barcode, 'loan']">
+                    {{ item.pending_loans[0].patron.name }}
+                  </a>
+                </div>
               </p-tag>
             }
           </li>
@@ -244,8 +246,8 @@
       }
     </div>
     <!-- ACTION DONE -->
-    <div name="action-done" class="col-2">
-      <div class="flex justify-content-end">
+    <div name="action-done" class="col-span-2">
+      <div class="flex justify-end">
         @if (item.actionDone) {
           <div class="flex gap-2 p-disabled" pButton severity="secondary" outlined>
             @switch (item.actionDone) {
@@ -280,7 +282,7 @@
         }
       </div>
       @if (canUseDebugMode && !isCollapsed) {
-        <div class="flex justify-content-end mt-2">
+        <div class="flex justify-end mt-2">
           <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" [outlined]="true" severity="warning" (onClick)="debugMode=!debugMode">
             <i class="fa fa-bug"></i>
           </p-button>
@@ -288,21 +290,21 @@
       }
     </div>
     @if (debugMode && !isCollapsed) {
-      <div class="col">
+      <div class="col-span-12">
         <h5 class="text-error"><i class="fa fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
-        <div class="grid">
+        <div class="grid grid-cols-12 gap-4">
           @if (loan) {
-            <div class="lg:col-6 col-12">
-              <div class="flex flex-column border-1 surface-border border-round p-2 bg-white">
+            <div class="lg:col-span-6 col-span-12">
+              <div class="flex flex-col border border-surface rounded-border p-2 bg-white">
                 <h5 translate>Loan</h5>
                 <p-scrollPanel styleClass="w-full" [style]="{ height: '500px' }">
                   <pre class="text-sm">{{ loan | json }}</pre>
                 </p-scrollPanel>
               </div>
             </div>
-            <div class="lg:col-6 col-12">
+            <div class="lg:col-span-6 col-span-12">
               @if (loan | getLoanCipo | async; as cipo) {
-                <div class="flex flex-column border-1 surface-border border-round p-2 bg-white">
+                <div class="flex flex-col border border-surface rounded-border p-2 bg-white">
                   <h5>
                     {{ 'Circulation policy' | translate }}&nbsp;
                     <a [routerLink]="['/records', 'circ_policies', 'detail', cipo.pid]" target="_circulation">
@@ -316,8 +318,8 @@
               }
             </div>
           } @else {
-            <div class="col">
-              <div class="flex flex-column border-1 surface-border border-round p-2 bg-white">
+            <div class="col-span-12">
+              <div class="flex flex-col border border-surface rounded-border p-2 bg-white">
                 <h5 translate>Item</h5>
                 <p-scrollPanel styleClass="w-full" [style]="{ height: '500px' }">
                   <pre class="text-sm">{{ item | json }}</pre>

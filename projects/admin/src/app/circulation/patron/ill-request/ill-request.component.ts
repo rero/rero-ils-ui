@@ -22,8 +22,9 @@ import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'admin-ill-request',
-  templateUrl: './ill-request.component.html'
+    selector: 'admin-ill-request',
+    templateUrl: './ill-request.component.html',
+    standalone: false
 })
 export class IllRequestComponent implements OnInit {
 

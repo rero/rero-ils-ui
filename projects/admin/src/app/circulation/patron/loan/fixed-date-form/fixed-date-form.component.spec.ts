@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { LOCALE_ID } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
@@ -23,6 +23,7 @@ import { SharedModule } from '@rero/shared';
 import { CirculationModule } from '../../../circulation.module';
 
 import { FixedDateFormComponent } from './fixed-date-form.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('FixedDateFormComponent', () => {
   let component: FixedDateFormComponent;
@@ -30,16 +31,15 @@ describe('FixedDateFormComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        CirculationModule,
+    imports: [CirculationModule,
         SharedModule,
-        TranslateModule.forRoot(),
-        HttpClientTestingModule,
-      ],
-      providers: [
-        { provide: LOCALE_ID, useValue: 'en-US' }
-      ]
-    })
+        TranslateModule.forRoot()],
+    providers: [
+        { provide: LOCALE_ID, useValue: 'en-US' },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   }));
 

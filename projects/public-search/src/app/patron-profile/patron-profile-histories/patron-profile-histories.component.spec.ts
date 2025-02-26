@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
@@ -25,6 +25,7 @@ import { OperationLogsApiService } from '../../api/operation-logs-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { PatronProfileService } from '../patron-profile.service';
 import { PatronProfileHistoriesComponent } from './patron-profile-histories.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('PatronProfileHistoriesComponent', () => {
@@ -60,17 +61,16 @@ describe('PatronProfileHistoriesComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ PatronProfileHistoriesComponent ],
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot()
-      ],
-      providers: [
-        {provide: UserApiService, useValue: userApiServiceSpy },
-        { provide: OperationLogsApiService, useValue: operationLogsApiServiceSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    })
+    declarations: [PatronProfileHistoriesComponent],
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [TranslateModule.forRoot()],
+    providers: [
+        { provide: UserApiService, useValue: userApiServiceSpy },
+        { provide: OperationLogsApiService, useValue: operationLogsApiServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   });
 

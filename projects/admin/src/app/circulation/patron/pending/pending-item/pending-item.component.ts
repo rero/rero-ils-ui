@@ -20,8 +20,9 @@ import { forkJoin } from 'rxjs';
 import { ItemsService } from '../../../../service/items.service';
 
 @Component({
-  selector: 'admin-pending-item',
-  templateUrl: './pending-item.component.html'
+    selector: 'admin-pending-item',
+    templateUrl: './pending-item.component.html',
+    standalone: false
 })
 export class PendingItemComponent implements OnInit {
 

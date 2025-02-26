@@ -20,8 +20,9 @@ import { RecordUiService, ResultItem } from '@rero/ng-core';
 import { IssueItemStatus } from '@rero/shared';
 
 @Component({
-  selector: 'admin-issues-brief-view',
-  templateUrl: './issues-brief-view.component.html',
+    selector: 'admin-issues-brief-view',
+    templateUrl: './issues-brief-view.component.html',
+    standalone: false
 })
 export class IssuesBriefViewComponent implements ResultItem, OnInit {
 

@@ -24,8 +24,9 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { ITabEvent, PatronProfileService } from '../patron-profile.service';
 
 @Component({
-  selector: 'public-search-patron-profile-fees',
-  templateUrl: './patron-profile-fees.component.html'
+    selector: 'public-search-patron-profile-fees',
+    templateUrl: './patron-profile-fees.component.html',
+    standalone: false
 })
 export class PatronProfileFeesComponent implements OnInit, OnDestroy {
 

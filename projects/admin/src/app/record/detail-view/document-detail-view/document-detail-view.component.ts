@@ -25,8 +25,9 @@ import { switchMap } from 'rxjs/operators';
 import { DocumentApiService } from '../../../api/document-api.service';
 
 @Component({
-  selector: 'admin-document-detail-view',
-  templateUrl: './document-detail-view.component.html'
+    selector: 'admin-document-detail-view',
+    templateUrl: './document-detail-view.component.html',
+    standalone: false
 })
 export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
 
@@ -60,7 +61,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   /** Enables or disables links */
   activateLink: boolean = true;
 
-  recordMessage: any[] = [];
+  recordMessage: string = undefined;
 
   /** External identifier for imported record. */
   get pid(): string | null {
@@ -104,7 +105,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
       switchMap((record: any) => {
         this.record = record;
         this.relatedResources = this.processRelatedResources(record);
-        this.message(record);
+        this.recordMessage = this.message(record);
         if (record != null && record.metadata != null && this.record.metadata.pid == null) {
           this.marc$ = this.recordService.getRecord(
             this.activatedRouter.snapshot.params.type, this.pid, 0, {
@@ -125,6 +126,10 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   /** On destroy hook */
   ngOnDestroy(): void {
     this._recordObs.unsubscribe();
+  }
+
+  selectedTab(): string {
+    return this.record.metadata.pid ? 'get' : 'description';
   }
 
   /**
@@ -195,7 +200,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
     return [];
   }
 
-  private message(record: any): void {
+  private message(record: any): string {
     if (record.metadata?.adminMetadata?.encodingLevel !== 'Full level' || record.metadata?.adminMetadata?.note) {
       let message = [];
       if (record.metadata?.adminMetadata?.encodingLevel) {
@@ -205,7 +210,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
       if (record.metadata.adminMetadata.note) {
         message.push(record.metadata.adminMetadata.note.join('. ') + '.')
       }
-      this.recordMessage = [{ severity: 'warn', detail: message.join(' '), icon: null }];
+      return message.join(' ');
     }
   }
 }

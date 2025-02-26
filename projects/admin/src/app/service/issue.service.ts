@@ -49,6 +49,7 @@ export class IssueService {
   openClaimEmailDialog(record: any): DynamicDialogRef {
     return this.dialogService.open(IssueEmailComponent, {
       header: this.translateService.instant('Claim'),
+      closable: true,
       width: '90vw',
       dismissableMask: true,
       data: { record }

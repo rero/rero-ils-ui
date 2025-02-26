@@ -19,8 +19,9 @@ import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/cor
 import { IPatronPermission, PermissionApiService } from 'projects/admin/src/app/api/permission-api.service';
 
 @Component({
-  selector: 'admin-patron-permissions',
-  templateUrl: './patron-permissions.component.html'
+    selector: 'admin-patron-permissions',
+    templateUrl: './patron-permissions.component.html',
+    standalone: false
 })
 export class PatronPermissionsComponent implements OnChanges {
 

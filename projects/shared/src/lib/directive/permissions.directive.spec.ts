@@ -20,10 +20,11 @@ import { PermissionsService } from '../service/permissions.service';
 import { PermissionsDirective } from './permissions.directive';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'permissions-testing-component',
-  template: `
-  <div id="perm" [permissions]="permissions">Permissions testing</div>`
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'permissions-testing-component',
+    template: `
+  <div id="perm" [permissions]="permissions">Permissions testing</div>`,
+    standalone: false
 })
 class PermissionsTestingComponent {
   @Input() permissions: string[] | string = [];

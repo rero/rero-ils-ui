@@ -18,8 +18,9 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'admin-local-work-detail-view',
-  templateUrl: './local-work-detail-view.component.html',
+    selector: 'admin-local-work-detail-view',
+    templateUrl: './local-work-detail-view.component.html',
+    standalone: false
 })
 export class LocalWorkDetailViewComponent {
   /** the current record */

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -16,34 +16,40 @@
 -->
 
 <ngx-loading-bar [includeSpinner]="false" height="3px" />
-
 @if (document) {
-<p-tabView [activeIndex]="0">
-  <p-tabPanel [header]="'Get' | translate">
-    <shared-doc-files [documentPid]="document.metadata.pid" />
-    <public-search-holdings [viewcode]="viewcode" [documentPid]="document.metadata.pid" />
-    <public-search-electronic-holdings [viewcode]="viewcode" [documentPid]="document.metadata.pid" />
-  </p-tabPanel>
+  <p-tabs>
+    <p-tablist>
+      <p-tab value="get" translate>Get</p-tab>
+      <p-tab value="description" translate>Description</p-tab>
+      @if (showinfo !== 'false') {
+        <p-tab value="more" translate>More Info</p-tab>
+      }
+    </p-tablist>
+    <p-tabpanels>
+      <p-tabpanel value="get">
+        <shared-doc-files [documentPid]="document.metadata.pid" />
+        <public-search-holdings [viewcode]="viewcode" [documentPid]="document.metadata.pid" />
+        <public-search-electronic-holdings [viewcode]="viewcode" [documentPid]="document.metadata.pid" />
+      </p-tabpanel>
+      <p-tabpanel value="description">
+        <shared-document-description [record]="document" />
+      </p-tabpanel>
+      @if (showinfo !== 'false') {
+        <p-tabpanel value="more">
+          <ng-content select="more-info" />
+        </p-tabpanel>
+      }
+    </p-tabpanels>
+  </p-tabs>
 
-  <p-tabPanel [header]="'Description' | translate">
-    <shared-document-description [record]="document" />
-  </p-tabPanel>
+  <p-divider />
 
-  @if (showinfo !== 'false') {
-  <p-tabPanel [header]="'More Info' | translate">
-    <ng-content select="more-info"></ng-content>
-  </p-tabPanel>
-  }
-</p-tabView>
-
-<p-divider />
-
-<p-menubar [model]="exportItems">
-  <ng-template pTemplate="item" let-item>
-      <a [href]="item.url" class="p-2 flex flex-column align-items-center justify-content-center w-6rem" download>
-      <i [ngClass]="[item.icon, 'fa-2x mb-1 text-color-secondary']"></i>
-      <span class="text-center text-xs text-color-secondary">{{item.label}}</span>
-      </a>
-  </ng-template>
-</p-menubar>
+  <p-menubar [model]="exportItems">
+    <ng-template #item let-item>
+        <a [href]="item.url" class="p-2 flex flex-col items-center justify-center w-24" download>
+          <i [ngClass]="[item.icon, 'fa-2x mb-1 text-color-secondary']"></i>
+          <span class="text-center text-xs text-muted-color">{{ item.label }}</span>
+        </a>
+    </ng-template>
+  </p-menubar>
 }

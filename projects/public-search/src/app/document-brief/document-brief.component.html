@@ -16,11 +16,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  <article class="flex gap-4">
+  <article class="flex gap-6">
     <div class="hidden md:block">
       <shared-thumbnail [record]="record" />
     </div>
-    <div class="flex-grow-1">
+    <div class="grow">
       <!-- document title -->
       <h4 class="mb-1">
         <a target="_self" [href]="detailUrl.link | safeUrl">{{ record.metadata.title | mainTitle }}</a>

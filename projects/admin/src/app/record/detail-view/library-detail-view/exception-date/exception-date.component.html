@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-   Copyright (C) 2019-2024 RERO
+   Copyright (C) 2019-2025 RERO
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU Affero General Public License as published by
@@ -15,18 +15,18 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (exception) {
-  <div class="grid m-2" [ngClass]="{'text-color-secondary line-through': isOver(exception)}">
-      <i class="fa col-1" aria-hidden="true" [ngClass]="{
-        'fa-circle text-success': exception.is_open,
-        'fa-ban text-error': !exception.is_open
-      }"></i>
-    <div class="col-3">
-      {{ exception.start_date | dateTranslate:'longDate'}}
+  <div class="grid grid-cols-12 gap-4 m-2 p-1" [ngClass]="{'text-color-secondary line-through': isOver(exception)}">
+    <i class="fa col-span-1" aria-hidden="true" [ngClass]="{
+      'fa-circle text-success': exception.is_open,
+      'fa-ban text-error': !exception.is_open
+    }"></i>
+    <div class="col-span-3">
+      {{ exception.start_date | dateTranslate:'longDate' }}
       @if (exception.end_date) {
         <i class="fa fa-long-arrow-right"></i>&nbsp;{{ exception.end_date | dateTranslate:'longDate' }}
       }
     </div>
-    <div class="col-2">
+    <div class="col-span-2">
       @if (exception.times) {
         @for (time of exception.times; track time) {
           <div>{{ time.start_time }} - {{ time.end_time }}</div>
@@ -37,7 +37,9 @@
         {{ exception.repeat.period | translate }}={{ exception.repeat.interval }}
       }
     </div>
-    <span class="col">{{ exception.title }}</span>
-    <ng-content></ng-content>
+    <span class="col-span-5">{{ exception.title }}</span>
+    <div class="col-span-1">
+      <ng-content></ng-content>
+    </div>
   </div>
 }

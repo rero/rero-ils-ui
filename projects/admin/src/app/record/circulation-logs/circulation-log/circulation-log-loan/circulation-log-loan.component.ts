@@ -18,8 +18,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'admin-circulation-log-loan',
-  templateUrl: './circulation-log-loan.component.html'
+    selector: 'admin-circulation-log-loan',
+    templateUrl: './circulation-log-loan.component.html',
+    standalone: false
 })
 export class CirculationLogLoanComponent {
 

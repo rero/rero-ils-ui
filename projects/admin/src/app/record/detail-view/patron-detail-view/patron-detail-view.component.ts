@@ -28,8 +28,9 @@ interface PatronPhone {
 }
 
 @Component({
-  selector: 'admin-patron-detail-view',
-  templateUrl: './patron-detail-view.component.html'
+    selector: 'admin-patron-detail-view',
+    templateUrl: './patron-detail-view.component.html',
+    standalone: false
 })
 export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestroy {
 

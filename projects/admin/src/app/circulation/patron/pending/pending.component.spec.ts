@@ -19,7 +19,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CirculationModule } from '../../circulation.module';
 import { PendingComponent } from './pending.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PendingComponent', () => {
   let component: PendingComponent;
@@ -27,13 +28,11 @@ describe('PendingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
+    imports: [RouterTestingModule,
         TranslateModule.forRoot(),
-        HttpClientTestingModule,
-        CirculationModule
-      ]
-    })
+        CirculationModule],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
   }));
 

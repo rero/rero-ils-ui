@@ -23,8 +23,9 @@ import { QueryResponse } from '../../record';
 import { RecordService } from '@rero/ng-core';
 
 @Component({
-  selector: 'public-search-holdings',
-  templateUrl: './holdings.component.html',
+    selector: 'public-search-holdings',
+    templateUrl: './holdings.component.html',
+    standalone: false
 })
 export class HoldingsComponent implements OnInit {
   private holdingsApiService: HoldingsApiService = inject(HoldingsApiService);

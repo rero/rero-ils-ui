@@ -19,8 +19,9 @@ import { Component, Input } from '@angular/core';
 import { PredictionIssue } from '@app/admin/service/holdings.service';
 
 @Component({
-  selector: 'admin-expected-issue',
-  templateUrl: './expected-issue.component.html'
+    selector: 'admin-expected-issue',
+    templateUrl: './expected-issue.component.html',
+    standalone: false
 })
 export class ExpectedIssueComponent {
 

@@ -17,7 +17,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'mainTitle'
+    name: 'mainTitle',
+    standalone: false
 })
 export class MainTitlePipe implements PipeTransform {
 

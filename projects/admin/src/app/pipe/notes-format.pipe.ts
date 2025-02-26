@@ -17,7 +17,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'notesFormat'
+    name: 'notesFormat',
+    standalone: false
 })
 export class NotesFormatPipe implements PipeTransform {
 

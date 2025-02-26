@@ -17,7 +17,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'marc'
+    name: 'marc',
+    standalone: false
 })
 export class MarcPipe implements PipeTransform {
 

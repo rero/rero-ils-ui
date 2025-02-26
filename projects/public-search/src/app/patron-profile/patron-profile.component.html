@@ -23,17 +23,18 @@
     patronPid="{{ patron.pid }}"
   />
 </section>
-<section class="mt-3">
-  <p-messages />
+<section class="mt-4">
+  <p-toast />
   <public-search-patron-profile-message/>
 </section>
 
-<section class="mt-3">
+<section class="mt-4">
+  <!--
   <p-tabView  [activeIndex]="activeIndex" [scrollable]="true" (onChange)="tabOnChange($event)">
 @for (tab of tabs|keyvalue: sortTabs; track tab.key) {
   <p-tabPanel>
-    <ng-template pTemplate="header">
-      <div class="flex align-items-center gap-1">
+    <ng-template #header>
+      <div class="flex items-center gap-1">
         <div>{{tab.value.title}}</div>
         @if (tab.value.count != null) {
             <p-badge [value]="tab.value.count" severity="info"/>
@@ -70,10 +71,11 @@
   </p-tabPanel>
 }
   </p-tabView>
+-->
 </section>
 } @else {
 <div class="text-center">
-  <h3 class="mt-4 mb-4" translate>Access denied</h3>
+  <h3 class="mt-6 mb-6" translate>Access denied</h3>
   {{ "You are not identified as a patron." | translate }}
 </div>
 } }

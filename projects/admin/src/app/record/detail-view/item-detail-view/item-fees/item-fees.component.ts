@@ -20,8 +20,9 @@ import { OrganisationService } from '@app/admin/service/organisation.service';
 import { tap } from 'rxjs';
 
 @Component({
-  selector: 'admin-item-fees',
-  templateUrl: './item-fees.component.html'
+    selector: 'admin-item-fees',
+    templateUrl: './item-fees.component.html',
+    standalone: false
 })
 export class ItemFeesComponent implements OnInit {
 

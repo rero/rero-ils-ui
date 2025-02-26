@@ -18,8 +18,9 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'admin-migration',
-  templateUrl: './migration.component.html'
+    selector: 'admin-migration',
+    templateUrl: './migration.component.html',
+    standalone: false
 })
 export class MigrationDetailComponent {
 

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
@@ -25,6 +25,7 @@ import { LoanApiService } from '../../api/loan-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { PatronProfileService } from '../patron-profile.service';
 import { PatronProfileRequestsComponent } from './patron-profile-requests.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('PatronProfileRequestComponent', () => {
@@ -60,17 +61,16 @@ describe('PatronProfileRequestComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ PatronProfileRequestsComponent ],
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot()
-      ],
-      providers: [
+    declarations: [PatronProfileRequestsComponent],
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [TranslateModule.forRoot()],
+    providers: [
         { provide: LoanApiService, useValue: loanApiServiceSpy },
-        { provide: UserApiService, useValue: userApiServiceSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    })
+        { provide: UserApiService, useValue: userApiServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   });
 

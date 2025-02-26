@@ -26,8 +26,9 @@ import { of } from 'rxjs';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'admin-user-id-editor',
-  templateUrl: './user-id-editor.component.html'
+    selector: 'admin-user-id-editor',
+    templateUrl: './user-id-editor.component.html',
+    standalone: false
 })
 export class UserIdEditorComponent implements OnInit {
 

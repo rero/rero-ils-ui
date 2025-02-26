@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
@@ -25,6 +25,7 @@ import { of } from 'rxjs';
 import { AcquisitionModule } from '../../../acquisition.module';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { AccountListComponent } from './account-list.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('AccountListComponent', () => {
@@ -38,18 +39,17 @@ describe('AccountListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AccountListComponent ],
-      imports: [
-        RouterTestingModule,
+    declarations: [AccountListComponent],
+    imports: [RouterTestingModule,
         TranslateModule.forRoot(),
-        HttpClientTestingModule,
-        AcquisitionModule
-      ],
-      providers: [
+        AcquisitionModule],
+    providers: [
         { provide: AcqAccountApiService, useValue: accountsServiceSpy },
-        { provide: UserService, useValue: userServiceSpy }
-      ]
-    })
+        { provide: UserService, useValue: userServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   });
 

@@ -17,8 +17,8 @@
 -->
 @if (data.total > 0) {
   <p-fieldset>
-    <ng-template pTemplate="header">
-      <div class="flex align-items-center">
+    <ng-template #header>
+      <div class="flex items-center">
         <span translate>Amount received</span>
         <p-button severity="secondary" text size="small" [icon]="mode === 'pie'? 'fa fa-list': 'fa fa-pie-chart'" (onClick)="updateMode($event)" />
       </div>

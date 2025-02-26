@@ -26,9 +26,10 @@ import { PredictionIssue } from '../../../service/holdings.service';
  * Adds prediction preview examples to the standard editor.
  */
 @Component({
-  selector: 'admin-holding-editor',
-  templateUrl: './holding-editor.component.html',
-  styleUrls: ['./holding-editor.component.scss']
+    selector: 'admin-holding-editor',
+    templateUrl: './holding-editor.component.html',
+    styleUrls: ['./holding-editor.component.scss'],
+    standalone: false
 })
 export class HoldingEditorComponent extends AbstractCanDeactivateComponent implements OnInit, OnDestroy {
 

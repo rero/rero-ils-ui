@@ -16,13 +16,13 @@
 -->
 
 <ng-core-search-input [placeholder]="'username or email' | translate" [searchText]="searchText"
-  (search)="searchValueUpdated($event)" class="form-inline mr-3" [focus]="false" [displayLabel]="false">
+  (search)="searchValueUpdated($event)" class="form-inline mr-4" [focus]="false" [displayLabel]="false">
 </ng-core-search-input>
 <p-divider></p-divider>
 <!-- ngx-formly -->
 <form [formGroup]="form" (ngSubmit)="submit()">
   <formly-form [model]="model" [fields]="fields" [form]="form" />
-  <div class="flex gap-1 justify-content-end mt-2">
+  <div class="flex gap-1 justify-end mt-2">
     <p-button
       outlined
       severity="danger"

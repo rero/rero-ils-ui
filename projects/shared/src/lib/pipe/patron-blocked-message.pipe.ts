@@ -19,7 +19,8 @@ import { TranslateService } from '@ngx-translate/core';
 
 
 @Pipe({
-  name: 'patronBlockedMessage'
+    name: 'patronBlockedMessage',
+    standalone: false
 })
 export class PatronBlockedMessagePipe implements PipeTransform {
 

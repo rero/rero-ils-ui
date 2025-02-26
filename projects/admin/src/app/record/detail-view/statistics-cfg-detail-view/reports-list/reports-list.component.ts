@@ -19,8 +19,9 @@ import { ApiService, Record, RecordService } from "@rero/ng-core";
 import { map } from "rxjs/operators";
 
 @Component({
-  selector: "admin-reports-list",
-  templateUrl: "./reports-list.component.html",
+    selector: "admin-reports-list",
+    templateUrl: "./reports-list.component.html",
+    standalone: false
 })
 export class ReportsListComponent implements OnInit {
 

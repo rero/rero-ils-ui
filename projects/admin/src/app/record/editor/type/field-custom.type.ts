@@ -18,8 +18,8 @@ import { Component, OnInit } from '@angular/core';
 import { FieldType, FieldTypeConfig } from '@ngx-formly/core';
 
 @Component({
-  selector: 'admin-field-custom-input',
-  template: `
+    selector: 'admin-field-custom-input',
+    template: `
       <!-- field -->
       <div>
         @switch (field.type) {
@@ -32,6 +32,7 @@ import { FieldType, FieldTypeConfig } from '@ngx-formly/core';
         }
       </div>
   `,
+    standalone: false
 })
 export class FieldCustomInputTypeComponent extends FieldType<FieldTypeConfig> implements OnInit {
 

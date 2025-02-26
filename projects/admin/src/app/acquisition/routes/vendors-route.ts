@@ -18,11 +18,11 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
-import { VendorBriefViewComponent } from '../record/brief-view/vendor-brief-view.component';
-import { VendorDetailViewComponent } from '../record/detail-view/vendor-detail-view/vendor-detail-view.component';
-import { BaseRoute } from './base-route';
+import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
+import { PermissionGuard } from '../../guard/permission.guard';
+import { VendorBriefViewComponent } from '../components/vendors/vendor-brief-view.component';
+import { VendorDetailViewComponent } from '../components/vendors/vendor-detail-view/vendor-detail-view.component';
+import { BaseRoute } from '../../routes/base-route';
 
 export class VendorsRoute extends BaseRoute implements RouteInterface {
 

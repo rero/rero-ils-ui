@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2024 RERO
+  Copyright (C) 2024-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,15 +14,14 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 @if (record()) {
-<div class="flex justify-content-between mb-2">
-  <div class="flex align-items-center justify-content-center">
+<div class="flex justify-between mb-2">
+  <div class="flex items-center justify-center">
     <p-inplace #inplace>
-      <ng-template pTemplate="display">
+      <ng-template #display>
         <strong>ILS pid:</strong> {{ ilsPid }}&nbsp;<i class="pi pi-pencil"></i>
       </ng-template>
-      <ng-template pTemplate="content">
+      <ng-template #content>
         <input
           [ngModel]="ilsPid"
           (keyup.enter)="saveIlsPid($event); inplace.deactivate()"
@@ -36,10 +35,10 @@
       </ng-template>
     </p-inplace>
   </div>
-  <div class="flex align-items-center justify-content-center">
+  <div class="flex items-center justify-center">
     <p-button
       icon="pi pi-chevron-left"
-      (click)="previousCandidate()"
+      (onClick)="previousCandidate()"
       [disabled]="!hasPrevious()"
       [text]="true"
     />
@@ -51,42 +50,40 @@
     >
     <p-button
       icon="pi pi-chevron-right"
-      (click)="nextCandidate()"
+      (onClick)="nextCandidate()"
       [disabled]="!hasNext()"
       [text]="true"
     />
   </div>
-  <div class="flex align-items-center gap-2 justify-content-center">
+  <div class="flex items-center gap-2 justify-center">
     <p-button
       size="small"
       outlined
       [label]="'Validate' | translate"
-      (click)="save()"
+      (onClick)="save()"
       icon="pi pi-check"
     />
     <p-button
       outlined
       size="small"
       [label]="'Reject' | translate"
-      (click)="reject()"
+      (onClick)="reject()"
       icon="pi pi-trash"
       severity="danger"
     />
   </div>
 </div>
 
-@if (messages) {
-  <p-messages
-    [value]="messages()"
-    [escape]="false"
-    [enableService]="false"
-    [closable]="false"
+@for (message of messages(); track message) {
+  <p-message
+    [text]="message.detail"
+    [severity]="message.severity"
     showTransitionOptions="0ms"
   />
 }
 
-<div class="flex justify-content-between mb-1">
-  <div class="flex align-items-center justify-content-center">
+<div class="flex justify-between mb-1">
+  <div class="flex items-center justify-center">
     <p-tag
       [severity]="
         status() === 'match'
@@ -109,7 +106,7 @@
   </div>
 
   @if (currentCandidate){
-  <div class="flex align-items-center justify-content-center">
+  <div class="flex items-center justify-center">
     @if(currentCandidate?.score) {
     <strong translate>Score</strong>&nbsp;{{ currentCandidate.score | number }}
     } @else {

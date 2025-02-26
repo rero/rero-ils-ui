@@ -15,17 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, model, OnInit } from '@angular/core';
 import { HoldingsApiService } from '@app/admin/api/holdings-api.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
 import { IPermissions, PERMISSION_OPERATOR, PERMISSIONS, PermissionsService, UserService } from '@rero/shared';
+import { AccordionTabOpenEvent } from 'primeng/accordion';
 import { forkJoin, Observable } from 'rxjs';
 
 @Component({
-  selector: 'admin-holdings',
-  templateUrl: './holdings.component.html'
+    selector: 'admin-holdings',
+    templateUrl: './holdings.component.html',
+    standalone: false
 })
 export class HoldingsComponent implements OnInit {
 
@@ -43,6 +45,8 @@ export class HoldingsComponent implements OnInit {
   @Input() holdingType: 'electronic' | 'serial' | 'standard';
   /** Restrict the functionality of interface */
   @Input() isCurrentOrganisation = true;
+
+  activePanels = model<null | number[]>(null);
 
   options: any[];
 
@@ -96,6 +100,7 @@ export class HoldingsComponent implements OnInit {
 
   /** onInit hook */
   ngOnInit() {
+    this.activePanels.set(this.isCurrentOrganisation? [0]: null)
     this.options = [
       {
         label: this.translateService.instant('an item'),
@@ -128,6 +133,11 @@ export class HoldingsComponent implements OnInit {
         this.holdingsTotal = count;
       });
     }
+  }
+
+  onOpen(event:  AccordionTabOpenEvent): void {
+    // TODO: Bug on event: https://github.com/primefaces/primeng/issues/17770
+    console.log(event);
   }
 
   // COMPONENT FUNCTIONS ======================================================

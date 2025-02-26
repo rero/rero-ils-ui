@@ -18,8 +18,9 @@
 import { ItemHoldingsCallNumberPipe } from './item-holdings-call-number.pipe';
 import { of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RecordService } from '@rero/ng-core';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ItemHoldingsCallNumberPipe', () => {
 
@@ -30,14 +31,14 @@ describe('ItemHoldingsCallNumberPipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
-      providers: [
+    imports: [],
+    providers: [
         ItemHoldingsCallNumberPipe,
-        { provide: RecordService, useValue: recordServiceSpy }
-      ]
-    });
+        { provide: RecordService, useValue: recordServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     itemHoldingsCallNumberPipe = TestBed.inject(ItemHoldingsCallNumberPipe);
   });
 

@@ -15,9 +15,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (item && document) {
-  <div class="grid grid-nogutter p-2">
+  <div class="grid grid-cols-12 gap-4 grid-nogutter p-2">
     <!-- FIRST ROW : barcode, title, availability, action button -->
-    <div class="col-3 flex align-items-start gap-2">
+    <div class="col-span-3 flex items-start gap-2">
       <div>
         <shared-open-close-button (status)="isCollapsed = $event" />
       </div>
@@ -25,7 +25,7 @@
         <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
       </div>
     </div>
-    <div class="col-6">
+    <div class="col-span-6">
       @if (document.title | mainTitle; as title) {
         <a [routerLink]="['/records', 'documents', 'detail', document.pid]">
           {{ title }}
@@ -54,8 +54,8 @@
         </dl>
       }
     </div>
-    <div class="col-2">{{ loan.created | dateTranslate: 'short' }}</div>
-    <div class="col-1 flex justify-content-end">
+    <div class="col-span-2">{{ loan.created | dateTranslate: 'short' }}</div>
+    <div class="col-span-1 flex justify-end">
       <admin-cancel-request-button [loan]="loan" (cancelRequestEvent)="cancelRequest($event)" />
     </div>
   </div>

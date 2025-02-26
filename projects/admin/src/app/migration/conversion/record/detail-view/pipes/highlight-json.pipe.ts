@@ -24,7 +24,8 @@ import { DomSanitizer } from '@angular/platform-browser';
  * Copied from the SONAR project.
  */
 @Pipe({
-  name: 'highlightJson',
+    name: 'highlightJson',
+    standalone: false
 })
 export class HighlightJsonPipe implements PipeTransform {
 
@@ -66,7 +67,7 @@ export class HighlightJsonPipe implements PipeTransform {
         return `<span class="${cls}">${match}</span>`;
       }
     );
-    const html = this.sanitizer.bypassSecurityTrustHtml(json);
-    return html;
+
+    return this.sanitizer.bypassSecurityTrustHtml(json);
   }
 }

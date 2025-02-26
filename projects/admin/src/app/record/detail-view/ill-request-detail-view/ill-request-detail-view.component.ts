@@ -21,8 +21,9 @@ import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'admin-ill-request-detail-view',
-  templateUrl: './ill-request-detail-view.component.html'
+    selector: 'admin-ill-request-detail-view',
+    templateUrl: './ill-request-detail-view.component.html',
+    standalone: false
 })
 export class IllRequestDetailViewComponent implements DetailRecord, OnInit {
 

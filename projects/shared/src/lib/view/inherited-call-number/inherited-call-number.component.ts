@@ -17,8 +17,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'shared-inherited-call-number',
-  templateUrl: './inherited-call-number.component.html'
+    selector: 'shared-inherited-call-number',
+    templateUrl: './inherited-call-number.component.html',
+    standalone: false
 })
 export class InheritedCallNumberComponent implements OnInit {
 

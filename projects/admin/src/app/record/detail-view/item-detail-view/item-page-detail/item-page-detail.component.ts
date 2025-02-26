@@ -16,7 +16,7 @@
  */
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { IssueService } from '@app/admin/service/issue.service';
-import { OperationLogsService } from '@app/admin/service/operation-logs.service';
+import { OperationLogsService } from '@rero/shared';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { DetailComponent, RecordDetailDirective } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
@@ -24,8 +24,9 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription, switchMap, tap } from 'rxjs';
 
 @Component({
-  selector: 'admin-item-page-detail',
-  templateUrl: './item-page-detail.component.html',
+    selector: 'admin-item-page-detail',
+    templateUrl: './item-page-detail.component.html',
+    standalone: false
 })
 export class ItemPageDetailComponent extends DetailComponent implements OnInit, OnDestroy {
   private operationLogsService: OperationLogsService = inject(OperationLogsService);

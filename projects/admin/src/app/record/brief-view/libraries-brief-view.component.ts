@@ -19,13 +19,14 @@ import { Component, Input } from '@angular/core';
 import { ResultItem  } from '@rero/ng-core';
 
 @Component({
-  selector: 'admin-libraries-brief-view',
-  template: `
+    selector: 'admin-libraries-brief-view',
+    template: `
   <h5>
     <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
   </h5>
   <small> {{ record.metadata.code }}</small>
   `,
+    standalone: false
 })
 export class LibrariesBriefViewComponent implements ResultItem {
 

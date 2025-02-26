@@ -15,8 +15,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (settings) {
-    <p-table styleClass="p-datatable-striped" [value]="settings">
-      <ng-template pTemplate="header">
+    <p-table stripedRows [value]="settings" size="small">
+      <ng-template #header>
         <tr>
             <th>&nbsp;</th>
             @for (patronType of patronTypes; track patronType) {
@@ -26,7 +26,7 @@
             }
         </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-itemType>
+        <ng-template #body let-itemType>
           <tr>
             <td>{{ itemType.label }}</td>
             @for (patronType of itemType.patronTypes; track patronType) {

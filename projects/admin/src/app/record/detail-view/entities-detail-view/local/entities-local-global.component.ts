@@ -18,8 +18,8 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'admin-entities-local-global',
-  template: `
+    selector: 'admin-entities-local-global',
+    template: `
   <dl class="metadata">
     <ng-content></ng-content>
     @if (record.source_catalog) {
@@ -36,7 +36,8 @@ import { Component, Input } from '@angular/core';
       </dd>
     }
   </dl>
-  `
+  `,
+    standalone: false
 })
 export class EntitiesLocalGlobalComponent {
   @Input() record: any;

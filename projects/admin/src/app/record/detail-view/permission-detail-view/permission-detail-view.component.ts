@@ -19,8 +19,9 @@ import { Component, inject, OnInit } from '@angular/core';
 import { IRolePermission, PermissionApiService } from '../../../api/permission-api.service';
 
 @Component({
-  selector: 'admin-permission-detail-view',
-  templateUrl: './permission-detail-view.component.html'
+    selector: 'admin-permission-detail-view',
+    templateUrl: './permission-detail-view.component.html',
+    standalone: false
 })
 export class PermissionDetailViewComponent implements OnInit {
 

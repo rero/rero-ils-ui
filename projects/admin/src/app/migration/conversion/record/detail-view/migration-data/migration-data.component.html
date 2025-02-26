@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020-2024 RERO
+  Copyright (C) 2020-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -16,27 +16,29 @@
 -->
 @if (record()) {
   <h5>
-    {{ record().id }}
-    &nbsp;<p-tag
+    {{ record().id }}&nbsp;
+    <p-tag
       [severity]="status() === 'complete'? 'success': status().endsWith('error') ? 'danger': 'secondary'"
       [value]="record().conversion.status | translate"
     />
   </h5>
-  <i
-    ><small
-      ><span translate>Modification date</span>&nbsp;{{
-        record()?.updated_at | dateTranslate : "medium"
-      }}</small
-    ></i
-  >
-  <hr />
-  @if (messages()) {
-    <p-messages [escape]="false" [value]="messages()" [enableService]="false" [closable]="false" />
-  }
-  <div class="text-sm grid data">
-    <div class="markdown col" [innerHTML]="record().raw | markdown"></div>
+  <div class="text-xs italic">
+    <span translate>Modification date</span>:&nbsp;{{ record()?.updated_at | dateTranslate : "medium" }}
+  </div>
+  <div class="my-3">
+    @for (message of messages(); track message) {
+      <p-message
+        styleClass="mb-2"
+        [text]="message.detail"
+        [severity]="message.severity"
+        showTransitionOptions="0ms"
+      />
+    }
+  </div>
+  <div class="text-sm grid grid-cols-12 gap-2 data">
+    <div class="markdown col-span-6 col-overflow" [innerHTML]="record().raw | markdown"></div>
     <div
-      class="json col"
+      class="json col-span-6 col-overflow"
       [innerHTML]="record()?.conversion?.json | json | highlightJson"
     ></div>
   </div>

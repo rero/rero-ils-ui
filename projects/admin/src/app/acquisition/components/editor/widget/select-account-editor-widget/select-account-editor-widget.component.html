@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<p-dropdown
+<p-select
   styleClass="w-full"
   [showClear]="true"
   [options]="accountList"
@@ -24,13 +24,13 @@
   (onChange)="selectAccount($event)"
   [loading]="loading"
 >
-  <ng-template pTemplate="selectedItem">
+  <ng-template #selectedItem>
     {{ selectedAccount.name }}
   </ng-template>
-  <ng-template let-account pTemplate="item">
+  <ng-template #item let-account>
     <div class="flex">
       <span
-        class="flex flex-grow-1"
+        class="flex grow"
         [style.padding-left.px]="account.depth * 20"
       >
         {{ account.name }}
@@ -39,7 +39,7 @@
       <span class="flex">[{{ account.number }}]</span>
       }
       <span
-        class="flex ml-4"
+        class="flex ml-6"
         [class]="{
           'text-success': account.remaining_balance.self > 0,
           'text-muted': account.remaining_balance.self === 0,
@@ -53,4 +53,4 @@
       </span>
     </div>
   </ng-template>
-</p-dropdown>
+</p-select>

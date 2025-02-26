@@ -43,8 +43,9 @@ export function fieldPasswordMatchValidator(control: AbstractControl) {
 }
 
 @Component({
-  selector: 'public-search-patron-profile-password',
-  templateUrl: './patron-profile-password.component.html'
+    selector: 'public-search-patron-profile-password',
+    templateUrl: './patron-profile-password.component.html',
+    standalone: false
 })
 export class PatronProfilePasswordComponent {
 

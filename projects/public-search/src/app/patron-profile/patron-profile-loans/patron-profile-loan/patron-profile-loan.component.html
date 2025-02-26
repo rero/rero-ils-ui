@@ -15,9 +15,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="grid grid-nogutter p-2 pl-1" [ngClass]="{'border-left-3 border-warning':record.metadata.is_late}">
+<div class="grid grid-cols-12 gap-4 grid-nogutter p-2 pl-1" [ngClass]="{'border-left-3 border-warning':record.metadata.is_late}">
       <!-- DOCUMENT & ADDITIONAL DATA -->
-       <div class="md:col-8 col-12 flex gap-2">
+       <div class="md:col-span-8 col-span-12 flex gap-2">
         <shared-open-close-button (status)="isCollapsed = $event" />
         <div class="w-full">
           <public-search-patron-profile-document
@@ -40,7 +40,7 @@
       </div>
     </div>
       <!-- DUE DATE & BADGES -->
-      <div class="md:col-2 col-12 hidden md:block">
+      <div class="md:col-span-2 col-span-12 hidden md:block">
         <div >
           <span [ngClass]="{ 'font-bold text-success': actionSuccess}">
             {{ record.metadata.end_date | dateTranslate :'shortDate' }}
@@ -49,7 +49,7 @@
         <ng-container [ngTemplateOutlet]="tags" />
       </div>
       <!-- ACTION BUTTONS COLUMN -->
-      <div class="md:col-2 col-12 flex justify-content-end">
+      <div class="md:col-span-2 col-span-12 flex justify-end">
           <p-button
             class="pointer-events-auto"
             [pTooltip]="canExtend.reasons | arrayTranslate | join:' / '"

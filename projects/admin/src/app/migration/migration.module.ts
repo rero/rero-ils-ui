@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,16 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { AutoFocusModule } from 'primeng/autofocus';
-
+import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { RecordModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { MessageService } from 'primeng/api';
+import { AutoFocusModule } from 'primeng/autofocus';
 import { BadgeModule } from 'primeng/badge';
 import { DataViewModule } from 'primeng/dataview';
 import { InplaceModule } from 'primeng/inplace';
-import { MessagesModule } from 'primeng/messages';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { MigrationDataBriefComponent } from './conversion/record/brief-view/migration-data/migration-data.component';
@@ -39,28 +40,29 @@ import { MigrationDetailComponent } from './record/brief-view/migration/migratio
 
 @NgModule({
   declarations: [
-    MigrationDetailComponent,
-    MigrationDataBriefComponent,
-    MigrationDataDetailComponent,
     HighlightJsonPipe,
+    MigrationDataBriefComponent,
     MigrationDataDeduplicationBriefComponent,
+    MigrationDataDetailComponent,
+    MigrationDetailComponent,
     MigrationMetadataBriefComponent,
-    MigrationSearchPageComponent,
     MigrationSearchComponent,
+    MigrationSearchPageComponent,
   ],
   imports: [
-    MigrationRoutingModule,
+    AutoFocusModule,
     BadgeModule,
-    SharedModule,
-    RecordModule,
-    MessagesModule,
-    TableModule,
-    InplaceModule,
-    ToastModule,
+    CommonModule,
     DataViewModule,
-    AutoFocusModule
+    FormsModule,
+    InplaceModule,
+    MigrationRoutingModule,
+    RecordModule,
+    SharedModule,
+    TableModule,
+    ToastModule,
+    TranslateModule.forChild(),
   ],
-  exports: [],
   providers: [MessageService],
 })
 export class MigrationModule {}

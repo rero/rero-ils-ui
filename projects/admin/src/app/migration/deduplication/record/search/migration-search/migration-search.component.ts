@@ -20,15 +20,17 @@ import { Record, RecordSearchComponent } from '@rero/ng-core';
 import { map, tap } from 'rxjs';
 
 @Component({
-  selector: 'admin-migration-search',
-  templateUrl: './migration-search.component.html',
-  styles: [
-  `
+    selector: 'admin-migration-search',
+    templateUrl: './migration-search.component.html',
+    styles: [
+        `
     li.list-group-item {
       border-bottom-style: double;
       border-bottom-width: 4px;
     }
-  `]
+  `
+    ],
+    standalone: false
 })
 export class MigrationSearchComponent extends RecordSearchComponent {
 

@@ -22,7 +22,8 @@ import { Loan } from '../../classes/loans';
 import { LoanService } from '../../service/loan.service';
 
 @Pipe({
-  name: 'getLoanCipo'
+    name: 'getLoanCipo',
+    standalone: false
 })
 export class GetLoanCipoPipe implements PipeTransform {
 

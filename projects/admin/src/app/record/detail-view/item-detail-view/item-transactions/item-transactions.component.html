@@ -14,15 +14,15 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="flex flex-column gap-2">
+<div class="flex flex-col gap-2">
   <!-- Loan borrowed -->
   @defer (when borrowedBy) {
     @if (borrowedBy.length > 0) {
       <p-panel [header]="'Borrowed by' | translate" id="item-loans-requests" [permissions]="permissions.CIRC_ADMIN">
-        <div class="grid px-2">
-          <div class="col-4 font-bold" translate>Patron</div>
-          <div class="col-4 font-bold" translate>Renewal</div>
-          <div class="col-3 font-bold" translate>Due date</div>
+        <div class="grid grid-cols-12 gap-4 px-2">
+          <div class="col-span-4 font-bold" translate>Patron</div>
+          <div class="col-span-4 font-bold" translate>Renewal</div>
+          <div class="col-span-3 font-bold" translate>Due date</div>
         </div>
         <div class="px-2">
           <admin-item-transaction type="loan_borrow" [transaction]="borrowedBy[0]" />
@@ -32,12 +32,12 @@
   }
   <p-panel>
   <!-- Loan requested -->
-    <ng-template pTemplate="header">
-      <div class="flex w-full align-items-center">
-      <div class="p-panel-title flex-grow-1" translate>
+    <ng-template #header>
+      <div class="flex w-full items-center">
+      <div class="p-panel-title grow" translate>
         Requested by
       </div>
-      <div class="flex-order-2">
+      <div class="order-2">
         <p-button
           outlined size="small"
           icon="fa fa-plus-square-o"
@@ -49,10 +49,10 @@
     </ng-template>
     @defer (when requestedBy) {
       @if (requestedBy.length > 0) {
-          <div class="grid px-2">
-            <div class="col-4 font-bold" translate>Patron</div>
-            <div class="col-4 font-bold" translate>Pick-up Location</div>
-            <div class="col-3 font-bold" translate>Request date</div>
+          <div class="grid grid-cols-12 gap-4 px-2">
+            <div class="col-span-4 font-bold" translate>Patron</div>
+            <div class="col-span-4 font-bold" translate>Pick-up Location</div>
+            <div class="col-span-3 font-bold" translate>Request date</div>
           </div>
           <div class="alternate-color">
           @for (request of requestedBy; track request) {
@@ -68,7 +68,7 @@
           }
         </div>
       } @else {
-        <div class="p-3" translate>No pending request</div>
+        <div class="p-4" translate>No pending request</div>
       }
     } @placeholder {
       <i class="fa fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}

@@ -20,8 +20,9 @@ import { Tools } from '@rero/shared';
 import { ITypeEmail } from '../../IPreviewInterface';
 
 @Component({
-  selector: 'admin-preview-email',
-  templateUrl: './preview-email.component.html'
+    selector: 'admin-preview-email',
+    templateUrl: './preview-email.component.html',
+    standalone: false
 })
 export class PreviewEmailComponent {
 

@@ -15,14 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input } from '@angular/core';
-import { IPermissions, PERMISSIONS } from '@rero/shared';
+import { IPermissions, PERMISSIONS } from '../../../util/permissions';
 import { DialogService } from 'primeng/dynamicdialog';
 import { OperationLogsComponent } from '../operation-logs.component';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'admin-operation-logs-dialog',
-  templateUrl: './operation-logs-dialog.component.html'
+    selector: 'shared-operation-logs-dialog',
+    templateUrl: './operation-logs-dialog.component.html',
+    standalone: false
 })
 export class OperationLogsDialogComponent {
 
@@ -43,6 +44,7 @@ export class OperationLogsDialogComponent {
     this.dialogService.open(OperationLogsComponent, {
       header: this.translateService.instant('Operation history'),
       dismissableMask: true,
+      closable: true,
       width: '60vw',
       data: {
         resourceType: this.resourceType,

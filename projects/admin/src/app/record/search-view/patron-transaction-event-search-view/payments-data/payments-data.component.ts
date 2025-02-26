@@ -19,8 +19,9 @@ import { Component, Input } from '@angular/core';
 import { PaymentData } from '../interfaces';
 
 @Component({
-  selector: 'admin-payments-data',
-  templateUrl: './payments-data.component.html'
+    selector: 'admin-payments-data',
+    templateUrl: './payments-data.component.html',
+    standalone: false
 })
 export class PaymentsDataComponent {
 

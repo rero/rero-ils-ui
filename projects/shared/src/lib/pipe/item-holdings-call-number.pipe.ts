@@ -20,7 +20,8 @@ import { map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
 @Pipe({
-  name: 'itemHoldingsCallNumber'
+    name: 'itemHoldingsCallNumber',
+    standalone: false
 })
 export class ItemHoldingsCallNumberPipe implements PipeTransform {
 

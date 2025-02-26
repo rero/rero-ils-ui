@@ -20,8 +20,9 @@ import { getSeverity } from '../../../utils/utils';
 import { CirculationService } from '../../services/circulation.service';
 
 @Component({
-  selector: 'admin-circulation-patron-detailed',
-  templateUrl: './card.component.html'
+    selector: 'admin-circulation-patron-detailed',
+    templateUrl: './card.component.html',
+    standalone: false
 })
 export class CardComponent implements OnInit {
 

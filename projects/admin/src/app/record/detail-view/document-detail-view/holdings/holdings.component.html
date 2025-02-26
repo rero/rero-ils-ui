@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,35 +15,45 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (canAdd) {
-  <div class="flex justify-content-end" [permissions]="[permissions.HOLD_CREATE, permissions.ITEM_CREATE]">
+  <div class="flex justify-end" [permissions]="[permissions.HOLD_CREATE, permissions.ITEM_CREATE]">
     <p-menu #menu [model]="options" [popup]="true" />
     <p-button icon="fa fa-caret-down" iconPos="right" outlined (onClick)="menu.toggle($event)" [label]="'Add'|translate"/>
   </div>
 }
 
 @if (holdings) {
-  <!-- TODO: activeIndex does not works for now as accordionTab is in a child component-->
-  <p-accordion multiple="true" [activeIndex]="isCurrentOrganisation? [0]: []">
-  @for (holding of holdings; track holding; let i = $index) {
-    <div
-      class="my-2 border-1 surface-border border-round"
-      admin-document-holding
-      [holding]="holding"
-      [selected]="isCurrentOrganisation? i === 0: false"
-      [isItemsCollapsed]="holdingsTotal > 1"
-      [isCurrentOrganisation]="isCurrentOrganisation"
-      (deleteHolding)="deleteHolding($event)"
-    >
-  </div>
-  }
-  </p-accordion>
-  @if (isLinkShowMore) {
-    <p-button severity="secondary" [text]="true" (onClick)="showMore()">
-      <div>
-        <i class="fa fa-plus-square-o"></i>&nbsp;{{
-          "Show more" | translate
-        }}&nbsp;<small>({{ hiddenHoldings }})</small>
-      </div>
-    </p-button>
+  <div class="mt-2">
+    <p-accordion [multiple]="true" [(value)]="activePanels" (onOpen)="onOpen($event)">
+      @for (holding of holdings; track holding; let i = $index) {
+        <p-accordion-panel [value]="i" class="mb-2">
+          <p-accordion-header>
+            <admin-holding-header
+              class="w-full"
+              [holding]="holding"
+              [isCurrentOrganisation]="isCurrentOrganisation"
+              (deleteHolding)="deleteHolding($event)"
+            />
+          </p-accordion-header>
+          <p-accordion-content>
+            @if(activePanels()?.indexOf(i) >= 0) {
+            <admin-holding-content
+              class="w-full"
+              [holding]="holding"
+              [isCurrentOrganisation]="isCurrentOrganisation"
+            />
+          }
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+    </p-accordion>
+    @if (isLinkShowMore) {
+      <p-button severity="secondary" [text]="true" (onClick)="showMore()">
+        <div>
+          <i class="fa fa-plus-square-o"></i>&nbsp;{{
+            "Show more" | translate
+          }}&nbsp;<small>({{ hiddenHoldings }})</small>
+        </div>
+      </p-button>
     }
+  </div>
 }

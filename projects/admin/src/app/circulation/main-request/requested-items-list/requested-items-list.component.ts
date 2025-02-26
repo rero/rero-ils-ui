@@ -20,8 +20,9 @@ import { Item } from '@app/admin/classes/items';
 import { LoanState } from '@app/admin/classes/loans';
 
 @Component({
-  selector: 'admin-circulation-requested-items-list',
-  templateUrl: './requested-items-list.component.html'
+    selector: 'admin-circulation-requested-items-list',
+    templateUrl: './requested-items-list.component.html',
+    standalone: false
 })
 export class RequestedItemsListComponent implements OnChanges {
 

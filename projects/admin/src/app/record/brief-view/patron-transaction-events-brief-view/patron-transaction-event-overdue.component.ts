@@ -20,8 +20,9 @@ import { Component } from '@angular/core';
 import { PatronTransactionEventDefaultComponent } from './patron-transaction-event-default.component';
 
 @Component({
-  selector: 'admin-patron-transaction-event-overdue',
-  templateUrl: './patron-transaction-event-overdue.component.html'
+    selector: 'admin-patron-transaction-event-overdue',
+    templateUrl: './patron-transaction-event-overdue.component.html',
+    standalone: false
 })
 export class PatronTransactionEventOverdueComponent extends PatronTransactionEventDefaultComponent {
 

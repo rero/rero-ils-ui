@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,61 +20,57 @@ import { NgModule } from '@angular/core';
 import { NgCoreFormlyRemoteAutocompleteModule } from '@rero/ng-core';
 import { AccordionModule } from 'primeng/accordion';
 import { AutoCompleteModule } from 'primeng/autocomplete';
-import { ChipsModule } from 'primeng/chips';
+import { AutoFocusModule } from 'primeng/autofocus';
+import { AvatarModule } from 'primeng/avatar';
+import { CardModule } from 'primeng/card';
+import { ChartModule } from 'primeng/chart';
 import { ChipModule } from 'primeng/chip';
 import { DividerModule } from 'primeng/divider';
 import { DragDropModule } from 'primeng/dragdrop';
-import { DropdownModule } from 'primeng/dropdown';
+import { FieldsetModule } from 'primeng/fieldset';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
-import { MessagesModule } from 'primeng/messages';
 import { PanelModule } from 'primeng/panel';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { RippleModule } from 'primeng/ripple';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { SelectModule } from 'primeng/select';
 import { SkeletonModule } from 'primeng/skeleton';
-import { TabViewModule } from 'primeng/tabview';
-import { TagModule } from 'primeng/tag';
-import { TooltipModule } from 'primeng/tooltip';
-import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
-import { FieldsetModule } from 'primeng/fieldset';
-import { ChartModule } from 'primeng/chart';
-import { AvatarModule } from 'primeng/avatar';
+import { TabsModule } from 'primeng/tabs';
+import { TagModule } from 'primeng/tag';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { TooltipModule } from 'primeng/tooltip';
 import { TreeModule } from 'primeng/tree';
 import { TreeTableModule } from 'primeng/treetable';
 
-
 @NgModule({
   exports: [
-    AutoCompleteModule,
     AccordionModule,
-    AvatarModule,
-    ChipsModule,
-    ChipModule,
+    AutoCompleteModule,
+    AutoFocusModule,
+    CardModule,
+    ChartModule,
     DividerModule,
     DragDropModule,
-    DropdownModule,
-    InputNumberModule,
-    InputSwitchModule,
-    InputTextModule,
+    FieldsetModule,
     InputGroupAddonModule,
     InputGroupModule,
+    InputNumberModule,
+    InputTextModule,
     PanelModule,
-    SkeletonModule,
-    TagModule,
-    TooltipModule,
-    NgCoreFormlyRemoteAutocompleteModule,
     RadioButtonModule,
-    MessagesModule,
-    TabViewModule,
-    CardModule,
+    RippleModule,
+    ScrollPanelModule,
+    SelectModule,
+    TabsModule,
     TableModule,
-    FieldsetModule,
-    ChartModule,
-    TreeModule,
-    TreeTableModule
+    TagModule,
+    ToggleSwitchModule,
+    TooltipModule,
+    TreeTableModule,
   ]
 })
 export class PrimengImportModule { }

@@ -20,7 +20,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FilesCollectionsComponent } from './files-collections.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule } from '@rero/ng-core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('FilesCollectionsComponent', () => {
   let component: FilesCollectionsComponent;
@@ -28,12 +29,10 @@ describe('FilesCollectionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot(),
-        CoreModule,
-        HttpClientTestingModule,
-      ],
-    }).compileComponents();
+    imports: [TranslateModule.forRoot(),
+        CoreModule],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
 
     fixture = TestBed.createComponent(FilesCollectionsComponent);
     component = fixture.componentInstance;

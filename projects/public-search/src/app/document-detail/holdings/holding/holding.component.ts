@@ -21,8 +21,9 @@ import { HoldingsNoteType } from '@rero/shared';
 import { HoldingsApiService } from '../../../api/holdings-api.service';
 
 @Component({
-  selector: 'public-search-holding, [public-search-holding]',
-  templateUrl: './holding.component.html'
+    selector: 'public-search-holding, [public-search-holding]',
+    templateUrl: './holding.component.html',
+    standalone: false
 })
 export class HoldingComponent {
 

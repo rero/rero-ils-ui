@@ -15,14 +15,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (document) {
-  <div class="grid grid-nogutter p-2" [ngClass]="getCallout()" id="request-{{ item.barcode }}">
-    <div class="col-3">
-      <div class="flex align-items-start gap-2">
+  <div class="grid grid-cols-12 gap-4 grid-nogutter p-2" [ngClass]="getCallout()" id="request-{{ item.barcode }}">
+    <div class="col-span-3">
+      <div class="flex items-start gap-2">
         <shared-open-close-button [collapsed]="isCollapsed" (status)="isCollapsed = $event" />
         <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
       </div>
     </div>
-    <div name="title" class="col-4">
+    <div name="title" class="col-span-4">
       @if (document.title | mainTitle; as title) {
         <a [routerLink]="['/records','documents','detail', document.pid]">
           {{ title }}
@@ -30,11 +30,11 @@
       }
       <shared-contribution [contributions]="document?.contribution" />
     </div>
-    <div class="col-2">
+    <div class="col-span-2">
       <shared-inherited-call-number [item]="item" />
     </div>
-    <div class="col-2">{{ item.loan.creation_date | dateTranslate :'medium' }}</div>
-    <div class="col-1 flex justify-content-end">
+    <div class="col-span-2">{{ item.loan.creation_date | dateTranslate :'medium' }}</div>
+    <div class="col-span-1 flex justify-end">
       @if (item.loan.state === LoanState.PENDING) {
         <p-button
           icon="fa fa-check"

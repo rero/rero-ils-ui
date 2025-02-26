@@ -19,8 +19,9 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'shared-document-brief-view',
-  templateUrl: './document-brief-view.component.html'
+    selector: 'shared-document-brief-view',
+    templateUrl: './document-brief-view.component.html',
+    standalone: false
 })
 export class DocumentBriefViewComponent {
 

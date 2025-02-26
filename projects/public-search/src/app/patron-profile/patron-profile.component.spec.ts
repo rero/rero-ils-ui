@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
@@ -29,6 +29,7 @@ import { OperationLogsApiService } from '../api/operation-logs-api.service';
 import { PatronTransactionApiService } from '../api/patron-transaction-api.service';
 import { PatronProfileMenuService } from './patron-profile-menu.service';
 import { PatronProfileComponent } from './patron-profile.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PatronProfileComponent', () => {
   let component: PatronProfileComponent;
@@ -69,25 +70,24 @@ describe('PatronProfileComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         PatronProfileComponent
-      ],
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
+    ],
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [TranslateModule.forRoot(),
         CoreModule,
         SharedModule,
-        LoadingBarModule
-      ],
-      providers: [
+        LoadingBarModule],
+    providers: [
         { provide: UserApiService, useValue: userApiServiceSpy },
         { provide: LoanApiService, useValue: loanApiServiceSpy },
         { provide: OperationLogsApiService, use: operationLogsApiServiceSpy },
         { provide: PatronTransactionApiService, useValue: patronTransactionApiServiceSpy },
-        { provide: IllRequestApiService, useValue: illRequestApiServiceSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    })
+        { provide: IllRequestApiService, useValue: illRequestApiServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   });
 

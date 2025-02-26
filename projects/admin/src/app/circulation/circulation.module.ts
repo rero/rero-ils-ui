@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,18 +18,20 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { RecordModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
-import { InputSwitchModule } from 'primeng/inputswitch';
 import { MenuModule } from 'primeng/menu';
-import { MessagesModule } from 'primeng/messages';
 import { RippleModule } from 'primeng/ripple';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { SplitButtonModule } from 'primeng/splitbutton';
-import { TabMenuModule } from 'primeng/tabmenu';
+import { TabsModule } from 'primeng/tabs';
 import { TagModule } from 'primeng/tag';
+import { TimelineModule } from 'primeng/timeline';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { JournalVolumePipe } from 'projects/public-search/src/app/pipe/journal-volume.pipe';
 import { CheckinActionComponent } from './checkin/checkin-action/checkin-action.component';
 import { CheckinComponent } from './checkin/checkin.component';
@@ -56,13 +58,13 @@ import { PatronFeeComponent } from './patron/patron-transactions/patron-fee/patr
 import {
   PatronTransactionEventFormComponent
 } from './patron/patron-transactions/patron-transaction-event-form/patron-transaction-event-form.component';
-import { PatronTransactionHistoryComponent } from './patron/patron-transactions/patron-transaction/patron-transaction-history/patron-transaction-history.component';
 import {
   DefaultTransactionDetailComponent
 } from './patron/patron-transactions/patron-transaction/default-transaction-detail/default-transaction-detail.component';
 import {
   OverdueTransactionDetailComponent
 } from './patron/patron-transactions/patron-transaction/overdue-transaction-detail/overdue-transaction-detail.component';
+import { PatronTransactionHistoryComponent } from './patron/patron-transactions/patron-transaction/patron-transaction-history/patron-transaction-history.component';
 import { PatronTransactionComponent } from './patron/patron-transactions/patron-transaction/patron-transaction.component';
 import { PatronTransactionsComponent } from './patron/patron-transactions/patron-transactions.component';
 import { PendingItemComponent } from './patron/pending/pending-item/pending-item.component';
@@ -71,69 +73,69 @@ import { PickupItemComponent } from './patron/pickup/pickup-item/pickup-item.com
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
 import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
-import { ScrollPanelModule } from 'primeng/scrollpanel';
 
 @NgModule({
     declarations: [
+        CancelRequestButtonComponent,
+        CardComponent,
+        ChangePasswordFormComponent,
+        CheckinActionComponent,
+        CheckinComponent,
+        CirculationMainComponent,
+        CirculationSettingsComponent,
+        DefaultTransactionDetailComponent,
+        FixedDateFormComponent,
+        GetLoanCipoPipe,
+        HistoryComponent,
+        HistoryLogComponent,
+        IllRequestComponent,
+        IllRequestItemComponent,
+        ItemComponent,
+        ItemsListComponent,
+        JournalVolumePipe,
+        LoanComponent,
         MainComponent,
         MainRequestComponent,
-        RequestedItemsListComponent,
-        CardComponent,
-        ItemsListComponent,
-        LoanComponent,
-        CheckinComponent,
-        ItemComponent,
-        ProfileComponent,
+        OverdueTransactionComponent,
+        OverdueTransactionComponent,
+        OverdueTransactionDetailComponent,
+        PatronFeeComponent,
+        PatronTransactionComponent,
+        PatronTransactionEventFormComponent,
+        PatronTransactionEventFormComponent,
+        PatronTransactionHistoryComponent,
+        PatronTransactionsComponent,
         PendingComponent,
         PendingItemComponent,
         PickupComponent,
         PickupItemComponent,
-        PatronTransactionsComponent,
-        PatronTransactionComponent,
-        PatronTransactionEventFormComponent,
-        OverdueTransactionComponent,
-        DefaultTransactionDetailComponent,
-        OverdueTransactionDetailComponent,
-        PatronTransactionEventFormComponent,
-        HistoryComponent,
+        ProfileComponent,
         RequestedItemComponent,
-        ChangePasswordFormComponent,
-        FixedDateFormComponent,
-        OverdueTransactionComponent,
-        HistoryLogComponent,
-        GetLoanCipoPipe,
-        CheckinActionComponent,
-        PatronFeeComponent,
-        CancelRequestButtonComponent,
-        IllRequestComponent,
-        IllRequestItemComponent,
-        JournalVolumePipe,
-        CirculationSettingsComponent,
-        CirculationMainComponent,
-        PatronTransactionHistoryComponent
+        RequestedItemsListComponent,
     ],
     imports: [
+        AccordionModule,
+        ButtonModule,
         CirculationRoutingModule,
         CommonModule,
-        FormsModule,
+        DynamicDialogModule,
         FormlyModule,
+        FormsModule,
+        MenuModule,
         ReactiveFormsModule,
         RecordModule,
-        SharedModule,
-        MenuModule,
-        DynamicDialogModule,
-        TagModule,
-        ButtonModule,
-        TabMenuModule,
         RippleModule,
-        MessagesModule,
-        InputSwitchModule,
+        ScrollPanelModule,
+        SharedModule,
         SplitButtonModule,
-        AccordionModule,
-        ScrollPanelModule
+        TabsModule,
+        TagModule,
+        TimelineModule,
+        ToggleSwitchModule,
+        TranslateModule.forChild(),
       ],
     providers: [
-      CurrencyPipe
+      CurrencyPipe,
     ]
 })
 export class CirculationModule { }

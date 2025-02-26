@@ -20,8 +20,9 @@ import { RecordService } from '@rero/ng-core';
 import { Observable, of, Subscription } from 'rxjs';
 
 @Component({
-  selector: 'admin-template-detail-view',
-  templateUrl: './template-detail-view.component.html'
+    selector: 'admin-template-detail-view',
+    templateUrl: './template-detail-view.component.html',
+    standalone: false
 })
 export class TemplateDetailViewComponent implements OnInit, OnDestroy {
 

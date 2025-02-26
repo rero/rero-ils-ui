@@ -1,0 +1,82 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2025 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+@let record = holding();
+@switch (holdingType) {
+  @case ('electronic') {
+    <div class="row">
+      @for (elocation of record.metadata.electronic_location; track elocation) {
+        <div class="col-span-12">
+          <a class="rero-ils-external-link" [href]="elocation.uri | safeUrl">{{ elocation.source }}</a>
+        </div>
+      }
+    </div>
+  }
+  @case ('serial') {
+    @if (items) {
+      <div class="grid grid-cols-12 gap-4 grid-nogutter py-2 px-1 font-bold">
+        <div class="col-span-3" translate>Barcode</div>
+        <div class="col-span-3" translate>Status</div>
+        <div class="col-span-3" translate>Unit</div>
+        <div class="col-span-3" translate>Call number</div>
+      </div>
+      <div class="alternate-color">
+      @for (item of items | slice:0: displayItemsCounter; track item) {
+        <admin-serial-holding-item
+          [holding]="holding"
+          [item]="item"
+          [isCurrentOrganisation]="isCurrentOrganisation()"
+          (deleteItem)="deleteItem($event)"
+          [attr.id]="$any(item).metadata.barcode | idAttribute:{prefix: 'item'}"
+        />
+      }
+      </div>
+      @if (displayItemsCounter < totalItemsCounter) {
+        <div class="flex items-center">
+          <p-button [link]="true" (onClick)="showMore(5)" [attr.id]="record.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
+            <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
+            {{ 'Show more' | translate }}&nbsp;…
+          </p-button>
+          <small class="pl-2 pt-1 text-secondary">({{ showMoreItemsCounter('issue') }})</small>
+        </div>
+      }
+    } @else {
+      <div class="font-bold" translate>No item received.</div>
+    }
+  }
+  @default {
+    @if (items && items.length > 0) {
+      @for (item of items | slice:0: displayItemsCounter; track item; let last = $last) {
+          <admin-default-holding-item
+            [holding]="holding"
+            [item]="item"
+            [isCurrentOrganisation]="isCurrentOrganisation"
+            (deleteItem)="deleteItem($event)"
+            [attr.id]="$any(item).metadata.barcode | idAttribute:{prefix: 'item'}"
+          />
+      }
+      @if (displayItemsCounter < totalItemsCounter) {
+        <div class="flex items-center">
+          <p-button (onClick)="showMore(5)" [attr.id]="record.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
+            <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
+            {{ 'Show more' | translate }}&nbsp;…
+          </p-button>
+          <small class="pl-2 pt-1 text-secondary">({{ showMoreItemsCounter('item') }})</small>
+        </div>
+      }
+    }
+  }
+}

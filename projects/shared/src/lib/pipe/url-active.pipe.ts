@@ -17,7 +17,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'urlActive'
+    name: 'urlActive',
+    standalone: false
 })
 export class UrlActivePipe implements PipeTransform {
 

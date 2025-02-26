@@ -23,8 +23,8 @@ import { DocumentAdvancedSearchFormComponent } from './document-advanced-search-
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'admin-document-advanced-search',
-  template: `
+    selector: 'admin-document-advanced-search',
+    template: `
     @if (!simple) {
       <p-button
         [label]="'Build advanced query' | translate"
@@ -34,7 +34,8 @@ import { TranslateService } from '@ngx-translate/core';
         (onClick)="openModalBox()"
       />
     }
-  `
+  `,
+    standalone: false
 })
 export class DocumentAdvancedSearchComponent implements OnInit, OnDestroy {
 
@@ -76,6 +77,7 @@ export class DocumentAdvancedSearchComponent implements OnInit, OnDestroy {
     const ref: DynamicDialogRef = this.dialogService.open(DocumentAdvancedSearchFormComponent, {
       dismissableMask: true,
       width: "90vw",
+      closable: true,
       header: this.translateService.instant('Build advanced query'),
     });
     this.subscription.add(

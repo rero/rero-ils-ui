@@ -17,7 +17,10 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({ name: 'isArray' })
+@Pipe({
+    name: 'isArray',
+    standalone: false
+})
 export class IsArrayPipe implements PipeTransform {
   transform(value: unknown): boolean {
     return Array.isArray(value);

@@ -16,10 +16,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @defer(when records.length > 0) {
-  <p-table [value]="records" styleClass="p-datatable-striped"  [tableStyle]="{ 'min-width': '50rem' }">
-    <ng-template pTemplate="body" let-record>
+  <p-table stripedRows [value]="records" [tableStyle]="{ 'min-width': '50rem' }" size="small">
+    <ng-template #body let-record>
       <tr>
-          <td class="text-color-secondary">
+          <td class="text-muted-color">
             <i class="fa fa-calendar "></i>&nbsp;{{ record.metadata.date | dateTranslate :'shortDate' }} - {{ record.metadata.date | dateTranslate :'mediumTime' }}
           </td>
           <td class="font-bold uppercase">

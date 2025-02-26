@@ -27,12 +27,13 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { TranslateService } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
 import { CurrencyPipe } from '@angular/common';
-import { DropdownChangeEvent } from 'primeng/dropdown';
+import { SelectChangeEvent } from 'primeng/select';
 
 
 @Component({
-  selector: 'admin-patron-transaction',
-  templateUrl: './patron-transaction.component.html'
+    selector: 'admin-patron-transaction',
+    templateUrl: './patron-transaction.component.html',
+    standalone: false
 })
 export class PatronTransactionComponent implements OnInit {
 
@@ -109,7 +110,7 @@ export class PatronTransactionComponent implements OnInit {
       : false;
   }
 
-  patronTransactionEvent(event: DropdownChangeEvent): void {
+  patronTransactionEvent(event: SelectChangeEvent): void {
     event.value.command();
     this.menuSelectedAction = {};
   }
@@ -123,6 +124,7 @@ export class PatronTransactionComponent implements OnInit {
     this.dialogService.open(PatronTransactionEventFormComponent, {
       header: this.translateService.instant(action),
       focusOnShow: false,
+      closable: true,
       width: '40vw',
       data: {
         action,

@@ -15,16 +15,16 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (fields.length > 0 && showForm) {
-  <div class="grid p-2" id="pickup-location-{{ record.metadata.pid }}">
+  <div class="grid grid-cols-12 gap-4 p-2" id="pickup-location-{{ record.metadata.pid }}">
     @if (recordType === 'holding' && itemCount > 0) {
-      <p-messages
-      showTransitionOptions="0ms"
-      class="col-12"
-      [value]="[{severity: 'warn', detail:'Please make sure that your requested issue is not listed above.' | translate }]"
-      [enableService]="false"
-      [closable]="false" />
+      <p-message
+        class="col-span-12"
+        [text]="'Please make sure that your requested issue is not listed above.' | translate"
+        severity="warn"
+        showTransitionOptions="0ms"
+      />
     }
-    <form class="col-12" [formGroup]="form" (ngSubmit)="submit()">
+    <form class="col-span-12" [formGroup]="form" (ngSubmit)="submit()">
       <div class="mb-2">
         <formly-form [model]="model" [fields]="fields" [form]="form"/>
       </div>
@@ -56,13 +56,11 @@
 }
 
 @if (requested && !showForm) {
-  <div class="grid p-2">
-      <p-messages
-        showTransitionOptions="0ms"
-        class="col-12"
-        [value]="[{severity: requestMessage.success? 'success' : 'error', detail: requestMessage.message }]"
-        [enableService]="false"
-        [closable]="false"
-      />
+  <div class="grid grid-cols-12 gap-4 p-2">
+    <p-message
+      [text]="requestMessage.message"
+      [severity]="requestMessage.success? 'success' : 'error'"
+      showTransitionOptions="0ms"
+    />
   </div>
 }

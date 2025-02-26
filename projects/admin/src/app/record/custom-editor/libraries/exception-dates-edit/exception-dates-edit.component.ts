@@ -21,9 +21,10 @@ import { LibraryExceptionFormService } from '../library-exception-form.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'admin-libraries-exception-dates-edit',
-  templateUrl: './exception-dates-edit.component.html',
-  styles: []
+    selector: 'admin-libraries-exception-dates-edit',
+    templateUrl: './exception-dates-edit.component.html',
+    styles: [],
+    standalone: false
 })
 export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
 

@@ -23,8 +23,9 @@ import { OperationLogsApiService } from '../../api/operation-logs-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { ITabEvent, PatronProfileService } from '../patron-profile.service';
 @Component({
-  selector: 'public-search-patron-profile-histories',
-  templateUrl: './patron-profile-histories.component.html'
+    selector: 'public-search-patron-profile-histories',
+    templateUrl: './patron-profile-histories.component.html',
+    standalone: false
 })
 export class PatronProfileHistoriesComponent implements OnInit, OnDestroy {
 

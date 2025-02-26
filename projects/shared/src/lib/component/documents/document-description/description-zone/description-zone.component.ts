@@ -17,7 +17,8 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'shared-description-zone',
-  templateUrl: './description-zone.component.html'
+    selector: 'shared-description-zone',
+    templateUrl: './description-zone.component.html',
+    standalone: false
 })
 export class DescriptionZoneComponent { }
