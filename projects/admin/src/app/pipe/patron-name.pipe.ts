@@ -21,7 +21,8 @@ import { map } from 'rxjs/operators';
 import { PatronService } from '../service/patron.service';
 
 @Pipe({
-  name: 'patronName'
+    name: 'patronName',
+    standalone: false
 })
 export class PatronNamePipe implements PipeTransform {
 

@@ -15,11 +15,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="grid">
-  <div class="md:col-9 col-8">
+<div class="grid grid-cols-12 gap-4">
+  <div class="md:col-span-9 col-span-8">
     <ng-core-editor [model]="model" (modelChange)="modelChanged($event)" (canDeactivateChange)="canDeactivateChanged($event)"></ng-core-editor>
   </div>
-  <div class="col">
+  <div class="col-span-12">
     <p-fieldset [legend]="'Predictions' | translate">
       @if (!serialPreviewError) {
         @if (serialPreviewExamples && serialPreviewExamples.length > 0) {
@@ -35,19 +35,16 @@
             }
           </ul>
         } @else {
-          <p-messages
-            [value]="[{ severity: 'info', detail: 'No preview available' | translate }]"
-            [closable]="false"
-            [enableService]="false"
+          <p-message
+            [text]="'No preview available' | translate"
+            severity="info"
             showTransitionOptions="0ms"
           />
         }
-
       } @else {
-        <p-messages
-          [value]="[{ severity: 'error', detail: ('Template' | translate) + '&nbsp;' + serialPreviewError.status }]"
-          [closable]="false"
-          [enableService]="false"
+        <p-message
+          [text]="('Template' | translate) + '&nbsp;' + serialPreviewError.status"
+          severity="error"
           showTransitionOptions="0ms"
         />
       }

@@ -17,7 +17,7 @@
  */
 
 import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -32,6 +32,7 @@ import {
   CoreConfigService,
   RecordHandleErrorService as CoreRecordHandleErrorService,
   NgCoreTranslateService,
+  primeNGConfig,
   RecordModule, RemoteAutocompleteService,
   TranslateLoader, TruncateTextPipe
 } from '@rero/ng-core';
@@ -40,9 +41,6 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { MenubarModule } from 'primeng/menubar';
 import { TableModule } from "primeng/table";
 import { Observable } from 'rxjs';
-import {
-  SelectAccountEditorWidgetComponent
-} from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 import { ReceivedOrderPermissionValidator } from './acquisition/utils/permissions';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -76,7 +74,6 @@ import { PatronTypesBriefViewComponent } from './record/brief-view/patron-types-
 import { PatronsBriefViewComponent } from './record/brief-view/patrons-brief-view/patrons-brief-view.component';
 import { StatisticsCfgBriefViewComponent } from './record/brief-view/statistics-cfg-brief-view-component';
 import { TemplatesBriefViewComponent } from './record/brief-view/templates-brief-view.component';
-import { VendorBriefViewComponent } from './record/brief-view/vendor-brief-view.component';
 import { CirculationLogLoanComponent } from './record/circulation-logs/circulation-log/circulation-log-loan/circulation-log-loan.component';
 import { CirculationLogNotificationComponent } from './record/circulation-logs/circulation-log/circulation-log-notification/circulation-log-notification.component';
 import { CirculationLogComponent } from './record/circulation-logs/circulation-log/circulation-log.component';
@@ -89,7 +86,6 @@ import { ExceptionDatesListComponent } from './record/custom-editor/libraries/ex
 import { LibraryComponent } from './record/custom-editor/libraries/library.component';
 import { NotificationTypePipe } from './record/custom-editor/libraries/pipe/notificationType.pipe';
 import { UserIdEditorComponent } from './record/custom-editor/user-id-editor/user-id-editor.component';
-import { AddressTypeComponent } from './record/detail-view/address-type/address-type.component';
 import { CircPolicyDetailViewComponent } from './record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
 import { CollectionDetailViewComponent } from './record/detail-view/collection-detail-view/collection-detail-view.component';
 import { CollectionItemsComponent } from './record/detail-view/collection-detail-view/collection-items/collection-items.component';
@@ -109,7 +105,6 @@ import {
 } from './record/detail-view/document-detail-view/holding/default-holding-item/default-holding-item.component';
 import { HoldingItemNoteComponent } from './record/detail-view/document-detail-view/holding/holding-item-note/holding-item-note.component';
 import { HoldingItemTemporaryItemTypeComponent } from './record/detail-view/document-detail-view/holding/holding-item-temporary-item-type/holding-item-temporary-item-type.component';
-import { HoldingComponent } from './record/detail-view/document-detail-view/holding/holding.component';
 import {
   SerialHoldingItemComponent
 } from './record/detail-view/document-detail-view/holding/serial-holding-item/serial-holding-item.component';
@@ -159,7 +154,6 @@ import { ReportDataComponent } from './record/detail-view/statistics-cfg-detail-
 import { ReportsListComponent } from './record/detail-view/statistics-cfg-detail-view/reports-list/reports-list.component';
 import { StatisticsCfgDetailViewComponent } from './record/detail-view/statistics-cfg-detail-view/statistics-cfg-detail-view.component';
 import { TemplateDetailViewComponent } from './record/detail-view/template-detail-view/template-detail-view.component';
-import { VendorDetailViewComponent } from './record/detail-view/vendor-detail-view/vendor-detail-view.component';
 import { AddEntityLocalFormComponent } from './record/editor/formly/primeng/entity-autocomplete/add-entity-local-form/add-entity-local-form.component';
 import { remoteAutocompleteToken } from './record/editor/formly/primeng/remote-autocomplete/remote-autocomplete-factory.service';
 import { DocumentsRemoteService } from './record/editor/formly/primeng/remote-autocomplete/remote/documents-remote.service';
@@ -171,8 +165,6 @@ import { RepeatTypeComponent } from './record/editor/type/repeat-section.type';
 import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
 import { UserIdComponent } from './record/editor/wrappers/user-id.component';
 import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patron-type-item-type/cipo-patron-type-item-type.component';
-import { OperationLogsDialogComponent } from './record/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
-import { OperationLogsComponent } from './record/operation-logs/operation-logs.component';
 import { DocumentAdvancedSearchFormComponent } from './record/search-view/document-advanced-search-form/document-advanced-search-form.component';
 import { DocumentAdvancedSearchComponent } from './record/search-view/document-advanced-search.component';
 import { DocumentRecordSearchComponent } from './record/search-view/document-record-search/document-record-search.component';
@@ -190,11 +182,14 @@ import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 
+import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { HotkeysShortcutPipe } from '@ngneat/hotkeys';
+import { providePrimeNG } from "primeng/config";
+import { CirculationLogsDialogComponent } from './record/circulation-logs/circulation-logs-dialog.component';
 import { EntityAutocompleteComponent } from './record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
 import { RemoteAutocompleteService as UiRemoteAutocompleteService } from './record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.service';
-import { CirculationLogsDialogComponent } from './record/circulation-logs/circulation-logs-dialog.component';
-
+import { HoldingHeaderComponent } from './record/detail-view/document-detail-view/holding/holding-header/holding-header.component';
+import { HoldingContentComponent } from './record/detail-view/document-detail-view/holding/holding-content/holding-content.component';
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
   return () => appInitializerService.load();
@@ -223,7 +218,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     ExceptionDateComponent,
     DocumentDetailViewComponent,
     HoldingEditorComponent,
-    HoldingComponent,
     HoldingsComponent,
     LibraryComponent,
     ExceptionDatesListComponent,
@@ -238,9 +232,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     ItemsBriefViewComponent,
     IssuesBriefViewComponent,
     PatronDetailViewComponent,
-    VendorDetailViewComponent,
-    VendorBriefViewComponent,
-    AddressTypeComponent,
     RelatedResourceComponent,
     ItemRequestComponent,
     ErrorPageComponent,
@@ -265,9 +256,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     LocalFieldComponent,
     MenuDashboardComponent,
     HoldingItemTemporaryItemTypeComponent,
-    OperationLogsComponent,
     HoldingSharedViewComponent,
-    OperationLogsDialogComponent,
     CipoPatronTypeItemTypeComponent,
     UserIdComponent,
     UserIdEditorComponent,
@@ -331,13 +320,16 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     MenuAppComponent,
     MenuUserComponent,
     EntityAutocompleteComponent,
+    HoldingHeaderComponent,
+    HoldingContentComponent
   ],
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
-    HttpClientModule,
     ReactiveFormsModule,
     RecordModule,
     TableModule,
@@ -345,8 +337,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     FormlyModule.forRoot({
       types: [
         { name: "cipo-pt-it", component: CipoPatronTypeItemTypeComponent },
-        { name: "account-select", component: SelectAccountEditorWidgetComponent },
-        { name: 'repeat', component: RepeatTypeComponent},
+        { name: 'repeat', component: RepeatTypeComponent },
         { name: 'select-formly', component: FormlyFieldSelect },
         { name: 'custom-field', component: FieldCustomInputTypeComponent },
         { name: 'entity-autocomplete', component: EntityAutocompleteComponent }
@@ -380,12 +371,12 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
       provide: APP_INITIALIZER,
       useFactory: appInitFactory,
       deps: [
-        AppInitializerService,
-        UserService,
-        OrganisationService,
-        AppSettingsService,
-        AppConfigService,
-        TranslateService
+          AppInitializerService,
+          UserService,
+          OrganisationService,
+          AppSettingsService,
+          AppConfigService,
+          TranslateService
       ],
       multi: true,
     },
@@ -400,16 +391,12 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
       multi: true,
     },
     { provide: TranslateService, useExisting: NgCoreTranslateService },
-
     { provide: RemoteAutocompleteService, useExisting: UiRemoteAutocompleteService },
     { provide: remoteAutocompleteToken, useExisting: DocumentsRemoteService, multi: true },
     { provide: remoteAutocompleteToken, useExisting: ItemsRemoteService, multi: true },
     { provide: remoteAutocompleteToken, useExisting: MefRemoteService, multi: true },
     { provide: remoteAutocompleteToken, useExisting: PatronsRemoteService, multi: true },
-    {
-      provide: CoreConfigService,
-      useClass: AppConfigService,
-    },
+    { provide: CoreConfigService, useClass: AppConfigService },
     {
       provide: LOCALE_ID,
       useFactory: (translate: TranslateService) => translate.currentLang,
@@ -421,13 +408,13 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     ReceivedOrderPermissionValidator,
     // TODO: needed for production build, remove this after it is fixed in the
     // @ngneat/hotkeys library
-    MainTitlePipe,
     ItemHoldingsCallNumberPipe,
     CountryCodeTranslatePipe,
     { provide: CoreBucketNameService, useClass: BucketNameService },
     { provide: CoreRecordHandleErrorService, useClass: RecordHandleErrorService },
-  ],
-  bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimationsAsync(),
+    providePrimeNG(primeNGConfig),
+  ]
 })
 export class AppModule {}

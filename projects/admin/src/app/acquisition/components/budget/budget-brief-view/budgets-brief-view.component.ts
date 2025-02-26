@@ -21,19 +21,20 @@ import { TranslateService } from '@ngx-translate/core';
 import { ResultItem } from '@rero/ng-core';
 
 @Component({
-  selector: 'admin-budgets-brief-view',
-  template: `
-  <h5>
-    <i
-      class="fa fa-circle mr-2"
-      [title]="title"
-      [ngClass]="{'text-success': record.metadata.is_active, 'text-error': !record.metadata.is_active}"
-    ></i>&nbsp;
-    <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
-  </h5>
+    selector: 'admin-budgets-brief-view',
+    template: `
+    <h5>
+      <i
+        class="fa fa-circle mr-2"
+        [title]="title"
+        [ngClass]="{'text-success': record.metadata.is_active, 'text-error': !record.metadata.is_active}"
+      ></i>&nbsp;
+      <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
+    </h5>
   `,
-  styles: []
-})
+    styles: [],
+    standalone: false
+  })
 export class BudgetsBriefViewComponent implements ResultItem {
 
   private translateService: TranslateService = inject(TranslateService);

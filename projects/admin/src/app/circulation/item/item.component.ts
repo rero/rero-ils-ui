@@ -29,8 +29,9 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Component({
-  selector: 'admin-item',
-  templateUrl: './item.component.html'
+    selector: 'admin-item',
+    templateUrl: './item.component.html',
+    standalone: false
 })
 export class ItemComponent implements OnInit {
 

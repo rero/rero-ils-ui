@@ -19,8 +19,9 @@ import { Component, Input } from '@angular/core';
 import { IPatronPermission } from 'projects/admin/src/app/api/permission-api.service';
 
 @Component({
-  selector: 'admin-patron-permission',
-  templateUrl: './patron-permission.component.html'
+    selector: 'admin-patron-permission',
+    templateUrl: './patron-permission.component.html',
+    standalone: false
 })
 export class PatronPermissionComponent {
 

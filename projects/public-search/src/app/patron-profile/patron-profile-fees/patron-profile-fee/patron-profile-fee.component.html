@@ -16,16 +16,16 @@
 -->
 
 @if (record) {
-  <div class="grid grid-nogutter p-2 pl-1">
-    <div class="col-1">
+  <div class="grid grid-cols-12 gap-4 grid-nogutter p-2 pl-1">
+    <div class="col-span-1">
       <shared-open-close-button (status)="isCollapsed = $event; expanded(record.metadata.pid)" />
     </div>
-    <div class="col-2">{{ record.metadata.creation_date | dateTranslate: 'short' }}</div>
-    <div class="col-6">{{ record.metadata.type | translate }}</div>
-    <div class="col-3 flex justify-content-end">{{ record.metadata.total_amount | currency:organisation.currency:'symbol' }}</div>
+    <div class="col-span-2">{{ record.metadata.creation_date | dateTranslate: 'short' }}</div>
+    <div class="col-span-6">{{ record.metadata.type | translate }}</div>
+    <div class="col-span-3 flex justify-end">{{ record.metadata.total_amount | currency:organisation.currency:'symbol' }}</div>
       <!-- FEE DETAILS & EVENTS =========================================== -->
       @if (!isCollapsed) {
-      <div id="fee-event-{{ record.metadata.pid }}" class="col-11 col-offset-1">
+      <div id="fee-event-{{ record.metadata.pid }}" class="col-span-11 col-start-2">
           <!-- NOTE -->
           @if (record.metadata.note) {
             <p-panel styleClass="mb-2 bg-transparent" [header]="'Note' | translate">
@@ -57,15 +57,15 @@
           <p-panel styleClass="bg-transparent time-line-30" [header]="'Transactions history' | translate" id="fee-{{ record.metadata.pid }}-transaction">
 
             <p-timeline [value]="events">
-              <ng-template pTemplate="content" let-event>
-                  <div class="grid grid-nogutter" [ngClass]="{ 'event-highlight': (event.metadata.type === 'dispute'), '': !(event.metadata.type === 'dispute') }">
-                    <div class="col-10">
+              <ng-template #content let-event>
+                  <div class="grid grid-cols-12 gap-4 grid-nogutter" [ngClass]="{ 'event-highlight': (event.metadata.type === 'dispute'), '': !(event.metadata.type === 'dispute') }">
+                    <div class="col-span-10">
                       {{ event.metadata.type | translate }}
                       @if (event.metadata.subtype) {
                         [{{ event.metadata.subtype | translate }}]
                       }
                     </div>
-                    <div class="col-2 flex justify-content-end amount">
+                    <div class="col-span-2 flex justify-end amount">
                       @if (event.metadata.amount) {
                         <p-tag [severity]="event.metadata.type === 'payment'? 'success' : 'danger'">
                           {{ event.metadata.amount | currency:organisation.currency:'symbol' }}
@@ -94,7 +94,7 @@
                       </dl>
                     }
               </ng-template>
-              <ng-template pTemplate="opposite" let-event>
+              <ng-template #opposite let-event>
                 <div class="p-text-secondary text-sm">
                   <i class="fa fa-calendar-o"></i>
                   {{ event.metadata.creation_date | dateTranslate: 'shortDate' }}
@@ -102,9 +102,9 @@
                   {{ event.metadata.creation_date | dateTranslate: 'HH:mm' }}
                 </div>
               </ng-template>
-              <ng-template pTemplate="marker" let-event>
+              <ng-template #marker let-event>
                 <span
-                class="flex align-items-center justify-content-center text-white border-circle z-1 shadow-1"
+                class="flex items-center justify-center text-white rounded-full z-10 shadow-sm"
                 [ngClass]="event.metadata.type === 'dispute'? 'background-warning': event.metadata.type === 'payment'? 'background-success': 'background-error'"
                 [style]="{'width': '1.5rem', 'height': '1.5rem'  }">
                   <i class="fa" [ngClass]="event.metadata.type === 'dispute'? 'fa-exclamation' : 'fa-check' "></i>

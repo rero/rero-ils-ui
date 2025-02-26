@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,25 +15,23 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 @if (order && order.pid) {
 <div [ngClass]="{ 'opacity-50': !order.is_current_budget }">
   <!-- ROLLOVER INFO -->
   @if (!order.is_current_budget) {
-    <p-messages
-      [value]="[{ severity: 'warn', detail: 'Fiscal year closed' | translate }]"
-      [closable]="false"
-      [enableService]="false"
+    <p-message
+      [text]="'Fiscal year closed' | translate"
+      severity="warn"
       showTransitionOptions="0ms"
     />
   }
 
   <!-- Place order button -->
-  <div class="flex gap-2 justify-content-between flex-wrap">
+  <div class="flex gap-2 justify-between flex-wrap">
     <h1>{{ order.reference }}</h1>
     @if (order?.is_current_budget && order?.pid) {
       @if (recordPermissions && recordPermissions.update.can && order.status === acqOrderStatus.PENDING) {
-        <section class="flex justify-content-end">
+        <section class="flex justify-end">
           <p-button
             (onClick)="placeOrderDialog()"
             severity="primary"
@@ -52,7 +50,7 @@
     <dd>
       @for (note of order.notes; track note) {
       <a href (click)="scrollTo($event, 'notes'); notesCollapsed = false">
-        <p-tag severity="{{ note | noteBadgeColor }}">{{
+        <p-tag [severity]="note | noteBadgeColor">{{
           note.type | translate
         }}</p-tag>
       </a>
@@ -61,20 +59,70 @@
     }
   </admin-order-summary>
 
+  <p-tabs [(value)]="tabActiveIndex">
+    <p-tablist>
+      <p-tab value="order" translate>Order</p-tab>
+      <p-tab value="reception" [disabled]="disabledReceipts" translate>Reception</p-tab>
+      <p-tab value="history" translate>History</p-tab>
+    </p-tablist>
+    <p-tabpanels>
+      <p-tabpanel value="order">
+        <div class="flex flex-col gap-2">
+          <admin-order-lines [order]="order" />
+          @if(order.notes && order.notes.length > 0) {
+            <p-panel>
+              <ng-template #header>
+                <div class="flex gap-2 items-center">
+                  <shared-open-close-button (status)="notesCollapsed = $event" />
+                  <h5 class="m-0">
+                    {{
+                      order.notes.length
+                        | i18nPlural : { "=1": "Note", other: "Notes" }
+                        | translate
+                    }}&nbsp;
+                    <p-badge [value]="order.notes.length" />
+                  </h5>
+                </div>
+              </ng-template>
+
+              @if (!notesCollapsed) {
+              <admin-notes [notes]="order.notes" />
+              }
+            </p-panel>
+          }
+        </div>
+      </p-tabpanel>
+      <p-tabpanel value="reception">
+          <admin-receipt-list [order]="order" />
+      </p-tabpanel>
+      <p-tabpanel value="history">
+        <p-timeline [value]="historyVersions">
+          <ng-template #opposite let-event>
+            <a [routerLink]="['/records', 'acq_orders', 'detail', event.pid]">{{
+              event.label
+            }}</a>
+          </ng-template>
+          <ng-template #content let-event>
+            <small>{{ event.description }}</small>
+          </ng-template>
+        </p-timeline>
+      </p-tabpanel>
+    </p-tabpanels>
+  </p-tabs>
+
+  <!--
   <p-tabView [activeIndex]="tabActiveIndex" (activeIndexChange)="addTabToUrl($event)">
     <p-tabPanel #orderPanel [header]="'Order' | translate">
-      <!--- TODO: change this for the next primeng version (19)-->
+      <- TODO: change this for the next primeng version (19)->
       @if(orderPanel.selected) {
-        <div class="flex flex-column gap-2">
-          <!-- ORDER LINES -->
+        <div class="flex flex-col gap-2">
           <admin-order-lines
             [order]="order"
           />
-          <!-- ORDER NOTES -->
           @if(order.notes && order.notes.length > 0) {
             <p-panel>
-              <ng-template pTemplate="header">
-                <div class="flex gap-2 align-items-center">
+              <ng-template #header>
+                <div class="flex gap-2 items-center">
                   <shared-open-close-button (status)="notesCollapsed = $event" />
                   <h5 class="m-0">
                     {{
@@ -110,17 +158,18 @@
     @if (historyVersions && historyVersions.length > 1) {
       <p-tabPanel [header]="'History' | translate">
         <p-timeline [value]="historyVersions">
-          <ng-template pTemplate="opposite" let-event>
+          <ng-template #opposite let-event>
             <a [routerLink]="['/records', 'acq_orders', 'detail', event.pid]">{{
               event.label
             }}</a>
           </ng-template>
-          <ng-template pTemplate="content" let-event>
+          <ng-template #content let-event>
             <small>{{ event.description }}</small>
           </ng-template>
         </p-timeline>
       </p-tabPanel>
     }
   </p-tabView>
+-->
 </div>
 }

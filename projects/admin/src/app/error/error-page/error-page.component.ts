@@ -21,17 +21,18 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { map } from 'rxjs/operators';
 
 @Component({
-  selector: 'admin-error-page',
-  template: `
+    selector: 'admin-error-page',
+    template: `
     <div class="alert alert-{{ messages[statusCode].level || 'danger' }}">
-      <h1 class="alert-heading mb-4">{{ statusCode }} - {{ messages[statusCode].title }}</h1>
+      <h1 class="alert-heading mb-6">{{ statusCode }} - {{ messages[statusCode].title }}</h1>
       @for (text of messages[statusCode].description || []; track text) {
         <pre>{{ text }}</pre>
       }
       <hr>
       <p>For any information please contact system administrator</p>
     </div>
-  `
+  `,
+    standalone: false
 })
 
 export class ErrorPageComponent implements OnInit {

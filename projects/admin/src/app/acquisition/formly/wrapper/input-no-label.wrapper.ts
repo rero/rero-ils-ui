@@ -18,8 +18,8 @@ import { Component } from '@angular/core';
 import { FieldWrapper } from '@ngx-formly/core';
 
 @Component({
-selector: 'admin-formly-input-no-label-wrapper',
-template: `
+    selector: 'admin-formly-input-no-label-wrapper',
+    template: `
   <div class="my-2">
     <ng-container #fieldComponent></ng-container>
     @if (showError) {
@@ -28,6 +28,7 @@ template: `
       </div>
     }
   </div>
-  `
+  `,
+    standalone: false
 })
 export class InputNoLabelWrapperComponent extends FieldWrapper {}

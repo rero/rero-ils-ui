@@ -25,14 +25,15 @@ import { DateTime } from 'luxon';
 import { Observable, Subscription } from 'rxjs';
 import { Item, ItemNote } from '../../../classes/items';
 import { HoldingsService } from '../../../service/holdings.service';
-import { OperationLogsService } from '../../../service/operation-logs.service';
+import { OperationLogsService } from '@rero/shared';
 import { OrganisationService } from '../../../service/organisation.service';
 
 @Component({
-  selector: 'admin-item-detail-view',
-  templateUrl: './item-detail-view.component.html',
-  providers: [IssueService],
-  styles: ['dl * { margin-bottom: 0; }']
+    selector: 'admin-item-detail-view',
+    templateUrl: './item-detail-view.component.html',
+    providers: [IssueService],
+    styles: ['dl * { margin-bottom: 0; }'],
+    standalone: false
 })
 export class ItemDetailViewComponent implements OnChanges, OnDestroy {
 

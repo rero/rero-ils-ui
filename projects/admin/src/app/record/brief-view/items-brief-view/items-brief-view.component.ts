@@ -19,8 +19,9 @@ import { Component, Input } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 
 @Component({
-  selector: 'admin-inventory-brief-view',
-  templateUrl: './items-brief-view.component.html'
+    selector: 'admin-inventory-brief-view',
+    templateUrl: './items-brief-view.component.html',
+    standalone: false
 })
 export class ItemsBriefViewComponent implements ResultItem {
 

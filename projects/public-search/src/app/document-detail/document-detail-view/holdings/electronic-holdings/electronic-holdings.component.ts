@@ -19,8 +19,9 @@ import { Component, inject, Input, OnInit } from '@angular/core';
 import { HoldingsApiService } from 'projects/public-search/src/app/api/holdings-api.service';
 
 @Component({
-  selector: 'public-search-electronic-holdings',
-  templateUrl: './electronic-holdings.component.html'
+    selector: 'public-search-electronic-holdings',
+    templateUrl: './electronic-holdings.component.html',
+    standalone: false
 })
 export class ElectronicHoldingsComponent implements OnInit{
 

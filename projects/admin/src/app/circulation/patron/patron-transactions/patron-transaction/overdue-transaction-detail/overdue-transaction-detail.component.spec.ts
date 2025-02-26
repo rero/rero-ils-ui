@@ -15,12 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CirculationModule } from '../../../../circulation.module';
 import { OverdueTransactionDetailComponent } from './overdue-transaction-detail.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('OverdueTransactionDetailComponent', () => {
@@ -29,13 +30,11 @@ describe('OverdueTransactionDetailComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        CirculationModule,
+    imports: [CirculationModule,
         RouterTestingModule,
-        HttpClientTestingModule,
-        TranslateModule.forRoot()
-      ]
-    })
+        TranslateModule.forRoot()],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
   }));
 

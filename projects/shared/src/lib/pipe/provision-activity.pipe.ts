@@ -24,7 +24,8 @@ export enum ProvisionActivityType {
 }
 
 @Pipe({
-  name: 'provisionActivity'
+    name: 'provisionActivity',
+    standalone: false
 })
 export class ProvisionActivityPipe implements PipeTransform {
 

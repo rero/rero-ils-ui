@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -18,16 +18,11 @@
 <h5 translate>This document may already exist</h5>
 }
 @if (records.length > 0) {
-<ul class="list-none m-0 p-0">
+<ul class="list-none">
   @for (record of records; track record) {
   <li>
     <a
-      [routerLink]="[
-        '/records',
-        'documents',
-        'detail',
-        $any(record).metadata.pid
-      ]"
+      [routerLink]="['/records', 'documents', 'detail', $any(record).metadata.pid]"
       (click)="cancel()"
     >
       @if ($any(record).metadata.ui_title_text_responsibility) {
@@ -41,13 +36,10 @@
 </ul>
 }
 @if (warning) {
-<p-messages
-  severity="warn"
->
-  <ng-template pTemplate>
-    <div class="flex gap-2 align-items-start">
+  <p-message severity="warn">
+    <div class="flex gap-2 items-start">
       <i class="fa fa-exclamation-circle text-2xl"></i>
-      <div class="flex flex-column gap-2">
+      <div class="flex flex-col gap-2">
         <div class="font-bold" translate>
           Too many identifiers: not all identifiers have been verified.
         </div>
@@ -57,13 +49,12 @@
         </div>
       </div>
     </div>
-  </ng-template>
-</p-messages>
+  </p-message>
 }
 <div class="font-bold" translate>
   Do you really want to import this document?
 </div>
-<div class="flex gap-1 justify-content-end mt-2">
+<div class="flex gap-1 justify-end mt-2">
   <p-button
     [label]="'Cancel' | translate"
     severity="secondary"

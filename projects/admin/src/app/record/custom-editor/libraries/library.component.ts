@@ -32,8 +32,9 @@ import { ExceptionDatesEditComponent } from './exception-dates-edit/exception-da
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
-  selector: 'admin-libraries-library',
-  templateUrl: './library.component.html'
+    selector: 'admin-libraries-library',
+    templateUrl: './library.component.html',
+    standalone: false
 })
 export class LibraryComponent extends AbstractCanDeactivateComponent implements OnInit, OnDestroy {
 
@@ -125,6 +126,7 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
     this.dynamicDialogRef = this.dialogService.open(ExceptionDatesEditComponent, {
       header: this.translateService.instant('Exception'),
       width: '50vw',
+      closable: true,
       data: {
         exceptionDate: null
       }

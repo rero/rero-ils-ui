@@ -17,7 +17,7 @@
 -->
 @if (item) {
   <div class="flex gap-2 pt-2">
-      <div class="flex-grow-1">  <!-- First row :: item detail -->
+      <div class="grow">  <!-- First row :: item detail -->
       <!-- METADATA COLUMN -->
        <dl class="metadata">
         <!-- Barcode -->
@@ -69,7 +69,8 @@
             <dd>{{ item.metadata.temporary_location.name }}</dd>
           }
           <!-- ITEM IN COLLECTION (hide if not current organisation) -->
-          @if (permissions && item.metadata.pid | itemInCollection | async; as collections) {
+          @let itemPid = item.metadata.pid;
+          @if (permissions && itemPid | itemInCollection | async; as collections) {
             <dt translate>Exhibition/course</dt>
             <dd>
               @for (collection of collections; track collection; let last=$last) {

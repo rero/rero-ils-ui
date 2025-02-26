@@ -20,8 +20,9 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ExceptionDatesEditComponent } from '../exception-dates-edit/exception-dates-edit.component';
 
 @Component({
-  selector: 'admin-libraries-exception-dates-list',
-  templateUrl: './exception-dates-list.component.html'
+    selector: 'admin-libraries-exception-dates-list',
+    templateUrl: './exception-dates-list.component.html',
+    standalone: false
 })
 export class ExceptionDatesListComponent {
 
@@ -33,6 +34,7 @@ export class ExceptionDatesListComponent {
 
   editException(index: number): void {
     this.dynamicDialogRef = this.dialogService.open(ExceptionDatesEditComponent, {
+      closable: true,
       data: {
         exceptionDate: this.exceptionDates[index]
       }

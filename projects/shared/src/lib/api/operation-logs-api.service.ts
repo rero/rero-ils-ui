@@ -18,7 +18,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { Error } from '@rero/ng-core/lib/error/error';
-import { BaseApi } from '@rero/shared';
+import { BaseApi } from '../api/base-api';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DateTime } from 'luxon';

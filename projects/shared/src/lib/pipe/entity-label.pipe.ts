@@ -45,7 +45,8 @@ import { TranslateService } from '@ngx-translate/core';
  *
  */
 @Pipe({
-  name: 'entityLabel'
+    name: 'entityLabel',
+    standalone: false
 })
 export class EntityLabelPipe implements PipeTransform {
 

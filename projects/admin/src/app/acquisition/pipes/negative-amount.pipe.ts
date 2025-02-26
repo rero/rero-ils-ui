@@ -18,7 +18,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'negativeAmount'
+    name: 'negativeAmount',
+    standalone: false
 })
 export class NegativeAmountPipe implements PipeTransform {
 

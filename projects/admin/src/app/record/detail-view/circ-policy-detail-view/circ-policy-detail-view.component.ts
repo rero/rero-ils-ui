@@ -20,8 +20,9 @@ import { Observable } from 'rxjs';
 import { OrganisationService } from '../../../service/organisation.service';
 
 @Component({
-  selector: 'admin-circ-policy-detail-view',
-  templateUrl: './circ-policy-detail-view.component.html'
+    selector: 'admin-circ-policy-detail-view',
+    templateUrl: './circ-policy-detail-view.component.html',
+    standalone: false
 })
 
 export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {

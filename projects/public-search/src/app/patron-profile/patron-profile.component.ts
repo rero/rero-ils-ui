@@ -45,8 +45,9 @@ interface Tabs {
 }
 
 @Component({
-  selector: 'public-search-patron-profile',
-  templateUrl: './patron-profile.component.html',
+    selector: 'public-search-patron-profile',
+    templateUrl: './patron-profile.component.html',
+    standalone: false
 })
 export class PatronProfileComponent implements OnInit, OnDestroy {
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);

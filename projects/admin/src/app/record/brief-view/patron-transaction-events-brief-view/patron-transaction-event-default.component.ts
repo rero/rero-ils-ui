@@ -20,8 +20,9 @@ import { Component, Input } from '@angular/core';
 import { PatronTransaction, PatronTransactionEvent } from '../../../classes/patron-transaction';
 
 @Component({
-  selector: 'admin-patron-transaction-event-default',
-  templateUrl: './patron-transaction-event-default.component.html'
+    selector: 'admin-patron-transaction-event-default',
+    templateUrl: './patron-transaction-event-default.component.html',
+    standalone: false
 })
 export class PatronTransactionEventDefaultComponent {
 

@@ -17,7 +17,7 @@
 -->
 
 @if (contributions) {
-  <ul class="list-none m-0 p-0">
+  <ul class="list-none">
     @for (contributor of contributions; track contributor; let last=$last) {
       <li class="inline">
         @if (activateLink || withEntityLink) {
@@ -42,7 +42,7 @@
           {{ contributor.entity | entityLabel }}
         }
         @if (withRoles && contributor.role && contributor.role.length > 0) {
-          <span class="ml-1 text-color-secondary">({{ contributor.role | arrayTranslate| join: ', '}})</span>
+          <span class="ml-1 text-muted-color">({{ contributor.role | arrayTranslate| join: ', '}})</span>
         }
       </li>
       @if (!last) {

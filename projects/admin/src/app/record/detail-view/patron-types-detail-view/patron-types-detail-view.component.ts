@@ -20,8 +20,9 @@ import { Observable } from 'rxjs';
 import { OrganisationService } from '../../../service/organisation.service';
 
 @Component({
-  selector: 'admin-patron-types-detail-view',
-  templateUrl: './patron-types-detail-view.component.html'
+    selector: 'admin-patron-types-detail-view',
+    templateUrl: './patron-types-detail-view.component.html',
+    standalone: false
 })
 export class PatronTypesDetailViewComponent implements DetailRecord {
 

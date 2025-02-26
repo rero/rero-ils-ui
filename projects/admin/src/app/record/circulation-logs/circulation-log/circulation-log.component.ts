@@ -19,8 +19,9 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { PermissionsService } from '@rero/shared';
 
 @Component({
-  selector: 'admin-circulation-log',
-  templateUrl: './circulation-log.component.html'
+    selector: 'admin-circulation-log',
+    templateUrl: './circulation-log.component.html',
+    standalone: false
 })
 export class CirculationLogComponent {
 

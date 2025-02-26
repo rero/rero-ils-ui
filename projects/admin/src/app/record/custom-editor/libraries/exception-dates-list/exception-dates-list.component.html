@@ -15,12 +15,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-
 @if (exceptionDates) {
     @for(exception of exceptionDates; track exception; let i=$index) {
       <admin-exception-date [exception]="exception">
        <!-- Actions -->
-       <div class="col-2 flex gap-1 justify-content-end">
+       <div class="flex gap-1 justify-end">
         <p-button
           outlined
           severity="primary"

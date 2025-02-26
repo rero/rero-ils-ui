@@ -15,8 +15,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="grid grid-nogutter p-2">
-  <div class="md:col-10 col-12 flex gap-2">
+<div class="grid grid-cols-12 gap-4 grid-nogutter p-2">
+  <div class="md:col-span-10 col-span-12 flex gap-2">
     <shared-open-close-button (status)="isCollapsed = $event" />
     <!-- ILL DOCUMENT & STATUS -->
     <div class="w-full">
@@ -24,7 +24,7 @@
       <div class="small">{{ record.metadata.document.authors }}</div>
        <!-- ILL DETAIL -->
       @if (!isCollapsed){
-        <dl class="metadata pt-3">
+        <dl class="metadata pt-4">
           <!-- PUBLISHER -->
           @if (record.metadata.document.publisher) {
             <dt translate>Publisher</dt>
@@ -89,7 +89,7 @@
       }
       </div>
   </div>
-  <div class="md:col-2 col-12 flex justify-content-end">
+  <div class="md:col-span-2 col-span-12 flex justify-end">
     @if (record.metadata.loan_status) {
       <p-tag [severity]="record.metadata.loan_status | loanStatusBadge">
         {{ record.metadata.loan_status | translate }}

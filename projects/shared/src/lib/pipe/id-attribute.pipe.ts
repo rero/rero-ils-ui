@@ -17,7 +17,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'idAttribute'
+    name: 'idAttribute',
+    standalone: false
 })
 export class IdAttributePipe implements PipeTransform {
 

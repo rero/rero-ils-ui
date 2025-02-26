@@ -18,8 +18,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'public-patron-profile-app',
-  templateUrl: './app.component.html'
+    selector: 'public-patron-profile-app',
+    templateUrl: './app.component.html',
+    standalone: false
 })
 export class AppComponent {
 

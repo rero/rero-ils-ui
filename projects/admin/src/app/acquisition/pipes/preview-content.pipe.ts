@@ -19,7 +19,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { IPreview } from '@app/admin/shared/preview-email/IPreviewInterface';
 
 @Pipe({
-  name: 'previewContent'
+    name: 'previewContent',
+    standalone: false
 })
 export class PreviewContentPipe implements PipeTransform {
 

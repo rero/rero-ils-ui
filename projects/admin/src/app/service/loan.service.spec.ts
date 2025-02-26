@@ -15,21 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { LoanService } from './loan.service';
 import { RecordModule } from '@rero/ng-core';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('LoanService', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      HttpClientTestingModule,
-      TranslateModule.forRoot(),
-      RecordModule
-    ]
-  }));
+    imports: [TranslateModule.forRoot(),
+        RecordModule],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}));
 
   it('should be created', () => {
     const service: LoanService = TestBed.inject(LoanService);

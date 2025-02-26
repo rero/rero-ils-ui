@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,23 +24,18 @@ export function _(str: string) {
 }
 
 @Component({
-  selector: 'public-search-error-page',
-  template: `
-    <p-messages
-      [severity]="messages[statusCode].severity"
-      [closable]="false"
-      [enableService]="false"
-      showTransitionOptions="0ms"
-    >
-      <ng-template pTemplate *ngVar="messages[statusCode] as msg">
-  <div class="w-full">
+    selector: 'public-search-error-page',
+    template: `
+    <p-message [severity]="messages[statusCode].severity" showTransitionOptions="0ms">
+      @let msg = messages[statusCode];
+      <div class="w-full">
         <h3>{{ msg.summary }}</h3>
         <p>{{ msg.detail }}</p>
         <em translate>For any information please contact system administrator.</em>
-    </div>
-      </ng-template>
-    </p-messages>
-  `
+      </div>
+    </p-message>
+  `,
+    standalone: false
 })
 
 export class ErrorPageComponent implements OnInit {

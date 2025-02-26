@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordModule } from '@rero/ng-core';
@@ -24,6 +24,7 @@ import { AppRoutingModule } from '../app-routing.module';
 import { ErrorPageComponent } from '../error/error-page.component';
 import { MainComponent } from '../main/main.component';
 import { DocumentBriefComponent } from './document-brief.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('DocumentBriefComponent', () => {
@@ -32,19 +33,17 @@ describe('DocumentBriefComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         DocumentBriefComponent,
         MainComponent,
         ErrorPageComponent
-      ],
-      imports: [
-        RecordModule,
-        HttpClientTestingModule,
+    ],
+    imports: [RecordModule,
         TranslateModule.forRoot(),
         AppRoutingModule,
-        SharedModule
-      ]
-    })
+        SharedModule],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
   }));
 

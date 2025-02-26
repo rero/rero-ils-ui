@@ -20,8 +20,9 @@ import { LoanState } from '@app/admin/classes/loans';
 import { RecordService } from '@rero/ng-core';
 
 @Component({
-  selector: 'admin-requested-item',
-  templateUrl: './requested-item.component.html'
+    selector: 'admin-requested-item',
+    templateUrl: './requested-item.component.html',
+    standalone: false
 })
 export class RequestedItemComponent implements OnInit {
 

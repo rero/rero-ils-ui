@@ -19,8 +19,9 @@ import { RecordPermissionService } from '@app/admin/service/record-permission.se
 import { RecordUiService } from '@rero/ng-core';
 
 @Component({
-  selector: 'admin-location',
-  templateUrl: './location.component.html'
+    selector: 'admin-location',
+    templateUrl: './location.component.html',
+    standalone: false
 })
 export class LocationComponent implements OnInit {
 

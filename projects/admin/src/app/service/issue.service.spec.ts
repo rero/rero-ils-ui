@@ -16,13 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { CommonModule } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { IssueItemStatus } from '@rero/shared';
 import { IssueEmailComponent } from '../components/issues/issue-email/issue-email.component';
 import { PreviewEmailModule } from '../shared/preview-email/preview-email.module';
 import { IssueService } from './issue.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('IssueService', () => {
   let service: IssueService;
@@ -35,19 +36,18 @@ describe('IssueService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         IssueEmailComponent
-      ],
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
-      ],
-      providers: [
+    ],
+    imports: [TranslateModule.forRoot()],
+    providers: [
         PreviewEmailModule,
         CommonModule,
-        IssueService
-      ]
-    });
+        IssueService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     service = TestBed.inject(IssueService);
   });
 

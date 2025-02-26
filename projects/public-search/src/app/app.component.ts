@@ -17,8 +17,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'public-search-root',
-  templateUrl: './app.component.html'
+    selector: 'public-search-root',
+    templateUrl: './app.component.html',
+    standalone: false
 })
 export class AppComponent {
 

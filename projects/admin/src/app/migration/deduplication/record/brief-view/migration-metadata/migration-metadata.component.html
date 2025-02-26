@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2024 RERO
+  Copyright (C) 2024-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,11 +15,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <p-table
-  styleClass="p-datatable-sm p-datatable-striped"
+  size="small"
+  stripedRows
   [value]="data()"
   [tableStyle]="{ 'min-width': '50rem', width: '100%', 'font-size': '0.8em' }"
 >
-  <ng-template pTemplate="header">
+  <ng-template #header>
     <tr>
       <th style="width: 10%" translate>Field</th>
       <th style="width: 40%" translate>Record to Import</th>
@@ -27,7 +28,7 @@
       <th class="text-right" style="width: 10%" translate>Score | Weight</th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-d>
+  <ng-template #body let-d>
     <tr>
       <td>
         <strong>{{ d.label | translate }}</strong>

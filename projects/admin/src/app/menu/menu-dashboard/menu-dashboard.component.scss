@@ -18,13 +18,13 @@
  admin-menu-dashboard {
   p-card {
     div.p-card-body {
-      @extend .px-1, .py-3;
+      @apply px-1 py-3;
     }
   }
 
   p-tieredmenu {
     div.p-tieredmenu {
-      @extend .border-none;
+      @apply border-none;
     }
   }
  }

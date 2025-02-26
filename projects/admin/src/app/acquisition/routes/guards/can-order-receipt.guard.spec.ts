@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -29,6 +29,7 @@ import { AcqOrderApiService } from '../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../api/acq-receipt-api.service';
 import { AcqOrderStatus, AcqOrderType } from '../../classes/order';
 import { CanOrderReceiptGuard } from './can-order-receipt.guard';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CanOrderReceiptGuard', () => {
   let guard: CanOrderReceiptGuard;
@@ -103,16 +104,15 @@ describe('CanOrderReceiptGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot(routes),
-        HttpClientTestingModule,
+    imports: [RouterModule.forRoot(routes),
         TranslateModule.forRoot(),
-        CoreModule
-      ],
-      providers: [
-        { provide: UserService, useValue: userTestingService }
-      ]
-    });
+        CoreModule],
+    providers: [
+        { provide: UserService, useValue: userTestingService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     guard = TestBed.inject(CanOrderReceiptGuard);
     acqOrderApiService = TestBed.inject(AcqOrderApiService);
     acqReceiptApiService = TestBed.inject(AcqReceiptApiService);

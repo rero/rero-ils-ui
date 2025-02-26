@@ -24,9 +24,9 @@ import { of, Subscription, switchMap } from 'rxjs';
 import { UserIdEditorComponent } from '../../custom-editor/user-id-editor/user-id-editor.component';
 
 @Component({
-  selector: 'admin-user-id',
-  template: `
-    <div class="flex gap-2 align-items-center mb-4">
+    selector: 'admin-user-id',
+    template: `
+    <div class="flex gap-2 items-center mb-6">
       @if (user) {
         <strong>
           {{ $any(user).metadata.last_name }}, {{ $any(user).metadata.first_name }}
@@ -40,6 +40,7 @@ import { UserIdEditorComponent } from '../../custom-editor/user-id-editor/user-i
       }
     </div>
   `,
+    standalone: false
 })
 export class UserIdComponent extends FieldWrapper implements OnInit, OnDestroy {
   private dialogService: DialogService = inject(DialogService);
@@ -75,6 +76,7 @@ export class UserIdComponent extends FieldWrapper implements OnInit, OnDestroy {
     const ref: DynamicDialogRef = this.dialogService.open(UserIdEditorComponent, {
       header: this.translateService.instant('Personal informations'),
       focusOnShow: false,
+      closable: true,
       width: '60vw',
       data: { userID: this.formControl.value },
     });

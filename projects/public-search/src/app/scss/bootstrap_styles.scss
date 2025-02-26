@@ -15,11 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@use 'sass:meta';
+@use "font-awesome/scss/font-awesome";
+@use "./styles.scss";
+
  @layer bootstrap {
-    @import 'bootstrap/scss/bootstrap';
+    @include meta.load-css('bootstrap/dist/css/bootstrap');
  }
- @import "./styles.scss";
- @import "font-awesome/scss/font-awesome";
 
  :root {
    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",

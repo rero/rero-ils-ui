@@ -16,23 +16,23 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
   <p-accordionTab>
-    <ng-template pTemplate="header">
+    <ng-template #header>
       <!-- MAIN ROW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       <div class="w-full">
-        <div class="grid mb-3">
-          <div id="holding-location-{{ holding.metadata.pid }}" class="col-12 md:col-5">
+        <div class="grid grid-cols-12 gap-4 mb-4">
+          <div id="holding-location-{{ holding.metadata.pid }}" class="col-span-12 md:col-span-5">
             {{ holding.metadata.library.name }}:&nbsp;{{ holding.metadata.location.name }}
           </div>
-          <div id="holding-category-name-{{ holding.metadata.pid }}" class="col-12 md:col-2">
+          <div id="holding-category-name-{{ holding.metadata.pid }}" class="col-span-12 md:col-span-2">
             {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}
           </div>
-          <div class="col-12 md:col-2">
+          <div class="col-span-12 md:col-span-2">
             @if (holding.metadata.public_items_count > 0) {
               {{ holding.metadata.public_items_count }}
               {{ holding.metadata.public_items_count | i18nPlural: { '=0': 'item', '=1': 'item', 'other': 'items' } | translate }}
           }
           </div>
-          <div id="holding-available-{{ holding.metadata.pid }}" class="col-12 md:col-3">
+          <div id="holding-available-{{ holding.metadata.pid }}" class="col-span-12 md:col-span-3">
             @if (holding.metadata.holdings_type === 'serial') {
                 <i class="fa fa-circle text-warning"></i>
                 {{ 'see collections and items' | translate }}

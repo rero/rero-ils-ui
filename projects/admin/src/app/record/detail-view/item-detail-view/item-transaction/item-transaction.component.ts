@@ -19,13 +19,14 @@ import { ItemsService } from '@app/admin/service/items.service';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
-import { DropdownChangeEvent } from 'primeng/dropdown';
+import { SelectChangeEvent } from 'primeng/select';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Component({
-  selector: 'admin-item-transaction',
-  templateUrl: './item-transaction.component.html'
+    selector: 'admin-item-transaction',
+    templateUrl: './item-transaction.component.html',
+    standalone: false
 })
 export class ItemTransactionComponent implements OnInit, OnDestroy {
 
@@ -113,7 +114,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   }
 
   /** Inform parent to cancel the request. */
-  emitUpdatePickupLocation(event:  DropdownChangeEvent): void {
+  emitUpdatePickupLocation(event:  SelectChangeEvent): void {
     const data = {
       pickupLocationPid: event.value,
       transaction: this.transaction

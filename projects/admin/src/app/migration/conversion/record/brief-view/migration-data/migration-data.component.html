@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2024 RERO
+  Copyright (C) 2024-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -19,23 +19,19 @@
   <a
     [routerLink]="[detailUrl.link]"
     [queryParams]="{ migration: record.metadata.migration_id }"
-    >{{ record.id }}
-    {{status}}
-    &nbsp;<p-tag
-      [severity]="status === 'complete'? 'success': status.endsWith('error') ? 'danger': 'secondary'"
+  >
+    {{ record.id }}&nbsp;
+    {{ status }}&nbsp;
+    <p-tag
+      [severity]="status === 'complete' ? 'success': status.endsWith('error') ? 'danger': 'secondary'"
       [value]="record.metadata.conversion.status | translate"
-  /></a>
+    />
+  </a>
 </h5>
 @if (record?.metadata?.conversion?.json?.title) {
-{{ record.metadata.conversion.json.title | mainTitle }}
+  {{ record.metadata.conversion.json.title | mainTitle }}
 }
-<div>
-  <i
-    ><small
-      ><span translate>Modification date</span>&nbsp;{{
-        record?.metadata?.updated_at | dateTranslate : "medium"
-      }}</small
-    ></i
-  >
+<div class="text-xs italic">
+    <span translate>Modification date</span>:&nbsp;{{ record?.metadata?.updated_at | dateTranslate : "medium" }}
 </div>
 }

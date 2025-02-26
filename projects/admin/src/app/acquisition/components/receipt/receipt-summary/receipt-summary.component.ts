@@ -28,8 +28,9 @@ import { AcqOrderStatus } from '@app/admin/acquisition/classes/order';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'admin-receipt-summary',
-  templateUrl: './receipt-summary.component.html'
+    selector: 'admin-receipt-summary',
+    templateUrl: './receipt-summary.component.html',
+    standalone: false
 })
 export class ReceiptSummaryComponent implements OnInit {
 

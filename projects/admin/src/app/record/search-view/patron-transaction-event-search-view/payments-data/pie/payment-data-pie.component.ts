@@ -21,8 +21,9 @@ import { OrganisationService } from '../../../../../service/organisation.service
 import { PaymentData } from '../../interfaces';
 
 @Component({
-  selector: 'admin-payments-data-pie',
-  templateUrl: './payment-data-pie.component.html',
+    selector: 'admin-payments-data-pie',
+    templateUrl: './payment-data-pie.component.html',
+    standalone: false
 })
 export class PaymentDataPieComponent implements OnInit {
   private organisationService: OrganisationService = inject(OrganisationService);

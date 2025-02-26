@@ -14,7 +14,6 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <ngx-spinner
   name="file-upload"
   color="#fff"
@@ -30,7 +29,7 @@
 </ngx-spinner>
 
 @if (files != null) {
-<div class="flex flex-column gap-2 py-2">
+<div class="flex flex-col gap-2 py-2">
   <admin-files-collections />
   <div>
     <h5 translate>Upload Files</h5>
@@ -47,7 +46,7 @@
       [maxFileSize]="500 * 1024 * 1024"
       (onSelect)="onSelect($event, '')"
     >
-      <ng-template pTemplate="toolbar">
+      <ng-template #toolbar>
         <div class="mt-2">
           <p class="text-warning" translate>
             By uploading a file, I declare that I am aware of the terms and
@@ -57,22 +56,14 @@
           </p>
         </div>
       </ng-template>
-      <ng-template let-file pTemplate="file"> </ng-template>
-      <ng-template let-file pTemplate="content">
+      <ng-template #file let-file></ng-template>
+      <ng-template #content let-file>
         @if (reachMaxFileLimit) {
-        <p-messages
-          [value]="[
-            {
-              severity: 'error',
-              detail:
-                'The maximum number of files is reached. No additional upload is allowed.'
-                | translate
-            }
-          ]"
-          [closable]="false"
-          [enableService]="false"
-          showTransitionOptions="0ms"
-        />
+          <p-message
+            [text]="'The maximum number of files is reached. No additional upload is allowed.' | translate"
+            severity="error"
+            showTransitionOptions="0ms"
+          />
         } @else {
         <span translate>Drag and drop files.</span>
         }
@@ -103,11 +94,11 @@
   </div>
 
   @if(filteredFiles.length > 0) {
-  <ul class="list-none alternate-color border-1 surface-border border-round p-2 m-0">
+  <ul class="list-none alternate-color border border-surface rounded-border p-2 m-0">
     @for (file of filteredFiles;track file.label) {
     <li>
-      <div class="grid align-items-center">
-        <div class="col-6">
+      <div class="grid grid-cols-12 gap-4 items-center">
+        <div class="col-span-6">
           <a
             class="text-link"
             tabindex="-1"
@@ -123,7 +114,7 @@
             >{{ file.key }} <i class="fa fa-download"></i
           ></a>
         </div>
-        <div class="col-5">
+        <div class="col-span-5">
           <div class="input-group">
             <p-inputGroup>
               <input
@@ -150,7 +141,7 @@
             </p-inputGroup>
           </div>
         </div>
-        <div class="col-1 flex justify-content-end">
+        <div class="col-span-1 flex justify-end">
           <p-button
             outlined
             tabindex="-1"

@@ -18,8 +18,9 @@ import { Component, Input } from '@angular/core';
 import { PatronTransaction } from '../../../../../classes/patron-transaction';
 
 @Component({
-  selector: 'admin-default-transaction-detail',
-  templateUrl: './default-transaction-detail.component.html'
+    selector: 'admin-default-transaction-detail',
+    templateUrl: './default-transaction-detail.component.html',
+    standalone: false
 })
 export class DefaultTransactionDetailComponent {
 

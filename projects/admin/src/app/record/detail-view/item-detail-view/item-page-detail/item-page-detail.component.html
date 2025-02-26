@@ -37,7 +37,7 @@
             />
         }
         @if (isEnabledOperationLog && record.metadata.pid) {
-          <admin-operation-logs-dialog resourceType="items" [resourcePid]="record.metadata.pid" />
+          <shared-operation-logs-dialog resourceType="items" [resourcePid]="record.metadata.pid" />
         }
       }
     </ng-container>

@@ -18,8 +18,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'shared-contribution',
-  templateUrl: './contribution.component.html'
+    selector: 'shared-contribution',
+    templateUrl: './contribution.component.html',
+    standalone: false
 })
 export class ContributionComponent implements OnInit {
 

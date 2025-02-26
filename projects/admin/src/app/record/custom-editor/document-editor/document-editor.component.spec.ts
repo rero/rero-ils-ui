@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -25,6 +25,7 @@ import { RecordModule, RecordService, RecordUiService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { EditorService } from '../../../service/editor.service';
 import { DocumentEditorComponent } from './document-editor.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const recordTestingUiService = jasmine.createSpyObj('RecordUiService', [
   'getResourceConfig'
@@ -67,26 +68,25 @@ describe('DocumentEditorComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         DocumentEditorComponent
-      ],
-      imports: [
-        HttpClientTestingModule,
-        RouterModule.forRoot([]),
+    ],
+    imports: [RouterModule.forRoot([]),
         TranslateModule.forRoot(),
         FormsModule,
         ReactiveFormsModule,
         FormlyModule.forRoot({}),
         RecordModule,
-        BrowserAnimationsModule
-      ],
-      providers: [
+        BrowserAnimationsModule],
+    providers: [
         EditorService,
         { provide: RecordService, useValue: recordTestingService },
         { provide: RecordUiService, useValue: recordTestingUiService },
-        { provide: ActivatedRoute, useValue: testingRoute }
-      ]
-    });
+        { provide: ActivatedRoute, useValue: testingRoute },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
   }));
 
   beforeEach(() => {

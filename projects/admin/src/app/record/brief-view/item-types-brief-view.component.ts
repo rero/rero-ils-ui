@@ -20,8 +20,8 @@ import { ResultItem } from '@rero/ng-core';
 
 
 @Component({
-  selector: 'admin-item-types-brief-view',
-  template: `
+    selector: 'admin-item-types-brief-view',
+    template: `
   <h5>
     <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
   </h5>
@@ -29,7 +29,8 @@ import { ResultItem } from '@rero/ng-core';
     {{ record.metadata.description }}
   }
   `,
-  styles: []
+    styles: [],
+    standalone: false
 })
 export class ItemTypesBriefViewComponent implements ResultItem {
 

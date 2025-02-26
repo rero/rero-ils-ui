@@ -15,16 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from "@angular/common/http";
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, viewChild } from '@angular/core';
 import { AppConfigService } from "@app/admin/service/app-config.service";
 import { TranslateService } from "@ngx-translate/core";
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { TabViewChangeEvent } from "primeng/tabview";
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
-  selector: "admin-statistics-cfg-view",
-  templateUrl: "./statistics-cfg-detail-view.component.html",
+    selector: "admin-statistics-cfg-view",
+    templateUrl: "./statistics-cfg-detail-view.component.html",
+    standalone: false
 })
 export class StatisticsCfgDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
 
@@ -76,20 +76,6 @@ export class StatisticsCfgDetailViewComponent implements DetailRecord, OnInit, O
       .subscribe({
         next: (res) => (this.liveData = res),
         error: () => this.liveDataError = this.translateService.instant('Data loading error')
-        });
-  }
-
-  /**
-   * Handles the TabView change event to update live values.
-   *
-   * This method is called when the active tab in the TabView changes. If the new tab index is 1,
-   * it triggers the `getLiveValues` method to refresh the data displayed in the application.
-   *
-   * @param {TabViewChangeEvent} event - The event object that contains details about the tab change.
-   */
-  tabViewChange(event: TabViewChangeEvent): void {
-    if (event.index == 1) {
-      this.getLiveValues();
-    }
+      });
   }
 }

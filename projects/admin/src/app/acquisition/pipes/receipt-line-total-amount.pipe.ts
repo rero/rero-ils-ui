@@ -20,7 +20,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { IAcqReceiptLine } from '../classes/receipt';
 
 @Pipe({
-  name: 'receiptLineTotalAmount'
+    name: 'receiptLineTotalAmount',
+    standalone: false
 })
 export class ReceiptLineTotalAmountPipe implements PipeTransform {
 

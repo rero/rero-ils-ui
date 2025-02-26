@@ -18,8 +18,9 @@
 import { AfterContentChecked, Directive, ElementRef, inject, Input, Renderer2, TemplateRef, ViewContainerRef } from '@angular/core';
 
 @Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[noContent]',
+    // eslint-disable-next-line @angular-eslint/directive-selector
+    selector: '[noContent]',
+    standalone: false
 })
 /**
  * This directive is used for ng-content.

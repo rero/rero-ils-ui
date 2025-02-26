@@ -22,8 +22,9 @@ import { catchError } from 'rxjs/operators';
 
 
 @Component({
-  selector: 'shared-thumbnail',
-  templateUrl: './thumbnail.component.html'
+    selector: 'shared-thumbnail',
+    templateUrl: './thumbnail.component.html',
+    standalone: false
 })
 export class ThumbnailComponent implements OnInit {
 
@@ -42,7 +43,7 @@ export class ThumbnailComponent implements OnInit {
   @Input() record: any;
 
   /** Style for image container */
-  @Input() styleClass = 'w-6rem';
+  @Input() styleClass = 'w-24';
 
   /**
    * Get cover url

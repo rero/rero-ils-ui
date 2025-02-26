@@ -17,22 +17,16 @@
 
 @if (holdings.length > 0) {
   @if (!user.roles.includes('patron')) {
-    <p-messages
-      [value]="[
-        {
-          severity: 'warn',
-          detail: 'Log in to see request options' | translate
-        }
-      ]"
-      [closable]="false"
-      [enableService]="false"
+    <p-message
+      [text]="'Log in to see request options' | translate"
+      severity="warn"
       showTransitionOptions="0ms"
     />
   }
   <p-accordion multiple="true" [activeIndex]="[0]">
     @for (holding of holdings; track holding) {
       <div
-        class="my-2 border-1 surface-border border-round"
+        class="my-2 border border-surface rounded-border"
         public-search-holding
         [holding]="holding"
         [viewcode]="viewcode"

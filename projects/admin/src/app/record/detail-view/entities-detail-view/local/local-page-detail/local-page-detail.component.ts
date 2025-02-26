@@ -15,13 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject } from '@angular/core';
-import { OperationLogsService } from '@app/admin/service/operation-logs.service';
+import { OperationLogsService } from '@rero/shared';
 import { DetailComponent } from '@rero/ng-core';
 import { Entity } from '@rero/shared';
 
 @Component({
-  selector: 'admin-local-page-detail',
-  templateUrl: './local-page-detail.component.html'
+    selector: 'admin-local-page-detail',
+    templateUrl: './local-page-detail.component.html',
+    standalone: false
 })
 export class LocalPageDetailComponent extends DetailComponent {
 

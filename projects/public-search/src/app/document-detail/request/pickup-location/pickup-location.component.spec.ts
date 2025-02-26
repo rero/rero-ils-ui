@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -28,6 +28,7 @@ import { of } from 'rxjs';
 import { ItemApiService } from '../../../api/item-api.service';
 import { LocationApiService } from '../../../api/location-api.service';
 import { PickupLocationComponent } from './pickup-location.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('PickupLocationComponent', () => {
@@ -54,26 +55,25 @@ describe('PickupLocationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        BrowserModule,
-        HttpClientTestingModule,
+    declarations: [PickupLocationComponent],
+    schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+    ],
+    imports: [BrowserModule,
         TranslateModule.forRoot(),
         CoreModule,
         FormsModule,
         ReactiveFormsModule,
         FormlyModule.forRoot(),
-        FormlyPrimeNGModule
-      ],
-      declarations: [ PickupLocationComponent ],
-      providers: [
+        FormlyPrimeNGModule],
+    providers: [
         { provide: LocationApiService, useValue: locationServiceSpy },
         { provide: UserService, useValue: userServiceSpy },
-        { provide: ItemApiService, useValue: itemServiceSpy }
-      ],
-      schemas: [
-        CUSTOM_ELEMENTS_SCHEMA
-      ]
-    })
+        { provide: ItemApiService, useValue: itemServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   });
 

@@ -25,8 +25,9 @@ import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
-  selector: 'admin-change-password-form',
-  templateUrl: './change-password-form.component.html'
+    selector: 'admin-change-password-form',
+    templateUrl: './change-password-form.component.html',
+    standalone: false
 })
 export class ChangePasswordFormComponent implements OnInit {
 
@@ -96,7 +97,7 @@ export class ChangePasswordFormComponent implements OnInit {
           key: 'password',
           type: 'passwordGenerator',
           props: {
-            class: 'surface-100',
+            class: 'bg-surface-100 dark:bg-surface-700',
             api: "/api/user/password/generate",
             label: 'New password',
             required: true,

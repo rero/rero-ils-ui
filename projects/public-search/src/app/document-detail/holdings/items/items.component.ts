@@ -21,8 +21,9 @@ import { ItemApiService } from '../../../api/item-api.service';
 import { QueryResponse } from '../../../record';
 
 @Component({
-  selector: 'public-search-items',
-  templateUrl: './items.component.html'
+    selector: 'public-search-items',
+    templateUrl: './items.component.html',
+    standalone: false
 })
 export class ItemsComponent implements OnInit {
 

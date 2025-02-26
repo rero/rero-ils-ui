@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -6,6 +6,7 @@ import { Loan } from '../../../../classes/loans';
 import { CirculationModule } from '../../../circulation.module';
 
 import { OverdueTransactionComponent } from './overdue-transaction.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('OverdueTransctionComponent', () => {
   let component: OverdueTransactionComponent;
@@ -13,13 +14,11 @@ describe('OverdueTransctionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule,
-        CirculationModule
-      ],
-      declarations: [ OverdueTransactionComponent ]
-    })
+    declarations: [OverdueTransactionComponent],
+    imports: [TranslateModule.forRoot(),
+        CirculationModule],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
   });
 

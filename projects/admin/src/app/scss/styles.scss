@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+@use 'sass:meta';
+@use 'font-awesome/scss/font-awesome';
+@use "primeicons/primeicons.css";
+@use "easymde/dist/easymde.min";
+@use "tailwindcss";
+@use '../../../../shared/src/scss/styles';
+@use '../menu/menu-dashboard/menu-dashboard.component';
+@use '../menu/menu-app/menu-app.component';
+@use '../record/detail-view/permission-detail-view/permission-detail-view.component';
+@use '../migration/conversion/record/detail-view/migration-data/migration-data.component';
+@use '../acquisition/components/account/account-detail-view/account-detail-view.component';
+@use '../circulation/patron/card/card.component';
+@use '../components/items/switch-location/item-switch-location/item-switch-location.component';
+
+@plugin "tailwindcss-primeui";
+
+@layer theme, base, primeng, utilities;
 
 :root {
   font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -23,29 +40,6 @@
     Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
 }
-
-@layer rero-ils-ui, primeng;
-
-@import 'font-awesome/scss/font-awesome';
-@import "primeng/resources/primeng";
-@import "primeicons/primeicons.css";
-@import "primeng/resources/themes/aura-light-blue/theme.css";
-@import "easymde/dist/easymde.min";
-
-@layer rero-ils-ui {
-  @import "primeflex/primeflex";
-  @import "../../../../shared/src/scss/styles.scss";
-  @import '../menu/menu-dashboard/menu-dashboard.component.scss';
-  @import '../menu/menu-app/menu-app.component.scss';
-  @import '../record/detail-view/document-detail-view/holding/holding.component.scss';
-  @import '../record/detail-view/entities-detail-view/remote/entities-remote-detail-view.component.scss';
-  @import '../record/detail-view/permission-detail-view/permission-detail-view.component.scss';
-  @import '../migration/conversion/record/detail-view/migration-data/migration-data.component.scss';
-  @import '../acquisition/components/account/account-detail-view/account-detail-view.component.scss';
-  @import '../circulation/patron/card/card.component.scss';
-}
-
-@layer rero-ils-ui {
   body {
     margin:0;
   }
@@ -61,15 +55,22 @@
       padding-left: calc(#{$DEPTH-PADDING} * #{$level});
     }
   }
-}
 
-.p-accordion-header, .p-panel-header {
-  @extend .surface-100;
+p-accordion-header {
+  @apply flex items-start;
+  background-color: var(--p-surface-100);
   a {
     background: transparent;
+  }
+  .p-iconwrapper {
+    @apply mt-2;
   }
 }
 
 ng-core-editor-field-password-generator {
-  @extend .w-full;
+  @apply w-full;
+}
+
+.p-panel-header {
+  background: var(--p-surface-100) !important;
 }

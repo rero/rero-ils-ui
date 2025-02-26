@@ -20,8 +20,8 @@ import { Subscription } from 'rxjs';
 import { Entity } from '../class/entity';
 
 @Component({
-  selector: 'shared-entity-link',
-  template: `
+    selector: 'shared-entity-link',
+    template: `
     @if (!external) {
       <a
         [class]="className"
@@ -34,7 +34,8 @@ import { Entity } from '../class/entity';
         [attr.href]="externalHrefLink"
       >{{ linkName }}</a>
     }
-  `
+  `,
+    standalone: false
 })
 export class EntityLinkComponent implements OnInit, OnDestroy {
 

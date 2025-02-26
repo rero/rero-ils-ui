@@ -21,8 +21,9 @@ import { CirculationStatistics } from '../../circulationStatistics';
 import { CirculationService } from '../../services/circulation.service';
 
 @Component({
-  selector: 'admin-pending',
-  templateUrl: './pending.component.html'
+    selector: 'admin-pending',
+    templateUrl: './pending.component.html',
+    standalone: false
 })
 export class PendingComponent implements OnInit {
 

@@ -19,8 +19,9 @@ import { Component, Input } from '@angular/core';
 import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
 
 @Component({
-  selector: 'admin-ill-request-item',
-  templateUrl: './ill-request-item.component.html'
+    selector: 'admin-ill-request-item',
+    templateUrl: './ill-request-item.component.html',
+    standalone: false
 })
 export class IllRequestItemComponent {
 

@@ -14,16 +14,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-@import "primeng/resources/primeng";
-@import "primeicons/primeicons.css";
-@import "primeng/resources/themes/aura-light-blue/theme.css";
-@import "easymde/dist/easymde.min";
+
+@use 'sass:meta';
+@use "primeicons/primeicons.css";
+@use "easymde/dist/easymde.min";
+
+@plugin "tailwindcss-primeui";
+
+@layer theme, rero-ils-ui, primeng;
+
+@layer theme {
+  @include meta.load-css('tailwindcss/theme');
+}
 
 @layer rero-ils-ui {
   .rero-ils-ui {
-    @import "primeflex/primeflex";
-    @import "../../../../shared/src/scss/styles.scss";
-    @import "../../../../public-search/src/app/document-detail/holdings/holding/holding.component.scss";
-    @import "../document-detail/document-detail-view/document-detail-view.component.scss";
+    @layer base {
+      @include meta.load-css("tailwindcss/preflight.css");
+    }
+    @layer utilities {
+      @include meta.load-css("tailwindcss/utilities.css");
+    }
+    @include meta.load-css("./styles-app.scss");
   }
 }
+

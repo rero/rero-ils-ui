@@ -16,18 +16,18 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @defer(when issue) {
-  <div class="grid  border-1 surface-border p-2 grid-nogutter align-items-center" [ngClass]="{'text-error': issue.metadata.issue.status === 'deleted'}">
-    <div class="col-10">
-      <div class="grid p-2 grid-nogutter align-items-center">
-        <div class="col-1 flex align-items-center">
-          <div class="flex-grow-1">
+  <div class="grid grid-cols-12 gap-4  border border-surface p-2 grid-nogutter items-center" [ngClass]="{'text-error': issue.metadata.issue.status === 'deleted'}">
+    <div class="col-span-10">
+      <div class="grid grid-cols-12 gap-4 p-2 grid-nogutter items-center">
+        <div class="col-span-1 flex items-center">
+          <div class="grow">
             <shared-open-close-button (status)="isCollapsed = $event" />
           </div>
             @if (isCollapsed) {
               <i class="fa mr-2" [ngClass]="getIcon()" [title]="iconTitle"></i>
             }
         </div>
-        <div class="col-8">
+        <div class="col-span-8">
           <a [routerLink]="['/records', 'items', 'detail', issue.metadata.pid]" class="issue-title">
             {{ issue.metadata.enumerationAndChronology }}
           </a>
@@ -43,7 +43,7 @@
           }
         </div>
         @if (isCollapsed) {
-          <span class="col-3 text-right">
+          <span class="col-span-3 text-right">
             {{ issue.metadata.issue.status_date | dateTranslate : 'shortDate' }}
           </span>
         }
@@ -60,7 +60,7 @@
             <dd>
               <i class="fa" [class]="getIcon(true)"></i>&nbsp;
               {{ issue.metadata.issue.status | translate }}
-              <span class="text-sm text-color-secondary">
+              <span class="text-sm text-muted-color">
                 ({{ 'Assigned on' | translate }} {{ issue.metadata.issue.status_date | dateTranslate }})
               </span>
             </dd>
@@ -79,7 +79,7 @@
               </dt>
               <dd>
                 {{ issue.metadata.issue.claims.counter }}
-                <span class="text-sm text-color-secondary">
+                <span class="text-sm text-muted-color">
                   ({{ 'last claim' | translate }}: {{ claimLastDate | dateTranslate: 'short' }})
                 </span>
               </dd>
@@ -88,7 +88,7 @@
         }
       </div>
     </div>
-    <div class="col-2 flex gap-1 justify-content-end">
+    <div class="col-span-2 flex gap-1 justify-end">
       <!-- CLAIMS BUTTON -->
       @if (recordPermissions?.update?.can) {
         @if (isClaimAllowed) {

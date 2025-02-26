@@ -16,38 +16,38 @@
 -->
 <form [formGroup]="exceptionForm" (ngSubmit)="onSubmit()" style="max-width: 50vw;">
   <!-- Title -->
-  <div class="grid">
-    <label for="title" class="col-2">
+  <div class="grid grid-cols-12 gap-4">
+    <label for="title" class="col-span-2">
       {{ 'Title' | translate }}&nbsp;*
     </label>
-    <div class="col-10">
+    <div class="col-span-10">
       <input
         class="w-full"
         pInputText
         formControlName="title"
         placeholder="{{ 'Please insert a title' | translate }}"
-        />
-        @if (title.invalid && (title.dirty || title.touched)) {
-          <div class="text-error">
-            @if (title.errors.required) {
-              <div translate>Title is required.</div>
-            }
-          </div>
-        }
+      />
+      @if (title.invalid && (title.dirty || title.touched)) {
+        <div class="text-error">
+          @if (title.errors.required) {
+            <div translate>Title is required.</div>
+          }
+        </div>
+      }
     </div>
-    <div class="col-offset-2 col-10">
-          <input type="radio" name="day" value="false" [checked]="is_period.value === false" (change)="onPeriodChange($event)" />
-          &nbsp;{{ 'Day' | translate }}
-          <input type="radio" name="period" value="true" [checked]="is_period.value === true" (change)="onPeriodChange($event)" />
-          &nbsp;{{ 'Period' | translate }}
+    <div class="row-start-3 col-span-10">
+      <input type="radio" name="day" value="false" [checked]="is_period.value === false" (change)="onPeriodChange($event)" />
+      &nbsp;{{ 'Day' | translate }}
+      <input type="radio" name="period" value="true" [checked]="is_period.value === true" (change)="onPeriodChange($event)" />
+      &nbsp;{{ 'Period' | translate }}
     </div>
     <!-- one Date -->
     @if (!is_period.value) {
-      <label for="date" class="col-2">
+      <label for="date" class="col-span-2">
         {{ 'Date' | translate }}&nbsp;*
       </label>
-      <div class="col-10">
-        <p-calendar appendTo="body" formControlName="date" [readonlyInput]="true" />
+      <div class="col-span-10">
+        <p-datepicker appendTo="body" formControlName="date" [readonlyInput]="true" />
         @if (date.invalid && (date.dirty || date.touched)) {
           <div class="text-error">
             @if (date.errors.required) {
@@ -62,11 +62,11 @@
     }
   <!-- Period -->
   @if (is_period.value) {
-      <label for="date" class="col-2 col-form-label required">
+      <label for="date" class="col-span-2 col-form-label required">
         {{ 'Dates' | translate }}&nbsp;*
       </label>
-      <div class="col-10">
-        <p-calendar
+      <div class="col-span-10">
+        <p-datepicker
           appendTo="body"
           formControlName="dates"
           selectionMode="range"
@@ -86,7 +86,7 @@
       </div>
   }
   <!-- open/close + times -->
-  <div class="col-offset-2 col-10">
+  <div class="row-start-3 col-span-10">
     <input type="radio" class="form-check-input" name="date-status" value="false" [checked]="is_open.value === false" (change)="onDateStatusChange($event)" />
     &nbsp;{{ 'Closed' | translate }}
     <input type="radio" class="form-check-input" name="date-status" value="true" [checked]="is_open.value === true" (change)="onDateStatusChange($event)"/>
@@ -98,7 +98,7 @@
       <em class="block mt-2" translate>Change the default closing hours for this day</em>
     }
   </div>
-    <div class="col-offset-2 col-10">
+    <div class="row-start-3 col-span-10">
       @if (times.length === 0) {
         <p-button
           (onClick)="addTime()"
@@ -108,18 +108,18 @@
           [label]="'period' | translate"
         />
       }
-      <ul class="list-none m-0 p-0">
+      <ul class="list-none">
         @for (time of times.controls; track time; let t=$index) {
           <li formArrayName="times">
             <div [formGroupName]="t">
-              <div class="grid">
-                <div class="col-5">
+              <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-5">
                   <input pInputText class="w-full" formControlName="start_time">
                 </div>
-                <div class="col-5">
+                <div class="col-span-5">
                   <input pInputText class="w-full" formControlName="end_time">
                 </div>
-                <div class="col-2">
+                <div class="col-span-2">
                   @if (times.length === 1) {
                     <p-button
                     text
@@ -177,8 +177,8 @@
         </div>
       }
     </div>
-    <div class="col-2 flex gap-2 align-items-top">
-          <p-inputSwitch
+    <div class="col-span-2 flex gap-2 align-items-top">
+          <p-toggleswitch
             formControlName="repeat"
             id="repeat"
             (onChange)="onRepeatChange($event)"
@@ -186,11 +186,11 @@
           {{ 'Repetition' | translate | titlecase }}
     </div>
     @if (repeat.value) {
-      <div class="col-10 flex flex-column gap-2">
+      <div class="col-span-10 flex flex-col gap-2">
         <label for="interval"><span translate>Repeat each</span>&nbsp;*</label>
         <div class="flex gap-2">
           <p-inputNumber [showButtons]="true"  min="1" step="1" formControlName="interval" />
-          <p-dropdown
+          <p-select
           styleClass="w-full"
           class="w-full"
           [options]="periods"
@@ -213,7 +213,7 @@
       </div>
     }
     </div>
-    <div class="flex justify-content-end">
+    <div class="flex justify-end">
     <p-button type="submit" [label]="'Save'|translate" (onClick)="onSubmit()" [disabled]="exceptionForm.invalid" />
   </div>
 </form>

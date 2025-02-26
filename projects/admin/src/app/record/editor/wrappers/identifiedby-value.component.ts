@@ -25,8 +25,8 @@ import { isbn } from 'simple-isbn';
 import { IdentifierTypes } from '../../../classes/identifiers';
 
 @Component({
-  selector: 'admin-identifiedby-value',
-  template: `
+    selector: 'admin-identifiedby-value',
+    template: `
     <ng-container #fieldComponent></ng-container>
     @if (message$ | async; as message) {
       <div class="text-error block">
@@ -42,7 +42,8 @@ import { IdentifierTypes } from '../../../classes/identifiers';
       </div>
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
 

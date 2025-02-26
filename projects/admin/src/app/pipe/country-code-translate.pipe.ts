@@ -19,7 +19,8 @@ import { inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Pipe({
-  name: 'countryCodeTranslate'
+    name: 'countryCodeTranslate',
+    standalone: false
 })
 export class CountryCodeTranslatePipe implements PipeTransform {
 

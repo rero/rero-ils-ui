@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
 import { TranslateModule } from '@ngx-translate/core';
 import { PatronProfilePasswordComponent, fieldPasswordMatchValidator } from './patron-profile-password.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('PatronProfilePasswordComponent', () => {
@@ -29,20 +30,18 @@ describe('PatronProfilePasswordComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PatronProfilePasswordComponent ],
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
+    declarations: [PatronProfilePasswordComponent],
+    imports: [TranslateModule.forRoot(),
         FormsModule,
         ReactiveFormsModule,
         FormlyModule.forRoot({
-          validators: [
-            { name: 'passwordMatch', validation: fieldPasswordMatchValidator }
-          ]
+            validators: [
+                { name: 'passwordMatch', validation: fieldPasswordMatchValidator }
+            ]
         }),
-        FormlyPrimeNGModule
-      ]
-    })
+        FormlyPrimeNGModule],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
   });
 

@@ -28,8 +28,9 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'admin-order-email-form',
-  templateUrl: './order-email-form.component.html'
+    selector: 'admin-order-email-form',
+    templateUrl: './order-email-form.component.html',
+    standalone: false
 })
 export class OrderEmailFormComponent implements OnInit, OnDestroy {
 

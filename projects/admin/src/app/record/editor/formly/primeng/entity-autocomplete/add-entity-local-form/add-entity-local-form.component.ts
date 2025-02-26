@@ -25,8 +25,9 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'admin-add-entity-local-form',
-  templateUrl: './add-entity-local-form.component.html'
+    selector: 'admin-add-entity-local-form',
+    templateUrl: './add-entity-local-form.component.html',
+    standalone: false
 })
 export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
 

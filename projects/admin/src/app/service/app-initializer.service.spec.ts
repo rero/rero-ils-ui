@@ -15,25 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule, UserService } from '@rero/shared';
 import { AppInitializerService } from './app-initializer.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('Service: AppInit', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
-        SharedModule
-      ],
-      providers: [
+    imports: [TranslateModule.forRoot(),
+        SharedModule],
+    providers: [
         AppInitializerService,
-        UserService
-      ]
-    });
+        UserService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
   });
 
   it('should initialize app', inject([AppInitializerService], (service: AppInitializerService) => {

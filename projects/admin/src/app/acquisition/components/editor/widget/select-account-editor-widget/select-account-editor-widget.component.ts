@@ -27,9 +27,10 @@ import { AcqAccountApiService } from '../../../../api/acq-account-api.service';
 import { orderAccountsAsTree } from '../../../../utils/account';
 
 @Component({
-  selector: 'admin-select-account-editor-widget',
-  templateUrl: './select-account-editor-widget.component.html',
-  changeDetection: ChangeDetectionStrategy.Default,
+    selector: 'admin-select-account-editor-widget',
+    templateUrl: './select-account-editor-widget.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    standalone: false
 })
 export class SelectAccountEditorWidgetComponent extends FieldType implements OnInit {
   // services

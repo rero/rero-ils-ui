@@ -15,9 +15,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <p-timeline [value]="events()">
-  <ng-template pTemplate="marker" let-event>
+  <ng-template #marker let-event>
     <span
-      class="flex w-1rem h-1rem align-items-center justify-content-center text-white border-circle z-1 shadow-1"
+      class="flex w-4 h-4 items-center justify-center text-white rounded-full z-10 shadow-sm"
       [ngClass]="{
         'bg-orange-200': event.type === patronTransactionEventType.DISPUTE,
         'bg-red-200': event.type === patronTransactionEventType.FEE,
@@ -27,7 +27,7 @@
     >
     </span>
   </ng-template>
-  <ng-template pTemplate="content" let-event>
+  <ng-template #content let-event>
     <div class="flex gap-2">
       <div>{{ eventLabel(event) }}</div>
         @if (event.type !== patronTransactionEventType.DISPUTE) {
@@ -45,22 +45,22 @@
       </div>
       <div id="event-{{ event.pid }}" class="my-2" [hidden]="true">
         @if (event.note) {
-          <div class="grid">
-            <div class="col-3">
+          <div class="grid grid-cols-12 gap-4">
+            <div class="col-span-3">
               <i class="fa fa-comment-o"></i>&nbsp;
               {{ 'Note' | translate }}
             </div>
-            <div class="col-8">{{ event.note }}</div>
+            <div class="col-span-8">{{ event.note }}</div>
           </div>
         }
         @if (event.operator) {
           @if (event.operator.pid | getRecord:'patrons' | async; as operator) {
-            <div class="grid">
-              <div class="col-3">
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-3">
                 <i class="fa fa-user"></i>&nbsp;
                 {{ 'Operator' | translate }}
               </div>
-              <div class="col-8">
+              <div class="col-span-8">
                 @if ($any(operator).metadata.last_name) {
                   {{ $any(operator).metadata.last_name }}
                 }
@@ -76,26 +76,26 @@
         }
         @if (event.library) {
           @if (event.library.pid | getRecord:'libraries' | async; as library) {
-            <div class="grid">
-              <div class="col-3">
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-3">
                 <i class="fa fa-map-marker"></i>&nbsp;
                 {{ 'Library' | translate }}
               </div>
-              <div class="col-8">{{ $any(library).metadata.name }}</div>
+              <div class="col-span-8">{{ $any(library).metadata.name }}</div>
             </div>
           }
         }
         @if (event.steps) {
           @for (step of event.steps; track step; let first = $first) {
-            <div class="grid mb-1">
-              <div class="col-3" [class.label-title]="first">
+            <div class="grid grid-cols-12 gap-4 mb-1">
+              <div class="col-span-3" [class.label-title]="first">
                 @if (first) {
                   <i class="fa fa-cubes"></i>&nbsp;
                   {{ 'Steps' | translate }}
                 }
               </div>
-              <div class="col-7">{{ step.timestamp | dateTranslate: 'shortDate' }}</div>
-              <div class="col-2">
+              <div class="col-span-7">{{ step.timestamp | dateTranslate: 'shortDate' }}</div>
+              <div class="col-span-2">
                 @if (event.type !== patronTransactionEventType.DISPUTE) {
                   <p-tag
                     [value]="step.amount | currency: organisation.default_currency"
@@ -109,7 +109,7 @@
       </div>
   </ng-template>
 
-  <ng-template pTemplate="opposite" let-event>
+  <ng-template #opposite let-event>
     <small class="p-text-secondary">
       <i class="fa fa-calendar-o"></i> {{ event.creation_date | dateTranslate: 'shortDate' }}
       <i class="fa fa-clock-o pl-1"></i> {{ event.creation_date | dateTranslate: 'HH:mm:ss' }}

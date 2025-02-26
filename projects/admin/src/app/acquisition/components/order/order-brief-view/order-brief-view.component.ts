@@ -23,8 +23,9 @@ import { AcqNoteType } from '../../../classes/common';
 import { AcqOrderStatus, IAcqOrder } from '../../../classes/order';
 
 @Component({
-  selector: 'admin-acquisition-order-brief-view',
-  templateUrl: './order-brief-view.component.html'
+    selector: 'admin-acquisition-order-brief-view',
+    templateUrl: './order-brief-view.component.html',
+    standalone: false
 })
 export class OrderBriefViewComponent implements ResultItem, OnInit {
 

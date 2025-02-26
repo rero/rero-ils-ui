@@ -15,8 +15,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (transaction?.note) {
-  <div class="grid">
-    <div class="col-2" translate>Note</div>
-    <div class="col-10">{{ transaction.note }}</div>
+  <div class="grid grid-cols-12">
+    <div class="col-span-2" translate>Note</div>
+    <div class="col-span-10">{{ transaction.note }}</div>
   </div>
 }

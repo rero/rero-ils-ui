@@ -22,9 +22,10 @@ import { IPermissions, JoinPipe, PERMISSIONS, UserService } from '@rero/shared';
 import { of, Subscription, switchMap } from 'rxjs';
 
 @Component({
-  selector: 'admin-local-field',
-  templateUrl: './local-field.component.html',
-  providers: [JoinPipe]
+    selector: 'admin-local-field',
+    templateUrl: './local-field.component.html',
+    providers: [JoinPipe],
+    standalone: false
 })
 export class LocalFieldComponent implements OnInit {
 

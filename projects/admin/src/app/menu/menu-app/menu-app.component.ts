@@ -24,8 +24,9 @@ import { MenuTranslateService } from '../service/menu-translate.service';
 import { MenuService } from '../service/menu.service';
 
 @Component({
-  selector: 'admin-menu-app',
-  templateUrl: './menu-app.component.html',
+    selector: 'admin-menu-app',
+    templateUrl: './menu-app.component.html',
+    standalone: false
 })
 export class MenuAppComponent implements OnInit, OnDestroy {
 

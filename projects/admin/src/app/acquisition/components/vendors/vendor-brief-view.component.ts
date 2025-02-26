@@ -19,8 +19,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
 
 @Component({
-  selector: 'admin-vendor-brief-view',
-  template: `
+    selector: 'admin-vendor-brief-view',
+    template: `
     <h5>
       <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
     </h5>
@@ -39,7 +39,8 @@ import { ResultItem } from '@rero/ng-core';
       }
     }
   `,
-  styleUrls: []
+    styleUrls: [],
+    standalone: false
 })
 export class VendorBriefViewComponent implements ResultItem, OnInit {
 

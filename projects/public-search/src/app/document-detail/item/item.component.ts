@@ -20,8 +20,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { ItemApiService } from '../../api/item-api.service';
 
 @Component({
-  selector: 'public-search-item',
-  templateUrl: './item.component.html'
+    selector: 'public-search-item',
+    templateUrl: './item.component.html',
+    standalone: false
 })
 export class ItemComponent {
 

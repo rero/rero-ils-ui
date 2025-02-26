@@ -19,7 +19,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { AcqNoteType, IAcqNote } from '../classes/common';
 
 @Pipe({
-  name: 'noteBadgeColor'
+    name: 'noteBadgeColor',
+    standalone: false
 })
 export class NoteBadgeColorPipe implements PipeTransform {
 

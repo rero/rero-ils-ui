@@ -18,8 +18,9 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'admin-migration-data',
-  templateUrl: './migration-data.component.html',
+    selector: 'admin-migration-data',
+    templateUrl: './migration-data.component.html',
+    standalone: false
 })
 export class MigrationDataBriefComponent {
   // current record

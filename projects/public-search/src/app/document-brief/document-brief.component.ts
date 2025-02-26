@@ -19,8 +19,9 @@ import { Component, inject, Input } from '@angular/core';
 import { DocumentApiService } from '../api/document-api.service';
 
 @Component({
-  selector: 'public-search-document-brief',
-  templateUrl: './document-brief.component.html'
+    selector: 'public-search-document-brief',
+    templateUrl: './document-brief.component.html',
+    standalone: false
 })
 export class DocumentBriefComponent {
 

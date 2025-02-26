@@ -16,18 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import 'bootstrap/scss/bootstrap';
 
 // TODO :: try to find a way to remove '::ng-deep' selector.
 //         Without this one, the css doesn't have any effect on primeNg component
-:host ::ng-deep .p-dropdown {
-  .p-dropdown-item-group {
-    @extend .small;
-    @extend .font-weight-bold;
+:host ::ng-deep .p-select {
+  .p-select-option-group {
+    // @apply text-sm;
+    @apply font-bold;
   }
 
-  .p-dropdown-item {
-    @extend .ml-4;
-    @extend .py-2;
+  .p-select-option {
+    @apply ml-4;
+    @apply py-2;
   }
 }

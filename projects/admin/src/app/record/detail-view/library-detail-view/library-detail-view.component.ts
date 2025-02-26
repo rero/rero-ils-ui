@@ -24,8 +24,9 @@ import { Observable, Subscription } from 'rxjs';
 import { Library } from '../../../classes/library';
 
 @Component({
-  selector: 'admin-library-detail-view',
-  templateUrl: './library-detail-view.component.html'
+    selector: 'admin-library-detail-view',
+    templateUrl: './library-detail-view.component.html',
+    standalone: false
 })
 export class LibraryDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
 

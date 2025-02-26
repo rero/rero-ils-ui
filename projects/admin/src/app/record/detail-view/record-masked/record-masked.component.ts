@@ -17,8 +17,8 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'admin-record-masked',
-  template: `
+    selector: 'admin-record-masked',
+    template: `
     @if (record.metadata | keyExists:'_masked') {
       <i
         class="fa"
@@ -35,7 +35,8 @@ import { Component, Input } from '@angular/core';
         <label class="ml-1" translate>No masked</label>
       }
     }
-  `
+  `,
+    standalone: false
 })
 export class RecordMaskedComponent {
 

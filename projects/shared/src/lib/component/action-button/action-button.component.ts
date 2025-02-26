@@ -18,8 +18,8 @@
 import { Component, input, output } from '@angular/core';
 
 @Component({
-  selector: 'shared-action-button',
-  template: `
+    selector: 'shared-action-button',
+    template: `
     @if (!disabled()) {
       @if (routerLink()?.length > 0) {
         <p-button
@@ -64,7 +64,8 @@ import { Component, input, output } from '@angular/core';
         <span [innerHTML]="message() | nl2br"></span>
       </ng-template>
     }
-  `
+  `,
+    standalone: false
 })
 export class ActionButtonComponent {
   label = input<string>();

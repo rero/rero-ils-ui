@@ -15,18 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { APP_INITIALIZER, DoBootstrap, inject, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { CoreConfigService, TranslateLoader } from '@rero/ng-core';
-import { RemoteSearchComponent, SharedModule } from '@rero/shared';
+import { CoreConfigService, primeNGConfig, TranslateLoader, TruncateTextPipe } from '@rero/ng-core';
+import { MainTitlePipe, RemoteSearchComponent, SharedModule } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { AppInitializerService } from './app-initializer.service';
 import { RouterModule } from '@angular/router';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { providePrimeNG } from 'primeng/config';
 
 /** function to instantiate the application  */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
@@ -34,31 +36,38 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
 }
 
 @NgModule({
-    declarations: [],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ReactiveFormsModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: BaseTranslateLoader,
-                useClass: TranslateLoader,
-                deps: [CoreConfigService, HttpClient]
-            },
-            isolate: false
-        }),
-        SharedModule
-    ],
-    providers: [
-        // TODO: remove this to avoid api call. It still needed because
-        //       `_getContributionName` need API config.
-        { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true }
-    ]
+  declarations: [],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    RouterModule.forRoot([]),
+    ReactiveFormsModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: BaseTranslateLoader,
+        useClass: TranslateLoader,
+        deps: [CoreConfigService, HttpClient],
+      },
+      isolate: false,
+    }),
+    SharedModule,
+  ],
+  providers: [
+    // TODO: remove this to avoid api call. It still needed because
+    //       `_getContributionName` need API config.
+    {
+      provide: APP_INITIALIZER, useFactory: appInitFactory,
+      deps: [AppInitializerService],
+      multi: true
+    },
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimationsAsync(),
+    providePrimeNG(primeNGConfig),
+    MainTitlePipe,
+    TruncateTextPipe
+  ],
 })
 export class AppModule implements DoBootstrap {
-
   private injector: Injector = inject(Injector);
 
   ngDoBootstrap(): void {

@@ -5,16 +5,16 @@
     <title>SearchBar</title>
     <base href="/">
   <style>
-    @layer bootstrap, primeng, rero-ils-ui;
+    @layer bootstrap, primeng, components, rero-ils-ui, utilities;
   </style>
   </head>
   <body>
     <div class="container">
       <h4>Search bar</h4>
       <div style="margin-bottom: 10px; width: 600px">
-        <main-search-bar placeholder="Search (Aoste view)" viewcode="aoste" class="rero-ils-ui"/>
+        <main-search-bar placeholder="Search (Aoste view)" viewcode="aoste" class="rero-ils-ui"></main-search-bar>
       </div>
-      <main-search-bar styleclass="w-full" inputstyleclass="text-lg w-full" placeholder="Search (Admin view)" class="rero-ils-ui" internal />
+      <main-search-bar styleclass="w-full" inputstyleclass="text-lg w-full" placeholder="Search (Admin view)" class="rero-ils-ui" internal></main-search-bar>
     </div>
   </body>
 </html>

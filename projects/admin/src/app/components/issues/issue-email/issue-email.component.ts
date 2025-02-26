@@ -24,8 +24,9 @@ import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
-  selector: 'admin-issue-email',
-  templateUrl: './issue-email.component.html'
+    selector: 'admin-issue-email',
+    templateUrl: './issue-email.component.html',
+    standalone: false
 })
 export class IssueEmailComponent implements OnInit {
 

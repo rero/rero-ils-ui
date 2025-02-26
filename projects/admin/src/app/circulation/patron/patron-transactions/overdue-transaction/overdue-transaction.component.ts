@@ -24,8 +24,9 @@ import { RecordService } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
 
 @Component({
-  selector: 'admin-overdue-transaction',
-  templateUrl: './overdue-transaction.component.html'
+    selector: 'admin-overdue-transaction',
+    templateUrl: './overdue-transaction.component.html',
+    standalone: false
 })
 export class OverdueTransactionComponent implements OnInit {
 

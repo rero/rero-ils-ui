@@ -30,8 +30,9 @@ import { PatronTransactionApiService } from 'projects/admin/src/app/api/patron-t
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
 
 @Component({
-  selector: 'admin-patron-fee',
-  templateUrl: './patron-fee.component.html'
+    selector: 'admin-patron-fee',
+    templateUrl: './patron-fee.component.html',
+    standalone: false
 })
 export class PatronFeeComponent implements OnInit {
 
@@ -101,7 +102,6 @@ export class PatronFeeComponent implements OnInit {
 
   /** Init form model */
   private _initForm(properties: any): void {
-    console.log(properties.type);
     this.formFields = [{
       key: 'type',
       type: 'select',

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -23,6 +23,7 @@ import { cloneDeep } from 'lodash-es';
 import { ErrorPageComponent } from 'projects/admin/src/app/error/error-page/error-page.component';
 
 import { PermissionGuard } from './permission.guard';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PermissionGuard', () => {
   let guard: PermissionGuard;
@@ -41,12 +42,10 @@ describe('PermissionGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot(routes),
-        TranslateModule.forRoot(),
-        HttpClientTestingModule
-      ]
-    });
+    imports: [RouterModule.forRoot(routes),
+        TranslateModule.forRoot()],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
     guard = TestBed.inject(PermissionGuard);
     permissionsService = TestBed.inject(PermissionsService);
     router = TestBed.inject(Router);

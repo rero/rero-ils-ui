@@ -20,8 +20,9 @@ import { HoldingsApiService } from '@app/admin/api/holdings-api.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
-  selector: 'admin-holding-organisation',
-  templateUrl: './holding-organisation.component.html'
+    selector: 'admin-holding-organisation',
+    templateUrl: './holding-organisation.component.html',
+    standalone: false
 })
 export class HoldingOrganisationComponent implements OnInit {
 

@@ -17,10 +17,10 @@
  */
 import { TestBed } from '@angular/core/testing';
 import { DocumentApiService } from './document-api.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentApiService', () => {
   let service: DocumentApiService;
@@ -37,13 +37,13 @@ describe('DocumentApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
-      providers: [
-        { provide: HttpClient, useValue: httpClientSpy }
-      ]
-    });
+    imports: [],
+    providers: [
+        { provide: HttpClient, useValue: httpClientSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     service = TestBed.inject(DocumentApiService);
   });
 

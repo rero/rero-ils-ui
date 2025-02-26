@@ -21,8 +21,9 @@ import { CirculationStatistics } from '../../circulationStatistics';
 import { CirculationService } from '../../services/circulation.service';
 
 @Component({
-  selector: 'admin-pickup',
-  templateUrl: './pickup.component.html'
+    selector: 'admin-pickup',
+    templateUrl: './pickup.component.html',
+    standalone: false
 })
 export class PickupComponent implements OnInit {
 

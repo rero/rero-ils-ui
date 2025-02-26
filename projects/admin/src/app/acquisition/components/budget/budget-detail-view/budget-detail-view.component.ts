@@ -23,8 +23,9 @@ import { switchMap } from 'rxjs/operators';
 import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';
 
 @Component({
-  selector: 'admin-budget-detail-view',
-  templateUrl: './budget-detail-view.component.html'
+    selector: 'admin-budget-detail-view',
+    templateUrl: './budget-detail-view.component.html',
+    standalone: false
 })
 export class BudgetDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
 

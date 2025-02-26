@@ -52,7 +52,7 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
             canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ACOL_CREATE) }),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
             preUpdateRecord: (data: any) => this.fieldsToRemoved(data, ['is_current_budget']),
-            redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_order, '/records/acq_orders/detail'),
+            redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_order, '/acquisition/records/acq_orders/detail'),
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
               const formWidget = jsonSchema.widget;
               if (formWidget?.formlyConfig?.props?.fieldMap === 'amount') {

@@ -15,24 +15,24 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (transaction !== undefined) {
-  <div [ngClass]="{ 'callout callout-warning': isDisputed(), 'border rounded': !isDisputed()}" class="p-2">
-    <div class="grid grid-nogutter align-items-start">
-      <div class="col-2 flex gap-2">
+  <div [ngClass]="{ 'callout callout-warning': isDisputed(), 'border rounded border-gray-200': !isDisputed()}" class="p-2">
+    <div class="grid grid-cols-12 grid-nogutter items-start">
+      <div class="col-span-2 flex gap-2">
         <shared-open-close-button (status)="isCollapsed = $event" />
         <div>
           {{ transaction.creation_date | dateTranslate :'shortDate' }}
         </div>
       </div>
-      <div class="col-3">{{ transaction.type | translate }}</div>
-      <div class="col-3">
+      <div class="col-span-3">{{ transaction.type | translate }}</div>
+      <div class="col-span-3">
         @if (transaction.library) {
           <span>{{ transaction.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</span>
         }
       </div>
-      <div class="col-2 flex justify-content-end">{{ transactionAmount | currency: organisation.default_currency }}</div>
-      <div class="col-2 flex justify-content-end" dropdown>
+      <div class="col-span-2 flex justify-end">{{ transactionAmount | currency: organisation.default_currency }}</div>
+      <div class="col-span-2 flex justify-end">
         @if (transaction.status === patronTransactionStatus.OPEN) {
-          <p-dropdown
+          <p-select
             [placeholder]="'Action'|translate"
             [options]="menuItems"
             [(ngModel)]="menuSelectedAction"
@@ -45,7 +45,7 @@
       <div class="mt-2">
         <!-- Transaction detail -->
         <h6 translate>Details</h6>
-        <section class="mb-3" [ngSwitch]="transaction?.type">
+        <section class="mb-4" [ngSwitch]="transaction?.type">
           <admin-overdue-transaction-detail [transaction]="transaction" *ngSwitchCase="'overdue'" />
           <admin-default-transaction-detail [transaction]="transaction" *ngSwitchDefault />
         </section>

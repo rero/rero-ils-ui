@@ -20,8 +20,9 @@ import { RecordSearchComponent, RecordSearchPageComponent, SearchResult } from '
 import { PaymentData } from './interfaces';
 
 @Component({
-  selector: 'admin-patron-transaction-event-search-view',
-  templateUrl: './patron-transaction-event-search-view.component.html',
+    selector: 'admin-patron-transaction-event-search-view',
+    templateUrl: './patron-transaction-event-search-view.component.html',
+    standalone: false
 })
 export class PatronTransactionEventSearchViewComponent extends RecordSearchPageComponent {
 

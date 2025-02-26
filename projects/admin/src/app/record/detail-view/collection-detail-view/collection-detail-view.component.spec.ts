@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { Nl2brPipe, RecordModule } from '@rero/ng-core';
@@ -26,6 +26,7 @@ import { FrontpageComponent } from '../../../widgets/frontpage/frontpage.compone
 import { CollectionDetailViewComponent } from './collection-detail-view.component';
 import { CollectionItemsComponent } from './collection-items/collection-items.component';
 import { of } from 'rxjs';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CollectionDetailViewComponent', () => {
   let component: CollectionDetailViewComponent;
@@ -33,22 +34,21 @@ describe('CollectionDetailViewComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         CollectionDetailViewComponent,
         CollectionItemsComponent,
         FrontpageComponent
-      ],
-      imports: [
-        RecordModule,
+    ],
+    imports: [RecordModule,
         AppRoutingModule,
-        HttpClientTestingModule,
         TranslateModule.forRoot(),
-        SharedModule
-      ],
-      providers: [
-        Nl2brPipe
-      ]
-    })
+        SharedModule],
+    providers: [
+        Nl2brPipe,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   }));
 

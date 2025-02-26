@@ -22,8 +22,9 @@ import { RecordService } from '@rero/ng-core';
 import { map, mergeMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'admin-overdue-transaction-detail',
-  templateUrl: './overdue-transaction-detail.component.html'
+    selector: 'admin-overdue-transaction-detail',
+    templateUrl: './overdue-transaction-detail.component.html',
+    standalone: false
 })
 export class OverdueTransactionDetailComponent implements OnInit {
 

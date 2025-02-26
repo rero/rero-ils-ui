@@ -85,7 +85,7 @@
   </dl>
 
   @if ($any(patron).second_address) {
-    <h4 class="mt-3" translate>Second address</h4>
+    <h4 class="mt-4" translate>Second address</h4>
     <dl class="metadata">
       @if ($any(patron).second_address.street) {
         <dt translate>Street</dt>
@@ -114,7 +114,7 @@
   }
 
   @if ($any(patron).isLibrarian) {
-    <h4 class="mt-3" translate>Librarian Information</h4>
+    <h4 class="mt-4" translate>Librarian Information</h4>
     <dl class="metadata">
       <dt translate>Library</dt>
       <dd>
@@ -123,7 +123,7 @@
     </dl>
   }
   @if ($any(patron).patron) {
-    <h4 class="mt-3" translate>Patron Information</h4>
+    <h4 class="mt-4" translate>Patron Information</h4>
     <dl class="metadata">
       <dt>
         <span [ngPlural]="$any(patron).roles.length">
@@ -165,7 +165,7 @@
   }
 
   @if (canUpdate()) {
-    <div class="flex gap-2 mt-3">
+    <div class="flex gap-2 mt-4">
       <p-button
         id="profile-change-password-button"
         outlined
@@ -180,5 +180,5 @@
     </div>
   }
 } @placeholder {
-  <div class="font-bold mx-2 my-4" translate>Loading in progress</div>
+  <div class="font-bold mx-2 my-6" translate>Loading in progress</div>
 }

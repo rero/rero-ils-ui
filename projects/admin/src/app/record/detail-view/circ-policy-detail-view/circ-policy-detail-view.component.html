@@ -17,11 +17,11 @@
 
 @if (record) {
   <header>
-    <h1 class="mb-3">{{ record.metadata.name | translate }}</h1>
+    <h1>{{ record.metadata.name | translate }}</h1>
   </header>
-  <article>
+  <article class="mt-4">
     <!-- DETAILS -->
-    <section class="m-2 p-2">
+    <section>
       <dl class="metadata">
         <dt translate>Name</dt>
         <dd id="cipo-name">{{ record.metadata.name }}</dd>
@@ -33,7 +33,7 @@
         <dd id="cipo-level">
           @if (record.metadata.policy_library_level) {
             {{ 'Library' | translate }}
-            <ul class="list-none m-0 p-0">
+            <ul class="list-none">
               @for (library of record.metadata.libraries; track library) {
                 <li>
                   <i class="fa fa-university"></i>&nbsp;
@@ -49,9 +49,9 @@
     </section>
 
     <!-- CIRCULATION SETTINGS -->
-    <section class="mt-3">
-      <p-fieldset [legend]="'Circulation settings'|translate">
-        <dl class="metadata">
+    <section class="mt-4">
+      <p-panel [header]="'Circulation settings'|translate">
+        <dl class="metadata mt-4">
           <!-- IS DEFAULT -->
           <dt translate>Is default</dt>
           <dd>
@@ -105,15 +105,15 @@
             }
           </dd>
         </dl>
-    </p-fieldset>
+    </p-panel>
     </section>
 
     <!-- REMINDERS -->
     @if (reminders.length > 0) {
-      <section class="mt-3">
-        <p-fieldset [legend]="'Reminders'|translate">
-          <p-table [value]="record.metadata.reminders">
-            <ng-template pTemplate="header">
+      <section class="mt-4">
+        <p-panel [header]="'Reminders'|translate">
+          <p-table stripedRows [value]="record.metadata.reminders" size="small">
+            <ng-template #header>
               <tr>
                 <th translate>Type</th>
                 <th translate>Days Delay</th>
@@ -121,7 +121,7 @@
                 <th translate>Amount</th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-reminder>
+            <ng-template #body let-reminder>
               <tr>
                 <td>{{ reminder.type | translate }}</td>
                 <td>
@@ -142,22 +142,22 @@
               </tr>
             </ng-template>
           </p-table>
-        </p-fieldset>
+        </p-panel>
       </section>
     }
 
     <!-- OVERDUE FEES -->
     @if (overdues?.length > 0) {
-      <section class="mt-3">
-        <p-fieldset [legend]="'Overdue fees'|translate">
-          <p-table [value]="overdues">
-            <ng-template pTemplate="header">
+      <section class="mt-4">
+        <p-panel [header]="'Overdue fees'|translate">
+          <p-table stripedRows [value]="overdues" size="small">
+            <ng-template #header>
               <tr>
                 <th translate>Interval of days</th>
                 <th translate>Amount/day</th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-overdue>
+            <ng-template #body let-overdue>
               <tr>
                 <td>
                   {{ overdue.from }}
@@ -165,7 +165,7 @@
                   @if (overdue.to) {
                     {{ overdue.to }}
                   } @else {
-                    <span class="text-color-secondary">&infin;</span>
+                    <span class="text-muted-color">&infin;</span>
                   }
                 </td>
                 <td>
@@ -174,18 +174,18 @@
               </tr>
             </ng-template>
           </p-table>
-        </p-fieldset>
+        </p-panel>
         </section>
     }
 
     <!-- APPLICATION -->
     @if (record.metadata.settings) {
-      <section class="mt-3">
-        <p-fieldset [legend]="'Application'|translate">
-          <p-table styleClass="p-datatable-striped" [value]="settings | keyvalue">
-            <ng-template pTemplate="header">
+      <section class="mt-4">
+        <p-panel [header]="'Application'|translate">
+          <p-table stripedRows [value]="settings | keyvalue" size="small">
+            <ng-template #header>
               <tr>
-                <th rowspan="2" class="vertical-align-bottom pl-0" translate>Patron types</th>
+                <th rowspan="2" class="align-bottom pl-0" translate>Patron types</th>
                 <th [attr.colspan]="itemTypes.size" class="text-center" translate>Item types</th>
               </tr>
               <tr>
@@ -196,7 +196,7 @@
                 }
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-setting>
+            <ng-template #body let-setting>
               <tr>
                 <th id="ptty-{{setting.key}}" class="text-left">
                   {{ setting.key | getRecord: 'patron_types' : 'field' : 'name' | async }}
@@ -213,7 +213,7 @@
               </tr>
             </ng-template>
           </p-table>
-        </p-fieldset>
+        </p-panel>
       </section>
     }
   </article>

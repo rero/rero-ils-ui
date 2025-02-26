@@ -25,8 +25,9 @@ import { interval, Subscription } from 'rxjs';
 import { ItemsService } from '../../service/items.service';
 
 @Component({
-  selector: 'admin-circulation-main-request',
-  templateUrl: './main-request.component.html'
+    selector: 'admin-circulation-main-request',
+    templateUrl: './main-request.component.html',
+    standalone: false
 })
 export class MainRequestComponent implements OnInit, OnDestroy {
 

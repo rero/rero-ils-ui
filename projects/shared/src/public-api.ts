@@ -71,3 +71,9 @@ export * from './lib/pipe/main-title.pipe';
 export * from './lib/pipe/document-provision-activity.pipe';
 export * from './lib/pipe/array-translate.pipe';
 export * from './lib/component/documents/document-description/other-edition/other-edition.component';
+export * from './lib/component/operation-logs/operation-logs.component';
+export * from './lib/component/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
+export * from './lib/service/operation-logs.service';
+export * from './lib/api/operation-logs-api.service';
+export * from './lib/pipe/main-title-relation.pipe';
+

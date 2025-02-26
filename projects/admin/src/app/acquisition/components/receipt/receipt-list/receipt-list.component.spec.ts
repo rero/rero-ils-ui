@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppModule } from '../../../../app.module';
@@ -24,6 +24,7 @@ import { AcquisitionModule } from '../../../acquisition.module';
 import { IAcqOrder } from '../../../classes/order';
 
 import { ReceiptListComponent } from './receipt-list.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ReceiptListComponent', () => {
   let component: ReceiptListComponent;
@@ -35,14 +36,12 @@ describe('ReceiptListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
+    declarations: [ReceiptListComponent],
+    imports: [TranslateModule.forRoot(),
         AcquisitionModule,
-        AppModule
-      ],
-      declarations: [ ReceiptListComponent ]
-    })
+        AppModule],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
   });
 

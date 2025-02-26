@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
@@ -23,6 +23,7 @@ import { of } from 'rxjs';
 import { PatronService } from '../../../service/patron.service';
 import { CirculationModule } from '../../circulation.module';
 import { HistoryComponent } from './history.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('HistoryComponent', () => {
   let component: HistoryComponent;
@@ -35,16 +36,15 @@ describe('HistoryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot(),
+    imports: [TranslateModule.forRoot(),
         RouterTestingModule,
-        HttpClientTestingModule,
-        CirculationModule
-      ],
-      providers: [
-        { provide: PatronService, useValue: patronServiceSpy }
-      ],
-    })
+        CirculationModule],
+    providers: [
+        { provide: PatronService, useValue: patronServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   }));
 

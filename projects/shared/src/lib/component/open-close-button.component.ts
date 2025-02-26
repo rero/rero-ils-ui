@@ -17,8 +17,8 @@
 import { Component, input, OnChanges, output, SimpleChanges } from '@angular/core';
 
 @Component({
-  selector: 'shared-open-close-button',
-  template: `
+    selector: 'shared-open-close-button',
+    template: `
   <p-button
     [styleClass]="styleClass()"
     [icon]="internalStatus ? 'fa fa-caret-right' : 'fa fa-caret-down'"
@@ -27,7 +27,8 @@ import { Component, input, OnChanges, output, SimpleChanges } from '@angular/cor
     severity="secondary"
     (onClick)="updateStatus()"
   />
-  `
+  `,
+    standalone: false
 })
 export class OpenCloseButtonComponent implements OnChanges {
 

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2019-2024 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,28 +19,19 @@
 import { NgModule } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel';
-import { PaginatorModule } from 'primeng/paginator';
-import { SkeletonModule } from 'primeng/skeleton';
-import { TabViewModule } from 'primeng/tabview';
-import { TagModule } from 'primeng/tag';
-import { TimelineModule } from 'primeng/timeline';
 import { DialogModule } from 'primeng/dialog';
-import { ToastModule } from 'primeng/toast';
-import { MessagesModule } from 'primeng/messages';
-
+import { PaginatorModule } from 'primeng/paginator';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
 
 @NgModule({
   exports: [
-    SkeletonModule,
-    TabViewModule,
-    TimelineModule,
-    CarouselModule,
-    TagModule,
     ButtonModule,
-    PaginatorModule,
+    CarouselModule,
     DialogModule,
-    MessagesModule,
-    ToastModule
+    PaginatorModule,
+    TableModule,
+    TagModule,
   ]
 })
 export class PrimeNgImportModule { }
