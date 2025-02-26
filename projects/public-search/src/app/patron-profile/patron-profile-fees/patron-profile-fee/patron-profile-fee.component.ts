@@ -21,8 +21,9 @@ import { PatronTransactionEventApiService } from '../../../api/patron-transactio
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 
 @Component({
-  selector: 'public-search-patron-profile-fee',
-  templateUrl: './patron-profile-fee.component.html'
+    selector: 'public-search-patron-profile-fee',
+    templateUrl: './patron-profile-fee.component.html',
+    standalone: false
 })
 export class PatronProfileFeeComponent {
 

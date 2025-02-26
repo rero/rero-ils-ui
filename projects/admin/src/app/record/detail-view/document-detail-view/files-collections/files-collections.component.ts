@@ -14,19 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
-import { pairwise, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'admin-files-collections',
-  templateUrl: './files-collections.component.html',
-  styleUrl: './files-collections.component.scss',
+    selector: 'admin-files-collections',
+    templateUrl: './files-collections.component.html',
+    standalone: false
 })
 export class FilesCollectionsComponent implements OnInit, OnDestroy {
 

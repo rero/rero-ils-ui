@@ -20,8 +20,9 @@ import { User } from '@rero/shared';
 import { ItemAction } from '../../classes/items';
 
 @Component({
-  selector: 'admin-circulation-items-list',
-  templateUrl: './items-list.component.html'
+    selector: 'admin-circulation-items-list',
+    templateUrl: './items-list.component.html',
+    standalone: false
 })
 export class ItemsListComponent implements OnInit{
 

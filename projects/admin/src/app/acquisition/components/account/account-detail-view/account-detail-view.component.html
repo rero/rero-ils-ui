@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
   Copyright (C) 2021 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -18,16 +18,15 @@
 @if (organisation && esRecord$ | async; as account) {
   <!-- ROLLOVER INFO -->
   @if (!account.is_active) {
-    <p-messages
-    [value]="[{ severity: 'warn', detail: 'Fiscal year closed' | translate }]"
-    [closable]="false"
-    [enableService]="false"
-    showTransitionOptions="0ms"
-  />
+    <p-message
+      [text]="'Fiscal year closed' | translate"
+      severity="warn"
+      showTransitionOptions="0ms"
+    />
   }
   <h1>{{ account.name }}</h1>
   <!-- Account general information's -->
-   <div class="flex flex-column gap-2">
+   <div class="flex flex-col gap-2">
   <p-panel [header]="'Details'|translate">
     <dl class="metadata">
       <dt translate>Account number</dt>
@@ -91,7 +90,7 @@
             {{ account.expenditure_amount.children | negativeAmount | currency: organisation.default_currency }}
           </td>
         </tr>
-        <tr class="surface-100">
+        <tr class="bg-surface-100 dark:bg-surface-700">
           <td colspan="2" class="font-bold" translate>Balance</td>
           <td colspan="2" class="text-right" [ngClass]="{
               'text-success': account.remaining_balance.self > 0,

@@ -18,8 +18,9 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'admin-local-person-detail-view',
-  templateUrl: './local-person-detail-view.component.html'
+    selector: 'admin-local-person-detail-view',
+    templateUrl: './local-person-detail-view.component.html',
+    standalone: false
 })
 export class LocalPersonDetailViewComponent {
   /** the current record */

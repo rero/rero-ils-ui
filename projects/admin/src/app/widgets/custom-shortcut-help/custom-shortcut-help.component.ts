@@ -21,9 +21,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
-  selector: 'admin-custom-shortcut-help',
-  templateUrl: './custom-shortcut-help.component.html',
-  styleUrls: ['./custom-shortcut-help.component.scss'],
+    selector: 'admin-custom-shortcut-help',
+    templateUrl: './custom-shortcut-help.component.html',
+    styleUrls: ['./custom-shortcut-help.component.scss'],
+    standalone: false
 })
 export class CustomShortcutHelpComponent {
 

@@ -20,8 +20,9 @@ import { ItemApiService } from '../../api/item-api.service';
 import { HoldingsApiService } from '../../api/holdings-api.service';
 
 @Component({
-  selector: 'public-search-request',
-  templateUrl: './request.component.html'
+    selector: 'public-search-request',
+    templateUrl: './request.component.html',
+    standalone: false
 })
 export class RequestComponent implements OnInit {
 

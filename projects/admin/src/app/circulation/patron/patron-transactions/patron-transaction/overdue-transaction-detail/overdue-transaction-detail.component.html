@@ -16,14 +16,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (transaction) {
-  <div class="grid">
+  <div class="grid grid-cols-12">
     @if (transaction.note) {
-      <div class="col-2" translate>Note</div>
-      <div class="col-10">{{ transaction.note }}</div>
+      <div class="col-span-2" translate>Note</div>
+      <div class="col-span-10">{{ transaction.note }}</div>
     }
     @if (transaction.document !== null && transaction.document.pid | getRecord:'documents' | async; as document) {
-      <div class="col-2" translate>Document</div>
-      <div class="col-10">
+      <div class="col-span-2" translate>Document</div>
+      <div class="col-span-10">
         @if ($any(document).metadata.title | mainTitle; as title) {
           <a [routerLink]="['/records','documents','detail', transaction.document.pid]">
             {{ title | truncateText: 15 }}
@@ -32,15 +32,15 @@
       </div>
     }
     @if (item) {
-      <div class="col-2" translate>Item</div>
-      <div class="col-10">
+      <div class="col-span-2" translate>Item</div>
+      <div class="col-span-10">
         <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
       </div>
     }
     @if (transaction.loan !== null) {
       @if (transaction.loan.pid | getRecord: 'loans' | async; as loan) {
-        <div class="col-2" translate>Loan started at</div>
-        <div class="col-10">{{ $any(loan).metadata.start_date | dateTranslate: 'shortDate' }}</div>
+        <div class="col-span-2" translate>Loan started at</div>
+        <div class="col-span-10">{{ $any(loan).metadata.start_date | dateTranslate: 'shortDate' }}</div>
       }
     }
   </div>

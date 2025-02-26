@@ -17,11 +17,12 @@
 
 import { inject, Pipe, PipeTransform } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Pipe({
-  name: 'itemInCollection'
+    name: 'itemInCollection',
+    standalone: false
 })
 export class ItemInCollectionPipe implements PipeTransform {
 
@@ -32,7 +33,10 @@ export class ItemInCollectionPipe implements PipeTransform {
    * @param itemPid - Item pid
    * @returns Observable
    */
-  transform(itemPid: string): Observable<[] | null> {
+  transform(itemPid: string|undefined): Observable<[] | null> {
+    if(itemPid === undefined) {
+      return of([]);
+    }
     return this.recordService.getRecords(
       'collections',
       `items.pid:${itemPid} AND published:true`,
@@ -45,7 +49,7 @@ export class ItemInCollectionPipe implements PipeTransform {
     ).pipe(
       map((result: any) => {
         return (this.recordService.totalHits(result.hits.total) === 0)
-          ? null
+          ? []
           : result.hits.hits;
       })
     );

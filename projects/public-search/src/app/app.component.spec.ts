@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
@@ -26,17 +26,15 @@ import { AppComponent } from './app.component';
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
+    declarations: [
+        AppComponent
+    ],
+    imports: [RouterModule.forRoot([]),
         TranslateModule.forRoot({}),
         LoadingBarModule,
-        RecordModule
-      ],
-      declarations: [
-        AppComponent
-      ]
-    }).compileComponents();
+        RecordModule],
+    providers: [provideHttpClient(withInterceptorsFromDi())]
+}).compileComponents();
   }));
 
   it('should create the app', () => {

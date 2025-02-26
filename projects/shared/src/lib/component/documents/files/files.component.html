@@ -19,7 +19,7 @@
 } @else {
   @if (files?.length > 0) {
     @if(files.length > numVisible) {
-      <div class="flex flex-column gap-2">
+      <div class="flex flex-col gap-2">
         <div>
           <span class="p-input-icon-right">
             <i class="fa fa-filter"></i>
@@ -41,7 +41,7 @@
     }
 
     @if (filteredFiles.length > 0) {
-      <div class="border-1 surface-border border-round text-center py-3 px-1 mt-2">
+      <div class="border border-surface rounded-border text-center py-4 px-1 mt-2">
         <p-carousel
           [showIndicators]="false"
           [showNavigators]="false"
@@ -51,23 +51,23 @@
           [numScroll]="numVisible"
           [circular]="false"
         >
-          <ng-template let-file pTemplate="item">
+          <ng-template let-file #item>
             <div class="px-1">
               @if (file.thumbnail){
               <img
                 (click)="preview(file); $event.preventDefault()"
                 src="{{ file.thumbnail }}"
                 [alt]="file.label"
-                class="w-6 shadow-1 border-300 border-1 mb-1 max-w-5rem"
+                class="w-6/12 shadow-sm border-surface-300 dark:border-surface-500 border mb-1 max-w-20"
                 style="cursor: zoom-in"
                 loading="lazy"
               />
             } @else {
               <div
-            > <i class="text-color-secondary fa fa-5x pb-1" [ngClass]="file.mimetype | faIconClass: 'file'"></i></div>
+            > <i class="text-muted-color fa fa-5x pb-1" [ngClass]="file.mimetype | faIconClass: 'file'"></i></div>
             }
               <div
-                class="action flex align-items-center justify-content-center gap-2"
+                class="action flex items-center justify-center gap-2"
               >
                 @if (file.preview) {
                 <a
@@ -75,11 +75,11 @@
                   href="{{ file.label }}"
                   (click)="preview(file); $event.preventDefault()"
                 >
-                  <i class="fa text-color-secondary fa-eye mx-1"></i>
+                  <i class="fa text-muted-color fa-eye mx-1"></i>
                 </a>
                 } @if (file.download) {
                 <a [href]="file.download" download>
-                  <i class="fa text-color-secondary fa-download mx-1"></i>
+                  <i class="fa text-muted-color fa-download mx-1"></i>
                 </a>
                 }
               </div>
@@ -104,7 +104,7 @@
 
 <p-dialog [modal]="true" [(visible)]="previewVisible" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
 [style]="{ width: '50vw' }">
-  <ng-template pTemplate="header">
+  <ng-template #header>
     <h4>
       {{ previewFile?.label }}
     </h4>

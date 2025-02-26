@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -17,20 +17,15 @@
 -->
 @if (record) {
   <!-- ADMIN METADATA -->
-  @if (recordMessage.length > 0) {
-    <p-messages
-      [value]="recordMessage"
-      [enableService]="false"
-      [closable]="false"
-      showTransitionOptions="0ms"
-    />
+  @if (recordMessage) {
+    <p-message [text]="recordMessage" severity="warn" showTransitionOptions="0ms" />
   }
   <!-- HEADER -->
-  <header class="py-2 flex gap-4">
+  <header class="py-2 flex gap-6">
     <div class="hidden md:block">
-      <shared-thumbnail [record]="record" styleClass="w-10rem" />
+      <shared-thumbnail [record]="record" styleClass="w-40" />
     </div>
-    <div class="flex-grow-1 flex flex-column gap-1">
+    <div class="grow flex flex-col gap-1">
       <!-- TITLE -->
       @if (record.metadata.title && record.metadata.title | mainTitle; as title) {
       <h1 id="doc-title">
@@ -68,7 +63,7 @@
         "
       >
         @for (provision of provisionActivity; track provision) {
-          <ul class="list-none m-0 p-0">
+          <ul class="list-none">
             @for (value of $any(provision).value; track value) {
               <li>{{ value }}</li>
             }
@@ -93,7 +88,7 @@
       <!-- EDITION STATEMENT -->
       @if (record.metadata.editionStatement) {
       <div id="doc-edition-statement">
-        <ul class="list-none m-0 p-0">
+        <ul class="list-none">
           @for (edition of record.metadata.editionStatement; track edition) {
             <li>{{ edition._text[0].value }}</li>
           }
@@ -199,7 +194,7 @@
           >
             <i class="fa fa-tag"></i>&nbsp;
             <shared-entity-link
-              className="text-color-secondary"
+              className="text-muted-color"
               resourceName="subjects"
               [entity]="subject.entity"
             />
@@ -214,10 +209,7 @@
           @for (genre of record.metadata.genreForm; track genre) {
             <span>
               <i class="fa fa-tag"></i>&nbsp;
-              <shared-entity-link
-                resourceName="genreForm"
-                [entity]="genre.entity"
-              />
+              <shared-entity-link resourceName="genreForm" [entity]="genre.entity" />
             </span>
           }
         </div>
@@ -225,10 +217,7 @@
 
       <!-- MASKED -->
       @if (record.metadata._masked) {
-      <admin-record-masked
-        [record]="record"
-        [withLabel]="true"
-      />
+        <admin-record-masked [record]="record" [withLabel]="true" />
       }
 
       <!-- LINKED DOCUMENTS -->
@@ -256,80 +245,85 @@
   <!-- END OF HEADER -->
 
   <!-- TABS -->
-  <p-tabView>
-    <!-- GET TAB -->
-    @if (record.metadata.pid) {
-      <p-tabPanel #tabGet>
-        <ng-template pTemplate="header">
-          <i class="fa fa-list-ulx"></i>&nbsp;{{ "Get" | translate }}
-        </ng-template>
-        @if(tabGet.selected) {
-          <div class="mb-2">
-            <shared-doc-files [documentPid]="record.metadata.pid" />
-          </div>
-        }
-        <admin-holding-organisation [document]="record" />
-      </p-tabPanel>
-    }
-
-    <!-- DESCRIPTION TAB -->
-    <p-tabPanel>
-      <ng-template pTemplate="header">
-        <i class="fa fa-bars"></i>&nbsp;{{ "Description" | translate }}
-      </ng-template>
-      <shared-document-description [record]="record" />
-    </p-tabPanel>
-
-    <!-- ENTITIES RELATED -->
-    @if (!record.metadata.harvested && record.metadata.pid) {
-      <p-tabPanel>
-        <ng-template pTemplate="header">
-          <i class="fa fa-cubes"></i>&nbsp;{{ "Related Entities" | translate }}
-        </ng-template>
-        <admin-entities-related [record]="record" />
-      </p-tabPanel>
-    }
-
-    <!-- LOCAL FIELDS TAB -->
-    @if (!record.metadata.harvested && record.metadata.pid && showLocalFieldsTab) {
-      <p-tabPanel>
-        <ng-template pTemplate="header">
-          <i class="fa fa-list-ul"></i>&nbsp;{{ "Local fields" | translate }}
-        </ng-template>
-        <admin-local-field [resourceType]="'documents'" [resourcePid]="record.metadata.pid" />
-      </p-tabPanel>
-    }
-
-    <!-- FILES TAB -->
-    @if (!record.metadata.harvested && record.metadata.pid && showFilesTab) {
-      <p-tabPanel>
-        <ng-template pTemplate="header">
-          <i class="fa fa-file"></i>&nbsp;{{ "Files" | translate }}
-        </ng-template>
-        <admin-upload-files [pid]="record.metadata.pid" />
-      </p-tabPanel>
-    }
-
-    <!-- MARC TAB -->
-    @if (marc$ | async; as marc) {
-      <p-tabPanel>
-        <ng-template pTemplate="header">
+   @let marcRecord = marc$ | async;
+   <p-tabs [value]="selectedTab()">
+    <p-tablist>
+      @if (record.metadata.pid) {
+      <p-tab value="get">
+        <i class="fa fa-list-ul"></i>&nbsp;
+        {{ "Get" | translate }}
+      </p-tab>
+      }
+      <p-tab value="description">
+        <i class="fa fa-bars"></i>&nbsp;
+        {{ "Description" | translate }}
+      </p-tab>
+      @if (!record.metadata.harvested && record.metadata.pid) {
+        <p-tab value="entity">
+          <i class="fa fa-cubes"></i>&nbsp;
+          {{ "Related Entities" | translate }}
+        </p-tab>
+      }
+      @if (!record.metadata.harvested && record.metadata.pid && showLocalFieldsTab) {
+        <p-tab value="local">
+          <i class="fa fa-list-ul"></i>&nbsp;
+          {{ "Local fields" | translate }}
+        </p-tab>
+      }
+      @if (!record.metadata.harvested && record.metadata.pid && showFilesTab) {
+        <p-tab value="file">
+          <i class="fa fa-file"></i>&nbsp;
+          {{ "Files" | translate }}
+        </p-tab>
+      }
+      @if (marcRecord) {
+        <p-tab value="marc">
           <i class="fa fa-list-ul"></i>&nbsp;
           <span translate>Marc</span>
-        </ng-template>
-        <p-table [value]="marc" styleClass="p-datatable-striped">
-          <ng-template pTemplate="body" let-field>
-            <tr>
-              @if (field | marc; as f) {
-                <td class="font-bold">{{ f.field }}</td>
-                <td>{{ f.ind1 }}</td>
-                <td>{{ f.ind2 }}</td>
-                <td>{{ f.value }}</td>
-              }
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-tabPanel>
-    }
-  </p-tabView>
+        </p-tab>
+      }
+    </p-tablist>
+    <p-tabpanels>
+      <p-tabpanel value="get">
+        <div class="mb-2">
+          <shared-doc-files [documentPid]="record.metadata.pid" />
+        </div>
+        <admin-holding-organisation [document]="record" />
+      </p-tabpanel>
+      <p-tabpanel value="description">
+        <shared-document-description [record]="record" />
+      </p-tabpanel>
+      @if (!record.metadata.harvested && record.metadata.pid) {
+        <p-tabpanel value="entity">
+          <admin-entities-related [record]="record" />
+        </p-tabpanel>
+      }
+      @if (!record.metadata.harvested && record.metadata.pid && showLocalFieldsTab) {
+        <p-tabpanel value="local">
+          <admin-local-field [resourceType]="'documents'" [resourcePid]="record.metadata.pid" />
+        </p-tabpanel>
+      }
+      @if (!record.metadata.harvested && record.metadata.pid && showFilesTab) {
+        <p-tabpanel value="file">
+          <admin-upload-files [pid]="record.metadata.pid" />
+        </p-tabpanel>
+      }
+      @if (marcRecord) {
+        <p-tabpanel value="marc">
+          <p-table stripedRows [value]="marcRecord" size="small">
+            <ng-template #body let-field>
+              <tr>
+                @if (field | marc; as f) {
+                  <td class="font-bold">{{ f.field }}</td>
+                  <td>{{ f.ind1 }}</td>
+                  <td>{{ f.ind2 }}</td>
+                  <td>{{ f.value }}</td>
+                }
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabpanel>
+      }
+    </p-tabpanels>
+   </p-tabs>
 }

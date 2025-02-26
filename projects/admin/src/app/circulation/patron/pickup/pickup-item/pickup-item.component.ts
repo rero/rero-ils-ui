@@ -20,8 +20,9 @@ import { forkJoin } from 'rxjs';
 import { ItemsService } from '../../../../service/items.service';
 
 @Component({
-  selector: 'admin-pickup-item',
-  templateUrl: './pickup-item.component.html'
+    selector: 'admin-pickup-item',
+    templateUrl: './pickup-item.component.html',
+    standalone: false
 })
 export class PickupItemComponent implements OnInit {
 

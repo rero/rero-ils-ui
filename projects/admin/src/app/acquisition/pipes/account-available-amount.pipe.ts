@@ -19,7 +19,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { IAcqAccount } from '../classes/account';
 
 @Pipe({
-  name: 'accountAvailableAmount'
+    name: 'accountAvailableAmount',
+    standalone: false
 })
 export class AccountAvailableAmountPipe implements PipeTransform {
 

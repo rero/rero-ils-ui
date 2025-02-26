@@ -23,8 +23,9 @@ import { extractIdOnRef } from '@rero/ng-core';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'admin-item-switch-location-standalone',
-  templateUrl: './item-switch-location-standalone.component.html'
+    selector: 'admin-item-switch-location-standalone',
+    templateUrl: './item-switch-location-standalone.component.html',
+    standalone: false
 })
 export class ItemSwitchLocationStandaloneComponent implements OnInit {
 

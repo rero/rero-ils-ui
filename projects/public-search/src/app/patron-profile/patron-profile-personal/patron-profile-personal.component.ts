@@ -18,8 +18,9 @@ import { Component, inject, Input } from '@angular/core';
 import { AppSettingsService, IPatron } from '@rero/shared';
 
 @Component({
-  selector: 'public-search-patron-profile-personal',
-  templateUrl: './patron-profile-personal.component.html'
+    selector: 'public-search-patron-profile-personal',
+    templateUrl: './patron-profile-personal.component.html',
+    standalone: false
 })
 export class PatronProfilePersonalComponent {
 

@@ -24,8 +24,9 @@ import { FixedDateFormComponent } from '../fixed-date-form/fixed-date-form.compo
 import { CirculationSettingsService, ICirculationSetting } from './circulation-settings.service';
 
 @Component({
-  selector: 'admin-circulation-settings',
-  templateUrl: './circulation-settings.component.html'
+    selector: 'admin-circulation-settings',
+    templateUrl: './circulation-settings.component.html',
+    standalone: false
 })
 export class CirculationSettingsComponent implements OnInit {
 
@@ -64,6 +65,7 @@ export class CirculationSettingsComponent implements OnInit {
     this.dialogRef = this.dialogService.open(FixedDateFormComponent, {
       header: this.translateService.instant('Choose a due date'),
       focusOnShow: false,
+      closable: true,
       width: '30vw',
     });
     this.dialogRef.onClose.subscribe((result?: any) => {

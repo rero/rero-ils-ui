@@ -17,24 +17,24 @@
 
 @if (holdings.length > 0) {
 <p-card class="p-card-body-p-0">
-  <ng-template pTemplate="header">
-      <div class="hidden md:flex grid grid-nogutter bg-blue-900 text-white p-2 text-lg font-bold">
-        <div class="col-6" translate>Library</div>
-        <div class="col-3" translate>Platform</div>
+  <ng-template #header>
+      <div class="hidden md:flex grid grid-cols-12 gap-4 grid-nogutter bg-blue-900 text-white p-2 text-lg font-bold">
+        <div class="col-span-6" translate>Library</div>
+        <div class="col-span-3" translate>Platform</div>
       </div>
   </ng-template>
 
   <div class="alternate-color">
   @for(holding of holdings; track holding) {
     @for (location of holding.metadata.electronic_location; track location) {
-  <div class="grid grid-nogutter p-2">
-      <div class="col-6">
+  <div class="grid grid-cols-12 gap-4 grid-nogutter p-2">
+      <div class="col-span-6">
       {{holding.metadata.library.name}}
       </div>
-      <div class="col-3 capitalize">
+      <div class="col-span-3 capitalize">
       {{location.source}}
       </div>
-      <div class="col-3 flex justify-content-end align-items-start">
+      <div class="col-span-3 flex justify-end items-start">
       <a href="{{location.uri}}" class="p-button p-button-sm" target="_blank"><i class="fa fa-external-link pr-1" ></i>{{ 'Online access' | translate}}</a>
       </div>
   </div>

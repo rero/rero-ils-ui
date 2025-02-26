@@ -18,8 +18,9 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'admin-collection-items',
-  templateUrl: './collection-items.component.html'
+    selector: 'admin-collection-items',
+    templateUrl: './collection-items.component.html',
+    standalone: false
 })
 export class CollectionItemsComponent {
 

@@ -16,12 +16,12 @@
 -->
 @if (loaded) {
 <form
-  class="flex flex-column gap-2"
+  class="flex flex-col gap-2"
   [formGroup]="form"
   (ngSubmit)="onSubmit(model)"
 >
   <!-- FORM HEADER :: title and action buttons -->
-  <section class="flex gap-2 justify-content-between align-items-center">
+  <section class="flex gap-2 justify-between items-center">
     <h1 translate>Receipt of an order</h1>
     <div class="flex gap-1">
       <p-button

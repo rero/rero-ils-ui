@@ -22,8 +22,8 @@ import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 
 @Component({
-  selector: 'admin-cancel-request-button',
-  template: `
+    selector: 'admin-cancel-request-button',
+    template: `
     <p-button
       class="pointer-events-auto"
       icon="fa fa-trash"
@@ -35,7 +35,8 @@ import { MessageService } from 'primeng/api';
       [tooltipDisabled]="canCancelRequest()"
       (onClick)="showCancelRequestDialog($event)"
     />
-  `
+  `,
+    standalone: false
 })
 export class CancelRequestButtonComponent {
 

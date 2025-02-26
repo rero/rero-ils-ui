@@ -16,8 +16,8 @@
 -->
 
 @if (data && data.length > 0) {
-  <p-table [value]="data" [tableStyle]="{ 'min-width': '50rem' }">
-    <ng-template pTemplate="body" let-line>
+  <p-table stripedRows [value]="data" [tableStyle]="{ 'min-width': '50rem' }" size="small">
+    <ng-template #body let-line>
       <tr>
         @for (value of line; track value) {
           <td>{{ value }}</td>
@@ -26,5 +26,5 @@
     </ng-template>
   </p-table>
 } @else {
-  <p class="m-0 px-4 py-2 text-color-secondary" translate>No result</p>
+  <p class="m-0 px-6 py-2 text-muted-color" translate>No result</p>
 }

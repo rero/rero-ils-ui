@@ -15,13 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateTranslatePipe, RecordModule } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { userTestingService } from 'projects/admin/tests/utils';
 import { CirculationLogComponent } from './circulation-log.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('CirculationLogComponent', () => {
@@ -71,19 +72,18 @@ describe('CirculationLogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         CirculationLogComponent,
         DateTranslatePipe
-      ],
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
-        RecordModule
-      ],
-      providers: [
-          { provide: UserService, useValue: userTestingService },
-      ]
-    })
+    ],
+    imports: [TranslateModule.forRoot(),
+        RecordModule],
+    providers: [
+        { provide: UserService, useValue: userTestingService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+})
     .compileComponents();
   });
 

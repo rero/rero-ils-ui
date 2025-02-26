@@ -27,8 +27,9 @@ import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 import { PatronProfileService } from '../../patron-profile.service';
 
 @Component({
-  selector: 'public-search-patron-profile-loan',
-  templateUrl: './patron-profile-loan.component.html'
+    selector: 'public-search-patron-profile-loan',
+    templateUrl: './patron-profile-loan.component.html',
+    standalone: false
 })
 export class PatronProfileLoanComponent implements OnInit {
 

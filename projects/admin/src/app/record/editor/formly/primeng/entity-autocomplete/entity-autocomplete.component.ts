@@ -23,17 +23,17 @@ import { AddEntityLocalFormComponent } from './add-entity-local-form/add-entity-
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
-  selector: 'admin-entity-autocomplete',
-  template: `
+    selector: 'admin-entity-autocomplete',
+    template: `
   <div class="flex w-full">
     @if (!field.formControl.value) {
       @if (props.filters?.options) {
         <div class="flex">
-          <p-dropdown
+          <p-select
             [options]="props.filters.options"
             [ngModel]="props.filters.selected"
             (onChange)="changeFilter($event)"
-          ></p-dropdown>
+          ></p-select>
         </div>
       }
       <div class="flex ml-1 w-full">
@@ -51,7 +51,7 @@ import { Observable, Subscription } from 'rxjs';
           (completeMethod)="search($event)"
           (onSelect)="onSelect($event)"
         >
-          <ng-template let-data pTemplate="group">
+          <ng-template #group let-data>
             <span class="font-bold">
               @if (data.label === 'local' && isAuthorizedToAddLocalEntity) {
                 {{ "link to local authority" | translate }}
@@ -66,11 +66,11 @@ import { Observable, Subscription } from 'rxjs';
               }
             </span>
           </ng-template>
-          <ng-template let-data pTemplate="item">
+          <ng-template let-data #item>
             <div class="flex">
               <div class="flex" [innerHTML]="data.label"></div>
               @if (data.link) {
-                <a class="ml-2 text-700" (click)="$event.stopPropagation()" [href]="data.link" target="_blank">
+                <a class="ml-2 text-surface-700 dark:text-surface-100" (click)="$event.stopPropagation()" [href]="data.link" target="_blank">
                   <i class="fa fa-external-link"></i>
                 </a>
               }
@@ -87,7 +87,8 @@ import { Observable, Subscription } from 'rxjs';
         <p-button icon="fa fa-trash" severity="secondary" [text]="true" (onClick)="clear()" styleClass="ml-1" />
       </div>
     }
-  </div>`
+  </div>`,
+    standalone: false
 })
 export class EntityAutocompleteComponent extends RemoteAutocomplete implements OnDestroy {
 
@@ -114,6 +115,7 @@ export class EntityAutocompleteComponent extends RemoteAutocomplete implements O
     const dialog: DynamicDialogRef = this.dialogService.open(AddEntityLocalFormComponent, {
       header: this.translateService.instant('Add local entity'),
       width: '75vw',
+      closable: true,
       modal: true,
       data: {
         selectedType: this.props.queryOptions.filter,

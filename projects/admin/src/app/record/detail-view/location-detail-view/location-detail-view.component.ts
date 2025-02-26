@@ -20,8 +20,9 @@ import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
-  selector: 'admin-location-detail-view',
-  templateUrl: './location-detail-view.component.html'
+    selector: 'admin-location-detail-view',
+    templateUrl: './location-detail-view.component.html',
+    standalone: false
 })
 export class LocationDetailViewComponent implements OnInit, OnDestroy, DetailRecord {
 

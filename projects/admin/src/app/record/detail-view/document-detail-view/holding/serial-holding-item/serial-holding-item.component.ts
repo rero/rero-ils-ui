@@ -19,8 +19,9 @@ import { IssueItemStatus } from '@rero/shared';
 import { DefaultHoldingItemComponent } from '../default-holding-item/default-holding-item.component';
 
 @Component({
-  selector: 'admin-serial-holding-item',
-  templateUrl: './serial-holding-item.component.html'
+    selector: 'admin-serial-holding-item',
+    templateUrl: './serial-holding-item.component.html',
+    standalone: false
 })
 export class SerialHoldingItemComponent extends DefaultHoldingItemComponent {
 

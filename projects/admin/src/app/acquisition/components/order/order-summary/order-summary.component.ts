@@ -24,8 +24,9 @@ import { AcqOrderLineStatus, AcqOrderStatus, IAcqOrder, IAcqOrderLine } from '..
 import { IAcqReceipt } from '../../../classes/receipt';
 
 @Component({
-  selector: 'admin-order-summary',
-  templateUrl: './order-summary.component.html'
+    selector: 'admin-order-summary',
+    templateUrl: './order-summary.component.html',
+    standalone: false
 })
 export class OrderSummaryComponent implements OnInit, OnDestroy {
 

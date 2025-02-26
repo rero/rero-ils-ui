@@ -19,12 +19,13 @@ import { FieldType } from '@ngx-formly/core';
 import { RecordService } from '@rero/ng-core';
 
 @Component({
-  selector: 'admin-formly-field-type',
-  template: `
+    selector: 'admin-formly-field-type',
+    template: `
     <div class="{{ field.props.className }}">
       {{ value }}
     </div>
   `,
+    standalone: false
 })
 export class FieldRefTypeComponent extends FieldType implements OnInit {
 

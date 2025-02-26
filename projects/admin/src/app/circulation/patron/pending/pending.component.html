@@ -16,11 +16,11 @@
 -->
 @defer(when loans) {
   <p-card class="p-card-body-p-0">
-    <ng-template pTemplate="header">
-      <div class="grid grid-nogutter py-3 px-2 m-1 text-lg font-bold align-items-center border-bottom-1 surface-border">
-        <div class="col-3" translate>Item</div>
-        <div class="col-6" translate>Title</div>
-        <div class="col-2" translate>Request date</div>
+    <ng-template #header>
+      <div class="grid grid-cols-12 gap-4 grid-nogutter py-4 px-2 m-1 text-lg font-bold items-center border-b border-surface">
+        <div class="col-span-3" translate>Item</div>
+        <div class="col-span-6" translate>Title</div>
+        <div class="col-span-2" translate>Request date</div>
       </div>
     </ng-template>
     @if (loans.length > 0) {
@@ -33,12 +33,12 @@
         }
       </div>
     } @else {
-      <div class="mx-3 my-4 font-bold" translate>
+      <div class="mx-4 my-6 font-bold" translate>
         No items
       </div>
     }
   </p-card>
 } @placeholder {
-  <div class="font-bold mx-2 my-4" translate>Loading in progress</div>
+  <div class="font-bold mx-2 my-6" translate>Loading in progress</div>
 }
 

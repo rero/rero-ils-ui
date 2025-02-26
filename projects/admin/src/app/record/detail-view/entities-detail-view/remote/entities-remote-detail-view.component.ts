@@ -21,8 +21,9 @@ import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record
 import { EntityType, EntityTypeIcon } from '@rero/shared';
 
 @Component({
-  selector: 'admin-remote-entities-remote-detail-view',
-  templateUrl: './entities-remote-detail-view.component.html'
+    selector: 'admin-remote-entities-remote-detail-view',
+    templateUrl: './entities-remote-detail-view.component.html',
+    standalone: false
 })
 export class RemoteEntitiesDetailViewComponent implements DetailRecord {
 

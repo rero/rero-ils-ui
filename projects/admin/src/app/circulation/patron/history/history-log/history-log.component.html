@@ -16,8 +16,8 @@
 -->
 <div *ngVar="log.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document">
   <!-- Basic loan information's -->
-  <div class="grid grid-nogutter p-2">
-    <div class="col-6 flex gap-2">
+  <div class="grid grid-cols-12 grid-nogutter p-2">
+    <div class="col-span-6 flex gap-2">
       <shared-open-close-button (status)="isCollapsed = $event; loadCheckout()" />
       @if (document) {
         <a [routerLink]="['/records','documents','detail', log.metadata.loan.item.document.pid]">
@@ -30,12 +30,12 @@
         <p-tag severity="info" [value]="log.metadata.loan.item.enumerationAndChronology" />
       }
     </div>
-    <div class="col-4">
+    <div class="col-span-4">
       @if (document?.metadata?.contribution && document.metadata.contribution.length > 0) {
         <shared-contribution [contributions]="document.metadata.contribution" [limitRecord]="3" />
       }
     </div>
-    <div class="col-2">
+    <div class="col-span-2">
       {{ log.metadata.date | dateTranslate: 'short' }}
     </div>
   </div>
@@ -43,9 +43,9 @@
   @if (!isCollapsed) {
     <div class="m-2">
       @if (log.metadata.loan.item.pid | getRecord:'items' | async; as item) {
-        <div class="grid">
-          <div class="col-2 font-weight-bold" translate>Item</div>
-          <div class="col-10">
+        <div class="grid grid-cols-12">
+          <div class="col-span-2 font-weight-bold" translate>Item</div>
+          <div class="col-span-10">
             <a [routerLink]="['/records', 'items', 'detail', $any(item).metadata.pid]">
               @if (!$any(item).metadata.barcode && !$any(item).metadata.call_number) {
                 {{ $any(item).metadata.pid }}
@@ -62,18 +62,18 @@
       }
       <h6 class="mt-2" translate>Transaction history</h6>
       <p-timeline [value]="events">
-        <ng-template pTemplate="marker" let-event>
+        <ng-template #marker let-event>
           <span
-            class="flex w-1rem h-1rem align-items-center justify-content-center text-white border-circle z-1 shadow-1"
+            class="flex w-4 h-4 items-center justify-center text-white rounded-full z-10 shadow-sm"
             [ngClass]="{
               'bg-green-200': event.type === 'Checkin',
               'bg-red-200': event.type === 'Checkout'
             }"
           ></span>
         </ng-template>
-        <ng-template pTemplate="content" let-event>
-          <div class="grid">
-            <div class="col-3">
+        <ng-template #content let-event>
+          <div class="grid grid-cols-12">
+            <div class="col-span-3">
               <div class="flex gap-2">
                 <i class="fa" [ngClass]="{
                   'fa-angle-double-left': event.type === 'Checkin',
@@ -84,7 +84,7 @@
                 </span>
               </div>
             </div>
-            <div class="col-9">
+            <div class="col-span-9">
               <ng-container
               [ngTemplateOutlet]="logLibrary"
               [ngTemplateOutletContext]="{ $implicit: event.loan.transaction_location }"
@@ -92,7 +92,7 @@
             </div>
           </div>
         </ng-template>
-        <ng-template pTemplate="opposite" let-event>
+        <ng-template #opposite let-event>
           <small class="p-text-secondary">
             <i class="fa fa-calendar-o"></i> {{ event.date | dateTranslate: 'shortDate' }}
             <i class="fa fa-clock-o pl-1"></i> {{ event.date | dateTranslate: 'HH:mm:ss' }}

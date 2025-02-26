@@ -20,8 +20,9 @@ import { Entity } from '@rero/shared';
 import { IEntityRelated } from './entities-related.interface';
 
 @Component({
-  selector: 'admin-entities-related',
-  templateUrl: './entities-related.component.html'
+    selector: 'admin-entities-related',
+    templateUrl: './entities-related.component.html',
+    standalone: false
 })
 export class EntitiesRelatedComponent implements OnInit {
 

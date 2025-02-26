@@ -23,7 +23,8 @@ import { Pipe, PipeTransform } from '@angular/core';
  */
 
 @Pipe({
-  name: 'notesFilter'
+    name: 'notesFilter',
+    standalone: false
 })
 export class NotesFilterPipe implements PipeTransform {
 

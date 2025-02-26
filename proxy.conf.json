@@ -1,5 +1,5 @@
 {
-  "/patrons/*": {
+  "/patrons/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -11,7 +11,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/records/*": {
+  "/records/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -35,7 +35,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/api/*": {
+  "/api/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -47,7 +47,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/notifications/*": {
+  "/notifications/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -59,7 +59,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/lang/*": {
+  "/lang/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -71,7 +71,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/static/*": {
+  "/static/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -83,7 +83,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/global/documents/*": {
+  "/global/documents/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -95,7 +95,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/aoste/documents/*": {
+  "/aoste/documents/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -107,7 +107,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/highlands/documents/*": {
+  "/highlands/documents/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -119,7 +119,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/fictive/documents/*": {
+  "/fictive/documents/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -131,7 +131,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/global/persons/*": {
+  "/global/persons/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -143,7 +143,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/aoste/persons/*": {
+  "/aoste/persons/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -155,7 +155,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/highlands/persons/*": {
+  "/highlands/persons/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -167,7 +167,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/fictive/persons/*": {
+  "/fictive/persons/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",

@@ -15,10 +15,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="flex flex-column gap-2">
+<div class="flex flex-col gap-2">
   <!-- LOAN METADATA -->
     <div class="flex gap-2">
-      <h5 class="flex-grow-1">{{ record.metadata.document.title | mainTitle }}</h5>
+      <h5 class="grow">{{ record.metadata.document.title | mainTitle }}</h5>
           <!-- ACTIONS BUTTON -->
       <div class="flex gap-1">
         <p-button icon="fa fa-history" severity="secondary" outlined size="small"  (onClick)="openTransactionHistoryDialog(record.metadata.pid)" />
@@ -67,6 +67,11 @@
 
     <!-- DEBUG PANEL -->
     @if (debugMode) {
-        <pre style="text-wrap: auto" class="text-xs surface-100 p-2">{{ record.metadata | json }}</pre>
+      <h5 class="text-error"><i class="fa fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
+      <div class="border border-1 border-surface p-2">
+        <p-scrollPanel [style]="{ height: '500px' }">
+          <pre class="text-sm text-wrap">{{ record.metadata | json }}</pre>
+        </p-scrollPanel>
+      </div>
     }
   </div>

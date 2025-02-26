@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,12 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { Component, input } from '@angular/core';
+import { AddressType } from '../../classes/address-type';
 
-admin-document-holding, [admin-document-holding] {
-  .p-accordion-header {
-    @extend .surface-100;
-    a.p-accordion-header-link {
-      background: none;
-    }
-  }
+
+@Component({
+    selector: 'admin-address-type',
+    templateUrl: './address-type.component.html',
+    styleUrls: [],
+    standalone: false
+})
+export class AddressTypeComponent {
+
+  addressType = input<AddressType>();
+
 }

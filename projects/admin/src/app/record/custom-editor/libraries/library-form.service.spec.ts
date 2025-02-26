@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 /*
  * RERO ILS UI
  * Copyright (C) 2019 RERO
@@ -18,14 +18,13 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { AppModule } from '../../../app.module';
 import { LibraryFormService } from './library-form.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('LibraryFormService', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      AppModule,
-      HttpClientTestingModule
-    ]
-  }));
+    imports: [AppModule],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}));
 
   it('should be created', () => {
     const service: LibraryFormService = TestBed.inject(LibraryFormService);

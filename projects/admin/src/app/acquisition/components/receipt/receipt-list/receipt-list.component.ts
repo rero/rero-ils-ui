@@ -27,8 +27,9 @@ import { IAcqReceipt } from '../../../classes/receipt';
 import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
 
 @Component({
-  selector: 'admin-receipt-list',
-  templateUrl: './receipt-list.component.html'
+    selector: 'admin-receipt-list',
+    templateUrl: './receipt-list.component.html',
+    standalone: false
 })
 export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
 

@@ -16,7 +16,7 @@
 -->
 @if (record$ | async; as record) {
   <h1>{{ record.metadata.name }}</h1>
-  <dl class="metadata">
+  <dl class="metadata mt-4">
     <!-- DESCRIPTION -->
     @if (record.metadata.description) {
       <dt translate>Description</dt>
@@ -34,34 +34,37 @@
       }"></i>
     </dd>
   </dl>
-  <!-- DISPLAYED status -->
-  @if (record.metadata.displayed_status) {
-    <p-fieldset [legend]="'Displayed status'|translate">
-      <ul class="list-none m-0 p-0">
-        @for (status of record.metadata.displayed_status; track status) {
-          <li>
-            <div class="font-bold w-5rem inline-block">
-              <i class="fa fa-language"></i>&nbsp;({{ status.language }})
-            </div>
-            {{ status.label }}
-          </li>
-        }
-      </ul>
-    </p-fieldset>
-  }
-  <!-- CIRCULATION INFORMATION'S -->
-  @if (record.metadata.circulation_information) {
-    <p-fieldset [legend]="'Circulation information'|translate">
-      <ul class="list-none m-0 p-0">
-        @for (circulation of record.metadata.circulation_information; track circulation) {
-          <li>
-            <div class="font-bold w-5rem inline-block">
-              <i class="fa fa-language"></i> ({{ circulation.language }})
-            </div>
-            {{ circulation.label }}
-          </li>
-        }
-      </ul>
-    </p-fieldset>
-  }
+
+  <section class="mt-4">
+    <!-- DISPLAYED status -->
+    @if (record.metadata.displayed_status) {
+      <p-panel [header]="'Displayed status'|translate">
+        <ul class="list-none mt-3">
+          @for (status of record.metadata.displayed_status; track status) {
+            <li>
+              <div class="font-bold w-20 inline-block">
+                <i class="fa fa-language"></i>&nbsp;({{ status.language }})
+              </div>
+              {{ status.label }}
+            </li>
+          }
+        </ul>
+      </p-panel>
+    }
+    <!-- CIRCULATION INFORMATION'S -->
+    @if (record.metadata.circulation_information) {
+      <p-panel [header]="'Circulation information'|translate">
+        <ul class="list-none mt-3">
+          @for (circulation of record.metadata.circulation_information; track circulation) {
+            <li>
+              <div class="font-bold w-20 inline-block">
+                <i class="fa fa-language"></i> ({{ circulation.language }})
+              </div>
+              {{ circulation.label }}
+            </li>
+          }
+        </ul>
+      </p-panel>
+    }
+  </section>
 }

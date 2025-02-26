@@ -20,8 +20,9 @@ import { MenuService } from '../service/menu.service';
 import { MenuItem } from 'primeng/api';
 
 @Component({
-  selector: 'admin-menu-dashboard',
-  templateUrl: './menu-dashboard.component.html'
+    selector: 'admin-menu-dashboard',
+    templateUrl: './menu-dashboard.component.html',
+    standalone: false
 })
 export class MenuDashboardComponent implements OnInit {
 

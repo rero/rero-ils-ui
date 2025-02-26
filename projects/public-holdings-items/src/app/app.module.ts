@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, DoBootstrap, inject, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -27,7 +27,14 @@ import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { CoreConfigService, CoreModule, NgCoreTranslateService, RecordModule, TranslateLoader } from '@rero/ng-core';
+import {
+  CoreConfigService,
+  CoreModule,
+  NgCoreTranslateService,
+  primeNGConfig,
+  RecordModule,
+  TranslateLoader,
+} from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { AccordionModule } from 'primeng/accordion';
 import { DividerModule } from 'primeng/divider';
@@ -43,6 +50,11 @@ import { RequestComponent } from 'projects/public-search/src/app/document-detail
 import { Observable } from 'rxjs';
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { providePrimeNG } from 'primeng/config';
+import { TabsModule } from 'primeng/tabs';
+import { MessageModule } from 'primeng/message';
+import { CardModule } from 'primeng/card';
 
 /** function to instantiate the application  */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
@@ -60,14 +72,17 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     DocumentDetailViewComponent,
     ElectronicHoldingsComponent,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     AccordionModule,
+    TabsModule,
+    CardModule,
+    MessageModule,
     MenubarModule,
     BrowserModule,
     BrowserAnimationsModule,
     DividerModule,
     RouterModule.forRoot([]),
-    HttpClientModule,
     FormsModule,
     FormlyModule.forRoot(),
     FormlyPrimeNGModule,
@@ -90,8 +105,10 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     { provide: TranslateService, useClass: NgCoreTranslateService },
     { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
     { provide: CoreConfigService, useClass: AppConfigService },
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimationsAsync(),
+    providePrimeNG(primeNGConfig),
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule implements DoBootstrap {
   private injector: Injector = inject(Injector);

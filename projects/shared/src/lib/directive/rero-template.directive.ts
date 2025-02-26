@@ -21,8 +21,9 @@ import { Directive, inject, Input, TemplateRef } from '@angular/core';
 /** See: https://github.com/primefaces/primeng/blob/master/src/app/components/api/shared.ts */
 
 @Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[rTemplate]',
+    // eslint-disable-next-line @angular-eslint/directive-selector
+    selector: '[rTemplate]',
+    standalone: false
 })
 export class ReroTemplateDirective {
 

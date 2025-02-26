@@ -18,8 +18,9 @@ import { Component, inject } from '@angular/core';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
-  selector: 'admin-checkin-action',
-  templateUrl: './checkin-action.component.html'
+    selector: 'admin-checkin-action',
+    templateUrl: './checkin-action.component.html',
+    standalone: false
 })
 export class CheckinActionComponent {
 

@@ -31,8 +31,9 @@ import { ItemsService } from '../../../../service/items.service';
 import { LoanService } from '../../../../service/loan.service';
 
 @Component({
-  selector: 'admin-item-request',
-  templateUrl: './item-request.component.html'
+    selector: 'admin-item-request',
+    templateUrl: './item-request.component.html',
+    standalone: false
 })
 export class ItemRequestComponent implements OnInit {
 

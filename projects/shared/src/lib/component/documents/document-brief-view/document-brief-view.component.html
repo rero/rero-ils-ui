@@ -40,13 +40,13 @@
 
 <!-- ISBN -->
 @if (record.identifiedBy | identifiedByLabel: ['bf:Isbn', 'bf:Ean']; as identifiedBy) {
-  <div class="text-sm font-bold text-color-secondary" name="document-identified-by">
+  <div class="text-sm font-bold text-muted-color" name="document-identified-by">
     ISBN: {{ identifiedBy | truncateText: 3 }}
   </div>
 }
 <!-- ISSN -->
 @if (record.identifiedBy | identifiedByLabel: ['bf:Issn']; as identifiedBy) {
-  <div class="text-sm font-bold text-color-secondary" name="document-identified-by">
+  <div class="text-sm font-bold text-muted-color" name="document-identified-by">
     ISSN: {{ identifiedBy | truncateText: 3 }}
   </div>
 }

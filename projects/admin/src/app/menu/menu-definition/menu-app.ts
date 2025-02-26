@@ -199,7 +199,7 @@ export const MENU_APP: MenuItem[] = [
         translateLabel: 'Vendors',
         id: MENU_IDS.APP.ACQUISITION.VENDOR,
         icon: 'fa fa-briefcase',
-        routerLink: ['/', 'records', 'vendors'],
+        routerLink: ['/', 'acquisition', 'records', 'vendors'],
         queryParams: {
           q: '',
           page: '1',
@@ -216,7 +216,7 @@ export const MENU_APP: MenuItem[] = [
         translateLabel: 'Orders',
         id: MENU_IDS.APP.ACQUISITION.ORDER,
         icon: 'fa fa-shopping-cart',
-        routerLink: ['/', 'records', 'acq_orders'],
+        routerLink: ['/', 'acquisition', 'records', 'acq_orders'],
         queryParams: {
           q: '',
           page: '1',
@@ -234,7 +234,7 @@ export const MENU_APP: MenuItem[] = [
         translateLabel: 'Budgets',
         id: MENU_IDS.APP.ACQUISITION.BUDGET,
         icon: 'fa fa-money',
-        routerLink: ['/', 'records', 'budgets'],
+        routerLink: ['/', 'acquisition', 'records', 'budgets'],
         queryParams: {
           q: '',
           page: '1',

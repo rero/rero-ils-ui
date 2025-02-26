@@ -18,12 +18,12 @@ import { Component } from '@angular/core';
 import { FieldArrayType } from '@ngx-formly/core';
 
 @Component({
-  selector: 'admin-formly-repeat-section',
-  template: `
+    selector: 'admin-formly-repeat-section',
+    template: `
     <p-panel styleClass="mb-2">
-      <ng-template pTemplate="header">
+      <ng-template #header>
         @if (field.props.label || field.props.addButton) {
-            <label class="flex align-items-center" [ngClass]="field.props.className">
+            <label class="flex items-center" [ngClass]="field.props.className">
               @if (field.props.label) {
                 <span>{{ field.props.label|translate }}</span>
               }
@@ -51,9 +51,9 @@ import { FieldArrayType } from '@ngx-formly/core';
         }
       </ng-template>
       @if (field.fieldGroup.length > 0) {
-          <div class="grid grid-nogutter">
+          <div class="grid grid-cols-12 gap-4 grid-nogutter">
             <div [ngClass]="field.props.trashButton ? 'col-11 col-offset-1': 'col-12'">
-              <div class="grid mt-2">
+              <div class="grid grid-cols-12 gap-4 mt-2">
                 @for (field of field.fieldGroup[0].fieldGroup; track field) {
                   @if (field.className) {
                     <div class="{{ field.props.headerClassName }}">
@@ -70,7 +70,7 @@ import { FieldArrayType } from '@ngx-formly/core';
               @if (f.fieldGroup.length > 0) {
                 <formly-field [ngClass]="field.props.trashButton ? 'col-11': 'col-12'" [field]="f" />
                 @if (field.props.trashButton) {
-                  <div class="col-1 flex align-items-center justify-content-end">
+                  <div class="col-span-1 flex items-center justify-end">
                     @if (showTrash) {
                       <p-button
                         size="small"
@@ -88,7 +88,8 @@ import { FieldArrayType } from '@ngx-formly/core';
         </div>
       }
     </p-panel>
-  `
+  `,
+    standalone: false
 })
 export class RepeatTypeComponent extends FieldArrayType {
 

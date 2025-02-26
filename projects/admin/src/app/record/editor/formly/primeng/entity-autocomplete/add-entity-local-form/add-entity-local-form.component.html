@@ -17,7 +17,7 @@
 -->
 @if (schema) {
   <form class="w-full" [formGroup]="form" (ngSubmit)="submit()">
-    <div class="flex justify-content-end">
+    <div class="flex justify-end">
       <p-button class="mr-2" severity="secondary" icon="fa fa-times" [label]="'Cancel' | translate" (onClick)="closeDialog()"></p-button>
       <p-button type="submit" icon="fa fa-save" [label]="'Save' | translate"></p-button>
     </div>

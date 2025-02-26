@@ -17,8 +17,9 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'admin-holding-shared-view',
-  templateUrl: './holding-shared-view.component.html'
+    selector: 'admin-holding-shared-view',
+    templateUrl: './holding-shared-view.component.html',
+    standalone: false
 })
 export class HoldingSharedViewComponent {
 

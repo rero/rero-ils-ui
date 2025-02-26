@@ -15,12 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { EditorService } from './editor.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('EditorService', () => {
   const record = {
@@ -37,14 +38,13 @@ describe('EditorService', () => {
   recordServiceSpy.getRecord.and.returnValue(of(record));
 
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      HttpClientTestingModule,
-      TranslateModule.forRoot()
-    ],
+    imports: [TranslateModule.forRoot()],
     providers: [
-      { provide: RecordService, useValue: recordServiceSpy },
+        { provide: RecordService, useValue: recordServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
     ]
-  }));
+}));
 
   beforeEach(() => {
     editorService = TestBed.inject(EditorService);

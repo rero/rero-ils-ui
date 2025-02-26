@@ -33,7 +33,7 @@
         [label]="'Search documents' | translate"
       />
       @if (isEnabledOperationLog && record.metadata.pid) {
-        <admin-operation-logs-dialog
+        <shared-operation-logs-dialog
           resourceType="local_entities"
           [resourcePid]="record.metadata.pid"
         />

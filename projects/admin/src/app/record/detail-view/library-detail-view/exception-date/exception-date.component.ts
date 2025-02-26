@@ -18,8 +18,9 @@ import { Component, Input } from '@angular/core';
 import { ExceptionDates, Library } from '@app/admin/classes/library';
 
 @Component({
-  selector: 'admin-exception-date',
-  templateUrl: './exception-date.component.html'
+    selector: 'admin-exception-date',
+    templateUrl: './exception-date.component.html',
+    standalone: false
 })
 export class ExceptionDateComponent {
   @Input() exception: ExceptionDates;

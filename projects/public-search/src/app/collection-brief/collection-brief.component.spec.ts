@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
@@ -23,6 +23,7 @@ import { AppRoutingModule } from '../app-routing.module';
 import { ErrorPageComponent } from '../error/error-page.component';
 import { MainComponent } from '../main/main.component';
 import { CollectionBriefComponent } from './collection-brief.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('CollectionBriefComponent', () => {
@@ -31,19 +32,17 @@ describe('CollectionBriefComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         MainComponent,
         CollectionBriefComponent,
         DateTranslatePipe,
         Nl2brPipe,
         ErrorPageComponent
-      ],
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
-        AppRoutingModule
-      ],
-    })
+    ],
+    imports: [TranslateModule.forRoot(),
+        AppRoutingModule],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
   }));
 

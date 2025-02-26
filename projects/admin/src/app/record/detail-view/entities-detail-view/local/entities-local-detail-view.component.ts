@@ -17,14 +17,15 @@
  */
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { OperationLogsService } from '@app/admin/service/operation-logs.service';
+import { OperationLogsService } from '@rero/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Entity, EntityType, EntityTypeIcon } from '@rero/shared';
 
 @Component({
-  selector: 'admin-entities-local-detail-view',
-  templateUrl: './entities-local-detail-view.component.html'
+    selector: 'admin-entities-local-detail-view',
+    templateUrl: './entities-local-detail-view.component.html',
+    standalone: false
 })
 export class EntitiesLocalDetailViewComponent implements OnInit, DetailRecord {
 

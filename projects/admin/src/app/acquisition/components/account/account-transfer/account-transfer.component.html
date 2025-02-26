@@ -17,40 +17,40 @@
 -->
 
 @if (accountsToDisplay && organisation) {
-  <div class="flex flex-wrap gap-2 justify-content-between">
+  <div class="flex flex-wrap gap-2 justify-between">
     <h1 translate>Fund transfer</h1>
     @if (budgets.length > 1) {
-      <p-dropdown
+      <p-select
         (onChange)="selectBudget($event)"
         [ngModel]="selectedBudget"
         [options]="budgets"
       >
-        <ng-template pTemplate="selectedItem">
+        <ng-template #selectedItem>
           {{
             selectedBudget.code | getRecord : "budgets" : "field" : "name" | async
           }}
         </ng-template>
-        <ng-template let-budget pTemplate="item">
+        <ng-template #item let-budget>
           {{ budget.code | getRecord : "budgets" : "field" : "name" | async }}
         </ng-template>
-      </p-dropdown>
+      </p-select>
     }
   </div>
   <form [formGroup]="form" (ngSubmit)="submit()">
     <p-card class="p-card-body-p-0">
-      <ng-template pTemplate="header">
-      <div class="hidden md:flex grid grid-nogutter bg-blue-900 text-white p-2 text-lg font-bold">
-        <div class="col-1 text-center" translate>Source</div>
-        <div class="col-offset-6 col-2 text-right" translate>Amount</div>
-        <div class="col-2 text-right" translate>Available</div>
-        <div class="col-1 text-center" translate>Target</div>
+      <ng-template #header>
+      <div class="hidden md:flex grid grid-cols-12 gap-4 grid-nogutter bg-blue-900 text-white p-2 text-lg font-bold">
+        <div class="col-span-1 text-center" translate>Source</div>
+        <div class="col-start-7 col-span-2 text-right" translate>Amount</div>
+        <div class="col-span-2 text-right" translate>Available</div>
+        <div class="col-span-1 text-center" translate>Target</div>
       </div>
     </ng-template>
-      <div class="mt-3">
+      <div class="mt-4">
         @if (accountsToDisplay.length > 0) {
           @for (account of accountsToDisplay; track account) {
-            <div class="grid grid-nogutter-x">
-              <div class="col-1 text-center">
+            <div class="grid grid-cols-12 gap-4 grid-nogutter-x">
+              <div class="col-span-1 text-center">
                 @if (!(form.get('target').value &&
                     form.get('target').value.pid === account.pid)) {
                   <p-radioButton
@@ -60,19 +60,19 @@
                   />
                 }
               </div>
-              <div class="col-6 ">
+              <div class="col-span-6 ">
                 <a class="depth-padding-{{ account.depth }}" [routerLink]="['/', 'records', 'acq_accounts', 'detail', account.pid]">{{ account.name }}</a>
               </div>
-              <div class="col-2 text-right">
+              <div class="col-span-2 text-right">
                 {{
                   account.allocated_amount | currency : organisation.default_currency
                 }}
               </div>
               <div
-                class="col-2 text-right"
+                class="col-span-2 text-right"
                 [class]="{
                   'text-success': account.remaining_balance.self > 0,
-                  'text-color-secondary': account.remaining_balance.self === 0,
+                  'text-muted-color': account.remaining_balance.self === 0,
                   'text-warning': account.remaining_balance.self < 0
                 }"
               >
@@ -81,7 +81,7 @@
                     | currency : organisation.default_currency
                 }}
               </div>
-              <div class="col-1 text-center">
+              <div class="col-span-1 text-center">
                 @if(!(form.get('source').value &&
                     form.get('source').value.pid === account.pid)) {
                 <p-radioButton
@@ -97,11 +97,11 @@
           {{ "No account available" | translate }}
         }
       </div>
-      <ng-template pTemplate="footer">
+      <ng-template #footer>
         <p-divider />
-        <div class="flex flex-column gap-2 px-4 pb-4">
+        <div class="flex flex-col gap-2 px-6 pb-6">
           <label for="amount" translate>Amount</label>
-          <div class="flex flex-wrap gap-2 justify-content-between">
+          <div class="flex flex-wrap gap-2 justify-between">
             <div>
               <p-inputGroup>
                 <p-inputGroupAddon>{{ currencySymbol }}</p-inputGroupAddon>
@@ -114,7 +114,7 @@
                 />
               </p-inputGroup>
             </div>
-            <div class="flex flex-wrap gap-1 justify-content-end">
+            <div class="flex flex-wrap gap-1 justify-end">
               <p-button
                 type="cancel"
                 [label]="'Cancel' | translate"

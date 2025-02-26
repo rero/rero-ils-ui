@@ -16,10 +16,10 @@
 -->
 <section id="requests-section" class="mt-2">
   <p-card class="p-card-body-p-0">
-    <ng-template pTemplate="header">
-        <div class="hidden md:flex grid grid-nogutter bg-blue-900 text-white p-2 text-lg font-bold">
-          <div class="col-8" translate>Document</div>
-          <div class="col-2" translate>Status</div>
+    <ng-template #header>
+        <div class="hidden md:flex grid grid-cols-12 gap-4 grid-nogutter bg-blue-900 text-white p-2 text-lg font-bold">
+          <div class="col-span-8" translate>Document</div>
+          <div class="col-span-2" translate>Status</div>
         </div>
     </ng-template>
 
@@ -37,10 +37,10 @@
           <shared-search-show-more-pager id="show-more-requests" [paginator]="paginator" />
       </div>
     } @else {
-        <div class="font-bold mx-2 my-4" translate>No request</div>
+        <div class="font-bold mx-2 my-6" translate>No request</div>
     }
   } @placeholder {
-      <div class="font-bold mx-2 my-4" translate>Loading in progress</div>
+      <div class="font-bold mx-2 my-6" translate>Loading in progress</div>
   }
   </p-card>
 </section>

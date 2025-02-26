@@ -27,9 +27,9 @@ import { MessageService, SelectItemGroup } from 'primeng/api';
 import { finalize, map } from 'rxjs/operators';
 
 @Component({
-  selector: 'admin-item-switch-location',
-  templateUrl: './item-switch-location.component.html',
-  styleUrls: ['./item-switch-location.component.scss']
+    selector: 'admin-item-switch-location',
+    templateUrl: './item-switch-location.component.html',
+    standalone: false
 })
 export class ItemSwitchLocationComponent implements OnInit {
 

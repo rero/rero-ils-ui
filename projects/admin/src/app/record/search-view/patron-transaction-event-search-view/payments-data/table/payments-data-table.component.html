@@ -20,14 +20,14 @@
   @for (subtype of data.subtypes; track subtype) {
     <li>
       <div class="flex">
-        <span class="flex-grow-1">{{ subtype.name | translate }}</span>
+        <span class="grow">{{ subtype.name | translate }}</span>
         <span>{{ subtype.total | currency: org_currency: 'symbol' }}</span>
       </div>
     </li>
   }
     <p-divider></p-divider>
   <li class="flex font-bold">
-    <span class="flex-grow-1" translate>Total</span>
+    <span class="grow" translate>Total</span>
     <span>{{ data.total | currency: org_currency: 'symbol' }}</span>
   </li>
 </ul>

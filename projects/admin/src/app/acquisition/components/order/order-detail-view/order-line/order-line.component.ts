@@ -26,8 +26,9 @@ import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqOrderLineStatus, IAcqOrderLine } from '../../../../classes/order';
 
 @Component({
-  selector: 'admin-order-line',
-  templateUrl: './order-line.component.html',
+    selector: 'admin-order-line',
+    templateUrl: './order-line.component.html',
+    standalone: false
 })
 export class OrderLineComponent implements OnInit, OnDestroy {
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);

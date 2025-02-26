@@ -19,7 +19,7 @@
   <admin-record-masked [record]="holding" [withLabel]="true"></admin-record-masked>
 }
 @if (holding.metadata.document.pid | getRecord:'documents' | async; as document) {
-    <div class="border-1 border-round surface-border p-4">
+    <div class="border rounded-border border-surface p-6">
       <admin-documents-brief-view
           [record]="document"
           [type]="'documents'" [detailUrl]="{
@@ -36,17 +36,16 @@
 <!-- TABS ================================================================= -->
 <!--    3 tabs will be displayed : Issues, Holdings details, Local fields -->
 
-
+<!--
 <p-tabView>
   <p-tabPanel>
-    <ng-template pTemplate="header">
+    <ng-template #header>
       <i class="fa fa-list-ul"></i>&nbsp;{{ 'Issues' | translate }}
     </ng-template>
-    <div class="flex flex-column gap-2">
-      <!-- top actions bar ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <div class="flex flex-col gap-2">
       <div class="flex">
         <p-button
-          class="flex-grow-1"
+          class="grow"
           outlined
           (onClick)="showMore('prediction', 3)"
           icon="fa fa-arrow-circle-o-up"
@@ -66,8 +65,7 @@
           />
         }
       </div>
-      <div class="flex flex-column">
-        <!-- expected issues ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <div class="flex flex-col">
         @for (prediction of predictionsItems; track prediction; let last = $last) {
           <admin-expected-issue [issue]="prediction">
             @if (last) {
@@ -101,14 +99,12 @@
             }
           </admin-expected-issue>
         }
-        <!-- received issues ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         @for (item of receivedItems; track item; let last = $last) {
           <admin-received-issue [issue]="item" [holding]="holding" (delete)="deleteIssue($event)" />
         }
       </div>
-      <!-- SHOW MORE RECEIVED ISSUE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       @if (receivedItems.length < totalReceivedItems) {
-        <div class="flex align-items-center gap-2">
+        <div class="flex items-center gap-2">
         <p-button
           outlined
           size="small"
@@ -116,24 +112,25 @@
           icon="fa fa-arrow-circle-o-down"
           label="{{ 'Show more' | translate }} &hellip;"
           />
-        <small class="text-color-secondary">({{ showMoreIssuesCounter }})</small>
+        <small class="text-muted-color">({{ showMoreIssuesCounter }})</small>
       </div>
       }
     </div>
   </p-tabPanel>
 
   <p-tabPanel>
-    <ng-template pTemplate="header">
+    <ng-template #header>
       <i class="fa fa-list-ul"></i>&nbsp;<span translate>Details</span>
     </ng-template>
     <admin-holding-detail context="holdings" [holding]="holding"></admin-holding-detail>
   </p-tabPanel>
 
   <p-tabPanel>
-    <ng-template pTemplate="header">
+    <ng-template #header>
       <i class="fa fa-list-ul"></i>&nbsp;<span translate>Local fields</span>
     </ng-template>
     <admin-local-field [resourceType]="'holdings'" [resourcePid]="holding.metadata.pid"></admin-local-field>
   </p-tabPanel>
 
 </p-tabView>
+-->

@@ -28,8 +28,9 @@ import { Subscription, forkJoin, of } from 'rxjs';
 import { debounceTime, map, tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'public-search-patron-profile-personal-editor',
-  templateUrl: './patron-profile-personal-editor.component.html'
+    selector: 'public-search-patron-profile-personal-editor',
+    templateUrl: './patron-profile-personal-editor.component.html',
+    standalone: false
 })
 export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
 
@@ -58,8 +59,8 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   private _subscriptions = new Subscription();
   /** Additional style for a field */
   private _cssConfig = {
-    keep_history: 'col-12 pl-0',
-    default: 'col-12 md:col-6 pl-0'
+    keep_history: 'col-span-12 pl-0',
+    default: 'col-span-12 md:col-span-6 pl-0'
   };
   /** Description for some fields defined as key */
   private _fieldDescription = {
@@ -85,7 +86,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
                 }
                 // Add the "row" class to the main object
                 if (field.key == null) {
-                  field.props.containerCssClass = 'grid';
+                  field.props.containerCssClass = 'grid grid-cols-12 gap-4';
                 }
                 const fkey = String(field.key);
                 // Add a class on each field

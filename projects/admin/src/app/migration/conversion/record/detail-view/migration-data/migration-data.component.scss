@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,24 +20,24 @@ admin-migration-data {
     table {
       border-spacing: 0;
       th {
-        @extend .text-left;
+        @apply text-left;
       }
       td,
       th {
-        @extend .vertical-align-top, .py-2, .px-3;
+        @apply align-top py-1 px-3;
       }
       tbody tr:nth-of-type(odd) {
-        @extend .surface-100;
+        background-color: var(--p-surface-100);
       }
     }
   }
   .data {
-    .col {
-      @extend .overflow-auto;
-      max-height: 600px;
+    .col-overflow {
+      @apply overflow-auto max-h-[600px];
     }
     .json {
-      @extend .surface-border, .border-left-1;
+      @apply border-l-1 pl-2;
+      border-color: var(--p-surface-300)
     }
   }
 }

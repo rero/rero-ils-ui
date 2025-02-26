@@ -16,15 +16,15 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <p-panel>
-  <ng-template pTemplate="header">
-    <div class="w-full flex flex-wrap justify-content-between gap-2">
+  <ng-template #header>
+    <div class="w-full flex flex-wrap justify-between gap-2">
       <h5 translate>Order lines</h5>
       @if (canAdd()) {
           <p-button
             icon="fa fa-plus-square-o"
             [label]="'Add'|translate"
             outlined
-            [routerLink]="['/', 'records', 'acq_order_lines', 'new']"
+            [routerLink]="['/acquisition', 'records', 'acq_order_lines', 'new']"
             [queryParams]="{ order: order.pid }"
           />
       }
@@ -34,7 +34,7 @@
     @defer (when orderLines) {
       @if (orderLines.length > 0) {
         @for (orderLine of orderLines; track orderLine) {
-          <div class="pt-2 border-bottom-1 surface-border">
+          <div class="pt-2 border-b border-surface">
           <admin-order-line [orderLine]="orderLine"
                             [order]="order"
           />

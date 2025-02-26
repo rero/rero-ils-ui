@@ -22,8 +22,9 @@ import { AcqOrderStatus, IAcqOrder, IAcqOrderLine } from '../../../../classes/or
 import { UserService } from '@rero/shared';
 
 @Component({
-  selector: 'admin-order-lines',
-  templateUrl: './order-lines.component.html'
+    selector: 'admin-order-lines',
+    templateUrl: './order-lines.component.html',
+    standalone: false
 })
 export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
 

@@ -18,7 +18,7 @@
 
 @defer(when loaded) {
   <div class="flex gap-2">
-    <div class="flex-grow-1">
+    <div class="grow">
       @switch (parent.type) {
         @case ('overdue') {
           <admin-patron-transaction-event-overdue [parent]="parent" [event]="event" />
@@ -28,16 +28,18 @@
         }
       }
     </div>
-    <p-tag [severity]="severity()">
-      @if (event().type !== eventTypes.DISPUTE) {
-        {{ event().amount | currency : organisation.default_currency }}
-      } @else {
-        {{ 'dispute' | translate }}
-      }
-    </p-tag>
+    <div>
+      <p-tag [severity]="severity()">
+        @if (event().type !== eventTypes.DISPUTE) {
+          {{ event().amount | currency : organisation.default_currency }}
+        } @else {
+          {{ 'dispute' | translate }}
+        }
+      </p-tag>
+    </div>
   </div>
-  <div class="flex gap-2 flex-wrap">
-    <div class="flex flex-grow-1 flex-wrap gap-2">
+  <div class="flex gap-2 flex-wrap mt-2">
+    <div class="flex grow flex-wrap gap-2">
       @if (event().operator) {
         <p-tag severity="secondary">
           <i class="fa fa-user-circle-o"></i>&nbsp;{{ event().operator.name }}

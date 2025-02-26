@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreModule, DateTranslatePipe } from '@rero/ng-core';
@@ -22,6 +22,7 @@ import { AppSettingsService, testUserPatronWithSettings } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { SharedModule } from '@rero/shared';
 import { PatronProfilePersonalComponent } from './patron-profile-personal.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PatronProfilePersonalComponent', () => {
   let component: PatronProfilePersonalComponent;
@@ -42,20 +43,19 @@ describe('PatronProfilePersonalComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         PatronProfilePersonalComponent,
         DateTranslatePipe
-      ],
-      imports: [
-        CoreModule,
+    ],
+    imports: [CoreModule,
         TranslateModule.forRoot(),
-        SharedModule,
-        HttpClientTestingModule
-      ],
-      providers: [
-        { provide: AppSettingsService, useValue: appSettingsServiceSpy }
-      ]
-    })
+        SharedModule],
+    providers: [
+        { provide: AppSettingsService, useValue: appSettingsServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   });
 

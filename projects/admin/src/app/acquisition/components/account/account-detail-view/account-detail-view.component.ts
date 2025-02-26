@@ -24,8 +24,9 @@ import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { IAcqAccount } from '../../../classes/account';
 
 @Component({
-  selector: 'admin-acquisition-account-detail-view',
-  templateUrl: './account-detail-view.component.html'
+    selector: 'admin-acquisition-account-detail-view',
+    templateUrl: './account-detail-view.component.html',
+    standalone: false
 })
 export class AccountDetailViewComponent implements OnInit, DetailRecord {
 

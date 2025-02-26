@@ -24,8 +24,9 @@ import { combineLatest } from 'rxjs';
 import { EditorService } from '../../../service/editor.service';
 
 @Component({
-  selector: 'admin-document-editor',
-  templateUrl: './document-editor.component.html'
+    selector: 'admin-document-editor',
+    templateUrl: './document-editor.component.html',
+    standalone: false
 })
 
 /**

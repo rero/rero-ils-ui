@@ -24,8 +24,9 @@ import { FileUpload } from 'primeng/fileupload';
 import { Observable, catchError, concatMap, from, map, of, switchMap, tap, toArray } from 'rxjs';
 
 @Component({
-  selector: 'admin-upload-files',
-  templateUrl: './upload-files.component.html'
+    selector: 'admin-upload-files',
+    templateUrl: './upload-files.component.html',
+    standalone: false
 })
 export class UploadFilesComponent implements OnInit {
 

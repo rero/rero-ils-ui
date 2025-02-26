@@ -23,7 +23,7 @@
     <div class="flex gap-2 py-2">
       <span class="font-bold">{{ 'Filter' | translate}}:</span>
         @for (filter of filterTypes; track filter) {
-            <p-inputSwitch [inputId]="filter" [formControlName]="filter" />
+            <p-toggleswitch [inputId]="filter" [formControlName]="filter" />
             <label class="" [for]="filter">{{ ('op_filter_' + filter) | translate }}</label>
         }
     </div>
@@ -32,7 +32,7 @@
     @if (recordTotals > 0) {
       @for (record of records; track record; let isFirst = $first; let idx = $index) {
         @if (isFirst || !isSamePeriod(record, records[idx-1])) {
-          <div class="surface-100 p-2 surface-border border-y-1">
+          <div class="bg-surface-100 dark:bg-surface-700 p-2 border-surface border-y">
             <i class="fa fa-calendar"></i>&nbsp;
             {{ record.metadata.date | dateTranslate :'MMMM Y' | titlecase }}
           </div>
@@ -66,7 +66,7 @@
     {{ 'loading in progress' | translate }}
   }
 </div>
-<div class="py-1 justify-content-start">
+<div class="py-1 justify-start">
   @if (loadedRecord && isLinkShowMore) {
     <p-button
       id="show-more-items-{{ resourcePid }}"

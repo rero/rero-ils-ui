@@ -26,8 +26,9 @@ import { forkJoin, Subscription } from 'rxjs';
 import { ItemRequestComponent } from '../../document-detail-view/item-request/item-request.component';
 
 @Component({
-  selector: 'admin-item-transactions',
-  templateUrl: './item-transactions.component.html'
+    selector: 'admin-item-transactions',
+    templateUrl: './item-transactions.component.html',
+    standalone: false
 })
 export class ItemTransactionsComponent implements OnInit, OnDestroy {
 
@@ -79,6 +80,7 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
     const ref = this.dialogService.open(ItemRequestComponent, {
       header: this.translateService.instant('Item request'),
       width: '40vw',
+      closable: true,
       data: { recordPid: this.itemPid, recordType: 'item' }
     });
     this.subscription.add(

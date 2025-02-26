@@ -1,5 +1,5 @@
 {
-  "/patrons/*": {
+  "/patrons/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -11,7 +11,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/records/preview/*": {
+  "/records/preview/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -35,7 +35,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/api/*": {
+  "/api/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -47,7 +47,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/notifications/*": {
+  "/notifications/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -59,7 +59,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/static/*": {
+  "/static/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",
@@ -71,7 +71,7 @@
       "Connection": "keep-alive"
     }
   },
-  "/lang/*": {
+  "/lang/**": {
     "target": "https://localhost:5000",
     "secure": false,
     "logLevel": "debug",

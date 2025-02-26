@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule, RecordService } from '@rero/ng-core';
@@ -22,6 +22,7 @@ import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { FieldRefTypeComponent } from './field-ref.type';
 import { ChangeDetectorRef } from '@angular/core';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CanAccessGuard', () => {
   let recordService: RecordService;
@@ -47,17 +48,15 @@ describe('CanAccessGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
-        CoreModule
-      ],
-      providers: [
+    imports: [TranslateModule.forRoot(),
+        CoreModule],
+    providers: [
         { provide: RecordService, useValue: recordServiceSpy },
-        ChangeDetectorRef
-      ]
-
-    });
+        ChangeDetectorRef,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     recordService = TestBed.inject(RecordService);
   });
 

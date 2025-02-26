@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, model, OnDestroy, OnInit } from '@angular/core';
 import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -32,8 +32,9 @@ import { PatronTransactionEventFormComponent } from './patron-transaction-event-
 import { AccordionTabOpenEvent } from 'primeng/accordion';
 
 @Component({
-  selector: 'admin-patron-transactions',
-  templateUrl: './patron-transactions.component.html'
+    selector: 'admin-patron-transactions',
+    templateUrl: './patron-transactions.component.html',
+    standalone: false
 })
 export class PatronTransactionsComponent implements OnInit, OnDestroy {
 
@@ -46,6 +47,8 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   private circulationService: CirculationService = inject(CirculationService);
 
   private dynamicDialogRef: DynamicDialogRef | undefined;
+
+  activePanel = model<undefined | string>(undefined);
 
   // COMPONENTS ATTRIBUTES ===============================================================
   /** all tab reference array */
@@ -96,6 +99,15 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   // CONSTRUCTOR & HOOKS ==================================================================
   /** OnInit hook */
   ngOnInit(): void {
+    this.activePanel.set("0");
+    this.subscriptions.add(
+      this.activePanel.subscribe(val => {
+        // lazy loading history
+        if (val === "2") {
+          this.loadFeesHistory();
+        }
+      })
+    );
     this.patronService.currentPatron$.subscribe((patron: any) => {
       if (patron) {
         this.patron = patron;
@@ -137,13 +149,6 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
     ];
   }
 
-  accordionOpen(event: AccordionTabOpenEvent): void {
-    // 2 = Transaction history
-    if (event.index === 2) {
-      this.loadFeesHistory();
-    }
-  }
-
   // COMPONENT FUNCTIONS ==================================================================
   /** load all PatronTransactions for the patron without 'status' restriction */
   loadFeesHistory(): void {
@@ -162,6 +167,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
       header: this.translateService.instant('Pay'),
       focusOnShow: false,
       width: '50vw',
+      closable: true,
       data: {
         action: 'pay',
         mode: 'full',
@@ -176,6 +182,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
       header: this.translateService.instant('Pay for my library'),
       focusOnShow: false,
       width: '50vw',
+      closable: true,
       data: {
         action: 'pay',
         mode: 'full',
@@ -190,6 +197,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
       header: this.translateService.instant('New fee'),
       focusOnShow: false,
       width: '30vw',
+      closable: true,
       data: {
         patronPid: this.patron.pid,
         organisationPid: this.patron.organisation.pid

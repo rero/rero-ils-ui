@@ -14,12 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
 import { CanAddAccountGuard } from './can-add-account.guard';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CanAddAccountGuard', () => {
   let guard: CanAddAccountGuard;
@@ -37,12 +38,10 @@ describe('CanAddAccountGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot(routes),
-        HttpClientTestingModule,
-        TranslateModule.forRoot()
-      ]
-    });
+    imports: [RouterModule.forRoot(routes),
+        TranslateModule.forRoot()],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
     guard = TestBed.inject(CanAddAccountGuard);
     router = TestBed.inject(Router);
   });

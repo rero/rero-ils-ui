@@ -16,9 +16,9 @@
 -->
 
 @if (record) {
-    <div class="grid grid-nogutter p-2">
+    <div class="grid grid-cols-12 gap-4 grid-nogutter p-2">
       <!-- DOCUMENT & ADDITIONAL DATA -->
-      <div *ngVar="record.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document" class="md:col-10 col-12">
+      <div *ngVar="record.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document" class="md:col-span-10 col-span-12">
         @if (document) {
           <a href="/{{ viewcode }}/documents/{{ record.metadata.loan.item.document.pid }}">
             {{ record.metadata.loan.item.document.title }}
@@ -40,7 +40,7 @@
           </dl>
       </div>
       <!-- DUE DATE -->
-        <div class="md:col-2 col-12 hidden md:block">
+        <div class="md:col-span-2 col-span-12 hidden md:block">
           {{ record.metadata.date | dateTranslate: 'shortDate' }}
       </div>
     </div>

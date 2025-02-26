@@ -18,18 +18,20 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { PatronApiService, Message } from '../../api/patron-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
-import { Message as PrimeMessage } from 'primeng/api';
+import { ToastMessageOptions } from 'primeng/api/toastmessage';
 
 @Component({
-  selector: 'public-search-patron-profile-message',
-  template: `
-      <p-messages
-      [value]="messages"
-      [closable]="false"
-      [enableService]="false"
-      showTransitionOptions="0ms"
-    />
-  `
+    selector: 'public-search-patron-profile-message',
+    template: `
+    @for (message of messages; track message) {
+      <p-message
+        [text]="message.text"
+        [severity]="message.severity"
+        showTransitionOptions="0ms"
+      />
+    }
+  `,
+    standalone: false
 })
 export class PatronProfileMessageComponent implements OnInit, OnDestroy {
   private patronApiService: PatronApiService = inject(PatronApiService);
@@ -39,7 +41,7 @@ export class PatronProfileMessageComponent implements OnInit, OnDestroy {
   private _subscription = new Subscription();
 
   /** patron messages */
-  messages: PrimeMessage[] = [];
+  messages: ToastMessageOptions[] = [];
 
   /** OnInit hook */
   ngOnInit(): void {
@@ -61,8 +63,8 @@ export class PatronProfileMessageComponent implements OnInit, OnDestroy {
     const patronPid = this.patronProfileMenuService.currentPatron.pid;
     this.patronApiService.getMessages(patronPid).subscribe(
       (messages: Message[]) =>
-        (this.messages = messages.map((message:Message): PrimeMessage => {
-          return { detail: message.content, severity: message.type };
+        (this.messages = messages.map((message:Message): ToastMessageOptions => {
+          return { text: message.content, severity: message.type };
         }))
     );
   }

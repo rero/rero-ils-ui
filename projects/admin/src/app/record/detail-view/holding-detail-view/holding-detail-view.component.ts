@@ -20,8 +20,9 @@ import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
-  selector: 'admin-holding-detail-view',
-  templateUrl: './holding-detail-view.component.html'
+    selector: 'admin-holding-detail-view',
+    templateUrl: './holding-detail-view.component.html',
+    standalone: false
 })
 export class HoldingDetailViewComponent implements OnInit , OnDestroy, DetailRecord {
 

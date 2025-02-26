@@ -17,7 +17,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'keyExists'
+    name: 'keyExists',
+    standalone: false
 })
 export class KeyExistsPipe implements PipeTransform {
 

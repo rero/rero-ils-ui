@@ -25,8 +25,9 @@ export interface BriefViewTag {
 
 
 @Component({
-  selector: 'shared-brief-view',
-  templateUrl: './brief-view.component.html'
+    selector: 'shared-brief-view',
+    templateUrl: './brief-view.component.html',
+    standalone: false
 })
 export class BriefViewComponent implements AfterContentInit {
 

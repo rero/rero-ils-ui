@@ -25,9 +25,9 @@ import { EntityBriefViewRemoteOrganisationComponent } from './entity-brief-view.
 import { EntityBriefViewRemotePersonComponent } from './entity-brief-view.person';
 
 @Component({
-  selector: 'shared-entity-brief-view',
-  providers: [ExtractSourceFieldPipe],
-  template: `
+    selector: 'shared-entity-brief-view',
+    providers: [ExtractSourceFieldPipe],
+    template: `
     <shared-brief-view [title]="entityTitle" [link]="routerLink" [tags]="tags">
       <ng-template rTemplate="icon">
         <i class="fa fa-2x" [class]="entityIcon" [title]="record.metadata.type | translate"></i>
@@ -43,7 +43,8 @@ import { EntityBriefViewRemotePersonComponent } from './entity-brief-view.person
         </div>
       </ng-template>
     </shared-brief-view>
-  `
+  `,
+    standalone: false
 })
 export class EntityBriefViewComponent implements ResultItem, OnInit, AfterViewInit {
 

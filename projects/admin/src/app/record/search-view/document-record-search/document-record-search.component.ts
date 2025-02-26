@@ -21,8 +21,9 @@ import { RecordSearchPageComponent, RecordService, SearchResult } from '@rero/ng
 import { AppSettingsService } from '@rero/shared';
 
 @Component({
-  selector: 'admin-document-record-search',
-  templateUrl: './document-record-search.component.html'
+    selector: 'admin-document-record-search',
+    templateUrl: './document-record-search.component.html',
+    standalone: false
 })
 export class DocumentRecordSearchComponent extends RecordSearchPageComponent implements OnInit {
 

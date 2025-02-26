@@ -21,8 +21,9 @@ import { RecordService } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 
 @Component({
-  selector: 'admin-migration-data-deduplication',
-  templateUrl: './migration-data-deduplication.component.html'
+    selector: 'admin-migration-data-deduplication',
+    templateUrl: './migration-data-deduplication.component.html',
+    standalone: false
 })
 export class MigrationDataDeduplicationBriefComponent implements OnInit {
   // services

@@ -22,17 +22,17 @@
 @if ((checkedOutItems && checkedOutItems.length > 0) || (checkedInItems && checkedInItems.length > 0)) {
   <!-- HEADER -->
    <p-card class="p-card-body-p-0">
-    <ng-template pTemplate="header">
-        <div class="grid grid-nogutter py-3 px-2 text-lg font-bold align-items-center border-bottom-1 surface-border">
-          <div class="col-3 flex gap-2 align-items-center">
+    <ng-template #header>
+        <div class="grid grid-cols-12 gap-4 grid-nogutter py-4 px-2 text-lg font-bold items-center border-b border-surface">
+          <div class="col-span-3 flex gap-2 items-center">
             <div>
               <shared-open-close-button (status)="allCollapsed = $event" />
             </div>
             <div translate>Item</div>
           </div>
-          <div class="col-5" translate>Document</div>
-          <div class="col-2" translate>Circulation info</div>
-          <div class="col-2 flex justify-content-end">
+          <div class="col-span-5" translate>Document</div>
+          <div class="col-span-2" translate>Circulation info</div>
+          <div class="col-span-2 flex justify-end">
             @if (patron) {
               <p-button
                 id="renew-all-button"

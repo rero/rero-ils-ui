@@ -15,12 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
 
 import { NotificationApiService } from './notification-api.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('NotificationApiService', () => {
   let service: NotificationApiService;
@@ -53,13 +54,13 @@ describe('NotificationApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
-      providers: [
-        { provide: RecordService, useValue: recordServiceSpy }
-      ]
-    });
+    imports: [],
+    providers: [
+        { provide: RecordService, useValue: recordServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     service = TestBed.inject(NotificationApiService);
 
 

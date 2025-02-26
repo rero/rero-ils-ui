@@ -15,8 +15,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (items) {
-  <h3 translate class="mt-4">Items</h3>
-  <ul class="list-none p-0 m-0 alternate-color">
+  <h4 translate>Items</h4>
+  <ul class="list-none alternate-color">
     @for (item of items; track item) {
       <li class="p-2" *ngVar="item.pid | getRecord: 'items' | async as itemData">
         @if ($any(itemData).metadata.document.pid | getRecord:'documents':'object':null:{Accept: 'application/rero+json'} | async; as document) {

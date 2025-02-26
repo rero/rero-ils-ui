@@ -20,8 +20,9 @@ import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'admin-patron-transaction-history',
-  templateUrl: './patron-transaction-history.component.html'
+    selector: 'admin-patron-transaction-history',
+    templateUrl: './patron-transaction-history.component.html',
+    standalone: false
 })
 export class PatronTransactionHistoryComponent {
 

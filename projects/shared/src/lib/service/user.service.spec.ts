@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
@@ -25,6 +25,7 @@ import { PERMISSIONS } from '../util/permissions';
 import { AppSettingsService } from './app-settings.service';
 import { PermissionsService } from './permissions.service';
 import { UserService } from './user.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('UserService', () => {
   let service: UserService;
@@ -40,13 +41,13 @@ describe('UserService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
-      providers: [
+    imports: [],
+    providers: [
         { provide: UserApiService, useValue: userApiServiceSpy },
-      ]
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
     service = TestBed.inject(UserService);
     appSettingsService = TestBed.inject(AppSettingsService);
     permissionsService = TestBed.inject(PermissionsService);

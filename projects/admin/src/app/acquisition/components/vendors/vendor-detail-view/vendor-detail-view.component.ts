@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,33 +18,21 @@ import { Component, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
-import { OperationLogsService } from '../../../service/operation-logs.service';
 
 @Component({
-  selector: 'admin-vendor-detail-view',
-  templateUrl: './vendor-detail-view.component.html'
+    selector: 'admin-vendor-detail-view',
+    templateUrl: './vendor-detail-view.component.html',
+    standalone: false
 })
 export class VendorDetailViewComponent implements DetailRecord {
 
   private translateService: TranslateService = inject(TranslateService);
-  private operationLogsService: OperationLogsService = inject(OperationLogsService);
 
   /** Observable resolving record data */
   record$: Observable<any>;
 
   /** Resource type */
   type: string;
-
-  /** Load operation logs on show */
-  showOperationLogs = false;
-
-  /**
-   * Is operation log enabled
-   * @return boolean
-   */
-  get isEnabledOperationLog(): boolean {
-    return this.operationLogsService.isLogVisible('vendors');
-  }
 
   /**
    * Get Current language interface
@@ -57,5 +45,17 @@ export class VendorDetailViewComponent implements DetailRecord {
   filterContact(contacts: any[], type: string): any {
     const contact = contacts.filter((contact: any) => contact.type === type);
     return contact.length === 0 ? undefined : contact[0];
+  }
+
+  tabSelected(record: any): string {
+    if (record.contacts.some((contact: any) => contact.type === 'default')) {
+      return 'default';
+    }
+    if (record.contacts.some((contact: any) => contact.type === 'order')) {
+      return 'order';
+    }
+    if (record.contacts.some((contact: any) => contact.type === 'serial')) {
+      return 'serial';
+    }
   }
 }

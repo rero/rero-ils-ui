@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { getCurrencySymbol } from '@angular/common';
+import { UrlSegment } from '@angular/router';
 import { AccountDetailViewComponent } from '@app/admin/acquisition/components/account/account-detail-view/account-detail-view.component';
 import { CanAddAccountGuard } from '@app/admin/acquisition/routes/guards/can-add-account.guard';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '@app/admin/guard/can-access.guard';
@@ -41,7 +42,6 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
   readonly name = 'acq_accounts';
   /** Record type */
   readonly recordType = 'acq_accounts';
-
   /** Get route configuration */
   getConfiguration() {
     return {

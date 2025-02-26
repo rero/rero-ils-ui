@@ -40,7 +40,7 @@
         <ng-container label>{{ 'General note' | translate }}</ng-container>
         <ng-container content>
           @for (noteType of notesGeneral | keyvalue; track noteType) {
-            <ul class="list-none m-0 p-0">
+            <ul class="list-none">
               @for (note of noteType.value; track note) {
                 <li>{{ note }}</li>
               }
@@ -55,7 +55,7 @@
       <shared-description-zone>
         <ng-container label>{{ 'Other responsibilities' | translate }}</ng-container>
         <ng-container content>
-          <ul class="list-none m-0 p-0">
+          <ul class="list-none">
             @for (credit of record.metadata.credits; track credit) {
               <li>{{ credit }}</li>
             }
@@ -95,7 +95,7 @@
       <shared-description-zone>
         <ng-container label>{{ 'Original title' | translate }}</ng-container>
         <ng-container content>
-          <ul class="list-none m-0 p-0">
+          <ul class="list-none">
             @for (title of record.metadata.originalTitle; track title) {
               <li>{{ title }}</li>
             }
@@ -110,7 +110,7 @@
         <shared-description-zone>
           <ng-container label>{{ 'Work' | translate }}</ng-container>
           <ng-container content>
-            <ul class="list-none m-0 p-0">
+            <ul class="list-none">
               @for (work of works; track work) {
                 <li>{{ work }}</li>
               }
@@ -125,7 +125,7 @@
       <shared-description-zone>
         <ng-container label>{{ 'Contents' | translate }}</ng-container>
         <ng-container content>
-          <ul class="list-none m-0 p-0">
+          <ul class="list-none">
             @for (table of record.metadata.tableOfContents; track table) {
               <li>{{ table }}</li>
             }
@@ -139,7 +139,7 @@
       <shared-description-zone>
         <ng-container label>{{ 'Thesis' | translate }}</ng-container>
         <ng-container content>
-          <ul class="list-none m-0 p-0">
+          <ul class="list-none">
             @for (dissertation of record.metadata.dissertation; track dissertation) {
               @for (label of dissertation.label; track label) {
                 <li>{{ label.value }}</li>
@@ -191,7 +191,7 @@
       <shared-description-zone>
         <ng-container label>{{ 'Scale' | translate }}</ng-container>
         <ng-container content>
-          <ul class="list-none m-0 p-0">
+          <ul class="list-none">
             @for (scale of record.metadata.scale; track scale) {
               <li>{{ scale.label }}</li>
             }
@@ -205,7 +205,7 @@
       <shared-description-zone>
         <ng-container label>{{ 'Cartographic data' | translate }}</ng-container>
         <ng-container content>
-          <ul class="list-none m-0 p-0">
+          <ul class="list-none">
             @for (cartographic of cartographicAttributes; track cartographic) {
               <li>
                 @if (cartographic.projection) {
@@ -229,7 +229,7 @@
       <shared-description-zone>
         <ng-container label>{{ 'Classification' | translate }}</ng-container>
         <ng-container content>
-          <ul class="list-none m-0 p-0">
+          <ul class="list-none">
             @for (classification of record.metadata.classification; track classification) {
               <li>
                 {{ classification.classificationPortion }}
@@ -251,7 +251,7 @@
       <shared-description-zone>
         <ng-container label>{{ 'Use and access condition' | translate }}</ng-container>
         <ng-container content>
-          <ul class="list-none m-0 p-0">
+          <ul class="list-none">
             @for (usage of record.metadata.usageAndAccessPolicy; track usage) {
               <li>{{ usage.label }}</li>
             }
@@ -277,7 +277,7 @@
         <shared-description-zone>
           <ng-container label>{{ $any(title).key | translate | ucfirst }}</ng-container>
           <ng-container content>
-            <ul class="list-none m-0 p-0">
+            <ul class="list-none">
               @for (value of $any(title).value; track value) {
                 <li>{{ value }}</li>
               }
@@ -292,7 +292,7 @@
       <shared-description-zone>
         <ng-container label>{{ 'Statement of responsibility' | translate }}</ng-container>
         <ng-container content>
-          <ul class="list-none m-0 p-0">
+          <ul class="list-none">
             @for (responsibility of record.metadata.ui_responsibilities; track responsibility) {
               <li>{{ responsibility }}</li>
             }
@@ -306,7 +306,7 @@
       <shared-description-zone>
         <ng-container label>{{ 'Series statement' | translate }}</ng-container>
         <ng-container content>
-          <ul class="list-none m-0 p-0">
+          <ul class="list-none">
             @for (serie of editionStatement; track serie) {
               <li>{{ serie.value }}</li>
             }
@@ -321,7 +321,7 @@
         <shared-description-zone>
           <ng-container label>{{ provision.key | translate }}</ng-container>
           <ng-container content>
-            <ul class="list-none m-0 p-0">
+            <ul class="list-none">
               @for (value of provision.value; track value; let isLast = $last) {
                 <li>{{ value }}@if (!isLast) {, }</li>
               }
@@ -401,7 +401,7 @@
         <shared-description-zone>
           <ng-container label>{{ noteType.key | translate | ucfirst }}</ng-container>
           <ng-container content>
-            <ul class="list-none m-0 p-0">
+            <ul class="list-none">
               @for (note of noteType.value; track note) {
                 <li>{{ note }}</li>
               }
@@ -416,7 +416,7 @@
       <shared-description-zone>
         <ng-container label>{{ 'Supplementary content' | translate }}</ng-container>
         <ng-container content>
-          <ul class="list-none m-0 p-0">
+          <ul class="list-none">
             @for (sup of record.metadata.supplementaryContent; track sup) {
               <li>{{ sup }}</li>
             }
@@ -430,7 +430,7 @@
       <shared-description-zone>
         <ng-container label>{{ 'Terms of availability' | translate }}</ng-container>
         <ng-container content>
-          <ul class="list-none m-0 p-0">
+          <ul class="list-none">
             @for (term of record.metadata.acquisitionTerms; track term) {
               <li>{{ term }}</li>
             }
@@ -444,7 +444,7 @@
       <shared-description-zone>
         <ng-container label>{{ 'Identifier' | translate }}</ng-container>
         <ng-container content>
-          <ul class="list-none m-0 p-0">
+          <ul class="list-none">
             @for (identifier of identifiedBy; track identifier; let i = $index) {
               <li [attr.id]="i | idAttribute:{prefix: 'doc-identifier'}">
                 @if (identifier.type === 'uri') {

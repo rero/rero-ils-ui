@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -24,6 +24,7 @@ import { cloneDeep } from 'lodash-es';
 import { userTestingService } from 'projects/admin/tests/utils';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
 import { LibraryGuard } from './library.guard';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('LibraryGuard', () => {
@@ -42,15 +43,14 @@ describe('LibraryGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot(routes),
-        HttpClientTestingModule,
-        TranslateModule.forRoot()
-      ],
-      providers: [
-        { provide: UserService, useValue: userTestingService }
-      ]
-    });
+    imports: [RouterModule.forRoot(routes),
+        TranslateModule.forRoot()],
+    providers: [
+        { provide: UserService, useValue: userTestingService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     guard = TestBed.inject(LibraryGuard);
     router = TestBed.inject(Router);
   });

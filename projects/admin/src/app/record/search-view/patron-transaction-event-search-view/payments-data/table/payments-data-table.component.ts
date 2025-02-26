@@ -20,8 +20,9 @@ import { OrganisationService } from '../../../../../service/organisation.service
 import { PaymentData } from '../../interfaces';
 
 @Component({
-  selector: 'admin-payments-data-table',
-  templateUrl: './payments-data-table.component.html'
+    selector: 'admin-payments-data-table',
+    templateUrl: './payments-data-table.component.html',
+    standalone: false
 })
 export class PaymentsDataTableComponent {
 

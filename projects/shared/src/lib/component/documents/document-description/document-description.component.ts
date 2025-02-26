@@ -19,8 +19,9 @@ import { Component, inject, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'shared-document-description',
-  templateUrl: './document-description.component.html'
+    selector: 'shared-document-description',
+    templateUrl: './document-description.component.html',
+    standalone: false
 })
 export class DocumentDescriptionComponent implements OnInit {
 
