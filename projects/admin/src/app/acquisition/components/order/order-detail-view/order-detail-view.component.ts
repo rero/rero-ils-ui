@@ -83,9 +83,17 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
     return this.order.status === AcqOrderStatus.PENDING && this.order.account_statement.provisional.total_amount > 0;
   }
 
+  get canAddLine(): boolean {
+    return this.order.status === AcqOrderStatus.PENDING;
+  }
+
   /** Is this order could manage reception */
   get disabledReceipts(): boolean {
     return [AcqOrderStatus.PENDING, AcqOrderStatus.CANCELLED].some((status) => status === this.order.status);
+  }
+
+  get createInfoMessage(): string {
+    return this.recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons);
   }
 
   addTabToUrl(event) {

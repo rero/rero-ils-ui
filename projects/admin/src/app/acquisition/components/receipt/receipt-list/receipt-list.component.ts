@@ -42,7 +42,7 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
   /** the order for which we want to display receipts */
   @Input() order: IAcqOrder;
   /** the permissions about the related order */
-  recordPermissions?: RecordPermissions = null;
+  @Input() recordPermissions?: RecordPermissions = null;
   /** AcqReceipt to display */
   receipts: IAcqReceipt[] = undefined;
 
@@ -55,7 +55,7 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
    * @return the message to display into the tooltip box
    */
   get createInfoMessage(): string {
-    return this.recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons, 'create');
+    return this.recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons);
   }
 
   canAdd(): boolean {

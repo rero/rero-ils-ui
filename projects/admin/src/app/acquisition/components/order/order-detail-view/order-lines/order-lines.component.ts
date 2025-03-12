@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { UserService } from '@rero/shared';
 import { Subscription } from 'rxjs';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqOrderStatus, IAcqOrder, IAcqOrderLine } from '../../../../classes/order';
-import { UserService } from '@rero/shared';
 
 @Component({
     selector: 'admin-order-lines',
