@@ -15,10 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@use "@rero/ng-core/assets/scss/ng-core-tailwind";
 @use "@rero/ng-core/assets/scss/ng-core";
 @use "../lib/component/documents/files/files.component";
 @use "../lib/view/contribution/contribution.component";
+@use "@rero/ng-core/assets/scss/tailwind/base.scss";
+@use "@rero/ng-core/assets/scss/tailwind/utilities.scss";
+@use "@rero/ng-core/assets/scss/tailwind/others.scss";
 
 .rero-ils-external-link:after {
   font-family: "FontAwesome";
