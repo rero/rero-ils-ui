@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -158,6 +158,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
     const result: Record<string, any> = {};
     identifiers
       .filter((identifier: any) => keys.includes(identifier.type))
+      .splice(0, 6)
       .forEach((element: any) => {
         let data = element.value;
         const key = availableIdentifiers[element.type];

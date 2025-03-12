@@ -19,11 +19,10 @@
   <!-- PREVIEW TOP -->
   <ng-content select="[headerMessage]" />
   @if (previewPosition === 'top') {
-    <div>
-      <h5 translate>Message</h5>
-      <ng-content select="[previewMessage]" />
-      <pre [innerHTML]="preview.trim() | nl2br"></pre>
-    </div>
+    <ng-container
+      [ngTemplateOutlet]="messagePreview"
+      [ngTemplateOutletContext]="{preview, position: ['previewMessage']}"
+    />
   }
 
   <h5 translate>Who do you want to send the message to?</h5>
@@ -43,7 +42,14 @@
       </ng-template>
       <div class="flex gap-1 mt-2">
         @for (email of emails; track email) {
-            <p-tag pDraggable="emails" [style]="{cursor: 'grab'}" (onDragStart)="dragStart(email)" (onDragEnd)="dragEnd()" icon="pi pi-user" [value]="email"></p-tag>
+          <p-tag
+            pDraggable="emails"
+            [style]="{cursor: 'grab'}"
+            (onDragStart)="dragStart(email)"
+            (onDragEnd)="dragEnd()"
+            icon="pi pi-user"
+            [value]="email"
+          />
         }
       </div>
     </p-panel>
@@ -59,8 +65,8 @@
         <div class="col-span-10">
           <p-autocomplete
             multiple
+            fluid
             [typeahead]="false"
-            class="p-fluid"
             [inputId]="type"
             pDroppable="emails"
             (onDrop)="drop($event)"
@@ -73,14 +79,28 @@
 
   <!-- PREVIEW BOTTOM -->
   @if (previewPosition === 'bottom') {
-    <div>
-      <h5 translate>Message</h5>
-      <ng-content select="[previewBottomMessage]" />
-      <pre class="max-h-[25rem] border rounded-border text-sm bg-surface-100 dark:bg-surface-700 border-surface overflow-auto p-6 "[innerHTML]="preview.trim() | nl2br"></pre>
-    </div>
+    <ng-container
+      [ngTemplateOutlet]="messagePreview"
+      [ngTemplateOutletContext]="{preview, position: ['previewBottomMessage']}"
+    />
   }
 </div>
-<div class="flex justify-end">
-  <p-button class="mr-1" severity="danger" outlined [label]="'Cancel'|translate" (onClick)="close()" aria-label="Close"/>
+
+<div class="flex justify-end gap-1 mt-2">
+  <p-button severity="danger" outlined [label]="'Cancel'|translate" (onClick)="close()" aria-label="Close"/>
   <p-button [label]="'Confirm'|translate" [disabled]="!formValid()" (onClick)="confirm()" />
 </div>
+
+<ng-template #messagePreview let-preview="preview" let-position="position">
+  <p-panel>
+    <ng-template #header>
+      <div class="grid grid-flow-row auto-rows-max">
+        <div class="font-bold" translate>Message</div>
+        <div class="italic text-sm">
+          <ng-content [select]="position" />
+        </div>
+      </div>
+    </ng-template>
+    <pre class="max-h-[25rem] text-sm overflow-auto p-6 mt-2" [innerHTML]="preview.trim()"></pre>
+  </p-panel>
+</ng-template>

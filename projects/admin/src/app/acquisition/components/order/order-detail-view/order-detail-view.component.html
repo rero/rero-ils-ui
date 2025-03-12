@@ -50,16 +50,16 @@
     <dd>
       @for (note of order.notes; track note) {
       <a href (click)="scrollTo($event, 'notes'); notesCollapsed = false">
-        <p-tag [severity]="note | noteBadgeColor">{{
-          note.type | translate
-        }}</p-tag>
+        <p-tag [severity]="note | noteBadgeColor">
+          {{ note.type | translate }}
+        </p-tag>
       </a>
       }
     </dd>
     }
   </admin-order-summary>
 
-  <p-tabs [(value)]="tabActiveIndex">
+  <p-tabs class="mt-3" [(value)]="tabActiveIndex">
     <p-tablist>
       <p-tab value="order" translate>Order</p-tab>
       <p-tab value="reception" [disabled]="disabledReceipts" translate>Reception</p-tab>
@@ -68,37 +68,57 @@
     <p-tabpanels>
       <p-tabpanel value="order">
         <div class="flex flex-col gap-2">
-          <admin-order-lines [order]="order" />
-          @if(order.notes && order.notes.length > 0) {
-            <p-panel>
-              <ng-template #header>
-                <div class="flex gap-2 items-center">
-                  <shared-open-close-button (status)="notesCollapsed = $event" />
-                  <h5 class="m-0">
-                    {{
-                      order.notes.length
-                        | i18nPlural : { "=1": "Note", other: "Notes" }
-                        | translate
-                    }}&nbsp;
-                    <p-badge [value]="order.notes.length" />
-                  </h5>
+          <p-accordion [multiple]="true" [value]="['lines']">
+            <p-accordion-panel value="lines">
+              <p-accordion-header>
+                <div class="w-full flex justify-between gap-2 pr-3">
+                  <span class="text-bold text-xl" translate>Order lines</span>
+                  @if (canAddLine) {
+                    <p-button
+                      (click)="$event.stopPropagation()"
+                      icon="fa fa-plus-square-o"
+                      size="small"
+                      [outlined]="true"
+                      [label]="'Add' | translate"
+                      [routerLink]="['/acquisition', 'records', 'acq_order_lines', 'new']"
+                      [queryParams]="{ order: order.pid }"
+                    />
+                  }
                 </div>
-              </ng-template>
-
-              @if (!notesCollapsed) {
-              <admin-notes [notes]="order.notes" />
-              }
-            </p-panel>
-          }
+                <ng-template #tooltipContent>
+                  <span [innerHTML]="createInfoMessage | nl2br"></span>
+                </ng-template>
+              </p-accordion-header>
+              <p-accordion-content>
+                <admin-order-lines [order]="order" />
+              </p-accordion-content>
+            </p-accordion-panel>
+            <p-accordion-panel value="notes">
+              <p-accordion-header>
+                <div class="w-full flex mr-2 items-center">
+                 @let orderNotesSize = order.notes?.length || 0;
+                  <span class="flex-grow text-bold text-xl">
+                    {{ orderNotesSize | i18nPlural : { "=0": "Note", "=1": "Note", other: "Notes" } | translate }}
+                  </span>
+                  <p-badge [value]="orderNotesSize" />
+                </div>
+              </p-accordion-header>
+              <p-accordion-content>
+                <div class="mt-2">
+                  <admin-notes [notes]="order.notes" />
+                </div>
+              </p-accordion-content>
+            </p-accordion-panel>
+          </p-accordion>
         </div>
       </p-tabpanel>
       <p-tabpanel value="reception">
-          <admin-receipt-list [order]="order" />
+        <admin-receipt-list [order]="order" [recordPermissions]="recordPermissions" />
       </p-tabpanel>
       <p-tabpanel value="history">
         <p-timeline [value]="historyVersions">
           <ng-template #opposite let-event>
-            <a [routerLink]="['/records', 'acq_orders', 'detail', event.pid]">{{
+            <a [routerLink]="['/acquisition', 'records', 'acq_orders', 'detail', event.pid]">{{
               event.label
             }}</a>
           </ng-template>
@@ -109,67 +129,5 @@
       </p-tabpanel>
     </p-tabpanels>
   </p-tabs>
-
-  <!--
-  <p-tabView [activeIndex]="tabActiveIndex" (activeIndexChange)="addTabToUrl($event)">
-    <p-tabPanel #orderPanel [header]="'Order' | translate">
-      <- TODO: change this for the next primeng version (19)->
-      @if(orderPanel.selected) {
-        <div class="flex flex-col gap-2">
-          <admin-order-lines
-            [order]="order"
-          />
-          @if(order.notes && order.notes.length > 0) {
-            <p-panel>
-              <ng-template #header>
-                <div class="flex gap-2 items-center">
-                  <shared-open-close-button (status)="notesCollapsed = $event" />
-                  <h5 class="m-0">
-                    {{
-                      order.notes.length
-                        | i18nPlural : { "=1": "Note", other: "Notes" }
-                        | translate
-                    }}&nbsp;
-                    <p-badge [value]="order.notes.length" />
-                  </h5>
-                </div>
-              </ng-template>
-
-              @if (!notesCollapsed) {
-              <admin-notes [notes]="order.notes" />
-              }
-            </p-panel>
-          }
-        </div>
-      }
-    </p-tabPanel>
-    <p-tabPanel
-      id="receipt"
-      [header]="'Reception' | translate"
-      [disabled]="disabledReceipts"
-      #receiptPanel
-    >
-      @if (receiptPanel.selected) {
-        <admin-receipt-list
-          [order]="order"
-        />
-      }
-    </p-tabPanel>
-    @if (historyVersions && historyVersions.length > 1) {
-      <p-tabPanel [header]="'History' | translate">
-        <p-timeline [value]="historyVersions">
-          <ng-template #opposite let-event>
-            <a [routerLink]="['/records', 'acq_orders', 'detail', event.pid]">{{
-              event.label
-            }}</a>
-          </ng-template>
-          <ng-template #content let-event>
-            <small>{{ event.description }}</small>
-          </ng-template>
-        </p-timeline>
-      </p-tabPanel>
-    }
-  </p-tabView>
--->
 </div>
 }

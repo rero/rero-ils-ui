@@ -246,7 +246,7 @@ export class OrderReceiptForm {
             {
               key: 'quantityMax',
               type: 'input',
-              wrappers: ['hide']
+              className: 'hidden'
             },
             {
               key: 'quantity',

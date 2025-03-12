@@ -64,6 +64,7 @@ import { VendorDetailViewComponent } from './components/vendors/vendor-detail-vi
 import { AddressTypeComponent } from './components/address-type/address-type.component';
 import { TreeTableModule } from 'primeng/treetable';
 import { TimelineModule } from 'primeng/timeline';
+import { AccordionModule } from 'primeng/accordion';
 
 @NgModule({
   declarations: [
@@ -99,6 +100,7 @@ import { TimelineModule } from 'primeng/timeline';
     VendorDetailViewComponent,
   ],
   imports: [
+    AccordionModule,
     AcquisitionRoutingModule,
     CommonModule,
     FormlyModule.forChild({

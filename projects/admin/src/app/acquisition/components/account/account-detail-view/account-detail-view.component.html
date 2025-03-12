@@ -38,7 +38,7 @@
       @if (account.parent) {
         <dt translate>Parent account</dt>
         <dd>
-          <a [routerLink]="['/', 'records', 'acq_accounts', 'detail', account.parent.pid]">
+          <a [routerLink]="['/acquisition', 'records', 'acq_accounts', 'detail', account.parent.pid]">
             {{ account.parent.pid | getRecord: 'acq_accounts': 'field': 'name' | async }}
           </a>
         </dd>
