@@ -23,7 +23,7 @@
       <p-button
         icon="fa fa-plus"
         [label]="'Add'|translate"
-        [routerLink]="['/', 'records', 'acq_accounts', 'new']"
+        [routerLink]="['/acquisition', 'records', 'acq_accounts', 'new']"
         [queryParams]="{ budget: organisation.current_budget_pid }"
         [permissions]="permissions.ACAC_CREATE"
       />
@@ -51,11 +51,7 @@
         <p-button size="small" outlined icon="fa fa-plus" [label]="'Expand all' | translate" (onClick)="expandAll()" />
         <p-button size="small" outlined icon="fa fa-minus" [label]="'Collapse all' | translate" (onClick)="collapseAll()" />
     </div>
-    <p-treeTable
-      autoLayout
-      styleClass="p-treetable-sm"
-      [value]="rootAccounts"
-    >
+    <p-treeTable autoLayout styleClass="p-treetable-sm" [value]="rootAccounts">
       <ng-template #header>
         <tr>
           <th translate>Name</th>
@@ -71,7 +67,7 @@
       <tr>
           <td>
               <p-treeTableToggler [rowNode]="rowNode" />
-              <a [title]="rowData.number" [routerLink]="['/records', 'acq_accounts', 'detail', rowData.pid]">{{ rowData.name }}</a>
+              <a [title]="rowData.number" [routerLink]="['/acquisition', 'records', 'acq_accounts', 'detail', rowData.pid]">{{ rowData.name }}</a>
           </td>
           <td  class="text-right">
             {{ rowData.allocated_amount | currency: organisation.default_currency }}
@@ -116,7 +112,7 @@
                 outlined
                 size="small"
                 [title]="'Edit account'|translate"
-                [routerLink]="['/', 'records', 'acq_accounts', 'edit', rowData.pid]"
+                [routerLink]="['/acquisition', 'records', 'acq_accounts', 'edit', rowData.pid]"
               />
             }
             <!-- DELETE BUTTON -->

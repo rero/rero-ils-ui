@@ -25,6 +25,8 @@ import { PermissionGuard } from '../../guard/permission.guard';
 import { BaseRoute } from '../../routes/base-route';
 import { OrderBriefViewComponent } from '../components/order/order-brief-view/order-brief-view.component';
 import { OrderDetailViewComponent } from '../components/order/order-detail-view/order-detail-view.component';
+import { OrderReceiptViewComponent } from '../components/receipt/receipt-form/order-receipt-view.component';
+import { CanOrderReceiptGuard } from './guards/can-order-receipt.guard';
 
 export class OrdersRoute extends BaseRoute implements RouteInterface {
 
@@ -41,7 +43,8 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
         { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.ACOR_ACCESS, PERMISSIONS.ACOR_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
         { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
         { path: 'edit/:pid', component: EditorComponent, canActivate: [CanAccessGuard, AcqOrderLineGuard], canDeactivate: [ ComponentCanDeactivateGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE, permissions: [ PERMISSIONS.ACOR_SEARCH ] } },
-        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { permissions: [ PERMISSIONS.ACOR_CREATE ] } }
+        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { permissions: [ PERMISSIONS.ACOR_CREATE ] } },
+        { path: 'receive/:pid', component: OrderReceiptViewComponent, canActivate: [CanOrderReceiptGuard] },
       ],
       data: {
         types: [

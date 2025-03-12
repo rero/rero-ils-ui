@@ -23,9 +23,7 @@
       @if (order.vendor) {
       <dt translate>Vendor</dt>
       <dd>
-        {{
-          order.vendor.pid | getRecord : "vendors" : "field" : "name" | async
-        }}
+        {{ order.vendor.pid | getRecord : "vendors" : "field" : "name" | async }}
       </dd>
       }
       <!-- ORDER STATUS -->
@@ -63,26 +61,19 @@
   </div>
 </section>
 }
-<ng-template
-  #totalAmount
-  let-quantity="quantity"
-  let-total="total"
-  let-label="label"
->
-  <div
-    class="bg-surface-100 dark:bg-surface-700 py-8 px-20 border rounded-border border-surface relative"
-  >
+<ng-template #totalAmount let-quantity="quantity" let-total="total" let-label="label">
+  <div class="bg-surface-100 dark:bg-surface-700 py-4 border rounded-border border-surface relative">
     <div
       style="border-bottom-left-radius: var(--border-radius)"
       class="absolute text-muted-color border-l border-b border-surface py-2 px-6 top-0 right-0"
     >
       <i class="fa fa-shopping-cart"></i>&nbsp;{{ quantity }}
     </div>
-    <div class="text-center">
-      <span class="text-xl font-bold">{{
-        total | currency : order.currency : "symbol"
-      }}</span>
-      <label class="text-sm text-muted-color">{{ label }}</label>
+    <div class="flex flex-wrap text-center">
+      <div class="w-full text-2xl font-bold">
+        {{ total | currency : order.currency : "symbol" }}
+      </div>
+      <div class="w-full text-sm text-muted-color">{{ label }}</div>
     </div>
   </div>
 </ng-template>
