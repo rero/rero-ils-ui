@@ -47,14 +47,22 @@
     <div class="col-span-12 lg:col-span-3 flex flex-col gap-1">
       @if (displayProvisionalAccountingData) {
         <div class="flex">
-          <label class="w-8/12 text-center border-surface border p-2 bg-surface-100 dark:bg-surface-700 rounded-l font-bold">{{ order.account_statement.provisional.total_amount | currency : order.currency }}</label>
-          <span class="w-4/12 border-surface border p-2 bg-surface-100 dark:bg-surface-700 rounded-r text-muted-color text-right"><i class="fa fa-shopping-cart"></i>&nbsp;{{ order.account_statement.provisional.quantity }}</span>
+          <label class="w-8/12 text-center border-surface border p-2 bg-surface-100 dark:bg-surface-700 rounded-l font-bold">
+            {{ order.account_statement.provisional.total_amount | currency : order.currency }}
+          </label>
+          <span class="w-4/12 text-center border-surface border p-2 bg-surface-100 dark:bg-surface-700 rounded-r text-muted-color text-right">
+            <i class="fa fa-shopping-cart"></i>&nbsp;{{ order.account_statement.provisional.quantity }}
+          </span>
         </div>
       }
       @if (displayExpenditureAccountingData) {
         <div class="flex">
-          <label class="w-8/12 text-center border-surface border p-2 bg-surface-100 dark:bg-surface-700 rounded-l font-bold">{{ order.account_statement.expenditure.total_amount | currency : order.currency }}</label>
-          <span class="w-4/12 border-surface border p-2 bg-surface-100 dark:bg-surface-700 rounded-r text-muted-color text-right"><i class="fa fa-sign-in"></i>&nbsp;{{ order.account_statement.expenditure.quantity }}</span>
+          <label class="w-8/12 text-center border-surface border p-2 bg-surface-100 dark:bg-surface-700 rounded-l font-bold">
+            {{ order.account_statement.expenditure.total_amount | currency : order.currency }}
+          </label>
+          <span class="w-4/12 text-center border-surface border p-2 bg-surface-100 dark:bg-surface-700 rounded-r text-muted-color text-right">
+            <i class="fa fa-sign-in"></i>&nbsp;{{ order.account_statement.expenditure.quantity }}
+          </span>
         </div>
       }
     </div>

@@ -17,37 +17,41 @@
 -->
 <p-panel>
   <ng-template #header>
-    <div class="w-full flex flex-wrap justify-between gap-2">
-      <h5>
-        {{
-          numberOfReceipt
-            | i18nPlural : { "=1": "Receipt", other: "Receipts" }
-            | translate
-        }}
-        <p-tag severity="secondary" [value]="numberOfReceipt" />
-      </h5>
-      @if (canAdd()) {
+    <div class="w-full flex items-center justify-between gap-2">
+      <span class="text-bold text-xl flex gap-2" translate>
+        {{ numberOfReceipt | i18nPlural : { "=1": "Receipt", other: "Receipts" } | translate }}
+        <p-badge [value]="numberOfReceipt" />
+      </span>
       <p-button
         icon="fa fa-plus-square-o"
+        size="small"
+        [outlined]="true"
         [label]="'Add' | translate"
-        outlined
-        [routerLink]="['/', 'acquisition', 'acq_orders', order.pid, 'receive']"
+        [routerLink]="['/acquisition', 'records', 'acq_orders', 'receive', order.pid]"
+        [queryParams]="{ order: order.pid }"
+        [pTooltip]="tooltipContent"
+        tooltipPosition="top"
+        [disabled]="!recordPermissions?.create?.can"
+        [tooltipDisabled]="recordPermissions?.create?.can"
       />
-      }
+      <ng-template #tooltipContent>
+        <span [innerHTML]="createInfoMessage | nl2br"></span>
+      </ng-template>
     </div>
   </ng-template>
-    @if (receipts) { @if (receipts.length > 0) { @for (receipt of receipts;
-    track receipt) {
-    <admin-receipt-summary
-      [receiptPid]="receipt.pid"
-      [allowActions]="true"
-      [order]="order"
-    />
-    } } @else {
-    <div translate>No receipt</div>
-    } } @else {
-    <i class="fa fa-spin fa-spinner"></i>&nbsp;{{
-      "Loading in progress…" | translate
-    }}
+  @if (receipts) {
+    @if (receipts.length > 0) {
+      <div class="alternate-color">
+        @for (receipt of receipts; track receipt) {
+          <admin-receipt-summary [receiptPid]="receipt.pid" [allowActions]="true" [order]="order" />
+        }
+      </div>
+    } @else {
+      <div class="mt-3" translate>No receipt</div>
     }
+  } @else {
+    <div class="my-3">
+      <i class="fa fa-spinner animate-spin"></i>&nbsp;{{ "Loading in progress…" | translate }}
+    </div>
+  }
 </p-panel>

@@ -16,12 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
-import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { ComponentCanDeactivateGuard, EditorComponent, RouteInterface } from '@rero/ng-core';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
-import { PermissionGuard } from '../../guard/permission.guard';
 import { BaseRoute } from '../../routes/base-route';
-import { ReceiptDetailViewComponent } from '../components/receipt/receipt-detail-view/receipt-detail-view.component';
 import { IsBudgetActiveGuard } from './guards/is-budget-active.guard';
 
 export class ReceiptsRoute extends BaseRoute implements RouteInterface {
