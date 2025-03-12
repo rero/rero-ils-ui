@@ -21,6 +21,7 @@
 @use "easymde/dist/easymde.min";
 @use "tailwindcss";
 @use '../../../../shared/src/scss/styles';
+@use "@rero/ng-core/assets/scss/tailwind/theme.scss";
 @use '../menu/menu-dashboard/menu-dashboard.component';
 @use '../menu/menu-app/menu-app.component';
 @use '../record/detail-view/permission-detail-view/permission-detail-view.component';

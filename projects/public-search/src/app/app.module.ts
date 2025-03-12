@@ -23,8 +23,8 @@ import { provideAnimationsAsync } from "@angular/platform-browser/animations/asy
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { BucketNameService as CoreBucketNameService, CoreConfigService, NgCoreTranslateService, primeNGConfig, RecordModule, TranslateLoader } from '@rero/ng-core';
-import { RemoteSearchComponent, SharedModule, UserService } from '@rero/shared';
+import { BucketNameService as CoreBucketNameService, CoreConfigService, NgCoreTranslateService, primeNGConfig, RecordModule, TranslateLoader, TruncateTextPipe } from '@rero/ng-core';
+import { MainTitlePipe, RemoteSearchComponent, SharedModule, UserService } from '@rero/shared';
 import { providePrimeNG } from "primeng/config";
 import { DividerModule } from 'primeng/divider';
 import { Observable } from 'rxjs';
@@ -80,9 +80,11 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         { provide: HTTP_INTERCEPTORS, useClass: CustomRequestInterceptor, multi: true },
         { provide: CoreBucketNameService, useClass: BucketNameService },
         provideAnimationsAsync(),
-        providePrimeNG(primeNGConfig)
+        providePrimeNG(primeNGConfig),
+        MainTitlePipe,
+        TruncateTextPipe
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule implements DoBootstrap {
 

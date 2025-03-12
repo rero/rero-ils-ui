@@ -18,10 +18,9 @@
 @use 'sass:meta';
 @use "primeicons/primeicons.css";
 @use "easymde/dist/easymde.min";
+@use "@rero/ng-core/assets/scss/tailwind/theme.scss";
 
 @plugin "tailwindcss-primeui";
-
-@layer theme, rero-ils-ui, primeng;
 
 @layer theme {
   @include meta.load-css('tailwindcss/theme');

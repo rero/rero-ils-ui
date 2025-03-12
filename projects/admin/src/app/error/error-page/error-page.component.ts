@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,20 +17,34 @@
 
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ } from "@ngx-translate/core";
 import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'admin-error-page',
     template: `
-    <div class="alert alert-{{ messages[statusCode].level || 'danger' }}">
-      <h1 class="alert-heading mb-6">{{ statusCode }} - {{ messages[statusCode].title }}</h1>
-      @for (text of messages[statusCode].description || []; track text) {
-        <pre>{{ text }}</pre>
-      }
-      <hr>
-      <p>For any information please contact system administrator</p>
-    </div>
+    <section class="bg-white dark:bg-gray-900">
+      <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+          <div class="mx-auto max-w-screen-sm text-center">
+              <span class="mb-4 text-7xl tracking-tight font-extrabold lg:text-8xl text-primary-600 dark:text-primary-500">
+              {{ statusCode }}
+              </span>
+              <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">
+                {{ messages[statusCode].title }}
+              </p>
+              <div class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">
+                <ul class="list-none">
+                  @for (text of messages[statusCode].description || []; track text) {
+                    <li>{{ text }}</li>
+                  }
+                </ul>
+              </div>
+              <div class="mt-4">
+                <p-button outlined [label]="'Back to dashboard'|translate" [routerLink]="['/']" />
+              </div>
+          </div>
+      </div>
+    </section>
   `,
     standalone: false
 })
