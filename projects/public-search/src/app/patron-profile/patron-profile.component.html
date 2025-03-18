@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -19,63 +19,66 @@
   <h3>{{ fullname }}</h3>
 </header>
 <section class="mt-2">
-  <public-search-patron-profile-menu
-    patronPid="{{ patron.pid }}"
-  />
+  <public-search-patron-profile-menu [patronPid]="patron.pid" />
 </section>
 <section class="mt-4">
   <p-toast />
-  <public-search-patron-profile-message/>
+  <public-search-patron-profile-message />
 </section>
 
 <section class="mt-4">
-  <!--
-  <p-tabView  [activeIndex]="activeIndex" [scrollable]="true" (onChange)="tabOnChange($event)">
-@for (tab of tabs|keyvalue: sortTabs; track tab.key) {
-  <p-tabPanel>
-    <ng-template #header>
-      <div class="flex items-center gap-1">
-        <div>{{tab.value.title}}</div>
-        @if (tab.value.count != null) {
-            <p-badge [value]="tab.value.count" severity="info"/>
-        }
-        @if (tab.value.feeTotal != null) {
-            <p-badge [value]="tab.value.feeTotal  | currency : patron.organisation.currency : 'symbol'" severity="warning"/>
-        }
-      </div>
-  </ng-template>
-  @switch(tab.key) {
-    @case ('loan') {
-      <public-search-patron-profile-loans [count]="tab.value.count" />
-    }
-    @case ('request') {
-      <public-search-patron-profile-requests />
-    }
-    @case ('fee') {
-      <public-search-patron-profile-fees [feesTotal]="tab.value.feeTotal" />
-    }
-    @case ('history') {
-      <public-search-patron-profile-histories />
-    }
-    @case ('illRequest') {
-      <public-search-patron-profile-ill-requests />
-    }
-    @case ('personalDetails') {
-      <public-search-patron-profile-personal
-        [user]="user"
-        [patron]="patron"
-        [viewcode]="viewcode"
-      />
-    }
-  }
-  </p-tabPanel>
-}
-  </p-tabView>
--->
+  @let tabsOrder = tabs|keyvalue: sortTabs;
+  <p-tabs [(value)]="activeTab">
+    <p-tablist>
+      @for (tab of tabsOrder; track tab.key) {
+        <p-tab [value]="tab.key">
+          <div class="flex gap-1">
+            <div>{{ tab.value.title }}</div>
+            @if (tab.value.count != null) {
+              <p-badge [value]="tab.value.count" severity="info" />
+            }
+            @if (tab.value.feeTotal != null) {
+              <p-badge [value]="tab.value.feeTotal  | currency : patron.organisation.currency : 'symbol'" severity="warn" />
+            }
+          </div>
+        </p-tab>
+      }
+    </p-tablist>
+    <p-tabpanels>
+      @for (tab of tabsOrder; track tab.key) {
+        <p-tabpanel [value]="tab.key">
+          @switch(tab.key) {
+            @case ('loan') {
+              <public-search-patron-profile-loans [count]="tab.value.count" />
+            }
+            @case ('request') {
+              <public-search-patron-profile-requests />
+            }
+            @case ('fee') {
+              <public-search-patron-profile-fees [feesTotal]="tab.value.feeTotal" />
+            }
+            @case ('history') {
+              <public-search-patron-profile-histories />
+            }
+            @case ('illRequest') {
+              <public-search-patron-profile-ill-requests />
+            }
+            @case ('personalDetails') {
+              <public-search-patron-profile-personal
+                [user]="user"
+                [patron]="patron"
+                [viewcode]="viewcode"
+              />
+            }
+          }
+        </p-tabpanel>
+      }
+    </p-tabpanels>
+  </p-tabs>
 </section>
 } @else {
-<div class="text-center">
-  <h3 class="mt-6 mb-6" translate>Access denied</h3>
+<div class="text-center p-6">
+  <h3 translate>Access denied</h3>
   {{ "You are not identified as a patron." | translate }}
 </div>
 } }

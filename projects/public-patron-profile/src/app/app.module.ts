@@ -17,14 +17,21 @@
 import { APP_BASE_HREF, CommonModule, PlatformLocation } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { RouterLink, RouterLinkActive, RouterModule, RouterOutlet, Routes } from '@angular/router';
 import { FormlyModule } from '@ngx-formly/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, NgCoreTranslateService, primeNGConfig, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
+import { BadgeModule } from 'primeng/badge';
+import { providePrimeNG } from 'primeng/config';
+import { MenuModule } from 'primeng/menu';
+import { MessageModule } from 'primeng/message';
+import { TabsModule } from 'primeng/tabs';
+import { TimelineModule } from 'primeng/timeline';
 import { PatronProfileDocumentComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-document/patron-profile-document.component';
 import { PatronProfileFeeComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-fees/patron-profile-fee/patron-profile-fee.component';
 import { PatronProfileFeesComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-fees/patron-profile-fees.component';
@@ -51,8 +58,6 @@ import { Observable } from 'rxjs';
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
 import { AppComponent } from './app.component';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { providePrimeNG } from 'primeng/config';
 
 /** function to instantiate the application  */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
@@ -97,6 +102,7 @@ const routes: Routes = [
   imports: [
     BrowserAnimationsModule,
     RouterOutlet,
+    FormsModule,
     ReactiveFormsModule,
     CommonModule,
     RecordModule,
@@ -116,6 +122,11 @@ const routes: Routes = [
     }),
     SharedModule,
     LoadingBarHttpClientModule,
+    TabsModule,
+    MessageModule,
+    MenuModule,
+    BadgeModule,
+    TimelineModule
   ],
   providers: [
     {

@@ -15,32 +15,27 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <section id="histories-section" class="container mt-2">
-  <p-card class="p-card-body-p-0">
+  <p-panel>
     <ng-template #header>
-        <div class="hidden md:flex grid grid-cols-12 gap-4 grid-nogutter bg-blue-900 text-white p-2 text-lg font-bold">
-          <div class="col-span-10" translate>Document</div>
-          <div class="col-span-2" translate>Return date</div>
-        </div>
+      <div class="hidden w-full md:grid grid-cols-12 gap-4 text-lg font-bold items-center">
+        <div class="col-span-10" translate>Document</div>
+        <div class="col-span-2" translate>Return date</div>
+      </div>
     </ng-template>
 
-  @defer (when loaded) {
-    @if (paginator.getRecordsCount() > 0) {
-          <div class="alternate-color">
-          @for (loan of records; track loan) {
-            <div>
-            <public-search-patron-profile-history
-              [record]="loan"
-              id="history-{{ loan.metadata.pid }}"
-              />
+    @defer (when loaded) {
+      @if (paginator.getRecordsCount() > 0) {
+        @for (loan of records; track loan) {
+          <div class="odd:bg-surface-50 my-1">
+            <public-search-patron-profile-history [record]="loan" id="history-{{ loan.metadata.pid }}" />
           </div>
-          }
-      </div>
-      <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator"/>
-    } @else {
-      <div class="font-bold mx-2 my-6" translate>No loan</div>
-  }
-} @placeholder {
-    <div class="font-bold mx-2 my-6" translate>Loading in progress</div>
-}
-  </p-card>
+        }
+        <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator" />
+      } @else {
+        <div class="font-bold mx-2 my-6" translate>No loan</div>
+      }
+    } @placeholder {
+        <div class="font-bold mx-2 my-6" translate>Loading in progress</div>
+    }
+  </p-panel>
 </section>

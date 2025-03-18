@@ -79,6 +79,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.currentLang, deps: [TranslateService] },
         { provide: HTTP_INTERCEPTORS, useClass: CustomRequestInterceptor, multi: true },
         { provide: CoreBucketNameService, useClass: BucketNameService },
+        MainTitlePipe,
+        TruncateTextPipe,
         provideAnimationsAsync(),
         providePrimeNG(primeNGConfig),
         MainTitlePipe,

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,16 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { PatronApiService, Message } from '../../api/patron-api.service';
-import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { ToastMessageOptions } from 'primeng/api/toastmessage';
+import { Subscription } from 'rxjs';
+import { Message, PatronApiService } from '../../api/patron-api.service';
+import { PatronProfileMenuService } from '../patron-profile-menu.service';
 
 @Component({
     selector: 'public-search-patron-profile-message',
     template: `
     @for (message of messages; track message) {
       <p-message
+        styleClass="mb-2"
         [text]="message.text"
         [severity]="message.severity"
         showTransitionOptions="0ms"
