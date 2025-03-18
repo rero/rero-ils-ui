@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -29,26 +29,21 @@
 }
 
 <!-- header -->
-<section id="loans-section" class="mt-2">
-  <p-card class="p-card-body-p-0">
+<section id="loans-section" class="mt-4">
+  <p-panel>
     <ng-template #header>
-        <div class="hidden md:flex grid grid-cols-12 gap-4 grid-nogutter bg-blue-900 text-white p-2 text-lg font-bold">
-          <div class="col-span-8" translate>Document</div>
-          <div class="col-span-2" translate>Due date</div>
-        </div>
+      <div class="hidden w-full md:grid grid-cols-12 gap-4 text-lg font-bold items-center">
+        <div class="col-span-8" translate>Document</div>
+        <div class="col-span-2" translate>Due date</div>
+      </div>
     </ng-template>
   @defer (when loaded) {
     @if (paginator.getRecordsCount() > 0) {
-        <div class="alternate-color">
-          @for (loan of records; track loan) {
-            <div>
-            <public-search-patron-profile-loan
-              [record]="loan"
-              id="loan-{{ loan.metadata.pid }}"
-              />
-            </div>
-          }
+      @for (loan of records; track loan) {
+        <div class="odd:bg-surface-50 my-1">
+          <public-search-patron-profile-loan [record]="loan" id="loan-{{ loan.metadata.pid }}" />
         </div>
+      }
       <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator" />
     } @else {
         <div class="font-bold mx-2 my-6" translate>No loan</div>
@@ -56,5 +51,5 @@
   } @placeholder {
       <div class="font-bold mx-2 my-6" translate>Loading in progress</div>
   }
-  </p-card>
+  </p-panel>
 </section>

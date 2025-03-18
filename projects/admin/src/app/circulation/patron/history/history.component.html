@@ -17,7 +17,7 @@
 @if (historyLogs$ | async; as logs) {
   <section class="content">
     @if (logs.length > 0) {
-      <div class="grid grid-cols-12 grid-nogutter p-4 m-1 text-lg font-bold items-center border-t border-b border-surface">
+      <div class="grid grid-cols-12 p-4 m-1 text-lg font-bold items-center border-t border-b border-surface">
         <div class="col-span-6" translate>Title</div>
         <div class="col-span-4" translate>Authors</div>
         <div class="col-span-2" translate>Return date</div>

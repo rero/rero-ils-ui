@@ -105,8 +105,8 @@
   </dl>
   @if (disabledButtonOnReadyOnly) {
     <div class="flex gap-2 mt-4">
-      <a id="profile-edit" class="p-button" [routerLink]="['user', 'edit' ]" translate>Edit</a>
-      <a id="profile-password-change" class="p-button" [routerLink]="['password', 'edit']" translate>Change my password</a>
+      <p-button size="small" [label]="'Edit'|translate" [routerLink]="['user', 'edit' ]" />
+      <p-button size="small" [label]="'Change my password'|translate" [routerLink]="['password', 'edit']" />
     </div>
   }
 </section>

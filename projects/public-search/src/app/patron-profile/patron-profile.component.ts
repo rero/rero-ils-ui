@@ -14,7 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { APP_BASE_HREF, KeyValue } from '@angular/common';
+import { Component, inject, model, OnDestroy, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { IPatron, UserService } from '@rero/shared';
 import { forkJoin, Subscription } from 'rxjs';
@@ -24,8 +26,6 @@ import { OperationLogsApiService } from '../api/operation-logs-api.service';
 import { PatronTransactionApiService } from '../api/patron-transaction-api.service';
 import { IMenu, PatronProfileMenuService } from './patron-profile-menu.service';
 import { PatronProfileService } from './patron-profile.service';
-import { APP_BASE_HREF, DOCUMENT, KeyValue, Location } from '@angular/common';
-import { TranslateService } from '@ngx-translate/core';
 
 interface Tab {
   loaded?: boolean;
@@ -71,49 +71,45 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   /** Current logged user */
   user: any;
 
-  activeIndex: number = 0;
+  activeTab = model<undefined | string >(undefined);
 
-  /** Tabs informations */
-  tabs: Tabs;
-
-  constructor() {
-    this.tabs = {
-      loan: {
-        loaded: false,
-        count: 0,
-        feeTotal: null,
-        title: this.translateService.instant('Loans'),
-        order: 0,
-      },
-      request: {
-        loaded: false,
-        count: 0,
-        title: this.translateService.instant('Requests'),
-        order: 1,
-      },
-      fee: {
-        title: this.translateService.instant('Fees'),
-        order: 2,
-        feeTotal: 0,
-      },
-      history: {
-        loaded: false,
-        count: 0,
-        title: this.translateService.instant('History'),
-        order: 3,
-      },
-      illRequest: {
-        loaded: false,
-        count: 0,
-        title: this.translateService.instant('Interlibrary loan'),
-        order: 4,
-      },
-      personalDetails: {
-        title: this.translateService.instant('Personal details'),
-        order: 5,
-      },
-    };
-  }
+  /** Tabs */
+  tabs: Tabs = {
+    loan: {
+      loaded: false,
+      count: 0,
+      feeTotal: null,
+      title: this.translateService.instant('Loans'),
+      order: 0,
+    },
+    request: {
+      loaded: false,
+      count: 0,
+      title: this.translateService.instant('Requests'),
+      order: 1,
+    },
+    fee: {
+      title: this.translateService.instant('Fees'),
+      order: 2,
+      feeTotal: 0,
+    },
+    illRequest: {
+      loaded: false,
+      count: 0,
+      title: this.translateService.instant('Interlibrary loan'),
+      order: 4,
+    },
+    history: {
+      loaded: false,
+      count: 0,
+      title: this.translateService.instant('History'),
+      order: 3,
+    },
+    personalDetails: {
+      title: this.translateService.instant('Personal details'),
+      order: 5,
+    },
+  };
 
   /** Current patron pid */
   private _patronPid: string;
@@ -141,11 +137,6 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
     return a.value.order - b.value.order;
   };
 
-  tabOnChange(event) {
-    const tabKey = this.getTabKeyByIndex(event.index);
-    this.selectTab(tabKey);
-  }
-
   /**
    * Retrieves the key of a tab based on its index value.
    * Iterates through the `tabs` object to find the tab that matches the given `order` property.
@@ -163,7 +154,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   }
   /**
    * Show or hide history tab
-   * @retun string
+   * @return string
    */
   get showHideHistory() {
     return this.user.keep_history ? '' : 'd-none';
@@ -183,6 +174,10 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
     if( pathParts.length > 1) {
       this.viewcode = pathParts[1];
     }
+    this.activeTab.subscribe((tabSelected: string) => {
+      this.tabs[tabSelected].loaded = true;
+      this.patronProfileService.changeTab({ name: tabSelected, count: this.tabs[tabSelected].count });
+    });
     this.subscription.add(
       this.patronProfileService.loanFeesEvent$.subscribe((fees: number) => (this.tabs.loan.feeTotal = +fees.toFixed(2)))
     );
@@ -206,15 +201,17 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
               Record,
               Record
             ]) => {
+              this.activeTab.set('loan');
               Object.values(this.tabs).map(tab => tab.loaded = false);
               this.tabs.loan.count = this.recordService.totalHits(loanResponse.hits.total);
               this.tabs.fee.feeTotal = feeResponse.aggregations.total.value;
               this.tabs.request.count = this.recordService.totalHits(requestResponse.hits.total);
               this.tabs.history.count = this.recordService.totalHits(historyResponse.hits.total);
               this.tabs.illRequest.count = this.recordService.totalHits(illRequestResponse.hits.total);
+
               // back to the loan tab if the organisation as been changed
-              this.activeIndex = 0;
-              this.selectTab(this.getTabKeyByIndex(this.activeIndex));
+              // this.activeIndex = 0;
+              // this.selectTab(this.getTabKeyByIndex(this.activeIndex));
             }
           );
         })
@@ -240,18 +237,6 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   /** OnDestroy hook */
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-  }
-
-  /**
-   * Select tab
-   * @param tabName - string, name of current selected tab
-   */
-  selectTab(name: string): void {
-    this.activeIndex = this.tabs[name].order;
-    if (name in this.tabs && !this.tabs[name].loaded) {
-      this.tabs[name].loaded = true;
-      this.patronProfileService.changeTab({ name, count: this.tabs[name].count });
-    }
   }
 
   /**

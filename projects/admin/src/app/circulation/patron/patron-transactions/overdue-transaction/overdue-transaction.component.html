@@ -16,7 +16,7 @@
 -->
 @if (transaction !== undefined && transaction.fees.total > 0) {
   <div class="p-2 border rounded border-gray-200">
-    <div class="grid grid-cols-12 gap-4 grid-nogutter items-start">
+    <div class="grid grid-cols-12 gap-4 items-start">
       <div class="col-span-2 flex gap-2">
         <shared-open-close-button (status)="isCollapsed = $event" />
         {{ transaction.loan.end_date | dateTranslate :'shortDate' }}
@@ -35,7 +35,7 @@
         <h6 translate>Details</h6>
         <section class="mb-4">
           @if (item) {
-            <div class="grid grid-cols-12 grid-nogutter">
+            <div class="grid grid-cols-12">
               <div class="col-span-2" translate>Item</div>
               <div class="col-span-10">
                 <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
