@@ -15,7 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="grid grid-cols-12 gap-4 grid-nogutter p-2">
+<div class="grid grid-cols-12 gap-4 p-2">
   <div class="md:col-span-10 col-span-12 flex gap-2">
     <shared-open-close-button (status)="isCollapsed = $event" />
     <!-- ILL DOCUMENT & STATUS -->
@@ -28,22 +28,22 @@
           <!-- PUBLISHER -->
           @if (record.metadata.document.publisher) {
             <dt translate>Publisher</dt>
-            <dd >{{ record.metadata.document.publisher }}</dd>
+            <dd>{{ record.metadata.document.publisher }}</dd>
           }
           <!-- YEAR -->
           @if (record.metadata.document.year) {
             <dt translate>Year</dt>
-            <dd >{{ record.metadata.document.year }}</dd>
+            <dd>{{ record.metadata.document.year }}</dd>
           }
           <!-- IDENTIFIER -->
           @if (record.metadata.document.identifier) {
             <dt translate>Identifier</dt>
-            <dd >{{ record.metadata.document.identifier }}</dd>
+            <dd>{{ record.metadata.document.identifier }}</dd>
           }
           <!-- SOURCE -->
           @if (record.metadata.document.source) {
             <dt translate>Source</dt>
-            <dd >
+            <dd>
               @if (record.metadata.document.source.volume || record.metadata.document.source.number) {
                 {{ record.metadata.document.source | journalVolume }}
               }
@@ -51,10 +51,10 @@
           }
           <!-- PICKUP LOCATION -->
           <dt translate>Pickup location</dt>
-          <dd >{{ record.metadata.pickup_location.name }}</dd>
+          <dd>{{ record.metadata.pickup_location.name }}</dd>
           <!-- SCOPE -->
           <dt translate>Scope</dt>
-          <dd >
+          <dd>
             @if (record.metadata.copy) {
               {{ 'Copy' | translate }}
             } @else {
@@ -70,15 +70,17 @@
           @if (record.metadata.found_in) {
             <dt translate>Found in</dt>
             <dd class="flex gap-2">
-              <a href="{{ record.metadata.found_in.url }}">{{ record.metadata.found_in.url }}</a>
+              @if(record.metadata?.found_in.url) {
+                <a href="{{ record.metadata.found_in.url }}">{{ record.metadata.found_in.url }}</a>
+              }
               <p-tag severity="secondary">{{ record.metadata.found_in.source }}</p-tag>
             </dd>
           }
           <!-- NOTES -->
           @if (record.metadata.notes && record.metadata.notes.length > 0) {
             <dt translate>Note</dt>
-            <dd >
-              <ul class="list-none pl-0 my-0">
+            <dd>
+              <ul class="list-none">
                 @for (note of record.metadata.notes | notesFilter:['public_note']; track note) {
                   <li [innerHTML]="note.content | nl2br"></li>
                 }
@@ -87,13 +89,13 @@
           }
         </dl>
       }
-      </div>
+    </div>
   </div>
-  <div class="md:col-span-2 col-span-12 flex justify-end">
+  <div class="md:col-span-2 col-span-12 text-end">
     @if (record.metadata.loan_status) {
       <p-tag [severity]="record.metadata.loan_status | loanStatusBadge">
         {{ record.metadata.loan_status | translate }}
-    </p-tag>
+      </p-tag>
     }
   </div>
 </div>

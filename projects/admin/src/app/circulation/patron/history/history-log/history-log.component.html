@@ -16,7 +16,7 @@
 -->
 <div *ngVar="log.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document">
   <!-- Basic loan information's -->
-  <div class="grid grid-cols-12 grid-nogutter p-2">
+  <div class="grid grid-cols-12 p-2">
     <div class="col-span-6 flex gap-2">
       <shared-open-close-button (status)="isCollapsed = $event; loadCheckout()" />
       @if (document) {

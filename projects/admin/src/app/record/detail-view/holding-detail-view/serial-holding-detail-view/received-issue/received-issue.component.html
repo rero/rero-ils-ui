@@ -16,9 +16,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @defer(when issue) {
-  <div class="grid grid-cols-12 gap-4  border border-surface p-2 grid-nogutter items-center" [ngClass]="{'text-error': issue.metadata.issue.status === 'deleted'}">
+  <div class="grid grid-cols-12 gap-4  border border-surface p-2 items-center" [ngClass]="{'text-error': issue.metadata.issue.status === 'deleted'}">
     <div class="col-span-10">
-      <div class="grid grid-cols-12 gap-4 p-2 grid-nogutter items-center">
+      <div class="grid grid-cols-12 gap-4 p-2 items-center">
         <div class="col-span-1 flex items-center">
           <div class="grow">
             <shared-open-close-button (status)="isCollapsed = $event" />

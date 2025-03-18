@@ -23,6 +23,7 @@ import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 @Component({
     selector: 'public-search-patron-profile-fee',
     templateUrl: './patron-profile-fee.component.html',
+    styleUrl: './patron-profile-fee.component.scss',
     standalone: false
 })
 export class PatronProfileFeeComponent {

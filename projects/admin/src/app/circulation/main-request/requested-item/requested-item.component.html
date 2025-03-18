@@ -15,7 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (document) {
-  <div class="grid grid-cols-12 gap-4 grid-nogutter p-2" [ngClass]="getCallout()" id="request-{{ item.barcode }}">
+  <div class="grid grid-cols-12 gap-4 p-2" [ngClass]="getCallout()" id="request-{{ item.barcode }}">
     <div class="col-span-3">
       <div class="flex items-start gap-2">
         <shared-open-close-button [collapsed]="isCollapsed" (status)="isCollapsed = $event" />

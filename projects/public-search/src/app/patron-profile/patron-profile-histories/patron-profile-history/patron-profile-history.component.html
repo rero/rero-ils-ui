@@ -16,7 +16,7 @@
 -->
 
 @if (record) {
-    <div class="grid grid-cols-12 gap-4 grid-nogutter p-2">
+    <div class="grid grid-cols-12 gap-4 p-2">
       <!-- DOCUMENT & ADDITIONAL DATA -->
       <div *ngVar="record.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document" class="md:col-span-10 col-span-12">
         @if (document) {
@@ -34,7 +34,7 @@
         @if (document) {
           <shared-contribution [contributions]="document.metadata?.contribution" [view]="viewcode"></shared-contribution>
         }
-          <dl class="metadata md:hidden">
+          <dl class="md:hidden grid grid-cols-4">
             <dt translate>Return date</dt>
             <dd>{{ record.metadata.date | dateTranslate: 'shortDate' }}</dd>
           </dl>

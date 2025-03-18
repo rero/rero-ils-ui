@@ -17,7 +17,7 @@
 @defer(when loans) {
   <p-card class="p-card-body-p-0">
     <ng-template #header>
-      <div class="grid grid-cols-12 gap-4 grid-nogutter py-4 px-2 m-1 text-lg font-bold items-center border-b border-surface">
+      <div class="grid grid-cols-12 gap-4 py-4 px-2 m-1 text-lg font-bold items-center border-b border-surface">
         <div class="col-span-3" translate>Item</div>
         <div class="col-span-6" translate>Title</div>
         <div class="col-span-2" translate>Request date</div>
@@ -26,10 +26,7 @@
     @if (loans.length > 0) {
       <div class="alternate-color">
         @for (loan of loans; track loan) {
-          <admin-pending-item
-            [loan]="loan"
-            (cancelRequestEvent)="cancelRequest($event)"
-          />
+          <admin-pending-item [loan]="loan" (cancelRequestEvent)="cancelRequest($event)" />
         }
       </div>
     } @else {

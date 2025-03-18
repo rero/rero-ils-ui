@@ -16,7 +16,7 @@
 -->
 @if (transaction !== undefined) {
   <div [ngClass]="{ 'callout callout-warning': isDisputed(), 'border rounded border-gray-200': !isDisputed()}" class="p-2">
-    <div class="grid grid-cols-12 grid-nogutter items-start">
+    <div class="grid grid-cols-12 items-start">
       <div class="col-span-2 flex gap-2">
         <shared-open-close-button (status)="isCollapsed = $event" />
         <div>

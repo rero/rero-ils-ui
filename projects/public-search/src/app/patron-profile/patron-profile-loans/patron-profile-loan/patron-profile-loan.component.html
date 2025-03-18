@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,51 +15,48 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="grid grid-cols-12 gap-4 grid-nogutter p-2 pl-1" [ngClass]="{'border-left-3 border-warning':record.metadata.is_late}">
-      <!-- DOCUMENT & ADDITIONAL DATA -->
-       <div class="md:col-span-8 col-span-12 flex gap-2">
-        <shared-open-close-button (status)="isCollapsed = $event" />
-        <div class="w-full">
-          <public-search-patron-profile-document
-            [record]="record"
-            [showAdditionalInformation]="!isCollapsed"
-            [isAnimated]="true"
-          >
-          <dl class="metadata" additional-metadata>
-            <dt translate>Library</dt>
-            <dd>{{ record.metadata.library.name }}</dd>
-          </dl>
-        </public-search-patron-profile-document>
-        <dl class="metadata md:hidden">
-          <dt translate>Due date</dt>
-          <dd [ngClass]="{ 'font-bold text-success': actionSuccess}">{{ record.metadata.end_date | dateTranslate :'shortDate' }}</dd>
-        </dl>
-        <div class="md:hidden">
-          <ng-container [ngTemplateOutlet]="tags" />
-        </div>
-      </div>
-    </div>
-      <!-- DUE DATE & BADGES -->
-      <div class="md:col-span-2 col-span-12 hidden md:block">
-        <div >
-          <span [ngClass]="{ 'font-bold text-success': actionSuccess}">
-            {{ record.metadata.end_date | dateTranslate :'shortDate' }}
-          </span>
-        </div>
+<div class="grid grid-cols-12 gap-4 p-2 pl-1" [ngClass]="{'callout callout-warning':record.metadata.is_late}">
+  <!-- DOCUMENT & ADDITIONAL DATA -->
+  <div class="md:col-span-8 col-span-12 flex gap-2">
+    <shared-open-close-button (status)="isCollapsed = $event" />
+    <div class="w-full">
+      <public-search-patron-profile-document [record]="record" [showAdditionalInformation]="!isCollapsed" [isAnimated]="true" >
+      <dl class="md:grid grid-cols-4" additional-metadata>
+        <dt class="font-bold mr-2" translate>Library</dt>
+        <dd class="col-span-3">{{ record.metadata.library.name }}</dd>
+      </dl>
+      </public-search-patron-profile-document>
+      <dl class="md:hidden">
+        <dt translate>Due date</dt>
+        <dd [ngClass]="{ 'font-bold text-success': actionSuccess}">{{ record.metadata.end_date | dateTranslate :'shortDate' }}</dd>
+      </dl>
+      <div class="md:hidden">
         <ng-container [ngTemplateOutlet]="tags" />
       </div>
-      <!-- ACTION BUTTONS COLUMN -->
-      <div class="md:col-span-2 col-span-12 flex justify-end">
-          <p-button
-            class="pointer-events-auto"
-            [pTooltip]="canExtend.reasons | arrayTranslate | join:' / '"
-            tooltipPosition="top"
-            [tooltipDisabled]="canExtend.can"
-            (onClick)="renew()"
-            [disabled]="renewInProgress || actionDone || !canExtend.can"
-            [label]="'Renew' | translate"
-            [icon]="renewInProgress? 'pi pi-spin pi-spinner': 'pi pi-refresh'"
-          />
+    </div>
+  </div>
+  <!-- DUE DATE & BADGES -->
+  <div class="md:col-span-2 col-span-12 hidden md:block">
+    <div>
+      <span [ngClass]="{ 'font-bold text-success': actionSuccess}">
+        {{ record.metadata.end_date | dateTranslate :'shortDate' }}
+      </span>
+    </div>
+    <ng-container [ngTemplateOutlet]="tags" />
+  </div>
+  <!-- ACTION BUTTONS COLUMN -->
+  <div class="md:col-span-2 col-span-12 flex justify-end">
+    <p-button
+      size="small"
+      class="pointer-events-auto"
+      [pTooltip]="canExtend.reasons | arrayTranslate | join:' / '"
+      tooltipPosition="top"
+      [tooltipDisabled]="canExtend.can"
+      (onClick)="renew()"
+      [disabled]="renewInProgress || actionDone || !canExtend.can"
+      [label]="'Renew' | translate"
+      [icon]="renewInProgress? 'pi pi-spin pi-spinner': 'pi pi-refresh'"
+    />
   </div>
 </div>
 
