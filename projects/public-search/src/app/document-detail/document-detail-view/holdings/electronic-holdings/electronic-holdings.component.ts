@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,14 +27,14 @@ export class ElectronicHoldingsComponent implements OnInit{
 
   private holdingsApiService: HoldingsApiService = inject(HoldingsApiService);
 
-  @Input() documentPid;
-  @Input() viewcode;
+  @Input() documentPid: string;
+  @Input() viewcode: string;
 
   holdings = [];
 
   ngOnInit(): void {
-      const query = `document.pid:${this.documentPid} AND holdings_type:electronic NOT _masked:true`;
-      this.holdingsApiService.getElectronicHoldingsByDocumentPidAndViewcode(this.documentPid, this.viewcode, 1, 100).subscribe((hits: any) => this.holdings = hits.hits);
+      this.holdingsApiService
+        .getElectronicHoldingsByDocumentPidAndViewcode(this.documentPid, this.viewcode, 1, 100)
+        .subscribe((hits: any) => this.holdings = hits.hits);
   }
-
 }

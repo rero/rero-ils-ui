@@ -45,7 +45,7 @@
       <div class="mt-4">
         @if (accountsToDisplay.length > 0) {
           @for (account of accountsToDisplay; track account) {
-            <div class="grid grid-cols-12 py-1 odd:bg-surface-100">
+            <div class="grid grid-cols-12 py-1 odd:bg-surface-50">
               <div class="col-span-1 text-center">
                 @if (!(form.get('target').value &&
                     form.get('target').value.pid === account.pid)) {
