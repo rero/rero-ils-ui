@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2024 RERO
+  Copyright (C) 2024-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,32 +14,39 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 @if (holdings.length > 0) {
-<p-card class="p-card-body-p-0">
-  <ng-template #header>
-      <div class="hidden md:flex grid grid-cols-12 gap-4 bg-blue-900 text-white p-2 text-lg font-bold">
+  <p-card class="p-card-body-p-0">
+    <ng-template #header>
+      <div class="grid grid-cols-12 gap-4 px-4 py-2 m-1 text-lg font-bold items-center border-b border-surface">
         <div class="col-span-6" translate>Library</div>
         <div class="col-span-3" translate>Platform</div>
       </div>
-  </ng-template>
+    </ng-template>
 
-  <div class="alternate-color">
-  @for(holding of holdings; track holding) {
-    @for (location of holding.metadata.electronic_location; track location) {
-  <div class="grid grid-cols-12 gap-4 p-2">
-      <div class="col-span-6">
-      {{holding.metadata.library.name}}
-      </div>
-      <div class="col-span-3 capitalize">
-      {{location.source}}
-      </div>
-      <div class="col-span-3 flex justify-end items-start">
-      <a href="{{location.uri}}" class="p-button p-button-sm" target="_blank"><i class="fa fa-external-link pr-1" ></i>{{ 'Online access' | translate}}</a>
-      </div>
-  </div>
+    @for(holding of holdings; track holding) {
+      @for (location of holding.metadata.electronic_location; track location) {
+        <div class="grid grid-cols-12 gap-4 p-2 odd:bg-surface-50 items-center">
+          <div class="col-span-6">
+            {{ holding.metadata.library.name }}
+          </div>
+          <div class="col-span-3 capitalize">
+            {{ location.source }}
+          </div>
+          <div class="col-span-3 flex justify-end">
+            <a
+              pButton
+              outlined
+              size="small"
+              icon="fa fa-external-link"
+              [href]="location.uri"
+              target="_blank"
+              translate
+            >
+              Online access
+            </a>
+          </div>
+        </div>
+      }
     }
-  }
-</div>
-</p-card>
+  </p-card>
 }

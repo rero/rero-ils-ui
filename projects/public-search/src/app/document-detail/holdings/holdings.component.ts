@@ -1,5 +1,6 @@
 /*
- * RERO IL-2024 RERO
+ * RERO ILS UI
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -13,14 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
-import { AppSettingsService, User, UserService } from '@rero/shared';
-import { Observable, switchMap, tap } from 'rxjs';
+import { HoldingsNoteType, User, UserService } from '@rero/shared';
+import { Observable, tap } from 'rxjs';
 import { HoldingsApiService } from '../../api/holdings-api.service';
 import { QueryResponse } from '../../record';
-import { RecordService } from '@rero/ng-core';
 
 @Component({
     selector: 'public-search-holdings',
@@ -28,7 +28,7 @@ import { RecordService } from '@rero/ng-core';
     standalone: false
 })
 export class HoldingsComponent implements OnInit {
-  private holdingsApiService: HoldingsApiService = inject(HoldingsApiService);
+  public holdingsApiService: HoldingsApiService = inject(HoldingsApiService);
   private translateService: TranslateService = inject(TranslateService);
   private userService: UserService = inject(UserService);
 
@@ -47,8 +47,14 @@ export class HoldingsComponent implements OnInit {
   /** Holdings per page */
   private holdingsPerPage = 10;
 
+  noteAuthorizedTypes: string[] = [HoldingsNoteType.GENERAL, HoldingsNoteType.ACCESS];
+
   get user(): User {
     return this.userService.user;
+  }
+
+  get language() {
+    return this.translateService.currentLang;
   }
 
   // GETTER & SETTER ==========================================================

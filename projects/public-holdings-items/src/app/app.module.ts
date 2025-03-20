@@ -41,7 +41,6 @@ import { DividerModule } from 'primeng/divider';
 import { MenubarModule } from 'primeng/menubar';
 import { DocumentDetailViewComponent } from 'projects/public-search/src/app/document-detail/document-detail-view/document-detail-view.component';
 import { ElectronicHoldingsComponent } from 'projects/public-search/src/app/document-detail/document-detail-view/holdings/electronic-holdings/electronic-holdings.component';
-import { HoldingComponent } from 'projects/public-search/src/app/document-detail/holdings/holding/holding.component';
 import { HoldingsComponent } from 'projects/public-search/src/app/document-detail/holdings/holdings.component';
 import { ItemsComponent } from 'projects/public-search/src/app/document-detail/holdings/items/items.component';
 import { ItemComponent } from 'projects/public-search/src/app/document-detail/item/item.component';
@@ -63,7 +62,6 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
 
 @NgModule({
   declarations: [
-    HoldingComponent,
     HoldingsComponent,
     ItemComponent,
     ItemsComponent,

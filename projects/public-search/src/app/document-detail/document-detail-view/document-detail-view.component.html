@@ -17,7 +17,7 @@
 
 <ngx-loading-bar [includeSpinner]="false" height="3px" />
 @if (document) {
-  <p-tabs>
+  <p-tabs value="get">
     <p-tablist>
       <p-tab value="get" translate>Get</p-tab>
       <p-tab value="description" translate>Description</p-tab>
@@ -41,8 +41,6 @@
       }
     </p-tabpanels>
   </p-tabs>
-
-  <p-divider />
 
   <p-menubar [model]="exportItems">
     <ng-template #item let-item>
