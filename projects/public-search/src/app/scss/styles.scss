@@ -19,6 +19,7 @@
 @use "primeicons/primeicons.css";
 @use "easymde/dist/easymde.min";
 @use "@rero/ng-core/assets/scss/tailwind/theme.scss";
+@use "../document-detail/holdings/holdings.component.scss";
 
 @plugin "tailwindcss-primeui";
 

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2023 RERO
+  Copyright (C) 2021-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,33 +14,19 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<div>
 @if (items.length > 0) {
-
-  <div class="alternate-color">
   @for (item of items; track item) {
-    <div>
-      <public-search-item
-        context="holding"
-        [item]="item"
-        [viewcode]="viewcode"
-      />
+    <div class="odd:bg-surface-50">
+      <public-search-item context="holding" [item]="item" [viewcode]="viewcode" />
     </div>
   }
-  </div>
   @if (isLinkShowMore) {
-    <p-button
-      severity="secondary"
-      [text]="true"
-      (onClick)="showMore()"
-    >
-    <div>
-      <i class="fa fa-plus-square-o"></i>&nbsp;{{'Show more' | translate}}&nbsp;<small>({{ hiddenItems }})</small>
-    </div>
-  </p-button>
+    <p-button severity="secondary" [text]="true" (onClick)="showMore()">
+      <div>
+        <i class="fa fa-plus-square-o"></i>&nbsp;{{'Show more' | translate}}&nbsp;<small>({{ hiddenItems }})</small>
+      </div>
+    </p-button>
   }
 } @else {
   <div translate>No item received.</div>
 }
-</div>
