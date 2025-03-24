@@ -15,20 +15,20 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (canAdd) {
-  <div class="flex justify-end" [permissions]="[permissions.HOLD_CREATE, permissions.ITEM_CREATE]">
+  <div class="ui:flex ui:justify-end" [permissions]="[permissions.HOLD_CREATE, permissions.ITEM_CREATE]">
     <p-menu #menu [model]="options" [popup]="true" />
     <p-button icon="fa fa-caret-down" iconPos="right" outlined (onClick)="menu.toggle($event)" [label]="'Add'|translate"/>
   </div>
 }
 
 @if (holdings) {
-  <div class="mt-2">
-    <p-accordion [multiple]="true" [(value)]="activePanels" (onOpen)="onOpen($event)">
+  <div class="ui:mt-2">
+    <p-accordion [multiple]="true" [(value)]="activePanels">
       @for (holding of holdings; track holding; let i = $index) {
-        <p-accordion-panel [value]="i" class="mb-2">
+        <p-accordion-panel [value]="i" class="ui:mb-2">
           <p-accordion-header>
             <admin-holding-header
-              class="w-full"
+              class="ui:w-full"
               [holding]="holding"
               [isCurrentOrganisation]="isCurrentOrganisation"
               (deleteHolding)="deleteHolding($event)"
@@ -37,7 +37,7 @@
           <p-accordion-content>
             @if(activePanels()?.indexOf(i) >= 0) {
             <admin-holding-content
-              class="w-full"
+              class="ui:w-full"
               [holding]="holding"
               [isCurrentOrganisation]="isCurrentOrganisation"
             />

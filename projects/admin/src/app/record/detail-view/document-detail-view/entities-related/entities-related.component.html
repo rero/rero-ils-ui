@@ -14,12 +14,12 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="py-2 alternate-color">
+<div class="ui:py-2">
   @for (field of entities | keyvalue; track field) {
-    <dl class="metadata">
+    <dl class="metadata ui:odd:bg-surface-50">
       <dt>{{ field.key | translate |ucfirst }}</dt>
       <dd>
-        <ul class="list-none">
+        <ul class="ui:list-none">
           @for (entity of field.value; track entity) {
             <li>
               <i [title]="entity.type | translate" class="fa {{ entity.icon }}"></i>&nbsp;

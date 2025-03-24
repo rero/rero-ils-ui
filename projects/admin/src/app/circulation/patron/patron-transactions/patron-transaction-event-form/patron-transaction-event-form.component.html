@@ -18,30 +18,30 @@
   <form [formGroup]="form" (ngSubmit)="onSubmitForm()">
     <formly-form [form]="form" [fields]="formFields" [model]="model" />
 
-    <p-scrollPanel class="m-6 w-full" [style]="{ 'max-height': '500px' }">
+    <p-scrollPanel class="ui:m-6 ui:w-full ui:max-h-[500px]">
     @for (transaction of transactions; track transaction) {
-      <p-panel styleClass="mb-2" [header]="transaction.type|translate">
-        <div class="card-text">
+      <p-panel styleClass="ui:mb-2" [header]="transaction.type|translate">
+        <div>
           @if (transaction.note) {
-            <div class="grid grid-cols-12 gap-4">
-              <label class="col-span-4" translate>Note</label>
-              <span class="col-span-8">{{ transaction.note }}</span>
+            <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+              <label class="ui:col-span-4" translate>Note</label>
+              <span class="ui:col-span-8">{{ transaction.note }}</span>
             </div>
           }
-          <div class="grid grid-cols-12 gap-4">
-            <label class="col-span-4" translate>Creation date</label>
-            <span class="col-span-8">{{ transaction.creation_date | dateTranslate: 'shortDate' }}</span>
+          <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+            <label class="ui:col-span-4" translate>Creation date</label>
+            <span class="ui:col-span-8">{{ transaction.creation_date | dateTranslate: 'shortDate' }}</span>
           </div>
-          <div class="grid grid-cols-12 gap-4">
-            <label class="col-span-4" translate>Total amount</label>
-            <span class="col-span-8">{{ transaction.total_amount | currency: organisation.default_currency }}</span>
+          <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+            <label class="ui:col-span-4" translate>Total amount</label>
+            <span class="ui:col-span-8">{{ transaction.total_amount | currency: organisation.default_currency }}</span>
           </div>
         </div>
       </p-panel>
     }
     </p-scrollPanel>
 
-    <div class="flex justify-end">
+    <div class="ui:flex ui:justify-end">
       <p-button type="submit" [label]="'Save'|translate" [disabled]="this.form.status !== 'VALID'" />
     </div>
   </form>

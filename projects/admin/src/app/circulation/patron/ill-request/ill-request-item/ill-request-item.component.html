@@ -15,21 +15,21 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="grid grid-cols-12 gap-4 p-2">
+<div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2">
   <!-- MAIN ROW :: title, authors, status and action buttons ============== -->
-  <div class="col-span-4 flex gap-1">
+  <div class="ui:col-span-4 ui:flex ui:gap-1">
     <shared-open-close-button (status)="isCollapsed = $event" />
     <div>
       {{ record.metadata.document.title }}
-      <div class="small">{{ record.metadata.document.authors }}</div>
+      <div class="ui:text-sm">{{ record.metadata.document.authors }}</div>
     </div>
   </div>
-  <div class="col-span-3">{{ record.metadata.pickup_location.name }}</div>
-  <div class="col-span-2">{{ record.created | dateTranslate:'medium'}}</div>
-  <div class="col-span-2">
+  <div class="ui:col-span-3">{{ record.metadata.pickup_location.name }}</div>
+  <div class="ui:col-span-2">{{ record.created | dateTranslate:'medium'}}</div>
+  <div class="ui:col-span-2">
     <p-tag [severity]="badgeColor(record.metadata.loan_status)" [value]="record.metadata.loan_status|translate" />
   </div>
-  <div class="col-span-1 text-right">
+  <div class="ui:col-span-1 ui:text-right">
     <p-button
       icon="fa fa-eye"
       outlined
@@ -39,7 +39,7 @@
   </div>
   <!-- DETAIL ROWS :: collapsible detail information's -->
   @if (!isCollapsed) {
-    <div class="col-span-12">
+    <div class="ui:col-start-5 ui:col-span-7">
       <dl class="metadata">
         <!-- PUBLISHER -->
         @if (record.metadata.document.publisher) {
@@ -83,8 +83,8 @@
         @if (record.metadata.found_in) {
           <dt translate>Found in</dt>
           <dd>
-            <a href="{{ record.metadata.found_in.url }}">{{ record.metadata.found_in.url }}</a>
-            <p-tag class="ml-2" severity="secondary" [value]="record.metadata.found_in.source" />
+            <a [href]="record.metadata.found_in.url">{{ record.metadata.found_in.url }}</a>
+            <p-tag class="ui:ml-2" severity="secondary" [value]="record.metadata.found_in.source" />
           </dd>
         }
         <!-- STATUS -->
@@ -96,7 +96,7 @@
         @if (record.metadata.notes && record.metadata.notes.length > 0) {
           <dt translate>Note</dt>
           <dd>
-            <ul class="list-none p-0 m-0">
+            <ul class="ui:list-none">
               @for (note of record.metadata.notes; track note) {
                 <li [innerHTML]="note.content | nl2br"></li>
               }

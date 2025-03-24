@@ -16,35 +16,35 @@
 -->
 
 @if (record) {
-  <div class="grid grid-cols-12 gap-4 p-2 pl-1" [ngClass]="{'callout callout-success':record.metadata.state === 'ITEM_AT_DESK'}">
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:pl-1" [ngClass]="{'callout callout-success':record.metadata.state === 'ITEM_AT_DESK'}">
 
-    <div class="md:col-span-8 col-span-12 flex gap-2">
+    <div class="ui:md:col-span-8 ui:col-span-12 ui:flex ui:gap-2">
       <shared-open-close-button (status)="isCollapsed = $event" />
-      <div class="w-full">
+      <div class="ui:w-full">
         <!-- DOCUMENT & ADDITIONAL DATA ===================================== -->
         <public-search-patron-profile-document
           [record]="record"
           [showAdditionalInformation]="!isCollapsed"
           [isAnimated]="true"
         />
-        <dl class="grid grid-cols-4">
-          <dt class="hidden md:block font-bold mr-2" translate>Pickup location</dt>
-          <dd class="col-span-3">{{ record.metadata.pickup_name }}</dd>
+        <dl class="ui:grid ui:grid-cols-4">
+          <dt class="ui:hidden ui:md:block ui:font-bold ui:mr-2" translate>Pickup location</dt>
+          <dd class="ui:col-span-3">{{ record.metadata.pickup_name }}</dd>
         </dl>
-        <dl class="md:hidden grid grid-cols-4">
-          <dt class="hidden" translate>Status</dt>
-          <dd class="col-span-3">
+        <dl class="ui:md:hidden ui:grid ui:grid-cols-4">
+          <dt class="ui:hidden" translate>Status</dt>
+          <dd class="ui:col-span-3">
             <ng-container [ngTemplateOutlet]="status" />
           </dd>
         </dl>
       </div>
     </div>
         <!-- STATUS ========================================================= -->
-    <div class="md:col-span-2 col-span-12 hidden md:block">
+    <div class="ui:md:col-span-2 ui:col-span-12 ui:hidden ui:md:block">
       <ng-container [ngTemplateOutlet]="status" />
     </div>
     <!-- ACTION BUTTONS ================================================= -->
-    <div class="md:col-span-2 col-span-12 flex justify-end">
+    <div class="ui:md:col-span-2 ui:col-span-12 ui:flex ui:justify-end">
       @if (['PENDING', 'ITEM_IN_TRANSIT_FOR_PICKUP'].includes(record.metadata.state)) {
         <p-button
           size="small"
@@ -72,7 +72,7 @@
   }
   <!-- PENDING OR ITEM IN TRANSIT FOR PICKUP -->
   @if (['PENDING', 'ITEM_IN_TRANSIT_FOR_PICKUP'].includes(record.metadata.state)) {
-    <i class="fa fa-ellipsis-h pr-1"  title="{{ 'pending' | translate }}" aria-hidden="true"></i>
+    <i class="fa fa-ellipsis-h ui:pr-1"  title="{{ 'pending' | translate }}" aria-hidden="true"></i>
     <!-- TODO: Add expired date and remove "waiting" text
     expected availability 00.00.0000  -->
     {{ 'waiting' | translate }}

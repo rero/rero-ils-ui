@@ -16,15 +16,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (order) {
-  <article class="grid grid-cols-12 gap-4 align-items-top">
-    <div class="col-span-12 lg:col-span-9">
+  <article class="ui:grid ui:grid-cols-12 ui:gap-4">
+    <div class="ui:col-span-12 ui:lg:col-span-9">
       <h5><a [routerLink]="[detailUrl.link]">{{ order.reference }}</a></h5>
-      <!-- @let notes = order.notes | notesFilter: [noteType.STAFF_NOTE]; -->
-      @let notes = [];
+      @let notes = order.notes | notesFilter: [noteType.STAFF_NOTE];
       @if (notes.length > 0) {
-        <div class="italic" [innerHTML]="notes[0].content | nl2br"></div>
+        <div class="ui:italic" [innerHTML]="notes[0].content | nl2br"></div>
       }
-      <span class="font-bold text-muted-color text-sm">
+      <span class="ui:font-bold ui:text-muted-color ui:text-sm">
         [
         {{ order.status | translate }}
         @switch (order.status) {
@@ -44,23 +43,23 @@
         ]
       </span>
     </div>
-    <div class="col-span-12 lg:col-span-3 flex flex-col gap-1">
+    <div class="ui:col-span-12 ui:lg:col-span-3 ui:flex ui:flex-col ui:gap-1">
       @if (displayProvisionalAccountingData) {
-        <div class="flex">
-          <label class="w-8/12 text-center border-surface border p-2 bg-surface-100 dark:bg-surface-700 rounded-l font-bold">
+        <div class="ui:flex">
+          <label class="ui:w-8/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:dark:bg-surface-700 ui:rounded-l ui:font-bold">
             {{ order.account_statement.provisional.total_amount | currency : order.currency }}
           </label>
-          <span class="w-4/12 text-center border-surface border p-2 bg-surface-100 dark:bg-surface-700 rounded-r text-muted-color text-right">
+          <span class="ui:w-4/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:dark:bg-surface-700 ui:rounded-r ui:text-muted-color ui:text-right">
             <i class="fa fa-shopping-cart"></i>&nbsp;{{ order.account_statement.provisional.quantity }}
           </span>
         </div>
       }
       @if (displayExpenditureAccountingData) {
-        <div class="flex">
-          <label class="w-8/12 text-center border-surface border p-2 bg-surface-100 dark:bg-surface-700 rounded-l font-bold">
+        <div class="ui:flex">
+          <label class="ui:w-8/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:dark:bg-surface-700 ui:rounded-l ui:font-bold">
             {{ order.account_statement.expenditure.total_amount | currency : order.currency }}
           </label>
-          <span class="w-4/12 text-center border-surface border p-2 bg-surface-100 dark:bg-surface-700 rounded-r text-muted-color text-right">
+          <span class="ui:w-4/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:dark:bg-surface-700 ui:rounded-r ui:text-muted-color ui:text-right">
             <i class="fa fa-sign-in"></i>&nbsp;{{ order.account_statement.expenditure.quantity }}
           </span>
         </div>

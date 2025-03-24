@@ -19,7 +19,7 @@
     <h1>{{ record.metadata.name }}</h1>
     <span [innerHTML]="record.metadata.description | nl2br"></span>
   </header>
-  <section class="mt-4">
+  <section class="ui:mt-4">
     <dl class="metadata">
       <dt translate>Library</dt>
       <dd>{{ record.metadata.library.$ref | getRecord: 'libraries' : 'field' : 'name' | async }}</dd>
@@ -36,7 +36,7 @@
       @if (record.metadata.filter_by_libraries?.length > 0) {
         <dt translate>Filter numbers by libraries</dt>
         <dd>
-          <ul class="list-none">
+          <ul class="ui:list-none">
             @for (lib of record.metadata.filter_by_libraries; track lib) {
               <li>
                 {{ lib.$ref| getRecord: 'libraries' : 'field' : 'name' | async }}
@@ -48,7 +48,7 @@
     </dl>
   </section>
 
-  <section class="mt-4">
+  <section class="ui:mt-4">
     <p-fieldset [legend]="'Configuration'|translate">
       <dl class="metadata">
 
@@ -66,9 +66,9 @@
         @if (record.metadata.category.indicator.distributions) {
           <dt translate>Distributions</dt>
           <dd>
-            <ul class="list-none">
+            <ul class="ui:list-none">
               @for (dist of record.metadata.category.indicator.distributions; track dist; let last = $last) {
-                <li class="inline">{{ dist | translate }}{{ last ? '' : ' / ' }}</li>
+                <li class="ui:inline">{{ dist | translate }}{{ last ? '' : ' / ' }}</li>
               }
             </ul>
           </dd>
@@ -89,7 +89,7 @@
     </p-fieldset>
   </section>
 
-  <section class="mt-4">
+  <section class="ui:mt-4">
     <p-tabs value="report">
       <p-tablist>
         <p-tab value="report" translate>Reports</p-tab>

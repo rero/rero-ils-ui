@@ -16,25 +16,24 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <h4 translate>Checkout/checkin</h4>
-<section class="content">
-  <div class="flex flex-col gap-4">
+<section>
+  <div class="ui:flex ui:flex-col ui:gap-4">
     <ng-core-search-input
-    [placeholder]="placeholder | translate"
-    [searchText]="searchText"
-    [focus]="searchInputFocus"
-    [disabled]="searchInputDisabled"
-    (search)="searchValueUpdated($event)"
-  />
-  <admin-circulation-patron-detailed
-        [patron]="patronInfo"
-        [barcode]="barcode"
-        [linkMode]="'circulation'"
-        [clearPatronButton]="false"
-      />
-
-      <admin-circulation-items-list
-        [checkedInItems]="items"
-        (hasFeesEmitter)="hasFees($event)"
-      />
+      [placeholder]="placeholder | translate"
+      [searchText]="searchText"
+      [focus]="searchInputFocus"
+      [disabled]="searchInputDisabled"
+      (search)="searchValueUpdated($event)"
+    />
+    <admin-circulation-patron-detailed
+      [patron]="patronInfo"
+      [barcode]="barcode"
+      [linkMode]="'circulation'"
+      [clearPatronButton]="false"
+    />
+    <admin-circulation-items-list
+      [checkedInItems]="items"
+      (hasFeesEmitter)="hasFees($event)"
+    />
   </div>
 </section>

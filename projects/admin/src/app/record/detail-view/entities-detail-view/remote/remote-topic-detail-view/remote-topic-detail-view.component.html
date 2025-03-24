@@ -30,7 +30,7 @@
 @if (record.variant_access_point) {
   <dt translate>Variant access point</dt>
   <dd>
-    <ul class="list-none p-0 m-0">
+    <ul class="ui:list-none">
       @for (variant_access_point of record.variant_access_point; track variant_access_point) {
         <li>{{ variant_access_point }}</li>
       }
@@ -41,7 +41,7 @@
 @if (record.broader) {
   <dt translate>Broader</dt>
   <dd>
-    <ul class="list-none p-0 m-0">
+    <ul class="ui:list-none">
       @for (broader of record.broader; track broader) {
         <li>{{ broader.authorized_access_point }}</li>
       }
@@ -52,7 +52,7 @@
 @if (record.narrower) {
   <dt translate>Narrower</dt>
   <dd>
-    <ul class="list-none p-0 m-0">
+    <ul class="ui:list-none">
       @for (narrower of record.narrower; track narrower) {
         <li>{{ narrower.authorized_access_point }}</li>
       }
@@ -63,7 +63,7 @@
 @if (record.related) {
   <dt translate>Related</dt>
   <dd>
-    <ul class="list-none p-0 m-0">
+    <ul class="ui:list-none">
       @for (related of record.related; track related) {
         <li>{{ related.authorized_access_point }}</li>
       }
@@ -75,9 +75,9 @@
 @if (record.classification) {
   <dt translate>Classification</dt>
   <dd>
-    <ul class="list-none p-0 m-0">
+    <ul class="ui:list-none">
       @for (classification of record.classification; track classification) {
-        <li class="mb-1 flex gap-1 items-center">
+        <li class="ui:mb-1 ui:flex ui:gap-1 ui:items-center">
           @if (classification.classificationPortion) {
             <span>{{ classification.classificationPortion }}</span>
           }
@@ -111,7 +111,7 @@
 <ng-template #match let-item="item">
   <dt translate>{{ item.title }}</dt>
   <dd>
-    <ul  class="list-none p-0 m-0">
+    <ul  class="ui:list-none">
       @if (item.match) {
         @for(match of item.match; track match) {
           <li>

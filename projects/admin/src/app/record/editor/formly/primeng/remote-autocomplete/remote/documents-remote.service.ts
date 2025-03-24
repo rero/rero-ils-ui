@@ -88,7 +88,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
       .getRecord(queryOptions.type, pid, 1)
       .pipe(
         map((data: any) =>
-          `<span class="bg-light p-2"><strong>${this.mainTitlePipe.transform(data.metadata.title)}</strong></span>`
+          `<span class="ui:p-2"><strong>${this.mainTitlePipe.transform(data.metadata.title)}</strong></span>`
         )
       );
   }

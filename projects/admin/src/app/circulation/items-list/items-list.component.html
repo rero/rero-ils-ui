@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,24 +15,24 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (checkedOutItems && checkedOutItems.length === 0 && patron) {
-  <div class="mb-2">
+  <div class="ui:mb-2">
     <span translate>No loan for the current patron.</span>
   </div>
 }
 @if ((checkedOutItems && checkedOutItems.length > 0) || (checkedInItems && checkedInItems.length > 0)) {
   <!-- HEADER -->
-   <p-card class="p-card-body-p-0">
+   <p-card>
     <ng-template #header>
-        <div class="grid grid-cols-12 gap-4 py-4 px-2 text-lg font-bold items-center border-b border-surface">
-          <div class="col-span-3 flex gap-2 items-center">
+        <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:px-2 ui:text-lg ui:font-bold ui:items-center ui:border-b ui:border-surface">
+          <div class="ui:col-span-3 ui:flex ui:gap-2 ui:items-center">
             <div>
               <shared-open-close-button (status)="allCollapsed = $event" />
             </div>
             <div translate>Item</div>
           </div>
-          <div class="col-span-5" translate>Document</div>
-          <div class="col-span-2" translate>Circulation info</div>
-          <div class="col-span-2 flex justify-end">
+          <div class="ui:col-span-5" translate>Document</div>
+          <div class="ui:col-span-2" translate>Circulation info</div>
+          <div class="ui:col-span-2 ui:flex ui:justify-end">
             @if (patron) {
               <p-button
                 id="renew-all-button"
@@ -45,28 +45,32 @@
         </div>
     </ng-template>
 
-    <div class="alternate-color">
+    <div>
       <!-- CHECKED OUT ITEMS -->
       @for (item of checkedOutItems; track item) {
-        <admin-item
-          [patron]="patron"
-          [item]="item"
-          [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
-          [isCollapsed]="allCollapsed"
-          (extendLoanClicked)="extendLoanClick($event, item)"
-        />
+        <div class="ui:odd:bg-surface-50">
+          <admin-item
+            [patron]="patron"
+            [item]="item"
+            [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
+            [isCollapsed]="allCollapsed"
+            (extendLoanClicked)="extendLoanClick($event, item)"
+          />
+        </div>
       }
 
       <!-- CHECKED IN ITEMS -->
-      <!-- Callout border for [TRANSIT|REQUEST|FEE] -->
+      <!-- Callout ui:border for [TRANSIT|REQUEST|FEE] -->
       @for (item of checkedInItems; track item) {
-        <admin-item
-          [patron]="patron"
-          [item]="item"
-          [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
-          [isCollapsed]="allCollapsed"
-          (hasFeesEmitter)="hasFees($event)"
-        />
+        <div class="ui:odd:bg-surface-50">
+          <admin-item
+            [patron]="patron"
+            [item]="item"
+            [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
+            [isCollapsed]="allCollapsed"
+            (hasFeesEmitter)="hasFees($event)"
+          />
+        </div>
       }
     </div>
   </p-card>

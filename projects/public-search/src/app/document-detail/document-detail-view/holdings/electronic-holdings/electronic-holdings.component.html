@@ -15,24 +15,24 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (holdings.length > 0) {
-  <p-card class="p-card-body-p-0">
+  <p-card>
     <ng-template #header>
-      <div class="grid grid-cols-12 gap-4 px-4 py-2 m-1 text-lg font-bold items-center border-b border-surface">
-        <div class="col-span-6" translate>Library</div>
-        <div class="col-span-3" translate>Platform</div>
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:px-4 ui:py-2 ui:m-1 ui:text-lg ui:font-bold ui:items-center ui:border-b ui:border-surface">
+        <div class="ui:col-span-6" translate>Library</div>
+        <div class="ui:col-span-3" translate>Platform</div>
       </div>
     </ng-template>
 
     @for(holding of holdings; track holding) {
       @for (location of holding.metadata.electronic_location; track location) {
-        <div class="grid grid-cols-12 gap-4 p-2 odd:bg-surface-50 items-center">
-          <div class="col-span-6">
+        <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:odd:bg-surface-50 ui:items-center">
+          <div class="ui:col-span-6">
             {{ holding.metadata.library.name }}
           </div>
-          <div class="col-span-3 capitalize">
+          <div class="ui:col-span-3 ui:capitalize">
             {{ location.source }}
           </div>
-          <div class="col-span-3 flex justify-end">
+          <div class="ui:col-span-3 ui:flex ui:justify-end">
             <a
               pButton
               outlined

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +21,7 @@ import { RecordService } from '@rero/ng-core';
 @Component({
     selector: 'admin-formly-field-type',
     template: `
-    <div class="{{ field.props.className }}">
+    <div [class]="field.props.className">
       {{ value }}
     </div>
   `,

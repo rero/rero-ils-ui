@@ -25,7 +25,7 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
     template: `
     @for (message of messages; track message) {
       <p-message
-        styleClass="mb-2"
+        styleClass="ui:mb-2"
         [text]="message.text"
         [severity]="message.severity"
         showTransitionOptions="0ms"

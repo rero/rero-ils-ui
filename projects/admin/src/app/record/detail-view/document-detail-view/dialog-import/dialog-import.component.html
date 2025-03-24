@@ -18,7 +18,7 @@
 <h5 translate>This document may already exist</h5>
 }
 @if (records.length > 0) {
-<ul class="list-none">
+<ul class="ui:list-none">
   @for (record of records; track record) {
   <li>
     <a
@@ -37,13 +37,13 @@
 }
 @if (warning) {
   <p-message severity="warn">
-    <div class="flex gap-2 items-start">
-      <i class="fa fa-exclamation-circle text-2xl"></i>
-      <div class="flex flex-col gap-2">
-        <div class="font-bold" translate>
+    <div class="ui:flex ui:gap-2 ui:items-start">
+      <i class="fa fa-exclamation-circle ui:text-2xl"></i>
+      <div class="ui:flex ui:flex-col ui:gap-2">
+        <div class="ui:font-bold" translate>
           Too many identifiers: not all identifiers have been verified.
         </div>
-        <div class="font-bold" translate>
+        <div class="ui:font-bold" translate>
           Please make sure that this document does not already exist before
           importing.
         </div>
@@ -51,10 +51,10 @@
     </div>
   </p-message>
 }
-<div class="font-bold" translate>
+<div class="ui:font-bold" translate>
   Do you really want to import this document?
 </div>
-<div class="flex gap-1 justify-end mt-2">
+<div class="ui:flex ui:gap-1 ui:justify-end ui:mt-2">
   <p-button
     [label]="'Cancel' | translate"
     severity="secondary"

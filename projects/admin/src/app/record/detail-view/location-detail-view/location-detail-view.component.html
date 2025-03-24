@@ -15,31 +15,31 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record && record.metadata; as data) {
-  <h1 class="mb-4">{{ data.name | translate }}</h1>
+  <h1 class="ui:mb-4">{{ data.name | translate }}</h1>
   <article>
       <!-- DETAILS -->
-      <section class="m-2 p-2">
+      <section class="ui:m-2 ui:p-2">
           <!-- LIBRARY -->
-          <dl class="grid grid-cols-12 gap-4 mb-1">
-              <dt class="col-span-3 label-title" translate>Library</dt>
-              <dd class="col-span-7 mb-0">
+          <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
+              <dt class="ui:col-span-3" translate>Library</dt>
+              <dd class="ui:col-span-7 ui:mb-0">
                   {{ data.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
               </dd>
           </dl>
           <!-- NAME -->
-          <dl class="grid grid-cols-12 gap-4 mb-1">
-              <dt class="col-span-3 label-title" translate>Name</dt>
-              <dd class="col-span-7 mb-0">{{ data.name }}</dd>
+          <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
+              <dt class="ui:col-span-3" translate>Name</dt>
+              <dd class="ui:col-span-7 ui:mb-0">{{ data.name }}</dd>
           </dl>
           <!-- CODE -->
-          <dl class="grid grid-cols-12 gap-4 mb-1">
-              <dt class="col-span-3 label-title" translate>Code</dt>
-              <dd class="col-span-7 mb-0">{{ data.code }}</dd>
+          <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
+              <dt class="ui:col-span-3" translate>Code</dt>
+              <dd class="ui:col-span-7 ui:mb-0">{{ data.code }}</dd>
           </dl>
           <!-- IS ONLINE -->
-          <dl class="grid grid-cols-12 gap-4 mb-1">
-            <dt class="col-span-3 label-title" translate>Is online</dt>
-            <dd class="col-span-7 mb-0">
+          <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
+            <dt class="ui:col-span-3" translate>Is online</dt>
+            <dd class="ui:col-span-7 ui:mb-0">
               <i class="fa"
                   [ngClass]="(data.is_online) ? 'fa-check' : 'fa-times'"
                   [ngStyle]="{'color': (data.is_online) ? 'green' : 'red'}"
@@ -48,9 +48,9 @@
             </dd>
           </dl>
           <!-- IS PICKUP -->
-          <dl class="grid grid-cols-12 gap-4 mb-1">
-              <dt class="col-span-3 label-title" translate>Is pickup</dt>
-              <dd class="col-span-7 mb-0">
+          <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
+              <dt class="ui:col-span-3" translate>Is pickup</dt>
+              <dd class="ui:col-span-7 ui:mb-0">
                 <i class="fa"
                     [ngClass]="(data.is_pickup) ? 'fa-check' : 'fa-times'"
                     [ngStyle]="{'color': (data.is_pickup) ? 'green' : 'red'}"
@@ -60,16 +60,16 @@
           </dl>
           <!-- PICKUP LOCATION NAME -->
           @if (data.pickup_name !== undefined && data.is_pickup) {
-            <dl class="grid grid-cols-12 gap-4 mb-1">
-                <dt class="col-span-3 label-title" translate>Pickup location name</dt>
-                <dd class="col-span-7 mb-0">{{ data.pickup_name }}</dd>
+            <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
+                <dt class="ui:col-span-3" translate>Pickup location name</dt>
+                <dd class="ui:col-span-7 ui:mb-0">{{ data.pickup_name }}</dd>
             </dl>
           }
-          <h4 class="mt-6" translate>Restrictions</h4>
+          <h4 class="ui:mt-6" translate>Restrictions</h4>
           <!-- ALLOW REQUEST -->
-          <dl class="grid grid-cols-12 gap-4 mb-1">
-            <dt class="col-span-3 label-title" translate>Allow request</dt>
-            <dd class="col-span-7 mb-0">
+          <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
+            <dt class="ui:col-span-3" translate>Allow request</dt>
+            <dd class="ui:col-span-7 ui:mb-0">
               <i class="fa"
                   [ngClass]="(data.allow_request) ? 'fa-check' : 'fa-times'"
                   [ngStyle]="{'color': (data.allow_request) ? 'green' : 'red'}"
@@ -79,9 +79,9 @@
           </dl>
           <!-- SEND NOTIFICATION -->
           @if (data.allow_request) {
-            <dl class="grid grid-cols-12 gap-4 mb-1">
-              <dt class="col-span-3 label-title" translate>Send notification</dt>
-              <dd class="col-span-7 mb-0">
+            <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
+              <dt class="ui:col-span-3" translate>Send notification</dt>
+              <dd class="ui:col-span-7 ui:mb-0">
                 <i class="fa"
                     [ngClass]="(data.send_notification) ? 'fa-check' : 'fa-times'"
                     [ngStyle]="{'color': (data.send_notification) ? 'green' : 'red'}"
@@ -92,17 +92,17 @@
           }
           <!-- CONTACT EMAIL -->
           @if (data.send_notification && data.allow_request) {
-            <dl class="grid grid-cols-12 gap-4 mb-1">
-              <dt class="col-span-3 label-title" translate>Contact email</dt>
-              <dd class="col-span-7 mb-0">{{ data.notification_email }}</dd>
+            <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
+              <dt class="ui:col-span-3" translate>Contact email</dt>
+              <dd class="ui:col-span-7 ui:mb-0">{{ data.notification_email }}</dd>
             </dl>
           }
           <!-- RESTRICT PICKUP TO -->
           @if (data.restrict_pickup_to && data.allow_request) {
-            <dl class="grid grid-cols-12 gap-4 mb-1">
-              <dt class="col-span-3 label-title" translate>Restrict pickup to</dt>
-              <dd class="col-span-7 mb-0">
-                <ul class="list-none">
+            <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
+              <dt class="ui:col-span-3" translate>Restrict pickup to</dt>
+              <dd class="ui:col-span-7 ui:mb-0">
+                <ul class="ui:list-none">
                   @for (location of data.restrict_pickup_to; track location) {
                     <li>
                       {{ location.pid | getRecord: 'locations' : 'field' : 'pickup_name' | async  }}

@@ -20,10 +20,12 @@
 
   <!-- other organisations -->
   @if (otherOrganisationCount > 0) {
-    <h5 translate>Other organisations</h5>
-    <admin-holdings [holdingType]="holdingType" [document]="document" [isCurrentOrganisation]="false" />
+    <div class="ui:mt-4">
+      <h5 translate>Other organisations</h5>
+      <admin-holdings [holdingType]="holdingType" [document]="document" [isCurrentOrganisation]="false" />
+    </div>
   }
 } @loading {
-  <span class="spinner-grow spinner-grow-sm" role="status"></span>
-  <span class="ml-1" translate>Loading in progress…</span>
+  <span class="fa fa-spin fa-spinner" role="status"></span>
+  <span class="ui:ml-1" translate>Loading in progress…</span>
 }

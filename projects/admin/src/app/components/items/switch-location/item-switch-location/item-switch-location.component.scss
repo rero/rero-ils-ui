@@ -22,11 +22,11 @@
 :host ::ng-deep .p-select {
   .p-select-option-group {
     // @apply text-sm;
-    @apply font-bold;
+    @apply ui:font-bold;
   }
 
   .p-select-option {
-    @apply ml-4;
-    @apply py-2;
+    @apply ui:ml-4;
+    @apply ui:py-2;
   }
 }

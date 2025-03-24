@@ -16,7 +16,7 @@
 -->
 @if (record$ | async; as record) {
   <h1>{{ record.metadata.name }}</h1>
-  <dl class="metadata mt-4">
+  <dl class="metadata ui:mt-4">
     <!-- DESCRIPTION -->
     @if (record.metadata.description) {
       <dt translate>Description</dt>
@@ -35,14 +35,14 @@
     </dd>
   </dl>
 
-  <section class="mt-4">
+  <section class="ui:mt-4">
     <!-- DISPLAYED status -->
     @if (record.metadata.displayed_status) {
       <p-panel [header]="'Displayed status'|translate">
-        <ul class="list-none mt-3">
+        <ul class="ui:list-none ui:mt-3">
           @for (status of record.metadata.displayed_status; track status) {
             <li>
-              <div class="font-bold w-20 inline-block">
+              <div class="ui:font-bold ui:w-20 ui:inline-block">
                 <i class="fa fa-language"></i>&nbsp;({{ status.language }})
               </div>
               {{ status.label }}
@@ -54,10 +54,10 @@
     <!-- CIRCULATION INFORMATION'S -->
     @if (record.metadata.circulation_information) {
       <p-panel [header]="'Circulation information'|translate">
-        <ul class="list-none mt-3">
+        <ul class="ui:list-none ui:mt-3">
           @for (circulation of record.metadata.circulation_information; track circulation) {
             <li>
-              <div class="font-bold w-20 inline-block">
+              <div class="ui:font-bold ui:w-20 ui:inline-block">
                 <i class="fa fa-language"></i> ({{ circulation.language }})
               </div>
               {{ circulation.label }}

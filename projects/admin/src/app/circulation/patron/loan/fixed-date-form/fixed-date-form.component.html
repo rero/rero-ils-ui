@@ -16,24 +16,24 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <form [formGroup]="formGroup" (ngSubmit)="onSubmitForm()">
-  <div class="flex flex-col gap-2">
+  <div class="ui:flex ui:flex-col ui:gap-2">
     <p-datepicker
       appendTo="body"
       id="end-date"
       appendTo="body"
       formControlName="endDate"
-      styleClass="w-full"
+      styleClass="ui:w-full"
       [showIcon]="true"
       [iconDisplay]="'input'"
       firstDayOfWeek="1"
-      [ngClass]="{'border-warning': formGroup.controls.endDate.touched && formGroup.controls.endDate.invalid}"
+      [ngClass]="{'ui:border-warning': formGroup.controls.endDate.touched && formGroup.controls.endDate.invalid}"
       [readonlyInput]="true"
       [disabledDays]="disabledDays"
       [minDate]="today"
     />
     <div>
       @if (formGroup.controls.endDate.valid || !formGroup.controls.endDate.touched) {
-        <span class="text-warning flex gap-1">
+        <span class="text-warning ui:flex ui:gap-1">
           <i class="fa fa-exclamation-triangle"></i>
           {{ 'This date will override the circulation policy behavior' | translate }}
         </span>
@@ -49,20 +49,20 @@
         </ng-container>
       }
     </div>
-    <div class="flex gap-1">
+    <div class="ui:flex ui:gap-1">
       <p-checkbox [binary]="true" inputId="remember" formControlName="remember" />
       <label for="remember" translate>Remember this date in current session</label>
     </div>
   </div>
 
-  <div class="mt-4 flex gap-1 justify-end">
+  <div class="ui:mt-4 ui:flex ui:gap-1 ui:justify-end">
     <p-button [label]="'Cancel' |translate" severity="danger" outlined (onClick)="closeModal()" />
     <p-button type="submit" [label]="'Apply' |translate" [disabled]="this.formGroup.invalid" />
   </div>
 </form>
 
 <ng-template #errorMessage let-message='message'>
-  <span class="text-error flex gap-1">
+  <span class="text-error ui:flex ui:gap-1">
     <i class="fa fa-times-circle"></i>
     {{ message }}
   </span>

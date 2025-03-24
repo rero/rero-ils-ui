@@ -15,9 +15,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (item && document) {
-  <div class="grid grid-cols-12 gap-4 p-2">
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2">
     <!-- FIRST ROW : barcode, title, availability, action button -->
-    <div class="col-span-3 flex items-start gap-2">
+    <div class="ui:col-span-3 ui:flex ui:items-start ui:gap-2">
       <div>
         <shared-open-close-button (status)="isCollapsed = $event" />
       </div>
@@ -25,7 +25,7 @@
         <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
       </div>
     </div>
-    <div class="col-span-6">
+    <div class="ui:col-span-6">
       @if (document.title | mainTitle; as title) {
         <a [routerLink]="['/records', 'documents', 'detail', document.pid]">
           {{ title }}
@@ -38,7 +38,7 @@
       <shared-contribution [contributions]="document?.contribution" />
 
       @if (!isCollapsed) {
-        <dl class="metadata pl-0">
+        <dl class="metadata ui:pl-0">
           <!-- position into queue -->
           <dt translate>Position</dt>
           <dd>
@@ -54,8 +54,8 @@
         </dl>
       }
     </div>
-    <div class="col-span-2">{{ loan.created | dateTranslate: 'short' }}</div>
-    <div class="col-span-1 flex justify-end">
+    <div class="ui:col-span-2">{{ loan.created | dateTranslate: 'short' }}</div>
+    <div class="ui:col-span-1 ui:flex ui:justify-end">
       <admin-cancel-request-button [loan]="loan" (cancelRequestEvent)="cancelRequest($event)" />
     </div>
   </div>

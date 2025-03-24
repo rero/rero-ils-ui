@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="flex flex-col gap-2">
+<div class="ui:flex ui:flex-col ui:gap-2">
   <!-- PREVIEW TOP -->
   <ng-content select="[headerMessage]" />
   @if (previewPosition === 'top') {
@@ -37,17 +37,17 @@
         } @else {
           {{ 'Suggested email addresses' | translate }}
         }
-        <small class="ml-1">(<span class="italic" translate>Drag and drop</span>)</small>
+        <small class="ui:ml-1">(<span class="ui:italic" translate>Drag and drop</span>)</small>
       </div>
       </ng-template>
-      <div class="flex gap-1 mt-2">
+      <div class="ui:flex ui:gap-1 ui:mt-2">
         @for (email of emails; track email) {
           <p-tag
             pDraggable="emails"
             [style]="{cursor: 'grab'}"
             (onDragStart)="dragStart(email)"
             (onDragEnd)="dragEnd()"
-            icon="pi pi-user"
+            icon="fa fa-user"
             [value]="email"
           />
         }
@@ -57,12 +57,12 @@
 
   <!-- RECIPIENTS -->
   <p-panel [header]="'Recipients' | translate">
-    <div class="grid grid-cols-12 gap-4 mt-2">
+    <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-2">
       @for (type of emailTypes; track type) {
-        <div class="col-span-2" [class.field-required]="mandatoryEmailTypes.includes(type)">
+        <div class="ui:col-span-2" [class.field-required]="mandatoryEmailTypes.includes(type)">
           {{ ('email_' + type) | translate }}&nbsp;:
         </div>
-        <div class="col-span-10">
+        <div class="ui:col-span-10">
           <p-autocomplete
             multiple
             fluid
@@ -86,7 +86,7 @@
   }
 </div>
 
-<div class="flex justify-end gap-1 mt-2">
+<div class="ui:flex ui:justify-end ui:gap-1 ui:mt-2">
   <p-button severity="danger" outlined [label]="'Cancel'|translate" (onClick)="close()" aria-label="Close"/>
   <p-button [label]="'Confirm'|translate" [disabled]="!formValid()" (onClick)="confirm()" />
 </div>
@@ -94,13 +94,13 @@
 <ng-template #messagePreview let-preview="preview" let-position="position">
   <p-panel>
     <ng-template #header>
-      <div class="grid grid-flow-row auto-rows-max">
-        <div class="font-bold" translate>Message</div>
-        <div class="italic text-sm">
+      <div class="ui:grid ui:grid-flow-row ui:auto-rows-max">
+        <div class="ui:font-bold" translate>Message</div>
+        <div class="ui:italic ui:text-sm">
           <ng-content [select]="position" />
         </div>
       </div>
     </ng-template>
-    <pre class="max-h-[25rem] text-sm overflow-auto p-6 mt-2" [innerHTML]="preview.trim()"></pre>
+    <pre class="ui:max-h-[25rem] ui:text-sm ui:overflow-auto ui:p-6 ui:mt-2" [innerHTML]="preview.trim()"></pre>
   </p-panel>
 </ng-template>

@@ -196,7 +196,7 @@ export class OrderReceiptForm {
         key: 'receiveLines',
         type: 'repeat',
         props: {
-          className: 'font-bold',
+          className: 'ui:font-bold',
           label: _('Order line(s)'),
           addButton: false,
           trashButton: false,
@@ -204,7 +204,7 @@ export class OrderReceiptForm {
           minLength: 0
         },
         fieldArray: {
-          fieldGroupClassName: 'grid grid-cols-12 gap-4',
+          fieldGroupClassName: 'ui:grid ui:grid-cols-12 ui:gap-4',
           validators: {
             validation: [
               { name: 'receiveQuantityMax', options: { errorPath: 'quantity' } }
@@ -219,20 +219,20 @@ export class OrderReceiptForm {
             {
               key: 'selected',
               type: 'checkbox',
-              className: 'col-span-1',
+              className: 'ui:col-span-1',
               wrappers: ['input-no-label'],
               props: {
                 hideLabel: true,
-                headerClassName: 'col-span-1',
+                headerClassName: 'ui:col-span-1',
               }
             },
             {
               key: 'document',
               type: 'field-document-brief-view',
-              className: 'col-span-5',
+              className: 'ui:col-span-5',
               wrappers: ['input-no-label'],
               props: {
-                headerClassName: 'col-span-5 font-bold',
+                headerClassName: 'ui:col-span-5 ui:font-bold',
                 label: _('Document'),
                 resource: 'documents',
                 resourceKey: 'document',
@@ -246,16 +246,16 @@ export class OrderReceiptForm {
             {
               key: 'quantityMax',
               type: 'input',
-              className: 'hidden'
+              className: 'ui:hidden'
             },
             {
               key: 'quantity',
               type: 'input',
-              className: 'col-span-2',
+              className: 'ui:col-span-2',
               wrappers: ['input-no-label'],
               props: {
-                headerClassName: 'col-span-2 font-bold',
-                styleClass: "w-full",
+                headerClassName: 'ui:col-span-2 ui:font-bold',
+                styleClass: "ui:w-full",
                 type: 'number',
                 label: _('Qty'),
                 required: true,
@@ -265,10 +265,10 @@ export class OrderReceiptForm {
             {
               key: 'amount',
               type: 'input',
-              className: 'col-span-2',
+              className: 'ui:col-span-2',
               wrappers: ['input-no-label'],
               props: {
-                headerClassName: 'col-span-2 font-bold',
+                headerClassName: 'ui:col-span-2 ui:font-bold',
                 type: 'number',
                 label: _('Amount'),
                 required: true,
@@ -278,10 +278,10 @@ export class OrderReceiptForm {
             {
               key: 'vatRate',
               type: 'input',
-              className: 'col-span-2',
+              className: 'ui:col-span-2',
               wrappers: ['input-no-label'],
               props: {
-                headerClassName: 'col-span-2 font-bold',
+                headerClassName: 'ui:col-span-2 ui:font-bold',
                 type: 'number',
                 label: _('Vat Rate'),
                 min: 0,
@@ -298,7 +298,7 @@ export class OrderReceiptForm {
         key: 'amountAdjustments',
         type: 'repeat',
         props: {
-          className: 'pl-0 my-0 font-bold',
+          className: 'ui:pl-0 ui:my-0 ui:font-bold',
           label: _('Fees, discounts and other adjustments'),
           addButton: true,
           trashButton: true
@@ -344,7 +344,7 @@ export class OrderReceiptForm {
         key: 'notes',
         type: 'repeat',
         props: {
-          className: 'pl-0 my-0 font-bold',
+          className: 'ui:pl-0 ui:my-0 ui:font-bold',
           label: _('Notes'),
           addButton: true,
           trashButton: true

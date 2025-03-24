@@ -18,12 +18,12 @@
   @if (!requestDialog) {
     @if (canRequest && canRequest.can) {
       <p-button
-        styleClass="m-2"
+        styleClass="ui:m-2"
         id="record-{{ record.metadata.pid }}-request-button"
         outlined
         (onClick)="showRequestDialog()"
       >
-        <i class="fa fa-cart-arrow-down mr-2"></i>
+        <i class="fa fa-cart-arrow-down ui:mr-2"></i>
         @if (recordType === 'item') {
           {{ 'Request' | translate }}
         } @else {
@@ -42,7 +42,7 @@
           recordType="{{ recordType }}"
           [viewcode]="viewcode"
           (closeEvent)="closeDialog()"
-          class="w-full"
+          class="ui:w-full"
         />
   }
 }

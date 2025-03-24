@@ -135,11 +135,6 @@ export class HoldingsComponent implements OnInit {
     }
   }
 
-  onOpen(event:  AccordionTabOpenEvent): void {
-    // TODO: Bug on event: https://github.com/primefaces/primeng/issues/17770
-    console.log(event);
-  }
-
   // COMPONENT FUNCTIONS ======================================================
   /** Handler when `show more` ink is clicked */
   showMore() {

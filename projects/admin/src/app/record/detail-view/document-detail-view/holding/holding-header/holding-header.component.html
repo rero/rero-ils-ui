@@ -16,23 +16,23 @@
 -->
 @if (holding()) {
   @let record = holding();
-  <div class="w-full">
-    <div class="grid grid-cols-12 gap-4 items-center">
-      <div id="holding-location-{{ record.metadata.pid }}" class="col-span-6">
+  <div class="ui:w-full">
+    <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-center">
+      <div id="holding-location-{{ record.metadata.pid }}" class="ui:col-span-6">
         @if (record.metadata._masked) {
           <admin-record-masked [record]="record"></admin-record-masked>
         }
         <span>{{ record.metadata.library.name }}: {{ record.metadata.location.name }}</span>
       </div>
 
-      <div class="col-span-2">
+      <div class="ui:col-span-2">
         {{ record.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}
       </div>
 
       @if (holdingType === 'serial') {
-      <div class="col-span-4 justify-end flex">
+      <div class="ui:col-span-4 ui:justify-end ui:flex">
         @if (permissions) {
-        <div class="flex gap-1 mr-4">
+        <div class="ui:flex ui:gap-1 ui:mr-4">
           <p-button
             icon="fa fa-eye"
             [title]="'Holdings detail'|translate"
@@ -46,7 +46,7 @@
             outlined
             size="small"
             (onClick)="addRequest(record.metadata.pid, 'holding')"
-            class="pointer-events-auto"
+            class="ui:pointer-events-auto"
             [pTooltip]="cannotRequestTooltipContent"
             tooltipPosition="top"
             [disabled]="!permissions.canRequest?.can"
@@ -66,7 +66,7 @@
           }
           <p-button
             icon="fa fa-trash"
-            class="pointer-events-auto"
+            class="ui:pointer-events-auto"
             severity="danger"
             outlined
             size="small"
@@ -83,7 +83,7 @@
         </div>
         }
       </div>
-      <admin-holding-detail context="document" [holding]="record" class="col-span-12"></admin-holding-detail>
+      <admin-holding-detail context="document" [holding]="record" class="ui:col-span-12"></admin-holding-detail>
       }
     </div>
   </div>

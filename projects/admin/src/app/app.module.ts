@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
+import { APP_BASE_HREF, DatePipe, PlatformLocation } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -404,6 +404,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     },
     MainTitlePipe,
     TruncateTextPipe,
+    DatePipe,
     CurrentLibraryPermissionValidator,
     ReceivedOrderPermissionValidator,
     // TODO: needed for production build, remove this after it is fixed in the

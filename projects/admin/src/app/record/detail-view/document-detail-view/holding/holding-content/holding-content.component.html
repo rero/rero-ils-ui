@@ -17,44 +17,44 @@
 @let record = holding();
 @switch (holdingType) {
   @case ('electronic') {
-    <div class="row">
+    <div class="ui:flex ui:flex-col">
       @for (elocation of record.metadata.electronic_location; track elocation) {
-        <div class="col-span-12">
-          <a class="rero-ils-external-link" [href]="elocation.uri | safeUrl">{{ elocation.source }}</a>
-        </div>
+       <a class="rero-ils-external-link" [href]="elocation.uri | safeUrl">{{ elocation.source }}</a>
       }
     </div>
   }
   @case ('serial') {
     @if (items) {
-      <div class="grid grid-cols-12 gap-4 py-2 px-1 font-bold">
-        <div class="col-span-3" translate>Barcode</div>
-        <div class="col-span-3" translate>Status</div>
-        <div class="col-span-3" translate>Unit</div>
-        <div class="col-span-3" translate>Call number</div>
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-2 ui:px-1 ui:font-bold">
+        <div class="ui:col-span-3" translate>Barcode</div>
+        <div class="ui:col-span-3" translate>Status</div>
+        <div class="ui:col-span-3" translate>Unit</div>
+        <div class="ui:col-span-3" translate>Call number</div>
       </div>
-      <div class="alternate-color">
+      <div>
       @for (item of items | slice:0: displayItemsCounter; track item) {
-        <admin-serial-holding-item
-          [holding]="holding"
-          [item]="item"
-          [isCurrentOrganisation]="isCurrentOrganisation()"
-          (deleteItem)="deleteItem($event)"
-          [attr.id]="$any(item).metadata.barcode | idAttribute:{prefix: 'item'}"
-        />
+        <div class="ui:odd:bg-surface-50">
+          <admin-serial-holding-item
+            [holding]="holding"
+            [item]="item"
+            [isCurrentOrganisation]="isCurrentOrganisation()"
+            (deleteItem)="deleteItem($event)"
+            [attr.id]="$any(item).metadata.barcode | idAttribute:{prefix: 'item'}"
+          />
+        </div>
       }
       </div>
       @if (displayItemsCounter < totalItemsCounter) {
-        <div class="flex items-center">
+        <div class="ui:flex ui:items-center">
           <p-button [link]="true" (onClick)="showMore(5)" [attr.id]="record.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
             <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
             {{ 'Show more' | translate }}&nbsp;…
           </p-button>
-          <small class="pl-2 pt-1 text-secondary">({{ showMoreItemsCounter('issue') }})</small>
+          <small class="ui:pl-2 ui:pt-1 ui:text-muted-color">({{ showMoreItemsCounter('issue') }})</small>
         </div>
       }
     } @else {
-      <div class="font-bold" translate>No item received.</div>
+      <div class="ui:font-bold" translate>No item received.</div>
     }
   }
   @default {
@@ -69,12 +69,12 @@
           />
       }
       @if (displayItemsCounter < totalItemsCounter) {
-        <div class="flex items-center">
+        <div class="ui:flex ui:items-center">
           <p-button (onClick)="showMore(5)" [attr.id]="record.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
             <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
             {{ 'Show more' | translate }}&nbsp;…
           </p-button>
-          <small class="pl-2 pt-1 text-secondary">({{ showMoreItemsCounter('item') }})</small>
+          <small class="ui:pl-2 ui:pt-1 ui:text-muted-color">({{ showMoreItemsCounter('item') }})</small>
         </div>
       }
     }

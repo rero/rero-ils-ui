@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
   Copyright (C) 2021 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 -->
 
 @if (accountsToDisplay && organisation) {
-  <div class="flex flex-wrap gap-2 justify-between">
+  <div class="ui:flex ui:flex-wrap ui:gap-2 ui:justify-between">
     <h1 translate>Fund transfer</h1>
     @if (budgets.length > 1) {
       <p-select (onChange)="selectBudget($event)" [ngModel]="selectedBudget" [options]="budgets">
@@ -32,21 +32,21 @@
       </p-select>
     }
   </div>
-  <form class="mt-3" [formGroup]="form" (ngSubmit)="submit()">
-    <p-card class="p-card-body-p-0">
+  <form class="ui:mt-3" [formGroup]="form" (ngSubmit)="submit()">
+    <p-card>
       <ng-template #header>
-      <div class="grid grid-cols-12 bg-surface-100 p-2 text-lg font-bold">
-        <div class="col-span-1 text-center" translate>Source</div>
-        <div class="col-span-8 text-right" translate>Amount</div>
-        <div class="col-span-2 text-right" translate>Available</div>
-        <div class="col-span-1 text-center" translate>Target</div>
+      <div class="ui:grid ui:grid-cols-12 ui:bg-surface-100 ui:p-2 ui:text-lg ui:font-bold">
+        <div class="ui:col-span-1 ui:text-center" translate>Source</div>
+        <div class="ui:col-span-8 ui:text-right" translate>Amount</div>
+        <div class="ui:col-span-2 ui:text-right" translate>Available</div>
+        <div class="ui:col-span-1 ui:text-center" translate>Target</div>
       </div>
     </ng-template>
-      <div class="mt-4">
+      <div class="ui:mt-4">
         @if (accountsToDisplay.length > 0) {
           @for (account of accountsToDisplay; track account) {
-            <div class="grid grid-cols-12 py-1 odd:bg-surface-50">
-              <div class="col-span-1 text-center">
+            <div class="ui:grid ui:grid-cols-12 ui:py-1 ui:odd:bg-surface-50">
+              <div class="ui:col-span-1 ui:text-center">
                 @if (!(form.get('target').value &&
                     form.get('target').value.pid === account.pid)) {
                   <p-radioButton
@@ -56,19 +56,24 @@
                   />
                 }
               </div>
-              <div class="col-span-6">
-                <a class="depth-padding-{{ account.depth }}" [routerLink]="['/acquisition', 'records', 'acq_accounts', 'detail', account.pid]">{{ account.name }}</a>
+              <div class="ui:col-span-6">
+                <a
+                [routerLink]="['/acquisition', 'records', 'acq_accounts', 'detail', account.pid]"
+                [style.padding-left.px]="account.depth * 10"
+                >
+                  {{ account.name }}
+                </a>
               </div>
-              <div class="col-span-2 text-right">
+              <div class="ui:col-span-2 ui:text-right">
                 {{
                   account.allocated_amount | currency : organisation.default_currency
                 }}
               </div>
               <div
-                class="col-span-2 text-right"
+                class="ui:col-span-2 ui:text-right"
                 [class]="{
                   'text-success': account.remaining_balance.self > 0,
-                  'text-muted-color': account.remaining_balance.self === 0,
+                  ' ui:text-muted-color': account.remaining_balance.self === 0,
                   'text-warning': account.remaining_balance.self < 0
                 }"
               >
@@ -77,7 +82,7 @@
                     | currency : organisation.default_currency
                 }}
               </div>
-              <div class="col-span-1 text-center">
+              <div class="ui:col-span-1 ui:text-center">
                 @if(!(form.get('source').value &&
                     form.get('source').value.pid === account.pid)) {
                 <p-radioButton
@@ -94,9 +99,9 @@
         }
       </div>
       <ng-template #footer>
-        <div class="flex flex-col gap-1 py-4 px-6 pb-6 mt-2 border-t border-surface">
+        <div class="ui:flex ui:flex-col ui:gap-1 ui:py-4 ui:px-6 ui:pb-6 ui:mt-2 ui:border-t ui:border-surface">
           <label for="amount" translate>Amount</label>
-          <div class="flex flex-wrap gap-2 justify-between">
+          <div class="ui:flex ui:flex-wrap ui:gap-2 ui:justify-between">
             <div>
               <p-inputGroup>
                 <p-inputGroupAddon>{{ currencySymbol }}</p-inputGroupAddon>
@@ -109,7 +114,7 @@
                 />
               </p-inputGroup>
             </div>
-            <div class="flex flex-wrap gap-1 justify-end">
+            <div class="ui:flex ui:flex-wrap ui:gap-1 ui:justify-end">
               <p-button
                 type="cancel"
                 [label]="'Cancel' | translate"

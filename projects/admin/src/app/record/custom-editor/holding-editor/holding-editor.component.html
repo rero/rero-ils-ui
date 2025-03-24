@@ -15,21 +15,21 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="grid grid-cols-12 gap-4">
-  <div class="md:col-span-9 col-span-8">
-    <ng-core-editor [model]="model" (modelChange)="modelChanged($event)" (canDeactivateChange)="canDeactivateChanged($event)"></ng-core-editor>
+<div class="ui:grid ui:grid-cols-12 ui:gap-4">
+  <div class="ui:md:col-span-9 ui:col-span-8">
+    <ng-core-editor [model]="model" (modelChange)="modelChanged($event)" (canDeactivateChange)="canDeactivateChanged($event)" />
   </div>
-  <div class="col-span-12">
+  <div class="ui:col-span-12">
     <p-fieldset [legend]="'Predictions' | translate">
       @if (!serialPreviewError) {
         @if (serialPreviewExamples && serialPreviewExamples.length > 0) {
-          <ul class="list-none p-0 m-0">
+          <ul class="ui:list-none">
             @for (issue of serialPreviewExamples | slice:0:10; track issue) {
               <li>{{ issue.issue }}</li>
             }
           </ul>
           …
-          <ul class="list-none p-0 m-0">
+          <ul class="ui:list-none">
             @for (issue of serialPreviewExamples | slice:97:100; track issue) {
               <li>{{ issue.issue }}</li>
             }

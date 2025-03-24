@@ -15,11 +15,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record()) {
-<div class="flex justify-between mb-2">
-  <div class="flex items-center justify-center">
+<div class="ui:flex ui:justify-between ui:mb-2">
+  <div class="ui:flex ui:items-center ui:justify-center">
     <p-inplace #inplace>
       <ng-template #display>
-        <strong>ILS pid:</strong> {{ ilsPid }}&nbsp;<i class="pi pi-pencil"></i>
+        <strong>ILS pid:</strong> {{ ilsPid }}&nbsp;<i class="fa fa-pencil"></i>
       </ng-template>
       <ng-template #content>
         <input
@@ -35,40 +35,38 @@
       </ng-template>
     </p-inplace>
   </div>
-  <div class="flex items-center justify-center">
+  <div class="ui:flex ui:items-center ui:justify-center">
     <p-button
-      icon="pi pi-chevron-left"
+      icon="fa fa-chevron-left"
       (onClick)="previousCandidate()"
       [disabled]="!hasPrevious()"
       [text]="true"
     />
     <small>
-      {{ currentCandidateIndex + 1 }}&nbsp;/&nbsp;{{
-        candidates.length
-      }}
+      {{ currentCandidateIndex + 1 }}&nbsp;/&nbsp;{{ candidates.length }}
     </small
     >
     <p-button
-      icon="pi pi-chevron-right"
+      icon="fa fa-chevron-right"
       (onClick)="nextCandidate()"
       [disabled]="!hasNext()"
       [text]="true"
     />
   </div>
-  <div class="flex items-center gap-2 justify-center">
+  <div class="ui:flex ui:items-center ui:gap-2 ui:justify-center">
     <p-button
       size="small"
-      outlined
+      [outlined]="true"
       [label]="'Validate' | translate"
       (onClick)="save()"
-      icon="pi pi-check"
+      icon="fa fa-check"
     />
     <p-button
-      outlined
+      [outlined]="true"
       size="small"
       [label]="'Reject' | translate"
       (onClick)="reject()"
-      icon="pi pi-trash"
+      icon="fa fa-trash"
       severity="danger"
     />
   </div>
@@ -76,14 +74,15 @@
 
 @for (message of messages(); track message) {
   <p-message
+    styleClass="ui:my-2"
     [text]="message.detail"
     [severity]="message.severity"
     showTransitionOptions="0ms"
   />
 }
 
-<div class="flex justify-between mb-1">
-  <div class="flex items-center justify-center">
+<div class="ui:flex ui:justify-between ui:mb-1">
+  <div class="ui:flex ui:items-center ui:justify-center">
     <p-tag
       [severity]="
         status() === 'match'
@@ -95,18 +94,15 @@
       [value]="record().metadata.deduplication.status | translate"
     />
     @if (record()?.metadata?.deduplication?.modified_by) {
-    <small class="ml-2"
-      >({{ record()?.metadata?.deduplication?.modified_by }} /
-      {{
-        record()?.metadata?.deduplication?.modified_at
-          | dateTranslate : "medium"
-      }})</small
-    >
+    <small class="ui:ml-2">
+      ({{ record()?.metadata?.deduplication?.modified_by }} /
+      {{ record()?.metadata?.deduplication?.modified_at | dateTranslate : "medium" }})
+    </small>
     }
   </div>
 
   @if (currentCandidate){
-  <div class="flex items-center justify-center">
+  <div class="ui:flex ui:items-center ui:justify-center">
     @if(currentCandidate?.score) {
     <strong translate>Score</strong>&nbsp;{{ currentCandidate.score | number }}
     } @else {
@@ -117,7 +113,7 @@
 </div>
 
 <admin-migration-metadata
-  class="mb-2"
+  class="ui:mb-2"
   [record]="record()"
   [candidate]="currentCandidate"
 />

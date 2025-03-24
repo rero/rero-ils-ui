@@ -16,8 +16,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (item) {
-  <div class="flex gap-2 pt-2">
-      <div class="grow">  <!-- First row :: item detail -->
+  <div class="ui:flex ui:gap-2 ui:pt-2">
+      <div class="ui:grow">  <!-- First row :: item detail -->
       <!-- METADATA COLUMN -->
        <dl class="metadata">
         <!-- Barcode -->
@@ -70,7 +70,8 @@
           }
           <!-- ITEM IN COLLECTION (hide if not current organisation) -->
           @let itemPid = item.metadata.pid;
-          @if (permissions && itemPid | itemInCollection | async; as collections) {
+          @let collections = permissions && itemPid | itemInCollection | async;
+          @if (collections.length > 0) {
             <dt translate>Exhibition/course</dt>
             <dd>
               @for (collection of collections; track collection; let last=$last) {
@@ -92,13 +93,13 @@
     </div>
     <!-- ACTIONS BUTTONS -->
     @if (permissions) {
-      <div class="flex gap-1">
+      <div class="ui:flex ui:gap-1">
         <p-button
           icon="fa fa-shopping-basket"
-          class="pointer-events-auto"
+          class="ui:pointer-events-auto"
           size="small"
           [title]="'Item request'|translate"
-          outlined
+          [outlined]="true"
           (onClick)="addRequest(item.metadata.pid, 'item')"
           [pTooltip]="cannotRequestTooltipContent"
           tooltipPosition="top"
@@ -114,7 +115,7 @@
             icon="fa fa-random"
             size="small"
             [title]="'Switch location'|translate"
-            outlined
+            [outlined]="true"
             [routerLink]="['/records', 'items', 'switch_location', item.metadata.pid]"
           />
         }
@@ -123,15 +124,15 @@
             icon="fa fa-pencil"
             size="small"
             [title]="'Edit'|translate"
-            outlined
+            [outlined]="true"
             [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
           />
         }
         <p-button
           icon="fa fa-trash"
-          class="pointer-events-auto"
+          class="ui:pointer-events-auto"
           size="small"
-          outlined
+          [outlined]="true"
           severity="danger"
           [title]="'Delete'|translate"
           [pTooltip]="tooltipContent"

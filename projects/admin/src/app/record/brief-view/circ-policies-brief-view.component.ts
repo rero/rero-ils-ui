@@ -23,7 +23,7 @@ import { ResultItem } from '@rero/ng-core';
     template: `
   <h5>
     <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>&nbsp;
-    <p-tag class="align-bottom" severity="secondary">
+    <p-tag class="ui:align-bottom" severity="secondary">
       @if (record.metadata.policy_library_level) {
         {{ 'Library' | translate }}
       } @else {

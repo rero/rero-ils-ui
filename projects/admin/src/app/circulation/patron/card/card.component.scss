@@ -14,22 +14,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-.blink {
-  animation: blink-animation 1s steps(5, start) infinite;
-  -webkit-animation: blink-animation 1s steps(5, start) infinite;
-}
+// .blink {
+//   animation: blink-animation 1s steps(5, start) infinite;
+//   -webkit-animation: blink-animation 1s steps(5, start) infinite;
+// }
 
-@keyframes blink-animation {
-  to {
-    visibility: hidden;
-  }
-}
-@-webkit-keyframes blink-animation {
-  to {
-    visibility: hidden;
-  }
-}
+// @keyframes blink-animation {
+//   to {
+//     visibility: hidden;
+//   }
+// }
+// @-webkit-keyframes blink-animation {
+//   to {
+//     visibility: hidden;
+//   }
+// }
 
 .p-message {
-  @apply mt-0;
+  @apply ui:mt-0;
 }

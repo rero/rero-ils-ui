@@ -17,7 +17,7 @@
 @if (libForm) {
 <h1 translate>Library</h1>
 <form [formGroup]="libForm" (ngSubmit)="onSubmit()">
-  <p-accordion [value]="[0]" multiple>
+  <p-accordion [value]="['0']" [multiple]="true">
     <!-- DESCRIPTIVE METADATA TAB ===================================== -->
     <p-accordion-panel value="0">
       <p-accordion-header>
@@ -26,16 +26,16 @@
         </div>
       </p-accordion-header>
       <p-accordion-content>
-        <div class="grid grid-cols-12 gap-4 items-center">
-          <label for="code" class="col-span-3"
+        <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-center">
+          <label for="code" class="ui:col-span-3"
             ><span translate>Code</span>&nbsp;*</label
           >
-          <div class="col-span-9">
+          <div class="ui:col-span-9">
             <input
               pInputText
               id="code"
               formControlName="code"
-              class="w-full"
+              class="ui:w-full"
               [class.ng-invalid]="code.invalid"
               placeholder="{{ 'Please insert a code' | translate }}"
               required
@@ -52,15 +52,15 @@
             </div>
             }
           </div>
-          <label for="name" class="col-span-3"
+          <label for="name" class="ui:col-span-3"
             ><span translate>Name</span>&nbsp;*</label
           >
-          <div class="col-span-9">
+          <div class="ui:col-span-9">
             <input
               pInputText
               id="name"
               formControlName="name"
-              class="w-full"
+              class="ui:w-full"
               [class.ng-invalid]="name.invalid"
               [placeholder]="'Please insert a name' | translate"
               required
@@ -75,8 +75,8 @@
             </div>
             }
           </div>
-          <label for="address" class="col-span-3 col-form-label" translate>Address</label>
-          <div class="col-span-9">
+          <label for="address" class="ui:col-span-3" translate>Address</label>
+          <div class="ui:col-span-9">
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="fa fa-home"></i>
@@ -85,7 +85,7 @@
                 pInputText
                 id="address"
                 formControlName="address"
-                class="w-full"
+                class="ui:w-full"
                 [class.ng-invalid]="address.invalid"
               />
               @if (address.invalid && (address.dirty || address.touched)) {
@@ -97,8 +97,8 @@
               }
             </p-inputgroup>
           </div>
-          <label for="email" class="col-span-3" translate>Email</label>
-          <div class="col-span-9">
+          <label for="email" class="ui:col-span-3" translate>Email</label>
+          <div class="ui:col-span-9">
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="fa fa-at"></i>
@@ -107,7 +107,7 @@
                 pInputText
                 id="email"
                 formControlName="email"
-                class="w-full"
+                class="ui:w-full"
                 [class.ng-invalid]="email.invalid"
               />
               @if (email.invalid && (email.dirty || email.touched)) {
@@ -119,15 +119,15 @@
               }
             </p-inputgroup>
           </div>
-          <label for="communication_language" class="col-span-3"
+          <label for="communication_language" class="ui:col-span-3"
             ><span translate>Communication language</span>&nbsp;*</label
           >
-          <div class="col-span-9">
+          <div class="ui:col-span-9">
             <p-select
               [options]="availableCommunicationLanguagesOptions"
               id="communication_language"
               formControlName="communication_language"
-              styleClass="w-full"
+              styleClass="ui:w-full"
             />
             @if (communicationLanguage.invalid && (communicationLanguage.dirty ||
             communicationLanguage.touched)) {
@@ -144,12 +144,12 @@
     <!-- OPENING HOURS TAB ============================================ -->
     <p-accordion-panel value="1">
       <p-accordion-header>
-        <div class="flex w-full items-center justify-between mr-2">
+        <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
           <div>
             <i class="fa fa-clock-o"></i>&nbsp;
             <span translate>Opening Hours</span>
           </div>
-          <div class="flex gap-1">
+          <div class="ui:flex ui:gap-1">
             @for (day of openingHours.controls; track day) {
             <i
               class="fa"
@@ -164,11 +164,11 @@
       </p-accordion-header>
       <p-accordion-content>
         @for (day of openingHours.controls; track day; let i=$index) {
-        <div class="mt-3" formArrayName="opening_hours">
+        <div class="ui:mt-3" formArrayName="opening_hours">
           <div [formGroupName]="i">
-            <div class="grid grid-cols-12 gap-4 align-items-top">
-              <div class="col-span-2 pt-3">
-                <div class="flex items-start gap-1">
+            <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:align-items-top">
+              <div class="ui:col-span-2 ui:pt-3">
+                <div class="ui:flex ui:items-start ui:gap-1">
                   <p-toggleswitch
                     formControlName="is_open"
                     [id]="day.value.day"
@@ -177,16 +177,16 @@
                   <label [for]="day.value.day">{{ day.value.day | translate | titlecase }}</label>
                 </div>
               </div>
-              <div class="col-span-10">
+              <div class="ui:col-span-10">
                 @if (day.value.is_open) {
-                <ul class="list-none">
+                <ul class="ui:list-none">
                   @for (time of $any(day).controls.times.controls; track time;
                   let t=$index; let last=$last; let count=$count) {
                   <li formArrayName="times">
                     <div [formGroupName]="t">
                       <!-- inputs row. One row for each period -->
-                      <div class="grid grid-cols-12 gap-4">
-                        <div class="col-span-10 flex gap-2 my-1">
+                      <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+                        <div class="ui:col-span-10 ui:flex ui:gap-2 ui:my-1">
                           <p-inputgroup>
                             <p-inputgroup-addon>
                               <i class="fa fa-clock-o"></i>
@@ -208,16 +208,7 @@
                             />
                           </p-inputgroup>
                         </div>
-                        <div class="col-span-2 flex gap-2 justify-end">
-                          @if (count > 1) {
-                            <p-button
-                              (onClick)="deleteTime(i, t)"
-                              outlined
-                              severity="danger"
-                              class="btn btn-sm btn-outline-danger"
-                              icon="fa fa-trash-o"
-                            />
-                          }
+                        <div class="ui:col-span-2 ui:flex ui:gap-2 ui:justify-end">
                           @if (last) {
                             <p-button
                               (onClick)="addTime(i)"
@@ -225,7 +216,16 @@
                               icon="fa fa-plus-square-o"
                               [label]="'period' | translate"
                             />
-                            }
+                          }
+                          @if (count > 1) {
+                            <p-button
+                              (onClick)="deleteTime(i, t)"
+                              outlined
+                              size="large"
+                              severity="danger"
+                              icon="fa fa-trash-o"
+                            />
+                          }
                         </div>
                       </div>
                       <div class="text-error">
@@ -270,13 +270,13 @@
     <!-- EXCEPTIONS DATES TAB ========================================= -->
     <p-accordion-panel value="2" #exceptionsPanel>
       <p-accordion-header>
-        <div class="flex w-full items-center justify-between mr-2">
+        <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
           <div>
             <i class="fa fa-exclamation-triangle"></i>&nbsp;
             <span translate>Exceptions (holidays, etc.)</span>
           </div>
 
-          <div class="flex gap-2 items-center">
+          <div class="ui:flex ui:gap-2 ui:items-center">
             <p-button
               [hidden]="!exceptionsPanel.active()"
               size="small"
@@ -306,16 +306,16 @@
       <p-accordion-content>
         <div formArrayName="notification_settings">
           @for(setting of notificationSettings.controls; track setting; let i=$index) {
-          <div class="grid grid-cols-12 mt-1" [formGroupName]="i">
-            <div class="col-span-3 flex gap-3 items-center">
+          <div class="ui:grid ui:grid-cols-12 ui:mt-1" [formGroupName]="i">
+            <div class="ui:col-span-3 ui:flex ui:gap-3 ui:items-center">
               @if ($any(setting).controls.type.value | notificationType:'patron') {
                 <i class="text-info fa fa-info"></i>
               }
-              <label class="font-bold">
+              <label class="ui:font-bold">
                 {{ $any(setting).controls.type.value | translate | ucfirst }}
               </label>
             </div>
-            <div class="col-span-9 flex gap-3">
+            <div class="ui:col-span-9 ui:flex ui:gap-3">
               <p-inputGroup>
                 <p-inputGroupAddon>
                   <i class="fa fa-at"></i>
@@ -332,7 +332,7 @@
                     <i class="fa fa-clock-o"></i>
                   </p-inputGroupAddon>
                   <p-inputNumber
-                    inputStyleClass="rounded-l-none"
+                    inputStyleClass="ui:rounded-l-none"
                     formControlName="delay"
                     [inputId]="$any(setting).controls.type.value + '-delay'"
                     [min]="0"
@@ -350,13 +350,13 @@
           <p-divider align="left">
             <small translate>Legend</small>
           </p-divider>
-          <div class="grid grid-cols-12 gap-4">
-            <small class="col-span-1 text-warning font-bold" translate>Note</small>
-            <small class="col-span-11 text-secondary italic" translate>
+          <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+            <small class="ui:col-span-1 text-warning ui:font-bold" translate>Note</small>
+            <small class="ui:col-span-11 ui:text-muted-color ui:italic" translate>
               No notification is sent if the field is empty.
             </small>
-            <i class="fa fa-info text-info col-span-1"></i>
-            <small class="col-span-11 text-secondary italic" translate>
+            <i class="fa fa-info text-info ui:col-span-1"></i>
+            <small class="ui:col-span-11 ui:text-muted-color ui:italic" translate>
               The notifications for patrons without e-mail are sent to this
               address.
             </small>
@@ -368,7 +368,7 @@
     <p-accordion-panel value="4">
       <p-accordion-header>
         <div>
-          <i class="fa fa-university mr-2"></i>&nbsp;
+          <i class="fa fa-university ui:mr-2"></i>&nbsp;
           <span translate>Acquisition settings</span>
         </div>
       </p-accordion-header>
@@ -440,9 +440,9 @@
     <!-- ROLLOVER SETTINGS TAB ======================================== -->
     <p-accordion-panel value="5">
       <p-accordion-header>
-        <div class="flex w-full items-center justify-between mr-2">
+        <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
           <div>
-            <i class="fa fa-wrench mr-2"></i>&nbsp;
+            <i class="fa fa-wrench ui:mr-2"></i>&nbsp;
             <span translate>Rollover settings</span>
           </div>
           <i class="fa"
@@ -454,14 +454,15 @@
         </div>
       </p-accordion-header>
       <p-accordion-content>
-        <div formGroupName="rollover_settings" class="grid grid-cols-12 gap-4 items-center mt-2">
-          <label for="account-transfer" class="col-span-3 col-form-label" translate>Account transfer</label>
-          <div class="col-span-9">
+        <div formGroupName="rollover_settings" class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-center ui:mt-2">
+          <label for="account-transfer" class="ui:col-span-3" translate>Account transfer</label>
+          <div class="ui:col-span-9">
             <p-select
+              appendTo="body"
               [options]="rolloverAccountTransferOptions"
               id="account-transfer"
               formControlName="account_transfer"
-              styleClass="w-full"
+              styleClass="ui:w-full"
             ></p-select>
           </div>
         </div>
@@ -469,12 +470,12 @@
     </p-accordion-panel>
   </p-accordion>
 
-  <div class="flex justify-end gap-1 mt-6">
+  <div class="ui:flex ui:justify-end ui:gap-1 ui:mt-6">
     <p-button
-      outlined
+      [outlined]="true"
       severity="danger"
       size="small"
-      (onClick)="onCancel($event)"
+      (onClick)="onCancel()"
       icon="fa fa-times"
       [label]="'Cancel' | translate"
     />
@@ -497,11 +498,11 @@
   let-icon="icon"
   let-fieldPrefix="fieldPrefix"
 >
-  <div class="mb-2">
+  <div class="ui:mb-2">
     <p-fieldset [formGroup]="formGroup">
       <!-- header -->
       <ng-template #header>
-        <p-tag class="mx-2">
+        <p-tag class="ui:mx-2">
           @if (icon) {
             <i class="fa {{ icon }}"></i>&nbsp;
           }
@@ -510,9 +511,9 @@
       </ng-template>
 
       <!-- body -->
-      <div class="grid grid-cols-12 gap-4">
-        <label [for]="fieldPrefix + '_name'" class="col-span-3" translate>Contact name</label>
-        <p-inputGroup class="col-span-9">
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+        <label [for]="fieldPrefix + '_name'" class="ui:col-span-3" translate>Contact name</label>
+        <p-inputGroup class="ui:col-span-9">
           <p-inputGroupAddon>
             <i class="fa fa-user"></i>
           </p-inputGroupAddon>
@@ -520,11 +521,11 @@
             pInputText
             formControlName="name"
             [id]="fieldPrefix + '_name'"
-            class="w-full"
+            class="ui:w-full"
           />
         </p-inputGroup>
-        <label [for]="fieldPrefix + '_email'" class="col-span-3" translate>Contact email</label>
-        <p-inputGroup class="col-span-9">
+        <label [for]="fieldPrefix + '_email'" class="ui:col-span-3" translate>Contact email</label>
+        <p-inputGroup class="ui:col-span-9">
           <p-inputGroupAddon>
             <i class="fa fa-at"></i>
           </p-inputGroupAddon>
@@ -532,13 +533,13 @@
             pInputText
             formControlName="email"
             [id]="fieldPrefix + '_email'"
-            class="w-full"
+            class="ui:w-full"
           />
         </p-inputGroup>
-        <label [for]="fieldPrefix + '_phone'" class="col-span-3" translate
+        <label [for]="fieldPrefix + '_phone'" class="ui:col-span-3" translate
           >Contact phone</label
         >
-        <p-inputGroup class="col-span-9">
+        <p-inputGroup class="ui:col-span-9">
           <p-inputGroupAddon>
             <i class="fa fa-phone"></i>
           </p-inputGroupAddon>
@@ -546,46 +547,46 @@
             pInputText
             formControlName="phone"
             [id]="fieldPrefix + '_phone'"
-            class="w-full"
+            class="ui:w-full"
           />
         </p-inputGroup>
       </div>
-      <div class="grid grid-cols-12 gap-4 mt-4" formGroupName="address">
-        <label [for]="fieldPrefix + '_street'" class="col-span-3" translate>Address</label>
-        <div class="col-span-9">
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-4" formGroupName="address">
+        <label [for]="fieldPrefix + '_street'" class="ui:col-span-3" translate>Address</label>
+        <div class="ui:col-span-9">
           <input
             pInputText
-            class="w-full"
+            class="ui:w-full"
             formControlName="street"
             [id]="fieldPrefix + '_street'"
             placeholder="{{ 'Street' | translate }}"
           />
         </div>
-        <div class="col-span-3 col-start-4">
+        <div class="ui:col-span-3 ui:col-start-4">
           <input
             pInputText
             formControlName="zip_code"
-            class="w-full"
+            class="ui:w-full"
             [id]="fieldPrefix + '_zip-code'"
             placeholder="{{ 'Zip code' | translate }}"
           />
         </div>
-        <div class="col-span-6">
+        <div class="ui:col-span-6">
           <input
             pInputText
             formControlName="city"
-            class="w-full"
+            class="ui:w-full"
             [id]="fieldPrefix + '_city'"
             placeholder="{{ 'City' | translate }}"
           />
         </div>
-        <div class="col-span-9 col-start-4">
+        <div class="ui:col-span-9 ui:col-start-4">
           <p-select
             formControlName="country"
             appendTo="body"
             [id]="fieldPrefix + '_country'"
             [options]="countryIsoCodesOptions"
-            styleClass="w-full"
+            styleClass="ui:w-full"
             [filter]="true"
             [showClear]="true"
             [placeholder]="'Select a country' | translate"
@@ -593,9 +594,9 @@
         </div>
       </div>
       <!-- extra field -->
-      <div class="grid grid-cols-12 gap-4 mt-4">
-        <label [for]="fieldPrefix + '_extra'" class="col-span-3" translate>Extra information</label>
-        <p-inputGroup class="col-span-9">
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-4">
+        <label [for]="fieldPrefix + '_extra'" class="ui:col-span-3" translate>Extra information</label>
+        <p-inputGroup class="ui:col-span-9">
           <p-inputGroupAddon>
             <i class="fa fa-sticky-note-o"></i>
           </p-inputGroupAddon>
@@ -603,7 +604,7 @@
             pInputText
             formControlName="extra"
             [id]="fieldPrefix + '_extra'"
-            class="w-full"
+            class="ui:w-full"
           />
         </p-inputGroup>
       </div>

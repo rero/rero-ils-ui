@@ -15,14 +15,14 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="flex content-start">
+<div class="ui:flex ui:content-start">
   @if (iconTemplate) {
-    <div class="text-center">
+    <div class="ui:text-center">
       <ng-container [ngTemplateOutlet]="iconTemplate" />
     </div>
   }
 
-  <div class="mx-4">
+  <div class="ui:mx-4">
     <div>
       @if (titleTemplate) {
         <ng-container
@@ -44,7 +44,7 @@
       }
     </div>
     @if (contentTemplate) {
-      <div class="italic">
+      <div class="ui:italic">
         <ng-container [ngTemplateOutlet]="contentTemplate" />
       </div>
     }

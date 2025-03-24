@@ -36,9 +36,9 @@ import { EntityBriefViewRemotePersonComponent } from './entity-brief-view.person
         <ng-container #contentTemplate></ng-container>
       </ng-template>
       <ng-template rTemplate="tags" let-tags>
-        <div class="flex gap-1">
+        <div class="ui:flex ui:gap-1">
           @for (tag of tags; track tag) {
-            <p-tag [severity]="tag.label === 'remote'? 'warning':'secondary'" [value]="tag.label"/>
+            <p-tag [severity]="tag.label === 'remote' ? 'warning' : 'secondary'" [value]="tag.label" />
           }
         </div>
       </ng-template>
@@ -84,7 +84,7 @@ export class EntityBriefViewComponent implements ResultItem, OnInit, AfterViewIn
   }
 
   /** AfterViewInit hook */
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     if (this.contentComponent) {
       setTimeout(() => {  // To be run at next macro task and avoid `NG100` error into console.
         const componentRef: any = this.entityContent.createComponent(this.contentComponent);

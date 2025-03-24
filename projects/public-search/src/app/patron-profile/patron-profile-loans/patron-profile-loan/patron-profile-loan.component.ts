@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -79,6 +79,7 @@ export class PatronProfileLoanComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
+    this.patronProfileService.resetLoanFeesTotal();
     this.loanApiService
       .canExtend(this.record.metadata.pid)
       .subscribe((response: CanExtend) => this.canExtend = response);
@@ -110,9 +111,11 @@ export class PatronProfileLoanComponent implements OnInit {
         this.actionSuccess = true;
         this.record.metadata.end_date = extendLoan.end_date;
         this.record.metadata.extension_count = extendLoan.extension_count;
+        this.record.metadata.is_late = extendLoan.is_late;
         if ('overdue' in this.record.metadata) {
           delete this.record.metadata.overdue;
         }
+        this.patronProfileService.loanFees(-this.fees);
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Success'),

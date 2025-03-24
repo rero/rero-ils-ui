@@ -16,25 +16,25 @@
 -->
 
 @if (record) {
-  <div class="grid grid-cols-12 gap-4 p-2 pl-1">
-    <div class="col-span-1">
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:pl-1">
+    <div class="ui:col-span-1">
       <shared-open-close-button (status)="isCollapsed = $event; expanded(record.metadata.pid)" />
     </div>
-    <div class="col-span-2">{{ record.metadata.creation_date | dateTranslate: 'short' }}</div>
-    <div class="col-span-6">{{ record.metadata.type | translate }}</div>
-    <div class="col-span-3 flex justify-end">{{ record.metadata.total_amount | currency:organisation.currency:'symbol' }}</div>
+    <div class="ui:col-span-2">{{ record.metadata.creation_date | dateTranslate: 'short' }}</div>
+    <div class="ui:col-span-6">{{ record.metadata.type | translate }}</div>
+    <div class="ui:col-span-3 ui:flex ui:justify-end">{{ record.metadata.total_amount | currency:organisation.currency:'symbol' }}</div>
       <!-- FEE DETAILS & EVENTS =========================================== -->
       @if (!isCollapsed) {
-      <div id="fee-event-{{ record.metadata.pid }}" class="col-span-11 col-start-2">
+      <div id="fee-event-{{ record.metadata.pid }}" class="ui:col-span-11 ui:col-start-2">
           <!-- NOTE -->
           @if (record.metadata.note) {
-            <p-panel styleClass="mb-2 bg-transparent" [header]="'Note' | translate">
+            <p-panel styleClass="ui:mb-2 ui:bg-transparent" [header]="'Note' | translate">
               {{ record.metadata.note }}
             </p-panel>
           }
           <!-- DOCUMENT METADATA -->
           @if (record.metadata.document; as document) {
-            <p-panel styleClass="mb-2 bg-transparent" [header]="'Document' | translate" id="fee-{{ record.metadata.pid }}-document">
+            <p-panel styleClass="ui:mb-2 ui:bg-transparent" [header]="'Document' | translate" id="fee-{{ record.metadata.pid }}-document">
               <dl class="metadata">
                 <!-- TITLE -->
                 <dt translate>Title</dt>
@@ -54,18 +54,18 @@
           }
 
           <!-- TRANSACTIONS HISTORY -->
-          <p-panel styleClass="bg-transparent time-line-30" [header]="'Transactions history' | translate" id="fee-{{ record.metadata.pid }}-transaction">
+          <p-panel styleClass="ui:bg-transparent time-line-30" [header]="'Transactions history' | translate" id="fee-{{ record.metadata.pid }}-transaction">
 
             <p-timeline [value]="events">
               <ng-template #content let-event>
-                  <div class="grid grid-cols-12 gap-4" [ngClass]="{ 'event-highlight': (event.metadata.type === 'dispute'), '': !(event.metadata.type === 'dispute') }">
-                    <div class="col-span-10">
+                  <div class="ui:grid ui:grid-cols-12 ui:gap-4" [ngClass]="{ 'event-highlight': (event.metadata.type === 'dispute'), '': !(event.metadata.type === 'dispute') }">
+                    <div class="ui:col-span-10">
                       {{ event.metadata.type | translate }}
                       @if (event.metadata.subtype) {
                         [{{ event.metadata.subtype | translate }}]
                       }
                     </div>
-                    <div class="col-span-2 flex justify-end amount">
+                    <div class="ui:col-span-2 ui:flex ui:justify-end">
                       @if (event.metadata.amount) {
                         <p-tag [severity]="event.metadata.type === 'payment'? 'success' : 'danger'">
                           {{ event.metadata.amount | currency:organisation.currency:'symbol' }}
@@ -74,39 +74,39 @@
                     </div>
                   </div>
                     @if (event.metadata.note) {
-                      <dl class="grid grid-cols-4">
-                        <dt class="font-bold mr-2">
-                          <i class="fa fa-comment-o pr-1" title="{{ 'Note' | translate }}"></i>
+                      <dl class="ui:grid ui:grid-cols-4">
+                        <dt class="ui:font-bold ui:mr-2">
+                          <i class="fa fa-comment-o ui:pr-1" [title]="'Note' | translate"></i>
                           {{ 'Note' | translate }}
                         </dt>
-                        <dd class="col-span-3">{{ event.metadata.note }}</dd>
+                        <dd class="ui:col-span-3">{{ event.metadata.note }}</dd>
                       </dl>
                     }
                     @if (event.metadata.library) {
-                      <dl class="grid grid-cols-4">
-                        <dt class="font-bold mr-2">
-                          <i class="fa fa-map-marker pr-1" title="{{ 'Library' | translate }}"></i>
+                      <dl class="ui:grid ui:grid-cols-4">
+                        <dt class="ui:font-bold ui:mr-2">
+                          <i class="fa fa-map-marker ui:pr-1" [title]="'Library' | translate"></i>
                           {{ 'Library' | translate }}
                         </dt>
-                        <dd class="col-span-3">
+                        <dd class="ui:col-span-3">
                           {{ event.metadata.library.name }}
                         </dd>
                       </dl>
                     }
               </ng-template>
               <ng-template #opposite let-event>
-                <div class="p-text-secondary text-sm">
+                <div class="ui:text-muted-color ui:text-sm">
                   <i class="fa fa-calendar-o"></i>
                   {{ event.metadata.creation_date | dateTranslate: 'shortDate' }}
-                  <i class="fa fa-clock-o pl-1"></i>
+                  <i class="fa fa-clock-o ui:pl-1"></i>
                   {{ event.metadata.creation_date | dateTranslate: 'HH:mm' }}
                 </div>
               </ng-template>
               <ng-template #marker let-event>
                 <span
-                class="flex items-center justify-center text-white rounded-full z-10 shadow-sm"
-                [ngClass]="event.metadata.type === 'dispute'? 'background-warning': event.metadata.type === 'payment'? 'background-success': 'background-error'"
-                [style]="{'width': '1.5rem', 'height': '1.5rem'  }">
+                class="ui:flex ui:items-center ui:justify-center ui:text-white ui:rounded-full ui:z-10 ui:shadow-sm"
+                [ngClass]="event.metadata.type === 'dispute'? 'ui:bg-yellow-500': event.metadata.type === 'payment'? 'ui:bg-green-500': 'ui:bg-red-500'"
+                [style]="{'width': '1.3rem', 'height': '1.3rem'  }">
                   <i class="fa" [ngClass]="event.metadata.type === 'dispute'? 'fa-exclamation' : 'fa-check' "></i>
                 </span>
               </ng-template>

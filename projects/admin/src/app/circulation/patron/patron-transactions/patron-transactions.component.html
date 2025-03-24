@@ -14,32 +14,32 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section class="content">
+<section>
   <p-accordion [(value)]="activePanel">
     <p-accordion-panel value="0">
       <p-accordion-header>
-        <div class="flex items-center w-full">
-          <h6 class="flex grow" translate>Engaged fees</h6>
+        <div class="ui:flex ui:items-center ui:w-full">
+          <h6 class="ui:flex ui:grow" translate>Engaged fees</h6>
           @if (statistics()['fees_engaged'] > 0) {
-            <p-tag severity="warning" class="mr-2">
+            <p-tag severity="warning" class="ui:mr-2">
               {{ statistics()['fees_engaged'] | currency: organisation.default_currency }}
             </p-tag>
           }
         </div>
       </p-accordion-header>
       <p-accordion-content>
-        <div class="flex justify-end my-2">
+        <div class="ui:flex ui:justify-end ui:my-2">
           <p-button size="small" icon="fa fa-plus" [label]="'Add a fee'|translate" (onClick)="addFee()" />
         </div>
         @if (tabs.engagedFees.transactions.length > 0) {
-          <div class="grid grid-cols-12 gap-4 py-4 px-2 my-1 text-lg font-bold items-center border-t border-b border-surface">
-            <div class="col-span-2" translate>Date</div>
-            <div class="col-span-3" translate>Category</div>
-            <div class="col-span-3" translate>Library</div>
-            <div class="col-span-2 text-right">
+          <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:px-2 ui:my-1 ui:text-lg ui:font-bold ui:items-center ui:border-t ui:border-surface">
+            <div class="ui:col-span-2" translate>Date</div>
+            <div class="ui:col-span-3" translate>Category</div>
+            <div class="ui:col-span-3" translate>Library</div>
+            <div class="ui:col-span-2 ui:text-right">
               {{ 'Total amount' | translate }}: {{ statistics()['fees_engaged'] | currency: organisation.default_currency }}
             </div>
-            <div class="col-span-2 flex justify-end">
+            <div class="ui:col-span-2 ui:flex ui:justify-end">
               <p-splitButton
                 size="sm"
                 [label]="'Pay all'|translate"
@@ -49,13 +49,15 @@
               />
             </div>
           </div>
-          <div class="alternate-color">
+          <div>
             @for (t of tabs.engagedFees.transactions; track t) {
-              <admin-patron-transaction [transaction]="t" />
+              <div class="ui:odd:bg-surface-50">
+                <admin-patron-transaction [transaction]="t" />
+              </div>
             }
           </div>
         } @else {
-          <div class="mt-4 font-bold">
+          <div class="ui:mt-4 ui:font-bold">
             {{ 'No pending fee for this patron' | translate }}
           </div>
         }
@@ -63,10 +65,10 @@
     </p-accordion-panel>
     <p-accordion-panel value="1">
       <p-accordion-header>
-        <div class="flex items-center w-full">
-          <h6 class="flex grow" translate>Overdue preview fees</h6>
+        <div class="ui:flex ui:items-center ui:w-full">
+          <h6 class="ui:flex ui:grow" translate>Overdue preview fees</h6>
           @if (tabs.overduePreviewFees.totalAmount > 0) {
-            <p-tag severity="secondary" class="mr-2">
+            <p-tag severity="secondary" class="ui:mr-2">
               {{ tabs.overduePreviewFees.totalAmount | currency: organisation.default_currency }}
             </p-tag>
           }
@@ -74,21 +76,23 @@
       </p-accordion-header>
       <p-accordion-content>
         @if (tabs.overduePreviewFees.transactions.length > 0) {
-          <div class="grid grid-cols-12 gap-4 py-4 px-2 my-1 text-lg font-bold items-center border-t border-b border-surface">
-            <div class="col-span-2" translate>Due date</div>
-            <div class="col-span-7" translate>Document</div>
-            <div class="col-span-2 text-right">
+          <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:px-2 ui:my-1 ui:text-lg ui:font-bold ui:items-center ui:border-t ui:border-b ui:border-surface">
+            <div class="ui:col-span-2" translate>Due date</div>
+            <div class="ui:col-span-7" translate>Document</div>
+            <div class="ui:col-span-2 ui:text-right">
               {{ 'Total amount' | translate }}: {{ tabs.overduePreviewFees.totalAmount | currency: organisation.default_currency }}
             </div>
-            <div class="col-span-1"></div>
+            <div class="ui:col-span-1"></div>
           </div>
-          <div class="alternate-color">
+          <div>
             @for (t of tabs.overduePreviewFees.transactions; track t) {
-              <admin-overdue-transaction [transaction]="t" />
+              <div class="ui:odd:bg-surface-50">
+                <admin-overdue-transaction [transaction]="t" />
+              </div>
             }
           </div>
         } @else {
-          <div class="mt-4 font-bold">
+          <div class="ui:mt-4 ui:font-bold">
             {{ 'No overdue fees for this patron' | translate }}
           </div>
         }
@@ -100,19 +104,21 @@
       </p-accordion-header>
       <p-accordion-content>
         @if (tabs.historyFees.transactions !== null && tabs.historyFees.transactions.length > 0) {
-          <div class="grid grid-cols-12 gap-4 py-4 my-1 text-lg font-bold items-center border-t border-b border-surface">
-            <div class="col-span-2" translate>Date</div>
-            <div class="col-span-3" translate>Category</div>
-            <div class="col-span-3" translate>Library</div>
-            <div class="col-span-2 flex justify-end" translate>Amount</div>
+          <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:my-1 ui:text-lg ui:font-bold ui:items-center">
+            <div class="ui:col-span-2" translate>Date</div>
+            <div class="ui:col-span-3" translate>Category</div>
+            <div class="ui:col-span-3" translate>Library</div>
+            <div class="ui:col-span-2 ui:flex ui:justify-end" translate>Amount</div>
           </div>
-          <div class="alternate-color">
+          <div>
             @for (t of tabs.historyFees.transactions; track t) {
-              <admin-patron-transaction [transaction]="t" />
+              <div class="ui:odd:bg-surface-50">
+                <admin-patron-transaction [transaction]="t" />
+              </div>
             }
           </div>
         } @else {
-          <div class="mt-4 font-bold">
+          <div class="ui:mt-4 ui:font-bold">
             {{ 'No fee history for this patron' | translate }}
           </div>
         }

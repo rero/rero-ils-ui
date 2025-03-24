@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,7 +23,6 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
     selector: 'admin-libraries-exception-dates-edit',
     templateUrl: './exception-dates-edit.component.html',
-    styles: [],
     standalone: false
 })
 export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
@@ -64,8 +63,12 @@ export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
     this.dynamicDialogRef.destroy();
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.dynamicDialogRef.close(this.form.getValue());
+  }
+
+  cancel(): void {
+    this.dynamicDialogRef.close();
   }
 
   onPeriodChange(event): void {

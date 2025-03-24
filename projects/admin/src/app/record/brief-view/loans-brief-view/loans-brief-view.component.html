@@ -15,18 +15,18 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="flex flex-col gap-2">
+<div class="ui:flex ui:flex-col ui:gap-2">
   <!-- LOAN METADATA -->
-    <div class="flex gap-2">
-      <h5 class="grow">{{ record.metadata.document.title | mainTitle }}</h5>
+    <div class="ui:flex ui:gap-2">
+      <h5 class="ui:grow">{{ record.metadata.document.title | mainTitle }}</h5>
           <!-- ACTIONS BUTTON -->
-      <div class="flex gap-1">
+      <div class="ui:flex ui:gap-1">
         <p-button icon="fa fa-history" severity="secondary" outlined size="small"  (onClick)="openTransactionHistoryDialog(record.metadata.pid)" />
         @if (canUseDebugMode) {
           <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" severity="warning" [outlined]="!debugMode" size="small"
             (onClick)="debugMode=!debugMode"
           >
-            <i class="mr-1 fa fa-bug"></i>
+            <i class="ui:mr-1 fa fa-bug"></i>
           </p-button>
         }
       </div>
@@ -45,32 +45,34 @@
       </dd>
       <dt translate>Status</dt>
       <dd>
-        <p-tag class="badge" [severity]="tagSeverity">{{ record.metadata.state | translate }}</p-tag>
-        @switch(record.metadata.state) {
-          <!-- ITEM_ON_LOAN additional information -->
-          @case (loanState.ITEM_ON_LOAN) {
-            @if (record.metadata?.is_late) {
-              <p-tag severity="danger" translate>overdue</p-tag>
-              ({{ 'due date' | translate }}
-              <span [ngClass]="{'text-error font-bold': record.metadata?.is_late}">
-                {{record.metadata.end_date | date: 'shortDate' }}</span>)
+        <div class="ui:flex ui:gap-x-2">
+          <p-tag class="badge" [severity]="tagSeverity">{{ record.metadata.state | translate }}</p-tag>
+          @switch(record.metadata.state) {
+            <!-- ITEM_ON_LOAN additional information -->
+            @case (loanState.ITEM_ON_LOAN) {
+              @if (record.metadata?.is_late) {
+                <p-tag severity="danger" translate>overdue</p-tag>
+                ({{ 'due date' | translate }}
+                <span [ngClass]="{'text-error ui:font-bold': record.metadata?.is_late}">
+                  {{record.metadata.end_date | date: 'shortDate' }}</span>)
+              }
+            }
+            <!-- REQUEST additional information -->
+            @case (loanState.ITEM_AT_DESK) {
+              ({{ 'request expire at' | translate }}
+              <span [ngClass]="{'text-error': isRequestExpired}">{{ record.metadata.request_expire_date | date: 'shortDate' }}</span>)
             }
           }
-          <!-- REQUEST additional information -->
-          @case (loanState.ITEM_AT_DESK) {
-            ({{ 'request expire at' | translate }}
-            <span [ngClass]="{'text-error': isRequestExpired}">{{ record.metadata.request_expire_date | date: 'shortDate' }}</span>)
-          }
-        }
+        </div>
       </dd>
     </dl>
 
     <!-- DEBUG PANEL -->
     @if (debugMode) {
       <h5 class="text-error"><i class="fa fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
-      <div class="border border-1 border-surface p-2">
+      <div class="ui:border-1 ui:border-surface ui:p-2">
         <p-scrollPanel [style]="{ height: '500px' }">
-          <pre class="text-sm text-wrap">{{ record.metadata | json }}</pre>
+          <pre class="ui:text-sm ui:text-wrap">{{ record.metadata | json }}</pre>
         </p-scrollPanel>
       </div>
     }

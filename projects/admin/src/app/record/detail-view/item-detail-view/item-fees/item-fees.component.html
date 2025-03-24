@@ -17,26 +17,26 @@
 @if (fees.length > 0) {
 <p-panel id="item-fees">
   <ng-template #header>
-    <div class="flex w-full items-center">
-      <div class="p-panel-title grow" translate>
+    <div class="ui:flex ui:w-full ui:items-center">
+      <div class="p-panel-title ui:grow" translate>
         Fees
       </div>
-      <div class="order-2">
-        <span class="font-bold" translate>Total</span>&nbsp;
+      <div class="ui:order-2">
+        <span class="ui:font-bold" translate>Total</span>&nbsp;
         <p-tag severity="danger">{{ total | currency: organisation.default_currency }}</p-tag>
       </div>
     </div>
   </ng-template>
-  <div class="flex gap-2 flex-col px-2">
-    <div class="flex">
-      <div class="grow font-bold" translate>Patron</div>
-      <div class="font-bold" translate>Amount</div>
+  <div class="ui:flex ui:gap-2 ui:flex-col ui:px-2">
+    <div class="ui:flex">
+      <div class="ui:grow ui:font-bold" translate>Patron</div>
+      <div class="ui:font-bold" translate>Amount</div>
     </div>
-    <div class="alternate-color">
+    <div>
     @for (fee of fees; track fee) {
       @if (fee.metadata.patron.pid | getRecord:'patrons' | async; as patron) {
-        <div class="flex">
-          <div class="grow">
+        <div class="ui:flex ui:odd:bg-surface-50">
+          <div class="ui:grow">
             <a [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0], 'fees']" [queryParams]="{event: fee.metadata.pid}">
               {{ $any(patron).metadata.last_name }} {{ $any(patron).metadata.first_name }} ({{ $any(patron).metadata.patron.barcode[0] }})
             </a>

@@ -15,29 +15,29 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="grid grid-cols-12 gap-4 border border-surface rounded-md my-2 p-2">
+<div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:border ui:border-surface ui:rounded-md ui:my-2 ui:p-2">
   @if (receipt) {
     <!-- RECEIPT INFORMATION COLUMN -->
-    <div class="col-span-10">
-      <div class="grid grid-cols-12 gap-4">
+    <div class="ui:col-span-10">
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4">
         <!-- FIRST ROW :: receipt detail (always visible) -->
-        <div class="col-span-9 flex flex-wrap gap-2 items-center">
+        <div class="ui:col-span-9 ui:flex ui:flex-wrap ui:gap-2 ui:items-center">
           @if (collapsable) {
             <shared-open-close-button (status)="isCollapsed = $event" />
           }
-          <div class="grow flex gap-2 items-center">
+          <div class="ui:grow ui:flex ui:gap-2 ui:items-center">
           <label>
             {{ receipt.reference }}
             @if (receipt | receptionDates; as reception_dates) {
-              <span class="italic text-sm">
+              <span class="ui:italic ui:text-sm">
                 ({{ reception_dates.join(', ') }})
               </span>
             }
           </label>
           @if (receipt.notes.length > 0 && isCollapsed) {
-            <span class="flex gap-1">
+            <span class="ui:flex ui:gap-1">
               @for (note of receipt.notes; track note) {
-                <i class="fa fa-circle fa-bullet text-{{ note | noteBadgeColor }}" aria-hidden="true" title="{{ note.type | translate }}"></i>
+                <i class="fa fa-circle text-{{ note | noteBadgeColor }}" aria-hidden="true" title="{{ note.type | translate }}"></i>
               }
             </span>
           }
@@ -50,26 +50,26 @@
               </p-tag>
           }
         </div>
-        <div class="col-span-3 flex font-bold justify-end items-center" [class.border-right-1]="recordPermissions && allowActions">
+        <div class="ui:col-span-3 ui:flex ui:font-bold ui:justify-end ui:items-center" [class.ui:border-right-1]="recordPermissions && allowActions">
           {{ receipt.total_amount | currency:receipt.currency:'symbol' }}
         </div>
         @if (!collapsable || !isCollapsed) {
           <!-- RECEPTION LINES ROWS :: One line for each reception line -->
           @for (line of receipt.receipt_lines; track line) {
-            <div class="col-span-9 flex gap-2 flex-wrap">
+            <div class="ui:col-span-9 ui:flex ui:gap-2 ui:flex-wrap">
               <strong>{{ line.quantity }}</strong>&nbsp;x
               <div>
                 @if (line.document.pid | getRecord: 'documents' | async; as document) {
                   <shared-document-brief-view [record]="$any(document).metadata" />
                 }
                 @if ($any(line).acq_account.pid | getRecord: 'acq_accounts' | async; as account) {
-                  <span class="font-bold text-muted-color text-sm">[{{ $any(account).metadata.number }}]</span>
+                  <span class="ui:font-bold ui:text-muted-color ui:text-sm">[{{ $any(account).metadata.number }}]</span>
                 }
               </div>
             </div>
-            <div class="col-span-3 flex flex-col gap-2 items-end" [class.border-right-1]="recordPermissions && allowActions">
-              <div class="font-bold">{{ line | receiptLineTotalAmount | currency:receipt.currency:'symbol' }}</div>
-              <div class="text-sm text-muted-color">
+            <div class="ui:col-span-3 ui:flex ui:flex-col ui:gap-2 ui:items-end" [class.ui:border-right-1]="recordPermissions && allowActions">
+              <div class="ui:font-bold">{{ line | receiptLineTotalAmount | currency:receipt.currency:'symbol' }}</div>
+              <div class="ui:text-sm ui:text-muted-color">
                 {{ line.quantity }} x {{ line.amount | currency:receipt.currency:'symbol' }}
                 @if (line.vat_rate) {
                   + {{ line.vat_rate }}%
@@ -79,11 +79,11 @@
           }
           <!-- RECEIPT ADJUSTMENTS :: One line for each adjustment -->
           @for (adjustment of receipt.amount_adjustments; track adjustment) {
-            <div class="col-span-9">
-              <i class="fa fa-long-arrow-right mr-4"></i>
+            <div class="ui:col-span-9">
+              <i class="fa fa-long-arrow-right ui:mr-4"></i>
               {{ adjustment.label }}
             </div>
-            <div class="col-span-3 flex-col font-bold flex items-end" [class.border-right-1]="recordPermissions && allowActions">
+            <div class="ui:col-span-3 ui:flex-col ui:font-bold ui:flex ui:items-end" [class.ui:border-right-1]="recordPermissions && allowActions">
               <div>
                 {{ adjustment.amount | currency:receipt.currency:'symbol' }}
               </div>
@@ -91,17 +91,17 @@
           }
           <!-- RECEIPT NOTES -->
           @if (receipt.notes.length > 0) {
-            <div class="col-span-9">
+            <div class="ui:col-span-9">
               <admin-notes [notes]="receipt.notes" />
             </div>
-            <div class="col-span-3" [class.border-right-1]="recordPermissions && allowActions">&nbsp;</div>
+            <div class="ui:col-span-3" [class.ui:border-right-1]="recordPermissions && allowActions">&nbsp;</div>
           }
         }
       </div>
     </div>
     <!-- ACTION BUTTON COLUMN -->
     @if (recordPermissions && allowActions) {
-      <div class="col-span-2 flex flex-wrap gap-1 justify-end">
+      <div class="ui:col-span-2 ui:flex ui:flex-wrap ui:gap-1 ui:justify-end">
         <!-- CONTINUE BUTTON -->
          @if (canEdit) {
           <shared-action-button
@@ -122,8 +122,8 @@
       </div>
     }
   } @else {
-    <div class="my-3">
-      <i class="fa fa-spinner animate-spin"></i>&nbsp;{{ "Loading in progress…" | translate }}
+    <div class="ui:my-3">
+      <i class="fa fa-spinner ui:animate-spin"></i>&nbsp;{{ "Loading in progress…" | translate }}
     </div>
   }
 </div>

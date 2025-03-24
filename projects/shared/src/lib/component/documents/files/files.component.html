@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2024 RERO
+  Copyright (C) 2024-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -19,29 +19,28 @@
 } @else {
   @if (files?.length > 0) {
     @if(files.length > numVisible) {
-      <div class="flex flex-col gap-2">
-        <div>
-          <span class="p-input-icon-right">
+      <div class="ui:flex ui:flex-col ui:gap-2">
+        <p-inputgroup>
+          <input
+            id="filter"
+            type="text"
+            pInputText
+            [placeholder]="'filter' | translate"
+            [(ngModel)]="filterText"
+            (keyup)="onTextChange($event)"
+          />
+          <p-inputgroup-addon>
             <i class="fa fa-filter"></i>
-            <input
-              class="p-inputtext"
-              id="filter"
-              type="text"
-              pInputText
-              [placeholder]="'filter' | translate"
-              [(ngModel)]="filterText"
-              (keyup)="onTextChange($event)"
-            />
-          </span>
-        </div>
-        <small *ngVar="filteredFiles.length as total" id="username-help">
+          </p-inputgroup-addon>
+        </p-inputgroup>
+        <small *ngVar="filteredFiles.length as total">
           {{ getResultsText() | async }}
         </small>
       </div>
     }
 
     @if (filteredFiles.length > 0) {
-      <div class="border border-surface rounded-border text-center py-4 px-1 mt-2">
+      <div class="ui:border ui:border-surface ui:rounded-border ui:text-center ui:py-4 ui:px-1 ui:mt-2">
         <p-carousel
           [showIndicators]="false"
           [showNavigators]="false"
@@ -52,35 +51,34 @@
           [circular]="false"
         >
           <ng-template let-file #item>
-            <div class="px-1">
-              @if (file.thumbnail){
-              <img
-                (click)="preview(file); $event.preventDefault()"
-                src="{{ file.thumbnail }}"
-                [alt]="file.label"
-                class="w-6/12 shadow-sm border-surface-300 dark:border-surface-500 border mb-1 max-w-20"
-                style="cursor: zoom-in"
-                loading="lazy"
-              />
-            } @else {
-              <div
-            > <i class="text-muted-color fa fa-5x pb-1" [ngClass]="file.mimetype | faIconClass: 'file'"></i></div>
-            }
-              <div
-                class="action flex items-center justify-center gap-2"
-              >
+            <div class="ui:px-1 ui:flex ui:flex-col">
+              @if (file.thumbnail) {
+                <div class="ui:flex ui:justify-center">
+                  <img
+                    (click)="preview(file); $event.preventDefault()"
+                    [src]="file.thumbnail"
+                    [alt]="file.label"
+                    class="ui:shadow-sm ui:border-surface-300 ui:dark:border-surface-500 ui:border ui:mb-1 ui:max-w-20 ui:cursor-zoom-in"
+                    loading="lazy"
+                  />
+                </div>
+              } @else {
+                <div>
+                  <i class="ui:text-muted-color fa fa-4x ui:pb-1" [ngClass]="file.mimetype | faIconClass: 'file'"></i>
+                </div>
+              }
+              <div class="ui:flex ui:items-center ui:justify-center ui:gap-2 ui:mt-2">
                 @if (file.preview) {
-                <a
-                  style="cursor: zoom-in"
-                  href="{{ file.label }}"
-                  (click)="preview(file); $event.preventDefault()"
-                >
-                  <i class="fa text-muted-color fa-eye mx-1"></i>
-                </a>
+                  <a
+                    [href]="file.label"
+                    (click)="preview(file); $event.preventDefault()"
+                  >
+                    <i class="fa  ui:text-muted-color fa-eye ui:mx-1"></i>
+                  </a>
                 } @if (file.download) {
-                <a [href]="file.download" download>
-                  <i class="fa text-muted-color fa-download mx-1"></i>
-                </a>
+                  <a [href]="file.download" download>
+                    <i class="fa fa-download ui:text-muted-color ui:mx-1"></i>
+                  </a>
                 }
               </div>
               <small>{{ file.label }}</small>
@@ -110,8 +108,7 @@
     </h4>
   </ng-template>
   @if (previewFile) {
-    <iframe id="preview-iframe" width="100%" height="800px" [src]="previewFile?.url"
-          style="border: none;">
+    <iframe id="preview-iframe" width="100%" height="800px" [src]="previewFile?.url" style="border: none;">
     </iframe>
   }
 </p-dialog>

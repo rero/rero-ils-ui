@@ -22,9 +22,9 @@
   (isCollapsedEvent)="loadData($event)"
 >
   <p-tag badge translate>Notification</p-tag>
-  <div collapsedContent class="grid grid-cols-12 gap-4">
+  <div collapsedContent class="ui:grid ui:grid-cols-12 ui:gap-4">
     <!-- Library -->
-    <div class="col-span-8">
+    <div class="ui:col-span-8">
       <i class="fa fa-globe"></i>&nbsp;
       @if (record.metadata.notification.sender_library_pid) {
         {{ record.metadata.notification.sender_library_pid | getRecord : 'libraries'  : 'field' : 'name' | async }}
@@ -33,7 +33,7 @@
       }
     </div>
     <!-- Type of notification -->
-    <div class="col-span-4">
+    <div class="ui:col-span-4">
       <p-tag severity="secondary">{{ record.metadata.notification.type | translate }}</p-tag>
     </div>
   </div>
@@ -55,7 +55,7 @@
     <!-- Recipients -->
     <dt><i class="fa fa-envelope"></i>&nbsp;{{ 'Recipients' | translate}}</dt>
     <dd>
-      <ul class="list-none">
+      <ul class="ui:list-none">
         @for (recipient of record.metadata.notification.recipients; track recipient) {
           <li>{{ recipient }}</li>
         }

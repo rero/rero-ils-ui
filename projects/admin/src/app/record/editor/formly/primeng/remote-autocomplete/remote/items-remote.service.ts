@@ -95,9 +95,9 @@ export class ItemsRemoteService implements IRemoteAutocomplete {
         return this.recordService.getRecord('documents', record.metadata.document. pid)
         .pipe(
           map((document: any | Error) =>
-            `<div class="pt-0">
-              <div class="font-bold">${this.mainTitlePipe.transform(document.metadata.title)}</div>
-              <span class="font-bold">${this.translateService.instant('Barcode')}</span>: ${record.metadata.barcode}
+            `<div class="ui:pt-0">
+              <div class="ui:font-bold">${this.mainTitlePipe.transform(document.metadata.title)}</div>
+              <span class="ui:font-bold">${this.translateService.instant('Barcode')}</span>: ${record.metadata.barcode}
              </div>`
           )
         );
