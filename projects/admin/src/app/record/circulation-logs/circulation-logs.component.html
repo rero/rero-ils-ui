@@ -15,13 +15,13 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="overflow-auto">
+<div class="ui:overflow-auto">
   @if (resourceType === 'item') {
     <admin-circulation-stats [itemPid]="this.resourcePid" />
   }
   <form [formGroup]="formGroup">
-    <div class="flex gap-2 py-2">
-      <span class="font-bold">{{ 'Filter' | translate}}:</span>
+    <div class="ui:flex ui:gap-2 ui:py-2">
+      <span class="ui:font-bold">{{ 'Filter' | translate}}:</span>
         @for (filter of filterTypes; track filter) {
             <p-toggleswitch [inputId]="filter" [formControlName]="filter" />
             <label class="" [for]="filter">{{ ('op_filter_' + filter) | translate }}</label>
@@ -32,7 +32,7 @@
     @if (recordTotals > 0) {
       @for (record of records; track record; let isFirst = $first; let idx = $index) {
         @if (isFirst || !isSamePeriod(record, records[idx-1])) {
-          <div class="bg-surface-100 dark:bg-surface-700 p-2 border-surface border-y">
+          <div class="ui:bg-surface-100 ui:dark:bg-surface-700 ui:p-2 ui:border-surface ui:border-y">
             <i class="fa fa-calendar"></i>&nbsp;
             {{ record.metadata.date | dateTranslate :'MMMM Y' | titlecase }}
           </div>
@@ -66,7 +66,7 @@
     {{ 'loading in progress' | translate }}
   }
 </div>
-<div class="py-1 justify-start">
+<div class="ui:py-1 ui:justify-start">
   @if (loadedRecord && isLinkShowMore) {
     <p-button
       id="show-more-items-{{ resourcePid }}"

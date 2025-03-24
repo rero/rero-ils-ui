@@ -44,9 +44,9 @@
 
   <p-menubar [model]="exportItems">
     <ng-template #item let-item>
-        <a [href]="item.url" class="p-2 flex flex-col items-center justify-center w-24" download>
-          <i [ngClass]="[item.icon, 'fa-2x mb-1 text-color-secondary']"></i>
-          <span class="text-center text-xs text-muted-color">{{ item.label }}</span>
+        <a [href]="item.url" class="ui:p-2 ui:flex ui:flex-col ui:items-center ui:justify-center ui:w-24" download>
+          <i [ngClass]="[item.icon, 'fa-2x ui:mb-1 ui:text-muted-color']"></i>
+          <span class="ui:text-center ui:text-xs ui:text-muted-color">{{ item.label }}</span>
         </a>
     </ng-template>
   </p-menubar>

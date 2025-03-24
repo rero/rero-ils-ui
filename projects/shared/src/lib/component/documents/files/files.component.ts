@@ -21,7 +21,6 @@ import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, Record, RecordService } from '@rero/ng-core';
-import { PrimeNG } from 'primeng/config';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Observable, Subscription, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
@@ -45,7 +44,6 @@ export interface File {
 })
 export class FilesComponent implements OnInit, OnDestroy {
 
-  protected ngConfigService: PrimeNG = inject(PrimeNG);
   protected httpService: HttpClient = inject(HttpClient);
   protected translateService: TranslateService = inject(TranslateService);
   protected recordService: RecordService = inject(RecordService);
@@ -78,13 +76,6 @@ export class FilesComponent implements OnInit, OnDestroy {
 
   /** all component subscription */
   private subscriptions = new Subscription();
-
-  // constructor
-  constructor() {
-    // to avoid primeng error
-    // TODO: remove this when primeng will be fixed
-    this.ngConfigService.translation.aria.slideNumber = '{slideNumber}';
-  }
 
   /** OnInit hook */
   ngOnInit(): void {
@@ -192,7 +183,7 @@ export class FilesComponent implements OnInit, OnDestroy {
    *
    * @param $event - standard event
    */
-  onTextChange($event): void {
+  onTextChange(event): void {
     if (this.filterText.length > 0) {
       this.filteredFiles = this.files.filter((value) => value.label.toLowerCase().includes(this.filterText.toLowerCase()));
     } else {

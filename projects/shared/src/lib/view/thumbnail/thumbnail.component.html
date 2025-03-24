@@ -15,11 +15,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  <div class="self-start flex">
-    <figure class="m-0" [ngClass]="styleClass">
-      <img class="w-full h-auto border border-surface rounded-border p-2" [src]="coverUrl"/>
+  <div class="ui:self-start ui:flex">
+    <figure class="ui:m-0" [ngClass]="styleClass">
+      <img class="ui:w-full ui:h-auto ui:border ui:border-surface ui:rounded-border ui:p-2" [src]="coverUrl" />
       @for (type of record.metadata.type; track type) {
-        <figcaption class="text-center font-bold text-sm text-muted-color">
+        <figcaption class="ui:text-center ui:font-bold ui:text-sm ui:text-muted-color">
           {{ type.subtype? (type.subtype | translate): (type.main_type | translate) }}
         </figcaption>
       }

@@ -10,10 +10,12 @@
     "tslib": "^2.1.0"
   },
   "peerDependencies": {
-    "@angular/common": "^14.0.0",
-    "@angular/core": "^14.0.0",
+    "@angular/common": "^19.2.0",
+    "@angular/core": "^19.2.0",
     "@biesbjerg/ngx-translate-extract-marker": "^1.0.0",
-    "@ngx-translate/core": "^14.0.0",
-    "primeng": "^14.2.2"
+    "@ngx-translate/core": "^16.0.0",
+    "@primeng/themes": "^19.0.7",
+    "primelocale": "^1.6",
+    "primeng": "^19.0.8"
   }
 }

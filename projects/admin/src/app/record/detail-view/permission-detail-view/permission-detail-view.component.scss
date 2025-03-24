@@ -18,12 +18,12 @@
 
 admin-permission-detail-view {
   table {
-    @apply relative w-full mt-3;
+    @apply ui:relative ui:w-full ui:mt-3;
     border-spacing: 0;
     thead tr {
-      @apply bg-white sticky top-0 align-bottom;
+      @apply ui:bg-white ui:sticky ui:top-0 ui:align-bottom;
       th span {
-        @apply text-left max-h-[13rem] text-sm p-2;
+        @apply ui:text-left ui:max-h-[13rem] ui:text-sm ui:p-2;
         writing-mode: vertical-rl;
         transform: rotate(180deg);
       }
@@ -36,11 +36,11 @@ admin-permission-detail-view {
         background-color: var(--p-surface-100);
       }
       td {
-        @apply p-3 w-[13rem] text-center w-[2rem];
+        @apply ui:p-3 ui:w-[13rem] ui:text-center ui:w-[2rem];
       }
       td:nth-child(2),
       td.type-system-role + td.type-role {
-        @apply border-l-2;
+        @apply ui:border-l-2;
         border-color: var(--p-surface-100)
       }
     }

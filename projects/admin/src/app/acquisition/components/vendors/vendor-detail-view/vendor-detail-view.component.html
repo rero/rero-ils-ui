@@ -17,13 +17,13 @@
 @if (record$ | async; as record) {
   <h1>{{ record.metadata.name }}</h1>
   <article>
-    <section class="mt-4">
+    <section class="ui:mt-4">
       <dl class="metadata">
         <!-- WEBSITE -->
         @if (record.metadata.website) {
           <dt translate>Website</dt>
           <dd>
-            <a target="_blank" href="{{ record.metadata.website }}">{{ record.metadata.website }}</a>
+            <a target="_blank" [href]="record.metadata.website">{{ record.metadata.website }}</a>
           </dd>
         }
         <!-- COMMUNICATION_LANGUAGE -->
@@ -51,7 +51,7 @@
       </dl>
     </section>
 
-    <section class="mt-4">
+    <section class="ui:mt-4">
       @let defaultContact = filterContact(record.metadata.contacts, 'default');
       @let orderContact = filterContact(record.metadata.contacts, 'order');
       @let serialContact = filterContact(record.metadata.contacts, 'serial');

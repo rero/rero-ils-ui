@@ -16,9 +16,9 @@
 -->
 
 @if (record) {
-    <div class="grid grid-cols-12 gap-4 p-2">
+    <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2">
       <!-- DOCUMENT & ADDITIONAL DATA -->
-      <div *ngVar="record.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document" class="md:col-span-10 col-span-12">
+      <div *ngVar="record.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async as document" class="ui:md:col-span-10 ui:col-span-12">
         @if (document) {
           <a href="/{{ viewcode }}/documents/{{ record.metadata.loan.item.document.pid }}">
             {{ record.metadata.loan.item.document.title }}
@@ -34,13 +34,13 @@
         @if (document) {
           <shared-contribution [contributions]="document.metadata?.contribution" [view]="viewcode"></shared-contribution>
         }
-          <dl class="md:hidden grid grid-cols-4">
+          <dl class="ui:md:hidden ui:grid ui:grid-cols-4">
             <dt translate>Return date</dt>
             <dd>{{ record.metadata.date | dateTranslate: 'shortDate' }}</dd>
           </dl>
       </div>
       <!-- DUE DATE -->
-        <div class="md:col-span-2 col-span-12 hidden md:block">
+        <div class="ui:md:col-span-2 ui:col-span-12 ui:hidden ui:md:block">
           {{ record.metadata.date | dateTranslate: 'shortDate' }}
       </div>
     </div>

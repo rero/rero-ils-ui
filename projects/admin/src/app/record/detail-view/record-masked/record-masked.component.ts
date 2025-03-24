@@ -27,12 +27,12 @@ import { Component, Input } from '@angular/core';
         [ngClass]="{ 'fa-eye-slash text-error': record.metadata._masked, 'fa-eye text-success': !record.metadata._masked }"
       ></i>
       @if (withLabel) {
-        <label class="ml-1">{{ (record.metadata._masked ? 'Masked' : 'No masked') | translate }}</label>
+        <label class="ui:ml-1">{{ (record.metadata._masked ? 'Masked' : 'No masked') | translate }}</label>
       }
     } @else {
       <i class="fa fa-eye text-success" title="No masked" aria-hidden="true"></i>
       @if (withLabel) {
-        <label class="ml-1" translate>No masked</label>
+        <label class="ui:ml-1" translate>No masked</label>
       }
     }
   `,

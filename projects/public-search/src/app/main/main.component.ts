@@ -19,8 +19,8 @@ import { Component } from '@angular/core';
 @Component({
     selector: 'public-search-main',
     template: `
-    <div class="mt-2 p-20 bg-surface-50 dark:bg-surface-950">
-        <h1 class="text-center" translate>Public search</h1>
+    <div class="ui:mt-2 ui:p-20 ui:bg-surface-50 ui:dark:bg-surface-950">
+        <h1 class="ui:text-center" translate>Public search</h1>
     </div>
 `,
     standalone: false

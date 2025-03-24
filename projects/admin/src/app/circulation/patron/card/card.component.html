@@ -15,15 +15,15 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (patron?.patron) {
-  <div [ngClass]="{'text-muted': !clearPatronButton}">
-    <div class="grid grid-cols-12">
-      <div class="col-span-6 mt-0">
-        <div class="flex w-full">
-          <div class="flex mr-6 items-center">
+  <div [ngClass]="{'ui:text-muted-color': !clearPatronButton}">
+    <div class="ui:grid ui:grid-cols-12 ui:gap-x-4">
+      <div class="ui:col-span-6 ui:mt-0">
+        <div class="ui:flex ui:w-full">
+          <div class="ui:flex ui:mr-6 ui:items-center">
             <i class="fa fa-user fa-5x" aria-hidden="true"></i>
           </div>
-          <div class="flex w-full">
-            <div class="w-full">
+          <div class="ui:flex ui:w-full">
+            <div class="ui:w-full">
               <h3>
                 <a [routerLink]="patronLink">
                   <span id="patron-last-name">{{ patron.last_name }}</span>
@@ -32,21 +32,21 @@
                   }
                 </a>
               </h3>
-              <div class="grid grid-cols-12 w-full mt-2">
-                <div class="col-span-6">
+              <div class="ui:grid ui:grid-cols-12 ui:w-full ui:mt-2">
+                <div class="ui:col-span-6">
                   <div id="patron-birth-date">
                     @if (patron.birth_date) {
                       {{ patron.birth_date | dateTranslate:'mediumDate' }}
                       ({{ patronAge }} {{ 'years old' | translate }})
                       @if (isBirthday) {
                         &nbsp;
-                        <i class="fa fa-birthday-cake text-warning blink"></i>
+                        <i class="fa fa-birthday-cake text-warning ui:animate-pulse"></i>
                       }
                     }
                   </div>
                   <div id="patron-city">{{ patron.city }}</div>
                 </div>
-                <div class="col-span-6">
+                <div class="ui:col-span-6">
                   @if (patron.patron.type.pid | getRecord: 'patron_types': 'string':'name' | async; as patronTypeName) {
                     <div id="patron-type">{{ patronTypeName }}</div>
                   }
@@ -56,19 +56,19 @@
             </div>
           </div>
           @if (clearPatronButton) {
-            <div class="flex">
+            <div class="ui:flex">
               <p-button icon="fa fa-close" severity="danger" outlined (onClick)="clear()"></p-button>
             </div>
           }
         </div>
         <!-- NOTES-->
         @if (patron.notes) {
-          <div class="my-3">
-            <p-message class="w-full" severity="warn" showTransitionOptions="0ms">
-              <ul class="list-none mb-0">
+          <div class="ui:my-3">
+            <p-message class="ui:w-full" severity="warn" showTransitionOptions="0ms">
+              <ul class="ui:list-none">
                 @for (note of patron.notes; track note) {
-                  <li class="my-1">
-                    <span class="font-bold text-xl">{{ note.type | translate | ucfirst }}</span>
+                  <li class="ui:my-1">
+                    <span class="ui:font-bold ui:text-xl">{{ note.type | translate | ucfirst }}</span>
                     <p [innerHTML]="note.content | nl2br"></p>
                   </li>
                 }
@@ -77,14 +77,13 @@
           </div>
         }
       </div>
-      <div class="col-span-6 mt-0">
+      <div class="ui:col-span-6 ui:mt-0">
         <!-- Circulation message -->
         @if (displayCirculationMessages) {
-            {{ circulationMessages }}
             @if (patron.circulation_information) {
               @for (message of patron.circulation_informations.messages; track message) {
                 <p-message
-                  class="w-full"
+                  class="ui:w-full"
                   [text]="message.content"
                   severity="getMessageSeverity(message.type)"
                   showTransitionOptions="0ms"
@@ -93,7 +92,7 @@
             }
             @for (message of circulationMessages; track message) {
               <p-message
-                class="w-full"
+                class="ui:w-full"
                 [severity]="message.severity"
                 [text]="message.detail"
                 severity="info"

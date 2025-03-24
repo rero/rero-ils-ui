@@ -26,21 +26,21 @@
     @for (holding of holdings; track holding; let idx = $index) {
       <p-accordion-panel [value]="idx">
         <p-accordion-header>
-          <div class="w-full">
-            <div class="grid grid-cols-12 gap-4 mb-4">
-              <div id="holding-location-{{ holding.metadata.pid }}" class="col-span-12 md:col-span-5">
+          <div class="ui:w-full">
+            <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-4">
+              <div id="holding-location-{{ holding.metadata.pid }}" class="ui:col-span-12 ui:md:col-span-5">
                 {{ holding.metadata.library.name }}:&nbsp;{{ holding.metadata.location.name }}
               </div>
-              <div id="holding-category-name-{{ holding.metadata.pid }}" class="col-span-12 md:col-span-2">
+              <div id="holding-category-name-{{ holding.metadata.pid }}" class="ui:col-span-12 ui:md:col-span-2">
                 {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}
               </div>
-              <div class="col-span-12 md:col-span-2">
+              <div class="ui:col-span-12 ui:md:col-span-2">
                 @if (holding.metadata.public_items_count > 0) {
                   {{ holding.metadata.public_items_count }}
                   {{ holding.metadata.public_items_count | i18nPlural: { '=0': 'item', '=1': 'item', 'other': 'items' } | translate }}
               }
               </div>
-              <div id="holding-available-{{ holding.metadata.pid }}" class="col-span-12 md:col-span-3">
+              <div id="holding-available-{{ holding.metadata.pid }}" class="ui:col-span-12 ui:md:col-span-3">
                 @if (holding.metadata.holdings_type === 'serial') {
                     <i class="fa fa-circle text-warning"></i>
                     {{ 'see collections and items' | translate }}
@@ -95,7 +95,7 @@
               @if (holding.metadata.notes) {
                 @for (note of holding.metadata.notes | notesFilter : noteAuthorizedTypes; track note) {
                   <dt>
-                    <i class="fa fa-sticky-note-o pr-2"></i>
+                    <i class="fa fa-sticky-note-o ui:pr-2"></i>
                     {{ note.type | translate }}
                   </dt>
                   <dd [innerHTML]="note.content | nl2br"></dd>
@@ -114,15 +114,15 @@
             recordType="holding"
             [viewcode]="viewcode"
             [holdingsItemsCount]="holding.metadata.public_items_count"
-            class="w-full"
-            [ngClass]="{'mt-2': holding.metadata.public_items_count === 0}"
+            class="ui:w-full"
+            [ngClass]="{'ui:mt-2': holding.metadata.public_items_count === 0}"
           />
         </p-accordion-content>
       </p-accordion-panel>
     }
   </p-accordion>
 
-  <div class="mt-2">
+  <div class="ui:mt-2">
     @if (isLinkShowMore) {
     <p-button severity="secondary" [text]="true" (onClick)="showMore($event)">
       <div>

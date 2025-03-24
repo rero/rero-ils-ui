@@ -20,28 +20,26 @@ import { FieldArrayType } from '@ngx-formly/core';
 @Component({
     selector: 'admin-formly-repeat-section',
     template: `
-    <p-panel styleClass="my-3">
+    <p-panel styleClass="ui:my-3">
       <ng-template #header>
         @if (field.props.label || field.props.addButton) {
-            <label class="flex items-center gap-1" [ngClass]="field.props.className">
+            <label class="ui:flex ui:items-center ui:gap-2" [ngClass]="field.props.className">
               @if (field.props.label) {
                 <span>{{ field.props.label|translate }}</span>
               }
               @if (field.props.addButton) {
-                <p-button
-                  text
-                  (onClick)="add()"
-                  icon="fa fa-clone"
-                />
+                <p-button text (onClick)="add()" icon="fa fa-clone" />
               }
               @if (field.props.selectUnselect) {
                 <p-button
-                  text
+                  [outlined]="true"
+                  size="small"
                   (onClick)="field.props.selectUnselect($event, 'select', field.fieldGroup)"
                   [label]="'Select all' | translate"
                 />
                 <p-button
-                  text
+                  [outlined]="true"
+                  size="small"
                   (onClick)="field.props.selectUnselect($event, 'unselect', field.fieldGroup)"
                   translate
                   [label]="'Deselect all' | translate"
@@ -51,11 +49,11 @@ import { FieldArrayType } from '@ngx-formly/core';
         }
       </ng-template>
       @if (field.fieldGroup.length > 0) {
-          <div class="grid grid-cols-12 gap-4">
-            <div [ngClass]="field.props.trashButton ? 'col-span-11': 'col-span-12'">
-              <div class="grid grid-cols-12 gap-4 mt-2">
+          <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+            <div [ngClass]="field.props.trashButton ? 'ui:col-span-11': 'ui:col-span-12'">
+              <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-2">
                 @for (field of field.fieldGroup[0].fieldGroup; track field) {
-                  @if (field.className && field.className !== 'hidden') {
+                  @if (field.className && field.className !== 'ui:hidden') {
                     <div class="{{ field.props.headerClassName }}">
                       {{ field.props.label|translate }}
                       @if (field.props.required) {
@@ -68,9 +66,9 @@ import { FieldArrayType } from '@ngx-formly/core';
             </div>
             @for (f of field.fieldGroup; track f; let i = $index) {
               @if (f.fieldGroup.length > 0) {
-                <formly-field [ngClass]="field.props.trashButton ? 'col-span-11': 'col-span-12'" [field]="f" />
+                <formly-field [ngClass]="field.props.trashButton ? 'ui:col-span-11': 'ui:col-span-12'" [field]="f" />
                 @if (field.props.trashButton) {
-                  <div class="col-span-1 flex items-center justify-end">
+                  <div class="ui:col-span-1 ui:flex ui:items-center ui:justify-end">
                     @if (showTrash) {
                       <p-button
                         size="small"

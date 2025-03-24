@@ -15,28 +15,30 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if(illRequests$ | async; as illRequests) {
-  <p-card class="p-card-body-p-0">
+  <p-card>
     <ng-template #header>
-      <div class="grid grid-cols-12 gap-4 py-4 px-2 m-1 text-lg font-bold items-center border-b border-surface">
-          <div class="col-span-4" translate>Document</div>
-        <div class="col-span-3" translate>Pickup location</div>
-        <div class="col-span-2" translate>Request date</div>
-        <div class="col-span-2" translate>Loan status</div>
-        <div class="col-span-1" translate></div>
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:px-2 ui:m-1 ui:text-lg ui:font-bold ui:items-center ui:border-b ui:border-surface">
+          <div class="ui:col-span-4" translate>Document</div>
+        <div class="ui:col-span-3" translate>Pickup location</div>
+        <div class="ui:col-span-2" translate>Request date</div>
+        <div class="ui:col-span-2" translate>Loan status</div>
+        <div class="ui:col-span-1" translate></div>
       </div>
     </ng-template>
     @if (illRequests.length > 0) {
-      <div class="alternate-color">
+      <div>
         @for (record of illRequests; track record) {
-          <admin-ill-request-item [record]="record" />
+          <div class="ui:odd:bg-surface-50">
+            <admin-ill-request-item [record]="record" />
+          </div>
         }
       </div>
     } @else {
-      <div class="mx-4 my-6 font-bold" translate>
+      <div class="ui:mx-4 ui:my-6 ui:font-bold" translate>
         No ill request.
       </div>
     }
   </p-card>
 } @else {
-  <div class="font-bold mx-2 my-6" translate>Loading in progress</div>
+  <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
 }

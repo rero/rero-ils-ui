@@ -14,28 +14,28 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section id="histories-section" class="container mt-2">
+<section id="histories-section" class="container ui:mt-2">
   <p-panel>
     <ng-template #header>
-      <div class="hidden w-full md:grid grid-cols-12 gap-4 text-lg font-bold items-center">
-        <div class="col-span-10" translate>Document</div>
-        <div class="col-span-2" translate>Return date</div>
+      <div class="ui:hidden ui:w-full ui:md:grid ui:grid-cols-12 ui:gap-4 ui:text-lg ui:font-bold ui:items-center">
+        <div class="ui:col-span-10" translate>Document</div>
+        <div class="ui:col-span-2" translate>Return date</div>
       </div>
     </ng-template>
 
     @defer (when loaded) {
       @if (paginator.getRecordsCount() > 0) {
         @for (loan of records; track loan) {
-          <div class="odd:bg-surface-50 my-1">
+          <div class="ui:odd:bg-surface-50 ui:my-1">
             <public-search-patron-profile-history [record]="loan" id="history-{{ loan.metadata.pid }}" />
           </div>
         }
         <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator" />
       } @else {
-        <div class="font-bold mx-2 my-6" translate>No loan</div>
+        <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No loan</div>
       }
     } @placeholder {
-        <div class="font-bold mx-2 my-6" translate>Loading in progress</div>
+        <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
     }
   </p-panel>
 </section>

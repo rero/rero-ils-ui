@@ -14,11 +14,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section class="content">
-  <div class="grid grid-cols-12 gap-4 mb-6">
-    <div class="col-span-6">
-      <div class="flex gap-1">
-        <div class="grow">
+<section>
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-6">
+    <div class="ui:col-span-6">
+      <div class="ui:flex ui:gap-1">
+        <div class="ui:grow">
           <ng-core-search-input
             [placeholder]="'Checkout/checkin: please enter an item barcode.' | translate"
             [searchText]="searchText"
@@ -27,23 +27,23 @@
             [disabled]="searchInputDisabled"
           />
         </div>
-        <div class="self-end pl-1">
+        <div class="ui:self-center ui:pl-1">
           <admin-circulation-settings />
         </div>
       </div>
       @if (checkoutSettings) {
-        <div class="flex gap-1 mt-2">
+        <div class="ui:flex ui:gap-1 ui:mt-2">
           @for (setting of checkoutSettings; track setting) {
             <p-tag [severity]="setting.extra?.severity || 'warning'">
               {{ setting.label }}
-              <i class="fa fa-times-circle ml-2" (click)="removeCheckoutSettings(setting.key)"></i>
+              <i class="fa fa-times-circle ui:ml-2" (click)="removeCheckoutSettings(setting.key)"></i>
             </p-tag>
           }
         </div>
       }
     </div>
     <!-- Sorting loans -->
-    <div class="col-span-6 flex items-start justify-end">
+    <div class="ui:col-span-6 ui:flex ui:items-start ui:justify-end">
       <p-select
         [options]="[
           {value:'-transactiondate', label:'Transaction date (desc)' | translate, icon:'fa fa-sort-numeric-desc'},
@@ -56,13 +56,13 @@
         (onChange)="selectingSortCriteria($event)"
       >
         <ng-template #selectedItem let-item>
-          <div class="flex items-center gap-2">
+          <div class="ui:flex ui:items-center ui:gap-2">
             <i [class]="item.icon"></i>
             <div>{{ item.label }}</div>
           </div>
         </ng-template>
         <ng-template #item let-item>
-          <div class="flex items-center gap-2">
+          <div class="ui:flex ui:items-center ui:gap-2">
             <i [class]="item.icon"></i>
             <div>{{ item.label }}</div>
           </div>

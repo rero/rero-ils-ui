@@ -27,7 +27,7 @@
   <header>
     <h1>{{ 'Barcode' | translate }} {{ record.metadata.barcode }}</h1>
   </header>
-  <section class="mt-4">
+  <section class="ui:mt-4">
     @if (record.metadata._masked) {
       <admin-record-masked [record]="record" [withLabel]="true" />
     }
@@ -59,7 +59,7 @@
           <span class="text-success">
           {{ record.metadata.temporary_item_type.pid | getRecord:'item_types': 'field':'name' | async }}
           @if (record.metadata.temporary_item_type.end_date; as endDate) {
-            <span class="text-sm">
+            <span class="ui:text-sm">
               <i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }}
             </span>
           }
@@ -141,7 +141,7 @@
 
   <!-- ISSUE DATA -->
   @if (record.metadata.type === 'issue') {
-    <section class="mt-4">
+    <section class="ui:mt-4">
       <header>
         <h3 translate>Issue data</h3>
       </header>
@@ -164,7 +164,7 @@
           @if (record.metadata.issue.status === issueItemStatus.RECEIVED) {
             {{ record.metadata.issue.received_date | dateTranslate }}
           } @else {
-            <span class="text-muted-color italic" translate>Not yet received</span>
+            <span class=" ui:text-muted-color ui:italic" translate>Not yet received</span>
           }
         </dd>
         <!-- issue status -->
@@ -179,17 +179,17 @@
 
   <!-- NOTES -->
   @if (record.metadata.notes) {
-    <section class="mt-4">
+    <section class="ui:mt-4">
       <h3 translate>Notes</h3>
       <dl class="metadata">
         @for (note of record.metadata.notes; track note) {
             <dt>
-              <i class="fa text-sm"
+              <i class="fa ui:text-sm"
                 [pTooltip]="isPublicNote(note)? ('Public notes' | translate): ('Staff notes' | translate)"
                 tooltipPosition="top"
                 [ngClass]="{
                   'fa-eye text-success': isPublicNote(note),
-                  'fa-eye-slash text-secondary': !isPublicNote(note)
+                  'fa-eye-slash ui:text-muted-color': !isPublicNote(note)
                 }"
               ></i>
               &nbsp;{{ note.type | translate }}
@@ -200,7 +200,7 @@
     </section>
   }
 
-  <section class="mt-4">
+  <section class="ui:mt-4">
     <p-tabs value="circulation">
       <p-tablist>
         <p-tab value="circulation">
@@ -208,7 +208,7 @@
           {{ 'Circulation' | translate }}
         </p-tab>
         <p-tab value="field">
-          <i class="fa fa-list-ul mr-1"></i>&nbsp;
+          <i class="fa fa-list-ul ui:mr-1"></i>&nbsp;
           {{ 'Local fields' | translate }}
         </p-tab>
         @if (record.metadata?.issue?.claims) {
@@ -225,14 +225,14 @@
       </p-tablist>
       <p-tabpanels>
         <p-tabpanel value="circulation">
-          <div class="flex flex-col gap-2">
-            <div class="flex justify-end">
+          <div class="ui:flex ui:flex-col ui:gap-2">
+            <div class="ui:flex ui:justify-end">
               <admin-circulation-logs-dialog [resourcePid]="record.metadata.pid" [resourceType]="'item'" />
             </div>
             <admin-item-transactions [itemPid]="record.metadata.pid" (requestEvent)="updateItemStatus()" />
             <admin-item-fees [itemPid]="record.metadata.pid" [permissions]="permissions.PTTR_ACCESS" />
             @if (record.metadata | keyExists:'legacy_checkout_count') {
-              <section class="border rounded-border border-surface px-2">
+              <section class="ui:border ui:rounded-border ui:border-surface ui:p-2">
                 <dl class="metadata">
                     <dt translate>
                       Legacy checkout count
@@ -250,7 +250,7 @@
         </p-tabpanel>
         @if (record.metadata?.issue?.claims) {
           <p-tabpanel value="claim">
-            <ul class="list-none">
+            <ul class="ui:list-none">
               @for (date of claimsDates; track date) {
                 <li>
                   {{ date | dateTranslate: 'shortDate' }} - {{ date | dateTranslate: 'shortTime' }}

@@ -25,7 +25,7 @@
     <p-tablist>
       @for(item of items; track item) {
         <p-tab [value]="item.id">
-          <a pRipple class="flex gap-2" [routerLink]="item.routerLink">
+          <a pRipple class="ui:flex ui:gap-2" [routerLink]="item.routerLink">
             <span>{{ item.label | translate }}</span>
             @if (item.tag?.statistics && item.tag?.statistics()[item.id] && item.tag?.statistics()[item.id] > 0) {
               @if (item.tag.withCurrency) {
@@ -42,7 +42,7 @@
       }
     </p-tablist>
   </p-tabs>
-  <div class="mt-6">
+  <div class="ui:mt-6">
     <router-outlet />
   </div>
 }

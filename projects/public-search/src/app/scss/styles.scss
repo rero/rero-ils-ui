@@ -15,27 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@use 'sass:meta';
-@use "primeicons/primeicons.css";
-@use "easymde/dist/easymde.min";
-@use "@rero/ng-core/assets/scss/tailwind/theme.scss";
-@use "../document-detail/holdings/holdings.component.scss";
 
-@plugin "tailwindcss-primeui";
-
-@layer theme {
-  @include meta.load-css('tailwindcss/theme');
-}
+@use '../../../../shared/src/scss/styles';
+@use "../document-detail/holdings/holdings.component";
 
 @layer rero-ils-ui {
   .rero-ils-ui {
-    @layer base {
-      @include meta.load-css("tailwindcss/preflight.css");
-    }
-    @layer utilities {
-      @include meta.load-css("tailwindcss/utilities.css");
-    }
-    @include meta.load-css("./styles-app.scss");
+    @import "@rero/ng-core/assets/scss/ng-core";
+    @import "tailwindcss/preflight.css" layer(base) prefix(ui);
   }
 }
 
+// due to the bootstrap reset (reboot)
+legend {
+  @apply ui:text-base;
+  width: auto;
+}

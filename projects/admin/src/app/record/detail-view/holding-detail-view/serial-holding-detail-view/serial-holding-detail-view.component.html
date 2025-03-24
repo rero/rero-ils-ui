@@ -19,7 +19,7 @@
   <admin-record-masked [record]="holding" [withLabel]="true"></admin-record-masked>
 }
 @if (holding.metadata.document.pid | getRecord:'documents' | async; as document) {
-    <div class="border rounded-border border-surface p-6">
+    <div class="ui:border ui:rounded-border ui:border-surface ui:p-6">
       <admin-documents-brief-view
           [record]="document"
           [type]="'documents'" [detailUrl]="{
@@ -42,10 +42,10 @@
     <ng-template #header>
       <i class="fa fa-list-ul"></i>&nbsp;{{ 'Issues' | translate }}
     </ng-template>
-    <div class="flex flex-col gap-2">
-      <div class="flex">
+    <div class="ui:flex ui:flex-col ui:gap-2">
+      <div class="ui:flex">
         <p-button
-          class="grow"
+          class="ui:grow"
           outlined
           (onClick)="showMore('prediction', 3)"
           icon="fa fa-arrow-circle-o-up"
@@ -65,7 +65,7 @@
           />
         }
       </div>
-      <div class="flex flex-col">
+      <div class="ui:flex ui:flex-col">
         @for (prediction of predictionsItems; track prediction; let last = $last) {
           <admin-expected-issue [issue]="prediction">
             @if (last) {
@@ -92,7 +92,7 @@
                       'enumerationAndChronology': prediction.issue,
                       'expected_date': prediction.expected_date
                     }"
-                    styleClass="ml-1"
+                    styleClass="ui:ml-1"
                   />
                 }
               </ng-container>
@@ -104,7 +104,7 @@
         }
       </div>
       @if (receivedItems.length < totalReceivedItems) {
-        <div class="flex items-center gap-2">
+        <div class="ui:flex ui:items-center ui:gap-2">
         <p-button
           outlined
           size="small"
@@ -112,7 +112,7 @@
           icon="fa fa-arrow-circle-o-down"
           label="{{ 'Show more' | translate }} &hellip;"
           />
-        <small class="text-muted-color">({{ showMoreIssuesCounter }})</small>
+        <small class=" ui:text-muted-color">({{ showMoreIssuesCounter }})</small>
       </div>
       }
     </div>

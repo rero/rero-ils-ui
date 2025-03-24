@@ -14,11 +14,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<p-menubar class="relative z-20" [model]="items" [autoDisplay]="false">
+<p-menubar class="ui:relative ui:z-20" [model]="items" [autoDisplay]="false">
   <ng-template #item let-item let-root="root">
     <a
       pRipple
-      class="flex items-center p-menubar-item-link"
+      class="ui:flex ui:items-center p-menubar-item-link"
       [attr.id]="item.id"
       [routerLink]="item.routerLink"
       [href]="item.url"
@@ -29,12 +29,12 @@
       }
       <span>{{ item.label }}</span>
       @if (item.shortcut) {
-        <span class="ml-auto border border-surface rounded bg-surface-100 bg-emphasis text-muted-color text-xs p-1">
+        <span class="ui:ml-auto ui:border ui:border-surface ui:rounded ui:bg-surface-100 ui:bg-emphasis ui:text-muted-color ui:text-xs ui:p-1">
           {{ item.shortcut }}
         </span>
       }
       @if (item.items) {
-        <i [ngClass]="['ml-auto pi', root ? 'pi-angle-down ml-2' : 'pi-angle-right']"></i>
+        <i [ngClass]="['ui:ml-auto fa', root ? 'fa-angle-down ui:ml-2' : 'fa-angle-right']"></i>
       }
     </a>
   </ng-template>

@@ -46,6 +46,7 @@ export class OperationLogsDialogComponent {
       dismissableMask: true,
       closable: true,
       width: '60vw',
+      position: 'top',
       data: {
         resourceType: this.resourceType,
         resourcePid: this.resourcePid

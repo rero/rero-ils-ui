@@ -168,15 +168,12 @@ export class MefRemoteService implements IRemoteAutocomplete {
     // Type of entity
     const icon = Entity.getIcon(entity.type);
     const title = this.translateService.instant(entity.type);
-    let output = `<i class="fa ${icon} mr-1" title="${title}"></i>`;
+    let output = `<i class="fa ${icon} ui:mr-1" title="${title}"></i>`;
     output += (entity?.uri)
       ? `<a href="${entity.uri}" target="_blank">${entity.label} <i class="fa fa-external-link"></i></a>`
       : `<span>${entity.label}</span>`;
     badges.forEach(badge => {
-      const className = (badge?.type)
-        ? `badge-${badge.type}`
-        : 'badge-secondary';
-      output += `<small class="badge ${className} ml-1">${badge.label}</small>`;
+      output += `<span class="ui:rounded-md ui:bg-surface-100 ui:ml-3 ui:py-1 ui:px-2">${badge.label}</span>`;
     });
     return output;
   }
@@ -188,7 +185,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
    */
   private handleEntityResolutionError(error: Error, value: string): Observable<string> {
     console.error(`getValueAsHTML :: Unable to resolve entity :: ${value}`, error);
-    return of(`<span class="text-warning"><i class="fa fa-exclamation-triangle mr-1"></i>${value}</span>`);
+    return of(`<span class="text-warning"><i class="fa fa-exclamation-triangle ui:mr-1"></i>${value}</span>`);
   }
 
   /**

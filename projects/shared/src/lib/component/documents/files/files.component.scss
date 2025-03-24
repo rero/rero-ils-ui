@@ -17,7 +17,7 @@
 
 shared-doc-files {
   .p-carousel-item {
-    @apply self-end;
+    @apply ui:self-end;
   }
   .p-dialog {
     transform: none;

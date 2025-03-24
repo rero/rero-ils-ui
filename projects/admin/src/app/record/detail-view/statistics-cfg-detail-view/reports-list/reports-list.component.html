@@ -19,12 +19,12 @@
     <ng-template #body let-report>
       <tr>
         <td>
-            <a class="pl-2" target="_blank" [href]="getReportUrl(report.metadata.pid)">
+            <a class="ui:pl-2" target="_blank" [href]="getReportUrl(report.metadata.pid)">
             {{ report.created | dateTranslate: 'longDate' }}
-            <i class="pl-1 fa fa-external-link"></i>
+            <i class="ui:pl-1 fa fa-external-link"></i>
           </a>
         </td>
-        <td class="text-right">
+        <td class="ui:text-right">
           <a pButton text [href]="getReportUrl(report.metadata.pid)+'?format=csv'">
             <i class="fa fa-download"></i>
           </a>
@@ -33,5 +33,5 @@
     </ng-template>
   </p-table>
 } @else {
-  <p class="m-0 px-6 py-2 text-muted-color" translate>No result</p>
+  <p class="ui:m-0 ui:px-6 ui:py-2  ui:text-muted-color" translate>No result</p>
 }

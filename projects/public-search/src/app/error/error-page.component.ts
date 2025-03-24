@@ -28,7 +28,7 @@ export function _(str: string) {
     template: `
     <p-message [severity]="messages[statusCode].severity" showTransitionOptions="0ms">
       @let msg = messages[statusCode];
-      <div class="w-full">
+      <div class="ui:w-full">
         <h3>{{ msg.summary }}</h3>
         <p>{{ msg.detail }}</p>
         <em translate>For any information please contact system administrator.</em>

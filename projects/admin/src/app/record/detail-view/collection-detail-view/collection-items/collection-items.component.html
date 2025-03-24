@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020-2024 RERO
+  Copyright (C) 2020-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -16,48 +16,51 @@
 -->
 @if (items) {
   <h4 translate>Items</h4>
-  <ul class="list-none alternate-color">
+  <ul class="ui:list-none">
     @for (item of items; track item) {
-      <li class="p-2" *ngVar="item.pid | getRecord: 'items' | async as itemData">
-        @if ($any(itemData).metadata.document.pid | getRecord:'documents':'object':null:{Accept: 'application/rero+json'} | async; as document) {
-          <h5>
-            <a [routerLink]="['/records','documents', 'detail', itemData.metadata.document.pid]">
-              {{ $any(document).metadata.title[0]._text }}
-            </a>
-          </h5>
-          <div>
-            @if ($any(document).metadata.contribution) {
-              <shared-contribution [contributions]="$any(document).metadata.contribution"></shared-contribution>
-            }
-          </div>
-          <dl class="metadata">
-            <dt translate>Publication</dt>
-            <dd>
-              {{ $any(document).metadata.provisionActivity[0]._text[0].value }}
-            </dd>
-            <dt translate>Barcode</dt>
-            <dd>
-              {{ itemData.metadata.barcode }}
-            </dd>
-            @if (itemData | itemHoldingsCallNumber | async; as callNumber) {
-              @if ((callNumber.first | json) !== '{}' || (callNumber.second | json) !== '{}') {
-                <dt translate>Call number</dt>
+      @let itemData = item.pid | getRecord: 'items' | async;
+      @if (itemData) {
+        <li class="ui:p-2 ui:odd:bg-surface-50">
+          @if ($any(itemData).metadata.document.pid | getRecord:'documents':'object':null:{Accept: 'application/rero+json'} | async; as document) {
+            <h5>
+              <a [routerLink]="['/records','documents', 'detail', $any(itemData).metadata.document.pid]">
+                {{ $any(document).metadata.title[0]._text }}
+              </a>
+            </h5>
+            <div>
+              @if ($any(document).metadata.contribution) {
+                <shared-contribution [contributions]="$any(document).metadata.contribution"></shared-contribution>
+              }
+            </div>
+            <dl class="metadata">
+              <dt translate>Publication</dt>
+              <dd>
+                {{ $any(document).metadata.provisionActivity[0]._text[0].value }}
+              </dd>
+              <dt translate>Barcode</dt>
+              <dd>
+                {{ $any(itemData).metadata.barcode }}
+              </dd>
+              @if (itemData | itemHoldingsCallNumber | async; as callNumber) {
+                @if ((callNumber.first | json) !== '{}' || (callNumber.second | json) !== '{}') {
+                  <dt translate>Call number</dt>
+                  <dd>
+                    <shared-inherited-call-number [item]="itemData" />
+                  </dd>
+                }
+              }
+              @if ($any(itemData).metadata.location.pid | getRecord:'locations' | async; as location) {
+                <dt translate>Library</dt>
                 <dd>
-                  <shared-inherited-call-number [item]="itemData" />
+                  @if ($any(location).metadata.library.pid | getRecord: 'libraries' | async; as library) {
+                    {{ $any(library).metadata.name }} - {{ $any(location).metadata.name }}
+                  }
                 </dd>
               }
-            }
-            @if (itemData.metadata.location.pid | getRecord:'locations' | async; as location) {
-              <dt translate>Library</dt>
-              <dd>
-                @if ($any(location).metadata.library.pid | getRecord: 'libraries' | async; as library) {
-                  {{ $any(library).metadata.name }} - {{ $any(location).metadata.name }}
-                }
-              </dd>
-            }
-          </dl>
-        }
-      </li>
+            </dl>
+          }
+        </li>
+      }
     }
   </ul>
 }

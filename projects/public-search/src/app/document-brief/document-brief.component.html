@@ -16,20 +16,20 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  <article class="flex gap-6">
-    <div class="hidden md:block">
+  <article class="ui:flex ui:gap-6">
+    <div class="ui:hidden ui:md:block">
       <shared-thumbnail [record]="record" />
     </div>
-    <div class="grow">
+    <div class="ui:grow">
       <!-- document title -->
-      <h4 class="mb-1">
+      <h4 class="ui:mb-1">
         <a target="_self" [href]="detailUrl.link | safeUrl">{{ record.metadata.title | mainTitle }}</a>
       </h4>
       <!-- contributions -->
       <shared-contribution [contributions]="record.metadata?.contribution" [view]="viewcode" />
       <!-- provision activity publications -->
       @if (provisionActivityPublications.length > 0) {
-        <ul class="list-none mb-0 p-0">
+        <ul class="ui:list-none">
           @for (publication of provisionActivityPublications; track publication) {
             <li>{{ publication.value }}</li>
           }
@@ -39,7 +39,7 @@
       <shared-part-of [record]="record" [viewcode]="viewcode" [isPublicView]="true" />
       <!-- edition statement -->
       @if (record.metadata.editionStatement) {
-        <ul class="list-none mb-0 p-0">
+        <ul class="ui:list-none">
           @for (edition of record.metadata.editionStatement; track edition) {
             <li>{{ edition._text[0].value }}</li>
           }

@@ -20,7 +20,7 @@
         <tr>
             <th>&nbsp;</th>
             @for (patronType of patronTypes; track patronType) {
-              <th class="text-center">
+              <th class="ui:text-center">
                 {{ patronType.metadata.name }}
               </th>
             }
@@ -30,7 +30,7 @@
           <tr>
             <td>{{ itemType.label }}</td>
             @for (patronType of itemType.patronTypes; track patronType) {
-              <td class="text-center">
+              <td class="ui:text-center">
                 <input
                   type="checkbox"
                   [checked]="patronType.checked"

@@ -23,23 +23,23 @@ import { map } from 'rxjs/operators';
 @Component({
     selector: 'admin-error-page',
     template: `
-    <section class="bg-white dark:bg-gray-900">
-      <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-          <div class="mx-auto max-w-screen-sm text-center">
-              <span class="mb-4 text-7xl tracking-tight font-extrabold lg:text-8xl text-primary-600 dark:text-primary-500">
+    <section class="ui:bg-white ui:dark:bg-gray-900">
+      <div class="ui:py-8 ui:px-4 ui:mx-auto ui:max-w-screen-xl ui:lg:py-16 ui:lg:px-6">
+          <div class="ui:mx-auto ui:max-w-screen-sm ui:text-center">
+              <span class="ui:mb-4 ui:text-7xl ui:tracking-tight ui:font-extrabold ui:lg:text-8xl ui:text-primary-600 ui:dark:text-primary-500">
               {{ statusCode }}
               </span>
-              <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">
+              <p class="ui:mb-4 ui:text-3xl ui:tracking-tight ui:font-bold ui:text-gray-900 ui:md:text-4xl ui:dark:text-white">
                 {{ messages[statusCode].title }}
               </p>
-              <div class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">
-                <ul class="list-none">
+              <div class="ui:mb-4 ui:text-lg ui:font-light ui:text-gray-500 ui:dark:text-gray-400">
+                <ul class="ui:list-none">
                   @for (text of messages[statusCode].description || []; track text) {
                     <li>{{ text }}</li>
                   }
                 </ul>
               </div>
-              <div class="mt-4">
+              <div class="ui:mt-4">
                 <p-button outlined [label]="'Back to dashboard'|translate" [routerLink]="['/']" />
               </div>
           </div>

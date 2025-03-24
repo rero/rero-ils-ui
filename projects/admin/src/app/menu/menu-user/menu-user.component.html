@@ -19,7 +19,7 @@
     @if (item.routerLink && !item.url) {
       <span
         pRipple
-        class="flex items-center p-menubar-item-link"
+        class="ui:flex ui:items-center p-menubar-item-link"
         [id]="item.id"
         [routerLink]="item.routerLink"
         [queryParams]="item.queryParams"
@@ -29,17 +29,17 @@
         }
         <span>{{ item.label }}</span>
         @if (item.badge) {
-          <p-badge [ngClass]="{ 'ml-auto': !root, 'ml-2': root }" [value]="item.badge"></p-badge>
+          <p-badge [ngClass]="{ 'ui:ml-auto': !root, 'ui:ml-2': root }" [value]="item.badge"></p-badge>
         }
         @if (item.shortcut) {
-          <span class="ml-auto border border-surface rounded bg-surface-100 bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
+          <span class="ui:ml-auto ui:border ui:border-surface ui:rounded ui:bg-surface-100 ui:bg-emphasis ui:text-muted-color ui:text-xs ui:p-1">{{ item.shortcut }}</span>
         }
       </span>
     }
     @if (item.url && !item.routerLink) {
       <a
         pRipple
-        class="flex items-center p-menubar-item-link"
+        class="ui:flex ui:items-center p-menubar-item-link"
         [id]="item.id"
         [href]="item.url"
         [target]="item.target"
@@ -49,21 +49,21 @@
         }
         <span>{{ item.label }}</span>
         @if (item.badge) {
-          <p-badge [ngClass]="{ 'ml-auto': !root, 'ml-2': root }" [value]="item.badge"></p-badge>
+          <p-badge [ngClass]="{ 'ui:ml-auto': !root, 'ui:ml-2': root }" [value]="item.badge"></p-badge>
         }
         @if (item.shortcut) {
-          <span class="ml-auto border border-surface rounded bg-surface-100 bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
+          <span class="ui:ml-auto ui:border ui:border-surface ui:rounded ui:bg-surface-100 ui:bg-emphasis ui:text-muted-color ui:text-xs ui:p-1">{{ item.shortcut }}</span>
         }
       </a>
     }
     @if (!item.url && !item.routerLink) {
-      <div class="flex items-center p-menubar-item-link">
+      <div class="ui:flex ui:items-center p-menubar-item-link">
         @if (item.icon) {
           <span [class]="item.icon" class="p-menubar-item-icon"></span>
         }
         <span>{{ item.label }}</span>
         @if (!item.disabled && item.items) {
-          <i [ngClass]="['ml-auto pi pi-fw', root ? 'pi-angle-down ml-2' : 'pi-angle-right']"></i>
+          <i [ngClass]="['ui:ml-auto fa', root ? 'fa-angle-down ui:ml-2' : 'fa-angle-right']"></i>
         }
       </div>
     }

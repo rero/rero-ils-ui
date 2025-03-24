@@ -20,11 +20,11 @@ admin-migration-data {
     table {
       border-spacing: 0;
       th {
-        @apply text-left;
+        @apply ui:text-left;
       }
       td,
       th {
-        @apply align-top py-1 px-3;
+        @apply ui:align-top ui:py-1 ui:px-3;
       }
       tbody tr:nth-of-type(odd) {
         background-color: var(--p-surface-100);
@@ -33,10 +33,10 @@ admin-migration-data {
   }
   .data {
     .col-overflow {
-      @apply overflow-auto max-h-[600px];
+      @apply ui:overflow-auto ui:max-h-[600px];
     }
     .json {
-      @apply border-l-1 pl-2;
+      @apply ui:border-l-1 ui:pl-2;
       border-color: var(--p-surface-300)
     }
   }

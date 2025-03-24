@@ -16,16 +16,16 @@
 -->
 <form [formGroup]="exceptionForm" (ngSubmit)="onSubmit()" style="max-width: 50vw;">
   <!-- Title -->
-  <div class="grid grid-cols-12 gap-4">
-    <label for="title" class="col-span-2">
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:flex">
+    <label for="title" class="ui:col-span-2">
       {{ 'Title' | translate }}&nbsp;*
     </label>
-    <div class="col-span-10">
+    <div class="ui:col-span-10">
       <input
-        class="w-full"
+        class="ui:w-full"
         pInputText
         formControlName="title"
-        placeholder="{{ 'Please insert a title' | translate }}"
+        [placeholder]="'Please insert a title' | translate"
       />
       @if (title.invalid && (title.dirty || title.touched)) {
         <div class="text-error">
@@ -35,19 +35,25 @@
         </div>
       }
     </div>
-    <div class="row-start-3 col-span-10">
+    <div class="ui:col-span-10 ui:col-start-3">
       <input type="radio" name="day" value="false" [checked]="is_period.value === false" (change)="onPeriodChange($event)" />
       &nbsp;{{ 'Day' | translate }}
       <input type="radio" name="period" value="true" [checked]="is_period.value === true" (change)="onPeriodChange($event)" />
       &nbsp;{{ 'Period' | translate }}
     </div>
-    <!-- one Date -->
+
     @if (!is_period.value) {
-      <label for="date" class="col-span-2">
+      <label for="date" class="ui:col-span-2">
         {{ 'Date' | translate }}&nbsp;*
       </label>
-      <div class="col-span-10">
-        <p-datepicker appendTo="body" formControlName="date" [readonlyInput]="true" />
+      <div class="ui:col-span-10">
+        <p-datepicker
+          appendTo="body"
+          formControlName="date"
+          [readonlyInput]="true"
+          styleClass="ui:w-full"
+          [showIcon]="true"
+        />
         @if (date.invalid && (date.dirty || date.touched)) {
           <div class="text-error">
             @if (date.errors.required) {
@@ -60,18 +66,20 @@
         }
       </div>
     }
-  <!-- Period -->
-  @if (is_period.value) {
-      <label for="date" class="col-span-2 col-form-label required">
+
+    @if (is_period.value) {
+      <label for="date" class="ui:col-span-2">
         {{ 'Dates' | translate }}&nbsp;*
       </label>
-      <div class="col-span-10">
+      <div class="ui:col-span-10">
         <p-datepicker
+          styleClass="ui:w-full"
           appendTo="body"
           formControlName="dates"
           selectionMode="range"
           [readonlyInput]="true"
           numberOfMonths="2"
+          [showIcon]="true"
         />
         @if (dates.invalid && (dates.dirty || dates.touched)) {
           <div class="text-error">
@@ -84,21 +92,22 @@
           </div>
         }
       </div>
-  }
-  <!-- open/close + times -->
-  <div class="row-start-3 col-span-10">
-    <input type="radio" class="form-check-input" name="date-status" value="false" [checked]="is_open.value === false" (change)="onDateStatusChange($event)" />
-    &nbsp;{{ 'Closed' | translate }}
-    <input type="radio" class="form-check-input" name="date-status" value="true" [checked]="is_open.value === true" (change)="onDateStatusChange($event)"/>
-    &nbsp;{{ 'Open' | translate }}
-    @if (exceptionForm.value && exceptionForm.value.is_open) {
-      <em class="block mt-2" translate>Change the default opening hours for this day</em>
     }
-    @if (exceptionForm.value && !exceptionForm.value.is_open) {
-      <em class="block mt-2" translate>Change the default closing hours for this day</em>
-    }
-  </div>
-    <div class="row-start-3 col-span-10">
+
+    <div class="ui:col-span-10 ui:col-start-3">
+      <input type="radio" name="date-status" value="false" [checked]="is_open.value === false" (change)="onDateStatusChange($event)" />
+      &nbsp;{{ 'Closed' | translate }}
+      <input type="radio" name="date-status" value="true" [checked]="is_open.value === true" (change)="onDateStatusChange($event)"/>
+      &nbsp;{{ 'Open' | translate }}
+      @if (exceptionForm.value && exceptionForm.value.is_open) {
+        <em class="ui:block ui:mt-2" translate>Change the default opening hours for this day</em>
+      }
+      @if (exceptionForm.value && !exceptionForm.value.is_open) {
+        <em class="ui:block ui:mt-2" translate>Change the default closing hours for this day</em>
+      }
+    </div>
+
+    <div class="ui:col-span-10 ui:col-start-3">
       @if (times.length === 0) {
         <p-button
           (onClick)="addTime()"
@@ -108,25 +117,25 @@
           [label]="'period' | translate"
         />
       }
-      <ul class="list-none">
+      <ul class="ui:list-none">
         @for (time of times.controls; track time; let t=$index) {
-          <li formArrayName="times">
+          <li formArrayName="times" class="ui:mb-1">
             <div [formGroupName]="t">
-              <div class="grid grid-cols-12 gap-4">
-                <div class="col-span-5">
-                  <input pInputText class="w-full" formControlName="start_time">
+              <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+                <div class="ui:col-span-5">
+                  <input pInputText class="ui:w-full" formControlName="start_time">
                 </div>
-                <div class="col-span-5">
-                  <input pInputText class="w-full" formControlName="end_time">
+                <div class="ui:col-span-5">
+                  <input pInputText class="ui:w-full" formControlName="end_time">
                 </div>
-                <div class="col-span-2">
+                <div class="ui:col-span-2">
                   @if (times.length === 1) {
                     <p-button
-                    text
-                    severity="secondary"
-                    size="small"
-                    (onClick)="addTime()"
-                    icon="fa fa-clone"
+                      text
+                      severity="secondary"
+                      size="small"
+                      (onClick)="addTime()"
+                      icon="fa fa-clone"
                     />
                   }
                   <p-button
@@ -177,25 +186,25 @@
         </div>
       }
     </div>
-    <div class="col-span-2 flex gap-2 align-items-top">
-          <p-toggleswitch
-            formControlName="repeat"
-            id="repeat"
-            (onChange)="onRepeatChange($event)"
-          />
-          {{ 'Repetition' | translate | titlecase }}
+
+    <div class="ui:col-span-2 ui:flex ui:gap-2 ui:items-center">
+      <p-toggleswitch
+        formControlName="repeat"
+        id="repeat"
+        (onChange)="onRepeatChange($event)"
+      />
+      {{ 'Repetition' | translate | titlecase }}
     </div>
     @if (repeat.value) {
-      <div class="col-span-10 flex flex-col gap-2">
+      <div class="ui:col-span-10 ui:flex ui:gap-2 ui:items-center">
         <label for="interval"><span translate>Repeat each</span>&nbsp;*</label>
-        <div class="flex gap-2">
+        <div class="ui:flex ui:gap-2">
           <p-inputNumber [showButtons]="true"  min="1" step="1" formControlName="interval" />
           <p-select
-          styleClass="w-full"
-          class="w-full"
-          [options]="periods"
-          formControlName="period"
-        />
+            appendTo="body"
+            [options]="periods"
+            formControlName="period"
+          />
         </div>
         @if (interval.invalid && (interval.dirty || interval.touched)) {
           <div class="text-error">
@@ -212,8 +221,9 @@
         }
       </div>
     }
-    </div>
-    <div class="flex justify-end">
+  </div>
+  <div class="ui:flex ui:gap-1 ui:justify-end ui:mt-3">
+    <p-button [label]="'Cancel'|translate" [outlined]="true" severity="danger" (onClick)="cancel()" />
     <p-button type="submit" [label]="'Save'|translate" (onClick)="onSubmit()" [disabled]="exceptionForm.invalid" />
   </div>
 </form>

@@ -15,22 +15,22 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (transaction !== undefined) {
-  <div [ngClass]="{ 'callout callout-warning': isDisputed(), 'border rounded border-gray-200': !isDisputed()}" class="p-2">
-    <div class="grid grid-cols-12 items-start">
-      <div class="col-span-2 flex gap-2">
+  <div [ngClass]="{ 'callout callout-warning': isDisputed()}" class="ui:p-2">
+    <div class="ui:grid ui:grid-cols-12 ui:items-start">
+      <div class="ui:col-span-2 ui:flex ui:gap-2">
         <shared-open-close-button (status)="isCollapsed = $event" />
         <div>
           {{ transaction.creation_date | dateTranslate :'shortDate' }}
         </div>
       </div>
-      <div class="col-span-3">{{ transaction.type | translate }}</div>
-      <div class="col-span-3">
+      <div class="ui:col-span-3">{{ transaction.type | translate }}</div>
+      <div class="ui:col-span-3">
         @if (transaction.library) {
           <span>{{ transaction.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</span>
         }
       </div>
-      <div class="col-span-2 flex justify-end">{{ transactionAmount | currency: organisation.default_currency }}</div>
-      <div class="col-span-2 flex justify-end">
+      <div class="ui:col-span-2 ui:flex ui:justify-end">{{ transactionAmount | currency: organisation.default_currency }}</div>
+      <div class="ui:col-span-2 ui:flex ui:justify-end">
         @if (transaction.status === patronTransactionStatus.OPEN) {
           <p-select
             [placeholder]="'Action'|translate"
@@ -42,16 +42,18 @@
       </div>
     </div>
     @if (!isCollapsed) {
-      <div class="mt-2">
-        <!-- Transaction detail -->
-        <h6 translate>Details</h6>
-        <section class="mb-4" [ngSwitch]="transaction?.type">
-          <admin-overdue-transaction-detail [transaction]="transaction" *ngSwitchCase="'overdue'" />
-          <admin-default-transaction-detail [transaction]="transaction" *ngSwitchDefault />
-        </section>
-        <!-- Transaction history -->
-        <h6 translate>Transaction history</h6>
-        <admin-patron-transaction-history [events]="transaction.get_events()" />
+      <div class="ui:grid ui:grid-cols-12">
+        <div class="ui:col-start-3 ui:col-span-9 ui:mt-2">
+          <!-- Transaction detail -->
+          <h6 translate>Details</h6>
+          <section class="ui:mb-4" [ngSwitch]="transaction?.type">
+            <admin-overdue-transaction-detail [transaction]="transaction" *ngSwitchCase="'overdue'" />
+            <admin-default-transaction-detail [transaction]="transaction" *ngSwitchDefault />
+          </section>
+          <!-- Transaction history -->
+          <h6 translate>Transaction history</h6>
+          <admin-patron-transaction-history [events]="transaction.get_events()" />
+        </div>
       </div>
     }
   </div>

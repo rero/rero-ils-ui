@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @defer (when permissions.length > 0) {
-  <div class="flex flex-col gap-2">
+  <div class="ui:flex ui:flex-col ui:gap-2">
     <label for="filter" translate>Filter permission list</label>
     <input
         pInputText
@@ -24,15 +24,17 @@
         id="filter"
         (keyup)="filterPermissions(search.value)"
     />
-    <small id="filterInfo" class="form-text text-muted-color" translate>Enter a part of the permission name to filter the list.</small>
+    <small id="filterInfo" class="ui:text-muted-color" translate>Enter a part of the permission name to filter the list.</small>
   </div>
-  <div class="grid grid-cols-12 gap-4 mt-4 mb-2">
-    <div class="col-span-10 font-bold uppercase" translate>Permission</div>
-    <div class="col-span-2 font-bold text-center uppercase" translate>Access</div>
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-4 ui:mb-2">
+    <div class="ui:col-span-10 ui:font-bold ui:uppercase" translate>Permission</div>
+    <div class="ui:col-span-2 ui:font-bold ui:text-center ui:uppercase" translate>Access</div>
   </div>
-  <div class="alternate-color">
+  <div>
     @for (permission of filteredPermissions; track permission) {
-      <admin-patron-permission [permission]="permission" />
+      <div class="ui:odd:bg-surface-50">
+        <admin-patron-permission [permission]="permission" />
+      </div>
     }
   </div>
 } @placeholder {

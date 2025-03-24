@@ -16,7 +16,7 @@
 -->
 
 @if (record) {
-<div class="flex justify-between">
+<div class="ui:flex ui:justify-between">
   <div>
     <h5>
       {{ record.metadata.name }}&nbsp;<p-tag [value]="record.metadata.status" />
@@ -29,7 +29,7 @@
     </div>
     }
   </div>
-  <div class="flex gap-1">
+  <div class="ui:flex ui:gap-1">
     <p-button
       [routerLink]="['..', 'format', 'migration_data']"
       [queryParams]="{ migration: record.id }"

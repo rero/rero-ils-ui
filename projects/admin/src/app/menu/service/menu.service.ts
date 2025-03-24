@@ -70,7 +70,7 @@ export class MenuService {
         label: this.translateService.instant(`ui_language_${language}`),
         translateLabel: `ui_language_${language}`,
         id: `lang-${language}`,
-        styleClass: currentLanguage === language ? 'font-bold' : '',
+        styleClass: currentLanguage === language ? 'ui:font-bold' : '',
         command: () => this.httpClient
           .post(`/language`, {lang: language})
           .subscribe(() => this.translateService.use(language))
@@ -111,7 +111,7 @@ export class MenuService {
           label: `[${library.metadata.code}] ${library.metadata.name}`,
           code: library.metadata.code,
           pid: library.metadata.pid,
-          styleClass: library.metadata.pid === libraryActive.metadata.pid ? 'font-bold' : '',
+          styleClass: library.metadata.pid === libraryActive.metadata.pid ? 'ui:font-bold' : '',
           command: () => this.libraryService.switch({
             pid: library.metadata.pid,
             code: library.metadata.code,

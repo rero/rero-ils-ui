@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,15 +15,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (loaded) {
-<form
-  class="flex flex-col gap-2"
-  [formGroup]="form"
-  (ngSubmit)="onSubmit(model)"
->
+<form class="ui:flex ui:flex-col ui:gap-2" [formGroup]="form" (ngSubmit)="onSubmit(model)">
   <!-- FORM HEADER :: title and action buttons -->
-  <section class="flex gap-2 justify-between items-center">
+  <section class="ui:flex ui:gap-2 ui:justify-between ui:items-center">
     <h1 translate>Receipt of an order</h1>
-    <div class="flex gap-1">
+    <div class="ui:flex ui:gap-1">
       <p-button
         outlined
         severity="danger"
@@ -44,7 +40,7 @@
 
   <!-- KNOWN ORDER/RECEIPT DATA -->
   <p-panel toggleable collapsed [header]="'Order overview' | translate">
-    <div class="p-2">
+    <div class="ui:p-2">
       <admin-order-summary [order]="orderRecord" />
       @if (receiptRecord) {
         <p-panel [header]="'Already in this receipt' | translate">
@@ -61,7 +57,7 @@
 
   <!-- FORMLY FORM -->
   <p-panel [header]="'Receipt new data' | translate">
-    <div class="p-2">
+    <div class="ui:p-2">
       <formly-form [form]="form" [fields]="fields" [model]="model" />
     </div>
   </p-panel>

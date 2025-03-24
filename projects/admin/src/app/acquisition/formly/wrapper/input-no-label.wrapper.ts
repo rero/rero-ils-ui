@@ -20,10 +20,10 @@ import { FieldWrapper } from '@ngx-formly/core';
 @Component({
     selector: 'admin-formly-input-no-label-wrapper',
     template: `
-  <div class="my-2">
+  <div class="ui:my-2">
     <ng-container #fieldComponent></ng-container>
     @if (showError) {
-      <div class="text-error my-2">
+      <div class="text-error ui:my-2">
         <formly-validation-message [field]="field" />
       </div>
     }

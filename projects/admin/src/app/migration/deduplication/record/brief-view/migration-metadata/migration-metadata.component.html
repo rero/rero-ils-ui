@@ -18,23 +18,23 @@
   size="small"
   stripedRows
   [value]="data()"
-  [tableStyle]="{ 'min-width': '50rem', width: '100%', 'font-size': '0.8em' }"
+  [tableStyle]="{ 'min-width': '50rem', width: '100%', 'ui:font-size': '0.8em' }"
 >
   <ng-template #header>
     <tr>
       <th style="width: 10%" translate>Field</th>
       <th style="width: 40%" translate>Record to Import</th>
       <th style="width: 40%" translate>Candidate</th>
-      <th class="text-right" style="width: 10%" translate>Score | Weight</th>
+      <th class="ui:text-right" style="width: 10%" translate>Score | Weight</th>
     </tr>
   </ng-template>
   <ng-template #body let-d>
     <tr>
-      <td>
+      <td class="ui:align-top">
         <strong>{{ d.label | translate }}</strong>
       </td>
       @if(d.link) {
-       <td>
+       <td class="ui:align-top">
         <a [routerLink]="d.link.router" [queryParams]="d.link?.params" target="_blank">
           {{d.field}}&nbsp;<i class="fa fa-external-link"></i>
         </a></td>
@@ -42,14 +42,14 @@
         <td [innerHTML]="d.field"></td>
       }
       @if(d?.c_link?.router) {
-       <td>
+       <td class="ui:align-top">
         <a [routerLink]="d.c_link.router" [queryParams]="d.c_link?.params" target="_blank">
           {{d.c_field}}&nbsp;<i class="fa fa-external-link"></i>
         </a></td>
       } @else {
-        <td [innerHTML]="d.c_field"></td>
+        <td class="ui:align-top" [innerHTML]="d.c_field"></td>
       }
-      <td class="text-right" [innerHTML]="d.score"></td>
+      <td class="ui:align-top ui:text-right" [innerHTML]="d.score"></td>
     </tr>
   </ng-template>
 </p-table>

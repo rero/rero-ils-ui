@@ -17,16 +17,16 @@
 -->
 @defer (when orderLines) {
   @if (orderLines.length > 0) {
-    <div class="alternate-color">
-      @for (orderLine of orderLines; track orderLine) {
+    @for (orderLine of orderLines; track orderLine) {
+      <div class="ui:odd:bg-surface-50">
         <admin-order-line [orderLine]="orderLine" [order]="order" />
-      }
-    </div>
+      </div>
+    }
   } @else {
-    <div class="mt-3" translate>No order lines</div>
+    <div class="ui:mt-3" translate>No order lines</div>
   }
 } @placeholder {
-  <div class="my-3">
-    <i class="fa fa-spinner animate-spin"></i>&nbsp;{{ "Loading in progress…" | translate }}
+  <div class="ui:my-3">
+    <i class="fa fa-spinner ui:animate-spin"></i>&nbsp;{{ "Loading in progress…" | translate }}
   </div>
 }

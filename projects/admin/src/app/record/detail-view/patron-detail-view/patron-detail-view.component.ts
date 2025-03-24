@@ -88,7 +88,7 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
    * @param role: the role to check.
    * @return the primeng badge class to use for this role.
    */
-  getroleTagSeverity(role: string): string {
+  getRoleTagSeverity(role: string): string {
     return roleTagSeverity(role);
   }
 

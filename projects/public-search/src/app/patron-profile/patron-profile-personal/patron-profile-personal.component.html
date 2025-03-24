@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<section id="personal-section" class="mt-2">
+<section id="personal-section" class="ui:mt-2">
   <h4 translate>Personal details</h4>
   <dl class="metadata">
     <!-- GENDER -->
@@ -104,7 +104,7 @@
     </dd>
   </dl>
   @if (disabledButtonOnReadyOnly) {
-    <div class="flex gap-2 mt-4">
+    <div class="ui:flex ui:gap-2 ui:mt-4">
       <p-button size="small" [label]="'Edit'|translate" [routerLink]="['user', 'edit' ]" />
       <p-button size="small" [label]="'Change my password'|translate" [routerLink]="['password', 'edit']" />
     </div>

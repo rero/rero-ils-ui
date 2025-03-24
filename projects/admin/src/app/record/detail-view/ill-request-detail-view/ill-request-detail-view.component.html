@@ -16,16 +16,16 @@
 -->
 @if (record) {
   <h1>{{ 'ILL request' | translate }} #{{ record.metadata.pid }}</h1>
-  <div class="flex flex-col gap-3 mt-5">
+  <div class="ui:flex ui:flex-col ui:gap-3 ui:mt-5">
     <!-- DOCUMENT INFORMATION'S -->
     <p-panel>
       <ng-template #header>
-        <span class="text-xl">
+        <span class="ui:text-xl">
           <i class="fa fa-book"></i>&nbsp;
           {{ 'Document information' | translate }}
         </span>
       </ng-template>
-      <dl class="metadata mt-3">
+      <dl class="metadata ui:mt-3">
         <dt translate>Title</dt>
         <dd>{{ record.metadata.document.title }}</dd>
         @if (record.metadata.document.authors; as authors) {
@@ -64,12 +64,12 @@
   <!-- REQUEST ADDITIONAL DETAILS -->
   <p-panel>
     <ng-template #header>
-      <span class="text-xl">
+      <span class="ui:text-xl">
         <i class="fa fa-info-circle"></i>&nbsp;
         {{ 'Request additional informations' | translate }}
       </span>
     </ng-template>
-    <dl class="metadata mt-3">
+    <dl class="metadata ui:mt-3">
       @if (record.metadata.found_in; as source) {
         <dt translate>Found in</dt>
         <dd>
@@ -128,12 +128,12 @@
   @if (record.metadata.notes) {
     <p-panel>
       <ng-template #header>
-        <span class="text-xl">
+        <span class="ui:text-xl">
           <i class="fa fa-sticky-note-o"></i>&nbsp;
           {{ 'Notes' | translate }}
         </span>
       </ng-template>
-      <dl class="metadata mt-3">
+      <dl class="metadata ui:mt-3">
         @for (note of record.metadata.notes; track note) {
           <dt translate>{{ note.type }}</dt>
           <dd [innerHTML]="note.content | nl2br"></dd>

@@ -16,35 +16,35 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (item && !(item.loading || false)) {
-  <div class="grid grid-cols-12 gap-4 items-start p-2" [ngClass]="{
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-start ui:p-2" [ngClass]="{
       'callout callout-warning': needCallout(item, 'warning') || (item.actionDone === itemAction.checkin && totalAmountOfFee > 0) || !item.loan,
-      'text-muted-color': item.status !== ItemStatus.ON_LOAN
+      ' ui:text-muted-color': item.status !== ItemStatus.ON_LOAN
     }"
   >
     <!-- BARCODE -->
-    <div name="barcode" class="col-span-3 flex gap-2">
+    <div name="barcode" class="ui:col-span-3 ui:flex ui:gap-2">
       @if (!item.actions || item.loan || totalAmountOfFee || item.pending_loans || notifications$) {
         <shared-open-close-button [collapsed]="isCollapsed" (status)="isCollapsed = $event" />
       }
-      <div class="flex flex-col gap-2">
+      <div class="ui:flex ui:flex-col ui:gap-2">
         <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
         @if (isCollapsed) {
-          <shared-inherited-call-number class="block text-sm" [item]="item" />
+          <shared-inherited-call-number class="ui:block ui:text-sm" [item]="item" />
         }
       </div>
       @if (item.actionDone) {
         @if ((item.actionDone === itemAction.checkin && item.getNote('checkin_note')) ||
         (item.actionDone === itemAction.checkout && item.getNote('checkout_note'))) {
-          <i class="fa fa-exclamation-triangle text-warning mt-1 ml-auto mr-2"></i>
+          <i class="fa fa-exclamation-triangle text-warning ui:mt-1 ui:ml-auto ui:mr-2"></i>
         }
       } @else {
         @if (!item.actions) {
-          <i class="fa fa-exclamation-triangle text-warning mt-1 ml-auto mr-2"></i>
+          <i class="fa fa-exclamation-triangle text-warning ui:mt-1 ui:ml-auto ui:mr-2"></i>
         }
       }
     </div>
     <!-- TITLE -->
-    <div name="title" class="col-span-5">
+    <div name="title" class="ui:col-span-5">
       <a [routerLink]="['/records','documents','detail', item.document.pid]">
         @if (item.document?.title) {
           {{ isCollapsed ? (item.document.title | mainTitle | truncateText: 12) : item.document.title | mainTitle }}
@@ -55,7 +55,7 @@
         }
       </a>
       @if (item.enumerationAndChronology && isCollapsed) {
-        <span class="badge badge-info">{{ item.enumerationAndChronology }}</span>
+        <p-tag severity="info" [value]="item.enumerationAndChronology" />
       }
       @if (document) {
         <shared-contribution [contributions]="document?.contribution" />
@@ -63,7 +63,7 @@
 
       <!-- COLLAPSED DETAILS -->
     @if (!isCollapsed) {
-      <div class="mt-2">
+      <div class="ui:mt-2">
         <dl class="metadata">
           <dt translate>Call number</dt>
           <dd>
@@ -97,9 +97,9 @@
           @if (item.loan && item.loan.extension_count) {
             <dt translate>Renewals</dt>
             <dd>
-              <p-tag severity="secondary" styleClass="mr-1">
+              <p-tag severity="secondary" styleClass="ui:mr-1">
                 {{ item.loan.extension_count }}
-                <i class="fa fa-refresh ml-1"></i>
+                <i class="fa fa-refresh ui:ml-1"></i>
               </p-tag>
             </dd>
           }
@@ -112,7 +112,7 @@
           @if (item.loan && totalAmountOfFee > 0) {
             <dt translate>Fees</dt>
             <dd>
-              <p-tag severity="warning" styleClass="mr-1">
+              <p-tag severity="warning" styleClass="ui:mr-1">
                 {{ totalAmountOfFee | currency: organisation.default_currency }}
               </p-tag>
             </dd>
@@ -121,10 +121,10 @@
             @if (notifications.length > 0) {
               <dt translate>Notifications</dt>
               <dd>
-                <ul class="list-none">
+                <ul class="ui:list-none">
                   @for (notification of notifications; track notification) {
                     <li>
-                      <span class="text-muted-color small">
+                      <span class="ui:text-muted-color ui:text-sm">
                         {{ notification.metadata.process_date
                             ? (notification.metadata.process_date | dateTranslate :'short')
                             : (notification.metadata.creation_date | dateTranslate : 'shortDate')
@@ -143,15 +143,15 @@
             <dt translate>Requests</dt>
             <dd>
               @if (item.pending_loans.length > 1) {
-                <p-tag severity="info" styleClass="mr-1">
+                <p-tag severity="info" styleClass="ui:mr-1">
                   {{ item.pending_loans.length }}
                 </p-tag>
-                <i class="fa fa-long-arrow-right px-2"></i>
+                <i class="fa fa-long-arrow-right ui:px-2"></i>
               }
               @for (request of item.pending_loans; track request) {
-                <p-tag severity="secondary" styleClass="mr-1">
+                <p-tag severity="secondary" styleClass="ui:mr-1">
                   <i class="fa fa-shopping-basket"></i>&nbsp;
-                  <a class="text-white" [routerLink]="['/circulation', 'patron', request.patron.barcode, 'loan']">{{ request.patron.name }}</a>
+                  <a class="ui:text-white" [routerLink]="['/circulation', 'patron', request.patron.barcode, 'loan']">{{ request.patron.name }}</a>
                 </p-tag>
               }
             </dd>
@@ -172,9 +172,9 @@
     }
     </div>
     <!-- CIRCULATION INFO -->
-    <div name="circ-info" class="col-span-2">
+    <div name="circ-info" class="ui:col-span-2">
       @if (item.loan) {
-        <ul class="list-none">
+        <ul class="ui:list-none">
           @switch (item.status) {
             @case ('on_loan') {
               <li>
@@ -218,22 +218,22 @@
             }
           }
           <!-- RENEWALS, FEES, REQUESTS -->
-          <li class="mt-1">
+          <li class="ui:mt-1">
             @if (isCollapsed && item.loan && item.loan.extension_count && (!item.actionDone || item.actionDone !== itemAction.checkin)) {
-              <p-tag [title]="'Renewals'|translate" severity="secondary" styleClass="mr-1">
-                {{ item.loan.extension_count }} <i class="fa fa-refresh ml-1"></i>
+              <p-tag [title]="'Renewals'|translate" severity="secondary" styleClass="ui:mr-1">
+                {{ item.loan.extension_count }} <i class="fa fa-refresh ui:ml-1"></i>
               </p-tag>
             }
             @if (isCollapsed && totalAmountOfFee > 0) {
-              <p-tag [title]="'Fees'|translate" severity="warning" styleClass="mr-1">
+              <p-tag [title]="'Fees'|translate" severity="warning" styleClass="ui:mr-1">
                 {{ totalAmountOfFee | currency: organisation.default_currency }}
               </p-tag>
             }
             @if (isCollapsed && item.pending_loans && item.pending_loans.length) {
-              <p-tag [title]="'Requests'|translate" severity="secondary" styleClass="mr-1">
-                <div class="flex items-start gap-1">
-                  <i class="fa fa-shopping-basket mt-1"></i>&nbsp;
-                  <a class="text-white" [routerLink]="['/circulation', 'patron', item.pending_loans[0].patron.barcode, 'loan']">
+              <p-tag [title]="'Requests'|translate" severity="secondary" styleClass="ui:mr-1">
+                <div class="ui:flex ui:items-start ui:gap-1">
+                  <i class="fa fa-shopping-basket ui:mt-1"></i>&nbsp;
+                  <a class="ui:text-white" [routerLink]="['/circulation', 'patron', item.pending_loans[0].patron.barcode, 'loan']">
                     {{ item.pending_loans[0].patron.name }}
                   </a>
                 </div>
@@ -246,10 +246,10 @@
       }
     </div>
     <!-- ACTION DONE -->
-    <div name="action-done" class="col-span-2">
-      <div class="flex justify-end">
+    <div name="action-done" class="ui:col-span-2">
+      <div class="ui:flex ui:justify-end">
         @if (item.actionDone) {
-          <div class="flex gap-2 p-disabled" pButton severity="secondary" outlined>
+          <div class="ui:flex ui:gap-2 p-disabled" pButton severity="secondary" outlined>
             @switch (item.actionDone) {
               @case (itemAction.checkin) {
                 <i class="fa fa-arrow-circle-o-down text-success" aria-hidden="true"></i>
@@ -282,7 +282,7 @@
         }
       </div>
       @if (canUseDebugMode && !isCollapsed) {
-        <div class="flex justify-end mt-2">
+        <div class="ui:flex ui:justify-end ui:mt-2">
           <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" [outlined]="true" severity="warning" (onClick)="debugMode=!debugMode">
             <i class="fa fa-bug"></i>
           </p-button>
@@ -290,39 +290,39 @@
       }
     </div>
     @if (debugMode && !isCollapsed) {
-      <div class="col-span-12">
+      <div class="ui:col-span-12">
         <h5 class="text-error"><i class="fa fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
-        <div class="grid grid-cols-12 gap-4">
+        <div class="ui:grid ui:grid-cols-12 ui:gap-4">
           @if (loan) {
-            <div class="lg:col-span-6 col-span-12">
-              <div class="flex flex-col border border-surface rounded-border p-2 bg-white">
+            <div class="ui:lg:col-span-6 ui:col-span-12">
+              <div class="ui:flex ui:flex-col ui:border ui:border-surface ui:rounded-border ui:p-2 ui:bg-white">
                 <h5 translate>Loan</h5>
-                <p-scrollPanel styleClass="w-full" [style]="{ height: '500px' }">
-                  <pre class="text-sm">{{ loan | json }}</pre>
+                <p-scrollPanel styleClass="ui:w-full" [style]="{ height: '500px' }">
+                  <pre class="ui:text-sm">{{ loan | json }}</pre>
                 </p-scrollPanel>
               </div>
             </div>
-            <div class="lg:col-span-6 col-span-12">
+            <div class="ui:lg:col-span-6 ui:col-span-12">
               @if (loan | getLoanCipo | async; as cipo) {
-                <div class="flex flex-col border border-surface rounded-border p-2 bg-white">
+                <div class="ui:flex ui:flex-col ui:border ui:border-surface ui:rounded-border ui:p-2 ui:bg-white">
                   <h5>
                     {{ 'Circulation policy' | translate }}&nbsp;
                     <a [routerLink]="['/records', 'circ_policies', 'detail', cipo.pid]" target="_circulation">
                       <i class="fa fa-external-link"></i>
                     </a>
                   </h5>
-                  <p-scrollPanel styleClass="w-full" [style]="{ height: '500px' }">
-                    <pre class="text-sm">{{ cipo | json }}</pre>
+                  <p-scrollPanel styleClass="ui:w-full" [style]="{ height: '500px' }">
+                    <pre class="ui:text-sm">{{ cipo | json }}</pre>
                   </p-scrollPanel>
                 </div>
               }
             </div>
           } @else {
-            <div class="col-span-12">
-              <div class="flex flex-col border border-surface rounded-border p-2 bg-white">
+            <div class="ui:col-span-12">
+              <div class="ui:flex ui:flex-col ui:border ui:border-surface ui:rounded-border ui:p-2 ui:bg-white">
                 <h5 translate>Item</h5>
-                <p-scrollPanel styleClass="w-full" [style]="{ height: '500px' }">
-                  <pre class="text-sm">{{ item | json }}</pre>
+                <p-scrollPanel styleClass="ui:w-full" [style]="{ height: '500px' }">
+                  <pre class="ui:text-sm">{{ item | json }}</pre>
                 </p-scrollPanel>
               </div>
             </div>

@@ -15,20 +15,21 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (historyLogs$ | async; as logs) {
-  <section class="content">
+  <section>
     @if (logs.length > 0) {
-      <div class="grid grid-cols-12 p-4 m-1 text-lg font-bold items-center border-t border-b border-surface">
-        <div class="col-span-6" translate>Title</div>
-        <div class="col-span-4" translate>Authors</div>
-        <div class="col-span-2" translate>Return date</div>
+      <div class="ui:grid ui:grid-cols-12 ui:p-4 ui:m-1 ui:text-lg ui:font-bold ui:items-center ui:border-t ui:border-b ui:border-surface">
+        <div class="ui:col-span-10">{{ 'Title' | translate }} / {{ 'Authors' | translate }}</div>
+        <div class="ui:col-span-2" translate>Return date</div>
       </div>
-      <div class="alternate-color">
+      <div>
         @for (log of logs; track log) {
-          <admin-history-log [log]="log" />
+          <div class="ui:odd:bg-surface-50">
+            <admin-history-log [log]="log" />
+          </div>
         }
       </div>
     } @else {
-      <div class="mt-4 font-bold" translate>No history.</div>
+      <div class="ui:mt-4 ui:font-bold" translate>No history.</div>
     }
   </section>
 }

@@ -31,6 +31,8 @@ export class PatronProfileService {
   /** Fees event */
   private loanFeesEvent = new Subject<number>();
 
+  private loanFeesTotal: number = 0;
+
   /** Get tab event observable */
   get tabsEvent$(): Observable<ITabEvent> {
     return this.tabsEvent.asObservable();
@@ -58,7 +60,12 @@ export class PatronProfileService {
 
   /** Emit the loan fees */
   loanFees(fees: number): void {
-    this.loanFeesEvent.next(fees);
+    this.loanFeesTotal += fees;
+    this.loanFeesEvent.next(this.loanFeesTotal);
+  }
+
+  resetLoanFeesTotal(): void {
+    this.loanFeesTotal = 0;
   }
 }
 
