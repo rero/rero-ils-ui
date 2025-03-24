@@ -23,16 +23,16 @@
   }
   <shared-contribution [contributions]="document?.contribution" [view]="viewcode" [limitRecord]="3" />
   @if (record.metadata && showAdditionalInformation) {
-      <dl class="md:grid grid-cols-4">
+      <dl class="ui:md:grid ui:grid-cols-4">
         <!-- CALL NUMBER -->
         @if (callNumbers; as formattedCallNumbers) {
-          <dt class="font-bold mr-2" translate>Call number</dt>
-          <dd class="col-span-3">{{ formattedCallNumbers }}</dd>
+          <dt class="ui:font-bold ui:mr-2" translate>Call number</dt>
+          <dd class="ui:col-span-3">{{ formattedCallNumbers }}</dd>
         }
         <!-- ENUMERATION AND CHRONOLOGY -->
         @if (record.metadata.item.enumerationAndChronology) {
-          <dt class="font-bold mr-2" translate>Unit</dt>
-          <dd class="col-span-3">{{ record.metadata.item.enumerationAndChronology }}</dd>
+          <dt class="ui:font-bold ui:mr-2" translate>Unit</dt>
+          <dd class="ui:col-span-3">{{ record.metadata.item.enumerationAndChronology }}</dd>
         }
       </dl>
       <ng-content select="[additional-metadata]" />

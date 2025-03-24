@@ -14,49 +14,48 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="main-content">
+<div>
   @if (record) {
     <ng-core-detail-button
-    [record]="record"
-    [type]="type"
-    [adminMode]="adminMode"
-    [useStatus]="useStatus"
-    [updateStatus]="updateStatus"
-    [deleteStatus]="deleteStatus"
-    (recordEvent)="recordEvent($event)"
-    (deleteMessageEvent)="showDeleteMessage($event)"
-  >
-    <ng-container beforeButton>
-      @if (record) {
-        @if (isEnabledOperationLog && record.metadata.pid) {
-          <shared-operation-logs-dialog resourceType="documents" [resourcePid]="record.metadata.pid" />
+      [record]="record"
+      [type]="type"
+      [adminMode]="adminMode"
+      [useStatus]="useStatus"
+      [updateStatus]="updateStatus"
+      [deleteStatus]="deleteStatus"
+      (recordEvent)="recordEvent($event)"
+      (deleteMessageEvent)="showDeleteMessage($event)"
+    >
+      <ng-container beforeButton>
+        @if (record) {
+          @if (isEnabledOperationLog && record.metadata.pid) {
+            <shared-operation-logs-dialog resourceType="documents" [resourcePid]="record.metadata.pid" />
+          }
+          @if (!record.metadata.pid && source) {
+            <p-button
+              icon="fa fa-cloud-download"
+              [label]="'Import'|translate"
+              outlined
+              [permissions]="permissions.DOC_CREATE"
+              (onClick)="importDocument($event, record, { source: source, pid: pid })"
+            />
+          }
+          @if (record.metadata.pid) {
+            <p-button
+              icon="fa fa-files-o"
+              [label]="'Duplicate'|translate"
+              outlined
+              [permissions]="permissions.DOC_CREATE"
+              [routerLink]="['/records', 'documents', 'duplicate']"
+              [queryParams]="{type: 'documents', pid: record.metadata.pid}"
+            />
+          }
         }
-        @if (!record.metadata.pid && source) {
-          <p-button
-            icon="fa fa-cloud-download"
-            [label]="'Import'|translate"
-            outlined
-            [permissions]="permissions.DOC_CREATE"
-            (onClick)="importDocument($event, record, { source: source, pid: pid })"
-          />
-        }
-        @if (record.metadata.pid) {
-          <p-button
-            icon="fa fa-files-o"
-            [label]="'Duplicate'|translate"
-            outlined
-            [permissions]="permissions.DOC_CREATE"
-            [routerLink]="['/records', 'documents', 'duplicate']"
-            [queryParams]="{type: 'documents', pid: record.metadata.pid}"
-          />
-        }
-      }
-    </ng-container>
-  </ng-core-detail-button>
+      </ng-container>
+    </ng-core-detail-button>
   }
   @if (error) {
     <ng-core-error [error]="error" />
   }
   <ng-template ngCoreRecordDetail />
-
 </div>

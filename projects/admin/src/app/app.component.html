@@ -16,30 +16,30 @@
 -->
 <ngx-loading-bar [includeSpinner]="false" height="3px" />
 <ngx-spinner color="#fff" size="medium" type="ball-zig-zag" [fullScreen]="true">
-  <p class="text-white" translate>Loading…</p>
+  <p class="ui:text-white" translate>Loading…</p>
 </ngx-spinner>
-<header class="bg-blue-900 p-1">
-  <div id="header-search" class="container flex w-full">
-    <div class="flex">
-      <a [routerLink]="['/']" class="navbar-brand pr-2 text-sm" id="homepage-logo">
+<header class="ui:bg-blue-900 ui:p-1">
+  <div id="header-search" class="container ui:flex ui:w-full">
+    <div class="ui:flex">
+      <a [routerLink]="['/']" class="ui:pr-2 ui:text-sm" id="homepage-logo">
         <img style="height: 44px;" class="logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+Cjxzdmcgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDE1NzEgMTE4NCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxuczpzZXJpZj0iaHR0cDovL3d3dy5zZXJpZi5jb20vIiBzdHlsZT0iZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7c3Ryb2tlLWxpbmVqb2luOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjI7Ij4KICAgIDxnIHRyYW5zZm9ybT0ibWF0cml4KDQuMTY2NjcsMCwwLDQuMTY2NjcsMCwwKSI+CiAgICAgICAgPHBhdGggZD0iTTI1Mi4yMjYsNDIuMjIxTDI1Mi4yMjYsMTEzLjUxNEMyNDIuMDE5LDE0MC44MDggMjIwLjM1OCwxNjIuMzQyIDE5My4xMDgsMTcyLjU5TDEyMS44MzUsMTcyLjU5TDEyMS44MzUsMTEzLjUxNEwxOTMuMTA4LDExMy41MTRMMTkzLjEwOCw0Mi4yMjFMMjUyLjIyNiw0Mi4yMjFaIiBzdHlsZT0iZmlsbDpyZ2IoMzAsMTYxLDIwNyk7ZmlsbC1ydWxlOm5vbnplcm87Ii8+CiAgICAgICAgPHBhdGggZD0iTTMyMy41MTksMTEzLjUxNEwzMjMuNTE5LDE3Mi41OUwyNTIuMjI2LDE3Mi41OUwyNTIuMjI2LDI0NC4yODdMMTkzLjEwOCwyNDQuMjg3TDE5My4xMDgsMTcyLjU5QzIyMC4zNTgsMTYyLjM0MiAyNDIuMDE5LDE0MC44MDggMjUyLjIyNiwxMTMuNTE0TDMyMy41MTksMTEzLjUxNFoiIHN0eWxlPSJmaWxsOnJnYigyMywxMDEsMTYyKTtmaWxsLXJ1bGU6bm9uemVybzsiLz4KICAgICAgICA8cGF0aCBkPSJNNDQuNDM4LDI0NC4zNDFMNDQuNDM4LDIzMC45MzZMNTIuOTI2LDIzMC45MzZMNTIuOTI2LDIzMC43MTRDNDkuNzk5LDIyOS4yMjQgNDcuMzgsMjI3LjEwMyA0NS42NjUsMjI0LjM0N0M0My45NTMsMjIxLjU5MyA0My4wOTgsMjE4LjQyNyA0My4wOTgsMjE0Ljg1M0M0My4wOTgsMjE0LjAzNSA0My4xNzMsMjEzLjIzMiA0My4zMjEsMjEyLjQ1MkM0My40NzEsMjExLjY2OCA0My42NTYsMjEwLjg3IDQzLjg3OSwyMTAuMDVMNTYuODM1LDIxMC4wNUM1Ni41MzgsMjExLjE2NiA1Ni4yOTYsMjEyLjI2NyA1Ni4xMSwyMTMuMzQ2QzU1LjkyNSwyMTQuNDI1IDU1LjgzLDIxNS40ODYgNTUuODMsMjE2LjUyOEM1NS44MywyMTkuNjU2IDU2LjQwNywyMjIuMTY5IDU3LjU2MiwyMjQuMDY4QzU4LjcxNywyMjUuOTY3IDYwLjAzNywyMjcuNDE4IDYxLjUyNywyMjguNDIzQzYzLjAxNywyMjkuNDI5IDY0LjUwNiwyMzAuMDk5IDY1Ljk5NCwyMzAuNDM0QzY3LjQ4NSwyMzAuNzY5IDY4LjYwMiwyMzAuOTM2IDY5LjM0NSwyMzAuOTM2TDk4LjA1LDIzMC45MzZMOTguMDUsMjQ0LjM0MUw0NC40MzgsMjQ0LjM0MVoiIHN0eWxlPSJmaWxsOnJnYigyMywxMDEsMTYyKTtmaWxsLXJ1bGU6bm9uemVybzsiLz4KICAgICAgICA8cGF0aCBkPSJNNjUuODg1LDE5MC42NzFDNjIuMDE0LDE5MC4xNCA1OC45MjYsMTg4LjcxNSA1Ni42MDYsMTg2LjM2N0M1NC4zLDE4NC4wMiA1My4xNTUsMTgwLjgzMyA1My4xNTUsMTc2LjgwOUM1My4xNTUsMTcyLjU3NCA1NC4yODYsMTY5LjI2MyA1Ni41NSwxNjYuODczQzU4LjgyOCwxNjQuNDgzIDYxLjkzMSwxNjMuMjY4IDY1Ljg4NSwxNjMuMTg0TDY1Ljg4NSwxOTAuNjcxWk03Mi4yNDMsMTQ5Ljc4MkM2Ny41NjMsMTQ5Ljc4MiA2My40MTIsMTUwLjM5NyA1OS43OTIsMTUxLjYyN0M1Ni4xODcsMTUyLjg1NyA1My4xNTUsMTU0LjU3NiA1MC42OTYsMTU2Ljc3QzQ4LjIzNiwxNTguOTY0IDQ2LjM0OSwxNjEuNjA0IDQ1LjA1LDE2NC42OTNDNDMuNzUsMTY3Ljc4MSA0My4wOTMsMTcxLjE5MSA0My4wOTMsMTc0LjkwOEM0My4wOTMsMTc4LjkzMyA0My43NjQsMTgyLjczNCA0NS4xMDUsMTg2LjMxMUM0Ni40NDcsMTg5Ljg3NSA0OC4zNDcsMTkyLjk3NyA1MC44MDcsMTk1LjU3NkM1My4yNjYsMTk4LjE4OSA1Ni4yMTQsMjAwLjI1OCA1OS42OCwyMDEuNzgxQzYzLjE0NiwyMDMuMzA0IDY3LjAwMiwyMDQuMDczIDcxLjI1MSwyMDQuMDczQzc1LjQ4NSwyMDQuMDczIDc5LjM0MiwyMDMuMzA0IDgyLjgwOCwyMDEuNzgxQzg2LjI3MywyMDAuMjU4IDg5LjIyMiwxOTguMTg5IDkxLjY4MSwxOTUuNTc2Qzk0LjE0MSwxOTIuOTc3IDk2LjA0MSwxODkuODc0IDk3LjM4MywxODYuMzExQzk4LjQ1OSwxODMuNDQ2IDk5LjEwMiwxODAuNDI4IDk5LjMxMiwxNzcuMjdMODguNjIxLDE3Ny4yN0M4OC40NTMsMTgwLjYzOCA4Ny4zMzUsMTgzLjU0NCA4NS4zMjMsMTg1Ljk3NkM4My4wODcsMTg4LjY1OSA3OS45NTcsMTkwLjIxIDc1LjkzMiwxOTAuNjcxTDc1LjkzMywxNDkuNzgyTDcyLjI0MywxNDkuNzgyWiIgc3R5bGU9ImZpbGw6cmdiKDIzLDEwMSwxNjIpO2ZpbGwtcnVsZTpub256ZXJvOyIvPgogICAgICAgIDxwYXRoIGQ9Ik00NC40MzksMTQwLjE4OUw0NC40MzksMTI2Ljc4NEw1Mi45MjcsMTI2Ljc4NEw1Mi45MjcsMTI2LjU2MkM0OS44LDEyNS4wNzIgNDcuMzgxLDEyMi45NTEgNDUuNjY3LDEyMC4xOTVDNDMuOTU1LDExNy40NCA0My4wOTksMTE0LjI3NSA0My4wOTksMTEwLjcwMUM0My4wOTksMTA5Ljg4MyA0My4xNzQsMTA5LjA4MSA0My4zMjMsMTA4LjI5OUM0My40NzIsMTA3LjUxNyA0My42NTcsMTA2LjcxOCA0My44OCwxMDUuODk4TDU2LjgzNywxMDUuODk4QzU2LjU0LDEwNy4wMTQgNTYuMjk3LDEwOC4xMTQgNTYuMTEyLDEwOS4xOTNDNTUuOTI2LDExMC4yNzIgNTUuODMyLDExMS4zMzQgNTUuODMyLDExMi4zNzZDNTUuODMxLDExNS41MDQgNTYuNDA5LDExOC4wMTcgNTcuNTY0LDExOS45MTZDNTguNzE4LDEyMS44MTUgNjAuMDM5LDEyMy4yNjcgNjEuNTI4LDEyNC4yNzFDNjMuMDE4LDEyNS4yNzYgNjQuNTA3LDEyNS45NDcgNjUuOTk2LDEyNi4yODJDNjcuNDg3LDEyNi42MTcgNjguNjA0LDEyNi43ODQgNjkuMzQ2LDEyNi43ODRMOTguMDUyLDEyNi43ODRMOTguMDUyLDE0MC4xODlMNDQuNDM5LDE0MC4xODlaIiBzdHlsZT0iZmlsbDpyZ2IoMzAsMTYxLDIwNyk7ZmlsbC1ydWxlOm5vbnplcm87Ii8+CiAgICAgICAgPHBhdGggZD0iTTcxLjI0Niw4Ny40MjZDNzMuMzMxLDg3LjQyNiA3NS4zNDIsODcuMDczIDc3LjI3OCw4Ni4zNjRDNzkuMjE0LDg1LjY1NyA4MC45MjcsODQuNjE1IDgyLjQxNSw4My4yMzZDODMuOTA2LDgxLjg1OSA4NS4wOTYsODAuMjAzIDg1Ljk5LDc4LjI2NUM4Ni44ODMsNzYuMzMxIDg3LjMzLDc0LjEzNCA4Ny4zMyw3MS42NzZDODcuMzMsNjkuMjIgODYuODgzLDY3LjAyMiA4NS45OSw2NS4wODZDODUuMDk2LDYzLjE1IDgzLjkwNiw2MS40OTUgODIuNDE2LDYwLjExNkM4MC45MjcsNTguNzM5IDc5LjIxNSw1Ny42OTYgNzcuMjc4LDU2Ljk4N0M3NS4zNDMsNTYuMjggNzMuMzMxLDU1LjkyOCA3MS4yNDYsNTUuOTI4QzY5LjE2Miw1NS45MjggNjcuMTUzLDU2LjI4IDY1LjIxNSw1Ni45ODdDNjMuMjc5LDU3LjY5NiA2MS41NjcsNTguNzM5IDYwLjA3Niw2MC4xMTZDNTguNTg4LDYxLjQ5NSA1Ny4zOTcsNjMuMTUgNTYuNTAyLDY1LjA4NkM1NS42MSw2Ny4wMjIgNTUuMTYyLDY5LjIyIDU1LjE2Miw3MS42NzZDNTUuMTYyLDc0LjEzNCA1NS42MSw3Ni4zMzEgNTYuNTAyLDc4LjI2NUM1Ny4zOTcsODAuMjA0IDU4LjU4OCw4MS44NTkgNjAuMDc2LDgzLjIzNkM2MS41NjcsODQuNjE1IDYzLjI3OSw4NS42NTcgNjUuMjE1LDg2LjM2NEM2Ny4xNTIsODcuMDczIDY5LjE2MSw4Ny40MjYgNzEuMjQ2LDg3LjQyNlpNNzEuMjQ1LDEwMC44MjhDNjcuMDAxLDEwMC44MjggNjMuMTQ4LDEwMC4wNjUgNTkuNjg2LDk4LjUzOEM1Ni4yMjMsOTcuMDEzIDUzLjI2Myw5NC45NDYgNTAuODA2LDkyLjM0QzQ4LjM0OSw4OS43MzQgNDYuNDQ5LDg2LjY0MyA0NS4xMSw4My4wNjlDNDMuNzcsNzkuNDk1IDQzLjEsNzUuNjk2IDQzLjEsNzEuNjc2QzQzLjEsNjcuNjU2IDQzLjc3LDYzLjg1NyA0NS4xMSw2MC4yODNDNDYuNDUsNTYuNzA5IDQ4LjM0OSw1My42MiA1MC44MDYsNTEuMDEyQzUzLjI2NCw0OC40MDcgNTYuMjIzLDQ2LjM0MSA1OS42ODcsNDQuODE0QzYzLjE0OSw0My4yODkgNjcuMDAyLDQyLjUyMyA3MS4yNDYsNDIuNTIzQzc1LjQ5LDQyLjUyMyA3OS4zNDUsNDMuMjg5IDgyLjgwNyw0NC44MTNDODYuMjY5LDQ2LjM0MSA4OS4yMyw0OC40MDcgOTEuNjg3LDUxLjAxMkM5NC4xNDQsNTMuNjIgOTYuMDQzLDU2LjcwOSA5Ny4zODMsNjAuMjgzQzk4LjcyMyw2My44NTcgOTkuMzkzLDY3LjY1NiA5OS4zOTMsNzEuNjc2Qzk5LjM5Myw3NS42OTYgOTguNzIzLDc5LjQ5NCA5Ny4zODIsODMuMDY4Qzk2LjA0Miw4Ni42NDMgOTQuMTQzLDg5LjczNCA5MS42ODYsOTIuMzRDODkuMjI5LDk0Ljk0NiA4Ni4yNjgsOTcuMDEzIDgyLjgwNiw5OC41MzhDNzkuMzQ0LDEwMC4wNjUgNzUuNDksMTAwLjgyOCA3MS4yNDUsMTAwLjgyOFoiIHN0eWxlPSJmaWxsOnJnYigzMCwxNjEsMjA3KTtmaWxsLXJ1bGU6bm9uemVybzsiLz4KICAgIDwvZz4KPC9zdmc+Cg==" alt="RERO ILS" />
       </a>
     </div>
     @if (user?.hasAdminUiAccess) {
-      <div class="flex w-full items-center">
-        <shared-remote-search internalRoutingBaseURL="/records/documents" class="w-full" styleclass="w-full" />
+      <div class="ui:flex ui:w-full ui:items-center">
+        <shared-remote-search internalRoutingBaseURL="/records/documents" class="ui:w-full" styleclass="ui:w-full" />
       </div>
     }
   </div>
 </header>
-<div class="container pb-6">
+<div class="container ui:pb-6">
 @if (user?.hasAdminUiAccess) {
   <admin-menu-app />
-  <div class="px-8">
+  <div class="ui:px-8">
     <p-toast>
       <ng-template #message let-message>
-        <div class="flex flex-col items-start" style="flex: 1">
-          <div class="font-medium text-lg text-surface-900 dark:text-surface-0">
+        <div class="ui:flex ui:flex-col ui:items-start" style="ui:flex: 1">
+          <div class="ui:font-medium ui:text-lg ui:text-surface-900 ui:dark:text-surface-0">
             {{ message.summary }}
           </div>
           <p [innerHtml]="message.detail"></p>
@@ -50,15 +50,15 @@
     <router-outlet />
   </div>
 } @else {
-  <div class="text-center">
-    <h3 class="mt-6 mb-6" translate>Permission required</h3>
+  <div class="ui:text-center">
+    <h3 class="ui:mt-6 ui:mb-6" translate>Permission required</h3>
     {{ 'You do not have sufficient permissions to view this page' | translate }}
   </div>
 }
 </div>
 
-<footer class="container px-8 flex border-t border-surface justify-center items-center mt-6 py-6">
-  <p class="text-secondary mb-0">
+<footer class="container ui:px-8 ui:flex ui:border-t ui:border-surface ui:justify-center ui:items-center ui:mt-6 ui:py-6">
+  <p class="ui:text-muted-color ui:mb-0">
     {{ 'Powered by' | translate }} <a href="https://github.com/rero/rero-ils" target="_blank">RERO ILS</a> & <a href="https://inveniosoftware.org/" target="_blank">Invenio</a> |
     <a href="https://www.rero.ch/" target="_blank">RERO+</a>
   </p>

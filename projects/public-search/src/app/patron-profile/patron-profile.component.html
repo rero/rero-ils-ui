@@ -18,21 +18,21 @@
 <header>
   <h3>{{ fullname }}</h3>
 </header>
-<section class="mt-2">
+<section class="ui:mt-2">
   <public-search-patron-profile-menu [patronPid]="patron.pid" />
 </section>
-<section class="mt-4">
+<section class="ui:mt-4">
   <p-toast />
   <public-search-patron-profile-message />
 </section>
 
-<section class="mt-4">
+<section class="ui:mt-4">
   @let tabsOrder = tabs|keyvalue: sortTabs;
   <p-tabs [(value)]="activeTab">
     <p-tablist>
       @for (tab of tabsOrder; track tab.key) {
         <p-tab [value]="tab.key">
-          <div class="flex gap-1">
+          <div class="ui:flex ui:gap-1">
             <div>{{ tab.value.title }}</div>
             @if (tab.value.count != null) {
               <p-badge [value]="tab.value.count" severity="info" />
@@ -77,7 +77,7 @@
   </p-tabs>
 </section>
 } @else {
-<div class="text-center p-6">
+<div class="ui:text-center ui:p-6">
   <h3 translate>Access denied</h3>
   {{ "You are not identified as a patron." | translate }}
 </div>

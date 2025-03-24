@@ -16,29 +16,29 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
   @if (orderLine && account) {
-    <div class="grid grid-cols-12 gap-4 mt-2 border-t border-b border-surface rounded-md">
-      <div class="col-span-8 flex gap-4 py-2 pl-2 border-l border-surface">
+    <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-2 ui:border-t ui:border-b ui:border-surface ui:ui:rounded-md">
+      <div class="ui:col-span-8 ui:flex ui:gap-4 ui:py-2 ui:pl-2 ui:border-l ui:border-surface">
         <shared-open-close-button (status)="isCollapsed = $event" />
-        <i class="fa status"
+        <i class="fa ui:mt-1"
             title="{{ orderLine.status | translate }}"
             [ngClass]="{
           'fa-envelope-open-o': orderLine.status === orderLineStatus.APPROVED,
           'fa-envelope-o': orderLine.status === orderLineStatus.ORDERED,
-          'text-text-color-secondary': orderLine.status === orderLineStatus.APPROVED || orderLine.status === orderLineStatus.ORDERED,
+          'ui:text-muted-color': orderLine.status === orderLineStatus.APPROVED || orderLine.status === orderLineStatus.ORDERED,
           'fa-sign-in': orderLine.status === orderLineStatus.RECEIVED || orderLine.status === orderLineStatus.PARTIALLY_RECEIVED,
           'text-success': orderLine.status === orderLineStatus.RECEIVED,
           'text-warning': orderLine.status === orderLineStatus.PARTIALLY_RECEIVED,
           'fa-window-close-o text-error': orderLine.status === orderLineStatus.CANCELLED
         }"></i>
-        <div class="flex items-start flex-col w-full">
-          <div class="flex w-full justify-between">
-            <div class="flex">
+        <div class="ui:flex ui:items-start ui:flex-col ui:w-full">
+          <div class="ui:flex ui:w-full ui:justify-between">
+            <div class="ui:flex">
               @if (orderLine.document.pid | getRecord: 'documents' | async; as document) {
                 <shared-document-brief-view [record]="$any(document).metadata" />
               }
             </div>
             @if (orderLine.notes.length > 0) {
-              <div class="flex gap-1">
+              <div class="ui:flex ui:gap-1">
                 @for (note of orderLine.notes; track note) {
                   <i class="fa fa-circle fa-bullet text-{{ note | noteBadgeColor }}" title="{{ note.type | translate }}"></i>
                 }
@@ -46,7 +46,7 @@
             }
           </div>
           <div [hidden]="!isCollapsed">{{ account.metadata.number }}</div>
-          <div class="mt-2" [hidden]="isCollapsed">
+          <div class="ui:mt-2" [hidden]="isCollapsed">
             <dl class="metadata">
               <dt translate>Account</dt>
               <dd>
@@ -65,16 +65,16 @@
           </div>
         </div>
       </div>
-      <div class="col-span-2 flex items-end gap-2 flex-col border-x border-surface py-2 px-2">
-        <div class="text-xl font-bold">{{ orderLine.total_amount | currency:order.currency:'symbol' }}</div>
-        <div class="text-muted-color text-sm">
+      <div class="ui:col-span-2 ui:flex ui:items-end ui:gap-2 ui:flex-col ui:border-x ui:border-surface ui:py-2 ui:px-2">
+        <div class="ui:text-xl ui:font-bold">{{ orderLine.total_amount | currency:order.currency:'symbol' }}</div>
+        <div class=" ui:text-muted-color ui:text-sm">
           {{ orderLine.quantity}} x {{ orderLine.amount | currency:order.currency:'symbol' }}
           @if (orderLine.discount_amount > 0) {
             - {{ orderLine.discount_amount | currency:order.currency:'symbol' }}
           }
         </div>
       </div>
-      <div class="col-span-2 flex gap-1 justify-end py-2 pr-2 border-r border-surface">
+      <div class="ui:col-span-2 ui:flex ui:gap-1 ui:justify-end ui:py-2 ui:pr-2 ui:border-r ui:border-surface">
         @if (recordPermissions?.update?.can) {
           <shared-action-button
             icon="fa fa-pencil"
@@ -95,7 +95,7 @@
       </div>
     </div>
   } @else {
-    <div class="my-3">
-      <i class="fa fa-spinner animate-spin"></i>&nbsp;{{ "Loading in progress…" | translate }}
+    <div class="ui:my-3">
+      <i class="fa fa-spinner ui:animate-spin"></i>&nbsp;{{ "Loading in progress…" | translate }}
     </div>
   }

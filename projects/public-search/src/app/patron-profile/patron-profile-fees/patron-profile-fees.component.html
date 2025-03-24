@@ -15,13 +15,13 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <!-- header -->
-<section id="fees-section" class="container mt-2">
-  <p-panel class="p-card-body-p-0">
+<section id="fees-section" class="container ui:mt-2">
+  <p-panel>
     <ng-template #header>
-      <div class="hidden w-full md:grid grid-cols-12 gap-4 text-lg font-bold items-center">
-          <div class="col-span-3" translate>Date</div>
-          <div class="col-span-6" translate>Category</div>
-          <div class="col-span-3 flex justify-end">
+      <div class="ui:hidden ui:w-full ui:md:grid ui:grid-cols-12 ui:gap-4 ui:text-lg ui:font-bold ui:items-center">
+          <div class="ui:col-span-3" translate>Date</div>
+          <div class="ui:col-span-6" translate>Category</div>
+          <div class="ui:col-span-3 ui:flex ui:justify-end">
             {{ 'Total amount' | translate }}:
             {{ feesTotal | currency:currency:'symbol' }}
           </div>
@@ -31,16 +31,16 @@
     @defer (when loaded) {
       @if (paginator.getRecordsCount() > 0) {
         @for (record of records; track record) {
-          <div class="odd:bg-surface-50 my-1">
+          <div class="ui:odd:bg-surface-50 ui:my-1">
             <public-search-patron-profile-fee [record]="record" id="fee-{{ record.metadata.pid }}" />
           </div>
         }
         <shared-search-show-more-pager id="show-more-fees" [paginator]="paginator" />
       } @else {
-        <div class="font-bold mx-2 my-6" translate>No fee</div>
+        <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No fee</div>
       }
     } @placeholder {
-      <div class="font-bold mx-2 my-6" translate>Loading in progress</div>
+      <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
     }
   </p-panel>
 </section>

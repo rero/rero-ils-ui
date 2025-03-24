@@ -26,7 +26,7 @@
   }
   <h1>{{ account.name }}</h1>
   <!-- Account general information's -->
-   <div class="flex flex-col gap-2">
+   <div class="ui:flex ui:flex-col ui:gap-2">
   <p-panel [header]="'Details'|translate">
     <dl class="metadata">
       <dt translate>Account number</dt>
@@ -48,51 +48,51 @@
 
   <!-- Account accounting information's -->
   <p-panel [header]="'Accounting informations'|translate">
-      <table class="w-full" style="border-spacing:0;">
+      <table class="ui:w-full ui:border-spacing-0">
         <tbody>
-        <tr class="p-2">
-          <td colspan="2" class="font-bold" translate>Allocated amount</td>
-          <td colspan="2" class="text-success text-right">
+        <tr class="ui:p-2">
+          <td colspan="2" class="ui:font-bold" translate>Allocated amount</td>
+          <td colspan="2" class="text-success ui:text-right">
             {{ account.allocated_amount | currency: organisation.default_currency }}
           </td>
         </tr>
         <tr>
-          <td colspan="2" class="font-bold" translate>Distribution</td>
-          <td colspan="2" class="text-right" [ngClass]="{'text-error': account.distribution > 0}">
+          <td colspan="2" class="ui:font-bold" translate>Distribution</td>
+          <td colspan="2" class="ui:text-right" [ngClass]="{'text-error': account.distribution > 0}">
             {{ account.distribution | negativeAmount | currency: organisation.default_currency }}
           </td>
         </tr>
         <tr>
-          <td class="font-bold" translate>Current encumbrance</td>
-          <td class="font-bold" translate>Self</td>
-          <td colspan="2" class="text-right" [ngClass]="{'text-error': account.encumbrance_amount.self > 0}">
+          <td class="ui:font-bold" translate>Current encumbrance</td>
+          <td class="ui:font-bold" translate>Self</td>
+          <td colspan="2" class="ui:text-right" [ngClass]="{'text-error': account.encumbrance_amount.self > 0}">
             {{ account.encumbrance_amount.self | negativeAmount | currency: organisation.default_currency }}
           </td>
         </tr>
         <tr>
           <td></td>
-          <td class="font-bold" translate>Children</td>
-          <td colspan="2" class="text-right" [ngClass]="{'text-error': account.encumbrance_amount.children > 0}">
+          <td class="ui:font-bold" translate>Children</td>
+          <td colspan="2" class="ui:text-right" [ngClass]="{'text-error': account.encumbrance_amount.children > 0}">
             {{ account.encumbrance_amount.children | negativeAmount | currency: organisation.default_currency }}
           </td>
         </tr>
         <tr>
-          <td class="font-bold" translate>Current expenditure</td>
-          <td class="font-bold" translate>Self</td>
-          <td colspan="2" class="text-right" [ngClass]="{'text-error': account.expenditure_amount.self > 0}">
+          <td class="ui:font-bold" translate>Current expenditure</td>
+          <td class="ui:font-bold" translate>Self</td>
+          <td colspan="2" class="ui:text-right" [ngClass]="{'text-error': account.expenditure_amount.self > 0}">
             {{ account.expenditure_amount.self | negativeAmount | currency: organisation.default_currency }}
           </td>
         </tr>
         <tr>
           <td></td>
-          <td class="font-bold" translate>Children</td>
-          <td colspan="2" class="text-right" [ngClass]="{'text-error': account.expenditure_amount.children > 0}">
+          <td class="ui:font-bold" translate>Children</td>
+          <td colspan="2" class="ui:text-right" [ngClass]="{'text-error': account.expenditure_amount.children > 0}">
             {{ account.expenditure_amount.children | negativeAmount | currency: organisation.default_currency }}
           </td>
         </tr>
-        <tr class="bg-surface-100 dark:bg-surface-700">
-          <td colspan="2" class="font-bold" translate>Balance</td>
-          <td colspan="2" class="text-right" [ngClass]="{
+        <tr class="ui:bg-surface-100 ui:dark:bg-surface-700">
+          <td colspan="2" class="ui:font-bold" translate>Balance</td>
+          <td colspan="2" class="ui:text-right" [ngClass]="{
               'text-success': account.remaining_balance.self > 0,
               'text-error': account.remaining_balance.self < 0
             }">
@@ -100,16 +100,16 @@
           </td>
         </tr>
         <tr>
-          <td colspan="2" class="font-bold" translate>Allowed encumbrance exceedance</td>
-          <td class="text-right">{{ account.encumbrance_exceedance.value }}%</td>
-          <td class="text-right">
+          <td colspan="2" class="ui:font-bold" translate>Allowed encumbrance exceedance</td>
+          <td class="ui:text-right">{{ account.encumbrance_exceedance.value }}%</td>
+          <td class="ui:text-right">
             {{ account.encumbrance_exceedance.amount | currency: organisation.default_currency }}
           </td>
         </tr>
         <tr>
-          <td colspan="2" class="font-bold" translate>Allowed expenditure exceedance</td>
-          <td class="text-right">{{ account.expenditure_exceedance.value }}%</td>
-          <td class="text-right">
+          <td colspan="2" class="ui:font-bold" translate>Allowed expenditure exceedance</td>
+          <td class="ui:text-right">{{ account.expenditure_exceedance.value }}%</td>
+          <td class="ui:text-right">
             {{ account.expenditure_exceedance.amount | currency: organisation.default_currency }}
           </td>
         </tr>

@@ -36,7 +36,7 @@
 @if (record.language) {
   <dt translate>Language</dt>
   <dd>
-    <ul class="list-none p-0 m-0">
+    <ul class="ui:list-none">
       @for (language of record.language; track language) {
         <li>{{ ('lang_' + language) | translate }}</li>
       }
@@ -53,7 +53,7 @@
 @if (record.variant_access_point) {
   <dt translate>Variant name</dt>
   <dd>
-    <ul class="list-none p-0 m-0">
+    <ul class="ui:list-none">
       @for (variant_name of record.variant_access_point; track variant_name) {
         <li>{{ variant_name }}</li>
       }

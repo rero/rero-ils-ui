@@ -19,10 +19,10 @@
   <p-table stripedRows [value]="records" [tableStyle]="{ 'min-width': '50rem' }" size="small">
     <ng-template #body let-record>
       <tr>
-          <td class="text-muted-color">
-            <i class="fa fa-calendar "></i>&nbsp;{{ record.metadata.date | dateTranslate :'shortDate' }} - {{ record.metadata.date | dateTranslate :'mediumTime' }}
+          <td class=" ui:text-muted-color">
+            <i class="fa fa-calendar"></i>&nbsp;{{ record.metadata.date | dateTranslate :'shortDate' }} - {{ record.metadata.date | dateTranslate :'mediumTime' }}
           </td>
-          <td class="font-bold uppercase">
+          <td class="ui:font-bold ui:uppercase">
             {{ record.metadata.operation | translate }}
           </td>
           <td>
@@ -37,9 +37,8 @@
   @if (isLinkShowMore) {
     <p-button severity="secondary" [text]="true" (onClick)="showMore()">
       <div>
-        <i class="fa fa-plus-square-o"></i>&nbsp;{{
-          "Show more" | translate
-        }}&nbsp;<small>({{ hiddenOperationLogs }})</small>
+        <i class="fa fa-plus-square-o"></i>&nbsp;{{ "Show more" | translate }}&nbsp;
+        <small>({{ hiddenOperationLogs }})</small>
       </div>
     </p-button>
   }

@@ -15,10 +15,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  <section class="flex flex-col py-2 gap-2">
+  <section class="ui:flex ui:flex-col ui:py-2 ui:gap-2">
     <h1 id="collection-title">{{ record.metadata.title }}</h1>
     @if (record.metadata.subjects) {
-      <div id="subject" class="flex gap-1">
+      <div id="subject" class="ui:flex ui:gap-1">
         @for(subject of record.metadata.subjects; track subject) {
           <p-tag severity="secondary">
             <i class="fa fa-tag"></i>&nbsp;{{ subject.name }}
@@ -50,7 +50,7 @@
       @if (record.metadata.libraries) {
         <dt translate>Libraries</dt>
         <dd>
-          <ul class="list-none">
+          <ul class="ui:list-none">
             @for (library of record.metadata.libraries; track library; let last=$last) {
               <li>{{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</li>
             }
@@ -64,7 +64,7 @@
       </dd>
       <dt translate>Status</dt>
       <dd>
-        <i class="fa fa-circle mr-1" aria-hidden="true" [ngClass]="{'text-success': record.metadata.published, 'text-error': !record.metadata.published}"></i>
+        <i class="fa fa-circle ui:mr-1" aria-hidden="true" [ngClass]="{'text-success': record.metadata.published, 'text-error': !record.metadata.published}"></i>
         @if (record.metadata.published) {
           {{ 'published' | translate }}
         } @else {
@@ -72,7 +72,7 @@
         }
       </dd>
     </dl>
-    <div class="mt-3">
+    <div class="ui:mt-3">
       <admin-collection-items [items]="record.metadata.items" />
     </div>
   </section>

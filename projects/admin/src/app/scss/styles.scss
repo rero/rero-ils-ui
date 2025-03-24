@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,24 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-@use 'sass:meta';
-@use 'font-awesome/scss/font-awesome';
-@use "primeicons/primeicons.css";
-@use "easymde/dist/easymde.min";
-@use "tailwindcss";
-@use '../../../../shared/src/scss/styles';
-@use "@rero/ng-core/assets/scss/tailwind/theme.scss";
-@use '../menu/menu-dashboard/menu-dashboard.component';
-@use '../menu/menu-app/menu-app.component';
-@use '../record/detail-view/permission-detail-view/permission-detail-view.component';
-@use '../migration/conversion/record/detail-view/migration-data/migration-data.component';
-@use '../acquisition/components/account/account-detail-view/account-detail-view.component';
-@use '../circulation/patron/card/card.component';
-@use '../components/items/switch-location/item-switch-location/item-switch-location.component';
+@use "font-awesome/scss/font-awesome";
+@use "../../../../shared/src/scss/styles";
 
-@plugin "tailwindcss-primeui";
 
-@layer theme, base, primeng, utilities;
+@use "../menu/menu-dashboard/menu-dashboard.component";
+@use "../menu/menu-app/menu-app.component";
+@use "../record/detail-view/permission-detail-view/permission-detail-view.component";
+@use "../migration/conversion/record/detail-view/migration-data/migration-data.component";
+@use "../acquisition/components/account/account-detail-view/account-detail-view.component";
+@use "../circulation/patron/card/card.component";
+@use "../components/items/switch-location/item-switch-location/item-switch-location.component";
+
+@import "tailwindcss/preflight.css" layer(base);
+@import "@rero/ng-core/assets/scss/ng-core";
 
 :root {
   font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -41,37 +37,10 @@
     Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
 }
-  body {
-    margin:0;
-  }
-  .container {
-    max-width: 1440px;
-    margin: auto;
-  }
-  $DEPTH-PADDING: 10px;
-  $MAX-DEPTH: 10;
-
-  @for $level from 1 to $MAX-DEPTH {
-    .depth-padding-#{$level} {
-      padding-left: calc(#{$DEPTH-PADDING} * #{$level});
-    }
-  }
-
-p-accordion-header {
-  @apply flex items-start;
-  background-color: var(--p-surface-100);
-  a {
-    background: transparent;
-  }
-  .p-iconwrapper {
-    @apply mt-2;
-  }
+body {
+  margin: 0;
 }
-
-ng-core-editor-field-password-generator {
-  @apply w-full;
-}
-
-.p-panel-header {
-  background: var(--p-surface-100) !important;
+.container {
+  max-width: 1440px;
+  margin: auto;
 }

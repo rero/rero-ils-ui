@@ -16,19 +16,19 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @defer(when issue) {
-  <div class="grid grid-cols-12 gap-4  border border-surface p-2 items-center" [ngClass]="{'text-error': issue.metadata.issue.status === 'deleted'}">
-    <div class="col-span-10">
-      <div class="grid grid-cols-12 gap-4 p-2 items-center">
-        <div class="col-span-1 flex items-center">
-          <div class="grow">
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4  ui:border ui:border-surface ui:p-2 ui:items-center" [ngClass]="{'text-error': issue.metadata.issue.status === 'deleted'}">
+    <div class="ui:col-span-10">
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:items-center">
+        <div class="ui:col-span-1 ui:flex ui:items-center">
+          <div class="ui:grow">
             <shared-open-close-button (status)="isCollapsed = $event" />
           </div>
             @if (isCollapsed) {
-              <i class="fa mr-2" [ngClass]="getIcon()" [title]="iconTitle"></i>
+              <i class="fa ui:mr-2" [ngClass]="getIcon()" [title]="iconTitle"></i>
             }
         </div>
-        <div class="col-span-8">
-          <a [routerLink]="['/records', 'items', 'detail', issue.metadata.pid]" class="issue-title">
+        <div class="ui:col-span-8">
+          <a [routerLink]="['/records', 'items', 'detail', issue.metadata.pid]" class="ui:line-through">
             {{ issue.metadata.enumerationAndChronology }}
           </a>
           @if (issue.new_issue) {
@@ -37,13 +37,13 @@
           @if (issue.metadata.notes) {
             <i class="fa fa-sticky-note-o text-warning"></i>
           }
-          <shared-inherited-call-number class="px-2" [item]="issue" />
+          <shared-inherited-call-number class="ui:px-2" [item]="issue" />
           @if (issue.metadata?.issue?.claims?.counter > 0 && isCollapsed) {
             <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
           }
         </div>
         @if (isCollapsed) {
-          <span class="col-span-3 text-right">
+          <span class="ui:col-span-3 ui:text-right">
             {{ issue.metadata.issue.status_date | dateTranslate : 'shortDate' }}
           </span>
         }
@@ -60,7 +60,7 @@
             <dd>
               <i class="fa" [class]="getIcon(true)"></i>&nbsp;
               {{ issue.metadata.issue.status | translate }}
-              <span class="text-sm text-muted-color">
+              <span class="ui:text-sm  ui:text-muted-color">
                 ({{ 'Assigned on' | translate }} {{ issue.metadata.issue.status_date | dateTranslate }})
               </span>
             </dd>
@@ -79,7 +79,7 @@
               </dt>
               <dd>
                 {{ issue.metadata.issue.claims.counter }}
-                <span class="text-sm text-muted-color">
+                <span class="ui:text-sm  ui:text-muted-color">
                   ({{ 'last claim' | translate }}: {{ claimLastDate | dateTranslate: 'short' }})
                 </span>
               </dd>
@@ -88,7 +88,7 @@
         }
       </div>
     </div>
-    <div class="col-span-2 flex gap-1 justify-end">
+    <div class="ui:col-span-2 ui:flex ui:gap-1 ui:justify-end">
       <!-- CLAIMS BUTTON -->
       @if (recordPermissions?.update?.can) {
         @if (isClaimAllowed) {
@@ -113,7 +113,7 @@
 
       <!-- DELETE BUTTON -->
       <p-button
-        class="pointer-events-auto"
+        class="ui:pointer-events-auto"
         size="small"
         icon="fa fa-trash"
         severity="danger"

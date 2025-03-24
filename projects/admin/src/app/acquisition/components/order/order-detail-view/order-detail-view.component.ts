@@ -84,7 +84,7 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
   }
 
   get canAddLine(): boolean {
-    return this.order.status === AcqOrderStatus.PENDING;
+    return this.order.status === AcqOrderStatus.PENDING && this.recordPermissions?.update?.can;
   }
 
   /** Is this order could manage reception */
@@ -156,7 +156,6 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
       header: this.translateService.instant('Place order'),
       width: '60vw',
       dismissableMask: true,
-      closable: true,
       data: {
         order: this.order,
       },

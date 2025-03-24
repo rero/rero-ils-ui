@@ -22,23 +22,23 @@
       [value]="record().conversion.status | translate"
     />
   </h5>
-  <div class="text-xs italic">
+  <div class="ui:text-xs ui:italic">
     <span translate>Modification date</span>:&nbsp;{{ record()?.updated_at | dateTranslate : "medium" }}
   </div>
-  <div class="my-3">
+  <div class="ui:my-3">
     @for (message of messages(); track message) {
       <p-message
-        styleClass="mb-2"
+        styleClass="ui:mb-2"
         [text]="message.detail"
         [severity]="message.severity"
         showTransitionOptions="0ms"
       />
     }
   </div>
-  <div class="text-sm grid grid-cols-12 gap-2 data">
-    <div class="markdown col-span-6 col-overflow" [innerHTML]="record().raw | markdown"></div>
+  <div class="ui:text-sm ui:grid ui:grid-cols-12 ui:gap-2 data">
+    <div class="markdown ui:col-span-6 col-overflow" [innerHTML]="record().raw | markdown"></div>
     <div
-      class="json col-span-6 col-overflow"
+      class="json ui:col-span-6 col-overflow"
       [innerHTML]="record()?.conversion?.json | json | highlightJson"
     ></div>
   </div>

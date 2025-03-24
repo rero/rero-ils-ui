@@ -15,25 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@use "@rero/ng-core/assets/scss/ng-core";
-@use "../lib/component/documents/files/files.component";
-@use "../lib/view/contribution/contribution.component";
-@use "@rero/ng-core/assets/scss/tailwind/base.scss";
-@use "@rero/ng-core/assets/scss/tailwind/utilities.scss";
-@use "@rero/ng-core/assets/scss/tailwind/others.scss";
+@use "easymde/dist/easymde.min";
+@use "@rero/ng-core/assets/scss/ng-core-tailwind";
+@import "tailwindcss/theme.css" layer(theme) prefix(ui);
+@import "tailwindcss/utilities.css" layer(utilities) prefix(ui);
+
+@plugin "tailwindcss-primeui";
+
+@import "../lib/component/documents/files/files.component";
+@import "../lib/view/contribution/contribution.component";
+
 
 .rero-ils-external-link:after {
   font-family: "FontAwesome";
-  @apply text-sm;
+  @apply ui:text-sm;
   vertical-align: top;
   content: " \f08e";
 }
 
-// THEME
-.p-tag.p-tag-secondary {
-  background-color: var(--p-surface-300) !important;
-  color: var(--p-surface-600) !important;
-  &:hover {
-    color: var(--p-surface-600) !important;
+p-accordion-header {
+  @apply ui:flex ui:items-start;
+  a {
+    background: transparent;
+  }
+  .p-iconwrapper {
+    @apply ui:mt-2;
   }
 }

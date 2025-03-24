@@ -78,7 +78,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
     loan: {
       loaded: false,
       count: 0,
-      feeTotal: null,
+      feeTotal: 0,
       title: this.translateService.instant('Loans'),
       order: 0,
     },
@@ -208,10 +208,6 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
               this.tabs.request.count = this.recordService.totalHits(requestResponse.hits.total);
               this.tabs.history.count = this.recordService.totalHits(historyResponse.hits.total);
               this.tabs.illRequest.count = this.recordService.totalHits(illRequestResponse.hits.total);
-
-              // back to the loan tab if the organisation as been changed
-              // this.activeIndex = 0;
-              // this.selectTab(this.getTabKeyByIndex(this.activeIndex));
             }
           );
         })

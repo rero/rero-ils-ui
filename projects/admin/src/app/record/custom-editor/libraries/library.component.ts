@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Location } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,12 +23,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { AbstractCanDeactivateComponent, ApiService, cleanDictKeys, CONFIG, RecordService, removeEmptyValues, UniqueValidator } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { Library } from '../../../classes/library';
 import { NotificationType } from '../../../classes/notification';
-import { LibraryFormService } from './library-form.service';
 import { ExceptionDatesEditComponent } from './exception-dates-edit/exception-dates-edit.component';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { LibraryFormService } from './library-form.service';
 
 @Component({
     selector: 'admin-libraries-library',
@@ -45,7 +44,6 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
   private userService: UserService = inject(UserService);
   private apiService: ApiService = inject(ApiService);
   private translateService: TranslateService = inject(TranslateService);
-  private location: Location = inject(Location);
   private countryCodeTranslatePipe: CountryCodeTranslatePipe = inject(CountryCodeTranslatePipe);
   private messageService: MessageService = inject(MessageService);
   private dialogService: DialogService = inject(DialogService);
@@ -126,7 +124,7 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
     this.dynamicDialogRef = this.dialogService.open(ExceptionDatesEditComponent, {
       header: this.translateService.instant('Exception'),
       width: '50vw',
-      closable: true,
+      closable: false,
       data: {
         exceptionDate: null
       }
@@ -210,11 +208,9 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
 
 
   /** Cancel the edition. */
-  onCancel(event) {
+  onCancel() {
     this.canDeactivate = true;
-    event.preventDefault();
-    this.location.back();
-    this.libraryForm.build();
+    this.router.navigate(['/', 'records', 'libraries', 'detail', this.library.pid])
   }
 
   /**
@@ -253,7 +249,6 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
     formValues.serial_acquisition_settings = removeEmptyValues(formValues.serial_acquisition_settings);
   }
 
-  // TODO :: docstring
   private _buildOptions(): void {
     // Build the options for rollover settings
     this.rolloverAccountTransferOptions = this.libraryForm.account_transfer_options.map(option => {

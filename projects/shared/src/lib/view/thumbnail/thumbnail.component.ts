@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ export class ThumbnailComponent implements OnInit {
   @Input() record: any;
 
   /** Style for image container */
-  @Input() styleClass = 'w-24';
+  @Input() styleClass = 'ui:w-24';
 
   /**
    * Get cover url

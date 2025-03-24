@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (order && order.pid) {
-<div [ngClass]="{ 'opacity-50': !order.is_current_budget }">
+<div [ngClass]="{ 'ui:opacity-50': !order.is_current_budget }">
   <!-- ROLLOVER INFO -->
   @if (!order.is_current_budget) {
     <p-message
@@ -27,11 +27,11 @@
   }
 
   <!-- Place order button -->
-  <div class="flex gap-2 justify-between flex-wrap">
+  <div class="ui:flex ui:gap-2 ui:justify-between ui:flex-wrap">
     <h1>{{ order.reference }}</h1>
     @if (order?.is_current_budget && order?.pid) {
       @if (recordPermissions && recordPermissions.update.can && order.status === acqOrderStatus.PENDING) {
-        <section class="flex justify-end">
+        <section class="ui:flex ui:justify-end">
           <p-button
             (onClick)="placeOrderDialog()"
             severity="primary"
@@ -59,7 +59,7 @@
     }
   </admin-order-summary>
 
-  <p-tabs class="mt-3" [(value)]="tabActiveIndex">
+  <p-tabs class="ui:mt-3" [(value)]="tabActiveIndex">
     <p-tablist>
       <p-tab value="order" translate>Order</p-tab>
       <p-tab value="reception" [disabled]="disabledReceipts" translate>Reception</p-tab>
@@ -67,12 +67,12 @@
     </p-tablist>
     <p-tabpanels>
       <p-tabpanel value="order">
-        <div class="flex flex-col gap-2">
+        <div class="ui:flex ui:flex-col ui:gap-2">
           <p-accordion [multiple]="true" [value]="['lines']">
             <p-accordion-panel value="lines">
               <p-accordion-header>
-                <div class="w-full flex justify-between gap-2 pr-3">
-                  <span class="text-bold text-xl" translate>Order lines</span>
+                <div class="ui:w-full ui:flex ui:justify-between ui:gap-2 ui:pr-3">
+                  <span class="ui:text-bold ui:text-xl" translate>Order lines</span>
                   @if (canAddLine) {
                     <p-button
                       (click)="$event.stopPropagation()"
@@ -95,16 +95,16 @@
             </p-accordion-panel>
             <p-accordion-panel value="notes">
               <p-accordion-header>
-                <div class="w-full flex mr-2 items-center">
+                <div class="ui:w-full ui:flex ui:mr-2 ui:items-center">
                  @let orderNotesSize = order.notes?.length || 0;
-                  <span class="flex-grow text-bold text-xl">
+                  <span class="ui:grow ui:text-bold ui:text-xl">
                     {{ orderNotesSize | i18nPlural : { "=0": "Note", "=1": "Note", other: "Notes" } | translate }}
                   </span>
                   <p-badge [value]="orderNotesSize" />
                 </div>
               </p-accordion-header>
               <p-accordion-content>
-                <div class="mt-2">
+                <div class="ui:mt-2">
                   <admin-notes [notes]="order.notes" />
                 </div>
               </p-accordion-content>

@@ -26,7 +26,7 @@ import { UserIdEditorComponent } from '../../custom-editor/user-id-editor/user-i
 @Component({
     selector: 'admin-user-id',
     template: `
-    <div class="flex gap-2 items-center mb-6">
+    <div class="ui:flex ui:gap-2 ui:items-center ui:mb-6">
       @if (user) {
         <strong>
           {{ $any(user).metadata.last_name }}, {{ $any(user).metadata.first_name }}

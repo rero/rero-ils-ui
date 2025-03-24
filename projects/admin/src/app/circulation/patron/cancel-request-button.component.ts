@@ -25,7 +25,7 @@ import { MessageService } from 'primeng/api';
     selector: 'admin-cancel-request-button',
     template: `
     <p-button
-      class="pointer-events-auto"
+      class="ui:pointer-events-auto"
       icon="fa fa-trash"
       severity="danger"
       outlined

@@ -21,11 +21,11 @@
     <p-message [text]="recordMessage" severity="warn" showTransitionOptions="0ms" />
   }
   <!-- HEADER -->
-  <header class="py-2 flex gap-6">
-    <div class="hidden md:block">
-      <shared-thumbnail [record]="record" styleClass="w-40" />
+  <header class="ui:py-2 ui:flex ui:gap-6">
+    <div class="ui:hidden ui:md:block">
+      <shared-thumbnail [record]="record" styleClass="ui:w-40" />
     </div>
-    <div class="grow flex flex-col gap-1">
+    <div class="ui:grow ui:flex ui:flex-col ui:gap-1">
       <!-- TITLE -->
       @if (record.metadata.title && record.metadata.title | mainTitle; as title) {
       <h1 id="doc-title">
@@ -63,7 +63,7 @@
         "
       >
         @for (provision of provisionActivity; track provision) {
-          <ul class="list-none">
+          <ul class="ui:list-none">
             @for (value of $any(provision).value; track value) {
               <li>{{ value }}</li>
             }
@@ -88,7 +88,7 @@
       <!-- EDITION STATEMENT -->
       @if (record.metadata.editionStatement) {
       <div id="doc-edition-statement">
-        <ul class="list-none">
+        <ul class="ui:list-none">
           @for (edition of record.metadata.editionStatement; track edition) {
             <li>{{ edition._text[0].value }}</li>
           }
@@ -119,6 +119,7 @@
         fieldLabel="{{ 'Issued with' | translate }}"
         [field]="record.metadata.issuedWith"
         [header]="true"
+        [inline]="true"
       />
       }
 
@@ -128,6 +129,7 @@
         fieldLabel="{{ 'Preceded by' | translate }}"
         [field]="record.metadata.precededBy"
         [header]="true"
+        [inline]="true"
       />
       }
 
@@ -137,6 +139,7 @@
         fieldLabel="{{ 'Succeeded by' | translate }}"
         [field]="record.metadata.succeededBy"
         [header]="true"
+        [inline]="true"
       />
       }
 
@@ -146,6 +149,7 @@
         fieldLabel="{{ 'Supplement to' | translate }}"
         [field]="record.metadata.supplementTo"
         [header]="true"
+        [inline]="true"
       />
       }
 
@@ -155,12 +159,13 @@
         fieldLabel="{{ 'Reproduction of' | translate }}"
         [field]="record.metadata.reproductionOf"
         [header]="true"
+        [inline]="true"
       />
       }
 
       <!-- ELECTRONIC LOCATOR: RELATED RESOURCE -->
       @if (relatedResources.length > 0) {
-        <ul class="list-none p-0 m-0">
+        <ul class="ui:list-none">
           @for (eloc of relatedResources; track eloc) {
           <li>
             <admin-related-resource [electronicLocator]="eloc" />
@@ -186,7 +191,7 @@
 
       <!-- SUBJECTS -->
       @if (record.metadata.subjects; as subjects) {
-        <div class="flex gap-1">
+        <div class="ui:flex ui:gap-1">
           @for (subject of subjects; track subject) {
           <p-tag
             severity="secondary"
@@ -194,7 +199,7 @@
           >
             <i class="fa fa-tag"></i>&nbsp;
             <shared-entity-link
-              className="text-muted-color"
+              className=" ui:text-muted-color"
               resourceName="subjects"
               [entity]="subject.entity"
             />
@@ -205,7 +210,7 @@
 
       <!-- GENRE, FORM -->
       @if (record.metadata.genreForm) {
-        <div class="flex gap-1">
+        <div class="ui:flex ui:gap-1">
           @for (genre of record.metadata.genreForm; track genre) {
             <span>
               <i class="fa fa-tag"></i>&nbsp;
@@ -285,7 +290,7 @@
     </p-tablist>
     <p-tabpanels>
       <p-tabpanel value="get">
-        <div class="mb-2">
+        <div class="ui:mb-2">
           <shared-doc-files [documentPid]="record.metadata.pid" />
         </div>
         <admin-holding-organisation [document]="record" />
@@ -314,7 +319,7 @@
             <ng-template #body let-field>
               <tr>
                 @if (field | marc; as f) {
-                  <td class="font-bold">{{ f.field }}</td>
+                  <td class="ui:font-bold">{{ f.field }}</td>
                   <td>{{ f.ind1 }}</td>
                   <td>{{ f.ind2 }}</td>
                   <td>{{ f.value }}</td>

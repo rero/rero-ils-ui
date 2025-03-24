@@ -23,11 +23,11 @@ import { Component, Input } from '@angular/core';
     <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }} </a>
     @if (record.metadata.visibility === 'private') {
       <small>
-        <i class="fa fa-lock text-muted-color" aria-hidden="true"></i>
+        <i class="fa fa-lock ui:text-muted-color" aria-hidden="true"></i>
       </small>
     }
   </h5>
-    <ul class="list-none">
+    <ul class="ui:list-none">
       @if (record.metadata.description) {
         <li>
           {{ record.metadata.description | truncateText: 8 }}

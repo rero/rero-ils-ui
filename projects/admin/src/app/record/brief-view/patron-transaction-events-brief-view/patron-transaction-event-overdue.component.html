@@ -30,7 +30,7 @@
         <shared-inherited-call-number [item]="parent.loan?.item" />
         (<a [routerLink]="['/records', 'items', 'detail', parent.loan.item.pid]">{{ parent.loan.item.barcode }}</a>)
       } @else {
-        <span class="text-secondary italic">[item_pid:{{ parent.loan.item_pid.value }}]</span>
+        <span class="ui:text-muted-color ui:italic">[item_pid:{{ parent.loan.item_pid.value }}]</span>
       }
     </dd>
   }

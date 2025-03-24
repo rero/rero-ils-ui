@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 201-2024 RERO
+  Copyright (C) 201-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -23,55 +23,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <style>
-      @layer bootstrap, rero-ils-ui, theme, primeng;
+      @layer bootstrap, theme, rero-ils-ui, primeng, utilities;
     </style>
   </head>
   <body>
     <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-          <a class="navbar-brand" href="/">Public Search</a>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="/global/search/documents">Global</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/aoste/search/documents">Aoste</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/highlands/search/documents"
-                  >Highlands</a
-                >
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/fictive/search/documents">Fictive</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/aoste/search/collections"
-                  >Aoste collections</a
-                >
-              </li>
-            </ul>
-          </div>
-          <!-- TODO: Input does'nt work on WebComponent -->
-          <div class="rero-ils-ui">
-            <main-search-bar
-              isAdmin="false"
-              viewCode="global"
-            ></main-search-bar>
-          </div>
-        </nav>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">Public Search</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/global/search/documents">Global</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/aoste/search/documents">Aoste</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/highlands/search/documents">Highlands</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/fictive/search/documents">Fictive</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/aoste/search/collections">Aoste collections</a>
+            </li>
+          </ul>
+        </div>
+        <div class="rero-ils-ui">
+          <main-search-bar isAdmin="false" viewCode="global"></main-search-bar>
+        </div>
+      </nav>
       <public-search-root class="rero-ils-ui"></public-search-root>
     </div>
   </body>

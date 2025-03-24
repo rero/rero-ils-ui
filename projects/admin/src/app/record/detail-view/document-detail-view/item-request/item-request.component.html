@@ -15,12 +15,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @defer(when formFields) {
-  <div class="flex gap-2 flex-col">
+  <div class="ui:flex ui:gap-2 ui:flex-col">
   @if (requestedBy$ | async; as requestedBy) {
     @if (requestedBy.length > 0) {
-      <div class="flex gap-2 items-start">
+      <div class="ui:flex ui:gap-2 ui:items-start">
         <p-message
-          class="grow"
+          class="ui:grow"
           [text]="requestedBy.length < 2
               ? requestedBy.length + ' ' + ('request in the queue' | translate)
               : requestedBy.length + ' ' + ('requests in the queue' | translate)"
@@ -36,8 +36,8 @@
     }
   }
   @if (patron) {
-    <p-card [header]="[patron.last_name, patron.first_name].join(', ')" styleClass="bg-surface-100 dark:bg-surface-700 ">
-      <p class="m-0">
+    <p-card [header]="[patron.last_name, patron.first_name].join(', ')" styleClass="ui:bg-surface-100 ui:dark:bg-surface-700 ">
+      <p class="ui:m-0">
         {{ patron.street }}<br>
         {{ patron.postal_code }} {{ patron.city }}<br>
         {{ patron.email }}
@@ -52,9 +52,9 @@
     </p-card>
   }
   <form [formGroup]="form" (ngSubmit)="submit(model)">
-    <div class="flex gap-2 flex-col">
+    <div class="ui:flex ui:gap-2 ui:flex-col">
       <formly-form [form]="form" [fields]="formFields" [model]="model" />
-      <div class="flex justify-end">
+      <div class="ui:flex ui:justify-end">
         <p-button
           id="new-request-button"
           type="submit"

@@ -16,9 +16,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  <div class="flex flex-col gap-2">
-    <div class="flex">
-      <h5 class="grow">
+  <div class="ui:flex ui:flex-col ui:gap-2">
+    <div class="ui:flex">
+      <h5 class="ui:grow">
         <a [routerLink]="[detailUrl.link]">
           {{ record.metadata.last_name }}
           @if (record.metadata.first_name) {
@@ -30,14 +30,14 @@
         <p-button
           [title]="'Circulation' | translate"
           icon="fa fa-exchange"
-          class="my-0 py-0"
+          class="ui:my-0 ui:py-0"
           outlined
           [routerLink]="['/circulation', 'patron', record.metadata.patron.barcode[0]]"
         />
       }
     </div>
 
-    <div class="flex gap-1 flex-wrap">
+    <div class="ui:flex ui:gap-1 ui:flex-wrap">
       @for (role of record.metadata.roles; track role) {
         <p-tag [severity]="getRoleTagSeverity(role)">
           {{ role | translate }}

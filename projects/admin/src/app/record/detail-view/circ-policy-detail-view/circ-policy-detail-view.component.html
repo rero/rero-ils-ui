@@ -19,7 +19,7 @@
   <header>
     <h1>{{ record.metadata.name | translate }}</h1>
   </header>
-  <article class="mt-4">
+  <article class="ui:mt-4">
     <!-- DETAILS -->
     <section>
       <dl class="metadata">
@@ -33,7 +33,7 @@
         <dd id="cipo-level">
           @if (record.metadata.policy_library_level) {
             {{ 'Library' | translate }}
-            <ul class="list-none">
+            <ul class="ui:list-none">
               @for (library of record.metadata.libraries; track library) {
                 <li>
                   <i class="fa fa-university"></i>&nbsp;
@@ -49,9 +49,9 @@
     </section>
 
     <!-- CIRCULATION SETTINGS -->
-    <section class="mt-4">
+    <section class="ui:mt-4">
       <p-panel [header]="'Circulation settings'|translate">
-        <dl class="metadata mt-4">
+        <dl class="metadata ui:mt-4">
           <!-- IS DEFAULT -->
           <dt translate>Is default</dt>
           <dd>
@@ -64,7 +64,7 @@
           <!-- CHECKOUT SETTINGS-->
           <dt translate>Allow checkout</dt>
           @if (checkoutIsAllowed) {
-            <dd class="flex gap-2">
+            <dd class="ui:flex ui:gap-2">
               <i id="cipo-allow-checkout" class="fa fa-check text-success" aria-hidden="true"></i>
             <dl class="metadata" style="padding-top: 0 !important;">
             <dt translate>Checkout duration</dt>
@@ -110,7 +110,7 @@
 
     <!-- REMINDERS -->
     @if (reminders.length > 0) {
-      <section class="mt-4">
+      <section class="ui:mt-4">
         <p-panel [header]="'Reminders'|translate">
           <p-table stripedRows [value]="record.metadata.reminders" size="small">
             <ng-template #header>
@@ -148,7 +148,7 @@
 
     <!-- OVERDUE FEES -->
     @if (overdues?.length > 0) {
-      <section class="mt-4">
+      <section class="ui:mt-4">
         <p-panel [header]="'Overdue fees'|translate">
           <p-table stripedRows [value]="overdues" size="small">
             <ng-template #header>
@@ -161,11 +161,11 @@
               <tr>
                 <td>
                   {{ overdue.from }}
-                  <i class="fa fa-long-arrow-right px-2"></i>
+                  <i class="fa fa-long-arrow-right ui:px-2"></i>
                   @if (overdue.to) {
                     {{ overdue.to }}
                   } @else {
-                    <span class="text-muted-color">&infin;</span>
+                    <span class=" ui:text-muted-color">&infin;</span>
                   }
                 </td>
                 <td>
@@ -180,17 +180,17 @@
 
     <!-- APPLICATION -->
     @if (record.metadata.settings) {
-      <section class="mt-4">
+      <section class="ui:mt-4">
         <p-panel [header]="'Application'|translate">
           <p-table stripedRows [value]="settings | keyvalue" size="small">
             <ng-template #header>
               <tr>
-                <th rowspan="2" class="align-bottom pl-0" translate>Patron types</th>
-                <th [attr.colspan]="itemTypes.size" class="text-center" translate>Item types</th>
+                <th rowspan="2" class="ui:align-bottom ui:pl-0" translate>Patron types</th>
+                <th [attr.colspan]="itemTypes.size" class="ui:text-center" translate>Item types</th>
               </tr>
               <tr>
                 @for (itemType of itemTypes; track itemType) {
-                  <th class="text-center">
+                  <th class="ui:text-center">
                     <span id="itty-{{itemType}}">{{ itemType | getRecord: 'item_types' : 'field' : 'name' | async }}</span>
                   </th>
                 }
@@ -198,14 +198,14 @@
             </ng-template>
             <ng-template #body let-setting>
               <tr>
-                <th id="ptty-{{setting.key}}" class="text-left">
+                <th id="ptty-{{setting.key}}" class="ui:text-left">
                   {{ setting.key | getRecord: 'patron_types' : 'field' : 'name' | async }}
                 </th>
                 @for (itemType of itemTypes; track itemType) {
-                  <td class="text-center">
+                  <td class="ui:text-center">
                     @for (currentItemType of setting.value; track currentItemType) {
                       @if (itemType === currentItemType) {
-                        <i id="ptty-{{setting.key}}-itty-{{currentItemType}}" class="fa fa-check  text-success" aria-hidden="true"></i>
+                        <i id="ptty-{{setting.key}}-itty-{{currentItemType}}" class="fa fa-check text-success" aria-hidden="true"></i>
                       }
                     }
                   </td>

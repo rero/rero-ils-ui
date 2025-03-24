@@ -17,8 +17,8 @@
 -->
 <p-panel>
   <ng-template #header>
-    <div class="w-full flex items-center justify-between gap-2">
-      <span class="text-bold text-xl flex gap-2" translate>
+    <div class="ui:w-full ui:flex ui:items-center ui:justify-between ui:gap-2">
+      <span class="ui:text-bold ui:text-xl ui:flex ui:gap-2" translate>
         {{ numberOfReceipt | i18nPlural : { "=1": "Receipt", other: "Receipts" } | translate }}
         <p-badge [value]="numberOfReceipt" />
       </span>
@@ -41,17 +41,17 @@
   </ng-template>
   @if (receipts) {
     @if (receipts.length > 0) {
-      <div class="alternate-color">
         @for (receipt of receipts; track receipt) {
-          <admin-receipt-summary [receiptPid]="receipt.pid" [allowActions]="true" [order]="order" />
+          <div class="ui:odd:bg-surface-50">
+            <admin-receipt-summary [receiptPid]="receipt.pid" [allowActions]="true" [order]="order" />
+          </div>
         }
-      </div>
     } @else {
-      <div class="mt-3" translate>No receipt</div>
+      <div class="ui:mt-3" translate>No receipt</div>
     }
   } @else {
-    <div class="my-3">
-      <i class="fa fa-spinner animate-spin"></i>&nbsp;{{ "Loading in progress…" | translate }}
+    <div class="ui:my-3">
+      <i class="fa fa-spinner ui:animate-spin"></i>&nbsp;{{ "Loading in progress…" | translate }}
     </div>
   }
 </p-panel>

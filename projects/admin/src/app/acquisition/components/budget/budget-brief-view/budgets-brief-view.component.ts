@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,14 +25,13 @@ import { ResultItem } from '@rero/ng-core';
     template: `
     <h5>
       <i
-        class="fa fa-circle mr-2"
+        class="fa fa-circle ui:mr-2"
         [title]="title"
         [ngClass]="{'text-success': record.metadata.is_active, 'text-error': !record.metadata.is_active}"
       ></i>&nbsp;
       <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
     </h5>
   `,
-    styles: [],
     standalone: false
   })
 export class BudgetsBriefViewComponent implements ResultItem {

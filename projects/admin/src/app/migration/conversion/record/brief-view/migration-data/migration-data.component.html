@@ -31,7 +31,7 @@
 @if (record?.metadata?.conversion?.json?.title) {
   {{ record.metadata.conversion.json.title | mainTitle }}
 }
-<div class="text-xs italic">
+<div class="ui:text-xs ui:italic">
     <span translate>Modification date</span>:&nbsp;{{ record?.metadata?.updated_at | dateTranslate : "medium" }}
 </div>
 }

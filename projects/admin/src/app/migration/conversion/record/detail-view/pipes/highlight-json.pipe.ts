@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -52,17 +52,17 @@ export class HighlightJsonPipe implements PipeTransform {
     json = json.replace(
       /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
       (match: any) => {
-        let cls = 'text-gray-600';
+        let cls = 'ui:text-gray-600';
         if (/^"/.test(match)) {
           if (/:$/.test(match)) {
-            cls = 'text-cyan-600';
+            cls = 'ui:text-cyan-600';
           } else {
-            cls = 'text-orange-600';
+            cls = 'ui:text-orange-600';
           }
         } else if (/true|false/.test(match)) {
-          cls = 'text-blue-600';
+          cls = 'ui:text-blue-600';
         } else if (/null/.test(match)) {
-          cls = 'text-blue-600';
+          cls = 'ui:text-blue-600';
         }
         return `<span class="${cls}">${match}</span>`;
       }

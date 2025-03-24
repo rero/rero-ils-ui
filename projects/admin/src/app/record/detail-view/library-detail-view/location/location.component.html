@@ -15,12 +15,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (permissions) {
-  <div class="flex justify-between items-center gap-2">
+  <div class="ui:flex ui:justify-between ui:items-center ui:gap-2">
   <div>
     <a [routerLink]="['/records/locations/detail', location.metadata.pid]">{{ location.metadata.name }}</a>
   </div>
-  <div class="flex gap-6">
-  <div class="flex gap-1 items-center">
+  <div class="ui:flex ui:gap-6">
+  <div class="ui:flex ui:gap-1 ui:items-center">
     @if (location.metadata.is_pickup) {
       <i class="fa fa-truck" [title]="'Pickup location'|translate"></i>
     }
@@ -31,7 +31,7 @@
       <i class="fa fa-globe" [title]="'Online location'|translate"></i>
     }
   </div>
-    <div class="flex gap-1">
+    <div class="ui:flex ui:gap-1">
       <!-- Edit button -->
       @if (permissions.update.can) {
         <p-button
@@ -43,7 +43,7 @@
       }
       <!-- Delete button -->
         <p-button
-          class="pointer-events-auto"
+          class="ui:pointer-events-auto"
           icon="fa fa-trash"
           severity="danger"
           [title]="'Delete'|translate"

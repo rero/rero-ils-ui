@@ -15,17 +15,17 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-  <div class="grid grid-cols-12 gap-4 bg-surface-100 dark:bg-surface-700 border border-surface p-2 items-center">
-    <div class="col-span-10">
-      <div class="grid grid-cols-12 gap-4 p-2 items-center">
-        <span class="col-start-2 col-span-8">{{ issue.issue }}</span>
-        <span class="col-span-3 text-right">
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:bg-surface-100 ui:dark:bg-surface-700 ui:border ui:border-surface ui:p-2 ui:items-center">
+    <div class="ui:col-span-10">
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:items-center">
+        <span class="ui:col-start-2 ui:col-span-8">{{ issue.issue }}</span>
+        <span class="ui:col-span-3 ui:text-right">
            {{'expected at' | translate }}
            {{ issue.expected_date | dateTranslate: 'shortDate' }}
         </span>
       </div>
     </div>
-    <div class="col-span-2 text-right">
+    <div class="ui:col-span-2 ui:text-right">
       <ng-content select="[actions]"></ng-content>
     </div>
   </div>

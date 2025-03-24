@@ -17,6 +17,7 @@
 
 import { CommonModule } from '@angular/common';
 import { NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CoreModule, Nl2brPipe, RecordModule } from '@rero/ng-core';
 import { ContributionComponent } from '../public-api';
@@ -161,6 +162,8 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     RecordModule,
     RouterModule,
     PrimeNgImportModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
 })

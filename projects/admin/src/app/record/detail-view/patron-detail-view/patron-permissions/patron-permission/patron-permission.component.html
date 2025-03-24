@@ -15,29 +15,29 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="grid grid-cols-12 gap-4 py-2">
-  <div class="col-span-10">
-    <i class="mr-1 fa"
+<div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-2">
+  <div class="ui:col-span-10">
+    <i class="ui:mr-1 fa"
        [ngClass]="{'fa-plus-square-o': isCollapsed === true, 'fa-minus-square-o': isCollapsed === false}"
        (click)="isCollapsed = !isCollapsed">
     </i>
     {{ permission.name }}
   </div>
-  <div class="col-span-2 text-center">
+  <div class="ui:col-span-2 ui:text-center">
     <i class="fa fa-square" [ngClass]="{'text-success': permission.can, 'text-error': !permission.can}"></i>
   </div>
   @if(!isCollapsed) {
-  <div id="reasons" class="col-span-12 my-1 ml-8">
-    <ul class="list-none">
+  <div id="reasons" class="ui:col-span-12 ui:my-1 ui:ml-8">
+    <ul class="ui:list-none">
       @for (role of permission.reasons | keyvalue; track role) {
         <li>
-          <div class="grid grid-cols-12 gap-4">
-            <div class="col-span-6">{{ role.key | translate }}</div>
+          <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+            <div class="ui:col-span-6">{{ role.key | translate }}</div>
             <div>
               <i class="fa fa-square" [ngClass]="{
                  'text-success': role.value === true,
                  'text-error': role.value === false,
-                 'text-muted-color': role.value === null
+                 ' ui:text-muted-color': role.value === null
               }"></i>
             </div>
           </div>

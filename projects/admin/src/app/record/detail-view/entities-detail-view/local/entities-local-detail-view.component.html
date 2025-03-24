@@ -24,7 +24,7 @@
   </small>
   <p-tag severity="info" [value]="'Local' | translate" />
 
-  <div class="pt-2">
+  <div class="ui:pt-2">
     @switch ($any(record).metadata.type) {
       @case (entityType.ORGANISATION) {
         <admin-local-organisation-detail-view [record]="$any(record).metadata" />

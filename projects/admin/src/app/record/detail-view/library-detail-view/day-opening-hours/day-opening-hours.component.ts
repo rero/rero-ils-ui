@@ -23,7 +23,7 @@ import { Component, Input } from '@angular/core';
     <dl class="metadata">
       <dt>{{ day.day | translate }}</dt>
       <dd>
-        <i class="fa mr-6" [ngClass]="{
+        <i class="fa ui:mr-6" [ngClass]="{
           'fa-times-circle-o text-error': !day.is_open,
           'fa-circle text-success': day.is_open
         }"></i>

@@ -21,9 +21,9 @@ import { ResultItem } from '@rero/ng-core';
 @Component({
     selector: 'admin-collection-brief',
     template: `
-    <div class="flex flex-col gap-1">
+    <div class="ui:flex ui:flex-col ui:gap-1">
       <h5>
-        <i class="fa fa-circle mr-1" [ngClass]="{'text-success': record.metadata.published, 'text-error': !record.metadata.published}" aria-hidden="true"></i>
+        <i class="fa fa-circle ui:mr-1" [ngClass]="{'text-success': record.metadata.published, 'text-error': !record.metadata.published}" aria-hidden="true"></i>
         <a id="collection-link" [routerLink]="[detailUrl.link]">{{ record.metadata.title }}</a>
         @if (record.metadata.collection_id) {
           ({{ record.metadata.collection_id }})

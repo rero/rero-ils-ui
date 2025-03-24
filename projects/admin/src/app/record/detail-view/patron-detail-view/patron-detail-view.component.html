@@ -16,7 +16,7 @@
 -->
 
 @if (patron) {
-  <div class="py-2">
+  <div class="ui:py-2">
   <!-- BLOCKED OR NOT? -->
   @if (patron.patron && patron.patron.blocked) {
     <p-message severity="error" showTransitionOptions="0ms">
@@ -25,21 +25,23 @@
     </p-message>
   }
 
-  <section id="contact-profile" class="flex flex-col gap-2">
+  <section id="contact-profile" class="ui:flex ui:flex-col ui:gap-2">
     <!-- MAIN PROFILE SECTION ================================================== -->
-    <div class="rounded-border border border-surface flex gap-6 p-6">
-        <div class="bg-surface-500 dark:bg-surface-300 rounded-full w-40 h-40 flex items-center justify-center">
-          <i class="fa fa-user-o fa-4x text-white"></i>
+    <div class="ui:rounded-border ui:border ui:border-surface ui:flex ui:gap-6 ui:p-6">
+        <div class="ui:bg-surface-500 ui:dark:bg-surface-300 ui:rounded-full ui:w-40 ui:h-40 ui:flex ui:items-center ui:justify-center">
+          <i class="fa fa-user-o fa-4x ui:text-white"></i>
         </div>
-      <div class="grow">
-        <div class="flex items-center gap-4 mb-2">
-          <span class="text-4xl">{{ patron.last_name }} {{ patron.first_name }}</span>
+      <div class="ui:grow">
+        <div class="ui:flex ui:items-center ui:gap-4 ui:mb-2">
+          <span class=" ui:text-4xl">{{ patron.last_name }} {{ patron.first_name }}</span>
 
           @if (patron.patron) {
             <a
+              pButton
+              outlined
+              size="small"
               [permissions]="permissions.CIRC_ADMIN"
               [routerLink]="['/circulation', 'patron', patron.patron.barcode[0]]"
-              class="p-button p-button-outlined"
             >
               <i class="fa fa-exchange"></i>&nbsp;{{ 'Circulation' | translate }}
             </a>
@@ -64,11 +66,11 @@
                 {{ patronPhones.length | i18nPlural: {'=1': 'Phone' | translate, 'other': 'Phones' | translate} }}
               </dt>
               <dd>
-                <ul class="list-none">
+                <ul class="ui:list-none">
                   @for (phone of patronPhones; track phone) {
                     <li>
                       {{ phone.value }}&nbsp;
-                      <span class="italic text-muted-color lowercase" >({{ phone.type | translate }})</span>
+                      <span class="ui:italic ui:text-muted-color" >({{ phone.type | translate }})</span>
                     </li>
                   }
                 </ul>
@@ -96,19 +98,19 @@
       </div>
     </div>
 
-    <div class="rounded-border border border-surface flex gap-6 p-6">
-    <p-accordion [multiple]="true" class="grow" [value]="['0', '1']">
+    <div class="ui:rounded-border ui:border ui:border-surface ui:flex ui:gap-6 ui:p-6">
+    <p-accordion [multiple]="true" class="ui:grow" [value]="['0', '1']">
       <!-- NOTES ================================================================= -->
       @if (patron.notes && patron.notes.length > 0) {
       <p-accordion-panel value="0">
         <p-accordion-header>
-          <span class="text-bold text-xl">
+          <span class="ui:text-bold ui:text-xl">
             {{ patron.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} | translate }}
           </span>
         </p-accordion-header>
         <p-accordion-content>
           @for (note of patron.notes; track note) {
-            <div class="mt-2">
+            <div class="ui:mt-2">
               <dl class="metadata">
                 <dt translate>
                   {{ note.type }}
@@ -123,10 +125,10 @@
         <!-- USER INFORMATION'S SECTION ============================================= -->
         <p-accordion-panel value="1">
           <p-accordion-header>
-            <span class="text-bold text-xl" translate>User informations</span>
+            <span class="ui:text-bold ui:text-xl" translate>User informations</span>
           </p-accordion-header>
           <p-accordion-content>
-            <div class="mt-2">
+            <div class="ui:mt-2">
               <dl class="metadata">
                 <dt>
                   <i class="fa fa-user"></i>&nbsp;
@@ -141,11 +143,9 @@
                   <i class="fa" [ngClass]="patron.keep_history ? 'fa-check text-success' : 'fa-times text-error'"></i>
                 </dd>
                 <dt translate>{{ patron.roles | i18nPlural: {'=1': 'Role', 'other': 'Roles'} }}</dt>
-                <dd class="flex gap-2 flex-wrap">
+                <dd class="ui:flex ui:gap-x-2 ui:flex-wrap">
                   @for (role of patron.roles; track role) {
-                    <p-tag [severity]="getroleTagSeverity(role)">
-                      {{ role | translate }}
-                    </p-tag>
+                    <p-tag [severity]="getRoleTagSeverity(role)" [value]="role | translate" />
                   }
                 </dd>
                 <dt translate>Creation date</dt>
@@ -159,10 +159,10 @@
     @if (patron.patron) {
     <p-accordion-panel value="3">
       <p-accordion-header>
-        <span class="text-bold text-xl" translate>Patron information</span>
+        <span class="ui:text-bold ui:text-xl" translate>Patron information</span>
       </p-accordion-header>
       <p-accordion-content>
-        <div class="mt-2">
+        <div class="ui:mt-2">
           <dl class="metadata">
             <dt>
               <i class="fa fa-barcode"></i>&nbsp;
@@ -184,7 +184,7 @@
                 <i class="fa fa-university"></i>&nbsp;
                 {{ 'Affiliation libraries' | translate }}
               </dt>
-              <ul class="list-none">
+              <ul class="ui:list-none">
                 @for (library of patron.patron.libraries; track library) {
                   <li>
                     {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
@@ -227,17 +227,17 @@
     @if (patron.libraries?.length > 0) {
       <p-accordion-panel value="4">
         <p-accordion-header>
-          <span class="text-bold text-xl" translate>Librarian information</span>
+          <span class="ui:text-bold ui:text-xl" translate>Librarian information</span>
         </p-accordion-header>
         <p-accordion-content>
-          <div class="mt-2">
+          <div class="ui:mt-2">
             <dl class="metadata">
               <dt>
                 <i class="fa fa-university"></i>&nbsp;
                 {{ patron.libraries.length | i18nPlural: {'=1': 'Library' | translate, 'other': 'Libraries' | translate} }}
               </dt>
               <dd>
-                <ul class="list-none p-0 m-0">
+                <ul class="ui:list-none">
                   @for (library of patron.libraries; track library) {
                     <li>
                       {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
@@ -255,10 +255,10 @@
     @if (canAccessDisplayPermissions) {
       <p-accordion-panel value="5">
         <p-accordion-header>
-          <span class="text-bold text-xl" translate>Permissions</span>
+          <span class="ui:text-bold ui:text-xl" translate>Permissions</span>
         </p-accordion-header>
         <p-accordion-content>
-          <div class="mt-2">
+          <div class="ui:mt-2">
             <admin-patron-permissions [hidden]="false" [pid]="patron.pid"></admin-patron-permissions>
           </div>
         </p-accordion-content>

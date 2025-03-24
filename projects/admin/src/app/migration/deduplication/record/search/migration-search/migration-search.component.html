@@ -25,10 +25,10 @@
     <h5>{{ availableTypes[0].label | translate }}</h5>
     }
     <ng-content select="[header]"></ng-content>
-    <div class="mt-4 flex gap-2">
+    <div class="ui:mt-4 ui:flex ui:gap-2">
       @if (showSearchInput) {
       <ng-core-search-input
-        class="grow"
+        class="ui:grow"
         [placeholder]="'search' | translate | ucfirst"
         [searchText]="q"
         [displayLabel]="false"
@@ -40,7 +40,7 @@
     </div>
     @if (loaded && hasNoRecord) {
       <p-message
-        class="my-6"
+        class="ui:my-6"
         [text]="emptyRecordMessage"
         severity="info"
         showTransitionOptions="0ms"
@@ -54,13 +54,13 @@
       />
       }
     } @else {
-    <div class="flex items-stretch w-full my-4">
+    <div class="ui:flex ui:items-stretch ui:w-full ui:my-4">
       @if (resultsText$ | async; as resultsText) {
-      <div class="flex items-center w-full">
+      <div class="ui:flex ui:items-center ui:w-full">
         <strong>{{ resultsText }}</strong>
       </div>
       }
-      <div class="flex items-center justify-end w-full">
+      <div class="ui:flex ui:items-center ui:justify-end ui:w-full">
         @if (adminMode.can && addStatus.can) {
         <p-button
           id="search-add-button"
@@ -71,30 +71,30 @@
         }
         <!-- Sorting -->
         @if (config?.sortOptions?.length > 0) {
-        <ng-core-menu-sort class="ml-1" [selectedValue]="selectedSortValue" [config]="config.sortOptions" (onChange)="changeSorting($event)" />
+        <ng-core-menu-sort class="ui:ml-1" [selectedValue]="selectedSortValue" [config]="config.sortOptions" (onChange)="changeSorting($event)" />
         }
         <!-- EXPORT BUTTON -->
-        <ng-core-export-button class="ml-1"[exportOptions]="exportOptions"/>
+        <ng-core-export-button class="ui:ml-1"[exportOptions]="exportOptions"/>
         <!-- END EXPORT BUTTON -->
       </div>
     </div>
     <ng-content select="[beforeResult]"></ng-content>
-    <div class="grid grid-cols-12 gap-4">
+    <div class="ui:grid ui:grid-cols-12 ui:gap-4">
       <ng-core-list-filters
         [aggregations]="aggregations"
-        class="col-span-12"
+        class="ui:col-span-12"
         [aggregationsFilters]="aggregationsFilters"
         [searchFilters]="searchFilters"
         (remove)="removeFilter($event)"
       />
       <ng-content select="[top-search-result]"></ng-content>
       @if ((aggregations && aggregations.length) || searchFields.length > 0 || searchFilters.length > 0) {
-      <div class="md:col-span-5 lg:col-span-3 col-span-12">
+      <div class="ui:md:col-span-5 ui:lg:col-span-3 ui:col-span-12">
         @if (searchFields.length > 0 && q) {
-        <div class="mb-4">
-          <span class="mr-1" translate>Search in</span>
+        <div class="ui:mb-4">
+          <span class="ui:mr-1" translate>Search in</span>
           <p-select
-            class="w-full"
+            class="ui:w-full"
             placeholder="…"
             [optionValue]="'path'"
             [options]="searchFields"
@@ -108,7 +108,7 @@
           [searchFilters]="searchFilters"
           [config]="config"
           [query]="q"
-          styleClassSection="my-2"
+          styleClassSection="ui:my-2"
           (onChange)="onChangeSearchFilter($event)"
         />
 
@@ -127,7 +127,7 @@
         } }
       </div>
       }
-      <div id="recordlist" class="md:col-span-7 lg:col-span-9 col-span-12">
+      <div id="recordlist" class="ui:md:col-span-7 ui:lg:col-span-9 ui:col-span-12">
         @if (showEmptySearchMessage) {
           <p-message
             [text]="'Enter a query to get results.'|translate"
@@ -138,9 +138,9 @@
         <ng-content select="[top-result]"/>
         <p-dataview [value]="records" [emptyMessage]="' '">
           <ng-template #list let-records>
-            <ul class="p-0 m-0">
+            <ul class="ui:list-none">
               @for (record of records; track record ; let first = $first) {
-              <li class="list-none py-2" [ngClass]="{ 'border-top-1 surface-border': !first }">
+              <li class="ui:py-2" [ngClass]="{ 'ui:border-top-1 ui:surface-border': !first }">
                 <admin-migration-data-deduplication
                   (refresh)="refresh($event)"
                   [record]="record"

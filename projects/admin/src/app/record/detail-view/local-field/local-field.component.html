@@ -17,15 +17,15 @@
 -->
 @defer (when !isLoading) {
   @if (localFields.length > 0) {
-    <div class="py-2 alternate-color">
+    <div class="ui:py-3">
       @for (field of localFields; track field) {
-        <dl class="metadata">
+        <dl class="metadata ui:odd:bg-surface-50">
           <dt translate>{{ 'local_' + field.name }}</dt>
           <dd>{{ field.value | join:'; ' }}</dd>
         </dl>
       }
     </div>
-    <div class="flex gap-1">
+    <div class="ui:flex ui:gap-1">
       @if (recordPermissions.update?.can) {
         <p-button
           icon="fa fa-pencil"
@@ -48,7 +48,7 @@
       }
     </div>
   } @else {
-  <div class="flex justify-end">
+  <div class="ui:flex ui:justify-end">
     <p-button
       icon="fa fa-plus-square-o"
       [label]="'Add local fields'|translate"

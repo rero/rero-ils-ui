@@ -20,15 +20,15 @@
 ul.contributor-list {
   padding-inline-start: 0;
   li {
-    @apply inline mr-0;
+    @apply ui:inline ui:mr-0;
   }
   & > li + li::before {
-    @apply mx-1;
+    @apply ui:mx-1;
     content: ";";
   }
 
   ul.contributor-roles {
-    @apply list-none inline ml-1;
+    @apply ui:list-none ui:inline ui:ml-1;
     color: var(--p-text-muted-color);
     & > li + li::before {
       content: ", ";

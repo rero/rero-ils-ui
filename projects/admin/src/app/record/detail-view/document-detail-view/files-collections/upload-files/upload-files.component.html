@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020-2024 RERO
+  Copyright (C) 2020-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,14 +14,8 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ngx-spinner
-  name="file-upload"
-  color="#fff"
-  size="medium"
-  type="ball-zig-zag"
-  [fullScreen]="true"
->
-  <p class="text-white">
+<ngx-spinner name="file-upload" color="#fff" size="medium" type="ball-zig-zag" [fullScreen]="true">
+  <p class="ui:text-white">
     {{ "Loading..." | translate }}
     @if (fileUpload?.files?.length > 0) { ({{ nUploadedFiles }} /
     {{ fileUpload.files.length }}) }
@@ -29,7 +23,7 @@
 </ngx-spinner>
 
 @if (files != null) {
-<div class="flex flex-col gap-2 py-2">
+<div class="ui:flex ui:flex-col ui:gap-2 ui:py-2">
   <admin-files-collections />
   <div>
     <h5 translate>Upload Files</h5>
@@ -45,10 +39,11 @@
       mode="advanced"
       [maxFileSize]="500 * 1024 * 1024"
       (onSelect)="onSelect($event, '')"
+      styleClass="ui:[&>.p-fileupload-header]:flex-col ui:[&>.p-fileupload-header]:items-start"
     >
       <ng-template #toolbar>
-        <div class="mt-2">
-          <p class="text-warning" translate>
+        <div class="ui:mt-2">
+          <p class="text-warning ui:w-full" translate>
             By uploading a file, I declare that I am aware of the terms and
             conditions of the copyright transfer agreement governing the
             publication of the respective document, and that the deposit of its
@@ -94,11 +89,11 @@
   </div>
 
   @if(filteredFiles.length > 0) {
-  <ul class="list-none alternate-color border border-surface rounded-border p-2 m-0">
+  <ul class="ui:list-none ui:border ui:border-surface ui:rounded-border ui:p-2">
     @for (file of filteredFiles;track file.label) {
-    <li>
-      <div class="grid grid-cols-12 gap-4 items-center">
-        <div class="col-span-6">
+    <li class="ui:odd:bg-surface-50">
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-center">
+        <div class="ui:col-span-6">
           <a
             class="text-link"
             tabindex="-1"
@@ -114,40 +109,36 @@
             >{{ file.key }} <i class="fa fa-download"></i
           ></a>
         </div>
-        <div class="col-span-5">
-          <div class="input-group">
-            <p-inputGroup>
-              <input
-                pInputText
-                #inputLabel
-                [value]="file.label"
-                type="text"
-                class="form-control"
-                [placeholder]="'label' | translate"
-                aria-label="label"
-                (keyup.enter)="updateLabel(file, inputLabel.value)"
-              />
-              <button
-                pButton
-                [disabled]="
-                  inputLabel.value.length === 0 ||
-                  inputLabel.value.trim() === file.label
-                "
-                (onClick)="updateLabel(file, inputLabel.value)"
-                outlined
-                type="button"
-                icon="fa fa-save"
-              ></button>
-            </p-inputGroup>
-          </div>
+        <div class="ui:col-span-5">
+          <p-inputGroup>
+            <input
+              pInputText
+              #inputLabel
+              [value]="file.label"
+              type="text"
+              [placeholder]="'label' | translate"
+              aria-label="label"
+              (keyup.enter)="updateLabel(file, inputLabel.value)"
+            />
+            <p-button
+              [disabled]="
+                inputLabel.value.length === 0 ||
+                inputLabel.value.trim() === file.label
+              "
+              (onClick)="updateLabel(file, inputLabel.value)"
+              outlined
+              type="button"
+              icon="fa fa-save"
+            ></p-button>
+          </p-inputGroup>
         </div>
-        <div class="col-span-1 flex justify-end">
+        <div class="ui:col-span-1 ui:flex ui:justify-end">
           <p-button
             outlined
             tabindex="-1"
             severity="danger"
             (onClick)="deleteFile(file)"
-            title="{{ 'remove' | translate }}"
+            [title]="'remove' | translate"
             icon="fa fa-trash"
           />
         </div>

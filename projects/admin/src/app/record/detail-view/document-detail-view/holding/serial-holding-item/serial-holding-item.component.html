@@ -16,8 +16,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (item && ((item.metadata.issue && item.metadata.issue.status !== itemIssueStatus.DELETED) || item.metadata.type === 'provisional')) {
-    <div class="grid grid-cols-12 gap-4 py-2 px-1 grow">  <!-- First row :: item detail -->
-      <div class="col-span-3 flex items-center">
+    <div class="ui:grid ui:grid-cols-12 ui:gap-1 ui:py-2 ui:px-1 ui:grow">  <!-- First row :: item detail -->
+      <div class="ui:col-span-3 ui:flex ui:items-center">
         @if (item.metadata._masked) {
           <admin-record-masked [record]="item" />
         }
@@ -29,24 +29,24 @@
           {{ item.metadata.barcode }}
         }
       </div>
-      <div class="col-span-3 flex items-center">
+      <div class="ui:col-span-3 ui:flex ui:items-center">
         <shared-availability
           recordType="item"
           [record]="item"
           [apiService]="itemApiService"
         />
       </div>
-      <div class="col-span-3 flex items-center">
+      <div class="ui:col-span-3 ui:flex ui:items-center">
         {{ item.metadata.enumerationAndChronology }}
       </div>
-      <div class="col-span-3 flex items-center">
-        <div class="grow">
-        <shared-inherited-call-number class-="grow" [item]="item" />
+      <div class="ui:col-span-3 ui:flex ui:items-center">
+        <div class="ui:grow">
+        <shared-inherited-call-number class-="ui:grow" [item]="item" />
         </div>
         @if (permissions) {
-          <div class="flex gap-1 justify-end">
+          <div class="ui:flex ui:gap-1 ui:justify-end">
             <p-button
-              class="pointer-events-auto"
+              class="ui:pointer-events-auto"
               icon="fa fa-shopping-basket"
               size="small"
               [title]="'Item request'|translate"
@@ -71,7 +71,7 @@
             }
             <p-button
               icon="fa fa-trash"
-              class="pointer-events-auto"
+              class="ui:pointer-events-auto"
               size="small"
               severity="danger"
               [title]="'Delete'|translate"
@@ -88,7 +88,7 @@
           </div>
         }
       </div>
-      <div class="col-span-12 pt-0">
+      <div class="ui:col-span-12 ui:pt-0">
         @if (permissions) {
           @for (note of item.metadata.notes; track note) {
             <admin-holding-item-note [note]="note" />
@@ -107,16 +107,18 @@
         <!-- ITEM IN COLLECTION -->
         @let itemPid = item.metadata.pid;
         @if (permissions && itemPid | itemInCollection | async; as collections) {
-          <dl class="metadata">
-            <dt translate>Exhibition/course</dt>
-            <dd>
-              @for (collection of collections; track collection; let last=$last) {
-                <a [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]">
-                  {{ $any(collection).metadata.title }}
-                </a>{{ last ? '' : '; ' }}
-              }
-            </dd>
-          </dl>
+          @if (collections.length > 0) {
+            <dl class="metadata">
+              <dt translate>Exhibition/course</dt>
+              <dd>
+                @for (collection of collections; track collection; let last=$last) {
+                  <a [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]">
+                    {{ $any(collection).metadata.title }}
+                  </a>{{ last ? '' : '; ' }}
+                }
+              </dd>
+            </dl>
+          }
         }
       </div>
   </div>

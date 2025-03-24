@@ -15,22 +15,22 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (fields.length > 0 && showForm) {
-  <div class="grid grid-cols-12 gap-4 p-2" id="pickup-location-{{ record.metadata.pid }}">
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2" id="pickup-location-{{ record.metadata.pid }}">
     @if (recordType === 'holding' && itemCount > 0) {
       <p-message
-        class="col-span-12"
+        class="ui:col-span-12"
         [text]="'Please make sure that your requested issue is not listed above.' | translate"
         severity="warn"
         showTransitionOptions="0ms"
       />
     }
-    <form class="col-span-12" [formGroup]="form" (ngSubmit)="submit()">
-      <div class="mb-2">
+    <form class="ui:col-span-12" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="ui:mb-2">
         <formly-form [model]="model" [fields]="fields" [form]="form"/>
       </div>
       @if (!requestInProgress) {
         <p-button
-          styleClass="mb-2 mr-2"
+          styleClass="ui:mb-2 ui:mr-2"
           [label]="'Cancel' | translate"
           id="pickup-location-{{ record.metadata.pid }}-cancel-button"
           severity="danger"
@@ -40,14 +40,14 @@
       }
       <p-button
         id="pickup-location-{{ record.metadata.pid }}-confirm-button"
-        styleClass="mb-2"
+        styleClass="ui:mb-2"
         type="submit"
         [disabled]="!form.valid || requestInProgress"
       >
         @if (!requestInProgress) {
           {{ 'Confirm your request' | translate }}
         } @else {
-          <span class="spinner-border spinner-border-sm mr-1" role="status"></span>
+          <i class="fa fa-spin fa-spinner"></i>&nbsp;
           {{ 'Request in progress' | translate }}
         }
       </p-button>
@@ -56,7 +56,7 @@
 }
 
 @if (requested && !showForm) {
-  <div class="p-2">
+  <div class="ui:p-2">
     <p-message
       [text]="requestMessage.message"
       [severity]="requestMessage.success? 'success' : 'error'"

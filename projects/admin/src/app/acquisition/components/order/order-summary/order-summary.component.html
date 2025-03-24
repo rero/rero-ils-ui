@@ -16,8 +16,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (order) {
-<section class="grid grid-cols-12 gap-4">
-  <div class="md:col-span-8">
+<section class="ui:grid ui:grid-cols-12 ui:gap-4">
+  <div class="ui:md:col-span-8">
     <dl class="metadata">
       <!-- VENDOR -->
       @if (order.vendor) {
@@ -39,7 +39,7 @@
     </dl>
   </div>
   <!-- ORDER TOTAL AMOUNT -->
-  <div class="md:col-span-4 flex flex-col gap-2">
+  <div class="ui:md:col-span-4 ui:flex ui:flex-col ui:gap-2">
     <ng-container
       [ngTemplateOutlet]="totalAmount"
       [ngTemplateOutletContext]="{
@@ -62,15 +62,15 @@
 </section>
 }
 <ng-template #totalAmount let-quantity="quantity" let-total="total" let-label="label">
-  <div class="bg-surface-100 dark:bg-surface-700 py-4 border rounded-border border-surface relative">
-    <div class="absolute dark:bg-surface-500 bg-surface-50 dark:text-white text-muted-color rounded-l-md rounded-r-md border-l border-b border-surface py-2 px-6 top-0 right-0">
+  <div class="ui:bg-surface-100 ui:dark:bg-surface-700 ui:py-4 ui:border ui:rounded-border ui:border-surface ui:relative">
+    <div class="ui:absolute ui:dark:bg-surface-500 ui:bg-surface-50 ui:dark:text-white ui:text-muted-color ui:rounded-l-md ui:rounded-r-md ui:border-l ui:border-b ui:border-surface ui:py-2 ui:px-6 ui:top-0 ui:right-0">
       <i class="fa fa-shopping-cart"></i>&nbsp;{{ quantity }}
     </div>
-    <div class="flex flex-wrap text-center">
-      <div class="w-full text-2xl font-bold">
+    <div class="ui:flex ui:flex-wrap ui:text-center">
+      <div class="ui:w-full ui:text-2xl ui:font-bold">
         {{ total | currency : order.currency : "symbol" }}
       </div>
-      <div class="w-full text-sm dark:text-white text-muted-color">{{ label }}</div>
+      <div class="ui:w-full ui:text-sm ui:dark:text-white  ui:text-muted-color">{{ label }}</div>
     </div>
   </div>
 </ng-template>
