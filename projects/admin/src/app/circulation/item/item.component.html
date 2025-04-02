@@ -26,8 +26,15 @@
       @if (!item.actions || item.loan || totalAmountOfFee || item.pending_loans || notifications$) {
         <shared-open-close-button [collapsed]="isCollapsed" (status)="isCollapsed = $event" />
       }
-      <div class="ui:flex ui:flex-col ui:gap-2">
-        <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+      <div class="ui:flex ui:flex-col ui:gap-2 ui:w-full">
+        <div class="ui:flex ui:items-center">
+          <div class="ui:grow">
+            <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+          </div>
+          @for (note of getCirculationNoteForAction(); track note) {
+            <i class="fa fa-sticky-note-o text-warning" [title]="'Note' | translate"></i>
+          }
+        </div>
         @if (isCollapsed) {
           <shared-inherited-call-number class="ui:block ui:text-sm" [item]="item" />
         }
@@ -60,116 +67,6 @@
       @if (document) {
         <shared-contribution [contributions]="document?.contribution" />
       }
-
-      <!-- COLLAPSED DETAILS -->
-    @if (!isCollapsed) {
-      <div class="ui:mt-2">
-        <dl class="metadata">
-          <dt translate>Call number</dt>
-          <dd>
-            <shared-inherited-call-number [item]="item" />
-          </dd>
-          @if (item.enumerationAndChronology) {
-            <dt translate>Unit</dt>
-            <dd>
-              {{ item.enumerationAndChronology }}
-            </dd>
-          }
-          @if (item.location.pid | getRecord: 'locations' | async; as location) {
-            <dt translate>Location</dt>
-            <dd>
-              {{ $any(location).metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}:
-              {{ $any(location).metadata.name }}
-            </dd>
-          }
-          @if (item.temporary_location) {
-            <dt translate>Temporary location</dt>
-            <dd>
-              {{ item.temporary_location.name }}
-            </dd>
-          }
-          @if (item.collections && item.collections.length > 0) {
-            <dt translate>Exhibition/course</dt>
-            <dd>
-              {{ item.collections.join(', ') }}
-            </dd>
-          }
-          @if (item.loan && item.loan.extension_count) {
-            <dt translate>Renewals</dt>
-            <dd>
-              <p-tag severity="secondary" styleClass="ui:mr-1">
-                {{ item.loan.extension_count }}
-                <i class="fa fa-refresh ui:ml-1"></i>
-              </p-tag>
-            </dd>
-          }
-          @if (item.loan && item.actionDone === 'checkin' && item?.loan?.last_end_date) {
-            <dt translate>Due date</dt>
-            <dd>
-              {{ item.loan.last_end_date | dateTranslate :'shortDate' }}
-            </dd>
-          }
-          @if (item.loan && totalAmountOfFee > 0) {
-            <dt translate>Fees</dt>
-            <dd>
-              <p-tag severity="warning" styleClass="ui:mr-1">
-                {{ totalAmountOfFee | currency: organisation.default_currency }}
-              </p-tag>
-            </dd>
-          }
-          @if (item.loan && notifications$ | async; as notifications) {
-            @if (notifications.length > 0) {
-              <dt translate>Notifications</dt>
-              <dd>
-                <ul class="ui:list-none">
-                  @for (notification of notifications; track notification) {
-                    <li>
-                      <span class="ui:text-muted-color ui:text-sm">
-                        {{ notification.metadata.process_date
-                            ? (notification.metadata.process_date | dateTranslate :'short')
-                            : (notification.metadata.creation_date | dateTranslate : 'shortDate')
-                              + '&nbsp;(' +  ('Not yet sent' | translate) + ')'
-                        }}
-                      </span>
-                      &mdash;
-                      {{ notification.metadata.notification_type | translate }}
-                    </li>
-                  }
-                </ul>
-              </dd>
-            }
-          }
-          @if (item.pending_loans) {
-            <dt translate>Requests</dt>
-            <dd>
-              @if (item.pending_loans.length > 1) {
-                <p-tag severity="info" styleClass="ui:mr-1">
-                  {{ item.pending_loans.length }}
-                </p-tag>
-                <i class="fa fa-long-arrow-right ui:px-2"></i>
-              }
-              @for (request of item.pending_loans; track request) {
-                <p-tag severity="secondary" styleClass="ui:mr-1">
-                  <i class="fa fa-shopping-basket"></i>&nbsp;
-                  <a class="ui:text-white" [routerLink]="['/circulation', 'patron', request.patron.barcode, 'loan']">{{ request.patron.name }}</a>
-                </p-tag>
-              }
-            </dd>
-          }
-
-          @for (note of getCirculationNoteForAction(); track note) {
-            <dt>
-              @if (note.type !== NOTEAPI) {
-                {{ note.type | translate }}
-              } @else {
-                {{ 'Note' | translate }}
-              }
-            </dt>
-            <dd>{{ note.content }}</dd>
-          }
-        </dl>
-      </div>
-    }
     </div>
     <!-- CIRCULATION INFO -->
     <div name="circ-info" class="ui:col-span-2">
@@ -225,7 +122,7 @@
               </p-tag>
             }
             @if (isCollapsed && totalAmountOfFee > 0) {
-              <p-tag [title]="'Fees'|translate" severity="warning" styleClass="ui:mr-1">
+              <p-tag [title]="'Fees'|translate" severity="warn" styleClass="ui:mr-1">
                 {{ totalAmountOfFee | currency: organisation.default_currency }}
               </p-tag>
             }
@@ -233,7 +130,7 @@
               <p-tag [title]="'Requests'|translate" severity="secondary" styleClass="ui:mr-1">
                 <div class="ui:flex ui:items-start ui:gap-1">
                   <i class="fa fa-shopping-basket ui:mt-1"></i>&nbsp;
-                  <a class="ui:text-white" [routerLink]="['/circulation', 'patron', item.pending_loans[0].patron.barcode, 'loan']">
+                  <a [routerLink]="['/circulation', 'patron', item.pending_loans[0].patron.barcode, 'loan']">
                     {{ item.pending_loans[0].patron.name }}
                   </a>
                 </div>
@@ -274,21 +171,131 @@
               icon="fa fa-refresh"
               [label]="'Renew'|translate"
               severity="secondary"
-              outlined
+              [outlined]="true"
               [disabled]="!item.actions.includes(itemAction.extend_loan)"
               [id]="item.barcode | idAttribute:{prefix: 'item', suffix: 'renew-button'}"
               (onClick)="extendLoanClick($event)"
             />
         }
       </div>
-      @if (canUseDebugMode && !isCollapsed) {
-        <div class="ui:flex ui:justify-end ui:mt-2">
-          <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" [outlined]="true" severity="warning" (onClick)="debugMode=!debugMode">
-            <i class="fa fa-bug"></i>
-          </p-button>
-        </div>
-      }
     </div>
+    <!-- COLLAPSED DETAILS -->
+    @if (!isCollapsed) {
+      <div class="ui:col-span-8 ui:col-start-4">
+        <dl class="metadata">
+          <dt translate>Call number</dt>
+          <dd>
+            <shared-inherited-call-number [item]="item" />
+          </dd>
+          @if (item.enumerationAndChronology) {
+            <dt translate>Unit</dt>
+            <dd>
+              {{ item.enumerationAndChronology }}
+            </dd>
+          }
+          @if (item.location.pid | getRecord: 'locations' | async; as location) {
+            <dt translate>Location</dt>
+            <dd>
+              {{ $any(location).metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}:
+              {{ $any(location).metadata.name }}
+            </dd>
+          }
+          @if (item.temporary_location) {
+            <dt translate>Temporary location</dt>
+            <dd>
+              {{ item.temporary_location.name }}
+            </dd>
+          }
+          @if (item.collections && item.collections.length > 0) {
+            <dt translate>Exhibition/course</dt>
+            <dd>
+              {{ item.collections.join(', ') }}
+            </dd>
+          }
+          @if (item.loan && item.loan.extension_count) {
+            <dt translate>Renewals</dt>
+            <dd>
+              <p-tag severity="secondary" styleClass="ui:mr-1">
+                {{ item.loan.extension_count }}
+                <i class="fa fa-refresh ui:ml-1"></i>
+              </p-tag>
+            </dd>
+          }
+          @if (item.loan && item.actionDone === 'checkin' && item?.loan?.last_end_date) {
+            <dt translate>Due date</dt>
+            <dd>
+              {{ item.loan.last_end_date | dateTranslate :'shortDate' }}
+            </dd>
+          }
+          @if (item.loan && totalAmountOfFee > 0) {
+            <dt translate>Fees</dt>
+            <dd>
+              <p-tag severity="warn" styleClass="ui:mr-1">
+                {{ totalAmountOfFee | currency: organisation.default_currency }}
+              </p-tag>
+            </dd>
+          }
+          @if (item.loan && notifications$ | async; as notifications) {
+            @if (notifications.length > 0) {
+              <dt translate>Notifications</dt>
+              <dd>
+                <ul class="ui:list-none">
+                  @for (notification of notifications; track notification) {
+                    <li>
+                      <span class="ui:text-muted-color ui:text-sm">
+                        {{ notification.metadata.process_date
+                            ? (notification.metadata.process_date | dateTranslate :'short')
+                            : (notification.metadata.creation_date | dateTranslate : 'shortDate')
+                              + '&nbsp;(' +  ('Not yet sent' | translate) + ')'
+                        }}
+                      </span>
+                      &mdash;
+                      {{ notification.metadata.notification_type | translate }}
+                    </li>
+                  }
+                </ul>
+              </dd>
+            }
+          }
+          @if (item.pending_loans) {
+            <dt translate>Requests</dt>
+            <dd>
+              @if (item.pending_loans.length > 1) {
+                <p-tag severity="secondary" styleClass="ui:mr-1">
+                  {{ item.pending_loans.length }}
+                </p-tag>
+                <i class="fa fa-long-arrow-right ui:px-2"></i>
+              }
+              @for (request of item.pending_loans; track request) {
+                <p-tag severity="secondary" styleClass="ui:mr-1">
+                  <i class="fa fa-shopping-basket"></i>&nbsp;
+                  <a [routerLink]="['/circulation', 'patron', request.patron.barcode, 'loan']">{{ request.patron.name }}</a>
+                </p-tag>
+              }
+            </dd>
+          }
+
+          @for (note of getCirculationNoteForAction(); track note) {
+            <dt>
+              <i class="fa fa-sticky-note-o text-warning ui:mr-1"></i>
+              @if (note.type !== NOTEAPI) {
+                {{ note.type | translate }}
+              } @else {
+                {{ 'Note' | translate }}
+              }
+            </dt>
+            <dd>{{ note.content }}</dd>
+          }
+        </dl>
+      </div>
+    }
+    @if (canUseDebugMode && !isCollapsed) {
+      <div class="ui:flex ui:justify-end ui:mt-2 ui:col-span-12">
+        <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" [outlined]="true" severity="danger" (onClick)="debugMode=!debugMode">
+          <i class="fa fa-bug"></i>
+        </p-button>
+      </div>
+    }
     @if (debugMode && !isCollapsed) {
       <div class="ui:col-span-12">
         <h5 class="text-error"><i class="fa fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>

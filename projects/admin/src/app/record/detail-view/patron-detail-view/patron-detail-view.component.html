@@ -19,10 +19,12 @@
   <div class="ui:py-2">
   <!-- BLOCKED OR NOT? -->
   @if (patron.patron && patron.patron.blocked) {
-    <p-message severity="error" showTransitionOptions="0ms">
-      {{ 'This patron is currently blocked' | translate }}<br>
-      {{ patron.patron.blocked_note }}
-    </p-message>
+    <div class="ui:my-4">
+      <p-message severity="error" showTransitionOptions="0ms">
+        {{ 'This patron is currently blocked' | translate }}<br>
+        {{ patron.patron.blocked_note }}
+      </p-message>
+    </div>
   }
 
   <section id="contact-profile" class="ui:flex ui:flex-col ui:gap-2">
@@ -49,8 +51,7 @@
         </div>
         <dl class="metadata">
           <dt>
-            <i class="fa fa-calendar-o"></i>&nbsp;
-            {{ 'Date of birth' | translate }}
+            <i class="fa fa-calendar-o"></i>&nbsp;{{ 'Date of birth' | translate }}
           </dt>
           <dd>{{ patron.birth_date | dateTranslate:'mediumDate' }}</dd>
           @if (patron.email) {
@@ -98,7 +99,7 @@
       </div>
     </div>
 
-    <div class="ui:rounded-border ui:border ui:border-surface ui:flex ui:gap-6 ui:p-6">
+    <div class="ui:flex ui:gap-6 ui:mt-6">
     <p-accordion [multiple]="true" class="ui:grow" [value]="['0', '1']">
       <!-- NOTES ================================================================= -->
       @if (patron.notes && patron.notes.length > 0) {

@@ -70,16 +70,18 @@
           }
           <!-- ITEM IN COLLECTION (hide if not current organisation) -->
           @let itemPid = item.metadata.pid;
-          @let collections = permissions && itemPid | itemInCollection | async;
-          @if (collections.length > 0) {
-            <dt translate>Exhibition/course</dt>
-            <dd>
-              @for (collection of collections; track collection; let last=$last) {
-                <a [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]">
-                  {{ $any(collection).metadata.title }}
-                </a>{{ last ? '' : '; ' }}
-              }
-            </dd>
+          @if (itemPid) {
+            @let collections = permissions && itemPid | itemInCollection | async;
+            @if (collections && collections.length > 0) {
+              <dt translate>Exhibition/course</dt>
+              <dd>
+                @for (collection of collections; track collection; let last=$last) {
+                  <a [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]">
+                    {{ $any(collection).metadata.title }}
+                  </a>{{ last ? '' : '; ' }}
+                }
+              </dd>
+            }
           }
         </dl>
         <!-- (hide if not current organisation) -->

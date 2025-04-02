@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnDestroy } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { ApiService, RemoteAutocomplete } from '@rero/ng-core';
 import { PERMISSIONS, PermissionsService } from '@rero/shared';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -30,10 +29,14 @@ import { AddEntityLocalFormComponent } from './add-entity-local-form/add-entity-
           @if (props.filters?.options) {
             <div class="ui:flex">
               <p-select
-                [options]="props.filters.options"
+                [options]="optionValues$|async"
                 [ngModel]="props.filters.selected"
                 (onChange)="changeFilter($event)"
-              ></p-select>
+              >
+              <ng-template let-selected #selectedItem>
+                {{ selected.untranslatedLabel | translate }}
+              </ng-template>
+              </p-select>
             </div>
           }
           <div class="ui:flex ui:ml-1 ui:w-full">
@@ -54,9 +57,9 @@ import { AddEntityLocalFormComponent } from './add-entity-local-form/add-entity-
               <ng-template #group let-data>
                 <span class="ui:font-bold">
                   @if (data.label === 'local' && isAuthorizedToAddLocalEntity) {
-                    {{ "link to local authority" | translate }}
+                    {{ "link to local authority" | translate }}&nbsp;
                     <i
-                      class="fa fa-plus-square-o ui:ml-2 ui:text-lg"
+                      class="fa fa-plus-square-o ui:text-xl ui:text-blue-500 ui:hover:text-blue-700 ui:cursor-pointer"
                       [title]="'Add local entity'|translate"
                       aria-hidden="true"
                       (click)="addLocalEntity($event)"
@@ -67,17 +70,17 @@ import { AddEntityLocalFormComponent } from './add-entity-local-form/add-entity-
                 </span>
               </ng-template>
               <ng-template let-data #item>
-                <div class="ui:flex">
+                <div class="ui:flex ui:gap-2 ui:items-center">
                   <div class="ui:flex" [innerHTML]="data.label"></div>
                   @if (data.link) {
-                    <a class="ui:ml-2 ui:text-surface-700 ui:dark:text-surface-100" (click)="$event.stopPropagation()" [href]="data.link" target="_blank">
+                    <a class="ui:ml-1 ui:text-surface-700 ui:dark:text-surface-100" (click)="$event.stopPropagation()" [href]="data.link" target="_blank">
                       <i class="fa fa-external-link"></i>
                     </a>
                   }
+                  @if (data.summary) {
+                    <div class="ui:italic ui:text-sm ui:text-gray-500" [innerHTML]="data.summary" [ngClass]="props.summaryClass"></div>
+                  }
                 </div>
-                @if (data.summary) {
-                  <div [innerHTML]="data.summary" [ngClass]="props.summaryClass"></div>
-                }
               </ng-template>
             </p-autoComplete>
           </div>
@@ -94,7 +97,6 @@ export class EntityAutocompleteComponent extends RemoteAutocomplete implements O
 
   private permissionsService: PermissionsService = inject(PermissionsService);
   private dialogService: DialogService = inject(DialogService);
-  private translateService: TranslateService = inject(TranslateService);
   private apiService: ApiService = inject(ApiService);
 
   isAuthorizedToAddLocalEntity = false;

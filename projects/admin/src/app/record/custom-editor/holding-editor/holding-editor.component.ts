@@ -17,7 +17,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractCanDeactivateComponent, removeEmptyValues } from '@rero/ng-core';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { EditorService } from '../../../service/editor.service';
 import { PredictionIssue } from '../../../service/holdings.service';
 
@@ -28,7 +28,6 @@ import { PredictionIssue } from '../../../service/holdings.service';
 @Component({
     selector: 'admin-holding-editor',
     templateUrl: './holding-editor.component.html',
-    styleUrls: ['./holding-editor.component.scss'],
     standalone: false
 })
 export class HoldingEditorComponent extends AbstractCanDeactivateComponent implements OnInit, OnDestroy {

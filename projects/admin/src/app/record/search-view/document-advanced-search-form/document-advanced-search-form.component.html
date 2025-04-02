@@ -17,23 +17,24 @@
 -->
 
 @if (configurationLoaded) {
-      <form [formGroup]="form" (ngSubmit)="submit()">
-        <formly-form
-          [model]="model"
-          [fields]="fieldsConfig"
-          [options]="options"
-          [form]="form"
-        />
-        <div class="ui:flex ui:gap-1 ui:justify-end">
-          <p-button outlined
-          (onClick)="clear()"
-          [label]="'Clear' | translate"
-          />
-          <p-button
-            type="submit"
-            [disabled]="!form.valid"
-            [label]="'Search' | translate"
-          />
-        </div>
-      </form>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <formly-form
+      [model]="model"
+      [fields]="fieldsConfig"
+      [options]="options"
+      [form]="form"
+    />
+    <div class="ui:flex ui:gap-1 ui:justify-end ui:mt-3">
+      <p-button
+      outlined
+      (onClick)="clear()"
+      [label]="'Clear' | translate"
+      />
+      <p-button
+        type="submit"
+        [disabled]="!form.valid"
+        [label]="'Search' | translate"
+      />
+    </div>
+  </form>
 }
