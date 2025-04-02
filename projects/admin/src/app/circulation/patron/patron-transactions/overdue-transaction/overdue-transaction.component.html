@@ -15,13 +15,13 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (transaction !== undefined && transaction.fees.total > 0) {
-  <div class="ui:p-2 ui:border ui:rounded ui:border-gray-200">
+  <div class="ui:p-2">
     <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-start">
       <div class="ui:col-span-2 ui:flex ui:gap-2">
         <shared-open-close-button (status)="isCollapsed = $event" />
         {{ transaction.loan.end_date | dateTranslate :'shortDate' }}
       </div>
-      <div class="ui:col-span-7">
+      <div class="ui:col-span-8">
         @if (document && document.title | mainTitle; as title) {
           <a [routerLink]="['/records','documents','detail', document.pid]">
             {{ title | truncateText: 15 }}

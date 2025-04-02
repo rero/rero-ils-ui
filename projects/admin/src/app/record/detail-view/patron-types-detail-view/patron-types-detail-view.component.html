@@ -57,7 +57,7 @@
             </div>
           </ng-template>
           @if (record?.metadata?.limits?.checkout_limits) {
-            <dl class="metadata">
+            <dl class="metadata ui:ml-7 ui:mb-4">
               <dt translate>General limit</dt>
               <dd>{{ record.metadata.limits.checkout_limits.global_limit }}</dd>
               @if (record.metadata.limits.checkout_limits.library_limit) {
@@ -95,7 +95,7 @@
             </div>
           </ng-template>
           @if (record.metadata.limits.fee_amount_limits) {
-            <dl class="metadata">
+            <dl class="metadata ui:ml-7 ui:mb-4">
               <dt translate>Limit</dt>
               <dd>{{ record.metadata.limits.fee_amount_limits.default_value | currency: organisation.default_currency }}</dd>
             </dl>
@@ -113,7 +113,7 @@
             </div>
           </ng-template>
           @if (record.metadata.limits.overdue_items_limits) {
-            <dl class="metadata">
+            <dl class="metadata ui:ml-7 ui:mb-4">
               <dt translate>Limit</dt>
               <dd>{{ record.metadata.limits.overdue_items_limits.default_value }}</dd>
             </dl>

@@ -17,7 +17,7 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
-import { HoldingsNoteType, User, UserService } from '@rero/shared';
+import { HoldingsNoteType, UserService } from '@rero/shared';
 import { Observable, tap } from 'rxjs';
 import { HoldingsApiService } from '../../api/holdings-api.service';
 import { QueryResponse } from '../../record';
@@ -49,8 +49,12 @@ export class HoldingsComponent implements OnInit {
 
   noteAuthorizedTypes: string[] = [HoldingsNoteType.GENERAL, HoldingsNoteType.ACCESS];
 
-  get user(): User {
-    return this.userService.user;
+  get userIsAuthenticated(): boolean {
+    return this.userService.user.isAuthenticated;
+  }
+
+  get userIsPatron(): boolean {
+    return this.userService.user.hasRoles(['patron']);
   }
 
   get language() {

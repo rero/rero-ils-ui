@@ -25,7 +25,7 @@
           {{ 'Document information' | translate }}
         </span>
       </ng-template>
-      <dl class="metadata ui:mt-3">
+      <dl class="metadata ui:m-3">
         <dt translate>Title</dt>
         <dd>{{ record.metadata.document.title }}</dd>
         @if (record.metadata.document.authors; as authors) {
@@ -69,11 +69,18 @@
         {{ 'Request additional informations' | translate }}
       </span>
     </ng-template>
-    <dl class="metadata ui:mt-3">
+    <dl class="metadata ui:m-3">
       @if (record.metadata.found_in; as source) {
         <dt translate>Found in</dt>
         <dd>
-          {{ source.source }} &mdash; <a class="rero-ils-external-link" href="{{ source.url }}">{{ source.url }}</a>
+          {{ source.source }} &mdash;
+          <a
+            [title]="source.url"
+            class="rero-ils-external-link"
+            href="{{ source.url }}"
+          >
+            {{ source.url | truncateText: 100 : '…' : 'char' }}
+          </a>
         </dd>
       }
       <dt translate>Requester</dt>
@@ -133,7 +140,7 @@
           {{ 'Notes' | translate }}
         </span>
       </ng-template>
-      <dl class="metadata ui:mt-3">
+      <dl class="metadata ui:m-3">
         @for (note of record.metadata.notes; track note) {
           <dt translate>{{ note.type }}</dt>
           <dd [innerHTML]="note.content | nl2br"></dd>

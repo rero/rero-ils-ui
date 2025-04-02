@@ -15,12 +15,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (holdings.length > 0) {
-  @if (!user.roles.includes('patron')) {
-    <p-message
-      [text]="'Log in to see request options' | translate"
-      severity="warn"
-      showTransitionOptions="0ms"
-    />
+  @if (!userIsAuthenticated) {
+    <div class="ui:mb-4">
+      <p-message
+        [text]="'Log in to see request options' | translate"
+        severity="warn"
+        showTransitionOptions="0ms"
+      />
+    </div>
   }
   <p-accordion [multiple]="true" [value]="[0]">
     @for (holding of holdings; track holding; let idx = $index) {
@@ -130,11 +132,11 @@
       </div>
     </p-button>
     }
-    @if(viewcode === 'global') {
+    @if(userIsAuthenticated && userIsPatron && viewcode === 'global') {
       <div>
         <a
           pButton
-          outlined
+          [outlined]="true"
           size="small"
           icon="fa fa-truck"
           href="/{{ viewcode }}/ill_requests/new?record_pid={{ documentPid }}"

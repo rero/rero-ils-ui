@@ -15,7 +15,7 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (exception) {
-  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-1" [ngClass]="{'ui:text-muted-color ui:line-through': isOver(exception)}">
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mx-2 ui:my-1" [ngClass]="{'ui:text-muted-color ui:line-through': isOver(exception)}">
     <i class="fa ui:col-span-1" aria-hidden="true" [ngClass]="{
       'fa-circle text-success': exception.is_open,
       'fa-ban text-error': !exception.is_open

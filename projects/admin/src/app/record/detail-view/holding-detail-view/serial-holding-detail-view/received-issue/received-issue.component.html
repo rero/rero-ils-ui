@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2022-2024 RERO
+  Copyright (C) 2022-2025 RERO
   Copyright (C) 2022-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @defer(when issue) {
-  <div class="ui:grid ui:grid-cols-12 ui:gap-4  ui:border ui:border-surface ui:p-2 ui:items-center" [ngClass]="{'text-error': issue.metadata.issue.status === 'deleted'}">
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-1 ui:border ui:border-surface" [ngClass]="{'text-error': issue.metadata.issue.status === 'deleted'}">
     <div class="ui:col-span-10">
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:items-center">
         <div class="ui:col-span-1 ui:flex ui:items-center">
@@ -48,47 +48,49 @@
           </span>
         }
         @if (!isCollapsed) {
-          <dl class="metadata">
-            @if (issue.metadata._masked) {
-              <dt></dt>
-              <dd class="text-error">
-                <i class="fa fa-eye-slash"></i>&nbsp;
-                {{ 'This issue has been marked as masked' | translate }}
-              </dd>
-            }
-            <dt translate>Status</dt>
-            <dd>
-              <i class="fa" [class]="getIcon(true)"></i>&nbsp;
-              {{ issue.metadata.issue.status | translate }}
-              <span class="ui:text-sm  ui:text-muted-color">
-                ({{ 'Assigned on' | translate }} {{ issue.metadata.issue.status_date | dateTranslate }})
-              </span>
-            </dd>
-            <dt translate>Expected date</dt>
-            <dd>{{ issue.metadata.issue.expected_date | dateTranslate }}</dd>
-            @if (issue.metadata.issue.status === issueItemStatusRef.RECEIVED) {
-              <dt translate>Received date</dt>
-              <dd>{{ issue.metadata.issue.received_date | dateTranslate }}</dd>
-            }
-            @if (issue.metadata?.issue?.claims?.counter > 0) {
-              <dt translate>
-                <span [ngPlural]="issue.metadata.issue.claims.counter">
-                  <ng-template ngPluralCase="=1">{{ 'Claim' | translate }}</ng-template>
-                  <ng-template ngPluralCase="other">{{ 'Claims' | translate }}</ng-template>
-                </span>
-              </dt>
+          <div class="ui:col-start-2 ui:col-span-10">
+            <dl class="metadata">
+              @if (issue.metadata._masked) {
+                <dt></dt>
+                <dd class="text-error">
+                  <i class="fa fa-eye-slash"></i>&nbsp;
+                  {{ 'This issue has been marked as masked' | translate }}
+                </dd>
+              }
+              <dt translate>Status</dt>
               <dd>
-                {{ issue.metadata.issue.claims.counter }}
+                <i class="fa" [class]="getIcon(true)"></i>&nbsp;
+                {{ issue.metadata.issue.status | translate }}
                 <span class="ui:text-sm  ui:text-muted-color">
-                  ({{ 'last claim' | translate }}: {{ claimLastDate | dateTranslate: 'short' }})
+                  ({{ 'Assigned on' | translate }} {{ issue.metadata.issue.status_date | dateTranslate }})
                 </span>
               </dd>
-            }
-          </dl>
+              <dt translate>Expected date</dt>
+              <dd>{{ issue.metadata.issue.expected_date | dateTranslate }}</dd>
+              @if (issue.metadata.issue.status === issueItemStatusRef.RECEIVED) {
+                <dt translate>Received date</dt>
+                <dd>{{ issue.metadata.issue.received_date | dateTranslate }}</dd>
+              }
+              @if (issue.metadata?.issue?.claims?.counter > 0) {
+                <dt translate>
+                  <span [ngPlural]="issue.metadata.issue.claims.counter">
+                    <ng-template ngPluralCase="=1">{{ 'Claim' | translate }}</ng-template>
+                    <ng-template ngPluralCase="other">{{ 'Claims' | translate }}</ng-template>
+                  </span>
+                </dt>
+                <dd>
+                  {{ issue.metadata.issue.claims.counter }}
+                  <span class="ui:text-sm  ui:text-muted-color">
+                    ({{ 'last claim' | translate }}: {{ claimLastDate | dateTranslate: 'short' }})
+                  </span>
+                </dd>
+              }
+            </dl>
+          </div>
         }
       </div>
     </div>
-    <div class="ui:col-span-2 ui:flex ui:gap-1 ui:justify-end">
+    <div class="ui:col-span-2 ui:flex ui:gap-1 ui:justify-end ui:mt-4 ui:pr-1">
       <!-- CLAIMS BUTTON -->
       @if (recordPermissions?.update?.can) {
         @if (isClaimAllowed) {

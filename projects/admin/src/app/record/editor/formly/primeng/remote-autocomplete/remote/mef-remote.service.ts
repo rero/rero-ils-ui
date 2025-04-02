@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -194,7 +194,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
    * @returns Suggestions corresponding to hits.
    */
   private buildRemoteSuggestions(hits: any): ISuggestionItem[] {
-    const suggestions = [];
+    let suggestions = [];
     this.sources().map((source: string) => suggestions.push({
       label: source,
       items: []
@@ -211,6 +211,9 @@ export class MefRemoteService implements IRemoteAutocomplete {
         }
       }
     });
+
+    // Remove sources without items
+    suggestions = suggestions.filter((suggestion: any) => suggestion.items.length > 0);
 
     return suggestions;
   }

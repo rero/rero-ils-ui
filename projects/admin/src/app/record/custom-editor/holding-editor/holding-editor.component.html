@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2020-2024 RERO
+  Copyright (C) 2020-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,39 +15,31 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="ui:grid ui:grid-cols-12 ui:gap-4">
-  <div class="ui:md:col-span-9 ui:col-span-8">
-    <ng-core-editor [model]="model" (modelChange)="modelChanged($event)" (canDeactivateChange)="canDeactivateChanged($event)" />
-  </div>
-  <div class="ui:col-span-12">
-    <p-fieldset [legend]="'Predictions' | translate">
-      @if (!serialPreviewError) {
-        @if (serialPreviewExamples && serialPreviewExamples.length > 0) {
-          <ul class="ui:list-none">
-            @for (issue of serialPreviewExamples | slice:0:10; track issue) {
-              <li>{{ issue.issue }}</li>
-            }
-          </ul>
-          …
-          <ul class="ui:list-none">
-            @for (issue of serialPreviewExamples | slice:97:100; track issue) {
-              <li>{{ issue.issue }}</li>
-            }
-          </ul>
+<div class="ui:grid ui:gap-4">
+  <ng-core-editor [model]="model" (modelChange)="modelChanged($event)" (canDeactivateChange)="canDeactivateChanged($event)">
+    <div class="ui:w-full ui:mb-3" beforeTableOfContent>
+      <div class="ui:font-bold ui:mb-1" translate>Predictions</div>
+      <div class="ui:ml-2">
+        @if (!serialPreviewError) {
+          @if (serialPreviewExamples && serialPreviewExamples.length > 0) {
+            <ul class="ui:list-none">
+              @for (issue of serialPreviewExamples | slice:0:10; track issue) {
+                <li>{{ issue.issue }}</li>
+              }
+            </ul>
+            …
+            <ul class="ui:list-none">
+              @for (issue of serialPreviewExamples | slice:97:100; track issue) {
+                <li>{{ issue.issue }}</li>
+              }
+            </ul>
+          } @else {
+            <span translate>No preview available</span>
+          }
         } @else {
-          <p-message
-            [text]="'No preview available' | translate"
-            severity="info"
-            showTransitionOptions="0ms"
-          />
+          <span class="ui:text-red-500">{{'Template' | translate }}&nbsp;{{ serialPreviewError.status }}</span>
         }
-      } @else {
-        <p-message
-          [text]="('Template' | translate) + '&nbsp;' + serialPreviewError.status"
-          severity="error"
-          showTransitionOptions="0ms"
-        />
-      }
-    </p-fieldset>
-  </div>
+      </div>
+    </div>
+  </ng-core-editor>
 </div>

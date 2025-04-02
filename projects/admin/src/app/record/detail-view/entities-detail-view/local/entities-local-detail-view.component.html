@@ -25,29 +25,36 @@
   <p-tag severity="info" [value]="'Local' | translate" />
 
   <div class="ui:pt-2">
-    @switch ($any(record).metadata.type) {
-      @case (entityType.ORGANISATION) {
-        <admin-local-organisation-detail-view [record]="$any(record).metadata" />
-      }
-      @case (entityType.PERSON) {
-        <admin-local-person-detail-view [record]="$any(record).metadata" />
-      }
-      @case (entityType.PLACE) {
-        <admin-local-place-detail-view [record]="$any(record).metadata" />
-      }
-      @case (entityType.TEMPORAL) {
-        <admin-local-place-detail-view [record]="$any(record).metadata" />
-      }
-      @case (entityType.TOPIC) {
-        <admin-local-topic-detail-view [record]="$any(record).metadata" />
-      }
-      @case (entityType.WORK) {
-        <admin-local-work-detail-view [record]="$any(record).metadata" />
-      }
-      @default {
-        {{ 'Missing template for this entity type:' | translate }} {{ $any(record).metadata.type }}
-      }
-    }
+    <p-panel styleClass="ui:pb-3">
+      <ng-template #header>
+        <span class="ui:font-medium ui:text-lg" translate>Local</span>
+      </ng-template>
+      <div class="ui:mx-4">
+        @switch ($any(record).metadata.type) {
+          @case (entityType.ORGANISATION) {
+            <admin-local-organisation-detail-view [record]="$any(record).metadata" />
+          }
+          @case (entityType.PERSON) {
+            <admin-local-person-detail-view [record]="$any(record).metadata" />
+          }
+          @case (entityType.PLACE) {
+            <admin-local-place-detail-view [record]="$any(record).metadata" />
+          }
+          @case (entityType.TEMPORAL) {
+            <admin-local-place-detail-view [record]="$any(record).metadata" />
+          }
+          @case (entityType.TOPIC) {
+            <admin-local-topic-detail-view [record]="$any(record).metadata" />
+          }
+          @case (entityType.WORK) {
+            <admin-local-work-detail-view [record]="$any(record).metadata" />
+          }
+          @default {
+            {{ 'Missing template for this entity type:' | translate }} {{ $any(record).metadata.type }}
+          }
+        }
+      </div>
+    </p-panel>
   </div>
 }
 

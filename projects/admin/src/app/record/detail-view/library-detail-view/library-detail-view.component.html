@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  <section id="library-profile" class="ui:flex ui:flex-col ui:gap-2">
+  <section id="library-profile" class="ui:flex ui:flex-col ui:gap-2 ui:mb-4">
     <div class="ui:rounded-border ui:border ui:border-surface ui:flex ui:gap-6 ui:p-6">
       <div class="ui:bg-surface-500 ui:dark:bg-surface-300 ui:rounded-full ui:w-40 ui:h-40 ui:flex ui:items-center ui:justify-center">
         <i class="fa fa-university fa-4x ui:text-white"></i>
@@ -41,7 +41,7 @@
     </div>
   </section>
 
-  <p-accordion multiple [value]="[0]">
+  <p-accordion [multiple]="true" [value]="['0']">
     <!-- locations ======================================================== -->
     <p-accordion-panel value="0" #locTab>
       <p-accordion-header>
@@ -130,7 +130,7 @@
       </div>
       </p-accordion-header>
       <p-accordion-content>
-        <div class="ui:mt-2">
+        <div class="ui:mt-2 ui:mx-2">
           @if (record.notification_settings; as notificationSettings) {
             <dl class="metadata">
               @for (setting of notificationSettings; track setting) {
@@ -152,12 +152,12 @@
     <p-accordion-panel value="4">
       <p-accordion-header>
         <div>
-        <i class="fa fa-university ui:mr-2"></i>&nbsp;
-        <span translate>Acquisition settings</span>
-      </div>
+          <i class="fa fa-university ui:mr-2"></i>&nbsp;
+          <span translate>Acquisition settings</span>
+        </div>
       </p-accordion-header>
       <p-accordion-content>
-        <div class="ui:mt-2">
+        <div class="ui:mt-2 ui:mx-2">
           @if (record.acquisition_settings; as acquisitionSettings) {
             <p-divider align="left">
               <div>
@@ -219,7 +219,7 @@
           </div>
         </p-accordion-header>
         <p-accordion-content>
-          <div class="ui:mt-2">
+          <div class="ui:mt-2 ui:mx-2">
             <dl class="metadata">
               <dt translate>Account transfer</dt>
               <dd>{{ record.rollover_settings.account_transfer | translate }}</dd>

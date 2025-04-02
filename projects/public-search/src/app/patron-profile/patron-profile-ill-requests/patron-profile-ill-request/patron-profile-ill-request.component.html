@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -22,73 +22,7 @@
     <div class="ui:w-full">
       <div>{{ record.metadata.document.title }}</div>
       <div class="ui:text-sm">{{ record.metadata.document.authors }}</div>
-       <!-- ILL DETAIL -->
-      @if (!isCollapsed){
-        <dl class="metadata ui:pt-4">
-          <!-- PUBLISHER -->
-          @if (record.metadata.document.publisher) {
-            <dt translate>Publisher</dt>
-            <dd>{{ record.metadata.document.publisher }}</dd>
-          }
-          <!-- YEAR -->
-          @if (record.metadata.document.year) {
-            <dt translate>Year</dt>
-            <dd>{{ record.metadata.document.year }}</dd>
-          }
-          <!-- IDENTIFIER -->
-          @if (record.metadata.document.identifier) {
-            <dt translate>Identifier</dt>
-            <dd>{{ record.metadata.document.identifier }}</dd>
-          }
-          <!-- SOURCE -->
-          @if (record.metadata.document.source) {
-            <dt translate>Source</dt>
-            <dd>
-              @if (record.metadata.document.source.volume || record.metadata.document.source.number) {
-                {{ record.metadata.document.source | journalVolume }}
-              }
-            </dd>
-          }
-          <!-- PICKUP LOCATION -->
-          <dt translate>Pickup location</dt>
-          <dd>{{ record.metadata.pickup_location.name }}</dd>
-          <!-- SCOPE -->
-          <dt translate>Scope</dt>
-          <dd>
-            @if (record.metadata.copy) {
-              {{ 'Copy' | translate }}
-            } @else {
-              {{ 'Loan' | translate }}
-            }
-          </dd>
-          <!-- PAGES -->
-          @if (record.metadata.copy && record.metadata.pages) {
-            <dt translate>Pages</dt>
-            <dd >{{ record.metadata.pages }}</dd>
-          }
-          <!-- FOUND IN -->
-          @if (record.metadata.found_in) {
-            <dt translate>Found in</dt>
-            <dd class="ui:flex ui:gap-2">
-              @if(record.metadata?.found_in.url) {
-                <a href="{{ record.metadata.found_in.url }}">{{ record.metadata.found_in.url }}</a>
-              }
-              <p-tag severity="secondary">{{ record.metadata.found_in.source }}</p-tag>
-            </dd>
-          }
-          <!-- NOTES -->
-          @if (record.metadata.notes && record.metadata.notes.length > 0) {
-            <dt translate>Note</dt>
-            <dd>
-              <ul class="ui:list-none">
-                @for (note of record.metadata.notes | notesFilter:['public_note']; track note) {
-                  <li [innerHTML]="note.content | nl2br"></li>
-                }
-              </ul>
-            </dd>
-          }
-        </dl>
-      }
+
     </div>
   </div>
   <div class="ui:md:col-span-2 ui:col-span-12 ui:text-end">
@@ -98,4 +32,79 @@
       </p-tag>
     }
   </div>
+
+  <!-- ILL DETAIL -->
+  @if (!isCollapsed){
+  <div class="ui:col-span-12 ui:pl-12 ui:mb-3">
+    <dl class="metadata ui:pt-4">
+      <!-- PUBLISHER -->
+      @if (record.metadata.document.publisher) {
+        <dt translate>Publisher</dt>
+        <dd>{{ record.metadata.document.publisher }}</dd>
+      }
+      <!-- YEAR -->
+      @if (record.metadata.document.year) {
+        <dt translate>Year</dt>
+        <dd>{{ record.metadata.document.year }}</dd>
+      }
+      <!-- IDENTIFIER -->
+      @if (record.metadata.document.identifier) {
+        <dt translate>Identifier</dt>
+        <dd>{{ record.metadata.document.identifier }}</dd>
+      }
+      <!-- SOURCE -->
+      @if (record.metadata.document.source) {
+        <dt translate>Source</dt>
+        <dd>
+          @if (record.metadata.document.source.volume || record.metadata.document.source.number) {
+            {{ record.metadata.document.source | journalVolume }}
+          }
+        </dd>
+      }
+      <!-- PICKUP LOCATION -->
+      <dt translate>Pickup location</dt>
+      <dd>{{ record.metadata.pickup_location.name }}</dd>
+      <!-- SCOPE -->
+      <dt translate>Scope</dt>
+      <dd>
+        @if (record.metadata.copy) {
+          {{ 'Copy' | translate }}
+        } @else {
+          {{ 'Loan' | translate }}
+        }
+      </dd>
+      <!-- PAGES -->
+      @if (record.metadata.copy && record.metadata.pages) {
+        <dt translate>Pages</dt>
+        <dd >{{ record.metadata.pages }}</dd>
+      }
+      <!-- FOUND IN -->
+      @if (record.metadata.found_in) {
+        <dt translate>Found in</dt>
+        <dd class="ui:flex ui:gap-2 ui:items-start">
+          @if(record.metadata?.found_in.url) {
+            <a
+              [title]="record.metadata.found_in.url"
+              href="{{ record.metadata.found_in.url }}"
+            >
+              {{ record.metadata.found_in.url | truncateText: 80 : '…' : 'char' }}
+            </a>
+          }
+          <p-tag severity="secondary">{{ record.metadata.found_in.source }}</p-tag>
+        </dd>
+      }
+      <!-- NOTES -->
+      @if (record.metadata.notes && record.metadata.notes.length > 0) {
+        <dt translate>Note</dt>
+        <dd>
+          <ul class="ui:list-none">
+            @for (note of record.metadata.notes | notesFilter:['public_note']; track note) {
+              <li [innerHTML]="note.content | nl2br"></li>
+            }
+          </ul>
+        </dd>
+      }
+    </dl>
+  </div>
+}
 </div>

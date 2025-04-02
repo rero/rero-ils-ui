@@ -39,8 +39,8 @@
   </div>
   <!-- DETAIL ROWS :: collapsible detail information's -->
   @if (!isCollapsed) {
-    <div class="ui:col-start-5 ui:col-span-7">
-      <dl class="metadata">
+    <div class="ui:col-span-12">
+      <dl class="metadata ui:ml-11">
         <!-- PUBLISHER -->
         @if (record.metadata.document.publisher) {
           <dt translate>Publisher</dt>
@@ -83,7 +83,13 @@
         @if (record.metadata.found_in) {
           <dt translate>Found in</dt>
           <dd>
-            <a [href]="record.metadata.found_in.url">{{ record.metadata.found_in.url }}</a>
+            <a
+              [title]="record.metadata.found_in.url"
+              [href]="record.metadata.found_in.url"
+              target="_blank"
+            >
+              {{ record.metadata.found_in.url | truncateText: 80 : '…' : 'char' }}
+            </a>
             <p-tag class="ui:ml-2" severity="secondary" [value]="record.metadata.found_in.source" />
           </dd>
         }

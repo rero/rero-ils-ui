@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (item && ((item.metadata.issue && item.metadata.issue.status !== itemIssueStatus.DELETED) || item.metadata.type === 'provisional')) {
-    <div class="ui:grid ui:grid-cols-12 ui:gap-1 ui:py-2 ui:px-1 ui:grow">  <!-- First row :: item detail -->
-      <div class="ui:col-span-3 ui:flex ui:items-center">
+    <div class="ui:grid ui:grid-cols-12 ui:gap-1 ui:px-1 ui:grow ui:items-center">
+      <div class="ui:col-span-3 ui:flex">
         @if (item.metadata._masked) {
           <admin-record-masked [record]="item" />
         }
@@ -29,19 +29,19 @@
           {{ item.metadata.barcode }}
         }
       </div>
-      <div class="ui:col-span-3 ui:flex ui:items-center">
+      <div class="ui:col-span-3">
         <shared-availability
           recordType="item"
           [record]="item"
           [apiService]="itemApiService"
         />
       </div>
-      <div class="ui:col-span-3 ui:flex ui:items-center">
+      <div class="ui:col-span-3">
         {{ item.metadata.enumerationAndChronology }}
       </div>
       <div class="ui:col-span-3 ui:flex ui:items-center">
         <div class="ui:grow">
-        <shared-inherited-call-number class-="ui:grow" [item]="item" />
+          <shared-inherited-call-number class-="ui:grow" [item]="item" />
         </div>
         @if (permissions) {
           <div class="ui:flex ui:gap-1 ui:justify-end">
@@ -106,8 +106,9 @@
         }
         <!-- ITEM IN COLLECTION -->
         @let itemPid = item.metadata.pid;
-        @if (permissions && itemPid | itemInCollection | async; as collections) {
-          @if (collections.length > 0) {
+        @if (permissions && itemPid) {
+          @let collections = itemPid | itemInCollection | async;
+          @if (collections && collections.length > 0) {
             <dl class="metadata">
               <dt translate>Exhibition/course</dt>
               <dd>
