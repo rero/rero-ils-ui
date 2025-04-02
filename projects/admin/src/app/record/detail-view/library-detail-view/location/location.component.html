@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -15,39 +15,53 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (permissions) {
-  <div class="ui:flex ui:justify-between ui:items-center ui:gap-2">
-  <div>
-    <a [routerLink]="['/records/locations/detail', location.metadata.pid]">{{ location.metadata.name }}</a>
-  </div>
-  <div class="ui:flex ui:gap-6">
-  <div class="ui:flex ui:gap-1 ui:items-center">
-    @if (location.metadata.is_pickup) {
-      <i class="fa fa-truck" [title]="'Pickup location'|translate"></i>
-    }
-    @if (location.metadata.is_ill_pickup) {
-      <i class="fa fa-truck text-primary" [title]="'ILL pickup location'|translate"></i>
-    }
-    @if (location.metadata.is_online) {
-      <i class="fa fa-globe" [title]="'Online location'|translate"></i>
-    }
-  </div>
+  <div class="ui:flex ui:justify-between ui:items-center ui:gap-2 ui:mx-2">
+    <div>
+      <a [routerLink]="['/records/locations/detail', location.metadata.pid]">{{ location.metadata.name }}</a>
+    </div>
+    <div class="ui:flex ui:gap-6">
+    <div class="ui:flex ui:gap-2 ui:items-center">
+      @if (location.metadata.is_pickup) {
+        <i
+          class="fa fa-truck"
+          [pTooltip]="'Pickup location'|translate"
+          tooltipPosition="top"
+        ></i>
+      }
+      @if (location.metadata.is_ill_pickup) {
+        <i
+          class="fa fa-truck ui:text-primary"
+          [pTooltip]="'ILL pickup location'|translate"
+          tooltipPosition="top"
+        ></i>
+      }
+      @if (location.metadata.is_online) {
+        <i
+          class="fa fa-globe"
+          [pTooltip]="'Online location'|translate"
+          tooltipPosition="top"
+        ></i>
+      }
+    </div>
     <div class="ui:flex ui:gap-1">
       <!-- Edit button -->
       @if (permissions.update.can) {
         <p-button
+          size="small"
           icon="fa fa-pencil"
           [title]="'Edit'|translate"
-          outlined
+          [outlined]="true"
           [routerLink]="['/records', 'locations', 'edit', location.metadata.pid]"
         />
       }
       <!-- Delete button -->
         <p-button
+          size="small"
           class="ui:pointer-events-auto"
           icon="fa fa-trash"
           severity="danger"
           [title]="'Delete'|translate"
-          outlined
+          [outlined]="true"
           (onClick)="delete(location.metadata.pid)"
           [pTooltip]="tooltipContent"
           tooltipPosition="top"

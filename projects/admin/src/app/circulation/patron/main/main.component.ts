@@ -278,7 +278,7 @@ export class MainComponent implements OnInit, OnDestroy {
         label: this.translateService.instant('Fees'),
         routerLink: ['/circulation', 'patron', this.barcode, 'fees'],
         tag: {
-          severity: 'warning',
+          severity: 'warn',
           statistics: this.circulationService.statistics,
           withCurrency: true,
         }

@@ -51,7 +51,7 @@
     <!-- CIRCULATION SETTINGS -->
     <section class="ui:mt-4">
       <p-panel [header]="'Circulation settings'|translate">
-        <dl class="metadata ui:mt-4">
+        <dl class="metadata ui:my-4 ui:mx-4">
           <!-- IS DEFAULT -->
           <dt translate>Is default</dt>
           <dd>
@@ -112,7 +112,7 @@
     @if (reminders.length > 0) {
       <section class="ui:mt-4">
         <p-panel [header]="'Reminders'|translate">
-          <p-table stripedRows [value]="record.metadata.reminders" size="small">
+          <p-table styleClass="ui:m-1" stripedRows [value]="record.metadata.reminders" size="small">
             <ng-template #header>
               <tr>
                 <th translate>Type</th>
@@ -150,16 +150,16 @@
     @if (overdues?.length > 0) {
       <section class="ui:mt-4">
         <p-panel [header]="'Overdue fees'|translate">
-          <p-table stripedRows [value]="overdues" size="small">
+          <p-table styleClass="ui:m-1" stripedRows [value]="overdues" size="small">
             <ng-template #header>
               <tr>
-                <th translate>Interval of days</th>
+                <th class="ui:pl-2" translate>Interval of days</th>
                 <th translate>Amount/day</th>
               </tr>
             </ng-template>
             <ng-template #body let-overdue>
               <tr>
-                <td>
+                <td class="ui:pl-2">
                   {{ overdue.from }}
                   <i class="fa fa-long-arrow-right ui:px-2"></i>
                   @if (overdue.to) {
@@ -182,10 +182,10 @@
     @if (record.metadata.settings) {
       <section class="ui:mt-4">
         <p-panel [header]="'Application'|translate">
-          <p-table stripedRows [value]="settings | keyvalue" size="small">
+          <p-table styleClass="ui:m-1" stripedRows [value]="settings | keyvalue" size="small">
             <ng-template #header>
               <tr>
-                <th rowspan="2" class="ui:align-bottom ui:pl-0" translate>Patron types</th>
+                <th rowspan="2" class="ui:align-bottom ui:pl-2" translate>Patron types</th>
                 <th [attr.colspan]="itemTypes.size" class="ui:text-center" translate>Item types</th>
               </tr>
               <tr>
@@ -198,7 +198,7 @@
             </ng-template>
             <ng-template #body let-setting>
               <tr>
-                <th id="ptty-{{setting.key}}" class="ui:text-left">
+                <th id="ptty-{{setting.key}}" class="ui:text-left ui:pl-2">
                   {{ setting.key | getRecord: 'patron_types' : 'field' : 'name' | async }}
                 </th>
                 @for (itemType of itemTypes; track itemType) {

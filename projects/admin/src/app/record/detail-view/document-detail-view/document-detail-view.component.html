@@ -289,9 +289,11 @@
       }
     </p-tablist>
     <p-tabpanels>
-      <p-tabpanel value="get">
+      <p-tabpanel #tabGet value="get">
         <div class="ui:mb-2">
-          <shared-doc-files [documentPid]="record.metadata.pid" />
+          @if (tabGet.active()) {
+            <shared-doc-files [documentPid]="record.metadata.pid" />
+          }
         </div>
         <admin-holding-organisation [document]="record" />
       </p-tabpanel>

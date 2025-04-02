@@ -18,27 +18,29 @@
 <h1>{{'Switch item location' | translate}}: {{ initialLocationName }} ({{ item.barcode }})</h1>
 
 @if (initialLocationName && options.length > 0) {
-  <form [formGroup]="form" (ngSubmit)="submit()">
-    <p-card>
-      <div class="ui:flex ui:flex-col ui:gap-1">
-        <label for="target">{{ 'Target' | translate }}&nbsp;*</label>
-        <p-select
-          inputId="target"
-          formControlName="target"
-          [options]="options"
-          [group]="true"
-          [placeholder]="'Select…' | translate"
-          styleClass="ui:w-full"
-          [filter]="isFilterActive()"
-          filterBy="label"
-        />
-      </div>
-      <ng-template #footer>
-        <div class="ui:flex ui:gap-2 ui:justify-end">
-          <p-button [label]="'Cancel'|translate" [outlined]="true" severity="danger" (onClick)="cancel()" />
-          <p-button [label]="'Save'|translate" type="submit" [disabled]="form.invalid" />
+  <div class="ui:mt-6">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <p-card class="ui:bg-white">
+        <div class="ui:flex ui:flex-col ui:gap-1 ui:m-3">
+          <label for="target">{{ 'Target' | translate }}&nbsp;*</label>
+          <p-select
+            inputId="target"
+            formControlName="target"
+            [options]="options"
+            [group]="true"
+            [placeholder]="'Select…' | translate"
+            styleClass="ui:w-full"
+            [filter]="isFilterActive()"
+            filterBy="label"
+          />
         </div>
-      </ng-template>
-    </p-card>
-  </form>
+        <ng-template #footer>
+          <div class="ui:flex ui:gap-2 ui:justify-end ui:m-3">
+            <p-button [label]="'Cancel'|translate" [outlined]="true" severity="danger" (onClick)="cancel()" />
+            <p-button [label]="'Save'|translate" type="submit" [disabled]="form.invalid" />
+          </div>
+        </ng-template>
+      </p-card>
+    </form>
+  </div>
 }

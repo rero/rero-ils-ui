@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2024 RERO
+ * Copyright (C) 2022-2025 RERO
  * Copyright (C) 2022-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,20 +20,25 @@ import { Component, Input } from '@angular/core';
 @Component({
     selector: 'admin-day-opening-hours',
     template: `
-    <dl class="metadata">
+    <dl class="metadata ui:mx-2">
       <dt>{{ day.day | translate }}</dt>
       <dd>
-        <i class="fa ui:mr-6" [ngClass]="{
+        <div class="ui:flex ui:gap-x-3 ui:items-center">
+        <i class="fa" [ngClass]="{
           'fa-times-circle-o text-error': !day.is_open,
           'fa-circle text-success': day.is_open
         }"></i>
         @if (day.is_open) {
-          @for (time of day.times; track time) {
-            <span>{{ time.start_time }} - {{ time.end_time }}</span>
-          }
+            @for (time of day.times; track time; let last = $last) {
+              <span>{{ time.start_time }} - {{ time.end_time }}</span>
+              @if (!last) {
+                /
+              }
+            }
         } @else {
           <span class="text-error" translate>Closed</span>
         }
+        </div>
       </dd>
     </dl>
   `,

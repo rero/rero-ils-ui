@@ -66,66 +66,72 @@
       <p-tab value="history" translate>History</p-tab>
     </p-tablist>
     <p-tabpanels>
-      <p-tabpanel value="order">
-        <div class="ui:flex ui:flex-col ui:gap-2">
-          <p-accordion [multiple]="true" [value]="['lines']">
-            <p-accordion-panel value="lines">
-              <p-accordion-header>
-                <div class="ui:w-full ui:flex ui:justify-between ui:gap-2 ui:pr-3">
-                  <span class="ui:text-bold ui:text-xl" translate>Order lines</span>
-                  @if (canAddLine) {
-                    <p-button
-                      (click)="$event.stopPropagation()"
-                      icon="fa fa-plus-square-o"
-                      size="small"
-                      [outlined]="true"
-                      [label]="'Add' | translate"
-                      [routerLink]="['/acquisition', 'records', 'acq_order_lines', 'new']"
-                      [queryParams]="{ order: order.pid }"
-                    />
-                  }
-                </div>
-                <ng-template #tooltipContent>
-                  <span [innerHTML]="createInfoMessage | nl2br"></span>
-                </ng-template>
-              </p-accordion-header>
-              <p-accordion-content>
-                <admin-order-lines [order]="order" />
-              </p-accordion-content>
-            </p-accordion-panel>
-            <p-accordion-panel value="notes">
-              <p-accordion-header>
-                <div class="ui:w-full ui:flex ui:mr-2 ui:items-center">
-                 @let orderNotesSize = order.notes?.length || 0;
-                  <span class="ui:grow ui:text-bold ui:text-xl">
-                    {{ orderNotesSize | i18nPlural : { "=0": "Note", "=1": "Note", other: "Notes" } | translate }}
-                  </span>
-                  <p-badge [value]="orderNotesSize" />
-                </div>
-              </p-accordion-header>
-              <p-accordion-content>
-                <div class="ui:mt-2">
-                  <admin-notes [notes]="order.notes" />
-                </div>
-              </p-accordion-content>
-            </p-accordion-panel>
-          </p-accordion>
-        </div>
+      <p-tabpanel #tabOrder value="order">
+        @if (tabOrder.active()) {
+          <div class="ui:flex ui:flex-col ui:gap-2">
+            <p-accordion [multiple]="true" [value]="['lines']">
+              <p-accordion-panel value="lines">
+                <p-accordion-header>
+                  <div class="ui:w-full ui:flex ui:justify-between ui:gap-2 ui:pr-3">
+                    <span class="ui:text-bold ui:text-xl" translate>Order lines</span>
+                    @if (canAddLine) {
+                      <p-button
+                        (click)="$event.stopPropagation()"
+                        icon="fa fa-plus-square-o"
+                        size="small"
+                        [outlined]="true"
+                        [label]="'Add' | translate"
+                        [routerLink]="['/acquisition', 'records', 'acq_order_lines', 'new']"
+                        [queryParams]="{ order: order.pid }"
+                      />
+                    }
+                  </div>
+                  <ng-template #tooltipContent>
+                    <span [innerHTML]="createInfoMessage | nl2br"></span>
+                  </ng-template>
+                </p-accordion-header>
+                <p-accordion-content>
+                  <admin-order-lines [order]="order" />
+                </p-accordion-content>
+              </p-accordion-panel>
+              <p-accordion-panel value="notes">
+                <p-accordion-header>
+                  <div class="ui:w-full ui:flex ui:mr-2 ui:items-center">
+                   @let orderNotesSize = order.notes?.length || 0;
+                    <span class="ui:grow ui:text-bold ui:text-xl">
+                      {{ orderNotesSize | i18nPlural : { "=0": "Note", "=1": "Note", other: "Notes" } | translate }}
+                    </span>
+                    <p-badge [value]="orderNotesSize" />
+                  </div>
+                </p-accordion-header>
+                <p-accordion-content>
+                  <div class="ui:mt-2">
+                    <admin-notes [notes]="order.notes" />
+                  </div>
+                </p-accordion-content>
+              </p-accordion-panel>
+            </p-accordion>
+          </div>
+        }
       </p-tabpanel>
-      <p-tabpanel value="reception">
-        <admin-receipt-list [order]="order" [recordPermissions]="recordPermissions" />
+      <p-tabpanel #tabReceipt value="reception">
+        @if(tabReceipt.active()) {
+          <admin-receipt-list [order]="order" [recordPermissions]="recordPermissions" />
+        }
       </p-tabpanel>
-      <p-tabpanel value="history">
-        <p-timeline [value]="historyVersions">
-          <ng-template #opposite let-event>
-            <a [routerLink]="['/acquisition', 'records', 'acq_orders', 'detail', event.pid]">{{
-              event.label
-            }}</a>
-          </ng-template>
-          <ng-template #content let-event>
-            <small>{{ event.description }}</small>
-          </ng-template>
-        </p-timeline>
+      <p-tabpanel #tabHistory value="history">
+        @if (tabHistory.active()) {
+          <p-timeline [value]="historyVersions">
+            <ng-template #opposite let-event>
+              <a [routerLink]="['/acquisition', 'records', 'acq_orders', 'detail', event.pid]">{{
+                event.label
+              }}</a>
+            </ng-template>
+            <ng-template #content let-event>
+              <small>{{ event.description }}</small>
+            </ng-template>
+          </p-timeline>
+        }
       </p-tabpanel>
     </p-tabpanels>
   </p-tabs>

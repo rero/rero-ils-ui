@@ -29,7 +29,6 @@ import { CirculationService } from '../../services/circulation.service';
 import { PatronTransactionService } from '../../services/patron-transaction.service';
 import { PatronFeeComponent } from './patron-fee/patron-fee.component';
 import { PatronTransactionEventFormComponent } from './patron-transaction-event-form/patron-transaction-event-form.component';
-import { AccordionTabOpenEvent } from 'primeng/accordion';
 
 @Component({
     selector: 'admin-patron-transactions',

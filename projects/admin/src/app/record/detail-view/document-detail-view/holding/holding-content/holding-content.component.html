@@ -33,7 +33,7 @@
       </div>
       <div>
       @for (item of items | slice:0: displayItemsCounter; track item) {
-        <div class="ui:odd:bg-surface-50">
+        <div class="ui:odd:bg-surface-50 ui:pb-2 ui:px-1">
           <admin-serial-holding-item
             [holding]="holding"
             [item]="item"
@@ -60,6 +60,7 @@
   @default {
     @if (items && items.length > 0) {
       @for (item of items | slice:0: displayItemsCounter; track item; let last = $last) {
+        <div class="ui:odd:bg-surface-50 ui:pb-2 ui:px-1">
           <admin-default-holding-item
             [holding]="holding"
             [item]="item"
@@ -67,6 +68,7 @@
             (deleteItem)="deleteItem($event)"
             [attr.id]="$any(item).metadata.barcode | idAttribute:{prefix: 'item'}"
           />
+        </div>
       }
       @if (displayItemsCounter < totalItemsCounter) {
         <div class="ui:flex ui:items-center">

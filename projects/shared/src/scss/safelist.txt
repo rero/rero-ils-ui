@@ -102,3 +102,4 @@ ui:md:w-9/12
 ui:md:w-10/12
 ui:md:w-11/12
 ui:md:text-xl
+ui:w-md-50

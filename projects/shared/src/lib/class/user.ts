@@ -169,8 +169,9 @@ export class User implements IUser {
   constructor(user: any) {
     // Check if the user is authenticated
     // by looking if keys exist in the object
-    if (Object.keys(user).length > 0) {
-      this._isAuthenticated = true;
+    const keys = Object.keys(user);
+    if (keys.length > 0) {
+      this._isAuthenticated = keys.includes('username');
       this._initialize(user);
     }
   }

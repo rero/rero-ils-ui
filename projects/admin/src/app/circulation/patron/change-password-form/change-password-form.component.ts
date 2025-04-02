@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -91,25 +91,22 @@ export class ChangePasswordFormComponent implements OnInit {
   }
 
   private initForm() {
-    if (this.patron) {
-      this.formFields = [
-        {
-          key: 'password',
-          type: 'passwordGenerator',
-          props: {
-            class: 'bg-surface-100 dark:bg-surface-700',
-            api: "/api/user/password/generate",
-            label: 'New password',
-            required: true,
-            keydown: (_, event) => {
-              if (event.key === 'Enter') {
-                event.preventDefault();
-              }
+    this.formFields = [
+      {
+        key: 'password',
+        type: 'passwordGenerator',
+        props: {
+          api: "/api/user/password/generate",
+          label: 'New password',
+          required: true,
+          keydown: (_, event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
             }
           }
         }
-      ];
-    }
+      }
+    ];
   }
 
   closeModal() {
