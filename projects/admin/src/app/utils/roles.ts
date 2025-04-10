@@ -21,7 +21,7 @@ export enum ROLES_TAG_SEVERITY {
   pro_full_permissions = 'danger',
   pro_read_only = 'help',
   pro_catalog_manager = 'success',
-  pro_circulation_manager = 'warning',
+  pro_circulation_manager = 'warn',
   pro_user_manager = 'info',
   pro_acquisition_manager = 'secondary',
   pro_library_administrator = 'contrast'

@@ -21,7 +21,7 @@
         <div class="ui:flex ui:items-center ui:w-full">
           <h6 class="ui:flex ui:grow" translate>Engaged fees</h6>
           @if (statistics()['fees_engaged'] > 0) {
-            <p-tag severity="warning" class="ui:mr-2">
+            <p-tag severity="warn" class="ui:mr-2">
               {{ statistics()['fees_engaged'] | currency: organisation.default_currency }}
             </p-tag>
           }

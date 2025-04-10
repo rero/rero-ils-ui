@@ -30,7 +30,7 @@ export class LoanStatusBadgePipe implements PipeTransform {
   transform(status: string): string {
     switch (status) {
       case 'PENDING':
-        return 'warning';
+        return 'warn';
       case 'ITEM_AT_DESK':
         return 'success';
       case 'ITEM_ON_LOAN':

@@ -44,3 +44,7 @@ body {
   max-width: 1440px;
   margin: auto;
 }
+
+.p-tag-secondary a {
+  @apply ui:!text-white
+}
