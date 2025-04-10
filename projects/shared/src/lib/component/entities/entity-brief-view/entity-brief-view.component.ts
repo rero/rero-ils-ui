@@ -38,7 +38,7 @@ import { EntityBriefViewRemotePersonComponent } from './entity-brief-view.person
       <ng-template rTemplate="tags" let-tags>
         <div class="ui:flex ui:gap-1">
           @for (tag of tags; track tag) {
-            <p-tag [severity]="tag.label === 'remote' ? 'warning' : 'secondary'" [value]="tag.label" />
+            <p-tag [severity]="tag.label === 'remote' ? 'warn' : 'secondary'" [value]="tag.label" />
           }
         </div>
       </ng-template>

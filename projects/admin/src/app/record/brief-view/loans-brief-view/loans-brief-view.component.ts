@@ -104,7 +104,7 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
         break;
       case LoanState.ITEM_IN_TRANSIT_FOR_PICKUP:
       case LoanState.ITEM_IN_TRANSIT_TO_HOUSE:
-        this.tagSeverity = 'warning';
+        this.tagSeverity = 'warn';
     }
   }
 }

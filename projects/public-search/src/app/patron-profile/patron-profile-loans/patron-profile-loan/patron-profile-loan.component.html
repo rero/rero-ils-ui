@@ -69,7 +69,7 @@
   }
   @if (record.metadata.overdue) {
     <div class="ui:mt-1">
-      <p-tag severity="warning" translate>overdue</p-tag>
+      <p-tag severity="warn" translate>overdue</p-tag>
       @if (fees > 0) {
         <span [title]="'Fees to date' | translate">
           {{ fees | currency:organisation.currency:'symbol' }}

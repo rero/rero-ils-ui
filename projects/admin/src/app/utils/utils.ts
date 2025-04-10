@@ -40,7 +40,7 @@ export function getTagSeverityFromStatus(status: string): string {
   switch (status) {
     case ILLRequestStatus.PENDING:
     case LoanState.PENDING:
-      return 'warning';
+      return 'warn';
     case ILLRequestStatus.VALIDATED:
     case LoanState.ITEM_AT_DESK:
       return 'success';

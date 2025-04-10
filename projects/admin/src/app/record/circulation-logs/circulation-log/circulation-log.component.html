@@ -40,7 +40,7 @@
           <ng-content class="ui:grow" select="[expandedContent]" />
           <!-- debug mode button -->
           @if (canUseDebugMode) {
-            <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" severity="warning" [outlined]="!debugMode" size="small"
+            <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" severity="warn" [outlined]="!debugMode" size="small"
             (onClick)="debugMode=!debugMode"
             >
               <i class="ui:mr-1 fa fa-bug"></i>
