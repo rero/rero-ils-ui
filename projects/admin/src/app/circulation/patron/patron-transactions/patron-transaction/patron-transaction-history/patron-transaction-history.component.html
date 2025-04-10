@@ -28,7 +28,7 @@
     </span>
   </ng-template>
   <ng-template #content let-event>
-    <div class="ui:flex ui:gap-2">
+    <div class="ui:flex ui:gap-3 ui:items-center">
       <div>{{ eventLabel(event) }}</div>
         @if (event.type !== patronTransactionEventType.DISPUTE) {
           <p-tag
