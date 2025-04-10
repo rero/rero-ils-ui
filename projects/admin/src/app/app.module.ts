@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 import { APP_BASE_HREF, DatePipe, PlatformLocation } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, inject, LOCALE_ID, NgModule, provideAppInitializer } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -36,11 +36,10 @@ import {
   RecordModule, RemoteAutocompleteService,
   TranslateLoader, TruncateTextPipe
 } from '@rero/ng-core';
-import { AppSettingsService, ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
+import { ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule } from '@rero/shared';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MenubarModule } from 'primeng/menubar';
 import { TableModule } from "primeng/table";
-import { Observable } from 'rxjs';
 import { ReceivedOrderPermissionValidator } from './acquisition/utils/permissions';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -175,7 +174,6 @@ import { PaymentsDataTableComponent } from './record/search-view/patron-transact
 import { AppConfigService } from './service/app-config.service';
 import { AppInitializerService } from './service/app-initializer.service';
 import { BucketNameService } from './service/bucket-name.service';
-import { OrganisationService } from './service/organisation.service';
 import { RecordHandleErrorService } from './service/record.handle-error.service';
 import { PreviewEmailModule } from './shared/preview-email/preview-email.module';
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
@@ -186,14 +184,10 @@ import { provideAnimationsAsync } from "@angular/platform-browser/animations/asy
 import { HotkeysShortcutPipe } from '@ngneat/hotkeys';
 import { providePrimeNG } from "primeng/config";
 import { CirculationLogsDialogComponent } from './record/circulation-logs/circulation-logs-dialog.component';
+import { HoldingContentComponent } from './record/detail-view/document-detail-view/holding/holding-content/holding-content.component';
+import { HoldingHeaderComponent } from './record/detail-view/document-detail-view/holding/holding-header/holding-header.component';
 import { EntityAutocompleteComponent } from './record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
 import { RemoteAutocompleteService as UiRemoteAutocompleteService } from './record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.service';
-import { HoldingHeaderComponent } from './record/detail-view/document-detail-view/holding/holding-header/holding-header.component';
-import { HoldingContentComponent } from './record/detail-view/document-detail-view/holding/holding-content/holding-content.component';
-/** Init application factory */
-export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
-  return () => appInitializerService.load();
-}
 
 @NgModule({
   declarations: [
@@ -362,23 +356,14 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     MenubarModule
   ],
   providers: [
+    provideAppInitializer(() => {
+      const appInitializerService = inject(AppInitializerService);
+      return appInitializerService.load();
+    }),
     {
       provide: APP_BASE_HREF,
       useFactory: (s: PlatformLocation) => s.getBaseHrefFromDOM(),
       deps: [PlatformLocation],
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitFactory,
-      deps: [
-          AppInitializerService,
-          UserService,
-          OrganisationService,
-          AppSettingsService,
-          AppConfigService,
-          TranslateService
-      ],
-      multi: true,
     },
     {
       provide: HTTP_INTERCEPTORS,

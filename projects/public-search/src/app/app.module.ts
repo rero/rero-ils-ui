@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
-import { APP_INITIALIZER, ApplicationRef, CUSTOM_ELEMENTS_SCHEMA, DoBootstrap, inject, Injector, LOCALE_ID, NgModule } from '@angular/core';
+import { ApplicationRef, CUSTOM_ELEMENTS_SCHEMA, DoBootstrap, inject, Injector, LOCALE_ID, NgModule, provideAppInitializer } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,10 +24,9 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BucketNameService as CoreBucketNameService, CoreConfigService, NgCoreTranslateService, primeNGConfig, RecordModule, TranslateLoader, TruncateTextPipe } from '@rero/ng-core';
-import { MainTitlePipe, RemoteSearchComponent, SharedModule, UserService } from '@rero/shared';
+import { MainTitlePipe, RemoteSearchComponent, SharedModule } from '@rero/shared';
 import { providePrimeNG } from "primeng/config";
 import { DividerModule } from 'primeng/divider';
-import { Observable } from 'rxjs';
 import { AppConfigService } from './app-config.service';
 import { AppInitializerService } from './app-initializer.service';
 import { AppRoutingModule } from './app-routing.module';
@@ -39,11 +38,6 @@ import { ErrorPageComponent } from './error/error-page.component';
 import { CustomRequestInterceptor } from './interceptor/custom-request.interceptor';
 import { MainComponent } from './main/main.component';
 import { BucketNameService } from './service/bucket-name.service';
-
-/** function to instantiate the application  */
-export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
-  return () => appInitializerService.load();
-}
 
 @NgModule({
     declarations: [
@@ -73,18 +67,21 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         LoadingBarRouterModule
     ],
     providers: [
-        { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService, UserService], multi: true },
-        { provide: CoreConfigService, useClass: AppConfigService },
-        { provide: TranslateService, useClass: NgCoreTranslateService },
-        { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.currentLang, deps: [TranslateService] },
-        { provide: HTTP_INTERCEPTORS, useClass: CustomRequestInterceptor, multi: true },
-        { provide: CoreBucketNameService, useClass: BucketNameService },
-        MainTitlePipe,
-        TruncateTextPipe,
-        provideAnimationsAsync(),
-        providePrimeNG(primeNGConfig),
-        MainTitlePipe,
-        TruncateTextPipe
+      provideAppInitializer(() => {
+        const appInitializerService = inject(AppInitializerService);
+        return appInitializerService.load();
+      }),
+      { provide: CoreConfigService, useClass: AppConfigService },
+      { provide: TranslateService, useClass: NgCoreTranslateService },
+      { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.currentLang, deps: [TranslateService] },
+      { provide: HTTP_INTERCEPTORS, useClass: CustomRequestInterceptor, multi: true },
+      { provide: CoreBucketNameService, useClass: BucketNameService },
+      MainTitlePipe,
+      TruncateTextPipe,
+      provideAnimationsAsync(),
+      providePrimeNG(primeNGConfig),
+      MainTitlePipe,
+      TruncateTextPipe
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
