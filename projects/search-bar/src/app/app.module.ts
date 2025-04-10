@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,24 +16,18 @@
  */
 
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { APP_INITIALIZER, DoBootstrap, inject, Injector, NgModule } from '@angular/core';
+import { DoBootstrap, inject, Injector, NgModule, provideAppInitializer } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { RouterModule } from '@angular/router';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CoreConfigService, primeNGConfig, TranslateLoader, TruncateTextPipe } from '@rero/ng-core';
 import { MainTitlePipe, RemoteSearchComponent, SharedModule } from '@rero/shared';
-import { Observable } from 'rxjs';
-import { AppInitializerService } from './app-initializer.service';
-import { RouterModule } from '@angular/router';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
-
-/** function to instantiate the application  */
-export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
-  return () => appInitializerService.load();
-}
+import { AppInitializerService } from './app-initializer.service';
 
 @NgModule({
   declarations: [],
@@ -53,13 +47,10 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     SharedModule,
   ],
   providers: [
-    // TODO: remove this to avoid api call. It still needed because
-    //       `_getContributionName` need API config.
-    {
-      provide: APP_INITIALIZER, useFactory: appInitFactory,
-      deps: [AppInitializerService],
-      multi: true
-    },
+    provideAppInitializer(() => {
+      const appInitializerService = inject(AppInitializerService);
+      return appInitializerService.load();
+    }),
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimationsAsync(),
     providePrimeNG(primeNGConfig),

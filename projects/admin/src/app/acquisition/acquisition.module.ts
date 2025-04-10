@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,16 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FORMLY_CONFIG, FormlyModule } from '@ngx-formly/core';
-import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ApiService, CoreModule, RecordModule } from '@rero/ng-core';
+import { ApiService, RecordModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
+import { AccordionModule } from 'primeng/accordion';
+import { TimelineModule } from 'primeng/timeline';
+import { TreeTableModule } from 'primeng/treetable';
 import { PreviewEmailModule } from '../shared/preview-email/preview-email.module';
-import { PrimengImportModule } from '../shared/primeng-import/primeng-import.module';
 import { AcquisitionRoutingModule } from './acquisition-routing.module';
 import { AcqAccountApiService } from './api/acq-account-api.service';
 import { AcqOrderApiService } from './api/acq-order-api.service';
@@ -33,6 +34,7 @@ import { AccountDetailViewComponent } from './components/account/account-detail-
 import { AccountListComponent } from './components/account/account-list/account-list.component';
 import { AccountTransferComponent } from './components/account/account-transfer/account-transfer.component';
 import { AcquisitionMainComponent } from './components/acquisition-main/acquisition-main.component';
+import { AddressTypeComponent } from './components/address-type/address-type.component';
 import { BudgetsBriefViewComponent } from './components/budget/budget-brief-view/budgets-brief-view.component';
 import { BudgetDetailViewComponent } from './components/budget/budget-detail-view/budget-detail-view.component';
 import { SelectAccountEditorWidgetComponent } from './components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
@@ -48,6 +50,8 @@ import { OrderReceiptForm } from './components/receipt/receipt-form/order-receip
 import { OrderReceiptViewComponent } from './components/receipt/receipt-form/order-receipt-view.component';
 import { ReceiptListComponent } from './components/receipt/receipt-list/receipt-list.component';
 import { ReceiptSummaryComponent } from './components/receipt/receipt-summary/receipt-summary.component';
+import { VendorBriefViewComponent } from './components/vendors/vendor-brief-view.component';
+import { VendorDetailViewComponent } from './components/vendors/vendor-detail-view/vendor-detail-view.component';
 import { registerFormlyExtension } from './formly/extension';
 import { FieldDocumentBriefViewTypeComponent } from './formly/type/field-document-brief-view.type';
 import { FieldRefTypeComponent } from './formly/type/field-ref.type';
@@ -59,12 +63,6 @@ import { NoteBadgeColorPipe } from './pipes/note-badge-color.pipe';
 import { PreviewContentPipe } from './pipes/preview-content.pipe';
 import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pipe';
 import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
-import { VendorBriefViewComponent } from './components/vendors/vendor-brief-view.component';
-import { VendorDetailViewComponent } from './components/vendors/vendor-detail-view/vendor-detail-view.component';
-import { AddressTypeComponent } from './components/address-type/address-type.component';
-import { TreeTableModule } from 'primeng/treetable';
-import { TimelineModule } from 'primeng/timeline';
-import { AccordionModule } from 'primeng/accordion';
 
 @NgModule({
   declarations: [

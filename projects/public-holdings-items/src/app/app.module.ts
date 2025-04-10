@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,11 +16,12 @@
  */
 
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, DoBootstrap, inject, Injector, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DoBootstrap, inject, Injector, NgModule, provideAppInitializer } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { RouterModule } from '@angular/router';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
@@ -37,8 +38,12 @@ import {
 } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { AccordionModule } from 'primeng/accordion';
+import { CardModule } from 'primeng/card';
+import { providePrimeNG } from 'primeng/config';
 import { DividerModule } from 'primeng/divider';
 import { MenubarModule } from 'primeng/menubar';
+import { MessageModule } from 'primeng/message';
+import { TabsModule } from 'primeng/tabs';
 import { DocumentDetailViewComponent } from 'projects/public-search/src/app/document-detail/document-detail-view/document-detail-view.component';
 import { ElectronicHoldingsComponent } from 'projects/public-search/src/app/document-detail/document-detail-view/holdings/electronic-holdings/electronic-holdings.component';
 import { HoldingsComponent } from 'projects/public-search/src/app/document-detail/holdings/holdings.component';
@@ -46,19 +51,8 @@ import { ItemsComponent } from 'projects/public-search/src/app/document-detail/h
 import { ItemComponent } from 'projects/public-search/src/app/document-detail/item/item.component';
 import { PickupLocationComponent } from 'projects/public-search/src/app/document-detail/request/pickup-location/pickup-location.component';
 import { RequestComponent } from 'projects/public-search/src/app/document-detail/request/request.component';
-import { Observable } from 'rxjs';
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { providePrimeNG } from 'primeng/config';
-import { TabsModule } from 'primeng/tabs';
-import { MessageModule } from 'primeng/message';
-import { CardModule } from 'primeng/card';
-
-/** function to instantiate the application  */
-export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
-  return () => appInitializerService.load();
-}
 
 @NgModule({
   declarations: [
@@ -100,8 +94,11 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     LoadingBarModule,
   ],
   providers: [
+    provideAppInitializer(() => {
+      const appInitializerService = inject(AppInitializerService);
+      return appInitializerService.load();
+    }),
     { provide: TranslateService, useClass: NgCoreTranslateService },
-    { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
     { provide: CoreConfigService, useClass: AppConfigService },
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimationsAsync(),

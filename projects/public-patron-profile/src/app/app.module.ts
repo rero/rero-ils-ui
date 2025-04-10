@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  */
 import { APP_BASE_HREF, CommonModule, PlatformLocation } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, inject, NgModule, provideAppInitializer } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -54,15 +54,9 @@ import { PatronProfileRequestsComponent } from 'projects/public-search/src/app/p
 import { PatronProfileComponent } from 'projects/public-search/src/app/patron-profile/patron-profile.component';
 import { JournalVolumePipe } from 'projects/public-search/src/app/pipe/journal-volume.pipe';
 import { LoanStatusBadgePipe } from 'projects/public-search/src/app/pipe/loan-status-badge.pipe';
-import { Observable } from 'rxjs';
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
 import { AppComponent } from './app.component';
-
-/** function to instantiate the application  */
-export function appInitFactory(appInitializerService: AppInitializerService): () => Observable<any> {
-  return () => appInitializerService.load();
-}
 
 const routes: Routes = [
   { path: '', component: PatronProfileComponent },
@@ -129,13 +123,16 @@ const routes: Routes = [
     TimelineModule
   ],
   providers: [
+    provideAppInitializer(() => {
+      const appInitializerService = inject(AppInitializerService);
+      return appInitializerService.load();
+    }),
     {
       provide: APP_BASE_HREF,
       useFactory: (s: PlatformLocation) => s.getBaseHrefFromDOM(),
       deps: [PlatformLocation],
     },
     { provide: TranslateService, useClass: NgCoreTranslateService },
-    { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [AppInitializerService], multi: true },
     { provide: CoreConfigService, useClass: AppConfigService },
     provideAnimationsAsync(),
     providePrimeNG(primeNGConfig)
