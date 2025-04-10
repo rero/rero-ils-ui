@@ -94,7 +94,7 @@ export class CirculationSettingsComponent implements OnInit {
       value: endDate.toISOString(),
       extra: {
         remember,
-        severity: remember ? 'success' : 'warning'
+        severity: remember ? 'success' : 'warn'
       }
     };
     this._setCheckoutSetting(setting);

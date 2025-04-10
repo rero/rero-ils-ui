@@ -98,7 +98,7 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
   getNoteBadgeColor(noteType: string): string {
     switch (noteType) {
       case 'public_note': return 'info';
-      case 'staff_note': return 'warning';
+      case 'staff_note': return 'warn';
       default: return 'secondary';
     }
   }

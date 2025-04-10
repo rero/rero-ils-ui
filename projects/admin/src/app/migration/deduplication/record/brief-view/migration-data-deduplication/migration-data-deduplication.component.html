@@ -88,7 +88,7 @@
         status() === 'match'
           ? 'success'
           : status().endsWith('check')
-          ? 'warning'
+          ? 'warn'
           : 'secondary'
       "
       [value]="record().metadata.deduplication.status | translate"

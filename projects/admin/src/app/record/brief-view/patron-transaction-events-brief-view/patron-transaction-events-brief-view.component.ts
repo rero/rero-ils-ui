@@ -57,9 +57,9 @@ export class PatronTransactionEventsBriefViewComponent implements ResultItem, On
       case 'payment':
         return 'success';
       case 'dispute':
-        return 'warning';
+        return 'warn';
       default:
-        return 'contrast';
+        return 'secondary';
     }
   });
 
