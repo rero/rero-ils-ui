@@ -18,7 +18,7 @@
   <div [ngClass]="{ 'callout callout-warning': isDisputed()}" class="ui:p-2">
     <div class="ui:grid ui:grid-cols-12 ui:items-start">
       <div class="ui:col-span-2 ui:flex ui:gap-2">
-        <shared-open-close-button (status)="isCollapsed = $event" />
+        <shared-open-close-button [collapsed]="isCollapsed" (status)="isCollapsed = $event" />
         <div>
           {{ transaction.creation_date | dateTranslate :'shortDate' }}
         </div>

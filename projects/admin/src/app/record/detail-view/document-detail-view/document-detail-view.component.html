@@ -53,15 +53,12 @@
         [activateLink]="activateLink"
       />
       <!-- PUBLICATION ACTIVITY: PUBLICATION -->
-      <ng-container
-        *ngVar="
-          record.metadata.provisionActivity
-            | documentProvisionActivity
-            | keyvalue
-            | callbackArrayFilter
-              : filterPublicationProvisionActivity as provisionActivity
-        "
-      >
+       @let provisionActivity = record.metadata.provisionActivity
+        | documentProvisionActivity
+        | keyvalue
+        | callbackArrayFilter
+          : filterPublicationProvisionActivity;
+      @if (provisionActivity) {
         @for (provision of provisionActivity; track provision) {
           <ul class="ui:list-none">
             @for (value of $any(provision).value; track value) {
@@ -69,7 +66,7 @@
             }
           </ul>
         }
-      </ng-container>
+      }
 
       <!-- EXTENT-->
       @if (record.metadata.extent) {
@@ -116,7 +113,7 @@
       <!-- ISSUED WITH -->
       @if (record.metadata.issuedWith) {
       <shared-other-edition
-        fieldLabel="{{ 'Issued with' | translate }}"
+        [fieldLabel]="'Issued with' | translate"
         [field]="record.metadata.issuedWith"
         [header]="true"
         [inline]="true"
@@ -126,7 +123,7 @@
       <!-- PRECEDED BY -->
       @if (record.metadata.precededBy) {
       <shared-other-edition
-        fieldLabel="{{ 'Preceded by' | translate }}"
+        [fieldLabel]="'Preceded by' | translate"
         [field]="record.metadata.precededBy"
         [header]="true"
         [inline]="true"
@@ -136,7 +133,7 @@
       <!-- SUCCEEDED BY -->
       @if (record.metadata.succeededBy) {
       <shared-other-edition
-        fieldLabel="{{ 'Succeeded by' | translate }}"
+        [fieldLabel]="'Succeeded by' | translate"
         [field]="record.metadata.succeededBy"
         [header]="true"
         [inline]="true"
@@ -146,7 +143,7 @@
       <!-- SUPPLEMENT TO -->
       @if (record.metadata.supplementTo) {
       <shared-other-edition
-        fieldLabel="{{ 'Supplement to' | translate }}"
+        [fieldLabel]="'Supplement to' | translate"
         [field]="record.metadata.supplementTo"
         [header]="true"
         [inline]="true"
@@ -156,7 +153,7 @@
       <!-- REPRODUCTION OF -->
       @if (record.metadata.reproductionOf) {
       <shared-other-edition
-        fieldLabel="{{ 'Reproduction of' | translate }}"
+        [fieldLabel]="'Reproduction of' | translate"
         [field]="record.metadata.reproductionOf"
         [header]="true"
         [inline]="true"
@@ -191,15 +188,14 @@
 
       <!-- SUBJECTS -->
       @if (record.metadata.subjects; as subjects) {
-        <div class="ui:flex ui:gap-1">
+        <div class="ui:flex ui:gap-1 ui:flex-wrap">
           @for (subject of subjects; track subject) {
           <p-tag
             severity="secondary"
-            title="{{ subject.entity.type | translate }}"
+            [title]="subject.entity.type | translate"
           >
-            <i class="fa fa-tag"></i>&nbsp;
+            <i class="fa fa-tag"></i>
             <shared-entity-link
-              className=" ui:text-muted-color"
               resourceName="subjects"
               [entity]="subject.entity"
             />
@@ -210,10 +206,10 @@
 
       <!-- GENRE, FORM -->
       @if (record.metadata.genreForm) {
-        <div class="ui:flex ui:gap-1">
+        <div class="ui:flex ui:gap-1 ui:flex-wrap">
           @for (genre of record.metadata.genreForm; track genre) {
             <span>
-              <i class="fa fa-tag"></i>&nbsp;
+              <i class="fa fa-tag"></i>
               <shared-entity-link resourceName="genreForm" [entity]="genre.entity" />
             </span>
           }

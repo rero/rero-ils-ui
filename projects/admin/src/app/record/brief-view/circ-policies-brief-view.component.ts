@@ -22,14 +22,16 @@ import { ResultItem } from '@rero/ng-core';
     selector: 'admin-circ-policies-brief-view',
     template: `
   <h5>
-    <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>&nbsp;
-    <p-tag class="ui:align-bottom" severity="secondary">
-      @if (record.metadata.policy_library_level) {
-        {{ 'Library' | translate }}
-      } @else {
-        {{ 'Organisation' | translate }}
-      }
-    </p-tag>
+    <div class="ui:flex ui:gap-2">
+      <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
+      <p-tag class="ui:align-bottom" severity="secondary">
+        @if (record.metadata.policy_library_level) {
+          {{ 'Library' | translate }}
+        } @else {
+          {{ 'Organisation' | translate }}
+        }
+      </p-tag>
+    </div>
   </h5>
   @if (record.metadata.description) {
     <span [innerHtml]="record.metadata.description | nl2br"></span>

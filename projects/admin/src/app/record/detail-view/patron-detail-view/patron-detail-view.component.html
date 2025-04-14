@@ -144,7 +144,7 @@
                   <i class="fa" [ngClass]="patron.keep_history ? 'fa-check text-success' : 'fa-times text-error'"></i>
                 </dd>
                 <dt translate>{{ patron.roles | i18nPlural: {'=1': 'Role', 'other': 'Roles'} }}</dt>
-                <dd class="ui:flex ui:gap-x-2 ui:flex-wrap">
+                <dd class="ui:flex ui:gap-1 ui:flex-wrap">
                   @for (role of patron.roles; track role) {
                     <p-tag [severity]="getRoleTagSeverity(role)" [value]="role | translate" />
                   }

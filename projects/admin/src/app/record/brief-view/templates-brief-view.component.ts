@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,12 +20,12 @@ import { Component, Input } from '@angular/core';
     selector: 'admin-templates-brief-view',
     template: `
   <h5>
-    <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }} </a>
-    @if (record.metadata.visibility === 'private') {
-      <small>
-        <i class="fa fa-lock ui:text-muted-color" aria-hidden="true"></i>
-      </small>
-    }
+    <div class="ui:flex ui:gap-3 ui:items-center">
+      <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
+      @if (record.metadata.visibility === 'private') {
+        <i [title]="'private'|translate" class="fa fa-lock ui:text-muted-color" aria-hidden="true"></i>
+      }
+    </div>
   </h5>
     <ul class="ui:list-none">
       @if (record.metadata.description) {
