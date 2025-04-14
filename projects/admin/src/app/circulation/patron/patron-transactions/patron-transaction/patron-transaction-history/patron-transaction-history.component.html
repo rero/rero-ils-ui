@@ -28,20 +28,22 @@
     </span>
   </ng-template>
   <ng-template #content let-event>
-    <div class="ui:flex ui:gap-3 ui:items-center">
-      <div>{{ eventLabel(event) }}</div>
-        @if (event.type !== patronTransactionEventType.DISPUTE) {
-          <p-tag
-            [value]="event.amount | currency: organisation.default_currency"
-            [severity]="tagSeverity(event)"
-          />
-        }
-        @if (event.pid) {
-          <i
-            class="fa"
-            [ngClass]="{'fa-eye': hideShowEye('event-' + event.pid), 'fa-eye-slash': !hideShowEye('event-' + event.pid)}"
-            (click)="hideShowEvent('event-' + event.pid)"></i>
-        }
+    <div class="ui:flex ui:gap-2 ui:items-start">
+      <div class="ui:flex ui:gap-2 ui:items-center">
+        <div>{{ eventLabel(event) }}</div>
+          @if (event.type !== patronTransactionEventType.DISPUTE) {
+            <p-tag
+              [value]="event.amount | currency: organisation.default_currency"
+              [severity]="tagSeverity(event)"
+            />
+          }
+          @if (event.pid) {
+            <i
+              class="fa"
+              [ngClass]="{'fa-eye': hideShowEye('event-' + event.pid), 'fa-eye-slash': !hideShowEye('event-' + event.pid)}"
+              (click)="hideShowEvent('event-' + event.pid)"></i>
+          }
+        </div>
       </div>
       <div id="event-{{ event.pid }}" class="ui:my-2" [hidden]="true">
         @if (event.note) {
