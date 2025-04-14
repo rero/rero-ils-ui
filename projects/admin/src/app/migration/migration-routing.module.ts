@@ -17,7 +17,7 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes, UrlSegment } from '@angular/router';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ } from "@ngx-translate/core";
 import { RecordSearchPageComponent } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { MigrationDataBriefComponent as ConversionMigrationDataComponent } from './conversion/record/brief-view/migration-data/migration-data.component';

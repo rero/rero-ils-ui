@@ -12,7 +12,6 @@
   "peerDependencies": {
     "@angular/common": "^19.2.0",
     "@angular/core": "^19.2.0",
-    "@biesbjerg/ngx-translate-extract-marker": "^1.0.0",
     "@ngx-translate/core": "^16.0.0",
     "@primeng/themes": "^19.0.7",
     "primelocale": "^1.6",

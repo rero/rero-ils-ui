@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ } from "@ngx-translate/core";
 import { ComponentCanDeactivateGuard, EditorComponent, RouteInterface } from '@rero/ng-core';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
 import { BaseRoute } from '../../routes/base-route';

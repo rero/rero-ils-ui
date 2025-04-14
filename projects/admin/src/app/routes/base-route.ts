@@ -16,7 +16,7 @@
  */
 import { inject } from '@angular/core';
 import { UrlSegment } from '@angular/router';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ } from "@ngx-translate/core";
 import { ActionStatus, extractIdOnRef } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { RouteToolService } from './route-tool.service';
