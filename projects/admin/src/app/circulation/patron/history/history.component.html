@@ -15,21 +15,21 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (historyLogs$ | async; as logs) {
-  <section>
-    @if (logs.length > 0) {
-      <div class="ui:grid ui:grid-cols-12 ui:p-4 ui:m-1 ui:text-lg ui:font-bold ui:items-center ui:border-t ui:border-b ui:border-surface">
+  <p-card>
+    <ng-template #header>
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:pl-4 ui:pr-7 ui:text-lg ui:font-bold ui:items-center">
         <div class="ui:col-span-10">{{ 'Title' | translate }} / {{ 'Authors' | translate }}</div>
         <div class="ui:col-span-2" translate>Return date</div>
       </div>
-      <div>
+    </ng-template>
+    @if (logs.length > 0) {
         @for (log of logs; track log) {
           <div class="ui:odd:bg-surface-50">
             <admin-history-log [log]="log" />
           </div>
         }
-      </div>
     } @else {
       <div class="ui:mt-4 ui:font-bold" translate>No history.</div>
     }
-  </section>
+  </p-card>
 }

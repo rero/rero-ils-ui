@@ -41,7 +41,7 @@
   </div>
   <!-- Transaction history check-in / checkout -->
   @if (!isCollapsed) {
-    <div class="ui:m-2">
+    <div class="ui:m-4 ui:pb-4">
       @if (log.metadata.loan.item.pid | getRecord:'items' | async; as item) {
         <div class="ui:grid ui:grid-cols-12">
           <div class="ui:col-span-2 ui:font-bold" translate>Item</div>
