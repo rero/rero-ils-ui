@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ } from "@ngx-translate/core";
 import { FieldWrapper } from '@ngx-formly/core';
 import { Record, RecordService } from '@rero/ng-core';
 import issn from 'issn';

@@ -17,7 +17,7 @@
  */
 import { inject, Injectable } from '@angular/core';
 import { DocumentApiService } from '@app/admin/api/document-api.service';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ } from "@ngx-translate/core";
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { IAdvancedSearchConfig, IFieldsData, IFieldsType, ILabelValue, ILabelValueField, ISearch, ISearchModel, ISelectOptions } from './i-advanced-search-config-interface';

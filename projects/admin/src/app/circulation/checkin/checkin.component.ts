@@ -17,7 +17,7 @@
  */
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG, Record, RecordService } from '@rero/ng-core';
 import { ItemStatus, User, UserService } from '@rero/shared';

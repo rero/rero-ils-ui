@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ } from "@ngx-translate/core";
 import { Error, Record } from '@rero/ng-core';
 import { BaseApi, Paginator } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';

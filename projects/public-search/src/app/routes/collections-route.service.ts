@@ -16,7 +16,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ } from "@ngx-translate/core";
 import { RecordSearchPageComponent } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { CollectionBriefComponent } from '../collection-brief/collection-brief.component';

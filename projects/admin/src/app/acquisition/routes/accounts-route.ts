@@ -23,7 +23,7 @@ import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '@app/admin/guard/can-access.
 import { PermissionGuard } from '@app/admin/guard/permission.guard';
 import { BaseRoute } from '@app/admin/routes/base-route';
 import { OrganisationService } from '@app/admin/service/organisation.service';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ } from "@ngx-translate/core";
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, JSONSchema7, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS } from '@rero/shared';
