@@ -17,7 +17,7 @@
 
 @if (transaction) {
   @if (transaction.metadata.patron_pid | getRecord:'patrons' | async; as patron) {
-    <div id="{{ $any(patron).metadata.patron.barcode[0] }}" class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-center">
+    <div id="{{ $any(patron).metadata.patron.barcode[0] }}" class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-2 ui:px-4 ui:items-center ui:odd:bg-surface-50">
       <div class="ui:col-span-4">
         <a name="loans" [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0]]">
           {{ $any(patron).metadata.last_name }} {{ $any(patron).metadata.first_name }} ({{ $any(patron).metadata.patron.barcode }})

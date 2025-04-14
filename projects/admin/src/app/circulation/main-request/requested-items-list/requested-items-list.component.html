@@ -17,7 +17,7 @@
 @defer (when items) {
   <p-card>
     <ng-template #header>
-      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:m-2 ui:text-lg ui:font-bold ui:items-center ui:border-t ui:border-b ui:border-surface">
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:m-2 ui:text-lg ui:font-bold ui:items-center">
         <div class="ui:col-span-3">
           <div class="ui:flex ui:gap-2 ui:items-center">
             <shared-open-close-button (status)="isCollapsed = $event" />
@@ -41,11 +41,11 @@
         </div>
       }
     } @else {
-      <div class="ui:mx-4 ui:my-6 ui:font-bold">
+      <div class="ui:mx-4 ui:my-6">
         {{ 'no request to validate' | translate }}
       </div>
     }
   </p-card>
 } @placeholder {
-  <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
+  <div class="ui:mx-2 ui:my-6" translate>Loading in progress</div>
 }

@@ -130,7 +130,11 @@
               <p-tag [title]="'Requests'|translate" severity="secondary" styleClass="ui:mr-1">
                 <div class="ui:flex ui:items-start ui:gap-1">
                   <i class="fa fa-shopping-basket ui:mt-1"></i>&nbsp;
-                  <a [routerLink]="['/circulation', 'patron', item.pending_loans[0].patron.barcode, 'loan']">
+                  <a
+                    class="ui:truncate"
+                    [title]="item.pending_loans[0].patron.name"
+                    [routerLink]="['/circulation', 'patron', item.pending_loans[0].patron.barcode, 'loan']"
+                  >
                     {{ item.pending_loans[0].patron.name }}
                   </a>
                 </div>
@@ -269,7 +273,10 @@
               @for (request of item.pending_loans; track request) {
                 <p-tag severity="secondary" styleClass="ui:mr-1">
                   <i class="fa fa-shopping-basket"></i>&nbsp;
-                  <a [routerLink]="['/circulation', 'patron', request.patron.barcode, 'loan']">{{ request.patron.name }}</a>
+                  <a
+                    [title]="request.patron.name"
+                    [routerLink]="['/circulation', 'patron', request.patron.barcode, 'loan']"
+                  >{{ request.patron.name }}</a>
                 </p-tag>
               }
             </dd>

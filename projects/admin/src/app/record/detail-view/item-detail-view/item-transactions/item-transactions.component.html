@@ -14,17 +14,17 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="ui:flex ui:flex-col ui:gap-2">
+<div class="ui:flex ui:flex-col ui:gap-4">
   <!-- Loan borrowed -->
   @defer (when borrowedBy) {
     @if (borrowedBy.length > 0) {
       <p-panel [header]="'Borrowed by' | translate" id="item-loans-requests" [permissions]="permissions.CIRC_ADMIN">
-        <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:px-2">
-          <div class="ui:col-span-4 ui:font-bold" translate>Patron</div>
-          <div class="ui:col-span-4 ui:font-bold" translate>Renewal</div>
-          <div class="ui:col-span-3 ui:font-bold" translate>Due date</div>
-        </div>
-        <div class="ui:px-2">
+        <div class="ui:pb-3">
+          <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:px-4 ui:py-2">
+            <div class="ui:col-span-4 ui:font-bold" translate>Patron</div>
+            <div class="ui:col-span-4 ui:font-bold" translate>Renewal</div>
+            <div class="ui:col-span-3 ui:font-bold" translate>Due date</div>
+          </div>
           <admin-item-transaction type="loan_borrow" [transaction]="borrowedBy[0]" />
         </div>
       </p-panel>
@@ -49,14 +49,14 @@
     </ng-template>
     @defer (when requestedBy) {
       @if (requestedBy.length > 0) {
-          <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:px-2">
-            <div class="ui:col-span-4 ui:font-bold" translate>Patron</div>
-            <div class="ui:col-span-4 ui:font-bold" translate>Pick-up Location</div>
-            <div class="ui:col-span-3 ui:font-bold" translate>Request date</div>
-          </div>
-          <div>
+        <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:px-4">
+          <div class="ui:col-span-4 ui:font-bold" translate>Patron</div>
+          <div class="ui:col-span-4 ui:font-bold" translate>Pick-up Location</div>
+          <div class="ui:col-span-3 ui:font-bold" translate>Request date</div>
+        </div>
+        <div>
           @for (request of requestedBy; track request) {
-            <div class="ui:px-2 ui:odd:bg-surface-50">
+            <div class="ui:py-2 ui:odd:bg-surface-50">
               <admin-item-transaction
                 type="loan_request"
                 [transaction]="request"

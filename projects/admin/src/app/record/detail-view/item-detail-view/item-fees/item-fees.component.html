@@ -27,25 +27,25 @@
       </div>
     </div>
   </ng-template>
-  <div class="ui:flex ui:gap-2 ui:flex-col ui:px-2">
-    <div class="ui:flex">
-      <div class="ui:grow ui:font-bold" translate>Patron</div>
-      <div class="ui:font-bold" translate>Amount</div>
-    </div>
-    <div>
-    @for (fee of fees; track fee) {
-      @if (fee.metadata.patron.pid | getRecord:'patrons' | async; as patron) {
-        <div class="ui:flex ui:odd:bg-surface-50">
-          <div class="ui:grow">
-            <a [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0], 'fees']" [queryParams]="{event: fee.metadata.pid}">
-              {{ $any(patron).metadata.last_name }} {{ $any(patron).metadata.first_name }} ({{ $any(patron).metadata.patron.barcode[0] }})
-            </a>
+  <div class="ui:flex ui:gap-2 ui:flex-col ui:py-4">
+      <div class="ui:flex ui:px-4">
+        <div class="ui:grow ui:font-bold" translate>Patron</div>
+        <div class="ui:font-bold" translate>Amount</div>
+      </div>
+      <div>
+      @for (fee of fees; track fee) {
+        @if (fee.metadata.patron.pid | getRecord:'patrons' | async; as patron) {
+          <div class="ui:flex ui:odd:bg-surface-50 ui:py-2 ui:px-4">
+            <div class="ui:grow">
+              <a [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0], 'fees']" [queryParams]="{event: fee.metadata.pid}">
+                {{ $any(patron).metadata.last_name }} {{ $any(patron).metadata.first_name }} ({{ $any(patron).metadata.patron.barcode[0] }})
+              </a>
+            </div>
+            <div>{{ fee.metadata.total_amount | currency: organisation.default_currency }}</div>
           </div>
-          <div>{{ fee.metadata.total_amount | currency: organisation.default_currency }}</div>
-        </div>
+        }
       }
-    }
+      </div>
     </div>
-  </div>
 </p-panel>
 }
