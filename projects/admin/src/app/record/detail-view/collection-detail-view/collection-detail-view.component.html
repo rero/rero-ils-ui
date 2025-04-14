@@ -18,7 +18,7 @@
   <section class="ui:flex ui:flex-col ui:py-2 ui:gap-2">
     <h1 id="collection-title">{{ record.metadata.title }}</h1>
     @if (record.metadata.subjects) {
-      <div id="subject" class="ui:flex ui:gap-1">
+      <div id="subject" class="ui:flex ui:gap-1 ui:flex-wrap">
         @for(subject of record.metadata.subjects; track subject) {
           <p-tag severity="secondary">
             <i class="fa fa-tag"></i>&nbsp;{{ subject.name }}

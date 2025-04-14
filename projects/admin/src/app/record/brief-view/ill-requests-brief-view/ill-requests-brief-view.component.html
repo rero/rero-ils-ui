@@ -17,10 +17,12 @@
 -->
 @if (record && requester) {
   <h5>
-    <a [routerLink]="[detailUrl.link]">
-      {{ record.metadata.document.title }}
-    </a>
-    <p-tag [severity]="tagSeverity" [value]="record.metadata.status | translate" />
+    <div class="ui:flex ui:gap-2">
+      <a [routerLink]="[detailUrl.link]">
+        {{ record.metadata.document.title }}
+      </a>
+      <p-tag [severity]="tagSeverity" [value]="record.metadata.status | translate" />
+    </div>
   </h5>
   @if (record.metadata.document.authors) {
     <div class="ui:mb-2">{{ record.metadata.document.authors }}</div>

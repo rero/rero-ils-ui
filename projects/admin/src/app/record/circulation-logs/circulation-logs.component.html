@@ -24,7 +24,7 @@
       <span class="ui:font-bold">{{ 'Filter' | translate}}:</span>
         @for (filter of filterTypes; track filter) {
             <p-toggleswitch [inputId]="filter" [formControlName]="filter" />
-            <label class="" [for]="filter">{{ ('op_filter_' + filter) | translate }}</label>
+            <label [for]="filter">{{ ('op_filter_' + filter) | translate }}</label>
         }
     </div>
   </form>
