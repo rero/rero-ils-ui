@@ -75,7 +75,6 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
-    "@biesbjerg/ngx-translate-extract-marker": "^1.0.0",
     "@ngneat/hotkeys": "^4.0.0",
     "@ngx-formly/core": "^7.0.0-alpha.1",
     "@ngx-formly/primeng": "^7.0.0-alpha.1",

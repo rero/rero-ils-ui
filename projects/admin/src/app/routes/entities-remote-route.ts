@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ } from "@ngx-translate/core";
 import { RouteInterface } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { RemoteEntitiesDetailViewComponent } from '../record/detail-view/entities-detail-view/remote/entities-remote-detail-view.component';

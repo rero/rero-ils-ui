@@ -16,7 +16,7 @@
  */
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ as marker } from "@ngx-translate/core";
 import { map } from 'rxjs/operators';
 
 export function _(str: string) {

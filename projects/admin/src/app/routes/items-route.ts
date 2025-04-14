@@ -17,7 +17,7 @@
 import {
   ItemSwitchLocationStandaloneComponent
 } from '@app/admin/components/items/switch-location/item-switch-location-standalone/item-switch-location-standalone.component';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ } from "@ngx-translate/core";
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { ComponentCanDeactivateGuard, EditorComponent, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
 import { IssueItemStatus, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';

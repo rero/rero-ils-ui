@@ -18,7 +18,7 @@
 
 import { inject, Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ } from "@ngx-translate/core";
 import { EntityBriefViewComponent } from '@rero/shared';
 import { of } from 'rxjs';
 import { AppConfigService } from '../app-config.service';

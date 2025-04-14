@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { _ } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
 import { HoldingsNoteType, UserService } from '@rero/shared';
 import { Observable, tap } from 'rxjs';
