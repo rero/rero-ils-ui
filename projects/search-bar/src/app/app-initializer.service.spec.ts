@@ -1,6 +1,6 @@
 /*
 * RERO ILS UI
-* Copyright (C) 2020 RERO
+* Copyright (C) 2020-2025 RERO
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU Affero General Public License as published by
@@ -15,23 +15,31 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule } from '@rero/shared';
+import { SharedModule, testUserPatronWithSettings, User, UserApiService } from '@rero/shared';
 import { AppInitializerService } from './app-initializer.service';
-
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { of } from 'rxjs';
 
 describe('AppInitializerService', () => {
-
   let appInitializerService: AppInitializerService;
+
+  const UserApiServiceSpy = jasmine.createSpyObj(UserApiService, ['getLoggedUser']);
+  UserApiServiceSpy.getLoggedUser.and.returnValue(of(testUserPatronWithSettings));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        HttpClientTestingModule,
         TranslateModule.forRoot(),
         SharedModule
+      ],
+      providers: [
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        AppInitializerService,
+        { provide: UserApiService, useValue: UserApiServiceSpy }
       ]
     });
     appInitializerService = TestBed.inject(AppInitializerService);
@@ -39,5 +47,12 @@ describe('AppInitializerService', () => {
 
   it('should be created', () => {
     expect(appInitializerService).toBeTruthy();
+  });
+
+  it('should return an instance of User', () => {
+    appInitializerService.load().subscribe((loggedUser: User) => {
+      expect(loggedUser).toBeInstanceOf(User);
+      expect(loggedUser.id).toEqual(testUserPatronWithSettings.id);
+    });
   });
 });
