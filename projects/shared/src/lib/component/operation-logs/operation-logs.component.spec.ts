@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,13 +14,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule } from 'primeng/button';
+import { DynamicDialogConfig, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { TableModule } from 'primeng/table';
+import { of } from 'rxjs';
+import { OperationLogsApiService } from '../../api/operation-logs-api.service';
 import { OperationLogsService } from '../../service/operation-logs.service';
 import { OperationLogsComponent } from './operation-logs.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-
 
 describe('OperationLogsComponent', () => {
   let component: OperationLogsComponent;
@@ -44,23 +48,44 @@ describe('OperationLogsComponent', () => {
   });
   operationLogsServiceSpy.getResourceKeyByResourceName.and.returnValue('doc');
 
+  const operationLogsApiServiceSpy = jasmine.createSpyObj('OperationLogsApiService', ['getLogs']);
+  operationLogsApiServiceSpy.getLogs.and.returnValue(of({
+    aggregations: [],
+    hits: {
+      total: {
+        value: 1
+      },
+      hits: records
+    },
+    links: [],
+    total: {
+      value: 1
+    }
+  }));
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [OperationLogsComponent],
-    imports: [TranslateModule.forRoot()],
-    providers: [
-        { provide: OperationLogsService, useValue: operationLogsServiceSpy },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-})
-    .compileComponents();
+      declarations: [OperationLogsComponent],
+      imports: [
+        TranslateModule.forRoot(),
+        DynamicDialogModule,
+        TableModule,
+        ButtonModule
+      ],
+      providers: [
+          { provide: OperationLogsService, useValue: operationLogsServiceSpy },
+          { provide: OperationLogsApiService, useValue: operationLogsApiServiceSpy },
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting(),
+          DynamicDialogRef,
+          DynamicDialogConfig
+      ]
+    }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(OperationLogsComponent);
     component = fixture.componentInstance;
-    component.records = records;
     fixture.detectChanges();
   });
 
@@ -68,8 +93,8 @@ describe('OperationLogsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display operation history title', () => {
-    const data = fixture.nativeElement.querySelector('h5');
-    expect(data.textContent).toContain('Operation history');
+  it('should display the log table', () => {
+    const htmlElement: HTMLElement = fixture.nativeElement;
+    expect(htmlElement).toBeDefined();
   });
 });

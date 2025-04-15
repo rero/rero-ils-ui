@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,6 +19,17 @@ import { TestBed } from '@angular/core/testing';
 import { MainTitlePipe } from './main-title.pipe';
 
 describe('MainTitlePipe', () => {
+  let pipe: MainTitlePipe;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        MainTitlePipe
+      ]
+    });
+
+    pipe = TestBed.inject(MainTitlePipe);
+  });
 
   const metadata = [{
     _text: 'document title',
@@ -30,32 +41,19 @@ describe('MainTitlePipe', () => {
     type: 'bf:Foo'
   }];
 
-  let mainTitlePipe: MainTitlePipe;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        MainTitlePipe
-      ]
-    });
-
-    mainTitlePipe = TestBed.inject(MainTitlePipe);
-  });
-
   it('create an instance', () => {
-    expect(mainTitlePipe).toBeTruthy();
+    expect(pipe).toBeTruthy();
   });
 
   it('should return a null value', () => {
-    expect(mainTitlePipe.transform(null)).toBeNull();
+    expect(pipe.transform(null)).toBeNull();
   });
 
   it('should return a title', () => {
-    expect(mainTitlePipe.transform(metadata)).toEqual('document title');
+    expect(pipe.transform(metadata)).toEqual('document title');
   });
 
   it('should return a null value (no key bf:Title)', () => {
-    expect(mainTitlePipe.transform(metadataNoText)).toBeNull();
+    expect(pipe.transform(metadataNoText)).toBeNull();
   });
-
 });

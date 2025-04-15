@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,26 +15,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { TestBed } from '@angular/core/testing';
 import { JoinPipe } from './join.pipe';
 
-describe('Pipe: Joine', () => {
+describe('JoinPipe', () => {
+  let pipe: JoinPipe;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        JoinPipe
+      ]
+    });
+
+    pipe = TestBed.inject(JoinPipe);
+  });
+
   it('create an instance', () => {
-    const pipe = new JoinPipe();
     expect(pipe).toBeTruthy();
   });
 
   it('should return the same chain', () => {
-    const pipe = new JoinPipe();
     expect(pipe.transform('foo')).toEqual('foo');
   });
 
   it('should return a chain separated by spaces (default separator)', () => {
-    const pipe = new JoinPipe();
     expect(pipe.transform(['foo', 'bar'])).toEqual('foo bar');
   });
 
   it('should return a semicolon separated string', () => {
-    const pipe = new JoinPipe();
     expect(pipe.transform(['foo', 'bar'], '; ')).toEqual('foo; bar');
   });
 });

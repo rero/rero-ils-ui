@@ -19,15 +19,6 @@ import { TestBed } from '@angular/core/testing';
 import { UrlActivePipe } from './url-active.pipe';
 
 describe('Pipe: UrlActivee', () => {
-
-  const text = 'A text with a link http://www.rero.ch';
-
-  const textResult =
-  'A text with a link <a href="http://www.rero.ch" target="_self">http://www.rero.ch</a>';
-
-  const textResultBlank =
-  'A text with a link <a href="http://www.rero.ch" target="_blank">http://www.rero.ch</a>';
-
   let urlActivePipe: UrlActivePipe;
 
   beforeEach(() => {
@@ -39,6 +30,14 @@ describe('Pipe: UrlActivee', () => {
 
     urlActivePipe = TestBed.inject(UrlActivePipe);
   });
+
+  const text = 'A text with a link http://www.rero.ch';
+
+  const textResult =
+  'A text with a link <a href="http://www.rero.ch" target="_self">http://www.rero.ch</a>';
+
+  const textResultBlank =
+  'A text with a link <a href="http://www.rero.ch" target="_blank">http://www.rero.ch</a>';
 
   it('create an instance', () => {
     expect(urlActivePipe).toBeTruthy();

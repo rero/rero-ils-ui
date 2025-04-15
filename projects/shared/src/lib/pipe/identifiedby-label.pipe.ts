@@ -23,19 +23,16 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class IdentifiedByLabelPipe implements PipeTransform {
 
-  /** the separator to use to glue all parts of the label. */
-  private _defaultSeparator = ', '
-
   /**
    * Pipe transformation method.
-   *   Format identifiedBy as a string.
+   * Format identifiedBy as a string.
    * @param identifiedBy - the list of identifiedBy to display
    * @param types - list of type used to filter identifier
    * @param separator - the glue string to use to join parts
    * @return the entity label
    */
-  transform(identifiedBy: any[], types: string[], separator: string = this._defaultSeparator): string | null {
-    const identifiers: Array<any> = (types && identifiedBy?.length)
+  transform(identifiedBy: any[], types: string[] = [], separator: string = ', '): string | null {
+    const identifiers: Array<any> = (types.length && identifiedBy?.length)
       ? identifiedBy.filter(identifier => types.includes(identifier.type))
       : identifiedBy;
     return identifiers

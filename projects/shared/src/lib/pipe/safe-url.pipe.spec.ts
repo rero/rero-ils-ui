@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2025 RERO
+ * Copyright (C) 2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,37 +14,40 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { TestBed } from '@angular/core/testing';
-import { KeyExistsPipe } from './key-exists.pipe';
 
-describe('KeyExistsPipe', () => {
-  let pipe: KeyExistsPipe;
+import { TestBed } from '@angular/core/testing';
+import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
+import { SafeUrlPipe } from './safe-url.pipe';
+
+describe('MainTitlePipe', () => {
+  let pipe: SafeUrlPipe;
+
+  const domSanitizerSpy = class domSanitizer {
+    bypassSecurityTrustResourceUrl(url: string) {
+      return url;
+    }
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        KeyExistsPipe
+        SafeUrlPipe,
+        { provide: DomSanitizer, useClass: domSanitizerSpy }
+      ],
+      imports: [
+        BrowserModule
       ]
     });
 
-    pipe = TestBed.inject(KeyExistsPipe);
+    pipe = TestBed.inject(SafeUrlPipe);
   });
-
-  const record = {
-    foo: 'bar'
-  };
 
   it('create an instance', () => {
     expect(pipe).toBeTruthy();
   });
 
-  it('should return false because the field does not exist', () => {
-    expect(pipe.transform(record, 'bar')).toBeFalsy();
-  });
-
-  it('should return true because the field exists', () => {
-    expect(pipe.transform(record, 'foo')).toBeTruthy();
+  it('should return a valid url', () => {
+    const url = 'https://localhost/pdf_viewer/pdf.pdf';
+    expect(pipe.transform(url)).toEqual(url);
   });
 });
-
-
