@@ -30,7 +30,7 @@ export class JoinPipe implements PipeTransform {
    * @param glue: string to use to join parts.
    * @return: the joined string
    */
-  transform(parts: string | Array<string>, glue: string = ' '): string {
+  transform(parts: string | string[], glue: string = ' '): string {
     if (!Array.isArray(parts)) {
       parts = [parts];
     }

@@ -23,7 +23,6 @@ export interface BriefViewTag {
   [key:string]: any;
 }
 
-
 @Component({
     selector: 'shared-brief-view',
     templateUrl: './brief-view.component.html',

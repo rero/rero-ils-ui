@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023 RERO
+ * Copyright (C) 2023-2025 RERO
  * Copyright (C) 2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,10 +18,6 @@
 import { Tools } from './tools';
 
 describe('Tools', () => {
-  it('should create an instance', () => {
-    expect(new Tools()).toBeTruthy();
-  });
-
   it('should validate an email address', () => {
     expect(Tools.validateEmail('foo')).toBeFalse();
     expect(Tools.validateEmail('foo@bar')).toBeFalse();

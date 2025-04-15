@@ -36,5 +36,4 @@ export class MainTitlePipe implements PipeTransform {
       ? mainTitles.pop()._text
       : null;
   }
-
 }

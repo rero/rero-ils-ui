@@ -31,5 +31,4 @@ export class MainTitleRelationPipe implements PipeTransform {
     const mainTitle = value.filter((title: any) => title.type === 'bf:Title');
     return mainTitle[0]._text;
   }
-
 }

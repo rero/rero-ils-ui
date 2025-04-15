@@ -36,7 +36,6 @@ import { OperationLogsDialogComponent } from './component/operation-logs/operati
 import { OperationLogsComponent } from './component/operation-logs/operation-logs.component';
 import { RemoteSearchComponent } from './component/remote-search/remote-search.component';
 import { LinkPermissionsDirective } from './directive/link-permissions.directive';
-import { NoContentDirective } from './directive/no-content.directive';
 import { PermissionsDirective } from './directive/permissions.directive';
 import { ReroTemplateDirective } from './directive/rero-template.directive';
 import { PrimeNgImportModule } from './modules/prime-ng-import/prime-ng-import.module';
@@ -49,7 +48,6 @@ import { FaIconClassPipe } from './pipe/fa-icon-class.pipe';
 import { GetTranslatedLabelPipe } from './pipe/get-translated-label.pipe';
 import { IdAttributePipe } from './pipe/id-attribute.pipe';
 import { IdentifiedByLabelPipe } from './pipe/identifiedby-label.pipe';
-import { IsArrayPipe } from './pipe/is-array.pipe';
 import { ItemHoldingsCallNumberPipe } from './pipe/item-holdings-call-number.pipe';
 import { JoinPipe } from './pipe/join.pipe';
 import { KeyExistsPipe } from './pipe/key-exists.pipe';
@@ -89,15 +87,12 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     IdAttributePipe,
     IdentifiedByLabelPipe,
     InheritedCallNumberComponent,
-    IsArrayPipe,
     ItemHoldingsCallNumberPipe,
     JoinPipe,
     KeyExistsPipe,
     LinkPermissionsDirective,
     MainTitlePipe,
     MainTitleRelationPipe,
-    NoContentDirective,
-    NoContentDirective,
     NotesFilterPipe,
     OpenCloseButtonComponent,
     OtherEditionComponent,
@@ -137,8 +132,6 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     MainTitlePipe,
     MainTitleRelationPipe,
     Nl2brPipe,
-    NoContentDirective,
-    NoContentDirective,
     NotesFilterPipe,
     OpenCloseButtonComponent,
     OtherEditionComponent,

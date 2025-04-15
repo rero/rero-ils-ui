@@ -35,15 +35,15 @@ describe('FaIconClassPipe', () => {
     expect(pipe).toBeTruthy();
   });
 
-  it('found pdf', () => {
-    expect(
-      pipe.transform('application/pdf', 'file')
-    ).toEqual('fa-file-pdf-o');
+  it('should return the class of the pdf icon', () => {
+    expect(pipe.transform('application/pdf', 'file')).toEqual('fa-file-pdf-o');
   });
 
-  it('found default', () => {
-    expect(
-      pipe.transform('application/page', 'file')
-    ).toEqual('fa-file-o');
+  it('should return the icon class for an audio file', () => {
+    expect(pipe.transform('audio/mpeg', 'file')).toEqual('fa-file-audio-o');
+  });
+
+  it('should return the default class', () => {
+    expect(pipe.transform('application/page', 'file')).toEqual('fa-file-o');
   });
 });
