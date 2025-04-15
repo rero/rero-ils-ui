@@ -28,7 +28,7 @@ describe('GetTranslatedLabelPipe', () => {
   ];
 
   const entriesDefault = [
-    {language: 'default', label: 'on_shelf' }
+    {language: 'default', label: 'on_shelf'}
   ];
 
   let getTranslatedLabelPipe: GetTranslatedLabelPipe;

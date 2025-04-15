@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,11 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { TestBed } from '@angular/core/testing';
 import { NotesFilterPipe } from './notes-filter.pipe';
 
 describe('NotesFilterPipe', () => {
-
   let pipe: NotesFilterPipe;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        NotesFilterPipe
+      ]
+    });
+
+    pipe = TestBed.inject(NotesFilterPipe);
+  });
 
   const notes = [
     { type: 'general_note', content: 'note general' },

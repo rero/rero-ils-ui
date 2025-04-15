@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,8 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ApiService } from '@rero/ng-core';
 import { of } from 'rxjs';
@@ -44,9 +43,7 @@ describe('Service: UserApi', () => {
     providers: [
         UserApiService,
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: ApiService, useValue: apiServiceSpy },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
+        { provide: ApiService, useValue: apiServiceSpy }
     ]
 });
     userApiService = TestBed.inject(UserApiService);

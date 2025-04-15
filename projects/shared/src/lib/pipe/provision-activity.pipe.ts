@@ -39,9 +39,8 @@ export class ProvisionActivityPipe implements PipeTransform {
     let provisionActivities = metadata.provisionActivity || [];
     provisionActivities = provisionActivities.filter(activity => activity.type === type && activity._text);
     // TODO : do better with '_text' using the current language tag
-    return (provisionActivities.length > 0 )
+    return (provisionActivities.length > 0)
       ? provisionActivities.pop()._text[0].value
       : null;
   }
-
 }

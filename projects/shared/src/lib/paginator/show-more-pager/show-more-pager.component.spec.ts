@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,9 +18,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { Paginator } from '../paginator';
 import { ShowMorePagerComponent } from './show-more-pager.component';
+import { ButtonModule } from 'primeng/button';
 
 
-describe('PagerComponent', () => {
+describe('ShowMorePagerComponent', () => {
   let component: ShowMorePagerComponent;
   let fixture: ComponentFixture<ShowMorePagerComponent>;
   let button: HTMLElement;
@@ -29,7 +30,8 @@ describe('PagerComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ ShowMorePagerComponent ],
       imports: [
-        TranslateModule.forRoot()
+        TranslateModule.forRoot(),
+        ButtonModule
       ]
     })
     .compileComponents();
@@ -52,8 +54,8 @@ describe('PagerComponent', () => {
       .setRecordsPerPage(5)
       .setRecordsCount(10);
     fixture.detectChanges();
-    button = fixture.nativeElement.querySelector('#my-button');
-    expect(button.textContent.trim()).toEqual('Show more');
+    button = fixture.nativeElement.querySelector('.p-button');
+    expect(button.textContent).toContain('Show more');
   });
 
   it('should not display the pager', () => {
@@ -61,7 +63,7 @@ describe('PagerComponent', () => {
       .setRecordsPerPage(10)
       .setRecordsCount(8);
     fixture.detectChanges();
-    button = fixture.nativeElement.querySelector('#my-button');
+    button = fixture.nativeElement.querySelector('.p-button');
     expect(button).toBeNull();
   });
 });
