@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@ import { Record, RecordService } from '@rero/ng-core';
 import { BaseApi, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AppConfigService } from '../app-config.service';
 import { HoldingCanRequest, HoldingPatronRequest } from '../classes/holdings';
 import { QueryResponse } from '../record';
-import { AppConfigService } from '../app-config.service';
 
 @Injectable({
   providedIn: 'root'

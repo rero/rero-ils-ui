@@ -25,7 +25,7 @@ export interface ResourceRouteInterface {
   create(viewcode: string): null | {};
 
   /**
-   * Get ressources name
+   * Get resources name
    * @return array of string, name(s) of route
    */
   getResources(): string[];

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ export class DocumentBriefComponent {
   public documentApiService: DocumentApiService = inject(DocumentApiService);
   private _record: any;
 
-  @Input() detailUrl: string;
+  @Input() detailUrl: { link: string, external: boolean };
   @Input() viewcode = this.pathArray[1];
   @Input() set record(value) {
     if (value !== undefined) {
@@ -44,7 +44,7 @@ export class DocumentBriefComponent {
 
   /** process provision activity publications */
   get provisionActivityPublications() {
-    const provisionActivity = this._record.metadata.provisionActivity;
+    const { provisionActivity } = this._record.metadata;
     const publications = [];
     if (undefined === provisionActivity) {
       return publications;

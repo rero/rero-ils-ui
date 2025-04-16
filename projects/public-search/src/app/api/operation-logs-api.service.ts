@@ -37,7 +37,8 @@ export class OperationLogsApiService extends BaseApi {
    * @return Observable
    */
   getHistory(
-    patronPid: string, page: number,
+    patronPid: string,
+    page: number,
     itemsPerPage: number = 10
   ): Observable<Record | Error> {
     const date = DateTime.now().minus({ months: 6 }).toISO();

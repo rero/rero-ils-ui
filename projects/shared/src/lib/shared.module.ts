@@ -63,6 +63,7 @@ import { PartOfComponent } from './view/brief/part-of/part-of.component';
 import { EntityLinkComponent } from './view/entity-link.component';
 import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
+import { JournalVolumePipe } from './pipe/journal-volume.pipe';
 
 @NgModule({
   declarations: [
@@ -107,7 +108,8 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     ThumbnailComponent,
     UrlActivePipe,
     OperationLogsComponent,
-    OperationLogsDialogComponent
+    OperationLogsDialogComponent,
+    JournalVolumePipe
   ],
   exports: [
     ActionButtonComponent,
@@ -147,7 +149,8 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     ThumbnailComponent,
     UrlActivePipe,
     OperationLogsComponent,
-    OperationLogsDialogComponent
+    OperationLogsDialogComponent,
+    JournalVolumePipe
   ],
   imports: [
     CommonModule,

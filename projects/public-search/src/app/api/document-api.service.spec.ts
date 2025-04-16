@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { DocumentApiService } from './document-api.service';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { DocumentApiService } from './document-api.service';
 
 describe('DocumentApiService', () => {
   let service: DocumentApiService;
@@ -37,11 +36,8 @@ describe('DocumentApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
     providers: [
-        { provide: HttpClient, useValue: httpClientSpy },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
+      { provide: HttpClient, useValue: httpClientSpy }
     ]
 });
     service = TestBed.inject(DocumentApiService);

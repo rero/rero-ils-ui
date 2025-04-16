@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,6 +17,7 @@
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { LoanOverduePreview } from '@app/admin/classes/loans';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule, RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
@@ -69,20 +70,27 @@ describe('LoanApiService', () => {
     }
   };
 
+  const loanOverduePreview = {
+    steps: [],
+    total: 1
+  };
+
   const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
   recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
   recordServiceSpy.totalHits.and.returnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [TranslateModule.forRoot(),
-        CoreModule],
-    providers: [
+      imports: [
+        TranslateModule.forRoot(),
+        CoreModule
+      ],
+      providers: [
         { provide: RecordService, useValue: recordServiceSpy },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
     service = TestBed.inject(LoanApiService);
     httpClient = TestBed.inject(HttpClient);
   });
@@ -92,38 +100,36 @@ describe('LoanApiService', () => {
   });
 
   it('should load the loans', () => {
-    service.getOnLoan('1', 1, 10).subscribe((response: any) => {
-      expect(response.hits.hits[0]).toEqual(record);
-    });
+    service.getOnLoan('1', 1, 10)
+      .subscribe((response: any) => expect(response.hits.hits[0]).toEqual(record));
   });
 
   it('should load the requests', () => {
-    service.getRequest('1', 1, 10).subscribe((response: any) => {
-      expect(response.hits.hits[0]).toEqual(record);
-    });
+    service.getRequest('1', 1, 10)
+      .subscribe((response: any) => expect(response.hits.hits[0]).toEqual(record));
   });
 
   it('should extend the loan', () => {
     spyOn(httpClient, 'get').and.returnValue(of(canExtend));
     service.canExtend('1')
-    .subscribe((response: CanExtend) => {
-      expect(response).toEqual(canExtend);
-    });
+      .subscribe((response: CanExtend) => expect(response).toEqual(canExtend));
   });
 
   it('should extend the loan', () => {
     spyOn(httpClient, 'post').and.returnValue(of(renew));
     service.renew({pid: '1', item_pid: '1', transaction_location_pid: '1', transaction_user_pid: '1'})
-    .subscribe((response: any) => {
-      expect(response.pid).toEqual('renew');
-    });
+      .subscribe((response: any) => expect(response.pid).toEqual('renew'));
   });
 
   it('should cancel the loan', () => {
     spyOn(httpClient, 'post').and.returnValue(of(cancel));
     service.cancel({pid: '1', transaction_location_pid: '1', transaction_user_pid: '1'})
-    .subscribe((response: any) => {
-      expect(response.pid).toEqual('cancel');
-    });
+      .subscribe((response: any) => expect(response.pid).toEqual('cancel'));
+  });
+
+  it('should return the list of projected expenses', () => {
+    spyOn(httpClient, 'get').and.returnValue(of(loanOverduePreview));
+    service.getPreviewOverdue('1')
+      .subscribe((response: LoanOverduePreview) => expect(response).toEqual(loanOverduePreview));
   });
 });

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,11 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { PatronApiService } from './patron-api.service';
+import { Message, PatronApiService } from './patron-api.service';
 
 describe('PatronApiService', () => {
   let service: PatronApiService;
@@ -35,13 +34,10 @@ describe('PatronApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [
-        { provide: HttpClient, useValue: httpClientSpy },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-});
+      providers: [
+        { provide: HttpClient, useValue: httpClientSpy }
+      ]
+    });
     service = TestBed.inject(PatronApiService);
   });
 
@@ -50,8 +46,7 @@ describe('PatronApiService', () => {
   });
 
   it('should return user messages', () => {
-    service.getMessages('4').subscribe((response: any) => {
-      expect(response).toEqual(messages);
-    });
+    service.getMessages('4')
+      .subscribe((response: Message[]) => expect(response).toEqual(messages));
   });
 });
