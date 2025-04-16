@@ -28,6 +28,7 @@ import { of } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { ISwitchLibrary, LibraryService } from '../service/library.service';
 import { MENU_IDS } from '../menu-definition/menu-ids';
+import { MenubarModule } from 'primeng/menubar';
 
 describe('AppMenuUserComponent', () => {
   let component: MenuUserComponent;
@@ -37,36 +38,35 @@ describe('AppMenuUserComponent', () => {
 
   const menuItems: MenuItem[] = [
     {
-      label: 'library',
+      name: 'library',
+      translateLabel: 'library',
       id: MENU_IDS.LIBRARY_MENU,
       items: [
         {
-          label: 'library name',
+          name: 'library name',
           code: 'library-code',
           pid: '1',
-          styleClass: null,
         }
       ]
     },
     {
-      label: 'menu',
+      name: 'menu',
+      translateLabel: 'menu',
       id: MENU_IDS.USER.MENU,
       items: [
         {
-          label: 'language',
+          name: 'language',
           id: MENU_IDS.USER.LANGUAGE,
           items: [
             {
               label: 'french',
               code: 'fr',
-              id: 'lang-fr',
-              styleClass: null,
+              id: 'lang-fr'
             },
             {
               label: 'English',
               code: 'en',
-              id: 'lang-en',
-              styleClass: null,
+              id: 'lang-en'
             },
           ],
         },
@@ -85,7 +85,7 @@ describe('AppMenuUserComponent', () => {
     name: 'library name'
   };
 
-  const menuServiceSpy = jasmine.createSpyObj('MenuService', ['generateMenuLibrary$', 'generateMenuLanguages', 'logout']);
+  const menuServiceSpy = jasmine.createSpyObj('MenuService', ['generateMenuLibrary$', 'generateMenuLanguages', 'updateLibraryQueryParams', 'logout']);
   menuServiceSpy.generateMenuLibrary$.and.returnValue(of([]));
 
   const menuTranslateServiceSpy = jasmine.createSpyObj('MenuTranslateService', ['process']);
@@ -103,9 +103,12 @@ describe('AppMenuUserComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      declarations: [
+        MenuUserComponent
+      ],
       imports: [
         TranslateModule.forRoot(),
-        MenuUserComponent
+        MenubarModule,
       ],
       providers: [
         { provide: MenuService, useValue: menuServiceSpy },
@@ -137,7 +140,8 @@ describe('AppMenuUserComponent', () => {
   });
 
   it('should change the library menu', () => {
-    expect(component.items.find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU).items[0].styleClass).toBeNull();
+    console.log(component.items.find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU).items[0]);
+    expect(component.items.find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU).items[0].styleClass).toBeUndefined();
     libraryService.switch(librarySwitch);
     fixture.detectChanges();
     expect(component.items.find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU).items[0].styleClass).toEqual('font-bold');
@@ -147,14 +151,14 @@ describe('AppMenuUserComponent', () => {
     expect(component.items
       .find((item: MenuItem) => item.id === MENU_IDS.USER.MENU).items
       .find((item: MenuItem) => item.id === MENU_IDS.USER.LANGUAGE).items
-      .find((item: MenuItem) => item.id === 'lang-en')
-      .styleClass).toEqual('font-bold');
+      .find((item: MenuItem) => item.id === 'lang-en').styleClass)
+      .toEqual('font-bold');
 
     translateService.use('fr');
     expect(component.items
       .find((item: MenuItem) => item.id === MENU_IDS.USER.MENU).items
       .find((item: MenuItem) => item.id === MENU_IDS.USER.LANGUAGE).items
-      .find((item: MenuItem) => item.id === 'lang-fr')
-      .styleClass).toEqual('font-bold');
+      .find((item: MenuItem) => item.id === 'lang-fr').styleClass)
+      .toEqual('font-bold');
   });
 });

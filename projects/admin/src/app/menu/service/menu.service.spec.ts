@@ -74,12 +74,14 @@ describe('MenuService', () => {
       items: [
         {
           label: 'Menu 1 - line 1',
+          untranslatedLabel: 'Menu 1 - line 1',
           access: {
             permissions: 'enabled'
           }
         },
         {
           label: 'Menu 1 - line 2',
+          untranslatedLabel: 'Menu 1 - line 2',
           access: {
             permissions: 'disabled'
           }
@@ -87,6 +89,7 @@ describe('MenuService', () => {
         ,
         {
           label: 'Menu 1 - line 3',
+          untranslatedLabel: 'Menu 1 - line 3',
           access: {
             permissions: 'enabled'
           }
@@ -95,9 +98,11 @@ describe('MenuService', () => {
     },
     {
       label: 'Menu 2',
+      untranslatedLabel: 'Menu 2',
       items: [
         {
-          label: 'Menu 2 - line 1'
+          label: 'Menu 2 - line 1',
+          untranslatedLabel: 'Menu 2 - line 1',
         }
       ]
     }
@@ -171,19 +176,19 @@ describe('MenuService', () => {
 
     expect(languages[1].label).toEqual(translations.ui_language_en);
     expect(languages[2].label).toEqual(translations.ui_language_fr);
-    expect(languages[2].styleClass).toEqual('font-bold');
+    expect(languages[2].styleClass).toEqual('ui:font-bold');
   });
 
   it('should return library menu lines', () => {
     service.generateMenuLibrary$().subscribe((menu: MenuItem) => {
-      expect(menu.label).toEqual('lib-1');
-      expect(menu.id).toEqual('menu-library');
-      expect(menu.icon).not.toBeNull();
-      expect(menu.items.length).toEqual(2);
-      expect(menu.items[0].code).toEqual('lib-1');
-      expect(menu.items[0].label).toEqual('[lib-1] Library 1');
-      expect(menu.items[0].pid).toEqual('1');
-      expect(typeof menu.items[0].command === 'function').toBeTrue()
+      expect(menu.menu.label).toEqual('lib-1');
+      expect(menu.menu.id).toEqual('library-menu');
+      expect(menu.menu.icon).not.toBeNull();
+      expect(menu.menu.items.length).toEqual(2);
+      expect(menu.menu.items[0].code).toEqual('lib-1');
+      expect(menu.menu.items[0].label).toEqual('[lib-1] Library 1');
+      expect(menu.menu.items[0].pid).toEqual('1');
+      expect(typeof menu.menu.items[0].command === 'function').toBeTrue()
     });
   });
 

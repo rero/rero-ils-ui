@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,15 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordModule, RecordService } from '@rero/ng-core';
 import { IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
 import { ItemApiService } from './item-api.service';
-
 
 describe('ItemApiService', () => {
   let service: ItemApiService;
@@ -45,15 +43,15 @@ describe('ItemApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RecordModule,
-        TranslateModule.forRoot()],
-    providers: [
+      imports: [
+        RecordModule,
+        TranslateModule.forRoot()
+      ],
+      providers: [
         { provide: RecordService, useValue: recordServiceSpy },
-        { provide: HttpClient, useValue: httpClientSpy },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-});
+        { provide: HttpClient, useValue: httpClientSpy }
+      ]
+    });
     service = TestBed.inject(ItemApiService);
   });
 
