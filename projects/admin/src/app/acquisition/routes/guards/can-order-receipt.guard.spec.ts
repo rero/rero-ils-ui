@@ -27,7 +27,7 @@ import { of } from 'rxjs';
 import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
 import { AcqOrderApiService } from '../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../api/acq-receipt-api.service';
-import { AcqOrderStatus, AcqOrderType } from '../../classes/order';
+import { AcqOrderStatus } from '../../classes/order';
 import { CanOrderReceiptGuard } from './can-order-receipt.guard';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -51,7 +51,6 @@ describe('CanOrderReceiptGuard', () => {
   const order = {
     reference: 'foo',
     priority: 1,
-    type: AcqOrderType.MONOGRAPH,
     currency: 'CHF',
     order_date: new Date(),
     account_statement: {

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -38,6 +38,7 @@ describe('MenuTranslateService', () => {
 
   const menuItems: MenuItem[] = [{
     label: '$symbolName',
+    translateLabel: '$symbolName',
     items: [
       {
         label: 'user',
@@ -45,10 +46,12 @@ describe('MenuTranslateService', () => {
       },
       {
         label: 'my library',
+        translateLabel: 'my library',
         routerLink: ['/', 'my-library', '$currentLibrary']
       },
       {
         label: 'query params',
+        translateLabel: 'query params',
         queryParams: {
           id: 1,
           organisation: '$currentOrganisation',
@@ -59,6 +62,7 @@ describe('MenuTranslateService', () => {
 
   const menuItemsResult: MenuItem[] = [{
     label: 'AM',
+    translateLabel: '$symbolName',
     items: [
       {
         label: 'utilisateur',
@@ -66,10 +70,12 @@ describe('MenuTranslateService', () => {
       },
       {
         label: 'my library',
+        translateLabel: 'my library',
         routerLink: ['/', 'my-library', '1']
       },
       {
         label: 'query params',
+        translateLabel: 'query params',
         queryParams: {
           id: 1,
           organisation: '2'
@@ -80,22 +86,26 @@ describe('MenuTranslateService', () => {
 
   const menuItemDateRange: MenuItem[] = [{
     label: 'date range',
+    translateLabel: 'date range',
     queryParams: {
       range: '$currentDayRange'
     }
   }];
 
   const menuLabelError: MenuItem[] = [{
-    label: '$fooBar'
+    label: '$fooBar',
+    translateLabel: '$fooBar',
   }];
 
   const menuRouterLinkError: MenuItem[] = [{
     label: 'label',
+    translateLabel: 'label',
     routerLink: ['/', '$fooBar']
   }];
 
   const menuQueryParamsError: MenuItem[] = [{
     label: 'label',
+    translateLabel: 'label',
     queryParams: {
       id: '$fooBar'
     }

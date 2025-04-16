@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2023 RERO
+ * Copyright (C) 2022-2025 RERO
  * Copyright (C) 2022-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,15 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { CommonModule } from '@angular/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 import { IssueItemStatus } from '@rero/shared';
+import { MessageService } from 'primeng/api';
+import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { MessageModule } from 'primeng/message';
 import { IssueEmailComponent } from '../components/issues/issue-email/issue-email.component';
-import { PreviewEmailModule } from '../shared/preview-email/preview-email.module';
 import { IssueService } from './issue.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('IssueService', () => {
   let service: IssueService;
@@ -39,13 +41,18 @@ describe('IssueService', () => {
     declarations: [
         IssueEmailComponent
     ],
-    imports: [TranslateModule.forRoot()],
+    imports: [
+      TranslateModule.forRoot(),
+      DynamicDialogModule,
+      MessageModule
+    ],
     providers: [
-        PreviewEmailModule,
-        CommonModule,
         IssueService,
+        DialogService,
+        MessageService,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
+        provideHttpClientTesting(),
+        provideNoopAnimations()
     ]
 });
     service = TestBed.inject(IssueService);
@@ -63,6 +70,6 @@ describe('IssueService', () => {
   });
 
   it('should return the modal reference', () => {
-    const modal = service.openClaimEmailDialog(record);
+    expect(service.openClaimEmailDialog(record)).toBeInstanceOf(DynamicDialogRef);
   });
 });

@@ -73,14 +73,16 @@ describe('CanAccessGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterModule.forRoot(routes),
-        TranslateModule.forRoot()],
-    providers: [
-        { provide: UserService, useValue: userTestingService },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-});
+      imports: [
+        RouterModule.forRoot(routes),
+        TranslateModule.forRoot()
+      ],
+      providers: [
+          { provide: UserService, useValue: userTestingService },
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
+      ]
+    });
     guard = TestBed.inject(CanAccessGuard);
     router = TestBed.inject(Router);
     recordPermissionService = TestBed.inject(RecordPermissionService);

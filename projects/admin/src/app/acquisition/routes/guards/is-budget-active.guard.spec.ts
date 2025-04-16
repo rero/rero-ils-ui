@@ -78,7 +78,7 @@ describe('IsBudgetActiveGuard', () => {
     expect(guard).toBeTruthy();
   });
 
-  it('should return true if the record has the flag true on is_current_buget', () => {
+  it('should return true if the record has the flag true on is_current_budget', () => {
     const record = cloneDeep(receipt);
     spyOn(recordService, 'getRecord').and.returnValue(of(record));
     guard.canActivate(activatedRouteSnapshotSpy).subscribe((access: boolean) => {
@@ -86,7 +86,7 @@ describe('IsBudgetActiveGuard', () => {
     });
   });
 
-  it('should return a 403 error if the record has the flag false on is_current_buget', fakeAsync(() => {
+  it('should return a 403 error if the record has the flag false on is_current_budget', fakeAsync(() => {
     const record = cloneDeep(receipt);
     record.metadata.is_current_budget = false;
     spyOn(recordService, 'getRecord').and.returnValue(of(record));
