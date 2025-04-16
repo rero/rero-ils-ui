@@ -32,7 +32,6 @@ import { TabsModule } from 'primeng/tabs';
 import { TagModule } from 'primeng/tag';
 import { TimelineModule } from 'primeng/timeline';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { JournalVolumePipe } from 'projects/public-search/src/app/pipe/journal-volume.pipe';
 import { CheckinActionComponent } from './checkin/checkin-action/checkin-action.component';
 import { CheckinComponent } from './checkin/checkin.component';
 import { CirculationMainComponent } from './circulation-main.component';
@@ -92,7 +91,6 @@ import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
         IllRequestItemComponent,
         ItemComponent,
         ItemsListComponent,
-        JournalVolumePipe,
         LoanComponent,
         MainComponent,
         MainRequestComponent,

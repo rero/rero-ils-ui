@@ -23,8 +23,8 @@
     <div class="ui:col-span-2">{{ record.metadata.creation_date | dateTranslate: 'short' }}</div>
     <div class="ui:col-span-6">{{ record.metadata.type | translate }}</div>
     <div class="ui:col-span-3 ui:flex ui:justify-end">{{ record.metadata.total_amount | currency:organisation.currency:'symbol' }}</div>
-      <!-- FEE DETAILS & EVENTS =========================================== -->
-      @if (!isCollapsed) {
+    <!-- FEE DETAILS & EVENTS =========================================== -->
+    @if (!isCollapsed) {
       <div id="fee-event-{{ record.metadata.pid }}" class="ui:col-span-11 ui:col-start-2">
           <!-- NOTE -->
           @if (record.metadata.note) {
@@ -112,7 +112,7 @@
               </ng-template>
           </p-timeline>
           </p-panel>
-        </div>
-      }
+      </div>
+    }
   </div>
 }

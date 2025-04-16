@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
 import { IAvailability } from '@rero/shared';
@@ -75,9 +74,7 @@ describe('ItemService', () => {
     imports: [],
     providers: [
         { provide: RecordService, useValue: recordServiceSpy },
-        { provide: HttpClient, useValue: httpClientSpy },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
+        { provide: HttpClient, useValue: httpClientSpy }
     ]
 });
     service = TestBed.inject(ItemApiService);

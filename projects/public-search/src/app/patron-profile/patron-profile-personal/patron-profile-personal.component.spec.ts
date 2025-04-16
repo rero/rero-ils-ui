@@ -75,11 +75,11 @@ describe('PatronProfilePersonalComponent', () => {
   });
 
   it('should display user information', () => {
-    const section = fixture.nativeElement.querySelector('#personal-section');
+    const section = fixture.nativeElement.querySelector('h4');
     expect(section.textContent).toContain('Personal details');
 
-    const dd = fixture.nativeElement.querySelectorAll('#personal-data dl > dd');
-    expect(dd[0].textContent).toContain('male');
+    const dd = fixture.nativeElement.querySelectorAll('dl > dd');
+    expect(dd[0].textContent).toContain('female');
     expect(dd[1].textContent).toContain('simonetta');
     expect(dd[2].textContent).toContain('Via Croix Noire 3 11100 Aosta italia');
     expect(dd[3].textContent).toContain('Rue des Remparts 1950 Sion switzerland');

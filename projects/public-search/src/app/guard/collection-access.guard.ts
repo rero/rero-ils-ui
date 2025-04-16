@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  */
 import { inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AppConfigService } from '../app-config.service';
 
 @Injectable({
@@ -27,13 +27,11 @@ export class CollectionAccessGuard  {
   private _appConfigService: AppConfigService = inject(AppConfigService);
   private _router: Router = inject(Router);
 
-  canActivate(
-    next: ActivatedRouteSnapshot):
-  Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    const view = next.data.types[0].preFilters.view;
+  canActivate(next: ActivatedRouteSnapshot): Observable<boolean> {
+    const {view} = next.data.types[0].preFilters;
     if (this._appConfigService.globalViewName === view) {
       this._router.navigate(['/errors/403'], { skipLocationChange: true });
     }
-    return true;
+    return of(true);
   }
 }
