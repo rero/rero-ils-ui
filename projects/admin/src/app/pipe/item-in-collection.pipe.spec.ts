@@ -72,7 +72,7 @@ describe('ItemInCollectionPipe', () => {
   it('should return a null value if no result', () => {
     recordServiceSpy.getRecords.and.returnValue(of(emptyRecords));
     recordServiceSpy.totalHits.and.returnValue(0);
-    pipe.transform('1').subscribe((result: any) => expect(result).toBeNull());
+    pipe.transform('1').subscribe((result: any) => expect(result).toEqual([]));
   });
 
   it('should return an array of results', () => {

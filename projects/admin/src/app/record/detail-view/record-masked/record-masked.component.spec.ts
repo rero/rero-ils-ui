@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -98,27 +98,22 @@ describe('MaskedComponent', () => {
 
   it('should return a bullet red icon (record with flag _masked true)', () => {
     component.record = recordMasked;
-    component.context = 'bullet';
     fixture.detectChanges();
     const icon = fixture.nativeElement.querySelector('i');
     expect(icon.attributes.title.textContent).toContain('Masked');
-    expect(icon.attributes.class.textContent).toContain('fa-circle');
-    expect(icon.attributes.class.textContent).toContain('text-success');
+    expect(icon.attributes.class.textContent).toContain('fa fa-eye-slash text-error');
   });
 
   it('should return a eye green icon (record without flag _masked)', () => {
     component.record = recordNoMaskedNoFlag;
-    component.context = 'bullet';
     fixture.detectChanges();
     const icon = fixture.nativeElement.querySelector('i');
     expect(icon.attributes.title.textContent).toContain('No masked');
-    expect(icon.attributes.class.textContent).toContain('fa-circle');
-    expect(icon.attributes.class.textContent).toContain('text-error');
+    expect(icon.attributes.class.textContent).toContain('fa fa-eye text-success');
   });
 
   it('should return a bullet red icon with label (record with flag _masked true)', () => {
     component.record = recordMasked;
-    component.context = 'bullet';
     component.withLabel = true;
     fixture.detectChanges();
     const label = fixture.nativeElement.querySelector('label');
@@ -127,7 +122,6 @@ describe('MaskedComponent', () => {
 
   it('should return a bullet green icon with label (record without flag _masked)', () => {
     component.record = recordNoMaskedNoFlag;
-    component.context = 'bullet';
     component.withLabel = true;
     fixture.detectChanges();
     const label = fixture.nativeElement.querySelector('label');

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -49,7 +49,7 @@ export class MenuUserComponent implements OnInit, OnDestroy {
     );
     this.subscription.add(
       this.menuService.generateMenuLibrary$().subscribe((menu: any) => {
-        this.items = [menu.menu, ...this.items];
+        this.items = [menu.menu, ...this.items].filter(item => !!item);
       })
     );
     this.subscription.add(
@@ -57,7 +57,7 @@ export class MenuUserComponent implements OnInit, OnDestroy {
     );
     this.subscription.add(
       this.libraryService.switch$.subscribe((library: ISwitchLibrary) => this.menuService.updateLibraryQueryParams(library))
-    )
+    );
   }
 
   ngOnDestroy(): void {
