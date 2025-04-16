@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,10 +34,10 @@ describe('LoanStatusBadgePipe', () => {
   });
 
   it('Should return the "badge-secondary" class', () => {
-    expect(pipe.transform('ITEM_AT_DESK')).toEqual('badge-success');
+    expect(pipe.transform('ITEM_AT_DESK')).toEqual('success');
   });
 
   it('Should return the "badge-light" class (default)', () => {
-    expect(pipe.transform('MISSING')).toEqual('badge-light');
+    expect(pipe.transform('MISSING')).toEqual('secondary');
   });
 });

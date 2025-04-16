@@ -1,7 +1,7 @@
 
  <!--
   RERO ILS UI
-  Copyright (C) 2020-2024 RERO
+  Copyright (C) 2020-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -17,24 +17,25 @@
 -->
 @if (record) {
   <h4>
-    <a id="collection-link" [href]="detailUrl.link">{{ record.metadata.title }}</a>
+    <a [href]="detailUrl.link">{{ record.metadata.title }}</a>
     @if (record.metadata.collection_id) {
       ({{ record.metadata.collection_id }})
     }
   </h4>
   <div>
     @if (record.metadata.teachers) {
-      <div id="collection-teacher">
+      <div>
         @for (teacher of record.metadata.teachers; track teacher; let last = $last) {
-          {{ teacher.name }}
-          {{ last ? '' : ', ' }}
+          {{ teacher.name }}{{ last ? '' : ', ' }}
         }
       </div>
     }
     @if (record.metadata.description) {
-      <div id="collection-start-end-date" [innerHtml]="record.metadata.description | nl2br"></div>
+      <div [innerHtml]="record.metadata.description | nl2br"></div>
     }
-    {{ record.metadata.start_date | dateTranslate: 'mediumDate' }}
-    - {{ record.metadata.end_date | dateTranslate: 'mediumDate' }}
+    <div>
+      {{ record.metadata.start_date | dateTranslate: 'mediumDate' }}
+      - {{ record.metadata.end_date | dateTranslate: 'mediumDate' }}
+    </div>
   </div>
 }

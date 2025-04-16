@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,16 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 import { PatronProfileRequestComponent } from './patron-profile-request.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PatronProfileRequestComponent', () => {
   let component: PatronProfileRequestComponent;
@@ -48,17 +48,18 @@ describe('PatronProfileRequestComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [PatronProfileRequestComponent],
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [TranslateModule.forRoot(),
-        SharedModule],
-    providers: [
+      declarations: [PatronProfileRequestComponent],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [
+        TranslateModule.forRoot(),
+        SharedModule
+      ],
+      providers: [
         { provide: UserApiService, useValue: userApiServiceSpy },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
-    .compileComponents();
+      ]
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -99,8 +100,8 @@ describe('PatronProfileRequestComponent', () => {
     component.record = record;
     fixture.detectChanges();
     const div = fixture.nativeElement.querySelectorAll('div')[2];
-    expect(div.textContent).toContain('waiting (position {{ rank }} in waiting list)');
-    const button = fixture.nativeElement.querySelector('button#request-cancel-1');
+    expect(div.textContent).toContain('(position {{ rank }} in waiting list)');
+    const button = fixture.nativeElement.querySelector('.p-button-label');
     expect(button.textContent).toContain('Cancel');
   });
 });

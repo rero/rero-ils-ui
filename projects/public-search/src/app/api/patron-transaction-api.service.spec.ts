@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { PatronTransactionApiService } from './patron-transaction-api.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('PatronTranslationApiService', () => {
@@ -68,8 +68,7 @@ describe('PatronTranslationApiService', () => {
   });
 
   it('should load the fees', () => {
-    service.getFees('1', 'open', 1).subscribe((response: any) => {
-      expect(response).toEqual(apiResponse);
-    });
+    service.getFees('1', 'open', 1)
+      .subscribe((response: any) => expect(response).toEqual(apiResponse));
   });
 });

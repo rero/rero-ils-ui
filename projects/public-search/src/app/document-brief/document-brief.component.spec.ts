@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,45 +15,62 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
-import { AppRoutingModule } from '../app-routing.module';
-import { ErrorPageComponent } from '../error/error-page.component';
-import { MainComponent } from '../main/main.component';
 import { DocumentBriefComponent } from './document-brief.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 describe('DocumentBriefComponent', () => {
   let component: DocumentBriefComponent;
   let fixture: ComponentFixture<DocumentBriefComponent>;
 
+  const record = {
+    metadata: {
+      type: [
+        { main_type: 'main' }
+      ],
+      title: [
+        { type: 'bf:Title', _text: 'Document title' }
+      ]
+    }
+  };
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [
-        DocumentBriefComponent,
-        MainComponent,
-        ErrorPageComponent
-    ],
-    imports: [RecordModule,
+      declarations: [
+          DocumentBriefComponent
+      ],
+      imports: [
+        RecordModule,
         TranslateModule.forRoot(),
-        AppRoutingModule,
-        SharedModule],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-})
-    .compileComponents();
+        SharedModule
+      ],
+      providers: [
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentBriefComponent);
     component = fixture.componentInstance;
+    component.detailUrl = { link: '/foo', external: false };
+    component.viewcode = 'global';
+    component.record = record
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should contain the information in the document', () => {
+    const title = fixture.nativeElement.querySelector('h4');
+    expect(title.textContent).toEqual('Document title');
   });
 });

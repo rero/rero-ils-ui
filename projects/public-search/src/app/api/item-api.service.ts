@@ -21,8 +21,8 @@ import { Record, RecordService } from '@rero/ng-core';
 import { BaseApi, IAvailability, IAvailabilityService, IssueItemStatus } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { QueryResponse } from '../record';
 import { AppConfigService } from '../app-config.service';
+import { QueryResponse } from '../record';
 
 @Injectable({
   providedIn: 'root'

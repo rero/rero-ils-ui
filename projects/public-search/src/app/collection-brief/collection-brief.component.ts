@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,12 +25,9 @@ import { ResultItem } from '@rero/ng-core';
 })
 export class CollectionBriefComponent implements ResultItem {
 
-  @Input()
-  record: any;
+  @Input() record: any;
 
-  @Input()
-  type: string;
+  @Input() type: string;
 
-  @Input()
-  detailUrl: { link: string, external: boolean };
+  @Input() detailUrl: { link: string, external: boolean };
 }
