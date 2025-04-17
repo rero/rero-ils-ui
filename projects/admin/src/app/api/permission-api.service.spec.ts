@@ -39,9 +39,11 @@ describe('PermissionService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      providers: [
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
+    });
     service = TestBed.inject(PermissionApiService);
     client = TestBed.inject(HttpClient);
   });

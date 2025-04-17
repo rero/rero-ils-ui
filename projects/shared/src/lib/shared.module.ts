@@ -20,7 +20,6 @@ import { NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CoreModule, Nl2brPipe, RecordModule } from '@rero/ng-core';
-import { ContributionComponent } from '../public-api';
 import { ActionButtonComponent } from './component/action-button/action-button.component';
 import { BriefViewComponent } from './component/core/brief-view/brief-view.component';
 import { DocumentBriefViewComponent } from './component/documents/document-brief-view/document-brief-view.component';
@@ -50,6 +49,7 @@ import { IdAttributePipe } from './pipe/id-attribute.pipe';
 import { IdentifiedByLabelPipe } from './pipe/identifiedby-label.pipe';
 import { ItemHoldingsCallNumberPipe } from './pipe/item-holdings-call-number.pipe';
 import { JoinPipe } from './pipe/join.pipe';
+import { JournalVolumePipe } from './pipe/journal-volume.pipe';
 import { KeyExistsPipe } from './pipe/key-exists.pipe';
 import { MainTitleRelationPipe } from './pipe/main-title-relation.pipe';
 import { MainTitlePipe } from './pipe/main-title.pipe';
@@ -60,10 +60,10 @@ import { SafeUrlPipe } from './pipe/safe-url.pipe';
 import { UrlActivePipe } from './pipe/url-active.pipe';
 import { AvailabilityComponent } from './view/availability/availability.component';
 import { PartOfComponent } from './view/brief/part-of/part-of.component';
+import { ContributionComponent } from './view/contribution/contribution.component';
 import { EntityLinkComponent } from './view/entity-link.component';
 import { InheritedCallNumberComponent } from './view/inherited-call-number/inherited-call-number.component';
 import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
-import { JournalVolumePipe } from './pipe/journal-volume.pipe';
 
 @NgModule({
   declarations: [

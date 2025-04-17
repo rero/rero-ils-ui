@@ -20,7 +20,7 @@ import { ApiService, RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { User } from '@rero/shared';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { Item } from '../classes/items';
 import { Loan, LoanOverduePreview, LoanState } from '../classes/loans';
 
@@ -105,7 +105,7 @@ export class PatronService {
     const url = `${itemApiUrl}/loans/${patronPid}?sort=${sort}`;
     return this.httpClient.get<any>(url).pipe(
       map(data => data.hits),
-      map(hits => this.recordService.totalHits(hits.total === 0) ? [] : hits.hits),
+      map(hits => this.recordService.totalHits(hits.total)  === 0 ? [] : hits.hits),
       map(hits => hits.map((data: any) => this._buildItem(data)))
     );
   }

@@ -36,13 +36,15 @@ describe('BucketNameService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [TranslateModule.forRoot({
-            loader: { provide: TranslateLoader, useClass: TranslateFakeLoader }
-        })],
+    imports: [
+      TranslateModule.forRoot({
+        loader: { provide: TranslateLoader, useClass: TranslateFakeLoader }
+      })
+    ],
     providers: [
-        { provide: OrganisationApiService, useValue: organisationApiServiceSpy },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
+      { provide: OrganisationApiService, useValue: organisationApiServiceSpy },
+      provideHttpClient(withInterceptorsFromDi()),
+      provideHttpClientTesting()
     ]
 });
     service = TestBed.inject(BucketNameService);

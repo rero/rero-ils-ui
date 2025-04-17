@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -45,9 +45,36 @@ export interface IAcqAccount extends IAcqBaseResource {
   expenditure_exceedance?: IExceedance;
   encumbrance_amount: IAccountingAmount;
   expenditure_amount: IAccountingAmount;
-  remaining_balance: IAccountingAmount;
+  remaining_balance?: IAccountingAmount;
   distribution: number;
   budget: IObjectReference;
   parent: IObjectReference;
   number_of_children?: number;
 }
+
+
+/** Default values */
+const exceedanceDefaultData = {
+  amount: 0,
+  value: 0
+};
+
+const allocatedAmountDefaultData = {
+  self: 0,
+  children: 0,
+  total: 0
+};
+
+export const accountDefaultData = {
+  name: '',
+  number: '',
+  depth: 0,
+  is_active: false,
+  allocated_amount: 0,
+  distribution: 0,
+  encumbrance_exceedance: exceedanceDefaultData,
+  expenditure_exceedance: exceedanceDefaultData,
+  encumbrance_amount: allocatedAmountDefaultData,
+  expenditure_amount: allocatedAmountDefaultData,
+  remaining_balance: allocatedAmountDefaultData
+};

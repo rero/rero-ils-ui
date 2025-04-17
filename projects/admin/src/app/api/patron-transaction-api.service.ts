@@ -37,7 +37,7 @@ export class PatronTransactionApiService {
     return this.httpClient.post(this.apiService.getEndpointByType('patron_transactions/'), model);
   }
 
-  getActiveFeesByItemPid(itemPid: string): any {
+  getActiveFeesByItemPid(itemPid: string): Observable<any> {
     const query = `item.pid:${itemPid} AND total_amount:>0`;
     return this.recordService.getRecords('patron_transactions', query)
       .pipe(map((result: Record) => result.hits.hits));

@@ -140,7 +140,6 @@ describe('AppMenuUserComponent', () => {
   });
 
   it('should change the library menu', () => {
-    console.log(component.items.find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU).items[0]);
     expect(component.items.find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU).items[0].styleClass).toBeUndefined();
     libraryService.switch(librarySwitch);
     fixture.detectChanges();

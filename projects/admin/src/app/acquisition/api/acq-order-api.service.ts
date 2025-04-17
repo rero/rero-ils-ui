@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2019-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ import { Notification } from '../../classes/notification';
 import {
   AcqAddressRecipient,
   AcqOrderHistoryVersionResponseInterface,
-  AcqOrderLineStatus,
-  AcqOrderStatus,
   IAcqOrder,
-  IAcqOrderLine
+  IAcqOrderLine,
+  orderDefaultData,
+  orderLineDefaultData
 } from '../classes/order';
 
 @Injectable({
@@ -42,22 +42,6 @@ export class AcqOrderApiService extends BaseApi {
   private recordUiService: RecordUiService = inject(RecordUiService);
 
   // SERVICES ATTRIBUTES ======================================================
-  /** Default values */
-  public readonly orderDefaultData = {
-    priority: 0,
-    status: AcqOrderStatus.PENDING,
-    notes: []
-  };
-  public readonly orderLineDefaultData = {
-    status: AcqOrderLineStatus.APPROVED,
-    priority: 0,
-    quantity: 0,
-    received_quantity: 0,
-    amount: 0,
-    total_amount: 0,
-    notes: []
-  };
-
 
   /** Subject emitted when an order line is deleted. The order line pid will be emitted */
   private _deletedOrderLineSubject$: Subject<IAcqOrderLine> = new Subject();
@@ -74,7 +58,7 @@ export class AcqOrderApiService extends BaseApi {
    */
   getOrder(orderPid: string, resolve=0): Observable<IAcqOrder> {
     return this.recordService.getRecord('acq_orders', orderPid, resolve, BaseApi.reroJsonheaders).pipe(
-        map(data => ({...this.orderDefaultData, ...data.metadata}) )
+        map(data => ({...orderDefaultData, ...data.metadata}) )
       );
   }
 
@@ -99,7 +83,7 @@ export class AcqOrderApiService extends BaseApi {
     );
   }
 
-  getOrderHistory(orderPid: string) {
+  getOrderHistory(orderPid: string): Observable<AcqOrderHistoryVersionResponseInterface[]> {
     const apiUrl = `/api/acq_order/${orderPid}/history`;
     return this.httpClient
         .get<AcqOrderHistoryVersionResponseInterface[]>(apiUrl);
@@ -120,7 +104,7 @@ export class AcqOrderApiService extends BaseApi {
       .getRecords('acq_order_lines', query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, 'priority')
       .pipe(
         map((result: Record) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-        map((hits: any[]) => hits.map(hit => ({...this.orderDefaultData, ...hit.metadata}) ))
+        map((hits: any[]) => hits.map(hit => ({...orderLineDefaultData, ...hit.metadata})))
       );
   }
 

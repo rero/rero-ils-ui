@@ -498,3 +498,49 @@ export const testUserLibrarianWithSettings = {
   username: 'simonetta',
   permissions: testPermissions
 };
+
+export const testPatron = {
+  metadata: {
+    $schema: 'https://bib.rero.ch/schemas/patrons/patron-v0.0.1.json',
+    birth_date: '1974-03-21',
+    city: 'Fribourg',
+    email: 'john@doe.com',
+    first_name: 'John',
+    home_phone: '+41261234567',
+    keep_history: true,
+    last_name: 'Doe',
+    organisation: {
+      pid: '1'
+    },
+    patron: {
+      barcode: ['2050124312'],
+      communication_channel: 'email',
+      communication_language: 'fre',
+      expiration_date: '2100-01-01',
+      subscriptions: [
+        {
+          end_date: '2026-02-20',
+          patron_transaction: {
+            pid: '3',
+            type: 'pttr'
+          },
+          patron_type: {
+            pid: '1',
+            type: 'ptty'
+          },
+          start_date: '2025-02-20'
+        }
+      ],
+      type: {
+        pid: '1',
+        type: 'ptty'
+      },
+    },
+    pid: '1',
+    postal_code: '1920',
+    roles: ['patron'],
+    street: 'Av. de la Gare',
+    user_id: 14,
+    username: 'john.doe'
+  }
+}

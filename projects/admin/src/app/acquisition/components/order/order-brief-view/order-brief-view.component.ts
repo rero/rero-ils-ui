@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ResultItem } from '@rero/ng-core';
-import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqNoteType } from '../../../classes/common';
-import { AcqOrderStatus, IAcqOrder } from '../../../classes/order';
+import { AcqOrderStatus, IAcqOrder, orderDefaultData } from '../../../classes/order';
 
 @Component({
     selector: 'admin-acquisition-order-brief-view',
@@ -28,8 +27,6 @@ import { AcqOrderStatus, IAcqOrder } from '../../../classes/order';
     standalone: false
 })
 export class OrderBriefViewComponent implements ResultItem, OnInit {
-
-  private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** the record to display */
@@ -74,7 +71,7 @@ export class OrderBriefViewComponent implements ResultItem, OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    const metadata = {...this.acqOrderApiService.orderDefaultData, ...this.record.metadata};
+    const metadata = {...orderDefaultData, ...this.record.metadata};
     // FILTERS NOTES ::
     //   the notes fields from AcqOrder ES index contains all notes from all related resources.
     //   We only need to keep the notes from itself.
