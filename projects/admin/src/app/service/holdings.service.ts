@@ -111,7 +111,7 @@ export class HoldingsService {
    * @param itemPid: the item pid to be requested
    * @return an observable on the API call response
    */
-   getPickupLocations(holdingPid): Observable<any> {
+   getPickupLocations(holdingPid: string): Observable<any> {
     const url = `/api/holding/${holdingPid}/pickup_locations`;
     return this.httpClient.get<any>(url).pipe(
       map(data => data.locations),

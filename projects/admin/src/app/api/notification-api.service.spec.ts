@@ -54,16 +54,13 @@ describe('NotificationApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [
-        { provide: RecordService, useValue: recordServiceSpy },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-});
+      providers: [
+          { provide: RecordService, useValue: recordServiceSpy },
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
+      ]
+    });
     service = TestBed.inject(NotificationApiService);
-
-
   });
 
   it('should be created', () => {

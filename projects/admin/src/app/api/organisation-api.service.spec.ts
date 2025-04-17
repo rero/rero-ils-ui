@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -36,13 +36,15 @@ describe('OrganisationApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [TranslateModule.forRoot()],
-    providers: [
-        { provide: RecordService, useValue: recordServiceSpy },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-});
+      imports: [
+        TranslateModule.forRoot()
+      ],
+      providers: [
+          { provide: RecordService, useValue: recordServiceSpy },
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
+      ]
+    });
     service = TestBed.inject(OrganisationApiService);
   });
 
@@ -52,7 +54,7 @@ describe('OrganisationApiService', () => {
 
   it('should return the organization\'s data', () => {
     service.getByPid('1').subscribe((data: any) => {
-      expect(data.name).toEqual(response.metadata.name);
+      expect(data).toEqual(response.metadata);
     });
 
   });

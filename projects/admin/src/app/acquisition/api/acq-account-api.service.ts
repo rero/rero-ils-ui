@@ -22,7 +22,7 @@ import { Record, RecordService } from '@rero/ng-core';
 import { Error } from '@rero/ng-core/lib/error/error';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { IAcqAccount } from '../classes/account';
+import { accountDefaultData, IAcqAccount } from '../classes/account';
 
 @Injectable({
   providedIn: 'root'
@@ -36,30 +36,6 @@ export class AcqAccountApiService {
   /** The resource name of acquisition account */
   resourceName = 'acq_accounts';
 
-  /** Default values */
-  public readonly exceedanceDefaultData = {
-    amount: 0,
-    value: 0
-  };
-  public readonly allocatedAmountDefaultData = {
-    self: 0,
-    children: 0,
-    total: 0
-  };
-  public readonly accountDefaultData = {
-    name: '',
-    number: '',
-    depth: 0,
-    is_active: false,
-    allocated_amount: 0,
-    distribution: 0,
-    encumbrance_exceedance: this.exceedanceDefaultData,
-    expenditure_exceedance: this.exceedanceDefaultData,
-    encumbrance_amount: this.allocatedAmountDefaultData,
-    expenditure_amount: this.allocatedAmountDefaultData,
-    remaining_balance: this.allocatedAmountDefaultData
-  };
-
   // SERVICES FUNCTIONS =======================================================
 
   /**
@@ -72,7 +48,7 @@ export class AcqAccountApiService {
       .getRecords(this.resourceName, `pid:${accountPid}`, 1, 1)
       .pipe(
         map((result: Record) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-        map((hits: any[]) => hits.map((hit: any) => ({...this.accountDefaultData, ...hit.metadata}) )),
+        map((hits: any[]) => hits.map((hit: any) => ({...accountDefaultData, ...hit.metadata}) )),
         map((hits: IAcqAccount[]) => hits.find(Boolean))  // Get first element of array if exists
       );
   }
@@ -99,7 +75,7 @@ export class AcqAccountApiService {
       .getRecords(this.resourceName, query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, {'Accept': 'application/rero+json'}, options.sort)
       .pipe(
         map((result: Record) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-        map((hits: any[]) => hits.map(hit => ({...this.accountDefaultData, ...hit.metadata}) ))
+        map((hits: any[]) => hits.map(hit => ({...accountDefaultData, ...hit.metadata}) ))
       );
   }
 

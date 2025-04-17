@@ -48,7 +48,7 @@ export class ItemsService {
    * @param libraryPid - string
    * @return Observable<any>
    */
-  getRequestedLoans(libraryPid): Observable<any> {
+  getRequestedLoans(libraryPid: string): Observable<any> {
     const itemApiUrl = this.apiService.getEndpointByType('item');
     const url = `${itemApiUrl}/requested_loans/${libraryPid}`;
     return this.httpClient.get<any>(url).pipe(
@@ -268,7 +268,7 @@ export class ItemsService {
     if (type === 'warning') {
       if (item.actionDone && item.actionDone === ItemAction.checkin) {
         return item.status === ItemStatus.IN_TRANSIT
-            || (item.pending_loans && item.pending_loans.length > 0)
+            || (item.pending_loans?.length > 0)
             || item.getNote(ItemNoteType.CHECKIN) != null;
       }
       if (item.actionDone && item.actionDone === ItemAction.checkout) {

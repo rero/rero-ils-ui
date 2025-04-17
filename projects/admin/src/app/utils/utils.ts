@@ -19,9 +19,10 @@
 import { ILLRequestStatus } from "../classes/ill-request";
 import { LoanState } from "../classes/loans";
 
-/** Convert a level string to boostrap level
- *  @param level - string: the level string to convert
- *  @return the severity of message (info by default)
+/**
+ * Convert a level string to primeng level
+ * @param level - string: the level string to convert
+ * @return the severity of message (info by default)
  */
 export function getSeverity(level: string) {
   switch (level) {

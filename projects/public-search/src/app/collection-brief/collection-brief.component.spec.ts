@@ -76,7 +76,6 @@ describe('CollectionBriefComponent', () => {
     const title = fixture.nativeElement.querySelector('h4');
     expect(title.textContent).toContain('Collection title (C01)');
     const div = fixture.nativeElement.querySelectorAll('div > div');
-    console.log(div[1].textContent);
     expect(div[1].textContent).toContain('Teacher name 2');
     expect(div[2].textContent).toContain('description of the collection');
     expect(div[3].textContent).toContain('1 Jan 2025 - 31 Mar 2025');

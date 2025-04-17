@@ -15,7 +15,6 @@
  * along with this program.  If not, see <httpClient://www.gnu.org/licenses/>.
  */
 
-
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';

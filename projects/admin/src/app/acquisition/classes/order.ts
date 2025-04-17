@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2023 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -59,6 +59,13 @@ export interface IAcqOrder extends IAcqBaseResource, IAcqResourceWithNotes {
   is_current_budget: boolean;
 }
 
+/** Default values */
+export const orderDefaultData = {
+  priority: 0,
+  status: AcqOrderStatus.PENDING,
+  notes: []
+};
+
 // ORDER LINES ================================================================
 /** Enumeration about order line status */
 export enum AcqOrderLineStatus {
@@ -87,6 +94,16 @@ export interface IAcqOrderLine extends IAcqBaseResource, IAcqResourceWithNotes {
   };
 }
 
+/** Default values */
+export const orderLineDefaultData = {
+  status: AcqOrderLineStatus.APPROVED,
+  priority: 0,
+  quantity: 0,
+  received_quantity: 0,
+  amount: 0,
+  total_amount: 0,
+  notes: []
+};
 
 // ORDER HISTORY ==============================================================
 export interface AcqOrderHistoryVersionResponseInterface {
@@ -115,3 +132,7 @@ export class AcqOrderHistoryVersion {
     this.pid = extractIdOnRef(obj.$ref);
   }
 }
+
+
+
+

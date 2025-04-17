@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 export * from './lib/api/base-api';
+export * from './lib/api/operation-logs-api.service';
 export * from './lib/api/user-api.service';
 export * from './lib/class/core';
 export * from './lib/class/entity';
@@ -25,27 +26,32 @@ export * from './lib/component/action-button/action-button.component';
 export * from './lib/component/core/brief-view/brief-view.component';
 export * from './lib/component/documents/document-brief-view/document-brief-view.component';
 export * from './lib/component/documents/document-description/document-description.component';
+export * from './lib/component/documents/document-description/other-edition/other-edition.component';
 export * from './lib/component/documents/files/files.component';
 export * from './lib/component/entities/entity-brief-view/entity-brief-view.component';
 export * from './lib/component/open-close-button.component';
+export * from './lib/component/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
+export * from './lib/component/operation-logs/operation-logs.component';
 export * from './lib/component/remote-search/remote-search.component';
 export * from './lib/directive/link-permissions.directive';
-export * from './lib/directive/no-content.directive';
 export * from './lib/directive/permissions.directive';
 export * from './lib/directive/rero-template.directive';
 export * from './lib/interface/i-availability';
 export * from './lib/modules/prime-ng-import/prime-ng-import.module';
 export * from './lib/paginator/paginator';
 export * from './lib/paginator/show-more-pager/show-more-pager.component';
+export * from './lib/pipe/array-translate.pipe';
+export * from './lib/pipe/document-provision-activity.pipe';
 export * from './lib/pipe/entity-label.pipe';
 export * from './lib/pipe/extract-source-field.pipe';
 export * from './lib/pipe/get-translated-label.pipe';
 export * from './lib/pipe/id-attribute.pipe';
 export * from './lib/pipe/identifiedby-label.pipe';
-export * from './lib/pipe/is-array.pipe';
 export * from './lib/pipe/item-holdings-call-number.pipe';
 export * from './lib/pipe/join.pipe';
+export * from './lib/pipe/journal-volume.pipe';
 export * from './lib/pipe/key-exists.pipe';
+export * from './lib/pipe/main-title-relation.pipe';
 export * from './lib/pipe/main-title.pipe';
 export * from './lib/pipe/notes-filter.pipe';
 export * from './lib/pipe/patron-blocked-message.pipe';
@@ -54,6 +60,7 @@ export * from './lib/pipe/safe-url.pipe';
 export * from './lib/pipe/url-active.pipe';
 export * from './lib/service/app-settings.service';
 export * from './lib/service/i-availability.service';
+export * from './lib/service/operation-logs.service';
 export * from './lib/service/permissions.service';
 export * from './lib/service/user.service';
 export * from './lib/shared.module';
@@ -65,15 +72,10 @@ export * from './lib/view/contribution/contribution.component';
 export * from './lib/view/entity-link.component';
 export * from './lib/view/inherited-call-number/inherited-call-number.component';
 export * from './lib/view/thumbnail/thumbnail.component';
+export * from './tests/api';
+export * from './tests/circulation';
+export * from './tests/loan';
+export * from './tests/organisation';
+export * from './tests/permission';
 export * from './tests/user';
-export * from './lib/pipe/provision-activity.pipe';
-export * from './lib/pipe/main-title.pipe';
-export * from './lib/pipe/document-provision-activity.pipe';
-export * from './lib/pipe/array-translate.pipe';
-export * from './lib/component/documents/document-description/other-edition/other-edition.component';
-export * from './lib/component/operation-logs/operation-logs.component';
-export * from './lib/component/operation-logs/operation-logs-dialog/operation-logs-dialog.component';
-export * from './lib/service/operation-logs.service';
-export * from './lib/api/operation-logs-api.service';
-export * from './lib/pipe/main-title-relation.pipe';
 

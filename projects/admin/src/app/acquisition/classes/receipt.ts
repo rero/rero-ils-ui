@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -54,3 +54,17 @@ export interface IAcqReceiptLine extends IAcqBaseResource, IAcqResourceWithNotes
     identifiers?: string[]
   }
 }
+
+/** Default value for an AcqReceipt */
+export const receiptDefaultData = {
+  amount_adjustments: [],
+  quantity: 0,
+  total_amount: 0,
+  receipt_lines: [],
+  notes: []
+};
+export const receiptLineDefaultData = {
+  quantity: 0,
+  amount: 0,
+  notes: []
+};
