@@ -55,7 +55,6 @@ import { MenuUserComponent } from './menu/menu-user/menu-user.component';
 import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
 import { ItemInCollectionPipe } from './pipe/item-in-collection.pipe';
 import { MarcPipe } from './pipe/marc.pipe';
-import { NotesFormatPipe } from './pipe/notes-format.pipe';
 import { PatronNamePipe } from './pipe/patron-name.pipe';
 import { CircPoliciesBriefViewComponent } from './record/brief-view/circ-policies-brief-view.component';
 import { CollectionBriefViewComponent } from './record/brief-view/collection-brief-view.component';
@@ -233,7 +232,6 @@ import { RemoteAutocompleteService as UiRemoteAutocompleteService } from './reco
     SerialHoldingDetailViewComponent,
     HoldingDetailViewComponent,
     DefaultHoldingItemComponent,
-    NotesFormatPipe,
     MarcPipe,
     TemplatesBriefViewComponent,
     TemplateDetailViewComponent,

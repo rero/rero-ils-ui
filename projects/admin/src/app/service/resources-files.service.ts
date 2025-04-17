@@ -27,7 +27,6 @@ import { BehaviorSubject, Observable, map, of, switchMap, tap } from 'rxjs';
 export class ResourcesFilesService {
 
   private httpService: HttpClient = inject(HttpClient);
-  private recordService: RecordService = inject(RecordService);
   private apiService: ApiService = inject(ApiService);
   private userService: UserService = inject(UserService);
 
@@ -57,29 +56,27 @@ export class ResourcesFilesService {
    * @param pid
    * @returns
    */
-  getParentRecord(pid: string): Observable<Record> {
+  getParentRecord(pid: string): Observable<any> {
     // get the current library pid
     const libPid = this.userService.user.currentLibrary;
     // retrieve the file record attached to the document and the current library
     return this.httpService
       .get(`${this.baseUrl}?q=metadata.document.pid:${pid} AND metadata.library.pid:${libPid}`)
       .pipe(
-        map((result: Record) => {
-          const total = this.recordService.totalHits(result.hits.total);
+        map((result: parentRecord) => {
+          const { total } = result.hits;
           if (total > 1) {
             throw new Error('More than one parent record.');
           }
           return total === 0 ? null : result.hits.hits[0];
         }),
-        map((esResult: Record) => {
+        map((esResult: any) => {
           if (esResult == null) {
             return esResult;
           }
-          const metadata = esResult['metadata'];
-          const docPid = metadata['document']['pid'];
-          metadata['document'] = { $ref: this.apiService.getRefEndpoint('documents', docPid) };
-          const libPid = metadata['library']['pid'];
-          metadata['library'] = { $ref: this.apiService.getRefEndpoint('libraries', libPid) };
+          const { metadata } = esResult;
+          metadata.document = { $ref: this.apiService.getRefEndpoint('documents', metadata.document.pid) };
+          metadata.library = { $ref: this.apiService.getRefEndpoint('libraries', metadata.library.pid) };
           return esResult;
         }),
         tap((record) => this.currentParentRecord.next(record))
@@ -108,7 +105,7 @@ export class ResourcesFilesService {
           library: { $ref: this.apiService.getRefEndpoint('libraries', libPid) },
         },
       })
-      .pipe(tap((record) => this.currentParentRecord.next(record))) as Observable<Record>;
+      .pipe(tap((record) => this.currentParentRecord.next(record))) as Observable<any>;
   }
 
   /**
@@ -119,8 +116,8 @@ export class ResourcesFilesService {
    * @param metadata new metadata
    * @returns the modified record
    */
-  updateParentRecordMetadata(pid: string, metadata: any): Observable<Record> {
-    return this.httpService.put(`${this.baseUrl}/${pid}`, metadata) as Observable<Record>;
+  updateParentRecordMetadata(pid: string, metadata: any): Observable<any> {
+    return this.httpService.put(`${this.baseUrl}/${pid}`, metadata) as Observable<any>;
   }
 
   /**
@@ -243,4 +240,13 @@ export class ResourcesFilesService {
   updateMetadata(parentRecordId: string, fileKey: string, data: any): Observable<any> {
     return this.httpService.put(`${this.baseUrl}/${parentRecordId}/files/${fileKey}`, data);
   }
+}
+
+export type parentRecord = {
+  hits: {
+    hits: any[];
+    total: number;
+  };
+  sortBy: string;
+  links: any;
 }

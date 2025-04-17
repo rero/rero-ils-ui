@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  * Copyright (C) 2020 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ export class DateValidators {
         ? null
         : {
           'minimum-date': {
-            'date-minimum': DateTime.fromISO(validationDate).toFormat(dateFormat),
+            'date-minimum': DateTime.fromJSDate(minDate).toFormat(dateFormat),
             actual: date.toFormat(dateFormat)
           }
         };

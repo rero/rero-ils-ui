@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -49,6 +49,7 @@ export class MarcPipe implements PipeTransform {
       for (const f of subFields) {
         subFieldsStr += `$${f[0]} ${f[1]} `;
       }
+      subFieldsStr = subFieldsStr.trim();
     }
     values.value = subFieldsStr;
     return values;

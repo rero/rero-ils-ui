@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,9 +19,8 @@ import { inject, Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { IAcqAccount } from '../classes/account';
+import { accountDefaultData, IAcqAccount } from '../classes/account';
 import { AcqBudget } from '../classes/budget';
-import { AcqAccountApiService } from './acq-account-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +28,6 @@ import { AcqAccountApiService } from './acq-account-api.service';
 export class AcqBudgetApiService {
 
   private recordService: RecordService = inject(RecordService);
-  private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
 
   /** The resource name of acquisition budget */
   resourceName = 'budgets';
@@ -58,7 +56,7 @@ export class AcqBudgetApiService {
       .getRecords('acq_accounts', `budget.pid:${budgetPid} AND depth:0`, 1, RecordService.MAX_REST_RESULTS_SIZE)
       .pipe(
         map((result: Record) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-        map((hits: any[]) => hits.map((hit: any) => ({...this.acqAccountApiService.accountDefaultData, ...hit.metadata}) )),
+        map((hits: any[]) => hits.map((hit: any) => ({...accountDefaultData, ...hit.metadata}) )),
         map((accounts: IAcqAccount[]) => accounts.reduce((total, acc) => total + acc.allocated_amount, 0))
       );
   }

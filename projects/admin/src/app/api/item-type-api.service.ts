@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,6 +16,7 @@
  */
 import { inject, Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -29,7 +30,7 @@ export class ItemTypeApiService {
    * Get All
    * @return Observable, array of records
    */
-  getAll() {
+  getAll(): Observable<any[]> {
     return this.recordService
       .getRecords('item_types', '', 1, RecordService.MAX_REST_RESULTS_SIZE)
       .pipe(map((response: Record) => response.hits.hits));

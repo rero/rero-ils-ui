@@ -18,7 +18,6 @@
 import { inject, Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

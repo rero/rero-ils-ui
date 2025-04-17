@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ import { Record, RecordService, RecordUiService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { IAcqReceipt, IAcqReceiptLine } from '../classes/receipt';
+import { IAcqReceipt, IAcqReceiptLine, receiptDefaultData, receiptLineDefaultData } from '../classes/receipt';
 import { AcqResponseReceiptLineStatus, ICreateLineMessage, IResponseReceiptLine } from '../components/receipt/receipt-form/order-receipt';
 
 @Injectable({
@@ -38,20 +38,6 @@ export class AcqReceiptApiService {
   // SERVICES ATTRIBUTES ======================================================
   /** The resource name for an acquisition receipt */
   readonly resourceName = 'acq_receipts';
-
-  /** Default value for an AcqReceipt */
-  public readonly receiptDefaultData = {
-    amount_adjustments: [],
-    quantity: 0,
-    total_amount: 0,
-    receipt_lines: [],
-    notes: []
-  };
-  public readonly receiptLineDefaultData = {
-    quantity: 0,
-    amount: 0,
-    notes: []
-  };
 
   /** default options to get records */
   private readonly _defaultRecordOptions = {
@@ -77,7 +63,7 @@ export class AcqReceiptApiService {
     return this.apiService
       .getRecord(this.resourceName, pid, 1, BaseApi.reroJsonheaders)
       .pipe(
-        map(data => ({...this.receiptDefaultData, ...data.metadata}) )
+        map(data => ({...receiptDefaultData, ...data.metadata}) )
       );
   }
 
@@ -96,7 +82,7 @@ export class AcqReceiptApiService {
       .getRecords(this.resourceName, query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, options.headers, options.sort)
       .pipe(
         map((result: Record) => this.apiService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-        map((hits: any[]) => hits.map(hit => ({...this.receiptDefaultData, ...hit.metadata}) ))
+        map((hits: any[]) => hits.map(hit => ({...receiptDefaultData, ...hit.metadata}) ))
       );
   }
 
@@ -121,7 +107,7 @@ export class AcqReceiptApiService {
                   undefined, undefined, BaseApi.reroJsonheaders, 'receipt_date')
       .pipe(
         map((result: Record) => this.apiService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-        map((hits: any[]) => hits.map(hit => ({...this.receiptLineDefaultData, ...hit.metadata}) ))
+        map((hits: any[]) => hits.map(hit => ({...receiptLineDefaultData, ...hit.metadata}) ))
       );
   }
 
@@ -135,7 +121,7 @@ export class AcqReceiptApiService {
     return this.apiService
       .create(this.resourceName, record)
       .pipe(
-        map((data: any) => ({...this.receiptDefaultData, ...data.metadata}) )
+        map((data: any) => ({...receiptDefaultData, ...data.metadata}) )
       );
   }
 
@@ -178,7 +164,7 @@ export class AcqReceiptApiService {
     return this.apiService
       .update(this.resourceName, receiptPid, record)
       .pipe(
-        map((response: any) => ({ ...this.receiptDefaultData, ...response.metadata}) )
+        map((response: any) => ({ ...receiptDefaultData, ...response.metadata}) )
       );
   }
 

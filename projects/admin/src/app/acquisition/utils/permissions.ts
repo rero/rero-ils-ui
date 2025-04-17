@@ -29,7 +29,7 @@ export class ReceivedOrderPermissionValidator {
    * @param permissions: the permissions related to the object.
    * @param order: the order to analyze.
    */
-  validate(permissions: RecordPermissions, order: IAcqOrder){
+  validate(permissions: RecordPermissions, order: IAcqOrder): RecordPermissions {
     setTimeout(() => {}, 0);
     if (order.status === AcqOrderStatus.RECEIVED) {
       permissions.create = {

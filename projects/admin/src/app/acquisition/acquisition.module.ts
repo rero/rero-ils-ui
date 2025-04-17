@@ -60,7 +60,6 @@ import { InputNoLabelWrapperComponent } from './formly/wrapper/input-no-label.wr
 import { AccountAvailableAmountPipe } from './pipes/account-available-amount.pipe';
 import { NegativeAmountPipe } from './pipes/negative-amount.pipe';
 import { NoteBadgeColorPipe } from './pipes/note-badge-color.pipe';
-import { PreviewContentPipe } from './pipes/preview-content.pipe';
 import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pipe';
 import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
 
@@ -87,7 +86,6 @@ import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
     OrderLinesComponent,
     OrderReceiptViewComponent,
     OrderSummaryComponent,
-    PreviewContentPipe,
     ReceiptLineTotalAmountPipe,
     ReceiptListComponent,
     ReceiptSummaryComponent,
