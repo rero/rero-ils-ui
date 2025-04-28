@@ -75,6 +75,7 @@ export class DocumentAdvancedSearchComponent implements OnInit, OnDestroy {
   /** Opening the advanced search dialog */
   openModalBox(): void {
     const ref: DynamicDialogRef = this.dialogService.open(DocumentAdvancedSearchFormComponent, {
+      modal: true,
       width: "60vw",
       closable: true,
       header: this.translateService.instant('Build advanced query'),

@@ -23,16 +23,16 @@ import { map } from 'rxjs/operators';
 @Component({
     selector: 'admin-error-page',
     template: `
-    <section class="ui:bg-white ui:dark:bg-gray-900">
+    <section class="ui:bg-white">
       <div class="ui:py-8 ui:px-4 ui:mx-auto ui:max-w-screen-xl ui:lg:py-16 ui:lg:px-6">
           <div class="ui:mx-auto ui:max-w-screen-sm ui:text-center">
-              <span class="ui:mb-4 ui:text-7xl ui:tracking-tight ui:font-extrabold ui:lg:text-8xl ui:text-primary-600 ui:dark:text-primary-500">
+              <span class="ui:mb-4 ui:text-7xl ui:tracking-tight ui:font-extrabold ui:lg:text-8xl ui:text-primary-600">
               {{ statusCode }}
               </span>
-              <p class="ui:mb-4 ui:text-3xl ui:tracking-tight ui:font-bold ui:text-gray-900 ui:md:text-4xl ui:dark:text-white">
+              <p class="ui:mb-4 ui:text-3xl ui:tracking-tight ui:font-bold ui:text-gray-900 ui:md:text-4xl">
                 {{ messages[statusCode].title }}
               </p>
-              <div class="ui:mb-4 ui:text-lg ui:font-light ui:text-gray-500 ui:dark:text-gray-400">
+              <div class="ui:mb-4 ui:text-lg ui:font-light ui:text-gray-500">
                 <ul class="ui:list-none">
                   @for (text of messages[statusCode].description || []; track text) {
                     <li>{{ text }}</li>

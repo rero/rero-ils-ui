@@ -21,7 +21,7 @@
     <p-scrollPanel class="ui:m-6 ui:w-full ui:max-h-[500px]">
     @for (transaction of transactions; track transaction) {
       <p-panel styleClass="ui:mb-2" [header]="transaction.type|translate">
-        <div>
+        <div class="ui:ml-4 ui:mb-2">
           @if (transaction.note) {
             <div class="ui:grid ui:grid-cols-12 ui:gap-4">
               <label class="ui:col-span-4" translate>Note</label>

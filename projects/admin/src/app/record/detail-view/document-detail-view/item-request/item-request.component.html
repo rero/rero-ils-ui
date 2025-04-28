@@ -18,7 +18,7 @@
   <div class="ui:flex ui:gap-2 ui:flex-col">
   @if (requestedBy$ | async; as requestedBy) {
     @if (requestedBy.length > 0) {
-      <div class="ui:flex ui:gap-2 ui:items-start">
+      <div class="ui:flex ui:gap-2 ui:my-1 ui:items-start">
         <p-message
           class="ui:grow"
           [text]="requestedBy.length < 2
@@ -36,7 +36,7 @@
     }
   }
   @if (patron) {
-    <p-card [header]="[patron.last_name, patron.first_name].join(', ')" styleClass="ui:bg-surface-100 ui:dark:bg-surface-700 ">
+    <p-card [header]="[patron.last_name, patron.first_name].join(', ')" styleClass="ui:bg-surface-100">
       <p class="ui:m-0">
         {{ patron.street }}<br>
         {{ patron.postal_code }} {{ patron.city }}<br>

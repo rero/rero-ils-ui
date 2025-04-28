@@ -36,13 +36,13 @@
         </p-button>
     }
   } @else {
-        <public-search-pickup-location
-          [record]="record"
-          [itemCount]="holdingsItemsCount"
-          recordType="{{ recordType }}"
-          [viewcode]="viewcode"
-          (closeEvent)="closeDialog()"
-          class="ui:w-full"
-        />
+    <public-search-pickup-location
+      [record]="record"
+      [itemCount]="holdingsItemsCount"
+      recordType="{{ recordType }}"
+      [viewcode]="viewcode"
+      (closeEvent)="closeDialog()"
+      class="ui:w-full"
+    />
   }
 }

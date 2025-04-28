@@ -164,6 +164,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   payAllTransactions(): void {
     this.dialogService.open(PatronTransactionEventFormComponent, {
       header: this.translateService.instant('Pay'),
+      modal: true,
       focusOnShow: false,
       width: '50vw',
       closable: true,
@@ -179,6 +180,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   payAllTransactionsInMyLibrary(): void {
     this.dialogService.open(PatronTransactionEventFormComponent, {
       header: this.translateService.instant('Pay for my library'),
+      modal: true,
       focusOnShow: false,
       width: '50vw',
       closable: true,
@@ -194,6 +196,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   addFee(): void {
     this.dynamicDialogRef = this.dialogService.open(PatronFeeComponent, {
       header: this.translateService.instant('New fee'),
+      modal: true,
       focusOnShow: false,
       width: '30vw',
       closable: true,

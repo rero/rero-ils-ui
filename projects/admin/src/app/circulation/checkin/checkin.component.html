@@ -25,12 +25,14 @@
       [disabled]="searchInputDisabled"
       (search)="searchValueUpdated($event)"
     />
-    <admin-circulation-patron-detailed
-      [patron]="patronInfo"
-      [barcode]="barcode"
-      [linkMode]="'circulation'"
-      [clearPatronButton]="false"
-    />
+    @if(patronInfo) {
+      <admin-circulation-patron-detailed
+        [patron]="patronInfo"
+        [barcode]="barcode"
+        [linkMode]="'circulation'"
+        [clearPatronButton]="false"
+      />
+    }
     <admin-circulation-items-list
       [checkedInItems]="items"
       (hasFeesEmitter)="hasFees($event)"

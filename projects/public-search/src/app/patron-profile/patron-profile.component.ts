@@ -19,7 +19,7 @@ import { Component, inject, model, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { IPatron, UserService } from '@rero/shared';
-import { forkJoin, Subscription } from 'rxjs';
+import { forkJoin, of, Subscription } from 'rxjs';
 import { IllRequestApiService } from '../api/ill-request-api.service';
 import { LoanApiService } from '../api/loan-api.service';
 import { OperationLogsApiService } from '../api/operation-logs-api.service';
@@ -33,6 +33,8 @@ interface Tab {
   feeTotal?: number | null;
   title: string;
   order: number;
+  tooltip?: string;
+  display: boolean;
 }
 
 interface Tabs {
@@ -81,33 +83,40 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
       feeTotal: 0,
       title: this.translateService.instant('Loans'),
       order: 0,
+      tooltip: this.translateService.instant('Fees to date'),
+      display: true
     },
     request: {
       loaded: false,
       count: 0,
       title: this.translateService.instant('Requests'),
       order: 1,
+      display: true
     },
     fee: {
       title: this.translateService.instant('Fees'),
       order: 2,
       feeTotal: 0,
+      display: true
     },
     illRequest: {
       loaded: false,
       count: 0,
       title: this.translateService.instant('Interlibrary loan'),
       order: 4,
+      display: true
     },
     history: {
       loaded: false,
       count: 0,
       title: this.translateService.instant('History'),
       order: 3,
+      display: true
     },
     personalDetails: {
       title: this.translateService.instant('Personal details'),
       order: 5,
+      display: true
     },
   };
 
@@ -152,13 +161,6 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
     }
     return null;
   }
-  /**
-   * Show or hide history tab
-   * @return string
-   */
-  get showHideHistory() {
-    return this.user.keep_history ? '' : 'd-none';
-  }
 
   /**
    * Current patron
@@ -183,13 +185,15 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
     );
     this.user = this.userService.user;
     if (this.user.isAuthenticated && this.user.isPatron) {
+      const keepHistory = this.user.keep_history === undefined ? false : this.user.keep_history;
+      this.tabs.history.display = keepHistory;
       this.subscription.add(
         this.patronProfileMenuService.onChange$.subscribe((menu: IMenu) => {
           this._patronPid = menu.value;
           const loanQuery = this.loanApiService.getOnLoan(this._patronPid, 1, 1, undefined);
           const requestQuery = this.loanApiService.getRequest(this._patronPid, 1, 1, undefined);
           const feeQuery = this.patronTransactionApiService.getFees(this._patronPid, 'open', 1, 1, undefined);
-          const historyQuery = this.operationLogsApiService.getHistory(this._patronPid, 1, 1);
+          const historyQuery = keepHistory ? this.operationLogsApiService.getHistory(this._patronPid, 1, 1) : of(undefined);
           const illRequestQuery = this.illRequestApiService.getPublicIllRequest(this._patronPid, 1, 1, undefined, '', {
             remove_archived: '1',
           });
@@ -206,8 +210,10 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
               this.tabs.loan.count = this.recordService.totalHits(loanResponse.hits.total);
               this.tabs.fee.feeTotal = feeResponse.aggregations.total.value;
               this.tabs.request.count = this.recordService.totalHits(requestResponse.hits.total);
-              this.tabs.history.count = this.recordService.totalHits(historyResponse.hits.total);
               this.tabs.illRequest.count = this.recordService.totalHits(illRequestResponse.hits.total);
+              if (historyQuery) {
+                this.tabs.history.count = this.recordService.totalHits(historyResponse.hits.total);
+              }
             }
           );
         })
@@ -216,14 +222,16 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
       this.subscription.add(
         this.patronProfileService.cancelRequestEvent$.subscribe(() => {
           this.tabs.request.count--;
-          this.tabs.history.loaded = false;
-          this.operationLogsApiService.getHistory(this._patronPid, 1, 1).subscribe((historyResponse: Record) => {
-            this.tabs.history = {
-              ...this.tabs.history,
-              loaded: false,
-              count: this.recordService.totalHits(historyResponse.hits.total),
-            };
-          });
+          if (keepHistory) {
+            this.tabs.history.loaded = false;
+            this.operationLogsApiService.getHistory(this._patronPid, 1, 1).subscribe((historyResponse: Record) => {
+              this.tabs.history = {
+                ...this.tabs.history,
+                loaded: false,
+                count: this.recordService.totalHits(historyResponse.hits.total),
+              };
+            });
+          }
         })
       );
       this.patronProfileMenuService.change(this._currentPatronPid(this.viewcode));

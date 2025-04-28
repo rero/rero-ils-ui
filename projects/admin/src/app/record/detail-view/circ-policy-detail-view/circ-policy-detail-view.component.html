@@ -134,7 +134,7 @@
                 <td>{{ reminder.communication_channel | translate }}</td>
                 <td>
                   @if (reminder.fee_amount) {
-                    {{ reminder.fee_amount | currency: org_currency:true }}
+                    {{ reminder.fee_amount | currency: org_currency }}
                   } @else {
                     &mdash;
                   }
@@ -169,7 +169,7 @@
                   }
                 </td>
                 <td>
-                  {{ overdue.fee_amount | currency: org_currency:true }} / {{ 'day' | translate }}
+                  {{ overdue.fee_amount | currency: org_currency }} / {{ 'day' | translate }}
                 </td>
               </tr>
             </ng-template>

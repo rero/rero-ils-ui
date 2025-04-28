@@ -31,7 +31,7 @@
           <div class="ui:grow">
             <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
           </div>
-          @for (note of getCirculationNoteForAction(); track note) {
+          @if (getCirculationNoteForAction().length > 0) {
             <i class="fa fa-sticky-note-o text-warning" [title]="'Note' | translate"></i>
           }
         </div>

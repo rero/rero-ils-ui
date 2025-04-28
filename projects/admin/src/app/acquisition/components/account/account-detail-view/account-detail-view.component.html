@@ -97,7 +97,7 @@
               {{ account.expenditure_amount.children | negativeAmount | currency: organisation.default_currency }}
             </td>
           </tr>
-          <tr class="ui:bg-surface-100 ui:dark:bg-surface-700">
+          <tr class="ui:bg-surface-100">
             <td colspan="2" class="ui:font-bold" translate>Balance</td>
             <td colspan="2" class="ui:text-right" [ngClass]="{
                 'text-success': account.remaining_balance.self > 0,

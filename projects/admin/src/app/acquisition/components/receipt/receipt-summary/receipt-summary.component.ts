@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input, OnInit } from '@angular/core';
+import { AcqOrderStatus } from '@app/admin/acquisition/classes/order';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
@@ -24,8 +25,6 @@ import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { IAcqReceipt } from '../../../classes/receipt';
 import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
-import { AcqOrderStatus } from '@app/admin/acquisition/classes/order';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-receipt-summary',
@@ -35,7 +34,6 @@ import { TranslateService } from '@ngx-translate/core';
 export class ReceiptSummaryComponent implements OnInit {
 
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
-  private translateService: TranslateService = inject(TranslateService);
   private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
   private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
   private currentLibraryPermissionValidator: CurrentLibraryPermissionValidator = inject(CurrentLibraryPermissionValidator);
@@ -67,20 +65,6 @@ export class ReceiptSummaryComponent implements OnInit {
       ? this.recordPermissionService.generateDeleteMessage(this.recordPermissions.delete.reasons)
       : '';
   }
-  get editInfoMessage(): string {
-    var msg = '';
-    if (!this.validStatuses.some((key: string) => key === this.order.status)) {
-      msg = this.translateService.instant('The order status should be ordered or partially received.');
-    }
-    return (!this.recordPermissions.update.can)
-      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.update.reasons, 'update')
-      : msg;
-  }
-
-  get canEdit(): boolean {
-    return this.recordPermissions.update.can && this.validStatuses.some((key: string) => key === this.order.status);
-  }
-
   /** OnInit hook */
   ngOnInit(): void {
     if (!this.collapsable){

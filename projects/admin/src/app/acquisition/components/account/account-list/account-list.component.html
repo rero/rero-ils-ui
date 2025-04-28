@@ -67,7 +67,7 @@
       <tr>
           <td class="ui:min-w-75 ui:max-w-75 ui:truncate">
               <p-treeTableToggler [rowNode]="rowNode" />
-              <a class="ui:dark:text-white" [title]="rowData.name +' ('+rowData.number+')'" [routerLink]="['/acquisition', 'records', 'acq_accounts', 'detail', rowData.pid]">{{ rowData.name }}</a>
+              <a [title]="rowData.name +' ('+rowData.number+')'" [routerLink]="['/acquisition', 'records', 'acq_accounts', 'detail', rowData.pid]">{{ rowData.name }}</a>
           </td>
           <td class="ui:!text-right">
             {{ rowData.allocated_amount | currency: organisation.default_currency }}

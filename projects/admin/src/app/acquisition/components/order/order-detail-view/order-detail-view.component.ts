@@ -154,8 +154,8 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
   placeOrderDialog(): void {
     this.modalRef = this.dialogService.open(OrderEmailFormComponent, {
       header: this.translateService.instant('Place order'),
+      modal: true,
       width: '60vw',
-      dismissableMask: true,
       data: {
         order: this.order,
       },

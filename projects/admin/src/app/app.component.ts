@@ -52,6 +52,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.hotKeysService.registerHelpModal(() => {
       this.dialogService.open(CustomShortcutHelpComponent, {
         header: this.translateService.instant('Available Shortcuts'),
+        modal: true,
         closable: true
       })
     });
