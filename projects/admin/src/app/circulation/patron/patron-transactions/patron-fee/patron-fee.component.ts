@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { getCurrencySymbol } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CirculationStatistics } from '@app/admin/circulation/circulationStatistics';
@@ -22,7 +21,7 @@ import { CirculationService } from '@app/admin/circulation/services/circulation.
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, CONFIG, RecordService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { Tools, UserService } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -118,7 +117,10 @@ export class PatronFeeComponent implements OnInit {
         label: 'Amount',
         required: true,
         addonLeft: [
-          getCurrencySymbol(this.organisationService.organisation.default_currency, 'wide')
+          Tools.currencySymbol(
+            this.translateService.currentLang,
+            this.organisationService.organisation.default_currency
+          )
         ]
       }
     }, {

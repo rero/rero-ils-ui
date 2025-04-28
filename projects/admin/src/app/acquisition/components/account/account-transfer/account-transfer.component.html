@@ -32,7 +32,7 @@
       </p-select>
     }
   </div>
-  <form class="ui:mt-3" [formGroup]="form" (ngSubmit)="submit()">
+  <form class="ui:mt-3" [formGroup]="form" (ngSubmit)="submit()" onkeydown="return event.key != 'Enter';">
     <p-card>
       <ng-template #header>
       <div class="ui:grid ui:grid-cols-12 ui:bg-surface-100 ui:p-2 ui:text-lg ui:font-bold">

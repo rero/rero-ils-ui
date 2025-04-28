@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2024 RERO
+ * Copyright (C) 2022-2025 RERO
  * Copyright (C) 2022-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,18 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { getCurrencySymbol } from '@angular/common';
-import { UrlSegment } from '@angular/router';
 import { AccountDetailViewComponent } from '@app/admin/acquisition/components/account/account-detail-view/account-detail-view.component';
 import { CanAddAccountGuard } from '@app/admin/acquisition/routes/guards/can-add-account.guard';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '@app/admin/guard/can-access.guard';
 import { PermissionGuard } from '@app/admin/guard/permission.guard';
 import { BaseRoute } from '@app/admin/routes/base-route';
 import { OrganisationService } from '@app/admin/service/organisation.service';
-import { _ } from "@ngx-translate/core";
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { _ } from "@ngx-translate/core";
 import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, JSONSchema7, RouteInterface } from '@rero/ng-core';
-import { PERMISSIONS } from '@rero/shared';
+import { PERMISSIONS, Tools } from '@rero/shared';
 import { of } from 'rxjs';
 
 /** Export formats configuration. */
@@ -98,7 +96,7 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
     const service = this.routeToolService.getInjectorToken(OrganisationService);
     if (service.organisation) {
       field.props.addonLeft = [
-        getCurrencySymbol(service.organisation.default_currency, 'wide')
+        Tools.currencySymbol(this.routeToolService.translateService.currentLang, service.organisation.default_currency)
       ];
     }
     return field;

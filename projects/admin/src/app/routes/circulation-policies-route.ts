@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,15 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { getCurrencySymbol } from '@angular/common';
-import { _ } from "@ngx-translate/core";
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { _ } from "@ngx-translate/core";
 import {
   ComponentCanDeactivateGuard,
   DetailComponent, EditorComponent, JSONSchema7, Record,
   RecordSearchPageComponent, RecordService, RouteInterface
 } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR, User } from '@rero/shared';
+import { PERMISSIONS, PERMISSION_OPERATOR, Tools, User } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
@@ -190,7 +189,10 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
   private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
     const service = this.routeToolService.getInjectorToken(OrganisationService);
     field.props.addonLeft = [
-      getCurrencySymbol(service.organisation.default_currency, 'wide')
+      Tools.currencySymbol(
+        this.routeToolService.translateService.currentLang,
+        service.organisation.default_currency
+      )
     ];
     return field;
   }

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, UrlSegment } from '@angular/router';
 import { IRecordType } from '@rero/ng-core';
 import { filter, Subscription } from 'rxjs';
@@ -72,7 +72,10 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
       this.subscription.unsubscribe();
   }
 
-  onSearch(query) {
+  onSearch(query: any) {
+    if (!(typeof query === 'string')) {
+      query = query.originalLabel;
+    }
     if (this.internalRoutingBaseURL) {
       this.router.navigate([this.internalRoutingBaseURL], {
         queryParams: {
@@ -82,18 +85,6 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
       });
     } else {
       this.document.location.href = `/${this.viewcode}/search/documents?q=${query}&page=1&size=10&sort=bestmatch`;
-    }
-  }
-
-  onSelect(element: any) {
-    if (!('link' in element)) {
-      throw new Error('Missing parameter link');
-    }
-    this.value = '';
-    if(this.internalRoutingBaseURL) {
-      this.router.navigateByUrl(element.link);
-    } else {
-      this.document.location.href = element.link;
     }
   }
 

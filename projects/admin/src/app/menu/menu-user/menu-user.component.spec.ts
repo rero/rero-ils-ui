@@ -143,7 +143,7 @@ describe('AppMenuUserComponent', () => {
     expect(component.items.find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU).items[0].styleClass).toBeUndefined();
     libraryService.switch(librarySwitch);
     fixture.detectChanges();
-    expect(component.items.find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU).items[0].styleClass).toEqual('font-bold');
+    expect(component.items.find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU).items[0].styleClass).toEqual('ui:font-bold');
   });
 
   it('should change the language menu', () => {
@@ -151,13 +151,13 @@ describe('AppMenuUserComponent', () => {
       .find((item: MenuItem) => item.id === MENU_IDS.USER.MENU).items
       .find((item: MenuItem) => item.id === MENU_IDS.USER.LANGUAGE).items
       .find((item: MenuItem) => item.id === 'lang-en').styleClass)
-      .toEqual('font-bold');
+      .toEqual('ui:font-bold');
 
     translateService.use('fr');
     expect(component.items
       .find((item: MenuItem) => item.id === MENU_IDS.USER.MENU).items
       .find((item: MenuItem) => item.id === MENU_IDS.USER.LANGUAGE).items
       .find((item: MenuItem) => item.id === 'lang-fr').styleClass)
-      .toEqual('font-bold');
+      .toEqual('ui:font-bold');
   });
 });

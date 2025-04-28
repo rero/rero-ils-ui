@@ -75,6 +75,7 @@ export class UserIdComponent extends FieldWrapper implements OnInit, OnDestroy {
   openModal(): void {
     const ref: DynamicDialogRef = this.dialogService.open(UserIdEditorComponent, {
       header: this.translateService.instant('Personal informations'),
+      modal: true,
       focusOnShow: false,
       closable: true,
       width: '60vw',

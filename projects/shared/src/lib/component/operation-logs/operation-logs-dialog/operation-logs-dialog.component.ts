@@ -43,7 +43,7 @@ export class OperationLogsDialogComponent {
   openDialog(): void {
     this.dialogService.open(OperationLogsComponent, {
       header: this.translateService.instant('Operation history'),
-      dismissableMask: true,
+      modal: true,
       closable: true,
       width: '60vw',
       position: 'top',

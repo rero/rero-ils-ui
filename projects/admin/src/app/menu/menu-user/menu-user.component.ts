@@ -83,7 +83,7 @@ export class MenuUserComponent implements OnInit, OnDestroy {
   private updateLibraryMenuAndRedirect(library: ISwitchLibrary): void {
     const element = this.items.find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU);
     element.label = library.code;
-    element.items.map((item: MenuItem) => item.styleClass = item.pid === library.pid ? 'font-bold' : '');
+    element.items.map((item: MenuItem) => item.styleClass = item.pid === library.pid ? 'ui:font-bold' : '');
     this.router.navigate(['/']);
   }
 
@@ -91,6 +91,6 @@ export class MenuUserComponent implements OnInit, OnDestroy {
     this.items
     .find((item: MenuItem) => item.id === MENU_IDS.USER.MENU).items
     .find((item: MenuItem) => item.id === MENU_IDS.USER.LANGUAGE).items
-    .map((item: MenuItem) => item.styleClass = item.id === `lang-${this.translateService.currentLang}` ? 'font-bold' : '')
+    .map((item: MenuItem) => item.styleClass = item.id === `lang-${this.translateService.currentLang}` ? 'ui:font-bold' : '')
   }
 }

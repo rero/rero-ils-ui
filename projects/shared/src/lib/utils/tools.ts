@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023 RERO
+ * Copyright (C) 2023-2025 RERO
  * Copyright (C) 2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,5 +24,10 @@ export class Tools {
   static validateEmail(email: string): boolean {
     const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     return re.test(String(email).toLowerCase());
+  }
+
+  static currencySymbol(language: string, currency: string): string {
+    return Intl.NumberFormat(language,{ style:'currency', currency })
+      .formatToParts().find(part => part.type === 'currency').value;
   }
 }

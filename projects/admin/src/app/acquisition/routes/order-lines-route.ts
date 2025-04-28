@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { getCurrencySymbol } from '@angular/common';
-import { _ } from "@ngx-translate/core";
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { _ } from "@ngx-translate/core";
 import { ComponentCanDeactivateGuard, EditorComponent, JSONSchema7, RouteInterface } from '@rero/ng-core';
-import { PERMISSIONS } from '@rero/shared';
+import { PERMISSIONS, Tools } from '@rero/shared';
 import { of } from 'rxjs';
 import { AcqOrderLineGuard } from '../../guard/acq-order-line.guard';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
@@ -88,7 +87,7 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
     //         But how to retrieve the order from here ??? and how get quickly currency to use into
     const service = this.routeToolService.getInjectorToken(OrganisationService);
     field.props.addonLeft = [
-      getCurrencySymbol(service.organisation.default_currency, 'wide')
+      Tools.currencySymbol(this.routeToolService.translateService.currentLang, service.organisation.default_currency)
     ];
     return field;
   }

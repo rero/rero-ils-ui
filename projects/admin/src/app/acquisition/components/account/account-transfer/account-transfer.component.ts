@@ -16,20 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { getCurrencySymbol } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { Tools, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
+import { SelectChangeEvent } from 'primeng/select';
+import { Subscription } from 'rxjs';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { IAcqAccount } from '../../../classes/account';
 import { orderAccountsAsTree } from '../../../utils/account';
-import { SelectChangeEvent } from 'primeng/select';
-import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'admin-account-transfer',
@@ -67,8 +66,8 @@ export class AccountTransferComponent implements OnInit, OnDestroy {
   }
 
   /** Get the currency symbol for the organisation */
-  get currencySymbol(): any {
-    return getCurrencySymbol(this.organisation.default_currency, 'wide');
+  get currencySymbol(): string {
+    return Tools.currencySymbol(this.translateService.currentLang, this.organisation.default_currency);
   }
 
   // CONSTRUCTOR & HOOKS ========================================================

@@ -23,5 +23,10 @@ describe('Tools', () => {
     expect(Tools.validateEmail('foo@bar')).toBeFalse();
     expect(Tools.validateEmail('foo@bar.com')).toBeTrue();
   });
+
+  it('should return the currency symbol according to language', () => {
+    expect(Tools.currencySymbol('fr', 'EUR')).toEqual('€');
+    expect(Tools.currencySymbol('en', 'USD')).toEqual('$');
+  });
 });
 

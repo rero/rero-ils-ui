@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -72,6 +72,8 @@ export class RemoteSearchConfig {
 
       values.push({
         label: this.highlightSearch(text, query),
+        value: text,
+        originalLabel: text,
         index: 'documents',
         link: this.generateDocumentLink(title),
         iconClass: 'fa fa-file-o',
@@ -96,6 +98,8 @@ export class RemoteSearchConfig {
       const text = this.getContributionName(hit.metadata);
       values.push({
         label: this.highlightSearch(text, query),
+        value: text,
+        originalLabel: text,
         index: 'entities',
         link: this.generateEntityLink(hit.metadata),
         iconClass: `fa ${Entity.getIcon(hit.metadata.type)}`

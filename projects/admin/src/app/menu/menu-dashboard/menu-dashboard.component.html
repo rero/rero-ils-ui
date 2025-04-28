@@ -17,9 +17,9 @@
 <div class="ui:flex ui:flex-wrap ui:lg:flex-nowrap ui:gap-4">
   @for (item of items; track item) {
     <div class="ui:w-full">
-      <p-card>
+      <p-card styleClass="ui:bg-white">
         <ng-template #header>
-          <div class="ui:bg-primary-950 ui:text-white ui:gap-1 ui:flex ui:items-center ui:p-4 ui:font-bold ui:rounded-t">
+          <div class="ui:bg-primary-950 ui:text-white ui:gap-1 ui:flex ui:items-center ui:p-4 ui:font-bold ui:rounded-t-lg">
             @if (item.icon) {
               <i [class]="item.icon"></i>
             }
