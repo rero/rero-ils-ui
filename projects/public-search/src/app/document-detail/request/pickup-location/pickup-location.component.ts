@@ -101,6 +101,8 @@ export class PickupLocationComponent implements OnInit {
           type: 'select',
           props: {
             label: this.translateService.instant('Pickup location'),
+            filter: true,
+            appendTo: 'body',
             required: true,
             options
           }

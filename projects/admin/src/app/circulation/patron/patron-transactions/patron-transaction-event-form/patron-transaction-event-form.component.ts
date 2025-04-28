@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { getCurrencySymbol } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { CirculationStatistics } from '@app/admin/circulation/circulationStatistics';
@@ -24,6 +23,7 @@ import { PatronTransaction } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
+import { Tools } from '@rero/shared';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 
@@ -107,7 +107,10 @@ export class PatronTransactionEventFormComponent implements OnInit {
         pattern: '^\\d*(\\.\\d{0,2})?$',
         required: true,
         addonLeft: [
-          getCurrencySymbol(this.organisationService.organisation.default_currency, 'wide')
+          Tools.currencySymbol(
+            this.translateService.currentLang,
+            this.organisationService.organisation.default_currency
+          )
         ]
       },
       validation: {

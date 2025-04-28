@@ -64,6 +64,7 @@ export class CirculationSettingsComponent implements OnInit {
   private openFixedEndDateDialog(): void {
     this.dialogRef = this.dialogService.open(FixedDateFormComponent, {
       header: this.translateService.instant('Choose a due date'),
+      modal: true,
       focusOnShow: false,
       width: '30vw',
     });

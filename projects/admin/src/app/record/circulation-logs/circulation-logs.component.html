@@ -32,7 +32,7 @@
     @if (recordTotals > 0) {
       @for (record of records; track record; let isFirst = $first; let idx = $index) {
         @if (isFirst || !isSamePeriod(record, records[idx-1])) {
-          <div class="ui:bg-surface-100 ui:dark:bg-surface-700 ui:p-2 ui:border-surface ui:border-y">
+          <div class="ui:bg-surface-100 ui:p-2 ui:border-surface ui:border-y">
             <i class="fa fa-calendar"></i>&nbsp;
             {{ record.metadata.date | dateTranslate :'MMMM Y' | titlecase }}
           </div>

@@ -64,7 +64,7 @@
           <admin-default-holding-item
             [holding]="holding"
             [item]="item"
-            [isCurrentOrganisation]="isCurrentOrganisation"
+            [isCurrentOrganisation]="isCurrentOrganisation()"
             (deleteItem)="deleteItem($event)"
             [attr.id]="$any(item).metadata.barcode | idAttribute:{prefix: 'item'}"
           />

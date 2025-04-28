@@ -73,7 +73,7 @@ import { AddEntityLocalFormComponent } from './add-entity-local-form/add-entity-
                 <div class="ui:flex ui:gap-2 ui:items-center">
                   <div class="ui:flex" [innerHTML]="data.label"></div>
                   @if (data.link) {
-                    <a class="ui:ml-1 ui:text-surface-700 ui:dark:text-surface-100" (click)="$event.stopPropagation()" [href]="data.link" target="_blank">
+                    <a class="ui:ml-1 ui:text-surface-700" (click)="$event.stopPropagation()" [href]="data.link" target="_blank">
                       <i class="fa fa-external-link"></i>
                     </a>
                   }
@@ -116,8 +116,8 @@ export class EntityAutocompleteComponent extends RemoteAutocomplete implements O
     event.preventDefault();
     const dialog: DynamicDialogRef = this.dialogService.open(AddEntityLocalFormComponent, {
       header: this.translateService.instant('Add local entity'),
-      width: '75vw',
       modal: true,
+      width: '75vw',
       data: {
         selectedType: this.props.queryOptions.filter,
         searchTerm: this.value

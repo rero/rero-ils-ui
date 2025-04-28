@@ -71,7 +71,7 @@
     <div class="ui:mt-1">
       <p-tag severity="warn" translate>overdue</p-tag>
       @if (fees > 0) {
-        <span [title]="'Fees to date' | translate">
+        <span class="ui:cursor-pointer" [pTooltip]="'Fees to date' | translate" tooltipPosition="top">
           {{ fees | currency:organisation.currency:'symbol' }}
         </span>
       }

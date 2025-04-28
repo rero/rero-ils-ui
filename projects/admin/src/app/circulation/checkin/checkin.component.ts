@@ -236,6 +236,7 @@ export class CheckinComponent implements OnInit {
         if (patron.total.value === 1 && item.total.value === 1) {
           const ref: DynamicDialogRef = this.dialogService.open(CheckinActionComponent, {
             header: this.translate.instant('Circulation action'),
+            modal: true,
             focusOnShow: false,
             closable: true,
             width: '25vw',

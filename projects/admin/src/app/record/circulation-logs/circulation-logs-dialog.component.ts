@@ -57,7 +57,7 @@ export class CirculationLogsDialogComponent {
   openDialog(): void {
     this.dialogService.open(CirculationLogsComponent, {
       header: this.translateService.instant('Circulation history'),
-      dismissableMask: true,
+      modal: true,
       closable: true,
       width: '60vw',
       position: 'top',

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -204,7 +204,7 @@ export class OrderReceiptForm {
           minLength: 0
         },
         fieldArray: {
-          fieldGroupClassName: 'ui:grid ui:grid-cols-12 ui:gap-4',
+          fieldGroupClassName: 'ui:grid ui:grid-cols-12 ui:gap-4 ui:px-4',
           validators: {
             validation: [
               { name: 'receiveQuantityMax', options: { errorPath: 'quantity' } }
@@ -259,7 +259,8 @@ export class OrderReceiptForm {
                 type: 'number',
                 label: _('Qty'),
                 required: true,
-                min: 1
+                min: 1,
+                inputStep: 1
               }
             },
             {
@@ -304,6 +305,7 @@ export class OrderReceiptForm {
           trashButton: true
         },
         fieldArray: {
+          fieldGroupClassName: 'ui:grid ui:px-4 ui:mb-3',
           fieldGroup: [
             {
               key: 'label',
@@ -350,6 +352,7 @@ export class OrderReceiptForm {
           trashButton: true
         },
         fieldArray: {
+          fieldGroupClassName: 'ui:grid ui:px-4 ui:mb-3',
           fieldGroup: [
             {
               key: 'type',

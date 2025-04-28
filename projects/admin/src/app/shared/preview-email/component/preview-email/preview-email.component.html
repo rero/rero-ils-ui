@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2023-2024 RERO
+  Copyright (C) 2023-2025 RERO
   Copyright (C) 2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@
         <small class="ui:ml-1">(<span class="ui:italic" translate>Drag and drop</span>)</small>
       </div>
       </ng-template>
-      <div class="ui:flex ui:gap-1 ui:mt-2">
+      <div class="ui:flex ui:gap-1 ui:mb-4 ui:mx-4">
         @for (email of emails; track email) {
           <p-tag
             pDraggable="emails"
@@ -57,7 +57,7 @@
 
   <!-- RECIPIENTS -->
   <p-panel [header]="'Recipients' | translate">
-    <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-2">
+    <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-2 ui:mb-4 ui:mx-4">
       @for (type of emailTypes; track type) {
         <div class="ui:col-span-2" [class.field-required]="mandatoryEmailTypes.includes(type)">
           {{ ('email_' + type) | translate }}&nbsp;:
@@ -101,6 +101,6 @@
         </div>
       </div>
     </ng-template>
-    <pre class="ui:max-h-[25rem] ui:text-sm ui:overflow-auto ui:p-6 ui:mt-2" [innerHTML]="preview.trim()"></pre>
+    <pre class="ui:max-h-[25rem] ui:text-sm ui:overflow-auto ui:px-5 ui:mb-4" [innerHTML]="preview.trim()"></pre>
   </p-panel>
 </ng-template>

@@ -17,7 +17,7 @@
 -->
 @if (order) {
 <section class="ui:grid ui:grid-cols-12 ui:gap-4">
-  <div class="ui:md:col-span-8">
+  <div class="ui:md:col-span-8 ui:px-3">
     <dl class="metadata">
       <!-- VENDOR -->
       @if (order.vendor) {
@@ -62,15 +62,15 @@
 </section>
 }
 <ng-template #totalAmount let-quantity="quantity" let-total="total" let-label="label">
-  <div class="ui:bg-surface-100 ui:dark:bg-surface-700 ui:py-4 ui:border ui:rounded-border ui:border-surface ui:relative">
-    <div class="ui:absolute ui:dark:bg-surface-500 ui:bg-surface-50 ui:dark:text-white ui:text-muted-color ui:rounded-l-md ui:rounded-r-md ui:border-l ui:border-b ui:border-surface ui:py-2 ui:px-6 ui:top-0 ui:right-0">
+  <div class="ui:bg-surface-50 ui:py-4 ui:border ui:rounded-border ui:border-surface ui:relative">
+    <div class="ui:absolute ui:bg-surface-200 ui:text-muted-color ui:rounded-l-md ui:rounded-r-md ui:border-l ui:border-b ui:border-surface ui:py-2 ui:px-6 ui:top-0 ui:right-0">
       <i class="fa fa-shopping-cart"></i>&nbsp;{{ quantity }}
     </div>
     <div class="ui:flex ui:flex-wrap ui:text-center">
       <div class="ui:w-full ui:text-2xl ui:font-bold">
         {{ total | currency : order.currency : "symbol" }}
       </div>
-      <div class="ui:w-full ui:text-sm ui:dark:text-white  ui:text-muted-color">{{ label }}</div>
+      <div class="ui:w-full ui:text-sm ui:text-muted-color">{{ label }}</div>
     </div>
   </div>
 </ng-template>

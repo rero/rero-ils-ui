@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2024 RERO
+ * Copyright (C) 2022-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,10 +22,10 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG, RecordService, processJsonSchema, removeEmptyValues, resolve$ref } from '@rero/ng-core';
-import { AppSettingsService, UserService } from '@rero/shared';
+import { AppSettingsService, User, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { Subscription, forkJoin, of } from 'rxjs';
-import { debounceTime, map, tap } from 'rxjs/operators';
+import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
     selector: 'public-search-patron-profile-personal-editor',
@@ -185,6 +185,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
     // Update user record and reload logged user
     this.recordService
       .update('users', this.userService.user.id.toString(), data)
+      .pipe(switchMap(() => this.userService.load()))
       .subscribe({
         next: () => {
           this.messageService.add({

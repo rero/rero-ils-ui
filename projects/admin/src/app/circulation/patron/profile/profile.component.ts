@@ -75,9 +75,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   updatePatronPassword(patron) {
     this.dialogService.open(ChangePasswordFormComponent, {
       header: this.translateService.instant('Update Patron Password'),
+      modal: true,
       focusOnShow: false,
       width: '30vw',
-      dismissableMask: true,
       data: {
         patron
       }

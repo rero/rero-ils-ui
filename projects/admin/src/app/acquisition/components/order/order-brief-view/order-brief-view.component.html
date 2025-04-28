@@ -46,20 +46,20 @@
     <div class="ui:col-span-12 ui:lg:col-span-3 ui:flex ui:flex-col ui:gap-1">
       @if (displayProvisionalAccountingData) {
         <div class="ui:flex">
-          <label class="ui:w-8/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:dark:bg-surface-700 ui:rounded-l ui:font-bold">
+          <label class="ui:w-8/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-l ui:font-bold">
             {{ order.account_statement.provisional.total_amount | currency : order.currency }}
           </label>
-          <span class="ui:w-4/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:dark:bg-surface-700 ui:rounded-r ui:text-muted-color ui:text-right">
+          <span class="ui:w-4/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-r ui:text-muted-color ui:text-right">
             <i class="fa fa-shopping-cart"></i>&nbsp;{{ order.account_statement.provisional.quantity }}
           </span>
         </div>
       }
       @if (displayExpenditureAccountingData) {
         <div class="ui:flex">
-          <label class="ui:w-8/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:dark:bg-surface-700 ui:rounded-l ui:font-bold">
+          <label class="ui:w-8/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-l ui:font-bold">
             {{ order.account_statement.expenditure.total_amount | currency : order.currency }}
           </label>
-          <span class="ui:w-4/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:dark:bg-surface-700 ui:rounded-r ui:text-muted-color ui:text-right">
+          <span class="ui:w-4/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-r ui:text-muted-color ui:text-right">
             <i class="fa fa-sign-in"></i>&nbsp;{{ order.account_statement.expenditure.quantity }}
           </span>
         </div>

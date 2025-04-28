@@ -252,7 +252,6 @@ export class UploadFilesComponent implements OnInit {
       message: this.translateService.instant('Do you really want to remove this file?'),
       acceptLabel: this.translateService.instant('OK'),
       rejectLabel: this.translateService.instant('Cancel'),
-      dismissableMask: true,
       accept: () => {
         this.fileService.delete(this.parentRecord.id, file.key).pipe(
           map(() => {

@@ -79,6 +79,7 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
   addRequest(): void {
     const ref = this.dialogService.open(ItemRequestComponent, {
       header: this.translateService.instant('Item request'),
+      modal: true,
       width: '40vw',
       closable: true,
       data: { recordPid: this.itemPid, recordType: 'item' }

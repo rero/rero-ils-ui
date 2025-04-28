@@ -31,17 +31,24 @@
   <p-tabs [(value)]="activeTab">
     <p-tablist>
       @for (tab of tabsOrder; track tab.key) {
-        <p-tab [value]="tab.key">
-          <div class="ui:flex ui:gap-1">
-            <div>{{ tab.value.title }}</div>
-            @if (tab.value.count != null) {
-              <p-badge [value]="tab.value.count" severity="info" />
-            }
-            @if (tab.value.feeTotal != null) {
-              <p-badge [value]="tab.value.feeTotal  | currency : patron.organisation.currency : 'symbol'" severity="warn" />
-            }
-          </div>
-        </p-tab>
+        @if (tab.value.display) {
+          <p-tab [value]="tab.key">
+            <div class="ui:flex ui:gap-1">
+              <div>{{ tab.value.title }}</div>
+              @if (tab.value.count != null) {
+                <p-badge [value]="tab.value.count" severity="info" />
+              }
+              @if (tab.value.feeTotal != null) {
+                <p-badge
+                  [value]="tab.value.feeTotal  | currency : patron.organisation.currency : 'symbol'"
+                  severity="warn"
+                  [pTooltip]="tab.value.tooltip"
+                  tooltipPosition="top"
+                />
+              }
+            </div>
+          </p-tab>
+        }
       }
     </p-tablist>
     <p-tabpanels>

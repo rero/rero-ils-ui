@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
   Copyright (C) 2021-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -29,15 +29,17 @@
           <label>
             {{ receipt.reference }}
             @if (receipt | receptionDates; as reception_dates) {
-              <span class="ui:italic ui:text-sm">
-                ({{ reception_dates.join(', ') }})
-              </span>
+              @if (reception_dates.length > 0) {
+                <span class="ui:italic ui:text-sm">
+                  ({{ reception_dates.join(', ') }})
+                </span>
+              }
             }
           </label>
           @if (receipt.notes.length > 0 && isCollapsed) {
             <span class="ui:flex ui:gap-1">
               @for (note of receipt.notes; track note) {
-                <i class="fa fa-circle text-{{ note | noteBadgeColor }}" aria-hidden="true" title="{{ note.type | translate }}"></i>
+                <i class="fa fa-circle text-{{ note | noteBadgeColor }}" aria-hidden="true" [title]="note.type | translate"></i>
               }
             </span>
           }
@@ -102,15 +104,6 @@
     <!-- ACTION BUTTON COLUMN -->
     @if (recordPermissions && allowActions) {
       <div class="ui:col-span-2 ui:flex ui:flex-wrap ui:gap-1 ui:justify-end">
-        <!-- CONTINUE BUTTON -->
-         @if (canEdit) {
-          <shared-action-button
-            icon="fa fa-pencil"
-            [title]="'Edit' | translate"
-            [routerLink]="['/', 'acquisition', 'records', 'acq_orders', 'receive', receipt.acq_order.pid]"
-            [queryParams]="{ receipt: receipt.pid }"
-          />
-         }
         <shared-action-button
           icon="fa fa-trash"
           [title]="'Delete' | translate"

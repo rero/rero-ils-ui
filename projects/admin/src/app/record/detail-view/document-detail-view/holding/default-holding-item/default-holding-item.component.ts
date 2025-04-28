@@ -97,6 +97,7 @@ export class DefaultHoldingItemComponent implements OnInit {
   addRequest(recordPid: string, recordType: string): void {
     const ref: DynamicDialogRef = this.dialogService.open(ItemRequestComponent,{
       header: this.translateService.instant('Item Request'),
+      modal: true,
       width: '30vw',
       closable: true,
       data: { recordPid, recordType }
