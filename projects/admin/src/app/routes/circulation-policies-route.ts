@@ -203,7 +203,7 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
   private _feeAmountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
     field = this._amountSymbol(field);
     field.props.addonRight = [
-      '/ day'
+      '/day'
     ];
     return field;
   }
