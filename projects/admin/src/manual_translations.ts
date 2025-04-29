@@ -248,7 +248,7 @@ _('Vol. {{ volume }}');
 _('n°. {{ number }}');
 
 // Circulation policies
-_('/ day');
+_('/day');
 
 // Fiction statement
 _('fiction');
