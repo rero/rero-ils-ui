@@ -116,7 +116,7 @@
       </p-tabpanel>
       <p-tabpanel #tabReceipt value="reception">
         @if(tabReceipt.active()) {
-          <admin-receipt-list [order]="order" [recordPermissions]="recordPermissions" />
+          <admin-receipt-list [order]="order" />
         }
       </p-tabpanel>
       <p-tabpanel #tabHistory value="history">
