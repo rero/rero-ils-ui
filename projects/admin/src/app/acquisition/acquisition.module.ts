@@ -24,6 +24,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ApiService, RecordModule } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { AccordionModule } from 'primeng/accordion';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { TimelineModule } from 'primeng/timeline';
 import { TreeTableModule } from 'primeng/treetable';
 import { PreviewEmailModule } from '../shared/preview-email/preview-email.module';
@@ -62,7 +63,6 @@ import { NegativeAmountPipe } from './pipes/negative-amount.pipe';
 import { NoteBadgeColorPipe } from './pipes/note-badge-color.pipe';
 import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pipe';
 import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
-import { InputNumberModule } from 'primeng/inputnumber';
 
 @NgModule({
   declarations: [

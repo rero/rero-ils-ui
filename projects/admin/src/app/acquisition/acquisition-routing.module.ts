@@ -20,7 +20,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, ROUTES, Routes } from '@angular/router';
 import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { PermissionGuard } from '../guard/permission.guard';
-import { RouteToolService } from '../routes/route-tool.service';
 import { AccountListComponent } from './components/account/account-list/account-list.component';
 import { AccountTransferComponent } from './components/account/account-transfer/account-transfer.component';
 import { AcquisitionMainComponent } from './components/acquisition-main/acquisition-main.component';
@@ -31,48 +30,44 @@ import { OrdersRoute } from './routes/orders-route';
 import { ReceiptsRoute } from './routes/receipts-route';
 import { VendorsRoute } from './routes/vendors-route';
 
-const routes: Routes = [
-  {
-    path: '',
-    component: AcquisitionMainComponent,
-    children: [
-      { path: '', redirectTo: 'accounts', pathMatch: 'full' },
-      {
-        path: 'accounts/transfer',
-        component: AccountTransferComponent,
-        canActivate: [PermissionGuard],
-        data: { permissions: [PERMISSIONS.ACAC_TRANSFER] },
-      },
-      {
-        path: 'accounts',
-        component: AccountListComponent,
-        canActivate: [PermissionGuard],
-        data: { permissions: [PERMISSIONS.ACAC_ACCESS, PERMISSIONS.ACAC_SEARCH], operator: PERMISSION_OPERATOR.AND },
-      },
-    ],
-  },
-];
+const initializeRoutes = () => {
+  const routes: Routes = [
+    {
+      path: '',
+      component: AcquisitionMainComponent,
+      children: [
+        { path: '', redirectTo: 'accounts', pathMatch: 'full' },
+        {
+          path: 'accounts/transfer',
+          component: AccountTransferComponent,
+          canActivate: [PermissionGuard],
+          data: { permissions: [PERMISSIONS.ACAC_TRANSFER] },
+        },
+        {
+          path: 'accounts',
+          component: AccountListComponent,
+          canActivate: [PermissionGuard],
+          data: { permissions: [PERMISSIONS.ACAC_ACCESS, PERMISSIONS.ACAC_SEARCH], operator: PERMISSION_OPERATOR.AND },
+        },
+        new AccountsRoute().getConfiguration(),
+        new BudgetsRoute().getConfiguration(),
+        new OrderLinesRoute().getConfiguration(),
+        new OrdersRoute().getConfiguration(),
+        new ReceiptsRoute().getConfiguration(),
+        new VendorsRoute().getConfiguration()
+      ],
+    },
+  ];
+  return routes;
+};
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild([])],
   exports: [RouterModule],
   providers: [
     {
       provide: ROUTES,
-      useFactory: () => {
-        const routes: Routes = [
-          new AccountsRoute().getConfiguration(),
-          new BudgetsRoute().getConfiguration(),
-          new OrderLinesRoute().getConfiguration(),
-          new OrdersRoute().getConfiguration(),
-          new ReceiptsRoute().getConfiguration(),
-          new VendorsRoute().getConfiguration()
-        ];
-        return routes;
-      },
-      deps: [
-        RouteToolService
-      ],
+      useFactory: () => initializeRoutes(),
       multi: true
     }
   ]
