@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -155,6 +155,7 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
     this.modalRef = this.dialogService.open(OrderEmailFormComponent, {
       header: this.translateService.instant('Place order'),
       modal: true,
+      focusOnShow: false,
       width: '60vw',
       data: {
         order: this.order,

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
-import { of, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { AcqOrderStatus, IAcqOrder } from '../../../classes/order';
@@ -41,10 +40,10 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
   // COMPONENT ATTRIBUTES =====================================================
   /** the order for which we want to display receipts */
   @Input() order: IAcqOrder;
-  /** the permissions about the related order */
-  @Input() recordPermissions?: RecordPermissions = null;
   /** AcqReceipt to display */
   receipts: IAcqReceipt[] = undefined;
+
+  public recordPermissions: any;
 
   /** all component subscription */
   private subscriptions = new Subscription();
@@ -72,7 +71,7 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
 
   /** OnInit hook */
   ngOnInit(): void {
-    this._loadPermissions();
+    this.loadPermissions();
     this._loadReceipts();
     this.subscriptions.add(
       this.acqReceiptApiService.deletedReceiptSubject$.subscribe((deletedReceipt: IAcqReceipt) => {
@@ -105,18 +104,12 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
    * Load and complete permissions related to an order.
    * Permissions about receipt must be completed regarding the current user library and the order status.
    */
-  private _loadPermissions(): void {
-    if (this.recordPermissions) {
-      const permissions$ = this.recordPermissions
-        ? of(this.recordPermissions)
-        : this.recordPermissionService.getPermission('acq_orders', this.order.pid);
-      const obsPermissions = permissions$
-        .pipe(
-          map(permissions => this.currentLibraryPermissionValidator.validate(permissions, this.order.library.pid)),
-          map(permissions => this.receivedOrderPermissionValidator.validate(permissions, this.order))
-        )
-        .subscribe((permissions) => this.recordPermissions = permissions);
-      this.subscriptions.add(obsPermissions);
-      }
-    }
+  private loadPermissions(): void {
+    this.subscriptions.add(this.recordPermissionService
+      .getPermission('acq_orders', this.order.pid)
+      .pipe(
+        map(permissions => this.currentLibraryPermissionValidator.validate(permissions, this.order.library.pid)),
+        map(permissions => this.receivedOrderPermissionValidator.validate(permissions, this.order))
+      ).subscribe((permissions: any) => this.recordPermissions = permissions));
+  }
 }
