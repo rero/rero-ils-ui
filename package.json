@@ -83,7 +83,7 @@
     "@ngx-loading-bar/router": "^7.0.0",
     "@ngx-translate/core": "^16.0.0",
     "@primeng/themes": "^19.0.7",
-    "@rero/ng-core": "^17.3.0",
+    "@rero/ng-core": "^19.0.1",
     "chart.js": "^4.4.7",
     "crypto-js": "^4.2.0",
     "easymde": "^2.19.0",
@@ -95,7 +95,7 @@
     "marked": "^15.0.0",
     "ngx-spinner": "^19.0.0",
     "postcss-cli": "^11.0.0",
-    "primelocale": "^1.6",
+    "primelocale": "^2.1.2",
     "primeng": "^19.0.8",
     "rxjs": "^7.8.1",
     "simple-isbn": "^1.1.5",
@@ -130,8 +130,8 @@
     "ng-packagr": "^19.2",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.0.8",
-    "tailwindcss-primeui": "^0.5.0",
-    "typescript": "~5.5.4"
+    "tailwindcss-primeui": "^0.6.1",
+    "typescript": "^5.8.3"
   },
   "files": [
     "dist"
