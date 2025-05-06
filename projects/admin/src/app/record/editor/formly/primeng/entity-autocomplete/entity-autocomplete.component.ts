@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, inject, OnDestroy } from '@angular/core';
 import { ApiService, RemoteAutocomplete } from '@rero/ng-core';
 import { PERMISSIONS, PermissionsService } from '@rero/shared';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -93,7 +93,7 @@ import { AddEntityLocalFormComponent } from './add-entity-local-form/add-entity-
       </div>`,
     standalone: false
 })
-export class EntityAutocompleteComponent extends RemoteAutocomplete implements OnDestroy {
+export class EntityAutocompleteComponent extends RemoteAutocomplete implements OnDestroy, AfterViewInit {
 
   private permissionsService: PermissionsService = inject(PermissionsService);
   private dialogService: DialogService = inject(DialogService);
