@@ -200,7 +200,7 @@ export class UserIdEditorComponent implements OnInit {
    * Create if the userID is null else update.
    */
   submit(): void {
-    this.form.updateValueAndValidity();
+    this.form.markAllAsTouched();
     if (!this.form.valid) {
       this.messageService.add({
         severity: 'error',

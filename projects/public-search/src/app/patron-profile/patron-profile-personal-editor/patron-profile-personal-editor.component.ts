@@ -171,7 +171,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   // COMPONENT FUNCTIONS ======================================================
   /** Submit form */
   submit() {
-    this.form.updateValueAndValidity();
+    this.form.markAllAsTouched();
     if (this.form.valid === false) {
       this.messageService.add({
         severity: 'error',
