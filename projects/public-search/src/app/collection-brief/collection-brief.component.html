@@ -25,7 +25,7 @@
   <div>
     @if (record.metadata.teachers) {
       <div>
-        @for (teacher of record.metadata.teachers; track teacher; let last = $last) {
+        @for (teacher of record.metadata.teachers; track $index; let last = $last) {
           {{ teacher.name }}{{ last ? '' : ', ' }}
         }
       </div>

@@ -29,7 +29,7 @@ import { Component, Input } from '@angular/core';
           'fa-circle text-success': day.is_open
         }"></i>
         @if (day.is_open) {
-            @for (time of day.times; track time; let last = $last) {
+            @for (time of day.times; track $index; let last = $last) {
               <span>{{ time.start_time }} - {{ time.end_time }}</span>
               @if (!last) {
                 /

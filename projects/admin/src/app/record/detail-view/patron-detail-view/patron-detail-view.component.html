@@ -68,7 +68,7 @@
               </dt>
               <dd>
                 <ul class="ui:list-none">
-                  @for (phone of patronPhones; track phone) {
+                  @for (phone of patronPhones; track $index) {
                     <li>
                       {{ phone.value }}&nbsp;
                       <span class="ui:italic ui:text-muted-color" >({{ phone.type | translate }})</span>
@@ -110,7 +110,7 @@
           </span>
         </p-accordion-header>
         <p-accordion-content>
-          @for (note of patron.notes; track note) {
+          @for (note of patron.notes; track $index) {
             <div class="ui:mt-2">
               <dl class="metadata">
                 <dt translate>
@@ -145,7 +145,7 @@
                 </dd>
                 <dt translate>{{ patron.roles | i18nPlural: {'=1': 'Role', 'other': 'Roles'} }}</dt>
                 <dd class="ui:flex ui:gap-1 ui:flex-wrap">
-                  @for (role of patron.roles; track role) {
+                  @for (role of patron.roles; track $index) {
                     <p-tag [severity]="getRoleTagSeverity(role)" [value]="role | translate" />
                   }
                 </dd>
@@ -186,7 +186,7 @@
                 {{ 'Affiliation libraries' | translate }}
               </dt>
               <ul class="ui:list-none">
-                @for (library of patron.patron.libraries; track library) {
+                @for (library of patron.patron.libraries; track $index) {
                   <li>
                     {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
                   </li>
@@ -239,7 +239,7 @@
               </dt>
               <dd>
                 <ul class="ui:list-none">
-                  @for (library of patron.libraries; track library) {
+                  @for (library of patron.libraries; track $index) {
                     <li>
                       {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
                     </li>

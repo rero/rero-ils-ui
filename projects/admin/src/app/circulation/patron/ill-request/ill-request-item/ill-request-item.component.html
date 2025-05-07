@@ -103,7 +103,7 @@
           <dt translate>Note</dt>
           <dd>
             <ul class="ui:list-none">
-              @for (note of record.metadata.notes; track note) {
+              @for (note of record.metadata.notes; track $index) {
                 <li [innerHTML]="note.content | nl2br"></li>
               }
             </ul>

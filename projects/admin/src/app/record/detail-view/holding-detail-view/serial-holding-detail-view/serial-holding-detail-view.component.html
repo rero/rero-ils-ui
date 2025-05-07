@@ -75,7 +75,7 @@
           }
         </div>
         <div class="ui:flex ui:flex-col">
-          @for (prediction of predictionsItems; track prediction; let last = $last) {
+          @for (prediction of predictionsItems; track $index; let last = $last) {
             <admin-expected-issue [issue]="prediction">
               @if (last) {
                 <ng-container actions>
@@ -108,7 +108,7 @@
               }
             </admin-expected-issue>
           }
-          @for (item of receivedItems; track item; let last = $last) {
+          @for (item of receivedItems; track item.metadata.pid; let last = $last) {
             <admin-received-issue [issue]="item" [holding]="holding" (delete)="deleteIssue($event)" />
           }
         </div>

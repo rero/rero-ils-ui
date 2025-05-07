@@ -40,7 +40,7 @@
     @if (record.metadata.displayed_status) {
       <p-panel [header]="'Displayed status'|translate">
         <ul class="ui:list-none ui:my-2 ui:ml-5">
-          @for (status of record.metadata.displayed_status; track status) {
+          @for (status of record.metadata.displayed_status; track $index) {
             <li>
               <div class="ui:font-bold ui:w-20 ui:inline-block">
                 <i class="fa fa-language"></i>&nbsp;({{ status.language }})
@@ -57,7 +57,7 @@
     @if (record.metadata.circulation_information) {
       <p-panel [header]="'Circulation information'|translate">
         <ul class="ui:list-none ui:my-2 ui:ml-5">
-          @for (circulation of record.metadata.circulation_information; track circulation) {
+          @for (circulation of record.metadata.circulation_information; track $index) {
             <li>
               <div class="ui:font-bold ui:w-20 ui:inline-block">
                 <i class="fa fa-language"></i> ({{ circulation.language }})

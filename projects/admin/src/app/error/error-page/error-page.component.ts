@@ -34,7 +34,7 @@ import { map } from 'rxjs/operators';
               </p>
               <div class="ui:mb-4 ui:text-lg ui:font-light ui:text-gray-500">
                 <ul class="ui:list-none">
-                  @for (text of messages[statusCode].description || []; track text) {
+                  @for (text of messages[statusCode].description || []; track $index) {
                     <li>{{ text }}</li>
                   }
                 </ul>

@@ -37,7 +37,7 @@
         <dt translate>Filter numbers by libraries</dt>
         <dd>
           <ul class="ui:list-none">
-            @for (lib of record.metadata.filter_by_libraries; track lib) {
+            @for (lib of record.metadata.filter_by_libraries; track lib.$ref) {
               <li>
                 {{ lib.$ref| getRecord: 'libraries' : 'field' : 'name' | async }}
               </li>
@@ -67,7 +67,7 @@
           <dt translate>Distributions</dt>
           <dd>
             <ul class="ui:list-none">
-              @for (dist of record.metadata.category.indicator.distributions; track dist; let last = $last) {
+              @for (dist of record.metadata.category.indicator.distributions; track $index; let last = $last) {
                 <li class="ui:inline">{{ dist | translate }}{{ last ? '' : ' / ' }}</li>
               }
             </ul>

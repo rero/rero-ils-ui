@@ -15,7 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record && record.metadata.partOf) {
-  @for (partOf of record.metadata.partOf; track partOf; let i = $index) {
+  @for (partOf of record.metadata.partOf; track $index; let i = $index) {
     <div>
       <b class="ui:mr-1">{{ getPartOfLabel(record) }}</b>:
       @if (isPublicView) {
@@ -29,7 +29,7 @@
       }
       @if (partOf.numbering) {
           ;
-          @for(numbering of partOf.numbering; track numbering; let i = $index; let isLast = $last) {
+          @for(numbering of partOf.numbering; track $index; let i = $index; let isLast = $last) {
             @if (formatNumbering(numbering); as num) {
               <span id="{{ 'doc-part-of-numbering-' + i }}">
                 {{ num }}

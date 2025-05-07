@@ -96,7 +96,7 @@
       @if (record.metadata.pid | itemInCollection | async; as collections) {
         <dt translate>Exhibition/course</dt>
         <dd>
-          @for (collection of collections; track collection; let last=$last) {
+          @for (collection of collections; track $any(collection).metadata.pid; let last=$last) {
             <a
               [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]"
             >{{ $any(collection).metadata.title }}</a>
@@ -182,7 +182,7 @@
     <section class="ui:mt-4">
       <h3 translate>Notes</h3>
       <dl class="metadata">
-        @for (note of record.metadata.notes; track note) {
+        @for (note of record.metadata.notes; track $index) {
             <dt>
               <i class="fa ui:text-sm"
                 [pTooltip]="isPublicNote(note)? ('Public notes' | translate): ('Staff notes' | translate)"
@@ -251,7 +251,7 @@
         @if (record.metadata?.issue?.claims) {
           <p-tabpanel value="claim">
             <ul class="ui:list-none">
-              @for (date of claimsDates; track date) {
+              @for (date of claimsDates; track $index) {
                 <li>
                   {{ date | dateTranslate: 'shortDate' }} - {{ date | dateTranslate: 'shortTime' }}
                 </li>

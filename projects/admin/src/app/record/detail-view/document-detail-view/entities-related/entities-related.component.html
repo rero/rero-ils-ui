@@ -15,12 +15,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div class="ui:py-2">
-  @for (field of entities | keyvalue; track field) {
+  @for (field of entities | keyvalue; track $index) {
     <dl class="metadata ui:odd:bg-surface-50">
       <dt>{{ field.key | translate |ucfirst }}</dt>
       <dd>
         <ul class="ui:list-none">
-          @for (entity of field.value; track entity) {
+          @for (entity of field.value; track $index) {
             <li>
               <i [title]="entity.type | translate" class="fa {{ entity.icon }}"></i>&nbsp;
               <a [routerLink]="['/records', entity.resource_type + '_entities', 'detail', entity.pid]">

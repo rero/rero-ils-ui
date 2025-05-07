@@ -26,7 +26,7 @@
     </ng-template>
     @if (loans.length > 0) {
       <div>
-        @for (loan of loans; track loan) {
+        @for (loan of loans; track $index) {
           <div class="ui:odd:bg-surface-50">
             <admin-pickup-item
               [loan]="loan"

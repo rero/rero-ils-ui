@@ -23,7 +23,7 @@
   />
   <p-tabs [value]="activeTab">
     <p-tablist>
-      @for(item of items; track item) {
+      @for(item of items; track item.id) {
         <p-tab [value]="item.id">
           <a pRipple class="ui:flex ui:gap-2" [routerLink]="item.routerLink">
             <span>{{ item.label | translate }}</span>

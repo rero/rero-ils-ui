@@ -20,7 +20,7 @@
   </dt>
   <dd [ngClass]="{'ui:inline': inline}">
     <ul class="ui:list-none" [ngClass]="{'ui:inline': inline}">
-      @for (edition of field; track edition; let last=$last) {
+      @for (edition of field; track $index; let last=$last) {
         <li class="ui:inline">
           @if (edition.label) {
             {{ edition.label }}

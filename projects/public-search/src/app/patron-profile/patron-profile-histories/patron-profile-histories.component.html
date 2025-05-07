@@ -25,7 +25,7 @@
 
     @defer (when loaded) {
       @if (paginator.getRecordsCount() > 0) {
-        @for (loan of records; track loan) {
+        @for (loan of records; track $index) {
           <div class="ui:odd:bg-surface-50 ui:my-1">
             <public-search-patron-profile-history [record]="loan" id="history-{{ loan.metadata.pid }}" />
           </div>

@@ -19,7 +19,7 @@
     <h1 id="collection-title">{{ record.metadata.title }}</h1>
     @if (record.metadata.subjects) {
       <div id="subject" class="ui:flex ui:gap-1 ui:flex-wrap">
-        @for(subject of record.metadata.subjects; track subject) {
+        @for(subject of record.metadata.subjects; track $index) {
           <p-tag severity="secondary">
             <i class="fa fa-tag"></i>&nbsp;{{ subject.name }}
           </p-tag>
@@ -34,7 +34,7 @@
       @if (record.metadata.teachers) {
         <dt translate>Teachers</dt>
         <dd>
-          @for (teacher of record.metadata.teachers; track teacher; let last = $last) {
+          @for (teacher of record.metadata.teachers; track $index; let last = $last) {
             {{ teacher.name }} {{ last ? '' : ', ' }}
           }
         </dd>
@@ -51,7 +51,7 @@
         <dt translate>Libraries</dt>
         <dd>
           <ul class="ui:list-none">
-            @for (library of record.metadata.libraries; track library; let last=$last) {
+            @for (library of record.metadata.libraries; track $index; let last=$last) {
               <li>{{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</li>
             }
           </ul>

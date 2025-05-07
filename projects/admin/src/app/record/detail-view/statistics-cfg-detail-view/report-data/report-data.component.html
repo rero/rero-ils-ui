@@ -19,7 +19,7 @@
   <p-table stripedRows [value]="data" [tableStyle]="{ 'min-width': '50rem' }" size="small">
     <ng-template #body let-line>
       <tr>
-        @for (value of line; track value) {
+        @for (value of line; track $index) {
           <td>{{ value }}</td>
         }
       </tr>

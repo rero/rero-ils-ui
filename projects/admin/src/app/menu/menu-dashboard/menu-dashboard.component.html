@@ -15,7 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div class="ui:flex ui:flex-wrap ui:lg:flex-nowrap ui:gap-4">
-  @for (item of items; track item) {
+  @for (item of items; track item.id) {
     <div class="ui:w-full">
       <p-card styleClass="ui:bg-white">
         <ng-template #header>
@@ -26,7 +26,7 @@
             <span>{{ item.label }}</span>
           </div>
         </ng-template>
-        @for (menuItem of item.items; track menuItem) {
+        @for (menuItem of item.items; track menuItem.id) {
           <p-tieredMenu [model]="[menuItem]" styleClass="ui:w-full ui:p-0">
             <ng-template #item let-item>
               <a

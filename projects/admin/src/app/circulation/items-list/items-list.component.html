@@ -47,7 +47,7 @@
 
     <div>
       <!-- CHECKED OUT ITEMS -->
-      @for (item of checkedOutItems; track item) {
+      @for (item of checkedOutItems; track item.pid) {
         <div class="ui:odd:bg-surface-50">
           <admin-item
             [patron]="patron"
@@ -61,7 +61,7 @@
 
       <!-- CHECKED IN ITEMS -->
       <!-- Callout ui:border for [TRANSIT|REQUEST|FEE] -->
-      @for (item of checkedInItems; track item) {
+      @for (item of checkedInItems; track item.pid) {
         <div class="ui:odd:bg-surface-50">
           <admin-item
             [patron]="patron"

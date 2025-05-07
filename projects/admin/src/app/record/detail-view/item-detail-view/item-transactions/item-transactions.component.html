@@ -55,7 +55,7 @@
           <div class="ui:col-span-3 ui:font-bold" translate>Request date</div>
         </div>
         <div>
-          @for (request of requestedBy; track request) {
+          @for (request of requestedBy; track $index) {
             <div class="ui:py-2 ui:odd:bg-surface-50">
               <admin-item-transaction
                 type="loan_request"

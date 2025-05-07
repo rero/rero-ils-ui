@@ -22,7 +22,7 @@
   <form [formGroup]="formGroup">
     <div class="ui:flex ui:gap-2 ui:py-2">
       <span class="ui:font-bold">{{ 'Filter' | translate}}:</span>
-        @for (filter of filterTypes; track filter) {
+        @for (filter of filterTypes; track $index) {
             <p-toggleswitch [inputId]="filter" [formControlName]="filter" />
             <label [for]="filter">{{ ('op_filter_' + filter) | translate }}</label>
         }
@@ -30,7 +30,7 @@
   </form>
   @defer {
     @if (recordTotals > 0) {
-      @for (record of records; track record; let isFirst = $first; let idx = $index) {
+      @for (record of records; track record.metadata.pid; let isFirst = $first; let idx = $index) {
         @if (isFirst || !isSamePeriod(record, records[idx-1])) {
           <div class="ui:bg-surface-100 ui:p-2 ui:border-surface ui:border-y">
             <i class="fa fa-calendar"></i>&nbsp;

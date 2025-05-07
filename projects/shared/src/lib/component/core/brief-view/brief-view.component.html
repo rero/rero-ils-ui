@@ -57,7 +57,7 @@
       } @else {
         @if (tags) {
           <div id="subject" class="ui:flex ui:gap-1 ui:flex-wrap">
-            @for (tag of tags; track tag) {
+            @for (tag of tags; track $index) {
               <p-tag severity="success" [value]="tag.label"/>
             }
           </div>

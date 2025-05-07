@@ -27,7 +27,7 @@
     <dt translate>Subordinate unit</dt>
     <dd>
       <ul class="ui:list-none">
-        @for (name of record.subordinate_unit; track name) {
+        @for (name of record.subordinate_unit; track $index) {
           <li>{{ name }}</li>
         }
       </ul>
@@ -73,7 +73,7 @@
     <dt translate>Alternative names</dt>
     <dd>
       <ul class="ui:list-none">
-        @for (name of record.alternative_names; track name) {
+        @for (name of record.alternative_names; track $index) {
           <li>{{ name }}</li>
         }
       </ul>

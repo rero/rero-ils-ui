@@ -41,7 +41,7 @@
       </div>
       </ng-template>
       <div class="ui:flex ui:gap-1 ui:mb-4 ui:mx-4">
-        @for (email of emails; track email) {
+        @for (email of emails; track $index) {
           <p-tag
             pDraggable="emails"
             [style]="{cursor: 'grab'}"
@@ -58,7 +58,7 @@
   <!-- RECIPIENTS -->
   <p-panel [header]="'Recipients' | translate">
     <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-2 ui:mb-4 ui:mx-4">
-      @for (type of emailTypes; track type) {
+      @for (type of emailTypes; track $index) {
         <div class="ui:col-span-2" [class.field-required]="mandatoryEmailTypes.includes(type)">
           {{ ('email_' + type) | translate }}&nbsp;:
         </div>

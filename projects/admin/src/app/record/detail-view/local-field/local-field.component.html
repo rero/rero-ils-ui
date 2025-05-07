@@ -18,7 +18,7 @@
 @defer (when !isLoading) {
   @if (localFields.length > 0) {
     <div class="ui:py-3">
-      @for (field of localFields; track field) {
+      @for (field of localFields; track $index) {
         <dl class="metadata ui:odd:bg-surface-50">
           <dt translate>{{ 'local_' + field.name }}</dt>
           <dd>{{ field.value | join:'; ' }}</dd>

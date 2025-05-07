@@ -30,7 +30,7 @@
       </div>
     </ng-template>
     @if (items.length > 0) {
-      @for (item of items; track item) {
+      @for (item of items; track item.pid) {
         <div class="ui:odd:bg-surface-50">
           <admin-requested-item
             [item]="item"

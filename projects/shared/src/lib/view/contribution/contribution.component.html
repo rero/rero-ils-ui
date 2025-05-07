@@ -18,7 +18,7 @@
 
 @if (contributions) {
   <ul class="ui:list-none">
-    @for (contributor of contributions; track contributor; let last=$last) {
+    @for (contributor of contributions; track $index; let last=$last) {
       <li class="ui:inline">
         @if (activateLink || withEntityLink) {
           @if (withEntityLink && contributor.entity?.pid) {

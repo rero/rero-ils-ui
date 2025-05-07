@@ -18,7 +18,7 @@
 @switch (holdingType) {
   @case ('electronic') {
     <div class="ui:flex ui:flex-col">
-      @for (elocation of record.metadata.electronic_location; track elocation) {
+      @for (elocation of record.metadata.electronic_location; track $index) {
        <a class="rero-ils-external-link" [href]="elocation.uri | safeUrl">{{ elocation.source }}</a>
       }
     </div>
@@ -32,7 +32,7 @@
         <div class="ui:col-span-3" translate>Call number</div>
       </div>
       <div>
-      @for (item of items | slice:0: displayItemsCounter; track item) {
+      @for (item of items | slice:0: displayItemsCounter; track $any(item).metadata.pid) {
         <div class="ui:odd:bg-surface-50 ui:pb-2 ui:px-1">
           <admin-serial-holding-item
             [holding]="holding"
@@ -59,7 +59,7 @@
   }
   @default {
     @if (items && items.length > 0) {
-      @for (item of items | slice:0: displayItemsCounter; track item; let last = $last) {
+      @for (item of items | slice:0: displayItemsCounter; track $any(item).metadata.pid; let last = $last) {
         <div class="ui:odd:bg-surface-50 ui:pb-2 ui:px-1">
           <admin-default-holding-item
             [holding]="holding"

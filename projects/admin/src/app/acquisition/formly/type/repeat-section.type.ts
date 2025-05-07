@@ -52,7 +52,7 @@ import { FieldArrayType } from '@ngx-formly/core';
           <div class="ui:grid ui:grid-cols-12 ui:gap-4">
             <div [ngClass]="field.props.trashButton ? 'ui:col-span-11': 'ui:col-span-12'">
               <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-2">
-                @for (field of field.fieldGroup[0].fieldGroup; track field) {
+                @for (field of field.fieldGroup[0].fieldGroup; track field.id) {
                   @if (field.className && field.className !== 'ui:hidden') {
                     <div class="{{ field.props.headerClassName }}">
                       {{ field.props.label|translate }}
@@ -64,7 +64,7 @@ import { FieldArrayType } from '@ngx-formly/core';
                 }
               </div>
             </div>
-            @for (f of field.fieldGroup; track f; let i = $index) {
+            @for (f of field.fieldGroup; track f.id; let i = $index) {
               @if (f.fieldGroup.length > 0) {
                 <formly-field [ngClass]="field.props.trashButton ? 'ui:col-span-11': 'ui:col-span-12'" [field]="f" />
                 @if (field.props.trashButton) {

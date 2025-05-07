@@ -37,7 +37,7 @@
     @if (item.metadata.in_collection) {
       <dt translate>Temporary location</dt>
       <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location-temporary'}">
-        @for (collection of item.metadata.in_collection; track collection; let last = $last) {
+        @for (collection of item.metadata.in_collection; track $index; let last = $last) {
           <a href="/{{ collection.viewcode }}/collections/{{ collection.pid }}">{{ collection.title }}</a>
           {{ last ? '' : '; ' }}
         }
@@ -73,7 +73,7 @@
     </dd>
     <!-- NOTES -->
     @if (item.metadata.notes && item.metadata.notes.length > 0) {
-      @for (note of item.metadata.notes | notesFilter : noteAuthorizedTypes; track note) {
+      @for (note of item.metadata.notes | notesFilter : noteAuthorizedTypes; track $index) {
         <dt>{{ note.type | translate }}</dt>
         <dd [innerHTML]="note.content | nl2br"></dd>
       }
